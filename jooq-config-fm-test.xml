@@ -4,9 +4,9 @@
 	<!-- Configure the database connection here -->
 	<jdbc>
 		<driver>org.postgresql.Driver</driver>
-		<url>jdbc:postgresql://localhost:5432/comunas</url>
-		<user>comunas</user>
-		<password>comunas</password>
+		<url>jdbc:postgresql://localhost:5432/zeitwert</url>
+		<user>zeitwert</user>
+		<password>zeitwert</password>
 	</jdbc>
 
 	<generator>
@@ -24,7 +24,7 @@
 			<javaTimeTypes>true</javaTimeTypes>
 		</generate>
 		<target>
-			<packageName>fm.comunas.fm.test.model.db</packageName>
+			<packageName>io.zeitwert.fm.test.model.db</packageName>
 			<directory>/src/test/java</directory>
 		</target>
 	</generator>

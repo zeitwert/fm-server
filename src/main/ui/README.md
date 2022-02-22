@@ -1,10 +1,10 @@
-# Comunas UI
+# Zeitwert UI
 
-The Comunas Web UI.
+The Zeitwert Web UI.
 
 ## Status
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e2da500f-9988-4151-ad39-6875da561f10/deploy-status)](https://app.netlify.com/sites/comunas-ui/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e2da500f-9988-4151-ad39-6875da561f10/deploy-status)](https://app.netlify.com/sites/zeitwert-ui/deploys)
 
 ## Installation
 
@@ -19,7 +19,7 @@ More details on the original [create-react-app readme](https://github.com/facebo
 
 ## Development
 
-Comunas UI is a single page TypeScript, React, Mobx-State-Tree application and can be built with yarn.
+Zeitwert UI is a single page TypeScript, React, Mobx-State-Tree application and can be built with yarn.
 
 Some commands:
 
@@ -29,9 +29,9 @@ Some commands:
 
 -   `yarn build` creates the production build in directory ./build
 
-### Direct link to @finadvise repos for more efficient development
+### Direct link to @zeitwert repos for more efficient development
 
-For a more efficient development, it is possible to link the finadvise-ui-forms repository into this package:
+For a more efficient development, it is possible to link the zeitwert-ui-forms repository into this package:
 
 **Delete library node_modules**:
 
@@ -39,12 +39,12 @@ For a more efficient development, it is possible to link the finadvise-ui-forms 
 
 **Symbolic link to source folder**:
 
--   create folder `@finadvise` in `src` folder
--   create symbolic link `forms` to src folder of finadvise-forms
+-   create folder `@zeitwert` in `src` folder
+-   create symbolic link `forms` to src folder of zeitwert-forms
 
-**Windows** (in `src\@finadvise` folder):
+**Windows** (in `src\@zeitwert` folder):
 
--   `mklink /D forms "..\..\..\finadvise-ui-forms\src"`
+-   `mklink /D forms "..\..\..\zeitwert-ui-forms\src"`
 
 ### Salesforce Lightning React
 
@@ -63,32 +63,4 @@ cp -r node_modules/\@salesforce/design-system-react/assets/images plugin/outlook
 
 ## Deployment
 
-The finadvise UI is deployed to [Netlify](https://app.netlify.com/sites/comunas-ui) upon pushing to Bitbucket, running at [https://comunas-ui.netlify.com](https://comunas-ui.netlify.com), and mapped from [https://www.comunas.fm](https://www.comunas.fm).
-
-## Docker (INACCURATE)
-
-Docker setup according to [http://mherman.org/blog/2017/12/07/dockerizing-a-react-app](http://mherman.org/blog/2017/12/07/dockerizing-a-react-app) for both a development and a production build.
-
-### Development Build
-
-docker container prune
-docker rmi comunas/comunas-ui-dev
-docker rmi comunas/comunas-ui-dev:0.0.1-SNAPSHOT
-
-docker build -f docker/dev.Dockerfile -t comunas/comunas-ui-dev:0.0.1-SNAPSHOT .
-docker tag comunas/comunas-ui-dev:0.0.1-SNAPSHOT comunas/comunas-ui-dev:latest
-
-docker run -it -v ${PWD}:/usr/src/app -v /usr/src/app/node_modules -p 3000:3000 --rm comunas/comunas-ui-dev
-
-### Production Build
-
-docker container prune
-docker rmi comunas/comunas-ui
-docker rmi comunas/comunas-ui:0.0.1-SNAPSHOT
-
-docker build -f docker/prod.Dockerfile -t comunas/comunas-ui:0.0.1-SNAPSHOT .
-docker tag comunas/comunas-ui:0.0.1-SNAPSHOT comunas/comunas-ui:latest
-
-docker run --name comunas_ui -it -p 3000:80 --rm comunas/comunas-ui:0.0.1-SNAPSHOT
-
-docker-compose -f docker/prod.docker-compose.yml up -d --build
+The zeitwert UI is deployed embedded in Spring Boot server, mapped from [https://www.zeitwert.fm](https://www.zeitwert.fm).

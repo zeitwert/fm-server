@@ -1,6 +1,6 @@
-import { ContactStoreModel, LifeEvent } from "@comunas/ui-model";
-import { Timeline } from "@comunas/ui-slds/timeline/Timeline";
 import Card from "@salesforce/design-system-react/components/card";
+import { ContactStoreModel, LifeEvent } from "@zeitwert/ui-model";
+import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

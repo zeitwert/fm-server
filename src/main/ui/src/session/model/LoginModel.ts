@@ -1,6 +1,6 @@
 
-import { EnumeratedField, TextField } from "@comunas/ui-forms";
-import { Enumerated, session, Session } from "@comunas/ui-model";
+import { EnumeratedField, TextField } from "@zeitwert/ui-forms";
+import { Enumerated, session, Session } from "@zeitwert/ui-model";
 import { types } from "mobx-state-tree";
 import { Form, Query } from "mstform";
 

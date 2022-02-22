@@ -1,8 +1,8 @@
 
-import { Account, Building, BuildingStore, BuildingStoreModel, EntityType } from "@comunas/ui-model";
 import Spinner from "@salesforce/design-system-react/components/spinner";
 import Tabs from "@salesforce/design-system-react/components/tabs";
 import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Account, Building, BuildingStore, BuildingStoreModel, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";

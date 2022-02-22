@@ -1,4 +1,4 @@
-import { Loading } from "@comunas/ui-slds/common/Loading";
+import { Loading } from "@zeitwert/ui-slds/common/Loading";
 import React from "react";
 
 export class AuthCallback extends React.Component {

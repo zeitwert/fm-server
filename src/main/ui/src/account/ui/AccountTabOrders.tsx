@@ -1,6 +1,6 @@
-import { Account, ItemListModel } from "@comunas/ui-model";
-import { DataTableCellWithEntityIcon, DataTableCellWithLink } from "@comunas/ui-slds/custom/CustomDataTableCells";
-import { ReportViewer } from "@comunas/ui-slds/report/ReportViewer";
+import { Account, ItemListModel } from "@zeitwert/ui-model";
+import { DataTableCellWithEntityIcon, DataTableCellWithLink } from "@zeitwert/ui-slds/custom/CustomDataTableCells";
+import { ReportViewer } from "@zeitwert/ui-slds/report/ReportViewer";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

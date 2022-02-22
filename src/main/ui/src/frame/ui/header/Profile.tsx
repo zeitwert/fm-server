@@ -1,9 +1,9 @@
-import { Session } from "@comunas/ui-model";
 import Avatar from "@salesforce/design-system-react/components/avatar";
 import Button from "@salesforce/design-system-react/components/button";
 import GlobalHeaderProfile from "@salesforce/design-system-react/components/global-header/profile";
 import Popover from "@salesforce/design-system-react/components/popover";
 import { GLOBAL_HEADER_PROFILE } from "@salesforce/design-system-react/utilities/constants";
+import { Session } from "@zeitwert/ui-model";
 import React from "react";
 
 const HeaderProfileCustomContent = (props: any) => (

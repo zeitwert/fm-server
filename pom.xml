@@ -10,9 +10,9 @@
 		<relativePath />
 	</parent>
 
-	<groupId>fm.comunas</groupId>
-	<artifactId>comunas-server</artifactId>
-	<name>Comunas Application Server</name>
+	<groupId>io.zeitwert</groupId>
+	<artifactId>zeitwert-server</artifactId>
+	<name>Zeitwert Application Server</name>
 	<description></description>
 	<version>0.0.1-SNAPSHOT</version>
 
@@ -103,7 +103,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>comunas-server</name>
+						<name>zeitwert-server</name>
 					</image>
 					<layers>
 						<enabled>true</enabled>
@@ -114,9 +114,9 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<configuration>
-					<url>jdbc:postgresql://localhost:5432/comunas</url>
-					<user>comunas</user>
-					<password>comunas</password>
+					<url>jdbc:postgresql://localhost:5432/zeitwert</url>
+					<user>zeitwert</user>
+					<password>zeitwert</password>
 				</configuration>
 			</plugin>
 			<plugin>

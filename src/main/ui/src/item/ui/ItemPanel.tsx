@@ -67,7 +67,7 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 								<p className="slds-popover_panel__label slds-truncate" title="Website">Website</p>
 							</dt>
 							<dd>
-								<a href="/#">www.comunas.ch</a>
+								<a href="/#">www.zeitwert.io</a>
 							</dd>
 						</dl>
 					</div>

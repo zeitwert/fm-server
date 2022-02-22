@@ -1,4 +1,4 @@
-import { Language, Locale, Session, SessionModel } from "@comunas/ui-model";
+import { Language, Locale, Session, SessionModel } from "@zeitwert/ui-model";
 import App from "App";
 import { createBrowserHistory } from "history";
 import { observer, Provider } from "mobx-react";
@@ -28,7 +28,7 @@ const session: Session = SessionModel.create({
 	},
 	appInfo: {
 		id: "advice",
-		name: "finadvise:advice",
+		name: "zeitwert:advice",
 		areas: [],
 		defaultArea: ""
 	}

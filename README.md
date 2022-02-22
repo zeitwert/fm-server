@@ -1,4 +1,4 @@
-# comunas.fm Application Server
+# zeitwert Application Server
 
 ## Modularisation
 
@@ -45,7 +45,7 @@ Trigger manual migration `mvnw flyway:migrate`
 ### jOOQ
 
 **Code Generation**
-Generated source code of jOOQ is checked in under `src/main/java/fm/comunas/[module]/[component]/db` (according to definition in jooq XML config files).
+Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/db` (according to definition in jooq XML config files).
 
 Sources can be generated (after database has been set up through flyway) with `mvnw generate-sources`;
 
@@ -87,7 +87,7 @@ Create authorization key:
 
 Attach the current application:
 
-`heroku git:remote -a comunas-server`
+`heroku git:remote -a zeitwert`
 
 To show logs from application:
 

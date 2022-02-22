@@ -1,8 +1,4 @@
 
-import { Account, Aggregate, API, Config, Enumerated, GenericUserType, UserInfo } from "@comunas/ui-model";
-import Datepicker from "@comunas/ui-slds/common/Datepicker";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
-import GenericUserCombobox, { ComboboxItem } from "@comunas/ui-slds/custom/GenericUserCombobox";
 import Button from "@salesforce/design-system-react/components/button";
 import Checkbox from "@salesforce/design-system-react/components/checkbox";
 import Combobox from "@salesforce/design-system-react/components/combobox";
@@ -10,6 +6,10 @@ import Icon from "@salesforce/design-system-react/components/icon";
 import Input from "@salesforce/design-system-react/components/input";
 import Textarea from "@salesforce/design-system-react/components/textarea";
 import Tooltip from "@salesforce/design-system-react/components/tooltip";
+import { Account, Aggregate, API, Config, Enumerated, GenericUserType, UserInfo } from "@zeitwert/ui-model";
+import Datepicker from "@zeitwert/ui-slds/common/Datepicker";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import GenericUserCombobox, { ComboboxItem } from "@zeitwert/ui-slds/custom/GenericUserCombobox";
 import { ActivityFormTypes, ActivityProps } from "activity/ActivityPortlet";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";

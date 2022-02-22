@@ -1,6 +1,6 @@
 
-import { FormWrapper } from "@comunas/ui-forms";
 import Card from "@salesforce/design-system-react/components/card";
+import { FormWrapper } from "@zeitwert/ui-forms";
 import { observer } from "mobx-react";
 import React from "react";
 

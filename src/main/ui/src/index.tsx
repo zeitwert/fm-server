@@ -1,9 +1,9 @@
+import IconSettings from "@salesforce/design-system-react/components/icon-settings";
 import {
 	AppStoreModel,
 	Env, Locale,
 	session, unregisterServiceWorker
-} from "@comunas/ui-model";
-import IconSettings from "@salesforce/design-system-react/components/icon-settings";
+} from "@zeitwert/ui-model";
 import "assets/app.css";
 import { NavigatorImpl } from "frame/app/impl/NavigationImpl";
 import Logger from "loglevel";

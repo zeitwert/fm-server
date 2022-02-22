@@ -1,16 +1,16 @@
-import { ItemListModel } from "@comunas/ui-model";
-import {
-	DataTableCellForTemperature,
-	DataTableCellWithChannelIcon,
-	DataTableCellWithEntityIcon,
-	DataTableCellWithLink
-} from "@comunas/ui-slds/custom/CustomDataTableCells";
-import { ReportViewer } from "@comunas/ui-slds/report/ReportViewer";
 import Button from "@salesforce/design-system-react/components/button";
 import ButtonGroup from "@salesforce/design-system-react/components/button-group";
 import Card from "@salesforce/design-system-react/components/card";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
 import Spinner from "@salesforce/design-system-react/components/spinner";
+import { ItemListModel } from "@zeitwert/ui-model";
+import {
+	DataTableCellForTemperature,
+	DataTableCellWithChannelIcon,
+	DataTableCellWithEntityIcon,
+	DataTableCellWithLink
+} from "@zeitwert/ui-slds/custom/CustomDataTableCells";
+import { ReportViewer } from "@zeitwert/ui-slds/report/ReportViewer";
 import { AppCtx } from "App";
 import classNames from "classnames";
 import { makeObservable, observable } from "mobx";

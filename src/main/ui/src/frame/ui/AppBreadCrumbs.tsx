@@ -1,9 +1,9 @@
-import { BreadCrumb as BreadCrumbItem } from "@comunas/ui-model";
-import { BreadCrumb, BreadCrumbs } from "@comunas/ui-slds/common/BreadCrumbs";
 import Button from "@salesforce/design-system-react/components/button";
 import GlobalNavigationBar from "@salesforce/design-system-react/components/global-navigation-bar";
 import GlobalNavigationBarRegion from "@salesforce/design-system-react/components/global-navigation-bar/region";
 import Icon from "@salesforce/design-system-react/components/icon";
+import { BreadCrumb as BreadCrumbItem } from "@zeitwert/ui-model";
+import { BreadCrumb, BreadCrumbs } from "@zeitwert/ui-slds/common/BreadCrumbs";
 import React from "react";
 
 interface AppBreadCrumbsProps {

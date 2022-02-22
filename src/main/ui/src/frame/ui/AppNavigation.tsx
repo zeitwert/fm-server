@@ -1,4 +1,3 @@
-import { ApplicationArea, MenuItem } from "@comunas/ui-model";
 import AppLauncher from "@salesforce/design-system-react/components/app-launcher";
 import AppLauncherExpandableSection from "@salesforce/design-system-react/components/app-launcher/expandable-section";
 import AppLauncherTile from "@salesforce/design-system-react/components/app-launcher/tile";
@@ -7,6 +6,7 @@ import GlobalNavigationBar from "@salesforce/design-system-react/components/glob
 import GlobalNavigationBarDropdown from "@salesforce/design-system-react/components/global-navigation-bar/dropdown";
 import GlobalNavigationBarLink from "@salesforce/design-system-react/components/global-navigation-bar/link";
 import GlobalNavigationBarRegion from "@salesforce/design-system-react/components/global-navigation-bar/region";
+import { ApplicationArea, MenuItem } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
@@ -86,13 +86,13 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 								id={area.id}
 								options={area.menu!.items.map((item: MenuItem) => {
 									switch (item._type) {
-										case "finadvise.app.domain.MenuHeader":
+										case "zeitwert.app.domain.MenuHeader":
 											return {
 												label: item.name,
 												value: item.id,
 												type: "header"
 											};
-										case "finadvise.app.domain.MenuAction":
+										case "zeitwert.app.domain.MenuAction":
 											return {
 												label: item.name,
 												value: item.id,

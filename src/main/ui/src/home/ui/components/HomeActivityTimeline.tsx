@@ -1,5 +1,5 @@
-import { ActivityStore, ActivityStoreModel } from "@comunas/ui-model";
 import Card from "@salesforce/design-system-react/components/card";
+import { ActivityStore, ActivityStoreModel } from "@zeitwert/ui-model";
 import ActivityPortletTimeline from "activity/timeline/ActivityPortletTimeline";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";

@@ -1,7 +1,7 @@
 
-import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextField } from "@comunas/ui-forms";
-import { Building, BuildingModel, BuildingStore, Enumerated, session } from "@comunas/ui-model";
 import Card from "@salesforce/design-system-react/components/card";
+import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextField } from "@zeitwert/ui-forms";
+import { Building, BuildingModel, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";

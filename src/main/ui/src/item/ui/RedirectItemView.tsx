@@ -1,4 +1,4 @@
-import { ITEM_API } from "@comunas/ui-model";
+import { ITEM_API } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";

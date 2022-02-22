@@ -1,12 +1,12 @@
 
-import { AggregateStore, EntityType, EntityTypeInfo, EntityTypes, ItemList, ItemListModel } from "@comunas/ui-model";
+import Button from "@salesforce/design-system-react/components/button";
+import { AggregateStore, EntityType, EntityTypeInfo, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
 	DataTableCellWithEntityIcon,
 	DataTableCellWithLink,
 	DateDataTableCell
-} from "@comunas/ui-slds/custom/CustomDataTableCells";
-import Button from "@salesforce/design-system-react/components/button";
+} from "@zeitwert/ui-slds/custom/CustomDataTableCells";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

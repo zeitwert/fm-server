@@ -1,7 +1,7 @@
-import { FormWrapper } from "@comunas/ui-forms";
-import { AggregateStore, EntityType, ItemPartStore } from "@comunas/ui-model";
 import { FormApi } from "@finadvise/forms";
 import Card from "@salesforce/design-system-react/components/card";
+import { FormWrapper } from "@zeitwert/ui-forms";
+import { AggregateStore, EntityType, ItemPartStore } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { action, computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

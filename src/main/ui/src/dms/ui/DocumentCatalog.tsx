@@ -1,5 +1,5 @@
-import { Document } from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
+import { Document } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

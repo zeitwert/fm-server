@@ -1,12 +1,12 @@
-import { FormWrapper } from "@comunas/ui-forms";
-import { Contact, ContactStore, EntityType, EntityTypes, FORM_API, LifeEvent } from "@comunas/ui-model";
-import { Timeline } from "@comunas/ui-slds/timeline/Timeline";
 import { FormApi } from "@finadvise/forms";
 import Card from "@salesforce/design-system-react/components/card";
 import ExpandableSection from "@salesforce/design-system-react/components/expandable-section";
 import Icon from "@salesforce/design-system-react/components/icon";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
 import Modal from "@salesforce/design-system-react/components/modal";
+import { FormWrapper } from "@zeitwert/ui-forms";
+import { Contact, ContactStore, EntityType, EntityTypes, FORM_API, LifeEvent } from "@zeitwert/ui-model";
+import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { AppCtx } from "App";
 import { ItemEditorButtons } from "item/ui/ItemEditorButtons";
 import { action, observable } from "mobx";

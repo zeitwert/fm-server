@@ -1,5 +1,5 @@
-import { AggregateStore, Doc, DocStore, Document, Enumerated, Obj, ObjStore } from "@comunas/ui-model";
 import Button from "@salesforce/design-system-react/components/button";
+import { AggregateStore, Doc, DocStore, Document, Enumerated, Obj, ObjStore } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import DocumentsWidget from "dms/ui/DocumentsWidget";
 import { DocumentViewer } from "dms/ui/DocumentViewer";

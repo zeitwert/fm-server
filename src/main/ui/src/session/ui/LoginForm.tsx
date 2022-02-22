@@ -1,9 +1,9 @@
 
-import { Input, Select } from "@comunas/ui-forms";
-import { Session } from "@comunas/ui-model";
 import Button from "@salesforce/design-system-react/components/button";
 import Card from "@salesforce/design-system-react/components/card";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Input, Select } from "@zeitwert/ui-forms";
+import { Session } from "@zeitwert/ui-model";
 import { inject, observer } from "mobx-react";
 import { Instance } from "mobx-state-tree";
 import { AnyFormState } from "mstform";
@@ -16,7 +16,7 @@ export interface LoginFormProps {
 
 const CARD_HEADER =
 	<MediaObject
-		figure={<img alt="Comunas" src="/favicon.png" />}
+		figure={<img alt="zeitwert" src="/favicon.png" />}
 		body={<div className="slds-card__header-link slds-truncate">Login</div>}
 		verticalCenter
 		canTruncate

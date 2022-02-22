@@ -6,16 +6,16 @@
 			"name": "Debug Application Dev",
 			"request": "launch",
 			"args": "--spring.profiles.active=dev",
-			"mainClass": "fm.comunas.server.Application",
-			"projectName": "comunas-server"
+			"mainClass": "io.zeitwert.server.Application",
+			"projectName": "zeitwert-server"
 		},
 		{
 			"type": "java",
 			"name": "Debug Application Prod",
 			"request": "launch",
 			"args": "--spring.profiles.active=prod",
-			"mainClass": "fm.comunas.server.Application",
-			"projectName": "comunas-server"
+			"mainClass": "io.zeitwert.server.Application",
+			"projectName": "zeitwert-server"
 		}
 	]
 }

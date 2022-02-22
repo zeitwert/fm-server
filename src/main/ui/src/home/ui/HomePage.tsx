@@ -1,4 +1,4 @@
-import { Col, Grid, Row } from "@comunas/ui-slds/common/Grid";
+import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";
 import { inject, observer } from "mobx-react";
 import React from "react";

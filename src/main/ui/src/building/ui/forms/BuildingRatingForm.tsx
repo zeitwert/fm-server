@@ -1,10 +1,10 @@
 
-import { EnumeratedField, FieldGroup, FieldRow, Select, TextField } from "@comunas/ui-forms";
-import { BuildingModel, BuildingStore, showMotivation } from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
 import Button from "@salesforce/design-system-react/components/button";
 import Card from "@salesforce/design-system-react/components/card";
 import Checkbox from "@salesforce/design-system-react/components/checkbox";
+import { EnumeratedField, FieldGroup, FieldRow, Select, TextField } from "@zeitwert/ui-forms";
+import { BuildingModel, BuildingStore, showMotivation } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";

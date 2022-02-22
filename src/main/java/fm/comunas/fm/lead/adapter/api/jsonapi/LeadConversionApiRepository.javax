@@ -1,9 +1,0 @@
-
-package fm.comunas.fm.lead.adapter.api.jsonapi;
-
-import io.crnk.core.repository.ResourceRepository;
-import fm.comunas.lead.adapter.api.jsonapi.dto.LeadConversionInfo;
-
-public interface LeadConversionApiRepository extends ResourceRepository<LeadConversionInfo, Integer> {
-
-}

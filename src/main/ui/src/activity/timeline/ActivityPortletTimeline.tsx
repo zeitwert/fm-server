@@ -1,7 +1,7 @@
-import { Activity, DateFormat } from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
-import { Timeline } from "@comunas/ui-slds/timeline/Timeline";
 import ExpandableSection from "@salesforce/design-system-react/components/expandable-section";
+import { Activity, DateFormat } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

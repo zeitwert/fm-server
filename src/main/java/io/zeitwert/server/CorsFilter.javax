@@ -1,0 +1,51 @@
+
+package io.zeitwert.server;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * CORS filter (necessary for crnk, which seems not to get routed over Spring
+ * Boot http)
+ */
+@Component("corsFilter")
+public class CorsFilter implements Filter {
+
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+			throws IOException, ServletException {
+
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+
+		// String referrer = request.getHeader("Referer");
+		// String origin = referrer != null ? referrer.substring(0,
+		// referrer.indexOf("/", 10)) : "*";
+		String origin = request.getHeader("origin");
+
+		response.setHeader("Access-Control-Allow-Origin", origin);
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST, PUT, PATCH, GET, DELETE");
+		response.setHeader("Access-Control-Max-Age", "3600");
+		response.setHeader("Access-Control-Allow-Headers",
+				"Content-Type, Accept, Origin, Authorization, Location, Content-Length, X-Requested-With, Access-Control-Request-Method, Access-Control-Request-Headers");
+		response.addHeader("Access-Control-Expose-Headers",
+				"Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Location");
+
+		// crnk does not accept OPTIONS, catch it before
+		if ("OPTIONS".equals(request.getMethod())) {
+			response.setStatus(HttpServletResponse.SC_OK);
+		} else {
+			chain.doFilter(req, res);
+		}
+	}
+
+}

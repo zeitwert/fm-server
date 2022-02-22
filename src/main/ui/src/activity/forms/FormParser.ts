@@ -1,4 +1,4 @@
-import { TaskPayload, UserInfo } from "@comunas/ui-model";
+import { TaskPayload, UserInfo } from "@zeitwert/ui-model";
 import { TaskFormState } from "activity/forms/TaskForm";
 import { toJS } from "mobx";
 import moment from "moment";

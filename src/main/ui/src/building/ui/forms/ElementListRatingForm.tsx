@@ -1,6 +1,6 @@
 
-import { FieldGroup, FieldRow, Input, Static } from "@comunas/ui-forms";
-import { Building, BuildingElement } from "@comunas/ui-model";
+import { FieldGroup, FieldRow, Input, Static } from "@zeitwert/ui-forms";
+import { Building, BuildingElement } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { IRepeatingFormIndexedAccessor } from "mstform";
 import { RepeatingFormAccess } from "mstform/dist/src/accessor";

@@ -1,4 +1,4 @@
-import { AggregateStore, EntityType } from "@comunas/ui-model";
+import { AggregateStore, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { action } from "mobx";
 import { inject, observer } from "mobx-react";

@@ -1,9 +1,9 @@
-import { Account, Aggregate, AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@comunas/ui-model";
-import { ItemWithNotes } from "@comunas/ui-model/fm/item/model/ItemWithNotesModel";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
 import Card from "@salesforce/design-system-react/components/card";
 import Tabs from "@salesforce/design-system-react/components/tabs";
 import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Account, Aggregate, AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
+import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
 import { FormParser } from "activity/forms/FormParser";
 import { AppCtx } from "App";

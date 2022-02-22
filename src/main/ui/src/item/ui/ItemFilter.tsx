@@ -1,5 +1,5 @@
 
-import { Enumerated } from "@comunas/ui-model";
+import { Enumerated } from "@zeitwert/ui-model";
 import _ from "lodash";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
