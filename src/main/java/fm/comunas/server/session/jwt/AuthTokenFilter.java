@@ -1,4 +1,4 @@
-package fm.comunas.ddd.session.jwt;
+package fm.comunas.server.session.jwt;
 
 import java.io.IOException;
 

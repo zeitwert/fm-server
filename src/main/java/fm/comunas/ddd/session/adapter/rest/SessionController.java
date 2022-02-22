@@ -6,9 +6,9 @@ import fm.comunas.ddd.session.adapter.rest.dto.LoginRequest;
 import fm.comunas.ddd.session.adapter.rest.dto.LoginResponse;
 import fm.comunas.ddd.session.adapter.rest.dto.SessionContextRequest;
 import fm.comunas.ddd.session.adapter.rest.dto.SessionInfoReponse;
-import fm.comunas.ddd.session.jwt.JwtUtils;
 import fm.comunas.ddd.session.model.SessionInfo;
 import fm.comunas.ddd.session.model.impl.UserDetailsImpl;
+import fm.comunas.ddd.session.service.api.JwtProvider;
 import fm.comunas.ddd.session.service.api.SessionService;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class SessionController {
 	ObjUserRepository userRepository;
 
 	@Autowired
-	JwtUtils jwtUtils;
+	JwtProvider jwtProvider;
 
 	@Autowired
 	SessionInfo sessionInfo;
@@ -48,7 +48,7 @@ public class SessionController {
 		Authentication authToken = this.getAuthToken(loginRequest);
 		Authentication authentication = authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
+		String jwt = jwtProvider.getJwtToken(authentication);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
 		//@formatter:off

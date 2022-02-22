@@ -1,8 +1,8 @@
-package fm.comunas.ddd.session;
+package fm.comunas.server.config;
 
-import fm.comunas.ddd.session.jwt.AuthEntryPointJwt;
-import fm.comunas.ddd.session.jwt.AuthTokenFilter;
-import fm.comunas.ddd.session.service.api.impl.SessionCookieFilter;
+import fm.comunas.server.session.SessionCookieFilter;
+import fm.comunas.server.session.jwt.AuthEntryPointJwt;
+import fm.comunas.server.session.jwt.AuthTokenFilter;
 
 import java.util.List;
 
@@ -68,10 +68,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
 			.authorizeRequests()
-				.antMatchers("/api/app/userInfo/**").permitAll()
+				.antMatchers("/*").permitAll()
+				.antMatchers("/static/**").permitAll()
+				.antMatchers("/assets/**").permitAll()
+				.antMatchers("/demo/**").permitAll()
+				.antMatchers("/api/app/userInfo/**").permitAll() // TODO revoke
 				.antMatchers("/api/session/login/**").permitAll()
 				.antMatchers("/enum/**").permitAll()
-				.antMatchers("/api/building/projection/**").permitAll()
+				.antMatchers("/api/building/projection/**").permitAll() // TODO revoke
 				.antMatchers("/api/test/all").permitAll()
 				.antMatchers("/api/test/**").authenticated()
 			.anyRequest().authenticated();

@@ -1,4 +1,4 @@
-package fm.comunas.ddd.session.service.api.impl;
+package fm.comunas.server.session;
 
 import fm.comunas.ddd.oe.model.ObjUser;
 import fm.comunas.ddd.oe.model.ObjUserRepository;

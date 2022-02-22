@@ -1,12 +1,12 @@
-package fm.comunas.ddd.session.service.api.impl;
+package fm.comunas.server.session;
 
 import fm.comunas.ddd.common.model.enums.CodeLocaleEnum;
 import fm.comunas.ddd.oe.model.ObjTenant;
 import fm.comunas.ddd.oe.model.ObjTenantRepository;
 import fm.comunas.ddd.oe.model.ObjUser;
 import fm.comunas.ddd.oe.model.ObjUserRepository;
-import fm.comunas.ddd.session.jwt.JwtUtils;
 import fm.comunas.ddd.session.model.SessionInfo;
+import fm.comunas.server.session.jwt.JwtUtils;
 
 import javax.servlet.http.HttpServletRequest;
 

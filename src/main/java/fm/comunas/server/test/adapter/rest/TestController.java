@@ -1,4 +1,4 @@
-package fm.comunas.ddd.session.adapter.rest;
+package fm.comunas.server.test.adapter.rest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;

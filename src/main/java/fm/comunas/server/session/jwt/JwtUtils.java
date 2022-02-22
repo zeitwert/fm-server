@@ -1,16 +1,11 @@
-package fm.comunas.ddd.session.jwt;
-
-import java.util.Date;
-import java.util.Map;
+package fm.comunas.server.session.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import fm.comunas.ddd.session.model.impl.UserDetailsImpl;
 import io.jsonwebtoken.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,24 +21,6 @@ public class JwtUtils {
 
 	@Value("${comunas.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
-
-	public String generateJwtToken(Authentication authentication) {
-		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-		//@formatter:off
-		return Jwts.builder()
-			.setSubject((userPrincipal.getUsername()))
-			.setIssuedAt(new Date())
-			.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-			.addClaims(
-				Map.of(
-					"https://comunas.fm/email", userPrincipal.getEmail(),
-					"https://comunas.fm/tenant", userPrincipal.getTenant()
-				)
-			)
-			.signWith(SignatureAlgorithm.HS512, jwtSecret)
-			.compact();
-		//@formatter:on
-	}
 
 	public String getJwtFromHeader(HttpServletRequest request) {
 		String authHeader = request.getHeader("Authorization");

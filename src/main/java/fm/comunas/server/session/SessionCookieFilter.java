@@ -1,4 +1,4 @@
-package fm.comunas.ddd.session.service.api.impl;
+package fm.comunas.server.session;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
