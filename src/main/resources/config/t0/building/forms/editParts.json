@@ -1,0 +1,106 @@
+{
+	"id": "building/editBuilding",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 3,
+						"type": "select",
+						"label": "Part Catalog",
+						"value": "{{building.buildingPartCatalog}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/building/codeBuildingPartCatalog",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true,
+						"enabled": "{{!!building.account}}"
+					},
+					{
+						"size": 3,
+						"type": "number",
+						"label": "Value",
+						"value": "{{building.insuredValue}}",
+						"enabled": "{{!!building.account}}"
+					},
+					{
+						"size": 3,
+						"type": "number",
+						"label": "Year",
+						"value": "{{building.insuredValueYear}}",
+						"enabled": "{{!!building.account}}"
+					},
+					{
+						"size": 3,
+						"type": "select",
+						"label": "Maintenance Strategy",
+						"value": "{{building.buildingMaintenanceStrategy}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true,
+						"enabled": "{{!!building.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "dataTable",
+						"label": "Parts",
+						"dataSource": "Static",
+						"identity": "id",
+						"formatItem": "{{$item.name}}",
+						"items": "{{building.elements}}",
+						"target": "_self",
+						"clientPagination": false,
+						"showPagination": false,
+						"showTotalRecords": false,
+						"enabled": true,
+						"columns": [
+							{
+								"label": "Part",
+								"accessor": "buildingPart.name"
+							},
+							{
+								"label": "Year",
+								"type": "number",
+								"alignment": "right",
+								"accessor": "conditionYear"
+							},
+							{
+								"label": "Value (%)",
+								"type": "number",
+								"alignment": "right",
+								"accessor": "valuePart"
+							},
+							{
+								"label": "Condition",
+								"type": "number",
+								"alignment": "right",
+								"accessor": "condition"
+							},
+							{
+								"label": "Strain",
+								"alignment": "right",
+								"accessor": "strain"
+							},
+							{
+								"label": "Strength",
+								"alignment": "right",
+								"accessor": "strength"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,61 @@
+{
+	"id": "kanban",
+	"name": "Kanban",
+	"layout": {
+		"layoutType": "kanban",
+		"header": {
+			"static": [
+				{
+					"value": "Space",
+					"displayName": "Space"
+				},
+				{
+					"value": "Phone",
+					"displayName": "Phone"
+				},
+				{
+					"value": "Restaurant",
+					"displayName": "Restaurant"
+				},
+				{
+					"value": "Office",
+					"displayName": "Office"
+				}
+			]
+		},
+		"data": [
+			"{{data.meetings}}",
+			{
+				"id": "{{id}}",
+				"link": "/meeting/{{id}}",
+				"name": "{{name}}",
+				"purpose": "{{purpose}}",
+				"date": "=> formatDate(scheduledDate)",
+				"location": "=> either(location, location.name, '')",
+				"opportunity": "=> either(opportunity, opportunity.caption, '')",
+				"opportunityLink": "/opportunity/{{opportunityId}}"
+			}
+		],
+		"groupBy": {
+			"value": "location",
+			"displayName": "location"
+		},
+		"cardLayout": {
+			"title": {
+				"value": "name",
+				"displayName": "name"
+			},
+			"body": [
+				{
+					"value": "purpose",
+					"displayName": "purpose"
+				},
+				{
+					"value": "date",
+					"displayName": "date"
+				}
+			]
+		},
+		"isTimelineHeader": false
+	}
+}

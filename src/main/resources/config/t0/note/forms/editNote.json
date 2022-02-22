@@ -1,0 +1,126 @@
+{
+	"id": "note/editNote",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Reference",
+						"value": "{{note.refObj}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/obj/objs/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/obj/objs",
+						"enableAutocomplete": false,
+						"path": "",
+						"visible": "{{!!note.refObj}}",
+						"enabled": false
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 8,
+						"type": "text",
+						"label": "Subject",
+						"value": "{{note.subject}}",
+						"isRequired": true
+					},
+					{
+						"size": 4,
+						"type": "select",
+						"label": "Visibility",
+						"value": "{{note.noteType}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/item/codeNoteType",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true,
+						"enabled": "{{!control.visibilityDisabled}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "richText",
+						"label": "Content",
+						"value": "{{note.content}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "hr",
+						"label": "System Information",
+						"visible": "{{!control.enabled}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 2,
+						"type": "select",
+						"label": "Owner",
+						"value": "{{note.owner}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/oe/objUser",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"visible": "{{!control.enabled}}",
+						"isRequired": true
+					},
+					{
+						"size": 3,
+						"type": "text",
+						"label": "Created by",
+						"value": "{{note.createdByUser.caption}}",
+						"visible": "{{!control.enabled}}",
+						"enabled": false
+					},
+					{
+						"size": 2,
+						"type": "date",
+						"enableTime": true,
+						"format": "dd DD.MM.YYYY HH:mm",
+						"label": "&nbsp;",
+						"value": "{{note.createdAt}}",
+						"visible": "{{!control.enabled}}",
+						"enabled": false
+					},
+					{
+						"size": 3,
+						"type": "text",
+						"label": "Last Modified By",
+						"value": "{{note.modifiedByUser.caption}}",
+						"visible": "{{!control.enabled}}",
+						"enabled": false
+					},
+					{
+						"size": 2,
+						"type": "date",
+						"enableTime": true,
+						"format": "dd DD.MM.YYYY HH:mm",
+						"label": "&nbsp;",
+						"value": "{{note.modifiedAt}}",
+						"visible": "{{!control.enabled}}",
+						"enabled": false
+					}
+				]
+			}
+		]
+	}
+}

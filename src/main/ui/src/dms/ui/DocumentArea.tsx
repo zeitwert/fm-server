@@ -1,0 +1,28 @@
+import { DocumentStoreModel, EntityType } from "@comunas/ui-model";
+import ItemsPage from "item/ui/ItemsPage";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import DocumentPage from "./DocumentPage";
+
+export default class DocumentArea extends React.Component {
+	render() {
+		return (
+			<Routes>
+				<Route
+					path=""
+					element={
+						<ItemsPage
+							entityType={EntityType.DOCUMENT}
+							store={DocumentStoreModel.create({})}
+							listDatamart="dms.documents"
+							listTemplate="dms.documents.all"
+							canCreate
+							createFormId="dms/editDocument"
+						/>
+					}
+				/>
+				<Route path=":documentId" element={<DocumentPage />} />
+			</Routes>
+		);
+	}
+}

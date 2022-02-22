@@ -1,0 +1,251 @@
+package fm.comunas.ddd.util;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.SortField;
+import org.jooq.SortOrder;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.util.Assert;
+
+import fm.comunas.ddd.app.service.api.AppContext;
+import io.crnk.core.queryspec.Direction;
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.FilterSpec;
+import io.crnk.core.queryspec.SortSpec;
+
+public class SqlUtils {
+
+	public static final String OBJ_PREFIX = "obj";
+	public static final String DOC_PREFIX = "doc";
+
+	private static final String SEARCH_TABLE_NAME = "item_search";
+	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getSchema().getTable(SEARCH_TABLE_NAME);
+	private static final Field<Integer> ITEM_ID = DSL.field("item_id", Integer.class);
+
+	private static String getPath(FilterSpec filter) {
+		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
+	}
+
+	public static String toString(Object value) {
+		if (value.getClass().isArray() && ((Object[]) value).length == 1) {
+			return SqlUtils.toString(((Object[]) value)[0]);
+		} else if (value instanceof Collection<?> && ((Collection<?>) value).size() == 1) {
+			return SqlUtils.toString(((Collection<?>) value).stream().toList().get(0));
+		}
+		return value == null ? null : String.valueOf(value);
+	}
+
+	private static Integer toInteger(Object value) {
+		if (value == null) {
+			return null;
+		} else if (value.getClass().isArray() && ((Object[]) value).length == 1) {
+			return toInteger(((Object[]) value)[0]);
+		} else if (value instanceof Collection<?> && ((Collection<?>) value).size() == 1) {
+			return toInteger(((Collection<?>) value).stream().toList().get(0));
+		} else if (value.getClass() == Integer.class) {
+			return (Integer) value;
+		} else if (value.getClass() == String.class) {
+			return Integer.valueOf((String) value);
+		}
+		Assert.isTrue(false, "cannot convert to integer " + value + " (" + value.getClass() + ")");
+		return null;
+	}
+
+	private static Condition searchFilter(DSLContext dslContext, Field<Integer> idField, FilterSpec filter) {
+		String searchText = filter.getValue();
+		String searchToken = "'" + searchText + "':*";
+		//@formatter:off
+		return idField.in(
+			dslContext
+				.select(ITEM_ID)
+				.from(SEARCH_TABLE)
+				.where(
+					DSL.noCondition()
+						.or("search_key @@ to_tsquery('simple', ?)", searchToken)
+						.or("search_key @@ to_tsquery('german', ?)", searchToken)
+						.or("search_key @@ to_tsquery('english', ?)", searchToken)
+				)
+				.orderBy(DSL.field("(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc", BigDecimal.class, searchToken, searchToken, searchToken))
+				.limit(0, 20)
+			);
+		//@formatter:on
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Condition integerFilter(Field<Integer> field, FilterSpec filter) {
+		if (filter.getValue() instanceof Collection) {
+			if (filter.getOperator() == CustomFilters.IN || filter.getOperator() == FilterOperator.EQ) {
+				return field.in((Collection<Integer>) filter.getValue());
+			}
+			Assert.isTrue(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+		} else {
+			Integer value = SqlUtils.toInteger(filter.getValue());
+			if (filter.getOperator() == FilterOperator.EQ) {
+				if (value != null) {
+					return field.eq(value);
+				} else {
+					return field.isNull();
+				}
+			} else if (filter.getOperator() == FilterOperator.NEQ) {
+				if (value != null) {
+					return field.eq(value).not();
+				} else {
+					return field.isNotNull();
+				}
+			} else if (filter.getOperator() == FilterOperator.GT) {
+				return field.gt(value);
+			} else if (filter.getOperator() == FilterOperator.GE) {
+				return field.ge(value);
+			} else if (filter.getOperator() == FilterOperator.LT) {
+				return field.lt(value);
+			} else if (filter.getOperator() == FilterOperator.LE) {
+				return field.le(value);
+			}
+		}
+		Assert.isTrue(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+		return DSL.falseCondition();
+	}
+
+	private static Condition stringFilter(Field<String> field, FilterSpec filter) {
+		if (filter.getOperator() == CustomFilters.IN) {
+			Set<String> value = filter.getValue();
+			Condition inner = DSL.noCondition();
+			for (String val : value) {
+				inner = inner.or(field.eq(val));
+			}
+			return inner;
+		}
+
+		String value = filter.getValue() != null ? filter.getValue().toString() : null;
+		if (filter.getOperator() == FilterOperator.EQ) {
+			if (value != null) {
+				return field.eq(value);
+			} else {
+				return field.isNull().or(field.eq(""));
+			}
+		} else if (filter.getOperator() == FilterOperator.NEQ) {
+			if (value != null) {
+				return field.eq(value).not();
+			} else {
+				return field.isNotNull().and(field.eq("").not());
+			}
+		} else if (filter.getOperator() == FilterOperator.GT) {
+			return field.gt(value);
+		} else if (filter.getOperator() == FilterOperator.GE) {
+			return field.ge(value);
+		} else if (filter.getOperator() == FilterOperator.LT) {
+			return field.lt(value);
+		} else if (filter.getOperator() == FilterOperator.LE) {
+			return field.le(value);
+		} else if (filter.getOperator() == FilterOperator.LIKE) {
+			return DSL.lower(field).like(value.replace("*", "%"));
+		}
+
+		Assert.isTrue(false, "unsupported string filter operator " + filter.getOperator());
+		return DSL.falseCondition();
+	}
+
+	private static Condition booleanFilter(Field<Boolean> field, FilterSpec filter) {
+		Boolean value = filter.getValue();
+		if (filter.getOperator() == FilterOperator.EQ) {
+			return field.eq(value);
+		}
+		Assert.isTrue(false, "unsupported boolean filter operator " + filter.getOperator());
+		return DSL.falseCondition();
+	}
+
+	private static Condition localDateTimeFilter(Field<LocalDateTime> field, FilterSpec filter) {
+		LocalDateTime value = filter.getValue();
+		if (filter.getOperator() == FilterOperator.EQ) {
+			return field.eq(value);
+		} else if (filter.getOperator() == FilterOperator.GT) {
+			return field.gt(value);
+		} else if (filter.getOperator() == FilterOperator.GE) {
+			return field.ge(value);
+		} else if (filter.getOperator() == FilterOperator.LT) {
+			return field.lt(value);
+		} else if (filter.getOperator() == FilterOperator.LE) {
+			return field.le(value);
+		}
+		Assert.isTrue(false, "unsupported local date time filter operator " + filter.getOperator());
+		return DSL.falseCondition();
+	}
+
+	private static Condition offsetDateTimeFilter(Field<OffsetDateTime> field, FilterSpec filter) {
+		OffsetDateTime value = ((OffsetDateTime) filter.getValue())
+				.atZoneSameInstant(ZoneId.systemDefault().getRules().getOffset(Instant.now())).toOffsetDateTime();
+		if (filter.getOperator() == FilterOperator.EQ) {
+			return field.eq(value);
+		} else if (filter.getOperator() == FilterOperator.GT) {
+			return field.gt(value);
+		} else if (filter.getOperator() == FilterOperator.GE) {
+			return field.ge(value);
+		} else if (filter.getOperator() == FilterOperator.LT) {
+			return field.lt(value);
+		} else if (filter.getOperator() == FilterOperator.LE) {
+			return field.le(value);
+		}
+		Assert.isTrue(false, "unsupported offset date time filter operator " + filter.getOperator());
+		return DSL.falseCondition();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Condition filter(DSLContext dslContext, Table<?> table, Field<Integer> idField, FilterSpec filter) {
+		String fieldName = StringUtils.toSnakeCase(SqlUtils.getPath(filter));
+		if (fieldName.equals("search_text")) {
+			return SqlUtils.searchFilter(dslContext, idField, filter);
+		} else {
+			Field<?> field = table.field(fieldName);
+			Assert.isTrue(field != null, "unknown field " + fieldName);
+			if (field.getType() == Integer.class) {
+				return SqlUtils.integerFilter((Field<Integer>) field, filter);
+			} else if (field.getType() == String.class) {
+				return SqlUtils.stringFilter((Field<String>) field, filter);
+			} else if (field.getType() == Boolean.class) {
+				return SqlUtils.booleanFilter((Field<Boolean>) field, filter);
+			} else if (field.getType() == LocalDateTime.class) {
+				return SqlUtils.localDateTimeFilter((Field<LocalDateTime>) field, filter);
+			} else if (field.getType() == OffsetDateTime.class) {
+				return SqlUtils.offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
+			} else {
+				Assert.isTrue(false, "unsupported field type " + fieldName + ": " + field.getType());
+			}
+		}
+		return DSL.falseCondition();
+	}
+
+	public static Condition andFilter(DSLContext dslContext, Condition whereClause, Table<?> table,
+			Field<Integer> idField, FilterSpec filter) {
+		return whereClause.and(SqlUtils.filter(dslContext, table, idField, filter));
+	}
+
+	public static Condition orFilter(DSLContext dslContext, Condition whereClause, Table<?> table, Field<Integer> idField,
+			FilterSpec filter) {
+		List<Condition> conditions = filter.getExpression().stream()
+				.map(f -> SqlUtils.filter(dslContext, table, idField, f)).toList();
+		return whereClause.and(DSL.or(conditions));
+	}
+
+	public static List<SortField<?>> sortFilter(Table<?> table, List<SortSpec> sortSpec) {
+		//@formatter:off
+		return sortSpec.stream()
+			.map(s -> {
+				return table.field(StringUtils.toSnakeCase(s.getPath().toString()))
+				.sort(s.getDirection().equals(Direction.ASC) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
+			}).collect(Collectors.toList());
+		//@formatter:on
+	}
+
+}

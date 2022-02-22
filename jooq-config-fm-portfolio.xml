@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.14.0.xsd">
+
+	<!-- Configure the database connection here -->
+	<jdbc>
+		<driver>org.postgresql.Driver</driver>
+		<url>jdbc:postgresql://localhost:5432/comunas</url>
+		<user>comunas</user>
+		<password>comunas</password>
+	</jdbc>
+
+	<generator>
+		<database>
+			<name>org.jooq.meta.postgres.PostgresDatabase</name>
+			<includes>
+				  code_portfolio.*
+				| obj_portfolio.*
+			</includes>
+			<excludes></excludes>
+			<inputSchema>public</inputSchema>
+		</database>
+		<generate>
+			<javaTimeTypes>true</javaTimeTypes>
+		</generate>
+		<target>
+			<packageName>fm.comunas.fm.portfolio.model.db</packageName>
+			<directory>/src/main/java</directory>
+		</target>
+	</generator>
+
+</configuration>

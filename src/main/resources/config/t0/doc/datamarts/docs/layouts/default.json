@@ -1,0 +1,48 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "entityIcon",
+				"type": "type",
+				"link": "link"
+			},
+			{
+				"id": "account",
+				"label": "Account",
+				"value": "accountName",
+				"template": "link",
+				"link": "accountLink"
+			},
+			{
+				"id": "stage",
+				"label": "Stage",
+				"value": "stage"
+			},
+			{
+				"id": "assignee",
+				"label": "Assignee",
+				"value": "assignee"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"typeName": "{{meta.itemType.name}}",
+				"type": "{{meta.itemType.id}}",
+				"name": "{{caption}}",
+				"link": "/doc/{{id}}",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"area": "=> join(areas)",
+				"stage": "{{caseStage.name}}",
+				"assignee": "{{assignee.caption}}"
+			}
+		]
+	}
+}

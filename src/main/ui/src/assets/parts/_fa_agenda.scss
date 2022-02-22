@@ -1,0 +1,32 @@
+/* Agenda Editor */
+.fa-agenda-item {
+	&.fa-selected {
+		background-color: rgb(215, 236, 255);
+	}
+}
+
+.fa-agenda-tab-textarea {
+	height: 6rem;
+}
+
+.fa-agenda-item-editor-doc-list .slds-card__header {
+	background-color: rgb(245, 245, 244);
+	margin-bottom: 0;
+	padding-bottom: 0.75rem;
+}
+
+.fa-agenda-item-editor-dropzone {
+	min-height: 6rem;
+	cursor: pointer;
+}
+
+.fa-doc-catalog-dragging {
+	background-color: white;
+	border: 1px solid #dddbda;
+	border-radius: 0.25rem;
+	max-width: 25rem;
+
+	* {
+		border: 0 !important;
+	}
+}

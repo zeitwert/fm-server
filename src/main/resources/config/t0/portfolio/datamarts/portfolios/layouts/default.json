@@ -1,0 +1,40 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "account",
+				"label": "Account",
+				"value": "accountName",
+				"template": "link",
+				"link": "accountLink"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/portfolio/{{id}}",
+				"accountId": "{{account.id}}",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"owner": "{{owner.caption}}"
+			}
+		]
+	}
+}

@@ -1,0 +1,163 @@
+{
+	"id": "contact/editAddresses",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"type": "subform",
+						"size": 12,
+						"isRequired": false,
+						"ignore": false,
+						"enabled": true,
+						"layoutDefinition": {
+							"rows": [
+								{
+									"cols": [
+										{
+											"type": "text",
+											"size": 12,
+											"isRequired": false,
+											"enabled": true,
+											"value": "{{name}}",
+											"styleClass": "{{'address-name'}}"
+										},
+										{
+											"type": "text",
+											"label": "Street",
+											"size": 3,
+											"isRequired": false,
+											"enabled": true,
+											"value": "{{street}}"
+										},
+										{
+											"type": "text",
+											"label": "Zip",
+											"size": 2,
+											"isRequired": false,
+											"enabled": true,
+											"value": "{{zip}}"
+										},
+										{
+											"type": "text",
+											"label": "City",
+											"size": 2,
+											"isRequired": false,
+											"enabled": true,
+											"value": "{{city}}"
+										},
+										{
+											"type": "text",
+											"label": "State",
+											"size": 2,
+											"isRequired": false,
+											"enabled": true,
+											"value": "{{state}}"
+										},
+										{
+											"size": 3,
+											"type": "select",
+											"label": "Country",
+											"value": "{{countryId}}",
+											"ignore": "{{!!control.enabled}}",
+											"dataSource": "Rest",
+											"storage": "Id",
+											"lookupUrl": "{{enumBaseUrl}}/base/codeCountry/{{$id}}",
+											"identity": "id",
+											"enableAutocomplete": false,
+											"isRequired": false,
+											"enabled": true,
+											"queryUrl": "{{enumBaseUrl}}/base/codeCountry",
+											"formatItem": "{{$item.caption}}"
+										},
+										{
+											"type": "hr",
+											"size": 12,
+											"styleClass": "{{'hr-margin'}}"
+										}
+									]
+								}
+							]
+						},
+						"multipleEntries": true,
+						"value": "{{contact.postalAddresses}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "accordion",
+						"visible": "{{!control.enabled}}",
+						"sections": [
+							{
+								"type": "panel",
+								"label": "System Information",
+								"rows": [
+									{
+										"cols": [
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Created By",
+												"value": "{{contact.meta.createdByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{contact.meta.createdAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Last Modified By",
+												"value": "{{contact.meta.modifiedByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{contact.meta.modifiedAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Last Viewed By",
+												"value": "{{contact.meta.viewedByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{contact.meta.viewedAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

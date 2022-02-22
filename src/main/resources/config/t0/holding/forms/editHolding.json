@@ -1,0 +1,117 @@
+{
+	"id": "holding/editHolding",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Override",
+						"value": "{{holding.part}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/account/accounts/{{holding.accountInfo.id}}/holdings/{{$id.split('-')[1]}}?include[accountHolding]=product,termsheet&include[product]=termsheet",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{apiBaseUrl}}/account/accounts/{{holding.accountInfo.id}}/holdings?filter[obj.id]={{holding.accountInfo.id}}&include[accountHolding]=product,termsheet&include[product]=termsheet",
+						"formatItem": "{{$item.label ? $item.label : $item.product.name}} ({{$item.product.currency.name}} {{$item.value}})",
+						"visible": "{{holding.part}}",
+						"enabled": "{{!holding.part}}"
+					},
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Product",
+						"value": "{{holding.product}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/product/products/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.name}}",
+						"queryUrl": "{{apiBaseUrl}}/product/products?filter[searchText]={{$searchText}}",
+						"enableAutocomplete": true,
+						"autocompleteMinLength": 2,
+						"path": "",
+						"visible": "{{holding.part || !control.edit}}",
+						"enabled": "{{!holding.part && !control.edit}}",
+						"isRequired": true
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "text",
+						"label": "Label",
+						"value": "{{holding.label}}"
+					},
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Acquisition Method",
+						"value": "{{holding.productAcquisitionMethod}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/product/codeProductAcquisitionMethod",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 3,
+						"type": "date",
+						"label": "Start date",
+						"value": "{{holding.startDate}}",
+						"format": "DD.MM.YYYY",
+						"maxDate": "today",
+						"isRequired": true
+					},
+					{
+						"size": 3,
+						"type": "date",
+						"label": "End date",
+						"value": "{{holding.endDate}}",
+						"format": "DD.MM.YYYY",
+						"minDate": "today"
+					},
+					{
+						"size": 2,
+						"type": "text",
+						"label": "&nbsp;",
+						"value": "{{holding.productInfo.currency.name}}",
+						"isRequired": false,
+						"enabled": false
+					},
+					{
+						"size": 4,
+						"type": "number",
+						"label": "Value",
+						"value": "{{holding.value}}",
+						"numberFormat": ".,",
+						"fractionSize": 0,
+						"isRequired": true
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "subform",
+						"label": "Term Sheet ({{holding.termsheetInfo.termsheetModel.name}})",
+						"value": "{{holding.termsheet}}",
+						"visible": "{{!!holding.product}}",
+						"layoutDefinition": "{{termsheetDefinition}}"
+					}
+				]
+			}
+		]
+	}
+}

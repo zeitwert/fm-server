@@ -1,0 +1,8 @@
+{
+	"id": "my-open",
+	"name": "My Open",
+	"layout": "default",
+	"params": {
+		"isInWork": true
+	}
+}

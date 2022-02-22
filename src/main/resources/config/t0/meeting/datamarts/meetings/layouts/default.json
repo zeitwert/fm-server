@@ -1,0 +1,86 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "accountName",
+				"label": "Account",
+				"value": "accountName",
+				"template": "link",
+				"link": "accountLink"
+			},
+			{
+				"id": "area",
+				"label": "Area",
+				"value": "area"
+			},
+			{
+				"id": "purpose",
+				"label": "Purpose",
+				"value": "purpose"
+			},
+			{
+				"id": "stage",
+				"label": "Stage",
+				"value": "stage"
+			},
+			{
+				"id": "startDate",
+				"label": "Start",
+				"template": "date",
+				"value": "startDate"
+			},
+			{
+				"id": "endDate",
+				"label": "End",
+				"template": "date",
+				"value": "endDate"
+			},
+			{
+				"id": "location",
+				"label": "Location",
+				"value": "location"
+			},
+			{
+				"id": "ref",
+				"label": "Reference",
+				"value": "refName",
+				"template": "link",
+				"link": "refLink"
+			},
+			{
+				"id": "assignee",
+				"label": "Assignee",
+				"value": "assignee"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"link": "/meeting/{{id}}",
+				"name": "{{name}}",
+				"purpose": "{{purpose}}",
+				"startDate": "{{startDate}}",
+				"endDate": "{{endDate}}",
+				"location": "=> either(location, location.name, '')",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"area": "=> join(areas)",
+				"stage": "{{caseStage.name}}",
+				"assignee": "{{assignee.caption}}",
+				"refName": "{{refDoc.caption}}",
+				"refLink": "/doc/{{refDoc.id}}"
+			}
+		]
+	}
+}

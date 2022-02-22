@@ -1,0 +1,68 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "topic",
+				"label": "Topic",
+				"value": "topic",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name"
+			},
+			{
+				"id": "source",
+				"label": "Source",
+				"value": "source"
+			},
+			{
+				"id": "stage",
+				"label": "Stage",
+				"value": "stage"
+			},
+			{
+				"id": "address",
+				"label": "Address",
+				"value": "address"
+			},
+			{
+				"id": "email",
+				"label": "e-Mail",
+				"value": "email"
+			},
+			{
+				"id": "phone",
+				"label": "Phone",
+				"value": "phone"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"topic": "{{subject}}",
+				"link": "/lead/{{id}}",
+				"stage": "{{caseStage.name}}",
+				"source": "{{leadSource.name}}",
+				"rating": "{{leadRating.name}}",
+				"remarks": "{{remarks}}",
+				"name": "=> nvl(name, contact.caption)",
+				"address": "{{street}} {{zip}} {{city}}",
+				"street": "{{street}}",
+				"zip": "{{zip}}",
+				"city": "{{city}}",
+				"state": "{{state}}",
+				"countryId": "{{countryId}}",
+				"contact": "=> nvl(email, mobile)",
+				"phone": "{{phone}}",
+				"email": "{{email}}"
+			}
+		]
+	}
+}

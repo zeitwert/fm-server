@@ -1,0 +1,78 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "accountName",
+				"label": "Account",
+				"value": "accountName",
+				"template": "link",
+				"link": "accountLink"
+			},
+			{
+				"id": "area",
+				"label": "Area",
+				"value": "area"
+			},
+			{
+				"id": "stage",
+				"label": "Stage",
+				"value": "stage"
+			},
+			{
+				"id": "ref",
+				"label": "Reference",
+				"value": "refName",
+				"template": "link",
+				"link": "refLink"
+			},
+			{
+				"id": "assignee",
+				"label": "Assignee",
+				"value": "assignee"
+			},
+			{
+				"id": "product",
+				"label": "Product",
+				"value": "product"
+			},
+			{
+				"id": "value",
+				"label": "Amount",
+				"value": "value"
+			},
+			{
+				"id": "probability",
+				"label": "Probability",
+				"value": "probability"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/opportunity/{{id}}",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"refName": "{{refDoc.caption}}",
+				"refLink": "/doc/{{refDoc.id}}",
+				"area": "=> join(areas)",
+				"stage": "{{caseStage.name}}",
+				"assignee": "{{assignee.caption}}",
+				"product": "{{product.caption}}",
+				"value": "{{value}}",
+				"probability": "20%"
+			}
+		]
+	}
+}

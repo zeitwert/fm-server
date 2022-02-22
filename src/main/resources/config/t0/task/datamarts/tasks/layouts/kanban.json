@@ -1,0 +1,44 @@
+{
+	"id": "kanban",
+	"name": "Kanban",
+	"layout": {
+		"layoutType": "kanban",
+		"isTimelineHeader": true,
+		"header": {
+			"dynamic": {
+				"url": "{{enumBaseUrl}}/doc/codeCaseStage/task",
+				"valueField": "id",
+				"displayNameField": "name"
+			}
+		},
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"link": "/task/{{id}}",
+				"stageId": "{{caseStage.id}}",
+				"stageName": "{{caseStage.name}}",
+				"name": "{{name}}",
+				"createdAt": "=> formatDate(meta.createdAt)"
+			}
+		],
+		"groupBy": {
+			"value": "stageId",
+			"serverFieldName": "caseStage"
+		},
+		"cardLayout": {
+			"title": {
+				"value": "name",
+				"displayName": "name"
+			},
+			"body": [
+				{
+					"value": "createdAt",
+					"displayName": "createdAt"
+				}
+			]
+		},
+		"docType": "task",
+		"modifyUrl": "{{apiBaseUrl}}/task/tasks"
+	}
+}
