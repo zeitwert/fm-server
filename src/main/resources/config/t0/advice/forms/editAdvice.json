@@ -1,0 +1,191 @@
+{
+	"id": "advice/editAdvice",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Account",
+						"value": "{{advice.account}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/account/accounts/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/account/accounts?filter[searchText]={{$searchText}}",
+						"enableAutocomplete": true,
+						"autocompleteMinLength": 2,
+						"path": "",
+						"isRequired": true,
+						"enabled": "{{!advice.account}}"
+					},
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Contact",
+						"value": "{{advice.contact}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/contact/contacts/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/contact/contacts?filter[account.id]={{advice.account}}",
+						"enableAutocomplete": false,
+						"path": "",
+						"enabled": "{{!!advice.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Type",
+						"value": "{{advice.adviceType}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/opportunity/codeOpportunityType",
+						"path": "",
+						"formatItem": "{{$item.caption}}",
+						"enabled": "{{!!advice.account}}",
+						"isRequired": true
+					},
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Reference",
+						"value": "{{advice.refDoc}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/doc/docs/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/doc/docs?filter[account.id]={{advice.account}}&filter[docTypeId][IN]=doc_advice,doc_opportunity,doc_lead",
+						"enableAutocomplete": false,
+						"path": "",
+						"enabled": "{{!!advice.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "text",
+						"label": "Name",
+						"value": "{{advice.caption}}",
+						"enabled": "{{!!advice.account}}",
+						"isRequired": true
+					},
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Areas",
+						"value": "{{advice.areas}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"multi": true,
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/common/codeArea",
+						"formatItem": "{{$item.caption}}",
+						"enabled": "{{!!advice.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "text",
+						"label": "Next step",
+						"value": "{{advice.nextStep}}",
+						"enabled": "{{!!advice.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "textarea",
+						"label": "Description",
+						"value": "{{advice.description}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "textarea",
+						"label": "Remarks",
+						"value": "{{advice.remarks}}",
+						"enabled": "{{!!advice.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "accordion",
+						"visible": "{{!control.enabled}}",
+						"sections": [
+							{
+								"type": "panel",
+								"label": "System Information",
+								"rows": [
+									{
+										"cols": [
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Created By",
+												"value": "{{advice.meta.createdByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{advice.meta.createdAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Last Modified By",
+												"value": "{{advice.meta.modifiedByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{advice.meta.modifiedAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"id": "meeting/editAgendaItem",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 2,
+						"type": "text",
+						"label": "Start Time",
+						"value": "{{agendaItem.startTime}}",
+						"enabled": false
+					},
+					{
+						"size": 2,
+						"type": "text",
+						"label": "End Time",
+						"value": "{{agendaItem.endTime}}",
+						"enabled": false
+					},
+					{
+						"size": 2,
+						"type": "number",
+						"label": "Minutes",
+						"value": "{{agendaItem.duration}}",
+						"defaultValue": 15,
+						"enabled": true,
+						"isRequired": true
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "text",
+						"label": "Description",
+						"value": "{{agendaItem.description}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "textarea",
+						"label": "Talking Points",
+						"value": "{{agendaItem.talkingPoints}}"
+					}
+				]
+			}
+		]
+	}
+}

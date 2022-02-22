@@ -1,0 +1,56 @@
+{
+	"rows": [
+		{
+			"cols": [
+				{
+					"size": 6,
+					"type": "select",
+					"label": "Status",
+					"value": "{{documentStatus}}",
+					"dataSource": "Rest",
+					"storage": "Full",
+					"identity": "id",
+					"enableAutocomplete": false,
+					"queryUrl": "{{enumBaseUrl}}/dms/codeDocumentStatus",
+					"path": "",
+					"formatItem": "{{$item.name}}",
+					"isRequired": true
+				},
+				{
+					"size": 6,
+					"type": "select",
+					"label": "Client visibility",
+					"value": "{{documentClientVisibility}}",
+					"dataSource": "Rest",
+					"storage": "Full",
+					"identity": "id",
+					"enableAutocomplete": false,
+					"queryUrl": "{{enumBaseUrl}}/dms/codeDocumentClientVisibility",
+					"path": "",
+					"formatItem": "{{$item.name}}",
+					"isRequired": true
+				}
+			]
+		},
+		{
+			"cols": [
+				{
+					"size": 12,
+					"type": "textarea",
+					"label": "Description",
+					"value": "{{description}}"
+				}
+			]
+		},
+		{
+			"cols": [
+				{
+					"size": 12,
+					"type": "textarea",
+					"label": "Talking Points",
+					"value": "{{talkingPoints}}"
+				}
+			]
+		}
+	]
+}

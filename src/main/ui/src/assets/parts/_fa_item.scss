@@ -1,0 +1,52 @@
+.fa-item-path {
+	position: absolute;
+	top: 0;
+	left: 0.5rem;
+	right: 0.5rem;
+	z-index: 10;
+}
+
+.fa-item-path-placeholder {
+	width: 100%;
+	height: 1px;
+	margin-top: 70px;
+}
+
+.fa-item-part {
+	// Due to item path.
+	height: calc(100% - 70px);
+}
+
+.fa-activity-timeline {
+	.slds-section__title-action {
+		.slds-truncate {
+			width: 100%;
+		}
+	}
+}
+
+.fa-note-content {
+	ul,
+	ol {
+		padding-left: 1rem;
+	}
+
+	ul {
+		list-style: disc;
+	}
+
+	ol {
+		list-style: decimal;
+	}
+}
+
+.fa-textarea {
+	min-height: 7rem;
+}
+
+/* Document editor */
+.fa-document-dragging {
+	.fa__fileSelector {
+		background-color: #d2ffe9 !important;
+	}
+}

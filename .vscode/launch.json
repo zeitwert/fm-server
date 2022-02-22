@@ -1,0 +1,21 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "java",
+			"name": "Debug Application Dev",
+			"request": "launch",
+			"args": "--spring.profiles.active=dev",
+			"mainClass": "fm.comunas.server.Application",
+			"projectName": "comunas-server"
+		},
+		{
+			"type": "java",
+			"name": "Debug Application Prod",
+			"request": "launch",
+			"args": "--spring.profiles.active=prod",
+			"mainClass": "fm.comunas.server.Application",
+			"projectName": "comunas-server"
+		}
+	]
+}

@@ -1,0 +1,82 @@
+package fm.comunas.ddd.property.model.impl;
+
+import fm.comunas.ddd.part.model.Part;
+import fm.comunas.ddd.part.model.base.PartSPI;
+import fm.comunas.ddd.property.model.PartListProperty;
+import fm.comunas.ddd.property.model.base.EntityWithPropertiesSPI;
+import fm.comunas.ddd.property.model.base.PropertyBase;
+import fm.comunas.ddd.property.model.enums.CodePartListType;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.util.Assert;
+
+public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> implements PartListProperty<P> {
+
+	private final CodePartListType partListType;
+
+	private List<P> partList = new ArrayList<>();
+
+	public PartListPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType) {
+		super(entity);
+		this.partListType = partListType;
+	}
+
+	@Override
+	public String getName() {
+		return this.partListType.getId();
+	}
+
+	@Override
+	public CodePartListType getPartListType() {
+		return this.partListType;
+	}
+
+	public Integer getPartCount() {
+		return this.partList.size();
+	}
+
+	public P getPart(Integer seqNr) {
+		Assert.isTrue(0 <= seqNr && seqNr < this.getPartCount(), "valid seqNr (" + seqNr + ")");
+		return this.partList.get(seqNr);
+	}
+
+	public P getPartById(Integer partId) {
+		Assert.isTrue(partId != null, "valid partId");
+		Optional<P> part = this.partList.stream().filter(p -> partId.equals(p.getId())).findAny();
+		Assert.isTrue(part.isPresent(), "part with id " + partId + " must exist");
+		return part.get();
+	}
+
+	public List<P> getPartList() {
+		return List.copyOf(this.partList);
+	}
+
+	public void clearPartList() {
+		this.partList.clear();
+	}
+
+	public P addPart() {
+		P part = this.getEntity().addPart(this, this.partListType);
+		this.partList.add(part);
+		this.getEntity().afterAdd(this);
+		return part;
+	}
+
+	public void removePart(Integer partId) {
+		P part = this.getPartById(partId);
+		((PartSPI<?>) part).delete();
+		this.partList.remove(part);
+		this.getEntity().afterRemove(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void loadPartList(Collection<Part<?>> partList) {
+		this.partList.clear();
+		partList.forEach(p -> this.partList.add((P) p));
+	}
+
+}

@@ -1,0 +1,25 @@
+{
+	"id": "item/editDocuments",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "upload",
+						"label": "Documents",
+						"value": "{{documents}}",
+						"autoupload": true,
+						"allowDelete": "newOnly",
+						"uploadUrl": "{{apiBaseUrl}}/dms/content",
+						"updateFileUrl": "{{apiBaseUrl}}/dms/content/{{$file.id}}",
+						"hasFileType": true,
+						"requireFileType": true,
+						"fileService": "{{apiBaseUrl}}",
+						"acceptFileTypes": ".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+					}
+				]
+			}
+		]
+	}
+}

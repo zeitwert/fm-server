@@ -1,0 +1,354 @@
+{
+	"id": "building/editBuilding",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Community",
+						"value": "{{building.account}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/account/accounts/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/account/accounts?filter[searchText]={{$searchText}}",
+						"enableAutocomplete": true,
+						"autocompleteMinLength": 2,
+						"path": "",
+						"isRequired": true,
+						"enabled": "{{!building.account}}"
+					},
+					{
+						"size": 4,
+						"type": "select",
+						"label": "Parts",
+						"value": "{{building.buildingPartCatalog}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/building/codeBuildingPartCatalog",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true,
+						"enabled": "{{!!building.account}}"
+					},
+					{
+						"size": 2,
+						"type": "select",
+						"label": "Currency",
+						"value": "{{building.currency}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/common/codeCurrency",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true,
+						"enabled": "{{!!building.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "text",
+						"label": "Name",
+						"value": "{{building.name}}",
+						"isRequired": true,
+						"enabled": "{{!!building.account}}"
+					},
+					{
+						"size": 3,
+						"type": "select",
+						"label": "Maintenance",
+						"value": "{{building.buildingMaintenanceStrategy}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true,
+						"enabled": "{{!!building.account}}"
+					},
+					{
+						"size": 3,
+						"type": "number",
+						"label": "Build Year",
+						"value": "{{building.buildingYear}}",
+						"enabled": "{{!!building.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "panel",
+						"size": 8,
+						"label": "Valuation",
+						"enabled": "{{!!building.account}}",
+						"rows": [
+							{
+								"cols": [
+									{
+										"size": 6,
+										"type": "number",
+										"label": "Insured Value",
+										"value": "{{building.insuredValue}}",
+										"isRequired": true
+									},
+									{
+										"size": 6,
+										"type": "number",
+										"label": "Year",
+										"value": "{{building.insuredValueYear}}",
+										"isRequired": true
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 6,
+										"type": "number",
+										"label": "Non-Insured Value",
+										"value": "{{building.notInsuredValue}}"
+									},
+									{
+										"size": 6,
+										"type": "number",
+										"label": "Year",
+										"value": "{{building.notInsuredValueYear}}",
+										"isRequired": "{{!!building.notInsuredValue}}",
+										"enabled": "{{!!building.account && !!building.notInsuredValue}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 6,
+										"type": "number",
+										"label": "Third-Party Value",
+										"value": "{{building.thirdPartyValue}}"
+									},
+									{
+										"size": 6,
+										"type": "number",
+										"label": "Year",
+										"value": "{{building.thirdPartyValueYear}}",
+										"isRequired": "{{!!building.thirdPartyValue}}",
+										"enabled": "{{!!building.account && !!building.thirdPartyValue}}"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "panel",
+						"size": 4,
+						"label": "Measures",
+						"enabled": "{{!!building.account}}",
+						"rows": [
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "number",
+										"label": "Volume (m³)",
+										"value": "{{building.volume}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "number",
+										"label": "Area (m²)",
+										"value": "{{building.area}}"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "panel",
+						"size": 6,
+						"label": "Address",
+						"enabled": "{{!!building.account}}",
+						"rows": [
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "text",
+										"label": "Street",
+										"value": "{{building.street}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 4,
+										"type": "text",
+										"label": "Zip",
+										"value": "{{building.zip}}"
+									},
+									{
+										"size": 8,
+										"type": "text",
+										"label": "City",
+										"value": "{{building.city}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 4,
+										"type": "text",
+										"label": "State",
+										"value": "{{building.state}}"
+									},
+									{
+										"size": 8,
+										"type": "select",
+										"label": "Country",
+										"value": "{{building.country}}",
+										"dataSource": "Rest",
+										"storage": "Full",
+										"identity": "id",
+										"enableAutocomplete": false,
+										"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+										"path": "",
+										"formatItem": "{{$item.name}}"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "panel",
+						"size": 6,
+						"label": "Contacts",
+						"enabled": "{{!!building.account}}",
+						"rows": [
+							{
+								"cols": [
+									{
+										"size": 6,
+										"type": "select",
+										"label": "Building Type",
+										"value": "{{building.buildingType}}",
+										"dataSource": "Rest",
+										"storage": "Full",
+										"identity": "id",
+										"enableAutocomplete": false,
+										"queryUrl": "{{enumBaseUrl}}/building/codeBuildingType",
+										"path": "",
+										"formatItem": "{{$item.name}}",
+										"enabled": "{{!!building.account}}"
+									},
+									{
+										"size": 6,
+										"type": "select",
+										"label": "Building Subtype",
+										"value": "{{building.buildingSubType}}",
+										"dataSource": "Rest",
+										"storage": "Full",
+										"identity": "id",
+										"enableAutocomplete": false,
+										"queryUrl": "{{enumBaseUrl}}/building/codeBuildingSubType",
+										"path": "",
+										"formatItem": "{{$item.name}}",
+										"enabled": "{{!!building.account}}"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "textarea",
+						"label": "Remarks",
+						"value": "{{building.remarks}}",
+						"enabled": "{{!!building.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "accordion",
+						"visible": "{{!control.enabled}}",
+						"sections": [
+							{
+								"type": "panel",
+								"label": "System Information",
+								"rows": [
+									{
+										"cols": [
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Created By",
+												"value": "{{building.meta.createdByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{building.meta.createdAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Last Modified By",
+												"value": "{{building.meta.modifiedByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{building.meta.modifiedAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

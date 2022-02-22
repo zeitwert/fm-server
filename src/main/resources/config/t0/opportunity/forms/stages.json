@@ -1,0 +1,31 @@
+{
+	"id": "opportunity/stages",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"type": "number",
+						"size": 12,
+						"label": "Expected budget",
+						"value": "{{budget}}",
+						"numberFormat": ".,",
+						"fractionSize": 2
+					},
+					{
+						"size": 12,
+						"type": "text",
+						"label": "Lead Source",
+						"value": "{{leadSource}}"
+					},
+					{
+						"size": 12,
+						"type": "text",
+						"label": "Support Engineer",
+						"value": "{{supportEngineer}}"
+					}
+				]
+			}
+		]
+	}
+}

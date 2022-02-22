@@ -1,0 +1,74 @@
+
+package fm.comunas.ddd.enums.model.base;
+
+import fm.comunas.ddd.app.service.api.Enumerations;
+import fm.comunas.ddd.enums.model.Enumerated;
+import fm.comunas.ddd.enums.model.Enumeration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.impl.DSL;
+import org.springframework.util.Assert;
+
+public abstract class EnumerationBase<E extends Enumerated> implements Enumeration<E> {
+
+	static protected final Field<String> ID = DSL.field("id", String.class);
+	static protected final Field<String> NAME = DSL.field("name", String.class);
+
+	private final DSLContext dslContext;
+
+	private final String module;
+	private final String id;
+	private List<E> items = new ArrayList<E>();
+	private Map<String, E> itemsById = new HashMap<String, E>();
+
+	public EnumerationBase(final Enumerations enums, final DSLContext dslContext) {
+		String[] parts = this.getClass().getCanonicalName().split("\\.");
+		Assert.isTrue(parts.length == 7,
+				"valid enumeration class name (fm.comunas.[area].[module].model.enums.[enumClass])");
+		this.dslContext = dslContext;
+		this.module = parts[3];
+		this.id = Character.toLowerCase(parts[6].charAt(0)) + parts[6].substring(1);
+		enums.addEnumeration(this);
+	}
+
+	protected DSLContext getDslContext() {
+		return this.dslContext;
+	}
+
+	public String getModule() {
+		return this.module;
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	protected void addItem(E item) {
+		this.items.add(item);
+		this.itemsById.put(item.getId(), item);
+	}
+
+	public List<E> getItems() {
+		return this.items;
+	}
+
+	public E getItem(String id) {
+		if (id == null) {
+			return null;
+		}
+		E item = itemsById.get(id);
+		Assert.isTrue(item != null, "valid item [" + id + "]");
+		return item;
+	}
+
+	public String getResourcePath() {
+		return this.module + "/" + this.id.replace("Enum", "");
+	}
+
+}

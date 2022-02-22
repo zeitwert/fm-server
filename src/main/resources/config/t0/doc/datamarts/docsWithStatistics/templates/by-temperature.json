@@ -1,0 +1,6 @@
+{
+	"id": "by-temperature",
+	"name": "Temperature",
+	"layout": "temperature",
+	"params": {}
+}

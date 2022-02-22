@@ -1,0 +1,61 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "documentIcon",
+				"link": "link"
+			},
+			{
+				"id": "key",
+				"label": "Key",
+				"value": "key"
+			},
+			{
+				"id": "type",
+				"label": "Type",
+				"value": "documentType"
+			},
+			{
+				"id": "category",
+				"label": "Category",
+				"value": "category"
+			},
+			{
+				"id": "contentType",
+				"label": "Content",
+				"value": "contentType"
+			},
+			{
+				"id": "status",
+				"label": "Status",
+				"value": "status"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"key": "{{intlKey}}",
+				"link": "/document/{{id}}",
+				"documentType": "{{documentType.caption}}",
+				"category": "{{documentCategory.name}}",
+				"contentTypeId": "{{contentType.id}}",
+				"contentType": "{{contentType.name}}",
+				"status": "{{documentStatus.name}}",
+				"owner": "{{owner.caption}}"
+			}
+		]
+	}
+}

@@ -1,0 +1,153 @@
+.calendar {
+	border-radius: 0.25rem;
+
+	&-big {
+		height: 100%;
+	}
+
+	&-big-with-footer {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
+	&-no-toolbar {
+		.rbc-time-content {
+			border: 0;
+		}
+	}
+
+	&.my-day-calendar {
+		height: calc(100vh - 325px);
+	}
+
+	.rbc-btn-group + .rbc-btn-group {
+		margin-left: 0;
+	}
+
+	.rbc-toolbar {
+		.navigate-buttons {
+			margin-left: 1rem;
+		}
+
+		.navigate-button {
+			border: none;
+		}
+
+		.rbc-toolbar-label {
+			text-align: left;
+			padding-left: 1.5rem;
+			font-size: 1.35rem;
+		}
+	}
+
+	.rbc-header {
+		font-size: 1rem;
+	}
+
+	.rbc-time-view {
+		.rbc-time-header {
+			border-bottom: 1px solid #dddddd;
+			margin-right: 0 !important;
+		}
+
+		.rbc-time-header-gutter {
+			min-width: 45.5px;
+		}
+
+		.rbc-row {
+			min-height: 24px;
+		}
+	}
+
+	.rbc-time-content {
+		/* Hide scrollbar for Chrome, Safari and Opera */
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		/* Hide scrollbar for IE, Edge and Firefox */
+		& {
+			-ms-overflow-style: none; /* IE and Edge */
+			scrollbar-width: none; /* Firefox */
+		}
+	}
+
+	.rbc-event {
+		&:not(.personal),
+		&:not(.highlighted) {
+			background-color: #999999;
+			border: 1px solid darken(#999999, 20%);
+		}
+
+		&:not(.personal) {
+			background-color: #34becd;
+			border: 1px solid darken(#34becd, 20%);
+		}
+
+		&.not-in-sync {
+			background-color: #f88962;
+			border: 1px solid darken(#f88962, 20%);
+		}
+
+		&.highlighted {
+			background-color: darken(#34becd, 10%);
+			border: 1px solid darken(#34becd, 30%);
+		}
+
+		.rbc-event-label {
+			padding-right: 0.75rem;
+			padding-bottom: 0.25rem;
+		}
+	}
+
+	.event-wrapper {
+		width: 100%;
+		border: none;
+	}
+}
+
+/* Calendar tasks footer */
+.calendar-tasks-footer {
+	height: 105px;
+
+	border-radius: 0.25rem;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+
+	.rbc-calendar {
+		overflow: hidden;
+	}
+
+	.rbc-time-header {
+		min-height: 100%;
+	}
+
+	.rbc-time-header-gutter {
+		position: relative;
+		min-width: 45px;
+
+		&::after {
+			content: "Tasks";
+			position: absolute;
+			transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+			margin-top: 110%;
+			margin-left: 35%;
+			font-size: 1rem;
+			font-weight: bold;
+		}
+	}
+
+	.rbc-time-header-cell {
+		display: none;
+	}
+
+	.rbc-time-content {
+		display: none;
+	}
+
+	.rbc-event {
+		&:not(.personal) {
+			background-color: #4bc076;
+		}
+	}
+}

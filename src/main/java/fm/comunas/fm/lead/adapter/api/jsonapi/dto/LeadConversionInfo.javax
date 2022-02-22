@@ -1,0 +1,67 @@
+
+package fm.comunas.lead.adapter.api.jsonapi.dto;
+
+import javax.annotation.Nullable;
+
+import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
+import fm.comunas.advice.model.impl.DocAdviceImpl;
+import fm.comunas.contact.model.impl.ObjContactImpl;
+import fm.comunas.account.model.impl.ObjAccountImpl;
+import fm.comunas.opportunity.model.impl.DocOpportunityImpl;
+
+@JsonApiResource(type = "leadConversion", resourcePath = "lead/conversion")
+public class LeadConversionInfo {
+
+	@JsonApiId
+	public Integer id;
+
+	public String leadId;
+
+	public String ownerId;
+
+	public Boolean doCreateAccount;
+
+	@Nullable
+	public String accountId;
+
+	@Nullable
+	public String accountName;
+
+	public Boolean doCreateContact;
+
+	@Nullable
+	public String contactId;
+
+	@Nullable
+	public String contactSalutation;
+
+	@Nullable
+	public String contactFirstName;
+
+	@Nullable
+	public String contactLastName;
+
+	public Boolean doCreateDoc;
+
+	@Nullable
+	public String docType;
+
+	@Nullable
+	public String docName;
+
+	@JsonApiRelation(serialize = SerializeType.ONLY_ID)
+	public ObjAccountImpl account;
+
+	@JsonApiRelation(serialize = SerializeType.ONLY_ID)
+	public ObjContactImpl contact;
+
+	@JsonApiRelation(serialize = SerializeType.ONLY_ID)
+	public DocOpportunityImpl opportunity;
+
+	@JsonApiRelation(serialize = SerializeType.ONLY_ID)
+	public DocAdviceImpl advice;
+
+}

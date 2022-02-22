@@ -1,0 +1,22 @@
+.fa-contact-addresses {
+	.fa__subform-instance.fa__container {
+		position: relative;
+		margin-bottom: 1.5rem;
+		padding-bottom: 1.5rem;
+
+		&::after {
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: calc(100% - 26px);
+			height: 1px;
+			background-color: #dddbda;
+		}
+	}
+
+	.fa-contact-address_name {
+		font-size: 1.25rem;
+	}
+}

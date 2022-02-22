@@ -1,0 +1,52 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "account",
+				"label": "Account",
+				"value": "accountName",
+				"template": "link",
+				"link": "accountLink"
+			},
+			{
+				"id": "email",
+				"label": "Email",
+				"value": "email"
+			},
+			{
+				"id": "phone",
+				"label": "Phone",
+				"value": "phone"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{caption}}",
+				"link": "/contact/{{id}}",
+				"accountId": "{{account.id}}",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"phone": "=> nvl(mobile, phone)",
+				"email": "{{email}}",
+				"owner": "{{owner.caption}}"
+			}
+		]
+	}
+}

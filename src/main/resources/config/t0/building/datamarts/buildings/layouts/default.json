@@ -1,0 +1,54 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "address",
+				"label": "Address",
+				"value": "address",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "account",
+				"label": "Community",
+				"value": "accountName",
+				"template": "link",
+				"link": "accountLink"
+			},
+			{
+				"id": "type",
+				"label": "Type",
+				"value": "buildingType"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/building/{{id}}",
+				"accountId": "{{account.id}}",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"buildingType": "{{buildingType.name}}",
+				"address": "{{street}} {{zip}} {{city}}",
+				"owner": "{{owner.caption}}"
+			}
+		]
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "productCategory",
+				"label": "Category",
+				"value": "productCategory"
+			},
+			{
+				"id": "productModel",
+				"label": "Model",
+				"value": "productModel"
+			},
+			{
+				"id": "area",
+				"label": "Area",
+				"value": "area"
+			},
+			{
+				"id": "parent",
+				"label": "Parent",
+				"value": "parentName",
+				"template": "link",
+				"link": "parentLink"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/product/{{id}}",
+				"area": "=> join(areas)",
+				"productCategory": "{{productModel.productCategory.name}}",
+				"productModel": "{{productModel.name}}",
+				"parentId": "{{parent.id}}",
+				"parentName": "{{parent.name}}",
+				"parentLink": "/product/{{parent.id}}"
+			}
+		]
+	}
+}

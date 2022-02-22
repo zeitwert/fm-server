@@ -1,0 +1,319 @@
+{
+	"id": "lead/editLead",
+	"formDef": {
+		"rows": [
+			{
+				"cols": [
+					{
+						"size": 2,
+						"type": "select",
+						"label": "Salutation",
+						"value": "{{lead.salutation}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/contact/codeSalutation",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"enabled": "{{!lead.contact}}",
+						"isRequired": true
+					},
+					{
+						"size": 2,
+						"type": "select",
+						"label": "Title",
+						"value": "{{lead.title}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/contact/codeTitle",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"enabled": "{{!lead.contact}}"
+					},
+					{
+						"size": 4,
+						"type": "text",
+						"label": "Firstname",
+						"value": "{{lead.firstName}}",
+						"enabled": "{{!lead.contact}}",
+						"isRequired": true
+					},
+					{
+						"size": 4,
+						"type": "text",
+						"label": "Lastname",
+						"value": "{{lead.lastName}}",
+						"enabled": "{{!lead.contact}}",
+						"isRequired": true
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Account",
+						"value": "{{lead.account}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/account/accounts/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/account/accounts?filter[searchText]={{$searchText}}",
+						"enableAutocomplete": true,
+						"autocompleteMinLength": 2,
+						"path": "",
+						"visible": "{{control.enabled || lead.account}}",
+						"enabled": "{{!lead.account}}"
+					},
+					{
+						"size": 6,
+						"type": "select",
+						"label": "Contact",
+						"value": "{{lead.contact}}",
+						"dataSource": "Rest",
+						"storage": "Id",
+						"lookupUrl": "{{apiBaseUrl}}/contact/contacts/{{$id}}",
+						"identity": "id",
+						"formatItem": "{{$item.caption}}",
+						"queryUrl": "{{apiBaseUrl}}/contact/contacts?filter[account.id]={{lead.account}}",
+						"enableAutocomplete": false,
+						"path": "",
+						"visible": "{{control.enabled || lead.account}}",
+						"enabled": "{{!!lead.account}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 8,
+						"type": "select",
+						"label": "Areas",
+						"value": "{{lead.areas}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"multi": true,
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/common/codeArea",
+						"formatItem": "{{$item.name}}"
+					},
+					{
+						"size": 4,
+						"type": "select",
+						"label": "Source",
+						"value": "{{lead.leadSource}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/lead/codeLeadSource",
+						"path": "",
+						"formatItem": "{{$item.name}}",
+						"isRequired": true
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 8,
+						"type": "text",
+						"label": "Topic",
+						"value": "{{lead.subject}}",
+						"isRequired": true
+					},
+					{
+						"size": 4,
+						"type": "select",
+						"label": "Rating",
+						"value": "{{lead.leadRating}}",
+						"dataSource": "Rest",
+						"storage": "Full",
+						"identity": "id",
+						"enableAutocomplete": false,
+						"queryUrl": "{{enumBaseUrl}}/lead/codeLeadRating",
+						"path": "",
+						"formatItem": "{{$item.name}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"size": 12,
+						"type": "textarea",
+						"label": "Remarks",
+						"value": "{{lead.remarks}}"
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "panel",
+						"size": 6,
+						"label": "Domicile Address",
+						"rows": [
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "text",
+										"label": "Street",
+										"value": "{{lead.street}}",
+										"enabled": "{{!lead.contact}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 4,
+										"type": "text",
+										"label": "Zip",
+										"value": "{{lead.zip}}",
+										"enabled": "{{!lead.contact}}"
+									},
+									{
+										"size": 8,
+										"type": "text",
+										"label": "City",
+										"value": "{{lead.city}}",
+										"enabled": "{{!lead.contact}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 4,
+										"type": "text",
+										"label": "State",
+										"value": "{{lead.state}}",
+										"enabled": "{{!lead.contact}}"
+									},
+									{
+										"size": 8,
+										"type": "select",
+										"label": "Country",
+										"value": "{{lead.country}}",
+										"dataSource": "Rest",
+										"storage": "Full",
+										"identity": "id",
+										"enableAutocomplete": false,
+										"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+										"path": "",
+										"formatItem": "{{$item.name}}",
+										"enabled": "{{!lead.contact}}"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "panel",
+						"size": 6,
+						"label": "Electronic Addresses",
+						"rows": [
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "text",
+										"label": "Email",
+										"value": "{{lead.email}}",
+										"enabled": "{{!lead.contact}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "text",
+										"label": "Phone",
+										"value": "{{lead.phone}}",
+										"enabled": "{{!lead.contact}}"
+									}
+								]
+							},
+							{
+								"cols": [
+									{
+										"size": 12,
+										"type": "text",
+										"label": "Mobile",
+										"value": "{{lead.mobile}}",
+										"enabled": "{{!lead.contact}}"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"cols": [
+					{
+						"type": "accordion",
+						"visible": "{{!control.enabled}}",
+						"sections": [
+							{
+								"type": "panel",
+								"label": "System Information",
+								"rows": [
+									{
+										"cols": [
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Created By",
+												"value": "{{lead.meta.createdByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{lead.meta.createdAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "text",
+												"label": "Last Modified By",
+												"value": "{{lead.meta.modifiedByUser.caption}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											},
+											{
+												"size": 6,
+												"type": "date",
+												"enableTime": true,
+												"format": "dddd, DD.MM.YYYY HH:mm",
+												"label": "&nbsp;",
+												"value": "{{lead.meta.modifiedAt}}",
+												"visible": "{{!control.enabled}}",
+												"enabled": false
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

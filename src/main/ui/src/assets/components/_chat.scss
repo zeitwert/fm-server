@@ -1,0 +1,96 @@
+/* Chat list */
+
+.slds-chat-list.selected {
+	background-color: #d4e8f8;
+	padding: 0;
+	margin: 0 0.75rem;
+	border-radius: 0.5rem;
+}
+
+/* Chat list item */
+.slds-chat-listitem {
+	padding: 0.25rem;
+	margin: 0.25rem 0 0.25rem 0;
+}
+
+/* Chat message */
+.slds-chat-message .chat-message__icon {
+	display: flex;
+	align-items: center;
+}
+
+.slds-chat-message__meta {
+	margin-top: 0.25rem;
+}
+
+.slds-chat-listitem_inbound .slds-chat-message__meta {
+	color: #2f75b5;
+}
+
+.slds-chat-message__meta {
+	margin-left: 0;
+	color: #1f4e78;
+}
+
+.slds-chat-message__text_outbound {
+	background-color: #3c97dd;
+	color: white;
+}
+
+.slds-chat-message__text_outbound a {
+	color: white;
+}
+
+/* Chat block */
+.chat-block {
+	display: flex;
+	width: 100%;
+	margin: 0 2.7rem 0.5rem 2.7rem;
+}
+
+.chat-block.chat-block-type__meeting .chat-block__text {
+	background-color: #34becd;
+	color: white;
+}
+
+.chat-block.chat-block-type__call .chat-block__text {
+	background-color: #f2cf5b;
+	color: white;
+}
+
+.chat-block.chat-block-type__visit .chat-block__text {
+	background-color: #0eb58a;
+	color: white;
+}
+
+.chat-block .chat-block__body {
+	flex-grow: 1;
+}
+
+.chat-block .chat-block__text {
+	padding: 0.5rem;
+	background-color: #f2f2f3;
+	border-radius: 0.5rem;
+	text-align: center;
+}
+
+/* Chat message reply */
+.chat-message-reply {
+	margin-bottom: 0.5rem;
+	border-left: 4px solid #a094ed;
+	padding-left: 0.5rem;
+	border-radius: 4px;
+}
+
+.chat-message-reply__from {
+	font-weight: bold;
+	color: #a094ed;
+}
+
+.slds-chat-listitem_outbound .chat-message-reply {
+	border-left: 4px solid #e2def9;
+}
+
+.slds-chat-listitem_outbound .chat-message-reply__from {
+	color: #e2def9;
+}

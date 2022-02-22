@@ -1,0 +1,49 @@
+{
+	"id": "kanban",
+	"name": "Kanban",
+	"layout": {
+		"layoutType": "kanban",
+		"isTimelineHeader": true,
+		"header": {
+			"dynamic": {
+				"url": "{{enumBaseUrl}}/doc/codeCaseStage/opportunity",
+				"valueField": "id",
+				"displayNameField": "name"
+			}
+		},
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"link": "/opportunity/{{id}}",
+				"stageId": "{{caseStage.id}}",
+				"stageName": "{{caseStage.name}}",
+				"name": "{{name}}",
+				"accountName": "{{account.caption}}",
+				"createdAt": "=> formatDate(meta.createdAt)"
+			}
+		],
+		"groupBy": {
+			"value": "stageId",
+			"serverFieldName": "caseStage"
+		},
+		"cardLayout": {
+			"title": {
+				"value": "name",
+				"displayName": "name"
+			},
+			"body": [
+				{
+					"value": "accountName",
+					"displayName": "accountName"
+				},
+				{
+					"value": "createdAt",
+					"displayName": "createdAt"
+				}
+			]
+		},
+		"docType": "opportunity",
+		"modifyUrl": "{{apiBaseUrl}}/opportunity/opportunities"
+	}
+}

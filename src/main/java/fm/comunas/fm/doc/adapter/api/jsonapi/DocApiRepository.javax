@@ -1,0 +1,9 @@
+
+package fm.comunas.ddd.doc.adapter.api.jsonapi;
+
+import io.crnk.core.repository.ResourceRepository;
+import fm.comunas.ddd.doc.adapter.api.jsonapi.impl.DocImpl;
+
+public interface DocApiRepository extends ResourceRepository<DocImpl, Integer> {
+
+}

@@ -1,0 +1,79 @@
+{
+	"id": "kanban",
+	"name": "Kanban",
+	"layout": {
+		"layoutType": "kanban",
+		"isTimelineHeader": true,
+		"header": {
+			"static": [
+				{
+					"value": "lead.new",
+					"displayName": "Assignment"
+				},
+				{
+					"value": "lead.contacting",
+					"displayName": "Contacting"
+				},
+				{
+					"value": "lead.qualifying",
+					"displayName": "Qualifying"
+				},
+				{
+					"value": "lead.done_unqualified",
+					"displayName": "Unqualified"
+				},
+				{
+					"value": "lead.done_nurture",
+					"displayName": "Done (Nurturing)"
+				},
+				{
+					"value": "lead.done_opportunity",
+					"displayName": "Converted (Opportunity)"
+				},
+				{
+					"value": "lead.done_advice",
+					"displayName": "Converted (Advice)"
+				}
+			]
+		},
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"link": "/lead/{{id}}",
+				"stageId": "{{caseStage.id}}",
+				"stageName": "{{caseStage.name}}",
+				"topic": "{{subject}}",
+				"name": "=> nvl(name, contact.caption)",
+				"source": "{{leadSource.name}}",
+				"remarks": "{{remarks}}"
+			}
+		],
+		"groupBy": {
+			"value": "stageId",
+			"serverFieldName": "caseStage"
+		},
+		"cardLayout": {
+			"title": {
+				"value": "topic",
+				"displayName": "topic"
+			},
+			"body": [
+				{
+					"value": "name",
+					"displayName": "name"
+				},
+				{
+					"value": "source",
+					"displayName": "source"
+				},
+				{
+					"value": "remarks",
+					"displayName": "remarks"
+				}
+			]
+		},
+		"docType": "lead",
+		"modifyUrl": "{{apiBaseUrl}}/lead/leads"
+	}
+}
