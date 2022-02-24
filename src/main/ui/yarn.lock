@@ -1306,9 +1306,9 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@finadvise/forms@^0.1.45":
+"@zeitwert/forms@^0.1.45":
   version "0.1.45"
-  resolved "https://registry.yarnpkg.com/@finadvise/forms/-/forms-0.1.45.tgz#b29b445d50d5b3173e3757ee1f8d63016ac847c7"
+  resolved "https://registry.yarnpkg.com/@zeitwert/forms/-/forms-0.1.45.tgz#b29b445d50d5b3173e3757ee1f8d63016ac847c7"
   integrity sha512-reYgH8okV/7YjcycxYB4B1DDw/JzzMO9l2iNhRJMjWBOfNMCOnwpecN2t3BO2CSdMmccITfHcDZW+M9I3M3pzw==
   dependencies:
     deepmerge "^4.2.2"

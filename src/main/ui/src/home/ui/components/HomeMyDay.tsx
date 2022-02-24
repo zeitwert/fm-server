@@ -1,6 +1,6 @@
 
-import { DateFormat } from "@comunas/ui-model";
 import Card from "@salesforce/design-system-react/components/card";
+import { DateFormat } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { inject, observer } from "mobx-react";

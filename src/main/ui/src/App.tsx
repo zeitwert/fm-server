@@ -1,6 +1,6 @@
-import { AppStore, Session } from "@comunas/ui-model";
 import BrandBand from "@salesforce/design-system-react/components/brand-band";
 import Settings from "@salesforce/design-system-react/components/settings";
+import { AppStore, Session } from "@zeitwert/ui-model";
 import DynamicView from "frame/app/DynamicView";
 import { Navigator } from "frame/app/Navigation";
 import AppHeader from "frame/ui/AppHeader";

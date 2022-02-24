@@ -1,4 +1,4 @@
-import { Navigation, NavigationAction, NavigationTarget } from "@comunas/ui-model";
+import { Navigation, NavigationAction, NavigationTarget } from "@zeitwert/ui-model";
 
 export interface Navigator {
 	readonly params: any;

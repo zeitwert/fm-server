@@ -1,6 +1,6 @@
-import { FormWrapper } from "@comunas/ui-forms";
-import { Document, DocumentContentModel, DocumentContentSnapshot, FORM_API } from "@comunas/ui-model";
 import { registerMetadataConfig } from "@finadvise/forms";
+import { FormWrapper } from "@zeitwert/ui-forms";
+import { Document, DocumentContentModel, DocumentContentSnapshot, FORM_API } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { inject } from "mobx-react";
 import React from "react";

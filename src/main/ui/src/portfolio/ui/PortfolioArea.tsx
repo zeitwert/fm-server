@@ -1,5 +1,5 @@
 
-import { EntityType, Portfolio, PortfolioStore, PortfolioStoreModel } from "@comunas/ui-model";
+import { EntityType, Portfolio, PortfolioStore, PortfolioStoreModel } from "@zeitwert/ui-model";
 import ItemsPage from "item/ui/ItemsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";

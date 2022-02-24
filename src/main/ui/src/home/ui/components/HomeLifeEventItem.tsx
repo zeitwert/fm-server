@@ -1,7 +1,7 @@
 
-import { Aggregate, ContactStore, DateFormat, EntityType, EntityTypes } from "@comunas/ui-model";
-import { TimelineItem } from "@comunas/ui-slds/timeline/Timeline";
 import Icon from "@salesforce/design-system-react/components/icon";
+import { Aggregate, ContactStore, DateFormat, EntityType, EntityTypes } from "@zeitwert/ui-model";
+import { TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

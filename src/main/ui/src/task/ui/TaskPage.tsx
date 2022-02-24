@@ -1,8 +1,8 @@
-import { Account, CaseStage, EntityType, Task, TaskStore, TaskStoreModel } from "@comunas/ui-model";
 import Avatar from "@salesforce/design-system-react/components/avatar";
 import Spinner from "@salesforce/design-system-react/components/spinner";
 import Tabs from "@salesforce/design-system-react/components/tabs";
 import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Account, CaseStage, EntityType, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { StageSelector } from "doc/ui/StageSelector";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";

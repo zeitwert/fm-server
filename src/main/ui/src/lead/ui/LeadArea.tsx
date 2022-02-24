@@ -1,4 +1,4 @@
-import { EntityType, LeadStoreModel } from "@comunas/ui-model";
+import { EntityType, LeadStoreModel } from "@zeitwert/ui-model";
 import ItemsPage from "item/ui/ItemsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";

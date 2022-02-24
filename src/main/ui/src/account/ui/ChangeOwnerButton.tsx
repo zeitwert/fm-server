@@ -1,5 +1,5 @@
-import { AccountStore, UserInfo } from "@comunas/ui-model";
 import Button from "@salesforce/design-system-react/components/button";
+import { AccountStore, UserInfo } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

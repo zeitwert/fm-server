@@ -1,4 +1,7 @@
 
+import Icon from "@salesforce/design-system-react/components/icon";
+import SplitViewHeader from "@salesforce/design-system-react/components/split-view/header";
+import SplitView from "@salesforce/design-system-react/components/split-view/index";
 import {
 	AggregateStore, API,
 	Config,
@@ -7,11 +10,8 @@ import {
 	DocumentModel,
 	DocumentStoreModel,
 	DOCUMENT_API, Enumerated
-} from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
-import Icon from "@salesforce/design-system-react/components/icon";
-import SplitViewHeader from "@salesforce/design-system-react/components/split-view/header";
-import SplitView from "@salesforce/design-system-react/components/split-view/index";
+} from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";
 import { DocumentCatalog } from "dms/ui/DocumentCatalog";
 import DocumentsWidget from "dms/ui/DocumentsWidget";

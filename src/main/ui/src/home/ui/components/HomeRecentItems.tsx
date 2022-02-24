@@ -1,7 +1,7 @@
-import { Aggregate, DateFormat } from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
 import Card from "@salesforce/design-system-react/components/card";
 import Icon from "@salesforce/design-system-react/components/icon";
+import { Aggregate, DateFormat } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";
 import { computed, makeObservable } from "mobx";
 import { inject, observer } from "mobx-react";

@@ -1,4 +1,4 @@
-import { Building, BuildingStore, BuildingStoreModel, EntityType } from "@comunas/ui-model";
+import { Building, BuildingStore, BuildingStoreModel, EntityType } from "@zeitwert/ui-model";
 import ItemsPage from "item/ui/ItemsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";

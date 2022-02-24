@@ -1,7 +1,7 @@
-import { API, CaseStage, Config } from "@comunas/ui-model";
 import Button from "@salesforce/design-system-react/components/button";
 import Combobox from "@salesforce/design-system-react/components/combobox";
 import Modal from "@salesforce/design-system-react/components/modal";
+import { API, CaseStage, Config } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { makeObservable, observable, transaction } from "mobx";
 import { inject, observer } from "mobx-react";

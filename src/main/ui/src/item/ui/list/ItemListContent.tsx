@@ -1,8 +1,8 @@
-import { KANBAN_API, LayoutType, Template } from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
-import { POSTFIX, PREFIX } from "@comunas/ui-slds/custom/CustomDataTableCells";
-import { ReportViewer } from "@comunas/ui-slds/report/ReportViewer";
 import { Status, Wrapper } from "@googlemaps/react-wrapper";
+import { KANBAN_API, LayoutType, Template } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { POSTFIX, PREFIX } from "@zeitwert/ui-slds/custom/CustomDataTableCells";
+import { ReportViewer } from "@zeitwert/ui-slds/report/ReportViewer";
 import { AppCtx } from "App";
 import axios from "axios";
 import { makeObservable, observable } from "mobx";

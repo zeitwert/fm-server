@@ -1,4 +1,4 @@
-import { ItemList } from "@comunas/ui-model";
+import { ItemList } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import ItemListView from "item/ui/list/ItemListView";
 import { inject, observer } from "mobx-react";

@@ -1,11 +1,11 @@
-import { AggregateStore, ItemPartNote } from "@comunas/ui-model";
-import ButtonStateful from "@comunas/ui-slds/common/ButtonStateful";
-import { PageHeader } from "@comunas/ui-slds/content/PageHeader";
 import Button from "@salesforce/design-system-react/components/button";
 import ButtonGroup from "@salesforce/design-system-react/components/button-group";
 import Icon from "@salesforce/design-system-react/components/icon";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
 import PageHeaderControl from "@salesforce/design-system-react/components/page-header/control";
+import { AggregateStore, ItemPartNote } from "@zeitwert/ui-model";
+import ButtonStateful from "@zeitwert/ui-slds/common/ButtonStateful";
+import { PageHeader } from "@zeitwert/ui-slds/content/PageHeader";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

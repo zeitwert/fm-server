@@ -1,7 +1,7 @@
-import { CaseStage, CaseStageType, DocStore } from "@comunas/ui-model";
-import { CasePath } from "@comunas/ui-slds/bpm/CasePath";
-import { CasePathStage, StageType } from "@comunas/ui-slds/bpm/CasePathStage";
 import Card from "@salesforce/design-system-react/components/card";
+import { CaseStage, CaseStageType, DocStore } from "@zeitwert/ui-model";
+import { CasePath } from "@zeitwert/ui-slds/bpm/CasePath";
+import { CasePathStage, StageType } from "@zeitwert/ui-slds/bpm/CasePathStage";
 import { AppCtx } from "App";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

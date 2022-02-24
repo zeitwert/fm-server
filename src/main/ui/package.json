@@ -1,5 +1,5 @@
 {
-	"name": "comunas-ui",
+	"name": "zeitwert-ui",
 	"version": "0.0.1-SNAPSHOT",
 	"license": "UNLICENSED",
 	"scripts": {
@@ -10,9 +10,7 @@
 		"analyze": "source-map-explorer 'build/static/js/*.js'",
 		"start": "npm-run-all -p watch-css start-js",
 		"build": "npm-run-all -s build-css build-js",
-		"test": "react-app-rewired test --env=jsdom --watchAll=false --passWithNoTests",
-		"docker-build": "docker build -f docker/prod.Dockerfile -t comunas-ui .",
-		"docker-run": "docker run -it -e COMUNAS_ENV=test -p 3000:3000 comunas-ui"
+		"test": "react-app-rewired test --env=jsdom --watchAll=false --passWithNoTests"
 	},
 	"prodDependencies": {},
 	"dependencies": {

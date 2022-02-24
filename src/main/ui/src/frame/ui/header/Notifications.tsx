@@ -1,12 +1,12 @@
 
-import { DateFormat } from "@comunas/ui-model";
-import { Col, Grid } from "@comunas/ui-slds/common/Grid";
 import Avatar from "@salesforce/design-system-react/components/avatar";
 import Button from "@salesforce/design-system-react/components/button";
 import GlobalHeaderNotifications from "@salesforce/design-system-react/components/global-header/notifications";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
 import Popover from "@salesforce/design-system-react/components/popover";
 import { GLOBAL_HEADER_NOTIFICATIONS } from "@salesforce/design-system-react/utilities/constants";
+import { DateFormat } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

@@ -1,11 +1,11 @@
 import {
-    Navigation,
-    NavigationAction,
-    NavigationTarget,
-    ROUTE_ACTION,
-    SELF_TARGET,
-    Session
-} from "@comunas/ui-model";
+	Navigation,
+	NavigationAction,
+	NavigationTarget,
+	ROUTE_ACTION,
+	SELF_TARGET,
+	Session
+} from "@zeitwert/ui-model";
 import { Navigator } from "frame/app/Navigation";
 
 export class NavigatorImpl implements Navigator {

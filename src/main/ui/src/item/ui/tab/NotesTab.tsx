@@ -1,5 +1,5 @@
-import { AggregateStore, DateFormat, ItemPartNote, ItemPartNotePayload, session } from "@comunas/ui-model";
-import { ItemWithNotes } from "@comunas/ui-model/fm/item/model/ItemWithNotesModel";
+import { AggregateStore, DateFormat, ItemPartNote, ItemPartNotePayload, session } from "@zeitwert/ui-model";
+import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
 import { AppCtx } from "App";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

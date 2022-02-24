@@ -1,7 +1,7 @@
 
-import { API, Config, jsonApiFetch } from "@comunas/ui-model";
 import { Form } from "@finadvise/forms";
 import Card from "@salesforce/design-system-react/components/card";
+import { API, Config, jsonApiFetch } from "@zeitwert/ui-model";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjectionChart";

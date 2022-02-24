@@ -1,3 +1,9 @@
+import Avatar from "@salesforce/design-system-react/components/avatar";
+import ButtonGroup from "@salesforce/design-system-react/components/button-group";
+import Icon from "@salesforce/design-system-react/components/icon";
+import Spinner from "@salesforce/design-system-react/components/spinner";
+import Tabs from "@salesforce/design-system-react/components/tabs";
+import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
 import {
 	Account, CaseStage,
 	Contact,
@@ -5,13 +11,7 @@ import {
 	ContactStoreModel,
 	DATE_FORMAT,
 	EntityType
-} from "@comunas/ui-model";
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import ButtonGroup from "@salesforce/design-system-react/components/button-group";
-import Icon from "@salesforce/design-system-react/components/icon";
-import Spinner from "@salesforce/design-system-react/components/spinner";
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+} from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import FormItemEditor from "item/ui/FormItemEditor";

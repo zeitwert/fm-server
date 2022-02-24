@@ -1,5 +1,5 @@
-import { FormWrapper } from "@comunas/ui-forms";
-import { ContactStore } from "@comunas/ui-model";
+import { FormWrapper } from "@zeitwert/ui-forms";
+import { ContactStore } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import React from "react";
 

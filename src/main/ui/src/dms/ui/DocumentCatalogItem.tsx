@@ -1,7 +1,7 @@
 
-import { Document } from "@comunas/ui-model";
 import Icon from "@salesforce/design-system-react/components/icon";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Document } from "@zeitwert/ui-model";
 import { DocumentUtils } from "dms/utils/DocumentUtils";
 import { observer } from "mobx-react";
 import React from "react";
@@ -33,8 +33,8 @@ export class DocumentCatalogItem extends React.Component<DocumentCatalogItemProp
 								snapshot.isDragging
 									? "fa-doc-catalog-dragging"
 									: isSelected
-									? "slds-card slds-card_boundary slds-is-selected"
-									: "slds-card slds-card_boundary"
+										? "slds-card slds-card_boundary slds-is-selected"
+										: "slds-card slds-card_boundary"
 							}
 						>
 							<td>

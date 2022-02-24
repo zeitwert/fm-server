@@ -1,10 +1,10 @@
-import { deepFind } from "@comunas/ui-model";
-import { Grid } from "@comunas/ui-slds/common/Grid";
 import Button from "@salesforce/design-system-react/components/button";
 import ButtonGroup from "@salesforce/design-system-react/components/button-group";
 import Card from "@salesforce/design-system-react/components/card";
 import Icon from "@salesforce/design-system-react/components/icon";
 import Tooltip from "@salesforce/design-system-react/components/tooltip";
+import { deepFind } from "@zeitwert/ui-model";
+import { Grid } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";
 import { inject, observer } from "mobx-react";
 import React from "react";

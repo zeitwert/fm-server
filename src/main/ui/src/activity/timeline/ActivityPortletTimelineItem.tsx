@@ -1,3 +1,4 @@
+import Icon from "@salesforce/design-system-react/components/icon";
 import {
 	Activity,
 	Aggregate,
@@ -5,9 +6,8 @@ import {
 	EntityType,
 	Task,
 	TaskStoreModel
-} from "@comunas/ui-model";
-import { TimelineItem } from "@comunas/ui-slds/timeline/Timeline";
-import Icon from "@salesforce/design-system-react/components/icon";
+} from "@zeitwert/ui-model";
+import { TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

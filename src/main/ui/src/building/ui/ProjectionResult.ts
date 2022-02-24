@@ -1,4 +1,4 @@
-import { Enumerated } from "@comunas/ui-model";
+import { Enumerated } from "@zeitwert/ui-model";
 
 export interface RestorationElement {
 	building: Enumerated;

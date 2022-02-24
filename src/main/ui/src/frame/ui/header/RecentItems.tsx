@@ -1,9 +1,9 @@
-import { Aggregate, AppStore, DateFormat, UserInfo } from "@comunas/ui-model";
 import Button from "@salesforce/design-system-react/components/button";
 import Icon from "@salesforce/design-system-react/components/icon";
 import MediaObject from "@salesforce/design-system-react/components/media-object";
 import Popover from "@salesforce/design-system-react/components/popover";
 import { GLOBAL_HEADER_FAVORITES } from "@salesforce/design-system-react/utilities/constants";
+import { Aggregate, AppStore, DateFormat, UserInfo } from "@zeitwert/ui-model";
 import classNames from "classnames";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

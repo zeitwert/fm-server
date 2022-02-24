@@ -1,6 +1,6 @@
-import { Col, Grid, Row } from "@comunas/ui-slds/common/Grid";
 import Button from "@salesforce/design-system-react/components/button";
 import Card from "@salesforce/design-system-react/components/card";
+import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
