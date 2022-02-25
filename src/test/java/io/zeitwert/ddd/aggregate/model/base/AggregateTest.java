@@ -27,7 +27,7 @@ import java.time.LocalDate;
 @ActiveProfiles("test")
 public class AggregateTest {
 
-	private static final String USER_EMAIL = "martin@zeitwert.io";
+	private static final String USER_EMAIL = "martin@comunas.fm";
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired

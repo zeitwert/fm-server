@@ -23,7 +23,7 @@ const session: Session = SessionModel.create({
 			email: "hannes_brunner@hotmail.com"
 		},
 		locale: Locale.en_us,
-		applicationId: "advise",
+		applicationId: "fm",
 		applications: []
 	},
 	appInfo: {

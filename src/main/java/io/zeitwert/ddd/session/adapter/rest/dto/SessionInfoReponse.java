@@ -15,7 +15,7 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 @Builder
 public class SessionInfoReponse {
 
-	private static final List<String> apps = Arrays.asList("advise", "client", "meeting", "config");
+	private static final List<String> apps = Arrays.asList("fm", "admin");
 
 	private ObjTenantDto tenant;
 
@@ -38,7 +38,7 @@ public class SessionInfoReponse {
 			.tenant(ObjTenantDto.fromObj(sessionInfo.getTenant()))
 			.user(ObjUserDto.fromObj(sessionInfo.getUser()))
 			.locale("en-US")
-			.applicationId(sessionInfo.getUser().getEmail().endsWith("zeitwert.io") ? "fm" : "advise")
+			.applicationId("fm")
 			.availableApplications(apps)
 			.customValues(sessionInfo.getCustomValues())
 			.build();
