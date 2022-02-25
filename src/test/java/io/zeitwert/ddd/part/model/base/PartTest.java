@@ -62,7 +62,7 @@ public class PartTest {
 
 		ObjTest test1a = testRepository.create(sessionInfo);
 		assertTrue(((PartRepositoryBase<ObjTest, ?>) testNodeRepository).isInitialised(test1a));
-		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
+		this.initObjTest(test1a, "One", "martin@comunas.fm", "ch");
 		Integer test1Id = test1a.getId();
 
 		assertEquals(0, test1a.getNodeList().size());
