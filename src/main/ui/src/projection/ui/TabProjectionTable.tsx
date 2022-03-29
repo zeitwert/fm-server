@@ -101,7 +101,7 @@ export default class TabProjectionTable extends React.Component<TabProjectionTab
 			});
 		}, 10);
 		return (
-			<div style={{ overflow: "auto" }}>
+			<div style={{ overflow: "auto", height: "100%" }}>
 				<DataTable items={timeValues} striped>
 					{columns}
 				</DataTable>
