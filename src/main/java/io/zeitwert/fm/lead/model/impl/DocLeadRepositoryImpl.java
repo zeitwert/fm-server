@@ -3,15 +3,12 @@ package io.zeitwert.fm.lead.model.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.fm.common.model.enums.CodeArea;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.doc.model.DocPartNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.lead.model.DocLead;
@@ -73,8 +70,9 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	@Override
 	public void doLoadParts(DocLead obj) {
 		super.doLoadParts(obj);
-		Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.dslContext, obj.getId(), "", CodeAreaEnum.class);
-		((DocLeadBase) obj).loadAreaSet(areaSet);
+		// Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.dslContext,
+		// obj.getId(), "", CodeAreaEnum.class);
+		// ((DocLeadBase) obj).loadAreaSet(areaSet);
 	}
 
 }

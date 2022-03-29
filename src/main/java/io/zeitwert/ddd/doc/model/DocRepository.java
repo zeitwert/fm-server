@@ -13,6 +13,6 @@ public interface DocRepository<D extends Doc, V extends Record> extends Aggregat
 
 	// DocPartItemRepository getItemRepository();
 
-	// CodePartListType getAreaSetType();
+	CodePartListType getAreaSetType();
 
 }

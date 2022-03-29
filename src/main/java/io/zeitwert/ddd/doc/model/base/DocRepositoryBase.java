@@ -28,6 +28,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	private final DocPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
+	private final CodePartListType areaSetType;
 
 	//@formatter:off
 	protected DocRepositoryBase(
@@ -42,6 +43,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
+		this.areaSetType = this.getAppContext().getPartListType(DocFields.AREA_SET);
 	}
 	//@formatter:on
 
@@ -52,6 +54,11 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	@Override
 	public CodePartListType getTransitionListType() {
 		return this.transitionListType;
+	}
+
+	@Override
+	public CodePartListType getAreaSetType() {
+		return this.areaSetType;
 	}
 
 	protected DocRepositoryUtil getUtil() {

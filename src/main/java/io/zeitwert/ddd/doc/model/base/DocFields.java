@@ -14,5 +14,6 @@ public interface DocFields extends AggregateFields {
 	static final Field<Integer> ASSIGNEE_ID = DSL.field("assignee_id", Integer.class);
 
 	static final String TRANSITION_LIST = "doc.transitionList";
+	static final String AREA_SET = "doc.areaSet";
 
 }
