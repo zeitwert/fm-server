@@ -72,25 +72,12 @@
 		"babel-loader": "8.1.0",
 		"deepmerge": "^4.2.2",
 		"del-cli": "^4.0.1",
-		"draft-js": "^0.11.7",
-		"json-api-normalizer": "^1.0.4",
-		"jsonapi-serializer": "^3.6.7",
-		"markdown-draft-js": "^2.3.0",
-		"memoize-one": "^6.0.0",
-		"mobx-state-tree": "^5.0.4",
 		"npm-run-all": "^4.1.5",
 		"react-app-rewired": "^2.1.8",
-		"react-autosize-textarea": "^7.1.0",
-		"react-datepicker": "1.8.0",
-		"react-draft-wysiwyg": "^1.14.7",
-		"react-maskedinput": "^4.0.1",
 		"react-scripts": "^4.0.3",
-		"react-slick": "^0.28.1",
-		"react-table": "^6.11.5",
 		"sass": "^1.43.4",
 		"source-map-explorer": "^2.5.2",
-		"stompjs": "^2.3.3",
-		"typescript": "^4.5.0-beta"
+		"typescript": "^4.6.2"
 	},
 	"engines": {
 		"node": ">=12"
