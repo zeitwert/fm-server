@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -106,25 +105,22 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public final Optional<A> get(SessionInfo sessionInfo, Integer id) {
+	public final A get(SessionInfo sessionInfo, Integer id) {
 		require(id != null, "id not null");
 		if (this.aggregateCache.hasItem(sessionInfo, id)) {
-			return Optional.of(this.aggregateCache.getItem(sessionInfo, id));
+			return this.aggregateCache.getItem(sessionInfo, id);
 		}
-		Optional<A> maybeAggregate = this.doLoad(sessionInfo, id);
-		if (maybeAggregate.isPresent()) {
-			A aggregate = maybeAggregate.get();
-			this.didDoLoadParts = false;
-			this.doLoadParts(aggregate);
-			Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
-			this.aggregateCache.addItem(sessionInfo, aggregate);
-			((AggregateSPI) aggregate).calcVolatile();
-		}
-		return maybeAggregate;
+		A aggregate = this.doLoad(sessionInfo, id);
+		this.didDoLoadParts = false;
+		this.doLoadParts(aggregate);
+		Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
+		this.aggregateCache.addItem(sessionInfo, aggregate);
+		((AggregateSPI) aggregate).calcVolatile();
+		return aggregate;
 	}
 
 	@Override
-	public abstract Optional<A> doLoad(SessionInfo sessionInfo, Integer id);
+	public abstract A doLoad(SessionInfo sessionInfo, Integer id);
 
 	@Override
 	public void doLoadParts(A aggregate) {

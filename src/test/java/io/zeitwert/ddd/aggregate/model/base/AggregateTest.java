@@ -66,7 +66,7 @@ public class AggregateTest {
 		testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 		Integer test1bIdHash = System.identityHashCode(test1b);
 		assertNotEquals(test1aIdHash, test1bIdHash);
 
@@ -110,7 +110,7 @@ public class AggregateTest {
 		testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", test1b.getCaption());
 		assertEquals("Short Test One", test1b.getShortText());
@@ -172,7 +172,7 @@ public class AggregateTest {
 		testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 
 		assertEquals(2, test1b.getAreaSet().size());
 		assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("safety_net")));

@@ -86,7 +86,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		SessionInfo sessionInfo = this.getMeta().getSessionInfo();
 		ObjContactRepository contactRepo = (ObjContactRepository) this.getAppContext().getRepository(ObjContact.class);
 		return contactRepo.getByForeignKey(sessionInfo, "accountId", this.getId()).stream()
-				.map(c -> contactRepo.get(sessionInfo, c.getId()).get()).toList();
+				.map(c -> contactRepo.get(sessionInfo, c.getId())).toList();
 	}
 
 	@Override

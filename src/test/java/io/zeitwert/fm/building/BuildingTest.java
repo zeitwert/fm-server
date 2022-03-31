@@ -102,7 +102,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1a);
 		building1a = null;
 
-		ObjBuilding building1b = buildingRepository.get(sessionInfo, building1Id).get();
+		ObjBuilding building1b = buildingRepository.get(sessionInfo, building1Id);
 		Integer building1bIdHash = System.identityHashCode(building1b);
 		assertNotEquals(building1aIdHash, building1bIdHash);
 		assertNotNull(building1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
@@ -138,7 +138,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1b);
 		building1b = null;
 
-		ObjBuilding building1c = buildingRepository.get(sessionInfo, building1Id).get();
+		ObjBuilding building1c = buildingRepository.get(sessionInfo, building1Id);
 
 		assertEquals(building1c.getElementCount(), 2, "element count 2");
 		assertEquals(building1c.getElementList().size(), 2, "element count 2");
@@ -163,7 +163,7 @@ public class BuildingTest {
 		hh.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
 		hh.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
 		this.accountRepository.store(hh);
-		return this.accountRepository.get(sessionInfo, hh.getId()).get();
+		return this.accountRepository.get(sessionInfo, hh.getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

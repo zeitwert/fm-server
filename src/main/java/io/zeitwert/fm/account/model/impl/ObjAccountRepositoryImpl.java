@@ -74,7 +74,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	}
 
 	@Override
-	public Optional<ObjAccount> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjAccount doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjAccountRecord accountRecord = this.dslContext.fetchOne(Tables.OBJ_ACCOUNT,
 				Tables.OBJ_ACCOUNT.OBJ_ID.eq(objId));
@@ -104,7 +104,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 		if (hhRecord == null) {
 			return Optional.empty();
 		}
-		return this.get(sessionInfo, hhRecord.getId());
+		return Optional.of(this.get(sessionInfo, hhRecord.getId()));
 	}
 
 }

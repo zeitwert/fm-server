@@ -55,7 +55,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			if (this.getOriginal() != null) {
 				hh = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				hh = this.getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId).get();
+				hh = this.getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
 			}
 			this.accountDto = ObjAccountDto.fromObj(hh, this.sessionInfo);
 		}

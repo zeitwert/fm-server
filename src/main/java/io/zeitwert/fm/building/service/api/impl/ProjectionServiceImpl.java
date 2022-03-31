@@ -46,7 +46,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 	public ProjectionResult getProjection(ObjPortfolio portfolio) {
 		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream()
-				.map(id -> this.buildingRepo.get(sessionInfo, id).get())
+				.map(id -> this.buildingRepo.get(sessionInfo, id))
 				.collect(Collectors.toSet());
 		int startYear = this.getMinProjectionDate(buildings);
 		int duration = DefaultDuration;

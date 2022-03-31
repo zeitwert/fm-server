@@ -2,13 +2,11 @@
 package io.zeitwert.fm.lead.adapter.api.jsonapi.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.crnk.core.exception.BadRequestException;
-import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -48,11 +46,8 @@ public class DocLeadApiRepositoryImpl extends ResourceRepositoryBase<DocLeadDto,
 
 	@Override
 	public DocLeadDto findOne(Integer docId, QuerySpec querySpec) {
-		Optional<DocLead> maybeLead = this.repository.get(this.sessionInfo, docId);
-		if (!maybeLead.isPresent()) {
-			throw new ResourceNotFoundException("Resource not found!");
-		}
-		return DocLeadDto.fromDoc(maybeLead.get(), this.sessionInfo);
+		DocLead lead = this.repository.get(this.sessionInfo, docId);
+		return DocLeadDto.fromDoc(lead, this.sessionInfo);
 	}
 
 	@Override
@@ -69,7 +64,7 @@ public class DocLeadApiRepositoryImpl extends ResourceRepositoryBase<DocLeadDto,
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		}
-		DocLead doc = this.repository.get(this.sessionInfo, dto.getId()).get();
+		DocLead doc = this.repository.get(this.sessionInfo, dto.getId());
 		dto.toDoc(doc);
 		this.repository.store(doc);
 		return DocLeadDto.fromDoc(doc, this.sessionInfo);

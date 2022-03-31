@@ -118,7 +118,7 @@ public class NoteTest {
 		// noteRepository).isInitialised(test1a));
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 
 		assertEquals(2, test1b.getNoteList().size());
 		assertEquals(2, noteRepository.getPartList(test1b, noteListType).size());
@@ -141,7 +141,7 @@ public class NoteTest {
 		// noteRepository).isInitialised(test1b));
 		test1b = null;
 
-		ObjTest test1c = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1c = testRepository.get(sessionInfo, test1Id);
 
 		assertEquals(3, test1c.getNoteList().size());
 		assertEquals(3, noteRepository.getPartList(test1c, noteListType).size());

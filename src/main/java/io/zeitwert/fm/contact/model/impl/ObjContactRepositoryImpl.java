@@ -2,7 +2,6 @@
 package io.zeitwert.fm.contact.model.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
@@ -94,7 +93,7 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
-	public Optional<ObjContact> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjContact doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjContactRecord contactRecord = this.dslContext.fetchOne(Tables.OBJ_CONTACT, Tables.OBJ_CONTACT.OBJ_ID.eq(objId));
 		if (contactRecord == null) {

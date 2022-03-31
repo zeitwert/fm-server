@@ -11,7 +11,7 @@ public interface ObjUserRepository extends ObjRepository<ObjUser, ObjUserVRecord
 	/**
 	 * Lookup user with given id (in global session)
 	 */
-	Optional<ObjUser> get(Integer id);
+	ObjUser get(Integer id);
 
 	/**
 	 * Lookup User with email

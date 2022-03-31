@@ -19,8 +19,6 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
-import java.util.Optional;
-
 public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends AggregateRepositoryBase<D, V>
 		implements DocRepository<D, V> {
 
@@ -65,12 +63,12 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		return DocRepositoryUtil.getInstance();
 	}
 
-	protected Optional<D> doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
+	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return Optional.of(newAggregate(sessionInfo, docRecord, extnRecord));
+		return newAggregate(sessionInfo, docRecord, extnRecord);
 	}
 
 	@Override

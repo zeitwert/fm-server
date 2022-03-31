@@ -11,7 +11,7 @@ public interface ObjTenantRepository extends ObjRepository<ObjTenant, ObjTenantV
 	/**
 	 * Lookup tenant with given id (in global session)
 	 */
-	Optional<ObjTenant> get(Integer id);
+	ObjTenant get(Integer id);
 
 	/**
 	 * Lookup Tenant by extl key

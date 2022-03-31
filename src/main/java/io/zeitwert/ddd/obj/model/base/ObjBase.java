@@ -143,8 +143,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@SuppressWarnings("unchecked")
 	public <O extends Obj> O getInstance() {
-		return (O) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId())
-				.get();
+		return (O) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId());
 	}
 
 	protected void doCalcAll() {
