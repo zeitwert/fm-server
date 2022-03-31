@@ -1,6 +1,13 @@
 
-insert into obj (id, tenant_id, obj_type_id, owner_id, caption)
-values (nextval('obj_id_seq'), 2, 'obj_portfolio', 5, 'Gesamtbestand');
+insert into obj(id, tenant_id, obj_type_id, owner_id, caption, created_by_user_id)
+values (
+	nextval('obj_id_seq'),
+	(select id from obj_tenant_v where extl_key = 'demo'),
+	'obj_portfolio',
+	(select id from obj_user_v where email = 'verena@comunas.fm'),
+	'Gesamtbestand',
+	(select id from obj_user_v where email = 'verena@comunas.fm')
+);
 
 insert into obj_portfolio(obj_id, intl_key, name, account_id)
 values ((select max(id) from obj), 'p1', 'Gesamtbestand', (select obj_id from obj_account where intl_key = '3043'));
@@ -8,8 +15,15 @@ values ((select max(id) from obj), 'p1', 'Gesamtbestand', (select obj_id from ob
 insert into obj_part_item(obj_id, part_list_type_id, seq_nr, item_id)
 values ((select obj_id from obj_portfolio where intl_key = 'p1'), 'portfolio.includeList', 1, (select obj_id from obj_account where intl_key = '3043'));
 
-insert into obj (id, tenant_id, obj_type_id, owner_id, caption)
-values (nextval('obj_id_seq'), 2, 'obj_portfolio', 5, 'Finanzvermögen');
+insert into obj(id, tenant_id, obj_type_id, owner_id, caption, created_by_user_id)
+values (
+	nextval('obj_id_seq'),
+	(select id from obj_tenant_v where extl_key = 'demo'),
+	'obj_portfolio',
+	(select id from obj_user_v where email = 'verena@comunas.fm'),
+	'Finanzvermögen',
+	(select id from obj_user_v where email = 'verena@comunas.fm')
+);
 
 insert into obj_portfolio(obj_id, intl_key, name, account_id)
 values ((select max(id) from obj), 'p2', 'Finanzvermögen', (select obj_id from obj_account where intl_key = '3043'));
@@ -23,8 +37,15 @@ values ((select obj_id from obj_portfolio where intl_key = 'p2'), 'portfolio.inc
 insert into obj_part_item(obj_id, part_list_type_id, seq_nr, item_id)
 values ((select obj_id from obj_portfolio where intl_key = 'p2'), 'portfolio.includeList', 3, (select obj_id from obj_building where zip = '3043' and name = 'Doppelkindergarten/Musikschule/Jugendtr.'));
 
-insert into obj (id, tenant_id, obj_type_id, owner_id, caption)
-values (nextval('obj_id_seq'), 2, 'obj_portfolio', 5, 'Verwaltungsvermögen');
+insert into obj(id, tenant_id, obj_type_id, owner_id, caption, created_by_user_id)
+values (
+	nextval('obj_id_seq'),
+	(select id from obj_tenant_v where extl_key = 'demo'),
+	'obj_portfolio',
+	(select id from obj_user_v where email = 'verena@comunas.fm'),
+	'Verwaltungsvermögen',
+	(select id from obj_user_v where email = 'verena@comunas.fm')
+);
 
 insert into obj_portfolio(obj_id, intl_key, name, account_id)
 values ((select max(id) from obj), 'p3', 'Verwaltungsvermögen', (select obj_id from obj_account where intl_key = '3043'));

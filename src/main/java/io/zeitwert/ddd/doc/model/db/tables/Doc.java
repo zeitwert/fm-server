@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row16;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -51,9 +51,9 @@ public class Doc extends TableImpl<DocRecord> {
     }
 
     /**
-     * The column <code>public.doc.tenant_id</code>.
+     * The column <code>public.doc.id</code>.
      */
-    public final TableField<DocRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<DocRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.doc.doc_type_id</code>.
@@ -61,9 +61,9 @@ public class Doc extends TableImpl<DocRecord> {
     public final TableField<DocRecord, String> DOC_TYPE_ID = createField(DSL.name("doc_type_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
-     * The column <code>public.doc.id</code>.
+     * The column <code>public.doc.tenant_id</code>.
      */
-    public final TableField<DocRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<DocRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.doc.owner_id</code>.
@@ -88,7 +88,7 @@ public class Doc extends TableImpl<DocRecord> {
     /**
      * The column <code>public.doc.is_in_work</code>.
      */
-    public final TableField<DocRecord, Boolean> IS_IN_WORK = createField(DSL.name("is_in_work"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
+    public final TableField<DocRecord, Boolean> IS_IN_WORK = createField(DSL.name("is_in_work"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.doc.assignee_id</code>.
@@ -101,24 +101,14 @@ public class Doc extends TableImpl<DocRecord> {
     public final TableField<DocRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.doc.ref_obj_id</code>.
-     */
-    public final TableField<DocRecord, Integer> REF_OBJ_ID = createField(DSL.name("ref_obj_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.doc.ref_doc_id</code>.
-     */
-    public final TableField<DocRecord, Integer> REF_DOC_ID = createField(DSL.name("ref_doc_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.doc.created_by_user_id</code>.
      */
-    public final TableField<DocRecord, Integer> CREATED_BY_USER_ID = createField(DSL.name("created_by_user_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<DocRecord, Integer> CREATED_BY_USER_ID = createField(DSL.name("created_by_user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.doc.created_at</code>.
      */
-    public final TableField<DocRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+    public final TableField<DocRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.doc.modified_by_user_id</code>.
@@ -185,12 +175,11 @@ public class Doc extends TableImpl<DocRecord> {
 
     @Override
     public List<ForeignKey<DocRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DocRecord, ?>>asList(Keys.DOC__DOC_CASE_DEF_ID_FKEY, Keys.DOC__DOC_CASE_STAGE_ID_FKEY, Keys.DOC__DOC_REF_DOC_ID_FKEY);
+        return Arrays.<ForeignKey<DocRecord, ?>>asList(Keys.DOC__DOC_CASE_DEF_ID_FKEY, Keys.DOC__DOC_CASE_STAGE_ID_FKEY);
     }
 
     private transient CodeCaseDef _codeCaseDef;
     private transient CodeCaseStage _codeCaseStage;
-    private transient Doc _doc;
 
     public CodeCaseDef codeCaseDef() {
         if (_codeCaseDef == null)
@@ -204,13 +193,6 @@ public class Doc extends TableImpl<DocRecord> {
             _codeCaseStage = new CodeCaseStage(this, Keys.DOC__DOC_CASE_STAGE_ID_FKEY);
 
         return _codeCaseStage;
-    }
-
-    public Doc doc() {
-        if (_doc == null)
-            _doc = new Doc(this, Keys.DOC__DOC_REF_DOC_ID_FKEY);
-
-        return _doc;
     }
 
     @Override
@@ -240,11 +222,11 @@ public class Doc extends TableImpl<DocRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row16 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Integer, String, Integer, Integer, String, String, String, Boolean, Integer, Integer, Integer, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
-        return (Row16) super.fieldsRow();
+    public Row14<Integer, String, Integer, Integer, String, String, String, Boolean, Integer, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

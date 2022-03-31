@@ -77,12 +77,12 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
     /**
      * The column <code>public.obj_part_transition.user_id</code>.
      */
-    public final TableField<ObjPartTransitionRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjPartTransitionRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_part_transition.modified_at</code>.
      */
-    public final TableField<ObjPartTransitionRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+    public final TableField<ObjPartTransitionRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.obj_part_transition.changes</code>.

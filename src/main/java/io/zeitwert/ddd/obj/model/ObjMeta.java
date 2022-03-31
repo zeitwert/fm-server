@@ -17,6 +17,10 @@ public interface ObjMeta extends AggregateMeta {
 
 	ObjUser getModifiedByUser();
 
+	OffsetDateTime getClosedAt();
+
+	ObjUser getClosedByUser();
+
 	List<ObjPartTransition> getTransitionList();
 
 }

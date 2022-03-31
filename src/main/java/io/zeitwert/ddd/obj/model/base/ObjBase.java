@@ -44,6 +44,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final SimpleProperty<OffsetDateTime> createdAt;
 	protected final ReferenceProperty<ObjUser> modifiedByUser;
 	protected final SimpleProperty<OffsetDateTime> modifiedAt;
+	protected final ReferenceProperty<ObjUser> closedByUser;
+	protected final SimpleProperty<OffsetDateTime> closedAt;
 
 	private final SimpleProperty<String> objTypeId;
 
@@ -64,6 +66,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.modifiedByUser = this.addReferenceProperty(objDbRecord, ObjFields.MODIFIED_BY_USER_ID, ObjUser.class);
 		this.modifiedAt = this.addSimpleProperty(objDbRecord, ObjFields.MODIFIED_AT);
 		this.objTypeId = this.addSimpleProperty(objDbRecord, ObjFields.OBJ_TYPE_ID);
+		this.closedByUser = this.addReferenceProperty(objDbRecord, ObjFields.CLOSED_BY_USER_ID, ObjUser.class);
+		this.closedAt = this.addSimpleProperty(objDbRecord, ObjFields.CLOSED_AT);
 		this.transitionList = this.addPartListProperty(repository.getTransitionListType());
 	}
 

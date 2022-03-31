@@ -77,12 +77,12 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
     /**
      * The column <code>public.doc_part_transition.user_id</code>.
      */
-    public final TableField<DocPartTransitionRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<DocPartTransitionRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.doc_part_transition.modified_at</code>.
      */
-    public final TableField<DocPartTransitionRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+    public final TableField<DocPartTransitionRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.doc_part_transition.old_case_stage_id</code>.
