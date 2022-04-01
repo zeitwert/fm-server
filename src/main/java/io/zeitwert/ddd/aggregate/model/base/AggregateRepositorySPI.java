@@ -69,13 +69,6 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	void doInitParts(A aggregate);
 
 	/**
-	 * Prepare database before storing, f.ex. delete old data
-	 * 
-	 * @param aggregate aggregate
-	 */
-	void beforeStore(A aggregate);
-
-	/**
 	 * Store Parts
 	 * 
 	 * @param aggregate aggregate

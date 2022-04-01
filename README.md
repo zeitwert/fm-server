@@ -1,5 +1,9 @@
 # zeitwert Application Server
 
+## Testing
+
+`mvnw surefire:test`
+
 ## Modularisation
 
 1. by Functional Module

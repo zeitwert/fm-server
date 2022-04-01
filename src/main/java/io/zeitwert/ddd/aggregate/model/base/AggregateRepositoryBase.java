@@ -53,7 +53,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private boolean didDoLoadParts = false;
 	private boolean didDoInit = false;
 	private boolean didDoInitParts = false;
-	private boolean didBeforeStore = false;
 	private boolean didDoStoreParts = false;
 	private boolean didAfterStore = false;
 
@@ -230,10 +229,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void store(A aggregate) {
 
-		this.didBeforeStore = false;
-		this.beforeStore(aggregate);
-		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": beforeStore was called");
-
+		((AggregateSPI) aggregate).beforeStore();
 		((AggregateSPI) aggregate).doStore(aggregate.getMeta().getSessionInfo().getUser().getId());
 
 		this.didDoStoreParts = false;
@@ -244,12 +240,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.afterStore(aggregate);
 		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": afterStore was called");
 
-	}
-
-	@Override
-	public void beforeStore(A aggregate) {
-		((AggregateSPI) aggregate).beforeStore();
-		this.didBeforeStore = true;
 	}
 
 	@Override
