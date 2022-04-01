@@ -59,10 +59,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		return this.areaSetType;
 	}
 
-	protected DocRepositoryUtil getUtil() {
-		return DocRepositoryUtil.getInstance();
-	}
-
 	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {

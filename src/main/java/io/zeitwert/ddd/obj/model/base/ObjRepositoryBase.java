@@ -67,10 +67,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return this.areaSetType;
 	}
 
-	protected ObjRepositoryUtil getUtil() {
-		return ObjRepositoryUtil.getInstance();
-	}
-
 	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
 		ObjRecord objRecord = this.dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
