@@ -13,6 +13,11 @@ export const Config = {
 			.replace("{type}", "enum")
 			.replace("{api}", module + "/" + enumName);
 	},
+	getExportUrl(module: string, url: string) {
+		return Env.getParam("API_BASE_URL")
+			.replace("{type}", "export")
+			.replace("{api}", module + "/" + url);
+	},
 	getTenantConfigUrl(tenant: string, url: string) {
 		return Env.getParam("API_BASE_URL")
 			.replace("{type}", "config")

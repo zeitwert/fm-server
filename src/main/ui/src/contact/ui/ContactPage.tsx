@@ -5,8 +5,7 @@ import Spinner from "@salesforce/design-system-react/components/spinner";
 import Tabs from "@salesforce/design-system-react/components/tabs";
 import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
 import {
-	Account, CaseStage,
-	Contact,
+	Account, Contact,
 	ContactStore,
 	ContactStoreModel,
 	DATE_FORMAT,
@@ -40,9 +39,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	@observable updateCount = 0;
 	@observable doEditContact = false;
-	@observable doStageSelection = false;
-	@observable abstractStage?: CaseStage;
-	@observable isSyncEventModalOpen = false;
 	@observable isChannelsModalOpen = false;
 	@observable isAddressesModalOpen = false;
 
