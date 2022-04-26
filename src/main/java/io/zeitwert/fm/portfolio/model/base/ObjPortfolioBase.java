@@ -4,7 +4,6 @@ package io.zeitwert.fm.portfolio.model.base;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -105,20 +104,18 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	private Set<Obj> getBuildings(Integer id) {
 		SessionInfo sessionInfo = this.getMeta().getSessionInfo();
 		ObjVRepository objRepo = this.getRepository().getObjVRepository();
-		Optional<Obj> maybeObj = objRepo.get(sessionInfo, id);
-		require(maybeObj.isPresent(), "valid obj [" + id + "]");
-		Obj obj = maybeObj.get();
+		Obj obj = objRepo.get(sessionInfo, id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		if (objType == CodeAggregateTypeEnum.getAggregateType("obj_building")) {
 			return Set.of(obj);
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_portfolio")) {
-			ObjPortfolio pf = this.getRepository().get(sessionInfo, id).get();
-			return pf.getBuildingSet().stream().map(buildingId -> objRepo.get(sessionInfo, buildingId).get())
+			ObjPortfolio pf = this.getRepository().get(sessionInfo, id);
+			return pf.getBuildingSet().stream().map(buildingId -> objRepo.get(sessionInfo, buildingId))
 					.collect(Collectors.toSet());
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_account")) {
 			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepository()
 					.getByForeignKey(sessionInfo, "account_id", id);
-			return buildings.stream().map(bldg -> objRepo.get(sessionInfo, bldg.getId()).get())
+			return buildings.stream().map(bldg -> objRepo.get(sessionInfo, bldg.getId()))
 					.collect(Collectors.toSet());
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());

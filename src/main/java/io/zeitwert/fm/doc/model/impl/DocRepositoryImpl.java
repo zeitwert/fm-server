@@ -2,9 +2,9 @@
 package io.zeitwert.fm.doc.model.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -60,12 +60,12 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	}
 
 	@Override
-	public Optional<Doc> doLoad(SessionInfo sessionInfo, Integer docId) {
+	public Doc doLoad(SessionInfo sessionInfo, Integer docId) {
 		DocRecord docRecord = this.dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null) {
-			return Optional.empty();
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return Optional.of(this.newAggregate(sessionInfo, docRecord, null));
+		return this.newAggregate(sessionInfo, docRecord, null);
 	}
 
 	@Override

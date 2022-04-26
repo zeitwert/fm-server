@@ -2,13 +2,11 @@
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.crnk.core.exception.BadRequestException;
-import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -48,11 +46,8 @@ public class ObjPortfolioApiRepositoryImpl extends ResourceRepositoryBase<ObjPor
 
 	@Override
 	public ObjPortfolioDto findOne(Integer objId, QuerySpec querySpec) {
-		Optional<ObjPortfolio> maybePortfolio = this.repository.get(this.sessionInfo, objId);
-		if (!maybePortfolio.isPresent()) {
-			throw new ResourceNotFoundException("Resource not found!");
-		}
-		return ObjPortfolioDto.fromObj(maybePortfolio.get(), this.sessionInfo);
+		ObjPortfolio portfolio = this.repository.get(this.sessionInfo, objId);
+		return ObjPortfolioDto.fromObj(portfolio, this.sessionInfo);
 	}
 
 	@Override
@@ -69,7 +64,7 @@ public class ObjPortfolioApiRepositoryImpl extends ResourceRepositoryBase<ObjPor
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		}
-		ObjPortfolio obj = this.repository.get(this.sessionInfo, dto.getId()).get();
+		ObjPortfolio obj = this.repository.get(this.sessionInfo, dto.getId());
 		dto.toObj(obj);
 		this.repository.store(obj);
 		return ObjPortfolioDto.fromObj(obj, this.sessionInfo);

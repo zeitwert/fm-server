@@ -37,7 +37,6 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<ObjRecord, ObjRecord> OBJ__OBJ_REF_OBJ_ID_FKEY = Internal.createForeignKey(Obj.OBJ, DSL.name("obj_ref_obj_id_fkey"), new TableField[] { Obj.OBJ.REF_OBJ_ID }, Keys.OBJ_PKEY, new TableField[] { Obj.OBJ.ID }, true);
     public static final ForeignKey<ObjPartItemRecord, ObjRecord> OBJ_PART_ITEM__OBJ_PART_ITEM_OBJ_ID_FKEY = Internal.createForeignKey(ObjPartItem.OBJ_PART_ITEM, DSL.name("obj_part_item_obj_id_fkey"), new TableField[] { ObjPartItem.OBJ_PART_ITEM.OBJ_ID }, Keys.OBJ_PKEY, new TableField[] { Obj.OBJ.ID }, true);
     public static final ForeignKey<ObjPartTransitionRecord, ObjRecord> OBJ_PART_TRANSITION__OBJ_PART_TRANSITION_OBJ_ID_FKEY = Internal.createForeignKey(ObjPartTransition.OBJ_PART_TRANSITION, DSL.name("obj_part_transition_obj_id_fkey"), new TableField[] { ObjPartTransition.OBJ_PART_TRANSITION.OBJ_ID }, Keys.OBJ_PKEY, new TableField[] { Obj.OBJ.ID }, true);
 }

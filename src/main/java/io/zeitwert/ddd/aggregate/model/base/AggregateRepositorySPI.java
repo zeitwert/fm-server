@@ -7,7 +7,6 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.Record;
 
@@ -24,7 +23,7 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * @param id aggregate id
 	 * @return instantiated Aggregate
 	 */
-	Optional<A> doLoad(SessionInfo sessionInfo, Integer id);
+	A doLoad(SessionInfo sessionInfo, Integer id);
 
 	/**
 	 * Load Parts from database and attach to Aggregate
@@ -68,13 +67,6 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * @param aggregate aggregate
 	 */
 	void doInitParts(A aggregate);
-
-	/**
-	 * Prepare database before storing, f.ex. delete old data
-	 * 
-	 * @param aggregate aggregate
-	 */
-	void beforeStore(A aggregate);
 
 	/**
 	 * Store Parts

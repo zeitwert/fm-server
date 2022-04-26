@@ -154,8 +154,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@SuppressWarnings("unchecked")
 	public <D extends Doc> D getInstance() {
-		return (D) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId())
-				.get();
+		return (D) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId());
 	}
 
 	private Class<? extends Doc> getInstanceClass() {

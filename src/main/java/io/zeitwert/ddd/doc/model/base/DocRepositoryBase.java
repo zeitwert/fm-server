@@ -19,8 +19,6 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
-import java.util.Optional;
-
 public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends AggregateRepositoryBase<D, V>
 		implements DocRepository<D, V> {
 
@@ -28,6 +26,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	private final DocPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
+	private final CodePartListType areaSetType;
 
 	//@formatter:off
 	protected DocRepositoryBase(
@@ -42,6 +41,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
+		this.areaSetType = this.getAppContext().getPartListType(DocFields.AREA_SET);
 	}
 	//@formatter:on
 
@@ -54,16 +54,17 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		return this.transitionListType;
 	}
 
-	protected DocRepositoryUtil getUtil() {
-		return DocRepositoryUtil.getInstance();
+	@Override
+	public CodePartListType getAreaSetType() {
+		return this.areaSetType;
 	}
 
-	protected Optional<D> doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
+	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return Optional.of(newAggregate(sessionInfo, docRecord, extnRecord));
+		return newAggregate(sessionInfo, docRecord, extnRecord);
 	}
 
 	@Override

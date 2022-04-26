@@ -16,15 +16,14 @@ import io.zeitwert.fm.lead.model.enums.CodeLeadRating;
 import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSource;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
+
 import io.zeitwert.ddd.common.model.enums.CodeCountry;
 import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.SessionInfo;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.jooq.UpdatableRecord;
 
@@ -50,8 +49,7 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 	protected final SimpleProperty<String> city;
 	protected final SimpleProperty<String> state;
 	protected final EnumProperty<CodeCountry> country;
-
-	private final Set<CodeArea> areaSet = new HashSet<>();
+	protected final EnumSetProperty<CodeArea> areaSet;
 
 	protected DocLeadBase(SessionInfo sessionInfo, DocLeadRepository repository, UpdatableRecord<?> docRecord,
 			UpdatableRecord<?> leadRecord) {
@@ -75,6 +73,7 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 		this.city = this.addSimpleProperty(leadRecord, DocLeadFields.CITY);
 		this.state = this.addSimpleProperty(leadRecord, DocLeadFields.STATE);
 		this.country = this.addEnumProperty(leadRecord, DocLeadFields.COUNTRY_ID, CodeCountryEnum.class);
+		this.areaSet = this.addEnumSetProperty(this.getRepository().getAreaSetType(), CodeAreaEnum.class);
 	}
 
 	@Override
@@ -95,34 +94,6 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 	}
 
 	@Override
-	public Set<CodeArea> getAreas() {
-		return Set.copyOf(this.areaSet); // return immutable copy of the area set
-	}
-
-	@Override
-	public void clearAreas() {
-		this.areaSet.clear();
-	}
-
-	@Override
-	public void addArea(CodeArea area) {
-		require(this.isValidEnum(area, CodeAreaEnum.class), "valid area");
-		this.areaSet.add(area);
-	}
-
-	@Override
-	public void removeArea(CodeArea area) {
-		require(this.isValidEnum(area, CodeAreaEnum.class), "valid area");
-		this.areaSet.remove(area);
-	}
-
-	public void loadAreaSet(Set<CodeArea> areas) {
-		areas.forEach(area -> require(this.isValidEnum(area, CodeAreaEnum.class), "valid area"));
-		this.areaSet.clear();
-		this.areaSet.addAll(areas);
-	}
-
-	@Override
 	protected void doCalcAll() {
 		this.calcCaption();
 	}
@@ -139,6 +110,12 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 		}
 		this.caption
 				.setValue(this.getCaption() + (this.getCaseStage() != null ? ", " + this.getCaseStage().getName() : ""));
+	}
+
+	@Override
+	public void beforeStore() {
+		super.beforeStore();
+		this.areaSet.beforeStore();
 	}
 
 }

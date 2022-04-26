@@ -2,7 +2,6 @@
 package io.zeitwert.fm.test.model.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
@@ -88,7 +87,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public Optional<ObjTest> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjTestRecord testRecord = this.dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
 		if (testRecord == null) {

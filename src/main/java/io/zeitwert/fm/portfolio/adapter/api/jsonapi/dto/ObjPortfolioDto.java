@@ -23,7 +23,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -86,9 +85,8 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 			pf.clearIncludeSet();
 			this.includes.forEach(item -> {
 				Integer id = Integer.parseInt(item.getId());
-				Optional<Obj> maybeObj = objRepository.get(sessionInfo, id);
-				Assert.isTrue(maybeObj.isPresent(), "valid obj [" + id + "]");
-				CodeAggregateType objType = maybeObj.get().getMeta().getAggregateType();
+				Obj obj = objRepository.get(sessionInfo, id);
+				CodeAggregateType objType = obj.getMeta().getAggregateType();
 				Assert.isTrue(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 				pf.addInclude(id);
 			});
@@ -97,9 +95,8 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 			pf.clearExcludeSet();
 			this.excludes.forEach(item -> {
 				Integer id = Integer.parseInt(item.getId());
-				Optional<Obj> maybeObj = objRepository.get(sessionInfo, id);
-				Assert.isTrue(maybeObj.isPresent(), "valid obj [" + id + "]");
-				CodeAggregateType objType = maybeObj.get().getMeta().getAggregateType();
+				Obj obj = objRepository.get(sessionInfo, id);
+				CodeAggregateType objType = obj.getMeta().getAggregateType();
 				Assert.isTrue(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 				pf.addExclude(id);
 			});
@@ -126,7 +123,7 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 	}
 
 	private static EnumeratedDto getObj(SessionInfo sessionInfo, Integer id) {
-		Obj obj = objRepository.get(sessionInfo, id).get();
+		Obj obj = objRepository.get(sessionInfo, id);
 		// @formatter:off
 		return EnumeratedDto.builder()
 			.id(obj.getId().toString())

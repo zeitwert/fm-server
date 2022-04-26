@@ -63,7 +63,7 @@ public abstract class ObjDtoBase<O extends Obj> {
 	}
 
 	public void toObj(O obj) {
-		obj.setOwner(this.getOwner() != null ? userRepository.get(this.getOwner().getId()).get() : null);
+		obj.setOwner(this.getOwner() != null ? userRepository.get(this.getOwner().getId()) : null);
 	}
 
 	public static void fromObj(ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, Obj obj, SessionInfo sessionInfo) {
@@ -84,7 +84,7 @@ public abstract class ObjDtoBase<O extends Obj> {
 			.meta(ObjMetaDto.fromRecord(obj, sessionInfo))
 			.id(obj.get(ObjFields.ID))
 			.caption(obj.get(ObjFields.CAPTION))
-			.owner(ObjUserDto.fromObj(userRepository.get(obj.get(ObjFields.OWNER_ID)).get()));
+			.owner(ObjUserDto.fromObj(userRepository.get(obj.get(ObjFields.OWNER_ID))));
 		// @formatter:on
 	}
 

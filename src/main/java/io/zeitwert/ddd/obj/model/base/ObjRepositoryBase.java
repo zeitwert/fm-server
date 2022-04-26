@@ -18,8 +18,6 @@ import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
-import java.util.Optional;
-
 public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends AggregateRepositoryBase<O, V>
 		implements ObjRepository<O, V> {
 
@@ -69,16 +67,12 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return this.areaSetType;
 	}
 
-	protected ObjRepositoryUtil getUtil() {
-		return ObjRepositoryUtil.getInstance();
-	}
-
-	protected Optional<O> doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
+	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
 		ObjRecord objRecord = this.dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return Optional.of(newAggregate(sessionInfo, objRecord, extnRecord));
+		return newAggregate(sessionInfo, objRecord, extnRecord);
 	}
 
 	@Override

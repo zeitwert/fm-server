@@ -13,13 +13,15 @@ as
 $func$
 declare
 	new_id int;
+	k_user_id int;
 begin
+	select id into k_user_id from obj_user_v where email = 'k@zeitwert.io';
 	insert into obj_tenant(obj_id, extl_key, name)
 	values (nextval('obj_id_seq'), new.key, new.name)
 	returning obj_id
 	into new_id;
-	insert into obj(id, tenant_id, obj_type_id, caption)
-	values (new_id, new_id, 'obj_tenant', new.name);
+	insert into obj(id, tenant_id, obj_type_id, caption, created_by_user_id)
+	values (new_id, new_id, 'obj_tenant', new.name, k_user_id);
 	return new;
 end
 $func$

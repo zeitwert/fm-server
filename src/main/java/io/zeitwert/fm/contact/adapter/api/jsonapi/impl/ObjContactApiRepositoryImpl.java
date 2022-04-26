@@ -2,13 +2,11 @@
 package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.crnk.core.exception.BadRequestException;
-import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -48,12 +46,8 @@ public class ObjContactApiRepositoryImpl extends ResourceRepositoryBase<ObjConta
 
 	@Override
 	public ObjContactDto findOne(Integer objId, QuerySpec querySpec) {
-		Optional<ObjContact> maybeContact = this.repository.get(this.sessionInfo, objId);
-		if (!maybeContact.isPresent()) {
-			throw new ResourceNotFoundException("Resource not found!");
-		}
-		ObjContactDto c = ObjContactDto.fromObj(maybeContact.get(), this.sessionInfo);
-		return c;
+		ObjContact contact = this.repository.get(this.sessionInfo, objId);
+		return ObjContactDto.fromObj(contact, this.sessionInfo);
 	}
 
 	@Override
@@ -70,7 +64,7 @@ public class ObjContactApiRepositoryImpl extends ResourceRepositoryBase<ObjConta
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		}
-		ObjContact obj = this.repository.get(this.sessionInfo, dto.getId()).get();
+		ObjContact obj = this.repository.get(this.sessionInfo, dto.getId());
 		dto.toObj(obj);
 		this.repository.store(obj);
 		return ObjContactDto.fromObj(obj, this.sessionInfo);

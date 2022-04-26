@@ -42,7 +42,7 @@ public class EnumController {
 	public ResponseEntity<ObjTenant> getTenant(@PathVariable String idOrExtlKey) {
 		Optional<ObjTenant> tenant = tenantRepository.getByExtlKey(idOrExtlKey);
 		if (tenant.isEmpty()) {
-			tenant = tenantRepository.get(Integer.valueOf(idOrExtlKey));
+			tenant = Optional.of(tenantRepository.get(Integer.valueOf(idOrExtlKey)));
 		}
 		if (tenant.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -54,7 +54,7 @@ public class EnumController {
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
 		Optional<ObjUser> user = userRepository.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
-			user = userRepository.get(Integer.valueOf(idOrEmail));
+			user = Optional.of(userRepository.get(Integer.valueOf(idOrEmail)));
 		}
 		if (user.isEmpty()) {
 			return ResponseEntity.notFound().build();

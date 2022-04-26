@@ -2,7 +2,6 @@
 package io.zeitwert.ddd.aggregate.model;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.Record;
 
@@ -11,7 +10,7 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 /**
- * A DDD Aggregate (Readonly) Repository
+ * A DDD Aggregate Repository
  */
 public interface AggregateRepository<A extends Aggregate, V extends Record> {
 
@@ -22,8 +21,10 @@ public interface AggregateRepository<A extends Aggregate, V extends Record> {
 
 	/**
 	 * Lookup an Aggregate with given id
+	 * return aggregate
+	 * throws NoDataFound exception when aggregate not found
 	 */
-	Optional<A> get(SessionInfo sessionInfo, Integer id);
+	A get(SessionInfo sessionInfo, Integer id);
 
 	/**
 	 * Find list of Aggregates matching search criteria

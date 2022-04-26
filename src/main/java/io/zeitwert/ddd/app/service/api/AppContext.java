@@ -29,9 +29,6 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
-
-import java.util.Optional;
 
 @Service("appContext")
 @DependsOn({ "crnkBoot", "codeAggregateTypeEnum", "codePartListTypeEnum" })
@@ -80,13 +77,6 @@ public final class AppContext {
 
 	public <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> intfClass) {
 		return this.repos.getRepository(intfClass);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <Aggr extends Aggregate> Optional<Aggr> getAggregate(SessionInfo sessionInfo, Class<Aggr> intfClass,
-			Integer id) {
-		AggregateRepository<?, ?> repo = this.repos.getRepository(intfClass);
-		return (Optional<Aggr>) (id == null ? Optional.empty() : repo.get(sessionInfo, id));
 	}
 
 	public <A extends Aggregate> void addPartRepository(String partTypeId, final Class<? extends Part<A>> intfClass,

@@ -2,9 +2,9 @@
 package io.zeitwert.fm.obj.model.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,12 +47,12 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 	//@formatter:on
 
 	@Override
-	public Optional<Obj> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public Obj doLoad(SessionInfo sessionInfo, Integer objId) {
 		ObjRecord objRecord = this.dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
-			return Optional.empty();
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return Optional.of(this.newAggregate(sessionInfo, objRecord, null));
+		return this.newAggregate(sessionInfo, objRecord, null);
 	}
 
 	@Override

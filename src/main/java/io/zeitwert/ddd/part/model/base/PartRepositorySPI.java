@@ -52,11 +52,4 @@ public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
 	 */
 	void doInit(P part, Integer partId, A aggregate, Part<?> parent, CodePartListType partListType);
 
-	/**
-	 * Optional hook before store of aggregates parts, f.ex. to assign seqNr
-	 * 
-	 * @param aggregate parent aggregate
-	 */
-	void beforeStore(A aggregate);
-
 }

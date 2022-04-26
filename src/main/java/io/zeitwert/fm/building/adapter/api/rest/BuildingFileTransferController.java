@@ -3,7 +3,6 @@ package io.zeitwert.fm.building.adapter.api.rest;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,11 +49,7 @@ public class BuildingFileTransferController {
 	@GetMapping("/{id}")
 	protected ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		Optional<ObjBuilding> maybeBuilding = this.repo.get(sessionInfo, id);
-		if (maybeBuilding.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		ObjBuilding building = maybeBuilding.get();
+		ObjBuilding building = this.repo.get(sessionInfo, id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
 		ResponseEntity<BuildingTransferDto> response = ResponseEntity.ok()

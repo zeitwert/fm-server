@@ -183,14 +183,9 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@SuppressWarnings("unchecked")
 	public void store(A aggregate) {
 		require(this.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
-		this.beforeStore(aggregate);
 		for (P part : this.getParts(aggregate)) {
 			((PartSPI<A>) part).store();
 		}
-	}
-
-	@Override
-	public void beforeStore(A aggregate) {
 	}
 
 	@EventListener

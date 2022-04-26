@@ -22,9 +22,9 @@ create table obj_account (
 	name																	varchar(100),
 	description														text,
 	--
-	account_type_id											varchar(40)					not null references code_account_type(id),
+	account_type_id												varchar(40)					not null references code_account_type(id),
 	client_segment_id											varchar(40)					references code_client_segment(id),
-	main_contact_id												integer,									-- references obj_contact(obj_id) deferrable initially deferred,
+	main_contact_id												integer,						-- references obj_contact(obj_id) deferrable initially deferred,
 	reference_currency_id									varchar(40)					references code_currency(id),
 	--
 	primary key (obj_id)

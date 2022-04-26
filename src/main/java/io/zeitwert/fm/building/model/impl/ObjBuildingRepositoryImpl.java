@@ -2,7 +2,6 @@
 package io.zeitwert.fm.building.model.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
@@ -115,7 +114,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public Optional<ObjBuilding> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjBuildingRecord buildingRecord = this.dslContext.fetchOne(Tables.OBJ_BUILDING,
 				Tables.OBJ_BUILDING.OBJ_ID.eq(objId));

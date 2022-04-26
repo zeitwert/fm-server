@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -49,9 +49,9 @@ public class Obj extends TableImpl<ObjRecord> {
     }
 
     /**
-     * The column <code>public.obj.tenant_id</code>.
+     * The column <code>public.obj.id</code>.
      */
-    public final TableField<ObjRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ObjRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj.obj_type_id</code>.
@@ -59,9 +59,9 @@ public class Obj extends TableImpl<ObjRecord> {
     public final TableField<ObjRecord, String> OBJ_TYPE_ID = createField(DSL.name("obj_type_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
-     * The column <code>public.obj.id</code>.
+     * The column <code>public.obj.tenant_id</code>.
      */
-    public final TableField<ObjRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ObjRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj.owner_id</code>.
@@ -74,14 +74,9 @@ public class Obj extends TableImpl<ObjRecord> {
     public final TableField<ObjRecord, String> CAPTION = createField(DSL.name("caption"), SQLDataType.VARCHAR(200), this, "");
 
     /**
-     * The column <code>public.obj.ref_obj_id</code>.
-     */
-    public final TableField<ObjRecord, Integer> REF_OBJ_ID = createField(DSL.name("ref_obj_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj.created_by_user_id</code>.
      */
-    public final TableField<ObjRecord, Integer> CREATED_BY_USER_ID = createField(DSL.name("created_by_user_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjRecord, Integer> CREATED_BY_USER_ID = createField(DSL.name("created_by_user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj.created_at</code>.
@@ -97,6 +92,16 @@ public class Obj extends TableImpl<ObjRecord> {
      * The column <code>public.obj.modified_at</code>.
      */
     public final TableField<ObjRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
+     * The column <code>public.obj.closed_by_user_id</code>.
+     */
+    public final TableField<ObjRecord, Integer> CLOSED_BY_USER_ID = createField(DSL.name("closed_by_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj.closed_at</code>.
+     */
+    public final TableField<ObjRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     private Obj(Name alias, Table<ObjRecord> aliased) {
         this(alias, aliased, null);
@@ -147,20 +152,6 @@ public class Obj extends TableImpl<ObjRecord> {
     }
 
     @Override
-    public List<ForeignKey<ObjRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjRecord, ?>>asList(Keys.OBJ__OBJ_REF_OBJ_ID_FKEY);
-    }
-
-    private transient Obj _obj;
-
-    public Obj obj() {
-        if (_obj == null)
-            _obj = new Obj(this, Keys.OBJ__OBJ_REF_OBJ_ID_FKEY);
-
-        return _obj;
-    }
-
-    @Override
     public Obj as(String alias) {
         return new Obj(DSL.name(alias), this);
     }
@@ -187,11 +178,11 @@ public class Obj extends TableImpl<ObjRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, String, Integer, Integer, String, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

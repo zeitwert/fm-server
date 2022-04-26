@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,15 +56,15 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	//@formatter:on
 
 	@Override
-	public Optional<ObjTenant> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjTenant doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjRecord objRecord = this.dslContext.fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
 				io.zeitwert.ddd.obj.model.db.Tables.OBJ.ID.eq(objId));
 		ObjTenantRecord tenantRecord = this.dslContext.fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
 		if (objRecord == null || tenantRecord == null) {
-			return Optional.empty();
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return Optional.of(newAggregate(sessionInfo, objRecord, tenantRecord));
+		return newAggregate(sessionInfo, objRecord, tenantRecord);
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	}
 
 	@Override
-	public Optional<ObjTenant> get(Integer id) {
+	public ObjTenant get(Integer id) {
 		return this.get(this.globalSessionInfo, id);
 	}
 
@@ -82,7 +83,7 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		if (tenantRecord == null) {
 			return Optional.empty();
 		}
-		return this.get(this.globalSessionInfo, tenantRecord.getId());
+		return Optional.of(this.get(this.globalSessionInfo, tenantRecord.getId()));
 	}
 
 	@Override

@@ -2,7 +2,6 @@
 package io.zeitwert.fm.portfolio.model.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
@@ -126,7 +125,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
-	public Optional<ObjPortfolio> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjPortfolio doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjPortfolioRecord portfolioRecord = this.dslContext.fetchOne(Tables.OBJ_PORTFOLIO,
 				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));

@@ -46,14 +46,14 @@ public class ProjectionController {
 	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer portfolioId)
 			throws InterruptedException, ExecutionException {
 		return ResponseEntity
-				.ok(this.projectionService.getProjection(this.portfolioRepo.get(sessionInfo, portfolioId).get()));
+				.ok(this.projectionService.getProjection(this.portfolioRepo.get(sessionInfo, portfolioId)));
 	}
 
 	@GetMapping("/buildings/{buildingId}")
 	ResponseEntity<ProjectionResult> getBuildingProjection(@PathVariable Integer buildingId)
 			throws InterruptedException, ExecutionException {
 		return ResponseEntity
-				.ok(this.projectionService.getProjection(this.buildingRepo.get(sessionInfo, buildingId).get()));
+				.ok(this.projectionService.getProjection(this.buildingRepo.get(sessionInfo, buildingId)));
 	}
 
 	@GetMapping("/elements/{elementId}")

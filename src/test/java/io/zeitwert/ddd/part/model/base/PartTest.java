@@ -116,7 +116,7 @@ public class PartTest {
 		assertFalse(((PartRepositoryBase<ObjTest, ?>) testNodeRepository).isInitialised(test1a));
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 
 		assertEquals(2, test1b.getNodeList().size());
 		assertEquals(2, testNodeRepository.getPartList(test1b, nodeListType).size());
@@ -137,7 +137,7 @@ public class PartTest {
 		assertFalse(((PartRepositoryBase<ObjTest, ?>) testNodeRepository).isInitialised(test1b));
 		test1b = null;
 
-		ObjTest test1c = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1c = testRepository.get(sessionInfo, test1Id);
 
 		assertEquals(3, test1c.getNodeList().size());
 		assertEquals(3, testNodeRepository.getPartList(test1c, nodeListType).size());

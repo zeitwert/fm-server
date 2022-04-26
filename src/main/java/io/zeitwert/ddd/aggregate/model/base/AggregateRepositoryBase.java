@@ -4,7 +4,6 @@ package io.zeitwert.ddd.aggregate.model.base;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -53,7 +52,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private boolean didDoLoadParts = false;
 	private boolean didDoInit = false;
 	private boolean didDoInitParts = false;
-	private boolean didBeforeStore = false;
 	private boolean didDoStoreParts = false;
 	private boolean didAfterStore = false;
 
@@ -105,25 +103,22 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public final Optional<A> get(SessionInfo sessionInfo, Integer id) {
+	public final A get(SessionInfo sessionInfo, Integer id) {
 		require(id != null, "id not null");
 		if (this.aggregateCache.hasItem(sessionInfo, id)) {
-			return Optional.of(this.aggregateCache.getItem(sessionInfo, id));
+			return this.aggregateCache.getItem(sessionInfo, id);
 		}
-		Optional<A> maybeAggregate = this.doLoad(sessionInfo, id);
-		if (maybeAggregate.isPresent()) {
-			A aggregate = maybeAggregate.get();
-			this.didDoLoadParts = false;
-			this.doLoadParts(aggregate);
-			Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
-			this.aggregateCache.addItem(sessionInfo, aggregate);
-			((AggregateSPI) aggregate).calcVolatile();
-		}
-		return maybeAggregate;
+		A aggregate = this.doLoad(sessionInfo, id);
+		this.didDoLoadParts = false;
+		this.doLoadParts(aggregate);
+		Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
+		this.aggregateCache.addItem(sessionInfo, aggregate);
+		((AggregateSPI) aggregate).calcVolatile();
+		return aggregate;
 	}
 
 	@Override
-	public abstract Optional<A> doLoad(SessionInfo sessionInfo, Integer id);
+	public abstract A doLoad(SessionInfo sessionInfo, Integer id);
 
 	@Override
 	public void doLoadParts(A aggregate) {
@@ -232,10 +227,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void store(A aggregate) {
 
-		this.didBeforeStore = false;
-		this.beforeStore(aggregate);
-		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": beforeStore was called");
-
+		((AggregateSPI) aggregate).beforeStore();
 		((AggregateSPI) aggregate).doStore(aggregate.getMeta().getSessionInfo().getUser().getId());
 
 		this.didDoStoreParts = false;
@@ -246,12 +238,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.afterStore(aggregate);
 		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": afterStore was called");
 
-	}
-
-	@Override
-	public void beforeStore(A aggregate) {
-		((AggregateSPI) aggregate).beforeStore();
-		this.didBeforeStore = true;
 	}
 
 	@Override

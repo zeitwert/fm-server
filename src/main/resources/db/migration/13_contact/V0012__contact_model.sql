@@ -95,7 +95,7 @@ create table obj_contact_part_address (
 	id																		integer							not null,
 	obj_id																integer							not null references obj_contact(obj_id) deferrable initially deferred,
 	parent_part_id												integer,						-- reference to parent part (optional)
-	part_list_type_id											varchar(40) default 'contact.addressList' not null references code_part_list_type(id),
+	part_list_type_id											varchar(40) 				not null default 'contact.addressList' references code_part_list_type(id),
 	seq_nr																integer,
 	--
 	key																		varchar(60),

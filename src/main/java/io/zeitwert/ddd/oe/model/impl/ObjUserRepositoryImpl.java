@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,15 +55,15 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	//@formatter:on
 
 	@Override
-	public Optional<ObjUser> doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjUser doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjRecord objRecord = this.dslContext.fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
 				io.zeitwert.ddd.obj.model.db.Tables.OBJ.ID.eq(objId));
 		ObjUserRecord userRecord = this.dslContext.fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(objId));
 		if (objRecord == null || userRecord == null) {
-			return Optional.empty();
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return Optional.of(newAggregate(sessionInfo, objRecord, userRecord));
+		return newAggregate(sessionInfo, objRecord, userRecord);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	}
 
 	@Override
-	public Optional<ObjUser> get(Integer id) {
+	public ObjUser get(Integer id) {
 		return this.get(this.globalSessionInfo, id);
 	}
 
@@ -81,7 +82,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 		if (userRecord == null) {
 			return Optional.empty();
 		}
-		return this.get(this.globalSessionInfo, userRecord.getId());
+		return Optional.of(this.get(this.globalSessionInfo, userRecord.getId()));
 	}
 
 	@Override

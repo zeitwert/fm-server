@@ -2,13 +2,11 @@
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.crnk.core.exception.BadRequestException;
-import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -48,11 +46,8 @@ public class ObjAccountApiRepositoryImpl extends ResourceRepositoryBase<ObjAccou
 
 	@Override
 	public ObjAccountDto findOne(Integer objId, QuerySpec querySpec) {
-		Optional<ObjAccount> maybeAccount = this.repository.get(this.sessionInfo, objId);
-		if (!maybeAccount.isPresent()) {
-			throw new ResourceNotFoundException("Resource not found!");
-		}
-		return ObjAccountDto.fromObj(maybeAccount.get(), this.sessionInfo);
+		ObjAccount account = this.repository.get(this.sessionInfo, objId);
+		return ObjAccountDto.fromObj(account, this.sessionInfo);
 	}
 
 	@Override
@@ -69,7 +64,7 @@ public class ObjAccountApiRepositoryImpl extends ResourceRepositoryBase<ObjAccou
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		}
-		ObjAccount obj = this.repository.get(this.sessionInfo, dto.getId()).get();
+		ObjAccount obj = this.repository.get(this.sessionInfo, dto.getId());
 		dto.toObj(obj);
 		this.repository.store(obj);
 		return ObjAccountDto.fromObj(obj, this.sessionInfo);

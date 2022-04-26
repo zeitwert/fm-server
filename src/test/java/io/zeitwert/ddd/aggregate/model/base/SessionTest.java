@@ -55,7 +55,7 @@ public class SessionTest {
 		testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id).get();
+		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 		Integer test1bIdHash = System.identityHashCode(test1b);
 		assertNotEquals(test1aIdHash, test1bIdHash);
 		assertEquals(sessionInfo, test1b.getMeta().getSessionInfo());
@@ -63,7 +63,7 @@ public class SessionTest {
 		ObjUser user = userRepository.getByEmail(USER_EMAIL).get();
 		SessionInfo session2 = sessionService.openSession(user);
 
-		ObjTest test1c = testRepository.get(session2, test1Id).get();
+		ObjTest test1c = testRepository.get(session2, test1Id);
 		Integer test1cIdHash = System.identityHashCode(test1c);
 		assertNotEquals(test1bIdHash, test1cIdHash);
 		assertEquals(session2, test1c.getMeta().getSessionInfo());
@@ -79,11 +79,11 @@ public class SessionTest {
 		assertEquals(true, ((AggregateBase) test1b).isStale());
 		test1b = null;
 
-		test1c = testRepository.get(session2, test1Id).get();
+		test1c = testRepository.get(session2, test1Id);
 		assertEquals(System.identityHashCode(test1c), test1cIdHash, "still the same aggregate");
 		assertEquals(true, ((AggregateBase) test1c).isStale());
 
-		test1b = testRepository.get(sessionInfo, test1Id).get();
+		test1b = testRepository.get(sessionInfo, test1Id);
 		assertNotEquals(System.identityHashCode(test1b), test1bIdHash, "different aggregate");
 		assertEquals(false, ((AggregateBase) test1b).isStale());
 

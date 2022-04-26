@@ -50,7 +50,7 @@ public abstract class DocDtoBase<D extends Doc> {
 	}
 
 	public void toDoc(D doc) {
-		doc.setOwner(this.getOwner() != null ? userRepository.get(this.getOwner().getId()).get() : null);
+		doc.setOwner(this.getOwner() != null ? userRepository.get(this.getOwner().getId()) : null);
 	}
 
 	public static void fromDoc(DocDtoBaseBuilder<?, ?, ?> dtoBuilder, Doc doc, SessionInfo sessionInfo) {
