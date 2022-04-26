@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class SessionInfo {
 
+	public final String ACCOUNT = "account";
+
 	private final ObjTenant tenant;
 	private final ObjUser user;
 	private final CodeLocale locale;
@@ -37,6 +39,19 @@ public class SessionInfo {
 		return this.locale;
 	}
 
+	public boolean hasAccount() {
+		return this.hasCustomValue(ACCOUNT);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Integer getAccountId() {
+		return Integer.parseInt(((Map<String, Object>) this.getCustomValue(ACCOUNT)).get("id").toString());
+	}
+
+	public boolean hasCustomValue(String key) {
+		return this.customValues.get(key) != null;
+	}
+
 	public Object getCustomValue(String key) {
 		return this.customValues.get(key);
 	}
@@ -51,6 +66,16 @@ public class SessionInfo {
 
 	public void setCustomValue(String key, Object value) {
 		this.customValues.put(key, value);
+	}
+
+	@Override
+	public String toString() {
+		return "SessionInfo("
+				+ "tenant: " + (tenant != null ? tenant.getId() : "null")
+				+ ", user: " + (user != null ? user.getId() : "null")
+				+ ", locale: " + (locale != null ? locale.getId() : "null")
+				+ ", customValues: " + customValues
+				+ ")";
 	}
 
 }

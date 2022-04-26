@@ -1,4 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import { FormWrapper } from "@zeitwert/ui-forms";
 import { CaseStage } from "@zeitwert/ui-model";
 import classNames from "classnames";

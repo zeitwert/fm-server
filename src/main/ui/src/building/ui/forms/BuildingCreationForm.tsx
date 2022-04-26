@@ -1,5 +1,5 @@
 
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextField } from "@zeitwert/ui-forms";
 import { Building, BuildingModel, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
@@ -35,7 +35,7 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 	formState: typeof BuildingCreationFormModel.FormStateType;
 
 	@observable
-	communities: Enumerated[] = [];
+	accounts: Enumerated[] = [];
 
 	constructor(props: BuildingCreationFormProps) {
 		super(props);
@@ -70,7 +70,7 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 	async componentDidMount() {
 		const userInfoResponse = await session.userInfo(session.sessionInfo!.user.email);
 		if (userInfoResponse) {
-			this.communities = userInfoResponse.communities;
+			this.accounts = userInfoResponse.accounts;
 		}
 	}
 
@@ -86,9 +86,9 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 									<FieldGroup>
 										<FieldRow>
 											<Select
-												label="Gemeinde"
+												label="Kunde"
 												value={building.account?.id}
-												values={this.communities}
+												values={this.accounts}
 												onChange={(e) => this.props.store.item!.setAccount(e.target.value?.toString())}
 											/>
 										</FieldRow>

@@ -1,7 +1,4 @@
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import Spinner from "@salesforce/design-system-react/components/spinner";
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, CaseStage, EntityType, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { StageSelector } from "doc/ui/StageSelector";
@@ -89,7 +86,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
 								>
 									<TabsPanel label="Details">
 										{this.activeLeftTabId === TAB.DETAILS && editor}

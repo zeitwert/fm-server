@@ -1,4 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { CaseStage, CaseStageType, DocStore } from "@zeitwert/ui-model";
 import { CasePath } from "@zeitwert/ui-slds/bpm/CasePath";
 import { CasePathStage, StageType } from "@zeitwert/ui-slds/bpm/CasePathStage";

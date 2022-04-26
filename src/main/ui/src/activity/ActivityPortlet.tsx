@@ -1,6 +1,5 @@
 
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, ActivityStore, ActivityStoreModel, Aggregate } from "@zeitwert/ui-model";
 import { TaskForm } from "activity/forms/TaskForm";
 import { makeObservable, observable } from "mobx";

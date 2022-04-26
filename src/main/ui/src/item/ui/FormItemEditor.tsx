@@ -1,5 +1,5 @@
 import { FormApi } from "@finadvise/forms";
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { FormWrapper } from "@zeitwert/ui-forms";
 import { AggregateStore, EntityType, ItemPartStore } from "@zeitwert/ui-model";
 import { AppCtx } from "App";

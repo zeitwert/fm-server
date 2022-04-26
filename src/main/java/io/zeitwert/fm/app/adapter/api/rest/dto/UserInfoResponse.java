@@ -14,6 +14,6 @@ public class UserInfoResponse {
 	private String name;
 	private String email;
 	private List<String> roles;
-	private List<EnumeratedDto> communities;
+	private List<EnumeratedDto> accounts;
 
 }

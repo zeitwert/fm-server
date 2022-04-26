@@ -1,4 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import { AccountStore, UserInfo } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

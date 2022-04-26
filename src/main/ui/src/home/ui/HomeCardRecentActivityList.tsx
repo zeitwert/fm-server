@@ -1,5 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import Card from "@salesforce/design-system-react/components/card";
+import { Button, Card } from "@salesforce/design-system-react";
 import { EntityType } from "@zeitwert/ui-model";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { AppCtx } from "App";

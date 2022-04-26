@@ -1,7 +1,4 @@
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import Button from "@salesforce/design-system-react/components/button";
-import GlobalHeaderProfile from "@salesforce/design-system-react/components/global-header/profile";
-import Popover from "@salesforce/design-system-react/components/popover";
+import { Avatar, Button, GlobalHeaderProfile, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_PROFILE } from "@salesforce/design-system-react/utilities/constants";
 import { Session } from "@zeitwert/ui-model";
 import React from "react";
@@ -16,8 +13,8 @@ const HeaderProfileCustomContent = (props: any) => (
 						<dd className="slds-item_detail slds-truncate">{props.email}</dd>
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Mandant:</dt>
 						<dd className="slds-item_detail slds-truncate">{props.tenant}</dd>
-						<dt className="slds-item_label slds-text-color_weak slds-truncate">Community:</dt>
-						<dd className="slds-item_detail slds-truncate">{props.customValues.community?.name || "No community"}</dd>
+						<dt className="slds-item_label slds-text-color_weak slds-truncate">Kunde:</dt>
+						<dd className="slds-item_detail slds-truncate">{props.customValues.account?.name || "Kein Kunde"}</dd>
 					</dl>
 					<p className="slds-truncate">
 						<Button variant="base" className="slds-m-right_medium" onClick={props.onSettings}>

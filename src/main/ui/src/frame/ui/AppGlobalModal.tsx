@@ -1,5 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
-import Spinner from "@salesforce/design-system-react/components/spinner";
+import { Card, Spinner } from "@salesforce/design-system-react";
 import { BreadCrumb } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import classNames from "classnames";

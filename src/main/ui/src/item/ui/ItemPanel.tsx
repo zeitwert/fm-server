@@ -54,7 +54,7 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 					<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
 						<dl>
 							<dt>
-								<p className="slds-popover_panel__label slds-truncate" title="Phone">Community</p>
+								<p className="slds-popover_panel__label slds-truncate" title="Account">Account</p>
 							</dt>
 							<dd>
 								<a href="/#">{accountName}</a>

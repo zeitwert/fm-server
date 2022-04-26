@@ -1,4 +1,4 @@
-import ExpandableSection from "@salesforce/design-system-react/components/expandable-section";
+import { ExpandableSection } from "@salesforce/design-system-react";
 import { Activity, DateFormat } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";

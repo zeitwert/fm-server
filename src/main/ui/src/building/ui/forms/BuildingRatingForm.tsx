@@ -1,7 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
-import Card from "@salesforce/design-system-react/components/card";
-import Checkbox from "@salesforce/design-system-react/components/checkbox";
+import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { EnumeratedField, FieldGroup, FieldRow, Select, TextField } from "@zeitwert/ui-forms";
 import { BuildingModel, BuildingStore, showMotivation } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";

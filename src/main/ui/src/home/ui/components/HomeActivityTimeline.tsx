@@ -1,4 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { ActivityStore, ActivityStoreModel } from "@zeitwert/ui-model";
 import ActivityPortletTimeline from "activity/timeline/ActivityPortletTimeline";
 import { AppCtx } from "App";

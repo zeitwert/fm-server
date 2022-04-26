@@ -1,5 +1,4 @@
-import Icon from "@salesforce/design-system-react/components/icon";
-import Tooltip from "@salesforce/design-system-react/components/tooltip";
+import { Icon, Tooltip } from "@salesforce/design-system-react";
 import { CaseStage, DateFormat, DocPartTransition } from "@zeitwert/ui-model";
 import classNames from "classnames";
 import { computed, makeObservable, observable } from "mobx";
