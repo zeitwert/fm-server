@@ -31,11 +31,11 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	constructor(props: LoginFormProps) {
 		super(props);
 		this.formState = LoginFormModel.state(LoginData);
-		this.formState.field("community").references.autoLoadReaction();
+		this.formState.field("account").references.autoLoadReaction();
 	}
 
 	componentWillUnmount() {
-		this.formState.field("community").references.clearAutoLoadReaction();
+		this.formState.field("account").references.clearAutoLoadReaction();
 	}
 
 	render() {
@@ -49,7 +49,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 						<div className="slds-card__body slds-card__body_inner">
 							<Input label="Email" accessor={this.formState.field("email")} placeholder="email address ..." />
 							<Input label="Passwort" accessor={this.formState.field("password")} type="password" placeholder="password ..." />
-							<Select label="Gemeinde" accessor={this.formState.field("community")} placeholder="community" />
+							<Select label="Kunde" accessor={this.formState.field("account")} placeholder="account" />
 						</div>
 						<footer className="slds-card__footer">
 							<Button

@@ -75,7 +75,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/app/userInfo/**").permitAll() // TODO revoke
 				.antMatchers("/api/session/login/**").permitAll()
 				.antMatchers("/enum/**").permitAll()
-				.antMatchers("/export/**").permitAll() // TODO revoke
 				.antMatchers("/api/building/projection/**").permitAll() // TODO revoke
 				.antMatchers("/api/test/all").permitAll()
 				.antMatchers("/api/test/**").authenticated()

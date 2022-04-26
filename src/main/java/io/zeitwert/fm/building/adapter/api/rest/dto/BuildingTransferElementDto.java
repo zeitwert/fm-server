@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data()
 @Builder
-public class BuildingElementExportDto {
+public class BuildingTransferElementDto {
 
 	private String buildingPart;
 	private String description;

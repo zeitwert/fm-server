@@ -8,20 +8,20 @@ export const LoginModel = types
 	.model("Login", {
 		email: types.maybe(types.string),
 		password: types.maybe(types.string),
-		community: types.maybe(types.frozen<Enumerated>()),
+		account: types.maybe(types.frozen<Enumerated>()),
 	})
 	.views((self) => ({
 		get isValidEmail(): boolean {
 			return isValidEmail(self.email);
 		},
 		get isReadyForLogin(): boolean {
-			return !!self.email && !!self.password && !!self.community;
+			return !!self.email && !!self.password && !!self.account;
 		}
 	}))
 	.actions((self) => ({
 		async login(session: Session) {
 			if (self.isReadyForLogin) {
-				await session.login(self.email!, self.password!, self.community);
+				await session.login(self.email!, self.password!, self.account);
 				if (!session.isAuthenticated) {
 					alert("Could not log in!");
 				}
@@ -29,11 +29,11 @@ export const LoginModel = types
 		}
 	}));
 
-const loadCommunities = async (q: Query): Promise<Enumerated[]> => {
+const loadAccounts = async (q: Query): Promise<Enumerated[]> => {
 	if (isValidEmail(q.email)) {
 		const userInfoResponse = await session.userInfo(q.email!);
 		if (userInfoResponse) {
-			return userInfoResponse.communities;
+			return userInfoResponse.accounts;
 		}
 	}
 	return [];
@@ -50,8 +50,8 @@ export const LoginFormModel = new Form(
 	{
 		email: new TextField({ required: true }),
 		password: new TextField({ required: true }),
-		community: new EnumeratedField({
-			source: loadCommunities,
+		account: new EnumeratedField({
+			source: loadAccounts,
 			dependentQuery: (accessor) => {
 				return { email: accessor.node.email };
 			}

@@ -134,7 +134,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		return (
 			<>
 				<ButtonGroup variant="list">
-					<Button onClick={() => { window.location.href = Config.getExportUrl("building", "buildings/" + this.props.params.buildingId!); }}>Export</Button>
+					<Button onClick={() => { window.location.href = Config.getTransferUrl("building", "buildings/" + this.props.params.buildingId!); }}>Export</Button>
 				</ButtonGroup>
 			</>
 		);

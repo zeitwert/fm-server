@@ -95,14 +95,14 @@ const MstSessionModel = types
 		}
 	}))
 	.actions((self) => ({
-		init(community: Enumerated) {
+		init(account: Enumerated) {
 			return flow(function* () {
 				try {
 					self.clear(SessionState.pendingOpen);
 					const sessionResponse: AxiosResponse<SessionInfo> = yield API.post(
 						Config.getApiUrl("session", SESSION_URL),
 						{
-							customValues: { community: community }
+							customValues: { account: account }
 						}
 					);
 					const sessionInfo = sessionResponse.data;
@@ -137,7 +137,7 @@ const MstSessionModel = types
 				initSession() {
 					const sessionInfo = sessionStorage.getItem(SESSION_INFO_ITEM);
 					if (!!sessionInfo) {
-						return self.init(JSON.parse(sessionInfo).customValues.community);
+						return self.init(JSON.parse(sessionInfo).customValues.account);
 					}
 					return Promise.resolve();
 				},
@@ -155,7 +155,7 @@ const MstSessionModel = types
 						}
 					})();
 				},
-				login(email: string, password: string, community: any) {
+				login(email: string, password: string, account: any) {
 					return flow(function* () {
 						try {
 							self.clear(SessionState.pendingAuth);
@@ -168,7 +168,7 @@ const MstSessionModel = types
 							);
 							if (loginResponse.status === 200) {
 								sessionStorage.setItem(AUTH_HEADER_ITEM, loginResponse.data.type + " " + loginResponse.data.token);
-								yield self.init(community);
+								yield self.init(account);
 								isAuthenticated.set(!!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM));
 							} else {
 								self.setState(SessionState.close);

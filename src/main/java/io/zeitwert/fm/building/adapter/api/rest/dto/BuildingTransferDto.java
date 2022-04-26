@@ -8,8 +8,11 @@ import java.util.List;
 
 @Data()
 @Builder
-public class BuildingExportDto {
+public class BuildingTransferDto {
 
+	private TransferMetaDto meta;
+
+	private Integer id;
 	private String name;
 	private String description;
 
@@ -46,6 +49,6 @@ public class BuildingExportDto {
 	private String buildingPartCatalog;
 	private String buildingMaintenanceStrategy;
 
-	private List<BuildingElementExportDto> elements;
+	private List<BuildingTransferElementDto> elements;
 
 }

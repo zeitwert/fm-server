@@ -99,7 +99,7 @@ const FormDef = {
 				{
 					size: 4,
 					type: "select",
-					label: "Community",
+					label: "Account",
 					value: "{{account}}",
 					dataSource: "Rest",
 					storage: "Id",

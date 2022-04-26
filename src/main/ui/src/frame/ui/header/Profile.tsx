@@ -16,8 +16,8 @@ const HeaderProfileCustomContent = (props: any) => (
 						<dd className="slds-item_detail slds-truncate">{props.email}</dd>
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Mandant:</dt>
 						<dd className="slds-item_detail slds-truncate">{props.tenant}</dd>
-						<dt className="slds-item_label slds-text-color_weak slds-truncate">Community:</dt>
-						<dd className="slds-item_detail slds-truncate">{props.customValues.community?.name || "No community"}</dd>
+						<dt className="slds-item_label slds-text-color_weak slds-truncate">Kunde:</dt>
+						<dd className="slds-item_detail slds-truncate">{props.customValues.account?.name || "Kein Kunde"}</dd>
 					</dl>
 					<p className="slds-truncate">
 						<Button variant="base" className="slds-m-right_medium" onClick={props.onSettings}>
