@@ -1,7 +1,5 @@
 
-import Icon from "@salesforce/design-system-react/components/icon";
-import SplitViewHeader from "@salesforce/design-system-react/components/split-view/header";
-import SplitView from "@salesforce/design-system-react/components/split-view/index";
+import { Icon, SplitView, SplitViewHeader } from "@salesforce/design-system-react";
 import {
 	AggregateStore, API,
 	Config,

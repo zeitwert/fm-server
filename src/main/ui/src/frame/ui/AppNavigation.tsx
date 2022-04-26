@@ -1,11 +1,4 @@
-import AppLauncher from "@salesforce/design-system-react/components/app-launcher";
-import AppLauncherExpandableSection from "@salesforce/design-system-react/components/app-launcher/expandable-section";
-import AppLauncherTile from "@salesforce/design-system-react/components/app-launcher/tile";
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import GlobalNavigationBar from "@salesforce/design-system-react/components/global-navigation-bar";
-import GlobalNavigationBarDropdown from "@salesforce/design-system-react/components/global-navigation-bar/dropdown";
-import GlobalNavigationBarLink from "@salesforce/design-system-react/components/global-navigation-bar/link";
-import GlobalNavigationBarRegion from "@salesforce/design-system-react/components/global-navigation-bar/region";
+import { AppLauncher, AppLauncherExpandableSection, AppLauncherTile, Avatar, GlobalNavigationBar, GlobalNavigationBarDropdown, GlobalNavigationBarLink, GlobalNavigationBarRegion } from "@salesforce/design-system-react";
 import { ApplicationArea, MenuItem } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";

@@ -1,5 +1,4 @@
-import Combobox from "@salesforce/design-system-react/components/combobox";
-import Icon from "@salesforce/design-system-react/components/icon";
+import { Combobox, Icon } from "@salesforce/design-system-react";
 import { Account, GenericUser, GenericUserType, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { observable } from "mobx";

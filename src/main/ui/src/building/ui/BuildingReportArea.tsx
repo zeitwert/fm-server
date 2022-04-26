@@ -1,6 +1,6 @@
 
 import { Form } from "@finadvise/forms";
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { API, Config, jsonApiFetch } from "@zeitwert/ui-model";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
@@ -99,7 +99,7 @@ const FormDef = {
 				{
 					size: 4,
 					type: "select",
-					label: "Community",
+					label: "Account",
 					value: "{{account}}",
 					dataSource: "Rest",
 					storage: "Id",

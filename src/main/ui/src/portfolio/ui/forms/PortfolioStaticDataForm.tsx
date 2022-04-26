@@ -1,5 +1,5 @@
 
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
 import { BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable, toJS } from "mobx";

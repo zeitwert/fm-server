@@ -1,7 +1,4 @@
-import Alert from "@salesforce/design-system-react/components/alert";
-import AlertContainer from "@salesforce/design-system-react/components/alert/container";
-import Toast from "@salesforce/design-system-react/components/toast";
-import ToastContainer from "@salesforce/design-system-react/components/toast/container";
+import { Alert, AlertContainer, Toast, ToastContainer } from "@salesforce/design-system-react";
 import { makeObservable, observable } from "mobx";
 import { observer, Provider } from "mobx-react";
 import React from "react";

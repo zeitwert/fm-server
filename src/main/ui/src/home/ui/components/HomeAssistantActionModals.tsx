@@ -1,6 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
-import Modal from "@salesforce/design-system-react/components/modal";
+import { Button, Modal } from "@salesforce/design-system-react";
 import { TaskForm } from "activity/forms/TaskForm";
 import React from "react";
 

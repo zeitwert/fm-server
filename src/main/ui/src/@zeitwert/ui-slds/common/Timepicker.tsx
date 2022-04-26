@@ -1,6 +1,4 @@
-import InputIcon from "@salesforce/design-system-react/components/icon/input-icon";
-import Input from "@salesforce/design-system-react/components/input";
-import MenuDropdown from "@salesforce/design-system-react/components/menu-dropdown";
+import { Input, InputIcon, MenuDropdown } from "@salesforce/design-system-react";
 import { MENU_DROPDOWN_TRIGGER } from "@salesforce/design-system-react/utilities/constants";
 import { AppCtx } from "App";
 import { inject } from "mobx-react";

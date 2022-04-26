@@ -1,10 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import ButtonGroup from "@salesforce/design-system-react/components/button-group";
-import Icon from "@salesforce/design-system-react/components/icon";
-import Dropdown from "@salesforce/design-system-react/components/menu-dropdown";
-import DropdownTrigger from "@salesforce/design-system-react/components/menu-dropdown/button-trigger";
-import PageHeader from "@salesforce/design-system-react/components/page-header";
-import PageHeaderControl from "@salesforce/design-system-react/components/page-header/control";
+import { Button, ButtonGroup, Dropdown, DropdownTrigger, Icon, PageHeader, PageHeaderControl } from "@salesforce/design-system-react";
 import { Enumerated } from "@zeitwert/ui-model";
 import { ScrollablePageHeader } from "@zeitwert/ui-slds/content/ScrollablePageHeader";
 import { makeObservable, observable } from "mobx";

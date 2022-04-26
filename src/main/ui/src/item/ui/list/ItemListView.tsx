@@ -1,4 +1,4 @@
-import Spinner from "@salesforce/design-system-react/components/spinner";
+import { Spinner } from "@salesforce/design-system-react";
 import { Template } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

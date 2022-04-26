@@ -1,8 +1,6 @@
 
-import Spinner from "@salesforce/design-system-react/components/spinner";
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
-import { Account, Building, BuildingStore, BuildingStoreModel, EntityType } from "@zeitwert/ui-model";
+import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Account, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
@@ -58,7 +56,11 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isFullWidth = [TAB.RATING, TAB.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		return (
 			<>
-				<ItemHeader store={this.buildingStore} details={this.getHeaderDetails(building)} />
+				<ItemHeader
+					store={this.buildingStore}
+					details={this.getHeaderDetails(building)}
+					customActions={this.getHeaderActions()}
+				/>
 				<ItemGrid>
 					<ItemLeftPart isFullWidth={isFullWidth}>
 						<ItemEditor
@@ -72,7 +74,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<Tabs
 								className="full-height"
 								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId) => (this.activeLeftTabId = tabId)}
+								onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
 							>
 								<TabsPanel label="Stammdaten">
 									{this.activeLeftTabId === TAB.OVERVIEW && <BuildingStaticDataForm store={this.buildingStore} />}
@@ -122,6 +124,16 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		// 	},
 		// 	{ label: "Address", content: `${building.street} ${building.zip} ${building.city}` }
 		// ];
+	}
+
+	private getHeaderActions() {
+		return (
+			<>
+				<ButtonGroup variant="list">
+					<Button onClick={() => { window.location.href = Config.getTransferUrl("building", "buildings/" + this.props.params.buildingId!); }}>Export</Button>
+				</ButtonGroup>
+			</>
+		);
 	}
 
 	private openEditor = () => {

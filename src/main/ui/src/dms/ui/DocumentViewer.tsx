@@ -1,6 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
-import Modal from "@salesforce/design-system-react/components/modal";
+import { Button, Modal } from "@salesforce/design-system-react";
 import { Config, decodeHtml, Document } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

@@ -1,6 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import Icon from "@salesforce/design-system-react/components/icon";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Button, Icon, MediaObject } from "@salesforce/design-system-react";
 import { Grid } from "@zeitwert/ui-slds/common/Grid";
 import classNames from "classnames";
 import { makeObservable, observable } from "mobx";

@@ -1,10 +1,5 @@
 
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import ButtonGroup from "@salesforce/design-system-react/components/button-group";
-import Icon from "@salesforce/design-system-react/components/icon";
-import Spinner from "@salesforce/design-system-react/components/spinner";
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
 	Account, CaseStage, EntityType, Lead,
 	LeadStore,
@@ -95,7 +90,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
 								>
 									<TabsPanel label="Details">
 										{this.activeLeftTabId === TAB.DETAILS && editor}

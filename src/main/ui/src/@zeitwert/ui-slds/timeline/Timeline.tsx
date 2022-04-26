@@ -1,4 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import classNames from "classnames";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

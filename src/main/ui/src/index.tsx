@@ -1,4 +1,4 @@
-import IconSettings from "@salesforce/design-system-react/components/icon-settings";
+import { IconSettings } from "@salesforce/design-system-react";
 import {
 	AppStoreModel,
 	Env, Locale,
