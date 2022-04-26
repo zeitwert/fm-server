@@ -1,4 +1,4 @@
-import DataTableRowActions from "@salesforce/design-system-react/components/data-table/row-actions";
+import { DataTableRowActions } from "@salesforce/design-system-react";
 import { DATA_TABLE_ROW_ACTIONS } from "@salesforce/design-system-react/utilities/constants";
 import React from "react";
 

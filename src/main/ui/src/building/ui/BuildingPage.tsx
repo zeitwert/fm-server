@@ -1,9 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
-import ButtonGroup from "@salesforce/design-system-react/components/button-group";
-import Spinner from "@salesforce/design-system-react/components/spinner";
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -78,7 +74,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<Tabs
 								className="full-height"
 								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId) => (this.activeLeftTabId = tabId)}
+								onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
 							>
 								<TabsPanel label="Stammdaten">
 									{this.activeLeftTabId === TAB.OVERVIEW && <BuildingStaticDataForm store={this.buildingStore} />}

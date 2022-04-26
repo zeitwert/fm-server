@@ -1,6 +1,5 @@
 
-import { Button, Icon, MediaObject, Modal } from "@salesforce/design-system-react";
-import Card from "@salesforce/design-system-react/components/card";
+import { Button, Card, Icon, MediaObject, Modal } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow } from "@zeitwert/ui-forms";
 import { EntityType, EntityTypes } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";

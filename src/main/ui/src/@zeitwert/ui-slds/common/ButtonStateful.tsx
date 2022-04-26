@@ -1,4 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
@@ -36,10 +36,10 @@ export default class ButtonStateful extends React.Component<ButtonStatefulProps>
 		if (active && stateThree) {
 			const iconProps = stateThree.icon
 				? {
-						iconCategory: "utility" as any,
-						iconName: stateThree.icon,
-						iconPosition: "left" as any
-				  }
+					iconCategory: "utility" as any,
+					iconName: stateThree.icon,
+					iconPosition: "left" as any
+				}
 				: {};
 			return (
 				<Button

@@ -1,7 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import GlobalNavigationBar from "@salesforce/design-system-react/components/global-navigation-bar";
-import GlobalNavigationBarRegion from "@salesforce/design-system-react/components/global-navigation-bar/region";
-import Icon from "@salesforce/design-system-react/components/icon";
+import { Button, GlobalNavigationBar, GlobalNavigationBarRegion, Icon } from "@salesforce/design-system-react";
 import { BreadCrumb as BreadCrumbItem } from "@zeitwert/ui-model";
 import { BreadCrumb, BreadCrumbs } from "@zeitwert/ui-slds/common/BreadCrumbs";
 import React from "react";

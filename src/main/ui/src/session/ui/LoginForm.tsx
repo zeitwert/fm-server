@@ -1,7 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
-import Card from "@salesforce/design-system-react/components/card";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Button, Card, MediaObject } from "@salesforce/design-system-react";
 import { Input, Select } from "@zeitwert/ui-forms";
 import { Session } from "@zeitwert/ui-model";
 import { inject, observer } from "mobx-react";

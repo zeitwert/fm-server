@@ -1,4 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { inject, observer } from "mobx-react";
 import React from "react";
 

@@ -1,5 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
-import Dropdown from "@salesforce/design-system-react/components/menu-dropdown";
+import { Card, Dropdown } from "@salesforce/design-system-react";
 import { Tile } from "@zeitwert/ui-slds/common/Tile";
 import { observer } from "mobx-react";
 import React from "react";

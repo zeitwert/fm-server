@@ -1,6 +1,5 @@
 
-import Icon from "@salesforce/design-system-react/components/icon";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Icon, MediaObject } from "@salesforce/design-system-react";
 import { Document } from "@zeitwert/ui-model";
 import { DocumentUtils } from "dms/utils/DocumentUtils";
 import { observer } from "mobx-react";

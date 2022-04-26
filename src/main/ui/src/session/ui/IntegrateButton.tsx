@@ -1,4 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
 import { inject } from "mobx-react";
@@ -38,16 +38,16 @@ export default class IntegrateButton extends React.Component<IntegrateButtonProp
 
 	private handleExternalIdPAuthentication = (provider: string) => {
 		this.authenticationLoading = true;
-/*
-		this.ctx.session
-			.handleExternalIdPAuthentication(this.ctx.session.sessionInfo!.user.email, provider)
-			.then(() => {
-				this.authenticationLoading = false;
-			})
-			.catch((error) => {
-				this.authenticationLoading = false;
-				this.ctx.logger.error("Could not external authenticate:", error);
-			});
-*/
-		};
+		/*
+				this.ctx.session
+					.handleExternalIdPAuthentication(this.ctx.session.sessionInfo!.user.email, provider)
+					.then(() => {
+						this.authenticationLoading = false;
+					})
+					.catch((error) => {
+						this.authenticationLoading = false;
+						this.ctx.logger.error("Could not external authenticate:", error);
+					});
+		*/
+	};
 }

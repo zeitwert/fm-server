@@ -1,5 +1,5 @@
 
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { EnumeratedField, FieldGroup, FieldRow, IntField, NumberField, OptionField, RadioButtonGroup, Static, TextArea, TextField } from "@zeitwert/ui-forms";
 import { BuildingElement, StrainOptions, StrengthOptions } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";

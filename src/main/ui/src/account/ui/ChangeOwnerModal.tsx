@@ -1,7 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import Combobox from "@salesforce/design-system-react/components/combobox";
-import Icon from "@salesforce/design-system-react/components/icon";
-import Modal from "@salesforce/design-system-react/components/modal";
+import { Button, Combobox, Icon, Modal } from "@salesforce/design-system-react";
 import { UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { makeObservable, observable, toJS } from "mobx";

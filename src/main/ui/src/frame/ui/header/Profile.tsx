@@ -1,7 +1,4 @@
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import Button from "@salesforce/design-system-react/components/button";
-import GlobalHeaderProfile from "@salesforce/design-system-react/components/global-header/profile";
-import Popover from "@salesforce/design-system-react/components/popover";
+import { Avatar, Button, GlobalHeaderProfile, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_PROFILE } from "@salesforce/design-system-react/utilities/constants";
 import { Session } from "@zeitwert/ui-model";
 import React from "react";

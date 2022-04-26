@@ -1,9 +1,5 @@
 import { FormApi } from "@finadvise/forms";
-import Card from "@salesforce/design-system-react/components/card";
-import ExpandableSection from "@salesforce/design-system-react/components/expandable-section";
-import Icon from "@salesforce/design-system-react/components/icon";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
-import Modal from "@salesforce/design-system-react/components/modal";
+import { Card, ExpandableSection, Icon, MediaObject, Modal } from "@salesforce/design-system-react";
 import { FormWrapper } from "@zeitwert/ui-forms";
 import { Contact, ContactStore, EntityType, EntityTypes, FORM_API, LifeEvent } from "@zeitwert/ui-model";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";

@@ -1,6 +1,4 @@
-import Spinner from "@salesforce/design-system-react/components/spinner";
-import Tabs from "@salesforce/design-system-react/components/tabs";
-import TabsPanel from "@salesforce/design-system-react/components/tabs/panel";
+import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, DocumentStore, DocumentStoreModel, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -76,7 +74,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
 								>
 									<TabsPanel label="Details">
 										{this.activeLeftTabId === TAB.DETAILS && editor}

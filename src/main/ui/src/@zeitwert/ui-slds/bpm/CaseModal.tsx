@@ -1,6 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import Modal from "@salesforce/design-system-react/components/modal";
-import Spinner from "@salesforce/design-system-react/components/spinner";
+import { Button, Modal, Spinner } from "@salesforce/design-system-react";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

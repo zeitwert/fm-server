@@ -1,4 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { ContactStoreModel, LifeEvent } from "@zeitwert/ui-model";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { AppCtx } from "App";

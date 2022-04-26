@@ -1,4 +1,4 @@
-import { default as BaseSlider } from "@salesforce/design-system-react/components/slider";
+import { Slider as BaseSlider } from "@salesforce/design-system-react";
 import _ from "lodash";
 import { observer } from "mobx-react";
 import React from "react";

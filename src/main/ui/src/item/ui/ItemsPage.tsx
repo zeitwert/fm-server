@@ -1,5 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import { AggregateStore, EntityType, EntityTypeInfo, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,

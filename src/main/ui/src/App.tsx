@@ -1,5 +1,4 @@
-import BrandBand from "@salesforce/design-system-react/components/brand-band";
-import Settings from "@salesforce/design-system-react/components/settings";
+import { BrandBand, Settings } from "@salesforce/design-system-react";
 import { AppStore, Session } from "@zeitwert/ui-model";
 import DynamicView from "frame/app/DynamicView";
 import { Navigator } from "frame/app/Navigation";

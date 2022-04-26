@@ -1,6 +1,4 @@
-import Icon from "@salesforce/design-system-react/components/icon";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
-import Modal from "@salesforce/design-system-react/components/modal";
+import { Icon, MediaObject, Modal } from "@salesforce/design-system-react";
 import { EntityType, EntityTypes } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { inject } from "mobx-react";

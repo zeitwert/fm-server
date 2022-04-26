@@ -1,5 +1,5 @@
 
-import { default as BaseDatepicker } from "@salesforce/design-system-react/components/date-picker";
+import { DatePicker as BaseDatePicker } from "@salesforce/design-system-react";
 import { DATE_FORMAT } from "@zeitwert/ui-model";
 import moment from "moment";
 import React from "react";
@@ -17,7 +17,7 @@ export default class Datepicker extends React.Component<DatepickerProps> {
 	render() {
 		const { label, value, isRequired, isOnlyPast, isOnlyFuture, onChange } = this.props;
 		return (
-			<BaseDatepicker
+			<BaseDatePicker
 				labels={{
 					label: label
 				}}

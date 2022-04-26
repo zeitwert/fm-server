@@ -1,5 +1,5 @@
 
-import SLDSButton from "@salesforce/design-system-react/components/button";
+import { SLDSButton } from "@salesforce/design-system-react";
 import { FC } from "react";
 
 export interface ButtonProps {
