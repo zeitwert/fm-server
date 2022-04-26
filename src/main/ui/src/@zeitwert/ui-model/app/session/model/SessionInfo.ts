@@ -14,7 +14,7 @@ export interface TenantInfo {
 	extlKey: string;
 }
 
-export interface CommunityInfo {
+export interface AccountInfo {
 	id: string;
 	name: string;
 	itemType: CodeItemType | undefined;
@@ -29,7 +29,7 @@ export interface UserInfo {
 	extlIdpUserId?: string;
 	picture?: string;
 	roles: string[];
-	communities: CommunityInfo[];
+	accounts: AccountInfo[];
 }
 
 export interface LoginInfo {

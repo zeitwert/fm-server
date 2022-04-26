@@ -1,6 +1,5 @@
 
-import GlobalHeader from "@salesforce/design-system-react/components/global-header";
-import GlobalHeaderSearch from "@salesforce/design-system-react/components/global-header/search";
+import { GlobalHeader, GlobalHeaderSearch } from "@salesforce/design-system-react";
 import { AppCtx } from "App";
 import { inject, observer } from "mobx-react";
 import React from "react";

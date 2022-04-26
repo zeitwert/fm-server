@@ -1,5 +1,4 @@
-import GlobalHeaderSetup from "@salesforce/design-system-react/components/global-header/setup";
-import Dropdown from "@salesforce/design-system-react/components/menu-dropdown";
+import { Dropdown, GlobalHeaderSetup } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_SETUP } from "@salesforce/design-system-react/utilities/constants";
 import React from "react";
 

@@ -1,5 +1,5 @@
 
-import Button from "@salesforce/design-system-react/components/button";
+import { Button } from "@salesforce/design-system-react";
 import { AggregateStore, EntityType, EntityTypeInfo, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
@@ -23,6 +23,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	listTemplate: string;
 	canCreate?: boolean;
 	createFormId?: string;
+	actionButtons?: React.ReactNode[];
 	createEditor?: () => JSX.Element;
 	onAfterCreate?: (store: AggregateStore) => void;
 }
@@ -50,7 +51,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	render() {
-		const { entityType, createFormId, createEditor, listTemplate, canCreate } = this.props;
+		const { entityType, createFormId, createEditor, listTemplate, actionButtons, canCreate } = this.props;
 		return (
 			<>
 				<ItemListController
@@ -66,9 +67,11 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 						entityIcon: DataTableCellWithEntityIcon
 					}}
 					actionButtons={
-						canCreate
-							? [<Button key="new" label={"New " + this.type.labelSingular} onClick={this.openEditor} />]
-							: []
+						(actionButtons || []).concat(
+							canCreate
+								? [<Button key="new" label={"New " + this.type.labelSingular} onClick={this.openEditor} />]
+								: []
+						)
 					}
 					onClick={this.openPanel}
 				/>

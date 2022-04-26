@@ -69,7 +69,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	}
 
 	@Override
-	protected String getCommunityIdField() {
+	protected String getAccountIdField() {
 		return "id";
 	}
 

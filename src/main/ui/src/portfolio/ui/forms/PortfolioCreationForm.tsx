@@ -1,5 +1,5 @@
 
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
 import { Enumerated, Portfolio, PortfolioModel, PortfolioStore, session } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
@@ -29,7 +29,7 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	formState: typeof PortfolioCreationFormModel.FormStateType;
 
 	@observable
-	communities: Enumerated[] = [];
+	accounts: Enumerated[] = [];
 
 	constructor(props: PortfolioCreationFormProps) {
 		super(props);
@@ -59,7 +59,7 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	async componentDidMount() {
 		const userInfoResponse = await session.userInfo(session.sessionInfo!.user.email);
 		if (userInfoResponse) {
-			this.communities = userInfoResponse.communities;
+			this.accounts = userInfoResponse.accounts;
 		}
 	}
 
@@ -78,7 +78,7 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 												label="Gemeinde"
 												required={true}
 												value={portfolio.account?.id}
-												values={this.communities}
+												values={this.accounts}
 												onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
 											/>
 										</FieldRow>

@@ -4,7 +4,6 @@ package io.zeitwert.ddd.aggregate.model.base;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -127,16 +126,15 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
 		//@formatter:off
 		querySpec.addFilter(PathSpec.of("tenant_id").filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
-		if (this.getCommunityIdField() != null && sessionInfo.getCustomValue("community") != null) {
-			String communityId = ((Map<String, Object>) sessionInfo.getCustomValue("community")).get("id").toString();
+		if (this.getAccountIdField() != null && sessionInfo.hasAccount()) {
+			Integer accountId = sessionInfo.getAccountId();
 			querySpec.addFilter(
 				FilterSpec.or(
-					PathSpec.of(this.getCommunityIdField()).filter(FilterOperator.EQ, communityId),
-					PathSpec.of(this.getCommunityIdField()).filter(FilterOperator.EQ, null)
+					PathSpec.of(this.getAccountIdField()).filter(FilterOperator.EQ, accountId),
+					PathSpec.of(this.getAccountIdField()).filter(FilterOperator.EQ, null)
 				)
 			);
 		}
@@ -144,7 +142,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		return this.doFind(querySpec);
 	}
 
-	protected String getCommunityIdField() {
+	protected String getAccountIdField() {
 		return null;
 	}
 

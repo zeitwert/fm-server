@@ -41,8 +41,8 @@ public class ApplicationController {
 		}
 		ObjUser user = maybeUser.get();
 		ObjTenant tenant = user.getTenant();
-		List<ObjAccountVRecord> communities = this.accountService.getAccountList(sessionInfo, tenant);
-		List<EnumeratedDto> communitiesDto = communities.stream()
+		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(sessionInfo, tenant);
+		List<EnumeratedDto> accountsDto = accounts.stream()
 				.map(hh -> EnumeratedDto.builder().id(hh.getId().toString()).name(hh.getName()).build()).toList();
 		//@formatter:off
 		return ResponseEntity.ok(
@@ -51,7 +51,7 @@ public class ApplicationController {
 				.email(user.getEmail())
 				.name(user.getName())
 				.roles(user.getRoleList().stream().map(r -> r.getId()).toList())
-				.communities(communitiesDto)
+				.accounts(accountsDto)
 				.build()
 		);
 		//@formatter:on

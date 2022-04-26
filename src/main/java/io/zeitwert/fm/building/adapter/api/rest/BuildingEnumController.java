@@ -20,9 +20,9 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 
-@RestController("buildingController")
+@RestController("buildingEnumController")
 @RequestMapping("/enum")
-public class BuildingController {
+public class BuildingEnumController {
 
 	@Autowired
 	private ProjectionService projectionService;

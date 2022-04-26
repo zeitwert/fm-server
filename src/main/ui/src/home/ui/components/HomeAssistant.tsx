@@ -1,8 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import ButtonGroup from "@salesforce/design-system-react/components/button-group";
-import Card from "@salesforce/design-system-react/components/card";
-import Icon from "@salesforce/design-system-react/components/icon";
-import Tooltip from "@salesforce/design-system-react/components/tooltip";
+import { Button, ButtonGroup, Card, Icon, Tooltip } from "@salesforce/design-system-react";
 import { deepFind } from "@zeitwert/ui-model";
 import { Grid } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";

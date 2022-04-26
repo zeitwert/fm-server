@@ -20,7 +20,7 @@
 			},
 			{
 				"id": "account",
-				"label": "Community",
+				"label": "Account",
 				"value": "accountName",
 				"template": "link",
 				"link": "accountLink"

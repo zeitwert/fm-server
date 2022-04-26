@@ -1,6 +1,5 @@
 
-import DataTableCell from "@salesforce/design-system-react/components/data-table/cell";
-import Icon from "@salesforce/design-system-react/components/icon";
+import { DataTableCell, Icon } from "@salesforce/design-system-react";
 import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/constants";
 import { channels, DateFormat, EntityTypes, NumberFormat } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";

@@ -1,8 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import ButtonGroup from "@salesforce/design-system-react/components/button-group";
-import Card from "@salesforce/design-system-react/components/card";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
-import Spinner from "@salesforce/design-system-react/components/spinner";
+import { Button, ButtonGroup, Card, MediaObject, Spinner } from "@salesforce/design-system-react";
 import { ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellForTemperature,

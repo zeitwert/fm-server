@@ -1,7 +1,4 @@
-import DataTable from "@salesforce/design-system-react/components/data-table";
-import DataTableColumn from "@salesforce/design-system-react/components/data-table/column";
-import DataTableRowActions from "@salesforce/design-system-react/components/data-table/row-actions";
-import Dropdown from "@salesforce/design-system-react/components/menu-dropdown";
+import { DataTable, DataTableColumn, DataTableRowActions, Dropdown } from "@salesforce/design-system-react";
 import { toJS } from "mobx";
 import React from "react";
 

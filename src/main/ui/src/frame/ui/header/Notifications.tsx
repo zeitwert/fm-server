@@ -1,9 +1,5 @@
 
-import Avatar from "@salesforce/design-system-react/components/avatar";
-import Button from "@salesforce/design-system-react/components/button";
-import GlobalHeaderNotifications from "@salesforce/design-system-react/components/global-header/notifications";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
-import Popover from "@salesforce/design-system-react/components/popover";
+import { Avatar, Button, GlobalHeaderNotifications, MediaObject, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_NOTIFICATIONS } from "@salesforce/design-system-react/utilities/constants";
 import { DateFormat } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";

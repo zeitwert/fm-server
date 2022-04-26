@@ -7,7 +7,7 @@
 					{
 						"size": 6,
 						"type": "select",
-						"label": "Community",
+						"label": "Account",
 						"value": "{{building.account}}",
 						"dataSource": "Rest",
 						"storage": "Id",

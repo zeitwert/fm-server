@@ -1,4 +1,4 @@
-import Icon from "@salesforce/design-system-react/components/icon";
+import { Icon } from "@salesforce/design-system-react";
 import { EmailProvider } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { inject } from "mobx-react";

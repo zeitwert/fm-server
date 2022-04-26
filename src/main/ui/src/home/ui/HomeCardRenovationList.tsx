@@ -1,5 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import Card from "@salesforce/design-system-react/components/card";
+import { Button, Card } from "@salesforce/design-system-react";
 import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";

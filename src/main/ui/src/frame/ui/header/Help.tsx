@@ -1,5 +1,4 @@
-import GlobalHeaderHelp from "@salesforce/design-system-react/components/global-header/help";
-import Popover from "@salesforce/design-system-react/components/popover";
+import { GlobalHeaderHelp, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_HELP } from "@salesforce/design-system-react/utilities/constants";
 import React from "react";
 

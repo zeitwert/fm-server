@@ -1,4 +1,4 @@
-import Icon from "@salesforce/design-system-react/components/icon";
+import { Icon } from "@salesforce/design-system-react";
 import React from "react";
 
 interface ChatItemAttachmentProps {

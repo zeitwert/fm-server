@@ -1,6 +1,4 @@
-import Button from "@salesforce/design-system-react/components/button";
-import Card from "@salesforce/design-system-react/components/card";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Button, Card, MediaObject } from "@salesforce/design-system-react";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

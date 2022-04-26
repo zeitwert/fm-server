@@ -1,5 +1,4 @@
-import Icon from "@salesforce/design-system-react/components/icon";
-import MediaObject from "@salesforce/design-system-react/components/media-object";
+import { Icon, MediaObject } from "@salesforce/design-system-react";
 import React from "react";
 import { Link } from "react-router-dom";
 

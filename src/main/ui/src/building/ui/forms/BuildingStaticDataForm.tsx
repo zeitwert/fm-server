@@ -1,5 +1,5 @@
 
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { EnumeratedField, FieldGroup, FieldRow, Input, IntField, NumberField, Select, TextArea, TextField } from "@zeitwert/ui-forms";
 import { BuildingModel, BuildingStore, Config, Enumerated } from "@zeitwert/ui-model";
 import axios from "axios";

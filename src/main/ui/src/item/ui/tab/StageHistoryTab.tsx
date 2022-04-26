@@ -1,4 +1,4 @@
-import Icon from "@salesforce/design-system-react/components/icon";
+import { Icon } from "@salesforce/design-system-react";
 import { Currency, DateFormat, DocStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { Timeline, TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";

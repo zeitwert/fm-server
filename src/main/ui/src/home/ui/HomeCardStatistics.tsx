@@ -1,4 +1,4 @@
-import Card from "@salesforce/design-system-react/components/card";
+import { Card } from "@salesforce/design-system-react";
 import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";

@@ -1,7 +1,5 @@
 
-import DataTable from "@salesforce/design-system-react/components/data-table";
-import DataTableCell from "@salesforce/design-system-react/components/data-table/cell";
-import DataTableColumn from "@salesforce/design-system-react/components/data-table/column";
+import { DataTable, DataTableCell, DataTableColumn } from "@salesforce/design-system-react";
 import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/constants";
 import { observer } from "mobx-react";
 import React from "react";
