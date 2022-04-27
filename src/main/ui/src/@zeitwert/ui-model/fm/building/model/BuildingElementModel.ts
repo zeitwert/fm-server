@@ -11,6 +11,9 @@ export const HighOption: Enumerated = { id: "1", name: "Hoch", itemType: undefin
 export const StrengthOptions: Enumerated[] = [LowOption, NormalOption, HighOption];
 export const StrainOptions: Enumerated[] = [HighOption, NormalOption, LowOption];
 
+export const ShortTermYears: number = 1;
+export const MidTermYears: number = 5;
+
 const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	.props({
 		buildingPart: types.maybe(types.frozen<Enumerated>()),
@@ -47,17 +50,20 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	.views((self) => {
 		const thisYear = (new Date()).getFullYear();
 		return {
+			get restorationAge(): number | undefined {
+				return self.restorationYear ? self.restorationYear - thisYear : undefined;
+			},
 			get shortTermRestoration(): number | undefined {
 				const relativeAge = self.restorationYear ? self.restorationYear - thisYear : undefined;
-				return relativeAge && relativeAge <= 4 ? self.restorationYear : undefined;
+				return relativeAge && relativeAge <= ShortTermYears ? self.restorationYear : undefined;
 			},
 			get midTermRestoration(): number | undefined {
 				const relativeAge = self.restorationYear ? self.restorationYear - thisYear : undefined;
-				return relativeAge && 4 < relativeAge && relativeAge <= 12 ? self.restorationYear : undefined;
+				return relativeAge && ShortTermYears < relativeAge && relativeAge <= MidTermYears ? self.restorationYear : undefined;
 			},
 			get longTermRestoration(): number | undefined {
 				const relativeAge = self.restorationYear ? self.restorationYear - thisYear : undefined;
-				return relativeAge && relativeAge > 12 ? self.restorationYear : undefined;
+				return relativeAge && relativeAge > MidTermYears ? self.restorationYear : undefined;
 			}
 		}
 	})

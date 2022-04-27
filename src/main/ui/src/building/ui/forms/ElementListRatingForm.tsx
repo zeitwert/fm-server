@@ -90,11 +90,12 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 						<Input id={"cell-" + row + "-0"} accessor={elementForm.field("valuePart")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
 						<Input id={"cell-" + row + "-1"} accessor={elementForm.field("conditionYear")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 1, e.key)} />
 						<Input id={"cell-" + row + "-2"} accessor={elementForm.field("condition")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
+						<Static value={element.restorationAge?.toString()} size={1} align="right" readOnlyLook="plain" />
 						<Static value={element.restorationCosts ? element.restorationCosts + " kCHF" : ""} size={1} align="right" readOnlyLook="plain" />
 						<Static value={element.shortTermRestoration?.toString()} size={1} align="center" readOnlyLook="plain" />
 						<Static value={element.midTermRestoration?.toString()} size={1} align="center" readOnlyLook="plain" />
 						<Static value={element.longTermRestoration?.toString()} size={1} align="center" readOnlyLook="plain" />
-						<Static value={element.description} size={3} readOnlyLook="plain" />
+						<Static value={element.description} size={2} readOnlyLook="plain" />
 					</FieldRow>
 					<hr style={{ margin: "0.25rem 0" }}></hr>
 				</FieldGroup>

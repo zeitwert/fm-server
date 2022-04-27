@@ -171,7 +171,7 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 								<FieldGroup>
 									<FieldRow>
 										<Select label="Währung" accessor={this.formState.field("currency")} size={8} />
-										<Input label="Building Year" accessor={this.formState.field("buildingYear")} size={4} />
+										<Input label="Baujahr" accessor={this.formState.field("buildingYear")} size={4} />
 									</FieldRow>
 									<FieldRow>
 										<Input label="Versicherungswert" accessor={this.formState.field("insuredValue")} size={8} />
@@ -192,7 +192,7 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 							<div className="slds-card__body slds-card__body_inner">
 								<FieldGroup>
 									<FieldRow>
-										<Input label="Volumen (m³)" accessor={this.formState.field("volume")} size={6} />
+										<Input label="Volumen RI (m³)" accessor={this.formState.field("volume")} size={6} />
 										<Input label="Fläche GF (m²)" accessor={this.formState.field("areaGross")} size={6} />
 									</FieldRow>
 									<FieldRow>
