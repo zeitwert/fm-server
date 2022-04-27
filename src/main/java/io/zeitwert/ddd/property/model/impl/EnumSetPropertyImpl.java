@@ -58,6 +58,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	public void clearItems() {
 		this.itemSet.forEach(item -> ((PartSPI<?>) item).delete());
 		this.itemSet.clear();
+		this.getEntity().afterClear(this);
 	}
 
 	@Override

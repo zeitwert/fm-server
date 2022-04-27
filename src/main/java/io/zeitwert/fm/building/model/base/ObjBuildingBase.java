@@ -173,6 +173,14 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
+	public void setBuildingPartCatalog(CodeBuildingPartCatalog catalog) {
+		if ((catalog == null) != (this.getBuildingPartCatalog() == null) || catalog != this.getBuildingPartCatalog()) {
+			this.elementList.clearPartList();
+		}
+		this.buildingPartCatalog.setValue(catalog);
+	}
+
+	@Override
 	public double getBuildingValue(int year) {
 		if (this.getInsuredValueYear() != null && this.getInsuredValue() != null) {
 			return DefaultPriceIndex.priceAt(this.getInsuredValueYear(), 1000.0 * this.getInsuredValue().doubleValue(), year);

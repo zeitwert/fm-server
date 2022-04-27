@@ -79,6 +79,11 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		this.calcAll();
 	}
 
+	@Override
+	public void afterClear(Property<?> property) {
+		this.calcAll();
+	}
+
 	private void clearValidationList() {
 		this.validationList.clear();
 	}
