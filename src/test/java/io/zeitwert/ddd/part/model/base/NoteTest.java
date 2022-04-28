@@ -59,7 +59,7 @@ public class NoteTest {
 
 		ObjTest test1a = testRepository.create(sessionInfo);
 		// assertTrue(asPartRepoBase.isInitialised(test1a));
-		this.initObjTest(test1a, "One", "martin@comunas.fm", "ch");
+		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
 		Integer test1Id = test1a.getId();
 
 		assertEquals(0, test1a.getNoteList().size());

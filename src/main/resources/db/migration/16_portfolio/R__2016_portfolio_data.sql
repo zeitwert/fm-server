@@ -4,9 +4,9 @@ values (
 	nextval('obj_id_seq'),
 	(select id from obj_tenant_v where extl_key = 'demo'),
 	'obj_portfolio',
-	(select id from obj_user_v where email = 'verena@comunas.fm'),
+	(select id from obj_user_v where email = 'martin@zeitwert.io'),
 	'Gesamtbestand',
-	(select id from obj_user_v where email = 'verena@comunas.fm')
+	(select id from obj_user_v where email = 'martin@zeitwert.io')
 );
 
 insert into obj_portfolio(obj_id, intl_key, name, account_id)
@@ -20,9 +20,9 @@ values (
 	nextval('obj_id_seq'),
 	(select id from obj_tenant_v where extl_key = 'demo'),
 	'obj_portfolio',
-	(select id from obj_user_v where email = 'verena@comunas.fm'),
+	(select id from obj_user_v where email = 'martin@zeitwert.io'),
 	'Finanzvermögen',
-	(select id from obj_user_v where email = 'verena@comunas.fm')
+	(select id from obj_user_v where email = 'martin@zeitwert.io')
 );
 
 insert into obj_portfolio(obj_id, intl_key, name, account_id)
@@ -42,9 +42,9 @@ values (
 	nextval('obj_id_seq'),
 	(select id from obj_tenant_v where extl_key = 'demo'),
 	'obj_portfolio',
-	(select id from obj_user_v where email = 'verena@comunas.fm'),
+	(select id from obj_user_v where email = 'martin@zeitwert.io'),
 	'Verwaltungsvermögen',
-	(select id from obj_user_v where email = 'verena@comunas.fm')
+	(select id from obj_user_v where email = 'martin@zeitwert.io')
 );
 
 insert into obj_portfolio(obj_id, intl_key, name, account_id)

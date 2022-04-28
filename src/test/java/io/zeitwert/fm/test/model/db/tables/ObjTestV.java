@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row19;
+import org.jooq.Row21;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -92,6 +92,16 @@ public class ObjTestV extends TableImpl<ObjTestVRecord> {
     public final TableField<ObjTestVRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
+     * The column <code>public.obj_test_v.closed_by_user_id</code>.
+     */
+    public final TableField<ObjTestVRecord, Integer> CLOSED_BY_USER_ID = createField(DSL.name("closed_by_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_test_v.closed_at</code>.
+     */
+    public final TableField<ObjTestVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
      * The column <code>public.obj_test_v.obj_id</code>.
      */
     public final TableField<ObjTestVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
@@ -146,7 +156,7 @@ public class ObjTestV extends TableImpl<ObjTestVRecord> {
     }
 
     private ObjTestV(Name alias, Table<ObjTestVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_test_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    ot.obj_id,\n    ot.short_text,\n    ot.long_text,\n    ot.date,\n    ot.\"int\",\n    ot.is_done,\n    ot.json,\n    ot.nr,\n    ot.country_id,\n    ot.ref_test_id\n   FROM (obj_test ot\n     JOIN obj ON ((obj.id = ot.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_test_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ot.obj_id,\n    ot.short_text,\n    ot.long_text,\n    ot.date,\n    ot.\"int\",\n    ot.is_done,\n    ot.json,\n    ot.nr,\n    ot.country_id,\n    ot.ref_test_id\n   FROM (obj_test ot\n     JOIN obj ON ((obj.id = ot.obj_id)));"));
     }
 
     /**
@@ -206,11 +216,11 @@ public class ObjTestV extends TableImpl<ObjTestVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row19 type methods
+    // Row21 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String, Integer> fieldsRow() {
-        return (Row19) super.fieldsRow();
+    public Row21<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String, Integer> fieldsRow() {
+        return (Row21) super.fieldsRow();
     }
 }

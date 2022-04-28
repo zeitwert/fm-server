@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row17;
+import org.jooq.Row19;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -90,6 +90,16 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     public final TableField<ObjAccountVRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
+     * The column <code>public.obj_account_v.closed_by_user_id</code>.
+     */
+    public final TableField<ObjAccountVRecord, Integer> CLOSED_BY_USER_ID = createField(DSL.name("closed_by_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_account_v.closed_at</code>.
+     */
+    public final TableField<ObjAccountVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
      * The column <code>public.obj_account_v.obj_id</code>.
      */
     public final TableField<ObjAccountVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
@@ -134,7 +144,7 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     }
 
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    hh.obj_id,\n    hh.intl_key,\n    hh.name,\n    hh.description,\n    hh.account_type_id,\n    hh.client_segment_id,\n    hh.main_contact_id,\n    hh.reference_currency_id\n   FROM (obj_account hh\n     JOIN obj ON ((obj.id = hh.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    hh.obj_id,\n    hh.intl_key,\n    hh.name,\n    hh.description,\n    hh.account_type_id,\n    hh.client_segment_id,\n    hh.main_contact_id,\n    hh.reference_currency_id\n   FROM (obj_account hh\n     JOIN obj ON ((obj.id = hh.obj_id)));"));
     }
 
     /**
@@ -194,11 +204,11 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row17 type methods
+    // Row19 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, Integer, String> fieldsRow() {
-        return (Row17) super.fieldsRow();
+    public Row19<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, Integer, String> fieldsRow() {
+        return (Row19) super.fieldsRow();
     }
 }

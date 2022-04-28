@@ -14,7 +14,6 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -91,6 +90,16 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     public final TableField<ObjContactVRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
+     * The column <code>public.obj_contact_v.closed_by_user_id</code>.
+     */
+    public final TableField<ObjContactVRecord, Integer> CLOSED_BY_USER_ID = createField(DSL.name("closed_by_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_contact_v.closed_at</code>.
+     */
+    public final TableField<ObjContactVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
      * The column <code>public.obj_contact_v.obj_id</code>.
      */
     public final TableField<ObjContactVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
@@ -160,7 +169,7 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     }
 
     private ObjContactV(Name alias, Table<ObjContactVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_contact_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    ct.obj_id,\n    ct.intl_key,\n    ct.description,\n    ct.account_id,\n    ct.contact_role_id,\n    ct.salutation_id,\n    ct.title_id,\n    ct.first_name,\n    ct.last_name,\n    ct.birth_date,\n    ct.phone,\n    ct.mobile,\n    ct.email\n   FROM (obj_contact ct\n     JOIN obj ON ((obj.id = ct.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_contact_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ct.obj_id,\n    ct.intl_key,\n    ct.description,\n    ct.account_id,\n    ct.contact_role_id,\n    ct.salutation_id,\n    ct.title_id,\n    ct.first_name,\n    ct.last_name,\n    ct.birth_date,\n    ct.phone,\n    ct.mobile,\n    ct.email\n   FROM (obj_contact ct\n     JOIN obj ON ((obj.id = ct.obj_id)));"));
     }
 
     /**
@@ -217,14 +226,5 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     @Override
     public ObjContactV rename(Name name) {
         return new ObjContactV(name, null);
-    }
-
-    // -------------------------------------------------------------------------
-    // Row22 type methods
-    // -------------------------------------------------------------------------
-
-    @Override
-    public Row22<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, Integer, String, String, String, String, String, LocalDate, String, String, String> fieldsRow() {
-        return (Row22) super.fieldsRow();
     }
 }
