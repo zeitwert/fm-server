@@ -1,4 +1,7 @@
 
+-- insert into migr_obj_building_v(tenant, owner, account, name, building_type_id, building_sub_type_id, building_part_catalog_id, building_year, street, zip, city, country_id, currency_id, volume, area_gross, insured_value, insured_value_year, building_maintenance_strategy_id, description) values
+-- ('comunas', 'info@comunas.ch', '5620', 'Reussbrücke-Saal, Zwischenbau', 'T12','ST01-9','C9',1938,'Wohlerstrasse 1','5620','Bremgarten','ch','chf',4816,0,2302,2000,'N','Umbau/Sanierung ''99\nDachraum gem. Hauswart i.O.');
+
 insert into migr_obj_building_v(tenant, owner, account, name, building_type_id, building_sub_type_id, building_part_catalog_id, building_year, street, zip, city, country_id, currency_id, volume, area_gross, insured_value, insured_value_year, building_maintenance_strategy_id, description) values
 ('demo', 'martin@comunas.fm', '8253', 'best. Schulhaus Zentrum', 'T02','ST02-12','C0',1958,'Schulstrasse 5','8253','Diessenhofen','ch','chf',13886,0,8497,2006,'N',''),
 ('demo', 'martin@comunas.fm', '8255', 'Schulhaus Schlattingen', 'T02','ST02-12','C0',1970,'Bahnhofstrasse 1','8255','Schlattingen','ch','chf',3539,0,2480,2006,'N',''),

@@ -45,16 +45,16 @@ as
 $func$
 declare
 	new_id int;
-	tenant_id int;
+	tnt_id int;
 	owner_id int;
 	account_id int;
 	hh_name varchar(200);
 begin
-	select id into tenant_id from obj_tenant_v where extl_key = new.tenant;
+	select id into tnt_id from obj_tenant_v where extl_key = new.tenant;
 	select id into owner_id from obj_user_v where email = new.owner;
-	select id, name into account_id, hh_name from obj_account_v where intl_key = new.account;
+	select a.id, a.name into account_id, hh_name from obj_account_v a where a.intl_key = new.account and a.tenant_id = tnt_id;
 	insert into obj(id, tenant_id, obj_type_id, owner_id, created_by_user_id, caption)
-	values (nextval('obj_id_seq'), tenant_id, 'obj_building', owner_id, owner_id, new.name || ' (' || hh_name || ')')
+	values (nextval('obj_id_seq'), tnt_id, 'obj_building', owner_id, owner_id, new.name || ' (' || hh_name || ')')
 	returning id
 	into new_id;
 	insert into obj_building(
