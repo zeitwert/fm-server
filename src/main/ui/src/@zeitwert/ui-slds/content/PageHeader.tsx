@@ -118,7 +118,7 @@ export class PageHeader extends React.Component<PageHeaderProps> {
 			details.push(
 				<li key={i} className="slds-page-header__detail-block">
 					<div
-						className={"slds-text-title " + this.props.details[i].truncate ? "slds-truncate" : ""}
+						className={"slds-text-title " + (this.props.details[i].truncate ? "slds-truncate" : "")}
 						title={this.props.details[i].label}
 					>
 						{this.props.details[i].label}
