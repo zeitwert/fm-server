@@ -30,6 +30,9 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 	static final int DefaultDuration = 25;
 
+	static final List<String> FullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10");
+	static final List<String> HalfTechRates = List.of("P12", "P60", "P61", "P62");
+
 	private final SessionInfo sessionInfo;
 
 	private final ObjBuildingRepository buildingRepo;
@@ -48,18 +51,60 @@ public class ProjectionServiceImpl implements ProjectionService {
 		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream()
 				.map(id -> this.buildingRepo.get(sessionInfo, id))
 				.collect(Collectors.toSet());
-		int startYear = this.getMinProjectionDate(buildings);
 		int duration = DefaultDuration;
-		ProjectionResult projectionResult = this.getProjectionDetails(buildings, startYear, duration);
-		return this.consolidateProjection(projectionResult);
-
+		return this.getProjectionDetails(buildings, duration);
 	}
 
 	public ProjectionResult getProjection(ObjBuilding building) {
-		int startYear = this.getMinProjectionDate(building);
 		int duration = DefaultDuration;
-		ProjectionResult projectionResult = this.getProjectionDetails(Set.of(building), startYear, duration);
-		return this.consolidateProjection(projectionResult);
+		return this.getProjectionDetails(Set.of(building), duration);
+	}
+
+	/**
+	 * - get startYear (max(building.element.conditionYear))
+	 * - for all elements of all buildings:
+	 * -
+	 * 
+	 * @param buildings
+	 * @param duration
+	 * @return
+	 */
+	private ProjectionResult getProjectionDetails(Set<ObjBuilding> buildings, Integer duration) {
+		List<RestorationElement> elementList = new ArrayList<>();
+		Map<EnumeratedDto, ObjBuildingPartElement> elementMap = new HashMap<>();
+		Map<String, List<ProjectionPeriod>> elementResultMap = new HashMap<>();
+		int startYear = this.getMinProjectionDate(buildings);
+		//@formatter:off
+		for (ObjBuilding building : buildings) {
+			for (ObjBuildingPartElement element : building.getElementList()) {
+				if (element.getValuePart() > 0 && element.getCondition() > 0) {
+					List<ProjectionPeriod> elementPeriodList = this.getProjection(
+						/* buildingPart  => */ element.getBuildingPart(),
+						/* elementValue  => */ 100.0,
+						/* conditionYear => */ element.getConditionYear(),
+						/* condition     => */ element.getCondition() / 100.0,
+						/* startYear     => */ startYear,
+						/* duration      => */ duration
+					);
+					EnumeratedDto elementEnum = this.getAsEnumerated(element);
+					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
+					EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
+					elementList.add(RestorationElement.builder().element(elementEnum).building(buildingEnum).buildingPart(buildingPartEnum).build());
+					elementMap.put(elementEnum, element);
+					elementResultMap.put(elementEnum.getId(), elementPeriodList);
+				}
+			}
+		}
+		ProjectionResult rawResult =
+			ProjectionResult.builder()
+				.startYear(startYear)
+				.duration(duration)
+				.elementList(elementList)
+				.elementMap(elementMap)
+				.elementResultMap(elementResultMap)
+				.build();
+		//@formatter:on
+		return this.consolidateProjection(rawResult);
 	}
 
 	private int getMinProjectionDate(Set<ObjBuilding> buildings) {
@@ -83,47 +128,12 @@ public class ProjectionServiceImpl implements ProjectionService {
 		return projectionYear;
 	}
 
-	private ProjectionResult getProjectionDetails(Set<ObjBuilding> buildings, Integer startYear, Integer duration) {
-		List<RestorationElement> elementList = new ArrayList<>();
-		Map<EnumeratedDto, ObjBuildingPartElement> elementMap = new HashMap<>();
-		Map<String, List<ProjectionPeriod>> elementResultMap = new HashMap<>();
-		//@formatter:off
-		for (ObjBuilding building : buildings) {
-			for (ObjBuildingPartElement element : building.getElementList()) {
-				EnumeratedDto elementEnum = this.getEnumerated(element);
-				EnumeratedDto buildingEnum = this.getEnumerated(building);
-				EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
-				if (element.getValuePart() > 0 && element.getCondition() > 0) {
-					List<ProjectionPeriod> elementPeriodList = this.getProjection(
-						/* buildingPart  => */ element.getBuildingPart(),
-						/* elementValue  => */ 100.0,
-						/* conditionYear => */ element.getConditionYear(),
-						/* condition     => */ element.getCondition() / 100.0,
-						/* startYear     => */ startYear,
-						/* duration      => */ duration
-					);
-					elementList.add(RestorationElement.builder().element(elementEnum).building(buildingEnum).buildingPart(buildingPartEnum).build());
-					elementMap.put(elementEnum, element);
-					elementResultMap.put(elementEnum.getId(), elementPeriodList);
-				}
-			}
-		}
-		return ProjectionResult.builder()
-			.startYear(startYear)
-			.duration(duration)
-			.elementList(elementList)
-			.elementMap(elementMap)
-			.elementResultMap(elementResultMap)
-			.build();
-		//@formatter:on
-	}
-
-	private EnumeratedDto getEnumerated(ObjBuilding building) {
+	private EnumeratedDto getAsEnumerated(ObjBuilding building) {
 		String id = Integer.toString(building.getId());
 		return EnumeratedDto.builder().id(id).name(building.getName()).build();
 	}
 
-	private EnumeratedDto getEnumerated(ObjBuildingPartElement element) {
+	private EnumeratedDto getAsEnumerated(ObjBuildingPartElement element) {
 		String id = Integer.toString(element.getId());
 		return EnumeratedDto.builder().id(id)
 				.name(element.getMeta().getAggregate().getName() + ": " + element.getBuildingPart().getName()).build();
@@ -153,7 +163,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				double elementRestorationCosts = elementValue * elementPeriod.getRestorationCosts() / 100.0;
 				restorationCosts += elementRestorationCosts;
 				if (elementRestorationCosts != 0) {
-					EnumeratedDto buildingEnum = this.getEnumerated(building);
+					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
 					EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
 					//@formatter:off
 					RestorationElement restorationElement = RestorationElement.builder()
@@ -200,36 +210,6 @@ public class ProjectionServiceImpl implements ProjectionService {
 			.build();
 		//@formatter:on
 
-	}
-
-	//@formatter:off
-	public ProjectionPeriod getNextRestoration(
-		CodeBuildingPart buildingPart,
-		double elementValue,
-		int conditionYear,
-		double condition
-	) {
-	//@formatter:on
-
-		require(buildingPart != null, "buildingPart not null");
-		Double startYear = 0.0;
-		Double restorationYear = 0.0;
-		Double restorationCosts = 0.0;
-		if ((condition / 100) > buildingPart.getOptimalRestoreTimeValue()) {
-			startYear = Math.floor(getRelativeAge(buildingPart, condition / 100));
-			restorationYear = Math.floor(getRelativeAge(buildingPart, buildingPart.getOptimalRestoreTimeValue())) + 1;
-			restorationCosts = buildingPart.getRestoreCostPerc() / 100 - buildingPart.getOptimalRestoreTimeValue();
-		} else {
-			restorationCosts = (buildingPart.getRestoreCostPerc() - condition) / 100;
-		}
-		int duration = Double.valueOf(restorationYear - startYear).intValue();
-
-		return ProjectionPeriod.builder()
-				.year(conditionYear + duration)
-				.originalValue(elementValue)
-				.timeValue(buildingPart.getOptimalRestoreTimeValue())
-				.restorationCosts(Math.round(restorationCosts * elementValue))
-				.build();
 	}
 
 	//@formatter:off
@@ -294,12 +274,10 @@ public class ProjectionServiceImpl implements ProjectionService {
 	}
 
 	private double getTechRate(CodeBuildingPart buildingPart) {
-		List<String> fullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10");
-		List<String> halfTechRates = List.of("P12", "P60", "P61", "P62");
 		String id = buildingPart.getId();
-		if (fullTechRates.contains(id)) {
+		if (FullTechRates.contains(id)) {
 			return 1.0;
-		} else if (halfTechRates.contains(id)) {
+		} else if (HalfTechRates.contains(id)) {
 			return 0.5;
 		}
 		return 0.0;
@@ -333,6 +311,36 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 	private double getRatio(double timeValue, double lowBound, double highBound, double lowValue, double highValue) {
 		return lowValue + (timeValue - lowBound) / (highBound - lowBound) * (highValue - lowValue);
+	}
+
+	//@formatter:off
+	public ProjectionPeriod getNextRestoration(
+		CodeBuildingPart buildingPart,
+		double elementValue,
+		int conditionYear,
+		double condition
+	) {
+	//@formatter:on
+
+		require(buildingPart != null, "buildingPart not null");
+		Double startYear = 0.0;
+		Double restorationYear = 0.0;
+		Double restorationCosts = 0.0;
+		if ((condition / 100) > buildingPart.getOptimalRestoreTimeValue()) {
+			startYear = Math.floor(getRelativeAge(buildingPart, condition / 100));
+			restorationYear = Math.floor(getRelativeAge(buildingPart, buildingPart.getOptimalRestoreTimeValue())) + 1;
+			restorationCosts = buildingPart.getRestoreCostPerc() / 100 - buildingPart.getOptimalRestoreTimeValue();
+		} else {
+			restorationCosts = (buildingPart.getRestoreCostPerc() - condition) / 100;
+		}
+		int duration = Double.valueOf(restorationYear - startYear).intValue();
+
+		return ProjectionPeriod.builder()
+				.year(conditionYear + duration)
+				.originalValue(elementValue)
+				.timeValue(buildingPart.getOptimalRestoreTimeValue())
+				.restorationCosts(Math.round(restorationCosts * elementValue))
+				.build();
 	}
 
 	public double getTimeValue(CodeBuildingPart buildingPart, double relativeAge) {

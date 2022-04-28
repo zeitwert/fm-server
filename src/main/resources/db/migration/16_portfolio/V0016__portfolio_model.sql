@@ -25,6 +25,8 @@ select	obj.tenant_id,
 				obj.created_at,
 				obj.modified_by_user_id,
 				obj.modified_at,
+				obj.closed_by_user_id,
+				obj.closed_at,
 				--
 				pf.*
 from		obj_portfolio pf

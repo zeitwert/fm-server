@@ -167,6 +167,11 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		this.calcAll();
 	}
 
+	@Override
+	public void afterClear(Property<?> property) {
+		this.calcAll();
+	}
+
 	protected Boolean isInCalc() {
 		return this.isInCalc;
 	}

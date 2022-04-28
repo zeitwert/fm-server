@@ -11,8 +11,5 @@ values
 
 insert into code_client_segment(id, name)
 values
-('mm', 'Mass Market'),
-('ma', 'Mass Affluent'),
-('a', 'Affluent'),
-('hnwi', 'Hight Net Worth Individual'),
-('uhnwi', 'Ultra Hight Net Worth Individual');
+('community', 'Community'),
+('family', 'Family Office');

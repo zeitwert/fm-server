@@ -60,10 +60,10 @@ const MstBuildingModel = ObjModel.named("Building")
 			id && (await (self.rootStore as BuildingStore).accountsStore.loadAccount(id));
 			return superSetField("account", id);
 		}
-		async function setBuildingPartCatalog(catalog: Enumerated) {
+		async function setBuildingPartCatalog(catalog: Enumerated | undefined) {
 			self.elements.clear();
 			if (!catalog?.id) {
-				return;
+				return superSetField("buildingPartCatalog", undefined);
 			}
 			return flow(function* () {
 				try {

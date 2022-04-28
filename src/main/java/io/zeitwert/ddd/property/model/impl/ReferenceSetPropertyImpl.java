@@ -57,6 +57,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	public void clearItems() {
 		this.itemSet.forEach(item -> ((PartSPI<?>) item).delete());
 		this.itemSet.clear();
+		this.getEntity().afterClear(this);
 	}
 
 	@Override

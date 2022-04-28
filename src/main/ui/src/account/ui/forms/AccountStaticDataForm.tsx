@@ -23,7 +23,8 @@ const AccountStaticDataFormModel = new Form(
 		name: new TextField({ required: true }),
 		description: new TextField(),
 		//
-		accountType: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeAccountType" }),
+		accountType: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeAccountType", required: true }),
+		clientSegment: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeClientSegment" }),
 		//mainContacte: new EnumeratedField({ source: loadContacts }),
 	}
 );
@@ -80,53 +81,8 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 									<FieldGroup>
 										<FieldRow>
 											<Input label="Name" type="text" accessor={this.formState.field("name")} size={6} />
-											<Select label="Typ" accessor={this.formState.field("accountType")} size={6} />
-										</FieldRow>
-										{/*
-										<FieldRow>
-											<Select label="Hauptkontakt" accessor={this.formState.field("mainContact")} size={6} />
-											<MultiSelect label="Bereiche" accessor={this.formState.field("area")} size={6} />
-										</FieldRow>
-										*/}
-										<FieldRow>
-											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
-							</div>
-						</Card>
-					</div>
-					<div className="slds-col slds-size_1-of-1">
-						<Card heading="Kontakte" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} size={6} />
-											<Select label="Typ" accessor={this.formState.field("accountType")} size={6} />
-										</FieldRow>
-										{/*
-										<FieldRow>
-											<Select label="Hauptkontakt" accessor={this.formState.field("mainContact")} size={6} />
-											<MultiSelect label="Bereiche" accessor={this.formState.field("area")} size={6} />
-										</FieldRow>
-										*/}
-										<FieldRow>
-											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
-							</div>
-						</Card>
-					</div>
-					<div className="slds-col slds-size_1-of-1">
-						<Card heading="Systeminformation" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} size={6} />
-											<Select label="Typ" accessor={this.formState.field("accountType")} size={6} />
+											<Select label="Typ" accessor={this.formState.field("accountType")} size={3} />
+											<Select label="Segment" accessor={this.formState.field("clientSegment")} size={3} />
 										</FieldRow>
 										{/*
 										<FieldRow>

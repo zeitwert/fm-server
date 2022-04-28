@@ -20,4 +20,6 @@ public interface EntityWithPropertiesSPI {
 
 	void afterRemove(Property<?> property);
 
+	void afterClear(Property<?> property);
+
 }

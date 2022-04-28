@@ -105,6 +105,20 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	private getHeaderDetails(account: Account): HeaderDetail[] {
 		return [
+			{ label: "Type", content: account.accountType?.name },
+			{ label: "Client Segment", content: account.clientSegment?.name },
+			{
+				label: "Main Contact",
+				content: account.mainContact?.caption,
+				icon: account.mainContact ? <Icon category="standard" name="contact" size="small" /> : undefined,
+				link: account.mainContact ? "/contact/" + account.mainContact?.id : undefined
+			},
+			{
+				label: "Email",
+				content: account.mainContact?.email,
+				url: "mailto:" + account.mainContact?.email
+			},
+			{ label: "Phone", content: account.mainContact?.phone },
 			{
 				label: "Owner",
 				content: account.owner!.caption,
@@ -119,20 +133,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 				),
 				link: "/user/" + account.owner!.id
 			},
-			{
-				label: "Main Contact",
-				content: account.mainContact?.caption,
-				icon: account.mainContact ? <Icon category="standard" name="contact" size="small" /> : undefined,
-				link: account.mainContact ? "/contact/" + account.mainContact?.id : undefined
-			},
-			{ label: "Type", content: account.accountType?.name },
-			{ label: "Client Segment", content: account.clientSegment?.name },
-			{ label: "Main Phone", content: account.mainContact?.phone },
-			{
-				label: "Main Email",
-				content: account.mainContact?.email,
-				url: "mailto:" + account.mainContact?.email
-			}
 		];
 	}
 

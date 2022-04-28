@@ -56,7 +56,11 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	public void clearPartList() {
+		for (P part : this.partList) {
+			((PartSPI<?>) part).delete();
+		}
 		this.partList.clear();
+		this.getEntity().afterClear(this);
 	}
 
 	public P addPart() {

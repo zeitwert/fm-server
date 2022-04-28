@@ -85,20 +85,21 @@ public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBu
 		ObjBuilding building = part.getMeta().getAggregate();
 		if (building.getInsuredValue() != null) {
 			if (part.getValuePart() > 0 && part.getCondition() != null && part.getConditionYear() != null) {
-				double elementValue = part.getValuePart() / 100.0 * building.getInsuredValue().doubleValue();
 				//@formatter:off
+
 				ProjectionPeriod renovationPeriod =
-				projectionService.getNextRestoration(
-					part.getBuildingPart(),
-					elementValue,
-					part.getConditionYear(),
-					part.getCondition()
+					projectionService.getNextRestoration(
+						part.getBuildingPart(),
+						1000000.0,
+						part.getConditionYear(),
+						part.getCondition()
 					);
-					//@formatter:off
-					restorationYear = renovationPeriod.getYear();
-					restorationCosts = renovationPeriod.getRestorationCosts();
-				}
+				//@formatter:on
+				restorationYear = renovationPeriod.getYear();
+				double elementValue = part.getValuePart() / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
+				restorationCosts = (double) Math.round(renovationPeriod.getRestorationCosts() / 1000000.0 * elementValue);
 			}
+		}
 		// @formatter:off
 		return dtoBuilder
 			.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
