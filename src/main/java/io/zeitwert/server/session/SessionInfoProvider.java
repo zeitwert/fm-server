@@ -40,7 +40,7 @@ public class SessionInfoProvider {
 
 		String userEmail;
 		if (request.getParameter("isWebhook") != null) {
-			userEmail = "martin@comunas.fm";
+			userEmail = "martin@zeitwert.io";
 		} else {
 			try {
 				String authToken = jwtUtils.getJwtFromHeader(request);

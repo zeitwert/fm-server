@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -90,6 +90,16 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     public final TableField<ObjTenantVRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
+     * The column <code>public.obj_tenant_v.closed_by_user_id</code>.
+     */
+    public final TableField<ObjTenantVRecord, Integer> CLOSED_BY_USER_ID = createField(DSL.name("closed_by_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_tenant_v.closed_at</code>.
+     */
+    public final TableField<ObjTenantVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
      * The column <code>public.obj_tenant_v.obj_id</code>.
      */
     public final TableField<ObjTenantVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
@@ -114,7 +124,7 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     }
 
     private ObjTenantV(Name alias, Table<ObjTenantVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_tenant_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    t.obj_id,\n    t.name,\n    t.description,\n    t.extl_key\n   FROM (obj_tenant t\n     JOIN obj ON ((obj.id = t.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_tenant_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    t.obj_id,\n    t.name,\n    t.description,\n    t.extl_key\n   FROM (obj_tenant t\n     JOIN obj ON ((obj.id = t.obj_id)));"));
     }
 
     /**
@@ -174,11 +184,11 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row15<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

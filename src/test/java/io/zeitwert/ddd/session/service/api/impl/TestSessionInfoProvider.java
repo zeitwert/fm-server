@@ -28,7 +28,7 @@ public class TestSessionInfoProvider {
 	public SessionInfo getSessionInfo(HttpServletRequest request, DSLContext dslContext,
 			ObjTenantRepository tenantRepository, ObjUserRepository userRepository) {
 
-		String userEmail = "martin@comunas.fm";
+		String userEmail = "martin@zeitwert.io";
 		Optional<ObjUser> user = userRepository.getByEmail(userEmail);
 		if (user.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");

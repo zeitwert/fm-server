@@ -194,8 +194,8 @@ public final class StratusImport {
 				building.set(CURRENCY_ID, CURRENCY_MAP.get(building.get(CURRENCY_ID).toString()));
 				building.set(MAINTENANCE_STRATEGY_ID, MAINTENANCE_STRATEGY_MAP.get(building.get(MAINTENANCE_STRATEGY_ID)));
 				building.set(DESCRIPTION, building.get(DESCRIPTION).replace("'", "''"));
-				fw.write("comunas" + OUT_SEPARATOR + "martin@comunas.fm");
-				System.out.print("comunas" + "," + "martin@comunas.fm");
+				fw.write("comunas" + OUT_SEPARATOR + "martin@zeitwert.io");
+				System.out.print("comunas" + "," + "martin@zeitwert.io");
 				for (int col : BUILDING_EXPORT) {
 					fw.write(OUT_SEPARATOR + building.get(col));
 					System.out.print("," + building.get(col));

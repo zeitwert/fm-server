@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row16;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -90,6 +90,16 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     public final TableField<ObjUserVRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
+     * The column <code>public.obj_user_v.closed_by_user_id</code>.
+     */
+    public final TableField<ObjUserVRecord, Integer> CLOSED_BY_USER_ID = createField(DSL.name("closed_by_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_user_v.closed_at</code>.
+     */
+    public final TableField<ObjUserVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
      * The column <code>public.obj_user_v.obj_id</code>.
      */
     public final TableField<ObjUserVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
@@ -129,7 +139,7 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     private ObjUserV(Name alias, Table<ObjUserVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    u.obj_id,\n    u.name,\n    u.description,\n    u.email,\n    u.password,\n    u.role_list,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.name,\n    u.description,\n    u.email,\n    u.password,\n    u.role_list,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
     }
 
     /**
@@ -189,11 +199,11 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row16 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, String> fieldsRow() {
-        return (Row16) super.fieldsRow();
+    public Row18<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, String> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }
