@@ -1,7 +1,7 @@
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
 import { TASK_API } from "../service/TaskApi";
-import { Task, TaskModel } from "./TaskModel";
+import { Task, TaskModel, TaskSnapshot } from "./TaskModel";
 
 const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 	.props({
@@ -19,8 +19,8 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 		}
 	}))
 	.actions((self) => ({
-		setItem(item: Task) {
-			self.task = item;
+		setItem(snapshot: TaskSnapshot) {
+			self.task = cast(snapshot);
 		}
 	}));
 

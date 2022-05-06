@@ -1,10 +1,10 @@
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { StoreWithContactsModel } from "../../contact/model/StoreWithContacts";
 import { LEAD_API } from "../service/LeadApi";
-import { Lead, LeadModel } from "./LeadModel";
+import { Lead, LeadModel, LeadSnapshot } from "./LeadModel";
 
 const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 	.props({
@@ -33,8 +33,8 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(item: Lead) {
-			self.lead = item;
+		setItem(snapshot: LeadSnapshot) {
+			self.lead = cast(snapshot);
 		}
 	}));
 

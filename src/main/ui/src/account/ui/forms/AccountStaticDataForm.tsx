@@ -25,7 +25,7 @@ const AccountStaticDataFormModel = new Form(
 		//
 		accountType: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeAccountType", required: true }),
 		clientSegment: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeClientSegment" }),
-		//mainContacte: new EnumeratedField({ source: loadContacts }),
+		//mainContact: new EnumeratedField({ source: loadContacts }),
 	}
 );
 
@@ -40,9 +40,8 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 
 	constructor(props: AccountStaticDataFormProps) {
 		super(props);
-		const account = props.store.item!;
 		this.formState = AccountStaticDataFormModel.state(
-			account,
+			this.props.store.item!,
 			{
 				converterOptions: {
 					decimalSeparator: ".",
@@ -50,7 +49,7 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 					renderThousands: true,
 				},
 				isReadOnly: (accessor) => {
-					if (!props.store.isInTrx) {
+					if (!this.props.store.isInTrx) {
 						return true;
 					}
 					return false;

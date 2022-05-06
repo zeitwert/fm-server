@@ -1,10 +1,10 @@
 
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { PORTFOLIO_API } from "../service/PortfolioApi";
-import { Portfolio, PortfolioModel } from "./PortfolioModel";
+import { Portfolio, PortfolioModel, PortfolioSnapshot } from "./PortfolioModel";
 
 const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	.props({
@@ -31,8 +31,8 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(item: Portfolio) {
-			self.portfolio = item;
+		setItem(snapshot: PortfolioSnapshot) {
+			self.portfolio = cast(snapshot);
 		}
 	}));
 

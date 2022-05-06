@@ -25,6 +25,7 @@ const MstAggregateStoreModel = types
 	.model("AggregateStore", {
 		id: types.maybe(types.string),
 		inTrx: types.optional(types.boolean, false),
+		storeCount: types.optional(types.number, 0),
 		counters: types.maybe(types.frozen<AggregateCounters>())
 	})
 	.volatile(() => ({
@@ -47,8 +48,8 @@ const MstAggregateStoreModel = types
 		}
 	}))
 	// must overwrite
-	.actions(() => ({
-		setItem(aggregate: Aggregate) {
+	.actions((self) => ({
+		setItem(aggregate: AggregateSnapshot) {
 			requireThis(false, "setItem() is implemented");
 		}
 	}))
@@ -108,7 +109,7 @@ const MstAggregateStoreModel = types
 			transaction(() => {
 				self.id = id;
 				self.afterLoad(repository);
-				self.setItem(self.model.create(repository[self.typeName][id]));
+				self.setItem(repository[self.typeName][id]);
 			});
 		}
 	}))
@@ -116,7 +117,7 @@ const MstAggregateStoreModel = types
 		create(initValues?: AggregatePayload) {
 			transaction(() => {
 				self.id = undefined;
-				self.setItem(self.model.create(Object.assign({}, initValues, { id: "##NEW##" })));
+				self.setItem(Object.assign({}, initValues, { id: "##NEW##" }));
 				self.startTrx();
 			});
 		},
@@ -160,6 +161,7 @@ const MstAggregateStoreModel = types
 					transaction(() => {
 						self.updateStore(id, repository);
 						self.commitTrx();
+						self.storeCount += 1;
 					});
 					return self.item;
 				} catch (error: any) {
