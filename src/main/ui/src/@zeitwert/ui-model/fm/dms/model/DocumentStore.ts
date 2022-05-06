@@ -1,10 +1,10 @@
 import Logger from "loglevel";
 import { transaction } from "mobx";
-import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { API, Config } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { DOCUMENT_API } from "../service/DocumentApi";
-import { Document, DocumentContentType, DocumentModel } from "./DocumentModel";
+import { Document, DocumentContentType, DocumentModel, DocumentSnapshot } from "./DocumentModel";
 
 const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 	.props({
@@ -23,8 +23,8 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 		}
 	}))
 	.actions((self) => ({
-		setItem(item: Document) {
-			self.document = item;
+		setItem(snapshot: DocumentSnapshot) {
+			self.document = cast(snapshot);
 		}
 	}))
 	.actions(() => ({

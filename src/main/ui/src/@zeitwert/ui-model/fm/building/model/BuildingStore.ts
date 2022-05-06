@@ -1,9 +1,9 @@
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { BUILDING_API } from "../service/BuildingApi";
-import { Building, BuildingModel } from "./BuildingModel";
+import { Building, BuildingModel, BuildingSnapshot } from "./BuildingModel";
 
 const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 	.props({
@@ -30,8 +30,8 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(item: Building) {
-			self.building = item;
+		setItem(snapshot: BuildingSnapshot) {
+			self.building = cast(snapshot);
 		}
 	}));
 

@@ -1,10 +1,10 @@
 import Logger from "loglevel";
-import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { CONTACT_API } from "../service/ContactApi";
-import { Contact, ContactModel } from "./ContactModel";
+import { Contact, ContactModel, ContactSnapshot } from "./ContactModel";
 import { LifeEvent } from "./LifeEventModel";
 
 const MstContactStoreModel = ObjStoreModel.named("ContactStore")
@@ -24,8 +24,8 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 		}
 	}))
 	.actions((self) => ({
-		setItem(item: Contact) {
-			self.contact = item;
+		setItem(snapshot: ContactSnapshot) {
+			self.contact = cast(snapshot);
 		}
 	}))
 	.actions((self) => {
