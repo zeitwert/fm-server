@@ -5,21 +5,17 @@ import io.zeitwert.ddd.common.model.enums.CodeLocale;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SessionInfo {
-
-	public final String ACCOUNT = "account";
 
 	private final ObjTenant tenant;
 	private final ObjUser user;
+	private final Integer accountId;
 	private final CodeLocale locale;
-	private final Map<String, Object> customValues = new HashMap<>();
 
-	public SessionInfo(ObjTenant tenant, ObjUser user, CodeLocale locale) {
+	public SessionInfo(ObjTenant tenant, ObjUser user, Integer accountId, CodeLocale locale) {
 		this.tenant = tenant;
 		this.user = user;
+		this.accountId = accountId;
 		this.locale = locale;
 	}
 
@@ -35,37 +31,16 @@ public class SessionInfo {
 		return this.user;
 	}
 
+	public boolean hasAccount() {
+		return this.accountId != null;
+	}
+
+	public Integer getAccountId() {
+		return this.accountId;
+	}
+
 	public CodeLocale getLocale() {
 		return this.locale;
-	}
-
-	public boolean hasAccount() {
-		return this.hasCustomValue(ACCOUNT);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Integer getAccountId() {
-		return Integer.parseInt(((Map<String, Object>) this.getCustomValue(ACCOUNT)).get("id").toString());
-	}
-
-	public boolean hasCustomValue(String key) {
-		return this.customValues.get(key) != null;
-	}
-
-	public Object getCustomValue(String key) {
-		return this.customValues.get(key);
-	}
-
-	public Map<String, Object> getCustomValues() {
-		return Map.copyOf(this.customValues);
-	}
-
-	public void clearCustomValues() {
-		this.customValues.clear();
-	}
-
-	public void setCustomValue(String key, Object value) {
-		this.customValues.put(key, value);
 	}
 
 	@Override
@@ -73,8 +48,8 @@ public class SessionInfo {
 		return "SessionInfo("
 				+ "tenant: " + (tenant != null ? tenant.getId() : "null")
 				+ ", user: " + (user != null ? user.getId() : "null")
+				+ ", accountId: " + accountId
 				+ ", locale: " + (locale != null ? locale.getId() : "null")
-				+ ", customValues: " + customValues
 				+ ")";
 	}
 

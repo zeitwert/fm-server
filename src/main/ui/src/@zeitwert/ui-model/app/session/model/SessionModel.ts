@@ -1,4 +1,4 @@
-import { Enumerated } from "@zeitwert/ui-model";
+
 import { AxiosResponse } from "axios";
 import Logger from "loglevel";
 import { observable, transaction } from "mobx";
@@ -95,16 +95,11 @@ const MstSessionModel = types
 		}
 	}))
 	.actions((self) => ({
-		init(account: Enumerated) {
+		init() {
 			return flow(function* () {
 				try {
 					self.clear(SessionState.pendingOpen);
-					const sessionResponse: AxiosResponse<SessionInfo> = yield API.post(
-						Config.getApiUrl("session", SESSION_URL),
-						{
-							customValues: { account: account }
-						}
-					);
+					const sessionResponse: AxiosResponse<SessionInfo> = yield API.get(Config.getApiUrl("session", SESSION_URL));
 					const sessionInfo = sessionResponse.data;
 					sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(sessionInfo));
 					const appListResponse = yield API.get(Config.getApiUrl("app", APP_LIST_URL));
@@ -137,7 +132,7 @@ const MstSessionModel = types
 				initSession() {
 					const sessionInfo = sessionStorage.getItem(SESSION_INFO_ITEM);
 					if (!!sessionInfo) {
-						return self.init(JSON.parse(sessionInfo).customValues.account);
+						return self.init();
 					}
 					return Promise.resolve();
 				},
@@ -163,12 +158,13 @@ const MstSessionModel = types
 								Config.getApiUrl("session", LOGIN_URL),
 								{
 									email: email,
-									password: password
+									password: password,
+									accountId: account?.id
 								}
 							);
 							if (loginResponse.status === 200) {
-								sessionStorage.setItem(AUTH_HEADER_ITEM, loginResponse.data.type + " " + loginResponse.data.token);
-								yield self.init(account);
+								sessionStorage.setItem(AUTH_HEADER_ITEM, loginResponse.data.tokenType + " " + loginResponse.data.token);
+								yield self.init();
 								isAuthenticated.set(!!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM));
 							} else {
 								self.setState(SessionState.close);

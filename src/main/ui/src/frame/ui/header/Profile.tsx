@@ -14,7 +14,7 @@ const HeaderProfileCustomContent = (props: any) => (
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Mandant:</dt>
 						<dd className="slds-item_detail slds-truncate">{props.tenant}</dd>
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Kunde:</dt>
-						<dd className="slds-item_detail slds-truncate">{props.customValues.account?.name || "Kein Kunde"}</dd>
+						<dd className="slds-item_detail slds-truncate">{props.account?.name || "Kein Kunde"}</dd>
 					</dl>
 					<p className="slds-truncate">
 						<Button variant="base" className="slds-m-right_medium" onClick={props.onSettings}>
@@ -90,6 +90,7 @@ export default class Profile extends React.Component<ProfileProps> {
 									emailProvider={user?.emailProvider?.name}
 									email={user?.email}
 									tenant={sessionInfo?.tenant?.caption}
+									account={sessionInfo?.account}
 									onLogout={() => {
 										session?.logout();
 										onLogout && onLogout();
@@ -97,7 +98,6 @@ export default class Profile extends React.Component<ProfileProps> {
 									hasExternalAuthentication={false}
 									onConnect={() => { }}
 									onDisconnect={() => { }}
-									customValues={sessionInfo?.customValues}
 								/>
 							}
 						>

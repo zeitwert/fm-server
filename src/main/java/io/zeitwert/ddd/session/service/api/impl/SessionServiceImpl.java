@@ -16,7 +16,7 @@ import io.zeitwert.ddd.session.service.api.SessionService;
 @Service("sessionService")
 class SessionServiceImpl implements SessionService {
 
-	private static final SessionInfo GLOBAL_SESSION = new SessionInfo(null, null, null);
+	private static final SessionInfo GLOBAL_SESSION = new SessionInfo(null, null, null, null);
 
 	private final AppContext appContext;
 
@@ -37,7 +37,7 @@ class SessionServiceImpl implements SessionService {
 	@Override
 	public SessionInfo openSession(ObjUser user, CodeLocale locale) {
 		Assert.isTrue(user != null, "valid user");
-		return new SessionInfo(user.getTenant(), user, locale);
+		return new SessionInfo(user.getTenant(), user, null, locale);
 	}
 
 	@Override

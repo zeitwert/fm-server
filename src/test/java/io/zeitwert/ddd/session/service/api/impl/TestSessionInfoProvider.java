@@ -35,7 +35,7 @@ public class TestSessionInfoProvider {
 		}
 		ObjTenant tenant = user.get().getTenant();
 
-		return new SessionInfo(tenant, user.get(), CodeLocaleEnum.getLocale("en-US"));
+		return new SessionInfo(tenant, user.get(), null, CodeLocaleEnum.getLocale("en-US"));
 
 	}
 

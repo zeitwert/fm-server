@@ -2,6 +2,9 @@ package io.zeitwert.server.session.jwt;
 
 import java.io.IOException;
 
+import io.jsonwebtoken.Claims;
+import io.zeitwert.ddd.session.service.api.JwtProvider;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +26,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	private UserDetailsService userDetailsService;
 
 	@Autowired
-	private JwtUtils jwtUtils;
+	private JwtProvider jwtProvider;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
@@ -31,9 +34,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
-			String jwt = jwtUtils.getJwtFromHeader(request);
-			if (jwt != null && jwtUtils.validateJwt(jwt)) {
-				String username = jwtUtils.getUserNameFromJwt(jwt);
+			String jwt = jwtProvider.getJwtFromHeader(request);
+			if (jwt != null && jwtProvider.isValidJwt(jwt)) {
+				Claims claims = jwtProvider.getClaims(jwt);
+				String username = claims.getSubject();
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
 						userDetails.getAuthorities());
