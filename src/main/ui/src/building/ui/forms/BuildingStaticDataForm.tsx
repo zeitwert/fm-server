@@ -174,15 +174,15 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 										<Input label="Baujahr" accessor={this.formState.field("buildingYear")} size={4} />
 									</FieldRow>
 									<FieldRow>
-										<Input label="Versicherungswert" accessor={this.formState.field("insuredValue")} size={8} />
+										<Input label="Versicherungswert (kCHF)" accessor={this.formState.field("insuredValue")} size={8} />
 										<Input label="Jahr" accessor={this.formState.field("insuredValueYear")} size={4} />
 									</FieldRow>
 									<FieldRow>
-										<Input label="Nicht versicherter Wert" accessor={this.formState.field("notInsuredValue")} size={8} />
+										<Input label="Nicht versicherter Wert (kCHF)" accessor={this.formState.field("notInsuredValue")} size={8} />
 										<Input label="Jahr" accessor={this.formState.field("notInsuredValueYear")} size={4} />
 									</FieldRow>
 									<FieldRow>
-										<Input label="Wert Fremdeigentum" accessor={this.formState.field("thirdPartyValue")} size={8} />
+										<Input label="Wert Fremdeigentum (kCHF)" accessor={this.formState.field("thirdPartyValue")} size={8} />
 										<Input label="Jahr" accessor={this.formState.field("thirdPartyValueYear")} size={4} />
 									</FieldRow>
 								</FieldGroup>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
@@ -50,6 +51,7 @@ public class ApplicationController {
 				.id(user.getId())
 				.email(user.getEmail())
 				.name(user.getName())
+				.tenant(ObjTenantDto.fromObj(tenant))
 				.roles(user.getRoleList().stream().map(r -> r.getId()).toList())
 				.accounts(accountsDto)
 				.build()

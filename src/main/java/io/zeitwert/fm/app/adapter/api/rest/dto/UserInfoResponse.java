@@ -1,6 +1,7 @@
 package io.zeitwert.fm.app.adapter.api.rest.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class UserInfoResponse {
 	private Integer id;
 	private String name;
 	private String email;
+	private ObjTenantDto tenant;
 	private List<String> roles;
 	private List<EnumeratedDto> accounts;
 
