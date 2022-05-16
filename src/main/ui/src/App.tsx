@@ -44,7 +44,7 @@ export default class App extends React.Component<AppProps> {
 					<Route path="/:path/*" element={<DynamicView />} />
 				</Routes>;
 		}
-		const title = this.ctx.session?.sessionInfo?.customValues?.account ? this.ctx.session?.sessionInfo?.customValues?.account?.name + " | " + this.ctx.session.appInfo?.name : "Login";
+		const title = this.ctx.session?.sessionInfo?.account ? (this.ctx.session?.sessionInfo?.account.name + " | " + this.ctx.session.appInfo?.name) : "Login";
 		return (
 			<>
 				<Helmet>

@@ -4,12 +4,12 @@ package io.zeitwert.ddd.session.adapter.rest;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.adapter.rest.dto.LoginRequest;
 import io.zeitwert.ddd.session.adapter.rest.dto.LoginResponse;
-import io.zeitwert.ddd.session.adapter.rest.dto.SessionContextRequest;
 import io.zeitwert.ddd.session.adapter.rest.dto.SessionInfoReponse;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.model.impl.UserDetailsImpl;
 import io.zeitwert.ddd.session.service.api.JwtProvider;
 import io.zeitwert.ddd.session.service.api.SessionService;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 
 import java.util.List;
 
@@ -38,6 +38,9 @@ public class SessionController {
 	ObjUserRepository userRepository;
 
 	@Autowired
+	ObjAccountRepository accountRepository;
+
+	@Autowired
 	JwtProvider jwtProvider;
 
 	@Autowired
@@ -48,7 +51,8 @@ public class SessionController {
 		Authentication authToken = this.getAuthToken(loginRequest);
 		Authentication authentication = authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtProvider.getJwtToken(authentication);
+		Integer accountId = loginRequest.getAccountId();
+		String jwt = jwtProvider.getJwt(authentication, accountId);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
 		//@formatter:off
@@ -58,8 +62,8 @@ public class SessionController {
 				.id(userDetails.getId())
 				.username(userDetails.getUsername())
 				.email(userDetails.getEmail())
+				.accountId(accountId)
 				.roles(roles)
-				//.customValues(sessionInfo.getCustomValues())
 				.build()
 		);
 		//@formatter:on
@@ -69,26 +73,12 @@ public class SessionController {
 		return new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
 	}
 
-	@PostMapping("/session")
-	public ResponseEntity<SessionInfoReponse> setSessionContext(@RequestBody SessionContextRequest contextRequest) {
-		if (this.sessionInfo == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-		sessionInfo.clearCustomValues();
-		if (contextRequest.getCustomValues() != null) {
-			for (String key : contextRequest.getCustomValues().keySet()) {
-				sessionInfo.setCustomValue(key, contextRequest.getCustomValues().get(key));
-			}
-		}
-		return ResponseEntity.ok(SessionInfoReponse.fromSession(sessionInfo));
-	}
-
 	@GetMapping("/session")
 	public ResponseEntity<SessionInfoReponse> getSessionInfo() {
 		if (this.sessionInfo == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		return ResponseEntity.ok(SessionInfoReponse.fromSession(sessionInfo));
+		return ResponseEntity.ok(SessionInfoReponse.fromSession(sessionInfo, accountRepository));
 	}
 
 	@PostMapping("/logout")

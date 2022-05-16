@@ -24,6 +24,7 @@ export interface UserInfo {
 	id: string;
 	caption: string;
 	name: string;
+	tenant: Enumerated;
 	emailProvider: Enumerated;
 	email: string;
 	extlIdpUserId?: string;
@@ -36,17 +37,17 @@ export interface LoginInfo {
 	id: number;
 	email: string;
 	username: string;
-	type: string;
+	accountId: number;
+	tokenType: string;
 	token: string;
 	roles: string[];
-	customValues: any;
 }
 
 export interface SessionInfo {
 	tenant: TenantInfo;
 	user: UserInfo;
+	account: AccountInfo;
 	locale: Locale;
 	applicationId: string;
 	applications: Application[];
-	customValues: any;
 }

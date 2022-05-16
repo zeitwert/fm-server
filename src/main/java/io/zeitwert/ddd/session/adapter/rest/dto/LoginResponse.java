@@ -4,18 +4,18 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Builder
 public class LoginResponse {
 
+	private final String tokenType = "Bearer";
 	private String token;
-	private final String type = "Bearer";
+
 	private Integer id;
 	private String username;
 	private String email;
+	private Integer accountId;
 	private List<String> roles;
-	private Map<String, Object> customValues;
 
 }
