@@ -99,8 +99,8 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	private openPanel = (item: any) => {
-		this.showPanel = true;
-		this.panelItem = item;
+		//this.showPanel = true; @TODO
+		//this.panelItem = item; @TODO
 	}
 
 	private closePanel = () => {

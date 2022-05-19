@@ -39,7 +39,7 @@ export default class BuildingArea extends React.Component {
 								store={buildingStore}
 								listDatamart="building.buildings"
 								listTemplate="building.buildings.all"
-								actionButtons={[<Button key="import" label={"Import"} onClick={this.openImport} />]}
+								actionButtons={[<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />]}
 								canCreate
 								createEditor={() => <BuildingCreationForm store={buildingStore} />}
 								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!) }}

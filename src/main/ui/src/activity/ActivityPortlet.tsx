@@ -1,7 +1,6 @@
 
 import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, ActivityStore, ActivityStoreModel, Aggregate } from "@zeitwert/ui-model";
-import { TaskForm } from "activity/forms/TaskForm";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
@@ -25,6 +24,7 @@ export interface ActivityProps {
 
 @observer
 export class ActivityPortlet extends React.Component<ActivityProps> {
+
 	@observable store: ActivityStore = ActivityStoreModel.create();
 	@observable activeTabId = TAB.TIMELINE;
 
@@ -64,24 +64,25 @@ export class ActivityPortlet extends React.Component<ActivityProps> {
 	}
 
 	private renderFormTabs() {
-		const { item, account } = this.props;
-		const tabs = [];
-		if (!this.hideTask) {
-			tabs.push(
-				<TabsPanel key={TAB.NEW_TASK} label="New Task">
-					<div className="slds-m-around_medium">
-						<TaskForm item={item} account={account} onSave={this.onActivitySave} />
-					</div>
-				</TabsPanel>
-			);
-		}
+		//const { item, account } = this.props;
+		const tabs: any[] = [];
+		// if (!this.hideTask) {
+		// 	tabs.push(
+		// 		<TabsPanel key={TAB.NEW_TASK} label="New Task">
+		// 			<div className="slds-m-around_medium">
+		// 				<TaskForm item={item} account={account} onSave={this.onActivitySave} />
+		// 			</div>
+		// 		</TabsPanel>
+		// 	);
+		// }
 		return tabs;
 	}
 
-	private onActivitySave = async (type: string, data: any) => {
-		const { item, onSave } = this.props;
-		await onSave(type, data);
-		await this.store.loadActivitiesByItem(item);
-		this.activeTabId = TAB.TIMELINE;
-	};
+	// private onActivitySave = async (type: string, data: any) => {
+	// 	const { item, onSave } = this.props;
+	// 	await onSave(type, data);
+	// 	await this.store.loadActivitiesByItem(item);
+	// 	this.activeTabId = TAB.TIMELINE;
+	// };
+
 }

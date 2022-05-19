@@ -17,15 +17,15 @@ interface ItemListProps extends ItemListHeaderProps {
 export default class ItemListView extends React.Component<ItemListProps> {
 
 	@observable
-	hasMap: boolean = false;
+	hasMap: boolean = false; // @TODO proper
 
 	@observable
-	showMap: boolean = false;
+	showMap: boolean = false; // @TODO proper
 
 	constructor(props: ItemListProps) {
 		super(props);
 		makeObservable(this);
-		this.hasMap = this.props.defaultTemplateId?.indexOf("buildings")! >= 0;
+		//this.hasMap = this.props.defaultTemplateId?.indexOf("buildings")! >= 0;
 	}
 
 	render() {

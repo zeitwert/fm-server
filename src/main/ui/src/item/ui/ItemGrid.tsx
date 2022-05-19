@@ -14,10 +14,10 @@ import NotesTab from "./tab/NotesTab";
 import StageHistoryTab from "./tab/StageHistoryTab";
 
 enum TAB {
-	NOTES = 0,
-	DOCUMENTS = 1,
-	CHAT = 2,
-	ACTIVITY = 3,
+	ACTIVITY = 0,
+	NOTES = 1,
+	DOCUMENTS = 2,
+	CHAT = 3,
 	STAGE_HISTORY = 4
 }
 
@@ -78,7 +78,7 @@ interface ItemRightPartProps {
 @observer
 export class ItemRightPart extends React.Component<ItemRightPartProps> {
 
-	@observable activeTabId = TAB.NOTES;
+	@observable activeTabId = TAB.ACTIVITY;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -90,7 +90,10 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 	}
 
 	render() {
-		const { store, areas, hideDocuments, hideNotes, hideChat, hasItemPath } = this.props;
+		const { store, areas, /*hideNotes, hideDocuments, hideChat,*/ hasItemPath } = this.props;
+		const hideNotes = true;
+		const hideDocuments = true;
+		const hideChat = true;
 		const item = store.item! as (Aggregate & ItemWithNotes);
 		const classes = classNames(
 			"slds-size_1-of-1 slds-large-size_1-of-3",
