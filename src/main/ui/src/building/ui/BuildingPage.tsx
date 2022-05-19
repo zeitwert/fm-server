@@ -83,7 +83,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 									{this.activeLeftTabId === TAB.RATING && <BuildingRatingForm store={this.buildingStore} />}
 								</TabsPanel>
 								<TabsPanel label="Auswertung">
-									{this.activeLeftTabId === TAB.EVALUATION && <TabProjection url={"buildings/" + this.buildingStore.building?.id} />}
+									{this.activeLeftTabId === TAB.EVALUATION && <TabProjection itemType="building" itemId={this.buildingStore.building?.id!} />}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>
