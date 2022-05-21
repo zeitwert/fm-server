@@ -15,9 +15,9 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.service.api.ProjectionPeriod;
-import io.zeitwert.fm.building.service.api.ProjectionResult;
 import io.zeitwert.fm.building.service.api.ProjectionService;
+import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
+import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 
 @RestController("projectionController")

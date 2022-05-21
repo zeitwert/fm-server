@@ -13,8 +13,8 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElement;
 import io.zeitwert.fm.building.model.enums.CodeBuildingElementDescriptionEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.service.api.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.ProjectionService;
+import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 
