@@ -6,14 +6,16 @@ import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import TabProjectionChart from "./TabProjectionChart";
+import TabProjectionPrint from "./TabProjectionPrint";
 import TabProjectionTable from "./TabProjectionTable";
 
 export interface TabProjectionProps {
-	url: string;
+	itemType: "building" | "portfolio";
+	itemId: string;
 }
 
 enum ReportType {
-	CHART, TABLE
+	CHART, TABLE, PRINT
 }
 
 @observer
@@ -35,13 +37,17 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 		return this.props as any as AppCtx;
 	}
 
+	get url() {
+		return this.props.itemType + "s/" + this.props.itemId;
+	}
+
 	constructor(props: any) {
 		super(props);
 		makeObservable(this);
 	}
 
 	async componentDidMount() {
-		await this.loadProjection(this.props.url);
+		await this.loadProjection(this.url);
 	}
 
 	render() {
@@ -83,10 +89,23 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 							<span className="slds-truncate" title="Tabelle">Tabelle</span>
 						</a>
 					</li>
+					<li className={"slds-vertical-tabs__nav-item" + (this.reportType === ReportType.PRINT ? " slds-is-active" : "")} title="Druck" role="presentation">
+						<a className="slds-vertical-tabs__link" href="/#" role="tab" tabIndex={1} id="rep-table" onClick={(e) => { this.reportType = ReportType.PRINT; e.stopPropagation(); e.preventDefault(); }}>
+							<span className="slds-vertical-tabs__left-icon">
+								<span className="slds-icon_container slds-icon-utility-rows slds-current-color">
+									<svg className="slds-icon slds-icon_small" aria-hidden="true">
+										<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#print"></use>
+									</svg>
+								</span>
+							</span>
+							<span className="slds-truncate" title="Tabelle">Druck</span>
+						</a>
+					</li>
 				</ul>
 				<div className="slds-vertical-tabs__content slds-show" id="rep-content" role="tabpanel">
 					{this.reportType === ReportType.CHART && <TabProjectionChart projection={this.projection} key={"portf-chart-" + this.loadNr} />}
 					{this.reportType === ReportType.TABLE && <TabProjectionTable projection={this.projection} key={"portf-table-" + this.loadNr} />}
+					{this.reportType === ReportType.PRINT && <TabProjectionPrint itemType={this.props.itemType} itemId={this.props.itemId} key={"portf-print-" + this.loadNr} />}
 				</div>
 			</div>
 		);

@@ -1,4 +1,4 @@
-package io.zeitwert.fm.building.service.api;
+package io.zeitwert.fm.building.service.api.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Builder;

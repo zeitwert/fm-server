@@ -82,7 +82,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 									{this.activeLeftTabId === TAB.DETAILS && <PortfolioStaticDataForm store={this.portfolioStore} />}
 								</TabsPanel>
 								<TabsPanel label="Auswertung">
-									{this.activeLeftTabId === TAB.EVALUATION && <TabProjection url={"portfolios/" + this.portfolioStore.portfolio?.id} />}
+									{this.activeLeftTabId === TAB.EVALUATION && <TabProjection itemType="portfolio" itemId={this.portfolioStore.portfolio?.id!} />}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>

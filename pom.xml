@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -27,8 +31,17 @@
 		<lombok.version>1.18.22</lombok.version>
 		<jooq-codegen.version>3.14.11</jooq-codegen.version>
 		<javassist.version>3.28.0-GA</javassist.version>
+		<aspose-words.version>22.4</aspose-words.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>AsposeJavaAPI</id>
+			<name>Aspose Java API</name>
+			<url>https://repository.aspose.com/repo/</url>
+		</repository>
+	</repositories>
+	
 	<dependencies>
 
 		<!-- Runtime -->
@@ -67,6 +80,20 @@
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>${javassist.version}</version>
+		</dependency>
+
+		<!-- Aspose -->
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-words</artifactId>
+			<version>${aspose-words.version}</version>
+			<classifier>jdk17</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-words</artifactId>
+			<version>${aspose-words.version}</version>
+			<classifier>javadoc</classifier>
 		</dependency>
 
 		<!-- Test -->

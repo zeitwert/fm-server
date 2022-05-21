@@ -18,6 +18,11 @@ export const Config = {
 			.replace("{type}", "transfer")
 			.replace("{api}", module + "/" + url);
 	},
+	getEvaluationUrl(module: string, url: string) {
+		return Env.getParam("API_BASE_URL")
+			.replace("{type}", "evaluation")
+			.replace("{api}", module + "/" + url);
+	},
 	getTenantConfigUrl(tenant: string, url: string) {
 		return Env.getParam("API_BASE_URL")
 			.replace("{type}", "config")

@@ -1,4 +1,4 @@
-package io.zeitwert.fm.building.service.api;
+package io.zeitwert.fm.building.service.api.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -15,8 +15,10 @@ interface ActivityPortletTimelineProps extends RouteComponentProps {
 
 @observer
 class ActivityPortletTimeline extends React.Component<ActivityPortletTimelineProps> {
+
 	@observable isUpcomingActivitiesOpen = true;
 	@observable isOverdueActivitiesOpen = true;
+	@observable isPastActivitiesOpen = true;
 	@observable pastActivityOpenStates = new Map<string, boolean>();
 
 	constructor(props: ActivityPortletTimelineProps) {
@@ -61,7 +63,15 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 				>
 					{this.renderTimeline(overdueActivities, "No overdue activities.", true)}
 				</ExpandableSection>
-				{this.renderPastActivities(pastActivities)}
+				<ExpandableSection
+					id="past-activities"
+					/* @ts-ignore */
+					title={<span className="slds-text-title_bold">Past</span>}
+					isOpen={this.isPastActivitiesOpen}
+					onToggleOpen={() => (this.isPastActivitiesOpen = !this.isPastActivitiesOpen)}
+				>
+					{this.renderPastActivities(pastActivities)}
+				</ExpandableSection>
 			</>
 		);
 	}
@@ -85,6 +95,9 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 	}
 
 	private renderPastActivities(activities: Map<string, Activity[]>) {
+		if (!activities?.size) {
+			return <p className="slds-m-horizontal_medium">No past activities.</p>;
+		}
 		const items: JSX.Element[] = [];
 		activities.forEach((activities, key) => {
 			const date = moment(key, "YYYY-MM");

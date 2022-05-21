@@ -6,10 +6,10 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElement;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.service.api.ProjectionPeriod;
-import io.zeitwert.fm.building.service.api.ProjectionResult;
 import io.zeitwert.fm.building.service.api.ProjectionService;
-import io.zeitwert.fm.building.service.api.RestorationElement;
+import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
+import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
+import io.zeitwert.fm.building.service.api.dto.RestorationElement;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 
 import java.util.ArrayList;

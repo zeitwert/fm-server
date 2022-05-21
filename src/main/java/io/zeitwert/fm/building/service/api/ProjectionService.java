@@ -2,6 +2,8 @@ package io.zeitwert.fm.building.service.api;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
+import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
+import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 
 import java.util.List;
