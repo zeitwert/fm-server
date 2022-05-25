@@ -15,7 +15,10 @@ export default class TabProjectionPrint extends React.Component<TabProjectionPri
 	render() {
 		return <>
 			<ButtonGroup variant="list">
-				<Button onClick={() => { window.location.href = Config.getEvaluationUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId); }}>Drucken</Button>
+				<Button onClick={() => { window.location.href = Config.getEvaluationUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId + "?format=pdf"); }}>Drucken PDF</Button>
+			</ButtonGroup>
+			<ButtonGroup variant="list">
+				<Button onClick={() => { window.location.href = Config.getEvaluationUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId + "?format=docx"); }}>Drucken DOCX</Button>
 			</ButtonGroup>
 		</>;
 	}
