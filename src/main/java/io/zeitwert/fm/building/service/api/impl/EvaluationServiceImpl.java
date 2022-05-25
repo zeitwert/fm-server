@@ -13,6 +13,7 @@ import io.zeitwert.fm.building.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.RestorationElement;
+import io.zeitwert.fm.common.service.api.Formatter;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 
 import java.awt.Color;
@@ -49,13 +50,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Baujahr", value);
 		}
 		if (building.getInsuredValue() != null) {
-			value = "CHF " + building.getInsuredValue().toString();
-			this.addParameter(facts, "GV-Neuwert (indexiert)", value);
-			value = "CHF " + building.getInsuredValue().toString();
-			this.addParameter(facts, "Zeitwert", value);
+			value = Formatter.INSTANCE.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
+			this.addParameter(facts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
 		}
 		if (building.getVolume() != null) {
-			value = building.getVolume().toString() + " m³";
+			value = Formatter.INSTANCE.formatNumber(building.getVolume()) + " m³";
 			this.addParameter(facts, "Volumen", value);
 		}
 		if (building.getBuildingType() != null) {
@@ -103,8 +102,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
 			EvaluationPeriod ep = EvaluationPeriod.builder()
 					.year(pp.getYear())
-					.originalValue((int) Math.round(pp.getOriginalValue() / 1000))
-					.timeValue((int) Math.round(pp.getTimeValue() / 1000))
+					.originalValue(1000 * (int) Math.round(pp.getOriginalValue() / 1000))
+					.timeValue(1000 * (int) Math.round(pp.getTimeValue() / 1000))
 					.maintenanceCosts(1000 * (int) Math.round(pp.getMaintenanceCosts() / 1000))
 					.restorationCosts(1000 * (int) Math.round(pp.getRestorationCosts() / 1000))
 					.build();
@@ -151,10 +150,6 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return null;
 	}
 
-	public PortfolioEvaluationResult getEvaluation(ObjPortfolio portfolio) {
-		return null;
-	}
-
 	private void addParameter(List<EvaluationParameter> list, String name, String value) {
 		if (value != null) {
 			list.add(EvaluationParameter.builder().name(name).value(value).build());
@@ -171,6 +166,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 		return GOOD_RATING;
 
+	}
+
+	public PortfolioEvaluationResult getEvaluation(ObjPortfolio portfolio) {
+		return null;
 	}
 
 }
