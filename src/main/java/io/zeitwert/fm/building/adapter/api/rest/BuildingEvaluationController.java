@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -43,7 +44,8 @@ import javax.annotation.PostConstruct;
 @RequestMapping("/evaluation/building/buildings")
 public class BuildingEvaluationController {
 
-	private static final int SAVE_FORMAT = SaveFormat.PDF;
+	// private static final String OPT_IS_MARKER = "\u058D";
+	private static final String OPT_IS_MARKER = "X";
 
 	@Autowired
 	private ObjBuildingRepository repo;
@@ -74,7 +76,9 @@ public class BuildingEvaluationController {
 	}
 
 	@GetMapping("/{id}")
-	protected ResponseEntity<byte[]> exportBuilding(@PathVariable("id") Integer id) throws Exception {
+	protected ResponseEntity<byte[]> exportBuilding(@PathVariable("id") Integer id,
+			@RequestParam(required = false, name = "format") String format)
+			throws Exception {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
@@ -85,10 +89,11 @@ public class BuildingEvaluationController {
 		this.fillRenovationTable(doc, evaluationResult);
 		this.fillCostsChart(doc, evaluationResult);
 
+		int saveFormat = this.getSaveFormat(format);
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		doc.save(outStream, SAVE_FORMAT);
+		doc.save(outStream, saveFormat);
 
-		String fileName = this.getFileName(building);
+		String fileName = this.getFileName(building, saveFormat);
 		ResponseEntity<byte[]> response = ResponseEntity.ok()
 				.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"") // mark file for download
 				.body(outStream.toByteArray());
@@ -116,7 +121,7 @@ public class BuildingEvaluationController {
 				if (restorationYear != null) {
 					Integer delta = (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
 					cell = getNthNextSibling(row.getFirstCell(), delta);
-					cell.getFirstParagraph().appendChild(new Run(doc, "\u058D"));
+					cell.getFirstParagraph().appendChild(new Run(doc, OPT_IS_MARKER));
 					cell = row.getLastCell();
 					cell.getFirstParagraph()
 							.appendChild(new Run(doc, Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF")));
@@ -187,9 +192,13 @@ public class BuildingEvaluationController {
 		return (Cell) cell;
 	}
 
-	private String getFileName(ObjBuilding building) {
+	private int getSaveFormat(String format) {
+		return format != null && "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
+	}
+
+	private String getFileName(ObjBuilding building, int saveFormat) {
 		return (building.getAccount() != null ? building.getAccount().getName() + " " : "") + building.getName()
-				+ (SAVE_FORMAT == SaveFormat.DOCX ? ".docx" : ".pdf");
+				+ (saveFormat == SaveFormat.DOCX ? ".docx" : ".pdf");
 	}
 
 }
