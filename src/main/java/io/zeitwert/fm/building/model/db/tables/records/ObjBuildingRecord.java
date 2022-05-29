@@ -217,241 +217,283 @@ public class ObjBuildingRecord extends UpdatableRecordImpl<ObjBuildingRecord> {
     }
 
     /**
+     * Setter for <code>public.obj_building.geo_address</code>.
+     */
+    public void setGeoAddress(String value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building.geo_address</code>.
+     */
+    public String getGeoAddress() {
+        return (String) get(14);
+    }
+
+    /**
+     * Setter for <code>public.obj_building.geo_coordinates</code>.
+     */
+    public void setGeoCoordinates(String value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building.geo_coordinates</code>.
+     */
+    public String getGeoCoordinates() {
+        return (String) get(15);
+    }
+
+    /**
+     * Setter for <code>public.obj_building.geo_zoom</code>.
+     */
+    public void setGeoZoom(Integer value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building.geo_zoom</code>.
+     */
+    public Integer getGeoZoom() {
+        return (Integer) get(16);
+    }
+
+    /**
      * Setter for <code>public.obj_building.currency_id</code>.
      */
     public void setCurrencyId(String value) {
-        set(14, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.obj_building.currency_id</code>.
      */
     public String getCurrencyId() {
-        return (String) get(14);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.obj_building.volume</code>.
      */
     public void setVolume(BigDecimal value) {
-        set(15, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.obj_building.volume</code>.
      */
     public BigDecimal getVolume() {
-        return (BigDecimal) get(15);
+        return (BigDecimal) get(18);
     }
 
     /**
      * Setter for <code>public.obj_building.area_gross</code>.
      */
     public void setAreaGross(BigDecimal value) {
-        set(16, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.obj_building.area_gross</code>.
      */
     public BigDecimal getAreaGross() {
-        return (BigDecimal) get(16);
+        return (BigDecimal) get(19);
     }
 
     /**
      * Setter for <code>public.obj_building.area_net</code>.
      */
     public void setAreaNet(BigDecimal value) {
-        set(17, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.obj_building.area_net</code>.
      */
     public BigDecimal getAreaNet() {
-        return (BigDecimal) get(17);
+        return (BigDecimal) get(20);
     }
 
     /**
      * Setter for <code>public.obj_building.nr_of_floors_above_ground</code>.
      */
     public void setNrOfFloorsAboveGround(Integer value) {
-        set(18, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.obj_building.nr_of_floors_above_ground</code>.
      */
     public Integer getNrOfFloorsAboveGround() {
-        return (Integer) get(18);
+        return (Integer) get(21);
     }
 
     /**
      * Setter for <code>public.obj_building.nr_of_floors_below_ground</code>.
      */
     public void setNrOfFloorsBelowGround(Integer value) {
-        set(19, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.obj_building.nr_of_floors_below_ground</code>.
      */
     public Integer getNrOfFloorsBelowGround() {
-        return (Integer) get(19);
+        return (Integer) get(22);
     }
 
     /**
      * Setter for <code>public.obj_building.building_type_id</code>.
      */
     public void setBuildingTypeId(String value) {
-        set(20, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.obj_building.building_type_id</code>.
      */
     public String getBuildingTypeId() {
-        return (String) get(20);
+        return (String) get(23);
     }
 
     /**
      * Setter for <code>public.obj_building.building_sub_type_id</code>.
      */
     public void setBuildingSubTypeId(String value) {
-        set(21, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.obj_building.building_sub_type_id</code>.
      */
     public String getBuildingSubTypeId() {
-        return (String) get(21);
+        return (String) get(24);
     }
 
     /**
      * Setter for <code>public.obj_building.building_year</code>.
      */
     public void setBuildingYear(Integer value) {
-        set(22, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>public.obj_building.building_year</code>.
      */
     public Integer getBuildingYear() {
-        return (Integer) get(22);
+        return (Integer) get(25);
     }
 
     /**
      * Setter for <code>public.obj_building.insured_value</code>.
      */
     public void setInsuredValue(BigDecimal value) {
-        set(23, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>public.obj_building.insured_value</code>.
      */
     public BigDecimal getInsuredValue() {
-        return (BigDecimal) get(23);
+        return (BigDecimal) get(26);
     }
 
     /**
      * Setter for <code>public.obj_building.insured_value_year</code>.
      */
     public void setInsuredValueYear(Integer value) {
-        set(24, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>public.obj_building.insured_value_year</code>.
      */
     public Integer getInsuredValueYear() {
-        return (Integer) get(24);
+        return (Integer) get(27);
     }
 
     /**
      * Setter for <code>public.obj_building.not_insured_value</code>.
      */
     public void setNotInsuredValue(BigDecimal value) {
-        set(25, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>public.obj_building.not_insured_value</code>.
      */
     public BigDecimal getNotInsuredValue() {
-        return (BigDecimal) get(25);
+        return (BigDecimal) get(28);
     }
 
     /**
      * Setter for <code>public.obj_building.not_insured_value_year</code>.
      */
     public void setNotInsuredValueYear(Integer value) {
-        set(26, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>public.obj_building.not_insured_value_year</code>.
      */
     public Integer getNotInsuredValueYear() {
-        return (Integer) get(26);
+        return (Integer) get(29);
     }
 
     /**
      * Setter for <code>public.obj_building.third_party_value</code>.
      */
     public void setThirdPartyValue(BigDecimal value) {
-        set(27, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>public.obj_building.third_party_value</code>.
      */
     public BigDecimal getThirdPartyValue() {
-        return (BigDecimal) get(27);
+        return (BigDecimal) get(30);
     }
 
     /**
      * Setter for <code>public.obj_building.third_party_value_year</code>.
      */
     public void setThirdPartyValueYear(Integer value) {
-        set(28, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>public.obj_building.third_party_value_year</code>.
      */
     public Integer getThirdPartyValueYear() {
-        return (Integer) get(28);
+        return (Integer) get(31);
     }
 
     /**
      * Setter for <code>public.obj_building.building_part_catalog_id</code>.
      */
     public void setBuildingPartCatalogId(String value) {
-        set(29, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>public.obj_building.building_part_catalog_id</code>.
      */
     public String getBuildingPartCatalogId() {
-        return (String) get(29);
+        return (String) get(32);
     }
 
     /**
      * Setter for <code>public.obj_building.building_maintenance_strategy_id</code>.
      */
     public void setBuildingMaintenanceStrategyId(String value) {
-        set(30, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>public.obj_building.building_maintenance_strategy_id</code>.
      */
     public String getBuildingMaintenanceStrategyId() {
-        return (String) get(30);
+        return (String) get(33);
     }
 
     // -------------------------------------------------------------------------
@@ -477,7 +519,7 @@ public class ObjBuildingRecord extends UpdatableRecordImpl<ObjBuildingRecord> {
     /**
      * Create a detached, initialised ObjBuildingRecord
      */
-    public ObjBuildingRecord(Integer objId, String intlKey, String name, String description, Integer accountId, String buildingNr, String buildingInsuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear, String buildingPartCatalogId, String buildingMaintenanceStrategyId) {
+    public ObjBuildingRecord(Integer objId, String intlKey, String name, String description, Integer accountId, String buildingNr, String buildingInsuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear, String buildingPartCatalogId, String buildingMaintenanceStrategyId) {
         super(ObjBuilding.OBJ_BUILDING);
 
         setObjId(objId);
@@ -494,6 +536,9 @@ public class ObjBuildingRecord extends UpdatableRecordImpl<ObjBuildingRecord> {
         setZip(zip);
         setCity(city);
         setCountryId(countryId);
+        setGeoAddress(geoAddress);
+        setGeoCoordinates(geoCoordinates);
+        setGeoZoom(geoZoom);
         setCurrencyId(currencyId);
         setVolume(volume);
         setAreaGross(areaGross);

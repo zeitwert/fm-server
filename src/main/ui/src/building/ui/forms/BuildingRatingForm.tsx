@@ -83,7 +83,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Select label="Bauteilset" accessor={this.formState.field("buildingPartCatalog")} size={3} onChange={this.onSetPartCatalog} />
+											<Select label="Gebäudekategorie" accessor={this.formState.field("buildingPartCatalog")} size={3} onChange={this.onSetPartCatalog} />
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="&nbsp;">
 													{

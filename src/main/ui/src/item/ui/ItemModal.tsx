@@ -27,7 +27,7 @@ export default class ItemModal extends React.Component<ItemModalProps> {
 			<MediaObject
 				body={
 					<>
-						{store.isNew ? "Add new" : "Edit"} {itemName}
+						{store.isNew ? "Neu:" : "Bearbeiten:"} {itemName}
 					</>
 				}
 				figure={<Icon category={iconCategory as any} name={iconName as any} size="small" />}

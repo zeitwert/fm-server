@@ -41,6 +41,7 @@ import io.zeitwert.fm.obj.model.base.FMObjBase;
 public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	static final CodeBuildingPriceIndex DefaultPriceIndex = CodeBuildingPriceIndexEnum.getBuildingPriceIndex("ch-ZRH");
+	static final Integer DefaultGeoZoom = 17;
 
 	private final UpdatableRecord<?> dbRecord;
 
@@ -58,6 +59,11 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final SimpleProperty<String> zip;
 	protected final SimpleProperty<String> city;
 	protected final EnumProperty<CodeCountry> country;
+
+	protected final SimpleProperty<String> geoAddress;
+	protected final SimpleProperty<String> geoCoordinates;
+	protected final SimpleProperty<Integer> geoZoom;
+
 	protected final EnumProperty<CodeCurrency> currency;
 
 	protected final SimpleProperty<BigDecimal> volume;
@@ -107,6 +113,10 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		this.city = this.addSimpleProperty(dbRecord, ObjBuildingFields.CITY);
 		this.country = this.addEnumProperty(dbRecord, ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
 		this.currency = this.addEnumProperty(dbRecord, ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
+
+		this.geoAddress = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_ADDRESS);
+		this.geoCoordinates = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_COORDINATES);
+		this.geoZoom = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_ZOOM);
 
 		this.volume = this.addSimpleProperty(dbRecord, ObjBuildingFields.VOLUME);
 		this.areaGross = this.addSimpleProperty(dbRecord, ObjBuildingFields.AREA_GROSS);
@@ -233,6 +243,9 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	private void validateElements() {
+		if (this.getGeoCoordinates() == null) {
+			this.addValidation(CodeValidationLevelEnum.ERROR, "geo coordinates must be determined");
+		}
 		if (this.getInsuredValue() == null || this.getInsuredValue().equals(BigDecimal.ZERO)) {
 			this.addValidation(CodeValidationLevelEnum.ERROR, "building value must be specified");
 		}

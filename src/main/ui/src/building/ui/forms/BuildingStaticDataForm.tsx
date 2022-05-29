@@ -24,7 +24,7 @@ const BuildingStaticDataFormModel = new Form(
 		name: new TextField({ required: true }),
 		description: new TextField(),
 		//
-		buildingNr: new TextField(),
+		buildingNr: new TextField({ required: true }),
 		buildingInsuranceNr: new TextField(),
 		plotNr: new TextField(),
 		nationalBuildingId: new TextField(),
@@ -123,22 +123,15 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 			<div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
 					<div className="slds-col slds-size_1-of-3">
-						<Card heading="Addresse" bodyClassName="slds-m-around_medium">
+						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<div className="slds-form" role="list">
-									<FieldGroup isAddress>
+									<FieldGroup>
 										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} helpText="a name" />
+											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} />
 										</FieldRow>
 										<FieldRow>
-											<Input label="Strasse" accessor={this.formState.field("street")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="PLZ" accessor={this.formState.field("zip")} size={4} />
-											<Input label="Ort" accessor={this.formState.field("city")} size={8} />
-										</FieldRow>
-										<FieldRow>
-											<Select label="Land" accessor={this.formState.field("country")} />
+											<Input label="Name" type="text" accessor={this.formState.field("name")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>
@@ -149,16 +142,31 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="Nr Police GV" accessor={this.formState.field("buildingInsuranceNr")} />
+											<Input label="Police Gebäudeversicherung" accessor={this.formState.field("buildingInsuranceNr")} />
 										</FieldRow>
 										<FieldRow>
 											<Input label="EGID" accessor={this.formState.field("nationalBuildingId")} />
 										</FieldRow>
 										<FieldRow>
 											<Input label="Parzellen-Nr" accessor={this.formState.field("plotNr")} />
+										</FieldRow>
+									</FieldGroup>
+								</div>
+							</div>
+						</Card>
+						<Card heading="Addresse" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body slds-card__body_inner">
+								<div className="slds-form" role="list">
+									<FieldGroup isAddress>
+										<FieldRow>
+											<Input label="Strasse" accessor={this.formState.field("street")} />
+										</FieldRow>
+										<FieldRow>
+											<Input label="PLZ" accessor={this.formState.field("zip")} size={4} />
+											<Input label="Ort" accessor={this.formState.field("city")} size={8} />
+										</FieldRow>
+										<FieldRow>
+											<Select label="Land" accessor={this.formState.field("country")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

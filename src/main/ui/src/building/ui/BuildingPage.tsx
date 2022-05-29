@@ -10,13 +10,15 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
 import React from "react";
+import BuildingLocationForm from "./forms/BuildingLocationForm";
 import BuildingRatingForm from "./forms/BuildingRatingForm";
 import BuildingStaticDataForm from "./forms/BuildingStaticDataForm";
 
 enum TAB {
 	OVERVIEW = 0,
-	RATING = 1,
-	EVALUATION = 2
+	LOCATION = 1,
+	RATING = 2,
+	EVALUATION = 3
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -66,7 +68,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 						<ItemEditor
 							store={this.buildingStore}
 							entityType={EntityType.BUILDING}
-							showEditButtons={this.activeLeftTabId === TAB.OVERVIEW || this.activeLeftTabId === TAB.RATING}
+							showEditButtons={[TAB.OVERVIEW, TAB.LOCATION, TAB.RATING].indexOf(this.activeLeftTabId) >= 0}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
@@ -78,6 +80,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							>
 								<TabsPanel label="Stammdaten">
 									{this.activeLeftTabId === TAB.OVERVIEW && <BuildingStaticDataForm store={this.buildingStore} />}
+								</TabsPanel>
+								<TabsPanel label="Lage">
+									{this.activeLeftTabId === TAB.LOCATION && <BuildingLocationForm store={this.buildingStore} />}
 								</TabsPanel>
 								<TabsPanel label="Bewertung">
 									{this.activeLeftTabId === TAB.RATING && <BuildingRatingForm store={this.buildingStore} />}

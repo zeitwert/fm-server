@@ -110,6 +110,11 @@ create table obj_building (
 	zip																		varchar(60),
 	city																	varchar(60),
 	country_id														varchar(40)					not null references code_country(id),
+	--
+	geo_address														varchar(200),
+	geo_coordinates												varchar(200),
+	geo_zoom															integer,
+	--
 	currency_id														varchar(40)					not null references code_currency(id),
 	--
 	volume																decimal,

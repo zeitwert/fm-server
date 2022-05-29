@@ -20,6 +20,7 @@
 		"@salesforce/design-system-react": "^0.10.39",
 		"axios": "^0.24.0",
 		"classnames": "^2.3.1",
+		"google-map-react": "^2.1.10",
 		"highcharts": "^9.3.0",
 		"highcharts-react-official": "^3.1.0",
 		"json-api-normalizer": "^1.0.4",
@@ -48,6 +49,7 @@
 	},
 	"devDependencies": {
 		"@types/d3-scale": "^4.0.2",
+		"@types/google-map-react": "^2.1.7",
 		"@types/google.maps": "^3.47.2",
 		"@types/history": "^4.7.9",
 		"@types/jest": "^27.0.1",

@@ -1,0 +1,84 @@
+
+package io.zeitwert.fm.building.adapter.api.rest;
+
+import com.google.maps.ImageResult;
+import com.google.maps.model.Size;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeRequestDto;
+import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeResponseDto;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.building.service.api.BuildingService;
+
+@RestController("buildingLocationController")
+@RequestMapping("/location/building/buildings")
+public class BuildingLocationController {
+
+	private static final Integer DefaultGeoZoom = 17;
+	private static final Size DefaultMapSize = new Size(800, 600);
+
+	@Autowired
+	private ObjBuildingRepository repo;
+
+	@Autowired
+	SessionInfo sessionInfo;
+
+	@Autowired
+	BuildingService buildingService;
+
+	@GetMapping("/{id}")
+	protected ResponseEntity<byte[]> getMap(@PathVariable("id") Integer id) {
+
+		ObjBuilding building = this.repo.get(sessionInfo, id);
+
+		String coordinates = building.getGeoCoordinates();
+		Integer zoom = building.getGeoZoom() != null ? building.getGeoZoom() : DefaultGeoZoom;
+		if (coordinates == null) {
+			return ResponseEntity.noContent().build();
+		}
+
+		ImageResult ir = buildingService.getMap(building.getName(), coordinates, DefaultMapSize, zoom);
+		if (ir == null) {
+			return ResponseEntity.noContent().build();
+		}
+
+		ResponseEntity<byte[]> response = ResponseEntity.ok()
+				.contentType(MediaType.IMAGE_JPEG)
+				.body(ir.imageData);
+
+		return response;
+	}
+
+	@PostMapping
+	public ResponseEntity<GeocodeResponseDto> login(@RequestBody GeocodeRequestDto request) {
+
+		if (request.getGeoAddress() != null && !request.getGeoAddress().equals("")) {
+		} else if (request.getCountry() == null) {
+			return ResponseEntity.badRequest().build();
+		} else if (request.getStreet() == null || request.getZip() == null || request.getCity() == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		String address = request.getGeoAddress();
+		if (address == null || address.equals("")) {
+			address = request.getStreet() + ", " + request.getZip() + " " + request.getCity() + ", " + request.getCountry();
+		}
+		String coordinates = this.buildingService.getCoordinates(address);
+		if (coordinates == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok()
+				.body(GeocodeResponseDto.builder().geoCoordinates(coordinates).geoZoom(DefaultGeoZoom).build());
+	}
+
+}

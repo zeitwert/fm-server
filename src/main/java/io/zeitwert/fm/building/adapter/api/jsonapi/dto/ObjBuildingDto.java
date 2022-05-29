@@ -80,6 +80,9 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private String zip;
 	private String city;
 	private EnumeratedDto country;
+	private String geoAddress;
+	private String geoCoordinates;
+	private Integer geoZoom;
 	private EnumeratedDto currency;
 	private BigDecimal volume;
 	private BigDecimal areaGross;
@@ -119,6 +122,9 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 		obj.setZip(this.zip);
 		obj.setCity(this.city);
 		obj.setCountry(this.country == null ? null : CodeCountryEnum.getCountry(this.country.getId()));
+		obj.setGeoAddress(this.geoAddress);
+		obj.setGeoCoordinates(this.geoCoordinates);
+		obj.setGeoZoom(this.getGeoZoom());
 		obj.setCurrency(this.currency == null ? null : CodeCurrencyEnum.getCurrency(this.currency.getId()));
 		obj.setVolume(this.volume);
 		obj.setAreaGross(this.areaGross);
@@ -169,6 +175,9 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			.zip(obj.getZip())
 			.city(obj.getCity())
 			.country(EnumeratedDto.fromEnum(obj.getCountry()))
+			.geoAddress(obj.getGeoAddress())
+			.geoCoordinates(obj.getGeoCoordinates())
+			.geoZoom(obj.getGeoZoom())
 			.currency(EnumeratedDto.fromEnum(obj.getCurrency()))
 			.volume(obj.getVolume())
 			.areaGross(obj.getAreaGross())
@@ -211,6 +220,9 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			.zip(obj.getZip())
 			.city(obj.getCity())
 			.country(EnumeratedDto.fromEnum(CodeCountryEnum.getCountry(obj.getCountryId())))
+			.geoAddress(obj.getGeoAddress())
+			.geoCoordinates(obj.getGeoCoordinates())
+			.geoZoom(obj.getGeoZoom())
 			.currency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getCurrencyId())))
 			.volume(obj.getVolume())
 			.areaGross(obj.getAreaGross())

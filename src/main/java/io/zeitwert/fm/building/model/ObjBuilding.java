@@ -73,6 +73,18 @@ public interface ObjBuilding extends FMObj {
 
 	void setCountry(CodeCountry country);
 
+	String getGeoAddress();
+
+	void setGeoAddress(String geoAddress);
+
+	String getGeoCoordinates();
+
+	void setGeoCoordinates(String geoCoordinates);
+
+	Integer getGeoZoom();
+
+	void setGeoZoom(Integer geoZoom);
+
 	CodeCurrency getCurrency();
 
 	void setCurrency(CodeCurrency currency);

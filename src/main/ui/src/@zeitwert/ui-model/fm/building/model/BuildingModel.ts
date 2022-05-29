@@ -1,6 +1,8 @@
 
-import { toJS } from "mobx";
-import { flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { AxiosResponse } from "axios";
+import Logger from "loglevel";
+import { reaction, toJS, transaction } from "mobx";
+import { addDisposer, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Config } from "../../../app/common/config/Config";
 import { API } from "../../../app/common/service/Api";
 import { UUID } from "../../../app/common/utils/Id";
@@ -9,6 +11,7 @@ import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
 import { BuildingElement, BuildingElementModel } from "./BuildingElementModel";
 import { BuildingStore } from "./BuildingStore";
+import { GeocodeRequest, GeocodeResponse } from "./GeocodeDto";
 
 const MstBuildingModel = ObjModel.named("Building")
 	.props({
@@ -32,6 +35,10 @@ const MstBuildingModel = ObjModel.named("Building")
 		zip: types.maybe(types.string),
 		city: types.maybe(types.string),
 		country: types.maybe(types.frozen<Enumerated>()),
+		//
+		geoAddress: types.maybe(types.string),
+		geoCoordinates: types.maybe(types.string),
+		geoZoom: types.maybe(types.number),
 		//
 		volume: types.maybe(types.number),
 		areaGross: types.maybe(types.number),
@@ -114,6 +121,83 @@ const MstBuildingModel = ObjModel.named("Building")
 			return self.elements.reduce((sum, element) => { return sum + (element.valuePart || 0.0); }, 0.0);
 		}
 	}))
+	.views((self) => ({
+		get isReadyForGeocode(): boolean {
+			if (!!self.geoAddress) {
+				return true;
+			} else if (!!self.street && !!self.zip && !!self.city && !!self.country) {
+				return true;
+			}
+			return false;
+		},
+		get geoInput(): string {
+			if (!!self.geoAddress) {
+				return self.geoAddress;
+			} else if (!!self.street && !!self.zip && !!self.city && !!self.country) {
+				return self.street + ", " + self.zip + " " + self.city + ", " + self.country;
+			}
+			return "";
+		},
+	}))
+	.actions((self) => ({
+		resolveGeocode() {
+			return flow(function* () {
+				if (self.isReadyForGeocode) {
+					transaction(() => {
+						self.geoCoordinates = undefined;
+						self.geoZoom = undefined;
+					});
+					try {
+						const geocodeResponse: AxiosResponse<GeocodeResponse> = yield API.post(
+							Config.getLocationUrl("building", "buildings"),
+							{
+								geoAddress: !!self.geoAddress ? self.geoAddress : undefined,
+								street: self.street,
+								zip: self.zip,
+								city: self.city,
+								country: self.country?.name
+							} as GeocodeRequest
+						);
+						if (geocodeResponse.status === 200) {
+							const geoCoordinates = geocodeResponse.data.geoCoordinates;
+							const geoZoom = geocodeResponse.data.geoZoom;
+							transaction(() => {
+								self.geoCoordinates = geoCoordinates;
+								self.geoZoom = geoZoom;
+							});
+						} else {
+							self.geoCoordinates = "Kann nicht auflösen";
+						}
+					} catch (error: any) {
+						Logger.error("Geocode request failed", error);
+					}
+				}
+			})();
+		}
+	}))
+	.actions(self => {
+		let timeout: any;
+		return {
+			afterCreate() {
+				addDisposer(self, reaction(
+					() => {
+						return { input: self.geoInput, inTrx: self.rootStore.isInTrx };
+					},
+					() => {
+						if (timeout) {
+							clearTimeout(timeout);
+							timeout = null;
+						}
+						if (self.rootStore.isInTrx && self.isReadyForGeocode) {
+							timeout = setTimeout(() => {
+								self.resolveGeocode();
+							}, 500);
+						}
+					}
+				))
+			}
+		}
+	})
 	.views((self) => ({
 		get apiSnapshot() {
 			return Object.assign({}, toJS(getSnapshot(self)), {
