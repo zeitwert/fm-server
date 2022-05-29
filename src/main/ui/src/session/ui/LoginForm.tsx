@@ -1,12 +1,36 @@
 
 import { Button, Card, MediaObject } from "@salesforce/design-system-react";
-import { Input, Select } from "@zeitwert/ui-forms";
-import { Session } from "@zeitwert/ui-model";
+import { EnumeratedField, Input, Select, TextField } from "@zeitwert/ui-forms";
+import { Enumerated, session, Session } from "@zeitwert/ui-model";
 import { inject, observer } from "mobx-react";
 import { Instance } from "mobx-state-tree";
-import { AnyFormState } from "mstform";
+import { AnyFormState, Form, Query } from "mstform";
 import React from "react";
-import { LoginData, LoginFormModel, LoginModel } from "session/model/LoginModel";
+import { isValidEmail, LoginData, LoginModel } from "session/model/LoginModel";
+
+const loadAccounts = async (q: Query): Promise<Enumerated[]> => {
+	if (isValidEmail(q.email)) {
+		const userInfoResponse = await session.userInfo(q.email!);
+		if (userInfoResponse) {
+			return userInfoResponse.accounts;
+		}
+	}
+	return [];
+};
+
+export const LoginFormModel = new Form(
+	LoginModel,
+	{
+		email: new TextField({ required: true }),
+		password: new TextField({ required: true }),
+		account: new EnumeratedField({
+			source: loadAccounts,
+			dependentQuery: (accessor) => {
+				return { email: accessor.node.email };
+			}
+		}),
+	}
+);
 
 export interface LoginFormProps {
 	session: Session;
@@ -66,3 +90,4 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	}
 
 }
+
