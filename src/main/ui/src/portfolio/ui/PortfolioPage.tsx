@@ -72,6 +72,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"portfolio-" + this.portfolioStore.portfolio?.id}
 						>
 							<Tabs
 								className="full-height"

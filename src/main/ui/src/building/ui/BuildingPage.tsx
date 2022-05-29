@@ -72,6 +72,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"building-" + this.buildingStore.building?.id}
 						>
 							<Tabs
 								className="full-height"

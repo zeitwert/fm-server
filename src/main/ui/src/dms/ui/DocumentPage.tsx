@@ -69,6 +69,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"document-" + this.documentStore.document?.id}
 						>
 							{(editor) => (
 								<Tabs

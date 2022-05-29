@@ -70,6 +70,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"account-" + this.accountStore.account?.id}
 						>
 							<Tabs className="full-height" selectedIndex={this.activeLeftTabId} onSelect={(tabId: any) => (this.activeLeftTabId = tabId)} >
 								<TabsPanel label="Details">

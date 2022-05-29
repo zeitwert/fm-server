@@ -81,6 +81,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"task-" + this.taskStore.task?.id}
 						>
 							{(editor) => (
 								<Tabs

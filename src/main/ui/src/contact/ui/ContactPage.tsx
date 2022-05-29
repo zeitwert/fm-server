@@ -90,6 +90,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"contact-" + this.contactStore.contact?.id}
 						>
 							{(editor) => (
 								<Tabs

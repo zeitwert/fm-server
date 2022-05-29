@@ -85,6 +85,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"lead-" + this.leadStore.lead?.id}
 						>
 							{(editor) => (
 								<Tabs

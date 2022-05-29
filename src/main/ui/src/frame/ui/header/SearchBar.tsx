@@ -2,7 +2,6 @@
 import { Combobox, Icon } from "@salesforce/design-system-react";
 import { API, Config, EntityTypes } from "@zeitwert/ui-model";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
-import { debounce } from "lodash";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -21,9 +20,8 @@ interface Option {
 class SearchBar extends React.Component<RouteComponentProps> {
 
 	@observable value = "";
-	readonly options = observable<Option>([]);
+	@observable options: Option[] = [];
 	@observable searchNr = 0;
-	debouncedSearch: (searchText: string) => void;
 
 	get ctx() {
 		return this.props as any;
@@ -32,7 +30,6 @@ class SearchBar extends React.Component<RouteComponentProps> {
 	constructor(props: any) {
 		super(props);
 		makeObservable(this);
-		this.debouncedSearch = debounce(this.search, 200);
 	}
 
 	render() {
@@ -46,20 +43,20 @@ class SearchBar extends React.Component<RouteComponentProps> {
 				events={{
 					onFocus: () => {
 						this.value = "";
-						this.options.clear();
+						this.options = [];
 					},
 					onChange: (e: React.FormEvent<HTMLInputElement>, data: { value: string }) => {
 						this.value = data.value;
-						this.debouncedSearch(data.value);
+						this.search(data.value);
 					},
 					onSubmit: (e: React.FormEvent<HTMLInputElement>, data: { value: string }) => {
 						this.value = data.value;
-						this.debouncedSearch(data.value);
+						this.search(data.value);
 					},
 					onSelect: (e: React.MouseEvent<HTMLElement>, data: { selection: Option[] }) => {
 						this.value = "";
 						this.searchNr++;
-						this.options.clear();
+						this.options = [];
 						this.props.navigate?.(data.selection[0]?.id);
 					}
 				}}
@@ -70,20 +67,20 @@ class SearchBar extends React.Component<RouteComponentProps> {
 
 	private search = (searchText: string) => {
 		const s = searchText?.replace(/\s/g, "");
-		if (s.length < 2 || (parseInt(s) && s.length < 4)) {
-			this.options.clear();
+		if (searchText?.replace(/\s/g, "").length < 2) {
+			this.options = [];
 		} else {
+			this.options = [];
 			API.get(Config.getApiUrl("search", "?searchText=" + s)).then((response) => {
-				this.options.clear();
-				response.data.forEach((item: any) => {
+				this.options = response.data.map((item: any) => {
 					const type = item.itemType.id.substring(4);
 					const entityType = EntityTypes[type];
-					this.options.push({
+					return {
 						id: "/" + type + "/" + item.id,
 						label: item.caption,
 						icon: <Icon category={entityType.iconCategory} name={entityType.iconName} />,
 						subTitle: entityType.labelSingular
-					});
+					};
 				});
 			});
 		}
