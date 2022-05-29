@@ -106,7 +106,7 @@ public class BuildingEvaluationController {
 
 		Table optRenovationTable = (Table) doc.getChild(NodeType.TABLE, 3, true);
 
-		Cell yearCell = optRenovationTable.getFirstRow().getFirstCell();
+		Cell yearCell = ((Row) optRenovationTable.getFirstRow().getNextSibling()).getFirstCell();
 		for (int i = 0; i < 25; i++) {
 			yearCell = (Cell) yearCell.getNextSibling();
 			yearCell.getFirstParagraph().appendChild(new Run(doc, Integer.toString(evaluationResult.getStartYear() + i)));
@@ -114,7 +114,7 @@ public class BuildingEvaluationController {
 
 		for (EvaluationElement e : evaluationResult.getElements()) {
 			if (e.getValuePart() > 0) {
-				Row row = addRow(optRenovationTable);
+				Row row = addRenovationTableRow(optRenovationTable);
 				Cell cell = row.getFirstCell();
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
 				Integer restorationYear = e.getRestorationYear();
@@ -128,7 +128,7 @@ public class BuildingEvaluationController {
 				}
 			}
 		}
-		optRenovationTable.getFirstRow().getNextSibling().remove();
+		optRenovationTable.getFirstRow().getNextSibling().getNextSibling().remove();
 
 	}
 
@@ -178,9 +178,9 @@ public class BuildingEvaluationController {
 
 	}
 
-	private Row addRow(Table table) {
-		Row firstRow = (Row) table.getFirstRow().getNextSibling();
-		Row clonedRow = (Row) firstRow.deepClone(true);
+	private Row addRenovationTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling().getNextSibling();
+		Row clonedRow = (Row) templateRow.deepClone(true);
 		table.appendChild(clonedRow);
 		return clonedRow;
 	}

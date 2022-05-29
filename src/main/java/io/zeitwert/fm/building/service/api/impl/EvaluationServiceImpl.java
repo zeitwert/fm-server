@@ -45,6 +45,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 		String value = null;
 
 		List<EvaluationParameter> facts = new ArrayList<>();
+		if (building.getBuildingPartCatalog() != null) {
+			value = building.getBuildingPartCatalog().getName();
+			this.addParameter(facts, "Gebäudekategorie", value);
+		}
 		if (building.getBuildingYear() != null) {
 			value = Integer.toString(building.getBuildingYear());
 			this.addParameter(facts, "Baujahr", value);
@@ -55,25 +59,24 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 		if (building.getVolume() != null) {
 			value = Formatter.INSTANCE.formatNumber(building.getVolume()) + " m³";
-			this.addParameter(facts, "Volumen", value);
+			this.addParameter(facts, "Volumen RI", value);
+		}
+		if (building.getAreaGross() != null && building.getAreaGross().longValue() > 0) {
+			value = Formatter.INSTANCE.formatNumber(building.getAreaGross()) + " m²";
+			this.addParameter(facts, "Fläche GF", value);
 		}
 		if (building.getBuildingType() != null) {
 			value = building.getBuildingType().getName();
-			this.addParameter(facts, "Gebäudetyp", value);
+			this.addParameter(facts, "Gebäudeart", value);
 		}
 		if (building.getBuildingSubType() != null) {
 			value = building.getBuildingSubType().getName();
-			this.addParameter(facts, "Gebäudeart", value);
-		}
-		if (building.getBuildingPartCatalog() != null) {
-			value = building.getBuildingPartCatalog().getName();
-			this.addParameter(facts, "Bauteilkatalog", value);
+			this.addParameter(facts, "Gebäudetyp", value);
 		}
 
 		List<EvaluationParameter> params = new ArrayList<>();
 		this.addParameter(params, "Laufzeit", "25 Jahre");
-		this.addParameter(params, "Teuerung", "1.0%");
-		this.addParameter(params, "Diskontierungssatz", "2.0%");
+		this.addParameter(params, "Teuerung", "0.0%");
 
 		ProjectionResult projectionResult = projectionService.getProjection(building);
 
