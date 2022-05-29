@@ -23,7 +23,7 @@ public class Formatter {
 	}
 
 	public String formatMonetaryValue(Object value, String currency) {
-		return currency + " " + formatter.format(value);
+		return formatter.format(value) + " " + currency;
 	}
 
 	public String formatValueWithUnit(Object value, String unit) {

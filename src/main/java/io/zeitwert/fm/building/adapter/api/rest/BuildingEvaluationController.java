@@ -8,6 +8,7 @@ import com.aspose.words.AxisBound;
 import com.aspose.words.Cell;
 import com.aspose.words.Chart;
 import com.aspose.words.Document;
+import com.aspose.words.DocumentBuilder;
 import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
@@ -18,6 +19,8 @@ import com.aspose.words.Run;
 import com.aspose.words.SaveFormat;
 import com.aspose.words.Shape;
 import com.aspose.words.Table;
+import com.google.maps.ImageResult;
+import com.google.maps.model.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.building.service.api.BuildingService;
 import io.zeitwert.fm.building.service.api.EvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
@@ -49,6 +53,9 @@ public class BuildingEvaluationController {
 
 	@Autowired
 	private ObjBuildingRepository repo;
+
+	@Autowired
+	private BuildingService buildingService;
 
 	@Autowired
 	SessionInfo sessionInfo;
@@ -85,6 +92,7 @@ public class BuildingEvaluationController {
 
 		Document doc = new Document(templateFile.getInputStream());
 
+		this.insertLocationImage(doc, building);
 		engine.buildReport(doc, evaluationResult, "building");
 		this.fillRenovationTable(doc, evaluationResult);
 		this.fillCostsChart(doc, evaluationResult);
@@ -99,6 +107,30 @@ public class BuildingEvaluationController {
 				.body(outStream.toByteArray());
 
 		return response;
+
+	}
+
+	private void insertLocationImage(Document doc, ObjBuilding building) {
+
+		if (building.getGeoCoordinates() == null) {
+			return;
+		}
+
+		String address = building.getGeoCoordinates().substring(4);
+		ImageResult ir = buildingService.getMap(building.getName(), address, new Size(1200, 1200), building.getGeoZoom());
+
+		if (ir == null) {
+			return;
+		}
+
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		try {
+			builder.moveToBookmark("Location");
+			builder.insertImage(ir.imageData, 360, 360);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -123,8 +155,10 @@ public class BuildingEvaluationController {
 					cell = getNthNextSibling(row.getFirstCell(), delta);
 					cell.getFirstParagraph().appendChild(new Run(doc, OPT_IS_MARKER));
 					cell = row.getLastCell();
-					cell.getFirstParagraph()
-							.appendChild(new Run(doc, Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF")));
+					String costs = Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF");
+					cell.getFirstParagraph().appendChild(new Run(doc, costs));
+					cell = (Cell) cell.getPreviousSibling();
+					cell.getFirstParagraph().appendChild(new Run(doc, Integer.toString(restorationYear)));
 				}
 			}
 		}
