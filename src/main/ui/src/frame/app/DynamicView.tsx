@@ -31,6 +31,7 @@ const AreaMap: {
 @inject("logger", "session")
 @observer
 class DynamicView extends React.Component<RouteComponentProps> {
+
 	get ctx() {
 		return this.props as any as AppCtx;
 	}

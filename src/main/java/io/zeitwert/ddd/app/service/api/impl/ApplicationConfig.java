@@ -51,7 +51,7 @@ class ApplicationConfig {
 	private final AppMenuAction buildingAction = AppMenuAction.builder().id("building").name("Immobilien")
 			.navigation(DefaultNavigation).icon("").build();
 	private final ApplicationArea buildingArea = ApplicationArea.builder().id("building").name("Immobilien")
-			.icon("custom:custom24").path("building").component("BuildingArea").menu(EmptyMenu).menuAction(buildingAction)
+			.icon("custom:custom24").path("/").component("BuildingArea").menu(EmptyMenu).menuAction(buildingAction)
 			.build();
 
 	private final AppMenuAction buildingReportAction = AppMenuAction.builder().id("bldgReport")
@@ -92,8 +92,8 @@ class ApplicationConfig {
 	private final Application fmApp = Application.builder().id("fm").name("zeitwert: fm").icon("advise")
 			.description("Strategische Unterhaltsplanung").build();
 	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fm").name("zeitwert: fm")
-			.areas(List.of(homeArea, portfolioArea, buildingArea, accountArea, contactArea, taskArea, buildingReportArea))
-			.defaultArea(homeArea.getId()).build();
+			.areas(List.of(buildingArea, portfolioArea, accountArea, contactArea))
+			.defaultArea(buildingArea.getId()).build();
 
 	private final Application adminApp = Application.builder().id("admin").name("zeitwert: admin").icon("config")
 			.description("Applikationskonfiguration").build();
