@@ -1339,6 +1339,19 @@ We have added the border property to demonstrate that the flip itself goes out o
   font-size: 1.1rem;
 }
 
+.simpleMarker {
+  background-image: url("./MapIcon.svg");
+  position: absolute;
+  cursor: pointer;
+  width: 49px;
+  height: 64px;
+  top: -64px;
+  left: -24.5px;
+  transform-origin: 24.5px 64px;
+  margin: 0;
+  padding: 0;
+}
+
 .fa-holding-block_title {
   background-color: #f3f2f2;
 }
@@ -1737,3 +1750,5 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   display: block;
   left: calc(100% - 5px);
 }
+
+/*# sourceMappingURL=app.css.map */

@@ -25,7 +25,7 @@ export default class BuildingMap extends React.Component<BuildingMapProps> {
 				defaultZoom={zoom}
 				onZoomAnimationStart={this.onZoom}
 			>
-				<BuildingMarker name={name} lat={lat} lng={lng} />
+				<SimpleMarker name={name} lat={lat} lng={lng} />
 			</GoogleMapReact>
 		);
 	}
@@ -42,4 +42,14 @@ interface BuildingMarkerProps {
 	lng: number;
 }
 
-const BuildingMarker = ({ name }: BuildingMarkerProps) => <div>{name}</div>;
+// const BuildingMarker = ({ name }: BuildingMarkerProps) => (<div>{name}</div>);
+
+const SimpleMarker = (props: BuildingMarkerProps) => (
+	<div
+		className="simpleMarker"
+		style={{
+			transform: `translate3D(0,0,0) scale(0.6, 0.6)`,
+		}}
+	>
+	</div>
+);
