@@ -15,7 +15,6 @@
 	"prodDependencies": {},
 	"dependencies": {
 		"@finadvise/forms": "^0.1.45",
-		"@googlemaps/react-wrapper": "^1.1.17",
 		"@salesforce-ux/design-system": "^2.16.1",
 		"@salesforce/design-system-react": "^0.10.39",
 		"axios": "^0.24.0",
@@ -50,7 +49,6 @@
 	"devDependencies": {
 		"@types/d3-scale": "^4.0.2",
 		"@types/google-map-react": "^2.1.7",
-		"@types/google.maps": "^3.47.2",
 		"@types/history": "^4.7.9",
 		"@types/jest": "^27.0.1",
 		"@types/jsonapi-serializer": "^3.6.5",
