@@ -48,7 +48,7 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 				<ExpandableSection
 					id="upcoming-activities"
 					/* @ts-ignore */
-					title={<span className="slds-text-title_bold">Upcoming</span>}
+					title="Upcoming"
 					isOpen={this.isUpcomingActivitiesOpen}
 					onToggleOpen={() => (this.isUpcomingActivitiesOpen = !this.isUpcomingActivitiesOpen)}
 				>
@@ -57,7 +57,7 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 				<ExpandableSection
 					id="overdue-activities"
 					/* @ts-ignore */
-					title={<span className="slds-text-title_bold">Overdue</span>}
+					title="Overdue"
 					isOpen={this.isOverdueActivitiesOpen}
 					onToggleOpen={() => (this.isOverdueActivitiesOpen = !this.isOverdueActivitiesOpen)}
 				>
@@ -66,7 +66,7 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 				<ExpandableSection
 					id="past-activities"
 					/* @ts-ignore */
-					title={<span className="slds-text-title_bold">Past</span>}
+					title="Past"
 					isOpen={this.isPastActivitiesOpen}
 					onToggleOpen={() => (this.isPastActivitiesOpen = !this.isPastActivitiesOpen)}
 				>

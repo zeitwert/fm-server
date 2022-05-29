@@ -51,7 +51,7 @@ class ApplicationConfig {
 	private final AppMenuAction buildingAction = AppMenuAction.builder().id("building").name("Immobilien")
 			.navigation(DefaultNavigation).icon("").build();
 	private final ApplicationArea buildingArea = ApplicationArea.builder().id("building").name("Immobilien")
-			.icon("custom:custom24").path("/").component("BuildingArea").menu(EmptyMenu).menuAction(buildingAction)
+			.icon("custom:custom24").path("building").component("BuildingArea").menu(EmptyMenu).menuAction(buildingAction)
 			.build();
 
 	private final AppMenuAction buildingReportAction = AppMenuAction.builder().id("bldgReport")
