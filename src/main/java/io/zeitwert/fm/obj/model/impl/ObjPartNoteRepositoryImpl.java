@@ -36,7 +36,7 @@ public class ObjPartNoteRepositoryImpl
 
 	@Override
 	public Integer nextPartId() {
-		return this.dslContext.nextval(OBJ_PART_ID_SEQ).intValue();
+		return this.getDSLContext().nextval(OBJ_PART_ID_SEQ).intValue();
 	}
 
 }

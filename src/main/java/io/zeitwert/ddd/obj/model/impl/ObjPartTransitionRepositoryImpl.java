@@ -42,7 +42,7 @@ public class ObjPartTransitionRepositoryImpl extends ObjPartRepositoryBase<Obj, 
 	@Override
 	public List<ObjPartTransition> doLoad(Obj obj) {
 		//@formatter:off
-		Result<ObjPartTransitionRecord> dbRecords = this.dslContext
+		Result<ObjPartTransitionRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.OBJ_PART_TRANSITION)
 			.where(Tables.OBJ_PART_TRANSITION.OBJ_ID.eq(obj.getId()))
 			.orderBy(Tables.OBJ_PART_TRANSITION.SEQ_NR)
@@ -53,7 +53,7 @@ public class ObjPartTransitionRepositoryImpl extends ObjPartRepositoryBase<Obj, 
 
 	@Override
 	public ObjPartTransition doCreate(Obj obj) {
-		ObjPartTransitionRecord dbRecord = this.dslContext.newRecord(Tables.OBJ_PART_TRANSITION);
+		ObjPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_TRANSITION);
 		return this.newPart(obj, dbRecord);
 	}
 

@@ -61,7 +61,7 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 
 	@Override
 	public Doc doLoad(SessionInfo sessionInfo, Integer docId) {
-		DocRecord docRecord = this.dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
+		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
@@ -85,7 +85,7 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	// @Override
 	// public Integer getDocumentCount(Item item) {
 	// 	//@formatter:off
-	// 	return this.dslContext.fetchCount(
+	// 	return this.getDSLContext().fetchCount(
 	// 		this.dslContext
 	// 			.selectFrom(Tables.DOC_PART_LIST)
 	// 			.where(Tables.DOC_PART_LIST.DOC_ID.eq(item.getId()))

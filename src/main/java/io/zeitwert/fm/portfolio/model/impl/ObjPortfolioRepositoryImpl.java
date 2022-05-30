@@ -105,7 +105,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 
 	@Override
 	public ObjPortfolio doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.dslContext.newRecord(Tables.OBJ_PORTFOLIO));
+		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public ObjPortfolio doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjPortfolioRecord portfolioRecord = this.dslContext.fetchOne(Tables.OBJ_PORTFOLIO,
+		ObjPortfolioRecord portfolioRecord = this.getDSLContext().fetchOne(Tables.OBJ_PORTFOLIO,
 				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));
 		if (portfolioRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");

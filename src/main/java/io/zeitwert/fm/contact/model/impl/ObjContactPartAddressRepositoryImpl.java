@@ -42,7 +42,7 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 	@Override
 	public List<ObjContactPartAddress> doLoad(ObjContact obj) {
 		//@formatter:off
-		Result<ObjContactPartAddressRecord> dbRecords = this.dslContext
+		Result<ObjContactPartAddressRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.OBJ_CONTACT_PART_ADDRESS)
 			.where(Tables.OBJ_CONTACT_PART_ADDRESS.OBJ_ID.eq(obj.getId()))
 			.orderBy(Tables.OBJ_CONTACT_PART_ADDRESS.SEQ_NR)
@@ -53,7 +53,7 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 
 	@Override
 	public ObjContactPartAddress doCreate(ObjContact obj) {
-		ObjContactPartAddressRecord dbRecord = this.dslContext.newRecord(Tables.OBJ_CONTACT_PART_ADDRESS);
+		ObjContactPartAddressRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_CONTACT_PART_ADDRESS);
 		return this.newPart(obj, dbRecord);
 	}
 

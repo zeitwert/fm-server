@@ -28,7 +28,7 @@ public abstract class DocPartRepositoryBase<D extends Doc, P extends DocPart<D>>
 
 	@Override
 	public Integer nextPartId() {
-		return this.dslContext.nextval(DOC_PART_ID_SEQ).intValue();
+		return this.getDSLContext().nextval(DOC_PART_ID_SEQ).intValue();
 	}
 
 }

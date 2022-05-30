@@ -68,7 +68,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
-		ObjRecord objRecord = this.dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
+		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
@@ -84,11 +84,11 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 
 	@Override
 	public Integer nextAggregateId() {
-		return this.dslContext.nextval(OBJ_ID_SEQ).intValue();
+		return this.getDSLContext().nextval(OBJ_ID_SEQ).intValue();
 	}
 
 	protected O doCreate(SessionInfo sessionInfo, UpdatableRecord<?> extnRecord) {
-		return newAggregate(sessionInfo, this.dslContext.newRecord(Tables.OBJ), extnRecord);
+		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
 	}
 
 	@Override

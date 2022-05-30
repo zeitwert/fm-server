@@ -274,6 +274,17 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>jooq-codegen-fm-dms</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>jooq-config-fm-dms.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
 						<id>jooq-codegen-fm-building</id>
 						<phase>generate-sources</phase>
 						<goals>

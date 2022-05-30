@@ -42,7 +42,7 @@ public class ObjBuildingPartElementRepositoryImpl extends ObjPartRepositoryBase<
 	@Override
 	public List<ObjBuildingPartElement> doLoad(ObjBuilding obj) {
 		//@formatter:off
-		Result<ObjBuildingPartElementRecord> dbRecords = this.dslContext
+		Result<ObjBuildingPartElementRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.OBJ_BUILDING_PART_ELEMENT)
 			.where(Tables.OBJ_BUILDING_PART_ELEMENT.OBJ_ID.eq(obj.getId()))
 			.orderBy(Tables.OBJ_BUILDING_PART_ELEMENT.SEQ_NR)
@@ -53,7 +53,7 @@ public class ObjBuildingPartElementRepositoryImpl extends ObjPartRepositoryBase<
 
 	@Override
 	public ObjBuildingPartElement doCreate(ObjBuilding obj) {
-		ObjBuildingPartElementRecord dbRecord = this.dslContext.newRecord(Tables.OBJ_BUILDING_PART_ELEMENT);
+		ObjBuildingPartElementRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_BUILDING_PART_ELEMENT);
 		return this.newPart(obj, dbRecord);
 	}
 

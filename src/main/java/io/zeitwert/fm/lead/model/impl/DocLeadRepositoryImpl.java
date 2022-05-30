@@ -49,7 +49,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 
 	@Override
 	public DocLead doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.dslContext.newRecord(Tables.DOC_LEAD));
+		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	@Override
 	public DocLead doLoad(SessionInfo sessionInfo, Integer docId) {
 		require(docId != null, "docId not null");
-		DocLeadRecord leadRecord = this.dslContext.fetchOne(Tables.DOC_LEAD, Tables.DOC_LEAD.DOC_ID.eq(docId));
+		DocLeadRecord leadRecord = this.getDSLContext().fetchOne(Tables.DOC_LEAD, Tables.DOC_LEAD.DOC_ID.eq(docId));
 		if (leadRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
@@ -75,7 +75,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	@Override
 	public void doLoadParts(DocLead doc) {
 		super.doLoadParts(doc);
-		// Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.dslContext,
+		// Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.getDSLContext(),
 		// doc.getId(), "", CodeAreaEnum.class);
 		// ((DocLeadBase) doc).loadAreaSet(areaSet);
 	}

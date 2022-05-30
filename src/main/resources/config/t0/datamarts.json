@@ -22,74 +22,7 @@
 		},
 		"config": {
 			"module": "doc",
-			"url": "docs?include[doc]=refObj,refDoc,account,assignee",
-			"accept": "application/vnd.api+json"
-		}
-	},
-	{
-		"id": "doc.docsWithStatistics",
-		"module": "doc",
-		"name": "Generic Orderbook w/ Statistics",
-		"provider": "api",
-		"params": {
-			"accountId": {
-				"name": "account.id",
-				"type": "string"
-			},
-			"refDocId": {
-				"name": "refDoc.id",
-				"type": "string"
-			},
-			"docTypeId": {
-				"type": "string"
-			},
-			"isInWork": {
-				"type": "boolean"
-			}
-		},
-		"config": {
-			"module": "doc",
-			"url": "docs-with-statistics?filter[docTypeId][IN]=doc_lead,doc_opportunity,doc_advice&include[doc]=refObj,refDoc,account,assignee&include[docWithStatistics]=latestItem",
-			"accept": "application/vnd.api+json"
-		}
-	},
-	{
-		"id": "lead.leads",
-		"module": "lead",
-		"name": "Lead Orderbook",
-		"provider": "api",
-		"params": {
-			"isInWork": {
-				"type": "boolean"
-			}
-		},
-		"config": {
-			"module": "lead",
-			"url": "leads?include[lead]=account,contact",
-			"accept": "application/vnd.api+json"
-		}
-	},
-	{
-		"id": "dms.documents",
-		"module": "document",
-		"name": "Document List",
-		"provider": "api",
-		"params": {},
-		"config": {
-			"module": "dms",
-			"url": "documents?filter[documentTypeId][NEQ]=instance",
-			"accept": "application/vnd.api+json"
-		}
-	},
-	{
-		"id": "portfolio.portfolios",
-		"module": "portfolio",
-		"name": "Portfolio List",
-		"provider": "api",
-		"params": {},
-		"config": {
-			"module": "portfolio",
-			"url": "portfolios?include[portfolio]=account",
+			"url": "docs?include[doc]=account,assignee",
 			"accept": "application/vnd.api+json"
 		}
 	},
@@ -118,50 +51,39 @@
 		}
 	},
 	{
-		"id": "opportunity.opportunities",
-		"module": "opportunity",
-		"name": "Opportunity Orderbook",
+		"id": "dms.documents",
+		"module": "document",
+		"name": "Document List",
 		"provider": "api",
-		"params": {
-			"isInWork": {
-				"type": "boolean"
-			}
-		},
+		"params": {},
 		"config": {
-			"module": "opportunity",
-			"url": "opportunities?include[opportunity]=refDoc,assignee,account,contact",
+			"module": "dms",
+			"url": "documents?filter[documentTypeId][NEQ]=instance",
 			"accept": "application/vnd.api+json"
 		}
 	},
 	{
-		"id": "advice.advices",
-		"module": "advice",
-		"name": "Advice Orderbook",
+		"id": "building.buildings",
+		"module": "building",
+		"name": "Building List",
 		"provider": "api",
-		"params": {
-			"isInWork": {
-				"type": "boolean"
-			}
-		},
+		"params": {},
 		"config": {
-			"module": "advice",
-			"url": "advices?include[advice]=refDoc,assignee,account,contact",
+			"module": "building",
+			"url": "buildings?include[building]=account&page[offset]=0&page[limit]=500",
 			"accept": "application/vnd.api+json"
 		}
 	},
 	{
-		"id": "meeting.meetings",
-		"module": "meeting",
-		"name": "Meeting Orderbook",
+		"id": "portfolio.portfolios",
+		"module": "portfolio",
+		"name": "Portfolio List",
 		"provider": "api",
-		"params": {
-			"isInWork": {
-				"type": "boolean"
-			}
-		},
+		"params": {},
 		"config": {
-			"module": "meeting",
-			"url": "meetings?include[meeting]=refDoc,assignee,account"
+			"module": "portfolio",
+			"url": "portfolios?include[portfolio]=account",
+			"accept": "application/vnd.api+json"
 		}
 	},
 	{
@@ -180,26 +102,18 @@
 		}
 	},
 	{
-		"id": "product.products",
-		"module": "product",
-		"name": "Product List",
+		"id": "lead.leads",
+		"module": "lead",
+		"name": "Lead Orderbook",
 		"provider": "api",
-		"params": {},
+		"params": {
+			"isInWork": {
+				"type": "boolean"
+			}
+		},
 		"config": {
-			"module": "product",
-			"url": "products?include[product]=parent",
-			"accept": "application/vnd.api+json"
-		}
-	},
-	{
-		"id": "building.buildings",
-		"module": "building",
-		"name": "Building List",
-		"provider": "api",
-		"params": {},
-		"config": {
-			"module": "building",
-			"url": "buildings?include[building]=account&page[offset]=0&page[limit]=500",
+			"module": "lead",
+			"url": "leads?include[lead]=account,contact",
 			"accept": "application/vnd.api+json"
 		}
 	}

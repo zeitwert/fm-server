@@ -57,9 +57,9 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	@Override
 	public ObjUser doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjRecord objRecord = this.dslContext.fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
+		ObjRecord objRecord = this.getDSLContext().fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
 				io.zeitwert.ddd.obj.model.db.Tables.OBJ.ID.eq(objId));
-		ObjUserRecord userRecord = this.dslContext.fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(objId));
+		ObjUserRecord userRecord = this.getDSLContext().fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(objId));
 		if (objRecord == null || userRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
@@ -78,7 +78,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 
 	@Override
 	public Optional<ObjUser> getByEmail(String email) {
-		ObjUserVRecord userRecord = this.dslContext.fetchOne(Tables.OBJ_USER_V, Tables.OBJ_USER_V.EMAIL.eq(email));
+		ObjUserVRecord userRecord = this.getDSLContext().fetchOne(Tables.OBJ_USER_V, Tables.OBJ_USER_V.EMAIL.eq(email));
 		if (userRecord == null) {
 			return Optional.empty();
 		}

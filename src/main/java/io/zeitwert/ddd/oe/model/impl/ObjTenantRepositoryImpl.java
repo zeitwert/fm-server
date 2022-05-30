@@ -58,9 +58,9 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	@Override
 	public ObjTenant doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjRecord objRecord = this.dslContext.fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
+		ObjRecord objRecord = this.getDSLContext().fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
 				io.zeitwert.ddd.obj.model.db.Tables.OBJ.ID.eq(objId));
-		ObjTenantRecord tenantRecord = this.dslContext.fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
+		ObjTenantRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
 		if (objRecord == null || tenantRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
@@ -78,7 +78,7 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	}
 
 	public Optional<ObjTenant> getByExtlKey(String extlKey) {
-		ObjTenantVRecord tenantRecord = this.dslContext.fetchOne(Tables.OBJ_TENANT_V,
+		ObjTenantVRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT_V,
 				Tables.OBJ_TENANT_V.EXTL_KEY.eq(extlKey));
 		if (tenantRecord == null) {
 			return Optional.empty();

@@ -42,7 +42,7 @@ public class DocPartTransitionRepositoryImpl extends DocPartRepositoryBase<Doc, 
 	@Override
 	public List<DocPartTransition> doLoad(Doc doc) {
 		//@formatter:off
-		Result<DocPartTransitionRecord> dbRecords = this.dslContext
+		Result<DocPartTransitionRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.DOC_PART_TRANSITION)
 			.where(Tables.DOC_PART_TRANSITION.DOC_ID.eq(doc.getId()))
 			.orderBy(Tables.DOC_PART_TRANSITION.SEQ_NR)
@@ -53,7 +53,7 @@ public class DocPartTransitionRepositoryImpl extends DocPartRepositoryBase<Doc, 
 
 	@Override
 	public DocPartTransition doCreate(Doc doc) {
-		DocPartTransitionRecord dbRecord = this.dslContext.newRecord(Tables.DOC_PART_TRANSITION);
+		DocPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.DOC_PART_TRANSITION);
 		return this.newPart(doc, dbRecord);
 	}
 

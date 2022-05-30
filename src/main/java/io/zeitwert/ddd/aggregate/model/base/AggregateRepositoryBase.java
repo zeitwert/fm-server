@@ -46,7 +46,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] proxyFactoryParamTypeList;
 
-	protected final DSLContext dslContext;
+	private final DSLContext dslContext;
 	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
 
 	private boolean didDoLoadParts = false;
@@ -75,8 +75,12 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 	//@formatter:on
 
-	protected AppContext getAppContext() {
+	protected final AppContext getAppContext() {
 		return this.appContext;
+	}
+
+	protected final DSLContext getDSLContext() {
+		return this.dslContext;
 	}
 
 	protected void require(boolean condition, String message) {
@@ -84,7 +88,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public CodeAggregateType getAggregateType() {
+	public final CodeAggregateType getAggregateType() {
 		return this.getAppContext().getAggregateType(this.aggregateTypeId);
 	}
 

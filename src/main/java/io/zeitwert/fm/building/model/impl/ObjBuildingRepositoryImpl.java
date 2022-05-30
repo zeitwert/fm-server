@@ -93,7 +93,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	@Override
 	public ObjBuilding doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.dslContext.newRecord(Tables.OBJ_BUILDING));
+		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjBuildingRecord buildingRecord = this.dslContext.fetchOne(Tables.OBJ_BUILDING,
+		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
 				Tables.OBJ_BUILDING.OBJ_ID.eq(objId));
 		if (buildingRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
