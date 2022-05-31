@@ -1,6 +1,6 @@
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
-	Account, Contact,
+	Contact,
 	ContactStore,
 	ContactStoreModel,
 	DATE_FORMAT,
@@ -133,7 +133,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							)}
 						</FormItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.contactStore} account={contact.account as Account} />
+					<ItemRightPart store={this.contactStore} />
 				</ItemGrid>
 			</>
 		);

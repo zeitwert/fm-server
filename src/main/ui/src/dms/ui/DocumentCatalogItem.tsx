@@ -50,7 +50,7 @@ export class DocumentCatalogItem extends React.Component<DocumentCatalogItemProp
 								/>
 							</td>
 							<td>
-								<div className="slds-truncate">{document.documentType?.name}</div>
+								<div className="slds-truncate">{document.documentKind?.name}</div>
 							</td>
 							{!snapshot.isDragging && (
 								<td>

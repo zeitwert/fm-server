@@ -111,6 +111,10 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@Override
 	public CodeContentType getContentType(ObjDocument document) {
 		Table<ObjDocumentPartContentRecord> query = this.getMaxContentVersionQuery(document);
+		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getMaxVersionQuery(document));
+		if (maxVersionNr == null) {
+			return null;
+		}
 		String contentTypeId = this.getDSLContext().fetchOne(query).getContentTypeId();
 		return CodeContentTypeEnum.getContentType(contentTypeId);
 	}

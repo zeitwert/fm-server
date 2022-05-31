@@ -87,7 +87,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.accountStore} account={account} />
+					<ItemRightPart store={this.accountStore} />
 				</ItemGrid>
 				{
 					this.contactStore.isInTrx &&

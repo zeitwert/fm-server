@@ -25,8 +25,10 @@ public class ObjDocumentDto extends FMObjDtoBase<ObjDocument> {
 
 	private String name;
 	private EnumeratedDto contentKind;
+	private String supportedContentTypes;
 	private EnumeratedDto documentKind;
 	private EnumeratedDto documentCategory;
+	private EnumeratedDto contentType;
 
 	@Override
 	public void toObj(ObjDocument obj) {
@@ -48,8 +50,10 @@ public class ObjDocumentDto extends FMObjDtoBase<ObjDocument> {
 		return dtoBuilder
 			.name(obj.getName())
 			.contentKind(EnumeratedDto.fromEnum(obj.getContentKind()))
+			.supportedContentTypes(obj.getContentKind().getExtensionList().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
 			.documentKind(EnumeratedDto.fromEnum(obj.getDocumentKind()))
 			.documentCategory(EnumeratedDto.fromEnum(obj.getDocumentCategory()))
+			.contentType(EnumeratedDto.fromEnum(obj.getContentType()))
 			.build();
 		// @formatter:on
 	}

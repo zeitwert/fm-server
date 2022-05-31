@@ -44,11 +44,11 @@ public class BuildingLocationController {
 
 		String coordinates = building.getGeoCoordinates();
 		Integer zoom = building.getGeoZoom() != null ? building.getGeoZoom() : DefaultGeoZoom;
-		if (coordinates == null) {
+		if (coordinates == null || !coordinates.startsWith("WGS:")) {
 			return ResponseEntity.noContent().build();
 		}
 
-		ImageResult ir = buildingService.getMap(building.getName(), coordinates, DefaultMapSize, zoom);
+		ImageResult ir = buildingService.getMap(building.getName(), coordinates.substring(4), DefaultMapSize, zoom);
 		if (ir == null) {
 			return ResponseEntity.noContent().build();
 		}

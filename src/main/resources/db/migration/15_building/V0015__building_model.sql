@@ -98,9 +98,9 @@ create table obj_building (
 	name																	varchar(100),
 	description														text,
 	--
-	account_id													integer							not null references obj_account(obj_id) deferrable initially deferred,
+	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
-	building_nr														varchar(200), -- Identifikation
+	building_nr														varchar(200), -- Identifikation -- TODO not null unique (demo data)
 	building_insurance_nr									varchar(200), -- Gebäudeversicherung Police Nr
 	plot_nr																varchar(200), -- Parzellen Nr
 	national_building_id									varchar(200), -- EGID (eidgenössischer Gebäudeidentifikator)
@@ -114,6 +114,8 @@ create table obj_building (
 	geo_address														varchar(200),
 	geo_coordinates												varchar(200),
 	geo_zoom															integer,
+	--
+	cover_foto_id													integer							references obj_document(obj_id) deferrable initially deferred, -- TODO not null (demo data)
 	--
 	currency_id														varchar(40)					not null references code_currency(id),
 	--

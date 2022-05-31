@@ -9,6 +9,7 @@ import { UUID } from "../../../app/common/utils/Id";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
+import { DocumentModel } from "../../dms/model/DocumentModel";
 import { BuildingElement, BuildingElementModel } from "./BuildingElementModel";
 import { BuildingStore } from "./BuildingStore";
 import { GeocodeRequest, GeocodeResponse } from "./GeocodeDto";
@@ -39,6 +40,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		geoAddress: types.maybe(types.string),
 		geoCoordinates: types.maybe(types.string),
 		geoZoom: types.maybe(types.number),
+		//
+		coverFoto: types.maybe(types.reference(DocumentModel)),
 		//
 		volume: types.maybe(types.number),
 		areaGross: types.maybe(types.number),

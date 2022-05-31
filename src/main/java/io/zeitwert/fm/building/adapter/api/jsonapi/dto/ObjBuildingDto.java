@@ -16,6 +16,8 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 import io.zeitwert.fm.building.service.api.ProjectionService;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
@@ -98,6 +100,29 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private Integer thirdPartyValueYear;
 	private List<ObjBuildingPartElementDto> elements;
 
+	@JsonApiRelationId
+	private Integer coverFotoId;
+
+	@JsonIgnore
+	private ObjDocumentDto coverFotoDto;
+
+	@JsonApiRelation(serialize = SerializeType.LAZY)
+	public ObjDocumentDto getCoverFoto() {
+		if (this.coverFotoDto == null) {
+			ObjDocument cf = null;
+			if (this.getOriginal() != null) {
+				cf = this.getOriginal().getCoverFoto();
+			} else if (this.coverFotoId != null) {
+				cf = this.getRepository(ObjDocument.class).get(this.sessionInfo, this.coverFotoId);
+			}
+			this.coverFotoDto = ObjDocumentDto.fromObj(cf, this.sessionInfo);
+		}
+		return this.coverFotoDto;
+	}
+
+	public void setCoverFoto(ObjDocumentDto coverFoto) {
+	}
+
 	public void toObj(ObjBuilding obj) {
 		super.toObj(obj);
 		obj.setAccountId(this.accountId);
@@ -178,6 +203,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			.geoAddress(obj.getGeoAddress())
 			.geoCoordinates(obj.getGeoCoordinates())
 			.geoZoom(obj.getGeoZoom())
+			.coverFotoId(obj.getCoverFotoId())
 			.currency(EnumeratedDto.fromEnum(obj.getCurrency()))
 			.volume(obj.getVolume())
 			.areaGross(obj.getAreaGross())
@@ -223,6 +249,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			.geoAddress(obj.getGeoAddress())
 			.geoCoordinates(obj.getGeoCoordinates())
 			.geoZoom(obj.getGeoZoom())
+			.coverFotoId(obj.getCoverFotoId())
 			.currency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getCurrencyId())))
 			.volume(obj.getVolume())
 			.areaGross(obj.getAreaGross())

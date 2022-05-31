@@ -1,5 +1,5 @@
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, DocumentStore, DocumentStoreModel, EntityType } from "@zeitwert/ui-model";
+import { DocumentStore, DocumentStoreModel, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import FormItemEditor from "item/ui/FormItemEditor";
@@ -49,11 +49,12 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 		}
 		const document = this.documentStore.document!;
 		const headerDetails: HeaderDetail[] = [
+			{ label: "Document", content: document.contentKind?.name },
 			{ label: "Content", content: document.contentType?.name },
-			{
-				label: "Areas",
-				content: document.areas?.map((mt) => mt.name).join(", ")
-			}
+			// {
+			// 	label: "Areas",
+			// 	content: document.areas?.map((mt) => mt.name).join(", ")
+			// }
 		];
 		return (
 			<>
@@ -89,11 +90,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 							)}
 						</FormItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart
-						store={this.documentStore}
-						account={undefined as unknown as Account}
-						hideDocuments
-					/>
+					<ItemRightPart store={this.documentStore} hideDocuments />
 				</ItemGrid>
 			</>
 		);

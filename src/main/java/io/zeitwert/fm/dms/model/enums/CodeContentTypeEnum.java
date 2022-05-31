@@ -3,6 +3,7 @@ package io.zeitwert.fm.dms.model.enums;
 
 import javax.annotation.PostConstruct;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
@@ -16,7 +17,7 @@ import io.zeitwert.ddd.app.service.api.Enumerations;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 
 @Component("codeContentTypeEnum")
-@DependsOn({ "flyway", "flywayInitializer" })
+@DependsOn({ "flyway", "flywayInitializer", "codeContentKindEnum" })
 public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 
 	private static CodeContentTypeEnum INSTANCE;
@@ -75,6 +76,13 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 				.stream()
 				.filter((CodeContentType cct) -> cct.getExtension().equalsIgnoreCase(extension))
 				.findAny();
+	}
+
+	public static List<CodeContentType> getContentTypeList(CodeContentKind contentKind) {
+		return INSTANCE.getItems()
+				.stream()
+				.filter((CodeContentType cct) -> cct.getContentKind() == contentKind)
+				.toList();
 	}
 
 }

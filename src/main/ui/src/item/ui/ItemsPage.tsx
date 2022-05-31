@@ -1,6 +1,6 @@
 
 import { Button } from "@salesforce/design-system-react";
-import { AggregateStore, EntityType, EntityTypeInfo, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
 	DataTableCellWithEntityIcon,
@@ -14,6 +14,7 @@ import React from "react";
 import { AppCtx } from "../../App";
 import ItemModal from "./ItemModal";
 import ItemPanel from "./ItemPanel";
+import { getNewEntityText } from "./ItemUtils";
 import ItemListController from "./list/ItemListController";
 
 interface ItemsPageProps extends RouteComponentProps {
@@ -36,7 +37,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	@observable store: AggregateStore;
 	@observable showPanel: boolean = false;
 	@observable panelItem: any | undefined = undefined;
-	type: EntityTypeInfo;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -47,17 +47,18 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 		makeObservable(this);
 		this.listStore = ItemListModel.create({ datamart: props.listDatamart });
 		this.store = this.props.store;
-		this.type = EntityTypes[this.props.entityType];
 	}
 
 	render() {
 		const { entityType, createFormId, createEditor, listTemplate, actionButtons, canCreate } = this.props;
+		const type = EntityTypes[this.props.entityType];
+		const newText = getNewEntityText(type);
 		return (
 			<>
 				<ItemListController
-					label={this.type.label}
-					iconCategory={this.type.iconCategory}
-					iconName={this.type.iconName}
+					label={type.label}
+					iconCategory={type.iconCategory}
+					iconName={type.iconName}
 					defaultTemplate={listTemplate}
 					store={this.listStore}
 					reportTemplates={{
@@ -69,7 +70,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					actionButtons={
 						(actionButtons || []).concat(
 							canCreate
-								? [<Button key="new" label={"New " + this.type.labelSingular} onClick={this.openEditor} />]
+								? [<Button key="new" label={newText} onClick={this.openEditor} />]
 								: []
 						)
 					}
@@ -99,8 +100,8 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	private openPanel = (item: any) => {
-		//this.showPanel = true; @TODO
-		//this.panelItem = item; @TODO
+		this.showPanel = true; // TODO
+		this.panelItem = item; // TODO
 	}
 
 	private closePanel = () => {
@@ -119,14 +120,15 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	};
 
 	private closeEditor = async () => {
+		const type = EntityTypes[this.props.entityType];
 		try {
 			await this.store!.store();
-			this.ctx.showToast("success", `New ${this.type.labelSingular} ${this.store!.id} created`);
+			this.ctx.showToast("success", `New ${type.labelSingular} ${this.store!.id} created`);
 			this.props.navigate("/" + this.store.typeName + "/" + this.store!.id);
 		} catch (error: any) {
 			this.ctx.showAlert(
 				"error",
-				`Could not create new ${this.type.labelSingular}: ` +
+				`Could not create new ${type.labelSingular}: ` +
 				(error.detail ? error.detail : error.title ? error.title : error)
 			);
 		}

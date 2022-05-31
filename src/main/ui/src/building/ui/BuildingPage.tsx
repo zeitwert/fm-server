@@ -1,11 +1,14 @@
 
 import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
+import { Building, BuildingStore, BuildingStoreModel, Config, DocStore, EntityType, TaskStoreModel } from "@zeitwert/ui-model";
+import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
+import { FormParser } from "activity/forms/FormParser";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
+import ErrorTab from "item/ui/tab/ErrorTab";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
@@ -13,21 +16,29 @@ import React from "react";
 import BuildingLocationForm from "./forms/BuildingLocationForm";
 import BuildingRatingForm from "./forms/BuildingRatingForm";
 import BuildingStaticDataForm from "./forms/BuildingStaticDataForm";
+import BuildingSummaryForm from "./forms/BuildingSummaryForm";
 
-enum TAB {
+enum LEFT_TABS {
 	OVERVIEW = 0,
 	LOCATION = 1,
 	RATING = 2,
-	EVALUATION = 3
+	EVALUATION = 3,
+}
+
+enum RIGHT_TABS {
+	SUMMARY = 0,
+	ACTIVITY = 1,
+	ERRORS = 2,
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class BuildingPage extends React.Component<RouteComponentProps> {
 
-	@observable activeLeftTabId = TAB.OVERVIEW;
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
 	@observable isLoaded = false;
+	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -55,7 +66,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 			return <Spinner variant="brand" size="large" />;
 		}
 		const building = this.buildingStore.building!;
-		const isFullWidth = [TAB.RATING, TAB.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
+		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
+		const allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0;
+		const hasError = building.meta?.validationList.length! > 0;
 		return (
 			<>
 				<ItemHeader
@@ -66,40 +79,60 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 				<ItemGrid>
 					<ItemLeftPart isFullWidth={isFullWidth}>
 						<ItemEditor
+							key={"building-" + this.buildingStore.building?.id}
 							store={this.buildingStore}
 							entityType={EntityType.BUILDING}
-							showEditButtons={[TAB.OVERVIEW, TAB.LOCATION, TAB.RATING].indexOf(this.activeLeftTabId) >= 0}
+							showEditButtons={allowEdit}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
-							key={"building-" + this.buildingStore.building?.id}
 						>
 							<Tabs
 								className="full-height"
 								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = tabId)}
 							>
-								<TabsPanel label="Stammdaten">
-									{this.activeLeftTabId === TAB.OVERVIEW && <BuildingStaticDataForm store={this.buildingStore} />}
+								<TabsPanel label="Stammdaten" classname="abc">
+									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <BuildingStaticDataForm store={this.buildingStore} />}
 								</TabsPanel>
 								<TabsPanel label="Lage">
-									{this.activeLeftTabId === TAB.LOCATION && <BuildingLocationForm store={this.buildingStore} />}
+									{this.activeLeftTabId === LEFT_TABS.LOCATION && <BuildingLocationForm store={this.buildingStore} />}
 								</TabsPanel>
 								<TabsPanel label="Bewertung">
-									{this.activeLeftTabId === TAB.RATING && <BuildingRatingForm store={this.buildingStore} />}
+									{this.activeLeftTabId === LEFT_TABS.RATING && <BuildingRatingForm store={this.buildingStore} />}
 								</TabsPanel>
-								<TabsPanel label="Auswertung">
-									{this.activeLeftTabId === TAB.EVALUATION && <TabProjection itemType="building" itemId={this.buildingStore.building?.id!} />}
+								<TabsPanel label="Auswertung" disabled={hasError} hasError={hasError}>
+									{this.activeLeftTabId === LEFT_TABS.EVALUATION && <TabProjection itemType="building" itemId={this.buildingStore.building?.id!} />}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
-					<>
-						{
-							!isFullWidth &&
-							<ItemRightPart store={this.buildingStore} account={building.account as Account} />
-						}
-					</>
+					<ItemRightPart isFullWidth={isFullWidth}>
+						<Tabs
+							className="full-height"
+							selectedIndex={this.activeRightTabId}
+							onSelect={(tabId: number) => (this.activeRightTabId = tabId)}
+						>
+							<TabsPanel label="Steckbrief">
+								{
+									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									<BuildingSummaryForm building={building} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									<ActivityPortlet {...Object.assign({}, this.props, { item: building, onSave: this.onSavePortlet })} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Fehler" disabled={!hasError} hasError={hasError}>
+								{
+									this.activeRightTabId === RIGHT_TABS.ERRORS &&
+									<ErrorTab validationList={building.meta?.validationList!} />
+								}
+							</TabsPanel>
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 			</>
 		);
@@ -159,6 +192,31 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 			this.ctx.showAlert(
 				"error",
 				"Could not store Building: " + (error.detail ? error.detail : error.title ? error.title : error)
+			);
+		}
+	};
+
+	private onSavePortlet = async (type: string, data: any) => {
+		let store: DocStore, payload: any, title: string;
+
+		switch (type) {
+			case ActivityFormTypes.TASK:
+				title = "Task";
+				store = TaskStoreModel.create({});
+				payload = FormParser.parseTask(data, this.ctx.session.sessionInfo!.user);
+				break;
+			default:
+				throw new Error("Undefined store set");
+		}
+
+		try {
+			store.create(payload);
+			await store.store();
+			this.ctx.showToast("success", title + " stored");
+		} catch (error: any) {
+			this.ctx.showAlert(
+				"error",
+				"Could not store " + title + ": " + (error.detail ? error.detail : error.title ? error.title : error)
 			);
 		}
 	};

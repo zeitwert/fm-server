@@ -8,6 +8,11 @@ export const Config = {
 			.replace("{type}", "api")
 			.replace("{api}", module + "/" + url);
 	},
+	getRestUrl(module: string, url: string) {
+		return Env.getParam("API_BASE_URL")
+			.replace("{type}", "rest")
+			.replace("{api}", module + "/" + url);
+	},
 	getEnumUrl(module: string, enumName: string) {
 		return Env.getParam("API_BASE_URL")
 			.replace("{type}", "enum")

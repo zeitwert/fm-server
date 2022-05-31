@@ -2,6 +2,7 @@
 import { Button, Card, Icon, MediaObject, Modal } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow } from "@zeitwert/ui-forms";
 import { EntityType, EntityTypes } from "@zeitwert/ui-model";
+import { getImportEntityText } from "item/ui/ItemUtils";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
@@ -23,12 +24,11 @@ export default class BuildingImportForm extends React.Component<BuildingImportFo
 	}
 
 	render() {
+		const entityType = EntityTypes[EntityType.BUILDING];
 		const heading = (
 			<MediaObject
-				body={
-					<>Import</>
-				}
-				figure={<Icon category={EntityTypes[EntityType.BUILDING].iconCategory} name={EntityTypes[EntityType.BUILDING].iconName} size="small" />}
+				body={<>{getImportEntityText(entityType)}</>}
+				figure={<Icon category={entityType.iconCategory} name={entityType.iconName} size="small" />}
 				verticalCenter
 			/>
 		);
@@ -57,7 +57,7 @@ export default class BuildingImportForm extends React.Component<BuildingImportFo
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<input type="file" accept=".zwbd" onChange={(e) => this.showFile(e)} />
+											<input type="file" accept=".zwbd" onChange={this.showFile} />
 										</FieldRow>
 										<FieldRow>
 											<pre>{this.content ? JSON.stringify(JSON.parse(this.content), null, 2) : ""}</pre>

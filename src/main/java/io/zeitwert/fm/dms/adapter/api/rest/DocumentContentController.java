@@ -53,15 +53,16 @@ public class DocumentContentController {
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.POST)
-	public ResponseEntity<Void> storeContent(Integer documentId, @RequestParam String name,
-			@RequestParam("content") MultipartFile fileContent, @RequestParam String mimeType) {
+	public ResponseEntity<Void> storeContent(@PathVariable Integer documentId,
+			@RequestParam("file") MultipartFile file) {
 		try {
 			ObjDocument document = this.documentRepository.get(this.sessionInfo, documentId);
-			CodeContentType contentType = this.contentTypeEnum.getContentType(mimeType, name);
+			CodeContentType contentType = this.contentTypeEnum.getContentType(file.getContentType(),
+					file.getOriginalFilename());
 			if (contentType == null) {
 				return ResponseEntity.badRequest().body(null);
 			}
-			this.documentRepository.storeContent(sessionInfo, document, contentType, fileContent.getBytes());
+			this.documentRepository.storeContent(sessionInfo, document, contentType, file.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return ResponseEntity.internalServerError().body(null);

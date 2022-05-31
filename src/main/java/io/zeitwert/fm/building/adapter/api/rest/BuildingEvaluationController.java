@@ -1,7 +1,9 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
+import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import com.aspose.words.AxisBound;
@@ -13,12 +15,15 @@ import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
 import com.aspose.words.NodeType;
+import com.aspose.words.RelativeHorizontalPosition;
+import com.aspose.words.RelativeVerticalPosition;
 import com.aspose.words.ReportingEngine;
 import com.aspose.words.Row;
 import com.aspose.words.Run;
 import com.aspose.words.SaveFormat;
 import com.aspose.words.Shape;
 import com.aspose.words.Table;
+import com.aspose.words.WrapType;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 
@@ -88,10 +93,18 @@ public class BuildingEvaluationController {
 			throws Exception {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
+
+		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
+			return ResponseEntity.badRequest().body("Coverfoto missing".getBytes(StandardCharsets.UTF_8));
+		} else if (building.getGeoCoordinates() == null) {
+			return ResponseEntity.badRequest().body("Coordinates missing".getBytes(StandardCharsets.UTF_8));
+		}
+
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		Document doc = new Document(templateFile.getInputStream());
 
+		this.insertCoverFoto(doc, building);
 		this.insertLocationImage(doc, building);
 		engine.buildReport(doc, evaluationResult, "building");
 		this.fillRenovationTable(doc, evaluationResult);
@@ -107,6 +120,33 @@ public class BuildingEvaluationController {
 				.body(outStream.toByteArray());
 
 		return response;
+
+	}
+
+	private void insertCoverFoto(Document doc, ObjBuilding building) {
+
+		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
+			return;
+		}
+
+		// String contentType = building.getCoverFoto().getContentType().getExtension();
+		byte[] content = building.getCoverFoto().getContent();
+
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		try {
+			builder.moveToBookmark("CoverFoto");
+			Shape coverFoto = builder.insertImage(content);
+			coverFoto.setAspectRatioLocked(true);
+			coverFoto.setBounds(new Rectangle2D.Float(0f, 0f, 400f, 230f));
+			coverFoto.setWrapType(WrapType.NONE);
+			coverFoto.setRelativeHorizontalPosition(RelativeHorizontalPosition.RIGHT_MARGIN);
+			coverFoto.setRelativeVerticalPosition(RelativeVerticalPosition.TOP_MARGIN);
+			coverFoto.setTop(170);
+			coverFoto.setLeft(-coverFoto.getWidth() - 20);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

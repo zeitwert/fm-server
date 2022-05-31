@@ -122,16 +122,32 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 		return (
 			<div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-3">
+					<div className="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-x-large-size_1-of-3">
 						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} />
+											<Input label="Nr" accessor={this.formState.field("buildingNr")} size={3} />
+											<Input label="Name" type="text" accessor={this.formState.field("name")} size={9} />
+										</FieldRow>
+									</FieldGroup>
+								</div>
+							</div>
+						</Card>
+						<Card heading="Addresse" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body slds-card__body_inner">
+								<div className="slds-form" role="list">
+									<FieldGroup isAddress>
+										<FieldRow>
+											<Input label="Strasse" accessor={this.formState.field("street")} />
 										</FieldRow>
 										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} />
+											<Input label="PLZ" accessor={this.formState.field("zip")} size={3} />
+											<Input label="Ort" accessor={this.formState.field("city")} size={9} />
+										</FieldRow>
+										<FieldRow>
+											<Select label="Land" accessor={this.formState.field("country")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>
@@ -154,26 +170,8 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 								</div>
 							</div>
 						</Card>
-						<Card heading="Addresse" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup isAddress>
-										<FieldRow>
-											<Input label="Strasse" accessor={this.formState.field("street")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="PLZ" accessor={this.formState.field("zip")} size={4} />
-											<Input label="Ort" accessor={this.formState.field("city")} size={8} />
-										</FieldRow>
-										<FieldRow>
-											<Select label="Land" accessor={this.formState.field("country")} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
-							</div>
-						</Card>
 					</div>
-					<div className="slds-col slds-size_1-of-3">
+					<div className="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-x-large-size_1-of-3">
 						<Card heading="Bewertung" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<FieldGroup>
@@ -211,15 +209,15 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 							</div>
 						</Card>
 					</div>
-					<div className="slds-col slds-size_1-of-3">
+					<div className="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-x-large-size_1-of-3">
 						<Card heading="Beschreibung" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<FieldGroup>
 									<FieldRow>
-										<Select label="Nutzung" accessor={this.formState.field("buildingType")} />
+										<Select label="Bauwerksart SIA I" accessor={this.formState.field("buildingType")} />
 									</FieldRow>
 									<FieldRow>
-										<Select label="Nutzung Detail" accessor={this.formState.field("buildingSubType")} />
+										<Select label="Bauwerksart SIA II" accessor={this.formState.field("buildingSubType")} />
 									</FieldRow>
 									<FieldRow>
 										<Select label="Denkmalschutz" accessor={this.formState.field("historicPreservation")} />

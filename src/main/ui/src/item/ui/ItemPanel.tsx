@@ -26,6 +26,14 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 					<span className="slds-assistive-text">Close</span>
 				</button>
 			</div>
+			<div>
+				<img
+					className="slds-align_absolute-center"
+					style={{ width: "100%", maxHeight: "200px" }}
+					src={"/demo/building-" + (Math.round(10 * Math.random()) % 10) + ".jpg"}
+					alt={name}
+				/>
+			</div>
 			<div className="slds-popover__header">
 				<header className="slds-media slds-media_center slds-m-bottom_small">
 					<span className="slds-icon_container slds-icon-standard-account slds-media__figure">
@@ -82,14 +90,6 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 						</dl>
 					</div>
 				</footer>
-			</div>
-			<div>
-				<img
-					className="slds-align_absolute-center"
-					style={{ width: "100%", maxHeight: "200px" }}
-					src={"/demo/building-" + (Math.round(10 * Math.random()) % 10) + ".jpeg"}
-					alt={name}
-				/>
 			</div>
 			<div className="slds-popover__body">
 				<dl className="slds-popover__body-list">

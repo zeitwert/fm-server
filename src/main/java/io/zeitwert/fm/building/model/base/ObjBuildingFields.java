@@ -32,6 +32,7 @@ public interface ObjBuildingFields extends FMObjFields {
 	static final Field<String> GEO_ADDRESS = DSL.field("geo_address", String.class);
 	static final Field<String> GEO_COORDINATES = DSL.field("geo_coordinates", String.class);
 	static final Field<Integer> GEO_ZOOM = DSL.field("geo_zoom", Integer.class);
+	static final Field<Integer> COVER_FOTO_ID = DSL.field("cover_foto_id", Integer.class);
 	static final Field<BigDecimal> VOLUME = DSL.field("volume", BigDecimal.class);
 	static final Field<BigDecimal> AREA_GROSS = DSL.field("area_gross", BigDecimal.class);
 	static final Field<BigDecimal> AREA_NET = DSL.field("area_net", BigDecimal.class);
