@@ -69,7 +69,7 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public ObjDocument doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
 	}
 
 	@Override

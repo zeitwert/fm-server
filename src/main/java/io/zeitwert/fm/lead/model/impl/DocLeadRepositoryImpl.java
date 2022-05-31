@@ -49,7 +49,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 
 	@Override
 	public DocLead doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
 	}
 
 	@Override

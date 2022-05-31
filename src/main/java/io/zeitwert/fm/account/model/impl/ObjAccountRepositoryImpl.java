@@ -54,7 +54,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public ObjAccount doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
 	}
 
 	@Override

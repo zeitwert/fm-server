@@ -49,9 +49,12 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private final DSLContext dslContext;
 	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
 
-	private boolean didDoLoadParts = false;
 	private boolean didDoInit = false;
 	private boolean didDoInitParts = false;
+	private boolean didAfterCreate = false;
+	private boolean didDoLoadParts = false;
+	private boolean didAfterLoad = false;
+	private boolean didBeforeStore = false;
 	private boolean didDoStoreParts = false;
 	private boolean didAfterStore = false;
 
@@ -92,8 +95,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		return this.getAppContext().getAggregateType(this.aggregateTypeId);
 	}
 
+	/**
+	 * Create a new aggregate, used from both create and load to create a new object
+	 */
 	@SuppressWarnings("unchecked")
-	protected A newAggregate(SessionInfo sessionInfo, UpdatableRecord<?> objRecord, UpdatableRecord<?> extnRecord) {
+	protected final A newAggregate(SessionInfo sessionInfo, UpdatableRecord<?> objRecord, UpdatableRecord<?> extnRecord) {
 		A aggregate = null;
 		try {
 			aggregate = (A) this.proxyFactory.create(proxyFactoryParamTypeList,
@@ -107,17 +113,72 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
+	public abstract Integer nextAggregateId();
+
+	@Override
+	public final A create(SessionInfo sessionInfo) {
+
+		Integer aggregateId = this.nextAggregateId();
+		A aggregate = this.doCreate(sessionInfo);
+
+		this.didDoInit = false;
+		this.doInit(aggregate, aggregateId, sessionInfo.getTenant(), sessionInfo.getUser());
+		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
+
+		this.didDoInitParts = false;
+		this.doInitParts(aggregate);
+		Assert.isTrue(this.didDoInitParts, this.getClass().getSimpleName() + ": doInitParts was called");
+
+		((AggregateSPI) aggregate).calcAll();
+		this.aggregateCache.addItem(sessionInfo, aggregate);
+
+		this.didAfterCreate = false;
+		this.afterCreate(aggregate);
+		Assert.isTrue(this.didAfterCreate, this.getClass().getSimpleName() + ": afterCreate was called");
+
+		return aggregate;
+	}
+
+	@Override
+	public abstract A doCreate(SessionInfo sessionInfo);
+
+	@Override
+	public void doInit(A aggregate, Integer aggregateId, ObjTenant tenant, ObjUser user) {
+		this.didDoInit = true;
+		((AggregateSPI) aggregate).doInit(aggregateId, tenant.getId(), user.getId());
+	}
+
+	@Override
+	public void doInitParts(A aggregate) {
+		this.didDoInitParts = true;
+	}
+
+	@Override
+	public void afterCreate(A aggregate) {
+		this.didAfterCreate = true;
+	}
+
+	@Override
 	public final A get(SessionInfo sessionInfo, Integer id) {
+
 		require(id != null, "id not null");
 		if (this.aggregateCache.hasItem(sessionInfo, id)) {
 			return this.aggregateCache.getItem(sessionInfo, id);
 		}
+
 		A aggregate = this.doLoad(sessionInfo, id);
+
 		this.didDoLoadParts = false;
 		this.doLoadParts(aggregate);
 		Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
+
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 		((AggregateSPI) aggregate).calcVolatile();
+
+		this.didAfterLoad = false;
+		this.afterLoad(aggregate);
+		Assert.isTrue(this.didAfterLoad, this.getClass().getSimpleName() + ": afterLoad was called");
+
 		return aggregate;
 	}
 
@@ -130,7 +191,49 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
+	public void afterLoad(A aggregate) {
+		this.didAfterLoad = true;
+	}
+
+	@Override
+	public final void store(A aggregate) {
+
+		this.didBeforeStore = false;
+		this.beforeStore(aggregate);
+		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": beforeStore was called");
+
+		((AggregateSPI) aggregate).beforeStore();
+		((AggregateSPI) aggregate).doStore(aggregate.getMeta().getSessionInfo().getUser().getId());
+
+		this.didDoStoreParts = false;
+		this.doStoreParts(aggregate);
+		Assert.isTrue(this.didDoStoreParts, this.getClass().getSimpleName() + ": doStoreParts was called");
+
+		this.didAfterStore = false;
+		this.afterStore(aggregate);
+		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": afterStore was called");
+
+	}
+
+	@Override
+	public void beforeStore(A aggregate) {
+		this.didBeforeStore = true;
+	}
+
+	@Override
+	public void doStoreParts(A aggregate) {
+		this.didDoStoreParts = true;
+	}
+
+	@Override
+	public void afterStore(A aggregate) {
+		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
+		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
+		this.didAfterStore = true;
+	}
+
+	@Override
+	public final List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
 		//@formatter:off
 		querySpec.addFilter(PathSpec.of("tenant_id").filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
 		if (this.getAccountIdField() != null && sessionInfo.hasAccount()) {
@@ -154,7 +257,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract List<V> doFind(QuerySpec querySpec);
 
 	@Override
-	public List<V> getByForeignKey(SessionInfo sessionInfo, String fkName, Integer targetId) {
+	public final List<V> getByForeignKey(SessionInfo sessionInfo, String fkName, Integer targetId) {
 		QuerySpec querySpec = new QuerySpec(Aggregate.class);
 		FilterSpec filterSpec = PathSpec.of(fkName).filter(FilterOperator.EQ, targetId);
 		querySpec.setFilters(Arrays.asList(filterSpec));
@@ -162,7 +265,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected final List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
 		Condition whereClause = DSL.noCondition();
 		if (querySpec != null) {
 			for (FilterSpec filter : querySpec.getFilters()) {
@@ -194,66 +297,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		recordList = select.orderBy(sortFields).limit(querySpec.getOffset(), querySpec.getLimit()).fetch();
 
 		return recordList;
-	}
-
-	@Override
-	public abstract Integer nextAggregateId();
-
-	@Override
-	public A create(SessionInfo sessionInfo) {
-		Integer aggregateId = this.nextAggregateId();
-		A aggregate = this.doCreate(sessionInfo);
-		this.didDoInit = false;
-		this.doInit(aggregate, aggregateId, sessionInfo.getTenant(), sessionInfo.getUser());
-		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
-		this.didDoInitParts = false;
-		this.doInitParts(aggregate);
-		Assert.isTrue(this.didDoInitParts, this.getClass().getSimpleName() + ": doInitParts was called");
-		((AggregateSPI) aggregate).calcAll();
-		this.aggregateCache.addItem(sessionInfo, aggregate);
-		return aggregate;
-	}
-
-	@Override
-	public abstract A doCreate(SessionInfo sessionInfo);
-
-	@Override
-	public void doInit(A aggregate, Integer aggregateId, ObjTenant tenant, ObjUser user) {
-		this.didDoInit = true;
-		((AggregateSPI) aggregate).doInit(aggregateId, tenant.getId(), user.getId());
-	}
-
-	@Override
-	public void doInitParts(A aggregate) {
-		this.didDoInitParts = true;
-	}
-
-	@Override
-	public void store(A aggregate) {
-
-		((AggregateSPI) aggregate).beforeStore();
-		((AggregateSPI) aggregate).doStore(aggregate.getMeta().getSessionInfo().getUser().getId());
-
-		this.didDoStoreParts = false;
-		this.doStoreParts(aggregate);
-		Assert.isTrue(this.didDoStoreParts, this.getClass().getSimpleName() + ": doStoreParts was called");
-
-		this.didAfterStore = false;
-		this.afterStore(aggregate);
-		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": afterStore was called");
-
-	}
-
-	@Override
-	public void doStoreParts(A aggregate) {
-		this.didDoStoreParts = true;
-	}
-
-	@Override
-	public void afterStore(A aggregate) {
-		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
-		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
-		this.didAfterStore = true;
 	}
 
 	@EventListener

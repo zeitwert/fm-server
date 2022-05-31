@@ -105,7 +105,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 
 	@Override
 	public ObjPortfolio doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
 	}
 
 	@Override

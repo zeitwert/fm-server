@@ -71,7 +71,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	@Override
 	public ObjTest doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_TEST));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_TEST));
 	}
 
 	@Override

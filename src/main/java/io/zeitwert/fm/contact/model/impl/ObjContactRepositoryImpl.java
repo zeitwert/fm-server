@@ -73,7 +73,7 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 
 	@Override
 	public ObjContact doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_CONTACT));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_CONTACT));
 	}
 
 	@Override
