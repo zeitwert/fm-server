@@ -5,7 +5,7 @@ import { BuildingApi } from "../BuildingApi";
 const MODULE = "building";
 const PATH = "buildings";
 const TYPE = "building";
-const INCLUDES = "include[building]=account";
+const INCLUDES = "include[building]=account,coverFoto";
 
 export class BuildingApiImpl extends AggregateApiImpl<BuildingSnapshot> implements BuildingApi {
 	constructor() {
@@ -16,6 +16,7 @@ export class BuildingApiImpl extends AggregateApiImpl<BuildingSnapshot> implemen
 			//refObj: "obj",
 			//documents: "document",
 			account: "account",
+			coverFoto: "document",
 			building_manager: "contact",
 			portfolio_manager: "contact"
 		};

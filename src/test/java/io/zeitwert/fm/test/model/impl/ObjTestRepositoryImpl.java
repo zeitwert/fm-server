@@ -71,7 +71,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	@Override
 	public ObjTest doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.dslContext.newRecord(Tables.OBJ_TEST));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_TEST));
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	@Override
 	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjTestRecord testRecord = this.dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
+		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
 		if (testRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}

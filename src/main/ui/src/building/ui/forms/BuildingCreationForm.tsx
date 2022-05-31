@@ -80,7 +80,7 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 			<div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
 					<div className="slds-col slds-size_1-of-1">
-						<Card heading="Gemeinde" bodyClassName="slds-m-around_medium">
+						<Card heading="Inhaber" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<div className="slds-form" role="list">
 									<FieldGroup>
@@ -90,13 +90,14 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 												value={building.account?.id}
 												values={this.accounts}
 												onChange={(e) => this.props.store.item!.setAccount(e.target.value?.toString())}
+												disabled={!!building.account?.id}
 											/>
 										</FieldRow>
 									</FieldGroup>
 								</div>
 							</div>
 						</Card>
-						<Card heading="Identifikation" bodyClassName="slds-m-around_medium">
+						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<div className="slds-form" role="list">
 									<FieldGroup>
@@ -105,15 +106,6 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 										</FieldRow>
 										<FieldRow>
 											<Input label="Name" type="text" accessor={this.formState.field("name")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="Nr Police GV" accessor={this.formState.field("buildingInsuranceNr")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="EGID" accessor={this.formState.field("nationalBuildingId")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="Parzellen-Nr" accessor={this.formState.field("plotNr")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

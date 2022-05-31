@@ -28,7 +28,7 @@ public abstract class ObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>>
 
 	@Override
 	public Integer nextPartId() {
-		return this.dslContext.nextval(OBJ_PART_ID_SEQ).intValue();
+		return this.getDSLContext().nextval(OBJ_PART_ID_SEQ).intValue();
 	}
 
 }

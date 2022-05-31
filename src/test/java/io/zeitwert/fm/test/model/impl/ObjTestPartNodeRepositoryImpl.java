@@ -42,7 +42,7 @@ public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest
 	@Override
 	public List<ObjTestPartNode> doLoad(ObjTest obj) {
 		//@formatter:off
-		Result<ObjTestPartNodeRecord> dbRecords = this.dslContext
+		Result<ObjTestPartNodeRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.OBJ_TEST_PART_NODE)
 			.where(Tables.OBJ_TEST_PART_NODE.OBJ_ID.eq(obj.getId()))
 			.orderBy(Tables.OBJ_TEST_PART_NODE.SEQ_NR)
@@ -53,7 +53,7 @@ public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest
 
 	@Override
 	public ObjTestPartNode doCreate(ObjTest obj) {
-		ObjTestPartNodeRecord dbRecord = this.dslContext.newRecord(Tables.OBJ_TEST_PART_NODE);
+		ObjTestPartNodeRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_TEST_PART_NODE);
 		return this.newPart(obj, dbRecord);
 	}
 

@@ -12,6 +12,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
+import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.model.FMObj;
 
 /**
@@ -72,6 +73,24 @@ public interface ObjBuilding extends FMObj {
 	CodeCountry getCountry();
 
 	void setCountry(CodeCountry country);
+
+	String getGeoAddress();
+
+	void setGeoAddress(String geoAddress);
+
+	String getGeoCoordinates();
+
+	void setGeoCoordinates(String geoCoordinates);
+
+	Integer getGeoZoom();
+
+	void setGeoZoom(Integer geoZoom);
+
+	Integer getCoverFotoId();
+
+	void setCoverFotoId(Integer id);
+
+	ObjDocument getCoverFoto();
 
 	CodeCurrency getCurrency();
 

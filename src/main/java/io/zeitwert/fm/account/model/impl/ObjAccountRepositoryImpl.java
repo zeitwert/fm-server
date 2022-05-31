@@ -54,7 +54,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public ObjAccount doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.dslContext.newRecord(Tables.OBJ_ACCOUNT));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	@Override
 	public ObjAccount doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjAccountRecord accountRecord = this.dslContext.fetchOne(Tables.OBJ_ACCOUNT,
+		ObjAccountRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT,
 				Tables.OBJ_ACCOUNT.OBJ_ID.eq(objId));
 		if (accountRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
@@ -99,7 +99,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public Optional<ObjAccount> getByKey(SessionInfo sessionInfo, String key) {
-		ObjAccountVRecord hhRecord = this.dslContext.fetchOne(Tables.OBJ_ACCOUNT_V,
+		ObjAccountVRecord hhRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
 				Tables.OBJ_ACCOUNT_V.INTL_KEY.eq(key));
 		if (hhRecord == null) {
 			return Optional.empty();

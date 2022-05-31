@@ -170,6 +170,26 @@ public class ObjBuildingV extends TableImpl<ObjBuildingVRecord> {
     public final TableField<ObjBuildingVRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40), this, "");
 
     /**
+     * The column <code>public.obj_building_v.geo_address</code>.
+     */
+    public final TableField<ObjBuildingVRecord, String> GEO_ADDRESS = createField(DSL.name("geo_address"), SQLDataType.VARCHAR(200), this, "");
+
+    /**
+     * The column <code>public.obj_building_v.geo_coordinates</code>.
+     */
+    public final TableField<ObjBuildingVRecord, String> GEO_COORDINATES = createField(DSL.name("geo_coordinates"), SQLDataType.VARCHAR(200), this, "");
+
+    /**
+     * The column <code>public.obj_building_v.geo_zoom</code>.
+     */
+    public final TableField<ObjBuildingVRecord, Integer> GEO_ZOOM = createField(DSL.name("geo_zoom"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_building_v.cover_foto_id</code>.
+     */
+    public final TableField<ObjBuildingVRecord, Integer> COVER_FOTO_ID = createField(DSL.name("cover_foto_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_building_v.currency_id</code>.
      */
     public final TableField<ObjBuildingVRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(40), this, "");
@@ -259,7 +279,7 @@ public class ObjBuildingV extends TableImpl<ObjBuildingVRecord> {
     }
 
     private ObjBuildingV(Name alias, Table<ObjBuildingVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_building_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    b.obj_id,\n    b.intl_key,\n    b.name,\n    b.description,\n    b.account_id,\n    b.building_nr,\n    b.building_insurance_nr,\n    b.plot_nr,\n    b.national_building_id,\n    b.historic_preservation_id,\n    b.street,\n    b.zip,\n    b.city,\n    b.country_id,\n    b.currency_id,\n    b.volume,\n    b.area_gross,\n    b.area_net,\n    b.nr_of_floors_above_ground,\n    b.nr_of_floors_below_ground,\n    b.building_type_id,\n    b.building_sub_type_id,\n    b.building_year,\n    b.insured_value,\n    b.insured_value_year,\n    b.not_insured_value,\n    b.not_insured_value_year,\n    b.third_party_value,\n    b.third_party_value_year,\n    b.building_part_catalog_id,\n    b.building_maintenance_strategy_id\n   FROM (obj_building b\n     JOIN obj ON ((obj.id = b.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_building_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    b.obj_id,\n    b.intl_key,\n    b.name,\n    b.description,\n    b.account_id,\n    b.building_nr,\n    b.building_insurance_nr,\n    b.plot_nr,\n    b.national_building_id,\n    b.historic_preservation_id,\n    b.street,\n    b.zip,\n    b.city,\n    b.country_id,\n    b.geo_address,\n    b.geo_coordinates,\n    b.geo_zoom,\n    b.cover_foto_id,\n    b.currency_id,\n    b.volume,\n    b.area_gross,\n    b.area_net,\n    b.nr_of_floors_above_ground,\n    b.nr_of_floors_below_ground,\n    b.building_type_id,\n    b.building_sub_type_id,\n    b.building_year,\n    b.insured_value,\n    b.insured_value_year,\n    b.not_insured_value,\n    b.not_insured_value_year,\n    b.third_party_value,\n    b.third_party_value_year,\n    b.building_part_catalog_id,\n    b.building_maintenance_strategy_id\n   FROM (obj_building b\n     JOIN obj ON ((obj.id = b.obj_id)));"));
     }
 
     /**

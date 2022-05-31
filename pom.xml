@@ -32,6 +32,7 @@
 		<jooq-codegen.version>3.14.11</jooq-codegen.version>
 		<javassist.version>3.28.0-GA</javassist.version>
 		<aspose-words.version>22.4</aspose-words.version>
+		<google-maps.version>2.0.0</google-maps.version>
 	</properties>
 
 	<repositories>
@@ -82,7 +83,7 @@
 			<version>${javassist.version}</version>
 		</dependency>
 
-		<!-- Aspose -->
+		<!-- Aspose, Google Maps -->
 		<dependency>
 			<groupId>com.aspose</groupId>
 			<artifactId>aspose-words</artifactId>
@@ -94,6 +95,11 @@
 			<artifactId>aspose-words</artifactId>
 			<version>${aspose-words.version}</version>
 			<classifier>javadoc</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.google.maps</groupId>
+			<artifactId>google-maps-services</artifactId>
+			<version>${google-maps.version}</version>
 		</dependency>
 
 		<!-- Test -->
@@ -265,6 +271,17 @@
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
 							<configurationFile>jooq-config-fm-contact.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-dms</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>jooq-config-fm-dms.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>

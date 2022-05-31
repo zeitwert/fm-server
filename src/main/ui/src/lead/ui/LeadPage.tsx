@@ -1,7 +1,7 @@
 
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
-	Account, CaseStage, EntityType, Lead,
+	CaseStage, EntityType, Lead,
 	LeadStore,
 	LeadStoreModel
 } from "@zeitwert/ui-model";
@@ -85,6 +85,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"lead-" + this.leadStore.lead?.id}
 						>
 							{(editor) => (
 								<Tabs
@@ -111,7 +112,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							)}
 						</FormItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.leadStore} account={lead.account as Account} hasItemPath />
+					<ItemRightPart store={this.leadStore} hasItemPath />
 				</ItemGrid>
 				{this.doStageSelection && (
 					<StageSelector

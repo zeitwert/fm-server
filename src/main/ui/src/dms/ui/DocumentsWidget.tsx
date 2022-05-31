@@ -1,6 +1,6 @@
 import { registerMetadataConfig } from "@finadvise/forms";
 import { FormWrapper } from "@zeitwert/ui-forms";
-import { Document, DocumentContentModel, DocumentContentSnapshot, FORM_API } from "@zeitwert/ui-model";
+import { Document, FORM_API } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { inject } from "mobx-react";
 import React from "react";
@@ -8,8 +8,8 @@ import React from "react";
 interface DocumentsWidgetProps {
 	documents: Document[];
 	isReadOnly?: boolean;
-	onSelect?: (content: DocumentContentSnapshot) => void;
-	onChange?: (content: DocumentContentSnapshot[]) => Promise<void>;
+	onSelect?: (content: any /*DocumentContentSnapshot*/) => void;
+	onChange?: (content: any /*DocumentContentSnapshot[]*/) => Promise<void>;
 }
 
 @inject("appStore")
@@ -48,11 +48,11 @@ export default class DocumentsWidget extends React.Component<DocumentsWidgetProp
 					}
 				}}
 				onUploadSelect={(path, value) => {
-					onSelect && onSelect(value as DocumentContentSnapshot);
+					onSelect && onSelect(value as any /*DocumentContentSnapshot*/);
 					return !isReadOnly;
 				}}
 				onAfterChange={(path, value) =>
-					path.includes("documents") && onChange && onChange(value as DocumentContentSnapshot[])
+					path.includes("documents") && onChange && onChange(value as any /*DocumentContentSnapshot[]*/)
 				}
 				displayMode={isReadOnly ? "readonly" : "enabled"}
 			/>
@@ -60,16 +60,16 @@ export default class DocumentsWidget extends React.Component<DocumentsWidgetProp
 	}
 
 	private getDocumentContent(document: Document) {
-		if (document.content && document.isInstance) {
-			document.content.syncMetadata(document);
-			return document.content.formSnapshot;
-		}
-		return DocumentContentModel.create({
-			// @ts-ignore
-			id: Number(document.id),
-			name: document.name!,
-			objId: Number(document.id),
-			editable: false
-		}).formSnapshot;
+		// if (document.content && document.isInstance) {
+		// 	document.content.syncMetadata(document);
+		// 	return document.content.formSnapshot;
+		// }
+		// return DocumentContentModel.create({
+		// 	// @ts-ignore
+		// 	id: Number(document.id),
+		// 	name: document.name!,
+		// 	objId: Number(document.id),
+		// 	editable: false
+		// }).formSnapshot;
 	}
 }

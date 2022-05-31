@@ -1,5 +1,5 @@
 import { Card, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, Aggregate, AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
+import { Aggregate, AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
 import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
@@ -65,7 +65,6 @@ export class ItemLeftPart extends React.Component<ItemLeftPartProps> {
 
 interface ItemRightPartProps {
 	store: AggregateStore;
-	account?: Account;
 	areas?: Enumerated[];
 	hideDocuments?: boolean;
 	hideNotes?: boolean;

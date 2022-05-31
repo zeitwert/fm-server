@@ -17,29 +17,6 @@ import org.jooq.Record;
 public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 
 	/**
-	 * Load core aggregate data from database and instantiate a new Aggregate. This
-	 * must not load Parts, they will be loaded by @see doGet below
-	 * 
-	 * @param id aggregate id
-	 * @return instantiated Aggregate
-	 */
-	A doLoad(SessionInfo sessionInfo, Integer id);
-
-	/**
-	 * Load Parts from database and attach to Aggregate
-	 * 
-	 * @param aggregate the aggregate
-	 */
-	void doLoadParts(A aggregate);
-
-	/**
-	 * Find aggregates (ids) according to given Query
-	 * 
-	 * @param querySpec query
-	 */
-	List<V> doFind(QuerySpec querySpec);
-
-	/**
 	 * Provide a new Aggregate id
 	 * 
 	 * @return new aggregate id
@@ -69,6 +46,43 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	void doInitParts(A aggregate);
 
 	/**
+	 * Do some work after create, f.ex. fire events
+	 * 
+	 * @param aggregate aggregate
+	 */
+	void afterCreate(A aggregate);
+
+	/**
+	 * Load core aggregate data from database and instantiate a new Aggregate. This
+	 * must not load Parts, they will be loaded by @see doGet below
+	 * 
+	 * @param id aggregate id
+	 * @return instantiated Aggregate
+	 */
+	A doLoad(SessionInfo sessionInfo, Integer id);
+
+	/**
+	 * Load Parts from database and attach to Aggregate
+	 * 
+	 * @param aggregate the aggregate
+	 */
+	void doLoadParts(A aggregate);
+
+	/**
+	 * Do some work after load, f.ex. fire events
+	 * 
+	 * @param aggregate aggregate
+	 */
+	void afterLoad(A aggregate);
+
+	/**
+	 * Do some work before store, f.ex. make sure certain structures are in place
+	 * 
+	 * @param aggregate aggregate
+	 */
+	void beforeStore(A aggregate);
+
+	/**
 	 * Store Parts
 	 * 
 	 * @param aggregate aggregate
@@ -81,5 +95,12 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * @param aggregate aggregate
 	 */
 	void afterStore(A aggregate);
+
+	/**
+	 * Find aggregates (ids) according to given Query
+	 * 
+	 * @param querySpec query
+	 */
+	List<V> doFind(QuerySpec querySpec);
 
 }

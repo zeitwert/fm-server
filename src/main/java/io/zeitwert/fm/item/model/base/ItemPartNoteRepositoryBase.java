@@ -33,7 +33,7 @@ public abstract class ItemPartNoteRepositoryBase<A extends Aggregate>
 	@Override
 	public List<ItemPartNote<A>> doLoad(A item) {
 		//@formatter:off
-		Result<ItemPartNoteRecord> dbRecords = this.dslContext
+		Result<ItemPartNoteRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.ITEM_PART_NOTE)
 			.where(Tables.ITEM_PART_NOTE.ITEM_ID.eq(item.getId()))
 			.orderBy(Tables.ITEM_PART_NOTE.SEQ_NR)
@@ -44,7 +44,7 @@ public abstract class ItemPartNoteRepositoryBase<A extends Aggregate>
 
 	@Override
 	public ItemPartNote<A> doCreate(A item) {
-		ItemPartNoteRecord dbRecord = this.dslContext.newRecord(Tables.ITEM_PART_NOTE);
+		ItemPartNoteRecord dbRecord = this.getDSLContext().newRecord(Tables.ITEM_PART_NOTE);
 		return this.newPart(item, dbRecord);
 	}
 

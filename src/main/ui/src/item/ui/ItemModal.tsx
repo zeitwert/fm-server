@@ -6,6 +6,7 @@ import { inject } from "mobx-react";
 import React from "react";
 import FormItemEditor, { BaseItemEditorProps } from "./FormItemEditor";
 import { ItemEditorButtons } from "./ItemEditorButtons";
+import { getEditEntityText, getNewEntityText } from "./ItemUtils";
 
 interface ItemModalProps extends BaseItemEditorProps {
 	size?: "small" | "medium" | "large";
@@ -21,15 +22,12 @@ export default class ItemModal extends React.Component<ItemModalProps> {
 
 	render() {
 		const entityType = EntityTypes[this.props.entityType];
-		const { iconCategory, iconName, labelSingular: itemName } = entityType;
+		const { iconCategory, iconName } = entityType;
 		const { store, children } = this.props;
+		const headerText = store.isNew ? getNewEntityText(entityType) : getEditEntityText(entityType);
 		const heading = (
 			<MediaObject
-				body={
-					<>
-						{store.isNew ? "Add new" : "Edit"} {itemName}
-					</>
-				}
+				body={<>{headerText}</>}
 				figure={<Icon category={iconCategory as any} name={iconName as any} size="small" />}
 				verticalCenter
 			/>

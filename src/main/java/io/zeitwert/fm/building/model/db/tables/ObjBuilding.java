@@ -118,6 +118,26 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     public final TableField<ObjBuildingRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
+     * The column <code>public.obj_building.geo_address</code>.
+     */
+    public final TableField<ObjBuildingRecord, String> GEO_ADDRESS = createField(DSL.name("geo_address"), SQLDataType.VARCHAR(200), this, "");
+
+    /**
+     * The column <code>public.obj_building.geo_coordinates</code>.
+     */
+    public final TableField<ObjBuildingRecord, String> GEO_COORDINATES = createField(DSL.name("geo_coordinates"), SQLDataType.VARCHAR(200), this, "");
+
+    /**
+     * The column <code>public.obj_building.geo_zoom</code>.
+     */
+    public final TableField<ObjBuildingRecord, Integer> GEO_ZOOM = createField(DSL.name("geo_zoom"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_building.cover_foto_id</code>.
+     */
+    public final TableField<ObjBuildingRecord, Integer> COVER_FOTO_ID = createField(DSL.name("cover_foto_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_building.currency_id</code>.
      */
     public final TableField<ObjBuildingRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");

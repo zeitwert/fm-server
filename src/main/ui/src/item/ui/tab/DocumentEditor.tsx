@@ -4,7 +4,6 @@ import {
 	AggregateStore, API,
 	Config,
 	Document,
-	DocumentContentSnapshot,
 	DocumentModel,
 	DocumentStoreModel,
 	DOCUMENT_API, Enumerated
@@ -99,7 +98,7 @@ export default class DocumentEditor extends React.Component<DocumentEditorProps>
 		);
 	}
 
-	private async setDocuments(content: DocumentContentSnapshot[]) {
+	private async setDocuments(content: any /*DocumentContentSnapshot[]*/) {
 		const { documents, onSet } = this.props;
 		const docs = [];
 		for (const c of content) {
@@ -110,7 +109,7 @@ export default class DocumentEditor extends React.Component<DocumentEditorProps>
 					const repository = await DOCUMENT_API.loadAggregate(documentId);
 					doc = DocumentModel.create(repository.document[documentId]);
 				}
-				doc.syncMetadata(c);
+				//doc.syncMetadata(c);
 				docs.push(doc);
 			}
 		}

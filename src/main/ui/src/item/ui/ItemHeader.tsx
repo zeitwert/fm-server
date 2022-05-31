@@ -51,36 +51,39 @@ export default class ItemHeader extends React.Component<ItemHeaderProps> {
 			<>
 				{/* @ts-ignore */}
 				<PageHeaderControl>
-					<ButtonStateful
-						stateOne={{
-							label: "Follow"
-						}}
-						stateTwo={{
-							label: !!follow ? (
-								<div className="slds-text-heading_small" style={{ lineHeight: 1.9 }}>
-									<strong>Unfollow</strong>
-								</div>
-							) : (
-								"Follow"
-							)
-						}}
-						stateThree={{
-							icon: "check",
-							label: (
-								<div className="slds-text-heading_small" style={{ lineHeight: 1.9 }}>
-									<strong>Following</strong>
-								</div>
-							)
-						}}
-						active={!!follow}
-						onClick={async () => {
-							// if (!follow) {
-							// 	await this.ctx.followStore.add(this.ctx.session.sessionInfo!.user, item);
-							// } else {
-							// 	await this.ctx.followStore.remove(follow);
-							// }
-						}}
-					/>
+					{
+						false &&
+						<ButtonStateful
+							stateOne={{
+								label: "Follow"
+							}}
+							stateTwo={{
+								label: !!follow ? (
+									<div className="slds-text-heading_small" style={{ lineHeight: 1.9 }}>
+										<strong>Unfollow</strong>
+									</div>
+								) : (
+									"Follow"
+								)
+							}}
+							stateThree={{
+								icon: "check",
+								label: (
+									<div className="slds-text-heading_small" style={{ lineHeight: 1.9 }}>
+										<strong>Following</strong>
+									</div>
+								)
+							}}
+							active={!!follow}
+							onClick={async () => {
+								// if (!follow) {
+								// 	await this.ctx.followStore.add(this.ctx.session.sessionInfo!.user, item);
+								// } else {
+								// 	await this.ctx.followStore.remove(follow);
+								// }
+							}}
+						/>
+					}
 				</PageHeaderControl>
 				{
 					this.props.editItem &&

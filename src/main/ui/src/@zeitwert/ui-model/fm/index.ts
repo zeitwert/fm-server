@@ -10,7 +10,7 @@ export * from "./contact/model/ContactModel";
 export * from "./contact/model/ContactStore";
 export * from "./contact/model/LifeEventModel";
 export * from "./contact/service/ContactApi";
-export * from "./dms/model/DocumentContentModel";
+//export * from "./dms/model/DocumentContentModel.ts.zz";
 export * from "./dms/model/DocumentModel";
 export * from "./dms/model/DocumentStore";
 export * from "./dms/service/DocumentApi";

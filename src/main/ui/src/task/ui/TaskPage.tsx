@@ -1,5 +1,5 @@
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, CaseStage, EntityType, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
+import { CaseStage, EntityType, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { StageSelector } from "doc/ui/StageSelector";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -81,6 +81,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"task-" + this.taskStore.task?.id}
 						>
 							{(editor) => (
 								<Tabs
@@ -95,12 +96,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							)}
 						</FormItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart
-						store={this.taskStore}
-						account={task.account as Account}
-						hideTask
-						hasItemPath
-					/>
+					<ItemRightPart store={this.taskStore} hideTask hasItemPath />
 				</ItemGrid>
 				{this.doStageSelection && (
 					<StageSelector

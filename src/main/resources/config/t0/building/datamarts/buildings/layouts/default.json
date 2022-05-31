@@ -14,9 +14,12 @@
 			{
 				"id": "address",
 				"label": "Address",
-				"value": "address",
-				"template": "link",
-				"link": "link"
+				"value": "address"
+			},
+			{
+				"id": "nr",
+				"label": "Nr",
+				"value": "nr"
 			},
 			{
 				"id": "account",
@@ -40,6 +43,7 @@
 			"{{data}}",
 			{
 				"id": "{{id}}",
+				"nr": "{{buildingNr}}",
 				"name": "{{name}}",
 				"link": "/building/{{id}}",
 				"accountId": "{{account.id}}",

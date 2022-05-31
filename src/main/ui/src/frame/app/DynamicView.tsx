@@ -31,6 +31,7 @@ const AreaMap: {
 @inject("logger", "session")
 @observer
 class DynamicView extends React.Component<RouteComponentProps> {
+
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
@@ -52,7 +53,8 @@ class DynamicView extends React.Component<RouteComponentProps> {
 
 	private componentName(path: string) {
 		if (this.ctx.session.appInfo) {
-			const area = this.ctx.session.appInfo!.areas.find((a) => a.path === (path || "/"));
+			const areaPath = (path ? path : this.ctx.session.appInfo?.defaultArea) || "/";
+			const area = this.ctx.session.appInfo!.areas.find((a) => a.path === areaPath);
 			return area ? area.component : undefined;
 		}
 	}

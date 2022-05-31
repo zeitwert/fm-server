@@ -1,12 +1,12 @@
 
 import { Button, Modal } from "@salesforce/design-system-react";
-import { Config, decodeHtml, Document } from "@zeitwert/ui-model";
+import { Document } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import PDFViewer from "./pdf/PDFViewer";
 
-const API_BASE_URL = Config.getApiUrl("##", "##").replace("/##/##", "");
+//const API_BASE_URL = Config.getApiUrl("##", "##").replace("/##/##", "");
 
 enum DocumentState {
 	Initial = 1,
@@ -85,50 +85,50 @@ export class DocumentViewer extends React.Component<DocumentViewerProps> {
 		if (!document || this.documentState === DocumentState.Ready) {
 			return;
 		}
-		if (document.isDocument) {
-			this.documentState = DocumentState.Loading;
-		}
+		// if (document.isDocument) {
+		// 	this.documentState = DocumentState.Loading;
+		// }
 	};
 
 	private getViewer = () => {
-		const document = this.props.document;
+		//const document = this.props.document;
 		if (this.documentState === DocumentState.Initial) {
 			return <>Loading...</>;
 		}
-		if (document.isPdf) {
-			return (
-				<div className="slds-scrollable_x">
-					<PDFViewer
-						file={document.isUrl ? document?.url || "" : API_BASE_URL + document.content?.downloadUrl}
-						onLoad={() => (this.documentState = DocumentState.Ready)}
-						ref={(component) => (this.PDFViewer = component)}
-						onDocumentComplete={this.props.onDocumentComplete}
-						onItemClick={(page) => this.props.onItemClick?.(page)}
-						page={this.props.page}
-					/>
-				</div>
-			);
-		} else if (document.isDocument && document.content) {
-			<div className="fa-full-dims" style={{ minHeight: 800 }}>
-				<iframe
-					title="AgendaItem"
-					src={API_BASE_URL + document.content.downloadUrl || ""}
-					className="fa-full-dims fa-border-0"
-					style={{ minHeight: 800 }}
-				/>
-			</div>;
-		} else if (document.isUrl) {
-			return (
-				<div className="slds-scrollable_x">
-					<iframe
-						className="fa-border-0 fa-full-width slds-scrollable_y"
-						title="Document"
-						src={decodeHtml(document?.url || "")}
-						style={{ height: this.el?.offsetHeight }}
-					/>
-				</div>
-			);
-		}
+		// if (document.isPdf) {
+		// 	return (
+		// 		<div className="slds-scrollable_x">
+		// 			<PDFViewer
+		// 				file={document.isUrl ? document?.url || "" : API_BASE_URL + document.content?.downloadUrl}
+		// 				onLoad={() => (this.documentState = DocumentState.Ready)}
+		// 				ref={(component) => (this.PDFViewer = component)}
+		// 				onDocumentComplete={this.props.onDocumentComplete}
+		// 				onItemClick={(page) => this.props.onItemClick?.(page)}
+		// 				page={this.props.page}
+		// 			/>
+		// 		</div>
+		// 	);
+		// } else if (document.isDocument && document.content) {
+		// 	<div className="fa-full-dims" style={{ minHeight: 800 }}>
+		// 		<iframe
+		// 			title="AgendaItem"
+		// 			src={API_BASE_URL + document.content.downloadUrl || ""}
+		// 			className="fa-full-dims fa-border-0"
+		// 			style={{ minHeight: 800 }}
+		// 		/>
+		// 	</div>;
+		// } else if (document.isUrl) {
+		// 	return (
+		// 		<div className="slds-scrollable_x">
+		// 			<iframe
+		// 				className="fa-border-0 fa-full-width slds-scrollable_y"
+		// 				title="Document"
+		// 				src={decodeHtml(document?.url || "")}
+		// 				style={{ height: this.el?.offsetHeight }}
+		// 			/>
+		// 		</div>
+		// 	);
+		// }
 		return <div className="slds-m-around_medium">Unable to load document.</div>;
 	};
 

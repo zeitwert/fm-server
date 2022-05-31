@@ -36,11 +36,13 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
+import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	static final CodeBuildingPriceIndex DefaultPriceIndex = CodeBuildingPriceIndexEnum.getBuildingPriceIndex("ch-ZRH");
+	static final Integer DefaultGeoZoom = 17;
 
 	private final UpdatableRecord<?> dbRecord;
 
@@ -58,6 +60,13 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final SimpleProperty<String> zip;
 	protected final SimpleProperty<String> city;
 	protected final EnumProperty<CodeCountry> country;
+
+	protected final SimpleProperty<String> geoAddress;
+	protected final SimpleProperty<String> geoCoordinates;
+	protected final SimpleProperty<Integer> geoZoom;
+
+	protected final ReferenceProperty<ObjDocument> coverFoto;
+
 	protected final EnumProperty<CodeCurrency> currency;
 
 	protected final SimpleProperty<BigDecimal> volume;
@@ -107,6 +116,12 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		this.city = this.addSimpleProperty(dbRecord, ObjBuildingFields.CITY);
 		this.country = this.addEnumProperty(dbRecord, ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
 		this.currency = this.addEnumProperty(dbRecord, ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
+
+		this.geoAddress = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_ADDRESS);
+		this.geoCoordinates = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_COORDINATES);
+		this.geoZoom = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_ZOOM);
+
+		this.coverFoto = this.addReferenceProperty(dbRecord, ObjBuildingFields.COVER_FOTO_ID, ObjDocument.class);
 
 		this.volume = this.addSimpleProperty(dbRecord, ObjBuildingFields.VOLUME);
 		this.areaGross = this.addSimpleProperty(dbRecord, ObjBuildingFields.AREA_GROSS);
@@ -233,24 +248,31 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	private void validateElements() {
+		if (this.getCoverFoto() == null || this.getCoverFoto().getContentType() == null) {
+			this.addValidation(CodeValidationLevelEnum.ERROR, "Für den Druck muss ein Coverfoto hochgeladen werden");
+		}
+		if (this.getGeoCoordinates() == null) {
+			this.addValidation(CodeValidationLevelEnum.ERROR, "Koordinaten der Immobilie fehlen");
+		}
 		if (this.getInsuredValue() == null || this.getInsuredValue().equals(BigDecimal.ZERO)) {
-			this.addValidation(CodeValidationLevelEnum.ERROR, "building value must be specified");
+			this.addValidation(CodeValidationLevelEnum.ERROR, "Gebäudewert muss erfasst werden");
 		}
 		if (this.getInsuredValueYear() == null) {
-			this.addValidation(CodeValidationLevelEnum.ERROR, "insured value year must be specified");
+			this.addValidation(CodeValidationLevelEnum.ERROR, "Jahr der Bestimmung des Gebäudewerts muss erfasst werden");
 		}
 		if (this.getElementContributions() != 100) {
 			this.addValidation(CodeValidationLevelEnum.ERROR,
-					"element contributions must sum up to 100% (is " + this.getElementContributions() + "%)");
+					"Summe der Bauteilwerte muss auf 100% summieren (ist " + this.getElementContributions() + "%)");
 		}
 		for (ObjBuildingPartElement element : this.getElementList()) {
 			if (element.getValuePart() != null && element.getValuePart() != 0) {
-				if (element.getCondition() == null) {
+				if (element.getCondition() == null || element.getCondition() == 0) {
 					this.addValidation(CodeValidationLevelEnum.ERROR,
-							"condition for element " + element.getBuildingPart().getName() + " must be specified");
-				} else if (element.getConditionYear() == null) {
+							"Zustand für Element [" + element.getBuildingPart().getName() + "] muss erfasst werden");
+				} else if (element.getConditionYear() == null || element.getConditionYear() < 1800) {
 					this.addValidation(CodeValidationLevelEnum.ERROR,
-							"valuation year for element " + element.getBuildingPart().getName() + " must be specified");
+							"Jahr der Zustandsbewertung für Element [" + element.getBuildingPart().getName()
+									+ "] muss erfasst werden");
 				}
 			}
 		}

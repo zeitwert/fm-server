@@ -26,7 +26,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		implements PartRepository<A, P>, PartRepositorySPI<A, P> {
 
 	private final AppContext appContext;
-	protected final DSLContext dslContext;
+	private final DSLContext dslContext;
 
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] paramTypeList;
@@ -54,8 +54,12 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	}
 	//@formatter:on
 
-	protected AppContext getAppContext() {
+	protected final AppContext getAppContext() {
 		return this.appContext;
+	}
+
+	protected final DSLContext getDSLContext() {
+		return this.dslContext;
 	}
 
 	protected void require(boolean condition, String message) {

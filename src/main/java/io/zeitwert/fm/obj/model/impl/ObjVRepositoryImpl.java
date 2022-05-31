@@ -48,7 +48,7 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 
 	@Override
 	public Obj doLoad(SessionInfo sessionInfo, Integer objId) {
-		ObjRecord objRecord = this.dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
+		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}

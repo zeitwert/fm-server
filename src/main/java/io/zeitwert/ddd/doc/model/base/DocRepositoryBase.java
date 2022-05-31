@@ -60,7 +60,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	}
 
 	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
-		DocRecord docRecord = this.dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
+		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
@@ -76,11 +76,11 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	@Override
 	public Integer nextAggregateId() {
-		return this.dslContext.nextval(DOC_ID_SEQ).intValue();
+		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
 	}
 
 	protected D doCreate(SessionInfo sessionInfo, UpdatableRecord<?> extnRecord) {
-		return newAggregate(sessionInfo, this.dslContext.newRecord(Tables.DOC), extnRecord);
+		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC), extnRecord);
 	}
 
 	protected void doInit(D doc, Integer docId, String caseDefId, String defaultInitCaseStageId) {

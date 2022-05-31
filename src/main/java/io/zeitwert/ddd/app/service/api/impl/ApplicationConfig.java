@@ -92,8 +92,8 @@ class ApplicationConfig {
 	private final Application fmApp = Application.builder().id("fm").name("zeitwert: fm").icon("advise")
 			.description("Strategische Unterhaltsplanung").build();
 	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fm").name("zeitwert: fm")
-			.areas(List.of(homeArea, portfolioArea, buildingArea, accountArea, contactArea, taskArea, buildingReportArea))
-			.defaultArea(homeArea.getId()).build();
+			.areas(List.of(buildingArea, portfolioArea, accountArea, contactArea))
+			.defaultArea(buildingArea.getId()).build();
 
 	private final Application adminApp = Application.builder().id("admin").name("zeitwert: admin").icon("config")
 			.description("Applikationskonfiguration").build();

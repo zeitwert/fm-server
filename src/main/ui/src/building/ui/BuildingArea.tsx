@@ -1,5 +1,5 @@
 import { Button } from "@salesforce/design-system-react";
-import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
+import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import ItemsPage from "item/ui/ItemsPage";
 import { makeObservable, observable } from "mobx";
@@ -42,7 +42,7 @@ export default class BuildingArea extends React.Component {
 								actionButtons={[<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />]}
 								canCreate
 								createEditor={() => <BuildingCreationForm store={buildingStore} />}
-								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!) }}
+								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!, this.ctx.session.sessionInfo?.account) }}
 							/>
 							{
 								this.doImport && (
@@ -84,7 +84,8 @@ export default class BuildingArea extends React.Component {
 
 }
 
-const initBuilding = (building: Building) => {
+const initBuilding = (building: Building, account: AccountInfo | undefined) => {
 	building.setField("country", { id: "ch", name: "Switzerland" });
 	building.setField("currency", { id: "chf", name: "CHF" });
+	building.setField("account", account?.id);
 }

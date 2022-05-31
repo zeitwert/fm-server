@@ -47,7 +47,7 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 	@Override
 	public List<ObjPartItem> doLoad(Obj obj) {
 		//@formatter:off
-		Result<ObjPartItemRecord> dbRecords = this.dslContext
+		Result<ObjPartItemRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.OBJ_PART_ITEM)
 			.where(Tables.OBJ_PART_ITEM.OBJ_ID.eq(obj.getId()))
 			.orderBy(Tables.OBJ_PART_ITEM.SEQ_NR)
@@ -58,7 +58,7 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 
 	@Override
 	public ObjPartItem doCreate(Obj obj) {
-		ObjPartItemRecord dbRecord = this.dslContext.newRecord(Tables.OBJ_PART_ITEM);
+		ObjPartItemRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_ITEM);
 		return this.newPart(obj, dbRecord);
 	}
 

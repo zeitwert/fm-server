@@ -22,6 +22,11 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
@@ -93,7 +98,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	@Override
 	public ObjBuilding doCreate(SessionInfo sessionInfo) {
-		return doCreate(sessionInfo, this.dslContext.newRecord(Tables.OBJ_BUILDING));
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
 	}
 
 	@Override
@@ -101,22 +106,13 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		super.doInitParts(obj);
 		this.getItemRepository().init(obj);
 		this.getElementRepository().init(obj);
-	}
-
-	@Override
-	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
+		this.addCoverFoto(obj);
 	}
 
 	@Override
 	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
-		ObjBuildingRecord buildingRecord = this.dslContext.fetchOne(Tables.OBJ_BUILDING,
+		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
 				Tables.OBJ_BUILDING.OBJ_ID.eq(objId));
 		if (buildingRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
@@ -133,10 +129,39 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
+	public void beforeStore(ObjBuilding obj) {
+		super.beforeStore(obj);
+		if (obj.getCoverFotoId() == null) {
+			this.addCoverFoto(obj);
+		}
+	}
+
+	@Override
 	public void doStoreParts(ObjBuilding obj) {
 		super.doStoreParts(obj);
 		this.getItemRepository().store(obj);
 		this.getElementRepository().store(obj);
+	}
+
+	@Override
+	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
+	}
+
+	@Override
+	protected String getAccountIdField() {
+		return "account_id";
+	}
+
+	private void addCoverFoto(ObjBuilding obj) {
+		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocument coverFoto = documentRepo.create(obj.getMeta().getSessionInfo());
+		coverFoto.setName("CoverFoto");
+		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
+		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
+		coverFoto.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("foto"));
+		documentRepo.store(coverFoto);
+		obj.setCoverFotoId(coverFoto.getId());
 	}
 
 }

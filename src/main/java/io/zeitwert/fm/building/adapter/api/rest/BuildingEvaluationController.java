@@ -1,23 +1,31 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
+import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import com.aspose.words.AxisBound;
 import com.aspose.words.Cell;
 import com.aspose.words.Chart;
 import com.aspose.words.Document;
+import com.aspose.words.DocumentBuilder;
 import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
 import com.aspose.words.NodeType;
+import com.aspose.words.RelativeHorizontalPosition;
+import com.aspose.words.RelativeVerticalPosition;
 import com.aspose.words.ReportingEngine;
 import com.aspose.words.Row;
 import com.aspose.words.Run;
 import com.aspose.words.SaveFormat;
 import com.aspose.words.Shape;
 import com.aspose.words.Table;
+import com.aspose.words.WrapType;
+import com.google.maps.ImageResult;
+import com.google.maps.model.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.building.service.api.BuildingService;
 import io.zeitwert.fm.building.service.api.EvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
@@ -49,6 +58,9 @@ public class BuildingEvaluationController {
 
 	@Autowired
 	private ObjBuildingRepository repo;
+
+	@Autowired
+	private BuildingService buildingService;
 
 	@Autowired
 	SessionInfo sessionInfo;
@@ -81,10 +93,19 @@ public class BuildingEvaluationController {
 			throws Exception {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
+
+		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
+			return ResponseEntity.badRequest().body("Coverfoto missing".getBytes(StandardCharsets.UTF_8));
+		} else if (building.getGeoCoordinates() == null) {
+			return ResponseEntity.badRequest().body("Coordinates missing".getBytes(StandardCharsets.UTF_8));
+		}
+
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		Document doc = new Document(templateFile.getInputStream());
 
+		this.insertCoverFoto(doc, building);
+		this.insertLocationImage(doc, building);
 		engine.buildReport(doc, evaluationResult, "building");
 		this.fillRenovationTable(doc, evaluationResult);
 		this.fillCostsChart(doc, evaluationResult);
@@ -102,11 +123,62 @@ public class BuildingEvaluationController {
 
 	}
 
+	private void insertCoverFoto(Document doc, ObjBuilding building) {
+
+		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
+			return;
+		}
+
+		// String contentType = building.getCoverFoto().getContentType().getExtension();
+		byte[] content = building.getCoverFoto().getContent();
+
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		try {
+			builder.moveToBookmark("CoverFoto");
+			Shape coverFoto = builder.insertImage(content);
+			coverFoto.setAspectRatioLocked(true);
+			coverFoto.setBounds(new Rectangle2D.Float(0f, 0f, 400f, 230f));
+			coverFoto.setWrapType(WrapType.NONE);
+			coverFoto.setRelativeHorizontalPosition(RelativeHorizontalPosition.RIGHT_MARGIN);
+			coverFoto.setRelativeVerticalPosition(RelativeVerticalPosition.TOP_MARGIN);
+			coverFoto.setTop(170);
+			coverFoto.setLeft(-coverFoto.getWidth() - 20);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void insertLocationImage(Document doc, ObjBuilding building) {
+
+		if (building.getGeoCoordinates() == null) {
+			return;
+		}
+
+		String address = building.getGeoCoordinates().substring(4);
+		ImageResult ir = buildingService.getMap(building.getName(), address, new Size(1200, 1200), building.getGeoZoom());
+
+		if (ir == null) {
+			return;
+		}
+
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		try {
+			builder.moveToBookmark("Location");
+			builder.insertImage(ir.imageData, 360, 360);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	private void fillRenovationTable(Document doc, BuildingEvaluationResult evaluationResult) {
 
 		Table optRenovationTable = (Table) doc.getChild(NodeType.TABLE, 3, true);
 
-		Cell yearCell = optRenovationTable.getFirstRow().getFirstCell();
+		Cell yearCell = ((Row) optRenovationTable.getFirstRow().getNextSibling()).getFirstCell();
 		for (int i = 0; i < 25; i++) {
 			yearCell = (Cell) yearCell.getNextSibling();
 			yearCell.getFirstParagraph().appendChild(new Run(doc, Integer.toString(evaluationResult.getStartYear() + i)));
@@ -114,7 +186,7 @@ public class BuildingEvaluationController {
 
 		for (EvaluationElement e : evaluationResult.getElements()) {
 			if (e.getValuePart() > 0) {
-				Row row = addRow(optRenovationTable);
+				Row row = addRenovationTableRow(optRenovationTable);
 				Cell cell = row.getFirstCell();
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
 				Integer restorationYear = e.getRestorationYear();
@@ -123,12 +195,14 @@ public class BuildingEvaluationController {
 					cell = getNthNextSibling(row.getFirstCell(), delta);
 					cell.getFirstParagraph().appendChild(new Run(doc, OPT_IS_MARKER));
 					cell = row.getLastCell();
-					cell.getFirstParagraph()
-							.appendChild(new Run(doc, Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF")));
+					String costs = Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF");
+					cell.getFirstParagraph().appendChild(new Run(doc, costs));
+					cell = (Cell) cell.getPreviousSibling();
+					cell.getFirstParagraph().appendChild(new Run(doc, Integer.toString(restorationYear)));
 				}
 			}
 		}
-		optRenovationTable.getFirstRow().getNextSibling().remove();
+		optRenovationTable.getFirstRow().getNextSibling().getNextSibling().remove();
 
 	}
 
@@ -178,9 +252,9 @@ public class BuildingEvaluationController {
 
 	}
 
-	private Row addRow(Table table) {
-		Row firstRow = (Row) table.getFirstRow().getNextSibling();
-		Row clonedRow = (Row) firstRow.deepClone(true);
+	private Row addRenovationTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling().getNextSibling();
+		Row clonedRow = (Row) templateRow.deepClone(true);
 		table.appendChild(clonedRow);
 		return clonedRow;
 	}

@@ -55,55 +55,59 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 					</AppLauncher>
 				</GlobalNavigationBarRegion>
 				<GlobalNavigationBarRegion region="secondary" navigation>
-					{this.ctx.session.appInfo!.areas.map((area: ApplicationArea) => {
-						if (area.menuAction) {
+					{
+						this.ctx.session.appInfo!.areas.map((area: ApplicationArea) => {
+							if (area.menuAction) {
+								return (
+									<GlobalNavigationBarLink
+										active={this.isActive(area.path, this.ctx.session.appInfo?.defaultArea === area.path)}
+										label={area.name}
+										id={area.id}
+										key={area.id}
+										onClick={() =>
+											this.props.navigate(
+												this.ctx.navigator.navigate(area.id, area.menuAction!.navigation)
+											)
+										}
+									/>
+								);
+							}
 							return (
-								<GlobalNavigationBarLink
-									active={this.isActive(area.path)}
-									label={area.name}
+								<GlobalNavigationBarDropdown
+									assistiveText={{
+										icon: "Open menu item submenu"
+									}}
 									id={area.id}
-									key={area.id}
-									onClick={() =>
-										this.props.navigate(
-											this.ctx.navigator.navigate(area.id, area.menuAction!.navigation)
-										)
+									options={
+										area.menu!.items.map((item: MenuItem) => {
+											switch (item._type) {
+												case "zeitwert.app.domain.MenuHeader":
+													return {
+														label: item.name,
+														value: item.id,
+														type: "header"
+													};
+												case "zeitwert.app.domain.MenuAction":
+													return {
+														label: item.name,
+														value: item.id,
+														iconCategory: item.icon.split(":")[0],
+														iconName: item.icon.split(":")[1],
+														href: "/#",
+														onClick: () =>
+															this.props.navigate(
+																this.ctx.navigator.navigate(area.id, item.navigation)
+															)
+													};
+												default:
+													return null;
+											}
+										})
 									}
 								/>
 							);
-						}
-						return (
-							<GlobalNavigationBarDropdown
-								assistiveText={{
-									icon: "Open menu item submenu"
-								}}
-								id={area.id}
-								options={area.menu!.items.map((item: MenuItem) => {
-									switch (item._type) {
-										case "zeitwert.app.domain.MenuHeader":
-											return {
-												label: item.name,
-												value: item.id,
-												type: "header"
-											};
-										case "zeitwert.app.domain.MenuAction":
-											return {
-												label: item.name,
-												value: item.id,
-												iconCategory: item.icon.split(":")[0],
-												iconName: item.icon.split(":")[1],
-												href: "/#",
-												onClick: () =>
-													this.props.navigate(
-														this.ctx.navigator.navigate(area.id, item.navigation)
-													)
-											};
-										default:
-											return null;
-									}
-								})}
-							/>
-						);
-					})}
+						})
+					}
 				</GlobalNavigationBarRegion>
 			</GlobalNavigationBar>
 		);
@@ -116,15 +120,16 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 		this.isLauncherOpen = false;
 	};
 
-	private isActive(areaPath: string) {
+	private isActive(areaPath: string, isDefault: boolean) {
 		const path = this.props.location.pathname;
 		if (!path) {
 			return false;
-		} else if (areaPath === "/") {
-			return path === areaPath;
+		} else if (path === "/") {
+			return isDefault;
 		}
 		return path.startsWith("/" + areaPath);
 	}
+
 }
 
 export default withRouter(AppNavigation);

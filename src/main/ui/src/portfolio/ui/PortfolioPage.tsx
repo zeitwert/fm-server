@@ -1,6 +1,6 @@
 
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, EntityType, Portfolio, PortfolioStoreModel } from "@zeitwert/ui-model";
+import { EntityType, Portfolio, PortfolioStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
@@ -72,6 +72,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
+							key={"portfolio-" + this.portfolioStore.portfolio?.id}
 						>
 							<Tabs
 								className="full-height"
@@ -90,7 +91,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 					<>
 						{
 							!isFullWidth &&
-							<ItemRightPart store={this.portfolioStore} account={portfolio.account as Account} />
+							<ItemRightPart store={this.portfolioStore} />
 						}
 					</>
 				</ItemGrid>
