@@ -116,7 +116,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label="Steckbrief">
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
-									<BuildingSummaryForm building={building} />
+									<BuildingSummaryForm building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
@@ -194,6 +194,11 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 				"Could not store Building: " + (error.detail ? error.detail : error.title ? error.title : error)
 			);
 		}
+	};
+
+	private reload = async () => {
+		// brute force reload
+		window.location.href = "/building/" + this.props.params.buildingId + "?t=" + (new Date()).getTime();
 	};
 
 	private onSavePortlet = async (type: string, data: any) => {
