@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
-import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -53,8 +52,11 @@ import javax.annotation.PostConstruct;
 @RequestMapping("/evaluation/building/buildings")
 public class BuildingEvaluationController {
 
+	private static final int CoverFotoWidth = 400;
+	private static final int CoverFotoHeight = 230;
+
 	// private static final String OPT_IS_MARKER = "\u058D";
-	private static final String OPT_IS_MARKER = "X";
+	private static final String OptimumRenovationMarker = "X";
 
 	@Autowired
 	private ObjBuildingRepository repo;
@@ -137,7 +139,12 @@ public class BuildingEvaluationController {
 			builder.moveToBookmark("CoverFoto");
 			Shape coverFoto = builder.insertImage(content);
 			coverFoto.setAspectRatioLocked(true);
-			coverFoto.setBounds(new Rectangle2D.Float(0f, 0f, 400f, 230f));
+			// adjust either width or height
+			if (coverFoto.getWidth() / coverFoto.getHeight() > ((double) CoverFotoWidth) / ((double) CoverFotoHeight)) {
+				coverFoto.setWidth(CoverFotoWidth);
+			} else {
+				coverFoto.setHeight(CoverFotoHeight);
+			}
 			coverFoto.setWrapType(WrapType.NONE);
 			coverFoto.setRelativeHorizontalPosition(RelativeHorizontalPosition.RIGHT_MARGIN);
 			coverFoto.setRelativeVerticalPosition(RelativeVerticalPosition.TOP_MARGIN);
@@ -193,7 +200,7 @@ public class BuildingEvaluationController {
 				if (restorationYear != null) {
 					Integer delta = (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
 					cell = getNthNextSibling(row.getFirstCell(), delta);
-					cell.getFirstParagraph().appendChild(new Run(doc, OPT_IS_MARKER));
+					cell.getFirstParagraph().appendChild(new Run(doc, OptimumRenovationMarker));
 					cell = row.getLastCell();
 					String costs = Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF");
 					cell.getFirstParagraph().appendChild(new Run(doc, costs));

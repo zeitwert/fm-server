@@ -116,7 +116,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return BuildingEvaluationResult.builder()
 				.id(building.getId())
 				.name(building.getName())
-				.description(building.getDescription().replace("<br>", SOFT_RETURN))
+				.description(building.getDescription() == null ? "" : building.getDescription().replace("<br>", SOFT_RETURN))
 				.address(building.getStreet() + ", " + building.getZip() + " " + building.getCity() + ", "
 						+ building.getCountry().getName())
 				.accountName(building.getAccount().getName())

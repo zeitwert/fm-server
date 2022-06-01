@@ -2,13 +2,13 @@
 import { Button, Card, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow } from "@zeitwert/ui-forms";
 import { API, Building, Config } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 export interface BuildingSummaryFormProps {
 	building: Building;
+	afterSave: () => void;
 }
 
 @observer
@@ -16,25 +16,31 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 
 	@observable imageFile: File | undefined;
 
-	constructor(props: CoverUploadFormProps) {
+	constructor(props: BuildingSummaryFormProps) {
 		super(props);
 		makeObservable(this);
 	}
 
 	render() {
-		const { building: item } = this.props;
+		console.log("bsf.render");
+		const { building } = this.props;
 		return (
 			<div>
 				<Tabs variant="scoped">
 					<TabsPanel key="cover" label="Cover">
-						<CoverUploadForm building={item} imageFile={this.imageFile} onFileChange={(f) => this.imageFile = f} />
+						<CoverUploadForm
+							building={building}
+							imageFile={this.imageFile}
+							onFileChange={this.onFileChange}
+							onUpload={this.uploadFile}
+						/>
 					</TabsPanel>
 					<TabsPanel key="location" label="Lage">
 						<div>
 							<img
 								className="slds-align_absolute-center"
 								style={{ width: "100%" }}
-								src={Config.getLocationUrl("building", "buildings/" + item.id)}
+								src={Config.getLocationUrl("building", "buildings/" + building.id)}
 								alt="Lageplan"
 							/>
 						</div>
@@ -44,6 +50,25 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 		);
 	}
 
+	private onFileChange = (f: File | undefined) => {
+		console.log("bsf.onFileChange", f);
+		this.imageFile = f;
+	}
+
+	private uploadFile = async () => {
+		console.log("bsf.uploadFile", this.imageFile);
+		const { building } = this.props;
+		if (!this.imageFile) {
+			return;
+		}
+		const data = new FormData();
+		data.append("file", this.imageFile);
+		const url = Config.getRestUrl("dms", "documents/" + building.coverFoto?.id + "/content");
+		await API.post(url, data);
+		this.imageFile = undefined;
+		this.props.afterSave();
+	}
+
 }
 
 
@@ -51,17 +76,14 @@ export interface CoverUploadFormProps {
 	building: Building;
 	imageFile: File | undefined;
 	onFileChange: (f: File | undefined) => void;
+	onUpload: () => void;
 }
 
 @observer
-@inject("appStore", "session", "showAlert", "showToast")
 class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
-
 	render() {
+		console.log("cuf.render");
 		const { building } = this.props;
 		const coverFoto = building.coverFoto;
 		const imageUrl = this.props.imageFile ? URL.createObjectURL(this.props.imageFile) : undefined;
@@ -106,23 +128,26 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<div className="slds-file-selector slds-file-selector_files">
-												<div className="slds-file-selector__dropzone">
-													<input type="file" className="slds-file-selector__input slds-assistive-text" accept={coverFoto?.supportedContentTypes} onChange={this.readFile} id="file-upload-input-115" aria-labelledby="file-selector-primary-label-113 file-selector-secondary-label114" />
-													<label className="slds-file-selector__body" htmlFor="file-upload-input-115" id="file-selector-secondary-label114">
-														<span className="slds-file-selector__button slds-button slds-button_neutral">
-															<svg className="slds-button__icon slds-button__icon_left" aria-hidden="true">
-																<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#upload"></use>
-															</svg>Foto wählen</span>
-														{/*<span className="slds-file-selector__text slds-medium-show">oder droppen</span>*/}
-													</label>
+											{
+												!imageUrl &&
+												<div className="slds-file-selector slds-file-selector_files">
+													<div className="slds-file-selector__dropzone">
+														<input type="file" className="slds-file-selector__input slds-assistive-text" accept={coverFoto?.supportedContentTypes} onChange={this.readFile} id="file-upload-input-115" aria-labelledby="file-selector-primary-label-113 file-selector-secondary-label114" />
+														<label className="slds-file-selector__body" htmlFor="file-upload-input-115" id="file-selector-secondary-label114">
+															<span className="slds-file-selector__button slds-button slds-button_neutral">
+																<svg className="slds-button__icon slds-button__icon_left" aria-hidden="true">
+																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#upload"></use>
+																</svg>Foto wählen</span>
+															{/*<span className="slds-file-selector__text slds-medium-show">oder droppen</span>*/}
+														</label>
+													</div>
 												</div>
-											</div>
+											}
 											{/*<input type="file" accept={item.coverFoto?.supportedContentTypes} onChange={this.readFile} size={8} />*/}
 											{
 												!!this.props.imageFile &&
 												<>
-													<Button variant="brand" onClick={this.uploadFile} className="slds-m-left_small">Upload</Button>
+													<Button variant="brand" onClick={this.props.onUpload} className="slds-m-left_small">Upload</Button>
 													<Button onClick={this.cancelUpload} className="slds-m-left_small">Cancel</Button>
 												</>
 											}
@@ -138,28 +163,12 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 	}
 
 	private readFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("cuf.readFile");
 		e.preventDefault();
 		if (e.target?.files?.[0]) {
 			this.props.onFileChange(e.target?.files?.[0]);
 		} else {
 			this.props.onFileChange(undefined);
-		}
-	}
-
-	private uploadFile = async (e: React.MouseEvent<HTMLButtonElement>) => {
-		if (this.props.imageFile) {
-			const data = new FormData();
-			data.append("file", this.props.imageFile);
-			const url = Config.getRestUrl("dms", "documents/" + this.props.building.coverFoto?.id + "/content");
-			try {
-				await API.post(url, data);
-				this.ctx.showToast("success", "Foto gespeichert");
-			} catch (error: any) {
-				this.ctx.showAlert(
-					"error",
-					"Could not store foto: " + (error.detail ? error.detail : error.title ? error.title : error)
-				);
-			}
 		}
 	}
 

@@ -26,7 +26,6 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 	.actions((self) => {
 		const superAfterLoad = self.afterLoad;
 		const afterLoad = (repository: EntityTypeRepository) => {
-			console.log("afterLoad", repository);
 			superAfterLoad(repository);
 			self.accountsStore.afterLoad(repository);
 			self.documentsStore.afterLoad(repository);
