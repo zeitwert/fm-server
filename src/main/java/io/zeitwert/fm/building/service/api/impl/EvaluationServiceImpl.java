@@ -86,8 +86,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 			if (element.getValuePart() > 0) {
 				EvaluationElement dto = EvaluationElement.builder()
 						.name(element.getBuildingPart().getName())
-						.description(element.getDescription().replace("<br>",
-								SOFT_RETURN))
+						.description(this.replaceEol(element.getDescription()))
 						.valuePart(element.getValuePart())
 						.rating(element.getCondition())
 						.ratingColor(getRatingColor(element.getCondition()))
@@ -116,7 +115,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return BuildingEvaluationResult.builder()
 				.id(building.getId())
 				.name(building.getName())
-				.description(building.getDescription() == null ? "" : building.getDescription().replace("<br>", SOFT_RETURN))
+				.description(this.replaceEol(building.getDescription()))
 				.address(building.getStreet() + ", " + building.getZip() + " " + building.getCity() + ", "
 						+ building.getCountry().getName())
 				.accountName(building.getAccount().getName())
@@ -127,6 +126,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 				.startYear(projectionResult.getStartYear())
 				.periods(periods)
 				.build();
+	}
+
+	private String replaceEol(String text) {
+		return text != null ? text.replace("<br>", SOFT_RETURN) : "";
 	}
 
 	private Integer getRestorationYear(ProjectionResult projectionResult, ObjBuilding building,
