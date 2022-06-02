@@ -125,6 +125,7 @@ public class BuildingEvaluationController {
 		this.copyStream2File("trebucbd");
 		this.copyStream2File("trebucbi");
 		this.copyStream2File("trabucit");
+		this.copyStream2File("webdings");
 		this.copyStream2File("wingding");
 
 		this.fontSettings = new FontSettings();
@@ -186,10 +187,9 @@ public class BuildingEvaluationController {
 		int saveFormat = this.getSaveFormat(format);
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-		PdfSaveOptions saveOptions = new PdfSaveOptions();
-		saveOptions.setSaveFormat(saveFormat);
-
 		if (saveFormat == SaveFormat.PDF) {
+			PdfSaveOptions saveOptions = new PdfSaveOptions();
+			saveOptions.setSaveFormat(saveFormat);
 			// Create encryption details and set user password = 1
 			int year = Calendar.getInstance().get(Calendar.YEAR);
 			PdfEncryptionDetails encryptionDetails = new PdfEncryptionDetails(null, "zeit" + year + "wert");
@@ -198,9 +198,10 @@ public class BuildingEvaluationController {
 			// Allow printing
 			encryptionDetails.setPermissions(PdfPermissions.PRINTING);
 			saveOptions.setEncryptionDetails(encryptionDetails);
+			doc.save(outStream, saveOptions);
+		} else {
+			doc.save(outStream, saveFormat);
 		}
-
-		doc.save(outStream, saveOptions);
 
 		String fileName = this.getFileName(building, saveFormat);
 		ResponseEntity<byte[]> response = ResponseEntity.ok()
