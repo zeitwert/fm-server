@@ -2,6 +2,10 @@
 package io.zeitwert.fm.building.adapter.api.rest;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -11,6 +15,7 @@ import com.aspose.words.Cell;
 import com.aspose.words.Chart;
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
+import com.aspose.words.FolderFontSource;
 import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
@@ -18,6 +23,7 @@ import com.aspose.words.NodeType;
 import com.aspose.words.PdfEncryptionDetails;
 import com.aspose.words.PdfPermissions;
 import com.aspose.words.PdfSaveOptions;
+import com.aspose.words.PhysicalFontInfo;
 import com.aspose.words.RelativeHorizontalPosition;
 import com.aspose.words.RelativeVerticalPosition;
 import com.aspose.words.ReportingEngine;
@@ -30,6 +36,9 @@ import com.aspose.words.WrapType;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -62,6 +71,8 @@ public class BuildingEvaluationController {
 	// private static final String OPT_IS_MARKER = "\u058D";
 	private static final String OptimumRenovationMarker = "X";
 
+	private Logger logger = LoggerFactory.getLogger(BuildingEvaluationController.class);
+
 	@Autowired
 	private ObjBuildingRepository repo;
 
@@ -80,6 +91,10 @@ public class BuildingEvaluationController {
 	@Value("classpath:templates/Building Evaluation Template.docx")
 	Resource templateFile;
 
+	ClassLoader classLoader = this.getClass().getClassLoader();
+
+	File fontsDir;
+
 	ReportingEngine engine = new ReportingEngine();
 
 	@PostConstruct
@@ -91,6 +106,49 @@ public class BuildingEvaluationController {
 		ReportingEngine.setUseReflectionOptimization(false);
 		engine.getKnownTypes().add(BuildingEvaluationResult.class);
 
+	}
+
+	@PostConstruct
+	protected void initFonts() throws Exception {
+
+		File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+		this.fontsDir = new File(tmpDir, "fonts");
+		if (!this.fontsDir.exists()) {
+			this.fontsDir.mkdirs();
+		}
+		logger.info("initFonts: " + this.fontsDir.getAbsolutePath());
+
+		this.copyStream2File("trebuc");
+		this.copyStream2File("trebucbd");
+		this.copyStream2File("trebucbi");
+		this.copyStream2File("trabucit");
+		this.copyStream2File("wingding");
+		listFonts();
+	}
+
+	private void copyStream2File(String fontName) throws IOException {
+		logger.info("copyStream2File(" + fontName + ")");
+		InputStream is = classLoader.getResourceAsStream("fonts/" + fontName + ".ttf");
+		if (is != null) {
+			File f = new File(this.fontsDir.getAbsolutePath() + "/" + fontName + ".ttf");
+			f.deleteOnExit();
+			try (FileOutputStream out = new FileOutputStream(f)) {
+				IOUtils.copy(is, out);
+			}
+		}
+	}
+
+	private void listFonts() {
+		// Get available fonts in folder
+		for (PhysicalFontInfo fontInfo : (Iterable<PhysicalFontInfo>) new FolderFontSource(fontsDir.getAbsolutePath(),
+				false)
+				.getAvailableFonts()) {
+			logger.info(
+					"Font family: " + fontInfo.getFontFamilyName()
+							+ ", version: " + fontInfo.getVersion()
+							+ ", font: " + fontInfo.getFullFontName()
+							+ ", path : " + fontInfo.getFilePath());
+		}
 	}
 
 	@GetMapping("/{id}")
