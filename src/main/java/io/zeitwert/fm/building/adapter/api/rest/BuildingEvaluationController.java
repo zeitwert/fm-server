@@ -109,8 +109,9 @@ public class BuildingEvaluationController {
 		this.insertCoverFoto(doc, building);
 		this.insertLocationImage(doc, building);
 		engine.buildReport(doc, evaluationResult, "building");
-		this.fillRenovationTable(doc, evaluationResult);
+		this.fillOptRenovationTable(doc, evaluationResult);
 		this.fillCostsChart(doc, evaluationResult);
+		this.fillCostsTable(doc, evaluationResult);
 
 		int saveFormat = this.getSaveFormat(format);
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -181,7 +182,7 @@ public class BuildingEvaluationController {
 
 	}
 
-	private void fillRenovationTable(Document doc, BuildingEvaluationResult evaluationResult) {
+	private void fillOptRenovationTable(Document doc, BuildingEvaluationResult evaluationResult) {
 
 		Table optRenovationTable = (Table) doc.getChild(NodeType.TABLE, 3, true);
 
@@ -213,21 +214,32 @@ public class BuildingEvaluationController {
 
 	}
 
+	private Row addRenovationTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling().getNextSibling();
+		Row clonedRow = (Row) templateRow.deepClone(true);
+		table.appendChild(clonedRow);
+		return clonedRow;
+	}
+
 	private void fillCostsChart(Document doc, BuildingEvaluationResult evaluationResult) {
 
-		String[] years = new String[evaluationResult.getPeriods().size()];
-		double[] originalValues = new double[evaluationResult.getPeriods().size()];
-		double[] timeValues = new double[evaluationResult.getPeriods().size()];
-		double[] maintenanceCosts = new double[evaluationResult.getPeriods().size()];
-		double[] restorationCosts = new double[evaluationResult.getPeriods().size()];
+		int periodCount = (int) evaluationResult.getPeriods().stream().filter(p -> p.getYear() != null).count();
+		String[] years = new String[periodCount];
+		double[] originalValues = new double[periodCount];
+		double[] timeValues = new double[periodCount];
+		double[] maintenanceCosts = new double[periodCount];
+		double[] restorationCosts = new double[periodCount];
 
-		for (int i = 0; i < evaluationResult.getPeriods().size(); i++) {
-			EvaluationPeriod ep = evaluationResult.getPeriods().get(i);
-			years[i] = ep.getYear().toString();
-			originalValues[i] = ep.getOriginalValue();
-			timeValues[i] = ep.getTimeValue();
-			maintenanceCosts[i] = ep.getMaintenanceCosts();
-			restorationCosts[i] = ep.getRestorationCosts();
+		int index = 0;
+		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
+			if (ep.getYear() != null && ep.getYear() > 0) { // only yearly summary records
+				years[index] = ep.getYear().toString();
+				originalValues[index] = ep.getOriginalValue();
+				timeValues[index] = ep.getTimeValue();
+				maintenanceCosts[index] = ep.getMaintenanceCosts();
+				restorationCosts[index] = ep.getRestorationCosts();
+				index += 1;
+			}
 		}
 
 		Shape valueChartShape = (Shape) doc.getChild(NodeType.SHAPE, 5, true);
@@ -259,8 +271,53 @@ public class BuildingEvaluationController {
 
 	}
 
-	private Row addRenovationTableRow(Table table) {
-		Row templateRow = (Row) table.getFirstRow().getNextSibling().getNextSibling();
+	private void fillCostsTable(Document doc, BuildingEvaluationResult evaluationResult) {
+
+		Table costsTable = (Table) doc.getChild(NodeType.TABLE, 4, true);
+		Formatter fmt = Formatter.INSTANCE;
+
+		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
+			Row row = addCostsTableRow(costsTable);
+			Cell cell = row.getFirstCell();
+			if (ep.getYear() != null) { // only yearly summary records
+				// year
+				cell.getFirstParagraph().appendChild(new Run(doc, ep.getYear().toString()));
+				cell = (Cell) cell.getNextSibling();
+				// originalValue
+				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getOriginalValue())));
+				cell = (Cell) cell.getNextSibling();
+				// timeValue
+				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getTimeValue())));
+				cell = (Cell) cell.getNextSibling();
+				// maintenanceCosts
+				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getMaintenanceCosts())));
+				cell = (Cell) cell.getNextSibling();
+			} else {
+				cell = (Cell) cell.getNextSibling().getNextSibling().getNextSibling().getNextSibling();
+			}
+			// restorationCosts
+			if (ep.getRestorationCosts() > 0) {
+				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getRestorationCosts())));
+			}
+			cell = (Cell) cell.getNextSibling();
+			// restorationElement
+			cell.getFirstParagraph().appendChild(new Run(doc, ep.getRestorationElement()));
+			cell = (Cell) cell.getNextSibling();
+			if (ep.getYear() != null) { // only yearly summary records
+				// totalCosts
+				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getTotalCosts())));
+				cell = (Cell) cell.getNextSibling();
+				// aggrCosts
+				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getAggrCosts())));
+			}
+		}
+
+		costsTable.getFirstRow().getNextSibling().remove();
+
+	}
+
+	private Row addCostsTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling();
 		Row clonedRow = (Row) templateRow.deepClone(true);
 		table.appendChild(clonedRow);
 		return clonedRow;
