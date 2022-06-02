@@ -134,8 +134,13 @@ export const Field: FC<FieldProps> = observer((props) => {
 								</button>
 								{
 									showHelpText &&
-									<div className="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" id={fieldId + "-help"} style={{ position: "absolute", top: "-45px", left: "-15px", width: "170px" }}>
-										<div className="slds-popover__body">{helpText}</div>
+									<div
+										className="slds-popover slds-popover_tooltip slds-nubbin_top-left"
+										role="tooltip"
+										id={fieldId + "-help"}
+										style={{ position: "absolute", top: "25px", left: "-15px", width: "300px", lineHeight: 1.5 }}
+									>
+										<div className="slds-popover__body" dangerouslySetInnerHTML={{ __html: helpText }} />
 									</div>
 								}
 							</div>

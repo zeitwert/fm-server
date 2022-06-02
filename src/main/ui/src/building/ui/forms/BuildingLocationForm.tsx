@@ -7,6 +7,8 @@ import { Form } from "mstform";
 import React from "react";
 import BuildingMap from "./BuildingMap";
 
+const ALT_GEO_ADDRESS_HELP_TEXT = "<b>Alternative Geo Addresse</b><ul class=\"slds-list_dotted\"><li>Adresse (Strasse Nr, PLZ Ort)</li><li>Plus Code (z.B. 9HG5+8P Zürich)</li><li>Koordinaten (z.B. 47.36489,8.676913)</li></ul>";
+
 const BuildingLocationFormModel = new Form(
 	BuildingModel,
 	{
@@ -93,7 +95,7 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 											<Select label="Land" accessor={this.formState.field("country")} />
 										</FieldRow>
 										<FieldRow>
-											<Input label="Alternative Geo Addresse" accessor={this.formState.field("geoAddress")} />
+											<Input label="Alternative Geo Addresse" accessor={this.formState.field("geoAddress")} helpText={ALT_GEO_ADDRESS_HELP_TEXT} />
 										</FieldRow>
 									</FieldGroup>
 								</div>
