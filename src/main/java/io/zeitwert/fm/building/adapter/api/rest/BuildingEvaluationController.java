@@ -4,6 +4,7 @@ package io.zeitwert.fm.building.adapter.api.rest;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Calendar;
 
 import com.aspose.words.AxisBound;
 import com.aspose.words.Cell;
@@ -14,6 +15,9 @@ import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
 import com.aspose.words.NodeType;
+import com.aspose.words.PdfEncryptionDetails;
+import com.aspose.words.PdfPermissions;
+import com.aspose.words.PdfSaveOptions;
 import com.aspose.words.RelativeHorizontalPosition;
 import com.aspose.words.RelativeVerticalPosition;
 import com.aspose.words.ReportingEngine;
@@ -115,7 +119,22 @@ public class BuildingEvaluationController {
 
 		int saveFormat = this.getSaveFormat(format);
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		doc.save(outStream, saveFormat);
+
+		PdfSaveOptions saveOptions = new PdfSaveOptions();
+		saveOptions.setSaveFormat(saveFormat);
+
+		if (saveFormat == SaveFormat.PDF) {
+			// Create encryption details and set user password = 1
+			int year = Calendar.getInstance().get(Calendar.YEAR);
+			PdfEncryptionDetails encryptionDetails = new PdfEncryptionDetails(null, "zeit" + year + "wert");
+			// Disallow all
+			encryptionDetails.setPermissions(PdfPermissions.DISALLOW_ALL);
+			// Allow printing
+			encryptionDetails.setPermissions(PdfPermissions.PRINTING);
+			saveOptions.setEncryptionDetails(encryptionDetails);
+		}
+
+		doc.save(outStream, saveOptions);
 
 		String fileName = this.getFileName(building, saveFormat);
 		ResponseEntity<byte[]> response = ResponseEntity.ok()
