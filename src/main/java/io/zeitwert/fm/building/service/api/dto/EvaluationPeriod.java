@@ -14,5 +14,9 @@ public class EvaluationPeriod {
 
 	private Integer maintenanceCosts;
 	private Integer restorationCosts;
+	private String restorationElement;
+
+	private Integer totalCosts;
+	private Integer aggrCosts;
 
 }

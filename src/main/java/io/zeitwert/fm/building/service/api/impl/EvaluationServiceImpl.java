@@ -101,15 +101,38 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 
 		List<EvaluationPeriod> periods = new ArrayList<>();
+		int aggrCosts = 0;
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			EvaluationPeriod ep = EvaluationPeriod.builder()
+			int maintenanceCosts = 1000 * (int) Math.round(pp.getMaintenanceCosts() / 1000);
+			int restorationCosts = 1000 * (int) Math.round(pp.getRestorationCosts() / 1000);
+			int totalCosts = maintenanceCosts + restorationCosts;
+			aggrCosts += totalCosts;
+			String restorationElement = "";
+			if (pp.getRestorationElements().size() == 1) {
+				restorationElement = pp.getRestorationElements().get(0).getBuildingPart().getName();
+			}
+			EvaluationPeriod eps = EvaluationPeriod.builder()
 					.year(pp.getYear())
 					.originalValue(1000 * (int) Math.round(pp.getOriginalValue() / 1000))
 					.timeValue(1000 * (int) Math.round(pp.getTimeValue() / 1000))
-					.maintenanceCosts(1000 * (int) Math.round(pp.getMaintenanceCosts() / 1000))
-					.restorationCosts(1000 * (int) Math.round(pp.getRestorationCosts() / 1000))
+					.maintenanceCosts(maintenanceCosts)
+					.restorationCosts(restorationCosts)
+					.restorationElement(restorationElement)
+					.totalCosts(totalCosts)
+					.aggrCosts(aggrCosts)
 					.build();
-			periods.add(ep);
+			periods.add(eps);
+			if (pp.getRestorationElements().size() > 1) {
+				for (RestorationElement re : pp.getRestorationElements()) {
+					restorationCosts = 1000 * (int) Math.round(re.getRestorationCosts() / 1000);
+					restorationElement = re.getBuildingPart().getName();
+					EvaluationPeriod epd = EvaluationPeriod.builder()
+							.restorationCosts(restorationCosts)
+							.restorationElement(restorationElement)
+							.build();
+					periods.add(epd);
+				}
+			}
 		}
 
 		return BuildingEvaluationResult.builder()
