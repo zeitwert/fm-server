@@ -45,7 +45,7 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 					renderThousands: true,
 				},
 				isReadOnly: (accessor) => {
-					if (["geoCoordinates"].indexOf(accessor.fieldref) >= 0) {
+					if (["geoCoordinates", "geoZoom"].indexOf(accessor.fieldref) >= 0) {
 						return true;
 					} else if (!props.store.isInTrx) {
 						return true;

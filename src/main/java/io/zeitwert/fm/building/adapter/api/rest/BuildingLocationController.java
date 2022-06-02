@@ -61,7 +61,7 @@ public class BuildingLocationController {
 	}
 
 	@PostMapping
-	public ResponseEntity<GeocodeResponseDto> login(@RequestBody GeocodeRequestDto request) {
+	public ResponseEntity<GeocodeResponseDto> getAddress(@RequestBody GeocodeRequestDto request) {
 
 		if (request.getGeoAddress() != null && !request.getGeoAddress().equals("")) {
 		} else if (request.getCountry() == null) {

@@ -5,6 +5,8 @@ import io.zeitwert.fm.building.service.api.BuildingService;
 import javax.annotation.PreDestroy;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
@@ -22,13 +24,15 @@ import org.springframework.stereotype.Service;
 @Service("buildingService")
 public class BuildingServiceImpl implements BuildingService {
 
-	private static final String GOOGLE_API_KEY = "AIzaSyBQF6Fi_Z0tZxVh5Eqzfx2m7hK3n718jsI";
+	private static final String GoogleApiKey = "AIzaSyBQF6Fi_Z0tZxVh5Eqzfx2m7hK3n718jsI";
+
+	private static final Pattern CoordinatePattern = Pattern.compile("(-?[\\d]*\\.[\\d]*),(-?[\\d]*\\.[\\d]*)");
 
 	private final GeoApiContext context;
 
 	protected BuildingServiceImpl() {
 		this.context = new GeoApiContext.Builder()
-				.apiKey(GOOGLE_API_KEY)
+				.apiKey(GoogleApiKey)
 				.build();
 	}
 
@@ -38,14 +42,22 @@ public class BuildingServiceImpl implements BuildingService {
 	}
 
 	public String getCoordinates(String address) {
+		// check if address is already a coordinate
+		Matcher matcher = CoordinatePattern.matcher(address);
+		if (matcher.find()) {
+			double x = Double.parseDouble(matcher.group(1));
+			double y = Double.parseDouble(matcher.group(2));
+			if (x < -90 || 90 < x) {
+				return null;
+			} else if (y < -180 || 180 < y) {
+				return null;
+			}
+			return "WGS:" + address;
+		}
 		GeocodingResult result = this.getGeocoding(address);
 		if (result == null) {
 			return null;
 		}
-		// String x = String.format("%.7g", WGStoCHx(result.geometry.location.lat,
-		// result.geometry.location.lng));
-		// String y = String.format("%.7g", WGStoCHy(result.geometry.location.lat,
-		// result.geometry.location.lng));
 		String lat = String.format("%.7g", result.geometry.location.lat);
 		String lng = String.format("%.7g", result.geometry.location.lng);
 		return "WGS:" + lat + "," + lng;
