@@ -16,6 +16,7 @@ import com.aspose.words.Chart;
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
 import com.aspose.words.FolderFontSource;
+import com.aspose.words.FontSettings;
 import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
@@ -93,7 +94,9 @@ public class BuildingEvaluationController {
 
 	ClassLoader classLoader = this.getClass().getClassLoader();
 
-	File fontsDir;
+	File fontsDirectory;
+
+	FontSettings fontSettings;
 
 	ReportingEngine engine = new ReportingEngine();
 
@@ -112,17 +115,21 @@ public class BuildingEvaluationController {
 	protected void initFonts() throws Exception {
 
 		File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-		this.fontsDir = new File(tmpDir, "fonts");
-		if (!this.fontsDir.exists()) {
-			this.fontsDir.mkdirs();
+		this.fontsDirectory = new File(tmpDir, "fonts");
+		if (!this.fontsDirectory.exists()) {
+			this.fontsDirectory.mkdirs();
 		}
-		logger.info("initFonts: " + this.fontsDir.getAbsolutePath());
+		logger.info("initFonts: " + this.fontsDirectory.getAbsolutePath());
 
 		this.copyStream2File("trebuc");
 		this.copyStream2File("trebucbd");
 		this.copyStream2File("trebucbi");
 		this.copyStream2File("trabucit");
 		this.copyStream2File("wingding");
+
+		this.fontSettings = new FontSettings();
+		this.fontSettings.setFontsFolder(this.fontsDirectory.getAbsolutePath(), false);
+
 		listFonts();
 	}
 
@@ -130,7 +137,7 @@ public class BuildingEvaluationController {
 		logger.info("copyStream2File(" + fontName + ")");
 		InputStream is = classLoader.getResourceAsStream("fonts/" + fontName + ".ttf");
 		if (is != null) {
-			File f = new File(this.fontsDir.getAbsolutePath() + "/" + fontName + ".ttf");
+			File f = new File(this.fontsDirectory.getAbsolutePath() + "/" + fontName + ".ttf");
 			f.deleteOnExit();
 			try (FileOutputStream out = new FileOutputStream(f)) {
 				IOUtils.copy(is, out);
@@ -140,7 +147,7 @@ public class BuildingEvaluationController {
 
 	private void listFonts() {
 		// Get available fonts in folder
-		for (PhysicalFontInfo fontInfo : (Iterable<PhysicalFontInfo>) new FolderFontSource(fontsDir.getAbsolutePath(),
+		for (PhysicalFontInfo fontInfo : (Iterable<PhysicalFontInfo>) new FolderFontSource(fontsDirectory.getAbsolutePath(),
 				false)
 				.getAvailableFonts()) {
 			logger.info(
@@ -167,6 +174,7 @@ public class BuildingEvaluationController {
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		Document doc = new Document(templateFile.getInputStream());
+		doc.setFontSettings(this.fontSettings);
 
 		this.insertCoverFoto(doc, building);
 		this.insertLocationImage(doc, building);
