@@ -86,7 +86,7 @@
 }
 .slds-tabs_default.full-height > .slds-tabs_default__content {
   height: calc(100% - 40px);
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 /* Combobox */
@@ -2082,3 +2082,5 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   display: block;
   left: calc(100% - 5px);
 }
+
+/*# sourceMappingURL=app.css.map */

@@ -7,6 +7,7 @@ import { ProjectionResult } from "../../building/ui/ProjectionResult";
 
 const CCY_FMT = new Intl.NumberFormat('de-CH', { /*style: 'currency', currency: 'CHF',*/ maximumFractionDigits: 0 });
 const NR_FMT = new Intl.NumberFormat('de-CH', { minimumFractionDigits: 6 });
+const PC_FMT = new Intl.NumberFormat('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const NumericCell: React.FunctionComponent<any> = ({ children, displayName, ...props }: any) => {
 	return (
@@ -22,6 +23,9 @@ const columns = [
 	<DataTableColumn key="originalValue" label="Neuwert (indexiert)" property="originalValue" width="8%">
 		<NumericCell />
 	</DataTableColumn>,
+	<DataTableColumn key="timeRate" label="ZN Wert" property="timeRate" width="5%">
+		<NumericCell />
+	</DataTableColumn>,
 	<DataTableColumn key="timeValue" label="Zustandswert" property="timeValue" width="8%">
 		<NumericCell />
 	</DataTableColumn>,
@@ -34,15 +38,15 @@ const columns = [
 	<DataTableColumn key="restorationPart" label="IS Element" property="restorationPart" width="20%" truncate={true} />,
 	<DataTableColumn key="restorationBuilding" label="IS Gebäude" property="restorationBuilding" width="40%" truncate={true} />,
 	/*
-	<DataTableColumn key="techPart" label="Technikanteil" property="techPart" width="5%">
-		<NumericCell />
-	</DataTableColumn>,
-	<DataTableColumn key="techRate" label="Technikrate" property="techRate" width="5%">
-		<NumericCell />
-	</DataTableColumn>,
-	<DataTableColumn key="maintenanceRate" label="IH Rate" property="maintenanceRate" width="5%">
-		<NumericCell />
-	</DataTableColumn>,
+		<DataTableColumn key="techPart" label="Technikanteil" property="techPart" width="5%">
+			<NumericCell />
+		</DataTableColumn>,
+		<DataTableColumn key="techRate" label="Technikrate" property="techRate" width="5%">
+			<NumericCell />
+		</DataTableColumn>,
+		<DataTableColumn key="maintenanceRate" label="IH Rate" property="maintenanceRate" width="5%">
+			<NumericCell />
+		</DataTableColumn>,
 	*/
 ];
 /*
@@ -70,12 +74,13 @@ export default class TabProjectionTable extends React.Component<TabProjectionTab
 				year: period.year,
 				originalValue: CCY_FMT.format(period.originalValue),
 				timeValue: CCY_FMT.format(period.timeValue),
+				timeRate: PC_FMT.format(100.0 * period.timeValue / period.originalValue),
 				restorationCosts: period.restorationCosts ? CCY_FMT.format(period.restorationCosts) : "",
 				restorationPart: "",
 				restorationBuilding: "",
-				techPart: period.techPart ? NR_FMT.format(period.techPart) : "",
+				techPart: period.techPart ? PC_FMT.format(100.0 * period.techPart) : "",
 				techRate: period.techRate ? NR_FMT.format(period.techRate) : "",
-				maintenanceRate: period.maintenanceRate ? NR_FMT.format(period.maintenanceRate) : "",
+				maintenanceRate: period.maintenanceRate ? PC_FMT.format(100.0 * period.maintenanceRate) : "",
 				maintenanceCosts: period.maintenanceCosts ? CCY_FMT.format(period.maintenanceCosts) : "",
 			};
 			if (period.restorationElements.length === 1) {

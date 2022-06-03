@@ -28,9 +28,11 @@ import org.springframework.util.Assert;
 @DependsOn("codeBuildingPriceIndexEnum")
 public class ProjectionServiceImpl implements ProjectionService {
 
-	static final int DefaultDuration = 25;
+	public static final int DefaultDuration = 25;
+	public static final double DefaultInflationRate = 1.0;
 
-	static final List<String> FullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10");
+	static final List<String> FullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10",
+			"P63", "P64", "P65", "P66");
 	static final List<String> HalfTechRates = List.of("P12", "P60", "P61", "P62");
 
 	private final SessionInfo sessionInfo;
@@ -143,20 +145,26 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		List<ProjectionPeriod> buildingPeriodList = new ArrayList<>();
 
+		double techValue = 0;
+		for (ObjBuildingPartElement part : projectionResult.getElementMap().values()) {
+			techValue += part.getValuePart() * getTechRate(part.getBuildingPart());
+		}
+		double techPart = techValue / 100;
+		double techRate = getTechRate(techPart);
+
 		for (int year = projectionResult.getStartYear(); year <= projectionResult.getEndYear(); year++) {
 
 			double originalValue = 0;
 			double timeValue = 0;
 			double restorationCosts = 0;
 			List<RestorationElement> restorationElements = new ArrayList<>();
-			double techValue = 0;
 
 			for (EnumeratedDto elementEnum : projectionResult.getElementMap().keySet()) {
 				ObjBuildingPartElement element = projectionResult.getElement(elementEnum);
 				List<ProjectionPeriod> elementPeriods = projectionResult.getElementResultMap().get(elementEnum.getId());
 				ProjectionPeriod elementPeriod = elementPeriods.get(year - elementPeriods.get(0).getYear());
 				ObjBuilding building = projectionResult.getBuilding(elementEnum);
-				double buildingValue = building.getBuildingValue(year);
+				double buildingValue = building.getBuildingValue(year, DefaultInflationRate);
 				double elementValue = buildingValue * element.getValuePart() / 100.0;
 				originalValue += elementValue;
 				timeValue += elementValue * elementPeriod.getTimeValue() / 100.0;
@@ -175,11 +183,10 @@ public class ProjectionServiceImpl implements ProjectionService {
 					restorationElements.add(restorationElement);
 					//@formatter:on
 				}
-				techValue += elementValue * elementPeriod.getTimeValue() / 100.0 * getTechRate(element.getBuildingPart());
 			}
-			double techPart = techValue / timeValue;
-			double techRate = getTechRate(techPart);
-			double maintenanceRate = this.getMaintenanceRate(timeValue / originalValue) / 100.0;
+
+			double maintenanceRate = techRate * this.getMaintenanceRate(timeValue / originalValue) / 100.0;
+			double maintenanceCosts = maintenanceRate * originalValue;
 
 			//@formatter:off
 			ProjectionPeriod buildingPeriod =
@@ -192,7 +199,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 					.techPart(techPart)
 					.techRate(techRate)
 					.maintenanceRate(maintenanceRate)
-					.maintenanceCosts(maintenanceRate * techRate * originalValue)
+					.maintenanceCosts(maintenanceCosts)
 					.build();
 			//@formatter:on
 			buildingPeriodList.add(buildingPeriod);
@@ -284,21 +291,16 @@ public class ProjectionServiceImpl implements ProjectionService {
 	}
 
 	private double getTechRate(double techPart) {
-		if (techPart <= 0.09) {
-			return 0.5;
-		} else if (techPart >= 0.22) {
-			return 1.0;
-		}
 		return this.getRatio(techPart, 0.09, 0.22, 0.5, 1.0);
 	}
 
 	private double getMaintenanceRate(double timeValue) {
 		if (timeValue >= 1.0) {
 			return 0.5;
-		} else if (timeValue >= 0.93) {
-			return getRatio(timeValue, 0.93, 1.0, 0.6, 0.5);
+		} else if (timeValue >= 0.94) {
+			return getRatio(timeValue, 0.94, 1.0, 0.64, 0.5);
 		} else if (timeValue >= 0.85) {
-			return getRatio(timeValue, 0.85, 0.93, 1.1, 0.6);
+			return getRatio(timeValue, 0.85, 0.94, 1.1, 0.64);
 		} else if (timeValue >= 0.75) {
 			return getRatio(timeValue, 0.75, 0.85, 2.0, 1.1);
 		} else if (timeValue >= 0.67) {
@@ -306,11 +308,16 @@ public class ProjectionServiceImpl implements ProjectionService {
 		} else if (timeValue >= 0.60) {
 			return getRatio(timeValue, 0.60, 0.67, 0.5, 2.0);
 		}
-		return getRatio(timeValue, 0.00, 0.60, 0.7, 0.5);
+		return getRatio(timeValue, 0.00, 0.60, 0.75, 0.5);
 	}
 
-	private double getRatio(double timeValue, double lowBound, double highBound, double lowValue, double highValue) {
-		return lowValue + (timeValue - lowBound) / (highBound - lowBound) * (highValue - lowValue);
+	private double getRatio(double value, double lowBound, double highBound, double lowValue, double highValue) {
+		if (value <= lowBound) {
+			return lowValue;
+		} else if (value >= highBound) {
+			return highValue;
+		}
+		return lowValue + (value - lowBound) / (highBound - lowBound) * (highValue - lowValue);
 	}
 
 	//@formatter:off

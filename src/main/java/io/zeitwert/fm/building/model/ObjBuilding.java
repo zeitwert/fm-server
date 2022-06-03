@@ -128,8 +128,6 @@ public interface ObjBuilding extends FMObj {
 
 	void setBuildingYear(Integer buildingYear);
 
-	double getBuildingValue(int year);
-
 	BigDecimal getInsuredValue();
 
 	void setInsuredValue(BigDecimal value);
@@ -179,5 +177,9 @@ public interface ObjBuilding extends FMObj {
 	ObjBuildingPartElement addElement(CodeBuildingPart buildingPart);
 
 	void removeElement(Integer elementId);
+
+	double getBuildingValue(int year);
+
+	double getBuildingValue(int year, double inflationRate);
 
 }
