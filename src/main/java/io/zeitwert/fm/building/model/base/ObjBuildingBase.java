@@ -204,6 +204,15 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
+	public double getBuildingValue(int year, double inflationRate) {
+		if (this.getInsuredValueYear() != null && this.getInsuredValue() != null) {
+			return DefaultPriceIndex.priceAt(this.getInsuredValueYear(), 1000.0 * this.getInsuredValue().doubleValue(), year,
+					inflationRate);
+		}
+		return 0;
+	}
+
+	@Override
 	public Integer getElementContributions() {
 		return this.elementContributions;
 	}

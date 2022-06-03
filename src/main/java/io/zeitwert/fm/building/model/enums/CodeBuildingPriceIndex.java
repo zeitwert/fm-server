@@ -19,7 +19,19 @@ public class CodeBuildingPriceIndex extends EnumeratedBase {
 		this.indexPerYear = indexPerYear;
 	}
 
-	public double priceAt(int origYear, double origPrice, int targetYear) {
+	public Integer getMinIndexYear() {
+		return this.minIndexYear;
+	}
+
+	public Integer getMaxIndexYear() {
+		return this.maxIndexYear;
+	}
+
+	public double indexAt(int year) {
+		return this.maxIndexYear;
+	}
+
+	public double indexAt(int origYear, int targetYear) {
 		if (targetYear > maxIndexYear) {
 			targetYear = maxIndexYear;
 		}
@@ -27,9 +39,21 @@ public class CodeBuildingPriceIndex extends EnumeratedBase {
 			origYear = minIndexYear;
 		}
 		if (indexPerYear.get(origYear) == null || indexPerYear.get(targetYear) == null) {
-			return origPrice;
+			return 1.0;
 		}
-		return indexPerYear.get(targetYear) / indexPerYear.get(origYear) * origPrice;
+		return indexPerYear.get(targetYear) / indexPerYear.get(origYear);
+	}
+
+	public double priceAt(int origYear, double origPrice, int targetYear) {
+		return this.indexAt(origYear, targetYear) * origPrice;
+	}
+
+	public double priceAt(int origYear, double origPrice, int targetYear, double inflationRate) {
+		double targetPrice = this.indexAt(origYear, targetYear) * origPrice;
+		if (targetYear > maxIndexYear && inflationRate > 0) {
+			targetPrice = targetPrice * Math.pow(1.0 + inflationRate / 100.0, targetYear - maxIndexYear);
+		}
+		return targetPrice;
 	}
 
 }

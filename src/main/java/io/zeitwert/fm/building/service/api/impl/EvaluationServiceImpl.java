@@ -42,6 +42,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 	public BuildingEvaluationResult getEvaluation(ObjBuilding building) {
 
+		Formatter fmt = Formatter.INSTANCE;
 		String value = null;
 
 		List<EvaluationParameter> facts = new ArrayList<>();
@@ -54,15 +55,15 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Baujahr", value);
 		}
 		if (building.getInsuredValue() != null) {
-			value = Formatter.INSTANCE.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
+			value = fmt.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
 			this.addParameter(facts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
 		}
 		if (building.getVolume() != null) {
-			value = Formatter.INSTANCE.formatNumber(building.getVolume()) + " m³";
+			value = fmt.formatNumber(building.getVolume()) + " m³";
 			this.addParameter(facts, "Volumen RI", value);
 		}
 		if (building.getAreaGross() != null && building.getAreaGross().longValue() > 0) {
-			value = Formatter.INSTANCE.formatNumber(building.getAreaGross()) + " m²";
+			value = fmt.formatNumber(building.getAreaGross()) + " m²";
 			this.addParameter(facts, "Fläche GF", value);
 		}
 		if (building.getBuildingType() != null) {
@@ -76,7 +77,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		List<EvaluationParameter> params = new ArrayList<>();
 		this.addParameter(params, "Laufzeit", "25 Jahre");
-		this.addParameter(params, "Teuerung", "0.0%");
+		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionServiceImpl.DefaultInflationRate) + " %");
 
 		ProjectionResult projectionResult = projectionService.getProjection(building);
 
