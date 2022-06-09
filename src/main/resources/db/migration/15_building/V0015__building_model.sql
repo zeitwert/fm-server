@@ -186,6 +186,8 @@ create table obj_building_part_element (
 	strength															integer,
 	--
 	description														text,
+	condition_description									text,
+	measure_description										text,
 	--
 	primary key (id)
 );

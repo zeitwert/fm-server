@@ -22,7 +22,6 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 	}
 
 	render() {
-		console.log("bsf.render");
 		const { building } = this.props;
 		return (
 			<div>
@@ -51,12 +50,10 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 	}
 
 	private onFileChange = (f: File | undefined) => {
-		console.log("bsf.onFileChange", f);
 		this.imageFile = f;
 	}
 
 	private uploadFile = async () => {
-		console.log("bsf.uploadFile", this.imageFile);
 		const { building } = this.props;
 		if (!this.imageFile) {
 			return;
@@ -83,7 +80,6 @@ export interface CoverUploadFormProps {
 class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 
 	render() {
-		console.log("cuf.render");
 		const { building } = this.props;
 		const coverFoto = building.coverFoto;
 		const imageUrl = this.props.imageFile ? URL.createObjectURL(this.props.imageFile) : undefined;
@@ -163,7 +159,6 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 	}
 
 	private readFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("cuf.readFile");
 		e.preventDefault();
 		if (e.target?.files?.[0]) {
 			this.props.onFileChange(e.target?.files?.[0]);

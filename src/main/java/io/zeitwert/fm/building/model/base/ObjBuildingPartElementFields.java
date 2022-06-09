@@ -14,5 +14,7 @@ public interface ObjBuildingPartElementFields extends ObjPartFields {
 	static final Field<Integer> STRAIN = DSL.field("strain", Integer.class);
 	static final Field<Integer> STRENGTH = DSL.field("strength", Integer.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
+	static final Field<String> CONDITION_DESCRIPTION = DSL.field("condition_description", String.class);
+	static final Field<String> MEASURE_DESCRIPTION = DSL.field("measure_description", String.class);
 
 }

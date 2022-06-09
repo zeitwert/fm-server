@@ -109,6 +109,8 @@ export const ElementRatingFormModel = new RepeatingForm({
 	strain: new OptionField(converters.maybe(converters.integer), { options: StrainOptions }),
 	strength: new OptionField(converters.maybe(converters.integer), { options: StrengthOptions }),
 	description: new TextField(),
+	conditionDescription: new TextField(),
+	measureDescription: new TextField(),
 	// materialDescriptions: new EnumeratedListField(),
 	// conditionDescriptions: new EnumeratedListField(),
 	// measureDescriptions: new EnumeratedListField(),
@@ -285,6 +287,25 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 												<TextArea
 													label="Beschreibung / Bemerkungen"
 													accessor={elementForm.field("description")}
+													rows={4}
+												/>
+											</div>
+										</FieldRow>
+										<FieldRow>
+											<div className="slds-size_1-of-1">
+												<TextArea
+													label="Zustandsbeschreibung"
+													accessor={elementForm.field("conditionDescription")}
+													rows={4}
+												/>
+											</div>
+										</FieldRow>
+										<FieldRow>
+											<div className="slds-size_1-of-1">
+												<TextArea
+													label="Massnahmen"
+													accessor={elementForm.field("measureDescription")}
+													rows={4}
 												/>
 											</div>
 										</FieldRow>

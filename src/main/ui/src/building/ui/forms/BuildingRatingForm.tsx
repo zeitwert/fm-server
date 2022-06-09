@@ -143,16 +143,16 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 							<div className="slds-col slds-size_1-of-1">
 								<FieldGroup>
 									<Grid isVertical={false}>
-										<Col className="slds-size_7-of-12">&nbsp;</Col>
+										<Col className="slds-size_6-of-12">&nbsp;</Col>
 										<Col className="slds-size_3-of-12 slds-align_absolute-center">Instandsetzungszeitpunkt</Col>
-										<Col className="slds-size_2-of-12">&nbsp;</Col>
+										<Col className="slds-size_3-of-12">&nbsp;</Col>
 									</Grid>
 									<Grid isVertical={false}>
-										<Col className="slds-size_7-of-12">&nbsp;</Col>
+										<Col className="slds-size_6-of-12">&nbsp;</Col>
 										<Col className="slds-size_1-of-12 slds-align_absolute-center">0 - 1 J.</Col>
 										<Col className="slds-size_1-of-12 slds-align_absolute-center">2 - 5 J.</Col>
 										<Col className="slds-size_1-of-12 slds-align_absolute-center">&gt; 5J.</Col>
-										<Col className="slds-size_2-of-12">&nbsp;</Col>
+										<Col className="slds-size_3-of-12">&nbsp;</Col>
 									</Grid>
 									<Grid isVertical={false} className="slds-text-title_bold">
 										<Col className="slds-size_2-of-12 slds-form-element">Bauteil</Col>
@@ -165,16 +165,20 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
 											<div className="slds-float_right">Z/N 100</div>
 										</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
-											<div className="slds-float_right">IS Zpt</div>
-										</Col>
+										{
+											/*
+												<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
+													<div className="slds-float_right">IS Zpt</div>
+												</Col>
+											*/
+										}
 										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
 											<div className="slds-float_right">IS Kosten</div>
 										</Col>
 										<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Kurzfristig</Col>
 										<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Mittelfristig</Col>
 										<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Langfristig</Col>
-										<Col className="slds-size_2-of-12 slds-form-element">Beschreibung/Bemerkungen</Col>
+										<Col className="slds-size_3-of-12 slds-form-element">Beschreibung / Zustand / Massnahmen</Col>
 									</Grid>
 								</FieldGroup>
 								<ElementListRatingForm
@@ -182,7 +186,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 									elementForms={elementForms}
 									showAllElements={this.showAllElements}
 									currentElementId={this.currentElementId}
-									onSelectElement={(id) => this.currentElementId = id}
+									onSelectElement={(id) => this.currentElementId = (this.currentElementId === id ? undefined : id)}
 								/>
 							</div>
 						</div>
