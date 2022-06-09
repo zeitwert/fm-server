@@ -85,6 +85,9 @@ public class BuildingFileTransferController {
 		building.setZip(dto.getZip());
 		building.setCity(dto.getCity());
 		building.setCountry(dto.getCountry() != null ? appContext.getEnumerated(CodeCountryEnum.class, dto.getCountry()) : null);
+		building.setGeoAddress(dto.getGeoAddress());
+		building.setGeoCoordinates(dto.getGeoCoordinates());
+		building.setGeoZoom(dto.getGeoZoom());
 		building.setCurrency(dto.getCurrency() != null ? appContext.getEnumerated(CodeCurrencyEnum.class, dto.getCurrency()) : null);
 		building.setVolume(dto.getVolume());
 		building.setAreaGross(dto.getAreaGross());
@@ -153,6 +156,9 @@ public class BuildingFileTransferController {
 				.zip(building.getZip())
 				.city(building.getCity())
 				.country(building.getCountry() != null ? building.getCountry().getId() : null)
+				.geoAddress(building.getGeoAddress())
+				.geoCoordinates(building.getGeoCoordinates())
+				.geoZoom(building.getGeoZoom())
 				.currency(building.getCurrency() != null ? building.getCurrency().getId() : null)
 				.volume(building.getVolume())
 				.areaGross(building.getAreaGross())

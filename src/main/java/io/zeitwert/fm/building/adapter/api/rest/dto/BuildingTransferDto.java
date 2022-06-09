@@ -28,6 +28,10 @@ public class BuildingTransferDto {
 	private String city;
 	private String country;
 
+	private String geoAddress;
+	private String geoCoordinates;
+	private Integer geoZoom;
+
 	private String currency;
 
 	private BigDecimal volume;
