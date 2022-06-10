@@ -98,7 +98,7 @@ public class NoteTest {
 		assertEquals(2, test1a.getNoteCount());
 		assertEquals(note1a2, test1a.getNote(1));
 		assertEquals(note1a2, test1a.getNoteById(note1a2.getId()));
-		assertEquals(PartStatus.DELETED, ((PartSPI<?>) note1a1).getStatus());
+		assertEquals(PartStatus.DELETED, note1a1.getMeta().getStatus());
 		assertEquals(2, test1a.getNoteList().size());
 		assertEquals(3, noteRepository.getPartList(test1a, noteListType).size());
 		// assertEquals(3, ((PartRepositoryBase<ObjTest, ?>)
@@ -111,7 +111,7 @@ public class NoteTest {
 		assertEquals(note1a2.getSubject(), test1aNoteList.get(1).getSubject());
 		assertEquals(test1aNoteList, List.of(note1a0, note1a2));
 		assertEquals(List.of(PartStatus.CREATED, PartStatus.DELETED, PartStatus.CREATED),
-				noteRepository.getPartList(test1a, noteListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
+				noteRepository.getPartList(test1a, noteListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
 		testRepository.store(test1a);
 		// assertFalse(((PartRepositoryBase<ObjTest, ?>)
@@ -125,7 +125,7 @@ public class NoteTest {
 		// assertEquals(2, ((PartRepositoryBase<ObjTest, ?>)
 		// noteRepository).getParts(test1b).size());
 		assertEquals(List.of(PartStatus.READ, PartStatus.READ),
-				noteRepository.getPartList(test1b, noteListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
+				noteRepository.getPartList(test1b, noteListType).stream().map(p -> p.getMeta().getStatus()).toList());
 		assertEquals("Subject 1,Subject 3",
 				String.join(",", test1b.getNoteList().stream().map(n -> n.getSubject()).toList()));
 		assertEquals("Subject 3", test1b.getNoteList().get(1).getSubject());
@@ -134,7 +134,7 @@ public class NoteTest {
 		initNote(note1b2, "Subject 4", "Content 4", false);
 		test1b.getNote(1).setIsPrivate(true);
 		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.CREATED),
-				noteRepository.getPartList(test1b, noteListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
+				noteRepository.getPartList(test1b, noteListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
 		testRepository.store(test1b);
 		// assertFalse(((PartRepositoryBase<ObjTest, ?>)
@@ -148,7 +148,7 @@ public class NoteTest {
 		// assertEquals(3, ((PartRepositoryBase<ObjTest, ?>)
 		// noteRepository).getParts(test1c).size());
 		assertEquals(List.of(PartStatus.READ, PartStatus.READ, PartStatus.READ),
-				noteRepository.getPartList(test1c, noteListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
+				noteRepository.getPartList(test1c, noteListType).stream().map(p -> p.getMeta().getStatus()).toList());
 		assertEquals("Subject 1,Subject 3,Subject 4",
 				String.join(",", test1c.getNoteList().stream().map(n -> n.getSubject()).toList()));
 
