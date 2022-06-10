@@ -3,6 +3,7 @@ package io.zeitwert.fm.item.model.base;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.item.model.base.ItemPartBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.item.model.ItemPartNote;
@@ -23,8 +24,8 @@ public abstract class ItemPartNoteBase<A extends Aggregate> extends ItemPartBase
 	protected final ReferenceProperty<ObjUser> modifiedByUser;
 	protected final SimpleProperty<OffsetDateTime> modifiedAt;
 
-	public ItemPartNoteBase(A a, UpdatableRecord<?> dbRecord) {
-		super(a, dbRecord);
+	public ItemPartNoteBase(PartRepository<A, ?> repository, A a, UpdatableRecord<?> dbRecord) {
+		super(repository, a, dbRecord);
 		this.subject = this.addSimpleProperty(dbRecord, ItemPartNoteFields.SUBJECT);
 		this.content = this.addSimpleProperty(dbRecord, ItemPartNoteFields.CONTENT);
 		this.isPrivate = this.addSimpleProperty(dbRecord, ItemPartNoteFields.IS_PRIVATE);

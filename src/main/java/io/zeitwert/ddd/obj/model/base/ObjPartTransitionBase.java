@@ -6,6 +6,7 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjPartTransitionRecord;
 import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
@@ -18,8 +19,8 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	protected final SimpleProperty<OffsetDateTime> modifiedAt;
 	protected final SimpleProperty<JSON> changes;
 
-	public ObjPartTransitionBase(Obj obj, UpdatableRecord<?> dbRecord) {
-		super(obj, dbRecord);
+	public ObjPartTransitionBase(PartRepository<Obj, ?> repository, Obj obj, UpdatableRecord<?> dbRecord) {
+		super(repository, obj, dbRecord);
 		this.user = this.addReferenceProperty(dbRecord, ObjPartTransitionFields.USER_ID, ObjUser.class);
 		this.modifiedAt = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.MODIFIED_AT);
 		this.changes = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.CHANGES);

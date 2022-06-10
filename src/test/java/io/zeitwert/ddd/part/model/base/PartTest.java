@@ -3,9 +3,12 @@ package io.zeitwert.ddd.part.model.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jooq.JSON;
+import org.jooq.UpdatableRecord;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,14 +74,21 @@ public class PartTest {
 
 		ObjTestPartNode node1a0 = test1a.addNode();
 		initObjTestPartNode(node1a0, "First", "ch");
+		assertEquals(PartStatus.CREATED, node1a0.getMeta().getStatus());
+		UpdatableRecord<?> dbRecord = ((PartBase<?>) node1a0).getDbRecord();
+		assertNotNull(dbRecord.getValue(PartFields.ID));
+		assertTrue(dbRecord.changed(PartFields.ID));
+		assertNull(dbRecord.original(PartFields.ID));
 		assertEquals(1, test1a.getNodeList().size());
 		assertEquals(1, testNodeRepository.getPartList(test1a, nodeListType).size());
 		assertEquals(1, ((PartRepositoryBase<ObjTest, ?>) testNodeRepository).getParts(test1a).size());
 
 		ObjTestPartNode node1a1 = test1a.addNode();
 		initObjTestPartNode(node1a1, "Second", "de");
+		assertEquals(PartStatus.CREATED, node1a1.getMeta().getStatus());
 		ObjTestPartNode node1a2 = test1a.addNode();
 		initObjTestPartNode(node1a2, "Third", "es");
+		assertEquals(PartStatus.CREATED, node1a2.getMeta().getStatus());
 
 		assertEquals(3, test1a.getNodeList().size());
 		assertEquals(3, testNodeRepository.getPartList(test1a, nodeListType).size());
@@ -98,7 +108,7 @@ public class PartTest {
 		assertEquals(2, test1a.getNodeCount());
 		assertEquals(node1a2, test1a.getNode(1));
 		assertEquals(node1a2, test1a.getNodeById(node1a2.getId()));
-		assertEquals(PartStatus.DELETED, ((PartSPI<?>) node1a1).getStatus());
+		assertEquals(PartStatus.DELETED, node1a1.getMeta().getStatus());
 		assertEquals(2, test1a.getNodeList().size());
 		assertEquals(3, testNodeRepository.getPartList(test1a, nodeListType).size());
 		assertEquals(3, ((PartRepositoryBase<ObjTest, ?>) testNodeRepository).getParts(test1a).size());
@@ -109,8 +119,8 @@ public class PartTest {
 		assertEquals(node1a0.getShortText(), test1aNodeList.get(0).getShortText());
 		assertEquals(node1a2.getShortText(), test1aNodeList.get(1).getShortText());
 		assertEquals(test1aNodeList, List.of(node1a0, node1a2));
-		assertEquals(List.of(PartStatus.UPDATED, PartStatus.DELETED, PartStatus.UPDATED),
-				testNodeRepository.getPartList(test1a, nodeListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
+		assertEquals(List.of(PartStatus.CREATED, PartStatus.DELETED, PartStatus.CREATED),
+				testNodeRepository.getPartList(test1a, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
 		testRepository.store(test1a);
 		assertFalse(((PartRepositoryBase<ObjTest, ?>) testNodeRepository).isInitialised(test1a));
@@ -129,8 +139,9 @@ public class PartTest {
 
 		ObjTestPartNode node1b2 = test1b.addNode();
 		initObjTestPartNode(node1b2, "Fourth", "de");
+		assertEquals(PartStatus.CREATED, node1b2.getMeta().getStatus());
 		test1b.getNode(1).setInt(43);
-		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.UPDATED),
+		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.CREATED),
 				testNodeRepository.getPartList(test1b, nodeListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
 
 		testRepository.store(test1b);

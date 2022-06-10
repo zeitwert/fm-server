@@ -4,6 +4,7 @@ package io.zeitwert.ddd.item.model.base;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.item.model.ItemPart;
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
@@ -11,8 +12,8 @@ import org.jooq.UpdatableRecord;
 
 public abstract class ItemPartBase<A extends Aggregate> extends PartBase<A> implements ItemPart<A> {
 
-	protected ItemPartBase(A obj, UpdatableRecord<?> dbRecord) {
-		super(obj, dbRecord);
+	protected ItemPartBase(PartRepository<A, ?> repository, A obj, UpdatableRecord<?> dbRecord) {
+		super(repository, obj, dbRecord);
 	}
 
 	@Override

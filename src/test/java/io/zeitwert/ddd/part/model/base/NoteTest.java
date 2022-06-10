@@ -110,7 +110,7 @@ public class NoteTest {
 		assertEquals(note1a0.getSubject(), test1aNoteList.get(0).getSubject());
 		assertEquals(note1a2.getSubject(), test1aNoteList.get(1).getSubject());
 		assertEquals(test1aNoteList, List.of(note1a0, note1a2));
-		assertEquals(List.of(PartStatus.UPDATED, PartStatus.DELETED, PartStatus.UPDATED),
+		assertEquals(List.of(PartStatus.CREATED, PartStatus.DELETED, PartStatus.CREATED),
 				noteRepository.getPartList(test1a, noteListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
 
 		testRepository.store(test1a);
@@ -133,7 +133,7 @@ public class NoteTest {
 		ObjPartNote note1b2 = test1b.addNote();
 		initNote(note1b2, "Subject 4", "Content 4", false);
 		test1b.getNote(1).setIsPrivate(true);
-		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.UPDATED),
+		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.CREATED),
 				noteRepository.getPartList(test1b, noteListType).stream().map(p -> ((PartSPI<?>) p).getStatus()).toList());
 
 		testRepository.store(test1b);

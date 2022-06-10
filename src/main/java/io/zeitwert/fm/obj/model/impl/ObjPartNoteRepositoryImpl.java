@@ -16,7 +16,7 @@ public class ObjPartNoteRepositoryImpl
 		implements ObjPartNoteRepository {
 
 	private static final String PART_TYPE = "obj_part_note";
-	private final String OBJ_PART_ID_SEQ = "obj_part_id_seq";
+	private static final String OBJ_PART_ID_SEQ = "obj_part_id_seq";
 
 	//@formatter:off
 	protected ObjPartNoteRepositoryImpl(

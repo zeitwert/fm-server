@@ -50,7 +50,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		this.proxyFactory = new ProxyFactory();
 		proxyFactory.setSuperclass(baseClass);
 		proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.paramTypeList = new Class<?>[] { aggregateIntfClass, UpdatableRecord.class };
+		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, UpdatableRecord.class };
 	}
 	//@formatter:on
 
@@ -103,7 +103,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	protected P newPart(A aggregate, UpdatableRecord<?> dbRecord) {
 		P part = null;
 		try {
-			part = (P) this.proxyFactory.create(paramTypeList, new Object[] { aggregate, dbRecord },
+			part = (P) this.proxyFactory.create(paramTypeList, new Object[] { this, aggregate, dbRecord },
 					PropertyHandler.INSTANCE);
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {
@@ -164,6 +164,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		this.didDoInit = false;
 		this.doInit(p, this.hasPartId() ? this.nextPartId() : null, aggregate, parent, partListType);
 		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
+		Assert.isTrue(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
 		this.addPart(p);
 		this.doAfterCreate(p);
 		return p;

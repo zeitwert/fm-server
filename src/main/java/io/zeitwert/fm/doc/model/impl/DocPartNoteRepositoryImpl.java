@@ -16,7 +16,7 @@ public class DocPartNoteRepositoryImpl
 		implements DocPartNoteRepository {
 
 	private static final String PART_TYPE = "doc_part_note";
-	private final String DOC_PART_ID_SEQ = "doc_part_id_seq";
+	private static final String DOC_PART_ID_SEQ = "doc_part_id_seq";
 
 	//@formatter:off
 	protected DocPartNoteRepositoryImpl(

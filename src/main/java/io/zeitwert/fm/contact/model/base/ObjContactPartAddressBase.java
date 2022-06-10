@@ -9,6 +9,7 @@ import io.zeitwert.fm.contact.model.enums.CodeInteractionChannelEnum;
 import io.zeitwert.ddd.common.model.enums.CodeCountry;
 import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
@@ -27,8 +28,9 @@ public abstract class ObjContactPartAddressBase extends ObjPartBase<ObjContact> 
 	protected final SimpleProperty<Boolean> isFavorite;
 	protected final SimpleProperty<Boolean> isMailAddress;
 
-	public ObjContactPartAddressBase(ObjContact obj, UpdatableRecord<?> dbRecord) {
-		super(obj, dbRecord);
+	public ObjContactPartAddressBase(PartRepository<ObjContact, ?> repository, ObjContact obj,
+			UpdatableRecord<?> dbRecord) {
+		super(repository, obj, dbRecord);
 		this.addressType = this.addEnumProperty(dbRecord, ObjContactPartAddressFields.ADDRESS_TYPE_ID,
 				CodeAddressTypeEnum.class);
 		this.name = this.addSimpleProperty(dbRecord, ObjContactPartAddressFields.NAME);

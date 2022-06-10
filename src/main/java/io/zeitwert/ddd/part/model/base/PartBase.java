@@ -7,6 +7,7 @@ import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartMeta;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
@@ -20,6 +21,8 @@ import org.jooq.UpdatableRecord;
 public abstract class PartBase<A extends Aggregate> extends EntityWithPropertiesBase
 		implements Part<A>, PartMeta<A>, PartSPI<A> {
 
+	private final PartRepository<A, ?> repository;
+
 	private A aggregate;
 	private final UpdatableRecord<?> dbRecord;
 
@@ -31,13 +34,18 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	private boolean isDeleted = false;
 	private boolean isInCalc = false;
 
-	protected PartBase(A aggregate, UpdatableRecord<?> dbRecord) {
+	protected PartBase(PartRepository<A, ?> repository, A aggregate, UpdatableRecord<?> dbRecord) {
+		this.repository = repository;
 		this.aggregate = aggregate;
 		this.dbRecord = dbRecord;
 		this.id = this.addSimpleProperty(dbRecord, PartFields.ID);
 		this.parentPartId = this.addSimpleProperty(dbRecord, PartFields.PARENT_PART_ID);
 		this.partListTypeId = this.addSimpleProperty(dbRecord, PartFields.PART_LIST_TYPE_ID);
 		this.seqNr = this.addSimpleProperty(dbRecord, PartFields.SEQ_NR);
+	}
+
+	public PartRepository<A, ?> getRepository() {
+		return this.repository;
 	}
 
 	public PartMeta<A> getMeta() {
@@ -126,11 +134,11 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	@Override
 	public PartStatus getStatus() {
+		PartRepositorySPI<?, ?> repoSpi = (PartRepositorySPI<?, ?>) this.getRepository();
 		if (this.isDeleted) {
 			return PartStatus.DELETED;
-			// } else if (this.getId() == null || this.getDbRecord().changed(PartFields.ID))
-			// {
-			// return PartStatus.CREATED;
+		} else if (repoSpi.hasPartId() && this.getDbRecord().changed(PartFields.ID)) {
+			return PartStatus.CREATED;
 		} else if (this.getDbRecord().changed()) {
 			return PartStatus.UPDATED;
 		} else {
