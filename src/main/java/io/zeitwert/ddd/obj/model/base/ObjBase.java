@@ -99,18 +99,22 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
+	public void doInit(Integer objId, Integer tenantId) {
 		this.objTypeId.setValue(this.getRepository().getAggregateType().getId());
 		this.id.setValue(objId);
 		this.tenant.setId(tenantId);
-		this.createdByUser.setId(userId);
+	}
+
+	@Override
+	public void afterCreate() {
+		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
 		this.createdAt.setValue(OffsetDateTime.now());
 	}
 
 	@Override
-	public void doStore(Integer userId) {
+	public void doStore() {
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
-		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, userId);
+		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(ObjFields.MODIFIED_AT, OffsetDateTime.now());
 		dbRecord.store();
 	}

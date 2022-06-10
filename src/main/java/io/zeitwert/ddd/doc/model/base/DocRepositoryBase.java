@@ -59,6 +59,29 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		return this.areaSetType;
 	}
 
+	@Override
+	public Integer nextAggregateId() {
+		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
+	}
+
+	protected D doCreate(SessionInfo sessionInfo, UpdatableRecord<?> extnRecord) {
+		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC), extnRecord);
+	}
+
+	// TODO get rid of
+	protected void doInitWorkflow(D doc, Integer docId, String caseDefId, String defaultInitCaseStageId) {
+		CodeCaseStage defaultCaseStage = this.getAppContext().getEnumeration(CodeCaseStageEnum.class)
+				.getItem(defaultInitCaseStageId);
+		((DocBase) doc).doInitWorkflow(caseDefId, defaultCaseStage);
+	}
+
+	@Override
+	public void doInitParts(D doc) {
+		super.doInitParts(doc);
+		this.transitionRepository.init(doc);
+		((DocBase) doc).addTransition();
+	}
+
 	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {
@@ -72,28 +95,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		super.doLoadParts(doc);
 		this.transitionRepository.load(doc);
 		((DocBase) doc).loadTransitionList(this.transitionRepository.getPartList(doc, this.getTransitionListType()));
-	}
-
-	@Override
-	public Integer nextAggregateId() {
-		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
-	}
-
-	protected D doCreate(SessionInfo sessionInfo, UpdatableRecord<?> extnRecord) {
-		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC), extnRecord);
-	}
-
-	protected void doInit(D doc, Integer docId, String caseDefId, String defaultInitCaseStageId) {
-		CodeCaseStage defaultCaseStage = this.getAppContext().getEnumeration(CodeCaseStageEnum.class)
-				.getItem(defaultInitCaseStageId);
-		((DocBase) doc).doInit(caseDefId, defaultCaseStage);
-	}
-
-	@Override
-	public void doInitParts(D doc) {
-		super.doInitParts(doc);
-		this.transitionRepository.init(doc);
-		((DocBase) doc).addTransition();
 	}
 
 	@Override

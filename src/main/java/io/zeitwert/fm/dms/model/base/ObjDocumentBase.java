@@ -62,14 +62,14 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjDocumentFields.OBJ_ID, objId);
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doStore() {
+		super.doStore();
 		this.dbRecord.store();
 	}
 

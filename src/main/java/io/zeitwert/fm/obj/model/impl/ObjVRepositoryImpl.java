@@ -47,6 +47,11 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 	//@formatter:on
 
 	@Override
+	public Obj doCreate(SessionInfo sessionInfo) {
+		throw new RuntimeException("cannot create an Obj");
+	}
+
+	@Override
 	public Obj doLoad(SessionInfo sessionInfo, Integer objId) {
 		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
@@ -58,11 +63,6 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 	@Override
 	public List<ObjRecord> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ, Tables.OBJ.ID, querySpec);
-	}
-
-	@Override
-	public Obj doCreate(SessionInfo sessionInfo) {
-		throw new RuntimeException("cannot create an Obj");
 	}
 
 }

@@ -67,21 +67,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return this.areaSetType;
 	}
 
-	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
-		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
-		if (objRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return newAggregate(sessionInfo, objRecord, extnRecord);
-	}
-
-	@Override
-	public void doLoadParts(O obj) {
-		super.doLoadParts(obj);
-		this.transitionRepository.load(obj);
-		((ObjBase) obj).loadTransitionList(this.transitionRepository.getPartList(obj, this.getTransitionListType()));
-	}
-
 	@Override
 	public Integer nextAggregateId() {
 		return this.getDSLContext().nextval(OBJ_ID_SEQ).intValue();
@@ -95,6 +80,21 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	public void doInitParts(O obj) {
 		super.doInitParts(obj);
 		this.transitionRepository.init(obj);
+	}
+
+	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
+		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
+		if (objRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return newAggregate(sessionInfo, objRecord, extnRecord);
+	}
+
+	@Override
+	public void doLoadParts(O obj) {
+		super.doLoadParts(obj);
+		this.transitionRepository.load(obj);
+		((ObjBase) obj).loadTransitionList(this.transitionRepository.getPartList(obj, this.getTransitionListType()));
 	}
 
 	@Override

@@ -8,13 +8,22 @@ public interface AggregateSPI {
 
 	/**
 	 * Initialise the database records of an Aggregate with some basic fields (id,
-	 * tenantId, etc) after creation (internal, technical callback).
+	 * tenantId) after creation (internal, technical callback).
 	 * 
 	 * @param aggregateId aggregate id
 	 * @param tenantId    tenant id
-	 * @param userId      user id
 	 */
-	public void doInit(Integer aggregateId, Integer tenantId, Integer userId);
+	public void doInit(Integer aggregateId, Integer tenantId);
+
+	/**
+	 * Do some work after create, f.ex. fire events, add transition etc.
+	 */
+	public void afterCreate();
+
+	/**
+	 * Do some work after load.
+	 */
+	public void afterLoad();
 
 	/**
 	 * Calculate all the derived fields, typically after a field change.
@@ -36,9 +45,12 @@ public interface AggregateSPI {
 	/**
 	 * Store the database record(s) (of the Aggregate only). The Parts will be
 	 * stored from the repository.
-	 * 
-	 * @param userId user id of current user
 	 */
-	public void doStore(Integer userId);
+	public void doStore();
+
+	/**
+	 * Do some work after store.
+	 */
+	public void afterStore();
 
 }

@@ -65,8 +65,8 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public abstract void loadBuildingSet(Collection<ObjPartItem> buildingSet);
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjPortfolioFields.OBJ_ID, objId);
 	}
 
@@ -76,8 +76,8 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doStore() {
+		super.doStore();
 		this.dbRecord.store();
 	}
 

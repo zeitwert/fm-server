@@ -65,8 +65,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjAccountFields.OBJ_ID, objId);
 	}
 
@@ -76,8 +76,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doStore() {
+		super.doStore();
 		this.dbRecord.store();
 	}
 

@@ -20,11 +20,21 @@ public interface AggregateRepository<A extends Aggregate, V extends Record> {
 	CodeAggregateType getAggregateType();
 
 	/**
+	 * Create a new Aggregate instance
+	 */
+	A create(SessionInfo sessionInfo);
+
+	/**
 	 * Lookup an Aggregate with given id
 	 * return aggregate
 	 * throws NoDataFound exception when aggregate not found
 	 */
 	A get(SessionInfo sessionInfo, Integer id);
+
+	/**
+	 * Store the Aggregate
+	 */
+	void store(A aggregate);
 
 	/**
 	 * Find list of Aggregates matching search criteria
@@ -35,15 +45,5 @@ public interface AggregateRepository<A extends Aggregate, V extends Record> {
 	 * Get a list of Aggregates with the given foreign key pointing to targetId
 	 */
 	List<V> getByForeignKey(SessionInfo sessionInfo, String fkName, Integer targetId);
-
-	/**
-	 * Create a new Aggregate instance
-	 */
-	A create(SessionInfo sessionInfo);
-
-	/**
-	 * Store the Aggregate
-	 */
-	void store(A aggregate);
 
 }

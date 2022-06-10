@@ -27,18 +27,21 @@ public abstract class FMObjDtoBase<O extends FMObj> extends ObjDtoBase<O> {
 
 	public void toObj(O obj) {
 		super.toObj(obj);
-		List<Integer> oldNotes = new ArrayList<>(obj.getNoteList().stream().map(note -> note.getId()).toList());
+		List<Integer> oldNoteIds = new ArrayList<>(obj.getNoteList().stream().map(note -> note.getId()).toList());
+		System.out.println("oldNoteIds: " + oldNoteIds);
 		this.notes.forEach(noteDto -> {
 			ObjPartNote note = null;
 			if (noteDto.getId() == null) {
 				note = obj.addNote();
+				System.out.println("addNote: " + note.getId());
 			} else {
-				oldNotes.remove(noteDto.getId());
+				oldNoteIds.remove(noteDto.getId());
 				note = obj.getNoteById(noteDto.getId());
+				System.out.println("editNote: " + noteDto.getId() + ", oldIds: " + oldNoteIds);
 			}
 			noteDto.toPart(note);
 		});
-		oldNotes.forEach((noteId) -> obj.removeNote(noteId));
+		oldNoteIds.forEach((noteId) -> obj.removeNote(noteId));
 	}
 
 	public static void fromObj(FMObjDtoBaseBuilder<?, ?, ?> dtoBuilder, FMObj obj, SessionInfo sessionInfo) {

@@ -2,8 +2,6 @@ package io.zeitwert.ddd.aggregate.model.base;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 import java.util.List;
@@ -29,14 +27,6 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * @return new Aggregate
 	 */
 	A doCreate(SessionInfo sessionInfo);
-
-	/**
-	 * Initialize new Aggregate instance with basic fields after creation
-	 * 
-	 * @param aggregate   aggregate
-	 * @param aggregateId aggregate id
-	 */
-	void doInit(A aggregate, Integer aggregateId, ObjTenant tenant, ObjUser user);
 
 	/**
 	 * Initialize Parts of new Aggregate instance

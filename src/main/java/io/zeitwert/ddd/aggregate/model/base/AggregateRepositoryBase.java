@@ -28,8 +28,6 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.SessionCache;
@@ -49,7 +47,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private final DSLContext dslContext;
 	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
 
-	private boolean didDoInit = false;
 	private boolean didDoInitParts = false;
 	private boolean didAfterCreate = false;
 	private boolean didDoLoadParts = false;
@@ -121,9 +118,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		Integer aggregateId = this.nextAggregateId();
 		A aggregate = this.doCreate(sessionInfo);
 
-		this.didDoInit = false;
-		this.doInit(aggregate, aggregateId, sessionInfo.getTenant(), sessionInfo.getUser());
-		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
+		((AggregateSPI) aggregate).doInit(aggregateId, sessionInfo.getTenant().getId());
 
 		this.didDoInitParts = false;
 		this.doInitParts(aggregate);
@@ -143,12 +138,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract A doCreate(SessionInfo sessionInfo);
 
 	@Override
-	public void doInit(A aggregate, Integer aggregateId, ObjTenant tenant, ObjUser user) {
-		this.didDoInit = true;
-		((AggregateSPI) aggregate).doInit(aggregateId, tenant.getId(), user.getId());
-	}
-
-	@Override
 	public void doInitParts(A aggregate) {
 		this.didDoInitParts = true;
 	}
@@ -156,6 +145,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void afterCreate(A aggregate) {
 		this.didAfterCreate = true;
+		((AggregateSPI) aggregate).afterCreate();
 	}
 
 	@Override
@@ -193,6 +183,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void afterLoad(A aggregate) {
 		this.didAfterLoad = true;
+		((AggregateSPI) aggregate).afterLoad();
 	}
 
 	@Override
@@ -202,8 +193,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.beforeStore(aggregate);
 		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": beforeStore was called");
 
-		((AggregateSPI) aggregate).beforeStore();
-		((AggregateSPI) aggregate).doStore(aggregate.getMeta().getSessionInfo().getUser().getId());
+		((AggregateSPI) aggregate).doStore();
 
 		this.didDoStoreParts = false;
 		this.doStoreParts(aggregate);
@@ -218,6 +208,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void beforeStore(A aggregate) {
 		this.didBeforeStore = true;
+		((AggregateSPI) aggregate).beforeStore();
 	}
 
 	@Override
@@ -227,9 +218,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	@Override
 	public void afterStore(A aggregate) {
+		this.didAfterStore = true;
+		((AggregateSPI) aggregate).afterStore();
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
-		this.didAfterStore = true;
 	}
 
 	@Override

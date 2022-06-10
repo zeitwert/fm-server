@@ -58,11 +58,6 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	}
 
 	@Override
-	public List<DocLeadVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
-	}
-
-	@Override
 	public DocLead doLoad(SessionInfo sessionInfo, Integer docId) {
 		require(docId != null, "docId not null");
 		DocLeadRecord leadRecord = this.getDSLContext().fetchOne(Tables.DOC_LEAD, Tables.DOC_LEAD.DOC_ID.eq(docId));
@@ -78,6 +73,11 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 		// Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.getDSLContext(),
 		// doc.getId(), "", CodeAreaEnum.class);
 		// ((DocLeadBase) doc).loadAreaSet(areaSet);
+	}
+
+	@Override
+	public List<DocLeadVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
 	}
 
 }

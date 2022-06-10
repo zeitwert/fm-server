@@ -98,15 +98,13 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public void doInit(Integer docId, Integer tenantId, Integer userId) {
+	public void doInit(Integer docId, Integer tenantId) {
 		this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
 		this.id.setValue(docId);
 		this.tenant.setId(tenantId);
-		this.createdByUser.setId(userId);
-		this.createdAt.setValue(OffsetDateTime.now());
 	}
 
-	void doInit(String caseDefId, CodeCaseStage defaultInitCaseStage) {
+	void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
 		this.caseDefId.setValue(caseDefId);
 		if (this.getCaseStage() != null) {
 			this.caseStage.setValue(this.getCaseStage());
@@ -116,11 +114,17 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public void doStore(Integer userId) {
+	public void afterCreate() {
+		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
+		this.createdAt.setValue(OffsetDateTime.now());
+	}
+
+	@Override
+	public void doStore() {
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getDocDbRecord();
-		dbRecord.setValue(DocFields.MODIFIED_BY_USER_ID, userId);
+		dbRecord.setValue(DocFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(DocFields.MODIFIED_AT, OffsetDateTime.now());
 		dbRecord.store();
 	}

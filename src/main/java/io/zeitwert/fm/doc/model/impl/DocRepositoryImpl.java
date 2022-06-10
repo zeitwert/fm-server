@@ -18,7 +18,6 @@ import io.zeitwert.ddd.doc.model.base.DocBase;
 import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
-import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
@@ -50,13 +49,6 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	public DocBase doCreate(SessionInfo sessionInfo) {
 		Assert.isTrue(false, "cannot create a doc");
 		return null;
-	}
-
-	@Override
-	public void doInit(Doc doc, Integer docId, ObjTenant tenant, ObjUser user) {
-		super.doInit(doc, docId, "advice", "advice.establish");
-		// DocOpportunityRecord adviceRecord = ((DocAdviceBase) doc).getDbRecord();
-		// adviceRecord.setDocId(docId);
 	}
 
 	@Override

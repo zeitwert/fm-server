@@ -158,8 +158,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	public abstract void loadElementList(Collection<ObjBuildingPartElement> nodeList);
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjBuildingFields.OBJ_ID, objId);
 	}
 
@@ -182,8 +182,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doStore() {
+		super.doStore();
 		this.dbRecord.store();
 	}
 

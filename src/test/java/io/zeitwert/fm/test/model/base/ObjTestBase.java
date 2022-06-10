@@ -69,8 +69,8 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	public abstract void loadNodeList(Collection<ObjTestPartNode> nodeList);
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjTestFields.OBJ_ID, objId);
 	}
 
@@ -84,8 +84,8 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doStore() {
+		super.doStore();
 		this.dbRecord.store();
 	}
 

@@ -28,15 +28,13 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	private boolean isInCalc = false;
 	private List<AggregatePartValidation> validationList = new ArrayList<>();
 
-	public abstract AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
-
-	@Override
-	public abstract void doInit(Integer aggregateId, Integer tenantId, Integer userId);
-
 	@Override
 	public AppContext getAppContext() {
 		return AppContext.getInstance();
 	}
+
+	@Override
+	public abstract AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
 
 	public AggregateMeta getMeta() {
 		return this;
@@ -62,6 +60,25 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	protected boolean isValidAggregateId(Integer id, Class<? extends Aggregate> aggregateClass) {
 		return id == null || true; // repo.get(id).isPresent(); <- too expensive
+	}
+
+	@Override
+	public abstract void doInit(Integer aggregateId, Integer tenantId);
+
+	@Override
+	public void afterCreate() {
+	}
+
+	@Override
+	public void afterLoad() {
+	}
+
+	@Override
+	public void beforeStore() {
+	}
+
+	@Override
+	public void afterStore() {
 	}
 
 	@Override
@@ -139,9 +156,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	protected void doCalcVolatile() {
-	}
-
-	public void beforeStore() {
 	}
 
 }

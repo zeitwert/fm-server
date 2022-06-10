@@ -45,6 +45,7 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 		int seqNr = 0;
 		for (ObjPartNote note : this.getNoteList()) {
 			note.setSeqNr(seqNr++);
+			System.out.println("beforeStore note " + note.getId() + " " + note.getSubject() + " " + note.getSeqNr());
 		}
 	}
 

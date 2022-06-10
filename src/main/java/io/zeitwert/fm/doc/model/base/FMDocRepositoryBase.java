@@ -48,16 +48,16 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 	}
 
 	@Override
+	public void doInitParts(O doc) {
+		super.doInitParts(doc);
+		this.getNoteRepository().init(doc);
+	}
+
+	@Override
 	public void doLoadParts(O doc) {
 		super.doLoadParts(doc);
 		this.getNoteRepository().load(doc);
 		((FMDocBase) doc).loadNoteList(this.getNoteRepository().getPartList(doc, this.getNoteListType()));
-	}
-
-	@Override
-	public void doInitParts(O doc) {
-		super.doInitParts(doc);
-		this.getNoteRepository().init(doc);
 	}
 
 	@Override
