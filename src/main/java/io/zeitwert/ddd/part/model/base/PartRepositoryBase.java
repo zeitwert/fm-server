@@ -2,15 +2,14 @@
 package io.zeitwert.ddd.part.model.base;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.require;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
@@ -31,7 +30,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] paramTypeList;
 
-	private final Map<A, List<P>> cache = new ConcurrentHashMap<>();
+	private final PartCache<A, P> partCache = new PartCache<>();
 
 	private boolean didDoInit = false;
 
@@ -62,45 +61,18 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		return this.dslContext;
 	}
 
-	protected void require(boolean condition, String message) {
-		Assert.isTrue(condition, "Precondition failed: " + message);
+	@Override
+	public boolean hasPartId() {
+		return true;
 	}
 
-	protected CodePartListType getPartListType(String partListTypeId) {
-		return this.getAppContext().getPartListType(partListTypeId);
-	}
-
-	boolean isInitialised(A aggregate) {
-		require(aggregate != null, "aggregate not null");
-		return this.cache.containsKey(aggregate);
-	}
-
-	private void initParts(A aggregate) {
-		require(aggregate != null, "aggregate not null");
-		require(!this.isInitialised(aggregate), this.getClass().getName() + ": aggregate not yet initialised");
-		this.cache.put(aggregate, new ArrayList<>());
-		Assert.isTrue(this.isInitialised(aggregate), this.getClass().getName() + ": aggregate initialised");
-	}
-
-	List<P> getParts(A aggregate) {
-		require(aggregate != null, "aggregate not null");
-		require(this.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
-		return this.cache.get(aggregate);
-	}
-
-	private void clearParts(A aggregate) {
-		this.cache.remove(aggregate);
-	}
-
-	void addPart(P part) {
-		A aggregate = part.getMeta().getAggregate();
-		require(this.isInitialised(aggregate),
-				this.getClass().getSimpleName() + ": aggregate " + aggregate.getId() + " initialised");
-		this.cache.get(aggregate).add(part);
+	@Override
+	public final void init(A aggregate) {
+		this.partCache.initParts(aggregate);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected P newPart(A aggregate, UpdatableRecord<?> dbRecord) {
+	protected final P newPart(A aggregate, UpdatableRecord<?> dbRecord) {
 		P part = null;
 		try {
 			part = (P) this.proxyFactory.create(paramTypeList, new Object[] { this, aggregate, dbRecord },
@@ -114,58 +86,22 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	}
 
 	@Override
-	public void init(A aggregate) {
-		this.initParts(aggregate);
-	}
-
-	@Override
-	public void load(A aggregate) {
-		this.initParts(aggregate);
-		this.doLoad(aggregate).forEach(p -> this.addPart(p));
-	}
-
-	@Override
-	public abstract List<P> doLoad(A aggregate);
-
-	private boolean isAggregateLevel(Part<?> part) {
-		return part.getParentPartId() == null || part.getParentPartId() == 0;
-	}
-
-	@Override
-	public List<P> getPartList(A aggregate, CodePartListType partListType) {
-		return this.getParts(aggregate).stream()
-				.filter(p -> isAggregateLevel(p) && partListType.getId().equals(p.getPartListTypeId())).toList();
-	}
-
-	@Override
-	public List<P> getPartList(A aggregate, Part<?> parent, CodePartListType partListType) {
-		return this.getParts(aggregate).stream()
-				.filter(p -> p.getParentPartId() == parent.getId() && partListType.getId().equals(p.getPartListTypeId()))
-				.toList();
-	}
-
-	@Override
-	public boolean hasPartId() {
-		return true;
-	}
-
-	@Override
 	public abstract Integer nextPartId();
 
 	@Override
-	public P create(A aggregate, CodePartListType partListType) {
+	public final P create(A aggregate, CodePartListType partListType) {
 		return this.create(aggregate, null, partListType);
 	}
 
 	@Override
-	public P create(A aggregate, Part<?> parent, CodePartListType partListType) {
+	public final P create(A aggregate, Part<?> parent, CodePartListType partListType) {
 		P p = this.doCreate(aggregate);
 		Assert.isTrue(p != null, "part created");
 		this.didDoInit = false;
 		this.doInit(p, this.hasPartId() ? this.nextPartId() : null, aggregate, parent, partListType);
 		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
 		Assert.isTrue(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
-		this.addPart(p);
+		this.partCache.addPart(p);
 		this.doAfterCreate(p);
 		return p;
 	}
@@ -182,21 +118,47 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 
 	@SuppressWarnings("unchecked")
 	public final void doAfterCreate(P p) {
-		((PartSPI<A>) p).afterCreate();
+		((PartSPI<A>) p).doAfterCreate();
+	}
+
+	@Override
+	public final void load(A aggregate) {
+		this.partCache.initParts(aggregate);
+		this.doLoad(aggregate).forEach(p -> this.partCache.addPart(p));
+	}
+
+	@Override
+	public abstract List<P> doLoad(A aggregate);
+
+	@Override
+	public List<P> getPartList(A aggregate, CodePartListType partListType) {
+		return this.partCache.getParts(aggregate).stream()
+				.filter(p -> isAggregateLevel(p) && partListType.getId().equals(p.getPartListTypeId())).toList();
+	}
+
+	@Override
+	public List<P> getPartList(A aggregate, Part<?> parent, CodePartListType partListType) {
+		return this.partCache.getParts(aggregate).stream()
+				.filter(p -> p.getParentPartId() == parent.getId() && partListType.getId().equals(p.getPartListTypeId()))
+				.toList();
+	}
+
+	private boolean isAggregateLevel(Part<?> part) {
+		return part.getParentPartId() == null || part.getParentPartId() == 0;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void store(A aggregate) {
-		require(this.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
-		for (P part : this.getParts(aggregate)) {
-			((PartSPI<A>) part).store();
+	public final void store(A aggregate) {
+		require(this.partCache.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
+		for (P part : this.partCache.getParts(aggregate)) {
+			((PartSPI<A>) part).doStore();
 		}
 	}
 
 	@EventListener
 	@SuppressWarnings("unchecked")
 	public void handleAggregateStoredEvent(AggregateStoredEvent event) {
-		this.clearParts((A) event.getAggregate());
+		this.partCache.clearParts((A) event.getAggregate());
 	}
 
 }

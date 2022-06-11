@@ -121,17 +121,4 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		throw new InvalidParameterException("unsupported objType " + objType.getId());
 	}
 
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.beginCalc();
-		try {
-			this.includeSet.beforeStore();
-			this.excludeSet.beforeStore();
-			this.buildingSet.beforeStore();
-		} finally {
-			this.endCalc();
-		}
-	}
-
 }

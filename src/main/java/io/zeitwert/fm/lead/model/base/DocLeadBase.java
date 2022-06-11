@@ -112,10 +112,4 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 				.setValue(this.getCaption() + (this.getCaseStage() != null ? ", " + this.getCaseStage().getName() : ""));
 	}
 
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.areaSet.beforeStore();
-	}
-
 }

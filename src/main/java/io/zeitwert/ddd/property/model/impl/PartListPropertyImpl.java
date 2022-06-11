@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.property.model.impl;
 
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.base.PartBase;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
@@ -35,6 +36,21 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return this.partListType;
 	}
 
+	public void clearPartList() {
+		for (P part : this.partList) {
+			((PartSPI<?>) part).delete();
+		}
+		this.partList.clear();
+		this.getEntity().afterClear(this);
+	}
+
+	public P addPart() {
+		P part = this.getEntity().addPart(this, this.partListType);
+		this.partList.add(part);
+		this.getEntity().afterAdd(this);
+		return part;
+	}
+
 	public Integer getPartCount() {
 		return this.partList.size();
 	}
@@ -55,21 +71,6 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return List.copyOf(this.partList);
 	}
 
-	public void clearPartList() {
-		for (P part : this.partList) {
-			((PartSPI<?>) part).delete();
-		}
-		this.partList.clear();
-		this.getEntity().afterClear(this);
-	}
-
-	public P addPart() {
-		P part = this.getEntity().addPart(this, this.partListType);
-		this.partList.add(part);
-		this.getEntity().afterAdd(this);
-		return part;
-	}
-
 	public void removePart(Integer partId) {
 		P part = this.getPartById(partId);
 		((PartSPI<?>) part).delete();
@@ -81,6 +82,13 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	public void loadPartList(Collection<Part<?>> partList) {
 		this.partList.clear();
 		partList.forEach(p -> this.partList.add((P) p));
+	}
+
+	public void doBeforeStore() {
+		int seqNr = 0;
+		for (P part : this.partList) {
+			((PartBase<?>) part).setSeqNr(seqNr++);
+		}
 	}
 
 }

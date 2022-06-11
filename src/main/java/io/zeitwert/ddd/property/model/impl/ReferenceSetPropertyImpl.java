@@ -39,21 +39,6 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	}
 
 	@Override
-	public Set<Integer> getItems() {
-		return Set.copyOf(this.itemSet.stream().map(item -> Integer.valueOf(item.getItemId())).toList());
-	}
-
-	@Override
-	public boolean hasItem(Integer aggregateId) {
-		for (EntityPartItem part : this.itemSet) {
-			if (part.getItemId().equals(aggregateId.toString())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public void clearItems() {
 		this.itemSet.forEach(item -> ((PartSPI<?>) item).delete());
 		this.itemSet.clear();
@@ -72,6 +57,21 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	}
 
 	@Override
+	public Set<Integer> getItems() {
+		return Set.copyOf(this.itemSet.stream().map(item -> Integer.valueOf(item.getItemId())).toList());
+	}
+
+	@Override
+	public boolean hasItem(Integer aggregateId) {
+		for (EntityPartItem part : this.itemSet) {
+			if (part.getItemId().equals(aggregateId.toString())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public void removeItem(Integer aggregateId) {
 		Assert.isTrue(aggregateId != null, "aggregateId not null");
 		if (this.hasItem(aggregateId)) {
@@ -83,8 +83,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 		}
 	}
 
-	@Override
-	public void beforeStore() {
+	public void doBeforeStore() {
 		int seqNr = 0;
 		for (EntityPartItem item : this.itemSet) {
 			item.setSeqNr(seqNr++);

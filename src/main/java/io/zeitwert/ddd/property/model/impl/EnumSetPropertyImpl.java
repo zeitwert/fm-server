@@ -40,21 +40,6 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	}
 
 	@Override
-	public Set<E> getItems() {
-		return Set.copyOf(this.itemSet.stream().map(item -> this.enumeration.getItem(item.getItemId())).toList());
-	}
-
-	@Override
-	public boolean hasItem(E item) {
-		for (EntityPartItem part : this.itemSet) {
-			if (part.getItemId().equals(item.getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public void clearItems() {
 		this.itemSet.forEach(item -> ((PartSPI<?>) item).delete());
 		this.itemSet.clear();
@@ -73,6 +58,21 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	}
 
 	@Override
+	public Set<E> getItems() {
+		return Set.copyOf(this.itemSet.stream().map(item -> this.enumeration.getItem(item.getItemId())).toList());
+	}
+
+	@Override
+	public boolean hasItem(E item) {
+		for (EntityPartItem part : this.itemSet) {
+			if (part.getItemId().equals(item.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public void removeItem(E item) {
 		Assert.isTrue(item != null, "item not null");
 		if (this.hasItem(item)) {
@@ -83,8 +83,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 		}
 	}
 
-	@Override
-	public void beforeStore() {
+	public void doBeforeStore() {
 		int seqNr = 0;
 		for (EntityPartItem item : this.itemSet) {
 			item.setSeqNr(seqNr++);

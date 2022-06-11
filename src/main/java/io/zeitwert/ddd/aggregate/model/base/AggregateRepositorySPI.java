@@ -40,7 +40,7 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * 
 	 * @param aggregate aggregate
 	 */
-	void afterCreate(A aggregate);
+	void doAfterCreate(A aggregate);
 
 	/**
 	 * Load core aggregate data from database and instantiate a new Aggregate. This
@@ -63,14 +63,14 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * 
 	 * @param aggregate aggregate
 	 */
-	void afterLoad(A aggregate);
+	void doAfterLoad(A aggregate);
 
 	/**
 	 * Do some work before store, f.ex. make sure certain structures are in place
 	 * 
 	 * @param aggregate aggregate
 	 */
-	void beforeStore(A aggregate);
+	void doBeforeStore(A aggregate);
 
 	/**
 	 * Store Parts
@@ -84,7 +84,7 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * 
 	 * @param aggregate aggregate
 	 */
-	void afterStore(A aggregate);
+	void doAfterStore(A aggregate);
 
 	/**
 	 * Find aggregates (ids) according to given Query

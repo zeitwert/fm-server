@@ -36,9 +36,9 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	}
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
 		DocPartTransitionRecord dbRecord = (DocPartTransitionRecord) this.getDbRecord();
-		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1);
+		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1); // TODO
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setModifiedAt(OffsetDateTime.now());
 		dbRecord.setOldCaseStageId(null);

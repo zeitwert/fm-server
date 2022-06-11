@@ -114,19 +114,25 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
 		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
 		this.createdAt.setValue(OffsetDateTime.now());
 	}
 
 	@Override
-	public void doStore() {
+	public void doBeforeStore() {
+		super.doBeforeStore();
+		this.addTransition();
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
-		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getDocDbRecord();
+		UpdatableRecord<?> dbRecord = getDocDbRecord();
 		dbRecord.setValue(DocFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(DocFields.MODIFIED_AT, OffsetDateTime.now());
-		dbRecord.store();
+	}
+
+	@Override
+	public void doStore() {
+		getDocDbRecord().store();
 	}
 
 	@Override
@@ -166,12 +172,6 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	protected void doCalcAll() {
-	}
-
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.addTransition();
 	}
 
 }

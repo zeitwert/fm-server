@@ -8,6 +8,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
@@ -82,11 +84,6 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public List<ObjTestVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
-	}
-
-	@Override
 	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
@@ -110,6 +107,11 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 		super.doStoreParts(obj);
 		this.getItemRepository().store(obj);
 		this.nodeRepository.store(obj);
+	}
+
+	@Override
+	public List<ObjTestVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
 	}
 
 }

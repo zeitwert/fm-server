@@ -13,6 +13,8 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -68,6 +70,11 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	//@formatter:on
 
 	@Override
+	protected String getAccountIdField() {
+		return "account_id";
+	}
+
+	@Override
 	public ObjDocument doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
 	}
@@ -75,16 +82,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@Override
 	public void doInitParts(ObjDocument obj) {
 		super.doInitParts(obj);
-	}
-
-	@Override
-	public List<ObjDocumentVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
 	}
 
 	@Override
@@ -106,6 +103,11 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@Override
 	public void doStoreParts(ObjDocument obj) {
 		super.doStoreParts(obj);
+	}
+
+	@Override
+	public List<ObjDocumentVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
 	}
 
 	@Override

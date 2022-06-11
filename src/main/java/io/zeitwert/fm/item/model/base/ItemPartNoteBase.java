@@ -36,7 +36,7 @@ public abstract class ItemPartNoteBase<A extends Aggregate> extends ItemPartBase
 	}
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
 		ItemPartNoteRecord dbRecord = (ItemPartNoteRecord) this.getDbRecord();
 		dbRecord.setCreatedByUserId(this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setCreatedAt(OffsetDateTime.now());

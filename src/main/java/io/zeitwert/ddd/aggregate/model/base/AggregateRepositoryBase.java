@@ -19,6 +19,8 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.util.Assert;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
@@ -83,13 +85,13 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		return this.dslContext;
 	}
 
-	protected void require(boolean condition, String message) {
-		Assert.isTrue(condition, "Precondition failed: " + message);
-	}
-
 	@Override
 	public final CodeAggregateType getAggregateType() {
 		return this.getAppContext().getAggregateType(this.aggregateTypeId);
+	}
+
+	protected String getAccountIdField() {
+		return null;
 	}
 
 	/**
@@ -128,8 +130,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 
 		this.didAfterCreate = false;
-		this.afterCreate(aggregate);
-		Assert.isTrue(this.didAfterCreate, this.getClass().getSimpleName() + ": afterCreate was called");
+		this.doAfterCreate(aggregate);
+		Assert.isTrue(this.didAfterCreate, this.getClass().getSimpleName() + ": doAfterCreate was called");
 
 		return aggregate;
 	}
@@ -143,9 +145,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public void afterCreate(A aggregate) {
+	public void doAfterCreate(A aggregate) {
 		this.didAfterCreate = true;
-		((AggregateSPI) aggregate).afterCreate();
+		((AggregateSPI) aggregate).doAfterCreate();
 	}
 
 	@Override
@@ -166,8 +168,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		((AggregateSPI) aggregate).calcVolatile();
 
 		this.didAfterLoad = false;
-		this.afterLoad(aggregate);
-		Assert.isTrue(this.didAfterLoad, this.getClass().getSimpleName() + ": afterLoad was called");
+		this.doAfterLoad(aggregate);
+		Assert.isTrue(this.didAfterLoad, this.getClass().getSimpleName() + ": doAfterLoad was called");
 
 		return aggregate;
 	}
@@ -181,17 +183,17 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public void afterLoad(A aggregate) {
+	public void doAfterLoad(A aggregate) {
 		this.didAfterLoad = true;
-		((AggregateSPI) aggregate).afterLoad();
+		((AggregateSPI) aggregate).doAfterLoad();
 	}
 
 	@Override
 	public final void store(A aggregate) {
 
 		this.didBeforeStore = false;
-		this.beforeStore(aggregate);
-		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": beforeStore was called");
+		this.doBeforeStore(aggregate);
+		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": doBeforeStore was called");
 
 		((AggregateSPI) aggregate).doStore();
 
@@ -200,15 +202,15 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		Assert.isTrue(this.didDoStoreParts, this.getClass().getSimpleName() + ": doStoreParts was called");
 
 		this.didAfterStore = false;
-		this.afterStore(aggregate);
-		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": afterStore was called");
+		this.doAfterStore(aggregate);
+		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": doAfterStore was called");
 
 	}
 
 	@Override
-	public void beforeStore(A aggregate) {
+	public void doBeforeStore(A aggregate) {
 		this.didBeforeStore = true;
-		((AggregateSPI) aggregate).beforeStore();
+		((AggregateSPI) aggregate).doBeforeStore();
 	}
 
 	@Override
@@ -217,9 +219,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public void afterStore(A aggregate) {
+	public void doAfterStore(A aggregate) {
 		this.didAfterStore = true;
-		((AggregateSPI) aggregate).afterStore();
+		((AggregateSPI) aggregate).doAfterStore();
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
 	}
@@ -239,10 +241,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		}
 		//@formatter:on
 		return this.doFind(querySpec);
-	}
-
-	protected String getAccountIdField() {
-		return null;
 	}
 
 	@Override

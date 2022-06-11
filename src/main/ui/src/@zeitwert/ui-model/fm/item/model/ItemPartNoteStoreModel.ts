@@ -1,17 +1,15 @@
 
 import { session, UUID } from "@zeitwert/ui-model";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { string } from "mobx-state-tree/dist/internal";
 import { ItemPartNote, ItemPartNoteModel, ItemPartNotePayload } from "./ItemPartNoteModel";
 
-const MstItemWithNotesModel = types.model("ItemWithNotes")
+const MstItemPartNoteStoreModel = types.model("ItemPartNoteStore")
 	.props({
+		aggregateId: string,
+		parentId: types.maybe(string),
 		notes: types.optional(types.array(ItemPartNoteModel), [])
 	})
-	.views((self) => ({
-		getNote(id: string): ItemPartNote {
-			return self.notes.find((n) => n.id === id)!;
-		}
-	}))
 	.actions((self) => ({
 		addNote(note?: ItemPartNotePayload): ItemPartNote {
 			const newNote = Object.assign(
@@ -26,24 +24,19 @@ const MstItemWithNotesModel = types.model("ItemWithNotes")
 			self.notes.push(newNote);
 			return self.notes.at(self.notes.length - 1)!;
 		},
-		modifyNote(id: string, note?: ItemPartNotePayload): ItemPartNote {
-			const origNote = self.getNote(id);
-			const newNote = Object.assign(
-				{},
-				origNote,
-				note
-			);
-			origNote.modify(newNote);
-			return origNote;
-		},
 		removeNote(id: string): void {
 			self.notes.remove(self.notes.find((n) => n.id === id)!);
 		}
+	}))
+	.views((self) => ({
+		getNote(id: string): ItemPartNote {
+			return self.notes.find((n) => { n.id === id })!;
+		}
 	}));
 
-type MstItemWithNotesType = typeof MstItemWithNotesModel;
+type MstItemWithNotesType = typeof MstItemPartNoteStoreModel;
 export interface MstItemWithNotes extends MstItemWithNotesType { }
-export const ItemWithNotesModel: MstItemWithNotes = MstItemWithNotesModel;
+export const ItemWithNotesModel: MstItemWithNotes = MstItemPartNoteStoreModel;
 export interface ItemWithNotes extends Instance<typeof ItemWithNotesModel> { }
-export type MstItemWithNotesSnapshot = SnapshotIn<typeof MstItemWithNotesModel>;
+export type MstItemWithNotesSnapshot = SnapshotIn<typeof MstItemPartNoteStoreModel>;
 export interface ItemWithNotesSnapshot extends MstItemWithNotesSnapshot { }

@@ -1,9 +1,10 @@
+import { transaction } from "mobx";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { faTypes } from "../../../app/common";
-import { UserInfo } from "../../../app/session";
+import { session, UserInfo } from "../../../app/session";
 import { ItemPartModel } from "../../../ddd/item/model/ItemPartModel";
 
-const MstItemPartNoteModel = ItemPartModel.named("Note")
+const MstItemPartNoteModel = ItemPartModel.named("ItemPartNote")
 	.props({
 		subject: types.maybe(types.string),
 		content: types.maybe(types.string),
@@ -27,6 +28,15 @@ const MstItemPartNoteModel = ItemPartModel.named("Note")
 	.actions((self) => ({
 		setPrivate(isPrivate: boolean) {
 			self.isPrivate = !!isPrivate;
+		},
+		modify(note: any) {
+			transaction(() => {
+				self.subject = note.subject;
+				self.content = note.content;
+				self.isPrivate = note.isPrivate;
+				self.modifiedAt = new Date();
+				self.modifiedByUser = session.sessionInfo?.user;
+			});
 		}
 	}));
 

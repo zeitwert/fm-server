@@ -98,10 +98,4 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		this.caption.setValue(this.getName());
 	}
 
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.areaSet.beforeStore();
-	}
-
 }

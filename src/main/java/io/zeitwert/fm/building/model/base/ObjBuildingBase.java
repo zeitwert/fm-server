@@ -173,15 +173,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		int seqNr = 0;
-		for (ObjBuildingPartElement element : this.getElementList()) {
-			element.setSeqNr(seqNr++);
-		}
-	}
-
-	@Override
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();

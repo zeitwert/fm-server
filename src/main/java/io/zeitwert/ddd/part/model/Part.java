@@ -19,6 +19,4 @@ public interface Part<A extends Aggregate> {
 
 	Integer getSeqNr();
 
-	void setSeqNr(Integer seqNr);
-
 }

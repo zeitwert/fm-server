@@ -1,8 +1,9 @@
+
 import { AggregateStore, DateFormat, ItemPartNote, ItemPartNotePayload, session } from "@zeitwert/ui-model";
 import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
-import { AppCtx } from "App";
 import { computed, makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
+import { getSnapshot } from "mobx-state-tree";
 import React, { FC } from "react";
 import ReactMarkdown from "react-markdown";
 
@@ -10,16 +11,10 @@ interface NotesTabProps {
 	store: AggregateStore;
 }
 
-@inject("session", "showAlert", "showToast")
 @observer
 export default class NotesTab extends React.Component<NotesTabProps> {
 
-	@observable editNote: ItemPartNote | undefined = undefined;
-	@observable isNew = false;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
+	@observable editNoteId: string | undefined;
 
 	constructor(props: NotesTabProps) {
 		super(props);
@@ -43,23 +38,40 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 						{
 							!item.notes.length &&
 							<li className="slds-feed__item" key="note-0">
-								<div>Keine Notizen bisher</div>
+								<div>Keine Notizen</div>
+								<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
 							</li>
 						}
 						{
 							item.notes.map((note, index) => (
 								<li className="slds-feed__item" key={"note-" + note.id}>
-									<Note
-										note={note}
-										onEdit={(note) => { }}
-										onChangeVisibility={(note) => { this.toggleVisibility(note) }}
-										onDelete={(note) => this.removeNote(note.id)}
-									/>
+									{
+										this.editNoteId === note.id &&
+										<NoteEditor
+											note={getSnapshot(note)}
+											onCancel={this.cancelNoteEditor}
+											onOk={(note) => { this.modifyNote(this.editNoteId!, note); }}
+										/>
+									}
+									{
+										(!this.editNoteId || (this.editNoteId !== note.id)) &&
+										<Note
+											note={note}
+											onEdit={(note) => { this.editNoteId = note.id }}
+											onChangeVisibility={(note) => { this.toggleVisibility(note) }}
+											onDelete={(note) => this.removeNote(note.id)}
+										/>
+									}
+									<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
 								</li>
 							))
 						}
 						<li className="slds-feed__item" key="note-add">
-							<NewNote onAdd={(note) => this.addNote(note)} />
+							<NoteEditor
+								isNew={true}
+								onCancel={this.cancelNoteEditor}
+								onOk={(note) => this.addNote(note)}
+							/>
 						</li>
 					</ul>
 				</div>
@@ -67,12 +79,28 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 		);
 	}
 
+	private cancelNoteEditor(): void {
+		this.editNoteId = undefined;
+	}
+
 	private addNote(note: ItemPartNotePayload): void {
+		console.log("addNote", note);
 		if (!this.props.store.inTrx) {
 			this.props.store.startTrx();
 		}
 		const item = this.props.store.item! as unknown as ItemWithNotes;
 		item!.addNote(note);
+		this.editNoteId = undefined;
+	}
+
+	private modifyNote(id: string, note: ItemPartNotePayload): void {
+		console.log("modifyNote", note);
+		if (!this.props.store.inTrx) {
+			this.props.store.startTrx();
+		}
+		const item = this.props.store.item! as unknown as ItemWithNotes;
+		item!.modifyNote(id, note);
+		this.editNoteId = undefined;
 	}
 
 	private toggleVisibility(note: ItemPartNote): void {
@@ -113,16 +141,29 @@ const Note: FC<NoteProps> = (props) => {
 					</a>
 				</div>
 				<div className="slds-media__body">
-					<div className="slds-grid slds-grid_align-spread slds-has-flexi-truncate">
-						<p>
-							<a href="/#" title={userName}>{userName}</a>
-						</p>
-						<NoteHeaderAction
-							note={note}
-							icon={note.isPrivate ? "lock" : "share"}
-							label={note.isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
-							onClick={(note) => props.onChangeVisibility(note)}
-						/>
+					<div className="slds-clearfix xslds-grid xslds-grid_align-spread xslds-has-flexi-truncate">
+						<div className="slds-float_left">
+							<p>
+								<a href="/#" title={userName}>{userName}</a>
+							</p>
+						</div>
+						<div className="slds-float_right">
+							<NoteHeaderAction
+								icon={note.isPrivate ? "lock" : "unlock"}
+								label={note.isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
+								onClick={() => props.onChangeVisibility(note)}
+							/>
+							<NoteHeaderAction
+								icon={"delete"}
+								label={"Löschen"}
+								onClick={() => props.onDelete(note)}
+							/>
+							<NoteHeaderAction
+								icon={"edit"}
+								label={"Bearbeiten"}
+								onClick={() => props.onEdit(note)}
+							/>
+						</div>
 					</div>
 					<p className="slds-text-body_small">
 						<a href="/#" title="..." className="slds-text-link_reset">{time}</a>
@@ -135,6 +176,8 @@ const Note: FC<NoteProps> = (props) => {
 					{note.content || "(kein Inhalt)"}
 				</ReactMarkdown>
 			</div>
+			{
+				/*
 			<footer className="slds-post__footer">
 				<ul className="slds-post__footer-actions-list slds-list_horizontal">
 					<li className="slds-col slds-item slds-m-right_medium">
@@ -143,74 +186,79 @@ const Note: FC<NoteProps> = (props) => {
 					<li className="slds-col slds-item slds-m-right_medium">
 						<NoteFooterAction note={note} icon="delete" label="Löschen" onClick={(note) => props.onDelete(note)} />
 					</li>
-					<li className="slds-col slds-item slds-m-right_medium">
-						<NoteFooterAction note={note} icon="like" label="Like" onClick={(note) => { }} />
-					</li>
-				</ul>
-				<ul className="slds-post__footer-meta-list slds-list_horizontal slds-has-dividers_right slds-text-title">
-					<li className="slds-item">20 likes</li>
 				</ul>
 			</footer>
+				*/
+			}
 		</article>
 	);
 
 };
 
 interface NoteHeaderActionProps {
-	note: ItemPartNote;
 	icon: string;
 	label: string;
-	onClick?: (note: ItemPartNote) => void;
+	onClick?: () => void;
 }
 
 const NoteHeaderAction: FC<NoteHeaderActionProps> = (props) => {
-	const { note, icon, label } = props;
+	const { icon, label } = props;
 	return (
-		<button className="slds-button slds-button_icon slds-button_icon-x-small" title={label} onClick={() => props.onClick?.(note)}>
-			<svg className="slds-icon slds-icon-text-default slds-icon_x-small slds-align-middle">
-				<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + icon}></use>
-			</svg>
-		</button>
+		<span className="slds-m-left_small">
+			<button className="slds-button slds-button_icon slds-button_icon-x-small" title={label} onClick={() => props.onClick?.()}>
+				<svg className="slds-icon slds-icon-text-default slds-icon_x-small slds-align-middle">
+					<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + icon}></use>
+				</svg>
+			</button>
+		</span>
 	);
 
 };
 
-interface NoteFooterActionProps {
-	note: ItemPartNote;
-	icon: string;
-	label: string;
-	onClick?: (note: ItemPartNote) => void;
-}
+// interface NoteFooterActionProps {
+// 	note: ItemPartNote;
+// 	icon: string;
+// 	label: string;
+// 	onClick?: (note: ItemPartNote) => void;
+// }
 
-const NoteFooterAction: FC<NoteFooterActionProps> = (props) => {
-	const { note, icon, label } = props;
-	return (<>
-		<button className="slds-button_reset slds-post__footer-action" title={label} onClick={() => props.onClick?.(note)}>
-			<svg className="slds-icon slds-icon-text-default slds-icon_x-small slds-align-middle">
-				<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + icon}></use>
-			</svg>{label}
-		</button>
-	</>
-	);
+// const NoteFooterAction: FC<NoteFooterActionProps> = (props) => {
+// 	const { note, icon, label } = props;
+// 	return (<>
+// 		<button className="slds-button_reset slds-post__footer-action" title={label} onClick={() => props.onClick?.(note)}>
+// 			<svg className="slds-icon slds-icon-text-default slds-icon_x-small slds-align-middle">
+// 				<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + icon}></use>
+// 			</svg>{label}
+// 		</button>
+// 	</>
+// 	);
+// };
 
-};
-
-interface NewNoteProps {
-	onAdd: (note: ItemPartNotePayload) => void;
+interface NoteEditorProps {
+	isNew?: boolean;
+	note?: ItemPartNotePayload;
+	onCancel: () => void;
+	onOk: (note: ItemPartNotePayload) => void;
 }
 
 @observer
-class NewNote extends React.Component<NewNoteProps> {
+class NoteEditor extends React.Component<NoteEditorProps> {
 
 	@observable isActive: boolean = false;
 	@observable subject: string = "";
 	@observable content: string = "";
 	@observable isPrivate: boolean = false;
-	@computed get allowAdd() { return !!this.subject || !!this.content; }
+	@computed get allowAdd() { return !!this.content; }
 
-	constructor(props: NewNoteProps) {
+	constructor(props: NoteEditorProps) {
 		super(props);
 		makeObservable(this);
+		if (!props.isNew) {
+			this.isActive = true;
+			this.subject = props.note?.subject || "";
+			this.content = props.note?.content || "";
+			this.isPrivate = props.note?.isPrivate || false;
+		}
 	}
 
 	render() {
@@ -219,7 +267,7 @@ class NewNote extends React.Component<NewNoteProps> {
 				<div className="slds-media slds-comment slds-hint-parent">
 					<div className="slds-media__figure">
 						<a className="slds-avatar slds-avatar_circle slds-avatar_medium" href="/#">
-							<img alt={session.sessionInfo?.user.caption} src={session.sessionInfo?.user.picture} title="User avatar" />
+							<img alt={session.sessionInfo?.user.caption} src={session.sessionInfo?.user.picture} title={session.sessionInfo?.user.caption} />
 						</a>
 					</div>
 					<div className="slds-media__body">
@@ -239,36 +287,24 @@ class NewNote extends React.Component<NewNoteProps> {
 									<div className="slds-publisher__actions slds-grid slds-grid_align-spread">
 										<ul className="slds-grid">
 											<li>
-												<button className={"slds-button slds-button_icon slds-button_icon-container"} title={this.isPrivate ? "Private Notiz. Freigeben." : "Öffentliche Notiz. Auf Privat ändern."} onClick={() => this.isPrivate = !this.isPrivate}>
+												<button className={"slds-button slds-button_icon slds-button_icon-container"} title={this.isPrivate ? "Freigeben" : "Privat stellen"} onClick={() => this.isPrivate = !this.isPrivate}>
 													<svg className="slds-button__icon" aria-hidden="true">
-														<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + (this.isPrivate ? "lock" : "share")}></use>
+														<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + (this.isPrivate ? "lock" : "unlock")}></use>
 													</svg>
 													<span className="slds-assistive-text">Privat</span>
 												</button>
 											</li>
-											<li>
-												<button className="slds-button slds-button_icon slds-button_icon-container" title="Benutzer">
-													<svg className="slds-button__icon" aria-hidden="true">
-														<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#adduser"></use>
-													</svg>
-													<span className="slds-assistive-text">Benutzer</span>
-												</button>
-											</li>
-											<li>
-												<button className="slds-button slds-button_icon slds-button_icon-container" title="Anhang">
-													<svg className="slds-button__icon" aria-hidden="true">
-														<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#attach"></use>
-													</svg>
-													<span className="slds-assistive-text">Anhang</span>
-												</button>
-											</li>
 										</ul>
 										<span>
-											<button className="slds-button slds-button_neutral" onClick={() => this.init()}>
-												Abbrechen
+											<button className="slds-button slds-button_icon slds-button_icon-border-filled" onClick={this.onCancel}>
+												<svg className="slds-button__icon" aria-hidden="true">
+													<use xlinkHref={"/assets/icons/action-sprite/svg/symbols.svg#close"}></use>
+												</svg>
 											</button>
-											<button className="slds-button slds-button_brand" onClick={() => this.props.onAdd(this.asNote())} disabled={!this.allowAdd}>
-												Notiz hinzufügen
+											<button className="slds-button slds-button_icon slds-button_icon-brand" onClick={this.onOk} disabled={!this.allowAdd}>
+												<svg className="slds-button__icon" aria-hidden="true">
+													<use xlinkHref={"/assets/icons/action-sprite/svg/symbols.svg#approval"}></use>
+												</svg>
 											</button>
 										</span>
 									</div>
@@ -281,14 +317,22 @@ class NewNote extends React.Component<NewNoteProps> {
 		);
 	};
 
+	private onCancel = (): void => {
+		this.props.onCancel();
+		this.init();
+	}
+
+	private onOk = (): void => {
+		this.props.onOk(this.asNote());
+		this.init();
+	}
+
 	private asNote(): ItemPartNotePayload {
-		const note = {
+		return {
 			subject: this.subject,
 			content: this.content,
 			isPrivate: this.isPrivate
 		};
-		this.init();
-		return note;
 	}
 
 	private init(): void {

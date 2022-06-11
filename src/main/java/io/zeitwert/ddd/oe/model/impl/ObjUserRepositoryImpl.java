@@ -9,6 +9,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
@@ -55,6 +57,11 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	//@formatter:on
 
 	@Override
+	public ObjUser doCreate(SessionInfo sessionInfo) {
+		throw new RuntimeException("cannot create a User");
+	}
+
+	@Override
 	public ObjUser doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjRecord objRecord = this.getDSLContext().fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
@@ -83,11 +90,6 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 			return Optional.empty();
 		}
 		return Optional.of(this.get(this.globalSessionInfo, userRecord.getId()));
-	}
-
-	@Override
-	public ObjUser doCreate(SessionInfo sessionInfo) {
-		throw new RuntimeException("cannot create a User");
 	}
 
 }

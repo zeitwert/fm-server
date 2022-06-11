@@ -13,13 +13,6 @@ import java.util.List;
 public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
 
 	/**
-	 * Load Parts from database for given aggregate
-	 * 
-	 * @param aggregate the aggregate
-	 */
-	List<P> doLoad(A aggregate);
-
-	/**
 	 * Does the part have a dedicated partId (instead of a composite key like f.ex.
 	 * ObjPartItem)
 	 * 
@@ -51,5 +44,12 @@ public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
 	 * @param partListType the part list type
 	 */
 	void doInit(P part, Integer partId, A aggregate, Part<?> parent, CodePartListType partListType);
+
+	/**
+	 * Load all Parts from database for given aggregate
+	 * 
+	 * @param aggregate the aggregate
+	 */
+	List<P> doLoad(A aggregate);
 
 }

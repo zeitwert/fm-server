@@ -8,6 +8,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
@@ -72,6 +74,11 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
+	protected String getAccountIdField() {
+		return "account_id";
+	}
+
+	@Override
 	public ObjContact doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_CONTACT));
 	}
@@ -80,16 +87,6 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	public void doInitParts(ObjContact obj) {
 		super.doInitParts(obj);
 		this.addressRepository.init(obj);
-	}
-
-	@Override
-	public List<ObjContactVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
 	}
 
 	@Override
@@ -114,6 +111,11 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	public void doStoreParts(ObjContact obj) {
 		super.doStoreParts(obj);
 		this.addressRepository.store(obj);
+	}
+
+	@Override
+	public List<ObjContactVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
 	}
 
 	@Override

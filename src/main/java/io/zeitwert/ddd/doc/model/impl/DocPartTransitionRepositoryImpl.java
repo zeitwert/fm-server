@@ -40,6 +40,12 @@ public class DocPartTransitionRepositoryImpl extends DocPartRepositoryBase<Doc, 
 	//@formatter:on
 
 	@Override
+	public DocPartTransition doCreate(Doc doc) {
+		DocPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.DOC_PART_TRANSITION);
+		return this.newPart(doc, dbRecord);
+	}
+
+	@Override
 	public List<DocPartTransition> doLoad(Doc doc) {
 		//@formatter:off
 		Result<DocPartTransitionRecord> dbRecords = this.getDSLContext()
@@ -49,12 +55,6 @@ public class DocPartTransitionRepositoryImpl extends DocPartRepositoryBase<Doc, 
 			.fetchInto(Tables.DOC_PART_TRANSITION);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(doc, dbRecord));
-	}
-
-	@Override
-	public DocPartTransition doCreate(Doc doc) {
-		DocPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.DOC_PART_TRANSITION);
-		return this.newPart(doc, dbRecord);
 	}
 
 }

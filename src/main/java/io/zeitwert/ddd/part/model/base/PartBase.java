@@ -117,7 +117,6 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		}
 	}
 
-	@Override
 	public void setSeqNr(Integer seqNr) {
 		try {
 			this.seqNr.setValue(seqNr);
@@ -129,7 +128,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	public abstract void doInit(Integer partId, A aggregate, Part<?> parent, CodePartListType partListType);
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
 	}
 
 	@Override
@@ -152,7 +151,8 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	}
 
 	@Override
-	public void store() {
+	public void doStore() {
+		this.doBeforeStoreProperties();
 		if (this.getStatus() == PartStatus.DELETED) {
 			this.getDbRecord().delete();
 		} else if (this.getStatus() != PartStatus.READ) {

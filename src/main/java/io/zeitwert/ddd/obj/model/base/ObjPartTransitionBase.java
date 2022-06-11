@@ -27,9 +27,10 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	}
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
 		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
-		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1);
+		// dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() +
+		// 1); // TODO
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setModifiedAt(OffsetDateTime.now());
 	}

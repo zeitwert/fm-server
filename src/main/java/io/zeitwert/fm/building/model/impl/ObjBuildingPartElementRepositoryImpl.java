@@ -40,6 +40,12 @@ public class ObjBuildingPartElementRepositoryImpl extends ObjPartRepositoryBase<
 	//@formatter:on
 
 	@Override
+	public ObjBuildingPartElement doCreate(ObjBuilding obj) {
+		ObjBuildingPartElementRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_BUILDING_PART_ELEMENT);
+		return this.newPart(obj, dbRecord);
+	}
+
+	@Override
 	public List<ObjBuildingPartElement> doLoad(ObjBuilding obj) {
 		//@formatter:off
 		Result<ObjBuildingPartElementRecord> dbRecords = this.getDSLContext()
@@ -49,12 +55,6 @@ public class ObjBuildingPartElementRepositoryImpl extends ObjPartRepositoryBase<
 			.fetchInto(Tables.OBJ_BUILDING_PART_ELEMENT);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(obj, dbRecord));
-	}
-
-	@Override
-	public ObjBuildingPartElement doCreate(ObjBuilding obj) {
-		ObjBuildingPartElementRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_BUILDING_PART_ELEMENT);
-		return this.newPart(obj, dbRecord);
 	}
 
 }

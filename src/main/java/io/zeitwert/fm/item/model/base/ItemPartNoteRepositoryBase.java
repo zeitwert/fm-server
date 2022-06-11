@@ -31,6 +31,12 @@ public abstract class ItemPartNoteRepositoryBase<A extends Aggregate>
 	//@formatter:on
 
 	@Override
+	public ItemPartNote<A> doCreate(A item) {
+		ItemPartNoteRecord dbRecord = this.getDSLContext().newRecord(Tables.ITEM_PART_NOTE);
+		return this.newPart(item, dbRecord);
+	}
+
+	@Override
 	public List<ItemPartNote<A>> doLoad(A item) {
 		//@formatter:off
 		Result<ItemPartNoteRecord> dbRecords = this.getDSLContext()
@@ -40,12 +46,6 @@ public abstract class ItemPartNoteRepositoryBase<A extends Aggregate>
 			.fetchInto(Tables.ITEM_PART_NOTE);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(item, dbRecord));
-	}
-
-	@Override
-	public ItemPartNote<A> doCreate(A item) {
-		ItemPartNoteRecord dbRecord = this.getDSLContext().newRecord(Tables.ITEM_PART_NOTE);
-		return this.newPart(item, dbRecord);
 	}
 
 }

@@ -40,6 +40,12 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 	//@formatter:on
 
 	@Override
+	public ObjContactPartAddress doCreate(ObjContact obj) {
+		ObjContactPartAddressRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_CONTACT_PART_ADDRESS);
+		return this.newPart(obj, dbRecord);
+	}
+
+	@Override
 	public List<ObjContactPartAddress> doLoad(ObjContact obj) {
 		//@formatter:off
 		Result<ObjContactPartAddressRecord> dbRecords = this.getDSLContext()
@@ -49,12 +55,6 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 			.fetchInto(Tables.OBJ_CONTACT_PART_ADDRESS);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(obj, dbRecord));
-	}
-
-	@Override
-	public ObjContactPartAddress doCreate(ObjContact obj) {
-		ObjContactPartAddressRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_CONTACT_PART_ADDRESS);
-		return this.newPart(obj, dbRecord);
 	}
 
 }

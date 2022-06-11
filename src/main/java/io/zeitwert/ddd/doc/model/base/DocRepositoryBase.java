@@ -104,8 +104,8 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	}
 
 	@Override
-	public void afterStore(D doc) {
-		super.afterStore(doc);
+	public void doAfterStore(D doc) {
+		super.doAfterStore(doc);
 	}
 
 }

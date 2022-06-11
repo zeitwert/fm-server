@@ -125,4 +125,16 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		return property;
 	}
 
+	protected void doBeforeStoreProperties() {
+		for (Property<?> p : this.propertyList) {
+			if (p instanceof EnumSetPropertyImpl<?>) {
+				((EnumSetPropertyImpl<?>) p).doBeforeStore();
+			} else if (p instanceof ReferenceSetPropertyImpl<?>) {
+				((ReferenceSetPropertyImpl<?>) p).doBeforeStore();
+			} else if (p instanceof PartListPropertyImpl<?>) {
+				((PartListPropertyImpl<?>) p).doBeforeStore();
+			}
+		}
+	}
+
 }

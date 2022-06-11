@@ -39,13 +39,4 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 		return super.addPart(property, partListType);
 	}
 
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		int seqNr = 0;
-		for (DocPartNote note : this.getNoteList()) {
-			note.setSeqNr(seqNr++);
-		}
-	}
-
 }

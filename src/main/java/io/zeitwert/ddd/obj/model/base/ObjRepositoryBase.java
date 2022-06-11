@@ -104,8 +104,8 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	@Override
-	public void afterStore(O obj) {
-		super.afterStore(obj);
+	public void doAfterStore(O obj) {
+		super.doAfterStore(obj);
 	}
 
 }

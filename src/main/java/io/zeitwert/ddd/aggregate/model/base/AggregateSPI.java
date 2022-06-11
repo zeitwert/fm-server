@@ -18,12 +18,12 @@ public interface AggregateSPI {
 	/**
 	 * Do some work after create, f.ex. fire events, add transition etc.
 	 */
-	public void afterCreate();
+	public void doAfterCreate();
 
 	/**
 	 * Do some work after load.
 	 */
-	public void afterLoad();
+	public void doAfterLoad();
 
 	/**
 	 * Calculate all the derived fields, typically after a field change.
@@ -40,7 +40,7 @@ public interface AggregateSPI {
 	/**
 	 * Prepare for storage, f.ex. assign seqNr to parts.
 	 */
-	public void beforeStore();
+	public void doBeforeStore();
 
 	/**
 	 * Store the database record(s) (of the Aggregate only). The Parts will be
@@ -51,6 +51,6 @@ public interface AggregateSPI {
 	/**
 	 * Do some work after store.
 	 */
-	public void afterStore();
+	public void doAfterStore();
 
 }

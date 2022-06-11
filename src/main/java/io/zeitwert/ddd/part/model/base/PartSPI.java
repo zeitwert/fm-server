@@ -30,7 +30,24 @@ public interface PartSPI<A extends Aggregate> {
 	/**
 	 * Initialise a Part after creation (external, functional callback).
 	 */
-	void afterCreate();
+	void doAfterCreate();
+
+	/**
+	 * Do some work after load.
+	 */
+	public void doAfterLoad();
+
+	/**
+	 * Calculate all the derived fields, typically after a field change.
+	 */
+	public void calcAll();
+
+	/**
+	 * Calculate all the volatile derived fields, i.e. fields that are not saved to
+	 * the database. This is triggered after loading the aggregate from the
+	 * database.
+	 */
+	public void calcVolatile();
 
 	/**
 	 * Mark the part for deletion.
@@ -38,8 +55,18 @@ public interface PartSPI<A extends Aggregate> {
 	void delete();
 
 	/**
+	 * Prepare for storage, f.ex. assign modified_at, modified_by_user_id.
+	 */
+	public void doBeforeStore();
+
+	/**
 	 * Store the part (insert/update/delete)
 	 */
-	void store();
+	void doStore();
+
+	/**
+	 * Do some work after store.
+	 */
+	public void doAfterStore();
 
 }

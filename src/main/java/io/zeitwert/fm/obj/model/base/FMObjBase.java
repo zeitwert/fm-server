@@ -39,14 +39,4 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 		return super.addPart(property, partListType);
 	}
 
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		int seqNr = 0;
-		for (ObjPartNote note : this.getNoteList()) {
-			note.setSeqNr(seqNr++);
-			System.out.println("beforeStore note " + note.getId() + " " + note.getSubject() + " " + note.getSeqNr());
-		}
-	}
-
 }

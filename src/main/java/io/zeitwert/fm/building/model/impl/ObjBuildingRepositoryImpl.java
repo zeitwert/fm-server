@@ -8,6 +8,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
@@ -27,6 +29,7 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
+import io.zeitwert.fm.obj.model.ObjPartNote;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
@@ -97,50 +100,74 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
+	protected String getAccountIdField() {
+		return "account_id";
+	}
+
+	@Override
 	public ObjBuilding doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
 	}
 
 	@Override
-	public void doInitParts(ObjBuilding obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-		this.getElementRepository().init(obj);
-		this.addCoverFoto(obj);
+	public void doInitParts(ObjBuilding building) {
+		super.doInitParts(building);
+		this.getItemRepository().init(building);
+		this.getElementRepository().init(building);
 	}
 
 	@Override
-	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+	public void doAfterCreate(ObjBuilding building) {
+		super.doAfterCreate(building);
+		this.addCoverFoto(building);
+	}
+
+	@Override
+	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer buildingId) {
+		require(buildingId != null, "objId not null");
 		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
-				Tables.OBJ_BUILDING.OBJ_ID.eq(objId));
+				Tables.OBJ_BUILDING.OBJ_ID.eq(buildingId));
 		if (buildingRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + buildingId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, buildingRecord);
+		return this.doLoad(sessionInfo, buildingId, buildingRecord);
 	}
 
 	@Override
-	public void doLoadParts(ObjBuilding obj) {
-		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
-		this.getElementRepository().load(obj);
-		((ObjBuildingBase) obj).loadElementList(this.elementRepository.getPartList(obj, this.getElementListType()));
+	public void doLoadParts(ObjBuilding building) {
+		super.doLoadParts(building);
+		this.getItemRepository().load(building);
+		this.getElementRepository().load(building);
+		((ObjBuildingBase) building)
+				.loadElementList(this.elementRepository.getPartList(building, this.getElementListType()));
 	}
 
 	@Override
-	public void beforeStore(ObjBuilding obj) {
-		super.beforeStore(obj);
-		if (obj.getCoverFotoId() == null) {
-			this.addCoverFoto(obj);
+	public void doAfterLoad(ObjBuilding building) {
+		super.doAfterLoad(building);
+		if (building.getNoteCount() == 0) {
+			for (int i = 0; i < 8.3 * Math.random(); i++) {
+				ObjPartNote note = building.addNote();
+				note.setSubject("Subject of Note " + (i + 1));
+				note.setContent("Content of Note " + (i + 1));
+				note.setIsPrivate(Math.random() > 0.8);
+			}
 		}
 	}
 
 	@Override
-	public void doStoreParts(ObjBuilding obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
-		this.getElementRepository().store(obj);
+	public void doBeforeStore(ObjBuilding building) {
+		super.doBeforeStore(building);
+		if (building.getCoverFotoId() == null) {
+			this.addCoverFoto(building);
+		}
+	}
+
+	@Override
+	public void doStoreParts(ObjBuilding building) {
+		super.doStoreParts(building);
+		this.getItemRepository().store(building);
+		this.getElementRepository().store(building);
 	}
 
 	@Override
@@ -148,20 +175,15 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
 	}
 
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
-	}
-
-	private void addCoverFoto(ObjBuilding obj) {
+	private void addCoverFoto(ObjBuilding building) {
 		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
-		ObjDocument coverFoto = documentRepo.create(obj.getMeta().getSessionInfo());
+		ObjDocument coverFoto = documentRepo.create(building.getMeta().getSessionInfo());
 		coverFoto.setName("CoverFoto");
 		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
 		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
 		coverFoto.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("foto"));
 		documentRepo.store(coverFoto);
-		obj.setCoverFotoId(coverFoto.getId());
+		building.setCoverFotoId(coverFoto.getId());
 	}
 
 }

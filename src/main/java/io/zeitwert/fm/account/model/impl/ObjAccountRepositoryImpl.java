@@ -9,6 +9,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
@@ -53,6 +55,11 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	//@formatter:on
 
 	@Override
+	protected String getAccountIdField() {
+		return "id";
+	}
+
+	@Override
 	public ObjAccount doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
 	}
@@ -61,16 +68,6 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	public void doInitParts(ObjAccount obj) {
 		super.doInitParts(obj);
 		this.getItemRepository().init(obj);
-	}
-
-	@Override
-	public List<ObjAccountVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "id";
 	}
 
 	@Override
@@ -105,6 +102,11 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 			return Optional.empty();
 		}
 		return Optional.of(this.get(sessionInfo, hhRecord.getId()));
+	}
+
+	@Override
+	public List<ObjAccountVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, querySpec);
 	}
 
 }

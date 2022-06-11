@@ -114,10 +114,4 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 		return s == null ? "" : s;
 	}
 
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.areaSet.beforeStore();
-	}
-
 }

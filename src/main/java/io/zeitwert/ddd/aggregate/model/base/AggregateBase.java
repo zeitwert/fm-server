@@ -66,19 +66,20 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	public abstract void doInit(Integer aggregateId, Integer tenantId);
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
 	}
 
 	@Override
-	public void afterLoad() {
+	public void doAfterLoad() {
 	}
 
 	@Override
-	public void beforeStore() {
+	public void doBeforeStore() {
+		this.doBeforeStoreProperties();
 	}
 
 	@Override
-	public void afterStore() {
+	public void doAfterStore() {
 	}
 
 	@Override

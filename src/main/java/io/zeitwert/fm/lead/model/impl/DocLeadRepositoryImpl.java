@@ -8,6 +8,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.doc.model.DocPartNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;

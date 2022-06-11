@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.require;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -104,6 +106,11 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
+	protected String getAccountIdField() {
+		return "account_id";
+	}
+
+	@Override
 	public ObjPortfolio doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
 	}
@@ -112,16 +119,6 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	public void doInitParts(ObjPortfolio obj) {
 		super.doInitParts(obj);
 		this.getItemRepository().init(obj);
-	}
-
-	@Override
-	public List<ObjPortfolioVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
 	}
 
 	@Override
@@ -149,6 +146,11 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	public void doStoreParts(ObjPortfolio obj) {
 		super.doStoreParts(obj);
 		this.getItemRepository().store(obj);
+	}
+
+	@Override
+	public List<ObjPortfolioVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, querySpec);
 	}
 
 }
