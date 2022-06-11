@@ -21,6 +21,9 @@ import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
@@ -64,6 +67,13 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getAddressRepository());
+	}
+
+	@Override
 	public ObjContactPartAddressRepository getAddressRepository() {
 		return this.addressRepository;
 	}
@@ -84,12 +94,6 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
-	public void doInitParts(ObjContact obj) {
-		super.doInitParts(obj);
-		this.addressRepository.init(obj);
-	}
-
-	@Override
 	public ObjContact doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjContactRecord contactRecord = this.getDSLContext().fetchOne(Tables.OBJ_CONTACT,
@@ -103,14 +107,7 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	@Override
 	public void doLoadParts(ObjContact obj) {
 		super.doLoadParts(obj);
-		this.addressRepository.load(obj);
-		((ObjContactBase) obj).loadAddressList(this.addressRepository.getPartList(obj, this.getAddressListType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjContact obj) {
-		super.doStoreParts(obj);
-		this.addressRepository.store(obj);
+		((ObjContactBase) obj).loadAddressList(this.getAddressRepository().getPartList(obj, this.getAddressListType()));
 	}
 
 	@Override

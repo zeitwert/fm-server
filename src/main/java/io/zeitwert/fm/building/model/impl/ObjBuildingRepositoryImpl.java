@@ -33,6 +33,8 @@ import io.zeitwert.fm.obj.model.ObjPartNote;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
+import javax.annotation.PostConstruct;
+
 @Component("objBuildingRepository")
 public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
 		implements ObjBuildingRepository {
@@ -75,6 +77,14 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(this.getElementRepository());
+	}
+
+	@Override
 	public ObjBuildingPartElementRepository getElementRepository() {
 		return this.elementRepository;
 	}
@@ -110,13 +120,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public void doInitParts(ObjBuilding building) {
-		super.doInitParts(building);
-		this.getItemRepository().init(building);
-		this.getElementRepository().init(building);
-	}
-
-	@Override
 	public void doAfterCreate(ObjBuilding building) {
 		super.doAfterCreate(building);
 		this.addCoverFoto(building);
@@ -136,10 +139,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public void doLoadParts(ObjBuilding building) {
 		super.doLoadParts(building);
-		this.getItemRepository().load(building);
-		this.getElementRepository().load(building);
 		((ObjBuildingBase) building)
-				.loadElementList(this.elementRepository.getPartList(building, this.getElementListType()));
+				.loadElementList(this.getElementRepository().getPartList(building, this.getElementListType()));
 	}
 
 	@Override
@@ -161,13 +162,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		if (building.getCoverFotoId() == null) {
 			this.addCoverFoto(building);
 		}
-	}
-
-	@Override
-	public void doStoreParts(ObjBuilding building) {
-		super.doStoreParts(building);
-		this.getItemRepository().store(building);
-		this.getElementRepository().store(building);
 	}
 
 	@Override

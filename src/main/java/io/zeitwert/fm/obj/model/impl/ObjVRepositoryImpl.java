@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.ObjVBase;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
@@ -45,6 +48,12 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 		);
 	}
 	//@formatter:on
+
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
 
 	@Override
 	public Obj doCreate(SessionInfo sessionInfo) {

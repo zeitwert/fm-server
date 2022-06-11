@@ -26,6 +26,8 @@ import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.SessionService;
 
+import javax.annotation.PostConstruct;
+
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>
 		implements ObjTenantRepository {
@@ -56,6 +58,12 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		this.globalSessionInfo = sessionService.getGlobalSession();
 	}
 	//@formatter:on
+
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
 
 	@Override
 	public ObjTenant doCreate(SessionInfo sessionInfo) {

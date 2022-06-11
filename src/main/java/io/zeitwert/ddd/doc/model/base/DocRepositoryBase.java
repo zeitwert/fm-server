@@ -45,6 +45,11 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	}
 	//@formatter:on
 
+	@Override
+	public void registerPartRepositories() {
+		this.addPartRepository(this.getTransitionRepository());
+	}
+
 	public DocPartTransitionRepository getTransitionRepository() {
 		return this.transitionRepository;
 	}
@@ -76,9 +81,8 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	}
 
 	@Override
-	public void doInitParts(D doc) {
-		super.doInitParts(doc);
-		this.transitionRepository.init(doc);
+	public void doAfterCreate(D doc) {
+		super.doAfterCreate(doc);
 		((DocBase) doc).addTransition();
 	}
 
@@ -93,14 +97,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	@Override
 	public void doLoadParts(D doc) {
 		super.doLoadParts(doc);
-		this.transitionRepository.load(doc);
-		((DocBase) doc).loadTransitionList(this.transitionRepository.getPartList(doc, this.getTransitionListType()));
-	}
-
-	@Override
-	public void doStoreParts(D doc) {
-		super.doStoreParts(doc);
-		this.transitionRepository.store(doc);
+		((DocBase) doc).loadTransitionList(this.getTransitionRepository().getPartList(doc, this.getTransitionListType()));
 	}
 
 	@Override

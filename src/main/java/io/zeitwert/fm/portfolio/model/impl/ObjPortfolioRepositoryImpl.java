@@ -26,6 +26,9 @@ import io.zeitwert.fm.portfolio.model.base.ObjPortfolioFields;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
@@ -81,6 +84,13 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 	//@formatter:on
 
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+	}
+
 	public ObjVRepository getObjVRepository() {
 		return this.objVRepository;
 	}
@@ -116,12 +126,6 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
-	public void doInitParts(ObjPortfolio obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-	}
-
-	@Override
 	public ObjPortfolio doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjPortfolioRecord portfolioRecord = this.getDSLContext().fetchOne(Tables.OBJ_PORTFOLIO,
@@ -135,17 +139,10 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public void doLoadParts(ObjPortfolio obj) {
 		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
 		ObjPortfolioBase pfBase = (ObjPortfolioBase) obj;
 		pfBase.loadIncludeSet(this.getItemRepository().getPartList(obj, this.getIncludeSetType()));
 		pfBase.loadExcludeSet(this.getItemRepository().getPartList(obj, this.getExcludeSetType()));
 		pfBase.loadBuildingSet(this.getItemRepository().getPartList(obj, this.getBuildingSetType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjPortfolio obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
 	}
 
 	@Override

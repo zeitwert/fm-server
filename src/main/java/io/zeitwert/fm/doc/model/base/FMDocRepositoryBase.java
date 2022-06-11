@@ -38,6 +38,12 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 	//@formatter:on
 
 	@Override
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getNoteRepository());
+	}
+
+	@Override
 	public DocPartNoteRepository getNoteRepository() {
 		return this.noteRepository;
 	}
@@ -48,22 +54,9 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 	}
 
 	@Override
-	public void doInitParts(O doc) {
-		super.doInitParts(doc);
-		this.getNoteRepository().init(doc);
-	}
-
-	@Override
 	public void doLoadParts(O doc) {
 		super.doLoadParts(doc);
-		this.getNoteRepository().load(doc);
 		((FMDocBase) doc).loadNoteList(this.getNoteRepository().getPartList(doc, this.getNoteListType()));
-	}
-
-	@Override
-	public void doStoreParts(O doc) {
-		super.doStoreParts(doc);
-		this.getNoteRepository().store(doc);
 	}
 
 }

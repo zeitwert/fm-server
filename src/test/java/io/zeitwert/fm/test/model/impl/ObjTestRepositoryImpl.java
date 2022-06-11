@@ -27,6 +27,8 @@ import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
+import javax.annotation.PostConstruct;
+
 @Component("objTestRepository")
 public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
 
@@ -62,6 +64,14 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(this.getNodeRepository());
+	}
+
+	@Override
 	public ObjTestPartNodeRepository getNodeRepository() {
 		return this.nodeRepository;
 	}
@@ -77,13 +87,6 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public void doInitParts(ObjTest obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-		this.nodeRepository.init(obj);
-	}
-
-	@Override
 	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
 		require(objId != null, "objId not null");
 		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
@@ -96,17 +99,8 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	@Override
 	public void doLoadParts(ObjTest obj) {
 		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
 		((ObjTestBase) obj).loadAreaSet(this.getItemRepository().getPartList(obj, this.getAreaSetType()));
-		this.nodeRepository.load(obj);
-		((ObjTestBase) obj).loadNodeList(this.nodeRepository.getPartList(obj, this.getNodeListType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjTest obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
-		this.nodeRepository.store(obj);
+		((ObjTestBase) obj).loadNodeList(this.getNodeRepository().getPartList(obj, this.getNodeListType()));
 	}
 
 	@Override

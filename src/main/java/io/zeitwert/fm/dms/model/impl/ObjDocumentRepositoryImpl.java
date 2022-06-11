@@ -28,6 +28,9 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
@@ -70,6 +73,12 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
+
+	@Override
 	protected String getAccountIdField() {
 		return "account_id";
 	}
@@ -77,11 +86,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@Override
 	public ObjDocument doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
-	}
-
-	@Override
-	public void doInitParts(ObjDocument obj) {
-		super.doInitParts(obj);
 	}
 
 	@Override
@@ -98,11 +102,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@Override
 	public void doLoadParts(ObjDocument obj) {
 		super.doLoadParts(obj);
-	}
-
-	@Override
-	public void doStoreParts(ObjDocument obj) {
-		super.doStoreParts(obj);
 	}
 
 	@Override

@@ -2,6 +2,7 @@
 package io.zeitwert.ddd.aggregate.model.base;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.SessionCache;
@@ -48,6 +50,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	private final DSLContext dslContext;
 	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
+	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
 	private boolean didDoInitParts = false;
 	private boolean didAfterCreate = false;
@@ -88,6 +91,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public final CodeAggregateType getAggregateType() {
 		return this.getAppContext().getAggregateType(this.aggregateTypeId);
+	}
+
+	protected void addPartRepository(PartRepository<? super A, ?> partRepository) {
+		this.partRepositories.add(partRepository);
 	}
 
 	protected String getAccountIdField() {
@@ -140,8 +147,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract A doCreate(SessionInfo sessionInfo);
 
 	@Override
-	public void doInitParts(A aggregate) {
+	public final void doInitParts(A aggregate) {
 		this.didDoInitParts = true;
+		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+			partRepo.init(aggregate);
+		}
 	}
 
 	@Override
@@ -180,6 +190,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void doLoadParts(A aggregate) {
 		this.didDoLoadParts = true;
+		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+			partRepo.load(aggregate);
+		}
 	}
 
 	@Override
@@ -214,8 +227,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public void doStoreParts(A aggregate) {
+	public final void doStoreParts(A aggregate) {
 		this.didDoStoreParts = true;
+		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+			partRepo.store(aggregate);
+		}
 	}
 
 	@Override

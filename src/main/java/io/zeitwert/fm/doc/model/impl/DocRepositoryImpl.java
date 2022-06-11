@@ -11,6 +11,9 @@ import org.springframework.util.Assert;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.doc.model.DocRepository;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
@@ -44,6 +47,12 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 		);
 	}
 	//@formatter:on
+
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
 
 	@Override
 	public DocBase doCreate(SessionInfo sessionInfo) {

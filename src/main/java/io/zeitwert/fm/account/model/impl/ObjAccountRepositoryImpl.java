@@ -25,6 +25,8 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
+import javax.annotation.PostConstruct;
+
 @Component("objAccountRepository")
 public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
@@ -55,6 +57,13 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+	}
+
+	@Override
 	protected String getAccountIdField() {
 		return "id";
 	}
@@ -62,12 +71,6 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	@Override
 	public ObjAccount doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
-	}
-
-	@Override
-	public void doInitParts(ObjAccount obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
 	}
 
 	@Override
@@ -84,14 +87,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	@Override
 	public void doLoadParts(ObjAccount obj) {
 		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
 		((ObjAccountBase) obj).loadAreaSet(this.getItemRepository().getPartList(obj, this.getAreaSetType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjAccount obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
 	}
 
 	@Override

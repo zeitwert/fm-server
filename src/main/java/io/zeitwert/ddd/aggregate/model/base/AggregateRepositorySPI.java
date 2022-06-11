@@ -15,6 +15,11 @@ import org.jooq.Record;
 public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 
 	/**
+	 * Register the required PartRepositories
+	 */
+	void registerPartRepositories();
+
+	/**
 	 * Provide a new Aggregate id
 	 * 
 	 * @return new aggregate id

@@ -48,6 +48,11 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	//@formatter:on
 
 	@Override
+	public void registerPartRepositories() {
+		this.addPartRepository(this.getTransitionRepository());
+	}
+
+	@Override
 	public ObjPartTransitionRepository getTransitionRepository() {
 		return this.transitionRepository;
 	}
@@ -76,12 +81,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
 	}
 
-	@Override
-	public void doInitParts(O obj) {
-		super.doInitParts(obj);
-		this.transitionRepository.init(obj);
-	}
-
 	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
 		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
@@ -93,14 +92,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	@Override
 	public void doLoadParts(O obj) {
 		super.doLoadParts(obj);
-		this.transitionRepository.load(obj);
-		((ObjBase) obj).loadTransitionList(this.transitionRepository.getPartList(obj, this.getTransitionListType()));
-	}
-
-	@Override
-	public void doStoreParts(O obj) {
-		super.doStoreParts(obj);
-		this.transitionRepository.store(obj);
+		((ObjBase) obj).loadTransitionList(this.getTransitionRepository().getPartList(obj, this.getTransitionListType()));
 	}
 
 	@Override

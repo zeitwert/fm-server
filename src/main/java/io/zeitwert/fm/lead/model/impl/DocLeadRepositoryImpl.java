@@ -19,6 +19,9 @@ import io.zeitwert.fm.lead.model.base.DocLeadBase;
 import io.zeitwert.fm.lead.model.db.Tables;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadRecord;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -50,13 +53,14 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	//@formatter:on
 
 	@Override
-	public DocLead doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
 	}
 
 	@Override
-	public void doInitParts(DocLead doc) {
-		super.doInitParts(doc);
+	public DocLead doCreate(SessionInfo sessionInfo) {
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
 	}
 
 	@Override
