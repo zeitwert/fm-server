@@ -93,7 +93,13 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final P create(A aggregate, Part<?> parent, CodePartListType partListType) {
+	public final P create(Part<?> parent, CodePartListType partListType) {
+		A aggregate = (A) parent.getMeta().getAggregate();
+		return this.create(aggregate, parent, partListType);
+	}
+
+	@SuppressWarnings("unchecked")
+	private P create(A aggregate, Part<?> parent, CodePartListType partListType) {
 
 		P p = this.doCreate(aggregate);
 		assertThis(p != null, "part created");
@@ -146,7 +152,9 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	}
 
 	@Override
-	public List<P> getPartList(A aggregate, Part<?> parent, CodePartListType partListType) {
+	@SuppressWarnings("unchecked")
+	public List<P> getPartList(Part<?> parent, CodePartListType partListType) {
+		A aggregate = (A) parent.getMeta().getAggregate();
 		return this.partCache.getParts(aggregate).stream()
 				.filter(p -> p.getParentPartId() == parent.getId() && partListType.getId().equals(p.getPartListTypeId()))
 				.toList();

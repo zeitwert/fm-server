@@ -27,11 +27,10 @@ public interface PartRepository<A extends Aggregate, P extends Part<A>> {
 	/**
 	 * Create a new Part instance
 	 * 
-	 * @param aggregate    the aggregate
 	 * @param parent       the parent part
 	 * @param partListType the part list type
 	 */
-	P create(A aggregate, Part<?> parent, CodePartListType partListType);
+	P create(Part<?> parent, CodePartListType partListType);
 
 	/**
 	 * Load all the Parts for an Aggregate, regardless of whether they are directly
@@ -52,14 +51,12 @@ public interface PartRepository<A extends Aggregate, P extends Part<A>> {
 	List<P> getPartList(A aggregate, CodePartListType partListType);
 
 	/**
-	 * Get the Parts which are directly attached to the given parent Part within the
-	 * Aggregate.
+	 * Get the Parts which are directly attached to the given parent Part.
 	 * 
-	 * @param aggregate    the aggregate
 	 * @param parent       the parent part
 	 * @param partListType the part list type
 	 */
-	List<P> getPartList(A aggregate, Part<?> parent, CodePartListType partListType);
+	List<P> getPartList(Part<?> parent, CodePartListType partListType);
 
 	/**
 	 * Store the parts of the given Aggregate (create/update/delete)
