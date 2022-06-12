@@ -86,12 +86,12 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public Optional<ObjAccount> getByKey(SessionInfo sessionInfo, String key) {
-		ObjAccountVRecord hhRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
+		ObjAccountVRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
 				Tables.OBJ_ACCOUNT_V.INTL_KEY.eq(key));
-		if (hhRecord == null) {
+		if (accountRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(sessionInfo, hhRecord.getId()));
+		return Optional.of(this.get(sessionInfo, accountRecord.getId()));
 	}
 
 	@Override

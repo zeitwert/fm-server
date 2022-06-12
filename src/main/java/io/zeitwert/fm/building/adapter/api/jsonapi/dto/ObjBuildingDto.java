@@ -53,13 +53,13 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
-			ObjAccount hh = null;
+			ObjAccount account = null;
 			if (this.getOriginal() != null) {
-				hh = this.getOriginal().getAccount();
+				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				hh = this.getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
+				account = this.getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
 			}
-			this.accountDto = ObjAccountDto.fromObj(hh, this.sessionInfo);
+			this.accountDto = ObjAccountDto.fromObj(account, this.sessionInfo);
 		}
 		return this.accountDto;
 	}

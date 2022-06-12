@@ -33,7 +33,7 @@ import java.util.Optional;
 @ActiveProfiles("test")
 public class BuildingTest {
 
-	private static final String HH_KEY = "##test##building";
+	private static final String ACCT_KEY = "##test##building";
 
 	@Autowired
 	private SessionInfo sessionInfo;
@@ -50,7 +50,7 @@ public class BuildingTest {
 		assertTrue(buildingRepository != null, "buildingRepository not null");
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
-		ObjAccount hh = this.getOrCreateTestHoushold(sessionInfo);
+		ObjAccount account = this.getOrCreateTestAccount(sessionInfo);
 		ObjBuilding building1a = buildingRepository.create(sessionInfo);
 
 		assertNotNull(building1a, "test not null");
@@ -63,7 +63,7 @@ public class BuildingTest {
 		assertNotNull(building1a.getMeta().getCreatedByUser(), "createdByUser not null");
 		assertNotNull(building1a.getMeta().getCreatedAt(), "createdAt not null");
 
-		building1a.setAccountId(hh.getId());
+		building1a.setAccountId(account.getId());
 		this.initBuilding(building1a);
 
 		assertEquals(building1a.getElementCount(), 0, "element count 0");
@@ -152,18 +152,17 @@ public class BuildingTest {
 
 	}
 
-	private ObjAccount getOrCreateTestHoushold(SessionInfo sessionInfo) {
-		Optional<ObjAccount> maybeHH = this.accountRepository.getByKey(sessionInfo, HH_KEY);
-		if (maybeHH.isPresent()) {
-			return maybeHH.get();
+	private ObjAccount getOrCreateTestAccount(SessionInfo sessionInfo) {
+		Optional<ObjAccount> maybeAccount = this.accountRepository.getByKey(sessionInfo, ACCT_KEY);
+		if (maybeAccount.isPresent()) {
+			return maybeAccount.get();
 		}
-		ObjAccount hh = this.accountRepository.create(sessionInfo);
-		hh.setName("Building Test Account");
-		// hh.setIntlKey(HH_KEY;
-		hh.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
-		hh.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
-		this.accountRepository.store(hh);
-		return this.accountRepository.get(sessionInfo, hh.getId());
+		ObjAccount account = this.accountRepository.create(sessionInfo);
+		account.setName("Building Test Account");
+		account.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
+		account.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
+		this.accountRepository.store(account);
+		return this.accountRepository.get(sessionInfo, account.getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

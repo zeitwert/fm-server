@@ -44,7 +44,8 @@ public class ApplicationController {
 		ObjTenant tenant = user.getTenant();
 		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(sessionInfo, tenant);
 		List<EnumeratedDto> accountsDto = accounts.stream()
-				.map(hh -> EnumeratedDto.builder().id(hh.getId().toString()).name(hh.getName()).build()).toList();
+				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
+				.toList();
 		//@formatter:off
 		return ResponseEntity.ok(
 			UserInfoResponse.builder()
