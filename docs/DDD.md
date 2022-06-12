@@ -21,13 +21,7 @@ sequenceDiagram
 	ER-->>OR: doCreate(..., new extnRecord)
 	OR-->>AR: newAggregate(..., new objRecord, extnRecord)
 	AR->>A: doInit(id, tenant) [technical init]
-	AR->>ARS: doInitParts() [technical init of part repos]
-	ARS-->>AR: doInitParts()
-	AR-->>PR: init()
-	AR-->>OR: doInitParts()
-	OR-->>PR: init()
-	OR-->>ER: doInitParts()
-	ER-->>PR: init()
+	AR->>PR: init() [technical init of part repos]
 	AR->>A: calcAll()
 	AR->>-ARS: doAfterCreate()
 	ARS->>A: doAfterCreate() [business init]
@@ -51,16 +45,16 @@ sequenceDiagram
 	ARS-->>ER: doLoad(sessionInfo, id): A
 	ER-->>OR: doLoad(sessionInfo, fetch extnRecord)
 	OR-->>AR: newAggregate(sessionInfo, fetch objRecord, extnRecord)
-	AR->>ARS: doLoadParts() [load and assign parts]
+	AR->>ARS: doLoadParts() [load parts]
 	ARS-->>AR: doLoadParts()
-	AR-->>PR: load() + loadXyzList() [load from db, assign to memory list]
+	AR-->>PR: load() [load from db]
 	PR-->>PRS: doLoad()
-	AR-->>OR: doLoadParts()
-	OR-->>PR: load() + loadXyzList()
-	PR-->>PRS: doLoad()
-	OR-->>ER: doLoadParts()
-	ER-->>PR: load() + loadXyzList()
-	PR-->>PRS: doLoad()
+	AR->>ARS: doAssignParts() [assign parts]
+	ARS-->>AR: doAssignParts()
+	AR-->>OR: doAssignParts()
+	OR-->>A: loadXyzList()
+	OR-->>ER: doAssignParts()
+	ER-->>A: loadXyzList()
 	AR->>A: calcVolatile()
 	AR->>-ARS: doAfterLoad()
 	ARS->>A: doAfterLoad() [business init]
@@ -127,10 +121,9 @@ sequenceDiagram
 ```
 
 todo
-- rename all callbacks to doXyz
-- PartRepositorySPI.doInitParts
 - PartRepositorySPI.doAfterCreate
 - Part calcAll, calcVolatile
+- PartRepositorySPI.doInitParts
 
 ## get
 

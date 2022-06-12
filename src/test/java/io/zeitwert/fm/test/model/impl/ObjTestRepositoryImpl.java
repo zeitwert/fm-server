@@ -8,7 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -88,19 +88,12 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	@Override
 	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
 		if (testRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
 		return this.doLoad(sessionInfo, objId, testRecord);
-	}
-
-	@Override
-	public void doLoadParts(ObjTest obj) {
-		super.doLoadParts(obj);
-		((ObjTestBase) obj).loadAreaSet(this.getItemRepository().getPartList(obj, this.getAreaSetType()));
-		((ObjTestBase) obj).loadNodeList(this.getNodeRepository().getPartList(obj, this.getNodeListType()));
 	}
 
 	@Override

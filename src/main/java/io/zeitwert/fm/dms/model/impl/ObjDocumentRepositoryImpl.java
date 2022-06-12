@@ -13,7 +13,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -90,18 +90,13 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public ObjDocument doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjDocumentRecord documentRecord = this.getDSLContext().fetchOne(Tables.OBJ_DOCUMENT,
 				Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId));
 		if (documentRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
 		return this.doLoad(sessionInfo, objId, documentRecord);
-	}
-
-	@Override
-	public void doLoadParts(ObjDocument obj) {
-		super.doLoadParts(obj);
 	}
 
 	@Override

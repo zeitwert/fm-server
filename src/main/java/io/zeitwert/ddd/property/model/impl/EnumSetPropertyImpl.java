@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.util.Assert;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> implements EnumSetProperty<E> {
 
@@ -48,7 +48,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 
 	@Override
 	public void addItem(E item) {
-		Assert.isTrue(item != null, "item not null");
+		assertThis(item != null, "item not null");
 		if (!this.hasItem(item)) {
 			EntityPartItem part = this.getEntity().addItem(this, this.partListType);
 			part.setItemId(item.getId());
@@ -74,7 +74,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 
 	@Override
 	public void removeItem(E item) {
-		Assert.isTrue(item != null, "item not null");
+		assertThis(item != null, "item not null");
 		if (this.hasItem(item)) {
 			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(item.getId())).findAny().get();
 			((PartSPI<?>) part).delete();

@@ -50,9 +50,4 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		return this.dbRecord.getValue(ObjUserFields.PICTURE);
 	}
 
-	@Override
-	public void doCalcAll() {
-
-	}
-
 }

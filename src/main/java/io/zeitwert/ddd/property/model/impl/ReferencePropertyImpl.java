@@ -10,7 +10,8 @@ import java.util.Objects;
 
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceProperty<A> {
 
@@ -38,11 +39,11 @@ public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> 
 
 	@Override
 	public void setId(Integer id) {
-		Assert.isTrue(this.isWritable(), "writable");
+		assertThis(this.isWritable(), "writable");
 		if (Objects.equals(this.getId(), id)) {
 			return;
 		}
-		Assert.isTrue(this.isValidAggregateId(id),
+		assertThis(this.isValidAggregateId(id),
 				"valid aggregate id [" + this.repository.getAggregateType().getId() + ": " + id + "]");
 		this.dbRecord.setValue(this.field, id);
 		this.getEntity().afterSet(this);

@@ -1,11 +1,11 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.obj.model.FMObjRepository;
 
-public interface ObjBuildingRepository extends ObjRepository<ObjBuilding, ObjBuildingVRecord> {
+public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjBuildingVRecord> {
 
 	ObjBuildingPartElementRepository getElementRepository();
 

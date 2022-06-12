@@ -3,6 +3,7 @@ package io.zeitwert.fm.contact.model.base;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.jooq.UpdatableRecord;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
+import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
@@ -70,6 +72,20 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjContactFields.OBJ_ID, objId);
 	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjContactPartAddressRepository addressRepo = this.getRepository().getAddressRepository();
+		this.loadAddressList(addressRepo.getPartList(this, this.getRepository().getAddressListType()));
+	}
+
+	protected abstract void loadAddressList(Collection<ObjContactPartAddress> addresses);
+
+	// void loadAddressList(List<ObjContactPartAddress> addresses) {
+	// this.addressList.clear();
+	// addresses.forEach(t -> this.addAddress(t));
+	// }
 
 	@Override
 	public void doStore() {
@@ -150,13 +166,9 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		this.removeAddress(addressId);
 	}
 
-	public void loadAddressList(List<ObjContactPartAddress> addresses) {
-		this.addressList.clear();
-		addresses.forEach(t -> this.addAddress(t));
-	}
-
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 

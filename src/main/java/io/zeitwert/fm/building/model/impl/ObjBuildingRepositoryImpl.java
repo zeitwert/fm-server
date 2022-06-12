@@ -8,7 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
@@ -127,20 +127,13 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	@Override
 	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer buildingId) {
-		require(buildingId != null, "objId not null");
+		requireThis(buildingId != null, "objId not null");
 		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
 				Tables.OBJ_BUILDING.OBJ_ID.eq(buildingId));
 		if (buildingRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + buildingId + "]");
 		}
 		return this.doLoad(sessionInfo, buildingId, buildingRecord);
-	}
-
-	@Override
-	public void doLoadParts(ObjBuilding building) {
-		super.doLoadParts(building);
-		((ObjBuildingBase) building)
-				.loadElementList(this.getElementRepository().getPartList(building, this.getElementListType()));
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
@@ -17,20 +17,20 @@ public class PartCache<A extends Aggregate, P extends Part<A>> {
 	private final Map<A, List<P>> cache = new ConcurrentHashMap<>();
 
 	public boolean isInitialised(A aggregate) {
-		require(aggregate != null, "aggregate not null");
+		requireThis(aggregate != null, "aggregate not null");
 		return this.cache.containsKey(aggregate);
 	}
 
 	public void initParts(A aggregate) {
-		require(aggregate != null, "aggregate not null");
-		require(!this.isInitialised(aggregate), this.getClass().getName() + ": aggregate not yet initialised");
+		requireThis(aggregate != null, "aggregate not null");
+		requireThis(!this.isInitialised(aggregate), this.getClass().getName() + ": aggregate not yet initialised");
 		this.cache.put(aggregate, new ArrayList<>());
 		assertThis(this.isInitialised(aggregate), this.getClass().getName() + ": aggregate initialised");
 	}
 
 	public List<P> getParts(A aggregate) {
-		require(aggregate != null, "aggregate not null");
-		require(this.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
+		requireThis(aggregate != null, "aggregate not null");
+		requireThis(this.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
 		return this.cache.get(aggregate);
 	}
 
@@ -40,7 +40,7 @@ public class PartCache<A extends Aggregate, P extends Part<A>> {
 
 	public void addPart(P part) {
 		A aggregate = part.getMeta().getAggregate();
-		require(this.isInitialised(aggregate),
+		requireThis(this.isInitialised(aggregate),
 				this.getClass().getSimpleName() + ": aggregate " + aggregate.getId() + " initialised");
 		this.cache.get(aggregate).add(part);
 	}

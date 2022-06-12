@@ -17,7 +17,8 @@ import org.jooq.SortField;
 import org.jooq.SortOrder;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.crnk.core.queryspec.Direction;
@@ -59,7 +60,7 @@ public class SqlUtils {
 		} else if (value.getClass() == String.class) {
 			return Integer.valueOf((String) value);
 		}
-		Assert.isTrue(false, "cannot convert to integer " + value + " (" + value.getClass() + ")");
+		assertThis(false, "cannot convert to integer " + value + " (" + value.getClass() + ")");
 		return null;
 	}
 
@@ -89,7 +90,7 @@ public class SqlUtils {
 			if (filter.getOperator() == CustomFilters.IN || filter.getOperator() == FilterOperator.EQ) {
 				return field.in((Collection<Integer>) filter.getValue());
 			}
-			Assert.isTrue(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+			assertThis(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		} else {
 			Integer value = SqlUtils.toInteger(filter.getValue());
 			if (filter.getOperator() == FilterOperator.EQ) {
@@ -114,7 +115,7 @@ public class SqlUtils {
 				return field.le(value);
 			}
 		}
-		Assert.isTrue(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+		assertThis(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		return DSL.falseCondition();
 	}
 
@@ -153,7 +154,7 @@ public class SqlUtils {
 			return DSL.lower(field).like(value.replace("*", "%"));
 		}
 
-		Assert.isTrue(false, "unsupported string filter operator " + filter.getOperator());
+		assertThis(false, "unsupported string filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -162,7 +163,7 @@ public class SqlUtils {
 		if (filter.getOperator() == FilterOperator.EQ) {
 			return field.eq(value);
 		}
-		Assert.isTrue(false, "unsupported boolean filter operator " + filter.getOperator());
+		assertThis(false, "unsupported boolean filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -179,7 +180,7 @@ public class SqlUtils {
 		} else if (filter.getOperator() == FilterOperator.LE) {
 			return field.le(value);
 		}
-		Assert.isTrue(false, "unsupported local date time filter operator " + filter.getOperator());
+		assertThis(false, "unsupported local date time filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -197,7 +198,7 @@ public class SqlUtils {
 		} else if (filter.getOperator() == FilterOperator.LE) {
 			return field.le(value);
 		}
-		Assert.isTrue(false, "unsupported offset date time filter operator " + filter.getOperator());
+		assertThis(false, "unsupported offset date time filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -208,7 +209,7 @@ public class SqlUtils {
 			return SqlUtils.searchFilter(dslContext, idField, filter);
 		} else {
 			Field<?> field = table.field(fieldName);
-			Assert.isTrue(field != null, "unknown field " + fieldName);
+			assertThis(field != null, "unknown field " + fieldName);
 			if (field.getType() == Integer.class) {
 				return SqlUtils.integerFilter((Field<Integer>) field, filter);
 			} else if (field.getType() == String.class) {
@@ -220,7 +221,7 @@ public class SqlUtils {
 			} else if (field.getType() == OffsetDateTime.class) {
 				return SqlUtils.offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
 			} else {
-				Assert.isTrue(false, "unsupported field type " + fieldName + ": " + field.getType());
+				assertThis(false, "unsupported field type " + fieldName + ": " + field.getType());
 			}
 		}
 		return DSL.falseCondition();

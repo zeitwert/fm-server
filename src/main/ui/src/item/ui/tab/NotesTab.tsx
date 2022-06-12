@@ -1,7 +1,7 @@
 
 import { AggregateStore, DateFormat, ItemPartNote, ItemPartNotePayload, session } from "@zeitwert/ui-model";
 import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
-import { computed, makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import { getSnapshot } from "mobx-state-tree";
 import React, { FC } from "react";
@@ -9,6 +9,8 @@ import ReactMarkdown from "react-markdown";
 
 interface NotesTabProps {
 	store: AggregateStore;
+	item: ItemWithNotes;
+	notes: ItemPartNote[];
 }
 
 @observer
@@ -22,99 +24,96 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 	}
 
 	render() {
-		const item = this.props.store.item! as unknown as ItemWithNotes;
+		const notes = this.props.notes;
+		toJS(notes); // necessary to trigger re-render after update :-(
 		return (
 			<div className="slds-is-relative fa-height-100">
-				{this.renderNoteList(item)}
-			</div>
-		);
-	}
-
-	private renderNoteList(item: ItemWithNotes) {
-		return (
-			<div className="slds-m-around_medium">
-				<div className="slds-feed">
-					<ul className="slds-feed__list">
-						{
-							!item.notes.length &&
-							<li className="slds-feed__item" key="note-0">
-								<div>Keine Notizen</div>
-								<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
-							</li>
-						}
-						{
-							item.notes.map((note, index) => (
-								<li className="slds-feed__item" key={"note-" + note.id}>
-									{
-										this.editNoteId === note.id &&
-										<NoteEditor
-											note={getSnapshot(note)}
-											onCancel={this.cancelNoteEditor}
-											onOk={(note) => { this.modifyNote(this.editNoteId!, note); }}
-										/>
-									}
-									{
-										(!this.editNoteId || (this.editNoteId !== note.id)) &&
-										<Note
-											note={note}
-											onEdit={(note) => { this.editNoteId = note.id }}
-											onChangeVisibility={(note) => { this.toggleVisibility(note) }}
-											onDelete={(note) => this.removeNote(note.id)}
-										/>
-									}
+				<div className="slds-m-around_medium">
+					<div className="slds-feed">
+						<ul className="slds-feed__list">
+							{
+								!notes.length &&
+								<li className="slds-feed__item" key="note-0">
+									<div>Keine Notizen</div>
 									<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
 								</li>
-							))
-						}
-						<li className="slds-feed__item" key="note-add">
-							<NoteEditor
-								isNew={true}
-								onCancel={this.cancelNoteEditor}
-								onOk={(note) => this.addNote(note)}
-							/>
-						</li>
-					</ul>
+							}
+							{
+								notes.map((note, index) => (
+									<li className="slds-feed__item" key={"note-" + note.id}>
+										{
+											this.editNoteId === note.id &&
+											<NoteEditor
+												note={getSnapshot(note)}
+												onCancel={this.cancelNoteEditor}
+												onOk={(note) => { this.modifyNote(this.editNoteId!, note); }}
+											/>
+										}
+										{
+											(!this.editNoteId || (this.editNoteId !== note.id)) &&
+											<Note
+												note={note}
+												onEdit={(note) => { this.editNoteId = note.id }}
+												onChangeVisibility={(note) => { this.toggleVisibility(note) }}
+												onDelete={(note) => this.removeNote(note.id)}
+											/>
+										}
+										<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
+									</li>
+								))
+							}
+							<li className="slds-feed__item" key="note-add">
+								{
+									!this.editNoteId &&
+									<NoteEditor
+										isNew={true}
+										onCancel={this.cancelNoteEditor}
+										onOk={(note) => this.addNote(note)}
+									/>
+								}
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		);
 	}
 
-	private cancelNoteEditor(): void {
+	private cancelNoteEditor = (): void => {
 		this.editNoteId = undefined;
 	}
 
-	private addNote(note: ItemPartNotePayload): void {
-		console.log("addNote", note);
-		if (!this.props.store.inTrx) {
-			this.props.store.startTrx();
+	private addNote = (note: ItemPartNotePayload): void => {
+		const { store, item } = this.props;
+		if (!store.inTrx) {
+			store.startTrx();
 		}
-		const item = this.props.store.item! as unknown as ItemWithNotes;
 		item!.addNote(note);
 		this.editNoteId = undefined;
 	}
 
-	private modifyNote(id: string, note: ItemPartNotePayload): void {
-		console.log("modifyNote", note);
-		if (!this.props.store.inTrx) {
-			this.props.store.startTrx();
+	private modifyNote = (id: string, note: ItemPartNotePayload): void => {
+		const { store, item } = this.props;
+		if (!store.inTrx) {
+			store.startTrx();
 		}
-		const item = this.props.store.item! as unknown as ItemWithNotes;
 		item!.modifyNote(id, note);
 		this.editNoteId = undefined;
 	}
 
-	private toggleVisibility(note: ItemPartNote): void {
-		if (!this.props.store.inTrx) {
-			this.props.store.startTrx();
+	private toggleVisibility = (note: ItemPartNote): void => {
+		const { store } = this.props;
+		if (!store.inTrx) {
+			store.startTrx();
 		}
 		note.setPrivate(!note.isPrivate);
 	}
 
-	private removeNote(id: string): void {
-		if (!this.props.store.inTrx) {
-			this.props.store.startTrx();
+	private removeNote = (id: string): void => {
+		const { store, item } = this.props;
+		if (!store.inTrx) {
+			store.startTrx();
 		}
-		const item = this.props.store.item! as unknown as ItemWithNotes;
 		item!.removeNote(id);
 	}
 
@@ -130,14 +129,15 @@ interface NoteProps {
 
 const Note: FC<NoteProps> = (props) => {
 	const note = props.note;
-	const userName = note.createdByUser?.caption;
+	const userName = note.modifiedByUser?.caption || note.createdByUser?.caption;
+	const userPicture = note.modifiedByUser?.picture || note.createdByUser?.picture || "/assets/images/avatar1.jpg";
 	const time = DateFormat.relativeTime(new Date(), (note.modifiedAt || note.createdAt)!);
 	return (
 		<article className="slds-post">
 			<header className="slds-post__header slds-media">
 				<div className="slds-media__figure">
 					<a href="/#" className="slds-avatar slds-avatar_circle slds-avatar_medium">
-						<img alt={userName} src={note.createdByUser?.picture || "/assets/images/avatar1.jpg"} title={userName} />
+						<img alt={userName} src={userPicture} title={userName} />
 					</a>
 				</div>
 				<div className="slds-media__body">

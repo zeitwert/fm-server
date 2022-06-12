@@ -10,7 +10,8 @@ import java.util.Objects;
 
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class EnumPropertyImpl<E extends Enumerated> extends PropertyBase<E> implements EnumProperty<E> {
 
@@ -39,11 +40,11 @@ public class EnumPropertyImpl<E extends Enumerated> extends PropertyBase<E> impl
 
 	@Override
 	public void setValue(E value) {
-		Assert.isTrue(this.isWritable(), "writable");
+		assertThis(this.isWritable(), "writable");
 		if (Objects.equals(this.getValue(), value)) {
 			return;
 		}
-		Assert.isTrue(this.isValidEnum(value),
+		assertThis(this.isValidEnum(value),
 				"valid enumeration item [" + this.enumeration.getId() + ": " + value.getId() + "]");
 		this.dbRecord.setValue(this.field, value != null ? value.getId() : null);
 		this.getEntity().afterSet(this);

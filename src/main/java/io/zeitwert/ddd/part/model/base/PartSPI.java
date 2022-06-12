@@ -33,6 +33,11 @@ public interface PartSPI<A extends Aggregate> {
 	void doAfterCreate();
 
 	/**
+	 * Assign Parts to Part lists after Load
+	 */
+	void doAssignParts();
+
+	/**
 	 * Do some work after load.
 	 */
 	public void doAfterLoad();

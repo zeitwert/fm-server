@@ -53,10 +53,4 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 		return this.noteListType;
 	}
 
-	@Override
-	public void doLoadParts(O doc) {
-		super.doLoadParts(doc);
-		((FMDocBase) doc).loadNoteList(this.getNoteRepository().getPartList(doc, this.getNoteListType()));
-	}
-
 }

@@ -2,11 +2,12 @@
 package io.zeitwert.ddd.doc.model.base;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
+
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
@@ -21,9 +22,13 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.PartListProperty;
+import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
@@ -47,8 +52,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	protected final SimpleProperty<Boolean> isInWork;
 	protected final ReferenceProperty<ObjUser> assigneeId;
 
-	private final List<DocPartTransition> transitionList = new ArrayList<>();
-	// private final List<ItemPartNoteImpl> notes = new ArrayList<>();
+	private final PartListProperty<DocPartTransition> transitionList;
 
 	protected DocBase(SessionInfo sessionInfo, DocRepository<? extends Doc, ? extends Record> repository,
 			UpdatableRecord<?> docDbRecord) {
@@ -68,6 +72,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.caseStage = this.addEnumProperty(docDbRecord, DocFields.CASE_STAGE_ID, CodeCaseStageEnum.class);
 		this.isInWork = this.addSimpleProperty(docDbRecord, DocFields.IS_IN_WORK);
 		this.assigneeId = this.addReferenceProperty(docDbRecord, DocFields.ASSIGNEE_ID, ObjUser.class);
+		this.transitionList = this.addPartListProperty(repository.getTransitionListType());
 	}
 
 	@Override
@@ -99,6 +104,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doInit(Integer docId, Integer tenantId) {
+		super.doInit(docId, tenantId);
 		this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
 		this.id.setValue(docId);
 		this.tenant.setId(tenantId);
@@ -115,14 +121,25 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doAfterCreate() {
+		super.doAfterCreate();
 		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
 		this.createdAt.setValue(OffsetDateTime.now());
+		this.transitionList.addPart();
 	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		DocPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
+		this.loadTransitionList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+	}
+
+	protected abstract void loadTransitionList(Collection<DocPartTransition> transitionList);
 
 	@Override
 	public void doBeforeStore() {
 		super.doBeforeStore();
-		this.addTransition();
+		this.transitionList.addPart();
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = getDocDbRecord();
@@ -132,46 +149,29 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doStore() {
+		super.doStore();
 		getDocDbRecord().store();
 	}
 
 	@Override
 	public void setCaseStage(CodeCaseStage caseStage) {
-		require(caseStage != null && !caseStage.getIsAbstract(), "valid caseStage");
+		requireThis(caseStage != null && !caseStage.getIsAbstract(), "valid caseStage");
 		this.caseStage.setValue(caseStage);
 	}
 
 	@Override
-	public List<DocPartTransition> getTransitionList() {
-		return List.copyOf(this.transitionList);
-	}
-
-	private void addTransition(DocPartTransition transition) {
-		this.transitionList.add(transition);
-	}
-
-	void addTransition() {
-		DocPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
-		DocPartTransition transition = transitionRepo.create(this,
-				this.getAppContext().getPartListType(DocFields.TRANSITION_LIST));
-		this.addTransition(transition);
-	}
-
-	void loadTransitionList(List<DocPartTransition> transitions) {
-		this.transitionList.clear();
-		transitions.forEach(t -> this.addTransition(t));
-	}
-
 	@SuppressWarnings("unchecked")
-	public <D extends Doc> D getInstance() {
-		return (D) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId());
-	}
-
-	private Class<? extends Doc> getInstanceClass() {
+	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+		if (property == this.transitionList) {
+			return (P) this.getRepository().getTransitionRepository().create(this, partListType);
+		}
 		return null;
 	}
 
-	protected void doCalcAll() {
-	}
+	// @Override
+	// public DocPartItem addItem(Property<?> property, CodePartListType
+	// partListType) {
+	// return this.getRepository().getItemRepository().create(this, partListType);
+	// }
 
 }

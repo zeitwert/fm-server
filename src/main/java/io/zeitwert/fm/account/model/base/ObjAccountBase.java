@@ -20,6 +20,7 @@ import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.ddd.common.model.enums.CodeCurrency;
 import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -62,8 +63,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		return (ObjAccountRepository) super.getRepository();
 	}
 
-	public abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
-
 	@Override
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
@@ -71,14 +70,23 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	@Override
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		return super.addPart(property, partListType);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.loadAreaSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
 	}
+
+	abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
 
 	@Override
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+		return super.addPart(property, partListType);
 	}
 
 	@Override
@@ -91,6 +99,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 

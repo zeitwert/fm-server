@@ -5,10 +5,12 @@ import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
+import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.common.model.enums.CodeCountry;
 import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -64,14 +66,30 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 		return (ObjTestRepository) super.getRepository();
 	}
 
-	public abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
-
-	public abstract void loadNodeList(Collection<ObjTestPartNode> nodeList);
-
 	@Override
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjTestFields.OBJ_ID, objId);
+	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.loadAreaSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
+		this.loadNodeList(nodeRepo.getPartList(this, this.getRepository().getNodeListType()));
+
+	}
+
+	protected abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
+
+	protected abstract void loadNodeList(Collection<ObjTestPartNode> nodeList);
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		this.dbRecord.store();
 	}
 
 	@Override
@@ -81,12 +99,6 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 			return (P) this.getRepository().getNodeRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -101,6 +113,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 

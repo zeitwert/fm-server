@@ -18,9 +18,9 @@ import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.Assert;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
@@ -52,12 +52,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
-	private boolean didDoInitParts = false;
 	private boolean didAfterCreate = false;
-	private boolean didDoLoadParts = false;
 	private boolean didAfterLoad = false;
 	private boolean didBeforeStore = false;
-	private boolean didDoStoreParts = false;
 	private boolean didAfterStore = false;
 
 	//@formatter:off
@@ -127,18 +124,19 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		Integer aggregateId = this.nextAggregateId();
 		A aggregate = this.doCreate(sessionInfo);
 
+		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
 		((AggregateSPI) aggregate).doInit(aggregateId, sessionInfo.getTenant().getId());
+		assertThis(((AggregateBase) aggregate).doInitSeqNr > doInitSeqNr,
+				aggregate.getClass().getSimpleName() + ": doInit was propagated");
 
-		this.didDoInitParts = false;
 		this.doInitParts(aggregate);
-		Assert.isTrue(this.didDoInitParts, this.getClass().getSimpleName() + ": doInitParts was called");
 
 		((AggregateSPI) aggregate).calcAll();
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 
 		this.didAfterCreate = false;
 		this.doAfterCreate(aggregate);
-		Assert.isTrue(this.didAfterCreate, this.getClass().getSimpleName() + ": doAfterCreate was called");
+		assertThis(this.didAfterCreate, this.getClass().getSimpleName() + ": doAfterCreate was propagated");
 
 		return aggregate;
 	}
@@ -148,7 +146,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	@Override
 	public final void doInitParts(A aggregate) {
-		this.didDoInitParts = true;
 		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
 			partRepo.init(aggregate);
 		}
@@ -157,29 +154,36 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void doAfterCreate(A aggregate) {
 		this.didAfterCreate = true;
+		Integer doAfterCreateSeqNr = ((AggregateBase) aggregate).doAfterCreateSeqNr;
 		((AggregateSPI) aggregate).doAfterCreate();
+		assertThis(((AggregateBase) aggregate).doAfterCreateSeqNr > doAfterCreateSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAfterCreate was propagated");
 	}
 
 	@Override
 	public final A get(SessionInfo sessionInfo, Integer id) {
 
-		require(id != null, "id not null");
+		requireThis(id != null, "id not null");
 		if (this.aggregateCache.hasItem(sessionInfo, id)) {
 			return this.aggregateCache.getItem(sessionInfo, id);
 		}
 
 		A aggregate = this.doLoad(sessionInfo, id);
 
-		this.didDoLoadParts = false;
+		this.doInitParts(aggregate);
 		this.doLoadParts(aggregate);
-		Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
+
+		Integer doAssignPartsSeqNr = ((AggregateBase) aggregate).doAssignPartsSeqNr;
+		((AggregateSPI) aggregate).doAssignParts();
+		assertThis(((AggregateBase) aggregate).doAssignPartsSeqNr > doAssignPartsSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAssignParts was propagated");
 
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 		((AggregateSPI) aggregate).calcVolatile();
 
 		this.didAfterLoad = false;
 		this.doAfterLoad(aggregate);
-		Assert.isTrue(this.didAfterLoad, this.getClass().getSimpleName() + ": doAfterLoad was called");
+		assertThis(this.didAfterLoad, this.getClass().getSimpleName() + ": doAfterLoad was propagated");
 
 		return aggregate;
 	}
@@ -188,8 +192,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract A doLoad(SessionInfo sessionInfo, Integer id);
 
 	@Override
-	public void doLoadParts(A aggregate) {
-		this.didDoLoadParts = true;
+	public final void doLoadParts(A aggregate) {
 		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
 			partRepo.load(aggregate);
 		}
@@ -198,7 +201,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void doAfterLoad(A aggregate) {
 		this.didAfterLoad = true;
+		Integer doAfterLoadSeqNr = ((AggregateBase) aggregate).doAfterLoadSeqNr;
 		((AggregateSPI) aggregate).doAfterLoad();
+		assertThis(((AggregateBase) aggregate).doAfterLoadSeqNr > doAfterLoadSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAfterLoad was propagated");
 	}
 
 	@Override
@@ -206,29 +212,32 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 		this.didBeforeStore = false;
 		this.doBeforeStore(aggregate);
-		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": doBeforeStore was called");
+		assertThis(this.didBeforeStore, this.getClass().getSimpleName() + ": doBeforeStore was propagated");
 
+		Integer doStoreSeqNr = ((AggregateBase) aggregate).doStoreSeqNr;
 		((AggregateSPI) aggregate).doStore();
+		assertThis(((AggregateBase) aggregate).doStoreSeqNr > doStoreSeqNr,
+				aggregate.getClass().getSimpleName() + ": doStore was propagated");
 
-		this.didDoStoreParts = false;
 		this.doStoreParts(aggregate);
-		Assert.isTrue(this.didDoStoreParts, this.getClass().getSimpleName() + ": doStoreParts was called");
 
 		this.didAfterStore = false;
 		this.doAfterStore(aggregate);
-		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": doAfterStore was called");
+		assertThis(this.didAfterStore, this.getClass().getSimpleName() + ": doAfterStore was propagated");
 
 	}
 
 	@Override
 	public void doBeforeStore(A aggregate) {
 		this.didBeforeStore = true;
+		Integer doBeforeStoreSeqNr = ((AggregateBase) aggregate).doBeforeStoreSeqNr;
 		((AggregateSPI) aggregate).doBeforeStore();
+		assertThis(((AggregateBase) aggregate).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
+				aggregate.getClass().getSimpleName() + ": doBeforeStore was propagated");
 	}
 
 	@Override
 	public final void doStoreParts(A aggregate) {
-		this.didDoStoreParts = true;
 		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
 			partRepo.store(aggregate);
 		}
@@ -237,7 +246,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public void doAfterStore(A aggregate) {
 		this.didAfterStore = true;
+		Integer doAfterStoreSeqNr = ((AggregateBase) aggregate).doAfterStoreSeqNr;
 		((AggregateSPI) aggregate).doAfterStore();
+		assertThis(((AggregateBase) aggregate).doAfterStoreSeqNr > doAfterStoreSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAfterStore was propagated");
+
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
 	}

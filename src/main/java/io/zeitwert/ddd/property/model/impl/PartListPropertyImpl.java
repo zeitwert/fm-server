@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.util.Assert;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> implements PartListProperty<P> {
 
@@ -56,14 +56,14 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	public P getPart(Integer seqNr) {
-		Assert.isTrue(0 <= seqNr && seqNr < this.getPartCount(), "valid seqNr (" + seqNr + ")");
+		assertThis(0 <= seqNr && seqNr < this.getPartCount(), "valid seqNr (" + seqNr + ")");
 		return this.partList.get(seqNr);
 	}
 
 	public P getPartById(Integer partId) {
-		Assert.isTrue(partId != null, "valid partId");
+		assertThis(partId != null, "valid partId");
 		Optional<P> part = this.partList.stream().filter(p -> partId.equals(p.getId())).findAny();
-		Assert.isTrue(part.isPresent(), "part with id " + partId + " must exist");
+		assertThis(part.isPresent(), "part with id " + partId + " must exist");
 		return part.get();
 	}
 

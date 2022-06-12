@@ -95,6 +95,7 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 

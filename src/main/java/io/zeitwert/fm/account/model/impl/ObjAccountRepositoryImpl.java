@@ -9,7 +9,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -75,19 +75,13 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public ObjAccount doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjAccountRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT,
 				Tables.OBJ_ACCOUNT.OBJ_ID.eq(objId));
 		if (accountRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
 		return this.doLoad(sessionInfo, objId, accountRecord);
-	}
-
-	@Override
-	public void doLoadParts(ObjAccount obj) {
-		super.doLoadParts(obj);
-		((ObjAccountBase) obj).loadAreaSet(this.getItemRepository().getPartList(obj, this.getAreaSetType()));
 	}
 
 	@Override

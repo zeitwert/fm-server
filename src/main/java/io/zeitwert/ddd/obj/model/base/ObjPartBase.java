@@ -18,6 +18,7 @@ public abstract class ObjPartBase<O extends Obj> extends PartBase<O> implements 
 
 	@Override
 	public final void doInit(Integer partId, O obj, Part<?> parent, CodePartListType partListType) {
+		super.doInit(partId, obj, parent, partListType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord();
 		if (partId != null) {
 			dbRecord.setValue(ObjPartFields.ID, partId);

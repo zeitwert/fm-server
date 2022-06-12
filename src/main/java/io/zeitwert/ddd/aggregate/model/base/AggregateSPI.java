@@ -13,44 +13,49 @@ public interface AggregateSPI {
 	 * @param aggregateId aggregate id
 	 * @param tenantId    tenant id
 	 */
-	public void doInit(Integer aggregateId, Integer tenantId);
+	void doInit(Integer aggregateId, Integer tenantId);
 
 	/**
 	 * Do some work after create, f.ex. fire events, add transition etc.
 	 */
-	public void doAfterCreate();
+	void doAfterCreate();
+
+	/**
+	 * Assign Parts to Aggregate lists after Load
+	 */
+	void doAssignParts();
 
 	/**
 	 * Do some work after load.
 	 */
-	public void doAfterLoad();
+	void doAfterLoad();
 
 	/**
 	 * Calculate all the derived fields, typically after a field change.
 	 */
-	public void calcAll();
+	void calcAll();
 
 	/**
 	 * Calculate all the volatile derived fields, i.e. fields that are not saved to
 	 * the database. This is triggered after loading the aggregate from the
 	 * database.
 	 */
-	public void calcVolatile();
+	void calcVolatile();
 
 	/**
 	 * Prepare for storage, f.ex. assign seqNr to parts.
 	 */
-	public void doBeforeStore();
+	void doBeforeStore();
 
 	/**
 	 * Store the database record(s) (of the Aggregate only). The Parts will be
 	 * stored from the repository.
 	 */
-	public void doStore();
+	void doStore();
 
 	/**
 	 * Do some work after store.
 	 */
-	public void doAfterStore();
+	void doAfterStore();
 
 }

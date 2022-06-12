@@ -1,7 +1,7 @@
 import { transaction } from "mobx";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { faTypes } from "../../../app/common";
-import { session, UserInfo } from "../../../app/session";
+import { UserInfo } from "../../../app/session";
 import { ItemPartModel } from "../../../ddd/item/model/ItemPartModel";
 
 const MstItemPartNoteModel = ItemPartModel.named("ItemPartNote")
@@ -34,8 +34,6 @@ const MstItemPartNoteModel = ItemPartModel.named("ItemPartNote")
 				self.subject = note.subject;
 				self.content = note.content;
 				self.isPrivate = note.isPrivate;
-				self.modifiedAt = new Date();
-				self.modifiedByUser = session.sessionInfo?.user;
 			});
 		}
 	}));

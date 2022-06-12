@@ -18,6 +18,7 @@ public abstract class DocPartBase<D extends Doc> extends PartBase<D> implements 
 
 	@Override
 	public final void doInit(Integer partId, D doc, Part<?> parent, CodePartListType partListType) {
+		super.doInit(partId, doc, parent, partListType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord();
 		if (partId != null) {
 			dbRecord.setValue(DocPartFields.ID, partId);

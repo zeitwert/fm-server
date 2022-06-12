@@ -4,7 +4,7 @@ import org.springframework.util.Assert;
 
 public class Check {
 
-	public static void require(boolean condition, String message) {
+	public static void requireThis(boolean condition, String message) {
 		Assert.isTrue(condition, "Precondition failed: " + message);
 	}
 

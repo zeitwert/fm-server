@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.util.Assert;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceSetProperty<A> {
 
@@ -47,7 +47,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 
 	@Override
 	public void addItem(Integer aggregateId) {
-		Assert.isTrue(aggregateId != null, "aggregateId not null");
+		assertThis(aggregateId != null, "aggregateId not null");
 		if (!this.hasItem(aggregateId)) {
 			EntityPartItem part = (EntityPartItem) this.getEntity().addItem(this, this.partListType);
 			part.setItemId(aggregateId.toString());
@@ -73,7 +73,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 
 	@Override
 	public void removeItem(Integer aggregateId) {
-		Assert.isTrue(aggregateId != null, "aggregateId not null");
+		assertThis(aggregateId != null, "aggregateId not null");
 		if (this.hasItem(aggregateId)) {
 			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(aggregateId.toString())).findAny()
 					.get();

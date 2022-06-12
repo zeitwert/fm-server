@@ -18,8 +18,9 @@ public abstract class ObjPartItemBase extends ObjPartBase<Obj> implements ObjPar
 	}
 
 	@Override
-	// since we have a combined primary key, parentPartId must be "null"
 	public void doAfterCreate() {
+		super.doAfterCreate();
+		// for combined primary key parentPartId cannot be "null" on database
 		if (this.getParentPartId() == null) {
 			((ObjPartItemRecord) this.getDbRecord()).setParentPartId(0);
 		}

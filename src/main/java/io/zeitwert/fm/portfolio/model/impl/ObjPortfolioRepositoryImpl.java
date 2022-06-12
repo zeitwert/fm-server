@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -127,22 +127,13 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 
 	@Override
 	public ObjPortfolio doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjPortfolioRecord portfolioRecord = this.getDSLContext().fetchOne(Tables.OBJ_PORTFOLIO,
 				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));
 		if (portfolioRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
 		return this.doLoad(sessionInfo, objId, portfolioRecord);
-	}
-
-	@Override
-	public void doLoadParts(ObjPortfolio obj) {
-		super.doLoadParts(obj);
-		ObjPortfolioBase pfBase = (ObjPortfolioBase) obj;
-		pfBase.loadIncludeSet(this.getItemRepository().getPartList(obj, this.getIncludeSetType()));
-		pfBase.loadExcludeSet(this.getItemRepository().getPartList(obj, this.getExcludeSetType()));
-		pfBase.loadBuildingSet(this.getItemRepository().getPartList(obj, this.getBuildingSetType()));
 	}
 
 	@Override

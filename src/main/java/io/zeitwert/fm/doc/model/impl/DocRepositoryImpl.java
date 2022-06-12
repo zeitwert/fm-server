@@ -7,7 +7,8 @@ import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.doc.model.DocRepository;
@@ -56,7 +57,7 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 
 	@Override
 	public DocBase doCreate(SessionInfo sessionInfo) {
-		Assert.isTrue(false, "cannot create a doc");
+		assertThis(false, "cannot create a doc");
 		return null;
 	}
 
@@ -76,11 +77,11 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 
 	@Override
 	public void changeOwner(List<Doc> docs, ObjUser user) {
-		docs.stream().forEach((doc) -> {
-			Doc instance = ((DocBase) doc).getInstance();
-			instance.setOwner(user);
-			this.store(instance);
-		});
+		// docs.stream().forEach((doc) -> {
+		// Doc instance = ((DocBase) doc).getInstance();
+		// instance.setOwner(user);
+		// this.store(instance);
+		// });
 	}
 
 	// @Override

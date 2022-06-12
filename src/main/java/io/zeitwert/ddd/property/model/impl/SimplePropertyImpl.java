@@ -8,7 +8,8 @@ import java.util.Objects;
 
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class SimplePropertyImpl<T> extends PropertyBase<T> implements SimpleProperty<T> {
 
@@ -33,7 +34,7 @@ public class SimplePropertyImpl<T> extends PropertyBase<T> implements SimpleProp
 
 	@Override
 	public void setValue(T value) {
-		Assert.isTrue(this.isWritable(), "writable");
+		assertThis(this.isWritable(), "writable");
 		if (Objects.equals(this.getValue(), value)) {
 			return;
 		}

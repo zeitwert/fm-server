@@ -75,6 +75,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 

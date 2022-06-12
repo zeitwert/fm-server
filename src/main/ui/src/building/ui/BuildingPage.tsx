@@ -122,7 +122,11 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={"Notizen"}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
-									<NotesTab store={this.buildingStore} />
+									<NotesTab
+										store={this.buildingStore}
+										item={this.buildingStore.building!}
+										notes={this.buildingStore.building!.notes}
+									/>
 								}
 							</TabsPanel>
 							{

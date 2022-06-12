@@ -17,12 +17,13 @@ public abstract class ItemPartBase<A extends Aggregate> extends PartBase<A> impl
 	}
 
 	@Override
-	public final void doInit(Integer partId, A obj, Part<?> parent, CodePartListType partListType) {
+	public final void doInit(Integer partId, A aggregate, Part<?> parent, CodePartListType partListType) {
+		super.doInit(partId, aggregate, parent, partListType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord();
 		if (partId != null) {
 			dbRecord.setValue(ItemPartFields.ID, partId);
 		}
-		dbRecord.setValue(ItemPartFields.ITEM_ID, obj.getId());
+		dbRecord.setValue(ItemPartFields.ITEM_ID, aggregate.getId());
 		dbRecord.setValue(ItemPartFields.PARENT_PART_ID, parent != null ? parent.getId() : null);
 		dbRecord.setValue(ItemPartFields.PART_LIST_TYPE_ID, partListType.getId());
 	}

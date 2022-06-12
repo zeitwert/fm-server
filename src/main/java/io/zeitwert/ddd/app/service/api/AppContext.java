@@ -12,7 +12,8 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.crnk.core.boot.CrnkBoot;
 import io.crnk.core.engine.registry.ResourceRegistry;
@@ -98,13 +99,13 @@ public final class AppContext {
 
 	public CodeAggregateType getAggregateType(String aggregateTypeId) {
 		CodeAggregateType aggregateType = this.enums.getEnumeration(CodeAggregateTypeEnum.class).getItem(aggregateTypeId);
-		Assert.isTrue(aggregateType != null, "found aggregateType " + aggregateTypeId);
+		assertThis(aggregateType != null, "found aggregateType " + aggregateTypeId);
 		return aggregateType;
 	}
 
 	public CodePartListType getPartListType(String partListTypeId) {
 		CodePartListType partListType = this.enums.getEnumeration(CodePartListTypeEnum.class).getItem(partListTypeId);
-		Assert.isTrue(partListType != null, "found partListType " + partListTypeId);
+		assertThis(partListType != null, "found partListType " + partListTypeId);
 		return partListType;
 	}
 

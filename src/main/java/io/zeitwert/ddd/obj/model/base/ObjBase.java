@@ -7,16 +7,14 @@ import java.util.Collection;
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
+import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.service.api.ObjService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
@@ -34,7 +32,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	private final SessionInfo sessionInfo;
 	private final ObjRepository<? extends Obj, ? extends Record> repository;
 	private final UpdatableRecord<?> objDbRecord;
-	private final CodeAggregateTypeEnum aggregateTypeEnum;
 
 	protected final SimpleProperty<Integer> id;
 	protected final ReferenceProperty<ObjTenant> tenant;
@@ -56,7 +53,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.sessionInfo = sessionInfo;
 		this.repository = repository;
 		this.objDbRecord = objDbRecord;
-		this.aggregateTypeEnum = AppContext.getInstance().getEnumeration(CodeAggregateTypeEnum.class);
 		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
 		this.tenant = this.addReferenceProperty(objDbRecord, ObjFields.TENANT_ID, ObjTenant.class);
 		this.owner = this.addReferenceProperty(objDbRecord, ObjFields.OWNER_ID, ObjUser.class);
@@ -100,6 +96,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@Override
 	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.objTypeId.setValue(this.getRepository().getAggregateType().getId());
 		this.id.setValue(objId);
 		this.tenant.setId(tenantId);
@@ -107,16 +104,32 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@Override
 	public void doAfterCreate() {
+		super.doAfterCreate();
 		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
 		this.createdAt.setValue(OffsetDateTime.now());
 	}
 
 	@Override
-	public void doStore() {
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
+		this.loadTransitionList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+	}
+
+	protected abstract void loadTransitionList(Collection<ObjPartTransition> transitionList);
+
+	@Override
+	public void doBeforeStore() {
+		super.doBeforeStore();
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
 		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(ObjFields.MODIFIED_AT, OffsetDateTime.now());
-		dbRecord.store();
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		getObjDbRecord().store();
 	}
 
 	@Override
@@ -131,26 +144,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public ObjPartItem addItem(Property<?> property, CodePartListType partListType) {
 		return this.getRepository().getItemRepository().create(this, partListType);
-	}
-
-	public abstract void loadTransitionList(Collection<ObjPartTransition> nodeList);
-
-	// TODO get rid
-	private Class<? extends Obj> getInstanceClass() {
-		if (this.getAggregateType() == aggregateTypeEnum.getItem("obj_contact")) {
-			return ObjContact.class;
-		} else if (this.getAggregateType() == aggregateTypeEnum.getItem("obj_account")) {
-			return ObjAccount.class;
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public <O extends Obj> O getInstance() {
-		return (O) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId());
-	}
-
-	protected void doCalcAll() {
 	}
 
 }

@@ -80,24 +80,12 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		((DocBase) doc).doInitWorkflow(caseDefId, defaultCaseStage);
 	}
 
-	@Override
-	public void doAfterCreate(D doc) {
-		super.doAfterCreate(doc);
-		((DocBase) doc).addTransition();
-	}
-
 	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
 		return newAggregate(sessionInfo, docRecord, extnRecord);
-	}
-
-	@Override
-	public void doLoadParts(D doc) {
-		super.doLoadParts(doc);
-		((DocBase) doc).loadTransitionList(this.getTransitionRepository().getPartList(doc, this.getTransitionListType()));
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -58,12 +59,6 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		return (ObjPortfolioRepository) super.getRepository();
 	}
 
-	public abstract void loadIncludeSet(Collection<ObjPartItem> includedSet);
-
-	public abstract void loadExcludeSet(Collection<ObjPartItem> excludedSet);
-
-	public abstract void loadBuildingSet(Collection<ObjPartItem> buildingSet);
-
 	@Override
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
@@ -71,8 +66,12 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		return super.addPart(property, partListType);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.loadIncludeSet(itemRepo.getPartList(this, this.getRepository().getIncludeSetType()));
+		this.loadExcludeSet(itemRepo.getPartList(this, this.getRepository().getExcludeSetType()));
+		this.loadBuildingSet(itemRepo.getPartList(this, this.getRepository().getBuildingSetType()));
 	}
 
 	@Override
@@ -82,7 +81,13 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
+	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+		return super.addPart(property, partListType);
+	}
+
+	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 		this.calcBuildingSet();
 	}
@@ -120,5 +125,11 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());
 	}
+
+	abstract void loadIncludeSet(Collection<ObjPartItem> includedSet);
+
+	abstract void loadExcludeSet(Collection<ObjPartItem> excludedSet);
+
+	abstract void loadBuildingSet(Collection<ObjPartItem> buildingSet);
 
 }

@@ -34,7 +34,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.springframework.util.Assert;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 @Data()
 @NoArgsConstructor
@@ -167,7 +167,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 		this.elements.forEach(elementDto -> {
 			ObjBuildingPartElement element = null;
 			if (elementDto.getId() == null) {
-				Assert.isTrue(elementDto.getBuildingPart() != null, "valid buildingPart");
+				assertThis(elementDto.getBuildingPart() != null, "valid buildingPart");
 				element = obj.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
 			} else {
 				element = obj.getElementById(elementDto.getId());

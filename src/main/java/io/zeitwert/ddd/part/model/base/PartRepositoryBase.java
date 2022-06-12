@@ -7,9 +7,9 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.Assert;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
@@ -31,8 +31,6 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	private final Class<?>[] paramTypeList;
 
 	private final PartCache<A, P> partCache = new PartCache<>();
-
-	private boolean didDoInit = false;
 
 	//@formatter:off
 	protected PartRepositoryBase(
@@ -94,15 +92,26 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public final P create(A aggregate, Part<?> parent, CodePartListType partListType) {
+
 		P p = this.doCreate(aggregate);
-		Assert.isTrue(p != null, "part created");
-		this.didDoInit = false;
-		this.doInit(p, this.hasPartId() ? this.nextPartId() : null, aggregate, parent, partListType);
-		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
-		Assert.isTrue(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
+		assertThis(p != null, "part created");
+
+		Integer partId = this.hasPartId() ? this.nextPartId() : null;
+		Integer doInitSeqNr = ((PartBase<?>) p).doInitSeqNr;
+		((PartSPI<A>) p).doInit(partId, aggregate, parent, partListType);
+		assertThis(((PartBase<?>) p).doInitSeqNr > doInitSeqNr, p.getClass().getSimpleName() + ": doInit was propagated");
+		assertThis(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
+
+		// ((PartSPI<A>) p).calcAll();
 		this.partCache.addPart(p);
-		this.doAfterCreate(p);
+
+		Integer doAfterCreateSeqNr = ((PartBase<?>) p).doAfterCreateSeqNr;
+		((PartSPI<A>) p).doAfterCreate();
+		assertThis(((PartBase<?>) p).doAfterCreateSeqNr > doAfterCreateSeqNr,
+				p.getClass().getSimpleName() + ": doAfterCreate was propagated");
+
 		return p;
 	}
 
@@ -110,21 +119,21 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	public abstract P doCreate(A aggregate);
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void doInit(P p, Integer partId, A aggregate, Part<?> parent, CodePartListType partListType) {
-		this.didDoInit = true;
-		((PartSPI<A>) p).doInit(partId, aggregate, parent, partListType);
-	}
-
-	@SuppressWarnings("unchecked")
-	public final void doAfterCreate(P p) {
-		((PartSPI<A>) p).doAfterCreate();
-	}
-
-	@Override
 	public final void load(A aggregate) {
-		this.partCache.initParts(aggregate);
-		this.doLoad(aggregate).forEach(p -> this.partCache.addPart(p));
+		List<P> parts = this.doLoad(aggregate);
+		parts.forEach(p -> this.partCache.addPart(p));
+		for (P part : parts) {
+			Integer doAssignPartsSeqNr = ((PartBase<?>) part).doAssignPartsSeqNr;
+			((PartSPI<?>) part).doAssignParts();
+			assertThis(((PartBase<?>) part).doAssignPartsSeqNr > doAssignPartsSeqNr,
+					part.getClass().getSimpleName() + ": doAssignParts was propagated");
+		}
+		for (P part : parts) {
+			Integer doAfterLoadSeqNr = ((PartBase<?>) part).doAfterLoadSeqNr;
+			((PartSPI<?>) part).doAfterLoad();
+			assertThis(((PartBase<?>) part).doAfterLoadSeqNr > doAfterLoadSeqNr,
+					part.getClass().getSimpleName() + ": doAfterLoad was propagated");
+		}
 	}
 
 	@Override
@@ -147,11 +156,29 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		return part.getParentPartId() == null || part.getParentPartId() == 0;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public final void store(A aggregate) {
-		require(this.partCache.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
-		for (P part : this.partCache.getParts(aggregate)) {
+		requireThis(this.partCache.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
+		List<P> allParts = this.partCache.getParts(aggregate);
+		List<P> activeParts = allParts.stream().filter(p -> p.getMeta().getStatus() != PartStatus.DELETED).toList();
+		for (P part : activeParts) {
+			Integer doBeforeStoreSeqNr = ((PartBase<?>) part).doBeforeStoreSeqNr;
+			((PartSPI<A>) part).doBeforeStore();
+			assertThis(((PartBase<?>) part).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
+					part.getClass().getSimpleName() + ": doBeforeStore was propagated");
+		}
+		for (P part : allParts) {
+			Integer doStoreSeqNr = ((PartBase<?>) part).doStoreSeqNr;
 			((PartSPI<A>) part).doStore();
+			assertThis(((PartBase<?>) part).doStoreSeqNr > doStoreSeqNr,
+					part.getClass().getSimpleName() + ": doStore was propagated");
+		}
+		for (P part : activeParts) {
+			Integer doAfterStoreSeqNr = ((PartBase<?>) part).doAfterStoreSeqNr;
+			((PartSPI<A>) part).doAfterStore();
+			assertThis(((PartBase<?>) part).doAfterStoreSeqNr > doAfterStoreSeqNr,
+					part.getClass().getSimpleName() + ": doAfterStore was propagated");
 		}
 	}
 

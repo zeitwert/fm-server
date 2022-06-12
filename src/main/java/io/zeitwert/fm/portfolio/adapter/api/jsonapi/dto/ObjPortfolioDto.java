@@ -4,7 +4,6 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.jsonwebtoken.lang.Assert;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
@@ -27,6 +26,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 @Data()
 @NoArgsConstructor
@@ -87,7 +88,7 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 				Integer id = Integer.parseInt(item.getId());
 				Obj obj = objRepository.get(sessionInfo, id);
 				CodeAggregateType objType = obj.getMeta().getAggregateType();
-				Assert.isTrue(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
+				assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 				pf.addInclude(id);
 			});
 		}
@@ -97,7 +98,7 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 				Integer id = Integer.parseInt(item.getId());
 				Obj obj = objRepository.get(sessionInfo, id);
 				CodeAggregateType objType = obj.getMeta().getAggregateType();
-				Assert.isTrue(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
+				assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 				pf.addExclude(id);
 			});
 		}

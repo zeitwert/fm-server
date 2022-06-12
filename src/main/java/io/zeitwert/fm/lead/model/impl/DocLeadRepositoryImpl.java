@@ -8,7 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.doc.model.DocPartNoteRepository;
@@ -65,20 +65,12 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 
 	@Override
 	public DocLead doLoad(SessionInfo sessionInfo, Integer docId) {
-		require(docId != null, "docId not null");
+		requireThis(docId != null, "docId not null");
 		DocLeadRecord leadRecord = this.getDSLContext().fetchOne(Tables.DOC_LEAD, Tables.DOC_LEAD.DOC_ID.eq(docId));
 		if (leadRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
 		return this.doLoad(sessionInfo, docId, leadRecord);
-	}
-
-	@Override
-	public void doLoadParts(DocLead doc) {
-		super.doLoadParts(doc);
-		// Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.getDSLContext(),
-		// doc.getId(), "", CodeAreaEnum.class);
-		// ((DocLeadBase) doc).loadAreaSet(areaSet);
 	}
 
 	@Override

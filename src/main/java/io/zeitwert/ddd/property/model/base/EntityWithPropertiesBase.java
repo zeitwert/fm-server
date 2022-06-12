@@ -29,16 +29,13 @@ import java.util.Map;
 
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 public abstract class EntityWithPropertiesBase implements EntityWithProperties, EntityWithPropertiesSPI {
 
 	private Map<String, Property<?>> propertyMap = new HashMap<>();
 	private List<Property<?>> propertyList = new ArrayList<>();
-
-	protected void require(boolean condition, String message) {
-		Assert.isTrue(condition, "Precondition failed: " + message);
-	}
 
 	@Override
 	public boolean hasProperty(String name) {
@@ -73,7 +70,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	protected void addProperty(Property<?> property) {
-		require(!this.hasProperty(property.getName()), "property [" + property.getName() + "] is unique");
+		requireThis(!this.hasProperty(property.getName()), "property [" + property.getName() + "] is unique");
 		this.propertyMap.put(property.getName(), property);
 		this.propertyList.add(property);
 	}
@@ -102,7 +99,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(CodePartListType partListType,
 			Class<? extends Enumeration<E>> enumClass) {
-		require(partListType != null, "partListType not null");
+		requireThis(partListType != null, "partListType not null");
 		final Enumeration<E> enumeration = this.getMeta().getAppContext().getEnumeration(enumClass);
 		final EnumSetProperty<E> property = new EnumSetPropertyImpl<E>(this, partListType, enumeration);
 		this.addProperty(property);
@@ -111,7 +108,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <T extends Aggregate> ReferenceSetProperty<T> addReferenceSetProperty(CodePartListType partListType,
 			Class<T> aggregateClass) {
-		require(partListType != null, "partListType not null");
+		requireThis(partListType != null, "partListType not null");
 		final AggregateRepository<T, ?> repository = this.getMeta().getAppContext().getRepository(aggregateClass);
 		final ReferenceSetProperty<T> property = new ReferenceSetPropertyImpl<T>(this, partListType, repository);
 		this.addProperty(property);
@@ -119,7 +116,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	protected <P extends Part<?>> PartListProperty<P> addPartListProperty(CodePartListType partListType) {
-		require(partListType != null, "partListType not null");
+		requireThis(partListType != null, "partListType not null");
 		final PartListProperty<P> property = new PartListPropertyImpl<P>(this, partListType);
 		this.addProperty(property);
 		return property;

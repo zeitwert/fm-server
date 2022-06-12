@@ -8,7 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.require;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.contact.model.ObjContact;
@@ -95,19 +95,13 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 
 	@Override
 	public ObjContact doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjContactRecord contactRecord = this.getDSLContext().fetchOne(Tables.OBJ_CONTACT,
 				Tables.OBJ_CONTACT.OBJ_ID.eq(objId));
 		if (contactRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
 		return this.doLoad(sessionInfo, objId, contactRecord);
-	}
-
-	@Override
-	public void doLoadParts(ObjContact obj) {
-		super.doLoadParts(obj);
-		((ObjContactBase) obj).loadAddressList(this.getAddressRepository().getPartList(obj, this.getAddressListType()));
 	}
 
 	@Override

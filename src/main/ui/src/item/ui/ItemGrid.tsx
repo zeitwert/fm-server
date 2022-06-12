@@ -105,7 +105,12 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 						{
 							!hideNotes &&
 							<TabsPanel label={"Notizen (" + item.notes.length + ")"}>
-								{this.activeTabId === TAB.NOTES && <NotesTab store={store} />}
+								{this.activeTabId === TAB.NOTES &&
+									<NotesTab
+										store={store}
+										item={store.item! as unknown as ItemWithNotes}
+										notes={[]}
+									/>}
 							</TabsPanel>
 						}
 						{

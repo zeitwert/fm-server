@@ -90,12 +90,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	@Override
-	public void doLoadParts(O obj) {
-		super.doLoadParts(obj);
-		((ObjBase) obj).loadTransitionList(this.getTransitionRepository().getPartList(obj, this.getTransitionListType()));
-	}
-
-	@Override
 	public void doAfterStore(O obj) {
 		super.doAfterStore(obj);
 	}

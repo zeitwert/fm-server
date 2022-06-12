@@ -12,6 +12,7 @@ import io.zeitwert.fm.item.model.ItemPartNote;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
 import io.zeitwert.fm.obj.model.ObjPartNote;
+import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 
 import java.util.Collection;
 
@@ -28,7 +29,20 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 		this.noteList = this.addPartListProperty(((FMObjRepository<?, ?>) this.getRepository()).getNoteListType());
 	}
 
-	public abstract void loadNoteList(Collection<ItemPartNote<Obj>> nodeList);
+	@Override
+	@SuppressWarnings("unchecked")
+	public FMObjRepository<? extends FMObj, ? extends Record> getRepository() {
+		return (FMObjRepository<? extends FMObj, ? extends Record>) super.getRepository();
+	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartNoteRepository noteRepo = this.getRepository().getNoteRepository();
+		this.loadNoteList(noteRepo.getPartList(this, this.getRepository().getNoteListType()));
+	}
+
+	protected abstract void loadNoteList(Collection<ItemPartNote<Obj>> nodeList);
 
 	@Override
 	@SuppressWarnings("unchecked")
