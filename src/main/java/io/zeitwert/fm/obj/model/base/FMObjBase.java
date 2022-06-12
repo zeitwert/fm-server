@@ -8,13 +8,10 @@ import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.item.model.ItemPartNote;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
 import io.zeitwert.fm.obj.model.ObjPartNote;
 import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
-
-import java.util.Collection;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
@@ -39,10 +36,8 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartNoteRepository noteRepo = this.getRepository().getNoteRepository();
-		this.loadNoteList(noteRepo.getPartList(this, this.getRepository().getNoteListType()));
+		this.noteList.loadPartList(noteRepo.getPartList(this, this.getRepository().getNoteListType()));
 	}
-
-	protected abstract void loadNoteList(Collection<ItemPartNote<Obj>> nodeList);
 
 	@Override
 	@SuppressWarnings("unchecked")

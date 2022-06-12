@@ -10,11 +10,8 @@ import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.doc.model.FMDocRepository;
-import io.zeitwert.fm.item.model.ItemPartNote;
 import io.zeitwert.fm.doc.model.DocPartNote;
 import io.zeitwert.fm.doc.model.DocPartNoteRepository;
-
-import java.util.Collection;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
@@ -39,10 +36,8 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 	public void doAssignParts() {
 		super.doAssignParts();
 		DocPartNoteRepository noteRepo = this.getRepository().getNoteRepository();
-		this.loadNoteList(noteRepo.getPartList(this, this.getRepository().getNoteListType()));
+		this.noteList.loadPartList(noteRepo.getPartList(this, this.getRepository().getNoteListType()));
 	}
-
-	protected abstract void loadNoteList(Collection<ItemPartNote<Doc>> nodeList);
 
 	@Override
 	@SuppressWarnings("unchecked")

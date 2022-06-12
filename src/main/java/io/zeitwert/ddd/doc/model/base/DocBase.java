@@ -2,7 +2,6 @@
 package io.zeitwert.ddd.doc.model.base;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
@@ -131,10 +130,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	public void doAssignParts() {
 		super.doAssignParts();
 		DocPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
-		this.loadTransitionList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+		this.transitionList.loadPartList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
 	}
-
-	protected abstract void loadTransitionList(Collection<DocPartTransition> transitionList);
 
 	@Override
 	public void doBeforeStore() {

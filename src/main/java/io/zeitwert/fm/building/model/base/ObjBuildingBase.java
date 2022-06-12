@@ -2,7 +2,6 @@
 package io.zeitwert.fm.building.model.base;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 
 import org.jooq.UpdatableRecord;
 
@@ -168,10 +167,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjBuildingPartElementRepository elementRepo = this.getRepository().getElementRepository();
-		this.loadElementList(elementRepo.getPartList(this, this.getRepository().getElementListType()));
+		this.elementList.loadPartList(elementRepo.getPartList(this, this.getRepository().getElementListType()));
 	}
-
-	protected abstract void loadElementList(Collection<ObjBuildingPartElement> nodeList);
 
 	@Override
 	public void doStore() {

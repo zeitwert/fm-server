@@ -2,7 +2,6 @@
 package io.zeitwert.fm.portfolio.model.base;
 
 import java.security.InvalidParameterException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +18,6 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.Property;
@@ -69,9 +67,9 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.loadIncludeSet(itemRepo.getPartList(this, this.getRepository().getIncludeSetType()));
-		this.loadExcludeSet(itemRepo.getPartList(this, this.getRepository().getExcludeSetType()));
-		this.loadBuildingSet(itemRepo.getPartList(this, this.getRepository().getBuildingSetType()));
+		this.includeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getIncludeSetType()));
+		this.excludeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getExcludeSetType()));
+		this.buildingSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getBuildingSetType()));
 	}
 
 	@Override
@@ -125,11 +123,5 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());
 	}
-
-	abstract void loadIncludeSet(Collection<ObjPartItem> includedSet);
-
-	abstract void loadExcludeSet(Collection<ObjPartItem> excludedSet);
-
-	abstract void loadBuildingSet(Collection<ObjPartItem> buildingSet);
 
 }

@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.account.model.base;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jooq.UpdatableRecord;
@@ -19,7 +18,6 @@ import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.ddd.common.model.enums.CodeCurrency;
 import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -73,10 +71,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.loadAreaSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
 	}
-
-	abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
 
 	@Override
 	public void doStore() {

@@ -2,7 +2,6 @@ package io.zeitwert.ddd.property.model;
 
 import io.zeitwert.ddd.part.model.Part;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface PartListProperty<P extends Part<?>> extends CollectionProperty<P> {
@@ -21,6 +20,6 @@ public interface PartListProperty<P extends Part<?>> extends CollectionProperty<
 
 	void removePart(Integer partId);
 
-	void loadPartList(Collection<Part<?>> partList);
+	void loadPartList(List<? extends Part<?>> partList);
 
 }

@@ -9,7 +9,6 @@ import io.zeitwert.ddd.property.model.base.PropertyBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +78,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadPartList(Collection<Part<?>> partList) {
+	public void loadPartList(List<? extends Part<?>> partList) {
 		this.partList.clear();
 		partList.forEach(p -> this.partList.add((P) p));
 	}

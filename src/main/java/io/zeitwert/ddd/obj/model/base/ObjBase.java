@@ -2,7 +2,6 @@
 package io.zeitwert.ddd.obj.model.base;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
@@ -113,10 +112,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
-		this.loadTransitionList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+		this.transitionList.loadPartList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
 	}
-
-	protected abstract void loadTransitionList(Collection<ObjPartTransition> transitionList);
 
 	@Override
 	public void doBeforeStore() {

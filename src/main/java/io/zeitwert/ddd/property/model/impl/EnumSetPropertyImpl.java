@@ -91,7 +91,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	}
 
 	@Override
-	public void loadEnumSet(Collection<EntityPartItem> partList) {
+	public void loadEnumSet(Collection<? extends EntityPartItem> partList) {
 		this.itemSet.clear();
 		partList.forEach(p -> this.itemSet.add(p));
 	}

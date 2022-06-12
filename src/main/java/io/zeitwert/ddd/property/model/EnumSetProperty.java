@@ -17,6 +17,6 @@ public interface EnumSetProperty<E extends Enumerated> extends CollectionPropert
 
 	void removeItem(E item);
 
-	void loadEnumSet(Collection<EntityPartItem> enums);
+	void loadEnumSet(Collection<? extends EntityPartItem> enums);
 
 }

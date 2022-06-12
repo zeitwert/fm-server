@@ -91,7 +91,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	}
 
 	@Override
-	public void loadReferenceSet(Collection<EntityPartItem> partList) {
+	public void loadReferenceSet(Collection<? extends EntityPartItem> partList) {
 		this.itemSet.clear();
 		partList.forEach(p -> this.itemSet.add(p));
 	}

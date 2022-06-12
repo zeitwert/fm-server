@@ -9,7 +9,6 @@ import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.common.model.enums.CodeCountry;
 import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -23,7 +22,6 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 
 import org.jooq.JSON;
 import org.jooq.UpdatableRecord;
@@ -76,15 +74,11 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.loadAreaSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
 		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
-		this.loadNodeList(nodeRepo.getPartList(this, this.getRepository().getNodeListType()));
+		this.nodeList.loadPartList(nodeRepo.getPartList(this, this.getRepository().getNodeListType()));
 
 	}
-
-	protected abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
-
-	protected abstract void loadNodeList(Collection<ObjTestPartNode> nodeList);
 
 	@Override
 	public void doStore() {
