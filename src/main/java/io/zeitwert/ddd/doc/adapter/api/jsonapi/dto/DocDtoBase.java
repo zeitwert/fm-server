@@ -2,7 +2,6 @@ package io.zeitwert.ddd.doc.adapter.api.jsonapi.dto;
 
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiMetaInformation;
-import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.base.DocFields;
@@ -13,8 +12,6 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -43,11 +40,6 @@ public abstract class DocDtoBase<D extends Doc> {
 	private String caption;
 
 	private ObjUserDto owner;
-
-	@JsonApiRelation
-	public List<DocPartTransitionDto> getTransitions() {
-		return this.original.getMeta().getTransitionList().stream().map(t -> DocPartTransitionDto.fromPart(t)).toList();
-	}
 
 	public void toDoc(D doc) {
 		doc.setOwner(this.getOwner() != null ? userRepository.get(this.getOwner().getId()) : null);

@@ -37,6 +37,7 @@ public class ObjMetaDto implements MetaInformation {
 	private OffsetDateTime modifiedAt;
 	private ObjUserDto closedByUser;
 	private OffsetDateTime closedAt;
+	private List<ObjPartTransitionDto> transitionList;
 	private List<AggregatePartValidationDto> validationList;
 
 	public static ObjMetaDto fromObj(Obj obj, SessionInfo sessionInfo) {
@@ -53,6 +54,7 @@ public class ObjMetaDto implements MetaInformation {
 			.modifiedAt(meta.getModifiedAt())
 			.closedByUser(ObjUserDto.fromObj(meta.getClosedByUser()))
 			.closedAt(meta.getClosedAt())
+			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
 			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on

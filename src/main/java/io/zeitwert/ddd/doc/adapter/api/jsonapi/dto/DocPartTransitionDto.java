@@ -1,27 +1,17 @@
 
 package io.zeitwert.ddd.doc.adapter.api.jsonapi.dto;
 
-import io.crnk.core.resource.annotations.JsonApiId;
-import io.crnk.core.resource.annotations.JsonApiRelation;
-import io.crnk.core.resource.annotations.JsonApiResource;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 import java.time.OffsetDateTime;
 
 @Data
-@SuperBuilder
-@JsonApiResource(type = "docPartTransition", resourcePath = "doc/transitions", nested = true, patchable = false, deletable = false)
+@Builder
 public class DocPartTransitionDto {
-
-	@JsonApiId
-	private DocPartId id;
-
-	@JsonApiRelation(opposite = "transitions")
-	private DocDto doc;
 
 	private Integer seqNr;
 
@@ -36,7 +26,6 @@ public class DocPartTransitionDto {
 	public static DocPartTransitionDto fromPart(DocPartTransition transition) {
 		// @formatter:off
 		return DocPartTransitionDto.builder()
-			.id(new DocPartId(transition.getMeta().getAggregate().getId(), transition.getId()))
 			.seqNr(transition.getSeqNr())
 			.user(ObjUserDto.fromObj(transition.getUser()))
 			.modifiedAt(transition.getModifiedAt())

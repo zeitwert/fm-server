@@ -29,6 +29,7 @@ public class DocMetaDto implements MetaInformation {
 	private OffsetDateTime modifiedAt;
 	private List<CodeCaseStage> caseStages;
 	private List<String> availableActions;
+	private List<DocPartTransitionDto> transitionList;
 	private List<AggregatePartValidationDto> validationList;
 
 	public static DocMetaDto fromDoc(Doc doc, SessionInfo sessionInfo) {
@@ -43,6 +44,7 @@ public class DocMetaDto implements MetaInformation {
 			.createdAt(meta.getCreatedAt())
 			.modifiedByUser(ObjUserDto.fromObj(meta.getModifiedByUser()))
 			.modifiedAt(meta.getModifiedAt())
+			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
 			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
