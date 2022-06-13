@@ -10,16 +10,14 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 
 public abstract class FMObjRepositoryBase<O extends FMObj, V extends Record> extends ObjRepositoryBase<O, V>
 		implements FMObjRepository<O, V> {
 
-	private final ObjPartNoteRepository noteRepository;
-	private final CodePartListType noteListType;
+	final ObjNoteRepository noteRepository;
 
 	//@formatter:off
 	protected FMObjRepositoryBase(
@@ -31,28 +29,16 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends Record> ext
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext, transitionRepository, itemRepository);
 		this.noteRepository = noteRepository;
-		this.noteListType = this.getAppContext().getPartListType(FMObjFields.NOTE_LIST);
 	}
 	//@formatter:on
 
 	@Override
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(this.getNoteRepository());
-	}
-
-	@Override
-	public ObjPartNoteRepository getNoteRepository() {
+	public ObjNoteRepository getNoteRepository() {
 		return this.noteRepository;
-	}
-
-	@Override
-	public CodePartListType getNoteListType() {
-		return this.noteListType;
 	}
 
 }

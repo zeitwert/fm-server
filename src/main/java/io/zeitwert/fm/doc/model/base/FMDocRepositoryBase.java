@@ -9,16 +9,14 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.fm.doc.model.DocPartNoteRepository;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.doc.model.FMDocRepository;
 
 public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> extends DocRepositoryBase<O, V>
 		implements FMDocRepository<O, V> {
 
-	private final DocPartNoteRepository noteRepository;
-	private final CodePartListType noteListType;
+	final ObjNoteRepository noteRepository;
 
 	//@formatter:off
 	protected FMDocRepositoryBase(
@@ -29,28 +27,16 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final DocPartTransitionRepository transitionRepository,
-		final DocPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext, transitionRepository);
-		this.noteListType = this.getAppContext().getPartListType(FMDocFields.NOTE_LIST);
 		this.noteRepository = noteRepository;
 	}
 	//@formatter:on
 
 	@Override
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(this.getNoteRepository());
-	}
-
-	@Override
-	public DocPartNoteRepository getNoteRepository() {
+	public ObjNoteRepository getNoteRepository() {
 		return this.noteRepository;
-	}
-
-	@Override
-	public CodePartListType getNoteListType() {
-		return this.noteListType;
 	}
 
 }

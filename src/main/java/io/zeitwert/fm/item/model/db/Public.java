@@ -4,15 +4,11 @@
 package io.zeitwert.fm.item.model.db;
 
 
-import io.zeitwert.fm.item.model.db.tables.ItemPartNote;
-import io.zeitwert.fm.item.model.db.tables.ItemPartTalkingPoint;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Catalog;
 import org.jooq.Sequence;
-import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
 
@@ -28,16 +24,6 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
-
-    /**
-     * The table <code>public.item_part_note</code>.
-     */
-    public final ItemPartNote ITEM_PART_NOTE = ItemPartNote.ITEM_PART_NOTE;
-
-    /**
-     * The table <code>public.item_part_talking_point</code>.
-     */
-    public final ItemPartTalkingPoint ITEM_PART_TALKING_POINT = ItemPartTalkingPoint.ITEM_PART_TALKING_POINT;
 
     /**
      * No further instances allowed
@@ -56,12 +42,5 @@ public class Public extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.ITEM_PART_ID_SEQ);
-    }
-
-    @Override
-    public final List<Table<?>> getTables() {
-        return Arrays.<Table<?>>asList(
-            ItemPartNote.ITEM_PART_NOTE,
-            ItemPartTalkingPoint.ITEM_PART_TALKING_POINT);
     }
 }

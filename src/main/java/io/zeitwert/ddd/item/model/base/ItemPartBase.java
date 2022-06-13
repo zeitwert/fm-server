@@ -21,11 +21,11 @@ public abstract class ItemPartBase<A extends Aggregate> extends PartBase<A> impl
 		super.doInit(partId, aggregate, parent, partListType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord();
 		if (partId != null) {
-			dbRecord.setValue(ItemPartFields.ID, partId);
+			dbRecord.setValue(ItemFields.ID, partId);
 		}
-		dbRecord.setValue(ItemPartFields.ITEM_ID, aggregate.getId());
-		dbRecord.setValue(ItemPartFields.PARENT_PART_ID, parent != null ? parent.getId() : null);
-		dbRecord.setValue(ItemPartFields.PART_LIST_TYPE_ID, partListType.getId());
+		dbRecord.setValue(ItemFields.ITEM_ID, aggregate.getId());
+		dbRecord.setValue(ItemFields.PARENT_PART_ID, parent != null ? parent.getId() : null);
+		dbRecord.setValue(ItemFields.PART_LIST_TYPE_ID, partListType.getId());
 	}
 
 }

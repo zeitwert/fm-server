@@ -30,35 +30,3 @@ select
 	modified_by_user_id,
 	modified_at
 from doc;
-
-create table item_part_talking_point (
-	id																		integer												not null,
-	item_id																integer												not null, -- references item(id) deferrable initially deferred,
-	parent_part_id												integer,
-	part_list_type_id											varchar(40)										not null references code_part_list_type(id),
-	seq_nr																integer												not null,
-	--
-	page_nr																integer,
-	talking_points												text													not null,
-	--
-	primary key (id)
-);
-
-create table item_part_note (
-	id																		integer												not null,
-	item_id																integer												not null, -- references item(id) deferrable initially deferred,
-	parent_part_id												integer,
-	part_list_type_id											varchar(40)										not null references code_part_list_type(id),
-	seq_nr																integer												not null,
-	--
-	subject																varchar(100),
-	content																text,
-	is_private														boolean,
-	--
-	created_by_user_id										integer,											-- not null references obj_user(obj_id),
-	created_at														timestamp with time zone			default now()::timestamp,
-	modified_by_user_id										integer,											-- references obj_user(obj_id),
-	modified_at														timestamp with time zone,
-	--
-	primary key (id)
-);
