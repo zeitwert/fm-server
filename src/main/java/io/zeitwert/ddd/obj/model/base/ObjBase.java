@@ -130,6 +130,13 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
+	public void delete() {
+		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
+		dbRecord.setValue(ObjFields.CLOSED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
+		dbRecord.setValue(ObjFields.CLOSED_AT, OffsetDateTime.now());
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		if (property == this.transitionList) {

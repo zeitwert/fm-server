@@ -13,4 +13,9 @@ public interface Obj extends Aggregate {
 
 	void setOwner(ObjUser owner);
 
+	/**
+	 * Delete the Obj (i.e. set closed_by_user_id, closed_at)
+	 */
+	void delete();
+
 }

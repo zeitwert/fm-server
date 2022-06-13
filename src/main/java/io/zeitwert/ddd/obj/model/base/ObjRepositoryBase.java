@@ -2,10 +2,15 @@
 package io.zeitwert.ddd.obj.model.base;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 import org.jooq.exception.NoDataFoundException;
 
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.PathSpec;
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -17,6 +22,8 @@ import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
+
+import java.util.List;
 
 public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends AggregateRepositoryBase<O, V>
 		implements ObjRepository<O, V> {
@@ -92,6 +99,18 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	@Override
 	public void doAfterStore(O obj) {
 		super.doAfterStore(obj);
+	}
+
+	@Override
+	public void delete(O obj) {
+		obj.delete();
+		this.store(obj);
+	}
+
+	@Override
+	protected List<V> doFind(SessionInfo sessionInfo, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+		querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
+		return super.doFind(sessionInfo, table, idField, querySpec);
 	}
 
 }
