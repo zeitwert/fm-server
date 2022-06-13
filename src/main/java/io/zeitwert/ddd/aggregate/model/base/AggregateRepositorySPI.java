@@ -94,8 +94,9 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	/**
 	 * Find aggregates (ids) according to given Query
 	 * 
-	 * @param querySpec query
+	 * @param sessionInfo sessionInfo
+	 * @param querySpec   query
 	 */
-	List<V> doFind(QuerySpec querySpec);
+	List<V> doFind(SessionInfo sessionInfo, QuerySpec querySpec);
 
 }

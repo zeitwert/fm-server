@@ -24,13 +24,14 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.fm.obj.model.ObjPartNote;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 import javax.annotation.PostConstruct;
@@ -54,8 +55,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository,
-		final ObjBuildingPartElementRepository elementRepository
+		final ObjBuildingPartElementRepository elementRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjBuildingRepository.class,
@@ -139,9 +140,9 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public void doAfterLoad(ObjBuilding building) {
 		super.doAfterLoad(building);
-		if (building.getNoteCount() == 0) {
+		if (building.getNoteList().size() == 0) {
 			for (int i = 0; i < 8.3 * Math.random(); i++) {
-				ObjPartNote note = building.addNote();
+				ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));
 				note.setSubject("Subject of Note " + (i + 1));
 				note.setContent("Content of Note " + (i + 1));
 				note.setIsPrivate(Math.random() > 0.8);
@@ -158,8 +159,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
+	public List<ObjBuildingVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
 	}
 
 	private void addCoverFoto(ObjBuilding building) {

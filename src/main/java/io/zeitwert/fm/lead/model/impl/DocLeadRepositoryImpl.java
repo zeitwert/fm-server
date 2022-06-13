@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.fm.doc.model.DocPartNoteRepository;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.lead.model.DocLead;
 import io.zeitwert.fm.lead.model.DocLeadRepository;
@@ -37,7 +37,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final DocPartTransitionRepository transitionRepository,
-		final DocPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			DocLeadRepository.class,
@@ -74,8 +74,8 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	}
 
 	@Override
-	public List<DocLeadVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
+	public List<DocLeadVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
 	}
 
 }

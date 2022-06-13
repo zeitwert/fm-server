@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
@@ -19,7 +20,6 @@ import io.zeitwert.fm.contact.model.base.ObjContactFields;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 import javax.annotation.PostConstruct;
@@ -47,8 +47,8 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository,
-		final ObjContactPartAddressRepository addressRepository
+		final ObjContactPartAddressRepository addressRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjContactRepository.class,
@@ -105,8 +105,8 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
-	public List<ObjContactVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
+	public List<ObjContactVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class SqlUtils {
 		} else if (value.getClass() == String.class) {
 			return Integer.valueOf((String) value);
 		}
-		assertThis(false, "cannot convert to integer " + value + " (" + value.getClass() + ")");
+		assertThis(false, value + " (" + value.getClass() + ") is an integer");
 		return null;
 	}
 
@@ -90,7 +91,7 @@ public class SqlUtils {
 			if (filter.getOperator() == CustomFilters.IN || filter.getOperator() == FilterOperator.EQ) {
 				return field.in((Collection<Integer>) filter.getValue());
 			}
-			assertThis(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+			assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		} else {
 			Integer value = SqlUtils.toInteger(filter.getValue());
 			if (filter.getOperator() == FilterOperator.EQ) {
@@ -115,7 +116,7 @@ public class SqlUtils {
 				return field.le(value);
 			}
 		}
-		assertThis(false, "unsupported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+		assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		return DSL.falseCondition();
 	}
 
@@ -154,7 +155,7 @@ public class SqlUtils {
 			return DSL.lower(field).like(value.replace("*", "%"));
 		}
 
-		assertThis(false, "unsupported string filter operator " + filter.getOperator());
+		assertThis(false, "supported string filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -163,14 +164,24 @@ public class SqlUtils {
 		if (filter.getOperator() == FilterOperator.EQ) {
 			return field.eq(value);
 		}
-		assertThis(false, "unsupported boolean filter operator " + filter.getOperator());
+		assertThis(false, "supported boolean filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
 	private static Condition localDateTimeFilter(Field<LocalDateTime> field, FilterSpec filter) {
 		LocalDateTime value = filter.getValue();
 		if (filter.getOperator() == FilterOperator.EQ) {
-			return field.eq(value);
+			if (value != null) {
+				return field.eq(value);
+			} else {
+				return field.isNull();
+			}
+		} else if (filter.getOperator() == FilterOperator.NEQ) {
+			if (value != null) {
+				return field.eq(value).not();
+			} else {
+				return field.isNotNull();
+			}
 		} else if (filter.getOperator() == FilterOperator.GT) {
 			return field.gt(value);
 		} else if (filter.getOperator() == FilterOperator.GE) {
@@ -180,25 +191,36 @@ public class SqlUtils {
 		} else if (filter.getOperator() == FilterOperator.LE) {
 			return field.le(value);
 		}
-		assertThis(false, "unsupported local date time filter operator " + filter.getOperator());
+		assertThis(false, "supported local date time filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
 	private static Condition offsetDateTimeFilter(Field<OffsetDateTime> field, FilterSpec filter) {
-		OffsetDateTime value = ((OffsetDateTime) filter.getValue())
-				.atZoneSameInstant(ZoneId.systemDefault().getRules().getOffset(Instant.now())).toOffsetDateTime();
-		if (filter.getOperator() == FilterOperator.EQ) {
-			return field.eq(value);
-		} else if (filter.getOperator() == FilterOperator.GT) {
-			return field.gt(value);
-		} else if (filter.getOperator() == FilterOperator.GE) {
-			return field.ge(value);
-		} else if (filter.getOperator() == FilterOperator.LT) {
-			return field.lt(value);
-		} else if (filter.getOperator() == FilterOperator.LE) {
-			return field.le(value);
+		OffsetDateTime value = (OffsetDateTime) filter.getValue();
+		if (value == null) {
+			if (filter.getOperator() == FilterOperator.EQ) {
+				return field.isNull();
+			} else if (filter.getOperator() == FilterOperator.NEQ) {
+				return field.isNotNull();
+			}
+		} else {
+			ZoneOffset zoneOffset = ZoneId.systemDefault().getRules().getOffset(Instant.now());
+			value = value.atZoneSameInstant(zoneOffset).toOffsetDateTime();
+			if (filter.getOperator() == FilterOperator.EQ) {
+				return field.eq(value);
+			} else if (filter.getOperator() == FilterOperator.NEQ) {
+				return field.eq(value).not();
+			} else if (filter.getOperator() == FilterOperator.GT) {
+				return field.gt(value);
+			} else if (filter.getOperator() == FilterOperator.GE) {
+				return field.ge(value);
+			} else if (filter.getOperator() == FilterOperator.LT) {
+				return field.lt(value);
+			} else if (filter.getOperator() == FilterOperator.LE) {
+				return field.le(value);
+			}
 		}
-		assertThis(false, "unsupported offset date time filter operator " + filter.getOperator());
+		assertThis(false, "supported offset date time filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -207,23 +229,21 @@ public class SqlUtils {
 		String fieldName = StringUtils.toSnakeCase(SqlUtils.getPath(filter));
 		if (fieldName.equals("search_text")) {
 			return SqlUtils.searchFilter(dslContext, idField, filter);
-		} else {
-			Field<?> field = table.field(fieldName);
-			assertThis(field != null, "unknown field " + fieldName);
-			if (field.getType() == Integer.class) {
-				return SqlUtils.integerFilter((Field<Integer>) field, filter);
-			} else if (field.getType() == String.class) {
-				return SqlUtils.stringFilter((Field<String>) field, filter);
-			} else if (field.getType() == Boolean.class) {
-				return SqlUtils.booleanFilter((Field<Boolean>) field, filter);
-			} else if (field.getType() == LocalDateTime.class) {
-				return SqlUtils.localDateTimeFilter((Field<LocalDateTime>) field, filter);
-			} else if (field.getType() == OffsetDateTime.class) {
-				return SqlUtils.offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
-			} else {
-				assertThis(false, "unsupported field type " + fieldName + ": " + field.getType());
-			}
 		}
+		Field<?> field = table.field(fieldName);
+		assertThis(field != null, "known field " + fieldName);
+		if (field.getType() == Integer.class) {
+			return SqlUtils.integerFilter((Field<Integer>) field, filter);
+		} else if (field.getType() == String.class) {
+			return SqlUtils.stringFilter((Field<String>) field, filter);
+		} else if (field.getType() == Boolean.class) {
+			return SqlUtils.booleanFilter((Field<Boolean>) field, filter);
+		} else if (field.getType() == LocalDateTime.class) {
+			return SqlUtils.localDateTimeFilter((Field<LocalDateTime>) field, filter);
+		} else if (field.getType() == OffsetDateTime.class) {
+			return SqlUtils.offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
+		}
+		assertThis(false, "supported field type " + fieldName + ": " + field.getType());
 		return DSL.falseCondition();
 	}
 

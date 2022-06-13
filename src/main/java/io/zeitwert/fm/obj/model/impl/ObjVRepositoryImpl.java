@@ -70,8 +70,8 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 	}
 
 	@Override
-	public List<ObjRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ, Tables.OBJ.ID, querySpec);
+	public List<ObjRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ, Tables.OBJ.ID, querySpec);
 	}
 
 }

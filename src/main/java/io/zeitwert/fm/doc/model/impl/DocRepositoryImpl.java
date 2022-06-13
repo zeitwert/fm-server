@@ -71,8 +71,8 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	}
 
 	@Override
-	public List<DocRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.DOC, Tables.DOC.ID, querySpec);
+	public List<DocRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.DOC, Tables.DOC.ID, querySpec);
 	}
 
 	@Override

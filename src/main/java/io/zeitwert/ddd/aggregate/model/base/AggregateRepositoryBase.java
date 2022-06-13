@@ -3,7 +3,6 @@ package io.zeitwert.ddd.aggregate.model.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -269,23 +268,24 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 			);
 		}
 		//@formatter:on
-		return this.doFind(querySpec);
+		return this.doFind(sessionInfo, querySpec);
 	}
 
 	@Override
-	public abstract List<V> doFind(QuerySpec querySpec);
+	public abstract List<V> doFind(SessionInfo sessionInfo, QuerySpec querySpec);
 
 	@Override
 	public final List<V> getByForeignKey(SessionInfo sessionInfo, String fkName, Integer targetId) {
 		QuerySpec querySpec = new QuerySpec(Aggregate.class);
-		FilterSpec filterSpec = PathSpec.of(fkName).filter(FilterOperator.EQ, targetId);
-		querySpec.setFilters(Arrays.asList(filterSpec));
-		return this.doFind(querySpec);
+		querySpec.addFilter(PathSpec.of(fkName).filter(FilterOperator.EQ, targetId));
+		return this.doFind(sessionInfo, querySpec);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected final List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected List<V> doFind(SessionInfo sessionInfo, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+
 		Condition whereClause = DSL.noCondition();
+
 		if (querySpec != null) {
 			for (FilterSpec filter : querySpec.getFilters()) {
 				if (filter.getOperator().equals(FilterOperator.OR) && filter.getExpression() != null) {
@@ -316,6 +316,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		recordList = select.orderBy(sortFields).limit(querySpec.getOffset(), querySpec.getLimit()).fetch();
 
 		return recordList;
+
 	}
 
 	@EventListener

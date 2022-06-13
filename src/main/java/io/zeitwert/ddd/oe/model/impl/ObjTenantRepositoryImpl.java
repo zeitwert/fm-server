@@ -83,8 +83,8 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	}
 
 	@Override
-	public List<ObjTenantVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
+	public List<ObjTenantVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}
 
 	@Override

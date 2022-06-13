@@ -16,7 +16,7 @@ import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -44,8 +44,8 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository,
-		final ObjTestPartNodeRepository nodeRepository
+		final ObjTestPartNodeRepository nodeRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjTestRepository.class,
@@ -97,8 +97,8 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public List<ObjTestVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
+	public List<ObjTestVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
 	}
 
 }

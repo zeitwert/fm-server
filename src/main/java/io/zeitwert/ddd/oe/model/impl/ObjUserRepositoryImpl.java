@@ -82,8 +82,8 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	}
 
 	@Override
-	public List<ObjUserVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, querySpec);
+	public List<ObjUserVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, querySpec);
 	}
 
 	@Override
