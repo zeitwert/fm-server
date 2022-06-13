@@ -52,7 +52,7 @@ public class SessionController {
 		Authentication authentication = authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		Integer accountId = loginRequest.getAccountId();
-		String jwt = jwtProvider.getJwt(authentication, accountId);
+		String jwt = jwtProvider.createJwt(authentication, accountId);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
 		//@formatter:off

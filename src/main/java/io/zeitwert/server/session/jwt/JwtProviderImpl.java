@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.zeitwert.ddd.session.model.impl.UserDetailsImpl;
 import io.zeitwert.ddd.session.service.api.JwtProvider;
 
@@ -35,7 +37,7 @@ public class JwtProviderImpl implements JwtProvider {
 	@Value("${zeitwert.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
-	public String getJwt(Authentication authentication, Integer accountId) {
+	public String createJwt(Authentication authentication, Integer accountId) {
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 		//@formatter:off
 		return Jwts.builder()
@@ -55,9 +57,7 @@ public class JwtProviderImpl implements JwtProvider {
 
 	public String getJwtFromHeader(HttpServletRequest request) {
 		String authHeader = request.getHeader("Authorization");
-		if (authHeader == null || !StringUtils.hasText(authHeader)) {
-			return null;
-		} else if (authHeader.startsWith(AUTH_HEADER_PREFIX)) {
+		if (StringUtils.hasText(authHeader) && authHeader.startsWith(AUTH_HEADER_PREFIX)) {
 			return authHeader.substring(AUTH_HEADER_PREFIX.length());
 		}
 		throw new RuntimeException("Authentication error (missing / invalid JWT)");
@@ -82,6 +82,7 @@ public class JwtProviderImpl implements JwtProvider {
 	}
 
 	public Claims getClaims(String token) {
+		requireThis(token != null && token.length() > 0, "valid JWT (" + token + ")");
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 	}
 

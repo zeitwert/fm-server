@@ -30,7 +30,7 @@ public class SessionInfoProvider {
 
 	@Bean
 	@Autowired
-	@RequestScope
+	@RequestScope // cannot do SessionScope, because tenantId or accountId might be switched
 	public SessionInfo getSessionInfo(HttpServletRequest request, DSLContext dslContext,
 			ObjTenantRepository tenantRepository, ObjUserRepository userRepository, ObjAccountRepository accountRepository) {
 
@@ -40,8 +40,14 @@ public class SessionInfoProvider {
 			throw new RuntimeException("Authentication error (missing dslContext)");
 		}
 
-		String authToken = jwtProvider.getJwtFromHeader(request);
-		Claims claims = jwtProvider.getClaims(authToken);
+		String authToken;
+		Claims claims;
+		try {
+			authToken = jwtProvider.getJwtFromHeader(request);
+			claims = jwtProvider.getClaims(authToken);
+		} catch (Exception exception) {
+			throw new RuntimeException("Authentication error (corrupt or missing token)");
+		}
 
 		String userEmail;
 		try {
@@ -63,7 +69,7 @@ public class SessionInfoProvider {
 		try {
 			accountId = (Integer) claims.get(JwtProvider.ACCOUNT_CLAIM);
 		} catch (Exception exception) {
-			throw new RuntimeException("Authentication error (corrupt token, accountId)");
+			throw new RuntimeException("Authentication error (corrupt token, missing accountId)");
 		}
 
 		return new SessionInfo(tenant, user.get(), accountId, CodeLocaleEnum.getLocale("en-US"));
