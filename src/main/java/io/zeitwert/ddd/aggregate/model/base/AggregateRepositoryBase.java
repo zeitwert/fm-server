@@ -257,7 +257,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	@Override
 	public final List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
 		//@formatter:off
-		querySpec.addFilter(PathSpec.of("tenant_id").filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
+		querySpec.addFilter(PathSpec.of(AggregateFields.TENANT_ID.getName()).filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
 		if (this.getAccountIdField() != null && sessionInfo.hasAccount()) {
 			Integer accountId = sessionInfo.getAccountId();
 			querySpec.addFilter(

@@ -19,6 +19,7 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
+import io.zeitwert.fm.account.model.base.ObjAccountFields;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
@@ -65,7 +66,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	protected String getAccountIdField() {
-		return "id";
+		return ObjAccountFields.ID.getName();
 	}
 
 	@Override

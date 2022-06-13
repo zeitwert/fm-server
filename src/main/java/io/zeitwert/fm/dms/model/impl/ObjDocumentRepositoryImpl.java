@@ -80,7 +80,7 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	protected String getAccountIdField() {
-		return "account_id";
+		return null;
 	}
 
 	@Override

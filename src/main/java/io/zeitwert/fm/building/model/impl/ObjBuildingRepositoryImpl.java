@@ -112,7 +112,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	@Override
 	protected String getAccountIdField() {
-		return "account_id";
+		return ObjBuildingFields.ACCOUNT_ID.getName();
 	}
 
 	@Override
