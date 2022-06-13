@@ -137,8 +137,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doBeforeStore() {
-		super.doBeforeStore();
 		this.transitionList.addPart();
+		super.doBeforeStore(); // transition needs to be present for transitionList.seqNr
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = getDocDbRecord();

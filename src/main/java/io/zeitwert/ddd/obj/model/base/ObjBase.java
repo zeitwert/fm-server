@@ -119,7 +119,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@Override
 	public void doBeforeStore() {
-		super.doBeforeStore();
+		this.transitionList.addPart();
+		super.doBeforeStore(); // transition needs to be present for transitionList.seqNr
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
 		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(ObjFields.MODIFIED_AT, OffsetDateTime.now());
