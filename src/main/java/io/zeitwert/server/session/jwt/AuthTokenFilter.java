@@ -2,16 +2,13 @@ package io.zeitwert.server.session.jwt;
 
 import java.io.IOException;
 
-import io.jsonwebtoken.Claims;
-import io.zeitwert.ddd.session.service.api.JwtProvider;
+import io.zeitwert.ddd.session.model.SessionInfo;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,28 +23,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	private UserDetailsService userDetailsService;
 
 	@Autowired
-	private JwtProvider jwtProvider;
-
-	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+	private SessionInfo sessionInfo;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		try {
-			String jwt = jwtProvider.getJwtFromHeader(request);
-			if (jwt != null && jwtProvider.isValidJwt(jwt)) {
-				Claims claims = jwtProvider.getClaims(jwt);
-				String username = claims.getSubject();
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-						userDetails.getAuthorities());
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-			}
-		} catch (Exception e) {
-			logger.error("Cannot set user authentication: {}", e);
-		}
-
+		String username = sessionInfo.getUser().getEmail();
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+				userDetails.getAuthorities());
+		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 		filterChain.doFilter(request, response);
 	}
 
