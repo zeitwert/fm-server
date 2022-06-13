@@ -104,7 +104,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
+		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+		this.owner.setId(sessionUserId);
+		this.createdByUser.setId(sessionUserId);
 		this.createdAt.setValue(OffsetDateTime.now());
 	}
 

@@ -121,7 +121,9 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		this.createdByUser.setId(this.getMeta().getSessionInfo().getUser().getId());
+		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+		this.owner.setId(sessionUserId);
+		this.createdByUser.setId(sessionUserId);
 		this.createdAt.setValue(OffsetDateTime.now());
 		this.transitionList.addPart();
 	}
