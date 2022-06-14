@@ -1,7 +1,7 @@
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;

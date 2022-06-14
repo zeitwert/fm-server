@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.lead.adapter.api.jsonapi.impl;
 
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
 import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.base.FMDocDtoBridge;
@@ -11,7 +11,7 @@ import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
 import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 

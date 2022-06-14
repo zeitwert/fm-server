@@ -12,5 +12,8 @@
 		"org.mockito.Mockito.*",
 		"org.mockito.ArgumentMatchers.*",
 		"org.mockito.Answers.*"
-	]
+	],
+	"search.exclude": {
+		"**/target": true
+	}
 }

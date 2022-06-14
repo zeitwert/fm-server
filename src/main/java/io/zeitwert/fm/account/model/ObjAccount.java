@@ -6,10 +6,10 @@ import java.util.Set;
 
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
-import io.zeitwert.fm.common.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeArea;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.obj.model.FMObj;
-import io.zeitwert.ddd.common.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
 
 public interface ObjAccount extends FMObj {
 

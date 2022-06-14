@@ -2,8 +2,8 @@
 package io.zeitwert.fm.lead.model.base;
 
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.common.model.enums.CodeArea;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
@@ -17,8 +17,8 @@ import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSource;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;

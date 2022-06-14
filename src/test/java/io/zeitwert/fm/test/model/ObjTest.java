@@ -1,8 +1,8 @@
 package io.zeitwert.fm.test.model;
 
-import io.zeitwert.fm.common.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeArea;
 import io.zeitwert.fm.obj.model.FMObj;
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

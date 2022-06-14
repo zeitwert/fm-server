@@ -7,10 +7,10 @@ import org.jooq.UpdatableRecord;
 
 import static io.zeitwert.ddd.util.Check.requireThis;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrency;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;

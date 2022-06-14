@@ -12,6 +12,7 @@ import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
@@ -85,9 +86,9 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		this.dbRecord.store();
 	}
 
-	private ObjContactPartAddress addAddress(boolean isMailAddress) {
+	private ObjContactPartAddress addAddress(CodeAddressChannel addressChannel) {
 		ObjContactPartAddress address = this.addressList.addPart();
-		address.setIsMailAddress(isMailAddress);
+		address.setAddressChannel(addressChannel);
 		return address;
 	}
 
@@ -112,7 +113,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	@Override
 	public ObjContactPartAddress addMailAddress() {
-		return this.addAddress(true);
+		return this.addAddress(null);
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	@Override
 	public ObjContactPartAddress addElectronicAddress() {
-		return this.addAddress(true);
+		return this.addAddress(null);
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class Sequences {
     /**
      * The sequence <code>public.doc_id_seq</code>
      */
-    public static final Sequence<Long> DOC_ID_SEQ = Internal.createSequence("doc_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), 1000000, null, 1000000, null, false, null);
+    public static final Sequence<Long> DOC_ID_SEQ = Internal.createSequence("doc_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), 100000000, null, 100000000, null, false, null);
 
     /**
      * The sequence <code>public.doc_part_id_seq</code>

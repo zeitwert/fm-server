@@ -1,14 +1,14 @@
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.fm.common.model.enums.CodeArea;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;

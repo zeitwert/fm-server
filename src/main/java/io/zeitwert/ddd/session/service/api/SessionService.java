@@ -1,7 +1,7 @@
 
 package io.zeitwert.ddd.session.service.api;
 
-import io.zeitwert.ddd.common.model.enums.CodeLocale;
+import io.zeitwert.fm.account.model.enums.CodeLocale;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 

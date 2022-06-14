@@ -8,8 +8,8 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.app.event.SessionClosedEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.common.model.enums.CodeLocale;
-import io.zeitwert.ddd.common.model.enums.CodeLocaleEnum;
+import io.zeitwert.fm.account.model.enums.CodeLocale;
+import io.zeitwert.fm.account.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.SessionService;

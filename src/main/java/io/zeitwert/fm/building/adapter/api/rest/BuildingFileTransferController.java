@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;

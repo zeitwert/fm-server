@@ -40,7 +40,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/io/crnk/crnk-core/3.4.20210509072026/crnk-core-3.4.20210509072026.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/net/jodah/typetools/0.6.1/typetools-0.6.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/crnk/crnk-setup-spring/3.4.20210509072026/crnk-setup-spring-3.4.20210509072026.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/flywaydb/flyway-core/7.7.3/flyway-core-7.7.3.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/flywaydb/flyway-core/8.5.12/flyway-core-8.5.12.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-jooq/2.5.7/spring-boot-starter-jooq-2.5.7.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-jdbc/2.5.7/spring-boot-starter-jdbc-2.5.7.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3.jar" enabled="true" runInBatchMode="false"/>

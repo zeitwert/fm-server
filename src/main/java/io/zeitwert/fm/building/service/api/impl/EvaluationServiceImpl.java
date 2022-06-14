@@ -1,5 +1,6 @@
 package io.zeitwert.fm.building.service.api.impl;
 
+import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElement;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -13,7 +14,6 @@ import io.zeitwert.fm.building.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.RestorationElement;
-import io.zeitwert.fm.common.service.api.Formatter;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 
 import java.awt.Color;

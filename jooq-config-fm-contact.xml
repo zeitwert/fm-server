@@ -5,15 +5,11 @@
 		<database>
 			<name>org.jooq.meta.postgres.PostgresDatabase</name>
 			<includes>
-				  code_address_type
-				| code_anniversary_notification
-				| code_anniversary_template
-				| code_anniversary_type
-				| code_gender
-				| code_interaction_channel
+				  code_gender
 				| code_salutation
 				| code_title
 				| code_contact.*
+				| code_address.*
 				| obj_contact.*
 			</includes>
 			<excludes></excludes>

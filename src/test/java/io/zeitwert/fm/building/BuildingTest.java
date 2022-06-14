@@ -21,8 +21,8 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.server.Application;
 

@@ -1,7 +1,7 @@
 package io.zeitwert.server.session;
 
 import io.jsonwebtoken.Claims;
-import io.zeitwert.ddd.common.model.enums.CodeLocaleEnum;
+import io.zeitwert.fm.account.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;

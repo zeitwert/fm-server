@@ -2,8 +2,8 @@
 package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;

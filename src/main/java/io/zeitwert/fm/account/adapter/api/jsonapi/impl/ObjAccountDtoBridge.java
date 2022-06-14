@@ -6,9 +6,9 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
