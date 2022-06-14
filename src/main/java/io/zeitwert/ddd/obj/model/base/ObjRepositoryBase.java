@@ -14,6 +14,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
@@ -32,6 +33,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 
 	private final ObjPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
+	private final ObjNoteRepository noteRepository;
 	private final ObjPartItemRepository itemRepository;
 	private final CodePartListType areaSetType;
 
@@ -44,11 +46,13 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository
+		final ObjPartItemRepository itemRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(ObjFields.TRANSITION_LIST);
+		this.noteRepository = noteRepository;
 		this.itemRepository = itemRepository;
 		this.areaSetType = this.getAppContext().getPartListType(ObjFields.AREA_SET);
 	}
@@ -67,6 +71,11 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	@Override
 	public CodePartListType getTransitionListType() {
 		return this.transitionListType;
+	}
+
+	@Override
+	public ObjNoteRepository getNoteRepository() {
+		return this.noteRepository;
 	}
 
 	@Override

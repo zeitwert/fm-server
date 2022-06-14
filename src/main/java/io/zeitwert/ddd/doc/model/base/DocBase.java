@@ -2,6 +2,7 @@
 package io.zeitwert.ddd.doc.model.base;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
@@ -11,6 +12,9 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.collaboration.model.ObjNote;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.ddd.doc.api.DocService;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocMeta;
@@ -172,5 +176,25 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	// partListType) {
 	// return this.getRepository().getItemRepository().create(this, partListType);
 	// }
+
+	public List<ObjNote> getNoteList() {
+		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		return noteRepository.getByForeignKey(this.getSessionInfo(), "related_to_id", this.getId()).stream()
+				.map(onv -> noteRepository.get(this.getSessionInfo(), onv.getId())).toList();
+	}
+
+	public ObjNote addNote(CodeNoteType noteType) {
+		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNote note = noteRepository.create(this.getSessionInfo());
+		note.setNoteType(noteType);
+		note.setRelatedToId(this.getId());
+		return note;
+	}
+
+	public void removeNote(Integer noteId) {
+		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNote note = noteRepository.get(this.getSessionInfo(), noteId);
+		noteRepository.delete(note);
+	}
 
 }

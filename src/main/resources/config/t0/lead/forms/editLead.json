@@ -100,7 +100,7 @@
 						"identity": "id",
 						"multi": true,
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeArea",
+						"queryUrl": "{{enumBaseUrl}}/account/codeArea",
 						"formatItem": "{{$item.name}}"
 					},
 					{
@@ -207,7 +207,7 @@
 										"storage": "Full",
 										"identity": "id",
 										"enableAutocomplete": false,
-										"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+										"queryUrl": "{{enumBaseUrl}}/account/codeCountry",
 										"path": "",
 										"formatItem": "{{$item.name}}",
 										"enabled": "{{!lead.contact}}"

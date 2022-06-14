@@ -45,7 +45,7 @@
 						"storage": "Full",
 						"identity": "id",
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeCurrency",
+						"queryUrl": "{{enumBaseUrl}}/account/codeCurrency",
 						"path": "",
 						"formatItem": "{{$item.name}}",
 						"isRequired": true,
@@ -232,7 +232,7 @@
 										"storage": "Full",
 										"identity": "id",
 										"enableAutocomplete": false,
-										"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+										"queryUrl": "{{enumBaseUrl}}/account/codeCountry",
 										"path": "",
 										"formatItem": "{{$item.name}}"
 									}

@@ -221,6 +221,17 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>jooq-codegen-fm-collaboration</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>jooq-config-ddd-collaboration.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
 						<id>jooq-codegen-fm-account</id>
 						<phase>generate-sources</phase>
 						<goals>
@@ -240,17 +251,6 @@
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
 							<configurationFile>jooq-config-fm-contact.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-collaboration</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-collaboration.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>

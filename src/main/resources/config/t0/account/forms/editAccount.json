@@ -55,7 +55,7 @@
 						"identity": "id",
 						"multi": true,
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeArea",
+						"queryUrl": "{{enumBaseUrl}}/account/codeArea",
 						"formatItem": "{{$item.name}}"
 					}
 				]
@@ -71,7 +71,7 @@
 						"storage": "Full",
 						"identity": "id",
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeCurrency",
+						"queryUrl": "{{enumBaseUrl}}/account/codeCurrency",
 						"path": "",
 						"formatItem": "{{$item.name}}",
 						"isRequired": true

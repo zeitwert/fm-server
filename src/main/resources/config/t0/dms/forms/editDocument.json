@@ -96,7 +96,7 @@
 						"identity": "id",
 						"multi": true,
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeArea",
+						"queryUrl": "{{enumBaseUrl}}/account/codeArea",
 						"formatItem": "{{$item.name}}"
 					},
 					{

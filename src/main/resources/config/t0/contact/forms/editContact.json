@@ -131,7 +131,7 @@
 						"storage": "Full",
 						"identity": "id",
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+						"queryUrl": "{{enumBaseUrl}}/account/codeCountry",
 						"path": "",
 						"formatItem": "{{$item.name}}",
 						"enabled": "{{!!contact.account}}"
@@ -145,7 +145,7 @@
 						"storage": "Full",
 						"identity": "id",
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+						"queryUrl": "{{enumBaseUrl}}/account/codeCountry",
 						"path": "",
 						"formatItem": "{{$item.name}}",
 						"enabled": "{{!!contact.account}}"
@@ -159,7 +159,7 @@
 						"storage": "Full",
 						"identity": "id",
 						"enableAutocomplete": false,
-						"queryUrl": "{{enumBaseUrl}}/common/codeCountry",
+						"queryUrl": "{{enumBaseUrl}}/account/codeCountry",
 						"path": "",
 						"formatItem": "{{$item.name}}",
 						"enabled": "{{!!contact.account}}"

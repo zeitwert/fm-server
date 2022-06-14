@@ -33,7 +33,7 @@ const BuildingStaticDataFormModel = new Form(
 		street: new TextField(),
 		zip: new TextField(),
 		city: new TextField(),
-		country: new EnumeratedField({ source: "{{enumBaseUrl}}/common/codeCountry" }),
+		country: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCountry" }),
 		//
 		buildingYear: new IntField({ minValue: 1800, maxLength: 4 }),
 		volume: new NumberField(),
@@ -42,7 +42,7 @@ const BuildingStaticDataFormModel = new Form(
 		nrOfFloorsAboveGround: new NumberField(),
 		nrOfFloorsBelowGround: new NumberField(),
 		//
-		currency: new EnumeratedField({ source: "{{enumBaseUrl}}/common/codeCurrency" }),
+		currency: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCurrency" }),
 		insuredValue: new NumberField({ required: true }),
 		insuredValueYear: new IntField({ required: true, minValue: 1800, maxLength: 4 }),
 		notInsuredValue: new NumberField(),

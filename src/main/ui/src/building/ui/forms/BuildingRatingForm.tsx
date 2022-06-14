@@ -16,7 +16,7 @@ const BuildingRatingFormModel = new Form(
 		id: new Field(converters.string),
 		name: new TextField({ required: true }),
 		//
-		currency: new EnumeratedField({ source: "{{enumBaseUrl}}/common/codeCurrency" }),
+		currency: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCurrency" }),
 		//
 		buildingPartCatalog: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
 		buildingMaintenanceStrategy: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
