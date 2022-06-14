@@ -2,20 +2,10 @@
 package io.zeitwert.ddd.obj.model;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.oe.model.ObjUser;
 
 public interface Obj extends Aggregate {
 
 	@Override
 	ObjMeta getMeta();
-
-	ObjUser getOwner();
-
-	void setOwner(ObjUser owner);
-
-	/**
-	 * Delete the Obj (i.e. set closed_by_user_id, closed_at)
-	 */
-	void delete();
 
 }

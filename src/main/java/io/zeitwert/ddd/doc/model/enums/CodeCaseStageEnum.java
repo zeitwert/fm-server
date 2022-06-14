@@ -20,6 +20,8 @@ import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 @DependsOn({ "flyway", "flywayInitializer" })
 public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 
+	static private CodeCaseStageEnum INSTANCE;
+
 	static private final String TABLE = "code_case_stage";
 
 	static protected final Field<String> CASE_DEF_ID = DSL.field("case_def_id", String.class);
@@ -33,6 +35,7 @@ public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 	@Autowired
 	protected CodeCaseStageEnum(final Enumerations enums, final DSLContext dslContext) {
 		super(enums, dslContext);
+		INSTANCE = this;
 	}
 
 	@PostConstruct
@@ -45,6 +48,10 @@ public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 			this.addItem(new CodeCaseStage(this, item.value1(), item.value3(), item.value4(), item.value2(), item.value5(),
 					item.value6(), item.value7(), item.value8(), item.value9()));
 		}
+	}
+
+	public static CodeCaseStage getCaseStage(String caseStageId) {
+		return INSTANCE.getItem(caseStageId);
 	}
 
 }

@@ -95,6 +95,11 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	@Override
+	public void delete() {
+		assertThis(false, "delete supported");
+	}
+
+	@Override
 	public void afterSet(Property<?> property) {
 		this.calcAll();
 	}

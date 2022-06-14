@@ -1,0 +1,29 @@
+
+package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
+
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
+import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.session.model.SessionInfo;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+import org.jooq.Record;
+
+public abstract class ObjVDtoBridge<O extends Obj> extends ObjDtoBase<O> {
+
+	public void toObj(O obj) {
+		super.toObj(obj);
+	}
+
+	public static void fromObj(ObjVDtoBaseBuilder<?, ?, ?> dtoBuilder, Obj obj, SessionInfo sessionInfo) {
+		ObjDtoBase.fromObj(dtoBuilder, obj, sessionInfo);
+	}
+
+	public static void fromRecord(ObjVDtoBaseBuilder<?, ?, ?> dtoBuilder, Record obj, SessionInfo sessionInfo) {
+		ObjDtoBase.fromRecord(dtoBuilder, obj, sessionInfo);
+	}
+
+}

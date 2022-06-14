@@ -1,73 +1,24 @@
 
 package io.zeitwert.fm.lead.adapter.api.jsonapi.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.crnk.core.exception.BadRequestException;
-import io.crnk.core.queryspec.QuerySpec;
-import io.crnk.core.repository.ResourceRepositoryBase;
-import io.crnk.core.resource.list.DefaultResourceList;
-import io.crnk.core.resource.list.ResourceList;
 import io.zeitwert.fm.lead.adapter.api.jsonapi.DocLeadApiRepository;
 import io.zeitwert.fm.lead.adapter.api.jsonapi.dto.DocLeadDto;
 import io.zeitwert.fm.lead.model.DocLead;
 import io.zeitwert.fm.lead.model.DocLeadRepository;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiAdapter;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 @Controller("docLeadApiRepository")
-public class DocLeadApiRepositoryImpl extends ResourceRepositoryBase<DocLeadDto, Integer>
+public class DocLeadApiRepositoryImpl extends AggregateApiAdapter<DocLead, DocLeadVRecord, DocLeadDto>
 		implements DocLeadApiRepository {
-
-	private final DocLeadRepository repository;
-	private final SessionInfo sessionInfo;
 
 	@Autowired
 	public DocLeadApiRepositoryImpl(final DocLeadRepository repository, SessionInfo sessionInfo) {
-		super(DocLeadDto.class);
-		this.repository = repository;
-		this.sessionInfo = sessionInfo;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public DocLeadDto create(DocLeadDto dto) {
-		if (dto.getId() != null) {
-			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
-		}
-		DocLead doc = this.repository.create(this.sessionInfo);
-		dto.toDoc(doc);
-		this.repository.store(doc);
-		return DocLeadDto.fromDoc(doc, this.sessionInfo);
-	}
-
-	@Override
-	public DocLeadDto findOne(Integer docId, QuerySpec querySpec) {
-		DocLead lead = this.repository.get(this.sessionInfo, docId);
-		return DocLeadDto.fromDoc(lead, this.sessionInfo);
-	}
-
-	@Override
-	public ResourceList<DocLeadDto> findAll(QuerySpec querySpec) {
-		List<DocLeadVRecord> itemList = this.repository.find(this.sessionInfo, querySpec);
-		ResourceList<DocLeadDto> list = new DefaultResourceList<>();
-		list.addAll(itemList.stream().map(item -> DocLeadDto.fromRecord(item, this.sessionInfo)).toList());
-		return list;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public DocLeadDto save(DocLeadDto dto) {
-		if (dto.getId() == null) {
-			throw new BadRequestException("Can only save existing object (missing id)");
-		}
-		DocLead doc = this.repository.get(this.sessionInfo, dto.getId());
-		dto.toDoc(doc);
-		this.repository.store(doc);
-		return DocLeadDto.fromDoc(doc, this.sessionInfo);
+		super(DocLeadDto.class, sessionInfo, repository, DocLeadDtoBridge.getInstance());
 	}
 
 }

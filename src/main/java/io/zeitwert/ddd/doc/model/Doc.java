@@ -10,10 +10,6 @@ public interface Doc extends Aggregate {
 	@Override
 	DocMeta getMeta();
 
-	ObjUser getOwner();
-
-	void setOwner(ObjUser owner);
-
 	CodeCaseStage getCaseStage();
 
 	void setCaseStage(CodeCaseStage caseStage);

@@ -135,7 +135,6 @@ public class BuildingEvaluationController {
 	}
 
 	private void copyStream2File(String fontName) throws IOException {
-		logger.info("copyStream2File(" + fontName + ")");
 		InputStream is = classLoader.getResourceAsStream("fonts/" + fontName + ".ttf");
 		if (is != null) {
 			File f = new File(this.fontsDirectory.getAbsolutePath() + "/" + fontName + ".ttf");
