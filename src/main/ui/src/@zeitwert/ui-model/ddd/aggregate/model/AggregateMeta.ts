@@ -1,5 +1,5 @@
 
-import { Aggregate } from "../..";
+import { UserInfo } from "@zeitwert/ui-model/app";
 import { Enumerated } from "./EnumeratedModel";
 
 export interface Validation {
@@ -10,10 +10,10 @@ export interface Validation {
 
 export interface AggregateMeta {
 	itemType: Enumerated;
-	tenant: Aggregate;
-	createdByUser: Aggregate;
+	tenant: Enumerated;
+	createdByUser: UserInfo;
 	createdAt: Date;
-	modifiedByUser: Aggregate;
+	modifiedByUser: UserInfo;
 	modifiedAt: Date;
 	validationList: Validation[];
 }

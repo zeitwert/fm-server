@@ -18,4 +18,6 @@ export interface AggregateApi<S extends AggregateSnapshot> {
 
 	storeAggregate(item: S): Promise<EntityTypeRepository>;
 
+	deleteAggregate(id: string): Promise<void>;
+
 }

@@ -71,4 +71,14 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 		return (S) this.bridge.fromAggregate(aggregate, this.sessionInfo);
 	}
 
+	@Override
+	public void delete(Integer id) {
+		if (id == null) {
+			throw new BadRequestException("Can only delete existing object (missing id)");
+		}
+		A aggregate = this.repository.get(this.sessionInfo, id);
+		aggregate.delete();
+		this.repository.store(aggregate);
+	}
+
 }

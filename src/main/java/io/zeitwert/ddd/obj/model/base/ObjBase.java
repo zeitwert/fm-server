@@ -108,10 +108,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
-		this.owner.setId(sessionUserId);
-		this.createdByUser.setId(sessionUserId);
-		this.createdAt.setValue(OffsetDateTime.now());
 	}
 
 	@Override
@@ -125,6 +121,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	public void doBeforeStore() {
 		this.transitionList.addPart();
 		super.doBeforeStore(); // transition needs to be present for transitionList.seqNr
+		if (this.getObjDbRecord().changed(ObjFields.ID)) { // isNew
+			Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+			this.owner.setId(sessionUserId);
+			this.createdByUser.setId(sessionUserId);
+			this.createdAt.setValue(OffsetDateTime.now());
+		}
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
 		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(ObjFields.MODIFIED_AT, OffsetDateTime.now());

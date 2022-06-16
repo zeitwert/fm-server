@@ -125,10 +125,6 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
-		this.owner.setId(sessionUserId);
-		this.createdByUser.setId(sessionUserId);
-		this.createdAt.setValue(OffsetDateTime.now());
 		this.transitionList.addPart();
 	}
 
@@ -143,6 +139,12 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	public void doBeforeStore() {
 		this.transitionList.addPart();
 		super.doBeforeStore(); // transition needs to be present for transitionList.seqNr
+		if (this.getDocDbRecord().changed(DocFields.ID)) { // isNew
+			Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+			this.owner.setId(sessionUserId);
+			this.createdByUser.setId(sessionUserId);
+			this.createdAt.setValue(OffsetDateTime.now());
+		}
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = getDocDbRecord();
