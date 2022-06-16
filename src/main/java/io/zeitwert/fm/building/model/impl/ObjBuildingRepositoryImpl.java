@@ -140,12 +140,15 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public void doAfterLoad(ObjBuilding building) {
 		super.doAfterLoad(building);
-		if (building.getNoteList().size() == 0) {
-			for (int i = 0; i < 8.3 * Math.random(); i++) {
-				ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));
-				note.setSubject("Subject of Note " + (i + 1));
-				note.setContent("Content of Note " + (i + 1));
-				note.setIsPrivate(Math.random() > 0.8);
+		if (building.getMeta().getSessionInfo().getTenant().getName().equals("Demo")) {
+			if (building.getNoteList().size() == 0) {
+				for (int i = 0; i < 8.3 * Math.random(); i++) {
+					ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));
+					note.setSubject("Subject of Note " + (i + 1));
+					note.setContent("Content of Note " + (i + 1));
+					note.setIsPrivate(Math.random() > 0.8);
+					this.getNoteRepository().store(note);
+				}
 			}
 		}
 	}

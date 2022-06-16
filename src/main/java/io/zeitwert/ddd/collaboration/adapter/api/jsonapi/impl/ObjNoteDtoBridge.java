@@ -26,7 +26,7 @@ public final class ObjNoteDtoBridge extends ObjDtoBridge<ObjNote, ObjNoteVRecord
 	@Override
 	public void toAggregate(ObjNoteDto dto, ObjNote note) {
 		super.toAggregate(dto, note);
-		note.setRelatedToId(dto.getRelatedToId());
+		note.setRelatedToId(Integer.parseInt(dto.getRelatedToId()));
 		note.setNoteType(dto.getNoteType() == null ? null : CodeNoteTypeEnum.getNoteType(dto.getNoteType().getId()));
 		note.setSubject(dto.getSubject());
 		note.setContent(dto.getContent());
@@ -42,7 +42,7 @@ public final class ObjNoteDtoBridge extends ObjDtoBridge<ObjNote, ObjNoteVRecord
 		this.fromAggregate(dtoBuilder, note, sessionInfo);
 		// @formatter:off
 		return dtoBuilder
-			.relatedToId(note.getRelatedToId())
+			.relatedToId(note.getRelatedToId().toString())
 			.noteType(EnumeratedDto.fromEnum(note.getNoteType()))
 			.subject(note.getSubject())
 			.content(note.getContent())
@@ -60,7 +60,7 @@ public final class ObjNoteDtoBridge extends ObjDtoBridge<ObjNote, ObjNoteVRecord
 		this.fromRecord(dtoBuilder, note, sessionInfo);
 		// @formatter:off
 		return dtoBuilder
-			.relatedToId(note.getRelatedToId())
+			.relatedToId(note.getRelatedToId().toString())
 			.noteType(EnumeratedDto.fromEnum(CodeNoteTypeEnum.getNoteType(note.getNoteTypeId())))
 			.subject(note.getSubject())
 			.content(note.getContent())

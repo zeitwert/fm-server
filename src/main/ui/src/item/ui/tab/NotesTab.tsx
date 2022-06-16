@@ -1,16 +1,16 @@
 
-import { AggregateStore, DateFormat, ItemPartNote, ItemPartNotePayload, session } from "@zeitwert/ui-model";
-import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
+import { DateFormat, session } from "@zeitwert/ui-model";
+import { NOTE, Note, NotePayload } from "@zeitwert/ui-model/ddd/collaboration/model/NoteModel";
+import { StoreWithNotes } from "@zeitwert/ui-model/ddd/collaboration/model/StoreWithNotes";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { getSnapshot } from "mobx-state-tree";
 import React, { FC } from "react";
 import ReactMarkdown from "react-markdown";
 
 interface NotesTabProps {
-	store: AggregateStore;
-	item: ItemWithNotes;
-	notes: ItemPartNote[];
+	relatedToId: string;
+	store: StoreWithNotes;
+	notes: Note[];
 }
 
 @observer
@@ -40,22 +40,22 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 							}
 							{
 								notes.map((note, index) => (
-									<li className="slds-feed__item" key={"note-" + note.id}>
+									<li className="slds-feed__item" key={"note-" + index}>
 										{
-											this.editNoteId === note.id &&
-											<NoteEditor
-												note={getSnapshot(note)}
-												onCancel={this.cancelNoteEditor}
-												onOk={(note) => { this.modifyNote(this.editNoteId!, note); }}
+											(!this.editNoteId || (this.editNoteId !== note.id)) &&
+											<NoteView
+												note={note}
+												onEdit={(note) => { this.editNoteId = note.id }}
+												onChangePrivacy={(note) => { this.changePrivacy(note) }}
+												onRemove={(note) => this.removeNote(note.id)}
 											/>
 										}
 										{
-											(!this.editNoteId || (this.editNoteId !== note.id)) &&
-											<Note
-												note={note}
-												onEdit={(note) => { this.editNoteId = note.id }}
-												onChangeVisibility={(note) => { this.toggleVisibility(note) }}
-												onDelete={(note) => this.removeNote(note.id)}
+											this.editNoteId === note.id &&
+											<NoteEditor
+												note={toJS(note)}
+												onCancel={this.cancelNoteEditor}
+												onOk={(note) => { this.modifyNote(this.editNoteId!, note); }}
 											/>
 										}
 										<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
@@ -83,117 +83,93 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 		this.editNoteId = undefined;
 	}
 
-	private addNote = (note: ItemPartNotePayload): void => {
-		const { store, item } = this.props;
-		if (!store.inTrx) {
-			store.startTrx();
-		}
-		item!.addNote(note);
+	private addNote = (note: NotePayload): void => {
+		this.props.store.addNote(this.props.relatedToId, note);
 		this.editNoteId = undefined;
 	}
 
-	private modifyNote = (id: string, note: ItemPartNotePayload): void => {
-		const { store, item } = this.props;
-		if (!store.inTrx) {
-			store.startTrx();
-		}
-		item!.modifyNote(id, note);
+	private modifyNote = (id: string, note: NotePayload): void => {
+		this.props.store.storeNote(id, note);
 		this.editNoteId = undefined;
 	}
 
-	private toggleVisibility = (note: ItemPartNote): void => {
-		const { store } = this.props;
-		if (!store.inTrx) {
-			store.startTrx();
-		}
-		note.setPrivate(!note.isPrivate);
+	private changePrivacy = (note: Note): void => {
+		this.modifyNote(note.id, Object.assign({}, note, { isPrivate: !note.isPrivate }));
 	}
 
 	private removeNote = (id: string): void => {
-		const { store, item } = this.props;
-		if (!store.inTrx) {
-			store.startTrx();
-		}
-		item!.removeNote(id);
+		this.props.store.removeNote(id);
 	}
 
 }
 
-
-interface NoteProps {
-	note: ItemPartNote;
-	onEdit: (note: ItemPartNote) => void;
-	onChangeVisibility: (note: ItemPartNote) => void;
-	onDelete: (note: ItemPartNote) => void;
+interface NoteViewProps {
+	note: Note;
+	onEdit: (note: Note) => void;
+	onChangePrivacy: (note: Note) => void;
+	onRemove: (note: Note) => void;
 }
 
-const Note: FC<NoteProps> = (props) => {
-	const note = props.note;
-	const userName = note.modifiedByUser?.caption || note.createdByUser?.caption;
-	const userPicture = note.modifiedByUser?.picture || note.createdByUser?.picture || "/assets/images/avatar1.jpg";
-	const time = DateFormat.relativeTime(new Date(), (note.modifiedAt || note.createdAt)!);
-	return (
-		<article className="slds-post">
-			<header className="slds-post__header slds-media">
-				<div className="slds-media__figure">
-					<a href="/#" className="slds-avatar slds-avatar_circle slds-avatar_medium">
-						<img alt={userName} src={userPicture} title={userName} />
-					</a>
-				</div>
-				<div className="slds-media__body">
-					<div className="slds-clearfix xslds-grid xslds-grid_align-spread xslds-has-flexi-truncate">
-						<div className="slds-float_left">
-							<p>
-								<a href="/#" title={userName}>{userName}</a>
-							</p>
-						</div>
-						<div className="slds-float_right">
-							<NoteHeaderAction
-								icon={note.isPrivate ? "lock" : "unlock"}
-								label={note.isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
-								onClick={() => props.onChangeVisibility(note)}
-							/>
-							<NoteHeaderAction
-								icon={"delete"}
-								label={"Löschen"}
-								onClick={() => props.onDelete(note)}
-							/>
-							<NoteHeaderAction
-								icon={"edit"}
-								label={"Bearbeiten"}
-								onClick={() => props.onEdit(note)}
-							/>
-						</div>
-					</div>
-					<p className="slds-text-body_small">
-						<a href="/#" title="..." className="slds-text-link_reset">{time}</a>
-					</p>
-				</div>
-			</header>
-			<div className="slds-post__content slds-text-longform">
-				<div><strong>{note.subject || "(kein Titel)"}</strong></div>
-				<ReactMarkdown className="fa-note-content">
-					{note.content || "(kein Inhalt)"}
-				</ReactMarkdown>
-			</div>
-			{
-				/*
-			<footer className="slds-post__footer">
-				<ul className="slds-post__footer-actions-list slds-list_horizontal">
-					<li className="slds-col slds-item slds-m-right_medium">
-						<NoteFooterAction note={note} icon="edit" label="Bearbeiten" onClick={(note) => props.onEdit(note)} />
-					</li>
-					<li className="slds-col slds-item slds-m-right_medium">
-						<NoteFooterAction note={note} icon="delete" label="Löschen" onClick={(note) => props.onDelete(note)} />
-					</li>
-				</ul>
-			</footer>
-				*/
-			}
-		</article>
-	);
+@observer
+class NoteView extends React.Component<NoteViewProps> {
 
-};
+	render() {
+
+		const note = this.props.note;
+		const isPrivate = note.isPrivate;
+		const userName = note.meta?.modifiedByUser?.caption || note.meta?.createdByUser?.caption;
+		const userPicture = note.meta?.modifiedByUser?.picture || note.meta?.createdByUser?.picture || "/assets/images/avatar1.jpg";
+		const time = DateFormat.relativeTime(new Date(), (note.meta?.modifiedAt || note.meta?.createdAt)!);
+
+		return (
+			<article className="slds-post">
+				<header className="slds-post__header slds-media">
+					<div className="slds-media__figure">
+						<a href="/#" className="slds-avatar slds-avatar_circle slds-avatar_medium">
+							<img alt={userName} src={userPicture} title={userName} />
+						</a>
+					</div>
+					<div className="slds-media__body">
+						<div className="slds-clearfix xslds-grid xslds-grid_align-spread xslds-has-flexi-truncate">
+							<div className="slds-float_left">
+								<p>
+									<a href="/#" title={userName}>{userName}</a>
+								</p>
+							</div>
+							<div className="slds-float_right">
+								<NoteHeaderAction
+									icon={isPrivate ? "lock" : "unlock"}
+									label={isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
+									onClick={() => this.props.onChangePrivacy(note)}
+								/>
+								<NoteHeaderAction
+									icon={"delete"}
+									label={"Löschen"}
+									onClick={() => this.props.onRemove(note)}
+								/>
+								<NoteHeaderAction
+									icon={"edit"}
+									label={"Bearbeiten"}
+									onClick={() => this.props.onEdit(note)}
+								/>
+							</div>
+						</div>
+						<p className="slds-text-body_small">
+							<a href="/#" title="..." className="slds-text-link_reset">{time}</a>
+						</p>
+					</div>
+				</header>
+				<div className="slds-post__content xslds-text-longform">
+					<div><strong>{note.subject || "(kein Titel)"}</strong></div>
+					<ReactMarkdown className="fa-note-content">
+						{note.content || "(kein Inhalt)"}
+					</ReactMarkdown>
+				</div>
+			</article>
+		);
+	}
+
+}
 
 interface NoteHeaderActionProps {
 	icon: string;
@@ -215,30 +191,11 @@ const NoteHeaderAction: FC<NoteHeaderActionProps> = (props) => {
 
 };
 
-// interface NoteFooterActionProps {
-// 	note: ItemPartNote;
-// 	icon: string;
-// 	label: string;
-// 	onClick?: (note: ItemPartNote) => void;
-// }
-
-// const NoteFooterAction: FC<NoteFooterActionProps> = (props) => {
-// 	const { note, icon, label } = props;
-// 	return (<>
-// 		<button className="slds-button_reset slds-post__footer-action" title={label} onClick={() => props.onClick?.(note)}>
-// 			<svg className="slds-icon slds-icon-text-default slds-icon_x-small slds-align-middle">
-// 				<use xlinkHref={"/assets/icons/utility-sprite/svg/symbols.svg#" + icon}></use>
-// 			</svg>{label}
-// 		</button>
-// 	</>
-// 	);
-// };
-
 interface NoteEditorProps {
 	isNew?: boolean;
-	note?: ItemPartNotePayload;
+	note?: NotePayload;
 	onCancel: () => void;
-	onOk: (note: ItemPartNotePayload) => void;
+	onOk: (note: NotePayload) => void;
 }
 
 @observer
@@ -283,7 +240,14 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 							{
 								this.isActive &&
 								<>
-									<textarea id="textarea-02" className="slds-publisher__input slds-input_bare slds-text-longform" placeholder="Notiz…" onChange={(e) => this.content = e.currentTarget.value || ""} value={this.content} />
+									<textarea
+										id="textarea-02"
+										className="slds-publisher__input slds-input_bare slds-text-longform"
+										placeholder="Notiz…"
+										onChange={(e) => this.content = e.currentTarget.value || ""}
+										value={this.content}
+										rows={6}
+									/>
 									<div className="slds-publisher__actions slds-grid slds-grid_align-spread">
 										<ul className="slds-grid">
 											<li>
@@ -327,8 +291,9 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 		this.init();
 	}
 
-	private asNote(): ItemPartNotePayload {
+	private asNote(): any/*ItemPartNotePayload*/ {
 		return {
+			noteType: NOTE,
 			subject: this.subject,
 			content: this.content,
 			isPrivate: this.isPrivate

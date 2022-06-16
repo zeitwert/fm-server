@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "note", resourcePath = "collaboration/notes")
 public class ObjNoteDto extends ObjDtoBase<ObjNote> {
 
-	private Integer relatedToId;
+	private String relatedToId;
 	private EnumeratedDto noteType;
 	private String subject;
 	private String content;
