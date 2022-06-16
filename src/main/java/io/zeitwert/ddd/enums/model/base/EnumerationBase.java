@@ -13,7 +13,8 @@ import java.util.Map;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public abstract class EnumerationBase<E extends Enumerated> implements Enumeration<E> {
 
@@ -29,8 +30,7 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 
 	public EnumerationBase(final Enumerations enums, final DSLContext dslContext) {
 		String[] parts = this.getClass().getCanonicalName().split("\\.");
-		Assert.isTrue(parts.length == 7,
-				"valid enumeration class name (io.zeitwert.[area].[module].model.enums.[enumClass])");
+		assertThis(parts.length == 7, "valid enumeration class name (io.zeitwert.[area].[module].model.enums.[enumClass])");
 		this.dslContext = dslContext;
 		this.module = parts[3];
 		this.id = Character.toLowerCase(parts[6].charAt(0)) + parts[6].substring(1);
@@ -63,7 +63,7 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 			return null;
 		}
 		E item = itemsById.get(id);
-		Assert.isTrue(item != null, "valid item [" + id + "]");
+		assertThis(item != null, "valid item [" + id + "]");
 		return item;
 	}
 

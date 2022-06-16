@@ -32,6 +32,8 @@ public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBu
 	private Integer strain;
 	private Integer strength;
 	private String description;
+	private String conditionDescription;
+	private String measureDescription;
 
 	private Integer restorationYear;
 	private Double restorationCosts;
@@ -57,6 +59,8 @@ public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBu
 		part.setStrain(this.strain);
 		part.setStrength(this.strength);
 		part.setDescription(this.description);
+		part.setConditionDescription(this.conditionDescription);
+		part.setMeasureDescription(this.measureDescription);
 		if (this.materialDescriptions != null) {
 			part.clearMaterialDescriptionSet();
 			this.materialDescriptions.forEach(description -> part.addMaterialDescription(
@@ -109,6 +113,8 @@ public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBu
 			.strain(part.getStrain())
 			.strength(part.getStrength())
 			.description(part.getDescription())
+			.conditionDescription(part.getConditionDescription())
+			.measureDescription(part.getMeasureDescription())
 			.materialDescriptions(part.getMaterialDescriptionSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
 			.conditionDescriptions(part.getConditionDescriptionSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
 			.measureDescriptions(part.getMeasureDescriptionSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))

@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.property.model.impl;
 
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.base.PartBase;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
@@ -8,11 +9,10 @@ import io.zeitwert.ddd.property.model.base.PropertyBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.util.Assert;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> implements PartListProperty<P> {
 
@@ -35,26 +35,6 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return this.partListType;
 	}
 
-	public Integer getPartCount() {
-		return this.partList.size();
-	}
-
-	public P getPart(Integer seqNr) {
-		Assert.isTrue(0 <= seqNr && seqNr < this.getPartCount(), "valid seqNr (" + seqNr + ")");
-		return this.partList.get(seqNr);
-	}
-
-	public P getPartById(Integer partId) {
-		Assert.isTrue(partId != null, "valid partId");
-		Optional<P> part = this.partList.stream().filter(p -> partId.equals(p.getId())).findAny();
-		Assert.isTrue(part.isPresent(), "part with id " + partId + " must exist");
-		return part.get();
-	}
-
-	public List<P> getPartList() {
-		return List.copyOf(this.partList);
-	}
-
 	public void clearPartList() {
 		for (P part : this.partList) {
 			((PartSPI<?>) part).delete();
@@ -70,6 +50,26 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return part;
 	}
 
+	public Integer getPartCount() {
+		return this.partList.size();
+	}
+
+	public P getPart(Integer seqNr) {
+		assertThis(0 <= seqNr && seqNr < this.getPartCount(), "valid seqNr (" + seqNr + ")");
+		return this.partList.get(seqNr);
+	}
+
+	public P getPartById(Integer partId) {
+		assertThis(partId != null, "valid partId");
+		Optional<P> part = this.partList.stream().filter(p -> partId.equals(p.getId())).findAny();
+		assertThis(part.isPresent(), "part with id " + partId + " must exist");
+		return part.get();
+	}
+
+	public List<P> getPartList() {
+		return List.copyOf(this.partList);
+	}
+
 	public void removePart(Integer partId) {
 		P part = this.getPartById(partId);
 		((PartSPI<?>) part).delete();
@@ -78,9 +78,16 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadPartList(Collection<Part<?>> partList) {
+	public void loadPartList(List<? extends Part<?>> partList) {
 		this.partList.clear();
 		partList.forEach(p -> this.partList.add((P) p));
+	}
+
+	public void doBeforeStore() {
+		int seqNr = 0;
+		for (P part : this.partList) {
+			((PartBase<?>) part).setSeqNr(seqNr++);
+		}
 	}
 
 }

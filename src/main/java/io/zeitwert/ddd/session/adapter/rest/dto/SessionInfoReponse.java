@@ -10,6 +10,7 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 
@@ -37,7 +38,7 @@ public class SessionInfoReponse {
 		}
 		ObjAccount account = sessionInfo.hasAccount() ? accountRepository.get(sessionInfo, sessionInfo.getAccountId())
 				: null;
-		ObjAccountDto accountDto = ObjAccountDto.fromObj(account, sessionInfo);
+		ObjAccountDto accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(account, sessionInfo);
 		// @formatter:off
 		return SessionInfoReponse.builder()
 			.tenant(ObjTenantDto.fromObj(sessionInfo.getTenant()))

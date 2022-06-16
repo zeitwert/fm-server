@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.service.api.BuildingService;
@@ -58,7 +59,6 @@ import io.zeitwert.fm.building.service.api.EvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
-import io.zeitwert.fm.common.service.api.Formatter;
 
 import javax.annotation.PostConstruct;
 
@@ -135,7 +135,6 @@ public class BuildingEvaluationController {
 	}
 
 	private void copyStream2File(String fontName) throws IOException {
-		logger.info("copyStream2File(" + fontName + ")");
 		InputStream is = classLoader.getResourceAsStream("fonts/" + fontName + ".ttf");
 		if (is != null) {
 			File f = new File(this.fontsDirectory.getAbsolutePath() + "/" + fontName + ".ttf");

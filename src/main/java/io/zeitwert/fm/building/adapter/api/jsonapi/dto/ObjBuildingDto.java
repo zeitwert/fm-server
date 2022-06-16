@@ -1,22 +1,13 @@
+
 package io.zeitwert.fm.building.adapter.api.jsonapi.dto;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
-import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoBridge;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.crnk.core.resource.annotations.JsonApiRelation;
@@ -33,8 +24,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.springframework.util.Assert;
 
 @Data()
 @NoArgsConstructor
@@ -53,17 +42,18 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
-			ObjAccount hh = null;
+			ObjAccount account = null;
 			if (this.getOriginal() != null) {
-				hh = this.getOriginal().getAccount();
+				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				hh = this.getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
+				account = getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
 			}
-			this.accountDto = ObjAccountDto.fromObj(hh, this.sessionInfo);
+			this.accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(account, this.sessionInfo);
 		}
 		return this.accountDto;
 	}
 
+	// Crnk needs to see this to set mainContractId
 	public void setAccount(ObjAccountDto account) {
 	}
 
@@ -113,159 +103,14 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			if (this.getOriginal() != null) {
 				cf = this.getOriginal().getCoverFoto();
 			} else if (this.coverFotoId != null) {
-				cf = this.getRepository(ObjDocument.class).get(this.sessionInfo, this.coverFotoId);
+				cf = getRepository(ObjDocument.class).get(this.sessionInfo, this.coverFotoId);
 			}
-			this.coverFotoDto = ObjDocumentDto.fromObj(cf, this.sessionInfo);
+			this.coverFotoDto = ObjDocumentDtoBridge.getInstance().fromAggregate(cf, this.sessionInfo);
 		}
 		return this.coverFotoDto;
 	}
 
 	public void setCoverFoto(ObjDocumentDto coverFoto) {
-	}
-
-	public void toObj(ObjBuilding obj) {
-		super.toObj(obj);
-		obj.setAccountId(this.accountId);
-
-		obj.setName(this.name);
-		obj.setDescription(this.description);
-		obj.setBuildingNr(this.buildingNr);
-		obj.setBuildingInsuranceNr(this.buildingInsuranceNr);
-		obj.setPlotNr(this.plotNr);
-		obj.setNationalBuildingId(this.nationalBuildingId);
-		obj.setHistoricPreservation(this.historicPreservation == null ? null
-				: CodeHistoricPreservationEnum.getHistoricPreservation(this.historicPreservation.getId()));
-
-		obj.setBuildingType(
-				this.buildingType == null ? null : CodeBuildingTypeEnum.getBuildingType(this.buildingType.getId()));
-		obj.setBuildingSubType(
-				this.buildingSubType == null ? null : CodeBuildingSubTypeEnum.getBuildingSubType(this.buildingSubType.getId()));
-		obj.setBuildingPartCatalog(this.buildingPartCatalog == null ? null
-				: CodeBuildingPartCatalogEnum.getBuildingPartCatalog(this.buildingPartCatalog.getId()));
-		obj.setBuildingYear(this.buildingYear);
-		obj.setStreet(this.street);
-		obj.setZip(this.zip);
-		obj.setCity(this.city);
-		obj.setCountry(this.country == null ? null : CodeCountryEnum.getCountry(this.country.getId()));
-		obj.setGeoAddress(this.geoAddress);
-		obj.setGeoCoordinates(this.geoCoordinates);
-		obj.setGeoZoom(this.getGeoZoom());
-		obj.setCurrency(this.currency == null ? null : CodeCurrencyEnum.getCurrency(this.currency.getId()));
-		obj.setVolume(this.volume);
-		obj.setAreaGross(this.areaGross);
-		obj.setAreaNet(this.areaNet);
-		obj.setNrOfFloorsAboveGround(this.nrOfFloorsAboveGround);
-		obj.setNrOfFloorsBelowGround(this.nrOfFloorsBelowGround);
-		obj.setBuildingMaintenanceStrategy(this.buildingMaintenanceStrategy == null ? null
-				: CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(this.buildingMaintenanceStrategy.getId()));
-		obj.setInsuredValue(this.insuredValue);
-		obj.setInsuredValueYear(this.insuredValueYear);
-		obj.setNotInsuredValue(this.notInsuredValue);
-		obj.setNotInsuredValueYear(this.notInsuredValueYear);
-		obj.setThirdPartyValue(this.thirdPartyValue);
-		obj.setThirdPartyValueYear(this.thirdPartyValueYear);
-		this.elements.forEach(elementDto -> {
-			ObjBuildingPartElement element = null;
-			if (elementDto.getId() == null) {
-				Assert.isTrue(elementDto.getBuildingPart() != null, "valid buildingPart");
-				element = obj.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
-			} else {
-				element = obj.getElementById(elementDto.getId());
-			}
-			elementDto.toPart(element);
-		});
-	}
-
-	public static ObjBuildingDto fromObj(ObjBuilding obj, SessionInfo sessionInfo, ProjectionService projectionService) {
-		if (obj == null) {
-			return null;
-		}
-		ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
-		FMObjDtoBase.fromObj(dtoBuilder, obj, sessionInfo);
-		// @formatter:off
-		return dtoBuilder
-			.accountId(obj.getAccountId())
-			.buildingType(EnumeratedDto.fromEnum(obj.getBuildingType()))
-			.buildingSubType(EnumeratedDto.fromEnum(obj.getBuildingSubType()))
-			.buildingPartCatalog(EnumeratedDto.fromEnum(obj.getBuildingPartCatalog()))
-			.name(obj.getName())
-			.description(obj.getDescription())
-			.buildingNr(obj.getBuildingNr())
-			.buildingInsuranceNr(obj.getBuildingInsuranceNr())
-			.plotNr(obj.getPlotNr())
-			.nationalBuildingId(obj.getNationalBuildingId())
-			.historicPreservation(EnumeratedDto.fromEnum(obj.getHistoricPreservation()))
-			.buildingYear(obj.getBuildingYear())
-			.street(obj.getStreet())
-			.zip(obj.getZip())
-			.city(obj.getCity())
-			.country(EnumeratedDto.fromEnum(obj.getCountry()))
-			.geoAddress(obj.getGeoAddress())
-			.geoCoordinates(obj.getGeoCoordinates())
-			.geoZoom(obj.getGeoZoom())
-			.coverFotoId(obj.getCoverFotoId())
-			.currency(EnumeratedDto.fromEnum(obj.getCurrency()))
-			.volume(obj.getVolume())
-			.areaGross(obj.getAreaGross())
-			.areaNet(obj.getAreaNet())
-			.nrOfFloorsAboveGround(obj.getNrOfFloorsAboveGround())
-			.nrOfFloorsBelowGround(obj.getNrOfFloorsBelowGround())
-			.buildingMaintenanceStrategy(EnumeratedDto.fromEnum(obj.getBuildingMaintenanceStrategy()))
-			.insuredValue(obj.getInsuredValue())
-			.insuredValueYear(obj.getInsuredValueYear())
-			.notInsuredValue(obj.getNotInsuredValue())
-			.notInsuredValueYear(obj.getNotInsuredValueYear())
-			.thirdPartyValue(obj.getThirdPartyValue())
-			.thirdPartyValueYear(obj.getThirdPartyValueYear())
-			.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a, projectionService)).toList())
-			.build();
-		// @formatter:on
-	}
-
-	public static ObjBuildingDto fromRecord(ObjBuildingVRecord obj, SessionInfo sessionInfo) {
-		if (obj == null) {
-			return null;
-		}
-		ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
-		FMObjDtoBase.fromRecord(dtoBuilder, obj, sessionInfo);
-		// @formatter:off
-		return dtoBuilder
-			.accountId(obj.getAccountId())
-			.buildingType(EnumeratedDto.fromEnum(CodeBuildingTypeEnum.getBuildingType(obj.getBuildingTypeId())))
-			.buildingSubType(EnumeratedDto.fromEnum(CodeBuildingSubTypeEnum.getBuildingSubType(obj.getBuildingSubTypeId())))
-			.buildingPartCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getBuildingPartCatalog(obj.getBuildingPartCatalogId())))
-			.name(obj.getName())
-			.description(obj.getDescription())
-			.buildingNr(obj.getBuildingNr())
-			.buildingInsuranceNr(obj.getBuildingInsuranceNr())
-			.plotNr(obj.getPlotNr())
-			.nationalBuildingId(obj.getNationalBuildingId())
-			.historicPreservation(EnumeratedDto.fromEnum(CodeHistoricPreservationEnum.getHistoricPreservation(obj.getHistoricPreservationId())))
-			.buildingYear(obj.getBuildingYear())
-			.street(obj.getStreet())
-			.zip(obj.getZip())
-			.city(obj.getCity())
-			.country(EnumeratedDto.fromEnum(CodeCountryEnum.getCountry(obj.getCountryId())))
-			.geoAddress(obj.getGeoAddress())
-			.geoCoordinates(obj.getGeoCoordinates())
-			.geoZoom(obj.getGeoZoom())
-			.coverFotoId(obj.getCoverFotoId())
-			.currency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getCurrencyId())))
-			.volume(obj.getVolume())
-			.areaGross(obj.getAreaGross())
-			.areaNet(obj.getAreaNet())
-			.nrOfFloorsAboveGround(obj.getNrOfFloorsAboveGround())
-			.nrOfFloorsBelowGround(obj.getNrOfFloorsBelowGround())
-			.buildingMaintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(obj.getBuildingMaintenanceStrategyId())))
-			.insuredValue(obj.getInsuredValue())
-			.insuredValueYear(obj.getInsuredValueYear())
-			.notInsuredValue(obj.getNotInsuredValue())
-			.notInsuredValueYear(obj.getNotInsuredValueYear())
-			.thirdPartyValue(obj.getThirdPartyValue())
-			.thirdPartyValueYear(obj.getThirdPartyValueYear())
-			//.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a)).toList())
-			.build();
-		// @formatter:on
 	}
 
 }

@@ -1,12 +1,16 @@
+
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateStoreModel } from "../../aggregate/model/AggregateStore";
+import { StoreWithNotesModel } from "../../collaboration/model/StoreWithNotes";
 import { Obj } from "./ObjModel";
 import { StoreWithObjsModel } from "./StoreWithObjs";
 
-const MstObjStoreModel = AggregateStoreModel.named("ObjStore")
+const MstObjStoreModel = AggregateStoreModel
+	.named("ObjStore")
 	.props({
 		objsStore: types.optional(StoreWithObjsModel, {}),
+		notesStore: types.optional(StoreWithNotesModel, {}),
 	})
 	.views((self) => ({
 		get item(): Obj | undefined {
@@ -14,6 +18,15 @@ const MstObjStoreModel = AggregateStoreModel.named("ObjStore")
 			return undefined as unknown as Obj;
 		}
 	}))
+	.actions((self) => {
+		const superLoad = self.load;
+		const load = async (id: string) => {
+			const item = await superLoad(id);
+			await self.notesStore.loadNotes(id);
+			return item;
+		}
+		return { load };
+	})
 	.actions((self) => {
 		const superAfterLoad = self.afterLoad;
 		const afterLoad = (repository: EntityTypeRepository) => {

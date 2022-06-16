@@ -2,14 +2,14 @@
 package io.zeitwert.fm.lead.model;
 
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.common.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeArea;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.lead.model.enums.CodeLeadRating;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSource;
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.obj.model.Obj;
 

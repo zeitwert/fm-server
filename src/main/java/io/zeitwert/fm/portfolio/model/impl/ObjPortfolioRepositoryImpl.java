@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
@@ -24,7 +25,11 @@ import io.zeitwert.fm.portfolio.model.base.ObjPortfolioFields;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
@@ -57,7 +62,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjPortfolioRepository.class,
@@ -78,6 +83,13 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 		this.buildingSetType = this.getAppContext().getPartListType(ObjPortfolioFields.BUILDING_LIST);
 	}
 	//@formatter:on
+
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+	}
 
 	public ObjVRepository getObjVRepository() {
 		return this.objVRepository;
@@ -104,29 +116,18 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
+	protected String getAccountIdField() {
+		return ObjPortfolioFields.ACCOUNT_ID.getName();
+	}
+
+	@Override
 	public ObjPortfolio doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
 	}
 
 	@Override
-	public void doInitParts(ObjPortfolio obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-	}
-
-	@Override
-	public List<ObjPortfolioVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
-	}
-
-	@Override
 	public ObjPortfolio doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjPortfolioRecord portfolioRecord = this.getDSLContext().fetchOne(Tables.OBJ_PORTFOLIO,
 				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));
 		if (portfolioRecord == null) {
@@ -136,19 +137,8 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
-	public void doLoadParts(ObjPortfolio obj) {
-		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
-		ObjPortfolioBase pfBase = (ObjPortfolioBase) obj;
-		pfBase.loadIncludeSet(this.getItemRepository().getPartList(obj, this.getIncludeSetType()));
-		pfBase.loadExcludeSet(this.getItemRepository().getPartList(obj, this.getExcludeSetType()));
-		pfBase.loadBuildingSet(this.getItemRepository().getPartList(obj, this.getBuildingSetType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjPortfolio obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
+	public List<ObjPortfolioVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, querySpec);
 	}
 
 }

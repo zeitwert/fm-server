@@ -37,6 +37,14 @@ public interface ObjBuildingPartElement extends ObjPart<ObjBuilding> {
 
 	void setDescription(String description);
 
+	String getConditionDescription();
+
+	void setConditionDescription(String description);
+
+	String getMeasureDescription();
+
+	void setMeasureDescription(String description);
+
 	Set<CodeBuildingElementDescription> getMaterialDescriptionSet();
 
 	void clearMaterialDescriptionSet();

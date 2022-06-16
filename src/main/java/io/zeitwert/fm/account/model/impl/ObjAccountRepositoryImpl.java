@@ -9,19 +9,24 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
+import io.zeitwert.fm.account.model.base.ObjAccountFields;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+
+import javax.annotation.PostConstruct;
 
 @Component("objAccountRepository")
 public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
@@ -36,7 +41,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjAccountRepository.class,
@@ -53,29 +58,25 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+	}
+
+	@Override
+	protected String getAccountIdField() {
+		return ObjAccountFields.ID.getName();
+	}
+
+	@Override
 	public ObjAccount doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
 	}
 
 	@Override
-	public void doInitParts(ObjAccount obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-	}
-
-	@Override
-	public List<ObjAccountVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "id";
-	}
-
-	@Override
 	public ObjAccount doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjAccountRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT,
 				Tables.OBJ_ACCOUNT.OBJ_ID.eq(objId));
 		if (accountRecord == null) {
@@ -85,26 +86,18 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	}
 
 	@Override
-	public void doLoadParts(ObjAccount obj) {
-		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
-		((ObjAccountBase) obj).loadAreaSet(this.getItemRepository().getPartList(obj, this.getAreaSetType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjAccount obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
-	}
-
-	@Override
 	public Optional<ObjAccount> getByKey(SessionInfo sessionInfo, String key) {
-		ObjAccountVRecord hhRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
+		ObjAccountVRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
 				Tables.OBJ_ACCOUNT_V.INTL_KEY.eq(key));
-		if (hhRecord == null) {
+		if (accountRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(sessionInfo, hhRecord.getId()));
+		return Optional.of(this.get(sessionInfo, accountRecord.getId()));
+	}
+
+	@Override
+	public List<ObjAccountVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, querySpec);
 	}
 
 }

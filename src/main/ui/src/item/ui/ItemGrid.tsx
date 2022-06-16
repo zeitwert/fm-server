@@ -1,6 +1,5 @@
 import { Card, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Aggregate, AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
-import { ItemWithNotes } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
+import { AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
 import { FormParser } from "activity/forms/FormParser";
@@ -93,7 +92,7 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 		const hideNotes = true;
 		const hideDocuments = true;
 		const hideChat = true;
-		const item = store.item! as (Aggregate & ItemWithNotes);
+		const item = store.item!;
 		const classes = classNames(
 			"slds-size_1-of-1 slds-large-size_1-of-3",
 			hasItemPath ? "fa-item-part" : "fa-height-100"
@@ -104,8 +103,15 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 					<Tabs selectedIndex={this.activeTabId} onSelect={this.onRightSelect} className="full-height">
 						{
 							!hideNotes &&
-							<TabsPanel label={"Notizen (" + item.notes.length + ")"}>
-								{this.activeTabId === TAB.NOTES && <NotesTab store={store} />}
+							<TabsPanel label={"Notizen (" + /*item.notes.length +*/ ")"}>
+								{
+									this.activeTabId === TAB.NOTES &&
+									<NotesTab
+										relatedToId={store.id!}
+										store={(store as any).notesStore}
+										notes={(store as any).notesStore.notes}
+									/>
+								}
 							</TabsPanel>
 						}
 						{

@@ -21,11 +21,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<frontend-src-dir>${project.basedir}/src/main/ui</frontend-src-dir>
-		<node.version>v16.14.0</node.version>
-		<yarn.version>v1.22.5</yarn.version>
-		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
 		<java.version>16</java.version>
+		<flyway.version>8.5.12</flyway.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<lombok.version>1.18.22</lombok.version>
@@ -33,6 +30,10 @@
 		<javassist.version>3.28.0-GA</javassist.version>
 		<aspose-words.version>22.4</aspose-words.version>
 		<google-maps.version>2.0.0</google-maps.version>
+		<frontend-src-dir>${project.basedir}/src/main/ui</frontend-src-dir>
+		<node.version>v16.14.0</node.version>
+		<yarn.version>v1.22.5</yarn.version>
+		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
 	</properties>
 
 	<repositories>
@@ -67,6 +68,7 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+			<version>${flyway.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -175,17 +177,6 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>jooq-codegen-ddd-common</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-ddd-common.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
 						<id>jooq-codegen-ddd-aggregate</id>
 						<phase>generate-sources</phase>
 						<goals>
@@ -230,25 +221,14 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>jooq-codegen-fm-common</id>
+						<id>jooq-codegen-fm-collaboration</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-common.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-item</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-item.xml</configurationFile>
+							<configurationFile>jooq-config-ddd-collaboration.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>

@@ -2,7 +2,6 @@
 package io.zeitwert.fm.portfolio.model.base;
 
 import java.security.InvalidParameterException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +18,7 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -58,16 +57,25 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		return (ObjPortfolioRepository) super.getRepository();
 	}
 
-	public abstract void loadIncludeSet(Collection<ObjPartItem> includedSet);
-
-	public abstract void loadExcludeSet(Collection<ObjPartItem> excludedSet);
-
-	public abstract void loadBuildingSet(Collection<ObjPartItem> buildingSet);
+	@Override
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
+		this.dbRecord.setValue(ObjPortfolioFields.OBJ_ID, objId);
+	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
-		this.dbRecord.setValue(ObjPortfolioFields.OBJ_ID, objId);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.includeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getIncludeSetType()));
+		this.excludeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getExcludeSetType()));
+		this.buildingSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getBuildingSetType()));
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		this.dbRecord.store();
 	}
 
 	@Override
@@ -76,13 +84,8 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
-		this.dbRecord.store();
-	}
-
-	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 		this.calcBuildingSet();
 	}
@@ -119,19 +122,6 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 					.collect(Collectors.toSet());
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());
-	}
-
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.beginCalc();
-		try {
-			this.includeSet.beforeStore();
-			this.excludeSet.beforeStore();
-			this.buildingSet.beforeStore();
-		} finally {
-			this.endCalc();
-		}
 	}
 
 }

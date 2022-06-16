@@ -40,6 +40,12 @@ public class ObjPartTransitionRepositoryImpl extends ObjPartRepositoryBase<Obj, 
 	//@formatter:on
 
 	@Override
+	public ObjPartTransition doCreate(Obj obj) {
+		ObjPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_TRANSITION);
+		return this.newPart(obj, dbRecord);
+	}
+
+	@Override
 	public List<ObjPartTransition> doLoad(Obj obj) {
 		//@formatter:off
 		Result<ObjPartTransitionRecord> dbRecords = this.getDSLContext()
@@ -49,12 +55,6 @@ public class ObjPartTransitionRepositoryImpl extends ObjPartRepositoryBase<Obj, 
 			.fetchInto(Tables.OBJ_PART_TRANSITION);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(obj, dbRecord));
-	}
-
-	@Override
-	public ObjPartTransition doCreate(Obj obj) {
-		ObjPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_TRANSITION);
-		return this.newPart(obj, dbRecord);
 	}
 
 }

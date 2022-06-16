@@ -2,7 +2,7 @@
 package io.zeitwert.ddd.aggregate.model.base;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -17,7 +17,9 @@ import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
@@ -28,8 +30,7 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.SessionCache;
@@ -48,14 +49,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	private final DSLContext dslContext;
 	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
+	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
-	private boolean didDoInit = false;
-	private boolean didDoInitParts = false;
 	private boolean didAfterCreate = false;
-	private boolean didDoLoadParts = false;
 	private boolean didAfterLoad = false;
 	private boolean didBeforeStore = false;
-	private boolean didDoStoreParts = false;
 	private boolean didAfterStore = false;
 
 	//@formatter:off
@@ -86,13 +84,17 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		return this.dslContext;
 	}
 
-	protected void require(boolean condition, String message) {
-		Assert.isTrue(condition, "Precondition failed: " + message);
-	}
-
 	@Override
 	public final CodeAggregateType getAggregateType() {
 		return this.getAppContext().getAggregateType(this.aggregateTypeId);
+	}
+
+	protected void addPartRepository(PartRepository<? super A, ?> partRepository) {
+		this.partRepositories.add(partRepository);
+	}
+
+	protected String getAccountIdField() {
+		return null;
 	}
 
 	/**
@@ -121,20 +123,19 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		Integer aggregateId = this.nextAggregateId();
 		A aggregate = this.doCreate(sessionInfo);
 
-		this.didDoInit = false;
-		this.doInit(aggregate, aggregateId, sessionInfo.getTenant(), sessionInfo.getUser());
-		Assert.isTrue(this.didDoInit, this.getClass().getSimpleName() + ": doInit was called");
+		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
+		((AggregateSPI) aggregate).doInit(aggregateId, sessionInfo.getTenant().getId());
+		assertThis(((AggregateBase) aggregate).doInitSeqNr > doInitSeqNr,
+				aggregate.getClass().getSimpleName() + ": doInit was propagated");
 
-		this.didDoInitParts = false;
 		this.doInitParts(aggregate);
-		Assert.isTrue(this.didDoInitParts, this.getClass().getSimpleName() + ": doInitParts was called");
 
 		((AggregateSPI) aggregate).calcAll();
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 
 		this.didAfterCreate = false;
-		this.afterCreate(aggregate);
-		Assert.isTrue(this.didAfterCreate, this.getClass().getSimpleName() + ": afterCreate was called");
+		this.doAfterCreate(aggregate);
+		assertThis(this.didAfterCreate, this.getClass().getSimpleName() + ": doAfterCreate was propagated");
 
 		return aggregate;
 	}
@@ -143,41 +144,45 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract A doCreate(SessionInfo sessionInfo);
 
 	@Override
-	public void doInit(A aggregate, Integer aggregateId, ObjTenant tenant, ObjUser user) {
-		this.didDoInit = true;
-		((AggregateSPI) aggregate).doInit(aggregateId, tenant.getId(), user.getId());
+	public final void doInitParts(A aggregate) {
+		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+			partRepo.init(aggregate);
+		}
 	}
 
 	@Override
-	public void doInitParts(A aggregate) {
-		this.didDoInitParts = true;
-	}
-
-	@Override
-	public void afterCreate(A aggregate) {
+	public void doAfterCreate(A aggregate) {
 		this.didAfterCreate = true;
+		Integer doAfterCreateSeqNr = ((AggregateBase) aggregate).doAfterCreateSeqNr;
+		((AggregateSPI) aggregate).doAfterCreate();
+		assertThis(((AggregateBase) aggregate).doAfterCreateSeqNr > doAfterCreateSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAfterCreate was propagated");
 	}
 
 	@Override
 	public final A get(SessionInfo sessionInfo, Integer id) {
 
-		require(id != null, "id not null");
+		requireThis(id != null, "id not null");
 		if (this.aggregateCache.hasItem(sessionInfo, id)) {
 			return this.aggregateCache.getItem(sessionInfo, id);
 		}
 
 		A aggregate = this.doLoad(sessionInfo, id);
 
-		this.didDoLoadParts = false;
+		this.doInitParts(aggregate);
 		this.doLoadParts(aggregate);
-		Assert.isTrue(this.didDoLoadParts, this.getClass().getSimpleName() + ": doLoadParts was called");
+
+		Integer doAssignPartsSeqNr = ((AggregateBase) aggregate).doAssignPartsSeqNr;
+		((AggregateSPI) aggregate).doAssignParts();
+		assertThis(((AggregateBase) aggregate).doAssignPartsSeqNr > doAssignPartsSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAssignParts was propagated");
 
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 		((AggregateSPI) aggregate).calcVolatile();
 
 		this.didAfterLoad = false;
-		this.afterLoad(aggregate);
-		Assert.isTrue(this.didAfterLoad, this.getClass().getSimpleName() + ": afterLoad was called");
+		this.doAfterLoad(aggregate);
+		assertThis(this.didAfterLoad, this.getClass().getSimpleName() + ": doAfterLoad was propagated");
 
 		return aggregate;
 	}
@@ -186,56 +191,73 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract A doLoad(SessionInfo sessionInfo, Integer id);
 
 	@Override
-	public void doLoadParts(A aggregate) {
-		this.didDoLoadParts = true;
+	public final void doLoadParts(A aggregate) {
+		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+			partRepo.load(aggregate);
+		}
 	}
 
 	@Override
-	public void afterLoad(A aggregate) {
+	public void doAfterLoad(A aggregate) {
 		this.didAfterLoad = true;
+		Integer doAfterLoadSeqNr = ((AggregateBase) aggregate).doAfterLoadSeqNr;
+		((AggregateSPI) aggregate).doAfterLoad();
+		assertThis(((AggregateBase) aggregate).doAfterLoadSeqNr > doAfterLoadSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAfterLoad was propagated");
 	}
 
 	@Override
 	public final void store(A aggregate) {
 
 		this.didBeforeStore = false;
-		this.beforeStore(aggregate);
-		Assert.isTrue(this.didBeforeStore, this.getClass().getSimpleName() + ": beforeStore was called");
+		this.doBeforeStore(aggregate);
+		assertThis(this.didBeforeStore, this.getClass().getSimpleName() + ": doBeforeStore was propagated");
 
-		((AggregateSPI) aggregate).beforeStore();
-		((AggregateSPI) aggregate).doStore(aggregate.getMeta().getSessionInfo().getUser().getId());
+		Integer doStoreSeqNr = ((AggregateBase) aggregate).doStoreSeqNr;
+		((AggregateSPI) aggregate).doStore();
+		assertThis(((AggregateBase) aggregate).doStoreSeqNr > doStoreSeqNr,
+				aggregate.getClass().getSimpleName() + ": doStore was propagated");
 
-		this.didDoStoreParts = false;
 		this.doStoreParts(aggregate);
-		Assert.isTrue(this.didDoStoreParts, this.getClass().getSimpleName() + ": doStoreParts was called");
 
 		this.didAfterStore = false;
-		this.afterStore(aggregate);
-		Assert.isTrue(this.didAfterStore, this.getClass().getSimpleName() + ": afterStore was called");
+		this.doAfterStore(aggregate);
+		assertThis(this.didAfterStore, this.getClass().getSimpleName() + ": doAfterStore was propagated");
 
 	}
 
 	@Override
-	public void beforeStore(A aggregate) {
+	public void doBeforeStore(A aggregate) {
 		this.didBeforeStore = true;
+		Integer doBeforeStoreSeqNr = ((AggregateBase) aggregate).doBeforeStoreSeqNr;
+		((AggregateSPI) aggregate).doBeforeStore();
+		assertThis(((AggregateBase) aggregate).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
+				aggregate.getClass().getSimpleName() + ": doBeforeStore was propagated");
 	}
 
 	@Override
-	public void doStoreParts(A aggregate) {
-		this.didDoStoreParts = true;
+	public final void doStoreParts(A aggregate) {
+		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+			partRepo.store(aggregate);
+		}
 	}
 
 	@Override
-	public void afterStore(A aggregate) {
+	public void doAfterStore(A aggregate) {
+		this.didAfterStore = true;
+		Integer doAfterStoreSeqNr = ((AggregateBase) aggregate).doAfterStoreSeqNr;
+		((AggregateSPI) aggregate).doAfterStore();
+		assertThis(((AggregateBase) aggregate).doAfterStoreSeqNr > doAfterStoreSeqNr,
+				aggregate.getClass().getSimpleName() + ": doAfterStore was propagated");
+
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
-		this.didAfterStore = true;
 	}
 
 	@Override
 	public final List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
 		//@formatter:off
-		querySpec.addFilter(PathSpec.of("tenant_id").filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
+		querySpec.addFilter(PathSpec.of(AggregateFields.TENANT_ID.getName()).filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
 		if (this.getAccountIdField() != null && sessionInfo.hasAccount()) {
 			Integer accountId = sessionInfo.getAccountId();
 			querySpec.addFilter(
@@ -246,27 +268,24 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 			);
 		}
 		//@formatter:on
-		return this.doFind(querySpec);
-	}
-
-	protected String getAccountIdField() {
-		return null;
+		return this.doFind(sessionInfo, querySpec);
 	}
 
 	@Override
-	public abstract List<V> doFind(QuerySpec querySpec);
+	public abstract List<V> doFind(SessionInfo sessionInfo, QuerySpec querySpec);
 
 	@Override
 	public final List<V> getByForeignKey(SessionInfo sessionInfo, String fkName, Integer targetId) {
 		QuerySpec querySpec = new QuerySpec(Aggregate.class);
-		FilterSpec filterSpec = PathSpec.of(fkName).filter(FilterOperator.EQ, targetId);
-		querySpec.setFilters(Arrays.asList(filterSpec));
-		return this.doFind(querySpec);
+		querySpec.addFilter(PathSpec.of(fkName).filter(FilterOperator.EQ, targetId));
+		return this.doFind(sessionInfo, querySpec);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected final List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected List<V> doFind(SessionInfo sessionInfo, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+
 		Condition whereClause = DSL.noCondition();
+
 		if (querySpec != null) {
 			for (FilterSpec filter : querySpec.getFilters()) {
 				if (filter.getOperator().equals(FilterOperator.OR) && filter.getExpression() != null) {
@@ -297,6 +316,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		recordList = select.orderBy(sortFields).limit(querySpec.getOffset(), querySpec.getLimit()).fetch();
 
 		return recordList;
+
 	}
 
 	@EventListener

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
@@ -47,7 +47,7 @@ public class BuildingFileTransferController {
 	SessionInfo sessionInfo;
 
 	@GetMapping("/{id}")
-	protected ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
+	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
 		ObjBuilding building = this.repo.get(sessionInfo, id);
 		BuildingTransferDto export = this.getTransferDto(building);
@@ -59,7 +59,7 @@ public class BuildingFileTransferController {
 	}
 
 	@PostMapping
-	protected ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
+	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
 			throws ServletException, IOException {
 		Integer accountId = sessionInfo.getAccountId();
 		if (accountId == null) {
@@ -108,12 +108,14 @@ public class BuildingFileTransferController {
 		dto.getElements().forEach((dtoElement) -> {
 			CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
 			ObjBuildingPartElement element = building.addElement(buildingPart);
-			element.setDescription(dtoElement.getDescription());
 			element.setValuePart(dtoElement.getValuePart());
 			element.setCondition(dtoElement.getCondition());
 			element.setConditionYear(dtoElement.getConditionYear());
 			element.setStrain(dtoElement.getStrain());
 			element.setStrength(dtoElement.getStrength());
+			element.setDescription(dtoElement.getDescription());
+			element.setConditionDescription(dtoElement.getConditionDescription());
+			element.setMeasureDescription(dtoElement.getMeasureDescription());
 		});
 		repo.store(building);
 		BuildingTransferDto export = this.getTransferDto(building);
@@ -133,12 +135,14 @@ public class BuildingFileTransferController {
 			return BuildingTransferElementDto
 				.builder()
 					.buildingPart(e.getBuildingPart().getId())
-					.description(e.getDescription())
 					.valuePart(e.getValuePart())
 					.condition(e.getCondition())
 					.conditionYear(e.getConditionYear())
 					.strain(e.getStrain())
 					.strength(e.getStrength())
+					.description(e.getDescription())
+					.conditionDescription(e.getConditionDescription())
+					.measureDescription(e.getMeasureDescription())
 				.build();
 		}).toList();
 		BuildingTransferDto export = BuildingTransferDto

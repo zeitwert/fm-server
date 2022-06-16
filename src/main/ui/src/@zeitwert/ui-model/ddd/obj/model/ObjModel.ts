@@ -1,4 +1,4 @@
-import { ItemWithNotesModel } from "@zeitwert/ui-model/fm/item/model/ItemWithNotesModel";
+
 import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { UserInfo } from "../../../app/session";
 import { Contact } from "../../../fm/contact/model/ContactModel";
@@ -13,7 +13,7 @@ export enum GenericUserType {
 
 export type GenericUser = Contact | UserInfo;
 
-const MstObjModel = types.compose(AggregateModel, ItemWithNotesModel)
+const MstObjModel = AggregateModel
 	.named("Obj")
 	.props({
 		meta: types.maybe(types.frozen<ObjMeta>()),

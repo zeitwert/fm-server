@@ -2,21 +2,22 @@
 package io.zeitwert.ddd.obj.model.base;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
+import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNote;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
+import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.service.api.ObjService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
@@ -34,7 +35,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	private final SessionInfo sessionInfo;
 	private final ObjRepository<? extends Obj, ? extends Record> repository;
 	private final UpdatableRecord<?> objDbRecord;
-	private final CodeAggregateTypeEnum aggregateTypeEnum;
 
 	protected final SimpleProperty<Integer> id;
 	protected final ReferenceProperty<ObjTenant> tenant;
@@ -56,7 +56,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.sessionInfo = sessionInfo;
 		this.repository = repository;
 		this.objDbRecord = objDbRecord;
-		this.aggregateTypeEnum = AppContext.getInstance().getEnumeration(CodeAggregateTypeEnum.class);
 		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
 		this.tenant = this.addReferenceProperty(objDbRecord, ObjFields.TENANT_ID, ObjTenant.class);
 		this.owner = this.addReferenceProperty(objDbRecord, ObjFields.OWNER_ID, ObjUser.class);
@@ -99,20 +98,51 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.objTypeId.setValue(this.getRepository().getAggregateType().getId());
 		this.id.setValue(objId);
 		this.tenant.setId(tenantId);
-		this.createdByUser.setId(userId);
-		this.createdAt.setValue(OffsetDateTime.now());
 	}
 
 	@Override
-	public void doStore(Integer userId) {
+	public void doAfterCreate() {
+		super.doAfterCreate();
+	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
+		this.transitionList.loadPartList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+	}
+
+	@Override
+	public void doBeforeStore() {
+		this.transitionList.addPart();
+		super.doBeforeStore(); // transition needs to be present for transitionList.seqNr
+		if (this.getObjDbRecord().changed(ObjFields.ID)) { // isNew
+			Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+			this.owner.setId(sessionUserId);
+			this.createdByUser.setId(sessionUserId);
+			this.createdAt.setValue(OffsetDateTime.now());
+		}
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
-		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, userId);
+		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(ObjFields.MODIFIED_AT, OffsetDateTime.now());
-		dbRecord.store();
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		getObjDbRecord().store();
+	}
+
+	@Override
+	public void delete() {
+		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
+		dbRecord.setValue(ObjFields.CLOSED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
+		dbRecord.setValue(ObjFields.CLOSED_AT, OffsetDateTime.now());
 	}
 
 	@Override
@@ -129,24 +159,24 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.getRepository().getItemRepository().create(this, partListType);
 	}
 
-	public abstract void loadTransitionList(Collection<ObjPartTransition> nodeList);
-
-	// TODO get rid
-	private Class<? extends Obj> getInstanceClass() {
-		if (this.getAggregateType() == aggregateTypeEnum.getItem("obj_contact")) {
-			return ObjContact.class;
-		} else if (this.getAggregateType() == aggregateTypeEnum.getItem("obj_account")) {
-			return ObjAccount.class;
-		}
-		return null;
+	public List<ObjNote> getNoteList() {
+		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		return noteRepository.getByForeignKey(this.getSessionInfo(), "related_to_id", this.getId()).stream()
+				.map(onv -> noteRepository.get(this.getSessionInfo(), onv.getId())).toList();
 	}
 
-	@SuppressWarnings("unchecked")
-	public <O extends Obj> O getInstance() {
-		return (O) this.getAppContext().getRepository(this.getInstanceClass()).get(this.getSessionInfo(), this.getId());
+	public ObjNote addNote(CodeNoteType noteType) {
+		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNote note = noteRepository.create(this.getSessionInfo());
+		note.setNoteType(noteType);
+		note.setRelatedToId(this.getId());
+		return note;
 	}
 
-	protected void doCalcAll() {
+	public void removeNote(Integer noteId) {
+		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNote note = noteRepository.get(this.getSessionInfo(), noteId);
+		noteRepository.delete(note);
 	}
 
 }

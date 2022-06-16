@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.util.Assert;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> implements EnumSetProperty<E> {
 
@@ -40,6 +40,24 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	}
 
 	@Override
+	public void clearItems() {
+		this.itemSet.forEach(item -> ((PartSPI<?>) item).delete());
+		this.itemSet.clear();
+		this.getEntity().afterClear(this);
+	}
+
+	@Override
+	public void addItem(E item) {
+		assertThis(item != null, "item not null");
+		if (!this.hasItem(item)) {
+			EntityPartItem part = this.getEntity().addItem(this, this.partListType);
+			part.setItemId(item.getId());
+			this.itemSet.add(part);
+			this.getEntity().afterAdd(this);
+		}
+	}
+
+	@Override
 	public Set<E> getItems() {
 		return Set.copyOf(this.itemSet.stream().map(item -> this.enumeration.getItem(item.getItemId())).toList());
 	}
@@ -55,26 +73,8 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	}
 
 	@Override
-	public void clearItems() {
-		this.itemSet.forEach(item -> ((PartSPI<?>) item).delete());
-		this.itemSet.clear();
-		this.getEntity().afterClear(this);
-	}
-
-	@Override
-	public void addItem(E item) {
-		Assert.isTrue(item != null, "item not null");
-		if (!this.hasItem(item)) {
-			EntityPartItem part = this.getEntity().addItem(this, this.partListType);
-			part.setItemId(item.getId());
-			this.itemSet.add(part);
-			this.getEntity().afterAdd(this);
-		}
-	}
-
-	@Override
 	public void removeItem(E item) {
-		Assert.isTrue(item != null, "item not null");
+		assertThis(item != null, "item not null");
 		if (this.hasItem(item)) {
 			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(item.getId())).findAny().get();
 			((PartSPI<?>) part).delete();
@@ -83,8 +83,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 		}
 	}
 
-	@Override
-	public void beforeStore() {
+	public void doBeforeStore() {
 		int seqNr = 0;
 		for (EntityPartItem item : this.itemSet) {
 			item.setSeqNr(seqNr++);
@@ -92,7 +91,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	}
 
 	@Override
-	public void loadEnumSet(Collection<EntityPartItem> partList) {
+	public void loadEnumSet(Collection<? extends EntityPartItem> partList) {
 		this.itemSet.clear();
 		partList.forEach(p -> this.itemSet.add(p));
 	}

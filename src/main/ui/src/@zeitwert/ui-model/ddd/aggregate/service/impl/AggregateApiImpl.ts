@@ -111,12 +111,12 @@ export abstract class AggregateApiImpl<S extends AggregateSnapshot> implements A
 		return this.deserializeData(response.data);
 	}
 
-	async removeItem(item: S) {
+	async deleteAggregate(id: string) {
 		const url = Config.getApiUrl(
 			this.module,
-			this.itemPath + "/" + item.id + (!!this.includes ? "?" + this.includes : "")
+			this.itemPath + "/" + id + (!!this.includes ? "?" + this.includes : "")
 		);
-		await API.delete(url, { headers: API_HEADERS, data: this.serializeItem(item) });
+		await API.delete(url, { headers: API_HEADERS });
 	}
 
 }

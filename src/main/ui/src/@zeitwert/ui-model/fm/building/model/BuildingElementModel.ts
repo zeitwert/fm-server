@@ -23,6 +23,8 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 		strain: types.maybe(types.number),
 		strength: types.maybe(types.number),
 		description: types.maybe(types.string),
+		conditionDescription: types.maybe(types.string),
+		measureDescription: types.maybe(types.string),
 		materialDescriptions: types.optional(types.array(types.frozen<Enumerated>()), []),
 		conditionDescriptions: types.optional(types.array(types.frozen<Enumerated>()), []),
 		measureDescriptions: types.optional(types.array(types.frozen<Enumerated>()), []),

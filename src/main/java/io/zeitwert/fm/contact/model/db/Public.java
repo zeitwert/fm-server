@@ -4,18 +4,14 @@
 package io.zeitwert.fm.contact.model.db;
 
 
+import io.zeitwert.fm.contact.model.db.tables.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.db.tables.CodeAddressType;
-import io.zeitwert.fm.contact.model.db.tables.CodeAnniversaryNotification;
-import io.zeitwert.fm.contact.model.db.tables.CodeAnniversaryTemplate;
-import io.zeitwert.fm.contact.model.db.tables.CodeAnniversaryType;
 import io.zeitwert.fm.contact.model.db.tables.CodeContactRole;
 import io.zeitwert.fm.contact.model.db.tables.CodeGender;
-import io.zeitwert.fm.contact.model.db.tables.CodeInteractionChannel;
 import io.zeitwert.fm.contact.model.db.tables.CodeSalutation;
 import io.zeitwert.fm.contact.model.db.tables.CodeTitle;
 import io.zeitwert.fm.contact.model.db.tables.ObjContact;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAnniversary;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactSearch;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactV;
 
@@ -41,24 +37,14 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
+     * The table <code>public.code_address_channel</code>.
+     */
+    public final CodeAddressChannel CODE_ADDRESS_CHANNEL = CodeAddressChannel.CODE_ADDRESS_CHANNEL;
+
+    /**
      * The table <code>public.code_address_type</code>.
      */
     public final CodeAddressType CODE_ADDRESS_TYPE = CodeAddressType.CODE_ADDRESS_TYPE;
-
-    /**
-     * The table <code>public.code_anniversary_notification</code>.
-     */
-    public final CodeAnniversaryNotification CODE_ANNIVERSARY_NOTIFICATION = CodeAnniversaryNotification.CODE_ANNIVERSARY_NOTIFICATION;
-
-    /**
-     * The table <code>public.code_anniversary_template</code>.
-     */
-    public final CodeAnniversaryTemplate CODE_ANNIVERSARY_TEMPLATE = CodeAnniversaryTemplate.CODE_ANNIVERSARY_TEMPLATE;
-
-    /**
-     * The table <code>public.code_anniversary_type</code>.
-     */
-    public final CodeAnniversaryType CODE_ANNIVERSARY_TYPE = CodeAnniversaryType.CODE_ANNIVERSARY_TYPE;
 
     /**
      * The table <code>public.code_contact_role</code>.
@@ -69,11 +55,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.code_gender</code>.
      */
     public final CodeGender CODE_GENDER = CodeGender.CODE_GENDER;
-
-    /**
-     * The table <code>public.code_interaction_channel</code>.
-     */
-    public final CodeInteractionChannel CODE_INTERACTION_CHANNEL = CodeInteractionChannel.CODE_INTERACTION_CHANNEL;
 
     /**
      * The table <code>public.code_salutation</code>.
@@ -94,11 +75,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.obj_contact_part_address</code>.
      */
     public final ObjContactPartAddress OBJ_CONTACT_PART_ADDRESS = ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS;
-
-    /**
-     * The table <code>public.obj_contact_part_anniversary</code>.
-     */
-    public final ObjContactPartAnniversary OBJ_CONTACT_PART_ANNIVERSARY = ObjContactPartAnniversary.OBJ_CONTACT_PART_ANNIVERSARY;
 
     /**
      * The table <code>public.obj_contact_search</code>.
@@ -126,18 +102,14 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            CodeAddressChannel.CODE_ADDRESS_CHANNEL,
             CodeAddressType.CODE_ADDRESS_TYPE,
-            CodeAnniversaryNotification.CODE_ANNIVERSARY_NOTIFICATION,
-            CodeAnniversaryTemplate.CODE_ANNIVERSARY_TEMPLATE,
-            CodeAnniversaryType.CODE_ANNIVERSARY_TYPE,
             CodeContactRole.CODE_CONTACT_ROLE,
             CodeGender.CODE_GENDER,
-            CodeInteractionChannel.CODE_INTERACTION_CHANNEL,
             CodeSalutation.CODE_SALUTATION,
             CodeTitle.CODE_TITLE,
             ObjContact.OBJ_CONTACT,
             ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS,
-            ObjContactPartAnniversary.OBJ_CONTACT_PART_ANNIVERSARY,
             ObjContactSearch.OBJ_CONTACT_SEARCH,
             ObjContactV.OBJ_CONTACT_V);
     }

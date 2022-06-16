@@ -13,9 +13,11 @@ export const TextArea: FC<TextAreaProps> = observer((props) => {
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
 	const fieldId = getFieldId(props);
 	return (
-		<Field {...props} isMultiline={true}>
-			{readOnly && inputProps.value && <p>{inputProps.value}</p>}
-			{readOnly && !inputProps.value && <p>&nbsp;</p>}
+		<Field {...props} isMultiline >
+			{
+				readOnly &&
+				<p style={{ whiteSpace: "pre-line" }} >{inputProps.value ? inputProps.value : <>&nbsp;</>}</p>
+			}
 			{
 				!readOnly &&
 				<textarea
@@ -25,6 +27,6 @@ export const TextArea: FC<TextAreaProps> = observer((props) => {
 					rows={rows}
 				/>
 			}
-		</Field>
+		</Field >
 	);
 });

@@ -33,9 +33,4 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		return this.dbRecord.getValue(ObjTenantFields.EXTL_KEY);
 	}
 
-	@Override
-	public void doCalcAll() {
-
-	}
-
 }

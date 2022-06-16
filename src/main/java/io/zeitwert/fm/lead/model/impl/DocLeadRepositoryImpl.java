@@ -8,8 +8,9 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.fm.doc.model.DocPartNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.lead.model.DocLead;
 import io.zeitwert.fm.lead.model.DocLeadRepository;
@@ -17,7 +18,11 @@ import io.zeitwert.fm.lead.model.base.DocLeadBase;
 import io.zeitwert.fm.lead.model.db.Tables;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadRecord;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
@@ -32,7 +37,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final DocPartTransitionRepository transitionRepository,
-		final DocPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			DocLeadRepository.class,
@@ -48,23 +53,19 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
+
+	@Override
 	public DocLead doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
 	}
 
 	@Override
-	public void doInitParts(DocLead doc) {
-		super.doInitParts(doc);
-	}
-
-	@Override
-	public List<DocLeadVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
-	}
-
-	@Override
 	public DocLead doLoad(SessionInfo sessionInfo, Integer docId) {
-		require(docId != null, "docId not null");
+		requireThis(docId != null, "docId not null");
 		DocLeadRecord leadRecord = this.getDSLContext().fetchOne(Tables.DOC_LEAD, Tables.DOC_LEAD.DOC_ID.eq(docId));
 		if (leadRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
@@ -73,11 +74,8 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	}
 
 	@Override
-	public void doLoadParts(DocLead doc) {
-		super.doLoadParts(doc);
-		// Set<CodeArea> areaSet = this.getUtil().loadEnumSet(this.getDSLContext(),
-		// doc.getId(), "", CodeAreaEnum.class);
-		// ((DocLeadBase) doc).loadAreaSet(areaSet);
+	public List<DocLeadVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
 	}
 
 }

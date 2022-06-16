@@ -1,8 +1,9 @@
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -27,8 +28,8 @@ public abstract class ObjTestPartNodeBase extends ObjPartBase<ObjTest> implement
 	protected final EnumProperty<CodeCountry> country;
 	protected final ReferenceProperty<ObjTest> refTest;
 
-	public ObjTestPartNodeBase(ObjTest obj, UpdatableRecord<?> dbRecord) {
-		super(obj, dbRecord);
+	public ObjTestPartNodeBase(PartRepository<ObjTest, ?> repository, ObjTest obj, UpdatableRecord<?> dbRecord) {
+		super(repository, obj, dbRecord);
 		this.shortText = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.SHORT_TEXT);
 		this.longText = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.LONG_TEXT);
 		this.date = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.DATE);

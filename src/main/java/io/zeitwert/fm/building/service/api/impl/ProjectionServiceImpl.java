@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 @Service("projectionService")
 @DependsOn("codeBuildingPriceIndexEnum")
@@ -43,10 +45,6 @@ public class ProjectionServiceImpl implements ProjectionService {
 	public ProjectionServiceImpl(SessionInfo sessionInfo, ObjBuildingRepository buildingRepo) {
 		this.sessionInfo = sessionInfo;
 		this.buildingRepo = buildingRepo;
-	}
-
-	protected void require(boolean condition, String message) {
-		Assert.isTrue(condition, "Precondition failed: " + message);
 	}
 
 	public ProjectionResult getProjection(ObjPortfolio portfolio) {
@@ -231,10 +229,10 @@ public class ProjectionServiceImpl implements ProjectionService {
 	) {
 	//@formatter:on
 
-		require(buildingPart != null, "buildingPart not null");
-		require(conditionYear <= startYear, "valid start year (" + conditionYear + "<=" + startYear + ")");
-		require(0 <= condition && condition <= 1.0, "valid condition (0 <=" + condition + " <= 1)");
-		require(duration <= 100, "duration <= 100");
+		requireThis(buildingPart != null, "buildingPart not null");
+		requireThis(conditionYear <= startYear, "valid start year (" + conditionYear + "<=" + startYear + ")");
+		requireThis(0 <= condition && condition <= 1.0, "valid condition (0 <=" + condition + " <= 1)");
+		requireThis(duration <= 100, "duration <= 100");
 
 		final int MaxProjectionYear = startYear + (int) Math.min(100.0, duration);
 		final double RestorationTimeValue = buildingPart.getOptimalRestoreTimeValue();
@@ -275,8 +273,8 @@ public class ProjectionServiceImpl implements ProjectionService {
 			relativeAge += 1;
 			timeValue = this.getTimeValue(buildingPart, relativeAge);
 		}
-		// Assert.isTrue(periodList.get(0).getYear() == startYear, "valid start year");
-		Assert.isTrue(periodList.size() == duration + 1, "valid duration");
+		// assertThis(periodList.get(0).getYear() == startYear, "valid start year");
+		assertThis(periodList.size() == duration + 1, "valid duration");
 		return periodList;
 	}
 
@@ -329,7 +327,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 	) {
 	//@formatter:on
 
-		require(buildingPart != null, "buildingPart not null");
+		requireThis(buildingPart != null, "buildingPart not null");
 		Double startYear = 0.0;
 		Double restorationYear = 0.0;
 		Double restorationCosts = 0.0;

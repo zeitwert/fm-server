@@ -40,6 +40,12 @@ public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest
 	//@formatter:on
 
 	@Override
+	public ObjTestPartNode doCreate(ObjTest obj) {
+		ObjTestPartNodeRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_TEST_PART_NODE);
+		return this.newPart(obj, dbRecord);
+	}
+
+	@Override
 	public List<ObjTestPartNode> doLoad(ObjTest obj) {
 		//@formatter:off
 		Result<ObjTestPartNodeRecord> dbRecords = this.getDSLContext()
@@ -49,12 +55,6 @@ public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest
 			.fetchInto(Tables.OBJ_TEST_PART_NODE);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(obj, dbRecord));
-	}
-
-	@Override
-	public ObjTestPartNode doCreate(ObjTest obj) {
-		ObjTestPartNodeRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_TEST_PART_NODE);
-		return this.newPart(obj, dbRecord);
 	}
 
 }

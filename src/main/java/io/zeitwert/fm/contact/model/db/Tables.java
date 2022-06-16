@@ -4,18 +4,14 @@
 package io.zeitwert.fm.contact.model.db;
 
 
+import io.zeitwert.fm.contact.model.db.tables.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.db.tables.CodeAddressType;
-import io.zeitwert.fm.contact.model.db.tables.CodeAnniversaryNotification;
-import io.zeitwert.fm.contact.model.db.tables.CodeAnniversaryTemplate;
-import io.zeitwert.fm.contact.model.db.tables.CodeAnniversaryType;
 import io.zeitwert.fm.contact.model.db.tables.CodeContactRole;
 import io.zeitwert.fm.contact.model.db.tables.CodeGender;
-import io.zeitwert.fm.contact.model.db.tables.CodeInteractionChannel;
 import io.zeitwert.fm.contact.model.db.tables.CodeSalutation;
 import io.zeitwert.fm.contact.model.db.tables.CodeTitle;
 import io.zeitwert.fm.contact.model.db.tables.ObjContact;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAnniversary;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactSearch;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactV;
 
@@ -27,24 +23,14 @@ import io.zeitwert.fm.contact.model.db.tables.ObjContactV;
 public class Tables {
 
     /**
+     * The table <code>public.code_address_channel</code>.
+     */
+    public static final CodeAddressChannel CODE_ADDRESS_CHANNEL = CodeAddressChannel.CODE_ADDRESS_CHANNEL;
+
+    /**
      * The table <code>public.code_address_type</code>.
      */
     public static final CodeAddressType CODE_ADDRESS_TYPE = CodeAddressType.CODE_ADDRESS_TYPE;
-
-    /**
-     * The table <code>public.code_anniversary_notification</code>.
-     */
-    public static final CodeAnniversaryNotification CODE_ANNIVERSARY_NOTIFICATION = CodeAnniversaryNotification.CODE_ANNIVERSARY_NOTIFICATION;
-
-    /**
-     * The table <code>public.code_anniversary_template</code>.
-     */
-    public static final CodeAnniversaryTemplate CODE_ANNIVERSARY_TEMPLATE = CodeAnniversaryTemplate.CODE_ANNIVERSARY_TEMPLATE;
-
-    /**
-     * The table <code>public.code_anniversary_type</code>.
-     */
-    public static final CodeAnniversaryType CODE_ANNIVERSARY_TYPE = CodeAnniversaryType.CODE_ANNIVERSARY_TYPE;
 
     /**
      * The table <code>public.code_contact_role</code>.
@@ -55,11 +41,6 @@ public class Tables {
      * The table <code>public.code_gender</code>.
      */
     public static final CodeGender CODE_GENDER = CodeGender.CODE_GENDER;
-
-    /**
-     * The table <code>public.code_interaction_channel</code>.
-     */
-    public static final CodeInteractionChannel CODE_INTERACTION_CHANNEL = CodeInteractionChannel.CODE_INTERACTION_CHANNEL;
 
     /**
      * The table <code>public.code_salutation</code>.
@@ -80,11 +61,6 @@ public class Tables {
      * The table <code>public.obj_contact_part_address</code>.
      */
     public static final ObjContactPartAddress OBJ_CONTACT_PART_ADDRESS = ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS;
-
-    /**
-     * The table <code>public.obj_contact_part_anniversary</code>.
-     */
-    public static final ObjContactPartAnniversary OBJ_CONTACT_PART_ANNIVERSARY = ObjContactPartAnniversary.OBJ_CONTACT_PART_ANNIVERSARY;
 
     /**
      * The table <code>public.obj_contact_search</code>.

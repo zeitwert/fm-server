@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.account.model.base;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jooq.UpdatableRecord;
@@ -12,14 +11,14 @@ import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
-import io.zeitwert.fm.common.model.enums.CodeArea;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
-import io.zeitwert.ddd.common.model.enums.CodeCurrency;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -62,23 +61,28 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		return (ObjAccountRepository) super.getRepository();
 	}
 
-	public abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
+	@Override
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
+		this.dbRecord.setValue(ObjAccountFields.OBJ_ID, objId);
+	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
-		this.dbRecord.setValue(ObjAccountFields.OBJ_ID, objId);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		this.dbRecord.store();
 	}
 
 	@Override
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -91,17 +95,12 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 
 	private void calcCaption() {
 		this.caption.setValue(this.getName());
-	}
-
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.areaSet.beforeStore();
 	}
 
 }

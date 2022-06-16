@@ -2,8 +2,8 @@
 package io.zeitwert.fm.lead.model.base;
 
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.common.model.enums.CodeArea;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
@@ -17,8 +17,8 @@ import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSource;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -82,19 +82,20 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 	}
 
 	@Override
-	public void doInit(Integer docId, Integer tenantId, Integer userId) {
-		super.doInit(docId, tenantId, userId);
+	public void doInit(Integer docId, Integer tenantId) {
+		super.doInit(docId, tenantId);
 		this.leadRecord.setValue(DocLeadFields.DOC_ID, docId);
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doStore() {
+		super.doStore();
 		this.leadRecord.store();
 	}
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 
@@ -110,12 +111,6 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 		}
 		this.caption
 				.setValue(this.getCaption() + (this.getCaseStage() != null ? ", " + this.getCaseStage().getName() : ""));
-	}
-
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.areaSet.beforeStore();
 	}
 
 }

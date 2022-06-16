@@ -13,6 +13,8 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -24,9 +26,12 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -51,7 +56,7 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjDocumentRepository.class,
@@ -68,28 +73,24 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
+
+	@Override
+	protected String getAccountIdField() {
+		return null;
+	}
+
+	@Override
 	public ObjDocument doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
 	}
 
 	@Override
-	public void doInitParts(ObjDocument obj) {
-		super.doInitParts(obj);
-	}
-
-	@Override
-	public List<ObjDocumentVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
-	}
-
-	@Override
 	public ObjDocument doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjDocumentRecord documentRecord = this.getDSLContext().fetchOne(Tables.OBJ_DOCUMENT,
 				Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId));
 		if (documentRecord == null) {
@@ -99,13 +100,8 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	}
 
 	@Override
-	public void doLoadParts(ObjDocument obj) {
-		super.doLoadParts(obj);
-	}
-
-	@Override
-	public void doStoreParts(ObjDocument obj) {
-		super.doStoreParts(obj);
+	public List<ObjDocumentVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
 	}
 
 	@Override

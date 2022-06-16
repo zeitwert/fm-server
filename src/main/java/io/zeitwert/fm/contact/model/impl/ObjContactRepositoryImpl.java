@@ -8,6 +8,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
@@ -17,9 +19,12 @@ import io.zeitwert.fm.contact.model.base.ObjContactFields;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -42,8 +47,8 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository,
-		final ObjContactPartAddressRepository addressRepository
+		final ObjContactPartAddressRepository addressRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjContactRepository.class,
@@ -62,6 +67,13 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getAddressRepository());
+	}
+
+	@Override
 	public ObjContactPartAddressRepository getAddressRepository() {
 		return this.addressRepository;
 	}
@@ -72,29 +84,18 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
+	protected String getAccountIdField() {
+		return ObjContactFields.ACCOUNT_ID.getName();
+	}
+
+	@Override
 	public ObjContact doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_CONTACT));
 	}
 
 	@Override
-	public void doInitParts(ObjContact obj) {
-		super.doInitParts(obj);
-		this.addressRepository.init(obj);
-	}
-
-	@Override
-	public List<ObjContactVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
-	}
-
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
-	}
-
-	@Override
 	public ObjContact doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjContactRecord contactRecord = this.getDSLContext().fetchOne(Tables.OBJ_CONTACT,
 				Tables.OBJ_CONTACT.OBJ_ID.eq(objId));
 		if (contactRecord == null) {
@@ -104,16 +105,8 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
-	public void doLoadParts(ObjContact obj) {
-		super.doLoadParts(obj);
-		this.addressRepository.load(obj);
-		((ObjContactBase) obj).loadAddressList(this.addressRepository.getPartList(obj, this.getAddressListType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjContact obj) {
-		super.doStoreParts(obj);
-		this.addressRepository.store(obj);
+	public List<ObjContactVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
 	}
 
 	@Override

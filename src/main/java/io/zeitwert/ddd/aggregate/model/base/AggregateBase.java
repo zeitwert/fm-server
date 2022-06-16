@@ -5,8 +5,6 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.Enumerated;
-import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.validation.model.AggregatePartValidation;
@@ -15,9 +13,10 @@ import io.zeitwert.ddd.validation.model.impl.AggregatePartValidationImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.jooq.Record;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 /**
  * An Aggregate based on jOOQ Record
@@ -28,15 +27,24 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	private boolean isInCalc = false;
 	private List<AggregatePartValidation> validationList = new ArrayList<>();
 
-	public abstract AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
+	private boolean didCalcAll = false;
+	private boolean didCalcVolatile = false;
 
-	@Override
-	public abstract void doInit(Integer aggregateId, Integer tenantId, Integer userId);
+	protected Integer doInitSeqNr = 0;
+	protected Integer doAfterCreateSeqNr = 0;
+	protected Integer doAssignPartsSeqNr = 0;
+	protected Integer doAfterLoadSeqNr = 0;
+	protected Integer doBeforeStoreSeqNr = 0;
+	protected Integer doStoreSeqNr = 0;
+	protected Integer doAfterStoreSeqNr = 0;
 
 	@Override
 	public AppContext getAppContext() {
 		return AppContext.getInstance();
 	}
+
+	@Override
+	public abstract AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
 
 	public AggregateMeta getMeta() {
 		return this;
@@ -50,18 +58,45 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		this.isStale = true;
 	}
 
-	protected <E extends Enumerated> boolean isValidEnum(E item, Class<? extends Enumeration<E>> enumClass) {
-		Enumeration<?> anEnum = this.getAppContext().getEnumeration(enumClass);
-		if (item == null) {
-			return true;
-		} else if (!Objects.equals(item.getEnumeration(), anEnum)) {
-			return false;
-		}
-		return Objects.equals(item, anEnum.getItem(item.getId()));
+	@Override
+	public void doInit(Integer aggregateId, Integer tenantId) {
+		this.doInitSeqNr += 1;
 	}
 
-	protected boolean isValidAggregateId(Integer id, Class<? extends Aggregate> aggregateClass) {
-		return id == null || true; // repo.get(id).isPresent(); <- too expensive
+	@Override
+	public void doAfterCreate() {
+		this.doAfterCreateSeqNr += 1;
+	}
+
+	@Override
+	public void doAssignParts() {
+		this.doAssignPartsSeqNr += 1;
+	}
+
+	@Override
+	public void doAfterLoad() {
+		this.doAfterLoadSeqNr += 1;
+	}
+
+	@Override
+	public void doBeforeStore() {
+		this.doBeforeStoreSeqNr += 1;
+		this.doBeforeStoreProperties();
+	}
+
+	@Override
+	public void doStore() {
+		this.doStoreSeqNr += 1;
+	}
+
+	@Override
+	public void doAfterStore() {
+		this.doAfterStoreSeqNr += 1;
+	}
+
+	@Override
+	public void delete() {
+		assertThis(false, "delete supported");
 	}
 
 	@Override
@@ -117,13 +152,16 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		}
 		try {
 			this.beginCalc();
+			this.didCalcAll = false;
 			this.doCalcAll();
+			assertThis(this.didCalcAll, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {
 			this.endCalc();
 		}
 	}
 
 	protected void doCalcAll() {
+		this.didCalcAll = true;
 	}
 
 	public void calcVolatile() {
@@ -132,16 +170,16 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		}
 		try {
 			this.beginCalc();
+			this.didCalcVolatile = false;
 			this.doCalcVolatile();
+			assertThis(this.didCalcVolatile, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {
 			this.endCalc();
 		}
 	}
 
 	protected void doCalcVolatile() {
-	}
-
-	public void beforeStore() {
+		this.didCalcVolatile = true;
 	}
 
 }

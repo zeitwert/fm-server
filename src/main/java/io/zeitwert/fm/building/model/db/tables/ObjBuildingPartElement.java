@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -106,6 +106,16 @@ public class ObjBuildingPartElement extends TableImpl<ObjBuildingPartElementReco
      * The column <code>public.obj_building_part_element.description</code>.
      */
     public final TableField<ObjBuildingPartElementRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.obj_building_part_element.condition_description</code>.
+     */
+    public final TableField<ObjBuildingPartElementRecord, String> CONDITION_DESCRIPTION = createField(DSL.name("condition_description"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.obj_building_part_element.measure_description</code>.
+     */
+    public final TableField<ObjBuildingPartElementRecord, String> MEASURE_DESCRIPTION = createField(DSL.name("measure_description"), SQLDataType.CLOB, this, "");
 
     private ObjBuildingPartElement(Name alias, Table<ObjBuildingPartElementRecord> aliased) {
         this(alias, aliased, null);
@@ -204,11 +214,11 @@ public class ObjBuildingPartElement extends TableImpl<ObjBuildingPartElementReco
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, Integer, Integer, String, Integer, String, Integer, Integer, Integer, Integer, Integer, String> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row14<Integer, Integer, Integer, String, Integer, String, Integer, Integer, Integer, Integer, Integer, String, String, String> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

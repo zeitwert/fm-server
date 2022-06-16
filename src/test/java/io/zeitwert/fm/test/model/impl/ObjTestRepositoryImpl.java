@@ -8,13 +8,15 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -24,6 +26,8 @@ import io.zeitwert.fm.test.model.base.ObjTestFields;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
+
+import javax.annotation.PostConstruct;
 
 @Component("objTestRepository")
 public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
@@ -40,8 +44,8 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository,
-		final ObjTestPartNodeRepository nodeRepository
+		final ObjTestPartNodeRepository nodeRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjTestRepository.class,
@@ -60,6 +64,14 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(this.getNodeRepository());
+	}
+
+	@Override
 	public ObjTestPartNodeRepository getNodeRepository() {
 		return this.nodeRepository;
 	}
@@ -75,20 +87,8 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public void doInitParts(ObjTest obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-		this.nodeRepository.init(obj);
-	}
-
-	@Override
-	public List<ObjTestVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
-	}
-
-	@Override
 	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
 		if (testRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
@@ -97,19 +97,8 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public void doLoadParts(ObjTest obj) {
-		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
-		((ObjTestBase) obj).loadAreaSet(this.getItemRepository().getPartList(obj, this.getAreaSetType()));
-		this.nodeRepository.load(obj);
-		((ObjTestBase) obj).loadNodeList(this.nodeRepository.getPartList(obj, this.getNodeListType()));
-	}
-
-	@Override
-	public void doStoreParts(ObjTest obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
-		this.nodeRepository.store(obj);
+	public List<ObjTestVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
 	}
 
 }

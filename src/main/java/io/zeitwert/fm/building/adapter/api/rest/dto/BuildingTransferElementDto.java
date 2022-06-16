@@ -8,12 +8,14 @@ import lombok.Data;
 public class BuildingTransferElementDto {
 
 	private String buildingPart;
-	private String description;
 	private Integer valuePart;
 	private Integer condition;
 	private Integer conditionYear;
 	private Integer strain;
 	private Integer strength;
+	private String description;
+	private String conditionDescription;
+	private String measureDescription;
 	// private String[] conditionDescriptions;
 	// private String[] materialDescriptions;
 	// private String[] measureDescriptions;

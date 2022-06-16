@@ -3,12 +3,13 @@ package io.zeitwert.ddd.session.service.api.impl;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.app.event.SessionClosedEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.common.model.enums.CodeLocale;
-import io.zeitwert.ddd.common.model.enums.CodeLocaleEnum;
+import io.zeitwert.fm.account.model.enums.CodeLocale;
+import io.zeitwert.fm.account.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.SessionService;
@@ -36,7 +37,7 @@ class SessionServiceImpl implements SessionService {
 
 	@Override
 	public SessionInfo openSession(ObjUser user, CodeLocale locale) {
-		Assert.isTrue(user != null, "valid user");
+		assertThis(user != null, "valid user");
 		return new SessionInfo(user.getTenant(), user, null, locale);
 	}
 

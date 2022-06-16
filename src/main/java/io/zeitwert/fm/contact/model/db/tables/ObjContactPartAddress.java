@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row16;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -65,7 +65,7 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
     /**
      * The column <code>public.obj_contact_part_address.part_list_type_id</code>.
      */
-    public final TableField<ObjContactPartAddressRecord, String> PART_LIST_TYPE_ID = createField(DSL.name("part_list_type_id"), SQLDataType.VARCHAR(40).nullable(false).defaultValue(DSL.field("'contact.addressList'::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<ObjContactPartAddressRecord, String> PART_LIST_TYPE_ID = createField(DSL.name("part_list_type_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
      * The column <code>public.obj_contact_part_address.seq_nr</code>.
@@ -73,19 +73,14 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
     public final TableField<ObjContactPartAddressRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.obj_contact_part_address.key</code>.
+     * The column <code>public.obj_contact_part_address.address_channel_id</code>.
      */
-    public final TableField<ObjContactPartAddressRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(60), this, "");
-
-    /**
-     * The column <code>public.obj_contact_part_address.address_type_id</code>.
-     */
-    public final TableField<ObjContactPartAddressRecord, String> ADDRESS_TYPE_ID = createField(DSL.name("address_type_id"), SQLDataType.VARCHAR(40), this, "");
+    public final TableField<ObjContactPartAddressRecord, String> ADDRESS_CHANNEL_ID = createField(DSL.name("address_channel_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
      * The column <code>public.obj_contact_part_address.name</code>.
      */
-    public final TableField<ObjContactPartAddressRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<ObjContactPartAddressRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.obj_contact_part_address.street</code>.
@@ -103,29 +98,9 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
     public final TableField<ObjContactPartAddressRecord, String> CITY = createField(DSL.name("city"), SQLDataType.VARCHAR(60), this, "");
 
     /**
-     * The column <code>public.obj_contact_part_address.state</code>.
-     */
-    public final TableField<ObjContactPartAddressRecord, String> STATE = createField(DSL.name("state"), SQLDataType.VARCHAR(60), this, "");
-
-    /**
      * The column <code>public.obj_contact_part_address.country_id</code>.
      */
     public final TableField<ObjContactPartAddressRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40), this, "");
-
-    /**
-     * The column <code>public.obj_contact_part_address.channel_id</code>.
-     */
-    public final TableField<ObjContactPartAddressRecord, String> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.VARCHAR(40), this, "");
-
-    /**
-     * The column <code>public.obj_contact_part_address.is_favorite</code>.
-     */
-    public final TableField<ObjContactPartAddressRecord, Boolean> IS_FAVORITE = createField(DSL.name("is_favorite"), SQLDataType.BOOLEAN, this, "");
-
-    /**
-     * The column <code>public.obj_contact_part_address.is_mail_address</code>.
-     */
-    public final TableField<ObjContactPartAddressRecord, Boolean> IS_MAIL_ADDRESS = createField(DSL.name("is_mail_address"), SQLDataType.BOOLEAN, this, "");
 
     private ObjContactPartAddress(Name alias, Table<ObjContactPartAddressRecord> aliased) {
         this(alias, aliased, null);
@@ -177,12 +152,11 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
 
     @Override
     public List<ForeignKey<ObjContactPartAddressRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjContactPartAddressRecord, ?>>asList(Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_OBJ_ID_FKEY, Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_ADDRESS_TYPE_ID_FKEY, Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_CHANNEL_ID_FKEY);
+        return Arrays.<ForeignKey<ObjContactPartAddressRecord, ?>>asList(Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_OBJ_ID_FKEY, Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_ADDRESS_CHANNEL_ID_FKEY);
     }
 
     private transient ObjContact _objContact;
-    private transient CodeAddressType _codeAddressType;
-    private transient CodeInteractionChannel _codeInteractionChannel;
+    private transient CodeAddressChannel _codeAddressChannel;
 
     public ObjContact objContact() {
         if (_objContact == null)
@@ -191,18 +165,11 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
         return _objContact;
     }
 
-    public CodeAddressType codeAddressType() {
-        if (_codeAddressType == null)
-            _codeAddressType = new CodeAddressType(this, Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_ADDRESS_TYPE_ID_FKEY);
+    public CodeAddressChannel codeAddressChannel() {
+        if (_codeAddressChannel == null)
+            _codeAddressChannel = new CodeAddressChannel(this, Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_ADDRESS_CHANNEL_ID_FKEY);
 
-        return _codeAddressType;
-    }
-
-    public CodeInteractionChannel codeInteractionChannel() {
-        if (_codeInteractionChannel == null)
-            _codeInteractionChannel = new CodeInteractionChannel(this, Keys.OBJ_CONTACT_PART_ADDRESS__OBJ_CONTACT_PART_ADDRESS_CHANNEL_ID_FKEY);
-
-        return _codeInteractionChannel;
+        return _codeAddressChannel;
     }
 
     @Override
@@ -232,11 +199,11 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
     }
 
     // -------------------------------------------------------------------------
-    // Row16 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Integer, Integer, Integer, String, Integer, String, String, String, String, String, String, String, String, String, Boolean, Boolean> fieldsRow() {
-        return (Row16) super.fieldsRow();
+    public Row11<Integer, Integer, Integer, String, Integer, String, String, String, String, String, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

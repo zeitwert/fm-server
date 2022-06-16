@@ -137,11 +137,12 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
 
     @Override
     public List<ForeignKey<ObjAccountRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjAccountRecord, ?>>asList(Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_ACCOUNT_TYPE_ID_FKEY, Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_CLIENT_SEGMENT_ID_FKEY);
+        return Arrays.<ForeignKey<ObjAccountRecord, ?>>asList(Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_ACCOUNT_TYPE_ID_FKEY, Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_CLIENT_SEGMENT_ID_FKEY, Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_REFERENCE_CURRENCY_ID_FKEY);
     }
 
     private transient CodeAccountType _codeAccountType;
     private transient CodeClientSegment _codeClientSegment;
+    private transient CodeCurrency _codeCurrency;
 
     public CodeAccountType codeAccountType() {
         if (_codeAccountType == null)
@@ -155,6 +156,13 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
             _codeClientSegment = new CodeClientSegment(this, Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_CLIENT_SEGMENT_ID_FKEY);
 
         return _codeClientSegment;
+    }
+
+    public CodeCurrency codeCurrency() {
+        if (_codeCurrency == null)
+            _codeCurrency = new CodeCurrency(this, Keys.OBJ_ACCOUNT__OBJ_ACCOUNT_REFERENCE_CURRENCY_ID_FKEY);
+
+        return _codeCurrency;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.jooq.exception.NoDataFoundException;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
@@ -26,6 +27,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	private final DocPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
+	final ObjNoteRepository noteRepository;
 	private final CodePartListType areaSetType;
 
 	//@formatter:off
@@ -36,14 +38,21 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		final String aggregateTypeId,
 		final AppContext appContext,
 		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository
+		final DocPartTransitionRepository transitionRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
+		this.noteRepository = noteRepository;
 		this.areaSetType = this.getAppContext().getPartListType(DocFields.AREA_SET);
 	}
 	//@formatter:on
+
+	@Override
+	public void registerPartRepositories() {
+		this.addPartRepository(this.getTransitionRepository());
+	}
 
 	public DocPartTransitionRepository getTransitionRepository() {
 		return this.transitionRepository;
@@ -55,23 +64,13 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	}
 
 	@Override
-	public CodePartListType getAreaSetType() {
-		return this.areaSetType;
-	}
-
-	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
-		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
-		if (docRecord == null || extnRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
-		}
-		return newAggregate(sessionInfo, docRecord, extnRecord);
+	public ObjNoteRepository getNoteRepository() {
+		return this.noteRepository;
 	}
 
 	@Override
-	public void doLoadParts(D doc) {
-		super.doLoadParts(doc);
-		this.transitionRepository.load(doc);
-		((DocBase) doc).loadTransitionList(this.transitionRepository.getPartList(doc, this.getTransitionListType()));
+	public CodePartListType getAreaSetType() {
+		return this.areaSetType;
 	}
 
 	@Override
@@ -83,28 +82,24 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC), extnRecord);
 	}
 
-	protected void doInit(D doc, Integer docId, String caseDefId, String defaultInitCaseStageId) {
+	// TODO get rid of
+	protected void doInitWorkflow(D doc, Integer docId, String caseDefId, String defaultInitCaseStageId) {
 		CodeCaseStage defaultCaseStage = this.getAppContext().getEnumeration(CodeCaseStageEnum.class)
 				.getItem(defaultInitCaseStageId);
-		((DocBase) doc).doInit(caseDefId, defaultCaseStage);
+		((DocBase) doc).doInitWorkflow(caseDefId, defaultCaseStage);
+	}
+
+	protected D doLoad(SessionInfo sessionInfo, Integer docId, UpdatableRecord<?> extnRecord) {
+		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
+		if (docRecord == null || extnRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
+		}
+		return newAggregate(sessionInfo, docRecord, extnRecord);
 	}
 
 	@Override
-	public void doInitParts(D doc) {
-		super.doInitParts(doc);
-		this.transitionRepository.init(doc);
-		((DocBase) doc).addTransition();
-	}
-
-	@Override
-	public void doStoreParts(D doc) {
-		super.doStoreParts(doc);
-		this.transitionRepository.store(doc);
-	}
-
-	@Override
-	public void afterStore(D doc) {
-		super.afterStore(doc);
+	public void doAfterStore(D doc) {
+		super.doAfterStore(doc);
 	}
 
 }

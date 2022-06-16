@@ -2,13 +2,19 @@
 package io.zeitwert.ddd.obj.model.base;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 import org.jooq.exception.NoDataFoundException;
 
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.PathSpec;
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
@@ -18,6 +24,8 @@ import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
+import java.util.List;
+
 public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends AggregateRepositoryBase<O, V>
 		implements ObjRepository<O, V> {
 
@@ -25,6 +33,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 
 	private final ObjPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
+	private final ObjNoteRepository noteRepository;
 	private final ObjPartItemRepository itemRepository;
 	private final CodePartListType areaSetType;
 
@@ -37,15 +46,22 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository
+		final ObjPartItemRepository itemRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(ObjFields.TRANSITION_LIST);
+		this.noteRepository = noteRepository;
 		this.itemRepository = itemRepository;
 		this.areaSetType = this.getAppContext().getPartListType(ObjFields.AREA_SET);
 	}
 	//@formatter:on
+
+	@Override
+	public void registerPartRepositories() {
+		this.addPartRepository(this.getTransitionRepository());
+	}
 
 	@Override
 	public ObjPartTransitionRepository getTransitionRepository() {
@@ -58,6 +74,11 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	@Override
+	public ObjNoteRepository getNoteRepository() {
+		return this.noteRepository;
+	}
+
+	@Override
 	public ObjPartItemRepository getItemRepository() {
 		return this.itemRepository;
 	}
@@ -65,21 +86,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	@Override
 	public CodePartListType getAreaSetType() {
 		return this.areaSetType;
-	}
-
-	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
-		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
-		if (objRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return newAggregate(sessionInfo, objRecord, extnRecord);
-	}
-
-	@Override
-	public void doLoadParts(O obj) {
-		super.doLoadParts(obj);
-		this.transitionRepository.load(obj);
-		((ObjBase) obj).loadTransitionList(this.transitionRepository.getPartList(obj, this.getTransitionListType()));
 	}
 
 	@Override
@@ -91,21 +97,29 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
 	}
 
-	@Override
-	public void doInitParts(O obj) {
-		super.doInitParts(obj);
-		this.transitionRepository.init(obj);
+	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
+		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
+		if (objRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return newAggregate(sessionInfo, objRecord, extnRecord);
 	}
 
 	@Override
-	public void doStoreParts(O obj) {
-		super.doStoreParts(obj);
-		this.transitionRepository.store(obj);
+	public void doAfterStore(O obj) {
+		super.doAfterStore(obj);
 	}
 
 	@Override
-	public void afterStore(O obj) {
-		super.afterStore(obj);
+	public void delete(O obj) {
+		obj.delete();
+		this.store(obj);
+	}
+
+	@Override
+	protected List<V> doFind(SessionInfo sessionInfo, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+		querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
+		return super.doFind(sessionInfo, table, idField, querySpec);
 	}
 
 }

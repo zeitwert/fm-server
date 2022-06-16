@@ -2,7 +2,6 @@ package io.zeitwert.ddd.part.model.base;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.util.List;
 
@@ -11,13 +10,6 @@ import java.util.List;
  * implementation.
  */
 public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
-
-	/**
-	 * Load Parts from database for given aggregate
-	 * 
-	 * @param aggregate the aggregate
-	 */
-	List<P> doLoad(A aggregate);
 
 	/**
 	 * Does the part have a dedicated partId (instead of a composite key like f.ex.
@@ -42,14 +34,10 @@ public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
 	P doCreate(A aggregate);
 
 	/**
-	 * Initialize new Part instance with basic fields after creation
+	 * Load all Parts from database for given aggregate
 	 * 
-	 * @param part         part
-	 * @param partId       part id
-	 * @param aggregate    parent aggregate
-	 * @param parent       parent part
-	 * @param partListType the part list type
+	 * @param aggregate the aggregate
 	 */
-	void doInit(P part, Integer partId, A aggregate, Part<?> parent, CodePartListType partListType);
+	List<P> doLoad(A aggregate);
 
 }

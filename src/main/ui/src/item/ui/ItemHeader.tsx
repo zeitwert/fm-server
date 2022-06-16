@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Icon, MediaObject, PageHeaderControl } from "@salesforce/design-system-react";
-import { AggregateStore, ItemPartNote } from "@zeitwert/ui-model";
+import { AggregateStore } from "@zeitwert/ui-model";
 import ButtonStateful from "@zeitwert/ui-slds/common/ButtonStateful";
 import { PageHeader } from "@zeitwert/ui-slds/content/PageHeader";
 import { AppCtx } from "App";
@@ -28,7 +28,7 @@ interface ItemHeaderProps {
 @observer
 export default class ItemHeader extends React.Component<ItemHeaderProps> {
 
-	@observable note: ItemPartNote | undefined = undefined;
+	@observable note: any/*ItemPartNote*/ | undefined = undefined;
 	@observable isFollowing = false;
 
 	get ctx() {

@@ -8,6 +8,7 @@ import io.zeitwert.ddd.doc.model.db.tables.records.DocPartTransitionRecord;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -23,8 +24,8 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	protected final EnumProperty<CodeCaseStage> newCaseStage;
 	protected final SimpleProperty<JSON> changes;
 
-	public DocPartTransitionBase(Doc doc, UpdatableRecord<?> dbRecord) {
-		super(doc, dbRecord);
+	public DocPartTransitionBase(PartRepository<Doc, ?> repository, Doc doc, UpdatableRecord<?> dbRecord) {
+		super(repository, doc, dbRecord);
 		this.user = this.addReferenceProperty(dbRecord, DocPartTransitionFields.USER_ID, ObjUser.class);
 		this.modifiedAt = this.addSimpleProperty(dbRecord, DocPartTransitionFields.MODIFIED_AT);
 		this.oldCaseStage = this.addEnumProperty(dbRecord, DocPartTransitionFields.OLD_CASE_STAGE_ID,
@@ -35,9 +36,10 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	}
 
 	@Override
-	public void afterCreate() {
+	public void doAfterCreate() {
+		super.doAfterCreate();
 		DocPartTransitionRecord dbRecord = (DocPartTransitionRecord) this.getDbRecord();
-		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1);
+		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1); // TODO
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setModifiedAt(OffsetDateTime.now());
 		dbRecord.setOldCaseStageId(null);

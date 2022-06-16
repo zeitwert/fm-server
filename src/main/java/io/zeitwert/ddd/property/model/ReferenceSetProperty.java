@@ -17,8 +17,6 @@ public interface ReferenceSetProperty<A extends Aggregate> extends CollectionPro
 
 	void removeItem(Integer aggregateId);
 
-	void beforeStore();
-
-	void loadReferenceSet(Collection<EntityPartItem> items);
+	void loadReferenceSet(Collection<? extends EntityPartItem> items);
 
 }

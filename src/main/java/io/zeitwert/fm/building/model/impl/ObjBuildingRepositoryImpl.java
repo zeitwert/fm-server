@@ -8,7 +8,12 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNote;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
@@ -27,8 +32,9 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.fm.obj.model.ObjPartNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+
+import javax.annotation.PostConstruct;
 
 @Component("objBuildingRepository")
 public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
@@ -49,8 +55,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjPartNoteRepository noteRepository,
-		final ObjBuildingPartElementRepository elementRepository
+		final ObjBuildingPartElementRepository elementRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjBuildingRepository.class,
@@ -70,6 +76,14 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		this.measureDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
 	}
 	//@formatter:on
+
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(this.getElementRepository());
+	}
 
 	@Override
 	public ObjBuildingPartElementRepository getElementRepository() {
@@ -97,71 +111,70 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
+	protected String getAccountIdField() {
+		return ObjBuildingFields.ACCOUNT_ID.getName();
+	}
+
+	@Override
 	public ObjBuilding doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
 	}
 
 	@Override
-	public void doInitParts(ObjBuilding obj) {
-		super.doInitParts(obj);
-		this.getItemRepository().init(obj);
-		this.getElementRepository().init(obj);
-		this.addCoverFoto(obj);
+	public void doAfterCreate(ObjBuilding building) {
+		super.doAfterCreate(building);
+		this.addCoverFoto(building);
 	}
 
 	@Override
-	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer buildingId) {
+		requireThis(buildingId != null, "objId not null");
 		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
-				Tables.OBJ_BUILDING.OBJ_ID.eq(objId));
+				Tables.OBJ_BUILDING.OBJ_ID.eq(buildingId));
 		if (buildingRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + buildingId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, buildingRecord);
+		return this.doLoad(sessionInfo, buildingId, buildingRecord);
 	}
 
 	@Override
-	public void doLoadParts(ObjBuilding obj) {
-		super.doLoadParts(obj);
-		this.getItemRepository().load(obj);
-		this.getElementRepository().load(obj);
-		((ObjBuildingBase) obj).loadElementList(this.elementRepository.getPartList(obj, this.getElementListType()));
-	}
-
-	@Override
-	public void beforeStore(ObjBuilding obj) {
-		super.beforeStore(obj);
-		if (obj.getCoverFotoId() == null) {
-			this.addCoverFoto(obj);
+	public void doAfterLoad(ObjBuilding building) {
+		super.doAfterLoad(building);
+		if (building.getMeta().getSessionInfo().getTenant().getName().equals("Demo")) {
+			if (building.getNoteList().size() == 0) {
+				for (int i = 0; i < 8.3 * Math.random(); i++) {
+					ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));
+					note.setSubject("Subject of Note " + (i + 1));
+					note.setContent("Content of Note " + (i + 1));
+					note.setIsPrivate(Math.random() > 0.8);
+					this.getNoteRepository().store(note);
+				}
+			}
 		}
 	}
 
 	@Override
-	public void doStoreParts(ObjBuilding obj) {
-		super.doStoreParts(obj);
-		this.getItemRepository().store(obj);
-		this.getElementRepository().store(obj);
+	public void doBeforeStore(ObjBuilding building) {
+		super.doBeforeStore(building);
+		if (building.getCoverFotoId() == null) {
+			this.addCoverFoto(building);
+		}
 	}
 
 	@Override
-	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
+	public List<ObjBuildingVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
 	}
 
-	@Override
-	protected String getAccountIdField() {
-		return "account_id";
-	}
-
-	private void addCoverFoto(ObjBuilding obj) {
+	private void addCoverFoto(ObjBuilding building) {
 		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
-		ObjDocument coverFoto = documentRepo.create(obj.getMeta().getSessionInfo());
+		ObjDocument coverFoto = documentRepo.create(building.getMeta().getSessionInfo());
 		coverFoto.setName("CoverFoto");
 		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
 		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
 		coverFoto.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("foto"));
 		documentRepo.store(coverFoto);
-		obj.setCoverFotoId(coverFoto.getId());
+		building.setCoverFotoId(coverFoto.getId());
 	}
 
 }

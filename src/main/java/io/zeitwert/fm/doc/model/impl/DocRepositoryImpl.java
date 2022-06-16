@@ -7,18 +7,22 @@ import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.doc.model.DocRepository;
+
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.base.DocBase;
 import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
-import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
@@ -32,7 +36,8 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	protected DocRepositoryImpl(
 		final AppContext appContext,
 		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository
+		final DocPartTransitionRepository transitionRepository,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			DocRepository.class,
@@ -41,22 +46,22 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 			ITEM_TYPE,
 			appContext,
 			dslContext,
-			transitionRepository
+			transitionRepository,
+			noteRepository
 		);
 	}
 	//@formatter:on
 
 	@Override
-	public DocBase doCreate(SessionInfo sessionInfo) {
-		Assert.isTrue(false, "cannot create a doc");
-		return null;
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
 	}
 
 	@Override
-	public void doInit(Doc doc, Integer docId, ObjTenant tenant, ObjUser user) {
-		super.doInit(doc, docId, "advice", "advice.establish");
-		// DocOpportunityRecord adviceRecord = ((DocAdviceBase) doc).getDbRecord();
-		// adviceRecord.setDocId(docId);
+	public DocBase doCreate(SessionInfo sessionInfo) {
+		assertThis(false, "cannot create a doc");
+		return null;
 	}
 
 	@Override
@@ -69,17 +74,17 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	}
 
 	@Override
-	public List<DocRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.DOC, Tables.DOC.ID, querySpec);
+	public List<DocRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.DOC, Tables.DOC.ID, querySpec);
 	}
 
 	@Override
 	public void changeOwner(List<Doc> docs, ObjUser user) {
-		docs.stream().forEach((doc) -> {
-			Doc instance = ((DocBase) doc).getInstance();
-			instance.setOwner(user);
-			this.store(instance);
-		});
+		// docs.stream().forEach((doc) -> {
+		// Doc instance = ((DocBase) doc).getInstance();
+		// instance.setOwner(user);
+		// this.store(instance);
+		// });
 	}
 
 	// @Override

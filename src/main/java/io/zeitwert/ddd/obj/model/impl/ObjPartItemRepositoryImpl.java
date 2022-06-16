@@ -45,6 +45,12 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 	}
 
 	@Override
+	public ObjPartItem doCreate(Obj obj) {
+		ObjPartItemRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_ITEM);
+		return this.newPart(obj, dbRecord);
+	}
+
+	@Override
 	public List<ObjPartItem> doLoad(Obj obj) {
 		//@formatter:off
 		Result<ObjPartItemRecord> dbRecords = this.getDSLContext()
@@ -54,12 +60,6 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 			.fetchInto(Tables.OBJ_PART_ITEM);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(obj, dbRecord));
-	}
-
-	@Override
-	public ObjPartItem doCreate(Obj obj) {
-		ObjPartItemRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_ITEM);
-		return this.newPart(obj, dbRecord);
 	}
 
 }

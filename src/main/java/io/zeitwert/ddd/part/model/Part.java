@@ -7,6 +7,8 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
  */
 public interface Part<A extends Aggregate> {
 
+	PartRepository<A, ?> getRepository();
+
 	PartMeta<A> getMeta();
 
 	Integer getId();
@@ -16,7 +18,5 @@ public interface Part<A extends Aggregate> {
 	String getPartListTypeId();
 
 	Integer getSeqNr();
-
-	void setSeqNr(Integer seqNr);
 
 }

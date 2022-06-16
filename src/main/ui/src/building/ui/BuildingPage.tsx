@@ -1,14 +1,13 @@
 
 import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Building, BuildingStore, BuildingStoreModel, Config, DocStore, EntityType, TaskStoreModel } from "@zeitwert/ui-model";
-import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
-import { FormParser } from "activity/forms/FormParser";
+import { Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
 import ErrorTab from "item/ui/tab/ErrorTab";
+import NotesTab from "item/ui/tab/NotesTab";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
@@ -27,7 +26,8 @@ enum LEFT_TABS {
 
 enum RIGHT_TABS {
 	SUMMARY = 0,
-	ACTIVITY = 1,
+	NOTES = 1,
+	//ACTIVITY = 1,
 	ERRORS = 2,
 }
 
@@ -119,12 +119,26 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 									<BuildingSummaryForm building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
+							<TabsPanel label={"Notizen"}>
+								{
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab
+										relatedToId={this.buildingStore.id!}
+										store={this.buildingStore.notesStore}
+										notes={this.buildingStore.notesStore.notes}
+									/>
+								}
+							</TabsPanel>
+							{
+								/*
 							<TabsPanel label="Aktivität">
 								{
 									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
 									<ActivityPortlet {...Object.assign({}, this.props, { item: building, onSave: this.onSavePortlet })} />
 								}
 							</TabsPanel>
+								*/
+							}
 							<TabsPanel label="Fehler" disabled={!hasError} hasError={hasError}>
 								{
 									this.activeRightTabId === RIGHT_TABS.ERRORS &&
@@ -201,30 +215,28 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		window.location.href = "/building/" + this.props.params.buildingId + "?t=" + (new Date()).getTime();
 	};
 
-	private onSavePortlet = async (type: string, data: any) => {
-		let store: DocStore, payload: any, title: string;
-
-		switch (type) {
-			case ActivityFormTypes.TASK:
-				title = "Task";
-				store = TaskStoreModel.create({});
-				payload = FormParser.parseTask(data, this.ctx.session.sessionInfo!.user);
-				break;
-			default:
-				throw new Error("Undefined store set");
-		}
-
-		try {
-			store.create(payload);
-			await store.store();
-			this.ctx.showToast("success", title + " stored");
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				"Could not store " + title + ": " + (error.detail ? error.detail : error.title ? error.title : error)
-			);
-		}
-	};
+	// private onSavePortlet = async (type: string, data: any) => {
+	// 	let store: DocStore, payload: any, title: string;
+	// 	switch (type) {
+	// 		case ActivityFormTypes.TASK:
+	// 			title = "Task";
+	// 			store = TaskStoreModel.create({});
+	// 			payload = FormParser.parseTask(data, this.ctx.session.sessionInfo!.user);
+	// 			break;
+	// 		default:
+	// 			throw new Error("Undefined store set");
+	// 	}
+	// 	try {
+	// 		store.create(payload);
+	// 		await store.store();
+	// 		this.ctx.showToast("success", title + " stored");
+	// 	} catch (error: any) {
+	// 		this.ctx.showAlert(
+	// 			"error",
+	// 			"Could not store " + title + ": " + (error.detail ? error.detail : error.title ? error.title : error)
+	// 		);
+	// 	}
+	// };
 
 }
 

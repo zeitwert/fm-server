@@ -1,14 +1,15 @@
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.fm.common.model.enums.CodeArea;
-import io.zeitwert.fm.common.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
+import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -21,7 +22,6 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 
 import org.jooq.JSON;
 import org.jooq.UpdatableRecord;
@@ -64,14 +64,26 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 		return (ObjTestRepository) super.getRepository();
 	}
 
-	public abstract void loadAreaSet(Collection<ObjPartItem> areaSet);
-
-	public abstract void loadNodeList(Collection<ObjTestPartNode> nodeList);
+	@Override
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
+		this.dbRecord.setValue(ObjTestFields.OBJ_ID, objId);
+	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
-		this.dbRecord.setValue(ObjTestFields.OBJ_ID, objId);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
+		this.nodeList.loadPartList(nodeRepo.getPartList(this, this.getRepository().getNodeListType()));
+
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		this.dbRecord.store();
 	}
 
 	@Override
@@ -81,12 +93,6 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 			return (P) this.getRepository().getNodeRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -101,6 +107,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 
@@ -112,12 +119,6 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 
 	private String getString(String s) {
 		return s == null ? "" : s;
-	}
-
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		this.areaSet.beforeStore();
 	}
 
 }

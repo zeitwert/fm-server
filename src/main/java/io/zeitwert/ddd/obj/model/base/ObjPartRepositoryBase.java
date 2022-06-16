@@ -11,7 +11,7 @@ import io.zeitwert.ddd.part.model.base.PartRepositoryBase;
 public abstract class ObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>> extends PartRepositoryBase<O, P>
 		implements ObjPartRepository<O, P> {
 
-	private final String OBJ_PART_ID_SEQ = "obj_part_id_seq";
+	private static final String OBJ_PART_ID_SEQ = "obj_part_id_seq";
 
 	//@formatter:off
 	protected ObjPartRepositoryBase(

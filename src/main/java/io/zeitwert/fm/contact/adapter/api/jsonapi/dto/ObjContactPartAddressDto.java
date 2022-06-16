@@ -8,8 +8,8 @@ import lombok.experimental.SuperBuilder;
 
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.enums.CodeInteractionChannelEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.contact.model.enums.CodeAddressChannelEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 
@@ -19,27 +19,23 @@ import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 @ToString(callSuper = true, includeFieldNames = true)
 public class ObjContactPartAddressDto extends ObjPartDtoBase<ObjContact, ObjContactPartAddress> {
 
+	private EnumeratedDto addressChannel;
+	private Boolean isMailAddress;
 	private String name;
 	private String street;
 	private String zip;
 	private String city;
-	private String state;
 	private EnumeratedDto country;
-	private EnumeratedDto channel;
-	private Boolean isFavorite;
-	private Boolean isMailAddress;
 
 	public void toPart(ObjContactPartAddress part) {
 		super.toPart(part);
+		part.setAddressChannel(
+				addressChannel == null ? null : CodeAddressChannelEnum.getAddressChannel(addressChannel.getId()));
 		part.setName(name);
 		part.setStreet(street);
 		part.setZip(zip);
 		part.setCity(city);
-		part.setState(state);
 		part.setCountry(country == null ? null : CodeCountryEnum.getCountry(country.getId()));
-		part.setChannel(channel == null ? null : CodeInteractionChannelEnum.getInteractionChannel(channel.getId()));
-		part.setIsFavorite(isFavorite);
-		part.setIsMailAddress(isMailAddress);
 	}
 
 	public static ObjContactPartAddressDto fromPart(ObjContactPartAddress part) {
@@ -50,15 +46,13 @@ public class ObjContactPartAddressDto extends ObjPartDtoBase<ObjContact, ObjCont
 		ObjPartDtoBase.fromPart(dtoBuilder, part);
 		// @formatter:off
 		return dtoBuilder
+			.addressChannel(EnumeratedDto.fromEnum(part.getAddressChannel()))
+			.isMailAddress(part.getIsMailAddress())
 			.name(part.getName())
 			.street(part.getStreet())
 			.zip(part.getZip())
 			.city(part.getCity())
-			.state(part.getState())
 			.country(EnumeratedDto.fromEnum(part.getCountry()))
-			.channel(EnumeratedDto.fromEnum(part.getChannel()))
-			.isFavorite(part.getIsFavorite())
-			.isMailAddress(part.getIsMailAddress())
 			.build();
 		// @formatter:on
 	}

@@ -2,7 +2,6 @@
 package io.zeitwert.fm.contact.model.base;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +10,9 @@ import org.jooq.UpdatableRecord;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
+import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
@@ -19,8 +20,8 @@ import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
-import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -41,7 +42,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	protected final SimpleProperty<String> email;
 	protected final SimpleProperty<String> description;
 
-	private final List<ObjContactPartAddress> addressList = new ArrayList<>();
+	private final PartListProperty<ObjContactPartAddress> addressList;
 
 	protected ObjContactBase(SessionInfo sessionInfo, ObjContactRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
@@ -58,6 +59,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		this.mobile = this.addSimpleProperty(dbRecord, ObjContactFields.MOBILE);
 		this.email = this.addSimpleProperty(dbRecord, ObjContactFields.EMAIL);
 		this.description = this.addSimpleProperty(dbRecord, ObjContactFields.DESCRIPTION);
+		this.addressList = this.addPartListProperty(this.getRepository().getAddressListType());
 	}
 
 	@Override
@@ -66,58 +68,52 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjContactFields.OBJ_ID, objId);
 	}
 
 	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjContactPartAddressRepository addressRepo = this.getRepository().getAddressRepository();
+		this.addressList.loadPartList(addressRepo.getPartList(this, this.getRepository().getAddressListType()));
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
 		this.dbRecord.store();
 	}
 
-	private Optional<ObjContactPartAddress> getAddress(Integer addressId) {
-		return this.addressList.stream().filter(a -> addressId.equals(a.getId())).findAny();
-	}
-
-	private void addAddress(ObjContactPartAddress address) {
-		this.addressList.add(address);
-	}
-
-	private ObjContactPartAddress addAddress(boolean isMailAddress) {
-		ObjContactPartAddress address = this.getRepository().getAddressRepository().create(this, null); // TODO implement
-		address.setIsMailAddress(isMailAddress);
-		this.addAddress(address);
+	private ObjContactPartAddress addAddress(CodeAddressChannel addressChannel) {
+		ObjContactPartAddress address = this.addressList.addPart();
+		address.setAddressChannel(addressChannel);
 		return address;
 	}
 
 	private void removeAddress(Integer addressId) {
-		Optional<ObjContactPartAddress> address = this.getAddress(addressId);
-		if (address.isPresent()) {
-			((PartSPI<?>) address.get()).delete();
-			this.addressList.remove(address.get());
-		}
+		this.addressList.removePart(addressId);
 	}
 
 	@Override
 	public List<ObjContactPartAddress> getMailAddressList() {
-		return this.addressList.stream().filter(a -> a.getIsMailAddress()).toList();
+		return this.addressList.getPartList().stream().filter(a -> a.getIsMailAddress()).toList();
 	}
 
 	@Override
 	public Optional<ObjContactPartAddress> getMailAddress(Integer addressId) {
-		return this.getAddress(addressId);
+		return Optional.of(this.addressList.getPartById(addressId));
 	}
 
 	@Override
 	public void clearMailAddressList() {
-		this.addressList.removeIf(a -> a.getIsMailAddress());
+		this.getMailAddressList().forEach(a -> this.addressList.removePart(a.getId()));
 	}
 
 	@Override
 	public ObjContactPartAddress addMailAddress() {
-		return this.addAddress(true);
+		return this.addAddress(null);
 	}
 
 	@Override
@@ -127,22 +123,22 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	@Override
 	public List<ObjContactPartAddress> getElectronicAddressList() {
-		return this.addressList.stream().filter(a -> !a.getIsMailAddress()).toList();
+		return this.addressList.getPartList().stream().filter(a -> !a.getIsMailAddress()).toList();
 	}
 
 	@Override
 	public Optional<ObjContactPartAddress> getElectronicAddress(Integer addressId) {
-		return this.getAddress(addressId);
+		return Optional.of(this.addressList.getPartById(addressId));
 	}
 
 	@Override
 	public void clearElectronicAddressList() {
-		this.addressList.removeIf(a -> !a.getIsMailAddress());
+		this.getElectronicAddressList().forEach(a -> this.addressList.removePart(a.getId()));
 	}
 
 	@Override
 	public ObjContactPartAddress addElectronicAddress() {
-		return this.addAddress(true);
+		return this.addAddress(null);
 	}
 
 	@Override
@@ -150,13 +146,9 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		this.removeAddress(addressId);
 	}
 
-	public void loadAddressList(List<ObjContactPartAddress> addresses) {
-		this.addressList.clear();
-		addresses.forEach(t -> this.addAddress(t));
-	}
-
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.calcCaption();
 	}
 

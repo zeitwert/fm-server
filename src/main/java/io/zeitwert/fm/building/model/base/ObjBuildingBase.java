@@ -2,14 +2,15 @@
 package io.zeitwert.fm.building.model.base;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
-import io.zeitwert.ddd.common.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.common.model.enums.CodeCurrency;
-import io.zeitwert.ddd.common.model.enums.CodeCurrencyEnum;
+import static io.zeitwert.ddd.util.Check.requireThis;
+
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
@@ -22,6 +23,7 @@ import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
@@ -155,12 +157,23 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		return (ObjBuildingRepository) super.getRepository();
 	}
 
-	public abstract void loadElementList(Collection<ObjBuildingPartElement> nodeList);
+	@Override
+	public void doInit(Integer objId, Integer tenantId) {
+		super.doInit(objId, tenantId);
+		this.dbRecord.setValue(ObjBuildingFields.OBJ_ID, objId);
+	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId, Integer userId) {
-		super.doInit(objId, tenantId, userId);
-		this.dbRecord.setValue(ObjBuildingFields.OBJ_ID, objId);
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjBuildingPartElementRepository elementRepo = this.getRepository().getElementRepository();
+		this.elementList.loadPartList(elementRepo.getPartList(this, this.getRepository().getElementListType()));
+	}
+
+	@Override
+	public void doStore() {
+		super.doStore();
+		this.dbRecord.store();
 	}
 
 	@Override
@@ -170,21 +183,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 			return (P) this.getRepository().getElementRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void beforeStore() {
-		super.beforeStore();
-		int seqNr = 0;
-		for (ObjBuildingPartElement element : this.getElementList()) {
-			element.setSeqNr(seqNr++);
-		}
-	}
-
-	@Override
-	public void doStore(Integer userId) {
-		super.doStore(userId);
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -225,7 +223,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	@Override
 	public ObjBuildingPartElement addElement(CodeBuildingPart buildingPart) {
-		require(this.getElement(buildingPart) == null, "unique element for buildingPart");
+		requireThis(this.getElement(buildingPart) == null, "unique element for buildingPart");
 		ObjBuildingPartElement e = this.elementList.addPart();
 		e.setBuildingPart(buildingPart);
 		return e;
@@ -233,11 +231,13 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	@Override
 	protected void doCalcAll() {
+		super.doCalcAll();
 		this.doCalcVolatile();
 	}
 
 	@Override
 	protected void doCalcVolatile() {
+		super.doCalcVolatile();
 		this.calcCaption();
 		this.calcElementContributions();
 		this.validateElements();

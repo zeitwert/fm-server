@@ -1,6 +1,6 @@
 package io.zeitwert.fm.test.model;
 
-import io.zeitwert.ddd.common.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.ddd.obj.model.ObjPart;
 
 import java.math.BigDecimal;

@@ -9,8 +9,11 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
@@ -23,6 +26,8 @@ import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.SessionService;
+
+import javax.annotation.PostConstruct;
 
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>
@@ -39,7 +44,8 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final SessionService sessionService
+		final SessionService sessionService,
+		final ObjNoteRepository noteRepository
 	) {
 		super(
 			ObjTenantRepository.class,
@@ -49,15 +55,27 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 			appContext,
 			dslContext,
 			transitionRepository,
-			itemRepository
+			itemRepository,
+			noteRepository
 		);
 		this.globalSessionInfo = sessionService.getGlobalSession();
 	}
 	//@formatter:on
 
 	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+	}
+
+	@Override
+	public ObjTenant doCreate(SessionInfo sessionInfo) {
+		throw new RuntimeException("cannot create a Tenant");
+	}
+
+	@Override
 	public ObjTenant doLoad(SessionInfo sessionInfo, Integer objId) {
-		require(objId != null, "objId not null");
+		requireThis(objId != null, "objId not null");
 		ObjRecord objRecord = this.getDSLContext().fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
 				io.zeitwert.ddd.obj.model.db.Tables.OBJ.ID.eq(objId));
 		ObjTenantRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
@@ -68,8 +86,8 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	}
 
 	@Override
-	public List<ObjTenantVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
+	public List<ObjTenantVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
+		return this.doFind(sessionInfo, Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}
 
 	@Override
@@ -84,11 +102,6 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 			return Optional.empty();
 		}
 		return Optional.of(this.get(this.globalSessionInfo, tenantRecord.getId()));
-	}
-
-	@Override
-	public ObjTenant doCreate(SessionInfo sessionInfo) {
-		throw new RuntimeException("cannot create a Tenant");
 	}
 
 }

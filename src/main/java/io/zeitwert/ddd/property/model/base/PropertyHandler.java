@@ -2,10 +2,8 @@ package io.zeitwert.ddd.property.model.base;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.enums.model.Enumerated;
-import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
-import io.zeitwert.ddd.property.model.EntityPartItem;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -15,7 +13,6 @@ import javassist.util.proxy.MethodHandler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
 
 public class PropertyHandler implements MethodHandler {
 
@@ -49,9 +46,6 @@ public class PropertyHandler implements MethodHandler {
 						} else if (methodName.startsWith("remove")) {
 							((PartListProperty<?>) property).removePart((Integer) args[0]);
 							return null;
-						} else if (methodName.startsWith("load") && methodName.endsWith("List")) {
-							((PartListProperty<?>) property).loadPartList((Collection<Part<?>>) args[0]);
-							return null;
 						}
 					}
 				} else if (property instanceof EnumSetProperty) {
@@ -73,9 +67,6 @@ public class PropertyHandler implements MethodHandler {
 						} else if (methodName.startsWith("remove")) {
 							((EnumSetProperty<Enumerated>) property).removeItem((Enumerated) args[0]);
 							return null;
-						} else if (methodName.startsWith("load") && methodName.endsWith("Set")) {
-							((EnumSetProperty<Enumerated>) property).loadEnumSet((Collection<EntityPartItem>) args[0]);
-							return null;
 						}
 					}
 				} else if (property instanceof ReferenceSetProperty) {
@@ -96,9 +87,6 @@ public class PropertyHandler implements MethodHandler {
 							return null;
 						} else if (methodName.startsWith("remove")) {
 							((ReferenceSetProperty<?>) property).removeItem((Integer) args[0]);
-							return null;
-						} else if (methodName.startsWith("load") && methodName.endsWith("Set")) {
-							((ReferenceSetProperty<?>) property).loadReferenceSet((Collection<EntityPartItem>) args[0]);
 							return null;
 						}
 					}
@@ -195,10 +183,6 @@ public class PropertyHandler implements MethodHandler {
 				return getName(methodName.substring(3)) + "Set";
 			} else if (methodName.startsWith("remove")) {
 				return getName(methodName.substring(6)) + "List";
-			} else if (methodName.startsWith("load") && methodName.endsWith("List")) {
-				return getName(methodName.substring(4, methodName.length() - 4)) + "List";
-			} else if (methodName.startsWith("load") && methodName.endsWith("Set")) {
-				return getName(methodName.substring(4, methodName.length() - 3)) + "Set";
 			}
 		}
 		throw new NoSuchFieldException(methodName);
@@ -227,8 +211,6 @@ public class PropertyHandler implements MethodHandler {
 			} else if (methodName.startsWith("add")) {
 				return true;
 			} else if (methodName.startsWith("remove")) {
-				return true;
-			} else if (methodName.startsWith("load") && (methodName.endsWith("List") || methodName.endsWith("Set"))) {
 				return true;
 			}
 		}

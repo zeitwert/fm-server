@@ -11,7 +11,7 @@ public interface JwtProvider {
 	static final String TENANT_CLAIM = "zw/tenant";
 	static final String ACCOUNT_CLAIM = "zw/accountId";
 
-	String getJwt(Authentication authentication, Integer accountId);
+	String createJwt(Authentication authentication, Integer accountId);
 
 	String getJwtFromHeader(HttpServletRequest request);
 
