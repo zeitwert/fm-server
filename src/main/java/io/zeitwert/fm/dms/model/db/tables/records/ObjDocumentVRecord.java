@@ -191,44 +191,44 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
     }
 
     /**
-     * Setter for <code>public.obj_document_v.content_kind_id</code>.
-     */
-    public void setContentKindId(String value) {
-        set(12, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_document_v.content_kind_id</code>.
-     */
-    public String getContentKindId() {
-        return (String) get(12);
-    }
-
-    /**
-     * Setter for <code>public.obj_document_v.name</code>.
-     */
-    public void setName(String value) {
-        set(13, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_document_v.name</code>.
-     */
-    public String getName() {
-        return (String) get(13);
-    }
-
-    /**
      * Setter for <code>public.obj_document_v.document_kind_id</code>.
      */
     public void setDocumentKindId(String value) {
-        set(14, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>public.obj_document_v.document_kind_id</code>.
      */
     public String getDocumentKindId() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.obj_document_v.content_kind_id</code>.
+     */
+    public void setContentKindId(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_document_v.content_kind_id</code>.
+     */
+    public String getContentKindId() {
+        return (String) get(13);
+    }
+
+    /**
+     * Setter for <code>public.obj_document_v.name</code>.
+     */
+    public void setName(String value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_document_v.name</code>.
+     */
+    public String getName() {
         return (String) get(14);
     }
 
@@ -336,17 +336,17 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
 
     @Override
     public Field<String> field13() {
-        return ObjDocumentV.OBJ_DOCUMENT_V.CONTENT_KIND_ID;
+        return ObjDocumentV.OBJ_DOCUMENT_V.DOCUMENT_KIND_ID;
     }
 
     @Override
     public Field<String> field14() {
-        return ObjDocumentV.OBJ_DOCUMENT_V.NAME;
+        return ObjDocumentV.OBJ_DOCUMENT_V.CONTENT_KIND_ID;
     }
 
     @Override
     public Field<String> field15() {
-        return ObjDocumentV.OBJ_DOCUMENT_V.DOCUMENT_KIND_ID;
+        return ObjDocumentV.OBJ_DOCUMENT_V.NAME;
     }
 
     @Override
@@ -421,17 +421,17 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
 
     @Override
     public String component13() {
-        return getContentKindId();
+        return getDocumentKindId();
     }
 
     @Override
     public String component14() {
-        return getName();
+        return getContentKindId();
     }
 
     @Override
     public String component15() {
-        return getDocumentKindId();
+        return getName();
     }
 
     @Override
@@ -506,17 +506,17 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
 
     @Override
     public String value13() {
-        return getContentKindId();
+        return getDocumentKindId();
     }
 
     @Override
     public String value14() {
-        return getName();
+        return getContentKindId();
     }
 
     @Override
     public String value15() {
-        return getDocumentKindId();
+        return getName();
     }
 
     @Override
@@ -603,19 +603,19 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
 
     @Override
     public ObjDocumentVRecord value13(String value) {
-        setContentKindId(value);
+        setDocumentKindId(value);
         return this;
     }
 
     @Override
     public ObjDocumentVRecord value14(String value) {
-        setName(value);
+        setContentKindId(value);
         return this;
     }
 
     @Override
     public ObjDocumentVRecord value15(String value) {
-        setDocumentKindId(value);
+        setName(value);
         return this;
     }
 
@@ -667,7 +667,7 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
     /**
      * Create a detached, initialised ObjDocumentVRecord
      */
-    public ObjDocumentVRecord(Integer tenantId, String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, String contentKindId, String name, String documentKindId, String documentCategoryId, Integer templateDocumentId) {
+    public ObjDocumentVRecord(Integer tenantId, String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, String documentKindId, String contentKindId, String name, String documentCategoryId, Integer templateDocumentId) {
         super(ObjDocumentV.OBJ_DOCUMENT_V);
 
         setTenantId(tenantId);
@@ -682,9 +682,9 @@ public class ObjDocumentVRecord extends TableRecordImpl<ObjDocumentVRecord> impl
         setClosedByUserId(closedByUserId);
         setClosedAt(closedAt);
         setObjId(objId);
+        setDocumentKindId(documentKindId);
         setContentKindId(contentKindId);
         setName(name);
-        setDocumentKindId(documentKindId);
         setDocumentCategoryId(documentCategoryId);
         setTemplateDocumentId(templateDocumentId);
     }

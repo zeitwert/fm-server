@@ -53,6 +53,11 @@ public class ObjDocument extends TableImpl<ObjDocumentRecord> {
     public final TableField<ObjDocumentRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.obj_document.document_kind_id</code>.
+     */
+    public final TableField<ObjDocumentRecord, String> DOCUMENT_KIND_ID = createField(DSL.name("document_kind_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
+
+    /**
      * The column <code>public.obj_document.content_kind_id</code>.
      */
     public final TableField<ObjDocumentRecord, String> CONTENT_KIND_ID = createField(DSL.name("content_kind_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
@@ -61,11 +66,6 @@ public class ObjDocument extends TableImpl<ObjDocumentRecord> {
      * The column <code>public.obj_document.name</code>.
      */
     public final TableField<ObjDocumentRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(200).nullable(false), this, "");
-
-    /**
-     * The column <code>public.obj_document.document_kind_id</code>.
-     */
-    public final TableField<ObjDocumentRecord, String> DOCUMENT_KIND_ID = createField(DSL.name("document_kind_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
      * The column <code>public.obj_document.document_category_id</code>.
@@ -127,26 +127,26 @@ public class ObjDocument extends TableImpl<ObjDocumentRecord> {
 
     @Override
     public List<ForeignKey<ObjDocumentRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjDocumentRecord, ?>>asList(Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_CONTENT_KIND_ID_FKEY, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_DOCUMENT_KIND_ID_FKEY, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_DOCUMENT_CATEGORY_ID_FKEY, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_TEMPLATE_DOCUMENT_ID_FKEY);
+        return Arrays.<ForeignKey<ObjDocumentRecord, ?>>asList(Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_DOCUMENT_KIND_ID_FKEY, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_CONTENT_KIND_ID_FKEY, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_DOCUMENT_CATEGORY_ID_FKEY, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_TEMPLATE_DOCUMENT_ID_FKEY);
     }
 
-    private transient CodeContentKind _codeContentKind;
     private transient CodeDocumentKind _codeDocumentKind;
+    private transient CodeContentKind _codeContentKind;
     private transient CodeDocumentCategory _codeDocumentCategory;
     private transient ObjDocument _objDocument;
-
-    public CodeContentKind codeContentKind() {
-        if (_codeContentKind == null)
-            _codeContentKind = new CodeContentKind(this, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_CONTENT_KIND_ID_FKEY);
-
-        return _codeContentKind;
-    }
 
     public CodeDocumentKind codeDocumentKind() {
         if (_codeDocumentKind == null)
             _codeDocumentKind = new CodeDocumentKind(this, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_DOCUMENT_KIND_ID_FKEY);
 
         return _codeDocumentKind;
+    }
+
+    public CodeContentKind codeContentKind() {
+        if (_codeContentKind == null)
+            _codeContentKind = new CodeContentKind(this, Keys.OBJ_DOCUMENT__OBJ_DOCUMENT_CONTENT_KIND_ID_FKEY);
+
+        return _codeContentKind;
     }
 
     public CodeDocumentCategory codeDocumentCategory() {

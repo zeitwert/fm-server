@@ -115,7 +115,7 @@ create table obj_building (
 	geo_coordinates												varchar(200),
 	geo_zoom															integer,
 	--
-	cover_foto_id													integer							references obj_document(obj_id) deferrable initially deferred, -- TODO not null (demo data)
+	cover_foto_id													integer							not null references obj_document(obj_id) deferrable initially deferred,
 	--
 	currency_id														varchar(40)					not null references code_currency(id),
 	--

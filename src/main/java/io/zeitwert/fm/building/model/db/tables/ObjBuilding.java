@@ -135,7 +135,7 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     /**
      * The column <code>public.obj_building.cover_foto_id</code>.
      */
-    public final TableField<ObjBuildingRecord, Integer> COVER_FOTO_ID = createField(DSL.name("cover_foto_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingRecord, Integer> COVER_FOTO_ID = createField(DSL.name("cover_foto_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_building.currency_id</code>.

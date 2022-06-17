@@ -38,7 +38,7 @@ create table obj_contact (
 	intl_key															varchar(60),
 	description														text,
 	--
-	account_id													integer							not null references obj_account(obj_id),
+	account_id													integer								not null references obj_account(obj_id),
 	--
 	contact_role_id												varchar(40)					references code_contact_role(id),
 	salutation_id													varchar(40)					references code_salutation(id),

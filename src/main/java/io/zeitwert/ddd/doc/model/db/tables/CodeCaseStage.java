@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -71,16 +71,6 @@ public class CodeCaseStage extends TableImpl<CodeCaseStageRecord> {
      * The column <code>public.code_case_stage.name</code>.
      */
     public final TableField<CodeCaseStageRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.code_case_stage.current_name</code>.
-     */
-    public final TableField<CodeCaseStageRecord, String> CURRENT_NAME = createField(DSL.name("current_name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.code_case_stage.past_name</code>.
-     */
-    public final TableField<CodeCaseStageRecord, String> PAST_NAME = createField(DSL.name("past_name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.code_case_stage.description</code>.
@@ -212,11 +202,11 @@ public class CodeCaseStage extends TableImpl<CodeCaseStageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<String, String, Integer, String, String, String, String, String, Integer, String, String, String> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row10<String, String, Integer, String, String, String, Integer, String, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

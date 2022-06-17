@@ -10,8 +10,8 @@ begin
 	select nextval('obj_id_seq') into tenant_id;
 	select nextval('obj_id_seq') into user_id;
 	-- tenant
-	insert into obj_tenant(obj_id, extl_key, name)
-	values (tenant_id, 'k', 'Kernel');
+	insert into obj_tenant(obj_id, tenant_type_id, extl_key, name)
+	values (tenant_id, 'kernel', 'k', 'Kernel');
 	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
 	values (tenant_id, tenant_id, 'obj_tenant', 'Kernel', user_id, user_id);
 	-- user

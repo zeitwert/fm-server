@@ -49,10 +49,16 @@ declare
 	owner_id int;
 	account_id int;
 	hh_name varchar(200);
+	cover_foto_id int;
 begin
 	select id into tnt_id from obj_tenant_v where extl_key = new.tenant;
 	select id into owner_id from obj_user_v where email = new.owner;
 	select a.id, a.name into account_id, hh_name from obj_account_v a where a.intl_key = new.account and a.tenant_id = tnt_id;
+	select nextval('obj_id_seq') into cover_foto_id;
+	insert into obj(id, tenant_id, obj_type_id, owner_id, created_by_user_id)
+	values (cover_foto_id, tnt_id, 'obj_document', owner_id, owner_id);
+	insert into obj_document(obj_id, document_kind_id, content_kind_id, name)
+	values (cover_foto_id, 'standalone', 'foto', 'Coverfoto');
 	insert into obj(id, tenant_id, obj_type_id, owner_id, created_by_user_id, caption)
 	values (nextval('obj_id_seq'), tnt_id, 'obj_building', owner_id, owner_id, new.name || ' (' || hh_name || ')')
 	returning id
@@ -74,6 +80,8 @@ begin
 		zip,
 		city,
 		country_id,
+		--
+		cover_foto_id,
 		--
 		currency_id,
 		--
@@ -107,6 +115,8 @@ begin
 		new.zip,
 		new.city,
 		new.country_id,
+		--
+		cover_foto_id,
 		--
 		new.currency_id,
 		--

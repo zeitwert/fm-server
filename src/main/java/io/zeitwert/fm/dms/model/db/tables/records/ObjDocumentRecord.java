@@ -36,44 +36,44 @@ public class ObjDocumentRecord extends UpdatableRecordImpl<ObjDocumentRecord> im
     }
 
     /**
-     * Setter for <code>public.obj_document.content_kind_id</code>.
-     */
-    public void setContentKindId(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_document.content_kind_id</code>.
-     */
-    public String getContentKindId() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.obj_document.name</code>.
-     */
-    public void setName(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_document.name</code>.
-     */
-    public String getName() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>public.obj_document.document_kind_id</code>.
      */
     public void setDocumentKindId(String value) {
-        set(3, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.obj_document.document_kind_id</code>.
      */
     public String getDocumentKindId() {
+        return (String) get(1);
+    }
+
+    /**
+     * Setter for <code>public.obj_document.content_kind_id</code>.
+     */
+    public void setContentKindId(String value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_document.content_kind_id</code>.
+     */
+    public String getContentKindId() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>public.obj_document.name</code>.
+     */
+    public void setName(String value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_document.name</code>.
+     */
+    public String getName() {
         return (String) get(3);
     }
 
@@ -135,17 +135,17 @@ public class ObjDocumentRecord extends UpdatableRecordImpl<ObjDocumentRecord> im
 
     @Override
     public Field<String> field2() {
-        return ObjDocument.OBJ_DOCUMENT.CONTENT_KIND_ID;
+        return ObjDocument.OBJ_DOCUMENT.DOCUMENT_KIND_ID;
     }
 
     @Override
     public Field<String> field3() {
-        return ObjDocument.OBJ_DOCUMENT.NAME;
+        return ObjDocument.OBJ_DOCUMENT.CONTENT_KIND_ID;
     }
 
     @Override
     public Field<String> field4() {
-        return ObjDocument.OBJ_DOCUMENT.DOCUMENT_KIND_ID;
+        return ObjDocument.OBJ_DOCUMENT.NAME;
     }
 
     @Override
@@ -165,17 +165,17 @@ public class ObjDocumentRecord extends UpdatableRecordImpl<ObjDocumentRecord> im
 
     @Override
     public String component2() {
-        return getContentKindId();
+        return getDocumentKindId();
     }
 
     @Override
     public String component3() {
-        return getName();
+        return getContentKindId();
     }
 
     @Override
     public String component4() {
-        return getDocumentKindId();
+        return getName();
     }
 
     @Override
@@ -195,17 +195,17 @@ public class ObjDocumentRecord extends UpdatableRecordImpl<ObjDocumentRecord> im
 
     @Override
     public String value2() {
-        return getContentKindId();
+        return getDocumentKindId();
     }
 
     @Override
     public String value3() {
-        return getName();
+        return getContentKindId();
     }
 
     @Override
     public String value4() {
-        return getDocumentKindId();
+        return getName();
     }
 
     @Override
@@ -226,19 +226,19 @@ public class ObjDocumentRecord extends UpdatableRecordImpl<ObjDocumentRecord> im
 
     @Override
     public ObjDocumentRecord value2(String value) {
-        setContentKindId(value);
+        setDocumentKindId(value);
         return this;
     }
 
     @Override
     public ObjDocumentRecord value3(String value) {
-        setName(value);
+        setContentKindId(value);
         return this;
     }
 
     @Override
     public ObjDocumentRecord value4(String value) {
-        setDocumentKindId(value);
+        setName(value);
         return this;
     }
 
@@ -279,13 +279,13 @@ public class ObjDocumentRecord extends UpdatableRecordImpl<ObjDocumentRecord> im
     /**
      * Create a detached, initialised ObjDocumentRecord
      */
-    public ObjDocumentRecord(Integer objId, String contentKindId, String name, String documentKindId, String documentCategoryId, Integer templateDocumentId) {
+    public ObjDocumentRecord(Integer objId, String documentKindId, String contentKindId, String name, String documentCategoryId, Integer templateDocumentId) {
         super(ObjDocument.OBJ_DOCUMENT);
 
         setObjId(objId);
+        setDocumentKindId(documentKindId);
         setContentKindId(contentKindId);
         setName(name);
-        setDocumentKindId(documentKindId);
         setDocumentCategoryId(documentCategoryId);
         setTemplateDocumentId(templateDocumentId);
     }

@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -51,6 +51,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      * The column <code>public.obj_tenant.obj_id</code>.
      */
     public final TableField<ObjTenantRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_tenant.tenant_type_id</code>.
+     */
+    public final TableField<ObjTenantRecord, String> TENANT_TYPE_ID = createField(DSL.name("tenant_type_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
      * The column <code>public.obj_tenant.name</code>.
@@ -116,6 +121,20 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     @Override
+    public List<ForeignKey<ObjTenantRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ObjTenantRecord, ?>>asList(Keys.OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY);
+    }
+
+    private transient CodeTenantType _codeTenantType;
+
+    public CodeTenantType codeTenantType() {
+        if (_codeTenantType == null)
+            _codeTenantType = new CodeTenantType(this, Keys.OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY);
+
+        return _codeTenantType;
+    }
+
+    @Override
     public ObjTenant as(String alias) {
         return new ObjTenant(DSL.name(alias), this);
     }
@@ -142,11 +161,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Integer, String, String, String, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
