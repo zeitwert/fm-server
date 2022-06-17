@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNote;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementDto;
+import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.TransferMetaDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -41,7 +46,10 @@ public class BuildingFileTransferController {
 	private static final String VERSION = "1.0";
 
 	@Autowired
-	private ObjBuildingRepository repo;
+	private ObjBuildingRepository buildingRepo;
+
+	@Autowired
+	private ObjNoteRepository noteRepo;
 
 	@Autowired
 	SessionInfo sessionInfo;
@@ -49,7 +57,7 @@ public class BuildingFileTransferController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		ObjBuilding building = this.repo.get(sessionInfo, id);
+		ObjBuilding building = this.buildingRepo.get(sessionInfo, id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
 		ResponseEntity<BuildingTransferDto> response = ResponseEntity.ok()
@@ -69,9 +77,87 @@ public class BuildingFileTransferController {
 		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = repo.create(sessionInfo);
-		AppContext appContext = building.getMeta().getAppContext();
+		ObjBuilding building = buildingRepo.create(sessionInfo);
 		building.setAccountId(accountId);
+		this.fillFromDto(building, dto);
+		buildingRepo.store(building);
+		BuildingTransferDto export = this.getTransferDto(building);
+		return ResponseEntity.ok().body(export);
+	}
+
+	private BuildingTransferDto getTransferDto(ObjBuilding building) {
+		//@formatter:off
+		TransferMetaDto meta = TransferMetaDto
+			.builder()
+				.aggregate(AGGREGATE)
+				.version(VERSION)
+			.build();
+		List<BuildingTransferElementDto> elements = building.getElementList().stream().map(e -> {
+			return BuildingTransferElementDto
+				.builder()
+					.buildingPart(e.getBuildingPart().getId())
+					.valuePart(e.getValuePart())
+					.condition(e.getCondition())
+					.conditionYear(e.getConditionYear())
+					.strain(e.getStrain())
+					.strength(e.getStrength())
+					.description(e.getDescription())
+					.conditionDescription(e.getConditionDescription())
+					.measureDescription(e.getMeasureDescription())
+				.build();
+		}).toList();
+		List<NoteTransferDto> notes = building.getNoteList().stream().map(note -> {
+			return NoteTransferDto
+				.builder()
+					.subject(note.getSubject())
+					.content(note.getContent())
+					.isPrivate(note.getIsPrivate())
+				.build();
+		}).toList();
+		BuildingTransferDto export = BuildingTransferDto
+			.builder()
+				.meta(meta)
+				.id(building.getId())
+				.name(building.getName())
+				.description(building.getDescription())
+				.buildingNr(building.getBuildingNr())
+				.buildingInsuranceNr(building.getBuildingInsuranceNr())
+				.plotNr(building.getPlotNr())
+				.nationalBuildingId(building.getNationalBuildingId())
+				.historicPreservation(building.getHistoricPreservation() != null ? building.getHistoricPreservation().getId() : null)
+				.street(building.getStreet())
+				.zip(building.getZip())
+				.city(building.getCity())
+				.country(building.getCountry() != null ? building.getCountry().getId() : null)
+				.geoAddress(building.getGeoAddress())
+				.geoCoordinates(building.getGeoCoordinates())
+				.geoZoom(building.getGeoZoom())
+				.currency(building.getCurrency() != null ? building.getCurrency().getId() : null)
+				.volume(building.getVolume())
+				.areaGross(building.getAreaGross())
+				.areaNet(building.getAreaNet())
+				.nrOfFloorsAboveGround(building.getNrOfFloorsAboveGround())
+				.nrOfFloorsBelowGround(building.getNrOfFloorsBelowGround())
+				.buildingType(building.getBuildingType() != null ? building.getBuildingType().getId() : null)
+				.buildingSubType(building.getBuildingSubType() != null ? building.getBuildingSubType().getId() : null)
+				.buildingYear(building.getBuildingYear())
+				.insuredValue(building.getInsuredValue())
+				.insuredValueYear(building.getInsuredValueYear())
+				.notInsuredValue(building.getNotInsuredValue())
+				.notInsuredValueYear(building.getNotInsuredValueYear())
+				.thirdPartyValue(building.getThirdPartyValue())
+				.thirdPartyValueYear(building.getThirdPartyValueYear())
+				.buildingPartCatalog(building.getBuildingPartCatalog() != null ? building.getBuildingPartCatalog().getId() : null)
+				.buildingMaintenanceStrategy(building.getBuildingMaintenanceStrategy() != null ? building.getBuildingMaintenanceStrategy().getId() : null)
+				.elements(elements)
+				.notes(notes)
+			.build();
+		//@formatter:on
+		return export;
+	}
+
+	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
+		AppContext appContext = building.getMeta().getAppContext();
 		//@formatter:off
 		building.setOwner(sessionInfo.getUser());
 		building.setName(dto.getName());
@@ -117,73 +203,15 @@ public class BuildingFileTransferController {
 			element.setConditionDescription(dtoElement.getConditionDescription());
 			element.setMeasureDescription(dtoElement.getMeasureDescription());
 		});
-		repo.store(building);
-		BuildingTransferDto export = this.getTransferDto(building);
-		ResponseEntity<BuildingTransferDto> response = ResponseEntity.ok().body(export);
+		CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
+		dto.getNotes().forEach((dtoNote) -> {
+			ObjNote note = building.addNote(noteType);
+			note.setSubject(dtoNote.getSubject());
+			note.setContent(dtoNote.getContent());
+			note.setIsPrivate(dtoNote.getIsPrivate());
+			noteRepo.store(note);
+		});
 		//@formatter:on
-		return response;
-	}
-
-	private BuildingTransferDto getTransferDto(ObjBuilding building) {
-		//@formatter:off
-		TransferMetaDto meta = TransferMetaDto
-			.builder()
-				.aggregate(AGGREGATE)
-				.version(VERSION)
-			.build();
-		List<BuildingTransferElementDto> elements = building.getElementList().stream().map(e -> {
-			return BuildingTransferElementDto
-				.builder()
-					.buildingPart(e.getBuildingPart().getId())
-					.valuePart(e.getValuePart())
-					.condition(e.getCondition())
-					.conditionYear(e.getConditionYear())
-					.strain(e.getStrain())
-					.strength(e.getStrength())
-					.description(e.getDescription())
-					.conditionDescription(e.getConditionDescription())
-					.measureDescription(e.getMeasureDescription())
-				.build();
-		}).toList();
-		BuildingTransferDto export = BuildingTransferDto
-			.builder()
-				.meta(meta)
-				.id(building.getId())
-				.name(building.getName())
-				.description(building.getDescription())
-				.buildingNr(building.getBuildingNr())
-				.buildingInsuranceNr(building.getBuildingInsuranceNr())
-				.plotNr(building.getPlotNr())
-				.nationalBuildingId(building.getNationalBuildingId())
-				.historicPreservation(building.getHistoricPreservation() != null ? building.getHistoricPreservation().getId() : null)
-				.street(building.getStreet())
-				.zip(building.getZip())
-				.city(building.getCity())
-				.country(building.getCountry() != null ? building.getCountry().getId() : null)
-				.geoAddress(building.getGeoAddress())
-				.geoCoordinates(building.getGeoCoordinates())
-				.geoZoom(building.getGeoZoom())
-				.currency(building.getCurrency() != null ? building.getCurrency().getId() : null)
-				.volume(building.getVolume())
-				.areaGross(building.getAreaGross())
-				.areaNet(building.getAreaNet())
-				.nrOfFloorsAboveGround(building.getNrOfFloorsAboveGround())
-				.nrOfFloorsBelowGround(building.getNrOfFloorsBelowGround())
-				.buildingType(building.getBuildingType() != null ? building.getBuildingType().getId() : null)
-				.buildingSubType(building.getBuildingSubType() != null ? building.getBuildingSubType().getId() : null)
-				.buildingYear(building.getBuildingYear())
-				.insuredValue(building.getInsuredValue())
-				.insuredValueYear(building.getInsuredValueYear())
-				.notInsuredValue(building.getNotInsuredValue())
-				.notInsuredValueYear(building.getNotInsuredValueYear())
-				.thirdPartyValue(building.getThirdPartyValue())
-				.thirdPartyValueYear(building.getThirdPartyValueYear())
-				.buildingPartCatalog(building.getBuildingPartCatalog() != null ? building.getBuildingPartCatalog().getId() : null)
-				.buildingMaintenanceStrategy(building.getBuildingMaintenanceStrategy() != null ? building.getBuildingMaintenanceStrategy().getId() : null)
-				.elements(elements)
-			.build();
-		//@formatter:on
-		return export;
 	}
 
 	private String getFileName(ObjBuilding building) {

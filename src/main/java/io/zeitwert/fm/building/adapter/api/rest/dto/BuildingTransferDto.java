@@ -55,4 +55,6 @@ public class BuildingTransferDto {
 
 	private List<BuildingTransferElementDto> elements;
 
+	private List<NoteTransferDto> notes;
+
 }
