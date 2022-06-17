@@ -7,6 +7,8 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 
 public class SessionInfo {
 
+	public final static SessionInfo NO_SESSION = new SessionInfo(null, null, null, null);
+
 	private final ObjTenant tenant;
 	private final ObjUser user;
 	private final Integer accountId;
