@@ -8,16 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.session.model.impl.UserDetailsImpl;
 import io.zeitwert.ddd.session.service.api.JwtProvider;
 
-import javax.servlet.http.HttpServletRequest;
-
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -28,7 +22,6 @@ import io.jsonwebtoken.UnsupportedJwtException;
 @Service
 public class JwtProviderImpl implements JwtProvider {
 
-	private static final String AUTH_HEADER_PREFIX = "Bearer ";
 	private static final Logger logger = LoggerFactory.getLogger(JwtProviderImpl.class);
 
 	@Value("${zeitwert.app.jwtSecret}")
@@ -55,14 +48,6 @@ public class JwtProviderImpl implements JwtProvider {
 		//@formatter:on
 	}
 
-	public String getJwtFromHeader(HttpServletRequest request) {
-		String authHeader = request.getHeader("Authorization");
-		if (StringUtils.hasText(authHeader) && authHeader.startsWith(AUTH_HEADER_PREFIX)) {
-			return authHeader.substring(AUTH_HEADER_PREFIX.length());
-		}
-		throw new RuntimeException("Authentication error (missing / invalid JWT)");
-	}
-
 	public boolean isValidJwt(String authToken) {
 		try {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
@@ -79,11 +64,6 @@ public class JwtProviderImpl implements JwtProvider {
 			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
 		return false;
-	}
-
-	public Claims getClaims(String token) {
-		requireThis(token != null && token.length() > 0, "valid JWT (" + token + ")");
-		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 	}
 
 }
