@@ -1,7 +1,7 @@
 
 import { Button, Card, MediaObject } from "@salesforce/design-system-react";
 import { EnumeratedField, Input, Select, TextField } from "@zeitwert/ui-forms";
-import { Enumerated, session, Session } from "@zeitwert/ui-model";
+import { Enumerated, Session } from "@zeitwert/ui-model";
 import { inject, observer } from "mobx-react";
 import { Instance } from "mobx-state-tree";
 import { AnyFormState, Form, Query } from "mstform";
@@ -10,7 +10,7 @@ import { isValidEmail, LoginData, LoginModel } from "session/model/LoginModel";
 
 const loadAccounts = async (q: Query): Promise<Enumerated[]> => {
 	if (isValidEmail(q.email)) {
-		const userInfoResponse = await session.userInfo(q.email!);
+		const userInfoResponse = await LoginData.loadAccounts(q.email!);
 		if (userInfoResponse) {
 			return userInfoResponse.accounts;
 		}
@@ -68,10 +68,25 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 				<div className="slds-col slds-size_1-of-3" />
 				<div className="slds-col slds-size_1-of-3">
 					<Card heading={CARD_HEADER}>
-						<div className="slds-card__body slds-card__body_inner">
-							<Input label="Email" accessor={this.formState.field("email")} placeholder="email address ..." />
-							<Input label="Passwort" accessor={this.formState.field("password")} type="password" placeholder="password ..." />
-							<Select label="Kunde" accessor={this.formState.field("account")} placeholder="account" />
+						<div className="slds-grid slds-wrap">
+							<div className="slds-col slds-size_2-of-3">
+								<div className="slds-card__body slds-card__body_inner">
+									<Input label="Email" accessor={this.formState.field("email")} placeholder="email address ..." />
+									<Input label="Passwort" accessor={this.formState.field("password")} type="password" placeholder="password ..." />
+									{
+										LoginData.hasTenant && LoginData.accounts?.length > 1 &&
+										<Select label="Kunde" accessor={this.formState.field("account")} placeholder="account" />
+									}
+								</div>
+							</div>
+							<div className="slds-col slds-size_1-of-3">
+								<div className="slds-card__body slds-card__body_inner" style={{ marginTop: "34px", marginRight: "1rem" }}>
+									{
+										LoginData.hasTenant &&
+										<img src={LoginData.tenantLogoUrl} alt="Tenant Logo" style={{ height: "144px" }} />
+									}
+								</div>
+							</div>
 						</div>
 						<footer className="slds-card__footer">
 							<Button
@@ -83,9 +98,9 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 							/>
 						</footer>
 					</Card>
-				</div>
+				</div >
 				<div className="slds-col slds-size_1-of-3" />
-			</div>
+			</div >
 		);
 	}
 

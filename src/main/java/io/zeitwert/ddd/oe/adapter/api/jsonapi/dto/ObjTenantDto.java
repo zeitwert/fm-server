@@ -13,6 +13,7 @@ public class ObjTenantDto {
 	private Integer id;
 	private String caption;
 	private String name;
+	private String extlKey;
 
 	public static ObjTenantDto fromObj(ObjTenant obj) {
 		if (obj == null) {
@@ -23,6 +24,7 @@ public class ObjTenantDto {
 			.id(obj.getId())
 			.caption(obj.getCaption())
 			.name(obj.getName())
+			.extlKey(obj.getExtlKey())
 			.build();
 		// @formatter:on
 	}
