@@ -27,15 +27,15 @@ add constraint obj$owner
 foreign key (owner_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table obj
-add constraint obj$created_by
+add constraint obj$created_by_user
 foreign key (created_by_user_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table obj
-add constraint obj$modified_by
+add constraint obj$modified_by_user
 foreign key (created_by_user_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table obj
-add constraint obj$closed_by
+add constraint obj$closed_by_user
 foreign key (closed_by_user_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table obj_part_transition
@@ -47,11 +47,11 @@ add constraint doc$owner
 foreign key (owner_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table doc
-add constraint doc$created_by
+add constraint doc$created_by_user
 foreign key (created_by_user_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table doc
-add constraint doc$modified_by
+add constraint doc$modified_by_user
 foreign key (created_by_user_id) references obj_user(obj_id) deferrable initially deferred;
 
 alter table doc_part_transition

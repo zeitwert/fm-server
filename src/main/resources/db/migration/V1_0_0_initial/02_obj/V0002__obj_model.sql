@@ -7,7 +7,7 @@ create table obj (
 	id																		integer												not null,
 	obj_type_id														varchar(40)										not null references code_aggregate_type(id),
 	tenant_id															integer												not null, -- references obj_tenant(obj_id),
-	owner_id															integer,											-- references obj_user(obj_id),
+	owner_id															integer												not null, -- references obj_user(obj_id),
 	caption																varchar(200),
 	--
 	created_by_user_id										integer												not null, -- references obj_user(obj_id),

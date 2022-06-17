@@ -20,8 +20,8 @@ begin
 	values (nextval('obj_id_seq'), new.key, new.name)
 	returning obj_id
 	into new_id;
-	insert into obj(id, tenant_id, obj_type_id, caption, created_by_user_id)
-	values (new_id, new_id, 'obj_tenant', new.name, k_user_id);
+	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
+	values (new_id, new_id, 'obj_tenant', new.name, k_user_id, k_user_id);
 	return new;
 end
 $func$

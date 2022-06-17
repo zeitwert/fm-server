@@ -12,11 +12,11 @@ begin
 	-- tenant
 	insert into obj_tenant(obj_id, extl_key, name)
 	values (tenant_id, 'k', 'Kernel');
-	insert into obj(id, tenant_id, obj_type_id, caption, created_by_user_id)
-	values (tenant_id, tenant_id, 'obj_tenant', 'Kernel', user_id);
+	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
+	values (tenant_id, tenant_id, 'obj_tenant', 'Kernel', user_id, user_id);
 	-- user
-	insert into obj(id, tenant_id, obj_type_id, caption, created_by_user_id)
-	values (user_id, tenant_id, 'obj_user', 'k', user_id);
+	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
+	values (user_id, tenant_id, 'obj_user', 'k', user_id, user_id);
 	insert into obj_user(obj_id, email, name, password, role_list, picture)
 	values (user_id, 'k@zeitwert.io', 'k', '{noop}k', 'APP-ADMIN', '');
 end $$;
