@@ -23,8 +23,6 @@ create table code_case_stage (
 	seq_nr																integer												not null,
 	case_stage_type_id										varchar(40)										not null references code_case_stage_type(id),
 	name																  varchar(100)									not null,
-	current_name													varchar(100)									not null, -- TODO drop
-	past_name															varchar(100)									not null, -- TODO drop
 	description														text,
 	due																		integer												not null,
 	action																varchar(100),

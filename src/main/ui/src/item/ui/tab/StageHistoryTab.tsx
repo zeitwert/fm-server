@@ -45,7 +45,7 @@ export default class StageHistoryTab extends React.Component<StageHistoryTabProp
 					{transitions.map((transition, index) => (
 						<TimelineItem
 							key={index}
-							name={transition.newCaseStage!.currentName}
+							name={transition.newCaseStage!.name}
 							type="stage"
 							icon={
 								<Icon category="standard" name="stage" size="medium" className="slds-timeline__icon" />

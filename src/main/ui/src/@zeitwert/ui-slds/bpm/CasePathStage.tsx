@@ -31,17 +31,17 @@ export class CasePathStage extends React.Component<CasePathStageProps> {
 	@computed get name() {
 		const { stage, stageType, isLast } = this.props;
 		if (isLast) {
-			return stage.pastName;
+			return stage.name;
 		}
 		switch (stageType) {
 			case StageType.won:
 			case StageType.lost:
 			case StageType.complete:
-				return stage.pastName;
+				return stage.name;
 			case StageType.current:
 			case StageType.incomplete:
 			default:
-				return stage.currentName;
+				return stage.name;
 		}
 	}
 
