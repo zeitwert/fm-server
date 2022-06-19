@@ -1,5 +1,5 @@
 
-import { Config, Enumerated, EnumeratedModel } from "@zeitwert/ui-model";
+import { API, Config, Enumerated, EnumeratedModel } from "@zeitwert/ui-model";
 import { types } from "mobx-state-tree";
 import { AccessorDependentQuery, Query, Source } from "mstform";
 
@@ -26,8 +26,8 @@ export function enumeratedSource(sourceOrUrl: EnumSource, dependentQuery?: Acces
 		source = new Source({
 			entryMap: container.entryMap,
 			load: async () => {
-				const response = await window.fetch(replaceUrlPlaceholders(sourceOrUrl));
-				return response.json();
+				const response = await API.get(replaceUrlPlaceholders(sourceOrUrl));
+				return response.data;
 			},
 		});
 	} else {
