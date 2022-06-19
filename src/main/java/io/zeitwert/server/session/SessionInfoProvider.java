@@ -51,7 +51,7 @@ public class SessionInfoProvider {
 
 		if (!hasJwt(request)) {
 			// localhost dev login
-			if (request.getServerName().equals("localhost")) {
+			if (request.getServerName().equals("XYZ--localhost")) {
 				Optional<ObjUser> user = userRepository.getByEmail("hannes@zeitwert.io");
 				return new SessionInfo(user.get().getTenant(), user.get(), null, EN_US);
 			}

@@ -103,7 +103,7 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 					<Tabs selectedIndex={this.activeTabId} onSelect={this.onRightSelect} className="full-height">
 						{
 							!hideNotes &&
-							<TabsPanel label={"Notizen (" + /*item.notes.length +*/ ")"}>
+							<TabsPanel label={"Notizen"}>
 								{
 									this.activeTabId === TAB.NOTES &&
 									<NotesTab
