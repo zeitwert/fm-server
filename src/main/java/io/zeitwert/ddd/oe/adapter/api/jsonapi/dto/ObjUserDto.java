@@ -1,34 +1,22 @@
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.dto;
 
-import io.crnk.core.resource.annotations.JsonApiId;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Data()
-@Builder
-public class ObjUserDto {
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@ToString(callSuper = true, includeFieldNames = true)
+public class ObjUserDto extends ObjDtoBase<ObjUser> {
 
-	@JsonApiId
-	private Integer id;
-	private String caption;
 	private String name;
 	private String email;
 	private String picture;
-
-	public static ObjUserDto fromObj(ObjUser obj) {
-		if (obj == null) {
-			return null;
-		}
-		// @formatter:off
-		return ObjUserDto.builder()
-			.id(obj.getId())
-			.caption(obj.getCaption())
-			.name(obj.getName())
-			.email(obj.getEmail())
-			.picture(obj.getPicture())
-			.build();
-		// @formatter:on
-	}
 
 }

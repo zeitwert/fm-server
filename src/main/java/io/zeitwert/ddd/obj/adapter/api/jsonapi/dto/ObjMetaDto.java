@@ -13,6 +13,8 @@ import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -42,19 +44,21 @@ public class ObjMetaDto implements MetaInformation {
 
 	public static ObjMetaDto fromObj(Obj obj, SessionInfo sessionInfo) {
 		ObjMeta meta = obj.getMeta();
+		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		// @formatter:off
 		return ObjMetaDto.builder()
 			.sessionId(sessionInfo.getId())
 			.itemType(EnumeratedDto.fromEnum(obj.getRepository().getAggregateType()))
-			.tenant(ObjTenantDto.fromObj(obj.getTenant()))
-			.owner(ObjUserDto.fromObj(obj.getOwner()))
-			.createdByUser(ObjUserDto.fromObj(meta.getCreatedByUser()))
+			.tenant(tenantBridge.fromAggregate(obj.getTenant(), sessionInfo))
+			.owner(userBridge.fromAggregate(obj.getOwner(), sessionInfo))
+			.createdByUser(userBridge.fromAggregate(meta.getCreatedByUser(), sessionInfo))
 			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(ObjUserDto.fromObj(meta.getModifiedByUser()))
+			.modifiedByUser(userBridge.fromAggregate(meta.getModifiedByUser(), sessionInfo))
 			.modifiedAt(meta.getModifiedAt())
-			.closedByUser(ObjUserDto.fromObj(meta.getClosedByUser()))
+			.closedByUser(userBridge.fromAggregate(meta.getClosedByUser(), sessionInfo))
 			.closedAt(meta.getClosedAt())
-			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
+			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t, sessionInfo)).toList())
 			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
@@ -63,17 +67,21 @@ public class ObjMetaDto implements MetaInformation {
 	public static ObjMetaDto fromRecord(Record obj, SessionInfo sessionInfo) {
 		ObjTenantRepository tenantRepo = (ObjTenantRepository) AppContext.getInstance().getRepository(ObjTenant.class);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
+		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		Integer modifiedByUserId = obj.getValue(ObjFields.MODIFIED_BY_USER_ID);
-		ObjUserDto modifiedByUser = modifiedByUserId == null ? null : ObjUserDto.fromObj(userRepo.get(modifiedByUserId));
+		ObjUserDto modifiedByUser = modifiedByUserId == null ? null
+				: userBridge.fromAggregate(userRepo.get(modifiedByUserId), sessionInfo);
 		Integer closedByUserId = obj.getValue(ObjFields.CLOSED_BY_USER_ID);
-		ObjUserDto closedByUser = closedByUserId == null ? null : ObjUserDto.fromObj(userRepo.get(closedByUserId));
+		ObjUserDto closedByUser = closedByUserId == null ? null
+				: userBridge.fromAggregate(userRepo.get(closedByUserId), sessionInfo);
 		// @formatter:off
 		return ObjMetaDto.builder()
 			.sessionId(sessionInfo.getId())
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
-			.tenant(ObjTenantDto.fromObj(tenantRepo.get(obj.getValue(ObjFields.TENANT_ID))))
-			.owner(ObjUserDto.fromObj(userRepo.get(obj.getValue(ObjFields.OWNER_ID))))
-			.createdByUser(ObjUserDto.fromObj(userRepo.get(obj.getValue(ObjFields.CREATED_BY_USER_ID))))
+			.tenant(tenantBridge.fromAggregate(tenantRepo.get(obj.getValue(ObjFields.TENANT_ID)), sessionInfo))
+			.owner(userBridge.fromAggregate(userRepo.get(obj.getValue(ObjFields.OWNER_ID)), sessionInfo))
+			.createdByUser(userBridge.fromAggregate(userRepo.get(obj.getValue(ObjFields.CREATED_BY_USER_ID)), sessionInfo))
 			.createdAt(obj.get(ObjFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(obj.get(ObjFields.MODIFIED_AT))

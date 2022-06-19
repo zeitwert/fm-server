@@ -13,6 +13,8 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -43,18 +45,20 @@ public class DocMetaDto implements MetaInformation {
 
 	public static DocMetaDto fromDoc(Doc doc, SessionInfo sessionInfo) {
 		DocMeta meta = doc.getMeta();
+		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		// @formatter:off
 		return DocMetaDto.builder()
 			.sessionId(sessionInfo.getId())
 			.itemType(EnumeratedDto.fromEnum(doc.getRepository().getAggregateType()))
-			.tenant(ObjTenantDto.fromObj(doc.getTenant()))
-			.owner(ObjUserDto.fromObj(doc.getOwner()))
+			.tenant(tenantBridge.fromAggregate(doc.getTenant(), sessionInfo))
+			.owner(userBridge.fromAggregate(doc.getOwner(), sessionInfo))
 			.caseStage(EnumeratedDto.fromEnum(doc.getCaseStage()))
-			.createdByUser(ObjUserDto.fromObj(meta.getCreatedByUser()))
+			.createdByUser(userBridge.fromAggregate(meta.getCreatedByUser(), sessionInfo))
 			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(ObjUserDto.fromObj(meta.getModifiedByUser()))
+			.modifiedByUser(userBridge.fromAggregate(meta.getModifiedByUser(), sessionInfo))
 			.modifiedAt(meta.getModifiedAt())
-			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
+			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v, sessionInfo)).toList())
 			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
@@ -63,16 +67,19 @@ public class DocMetaDto implements MetaInformation {
 	public static DocMetaDto fromRecord(Record doc, SessionInfo sessionInfo) {
 		ObjTenantRepository tenantRepo = (ObjTenantRepository) AppContext.getInstance().getRepository(ObjTenant.class);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
+		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		Integer modifiedByUserId = doc.getValue(DocFields.MODIFIED_BY_USER_ID);
-		ObjUserDto modifiedByUser = modifiedByUserId == null ? null : ObjUserDto.fromObj(userRepo.get(modifiedByUserId));
+		ObjUserDto modifiedByUser = modifiedByUserId == null ? null
+				: userBridge.fromAggregate(userRepo.get(modifiedByUserId), sessionInfo);
 		// @formatter:off
 		return DocMetaDto.builder()
 			.sessionId(sessionInfo.getId())
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(doc.get(DocFields.DOC_TYPE_ID))))
-			.tenant(ObjTenantDto.fromObj(tenantRepo.get(doc.getValue(DocFields.TENANT_ID))))
-			.owner(ObjUserDto.fromObj(userRepo.get(doc.getValue(DocFields.OWNER_ID))))
+			.tenant(tenantBridge.fromAggregate(tenantRepo.get(doc.getValue(DocFields.TENANT_ID)), sessionInfo))
+			.owner(userBridge.fromAggregate(userRepo.get(doc.getValue(DocFields.OWNER_ID)), sessionInfo))
 			.caseStage(EnumeratedDto.fromEnum(CodeCaseStageEnum.getCaseStage(doc.get(DocFields.CASE_STAGE_ID))))
-			.createdByUser(ObjUserDto.fromObj(userRepo.get(doc.getValue(DocFields.CREATED_BY_USER_ID))))
+			.createdByUser(userBridge.fromAggregate(userRepo.get(doc.getValue(DocFields.CREATED_BY_USER_ID)), sessionInfo))
 			.createdAt(doc.get(DocFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(doc.get(DocFields.MODIFIED_AT))

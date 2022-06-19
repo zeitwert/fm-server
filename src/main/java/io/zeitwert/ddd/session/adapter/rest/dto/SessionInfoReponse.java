@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
@@ -36,13 +38,15 @@ public class SessionInfoReponse {
 		if (sessionInfo == null) {
 			return null;
 		}
+		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		ObjAccount account = sessionInfo.hasAccount() ? accountRepository.get(sessionInfo, sessionInfo.getAccountId())
 				: null;
 		ObjAccountDto accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(account, sessionInfo);
 		// @formatter:off
 		return SessionInfoReponse.builder()
-			.tenant(ObjTenantDto.fromObj(sessionInfo.getTenant()))
-			.user(ObjUserDto.fromObj(sessionInfo.getUser()))
+			.tenant(tenantBridge.fromAggregate(sessionInfo.getTenant(), sessionInfo))
+			.user(userBridge.fromAggregate(sessionInfo.getUser(), sessionInfo))
 			.account(accountDto)
 			.locale("en-US")
 			.applicationId("fm")
