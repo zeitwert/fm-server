@@ -31,18 +31,6 @@ public interface AggregateSPI {
 	void doAfterLoad();
 
 	/**
-	 * Calculate all the derived fields, typically after a field change.
-	 */
-	void calcAll();
-
-	/**
-	 * Calculate all the volatile derived fields, i.e. fields that are not saved to
-	 * the database. This is triggered after loading the aggregate from the
-	 * database.
-	 */
-	void calcVolatile();
-
-	/**
 	 * Prepare for storage, f.ex. assign seqNr to parts.
 	 */
 	void doBeforeStore();

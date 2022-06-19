@@ -24,6 +24,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 public abstract class AggregateBase extends EntityWithPropertiesBase implements Aggregate, AggregateMeta, AggregateSPI {
 
 	private Boolean isStale = false;
+	private boolean isCalcDisabled = false;
 	private boolean isInCalc = false;
 	private List<AggregatePartValidation> validationList = new ArrayList<>();
 
@@ -133,6 +134,14 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 				.validationLevel(validationLevel).validation(validation).build());
 	}
 
+	protected void disableCalc() {
+		this.isCalcDisabled = true;
+	}
+
+	protected void enableCalc() {
+		this.isCalcDisabled = false;
+	}
+
 	protected Boolean isInCalc() {
 		return this.isInCalc;
 	}
@@ -146,8 +155,9 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		this.isInCalc = false;
 	}
 
+	@Override
 	public void calcAll() {
-		if (this.isInCalc()) {
+		if (this.isCalcDisabled || this.isInCalc()) {
 			return;
 		}
 		try {
@@ -164,8 +174,9 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		this.didCalcAll = true;
 	}
 
+	@Override
 	public void calcVolatile() {
-		if (this.isInCalc()) {
+		if (this.isCalcDisabled || this.isInCalc()) {
 			return;
 		}
 		try {

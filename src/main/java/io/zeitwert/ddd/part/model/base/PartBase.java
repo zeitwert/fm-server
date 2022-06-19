@@ -1,7 +1,6 @@
 package io.zeitwert.ddd.part.model.base;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartMeta;
@@ -206,6 +205,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		this.isInCalc = false;
 	}
 
+	@Override
 	public void calcAll() {
 		if (this.isInCalc()) {
 			return;
@@ -213,7 +213,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		try {
 			this.beginCalc();
 			this.doCalcAll();
-			((AggregateSPI) this.getAggregate()).calcAll();
+			this.getAggregate().calcAll();
 		} finally {
 			this.endCalc();
 		}
@@ -222,6 +222,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	protected void doCalcAll() {
 	}
 
+	@Override
 	public void calcVolatile() {
 		if (this.isInCalc()) {
 			return;
@@ -229,7 +230,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		try {
 			this.beginCalc();
 			this.doCalcVolatile();
-			((AggregateSPI) this.getAggregate()).calcVolatile();
+			this.getAggregate().calcVolatile();
 		} finally {
 			this.endCalc();
 		}

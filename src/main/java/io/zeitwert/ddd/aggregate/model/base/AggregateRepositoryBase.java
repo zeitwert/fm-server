@@ -3,6 +3,7 @@ package io.zeitwert.ddd.aggregate.model.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -130,7 +131,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 		this.doInitParts(aggregate);
 
-		((AggregateSPI) aggregate).calcAll();
+		aggregate.calcAll();
 		this.aggregateCache.addItem(sessionInfo, aggregate);
 
 		this.didAfterCreate = false;
@@ -178,7 +179,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 				aggregate.getClass().getSimpleName() + ": doAssignParts was propagated");
 
 		this.aggregateCache.addItem(sessionInfo, aggregate);
-		((AggregateSPI) aggregate).calcVolatile();
+		aggregate.calcVolatile();
 
 		this.didAfterLoad = false;
 		this.doAfterLoad(aggregate);
@@ -192,7 +193,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	@Override
 	public final void doLoadParts(A aggregate) {
-		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
+		List<PartRepository<? super A, ?>> repos = new ArrayList<>(this.partRepositories);
+		Collections.reverse(repos);
+		for (PartRepository<? super A, ?> partRepo : repos) {
 			partRepo.load(aggregate);
 		}
 	}

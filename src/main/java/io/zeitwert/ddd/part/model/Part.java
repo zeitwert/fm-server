@@ -19,4 +19,16 @@ public interface Part<A extends Aggregate> {
 
 	Integer getSeqNr();
 
+	/**
+	 * Calculate all the derived fields, typically after a field change.
+	 */
+	public void calcAll();
+
+	/**
+	 * Calculate all the volatile derived fields, i.e. fields that are not saved to
+	 * the database. This is triggered after loading the aggregate from the
+	 * database.
+	 */
+	public void calcVolatile();
+
 }

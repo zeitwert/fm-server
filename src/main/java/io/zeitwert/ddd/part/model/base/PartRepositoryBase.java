@@ -101,6 +101,9 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@SuppressWarnings("unchecked")
 	private P create(A aggregate, Part<?> parent, CodePartListType partListType) {
 
+		requireThis(this.partCache.isInitialised(aggregate),
+				this.getClass().getSimpleName() + ": aggregate " + aggregate.getId() + " initialised");
+
 		P p = this.doCreate(aggregate);
 		assertThis(p != null, "part created");
 
@@ -156,7 +159,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	public List<P> getPartList(Part<?> parent, CodePartListType partListType) {
 		A aggregate = (A) parent.getMeta().getAggregate();
 		return this.partCache.getParts(aggregate).stream()
-				.filter(p -> p.getParentPartId() == parent.getId() && partListType.getId().equals(p.getPartListTypeId()))
+				.filter(p -> (p.getParentPartId().equals(parent.getId())) && partListType.getId().equals(p.getPartListTypeId()))
 				.toList();
 	}
 
