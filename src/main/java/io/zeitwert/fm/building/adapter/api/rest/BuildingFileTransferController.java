@@ -191,26 +191,30 @@ public class BuildingFileTransferController {
 		building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
 		building.getCurrentRating().setBuildingPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
 		building.getCurrentRating().setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
-		dto.getElements().forEach((dtoElement) -> {
-			CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
-			ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
-			element.setValuePart(dtoElement.getValuePart());
-			element.setCondition(dtoElement.getCondition());
-			element.setConditionYear(dtoElement.getConditionYear());
-			element.setStrain(dtoElement.getStrain());
-			element.setStrength(dtoElement.getStrength());
-			element.setDescription(dtoElement.getDescription());
-			element.setConditionDescription(dtoElement.getConditionDescription());
-			element.setMeasureDescription(dtoElement.getMeasureDescription());
-		});
-		CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
-		dto.getNotes().forEach((dtoNote) -> {
-			ObjNote note = building.addNote(noteType);
-			note.setSubject(dtoNote.getSubject());
-			note.setContent(dtoNote.getContent());
-			note.setIsPrivate(dtoNote.getIsPrivate());
-			noteRepo.store(note);
-		});
+		if (dto.getElements() != null) {
+			dto.getElements().forEach((dtoElement) -> {
+				CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
+				ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
+				element.setValuePart(dtoElement.getValuePart());
+				element.setCondition(dtoElement.getCondition());
+				element.setConditionYear(dtoElement.getConditionYear());
+				element.setStrain(dtoElement.getStrain());
+				element.setStrength(dtoElement.getStrength());
+				element.setDescription(dtoElement.getDescription());
+				element.setConditionDescription(dtoElement.getConditionDescription());
+				element.setMeasureDescription(dtoElement.getMeasureDescription());
+			});
+		}
+		if (dto.getNotes() != null) {
+			CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
+			dto.getNotes().forEach((dtoNote) -> {
+				ObjNote note = building.addNote(noteType);
+				note.setSubject(dtoNote.getSubject());
+				note.setContent(dtoNote.getContent());
+				note.setIsPrivate(dtoNote.getIsPrivate());
+				noteRepo.store(note);
+			});
+		}
 		//@formatter:on
 	}
 
