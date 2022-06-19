@@ -5,7 +5,8 @@ values
 
 insert into code_part_list_type(id, name)
 values
-('building.elementList', 'Elements'),
+('building.ratingList', 'Ratings'),
+('building.elementRatingList', 'Element Ratings'),
 ('building.materialDescriptionSet', 'Material Descriptions'),
 ('building.conditionDescriptionSet', 'Condition Descriptions'),
 ('building.measureDescriptionSet', 'Measure Descriptions');
@@ -256,6 +257,12 @@ values
 ('C36', 'Parkhaus', 'P48:63,P2,P3:20,P4:1,P5:1,P50:3,P51:1,P6,P7,P52,P53,P54:1,P56:2,P10,P57:2,P58:3,P59,P60,P61:3,P62'),
 ('C37', 'Werkhof', 'P48:32,P2,P3:7,P4:6,P5:15,P50:8,P51:1,P6:2,P7:4,P52:3,P53:3,P54:1,P55:3,P56:2,P10,P57:8,P58:5,P59,P60,P61,P62'),
 ('C38', 'Zivilschutzanlage', 'P48:48,P49,P2,P3:20,P5:2,P50:5,P51:1,P52:2,P53:2,P54:3,P55:3,P56,P57:2,P58:10,P59:2,P60,P61,P62');
+
+insert into code_building_rating_status(id, name)
+values
+('open','Open'),
+('review','Review'),
+('done','Done');
 
 insert into code_building_price_index(id, name)
 values

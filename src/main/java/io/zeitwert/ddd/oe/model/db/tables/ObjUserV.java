@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row18;
+import org.jooq.Row19;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -105,9 +105,19 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     public final TableField<ObjUserVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_user_v.email</code>.
+     */
+    public final TableField<ObjUserVRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * The column <code>public.obj_user_v.name</code>.
      */
     public final TableField<ObjUserVRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.obj_user_v.role_list</code>.
+     */
+    public final TableField<ObjUserVRecord, String> ROLE_LIST = createField(DSL.name("role_list"), SQLDataType.VARCHAR(400), this, "");
 
     /**
      * The column <code>public.obj_user_v.description</code>.
@@ -115,19 +125,14 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     public final TableField<ObjUserVRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.obj_user_v.email</code>.
-     */
-    public final TableField<ObjUserVRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.obj_user_v.password</code>.
      */
     public final TableField<ObjUserVRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.obj_user_v.role_list</code>.
+     * The column <code>public.obj_user_v.need_password_change</code>.
      */
-    public final TableField<ObjUserVRecord, String> ROLE_LIST = createField(DSL.name("role_list"), SQLDataType.VARCHAR(400), this, "");
+    public final TableField<ObjUserVRecord, Boolean> NEED_PASSWORD_CHANGE = createField(DSL.name("need_password_change"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.obj_user_v.picture</code>.
@@ -139,7 +144,7 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     private ObjUserV(Name alias, Table<ObjUserVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.name,\n    u.description,\n    u.email,\n    u.password,\n    u.role_list,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
     }
 
     /**
@@ -199,11 +204,11 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row18 type methods
+    // Row19 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, String> fieldsRow() {
-        return (Row18) super.fieldsRow();
+    public Row19<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
+        return (Row19) super.fieldsRow();
     }
 }

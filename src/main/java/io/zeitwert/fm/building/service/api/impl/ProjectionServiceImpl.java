@@ -3,7 +3,7 @@ package io.zeitwert.fm.building.service.api.impl;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.service.api.ProjectionService;
@@ -71,12 +71,12 @@ public class ProjectionServiceImpl implements ProjectionService {
 	 */
 	private ProjectionResult getProjectionDetails(Set<ObjBuilding> buildings, Integer duration) {
 		List<RestorationElement> elementList = new ArrayList<>();
-		Map<EnumeratedDto, ObjBuildingPartElement> elementMap = new HashMap<>();
+		Map<EnumeratedDto, ObjBuildingPartElementRating> elementMap = new HashMap<>();
 		Map<String, List<ProjectionPeriod>> elementResultMap = new HashMap<>();
 		int startYear = this.getMinProjectionDate(buildings);
 		//@formatter:off
 		for (ObjBuilding building : buildings) {
-			for (ObjBuildingPartElement element : building.getElementList()) {
+			for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 				if (element.getValuePart() > 0 && element.getCondition() > 0) {
 					List<ProjectionPeriod> elementPeriodList = this.getProjection(
 						/* buildingPart  => */ element.getBuildingPart(),
@@ -120,7 +120,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 	private int getMinProjectionDate(ObjBuilding building) {
 		int projectionYear = building.getInsuredValueYear();
-		for (ObjBuildingPartElement element : building.getElementList()) {
+		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 			if (element.getValuePart() > 0 && element.getConditionYear() > projectionYear) {
 				projectionYear = element.getConditionYear();
 			}
@@ -133,7 +133,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 		return EnumeratedDto.builder().id(id).name(building.getName()).build();
 	}
 
-	private EnumeratedDto getAsEnumerated(ObjBuildingPartElement element) {
+	private EnumeratedDto getAsEnumerated(ObjBuildingPartElementRating element) {
 		String id = Integer.toString(element.getId());
 		return EnumeratedDto.builder().id(id)
 				.name(element.getMeta().getAggregate().getName() + ": " + element.getBuildingPart().getName()).build();
@@ -144,7 +144,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 		List<ProjectionPeriod> buildingPeriodList = new ArrayList<>();
 
 		double techValue = 0;
-		for (ObjBuildingPartElement part : projectionResult.getElementMap().values()) {
+		for (ObjBuildingPartElementRating part : projectionResult.getElementMap().values()) {
 			techValue += part.getValuePart() * getTechRate(part.getBuildingPart());
 		}
 		double techPart = techValue / 100;
@@ -158,7 +158,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 			List<RestorationElement> restorationElements = new ArrayList<>();
 
 			for (EnumeratedDto elementEnum : projectionResult.getElementMap().keySet()) {
-				ObjBuildingPartElement element = projectionResult.getElement(elementEnum);
+				ObjBuildingPartElementRating element = projectionResult.getElement(elementEnum);
 				List<ProjectionPeriod> elementPeriods = projectionResult.getElementResultMap().get(elementEnum.getId());
 				ProjectionPeriod elementPeriod = elementPeriods.get(year - elementPeriods.get(0).getYear());
 				ObjBuilding building = projectionResult.getBuilding(elementEnum);

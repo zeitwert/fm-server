@@ -6,19 +6,12 @@ import java.util.List;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.model.FMObj;
 
-/**
- * todo
- * - geschosse oberirdisch, unterirdisch
- */
 public interface ObjBuilding extends FMObj {
 
 	@Override
@@ -152,31 +145,19 @@ public interface ObjBuilding extends FMObj {
 
 	void setThirdPartyValueYear(Integer year);
 
-	CodeBuildingPartCatalog getBuildingPartCatalog();
+	ObjBuildingPartRating getCurrentRating();
 
-	void setBuildingPartCatalog(CodeBuildingPartCatalog buildingPartCatalog);
+	Integer getRatingCount();
 
-	CodeBuildingMaintenanceStrategy getBuildingMaintenanceStrategy();
+	ObjBuildingPartRating getRating(Integer seqNr);
 
-	void setBuildingMaintenanceStrategy(CodeBuildingMaintenanceStrategy strategy);
+	List<ObjBuildingPartRating> getRatingList();
 
-	Integer getElementContributions();
+	ObjBuildingPartRating getRatingById(Integer ratingId);
 
-	Integer getElementCount();
+	ObjBuildingPartRating addRating();
 
-	ObjBuildingPartElement getElement(Integer seqNr);
-
-	List<ObjBuildingPartElement> getElementList();
-
-	ObjBuildingPartElement getElementById(Integer elementId);
-
-	ObjBuildingPartElement getElement(CodeBuildingPart buildingPart);
-
-	void clearElementList();
-
-	ObjBuildingPartElement addElement(CodeBuildingPart buildingPart);
-
-	void removeElement(Integer elementId);
+	void removeRating(Integer ratingId);
 
 	double getBuildingValue(int year);
 

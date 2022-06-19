@@ -85,7 +85,8 @@ export default class BuildingArea extends React.Component {
 }
 
 const initBuilding = (building: Building, account: AccountInfo | undefined) => {
+	building.setField("account", account?.id);
 	building.setField("country", { id: "ch", name: "Switzerland" });
 	building.setField("currency", { id: "chf", name: "CHF" });
-	building.setField("account", account?.id);
+	building.setField("ratingStatus", { id: "open", name: "Open" });
 }

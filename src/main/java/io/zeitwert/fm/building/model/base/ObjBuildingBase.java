@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import org.jooq.UpdatableRecord;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
@@ -22,16 +22,13 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRepository;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndex;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndexEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
@@ -88,12 +85,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final SimpleProperty<BigDecimal> thirdPartyValue;
 	protected final SimpleProperty<Integer> thirdPartyValueYear;
 
-	protected final EnumProperty<CodeBuildingPartCatalog> buildingPartCatalog;
-	protected final EnumProperty<CodeBuildingMaintenanceStrategy> buildingMaintenanceStrategy;
-
-	protected final PartListProperty<ObjBuildingPartElement> elementList;
-
-	protected Integer elementContributions = null;
+	protected final PartListProperty<ObjBuildingPartRating> ratingList;
 
 	protected ObjBuildingBase(SessionInfo sessionInfo, ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
@@ -143,13 +135,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		this.thirdPartyValue = this.addSimpleProperty(dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE);
 		this.thirdPartyValueYear = this.addSimpleProperty(dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
 
-		this.buildingPartCatalog = this.addEnumProperty(dbRecord, ObjBuildingFields.BUILDING_PART_CATALOG_ID,
-				CodeBuildingPartCatalogEnum.class);
-		this.buildingMaintenanceStrategy = this.addEnumProperty(dbRecord,
-				ObjBuildingFields.BUILDING_MAINTENANCE_STRATEGY_ID, CodeBuildingMaintenanceStrategyEnum.class);
-
-		this.elementList = this.addPartListProperty(this.getRepository().getElementListType());
-
+		this.ratingList = this.addPartListProperty(this.getRepository().getRatingListType());
 	}
 
 	@Override
@@ -164,10 +150,19 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
+	public void doAfterCreate() {
+		super.doAfterCreate();
+		assertThis(this.getCurrentRating() == null, "no rating");
+		ObjBuildingPartRating rating = this.addRating();
+		rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
+		assertThis(this.getCurrentRating() != null, "valid rating");
+	}
+
+	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjBuildingPartElementRepository elementRepo = this.getRepository().getElementRepository();
-		this.elementList.loadPartList(elementRepo.getPartList(this, this.getRepository().getElementListType()));
+		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
+		this.ratingList.loadPartList(ratingRepo.getPartList(this, this.getRepository().getRatingListType()));
 	}
 
 	@Override
@@ -179,18 +174,10 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		if (property == this.elementList) {
-			return (P) this.getRepository().getElementRepository().create(this, partListType);
+		if (property == this.ratingList) {
+			return (P) this.getRepository().getRatingRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void setBuildingPartCatalog(CodeBuildingPartCatalog catalog) {
-		if ((catalog == null) != (this.getBuildingPartCatalog() == null) || catalog != this.getBuildingPartCatalog()) {
-			this.elementList.clearPartList();
-		}
-		this.buildingPartCatalog.setValue(catalog);
 	}
 
 	@Override
@@ -211,49 +198,35 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
-	public Integer getElementContributions() {
-		return this.elementContributions;
-	}
-
-	@Override
-	public ObjBuildingPartElement getElement(CodeBuildingPart buildingPart) {
-		return this.elementList.getPartList().stream().filter(p -> p.getBuildingPart() == buildingPart).findFirst()
-				.orElse(null);
-	}
-
-	@Override
-	public ObjBuildingPartElement addElement(CodeBuildingPart buildingPart) {
-		requireThis(this.getElement(buildingPart) == null, "unique element for buildingPart");
-		ObjBuildingPartElement e = this.elementList.addPart();
-		e.setBuildingPart(buildingPart);
-		return e;
+	public ObjBuildingPartRating getCurrentRating() {
+		if (this.getRatingCount() > 0) {
+			return this.getRating(this.getRatingCount() - 1);
+		}
+		return null;
 	}
 
 	@Override
 	protected void doCalcAll() {
 		super.doCalcAll();
-		this.doCalcVolatile();
+		this.calcCaption();
+		if (this.getCurrentRating() != null) {
+			this.getCurrentRating().calcAll();
+		}
+		this.validateElements();
 	}
 
 	@Override
 	protected void doCalcVolatile() {
 		super.doCalcVolatile();
 		this.calcCaption();
-		this.calcElementContributions();
+		if (this.getCurrentRating() != null) {
+			this.getCurrentRating().calcVolatile();
+		}
 		this.validateElements();
 	}
 
 	private void calcCaption() {
 		this.caption.setValue(this.getName() + " (" + this.getZip() + " " + this.getCity() + ")");
-	}
-
-	private void calcElementContributions() {
-		this.elementContributions = 0;
-		for (ObjBuildingPartElement element : this.getElementList()) {
-			if (element.getValuePart() != null) {
-				this.elementContributions += element.getValuePart();
-			}
-		}
 	}
 
 	private void validateElements() {
@@ -269,19 +242,26 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		if (this.getInsuredValueYear() == null) {
 			this.addValidation(CodeValidationLevelEnum.ERROR, "Jahr der Bestimmung des Gebäudewerts muss erfasst werden");
 		}
-		if (this.getElementContributions() != 100) {
-			this.addValidation(CodeValidationLevelEnum.ERROR,
-					"Summe der Bauteilwerte muss auf 100% summieren (ist " + this.getElementContributions() + "%)");
-		}
-		for (ObjBuildingPartElement element : this.getElementList()) {
-			if (element.getValuePart() != null && element.getValuePart() != 0) {
-				if (element.getCondition() == null || element.getCondition() == 0) {
-					this.addValidation(CodeValidationLevelEnum.ERROR,
-							"Zustand für Element [" + element.getBuildingPart().getName() + "] muss erfasst werden");
-				} else if (element.getConditionYear() == null || element.getConditionYear() < 1800) {
-					this.addValidation(CodeValidationLevelEnum.ERROR,
-							"Jahr der Zustandsbewertung für Element [" + element.getBuildingPart().getName()
-									+ "] muss erfasst werden");
+		if (this.getCurrentRating() == null) {
+			this.addValidation(CodeValidationLevelEnum.ERROR, "Es fehlt eine Zustandsbewertung");
+		} else {
+			if (this.getCurrentRating().getRatingDate() == null) {
+				this.addValidation(CodeValidationLevelEnum.ERROR, "Datum der Zustandsbewertung muss erfasst werden");
+			}
+			if (this.getCurrentRating().getElementContributions() != 100) {
+				this.addValidation(CodeValidationLevelEnum.ERROR,
+						"Summe der Bauteilwerte muss 100% sein (ist " + this.getCurrentRating().getElementContributions() + "%)");
+			}
+			for (ObjBuildingPartElementRating element : this.getCurrentRating().getElementList()) {
+				if (element.getValuePart() != null && element.getValuePart() != 0) {
+					if (element.getCondition() == null || element.getCondition() == 0) {
+						this.addValidation(CodeValidationLevelEnum.ERROR,
+								"Zustand für Element [" + element.getBuildingPart().getName() + "] muss erfasst werden");
+					} else if (element.getConditionYear() == null || element.getConditionYear() < 1800) {
+						this.addValidation(CodeValidationLevelEnum.ERROR,
+								"Jahr der Zustandsbewertung für Element [" + element.getBuildingPart().getName()
+										+ "] muss erfasst werden");
+					}
 				}
 			}
 		}

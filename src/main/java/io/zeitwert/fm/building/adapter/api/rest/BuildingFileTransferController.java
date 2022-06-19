@@ -21,12 +21,12 @@ import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementDto;
+import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.TransferMetaDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -92,8 +92,8 @@ public class BuildingFileTransferController {
 				.aggregate(AGGREGATE)
 				.version(VERSION)
 			.build();
-		List<BuildingTransferElementDto> elements = building.getElementList().stream().map(e -> {
-			return BuildingTransferElementDto
+		List<BuildingTransferElementRatingDto> elements = building.getCurrentRating().getElementList().stream().map(e -> {
+			return BuildingTransferElementRatingDto
 				.builder()
 					.buildingPart(e.getBuildingPart().getId())
 					.valuePart(e.getValuePart())
@@ -147,8 +147,8 @@ public class BuildingFileTransferController {
 				.notInsuredValueYear(building.getNotInsuredValueYear())
 				.thirdPartyValue(building.getThirdPartyValue())
 				.thirdPartyValueYear(building.getThirdPartyValueYear())
-				.buildingPartCatalog(building.getBuildingPartCatalog() != null ? building.getBuildingPartCatalog().getId() : null)
-				.buildingMaintenanceStrategy(building.getBuildingMaintenanceStrategy() != null ? building.getBuildingMaintenanceStrategy().getId() : null)
+				.buildingPartCatalog(building.getCurrentRating().getBuildingPartCatalog() != null ? building.getCurrentRating().getBuildingPartCatalog().getId() : null)
+				.buildingMaintenanceStrategy(building.getCurrentRating().getBuildingMaintenanceStrategy() != null ? building.getCurrentRating().getBuildingMaintenanceStrategy().getId() : null)
 				.elements(elements)
 				.notes(notes)
 			.build();
@@ -189,11 +189,11 @@ public class BuildingFileTransferController {
 		building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
 		building.setThirdPartyValue(dto.getThirdPartyValue());
 		building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-		building.setBuildingPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
-		building.setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
+		building.getCurrentRating().setBuildingPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
+		building.getCurrentRating().setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
 		dto.getElements().forEach((dtoElement) -> {
 			CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
-			ObjBuildingPartElement element = building.addElement(buildingPart);
+			ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
 			element.setValuePart(dtoElement.getValuePart());
 			element.setCondition(dtoElement.getCondition());
 			element.setConditionYear(dtoElement.getConditionYear());

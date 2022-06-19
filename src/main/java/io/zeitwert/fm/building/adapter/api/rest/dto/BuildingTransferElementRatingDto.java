@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data()
 @Builder
-public class BuildingTransferElementDto {
+public class BuildingTransferElementRatingDto {
 
 	private String buildingPart;
 	private Integer valuePart;

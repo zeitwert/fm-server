@@ -7,9 +7,11 @@ import io.zeitwert.fm.obj.model.FMObjRepository;
 
 public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjBuildingVRecord> {
 
-	ObjBuildingPartElementRepository getElementRepository();
+	ObjBuildingPartRatingRepository getRatingRepository();
 
-	CodePartListType getElementListType();
+	CodePartListType getRatingListType();
+
+	ObjBuildingPartElementRatingRepository getElementRepository();
 
 	CodePartListType getMaterialDescriptionSetType();
 

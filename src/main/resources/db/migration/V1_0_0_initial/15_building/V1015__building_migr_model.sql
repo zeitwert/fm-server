@@ -11,7 +11,6 @@ select	b.id,
 				--
 				b.building_type_id,
 				b.building_sub_type_id,
-				b.building_part_catalog_id,
 				b.building_year,
 				--
 				b.street,
@@ -31,7 +30,8 @@ select	b.id,
 				b.third_party_value,
 				b.third_party_value_year,
 				--
-				b.building_maintenance_strategy_id,
+				null building_part_catalog_id,
+				null building_maintenance_strategy_id,
 				--
 				b.description
 from		obj_building_v b
@@ -73,7 +73,6 @@ begin
 		--
 		building_type_id,
 		building_sub_type_id,
-		building_part_catalog_id,
 		building_year,
 		--
 		street,
@@ -95,8 +94,6 @@ begin
 		third_party_value,
 		third_party_value_year,
 		--
-		building_maintenance_strategy_id,
-		--
 		description
 	) values (
 		new_id,
@@ -108,7 +105,6 @@ begin
 		--
 		new.building_type_id,
 		new.building_sub_type_id,
-		new.building_part_catalog_id,
 		new.building_year,
 		--
 		new.street,
@@ -130,9 +126,30 @@ begin
 		new.third_party_value,
 		new.third_party_value_year,
 		--
+		replace(replace(new.description, '\n', chr(10)), '<br>', chr(10))
+	);
+	insert into obj_building_part_rating(
+		id,
+		obj_id,
+		part_list_type_id,
+		seq_nr,
+		--
+		building_part_catalog_id,
+		building_maintenance_strategy_id,
+		--
+		rating_status_id,
+		rating_date
+	) values (
+		nextval('obj_part_id_seq'),
+		new_id,
+		'building.ratingList',
+		0,
+		--
+		new.building_part_catalog_id,
 		new.building_maintenance_strategy_id,
 		--
-		replace(new.description, '\n', chr(10))
+		'done',
+		current_date -- will be overwritten in building_data_03
 	);
 	return new;
 end

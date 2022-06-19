@@ -17,8 +17,8 @@ export function enumeratedConverter(options?: EnumeratedConverterOptions) {
 			}
 			return getSnapshot(accessor.references.getById(raw));
 		},
-		render(value) {
-			return value ? value.id : "";
+		render(value) { // toString() to support numeric ids (f.ex. User)
+			return value ? value.id.toString() : "";
 		},
 	});
 }

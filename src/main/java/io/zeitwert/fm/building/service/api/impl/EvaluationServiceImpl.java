@@ -2,7 +2,7 @@ package io.zeitwert.fm.building.service.api.impl;
 
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.service.api.EvaluationService;
 import io.zeitwert.fm.building.service.api.ProjectionService;
@@ -46,8 +46,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 		String value = null;
 
 		List<EvaluationParameter> facts = new ArrayList<>();
-		if (building.getBuildingPartCatalog() != null) {
-			value = building.getBuildingPartCatalog().getName();
+		if (building.getCurrentRating().getBuildingPartCatalog() != null) {
+			value = building.getCurrentRating().getBuildingPartCatalog().getName();
 			this.addParameter(facts, "Gebäudekategorie", value);
 		}
 		if (building.getBuildingYear() != null) {
@@ -83,7 +83,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		Integer ratingYear = 9999;
 		List<EvaluationElement> elements = new ArrayList<>();
-		for (ObjBuildingPartElement element : building.getElementList()) {
+		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 			if (element.getValuePart() > 0) {
 				EvaluationElement dto = EvaluationElement.builder()
 						.name(element.getBuildingPart().getName())

@@ -13,7 +13,7 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -66,38 +66,38 @@ public class BuildingTest {
 		building1a.setAccountId(account.getId());
 		this.initBuilding(building1a);
 
-		assertEquals(building1a.getElementCount(), 0, "element count 0");
-		assertEquals(building1a.getElementList().size(), 0, "element count 0");
-		assertEquals(building1a.getElementContributions(), 0, "element contributions 0");
+		assertEquals(building1a.getCurrentRating().getElementCount(), 0, "element count 0");
+		assertEquals(building1a.getCurrentRating().getElementList().size(), 0, "element count 0");
+		assertEquals(building1a.getCurrentRating().getElementContributions(), 0, "element contributions 0");
 
 		CodeBuildingPart bp1 = CodeBuildingPartEnum.getBuildingPart("P1");
-		ObjBuildingPartElement e1 = building1a.addElement(bp1);
+		ObjBuildingPartElementRating e1 = building1a.getCurrentRating().addElement(bp1);
 		e1.setCondition(100);
 		e1.setConditionYear(2000);
 		e1.setValuePart(50);
 		Integer e1id = e1.getId();
 
-		assertEquals(building1a.getElementCount(), 1, "element count 1");
-		assertEquals(building1a.getElementList().size(), 1, "element count 1");
-		assertEquals(building1a.getElement(0), e1, "e1 by seqNr");
-		assertEquals(building1a.getElementById(e1id), e1, "e1 by id");
-		assertEquals(building1a.getElement(bp1), e1, "e1 by buildingPart");
-		assertEquals(building1a.getElementContributions(), 50, "element contributions 50");
+		assertEquals(building1a.getCurrentRating().getElementCount(), 1, "element count 1");
+		assertEquals(building1a.getCurrentRating().getElementList().size(), 1, "element count 1");
+		assertEquals(building1a.getCurrentRating().getElement(0), e1, "e1 by seqNr");
+		assertEquals(building1a.getCurrentRating().getElementById(e1id), e1, "e1 by id");
+		assertEquals(building1a.getCurrentRating().getElement(bp1), e1, "e1 by buildingPart");
+		assertEquals(building1a.getCurrentRating().getElementContributions(), 50, "element contributions 50");
 
 		CodeBuildingPart bp2 = CodeBuildingPartEnum.getBuildingPart("P2");
-		ObjBuildingPartElement e2 = building1a.addElement(bp2);
+		ObjBuildingPartElementRating e2 = building1a.getCurrentRating().addElement(bp2);
 		e2.setCondition(100);
 		e2.setConditionYear(2000);
 		e2.setValuePart(50);
 		Integer e2id = e2.getId();
 
 		this.checkBuilding(building1a);
-		assertEquals(building1a.getElement(0), e1, "e1 by seqNr");
-		assertEquals(building1a.getElement(1), e2, "e2 by seqNr");
-		assertEquals(building1a.getElementById(e1id), e1, "e1 by id");
-		assertEquals(building1a.getElementById(e2id), e2, "e2 by id");
-		assertEquals(building1a.getElement(bp1), e1, "e1 by buildingPart");
-		assertEquals(building1a.getElement(bp2), e2, "e2 by buildingPart");
+		assertEquals(building1a.getCurrentRating().getElement(0), e1, "e1 by seqNr");
+		assertEquals(building1a.getCurrentRating().getElement(1), e2, "e2 by seqNr");
+		assertEquals(building1a.getCurrentRating().getElementById(e1id), e1, "e1 by id");
+		assertEquals(building1a.getCurrentRating().getElementById(e2id), e2, "e2 by id");
+		assertEquals(building1a.getCurrentRating().getElement(bp1), e1, "e1 by buildingPart");
+		assertEquals(building1a.getCurrentRating().getElement(bp2), e2, "e2 by buildingPart");
 
 		this.buildingRepository.store(building1a);
 		building1a = null;
@@ -109,46 +109,46 @@ public class BuildingTest {
 		assertNotNull(building1b.getMeta().getModifiedAt(), "modifiedAt not null");
 
 		this.checkBuilding(building1b);
-		assertEquals(building1b.getElement(0).getBuildingPart(), bp1, "e1 by seqNr");
-		assertEquals(building1b.getElement(1).getBuildingPart(), bp2, "e2 by seqNr");
-		assertEquals(building1b.getElementById(e1id).getBuildingPart(), bp1, "e1 by id");
-		assertEquals(building1b.getElementById(e2id).getBuildingPart(), bp2, "e2 by id");
-		assertEquals(building1b.getElement(bp1).getBuildingPart(), bp1, "e1 by buildingPart");
-		assertEquals(building1b.getElement(bp2).getBuildingPart(), bp2, "e2 by buildingPart");
+		assertEquals(building1b.getCurrentRating().getElement(0).getBuildingPart(), bp1, "e1 by seqNr");
+		assertEquals(building1b.getCurrentRating().getElement(1).getBuildingPart(), bp2, "e2 by seqNr");
+		assertEquals(building1b.getCurrentRating().getElementById(e1id).getBuildingPart(), bp1, "e1 by id");
+		assertEquals(building1b.getCurrentRating().getElementById(e2id).getBuildingPart(), bp2, "e2 by id");
+		assertEquals(building1b.getCurrentRating().getElement(bp1).getBuildingPart(), bp1, "e1 by buildingPart");
+		assertEquals(building1b.getCurrentRating().getElement(bp2).getBuildingPart(), bp2, "e2 by buildingPart");
 
 		CodeBuildingPart bp3 = CodeBuildingPartEnum.getBuildingPart("P4");
-		ObjBuildingPartElement e3 = building1b.addElement(bp3);
+		ObjBuildingPartElementRating e3 = building1b.getCurrentRating().addElement(bp3);
 		e3.setCondition(100);
 		e3.setConditionYear(2000);
 		e3.setValuePart(50);
 		Integer e3id = e3.getId();
 
-		building1b.removeElement(e2id);
+		building1b.getCurrentRating().removeElement(e2id);
 
-		assertEquals(building1b.getElementCount(), 2, "element count 2");
-		assertEquals(building1b.getElementList().size(), 2, "element count 2");
-		assertEquals(building1b.getElementContributions(), 100, "element contributions 100");
-		assertEquals(building1b.getElement(0).getBuildingPart(), bp1, "e1 by seqNr");
-		assertEquals(building1b.getElement(1).getBuildingPart(), bp3, "e3 by seqNr");
-		assertEquals(building1b.getElementById(e1id).getBuildingPart(), bp1, "e1 by id");
-		assertEquals(building1b.getElementById(e3id).getBuildingPart(), bp3, "e3 by id");
-		assertEquals(building1b.getElement(bp1).getBuildingPart(), bp1, "e1 by buildingPart");
-		assertEquals(building1b.getElement(bp3).getBuildingPart(), bp3, "e3 by buildingPart");
+		assertEquals(building1b.getCurrentRating().getElementCount(), 2, "element count 2");
+		assertEquals(building1b.getCurrentRating().getElementList().size(), 2, "element count 2");
+		assertEquals(building1b.getCurrentRating().getElementContributions(), 100, "element contributions 100");
+		assertEquals(building1b.getCurrentRating().getElement(0).getBuildingPart(), bp1, "e1 by seqNr");
+		assertEquals(building1b.getCurrentRating().getElement(1).getBuildingPart(), bp3, "e3 by seqNr");
+		assertEquals(building1b.getCurrentRating().getElementById(e1id).getBuildingPart(), bp1, "e1 by id");
+		assertEquals(building1b.getCurrentRating().getElementById(e3id).getBuildingPart(), bp3, "e3 by id");
+		assertEquals(building1b.getCurrentRating().getElement(bp1).getBuildingPart(), bp1, "e1 by buildingPart");
+		assertEquals(building1b.getCurrentRating().getElement(bp3).getBuildingPart(), bp3, "e3 by buildingPart");
 
 		this.buildingRepository.store(building1b);
 		building1b = null;
 
 		ObjBuilding building1c = buildingRepository.get(sessionInfo, building1Id);
 
-		assertEquals(building1c.getElementCount(), 2, "element count 2");
-		assertEquals(building1c.getElementList().size(), 2, "element count 2");
-		assertEquals(building1c.getElementContributions(), 100, "element contributions 100");
-		assertEquals(building1c.getElement(0).getBuildingPart(), bp1, "e1 by seqNr");
-		assertEquals(building1c.getElement(1).getBuildingPart(), bp3, "e3 by seqNr");
-		assertEquals(building1c.getElementById(e1id).getBuildingPart(), bp1, "e1 by id");
-		assertEquals(building1c.getElementById(e3id).getBuildingPart(), bp3, "e3 by id");
-		assertEquals(building1c.getElement(bp1).getBuildingPart(), bp1, "e1 by buildingPart");
-		assertEquals(building1c.getElement(bp3).getBuildingPart(), bp3, "e3 by buildingPart");
+		assertEquals(building1c.getCurrentRating().getElementCount(), 2, "element count 2");
+		assertEquals(building1c.getCurrentRating().getElementList().size(), 2, "element count 2");
+		assertEquals(building1c.getCurrentRating().getElementContributions(), 100, "element contributions 100");
+		assertEquals(building1c.getCurrentRating().getElement(0).getBuildingPart(), bp1, "e1 by seqNr");
+		assertEquals(building1c.getCurrentRating().getElement(1).getBuildingPart(), bp3, "e3 by seqNr");
+		assertEquals(building1c.getCurrentRating().getElementById(e1id).getBuildingPart(), bp1, "e1 by id");
+		assertEquals(building1c.getCurrentRating().getElementById(e3id).getBuildingPart(), bp3, "e3 by id");
+		assertEquals(building1c.getCurrentRating().getElement(bp1).getBuildingPart(), bp1, "e1 by buildingPart");
+		assertEquals(building1c.getCurrentRating().getElement(bp3).getBuildingPart(), bp3, "e3 by buildingPart");
 
 	}
 
@@ -194,46 +194,48 @@ public class BuildingTest {
 		building.setThirdPartyValue(BigDecimal.valueOf(0.0));
 		building.setThirdPartyValueYear(2000);
 
-		building.setBuildingMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy("N"));
-		building.setBuildingPartCatalog(CodeBuildingPartCatalogEnum.getBuildingPartCatalog("C6"));
+		building.getCurrentRating()
+				.setBuildingMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy("N"));
+		building.getCurrentRating().setBuildingPartCatalog(CodeBuildingPartCatalogEnum.getBuildingPartCatalog("C6"));
 	}
 
 	private void checkBuilding(ObjBuilding building) {
-		assertEquals(building.getBuildingNr(), "B1");
-		assertEquals(building.getBuildingInsuranceNr(), "BI1");
-		assertEquals(building.getPlotNr(), "P1");
-		assertEquals(building.getNationalBuildingId(), "NB1");
+		assertEquals("B1", building.getBuildingNr());
+		assertEquals("BI1", building.getBuildingInsuranceNr());
+		assertEquals("P1", building.getPlotNr());
+		assertEquals("NB1", building.getNationalBuildingId());
 
-		assertEquals(building.getStreet(), "Teststrasse 10");
-		assertEquals(building.getZip(), "1111");
-		assertEquals(building.getCity(), "Testingen");
-		assertEquals(building.getCountry(), CodeCountryEnum.getCountry("ch"));
-		assertEquals(building.getCurrency(), CodeCurrencyEnum.getCurrency("chf"));
+		assertEquals("Teststrasse 10", building.getStreet());
+		assertEquals("1111", building.getZip());
+		assertEquals("Testingen", building.getCity());
+		assertEquals(CodeCountryEnum.getCountry("ch"), building.getCountry());
+		assertEquals(CodeCurrencyEnum.getCurrency("chf"), building.getCurrency());
 
-		assertEquals(building.getVolume(), BigDecimal.valueOf(1000.0));
-		assertEquals(building.getAreaGross(), BigDecimal.valueOf(100.0));
-		assertEquals(building.getAreaNet(), BigDecimal.valueOf(90.0));
-		assertEquals(building.getNrOfFloorsAboveGround(), 3);
-		assertEquals(building.getNrOfFloorsBelowGround(), 1);
+		assertEquals(BigDecimal.valueOf(1000.0), building.getVolume());
+		assertEquals(BigDecimal.valueOf(100.0), building.getAreaGross());
+		assertEquals(BigDecimal.valueOf(90.0), building.getAreaNet());
+		assertEquals(3, building.getNrOfFloorsAboveGround());
+		assertEquals(1, building.getNrOfFloorsBelowGround());
 
-		assertEquals(building.getBuildingType(), CodeBuildingTypeEnum.getBuildingType("T01"));
-		assertEquals(building.getBuildingSubType(), CodeBuildingSubTypeEnum.getBuildingSubType("ST05-26"));
-		assertEquals(building.getBuildingYear(), 1985);
+		assertEquals(CodeBuildingTypeEnum.getBuildingType("T01"), building.getBuildingType());
+		assertEquals(CodeBuildingSubTypeEnum.getBuildingSubType("ST05-26"), building.getBuildingSubType());
+		assertEquals(1985, building.getBuildingYear());
 
-		assertEquals(building.getInsuredValue(), BigDecimal.valueOf(1000000.0));
-		assertEquals(building.getInsuredValueYear(), 2000);
-		assertEquals(building.getNotInsuredValue(), BigDecimal.valueOf(0.0));
-		assertEquals(building.getNotInsuredValueYear(), 2000);
-		assertEquals(building.getThirdPartyValue(), BigDecimal.valueOf(0.0));
-		assertEquals(building.getThirdPartyValueYear(), 2000);
+		assertEquals(BigDecimal.valueOf(1000000.0), building.getInsuredValue());
+		assertEquals(2000, building.getInsuredValueYear());
+		assertEquals(BigDecimal.valueOf(0.0), building.getNotInsuredValue());
+		assertEquals(2000, building.getNotInsuredValueYear());
+		assertEquals(BigDecimal.valueOf(0.0), building.getThirdPartyValue());
+		assertEquals(2000, building.getThirdPartyValueYear());
 
-		assertEquals(building.getBuildingMaintenanceStrategy(),
-				CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy("N"));
-		assertEquals(building.getBuildingPartCatalog(), CodeBuildingPartCatalogEnum.getBuildingPartCatalog("C6"));
+		assertEquals(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy("N"),
+				building.getCurrentRating().getBuildingMaintenanceStrategy());
+		assertEquals(CodeBuildingPartCatalogEnum.getBuildingPartCatalog("C6"),
+				building.getCurrentRating().getBuildingPartCatalog());
 
-		assertEquals(building.getElementCount(), 2, "element count 2");
-		assertEquals(building.getElementList().size(), 2, "element count 2");
-		assertEquals(building.getElementContributions(), 100, "element contributions 100");
+		assertEquals(2, building.getCurrentRating().getElementCount(), "element count 2");
+		assertEquals(2, building.getCurrentRating().getElementList().size(), "element count 2");
+		assertEquals(100, building.getCurrentRating().getElementContributions(), "element contributions 100");
 	}
 
 }

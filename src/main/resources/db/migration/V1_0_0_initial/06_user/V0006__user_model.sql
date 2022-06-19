@@ -10,11 +10,13 @@ create table code_user_role (
 create table obj_user (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
 	--
-	name																	varchar(100),
-	description														text,
 	email																	varchar(100)				not null,
-	password															varchar(100)				not null,
+	name																	varchar(100)				not null,
 	role_list															varchar(400)				not null, -- comma-separated list of code_user_role
+	description														text,
+	--
+	password															varchar(100)				not null,
+	need_password_change									boolean,
 	--
 	picture																varchar(400),
 	--

@@ -5,15 +5,18 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
-import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementDto;
+import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
@@ -39,24 +42,19 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 	@Override
 	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj) {
 		super.toAggregate(dto, obj);
-		obj.setAccountId(dto.getAccountId());
 
+		// @formatter:off
+		obj.setAccountId(dto.getAccountId());
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
 		obj.setBuildingNr(dto.getBuildingNr());
 		obj.setBuildingInsuranceNr(dto.getBuildingInsuranceNr());
 		obj.setPlotNr(dto.getPlotNr());
 		obj.setNationalBuildingId(dto.getNationalBuildingId());
-		obj.setHistoricPreservation(dto.getHistoricPreservation() == null ? null
-				: CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation().getId()));
+		obj.setHistoricPreservation(dto.getHistoricPreservation() == null ? null : CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation().getId()));
 
-		obj.setBuildingType(
-				dto.getBuildingType() == null ? null : CodeBuildingTypeEnum.getBuildingType(dto.getBuildingType().getId()));
-		obj.setBuildingSubType(
-				dto.getBuildingSubType() == null ? null
-						: CodeBuildingSubTypeEnum.getBuildingSubType(dto.getBuildingSubType().getId()));
-		obj.setBuildingPartCatalog(dto.getBuildingPartCatalog() == null ? null
-				: CodeBuildingPartCatalogEnum.getBuildingPartCatalog(dto.getBuildingPartCatalog().getId()));
+		obj.setBuildingType(dto.getBuildingType() == null ? null : CodeBuildingTypeEnum.getBuildingType(dto.getBuildingType().getId()));
+		obj.setBuildingSubType(dto.getBuildingSubType() == null ? null : CodeBuildingSubTypeEnum.getBuildingSubType(dto.getBuildingSubType().getId()));
 		obj.setBuildingYear(dto.getBuildingYear());
 		obj.setStreet(dto.getStreet());
 		obj.setZip(dto.getZip());
@@ -71,25 +69,32 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		obj.setAreaNet(dto.getAreaNet());
 		obj.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
 		obj.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-		obj.setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() == null ? null
-				: CodeBuildingMaintenanceStrategyEnum
-						.getBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy().getId()));
 		obj.setInsuredValue(dto.getInsuredValue());
 		obj.setInsuredValueYear(dto.getInsuredValueYear());
 		obj.setNotInsuredValue(dto.getNotInsuredValue());
 		obj.setNotInsuredValueYear(dto.getNotInsuredValueYear());
 		obj.setThirdPartyValue(dto.getThirdPartyValue());
 		obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-		dto.getElements().forEach(elementDto -> {
-			ObjBuildingPartElement element = null;
-			if (elementDto.getId() == null) {
-				assertThis(elementDto.getBuildingPart() != null, "valid buildingPart");
-				element = obj.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
-			} else {
-				element = obj.getElementById(elementDto.getId());
-			}
-			elementDto.toPart(element);
-		});
+
+		if (obj.getCurrentRating() != null) {
+			ObjBuildingPartRating rating = obj.getCurrentRating();
+			rating.setBuildingPartCatalog(dto.getBuildingPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getBuildingPartCatalog(dto.getBuildingPartCatalog().getId()));
+			rating.setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy().getId()));
+			rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
+			rating.setRatingDate(dto.getRatingDate());
+			rating.setRatingUser(dto.getRatingUser() == null ? null : getUserRepository().get(dto.getRatingUser().getId()));
+			dto.getElements().forEach(elementDto -> {
+				ObjBuildingPartElementRating element = null;
+				if (elementDto.getId() == null) {
+					assertThis(elementDto.getBuildingPart() != null, "valid buildingPart");
+					element = rating.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
+				} else {
+					element = rating.getElementById(elementDto.getId());
+				}
+				elementDto.toPart(element);
+			});
+		}
+		// @formatter:on
 	}
 
 	@Override
@@ -97,15 +102,15 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		if (obj == null) {
 			return null;
 		}
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj, sessionInfo);
 		ProjectionService projectionService = AppContext.getInstance().getBean(ProjectionService.class);
 		// @formatter:off
-		return dtoBuilder
+		dtoBuilder
 			.accountId(obj.getAccountId())
 			.buildingType(EnumeratedDto.fromEnum(obj.getBuildingType()))
 			.buildingSubType(EnumeratedDto.fromEnum(obj.getBuildingSubType()))
-			.buildingPartCatalog(EnumeratedDto.fromEnum(obj.getBuildingPartCatalog()))
 			.name(obj.getName())
 			.description(obj.getDescription())
 			.buildingNr(obj.getBuildingNr())
@@ -128,16 +133,24 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.areaNet(obj.getAreaNet())
 			.nrOfFloorsAboveGround(obj.getNrOfFloorsAboveGround())
 			.nrOfFloorsBelowGround(obj.getNrOfFloorsBelowGround())
-			.buildingMaintenanceStrategy(EnumeratedDto.fromEnum(obj.getBuildingMaintenanceStrategy()))
 			.insuredValue(obj.getInsuredValue())
 			.insuredValueYear(obj.getInsuredValueYear())
 			.notInsuredValue(obj.getNotInsuredValue())
 			.notInsuredValueYear(obj.getNotInsuredValueYear())
 			.thirdPartyValue(obj.getThirdPartyValue())
-			.thirdPartyValueYear(obj.getThirdPartyValueYear())
-			.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a, projectionService)).toList())
-			.build();
+			.thirdPartyValueYear(obj.getThirdPartyValueYear());
+		if (obj.getCurrentRating() != null) {
+			ObjBuildingPartRating rating = obj.getCurrentRating();
+			dtoBuilder
+				.buildingPartCatalog(EnumeratedDto.fromEnum(rating.getBuildingPartCatalog()))
+				.buildingMaintenanceStrategy(EnumeratedDto.fromEnum(rating.getBuildingMaintenanceStrategy()))
+				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
+				.ratingDate(rating.getRatingDate())
+				.ratingUser(userBridge.fromAggregate(rating.getRatingUser(), sessionInfo))
+				.elements(obj.getCurrentRating().getElementList().stream().map(a -> ObjBuildingPartElementRatingDto.fromPart(a, projectionService)).toList());
+		}
 		// @formatter:on
+		return dtoBuilder.build();
 	}
 
 	@Override
@@ -148,11 +161,10 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj, sessionInfo);
 		// @formatter:off
-		return dtoBuilder
+		dtoBuilder = dtoBuilder
 			.accountId(obj.getAccountId())
 			.buildingType(EnumeratedDto.fromEnum(CodeBuildingTypeEnum.getBuildingType(obj.getBuildingTypeId())))
 			.buildingSubType(EnumeratedDto.fromEnum(CodeBuildingSubTypeEnum.getBuildingSubType(obj.getBuildingSubTypeId())))
-			.buildingPartCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getBuildingPartCatalog(obj.getBuildingPartCatalogId())))
 			.name(obj.getName())
 			.description(obj.getDescription())
 			.buildingNr(obj.getBuildingNr())
@@ -175,16 +187,19 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.areaNet(obj.getAreaNet())
 			.nrOfFloorsAboveGround(obj.getNrOfFloorsAboveGround())
 			.nrOfFloorsBelowGround(obj.getNrOfFloorsBelowGround())
-			.buildingMaintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(obj.getBuildingMaintenanceStrategyId())))
 			.insuredValue(obj.getInsuredValue())
 			.insuredValueYear(obj.getInsuredValueYear())
 			.notInsuredValue(obj.getNotInsuredValue())
 			.notInsuredValueYear(obj.getNotInsuredValueYear())
 			.thirdPartyValue(obj.getThirdPartyValue())
-			.thirdPartyValueYear(obj.getThirdPartyValueYear())
-			//.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a)).toList())
-			.build();
+			.thirdPartyValueYear(obj.getThirdPartyValueYear());
+		// if (obj.getCurrentRating() != null) {
+		// .buildingPartCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getBuildingPartCatalog(obj.getBuildingPartCatalogId())))
+		// .buildingMaintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(obj.getBuildingMaintenanceStrategyId())))
+		//.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a)).toList())
+		// }
 		// @formatter:on
+		return dtoBuilder.build();
 	}
 
 }

@@ -2,7 +2,7 @@ package io.zeitwert.fm.building.service.api.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,7 +21,7 @@ public class ProjectionResult {
 	private List<ProjectionPeriod> periodList;
 
 	@JsonIgnore
-	private Map<EnumeratedDto, ObjBuildingPartElement> elementMap;
+	private Map<EnumeratedDto, ObjBuildingPartElementRating> elementMap;
 	@JsonIgnore
 	private Map<String, List<ProjectionPeriod>> elementResultMap;
 
@@ -29,7 +29,7 @@ public class ProjectionResult {
 		return this.startYear + this.duration;
 	}
 
-	public ObjBuildingPartElement getElement(EnumeratedDto enumerated) {
+	public ObjBuildingPartElementRating getElement(EnumeratedDto enumerated) {
 		return this.elementMap.get(enumerated);
 	}
 

@@ -12,31 +12,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.Enumerations;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
+import io.zeitwert.ddd.session.model.SessionInfo;
 
 @RestController("enumController")
 @RequestMapping("/enum")
 public class EnumController {
 
-	private final Enumerations enumerations;
-	private final ObjTenantRepository tenantRepository;
-	private final ObjUserRepository userRepository;
+	@Autowired
+	Enumerations enumerations;
 
 	@Autowired
-	public EnumController(Enumerations enumerations, ObjTenantRepository tenantRepository,
-			ObjUserRepository userRepository) {
-		this.enumerations = enumerations;
-		this.tenantRepository = tenantRepository;
-		this.userRepository = userRepository;
-	}
+	ObjTenantRepository tenantRepository;
+
+	@Autowired
+	ObjUserRepository userRepository;
+
+	@Autowired
+	SessionInfo sessionInfo;
 
 	@GetMapping("/oe/objTenant/{idOrExtlKey}")
 	public ResponseEntity<ObjTenant> getTenant(@PathVariable String idOrExtlKey) {
@@ -48,6 +52,17 @@ public class EnumController {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok(tenant.get());
+	}
+
+	@GetMapping("/oe/objUser")
+	public ResponseEntity<List<EnumeratedDto>> getUsers() {
+		QuerySpec querySpec = new QuerySpec(ObjUser.class);
+		List<ObjUserVRecord> userList = userRepository.find(sessionInfo, querySpec);
+		// return ResponseEntity
+		// .ok(userList.stream().map(user ->
+		// ObjUserDtoBridge.getInstance().fromRecord(user, sessionInfo)).toList());
+		return ResponseEntity.ok(userList.stream()
+				.map(user -> EnumeratedDto.builder().id(user.getId().toString()).name(user.getName()).build()).toList());
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")

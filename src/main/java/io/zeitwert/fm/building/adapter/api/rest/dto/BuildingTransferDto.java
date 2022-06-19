@@ -53,7 +53,7 @@ public class BuildingTransferDto {
 	private String buildingPartCatalog;
 	private String buildingMaintenanceStrategy;
 
-	private List<BuildingTransferElementDto> elements;
+	private List<BuildingTransferElementRatingDto> elements;
 
 	private List<NoteTransferDto> notes;
 

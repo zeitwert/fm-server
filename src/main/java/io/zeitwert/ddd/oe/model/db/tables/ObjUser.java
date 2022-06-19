@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,9 +53,19 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     public final TableField<ObjUserRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.obj_user.email</code>.
+     */
+    public final TableField<ObjUserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>public.obj_user.name</code>.
      */
-    public final TableField<ObjUserRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ObjUserRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_user.role_list</code>.
+     */
+    public final TableField<ObjUserRecord, String> ROLE_LIST = createField(DSL.name("role_list"), SQLDataType.VARCHAR(400).nullable(false), this, "");
 
     /**
      * The column <code>public.obj_user.description</code>.
@@ -63,19 +73,14 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     public final TableField<ObjUserRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.obj_user.email</code>.
-     */
-    public final TableField<ObjUserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
      * The column <code>public.obj_user.password</code>.
      */
     public final TableField<ObjUserRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.obj_user.role_list</code>.
+     * The column <code>public.obj_user.need_password_change</code>.
      */
-    public final TableField<ObjUserRecord, String> ROLE_LIST = createField(DSL.name("role_list"), SQLDataType.VARCHAR(400).nullable(false), this, "");
+    public final TableField<ObjUserRecord, Boolean> NEED_PASSWORD_CHANGE = createField(DSL.name("need_password_change"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.obj_user.picture</code>.
@@ -157,11 +162,11 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, String, String, String> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

@@ -1,6 +1,6 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, Select, TextField } from "@zeitwert/ui-forms";
+import { DateField, EnumeratedField, FieldGroup, FieldRow, Input, Select, TextField } from "@zeitwert/ui-forms";
 import { BuildingModel, BuildingStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable, toJS } from "mobx";
@@ -20,6 +20,10 @@ const BuildingRatingFormModel = new Form(
 		//
 		buildingPartCatalog: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
 		buildingMaintenanceStrategy: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
+		//
+		ratingStatus: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingRatingStatus" }),
+		ratingDate: new DateField(),
+		ratingUser: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/objUser" }),
 		//
 		elements: ElementRatingFormModel
 	}
@@ -83,7 +87,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Select label="Gebäudekategorie" accessor={this.formState.field("buildingPartCatalog")} size={3} onChange={this.onSetPartCatalog} />
+											<Select label="Gebäudekategorie" accessor={this.formState.field("buildingPartCatalog")} size={2} onChange={this.onSetPartCatalog} />
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="&nbsp;">
 													{
@@ -100,10 +104,13 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 												</FieldGroup>
 											</div>
 											<Select label="Unterhaltsplanung" accessor={this.formState.field("buildingMaintenanceStrategy")} size={2} />
+											<Select label="Bewertungsstatus" accessor={this.formState.field("ratingStatus")} size={2} />
+											<Input label="Bewertungsdatum" accessor={this.formState.field("ratingDate")} size={1} />
+											<Select label="Bewertung durch" accessor={this.formState.field("ratingUser")} size={2} />
 											<div className="slds-size_1-of-12" />
-											<div className="slds-size_5-of-12">
+											<div className="slds-size_1-of-12">
 												<FieldGroup label="Optionen">
-													<Checkbox labels={{ label: "Alle Bauteile zeigen" }} checked={this.showAllElements} onChange={() => this.showAllElements = !this.showAllElements}></Checkbox>
+													<Checkbox labels={{ label: "Alle Bauteile" }} checked={this.showAllElements} onChange={() => this.showAllElements = !this.showAllElements}></Checkbox>
 												</FieldGroup>
 											</div>
 										</FieldRow>
@@ -154,7 +161,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 										<Col className="slds-size_1-of-12 slds-align_absolute-center">&gt; 5J.</Col>
 										<Col className="slds-size_3-of-12">&nbsp;</Col>
 									</Grid>
-									<Grid isVertical={false} className="slds-text-title_bold">
+									<Grid isVertical={false} className="slds-form-element__row slds-text-title_bold">
 										<Col className="slds-size_2-of-12 slds-form-element">Bauteil</Col>
 										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
 											<div className="slds-float_right">Anteile</div>

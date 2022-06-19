@@ -2,6 +2,7 @@
 package io.zeitwert.fm.building.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -21,6 +22,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,7 +61,6 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 
 	private EnumeratedDto buildingType;
 	private EnumeratedDto buildingSubType;
-	private EnumeratedDto buildingPartCatalog;
 	private String name;
 	private String description;
 	private String buildingNr;
@@ -81,14 +82,19 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private BigDecimal areaNet;
 	private Integer nrOfFloorsAboveGround;
 	private Integer nrOfFloorsBelowGround;
-	private EnumeratedDto buildingMaintenanceStrategy;
 	private BigDecimal insuredValue;
 	private Integer insuredValueYear;
 	private BigDecimal notInsuredValue;
 	private Integer notInsuredValueYear;
 	private BigDecimal thirdPartyValue;
 	private Integer thirdPartyValueYear;
-	private List<ObjBuildingPartElementDto> elements;
+
+	private EnumeratedDto buildingPartCatalog;
+	private EnumeratedDto buildingMaintenanceStrategy;
+	private EnumeratedDto ratingStatus;
+	private LocalDate ratingDate;
+	private ObjUserDto ratingUser;
+	private List<ObjBuildingPartElementRatingDto> elements;
 
 	@JsonApiRelationId
 	private Integer coverFotoId;
