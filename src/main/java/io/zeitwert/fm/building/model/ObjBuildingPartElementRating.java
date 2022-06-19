@@ -7,7 +7,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 
 import java.util.Set;
 
-public interface ObjBuildingPartElement extends ObjPart<ObjBuilding> {
+public interface ObjBuildingPartElementRating extends ObjPart<ObjBuilding> {
 
 	CodeBuildingPart getBuildingPart();
 

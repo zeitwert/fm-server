@@ -8,8 +8,6 @@ export enum CaseStageType {
 export interface CaseStage {
 	id: string;
 	name: string;
-	currentName: string;
-	pastName: string;
 	description: string;
 	due: number; // Days to expire
 	caseDefId: string;

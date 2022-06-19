@@ -4,13 +4,16 @@
 package io.zeitwert.ddd.oe.model.db;
 
 
+import io.zeitwert.ddd.oe.model.db.tables.CodeTenantType;
 import io.zeitwert.ddd.oe.model.db.tables.CodeUserRole;
 import io.zeitwert.ddd.oe.model.db.tables.ObjTenant;
 import io.zeitwert.ddd.oe.model.db.tables.ObjUser;
+import io.zeitwert.ddd.oe.model.db.tables.records.CodeTenantTypeRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.CodeUserRoleRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -28,9 +31,16 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<CodeTenantTypeRecord> CODE_TENANT_TYPE_PKEY = Internal.createUniqueKey(CodeTenantType.CODE_TENANT_TYPE, DSL.name("code_tenant_type_pkey"), new TableField[] { CodeTenantType.CODE_TENANT_TYPE.ID }, true);
     public static final UniqueKey<CodeUserRoleRecord> CODE_USER_ROLE_PKEY = Internal.createUniqueKey(CodeUserRole.CODE_USER_ROLE, DSL.name("code_user_role_pkey"), new TableField[] { CodeUserRole.CODE_USER_ROLE.ID }, true);
     public static final UniqueKey<ObjTenantRecord> EXTL_KEY_UNIQUE = Internal.createUniqueKey(ObjTenant.OBJ_TENANT, DSL.name("extl_key_unique"), new TableField[] { ObjTenant.OBJ_TENANT.EXTL_KEY }, true);
     public static final UniqueKey<ObjTenantRecord> OBJ_TENANT_PKEY = Internal.createUniqueKey(ObjTenant.OBJ_TENANT, DSL.name("obj_tenant_pkey"), new TableField[] { ObjTenant.OBJ_TENANT.OBJ_ID }, true);
     public static final UniqueKey<ObjUserRecord> EMAIL_UNIQUE = Internal.createUniqueKey(ObjUser.OBJ_USER, DSL.name("email_unique"), new TableField[] { ObjUser.OBJ_USER.EMAIL }, true);
     public static final UniqueKey<ObjUserRecord> OBJ_USER_PKEY = Internal.createUniqueKey(ObjUser.OBJ_USER, DSL.name("obj_user_pkey"), new TableField[] { ObjUser.OBJ_USER.OBJ_ID }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<ObjTenantRecord, CodeTenantTypeRecord> OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY = Internal.createForeignKey(ObjTenant.OBJ_TENANT, DSL.name("obj_tenant_tenant_type_id_fkey"), new TableField[] { ObjTenant.OBJ_TENANT.TENANT_TYPE_ID }, Keys.CODE_TENANT_TYPE_PKEY, new TableField[] { CodeTenantType.CODE_TENANT_TYPE.ID }, true);
 }

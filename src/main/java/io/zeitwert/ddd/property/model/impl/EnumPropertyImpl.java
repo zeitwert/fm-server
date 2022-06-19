@@ -45,7 +45,7 @@ public class EnumPropertyImpl<E extends Enumerated> extends PropertyBase<E> impl
 			return;
 		}
 		assertThis(this.isValidEnum(value),
-				"valid enumeration item [" + this.enumeration.getId() + ": " + value.getId() + "]");
+				"valid enumeration item [" + this.enumeration.getId() + ": " + value + "]");
 		this.dbRecord.setValue(this.field, value != null ? value.getId() : null);
 		this.getEntity().afterSet(this);
 	}

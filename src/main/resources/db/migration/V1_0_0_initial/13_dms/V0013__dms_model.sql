@@ -37,10 +37,10 @@ create table code_content_type (
 create table obj_document (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
 	--
+	document_kind_id											varchar(40)					not null references code_document_kind(id) deferrable initially deferred,
 	content_kind_id												varchar(40)					not null references code_content_kind(id) deferrable initially deferred,
 	name																	varchar(200)				not null,
 	--
-	document_kind_id											varchar(40)					not null references code_document_kind(id) deferrable initially deferred,
 	document_category_id									varchar(40)					references code_document_category(id) deferrable initially deferred,
 	template_document_id									integer							references obj_document(obj_id) deferrable initially deferred,
 	--

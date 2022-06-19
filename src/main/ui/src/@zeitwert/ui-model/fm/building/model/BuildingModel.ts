@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import Logger from "loglevel";
 import { reaction, toJS, transaction } from "mobx";
 import { addDisposer, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { faTypes } from "../../../app/common";
 import { Config } from "../../../app/common/config/Config";
 import { API } from "../../../app/common/service/Api";
 import { UUID } from "../../../app/common/utils/Id";
@@ -28,7 +29,6 @@ const MstBuildingModel = ObjModel.named("Building")
 		//
 		buildingType: types.maybe(types.frozen<Enumerated>()),
 		buildingSubType: types.maybe(types.frozen<Enumerated>()),
-		buildingPartCatalog: types.maybe(types.frozen<Enumerated>()),
 		buildingYear: types.maybe(types.number),
 		currency: types.maybe(types.frozen<Enumerated>()),
 		//
@@ -49,13 +49,19 @@ const MstBuildingModel = ObjModel.named("Building")
 		nrOfFloorsAboveGround: types.maybe(types.number),
 		nrOfFloorsBelowGround: types.maybe(types.number),
 		//
-		buildingMaintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
 		insuredValue: types.maybe(types.number),
 		insuredValueYear: types.maybe(types.number),
 		notInsuredValue: types.maybe(types.number),
 		notInsuredValueYear: types.maybe(types.number),
 		thirdPartyValue: types.maybe(types.number),
 		thirdPartyValueYear: types.maybe(types.number),
+		//
+		buildingPartCatalog: types.maybe(types.frozen<Enumerated>()),
+		buildingMaintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
+		//
+		ratingStatus: types.maybe(types.frozen<Enumerated>()),
+		ratingDate: types.maybe(faTypes.date),
+		ratingUser: types.maybe(types.frozen<Enumerated>()),
 		//
 		elements: types.optional(types.array(BuildingElementModel), []),
 	})

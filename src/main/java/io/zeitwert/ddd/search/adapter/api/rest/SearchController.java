@@ -15,6 +15,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.search.adapter.api.rest.dto.SearchResultDto;
 import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.util.CustomFilters;
 
 @RestController("searchController")
@@ -25,9 +26,12 @@ public class SearchController {
 
 	private final SearchService searchService;
 
+	private final SessionInfo sessionInfo;
+
 	@Autowired
-	SearchController(AppContext appContext, SearchService searchService) {
+	SearchController(AppContext appContext, SearchService searchService, SessionInfo sessionInfo) {
 		this.searchService = searchService;
+		this.sessionInfo = sessionInfo;
 		appContext.addFilterOperator(CustomFilters.IN);
 	}
 
@@ -36,7 +40,8 @@ public class SearchController {
 			@RequestParam(required = false) List<String> itemTypes) {
 		List<SearchResult> items = this.searchService.find(itemTypes, searchText, SEARCH_RESULT_SIZE);
 		Collections.sort(items, Collections.reverseOrder());
-		return ResponseEntity.ok(items.stream().map(sr -> SearchResultDto.fromItem(sr)).limit(SEARCH_RESULT_SIZE).toList());
+		return ResponseEntity.ok(
+				items.stream().limit(SEARCH_RESULT_SIZE).map(sr -> SearchResultDto.fromItem(sr, this.sessionInfo)).toList());
 	}
 
 }

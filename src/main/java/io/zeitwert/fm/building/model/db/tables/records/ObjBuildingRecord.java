@@ -482,34 +482,6 @@ public class ObjBuildingRecord extends UpdatableRecordImpl<ObjBuildingRecord> {
         return (Integer) get(32);
     }
 
-    /**
-     * Setter for <code>public.obj_building.building_part_catalog_id</code>.
-     */
-    public void setBuildingPartCatalogId(String value) {
-        set(33, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_building.building_part_catalog_id</code>.
-     */
-    public String getBuildingPartCatalogId() {
-        return (String) get(33);
-    }
-
-    /**
-     * Setter for <code>public.obj_building.building_maintenance_strategy_id</code>.
-     */
-    public void setBuildingMaintenanceStrategyId(String value) {
-        set(34, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_building.building_maintenance_strategy_id</code>.
-     */
-    public String getBuildingMaintenanceStrategyId() {
-        return (String) get(34);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -533,7 +505,7 @@ public class ObjBuildingRecord extends UpdatableRecordImpl<ObjBuildingRecord> {
     /**
      * Create a detached, initialised ObjBuildingRecord
      */
-    public ObjBuildingRecord(Integer objId, String intlKey, String name, String description, Integer accountId, String buildingNr, String buildingInsuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, Integer coverFotoId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear, String buildingPartCatalogId, String buildingMaintenanceStrategyId) {
+    public ObjBuildingRecord(Integer objId, String intlKey, String name, String description, Integer accountId, String buildingNr, String buildingInsuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, Integer coverFotoId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear) {
         super(ObjBuilding.OBJ_BUILDING);
 
         setObjId(objId);
@@ -569,7 +541,5 @@ public class ObjBuildingRecord extends UpdatableRecordImpl<ObjBuildingRecord> {
         setNotInsuredValueYear(notInsuredValueYear);
         setThirdPartyValue(thirdPartyValue);
         setThirdPartyValueYear(thirdPartyValueYear);
-        setBuildingPartCatalogId(buildingPartCatalogId);
-        setBuildingMaintenanceStrategyId(buildingMaintenanceStrategyId);
     }
 }

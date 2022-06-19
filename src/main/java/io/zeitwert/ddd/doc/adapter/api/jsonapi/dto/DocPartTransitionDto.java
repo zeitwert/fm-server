@@ -4,6 +4,8 @@ package io.zeitwert.ddd.doc.adapter.api.jsonapi.dto;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,11 +25,12 @@ public class DocPartTransitionDto {
 
 	private CodeCaseStage newCaseStage;
 
-	public static DocPartTransitionDto fromPart(DocPartTransition transition) {
+	public static DocPartTransitionDto fromPart(DocPartTransition transition, SessionInfo sessionInfo) {
+		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		// @formatter:off
 		return DocPartTransitionDto.builder()
 			.seqNr(transition.getSeqNr())
-			.user(ObjUserDto.fromObj(transition.getUser()))
+			.user(userBridge.fromAggregate(transition.getUser(), sessionInfo))
 			.modifiedAt(transition.getModifiedAt())
 			.oldCaseStage(transition.getOldCaseStage())
 			.newCaseStage(transition.getNewCaseStage())

@@ -1,0 +1,141 @@
+package io.zeitwert.fm.building.model.base;
+
+import io.zeitwert.ddd.obj.model.base.ObjPartBase;
+import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.PartListProperty;
+import io.zeitwert.ddd.property.model.Property;
+import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
+import io.zeitwert.fm.building.model.ObjBuildingPartRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.jooq.UpdatableRecord;
+
+import static io.zeitwert.ddd.util.Check.requireThis;
+
+public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
+		implements ObjBuildingPartRating {
+
+	protected final EnumProperty<CodeBuildingPartCatalog> buildingPartCatalog;
+	protected final EnumProperty<CodeBuildingMaintenanceStrategy> buildingMaintenanceStrategy;
+
+	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus;
+	protected final SimpleProperty<LocalDate> ratingDate;
+	protected final ReferenceProperty<ObjUser> ratingUser;
+
+	protected final PartListProperty<ObjBuildingPartElementRating> elementList;
+
+	protected Integer elementContributions = null;
+
+	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj,
+			UpdatableRecord<?> dbRecord) {
+		super(repository, obj, dbRecord);
+
+		this.buildingPartCatalog = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.BUILDING_PART_CATALOG_ID,
+				CodeBuildingPartCatalogEnum.class);
+		this.buildingMaintenanceStrategy = this.addEnumProperty(dbRecord,
+				ObjBuildingPartRatingFields.BUILDING_MAINTENANCE_STRATEGY_ID, CodeBuildingMaintenanceStrategyEnum.class);
+
+		this.ratingStatus = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.RATING_STATUS_ID,
+				CodeBuildingRatingStatusEnum.class);
+		this.ratingDate = this.addSimpleProperty(dbRecord, ObjBuildingPartRatingFields.RATING_DATE);
+		this.ratingUser = this.addReferenceProperty(dbRecord, ObjBuildingPartRatingFields.RATING_USER_ID, ObjUser.class);
+		this.elementList = this.addPartListProperty(this.getRepository().getElementListType());
+	}
+
+	@Override
+	public ObjBuildingPartRatingRepository getRepository() {
+		return (ObjBuildingPartRatingRepository) super.getRepository();
+	}
+
+	@Override
+	public void doAfterCreate() {
+		super.doAfterCreate();
+		this.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
+	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjBuildingPartElementRatingRepository elementRepo = this.getAggregate().getRepository().getElementRepository();
+		List<ObjBuildingPartElementRating> elementList = elementRepo.getPartList(this,
+				this.getRepository().getElementListType());
+		this.elementList.loadPartList(elementList);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+		if (property == this.elementList) {
+			ObjBuildingPartElementRatingRepository elementRepo = this.getAggregate().getRepository().getElementRepository();
+			return (P) elementRepo.create(this, partListType);
+		}
+		return super.addPart(property, partListType);
+	}
+
+	@Override
+	public void setBuildingPartCatalog(CodeBuildingPartCatalog catalog) {
+		if ((catalog == null) != (this.getBuildingPartCatalog() == null) || catalog != this.getBuildingPartCatalog()) {
+			this.elementList.clearPartList();
+		}
+		this.buildingPartCatalog.setValue(catalog);
+	}
+
+	@Override
+	public Integer getElementContributions() {
+		return this.elementContributions;
+	}
+
+	@Override
+	public ObjBuildingPartElementRating getElement(CodeBuildingPart buildingPart) {
+		return this.elementList.getPartList().stream().filter(p -> p.getBuildingPart() == buildingPart).findFirst()
+				.orElse(null);
+	}
+
+	@Override
+	public ObjBuildingPartElementRating addElement(CodeBuildingPart buildingPart) {
+		requireThis(this.getElement(buildingPart) == null, "unique element for buildingPart");
+		ObjBuildingPartElementRating e = this.elementList.addPart();
+		e.setBuildingPart(buildingPart);
+		return e;
+	}
+
+	@Override
+	protected void doCalcAll() {
+		super.doCalcAll();
+		this.doCalcVolatile();
+	}
+
+	@Override
+	protected void doCalcVolatile() {
+		super.doCalcVolatile();
+		this.calcElementContributions();
+	}
+
+	private void calcElementContributions() {
+		this.elementContributions = 0;
+		for (ObjBuildingPartElementRating element : this.getElementList()) {
+			if (element.getValuePart() != null) {
+				this.elementContributions += element.getValuePart();
+			}
+		}
+	}
+
+}

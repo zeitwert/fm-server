@@ -13,7 +13,7 @@ public abstract class FMObjDtoBridge<O extends FMObj, V extends TableRecord<?>, 
 
 	@Override
 	public void toAggregate(D dto, O obj) {
-		obj.setOwner(dto.getOwner() != null ? getUserRepository().get(dto.getOwner().getId()) : null);
+		super.toAggregate(dto, obj);
 	}
 
 	@Override

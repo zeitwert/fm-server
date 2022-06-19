@@ -1,7 +1,16 @@
 
+create table code_tenant_type (
+	id																		varchar(40)					not null,
+	--
+	name																	varchar(100)				not null,
+	--
+	primary key (id)
+);
+
 create table obj_tenant (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
 	--
+	tenant_type_id												varchar(40)					not null references code_tenant_type(id),
 	name																	varchar(100),
 	description														text,
 	extl_key															varchar(60)					not null,

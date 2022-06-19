@@ -5,7 +5,7 @@ import io.zeitwert.ddd.obj.model.base.ObjPartFields;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface ObjBuildingPartElementFields extends ObjPartFields {
+public interface ObjBuildingPartElementRatingFields extends ObjPartFields {
 
 	static final Field<String> BUILDING_PART_ID = DSL.field("building_part_id", String.class);
 	static final Field<Integer> VALUE_PART = DSL.field("value_part", Integer.class);

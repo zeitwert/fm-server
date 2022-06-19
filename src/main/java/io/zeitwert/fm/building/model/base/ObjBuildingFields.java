@@ -22,7 +22,6 @@ public interface ObjBuildingFields extends FMObjFields {
 	static final Field<String> HISTORIC_PRESERVERATION_ID = DSL.field("historic_preservation_id", String.class);
 	static final Field<String> BUILDING_TYPE_ID = DSL.field("building_type_id", String.class);
 	static final Field<String> BUILDING_SUB_TYPE_ID = DSL.field("building_sub_type_id", String.class);
-	static final Field<String> BUILDING_PART_CATALOG_ID = DSL.field("building_part_catalog_id", String.class);
 	static final Field<Integer> BUILDING_YEAR = DSL.field("building_year", Integer.class);
 	static final Field<String> STREET = DSL.field("street", String.class);
 	static final Field<String> ZIP = DSL.field("zip", String.class);
@@ -38,8 +37,6 @@ public interface ObjBuildingFields extends FMObjFields {
 	static final Field<BigDecimal> AREA_NET = DSL.field("area_net", BigDecimal.class);
 	static final Field<Integer> NR_OF_FLOORS_ABOVE_GROUND = DSL.field("nr_of_floors_above_ground", Integer.class);
 	static final Field<Integer> NR_OF_FLOORS_BELOW_GROUND = DSL.field("nr_of_floors_below_ground", Integer.class);
-	static final Field<String> BUILDING_MAINTENANCE_STRATEGY_ID = DSL.field("building_maintenance_strategy_id",
-			String.class);
 	static final Field<BigDecimal> INSURED_VALUE = DSL.field("insured_value", BigDecimal.class);
 	static final Field<Integer> INSURED_VALUE_YEAR = DSL.field("insured_value_year", Integer.class);
 	static final Field<BigDecimal> NOT_INSURED_VALUE = DSL.field("not_insured_value", BigDecimal.class);
@@ -48,7 +45,7 @@ public interface ObjBuildingFields extends FMObjFields {
 	static final Field<Integer> THIRD_PARTY_VALUE_YEAR = DSL.field("third_party_value_year", Integer.class);
 
 	// collections
-	static final String ELEMENT_LIST = "building.elementList";
+	static final String RATING_LIST = "building.ratingList";
 	static final String MATERIAL_DESCRIPTION_SET = "building.materialDescriptionSet";
 	static final String CONDITION_DESCRIPTION_SET = "building.conditionDescriptionSet";
 	static final String MEASURE_DESCRIPTION_SET = "building.measureDescriptionSet";

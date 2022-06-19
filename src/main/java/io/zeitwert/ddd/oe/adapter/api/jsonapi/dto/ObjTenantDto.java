@@ -1,30 +1,21 @@
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.dto;
 
-import io.crnk.core.resource.annotations.JsonApiId;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Data()
-@Builder
-public class ObjTenantDto {
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@ToString(callSuper = true, includeFieldNames = true)
+public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 
-	@JsonApiId
-	private Integer id;
-	private String caption;
 	private String name;
-
-	public static ObjTenantDto fromObj(ObjTenant obj) {
-		if (obj == null) {
-			return null;
-		}
-		// @formatter:off
-		return ObjTenantDto.builder()
-			.id(obj.getId())
-			.caption(obj.getCaption())
-			.name(obj.getName())
-			.build();
-		// @formatter:on
-	}
+	private String extlKey;
 
 }

@@ -4,6 +4,7 @@
 package io.zeitwert.ddd.oe.model.db;
 
 
+import io.zeitwert.ddd.oe.model.db.tables.CodeTenantType;
 import io.zeitwert.ddd.oe.model.db.tables.CodeUserRole;
 import io.zeitwert.ddd.oe.model.db.tables.ObjTenant;
 import io.zeitwert.ddd.oe.model.db.tables.ObjTenantV;
@@ -16,6 +17,11 @@ import io.zeitwert.ddd.oe.model.db.tables.ObjUserV;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.code_tenant_type</code>.
+     */
+    public static final CodeTenantType CODE_TENANT_TYPE = CodeTenantType.CODE_TENANT_TYPE;
 
     /**
      * The table <code>public.code_user_role</code>.

@@ -14,14 +14,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNote;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementDto;
+import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto;
+import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.TransferMetaDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -41,7 +46,10 @@ public class BuildingFileTransferController {
 	private static final String VERSION = "1.0";
 
 	@Autowired
-	private ObjBuildingRepository repo;
+	private ObjBuildingRepository buildingRepo;
+
+	@Autowired
+	private ObjNoteRepository noteRepo;
 
 	@Autowired
 	SessionInfo sessionInfo;
@@ -49,7 +57,7 @@ public class BuildingFileTransferController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		ObjBuilding building = this.repo.get(sessionInfo, id);
+		ObjBuilding building = this.buildingRepo.get(sessionInfo, id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
 		ResponseEntity<BuildingTransferDto> response = ResponseEntity.ok()
@@ -69,59 +77,12 @@ public class BuildingFileTransferController {
 		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = repo.create(sessionInfo);
-		AppContext appContext = building.getMeta().getAppContext();
+		ObjBuilding building = buildingRepo.create(sessionInfo);
 		building.setAccountId(accountId);
-		//@formatter:off
-		building.setOwner(sessionInfo.getUser());
-		building.setName(dto.getName());
-		building.setDescription(dto.getDescription());
-		building.setBuildingNr(dto.getBuildingNr());
-		building.setBuildingInsuranceNr(dto.getBuildingInsuranceNr());
-		building.setPlotNr(dto.getPlotNr());
-		building.setNationalBuildingId(dto.getNationalBuildingId());
-		building.setHistoricPreservation(dto.getHistoricPreservation() != null ? appContext.getEnumerated(CodeHistoricPreservationEnum.class, dto.getHistoricPreservation()) : null);
-		building.setStreet(dto.getStreet());
-		building.setZip(dto.getZip());
-		building.setCity(dto.getCity());
-		building.setCountry(dto.getCountry() != null ? appContext.getEnumerated(CodeCountryEnum.class, dto.getCountry()) : null);
-		building.setGeoAddress(dto.getGeoAddress());
-		building.setGeoCoordinates(dto.getGeoCoordinates());
-		building.setGeoZoom(dto.getGeoZoom());
-		building.setCurrency(dto.getCurrency() != null ? appContext.getEnumerated(CodeCurrencyEnum.class, dto.getCurrency()) : null);
-		building.setVolume(dto.getVolume());
-		building.setAreaGross(dto.getAreaGross());
-		building.setAreaNet(dto.getAreaNet());
-		building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
-		building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-		building.setBuildingType(dto.getBuildingType() != null ? appContext.getEnumerated(CodeBuildingTypeEnum.class, dto.getBuildingType()) : null);
-		building.setBuildingSubType(dto.getBuildingSubType() != null ? appContext.getEnumerated(CodeBuildingSubTypeEnum.class, dto.getBuildingSubType()) : null);
-		building.setBuildingYear(dto.getBuildingYear());
-		building.setInsuredValue(dto.getInsuredValue());
-		building.setInsuredValueYear(dto.getInsuredValueYear());
-		building.setNotInsuredValue(dto.getNotInsuredValue());
-		building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
-		building.setThirdPartyValue(dto.getThirdPartyValue());
-		building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-		building.setBuildingPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
-		building.setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
-		dto.getElements().forEach((dtoElement) -> {
-			CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
-			ObjBuildingPartElement element = building.addElement(buildingPart);
-			element.setValuePart(dtoElement.getValuePart());
-			element.setCondition(dtoElement.getCondition());
-			element.setConditionYear(dtoElement.getConditionYear());
-			element.setStrain(dtoElement.getStrain());
-			element.setStrength(dtoElement.getStrength());
-			element.setDescription(dtoElement.getDescription());
-			element.setConditionDescription(dtoElement.getConditionDescription());
-			element.setMeasureDescription(dtoElement.getMeasureDescription());
-		});
-		repo.store(building);
+		this.fillFromDto(building, dto);
+		buildingRepo.store(building);
 		BuildingTransferDto export = this.getTransferDto(building);
-		ResponseEntity<BuildingTransferDto> response = ResponseEntity.ok().body(export);
-		//@formatter:on
-		return response;
+		return ResponseEntity.ok().body(export);
 	}
 
 	private BuildingTransferDto getTransferDto(ObjBuilding building) {
@@ -131,8 +92,8 @@ public class BuildingFileTransferController {
 				.aggregate(AGGREGATE)
 				.version(VERSION)
 			.build();
-		List<BuildingTransferElementDto> elements = building.getElementList().stream().map(e -> {
-			return BuildingTransferElementDto
+		List<BuildingTransferElementRatingDto> elements = building.getCurrentRating().getElementList().stream().map(e -> {
+			return BuildingTransferElementRatingDto
 				.builder()
 					.buildingPart(e.getBuildingPart().getId())
 					.valuePart(e.getValuePart())
@@ -143,6 +104,14 @@ public class BuildingFileTransferController {
 					.description(e.getDescription())
 					.conditionDescription(e.getConditionDescription())
 					.measureDescription(e.getMeasureDescription())
+				.build();
+		}).toList();
+		List<NoteTransferDto> notes = building.getNoteList().stream().map(note -> {
+			return NoteTransferDto
+				.builder()
+					.subject(note.getSubject())
+					.content(note.getContent())
+					.isPrivate(note.getIsPrivate())
 				.build();
 		}).toList();
 		BuildingTransferDto export = BuildingTransferDto
@@ -178,12 +147,71 @@ public class BuildingFileTransferController {
 				.notInsuredValueYear(building.getNotInsuredValueYear())
 				.thirdPartyValue(building.getThirdPartyValue())
 				.thirdPartyValueYear(building.getThirdPartyValueYear())
-				.buildingPartCatalog(building.getBuildingPartCatalog() != null ? building.getBuildingPartCatalog().getId() : null)
-				.buildingMaintenanceStrategy(building.getBuildingMaintenanceStrategy() != null ? building.getBuildingMaintenanceStrategy().getId() : null)
+				.buildingPartCatalog(building.getCurrentRating().getBuildingPartCatalog() != null ? building.getCurrentRating().getBuildingPartCatalog().getId() : null)
+				.buildingMaintenanceStrategy(building.getCurrentRating().getBuildingMaintenanceStrategy() != null ? building.getCurrentRating().getBuildingMaintenanceStrategy().getId() : null)
 				.elements(elements)
+				.notes(notes)
 			.build();
 		//@formatter:on
 		return export;
+	}
+
+	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
+		AppContext appContext = building.getMeta().getAppContext();
+		//@formatter:off
+		building.setOwner(sessionInfo.getUser());
+		building.setName(dto.getName());
+		building.setDescription(dto.getDescription());
+		building.setBuildingNr(dto.getBuildingNr());
+		building.setBuildingInsuranceNr(dto.getBuildingInsuranceNr());
+		building.setPlotNr(dto.getPlotNr());
+		building.setNationalBuildingId(dto.getNationalBuildingId());
+		building.setHistoricPreservation(dto.getHistoricPreservation() != null ? appContext.getEnumerated(CodeHistoricPreservationEnum.class, dto.getHistoricPreservation()) : null);
+		building.setStreet(dto.getStreet());
+		building.setZip(dto.getZip());
+		building.setCity(dto.getCity());
+		building.setCountry(dto.getCountry() != null ? appContext.getEnumerated(CodeCountryEnum.class, dto.getCountry()) : null);
+		building.setGeoAddress(dto.getGeoAddress());
+		building.setGeoCoordinates(dto.getGeoCoordinates());
+		building.setGeoZoom(dto.getGeoZoom());
+		building.setCurrency(dto.getCurrency() != null ? appContext.getEnumerated(CodeCurrencyEnum.class, dto.getCurrency()) : null);
+		building.setVolume(dto.getVolume());
+		building.setAreaGross(dto.getAreaGross());
+		building.setAreaNet(dto.getAreaNet());
+		building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
+		building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
+		building.setBuildingType(dto.getBuildingType() != null ? appContext.getEnumerated(CodeBuildingTypeEnum.class, dto.getBuildingType()) : null);
+		building.setBuildingSubType(dto.getBuildingSubType() != null ? appContext.getEnumerated(CodeBuildingSubTypeEnum.class, dto.getBuildingSubType()) : null);
+		building.setBuildingYear(dto.getBuildingYear());
+		building.setInsuredValue(dto.getInsuredValue());
+		building.setInsuredValueYear(dto.getInsuredValueYear());
+		building.setNotInsuredValue(dto.getNotInsuredValue());
+		building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
+		building.setThirdPartyValue(dto.getThirdPartyValue());
+		building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
+		building.getCurrentRating().setBuildingPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
+		building.getCurrentRating().setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
+		dto.getElements().forEach((dtoElement) -> {
+			CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
+			ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
+			element.setValuePart(dtoElement.getValuePart());
+			element.setCondition(dtoElement.getCondition());
+			element.setConditionYear(dtoElement.getConditionYear());
+			element.setStrain(dtoElement.getStrain());
+			element.setStrength(dtoElement.getStrength());
+			element.setDescription(dtoElement.getDescription());
+			element.setConditionDescription(dtoElement.getConditionDescription());
+			element.setMeasureDescription(dtoElement.getMeasureDescription());
+		});
+		CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
+		dto.getNotes().forEach((dtoNote) -> {
+			ObjNote note = building.addNote(noteType);
+			note.setSubject(dtoNote.getSubject());
+			note.setContent(dtoNote.getContent());
+			note.setIsPrivate(dtoNote.getIsPrivate());
+			noteRepo.store(note);
+		});
+		//@formatter:on
 	}
 
 	private String getFileName(ObjBuilding building) {

@@ -66,7 +66,7 @@ public class Obj extends TableImpl<ObjRecord> {
     /**
      * The column <code>public.obj.owner_id</code>.
      */
-    public final TableField<ObjRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj.caption</code>.

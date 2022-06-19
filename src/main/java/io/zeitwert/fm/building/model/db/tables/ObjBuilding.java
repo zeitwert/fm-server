@@ -75,7 +75,7 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     /**
      * The column <code>public.obj_building.building_nr</code>.
      */
-    public final TableField<ObjBuildingRecord, String> BUILDING_NR = createField(DSL.name("building_nr"), SQLDataType.VARCHAR(200), this, "");
+    public final TableField<ObjBuildingRecord, String> BUILDING_NR = createField(DSL.name("building_nr"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>public.obj_building.building_insurance_nr</code>.
@@ -135,7 +135,7 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     /**
      * The column <code>public.obj_building.cover_foto_id</code>.
      */
-    public final TableField<ObjBuildingRecord, Integer> COVER_FOTO_ID = createField(DSL.name("cover_foto_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingRecord, Integer> COVER_FOTO_ID = createField(DSL.name("cover_foto_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_building.currency_id</code>.
@@ -212,16 +212,6 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
      */
     public final TableField<ObjBuildingRecord, Integer> THIRD_PARTY_VALUE_YEAR = createField(DSL.name("third_party_value_year"), SQLDataType.INTEGER, this, "");
 
-    /**
-     * The column <code>public.obj_building.building_part_catalog_id</code>.
-     */
-    public final TableField<ObjBuildingRecord, String> BUILDING_PART_CATALOG_ID = createField(DSL.name("building_part_catalog_id"), SQLDataType.VARCHAR(40), this, "");
-
-    /**
-     * The column <code>public.obj_building.building_maintenance_strategy_id</code>.
-     */
-    public final TableField<ObjBuildingRecord, String> BUILDING_MAINTENANCE_STRATEGY_ID = createField(DSL.name("building_maintenance_strategy_id"), SQLDataType.VARCHAR(40), this, "");
-
     private ObjBuilding(Name alias, Table<ObjBuildingRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -272,14 +262,12 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
 
     @Override
     public List<ForeignKey<ObjBuildingRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjBuildingRecord, ?>>asList(Keys.OBJ_BUILDING__OBJ_BUILDING_HISTORIC_PRESERVATION_ID_FKEY, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_TYPE_ID_FKEY, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_SUB_TYPE_ID_FKEY, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_PART_CATALOG_ID_FKEY, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_MAINTENANCE_STRATEGY_ID_FKEY);
+        return Arrays.<ForeignKey<ObjBuildingRecord, ?>>asList(Keys.OBJ_BUILDING__OBJ_BUILDING_HISTORIC_PRESERVATION_ID_FKEY, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_TYPE_ID_FKEY, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_SUB_TYPE_ID_FKEY);
     }
 
     private transient CodeHistoricPreservation _codeHistoricPreservation;
     private transient CodeBuildingType _codeBuildingType;
     private transient CodeBuildingSubType _codeBuildingSubType;
-    private transient CodeBuildingPartCatalog _codeBuildingPartCatalog;
-    private transient CodeBuildingMaintenanceStrategy _codeBuildingMaintenanceStrategy;
 
     public CodeHistoricPreservation codeHistoricPreservation() {
         if (_codeHistoricPreservation == null)
@@ -300,20 +288,6 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
             _codeBuildingSubType = new CodeBuildingSubType(this, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_SUB_TYPE_ID_FKEY);
 
         return _codeBuildingSubType;
-    }
-
-    public CodeBuildingPartCatalog codeBuildingPartCatalog() {
-        if (_codeBuildingPartCatalog == null)
-            _codeBuildingPartCatalog = new CodeBuildingPartCatalog(this, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_PART_CATALOG_ID_FKEY);
-
-        return _codeBuildingPartCatalog;
-    }
-
-    public CodeBuildingMaintenanceStrategy codeBuildingMaintenanceStrategy() {
-        if (_codeBuildingMaintenanceStrategy == null)
-            _codeBuildingMaintenanceStrategy = new CodeBuildingMaintenanceStrategy(this, Keys.OBJ_BUILDING__OBJ_BUILDING_BUILDING_MAINTENANCE_STRATEGY_ID_FKEY);
-
-        return _codeBuildingMaintenanceStrategy;
     }
 
     @Override

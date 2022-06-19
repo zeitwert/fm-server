@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
-import io.zeitwert.ddd.oe.model.ObjTenant;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -36,13 +35,13 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
+		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
 		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		ObjUser user = maybeUser.get();
-		ObjTenant tenant = user.getTenant();
-		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(sessionInfo, tenant);
+		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(sessionInfo, user.getTenant());
 		List<EnumeratedDto> accountsDto = accounts.stream()
 				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
 				.toList();
@@ -52,7 +51,7 @@ public class ApplicationController {
 				.id(user.getId())
 				.email(user.getEmail())
 				.name(user.getName())
-				.tenant(ObjTenantDto.fromObj(tenant))
+				.tenant(tenantBridge.fromAggregate(user.getTenant(), sessionInfo))
 				.roles(user.getRoleList().stream().map(r -> r.getId()).toList())
 				.accounts(accountsDto)
 				.build()

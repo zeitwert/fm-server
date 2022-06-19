@@ -10,11 +10,13 @@ import io.zeitwert.fm.building.model.db.tables.CodeBuildingPart;
 import io.zeitwert.fm.building.model.db.tables.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.db.tables.CodeBuildingPriceIndex;
 import io.zeitwert.fm.building.model.db.tables.CodeBuildingPriceIndexValue;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.db.tables.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.db.tables.CodeBuildingType;
 import io.zeitwert.fm.building.model.db.tables.CodeHistoricPreservation;
 import io.zeitwert.fm.building.model.db.tables.ObjBuilding;
-import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartElementRating;
+import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingSearch;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingV;
 
@@ -70,6 +72,11 @@ public class Public extends SchemaImpl {
     public final CodeBuildingPriceIndexValue CODE_BUILDING_PRICE_INDEX_VALUE = CodeBuildingPriceIndexValue.CODE_BUILDING_PRICE_INDEX_VALUE;
 
     /**
+     * The table <code>public.code_building_rating_status</code>.
+     */
+    public final CodeBuildingRatingStatus CODE_BUILDING_RATING_STATUS = CodeBuildingRatingStatus.CODE_BUILDING_RATING_STATUS;
+
+    /**
      * The table <code>public.code_building_sub_type</code>.
      */
     public final CodeBuildingSubType CODE_BUILDING_SUB_TYPE = CodeBuildingSubType.CODE_BUILDING_SUB_TYPE;
@@ -90,9 +97,14 @@ public class Public extends SchemaImpl {
     public final ObjBuilding OBJ_BUILDING = ObjBuilding.OBJ_BUILDING;
 
     /**
-     * The table <code>public.obj_building_part_element</code>.
+     * The table <code>public.obj_building_part_element_rating</code>.
      */
-    public final ObjBuildingPartElement OBJ_BUILDING_PART_ELEMENT = ObjBuildingPartElement.OBJ_BUILDING_PART_ELEMENT;
+    public final ObjBuildingPartElementRating OBJ_BUILDING_PART_ELEMENT_RATING = ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING;
+
+    /**
+     * The table <code>public.obj_building_part_rating</code>.
+     */
+    public final ObjBuildingPartRating OBJ_BUILDING_PART_RATING = ObjBuildingPartRating.OBJ_BUILDING_PART_RATING;
 
     /**
      * The table <code>public.obj_building_search</code>.
@@ -126,11 +138,13 @@ public class Public extends SchemaImpl {
             CodeBuildingPartCatalog.CODE_BUILDING_PART_CATALOG,
             CodeBuildingPriceIndex.CODE_BUILDING_PRICE_INDEX,
             CodeBuildingPriceIndexValue.CODE_BUILDING_PRICE_INDEX_VALUE,
+            CodeBuildingRatingStatus.CODE_BUILDING_RATING_STATUS,
             CodeBuildingSubType.CODE_BUILDING_SUB_TYPE,
             CodeBuildingType.CODE_BUILDING_TYPE,
             CodeHistoricPreservation.CODE_HISTORIC_PRESERVATION,
             ObjBuilding.OBJ_BUILDING,
-            ObjBuildingPartElement.OBJ_BUILDING_PART_ELEMENT,
+            ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING,
+            ObjBuildingPartRating.OBJ_BUILDING_PART_RATING,
             ObjBuildingSearch.OBJ_BUILDING_SEARCH,
             ObjBuildingV.OBJ_BUILDING_V);
     }

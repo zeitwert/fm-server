@@ -6,7 +6,5 @@ values
 insert into code_user_role(id, name)
 values
 ('APP-ADMIN', 'Application Admin (Super User)'),
-('SAAS-USER', 'SaaS User'),
-('SAAS-ADMIN', 'SaaS Admin'),
-('COMMUNITY-USER', 'Community User'),
-('COMMUNITY-ADMIN', 'Community Admin');
+('ADMIN', 'Advisor or Account Admin'),
+('USER', 'Advisor or Account User');

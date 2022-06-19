@@ -19,7 +19,8 @@ import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRepository;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
+import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.base.ObjBuildingFields;
@@ -42,8 +43,9 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private static final String ITEM_TYPE = "obj_building";
 
-	private final ObjBuildingPartElementRepository elementRepository;
-	private final CodePartListType elementListType;
+	private final ObjBuildingPartRatingRepository ratingRepository;
+	private final CodePartListType ratingListType;
+	private final ObjBuildingPartElementRatingRepository elementRepository;
 	private final CodePartListType materialDescriptionSetType;
 	private final CodePartListType conditionDescriptionSetType;
 	private final CodePartListType measureDescriptionSetType;
@@ -55,8 +57,9 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjBuildingPartElementRepository elementRepository,
-		final ObjNoteRepository noteRepository
+		final ObjNoteRepository noteRepository,
+		final ObjBuildingPartRatingRepository ratingRepository,
+		final ObjBuildingPartElementRatingRepository elementRepository
 	) {
 		super(
 			ObjBuildingRepository.class,
@@ -69,8 +72,9 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 			itemRepository,
 			noteRepository
 		);
+		this.ratingRepository = ratingRepository;
+		this.ratingListType = this.getAppContext().getPartListType(ObjBuildingFields.RATING_LIST);
 		this.elementRepository = elementRepository;
-		this.elementListType = this.getAppContext().getPartListType(ObjBuildingFields.ELEMENT_LIST);
 		this.materialDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MATERIAL_DESCRIPTION_SET);
 		this.conditionDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.CONDITION_DESCRIPTION_SET);
 		this.measureDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
@@ -82,17 +86,23 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(this.getRatingRepository());
 		this.addPartRepository(this.getElementRepository());
 	}
 
 	@Override
-	public ObjBuildingPartElementRepository getElementRepository() {
-		return this.elementRepository;
+	public ObjBuildingPartRatingRepository getRatingRepository() {
+		return this.ratingRepository;
 	}
 
 	@Override
-	public CodePartListType getElementListType() {
-		return this.elementListType;
+	public CodePartListType getRatingListType() {
+		return this.ratingListType;
+	}
+
+	@Override
+	public ObjBuildingPartElementRatingRepository getElementRepository() {
+		return this.elementRepository;
 	}
 
 	@Override

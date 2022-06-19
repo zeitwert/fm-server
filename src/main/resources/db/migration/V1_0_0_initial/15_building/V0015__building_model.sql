@@ -100,7 +100,7 @@ create table obj_building (
 	--
 	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
-	building_nr														varchar(200), -- Identifikation -- TODO not null unique (demo data)
+	building_nr														varchar(200), -- Identifikation -- TODO make unique key (by tenant demo data)
 	building_insurance_nr									varchar(200), -- Gebäudeversicherung Police Nr
 	plot_nr																varchar(200), -- Parzellen Nr
 	national_building_id									varchar(200), -- EGID (eidgenössischer Gebäudeidentifikator)
@@ -115,7 +115,7 @@ create table obj_building (
 	geo_coordinates												varchar(200),
 	geo_zoom															integer,
 	--
-	cover_foto_id													integer							references obj_document(obj_id) deferrable initially deferred, -- TODO not null (demo data)
+	cover_foto_id													integer							not null references obj_document(obj_id) deferrable initially deferred,
 	--
 	currency_id														varchar(40)					not null references code_currency(id),
 	--
@@ -135,9 +135,6 @@ create table obj_building (
 	not_insured_value_year								integer,
 	third_party_value											decimal,
 	third_party_value_year								integer,
-	--
-	building_part_catalog_id							varchar(40)					references code_building_part_catalog(id),
-	building_maintenance_strategy_id			varchar(40)					references code_building_maintenance_strategy(id),
 	--
 	primary key (obj_id)
 );
@@ -161,6 +158,31 @@ select	obj.tenant_id,
 from		obj_building b
 join obj on obj.id = b.obj_id;
 
+create table code_building_rating_status (
+	id																		varchar(40)					not null,
+	--
+	name																	varchar(100)				not null,
+	--
+	primary key (id)
+);
+
+create table obj_building_part_rating (
+	id																		integer							not null,
+	obj_id																integer							not null references obj_building(obj_id) deferrable initially deferred,
+	parent_part_id												integer,						-- reference to parent part (optional)
+	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
+	seq_nr																integer,
+	--
+	building_part_catalog_id							varchar(40)					references code_building_part_catalog(id),
+	building_maintenance_strategy_id			varchar(40)					references code_building_maintenance_strategy(id),
+	--
+	rating_status_id											varchar(40)					not null references code_building_rating_status(id),
+	rating_date														date,
+	rating_user_id												integer							references obj_user(obj_id) deferrable initially deferred,
+	--
+	primary key (id)
+);
+
 create table code_building_element_description (
 	id																		varchar(40)					not null,
 	--
@@ -170,11 +192,11 @@ create table code_building_element_description (
 	primary key (id)
 );
 
-create table obj_building_part_element (
+create table obj_building_part_element_rating (
 	id																		integer							not null,
 	obj_id																integer							not null references obj_building(obj_id) deferrable initially deferred,
-	parent_part_id												integer,						-- reference to parent part (optional)
-	part_list_type_id											varchar(40) default 'building.elementList' not null references code_part_list_type(id),
+	parent_part_id												integer							references obj_building_part_rating(id) deferrable initially deferred, -- TODO not null (demo data)
+	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
 	seq_nr																integer,
 	--
 	building_part_id											varchar(40)					references code_building_part(id),

@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElement;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingElementDescriptionEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.service.api.ProjectionService;
@@ -23,7 +23,7 @@ import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBuildingPartElement> {
+public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding, ObjBuildingPartElementRating> {
 
 	private EnumeratedDto buildingPart;
 	private Integer valuePart;
@@ -49,7 +49,7 @@ public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBu
 	private Set<EnumeratedDto> conditionDescriptions;
 	private Set<EnumeratedDto> measureDescriptions;
 
-	public void toPart(ObjBuildingPartElement part) {
+	public void toPart(ObjBuildingPartElementRating part) {
 		super.toPart(part);
 		part.setBuildingPart(
 				this.buildingPart == null ? null : CodeBuildingPartEnum.getBuildingPart(this.buildingPart.getId()));
@@ -78,11 +78,12 @@ public class ObjBuildingPartElementDto extends ObjPartDtoBase<ObjBuilding, ObjBu
 		}
 	}
 
-	public static ObjBuildingPartElementDto fromPart(ObjBuildingPartElement part, ProjectionService projectionService) {
+	public static ObjBuildingPartElementRatingDto fromPart(ObjBuildingPartElementRating part,
+			ProjectionService projectionService) {
 		if (part == null) {
 			return null;
 		}
-		ObjBuildingPartElementDtoBuilder<?, ?> dtoBuilder = ObjBuildingPartElementDto.builder();
+		ObjBuildingPartElementRatingDtoBuilder<?, ?> dtoBuilder = ObjBuildingPartElementRatingDto.builder();
 		ObjPartDtoBase.fromPart(dtoBuilder, part);
 		Integer restorationYear = null;
 		Double restorationCosts = null;

@@ -108,9 +108,14 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	@Override
 	public void doInit(Integer docId, Integer tenantId) {
 		super.doInit(docId, tenantId);
-		this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
-		this.id.setValue(docId);
-		this.tenant.setId(tenantId);
+		try {
+			this.disableCalc();
+			this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
+			this.id.setValue(docId);
+			this.tenant.setId(tenantId);
+		} finally {
+			this.enableCalc();
+		}
 	}
 
 	void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
@@ -125,6 +130,10 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
+		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+		this.owner.setId(sessionUserId);
+		this.createdByUser.setId(sessionUserId);
+		this.createdAt.setValue(OffsetDateTime.now());
 		this.transitionList.addPart();
 	}
 
@@ -137,14 +146,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doBeforeStore() {
-		this.transitionList.addPart();
-		super.doBeforeStore(); // transition needs to be present for transitionList.seqNr
-		if (this.getDocDbRecord().changed(DocFields.ID)) { // isNew
-			Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
-			this.owner.setId(sessionUserId);
-			this.createdByUser.setId(sessionUserId);
-			this.createdAt.setValue(OffsetDateTime.now());
-		}
+		super.doBeforeStore();
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = getDocDbRecord();

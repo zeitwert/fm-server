@@ -105,6 +105,11 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
     public final TableField<ObjDocumentVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_document_v.document_kind_id</code>.
+     */
+    public final TableField<ObjDocumentVRecord, String> DOCUMENT_KIND_ID = createField(DSL.name("document_kind_id"), SQLDataType.VARCHAR(40), this, "");
+
+    /**
      * The column <code>public.obj_document_v.content_kind_id</code>.
      */
     public final TableField<ObjDocumentVRecord, String> CONTENT_KIND_ID = createField(DSL.name("content_kind_id"), SQLDataType.VARCHAR(40), this, "");
@@ -113,11 +118,6 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
      * The column <code>public.obj_document_v.name</code>.
      */
     public final TableField<ObjDocumentVRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(200), this, "");
-
-    /**
-     * The column <code>public.obj_document_v.document_kind_id</code>.
-     */
-    public final TableField<ObjDocumentVRecord, String> DOCUMENT_KIND_ID = createField(DSL.name("document_kind_id"), SQLDataType.VARCHAR(40), this, "");
 
     /**
      * The column <code>public.obj_document_v.document_category_id</code>.
@@ -134,7 +134,7 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
     }
 
     private ObjDocumentV(Name alias, Table<ObjDocumentVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_document_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    d.obj_id,\n    d.content_kind_id,\n    d.name,\n    d.document_kind_id,\n    d.document_category_id,\n    d.template_document_id\n   FROM (obj_document d\n     JOIN obj ON ((obj.id = d.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_document_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    d.obj_id,\n    d.document_kind_id,\n    d.content_kind_id,\n    d.name,\n    d.document_category_id,\n    d.template_document_id\n   FROM (obj_document d\n     JOIN obj ON ((obj.id = d.obj_id)));"));
     }
 
     /**

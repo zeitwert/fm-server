@@ -26,6 +26,18 @@ public interface Aggregate {
 	String getCaption();
 
 	/**
+	 * Calculate all the derived fields, typically after a field change.
+	 */
+	void calcAll();
+
+	/**
+	 * Calculate all the volatile derived fields, i.e. fields that are not saved to
+	 * the database. This is triggered after loading the aggregate from the
+	 * database.
+	 */
+	void calcVolatile();
+
+	/**
 	 * Delete the Aggregate (i.e. set closed_by_user_id, closed_at)
 	 */
 	void delete();
