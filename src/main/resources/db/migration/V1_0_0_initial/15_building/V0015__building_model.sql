@@ -169,9 +169,9 @@ create table code_building_rating_status (
 create table obj_building_part_rating (
 	id																		integer							not null,
 	obj_id																integer							not null references obj_building(obj_id) deferrable initially deferred,
-	parent_part_id												integer,						-- reference to parent part (optional)
+	parent_part_id												integer							not null default 0, -- reference to parent part
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
-	seq_nr																integer,
+	seq_nr																integer							not null default 0,
 	--
 	building_part_catalog_id							varchar(40)					references code_building_part_catalog(id),
 	building_maintenance_strategy_id			varchar(40)					references code_building_maintenance_strategy(id),
@@ -182,6 +182,9 @@ create table obj_building_part_rating (
 	--
 	primary key (id)
 );
+
+create index obj_building_part_rating$part
+on     obj_building_part_rating(obj_id, parent_part_id, part_list_type_id, seq_nr);
 
 create table code_building_element_description (
 	id																		varchar(40)					not null,
@@ -195,9 +198,9 @@ create table code_building_element_description (
 create table obj_building_part_element_rating (
 	id																		integer							not null,
 	obj_id																integer							not null references obj_building(obj_id) deferrable initially deferred,
-	parent_part_id												integer							references obj_building_part_rating(id) deferrable initially deferred, -- TODO not null (demo data)
+	parent_part_id												integer							not null default 0, --references obj_building_part_rating(id) deferrable initially deferred, -- TODO not null (demo data)
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
-	seq_nr																integer,
+	seq_nr																integer							not null default 0,
 	--
 	building_part_id											varchar(40)					references code_building_part(id),
 	--
@@ -213,3 +216,6 @@ create table obj_building_part_element_rating (
 	--
 	primary key (id)
 );
+
+create index obj_building_part_element_rating$part
+on     obj_building_part_element_rating(obj_id, parent_part_id, part_list_type_id, seq_nr);

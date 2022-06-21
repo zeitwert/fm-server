@@ -34,7 +34,7 @@ create table obj_part_item (
 create table obj_part_transition (
 	id																		integer												not null,
 	obj_id																integer												not null references obj(id) deferrable initially deferred,
-	parent_part_id												integer,
+	parent_part_id												integer												not null default 0,
 	part_list_type_id											varchar(40)										not null references code_part_list_type(id),
 	seq_nr																integer												not null,
 	--
@@ -45,3 +45,6 @@ create table obj_part_transition (
 	--
 	primary key (id)
 );
+
+create index obj_part_transition$part
+on     obj_part_transition(obj_id, parent_part_id, part_list_type_id, seq_nr);

@@ -75,7 +75,7 @@ create table doc_part_item (
 create table doc_part_transition (
 	id																		integer												not null,
 	doc_id																integer												not null references doc(id) deferrable initially deferred,
-	parent_part_id												integer,
+	parent_part_id												integer												not null default 0,
 	part_list_type_id											varchar(40)										not null references code_part_list_type(id),
 	seq_nr																integer												not null,
 	--
@@ -89,3 +89,6 @@ create table doc_part_transition (
 	--
 	primary key (id)
 );
+
+create index doc_part_transition$part
+on     doc_part_transition(doc_id, parent_part_id, part_list_type_id, seq_nr);

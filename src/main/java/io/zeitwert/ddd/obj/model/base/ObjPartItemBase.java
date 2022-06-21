@@ -1,12 +1,11 @@
 package io.zeitwert.ddd.obj.model.base;
 
+import org.jooq.UpdatableRecord;
+
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjPartItemRecord;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-
-import org.jooq.UpdatableRecord;
 
 public abstract class ObjPartItemBase extends ObjPartBase<Obj> implements ObjPartItem {
 
@@ -15,15 +14,6 @@ public abstract class ObjPartItemBase extends ObjPartBase<Obj> implements ObjPar
 	public ObjPartItemBase(PartRepository<Obj, ?> repository, Obj obj, UpdatableRecord<?> dbRecord) {
 		super(repository, obj, dbRecord);
 		this.itemId = this.addSimpleProperty(dbRecord, ObjPartItemFields.ITEM_ID);
-	}
-
-	@Override
-	public void doAfterCreate() {
-		super.doAfterCreate();
-		// for combined primary key parentPartId cannot be "null" on database
-		if (this.getParentPartId() == null) {
-			((ObjPartItemRecord) this.getDbRecord()).setParentPartId(0);
-		}
 	}
 
 	@Override

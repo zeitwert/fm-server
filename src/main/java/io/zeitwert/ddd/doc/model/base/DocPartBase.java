@@ -1,14 +1,14 @@
 
 package io.zeitwert.ddd.doc.model.base;
 
+import org.jooq.UpdatableRecord;
+
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPart;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-
-import org.jooq.UpdatableRecord;
 
 public abstract class DocPartBase<D extends Doc> extends PartBase<D> implements DocPart<D> {
 
@@ -24,7 +24,7 @@ public abstract class DocPartBase<D extends Doc> extends PartBase<D> implements 
 			dbRecord.setValue(DocPartFields.ID, partId);
 		}
 		dbRecord.setValue(DocPartFields.DOC_ID, doc.getId());
-		dbRecord.setValue(DocPartFields.PARENT_PART_ID, parent != null ? parent.getId() : null);
+		dbRecord.setValue(DocPartFields.PARENT_PART_ID, parent != null ? parent.getId() : 0);
 		dbRecord.setValue(DocPartFields.PART_LIST_TYPE_ID, partListType.getId());
 	}
 

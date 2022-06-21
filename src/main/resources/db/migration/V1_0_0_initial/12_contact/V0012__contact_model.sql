@@ -97,7 +97,7 @@ create table code_address_channel (
 create table obj_contact_part_address (
 	id																		integer							not null,
 	obj_id																integer							not null references obj_contact(obj_id) deferrable initially deferred,
-	parent_part_id												integer,						-- reference to parent part (optional)
+	parent_part_id												integer							not null default 0, -- reference to parent part
 	part_list_type_id											varchar(40) 				not null references code_part_list_type(id),
 	seq_nr																integer,
 	--
@@ -112,3 +112,6 @@ create table obj_contact_part_address (
 	--
 	primary key (id)
 );
+
+create index obj_contact_part_address$part
+on     obj_contact_part_address(obj_id, parent_part_id, part_list_type_id, seq_nr);

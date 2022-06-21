@@ -24,6 +24,9 @@ create table obj_user (
 	constraint email_unique unique (email)
 );
 
+create index obj_user$email
+on     obj_user(email);
+
 alter table obj
 add constraint obj$owner
 foreign key (owner_id) references obj_user(obj_id) deferrable initially deferred;

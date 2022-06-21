@@ -1,15 +1,15 @@
 
 package io.zeitwert.ddd.part.model.base;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 import org.springframework.context.event.EventListener;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
@@ -154,6 +154,10 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 				.filter(p -> isAggregateLevel(p) && partListType.getId().equals(p.getPartListTypeId())).toList();
 	}
 
+	private boolean isAggregateLevel(Part<?> part) {
+		return part.getParentPartId() == null || part.getParentPartId() == 0;
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<P> getPartList(Part<?> parent, CodePartListType partListType) {
@@ -161,10 +165,6 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		return this.partCache.getParts(aggregate).stream()
 				.filter(p -> (p.getParentPartId().equals(parent.getId())) && partListType.getId().equals(p.getPartListTypeId()))
 				.toList();
-	}
-
-	private boolean isAggregateLevel(Part<?> part) {
-		return part.getParentPartId() == null || part.getParentPartId() == 0;
 	}
 
 	@Override
