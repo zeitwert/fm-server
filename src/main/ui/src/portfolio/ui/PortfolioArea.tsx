@@ -1,6 +1,8 @@
 
-import { EntityType, Portfolio, PortfolioStore, PortfolioStoreModel } from "@zeitwert/ui-model";
+import { AccountInfo, EntityType, Portfolio, PortfolioStore, PortfolioStoreModel } from "@zeitwert/ui-model";
+import { AppCtx } from "App";
 import ItemsPage from "item/ui/ItemsPage";
+import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import PortfolioCreationForm from "./forms/PortfolioCreationForm";
@@ -8,7 +10,14 @@ import PortfolioPage from "./PortfolioPage";
 
 const portfolioStore = PortfolioStoreModel.create({});
 
+@inject("appStore", "session", "showAlert", "showToast")
+@observer
 export default class PortfolioArea extends React.Component {
+
+	get ctx() {
+		return this.props as any as AppCtx;
+	}
+
 	render() {
 		return (
 			<Routes>
@@ -22,7 +31,7 @@ export default class PortfolioArea extends React.Component {
 							listTemplate="portfolio.portfolios.all"
 							canCreate
 							createEditor={() => <PortfolioCreationForm store={portfolioStore} />}
-							onAfterCreate={(store: PortfolioStore) => { initPortfolio(store.item!) }}
+							onAfterCreate={(store: PortfolioStore) => { initPortfolio(store.item!, this.ctx.session.sessionInfo?.account) }}
 						/>
 					}
 				/>
@@ -30,9 +39,9 @@ export default class PortfolioArea extends React.Component {
 			</Routes>
 		);
 	}
+
 }
 
-const initPortfolio = (portfolio: Portfolio) => {
-	//portfolio.setField("country", { id: "ch", name: "Switzerland" });
-	//portfolio.setField("currency", { id: "chf", name: "CHF" });
+const initPortfolio = (portfolio: Portfolio, account: AccountInfo | undefined) => {
+	portfolio.setField("account", account?.id);
 }

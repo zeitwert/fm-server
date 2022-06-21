@@ -1,20 +1,25 @@
 
 package io.zeitwert.fm.portfolio.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
+import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
@@ -26,16 +31,6 @@ import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
-import javax.annotation.PostConstruct;
-
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
-
 @Component("objPortfolioRepository")
 @DependsOn({ "objRepository", "objAccountRepository", "objBuildingRepository" })
 public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio, ObjPortfolioVRecord>
@@ -44,25 +39,22 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	private static final String ITEM_TYPE = "obj_portfolio";
 
 	private final ObjVRepository objVRepository;
-
 	private final ObjAccountRepository accountRepository;
-
 	private final ObjBuildingRepository buildingRepository;
-
 	private final CodePartListType includeSetType;
-
 	private final CodePartListType excludeSetType;
-
 	private final CodePartListType buildingSetType;
 
-	@Autowired
 	//@formatter:off
 	protected ObjPortfolioRepositoryImpl(
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final ObjNoteRepository noteRepository
+		final ObjNoteRepository noteRepository,
+		final ObjVRepository objVRepository,
+		final ObjAccountRepository accountRepository,
+		final ObjBuildingRepository buildingRepository
 	) {
 		super(
 			ObjPortfolioRepository.class,
@@ -75,9 +67,9 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 			itemRepository,
 			noteRepository
 		);
-		this.objVRepository = (ObjVRepository) this.getAppContext().getRepository(Obj.class);
-		this.accountRepository = (ObjAccountRepository) this.getAppContext().getRepository(ObjAccount.class);
-		this.buildingRepository = (ObjBuildingRepository) this.getAppContext().getRepository(ObjBuilding.class);
+		this.objVRepository = objVRepository;
+		this.accountRepository = accountRepository;
+		this.buildingRepository = buildingRepository;
 		this.includeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.INCLUDE_LIST);
 		this.excludeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.EXCLUDE_LIST);
 		this.buildingSetType = this.getAppContext().getPartListType(ObjPortfolioFields.BUILDING_LIST);

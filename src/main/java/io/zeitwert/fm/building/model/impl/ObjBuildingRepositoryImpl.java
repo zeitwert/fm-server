@@ -1,15 +1,17 @@
 
 package io.zeitwert.fm.building.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
-
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.collaboration.model.ObjNote;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
@@ -24,7 +26,6 @@ import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.base.ObjBuildingFields;
-import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
@@ -34,8 +35,6 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
-
-import javax.annotation.PostConstruct;
 
 @Component("objBuildingRepository")
 public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
@@ -50,7 +49,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	private final CodePartListType conditionDescriptionSetType;
 	private final CodePartListType measureDescriptionSetType;
 
-	@Autowired
 	//@formatter:off
 	protected ObjBuildingRepositoryImpl(
 		final AppContext appContext,
@@ -150,7 +148,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public void doAfterLoad(ObjBuilding building) {
 		super.doAfterLoad(building);
-		if (building.getMeta().getSessionInfo().getTenant().getName().equals("Demo")) {
+		if (building.getMeta().getSessionInfo().getTenant().getExtlKey().equals("demo")) {
 			if (building.getNoteList().size() == 0) {
 				for (int i = 0; i < 8.3 * Math.random(); i++) {
 					ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));

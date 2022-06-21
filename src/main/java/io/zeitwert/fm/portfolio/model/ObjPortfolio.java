@@ -1,29 +1,34 @@
 package io.zeitwert.fm.portfolio.model;
 
+import java.util.Set;
+
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.obj.model.FMObj;
 
-import java.util.Set;
-
 public interface ObjPortfolio extends FMObj {
 
-	String getName();
-
-	void setName(String name);
-
-	String getPortfolioNr();
-
-	void setPortfolioNr(String portfolioNr);
-
-	String getDescription();
-
-	void setDescription(String description);
+	@Override
+	ObjPortfolioRepository getRepository();
 
 	Integer getAccountId();
 
 	void setAccountId(Integer id);
 
 	ObjAccount getAccount();
+
+	String getName();
+
+	void setName(String name);
+
+	String getDescription();
+
+	void setDescription(String description);
+
+	String getPortfolioNr();
+
+	void setPortfolioNr(String portfolioNr);
+
+	Set<Integer> getBuildingSet();
 
 	Set<Integer> getIncludeSet();
 
@@ -40,7 +45,5 @@ public interface ObjPortfolio extends FMObj {
 	void addExclude(Integer exclude);
 
 	void removeExclude(Integer exclude);
-
-	Set<Integer> getBuildingSet();
 
 }

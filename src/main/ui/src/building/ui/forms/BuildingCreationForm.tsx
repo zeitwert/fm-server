@@ -87,6 +87,7 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 										<FieldRow>
 											<Select
 												label="Kunde"
+												required={true}
 												value={building.account?.id}
 												values={this.accounts}
 												onChange={(e) => this.props.store.item!.setAccount(e.target.value?.toString())}
@@ -102,10 +103,10 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} />
+											<Input label="Name" type="text" accessor={this.formState.field("name")} />
 										</FieldRow>
 										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} />
+											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

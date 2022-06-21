@@ -1,5 +1,9 @@
 package io.zeitwert.ddd.part.model.base;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
+import org.jooq.UpdatableRecord;
+
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
@@ -10,8 +14,6 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-
-import org.jooq.UpdatableRecord;
 
 public abstract class PartBase<A extends Aggregate> extends EntityWithPropertiesBase
 		implements Part<A>, PartMeta<A>, PartSPI<A> {
@@ -27,7 +29,11 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	protected final SimpleProperty<Integer> seqNr;
 
 	private boolean isDeleted = false;
+	private int isCalcDisabled = 0;
 	private boolean isInCalc = false;
+
+	private boolean didCalcAll = false;
+	private boolean didCalcVolatile = false;
 
 	protected Integer doInitSeqNr = 0;
 	protected Integer doAfterCreateSeqNr = 0;
@@ -108,8 +114,11 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	public void setSeqNr(Integer seqNr) {
 		try {
-			this.seqNr.setValue(seqNr); // TODO suppress calcAll
+			this.disableCalc(); // suppress calc
+			this.seqNr.setValue(seqNr);
 		} catch (IllegalArgumentException e) {
+		} finally {
+			this.enableCalc();
 		}
 	}
 
@@ -193,6 +202,18 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		this.calcAll();
 	}
 
+	protected boolean isCalcEnabled() {
+		return this.isCalcDisabled == 0;
+	}
+
+	protected void disableCalc() {
+		this.isCalcDisabled += 1;
+	}
+
+	protected void enableCalc() {
+		this.isCalcDisabled -= 1;
+	}
+
 	protected Boolean isInCalc() {
 		return this.isInCalc;
 	}
@@ -207,36 +228,42 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	@Override
 	public void calcAll() {
-		if (this.isInCalc()) {
+		if (!this.isCalcEnabled() || this.isInCalc()) {
 			return;
 		}
 		try {
 			this.beginCalc();
+			this.didCalcAll = true;
 			this.doCalcAll();
 			this.getAggregate().calcAll();
+			assertThis(this.didCalcAll, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {
 			this.endCalc();
 		}
 	}
 
 	protected void doCalcAll() {
+		this.didCalcAll = true;
 	}
 
 	@Override
 	public void calcVolatile() {
-		if (this.isInCalc()) {
+		if (!this.isCalcEnabled() || this.isInCalc()) {
 			return;
 		}
 		try {
 			this.beginCalc();
+			this.didCalcVolatile = false;
 			this.doCalcVolatile();
 			this.getAggregate().calcVolatile();
+			assertThis(this.didCalcVolatile, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {
 			this.endCalc();
 		}
 	}
 
 	protected void doCalcVolatile() {
+		this.didCalcVolatile = true;
 	}
 
 }

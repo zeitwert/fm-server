@@ -8,13 +8,6 @@ import java.util.stream.Collectors;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.obj.model.ObjVRepository;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
@@ -26,6 +19,13 @@ import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 
 public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio {
 
@@ -70,6 +70,12 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		this.includeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getIncludeSetType()));
 		this.excludeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getExcludeSetType()));
 		this.buildingSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getBuildingSetType()));
+	}
+
+	@Override
+	public void doBeforeStore() {
+		System.out.println("portf.doBeforeStore");
+		super.doBeforeStore();
 	}
 
 	@Override

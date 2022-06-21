@@ -1,6 +1,13 @@
 
 package io.zeitwert.ddd.aggregate.model.base;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jooq.Record;
+
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
@@ -11,20 +18,13 @@ import io.zeitwert.ddd.validation.model.AggregatePartValidation;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevel;
 import io.zeitwert.ddd.validation.model.impl.AggregatePartValidationImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.Record;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 /**
  * An Aggregate based on jOOQ Record
  */
 public abstract class AggregateBase extends EntityWithPropertiesBase implements Aggregate, AggregateMeta, AggregateSPI {
 
-	private Boolean isStale = false;
-	private boolean isCalcDisabled = false;
+	private boolean isStale = false;
+	private int isCalcDisabled = 0;
 	private boolean isInCalc = false;
 	private List<AggregatePartValidation> validationList = new ArrayList<>();
 
@@ -134,15 +134,19 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 				.validationLevel(validationLevel).validation(validation).build());
 	}
 
+	protected boolean isCalcEnabled() {
+		return this.isCalcDisabled == 0;
+	}
+
 	protected void disableCalc() {
-		this.isCalcDisabled = true;
+		this.isCalcDisabled += 1;
 	}
 
 	protected void enableCalc() {
-		this.isCalcDisabled = false;
+		this.isCalcDisabled -= 1;
 	}
 
-	protected Boolean isInCalc() {
+	protected boolean isInCalc() {
 		return this.isInCalc;
 	}
 
@@ -157,7 +161,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	@Override
 	public void calcAll() {
-		if (this.isCalcDisabled || this.isInCalc()) {
+		if (!this.isCalcEnabled() || this.isInCalc()) {
 			return;
 		}
 		try {
@@ -176,7 +180,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	@Override
 	public void calcVolatile() {
-		if (this.isCalcDisabled || this.isInCalc()) {
+		if (!this.isCalcEnabled() || this.isInCalc()) {
 			return;
 		}
 		try {

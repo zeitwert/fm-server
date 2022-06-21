@@ -31,13 +31,15 @@ const MstPortfolioModel = ObjModel.named("Portfolio")
 			self.includes.push(obj);
 		}
 		function removeIncludeObj(id: string) {
-
+			const index = self.includes.findIndex((o) => o.id === id);
+			self.includes.splice(index, 1);
 		}
 		function addExcludeObj(obj: Enumerated) {
 			self.excludes.push(obj);
 		}
 		function removeExcludeObj(id: string) {
-
+			const index = self.excludes.findIndex((o) => o.id === id);
+			self.excludes.splice(index, 1);
 		}
 		async function setField(field: string, value: any) {
 			switch (field) {

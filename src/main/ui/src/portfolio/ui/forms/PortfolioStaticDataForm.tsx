@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
-import { BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
@@ -27,10 +27,22 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	formState: typeof PortfolioStaticDataFormModel.FormStateType;
 
 	@observable
+	allAccounts: Enumerated[] = [];
+
+	@observable
 	allPortfolios: Enumerated[] = [];
 
 	@observable
 	allBuildings: Enumerated[] = [];
+
+	@computed
+	get availableAccounts(): Enumerated[] {
+		const portfolio = this.props.store.item! as Portfolio;
+		return this.allAccounts
+			.filter(acct => !portfolio.includes.find(incl => incl.id === acct.id))
+			.filter(acct => !portfolio.excludes.find(excl => excl.id === acct.id))
+			.sort((a, b) => a.name < b.name ? -1 : 1);
+	}
 
 	@computed
 	get availablePortfolios(): Enumerated[] {
@@ -81,6 +93,14 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	}
 
 	async componentDidMount() {
+		const allAccounts = await ACCOUNT_API.getAggregates();
+		this.allAccounts = Object.values(allAccounts.account).map(acct => {
+			return {
+				id: acct.id,
+				name: acct.caption,
+				itemType: acct.meta.itemType
+			}
+		});
 		const allPortfolios = await PORTFOLIO_API.getAggregates();
 		this.allPortfolios = Object.values(allPortfolios.portfolio).map(pf => {
 			return {
@@ -104,6 +124,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	}
 
 	render() {
+		const isInTrx = this.props.store.isInTrx;
 		const portfolio = this.props.store.item! as Portfolio;
 		return (
 			<div>
@@ -153,11 +174,14 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 									<thead>
 										<tr className="slds-line-height_reset">
-											<th className="" scope="col">
+											<th className="" scope="col" style={{ width: "75%" }}>
 												<div className="slds-truncate" title="Element">Element</div>
 											</th>
-											<th className="" scope="col">
+											<th className="" scope="col" style={{ width: "20%" }}>
 												<div className="slds-truncate" title="Typ">Typ</div>
+											</th>
+											<th className="" scope="col" style={{ width: "5%" }}>
+												<div className="slds-truncate" title="Aktion">Aktion</div>
 											</th>
 										</tr>
 									</thead>
@@ -173,6 +197,16 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 													<td data-label="Typ">
 														<div className="slds-truncate">{item.itemType?.name}</div>
 													</td>
+													<td data-label="Aktion">
+														{
+															isInTrx &&
+															<button className="slds-button slds-button_icon slds-button_icon-error" title="Remove" onClick={() => { portfolio.removeIncludeObj(item.id) }}>
+																<svg className="slds-button__icon" aria-hidden="true">
+																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+																</svg>
+															</button>
+														}
+													</td>
 												</tr>
 											))
 										}
@@ -187,11 +221,14 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 									<thead>
 										<tr className="slds-line-height_reset">
-											<th className="" scope="col">
+											<th className="" scope="col" style={{ width: "75%" }}>
 												<div className="slds-truncate" title="Element">Element</div>
 											</th>
-											<th className="" scope="col">
+											<th className="" scope="col" style={{ width: "20%" }}>
 												<div className="slds-truncate" title="Typ">Typ</div>
+											</th>
+											<th className="" scope="col" style={{ width: "5%" }}>
+												<div className="slds-truncate" title="Aktion">Aktion</div>
 											</th>
 										</tr>
 									</thead>
@@ -207,6 +244,16 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 													<td data-label="Typ">
 														<div className="slds-truncate">{item.itemType?.name}</div>
 													</td>
+													<td data-label="Aktion">
+														{
+															isInTrx &&
+															<button className="slds-button slds-button_icon slds-button_icon-error" title="Remove" onClick={() => { portfolio.removeExcludeObj(item.id) }}>
+																<svg className="slds-button__icon" aria-hidden="true">
+																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+																</svg>
+															</button>
+														}
+													</td>
 												</tr>
 											))
 										}
@@ -218,7 +265,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 				</div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
 					<div className="slds-col slds-size_1-of-2">
-						<Card hasNoHeader heading="" bodyClassName="slds-m-around_medium">
+						<Card heading="Hinzufügen" bodyClassName="slds-m-around_medium">
 							{
 								this.props.store.isInTrx &&
 								<div className="slds-card__body xslds-card__body_inner">
@@ -239,13 +286,21 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 												onChange={(e) => { this.addIncludeObj(this.allPortfolios, e.target.value?.toString()) }}
 											/>
 										</FieldRow>
+										<FieldRow>
+											<Select
+												label="Kunde:"
+												value={undefined}
+												values={this.availableAccounts}
+												onChange={(e) => { this.addIncludeObj(this.allAccounts, e.target.value?.toString()) }}
+											/>
+										</FieldRow>
 									</FieldGroup>
 								</div>
 							}
 						</Card>
 					</div>
 					<div className="slds-col slds-size_1-of-2">
-						<Card hasNoHeader heading="" bodyClassName="slds-m-around_medium">
+						<Card heading="Hinzufügen" bodyClassName="slds-m-around_medium">
 							{
 								this.props.store.isInTrx &&
 								<div className="slds-card__body xslds-card__body_inner">
@@ -264,6 +319,14 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 												value={undefined}
 												values={this.availablePortfolios}
 												onChange={(e) => { this.addExcludeObj(this.allPortfolios, e.target.value?.toString()) }}
+											/>
+										</FieldRow>
+										<FieldRow>
+											<Select
+												label="Kunde:"
+												value={undefined}
+												values={this.availableAccounts}
+												onChange={(e) => { this.addExcludeObj(this.allAccounts, e.target.value?.toString()) }}
 											/>
 										</FieldRow>
 									</FieldGroup>
