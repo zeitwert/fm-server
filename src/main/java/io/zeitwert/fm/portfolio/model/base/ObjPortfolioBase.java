@@ -73,12 +73,6 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
-	public void doBeforeStore() {
-		System.out.println("portf.doBeforeStore");
-		super.doBeforeStore();
-	}
-
-	@Override
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
