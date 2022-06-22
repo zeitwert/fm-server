@@ -1,9 +1,5 @@
 package io.zeitwert.server.config;
 
-import io.zeitwert.server.session.SessionCookieFilter;
-import io.zeitwert.server.session.jwt.AuthEntryPointJwt;
-import io.zeitwert.server.session.jwt.AuthTokenFilter;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import io.zeitwert.server.session.SessionCookieFilter;
+import io.zeitwert.server.session.jwt.AuthEntryPointJwt;
+import io.zeitwert.server.session.jwt.AuthTokenFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -76,6 +76,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/session/login/**").permitAll()
 				.antMatchers("/enum/**").permitAll()
 				.antMatchers("/api/building/projection/**").permitAll() // TODO revoke
+				.antMatchers("/rest/dms/documents/**/content").permitAll() // TODO revoke
+				.antMatchers("/location/building/buildings/**").permitAll() // TODO revoke
+				.antMatchers("/evaluation/building/buildings/**").permitAll() // TODO revoke
 				.antMatchers("/api/test/all").permitAll()
 				.antMatchers("/api/test/**").authenticated()
 			.anyRequest().authenticated();
