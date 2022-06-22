@@ -4,6 +4,7 @@
 package io.zeitwert.ddd.obj.model.db.tables;
 
 
+import io.zeitwert.ddd.obj.model.db.Indexes;
 import io.zeitwert.ddd.obj.model.db.Keys;
 import io.zeitwert.ddd.obj.model.db.Public;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjPartTransitionRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -62,7 +64,7 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
     /**
      * The column <code>public.obj_part_transition.parent_part_id</code>.
      */
-    public final TableField<ObjPartTransitionRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjPartTransitionRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.obj_part_transition.part_list_type_id</code>.
@@ -125,6 +127,11 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_PART_TRANSITION$PART);
     }
 
     @Override

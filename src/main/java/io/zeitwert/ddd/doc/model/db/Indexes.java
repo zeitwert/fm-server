@@ -5,6 +5,7 @@ package io.zeitwert.ddd.doc.model.db;
 
 
 import io.zeitwert.ddd.doc.model.db.tables.Doc;
+import io.zeitwert.ddd.doc.model.db.tables.DocPartTransition;
 
 import org.jooq.Index;
 import org.jooq.OrderField;
@@ -23,4 +24,5 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index DOC$IS_IN_WORK = Internal.createIndex(DSL.name("doc$is_in_work"), Doc.DOC, new OrderField[] { Doc.DOC.IS_IN_WORK }, false);
+    public static final Index DOC_PART_TRANSITION$PART = Internal.createIndex(DSL.name("doc_part_transition$part"), DocPartTransition.DOC_PART_TRANSITION, new OrderField[] { DocPartTransition.DOC_PART_TRANSITION.DOC_ID, DocPartTransition.DOC_PART_TRANSITION.PARENT_PART_ID, DocPartTransition.DOC_PART_TRANSITION.PART_LIST_TYPE_ID, DocPartTransition.DOC_PART_TRANSITION.SEQ_NR }, false);
 }

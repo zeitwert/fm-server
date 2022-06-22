@@ -4,6 +4,7 @@
 package io.zeitwert.ddd.oe.model.db.tables;
 
 
+import io.zeitwert.ddd.oe.model.db.Indexes;
 import io.zeitwert.ddd.oe.model.db.Keys;
 import io.zeitwert.ddd.oe.model.db.Public;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row8;
@@ -123,6 +125,11 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_USER$EMAIL);
     }
 
     @Override

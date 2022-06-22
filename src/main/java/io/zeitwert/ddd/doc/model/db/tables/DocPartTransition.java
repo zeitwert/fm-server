@@ -4,6 +4,7 @@
 package io.zeitwert.ddd.doc.model.db.tables;
 
 
+import io.zeitwert.ddd.doc.model.db.Indexes;
 import io.zeitwert.ddd.doc.model.db.Keys;
 import io.zeitwert.ddd.doc.model.db.Public;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocPartTransitionRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -62,7 +64,7 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
     /**
      * The column <code>public.doc_part_transition.parent_part_id</code>.
      */
-    public final TableField<DocPartTransitionRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<DocPartTransitionRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.doc_part_transition.part_list_type_id</code>.
@@ -135,6 +137,11 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.DOC_PART_TRANSITION$PART);
     }
 
     @Override

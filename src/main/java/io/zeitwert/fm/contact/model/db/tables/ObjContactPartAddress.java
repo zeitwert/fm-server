@@ -4,6 +4,7 @@
 package io.zeitwert.fm.contact.model.db.tables;
 
 
+import io.zeitwert.fm.contact.model.db.Indexes;
 import io.zeitwert.fm.contact.model.db.Keys;
 import io.zeitwert.fm.contact.model.db.Public;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row11;
@@ -60,7 +62,7 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
     /**
      * The column <code>public.obj_contact_part_address.parent_part_id</code>.
      */
-    public final TableField<ObjContactPartAddressRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjContactPartAddressRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.obj_contact_part_address.part_list_type_id</code>.
@@ -138,6 +140,11 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_CONTACT_PART_ADDRESS$PART);
     }
 
     @Override
