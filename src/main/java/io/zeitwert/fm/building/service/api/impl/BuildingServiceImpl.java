@@ -1,12 +1,12 @@
 package io.zeitwert.fm.building.service.api.impl;
 
-import io.zeitwert.fm.building.service.api.BuildingService;
-
-import javax.annotation.PreDestroy;
-
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.PreDestroy;
+
+import org.springframework.stereotype.Service;
 
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
@@ -19,14 +19,14 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Size;
 
-import org.springframework.stereotype.Service;
+import io.zeitwert.fm.building.service.api.BuildingService;
 
 @Service("buildingService")
 public class BuildingServiceImpl implements BuildingService {
 
 	private static final String GoogleApiKey = "AIzaSyBQF6Fi_Z0tZxVh5Eqzfx2m7hK3n718jsI";
 
-	private static final Pattern CoordinatePattern = Pattern.compile("(-?[\\d]*\\.[\\d]*),(-?[\\d]*\\.[\\d]*)");
+	private static final Pattern CoordinatePattern = Pattern.compile("(-?[\\d]*\\.[\\d]*),[\\s]*(-?[\\d]*\\.[\\d]*)");
 
 	private final GeoApiContext context;
 
