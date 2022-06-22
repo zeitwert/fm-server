@@ -134,8 +134,8 @@ begin
 		part_list_type_id,
 		seq_nr,
 		--
-		building_part_catalog_id,
-		building_maintenance_strategy_id,
+		part_catalog_id,
+		maintenance_strategy_id,
 		--
 		rating_status_id,
 		rating_date

@@ -22,7 +22,7 @@ const MstBuildingModel = ObjModel.named("Building")
 		name: types.maybe(types.string),
 		description: types.maybe(types.string),
 		buildingNr: types.maybe(types.string),
-		buildingInsuranceNr: types.maybe(types.string),
+		insuranceNr: types.maybe(types.string),
 		plotNr: types.maybe(types.string),
 		nationalBuildingId: types.maybe(types.string),
 		historicPreservation: types.maybe(types.frozen<Enumerated>()),
@@ -56,8 +56,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		thirdPartyValue: types.maybe(types.number),
 		thirdPartyValueYear: types.maybe(types.number),
 		//
-		buildingPartCatalog: types.maybe(types.frozen<Enumerated>()),
-		buildingMaintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
+		partCatalog: types.maybe(types.frozen<Enumerated>()),
+		maintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
 		//
 		ratingStatus: types.maybe(types.frozen<Enumerated>()),
 		ratingDate: types.maybe(faTypes.date),

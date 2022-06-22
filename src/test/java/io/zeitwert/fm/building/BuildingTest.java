@@ -1,17 +1,25 @@
 
 package io.zeitwert.fm.building;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -21,13 +29,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.server.Application;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("test")
@@ -167,7 +169,7 @@ public class BuildingTest {
 
 	private void initBuilding(ObjBuilding building) {
 		building.setBuildingNr("B1");
-		building.setBuildingInsuranceNr("BI1");
+		building.setInsuranceNr("BI1");
 		building.setPlotNr("P1");
 		building.setNationalBuildingId("NB1");
 
@@ -194,14 +196,13 @@ public class BuildingTest {
 		building.setThirdPartyValue(BigDecimal.valueOf(0.0));
 		building.setThirdPartyValueYear(2000);
 
-		building.getCurrentRating()
-				.setBuildingMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy("N"));
-		building.getCurrentRating().setBuildingPartCatalog(CodeBuildingPartCatalogEnum.getBuildingPartCatalog("C6"));
+		building.getCurrentRating().setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"));
+		building.getCurrentRating().setPartCatalog(CodeBuildingPartCatalogEnum.getPartCatalog("C6"));
 	}
 
 	private void checkBuilding(ObjBuilding building) {
 		assertEquals("B1", building.getBuildingNr());
-		assertEquals("BI1", building.getBuildingInsuranceNr());
+		assertEquals("BI1", building.getInsuranceNr());
 		assertEquals("P1", building.getPlotNr());
 		assertEquals("NB1", building.getNationalBuildingId());
 
@@ -228,10 +229,9 @@ public class BuildingTest {
 		assertEquals(BigDecimal.valueOf(0.0), building.getThirdPartyValue());
 		assertEquals(2000, building.getThirdPartyValueYear());
 
-		assertEquals(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy("N"),
-				building.getCurrentRating().getBuildingMaintenanceStrategy());
-		assertEquals(CodeBuildingPartCatalogEnum.getBuildingPartCatalog("C6"),
-				building.getCurrentRating().getBuildingPartCatalog());
+		assertEquals(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"),
+				building.getCurrentRating().getMaintenanceStrategy());
+		assertEquals(CodeBuildingPartCatalogEnum.getPartCatalog("C6"), building.getCurrentRating().getPartCatalog());
 
 		assertEquals(2, building.getCurrentRating().getElementCount(), "element count 2");
 		assertEquals(2, building.getCurrentRating().getElementList().size(), "element count 2");

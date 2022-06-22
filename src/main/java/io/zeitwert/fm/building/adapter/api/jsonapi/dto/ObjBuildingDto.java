@@ -1,6 +1,16 @@
 
 package io.zeitwert.fm.building.adapter.api.jsonapi.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.crnk.core.resource.annotations.JsonApiRelation;
+import io.crnk.core.resource.annotations.JsonApiRelationId;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
@@ -11,21 +21,11 @@ import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoBridge;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
-import io.crnk.core.resource.annotations.JsonApiRelation;
-import io.crnk.core.resource.annotations.JsonApiRelationId;
-import io.crnk.core.resource.annotations.JsonApiResource;
-import io.crnk.core.resource.annotations.SerializeType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data()
 @NoArgsConstructor
@@ -64,7 +64,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private String name;
 	private String description;
 	private String buildingNr;
-	private String buildingInsuranceNr;
+	private String insuranceNr;
 	private String plotNr;
 	private String nationalBuildingId;
 	private EnumeratedDto historicPreservation;
@@ -89,8 +89,8 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private BigDecimal thirdPartyValue;
 	private Integer thirdPartyValueYear;
 
-	private EnumeratedDto buildingPartCatalog;
-	private EnumeratedDto buildingMaintenanceStrategy;
+	private EnumeratedDto partCatalog;
+	private EnumeratedDto maintenanceStrategy;
 	private EnumeratedDto ratingStatus;
 	private LocalDate ratingDate;
 	private ObjUserDto ratingUser;

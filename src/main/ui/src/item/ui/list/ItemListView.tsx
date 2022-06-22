@@ -46,7 +46,12 @@ export default class ItemListView extends React.Component<ItemListProps> {
 					onSelectTemplate={this.props.onSelectTemplate}
 					onShowMap={(showMap: boolean) => { this.showMap = !this.showMap; }}
 				/>
-				{!this.props.isLoading && (
+				{
+					this.props.isLoading &&
+					<Spinner variant="brand" size="large" />
+				}
+				{
+					!this.props.isLoading &&
 					<ItemListContent
 						template={this.props.template}
 						reportData={this.props.reportData}
@@ -55,8 +60,7 @@ export default class ItemListView extends React.Component<ItemListProps> {
 						showMap={this.showMap}
 						onClick={this.props.onClick}
 					/>
-				)}
-				{this.props.isLoading && <Spinner variant="brand" size="large" />}
+				}
 			</>
 		);
 	}

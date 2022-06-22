@@ -1,12 +1,14 @@
 
 package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -22,8 +24,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
 
 public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
 
@@ -48,7 +48,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
 		obj.setBuildingNr(dto.getBuildingNr());
-		obj.setBuildingInsuranceNr(dto.getBuildingInsuranceNr());
+		obj.setInsuranceNr(dto.getInsuranceNr());
 		obj.setPlotNr(dto.getPlotNr());
 		obj.setNationalBuildingId(dto.getNationalBuildingId());
 		obj.setHistoricPreservation(dto.getHistoricPreservation() == null ? null : CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation().getId()));
@@ -78,8 +78,8 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
-			rating.setBuildingPartCatalog(dto.getBuildingPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getBuildingPartCatalog(dto.getBuildingPartCatalog().getId()));
-			rating.setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy().getId()));
+			rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getPartCatalog(dto.getPartCatalog().getId()));
+			rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
 			rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
 			rating.setRatingDate(dto.getRatingDate());
 			rating.setRatingUser(dto.getRatingUser() == null ? null : getUserRepository().get(dto.getRatingUser().getId()));
@@ -114,7 +114,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.name(obj.getName())
 			.description(obj.getDescription())
 			.buildingNr(obj.getBuildingNr())
-			.buildingInsuranceNr(obj.getBuildingInsuranceNr())
+			.insuranceNr(obj.getInsuranceNr())
 			.plotNr(obj.getPlotNr())
 			.nationalBuildingId(obj.getNationalBuildingId())
 			.historicPreservation(EnumeratedDto.fromEnum(obj.getHistoricPreservation()))
@@ -142,8 +142,8 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
 			dtoBuilder
-				.buildingPartCatalog(EnumeratedDto.fromEnum(rating.getBuildingPartCatalog()))
-				.buildingMaintenanceStrategy(EnumeratedDto.fromEnum(rating.getBuildingMaintenanceStrategy()))
+				.partCatalog(EnumeratedDto.fromEnum(rating.getPartCatalog()))
+				.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
 				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
 				.ratingDate(rating.getRatingDate())
 				.ratingUser(userBridge.fromAggregate(rating.getRatingUser(), sessionInfo))
@@ -168,7 +168,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.name(obj.getName())
 			.description(obj.getDescription())
 			.buildingNr(obj.getBuildingNr())
-			.buildingInsuranceNr(obj.getBuildingInsuranceNr())
+			.insuranceNr(obj.getInsuranceNr())
 			.plotNr(obj.getPlotNr())
 			.nationalBuildingId(obj.getNationalBuildingId())
 			.historicPreservation(EnumeratedDto.fromEnum(CodeHistoricPreservationEnum.getHistoricPreservation(obj.getHistoricPreservationId())))

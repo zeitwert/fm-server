@@ -1,5 +1,13 @@
 package io.zeitwert.fm.building.model.base;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+
+import org.jooq.UpdatableRecord;
+
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
@@ -23,18 +31,11 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.jooq.UpdatableRecord;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
 
-	protected final EnumProperty<CodeBuildingPartCatalog> buildingPartCatalog;
-	protected final EnumProperty<CodeBuildingMaintenanceStrategy> buildingMaintenanceStrategy;
+	protected final EnumProperty<CodeBuildingPartCatalog> partCatalog;
+	protected final EnumProperty<CodeBuildingMaintenanceStrategy> maintenanceStrategy;
 
 	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus;
 	protected final SimpleProperty<LocalDate> ratingDate;
@@ -48,10 +49,10 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 			UpdatableRecord<?> dbRecord) {
 		super(repository, obj, dbRecord);
 
-		this.buildingPartCatalog = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.BUILDING_PART_CATALOG_ID,
+		this.partCatalog = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.PART_CATALOG_ID,
 				CodeBuildingPartCatalogEnum.class);
-		this.buildingMaintenanceStrategy = this.addEnumProperty(dbRecord,
-				ObjBuildingPartRatingFields.BUILDING_MAINTENANCE_STRATEGY_ID, CodeBuildingMaintenanceStrategyEnum.class);
+		this.maintenanceStrategy = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.MAINTENANCE_STRATEGY_ID,
+				CodeBuildingMaintenanceStrategyEnum.class);
 
 		this.ratingStatus = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.RATING_STATUS_ID,
 				CodeBuildingRatingStatusEnum.class);
@@ -91,11 +92,11 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public void setBuildingPartCatalog(CodeBuildingPartCatalog catalog) {
-		if ((catalog == null) != (this.getBuildingPartCatalog() == null) || catalog != this.getBuildingPartCatalog()) {
+	public void setPartCatalog(CodeBuildingPartCatalog partCatalog) {
+		if (!Objects.equals(partCatalog, this.getPartCatalog())) {
 			this.elementList.clearPartList();
+			this.partCatalog.setValue(partCatalog);
 		}
-		this.buildingPartCatalog.setValue(catalog);
 	}
 
 	@Override

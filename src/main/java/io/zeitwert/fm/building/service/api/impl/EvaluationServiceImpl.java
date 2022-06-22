@@ -1,5 +1,12 @@
 package io.zeitwert.fm.building.service.api.impl;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
@@ -15,13 +22,6 @@ import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.RestorationElement;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service("evaluationService")
 public class EvaluationServiceImpl implements EvaluationService {
@@ -46,8 +46,16 @@ public class EvaluationServiceImpl implements EvaluationService {
 		String value = null;
 
 		List<EvaluationParameter> facts = new ArrayList<>();
-		if (building.getCurrentRating().getBuildingPartCatalog() != null) {
-			value = building.getCurrentRating().getBuildingPartCatalog().getName();
+		if (building.getCurrentRating().getRatingUser() != null) {
+			value = building.getCurrentRating().getRatingUser().getName();
+			this.addParameter(facts, "Begehung durch", value);
+		}
+		if (building.getCurrentRating().getRatingDate() != null) {
+			value = fmt.formatDate(building.getCurrentRating().getRatingDate());
+			this.addParameter(facts, "Begehung am", value);
+		}
+		if (building.getCurrentRating().getPartCatalog() != null) {
+			value = building.getCurrentRating().getPartCatalog().getName();
 			this.addParameter(facts, "Gebäudekategorie", value);
 		}
 		if (building.getBuildingYear() != null) {

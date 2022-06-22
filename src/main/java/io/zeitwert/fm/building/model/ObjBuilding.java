@@ -3,9 +3,9 @@ package io.zeitwert.fm.building.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
@@ -35,9 +35,9 @@ public interface ObjBuilding extends FMObj {
 
 	void setBuildingNr(String buildingNr);
 
-	String getBuildingInsuranceNr();
+	String getInsuranceNr();
 
-	void setBuildingInsuranceNr(String buildingInsuranceNr);
+	void setInsuranceNr(String insuranceNr);
 
 	String getPlotNr();
 

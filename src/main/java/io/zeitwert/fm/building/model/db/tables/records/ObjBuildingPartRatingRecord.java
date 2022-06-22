@@ -94,30 +94,30 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
     }
 
     /**
-     * Setter for <code>public.obj_building_part_rating.building_part_catalog_id</code>.
+     * Setter for <code>public.obj_building_part_rating.part_catalog_id</code>.
      */
-    public void setBuildingPartCatalogId(String value) {
+    public void setPartCatalogId(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>public.obj_building_part_rating.building_part_catalog_id</code>.
+     * Getter for <code>public.obj_building_part_rating.part_catalog_id</code>.
      */
-    public String getBuildingPartCatalogId() {
+    public String getPartCatalogId() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>public.obj_building_part_rating.building_maintenance_strategy_id</code>.
+     * Setter for <code>public.obj_building_part_rating.maintenance_strategy_id</code>.
      */
-    public void setBuildingMaintenanceStrategyId(String value) {
+    public void setMaintenanceStrategyId(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.obj_building_part_rating.building_maintenance_strategy_id</code>.
+     * Getter for <code>public.obj_building_part_rating.maintenance_strategy_id</code>.
      */
-    public String getBuildingMaintenanceStrategyId() {
+    public String getMaintenanceStrategyId() {
         return (String) get(6);
     }
 
@@ -213,12 +213,12 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
 
     @Override
     public Field<String> field6() {
-        return ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.BUILDING_PART_CATALOG_ID;
+        return ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.PART_CATALOG_ID;
     }
 
     @Override
     public Field<String> field7() {
-        return ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.BUILDING_MAINTENANCE_STRATEGY_ID;
+        return ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.MAINTENANCE_STRATEGY_ID;
     }
 
     @Override
@@ -263,12 +263,12 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
 
     @Override
     public String component6() {
-        return getBuildingPartCatalogId();
+        return getPartCatalogId();
     }
 
     @Override
     public String component7() {
-        return getBuildingMaintenanceStrategyId();
+        return getMaintenanceStrategyId();
     }
 
     @Override
@@ -313,12 +313,12 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
 
     @Override
     public String value6() {
-        return getBuildingPartCatalogId();
+        return getPartCatalogId();
     }
 
     @Override
     public String value7() {
-        return getBuildingMaintenanceStrategyId();
+        return getMaintenanceStrategyId();
     }
 
     @Override
@@ -368,13 +368,13 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
 
     @Override
     public ObjBuildingPartRatingRecord value6(String value) {
-        setBuildingPartCatalogId(value);
+        setPartCatalogId(value);
         return this;
     }
 
     @Override
     public ObjBuildingPartRatingRecord value7(String value) {
-        setBuildingMaintenanceStrategyId(value);
+        setMaintenanceStrategyId(value);
         return this;
     }
 
@@ -425,7 +425,7 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
     /**
      * Create a detached, initialised ObjBuildingPartRatingRecord
      */
-    public ObjBuildingPartRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String buildingPartCatalogId, String buildingMaintenanceStrategyId, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId) {
+    public ObjBuildingPartRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String partCatalogId, String maintenanceStrategyId, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId) {
         super(ObjBuildingPartRating.OBJ_BUILDING_PART_RATING);
 
         setId(id);
@@ -433,8 +433,8 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
         setParentPartId(parentPartId);
         setPartListTypeId(partListTypeId);
         setSeqNr(seqNr);
-        setBuildingPartCatalogId(buildingPartCatalogId);
-        setBuildingMaintenanceStrategyId(buildingMaintenanceStrategyId);
+        setPartCatalogId(partCatalogId);
+        setMaintenanceStrategyId(maintenanceStrategyId);
         setRatingStatusId(ratingStatusId);
         setRatingDate(ratingDate);
         setRatingUserId(ratingUserId);

@@ -1,16 +1,12 @@
 
 package io.zeitwert.fm.building.model.base;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.math.BigDecimal;
 
 import org.jooq.UpdatableRecord;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
-import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
-import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
@@ -21,6 +17,10 @@ import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -50,7 +50,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 	protected final SimpleProperty<String> buildingNr;
-	protected final SimpleProperty<String> buildingInsuranceNr;
+	protected final SimpleProperty<String> insuranceNr;
 	protected final SimpleProperty<String> plotNr;
 	protected final SimpleProperty<String> nationalBuildingId;
 	protected final EnumProperty<CodeHistoricPreservation> historicPreservation;
@@ -99,7 +99,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		this.name = this.addSimpleProperty(dbRecord, ObjBuildingFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjBuildingFields.DESCRIPTION);
 		this.buildingNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.BUILDING_NR);
-		this.buildingInsuranceNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.BUILDING_INSURANCE_NR);
+		this.insuranceNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.INSURANCE_NR);
 		this.plotNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.PLOT_NR);
 		this.nationalBuildingId = this.addSimpleProperty(dbRecord, ObjBuildingFields.NATIONAL_BUILDING_ID);
 		this.historicPreservation = this.addEnumProperty(dbRecord, ObjBuildingFields.HISTORIC_PRESERVERATION_ID,

@@ -1,11 +1,11 @@
 package io.zeitwert.fm.building.model.base;
 
-import io.zeitwert.fm.obj.model.base.FMObjFields;
-
 import java.math.BigDecimal;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+
+import io.zeitwert.fm.obj.model.base.FMObjFields;
 
 public interface ObjBuildingFields extends FMObjFields {
 
@@ -16,7 +16,7 @@ public interface ObjBuildingFields extends FMObjFields {
 	static final Field<String> NAME = DSL.field("name", String.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
 	static final Field<String> BUILDING_NR = DSL.field("building_nr", String.class);
-	static final Field<String> BUILDING_INSURANCE_NR = DSL.field("building_insurance_nr", String.class);
+	static final Field<String> INSURANCE_NR = DSL.field("insurance_nr", String.class);
 	static final Field<String> PLOT_NR = DSL.field("plot_nr", String.class);
 	static final Field<String> NATIONAL_BUILDING_ID = DSL.field("national_building_id", String.class);
 	static final Field<String> HISTORIC_PRESERVERATION_ID = DSL.field("historic_preservation_id", String.class);

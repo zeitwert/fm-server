@@ -4,31 +4,39 @@ package io.zeitwert.ddd.util;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class Formatter {
 
 	public static final Formatter INSTANCE = new Formatter();
 
-	private final DecimalFormat formatter;
+	private final DecimalFormat decimalFormatter;
+	private final DateTimeFormatter dateFormatter;
 
 	public Formatter() {
-		this.formatter = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
-		DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+		this.decimalFormatter = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
+		DecimalFormatSymbols symbols = decimalFormatter.getDecimalFormatSymbols();
 		symbols.setGroupingSeparator('\'');
-		formatter.setDecimalFormatSymbols(symbols);
+		decimalFormatter.setDecimalFormatSymbols(symbols);
+		this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	}
 
 	public String formatNumber(Object value) {
-		return this.formatter.format(value);
+		return this.decimalFormatter.format(value);
 	}
 
 	public String formatMonetaryValue(Object value, String currency) {
-		return formatter.format(value) + " " + currency;
+		return decimalFormatter.format(value) + " " + currency;
 	}
 
 	public String formatValueWithUnit(Object value, String unit) {
-		return formatter.format(value) + " " + unit;
+		return decimalFormatter.format(value) + " " + unit;
+	}
+
+	public String formatDate(LocalDate value) {
+		return this.dateFormatter.format(value);
 	}
 
 }

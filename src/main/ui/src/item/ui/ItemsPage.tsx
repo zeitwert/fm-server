@@ -100,8 +100,11 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	private openPanel = (item: any) => {
-		this.showPanel = true; // TODO
-		this.panelItem = item; // TODO
+		const type = EntityTypes[this.props.entityType];
+		if (type.hasPreview) {
+			this.showPanel = true; // TODO
+			this.panelItem = item; // TODO
+		}
 	}
 
 	private closePanel = () => {

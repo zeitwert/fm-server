@@ -21,12 +21,13 @@ export type IconCategory = "standard" | "action" | "custom" | "doctype" | "utili
 
 export interface EntityTypeInfo {
 	type: EntityType;
-	gender: EntityGender;
 	label: string;
 	labelSingular: string;
+	gender: EntityGender;
 	iconCategory: IconCategory;
 	iconName: string;
 	isFavoritable: boolean;
+	hasPreview: boolean;
 }
 
 export const EntityTypes: { [type: string]: EntityTypeInfo } = {
@@ -37,7 +38,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.PORTFOLIO,
 		iconCategory: "standard",
 		iconName: "store_group",
-		isFavoritable: true
+		isFavoritable: true,
+		hasPreview: false
 	},
 	[EntityType.ACCOUNT]: {
 		label: "Kunden",
@@ -46,7 +48,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.ACCOUNT,
 		iconCategory: "standard",
 		iconName: "account",
-		isFavoritable: true
+		isFavoritable: true,
+		hasPreview: false
 	},
 	[EntityType.CONTACT]: {
 		label: "Kontakte",
@@ -55,7 +58,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.CONTACT,
 		iconCategory: "standard",
 		iconName: "contact",
-		isFavoritable: true
+		isFavoritable: true,
+		hasPreview: false
 	},
 	[EntityType.DOCUMENT]: {
 		label: "Dokumente",
@@ -64,7 +68,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.DOCUMENT,
 		iconCategory: "standard",
 		iconName: "document",
-		isFavoritable: false
+		isFavoritable: false,
+		hasPreview: false
 	},
 	[EntityType.BUILDING]: {
 		label: "Immobilien",
@@ -73,16 +78,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.BUILDING,
 		iconCategory: "custom",
 		iconName: "custom24",
-		isFavoritable: true
-	},
-	[EntityType.LIFE_EVENT]: {
-		label: "Life Events",
-		labelSingular: "Life Event",
-		gender: EntityGender.MALE,
-		type: EntityType.LIFE_EVENT,
-		iconCategory: "standard",
-		iconName: "key_dates",
-		isFavoritable: true
+		isFavoritable: true,
+		hasPreview: true
 	},
 	[EntityType.TASK]: {
 		label: "Aufgaben",
@@ -91,7 +88,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.TASK,
 		iconCategory: "standard",
 		iconName: "task",
-		isFavoritable: false
+		isFavoritable: false,
+		hasPreview: false
 	},
 	[EntityType.NOTE]: {
 		label: "Notizen",
@@ -100,7 +98,8 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.NOTE,
 		iconCategory: "standard",
 		iconName: "note",
-		isFavoritable: false
+		isFavoritable: false,
+		hasPreview: false
 	},
 	[EntityType.LEAD]: {
 		label: "Leads",
@@ -109,6 +108,7 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.LEAD,
 		iconCategory: "standard",
 		iconName: "lead",
-		isFavoritable: true
+		isFavoritable: true,
+		hasPreview: false
 	}
 };

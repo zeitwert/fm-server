@@ -18,8 +18,8 @@ const BuildingRatingFormModel = new Form(
 		//
 		currency: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCurrency" }),
 		//
-		buildingPartCatalog: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
-		buildingMaintenanceStrategy: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
+		partCatalog: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
+		maintenanceStrategy: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
 		//
 		ratingStatus: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingRatingStatus" }),
 		ratingDate: new DateField(),
@@ -64,7 +64,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 				},
 				isDisabled: (accessor) => {
 					if (["buildingPartCatalog"].indexOf(accessor.fieldref) >= 0) {
-						return !!building.buildingPartCatalog;
+						return !!building.partCatalog;
 					} else if (["elements[].condition", "elements[].conditionYear"].indexOf(accessor.fieldref) >= 0) {
 						return !(accessor.parent as any)?.fieldAccessors.get("valuePart").value;
 					}
@@ -87,11 +87,11 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Select label="Gebäudekategorie" accessor={this.formState.field("buildingPartCatalog")} size={2} onChange={this.onSetPartCatalog} />
+											<Select label="Gebäudekategorie" accessor={this.formState.field("partCatalog")} size={2} onChange={this.onSetPartCatalog} />
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="&nbsp;">
 													{
-														building.buildingPartCatalog &&
+														building.partCatalog &&
 														<Button
 															variant="icon"
 															iconCategory="utility"
@@ -103,7 +103,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 													}
 												</FieldGroup>
 											</div>
-											<Select label="Unterhaltsplanung" accessor={this.formState.field("buildingMaintenanceStrategy")} size={2} />
+											<Select label="Unterhaltsplanung" accessor={this.formState.field("maintenanceStrategy")} size={2} />
 											<Select label="Bewertungsstatus" accessor={this.formState.field("ratingStatus")} size={2} />
 											<Input label="Bewertungsdatum" accessor={this.formState.field("ratingDate")} size={1} />
 											<Select label="Bewertung durch" accessor={this.formState.field("ratingUser")} size={2} />
@@ -211,7 +211,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	private onSetPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>): void => {
 		const building = this.props.store.item!;
-		const buildingPartCatalog = toJS(this.formState.field("buildingPartCatalog").references.getById(e.target.value));
+		const buildingPartCatalog = toJS(this.formState.field("partCatalog").references.getById(e.target.value));
 		building.setBuildingPartCatalog(buildingPartCatalog);
 	}
 

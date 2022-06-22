@@ -25,7 +25,7 @@ const BuildingStaticDataFormModel = new Form(
 		description: new TextField(),
 		//
 		buildingNr: new TextField({ required: true }),
-		buildingInsuranceNr: new TextField(),
+		insuranceNr: new TextField(),
 		plotNr: new TextField(),
 		nationalBuildingId: new TextField(),
 		historicPreservation: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeHistoricPreservation" }),
@@ -57,9 +57,6 @@ const BuildingStaticDataFormModel = new Form(
 				return { buildingType: accessor.node.buildingType };
 			}
 		}),
-		//
-		buildingPartCatalog: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
-		buildingMaintenanceStrategy: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
 	}
 );
 
@@ -158,7 +155,7 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Police Gebäudeversicherung" accessor={this.formState.field("buildingInsuranceNr")} />
+											<Input label="Police Gebäudeversicherung" accessor={this.formState.field("insuranceNr")} />
 										</FieldRow>
 										<FieldRow>
 											<Input label="EGID" accessor={this.formState.field("nationalBuildingId")} />

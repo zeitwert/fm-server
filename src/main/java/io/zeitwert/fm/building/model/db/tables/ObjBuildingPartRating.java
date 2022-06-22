@@ -4,6 +4,7 @@
 package io.zeitwert.fm.building.model.db.tables;
 
 
+import io.zeitwert.fm.building.model.db.Indexes;
 import io.zeitwert.fm.building.model.db.Keys;
 import io.zeitwert.fm.building.model.db.Public;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row10;
@@ -61,7 +63,7 @@ public class ObjBuildingPartRating extends TableImpl<ObjBuildingPartRatingRecord
     /**
      * The column <code>public.obj_building_part_rating.parent_part_id</code>.
      */
-    public final TableField<ObjBuildingPartRatingRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingPartRatingRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.obj_building_part_rating.part_list_type_id</code>.
@@ -71,17 +73,17 @@ public class ObjBuildingPartRating extends TableImpl<ObjBuildingPartRatingRecord
     /**
      * The column <code>public.obj_building_part_rating.seq_nr</code>.
      */
-    public final TableField<ObjBuildingPartRatingRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingPartRatingRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.obj_building_part_rating.building_part_catalog_id</code>.
+     * The column <code>public.obj_building_part_rating.part_catalog_id</code>.
      */
-    public final TableField<ObjBuildingPartRatingRecord, String> BUILDING_PART_CATALOG_ID = createField(DSL.name("building_part_catalog_id"), SQLDataType.VARCHAR(40), this, "");
+    public final TableField<ObjBuildingPartRatingRecord, String> PART_CATALOG_ID = createField(DSL.name("part_catalog_id"), SQLDataType.VARCHAR(40), this, "");
 
     /**
-     * The column <code>public.obj_building_part_rating.building_maintenance_strategy_id</code>.
+     * The column <code>public.obj_building_part_rating.maintenance_strategy_id</code>.
      */
-    public final TableField<ObjBuildingPartRatingRecord, String> BUILDING_MAINTENANCE_STRATEGY_ID = createField(DSL.name("building_maintenance_strategy_id"), SQLDataType.VARCHAR(40), this, "");
+    public final TableField<ObjBuildingPartRatingRecord, String> MAINTENANCE_STRATEGY_ID = createField(DSL.name("maintenance_strategy_id"), SQLDataType.VARCHAR(40), this, "");
 
     /**
      * The column <code>public.obj_building_part_rating.rating_status_id</code>.
@@ -137,6 +139,11 @@ public class ObjBuildingPartRating extends TableImpl<ObjBuildingPartRatingRecord
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_BUILDING_PART_RATING$PART);
+    }
+
+    @Override
     public UniqueKey<ObjBuildingPartRatingRecord> getPrimaryKey() {
         return Keys.OBJ_BUILDING_PART_RATING_PKEY;
     }
@@ -148,7 +155,7 @@ public class ObjBuildingPartRating extends TableImpl<ObjBuildingPartRatingRecord
 
     @Override
     public List<ForeignKey<ObjBuildingPartRatingRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjBuildingPartRatingRecord, ?>>asList(Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_OBJ_ID_FKEY, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_BUILDING_PART_CATALOG_ID_FKEY, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_BUILDING_MAINTENANCE_STRATEGY_ID_FKEY, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_RATING_STATUS_ID_FKEY);
+        return Arrays.<ForeignKey<ObjBuildingPartRatingRecord, ?>>asList(Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_OBJ_ID_FKEY, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_PART_CATALOG_ID_FKEY, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_MAINTENANCE_STRATEGY_ID_FKEY, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_RATING_STATUS_ID_FKEY);
     }
 
     private transient ObjBuilding _objBuilding;
@@ -165,14 +172,14 @@ public class ObjBuildingPartRating extends TableImpl<ObjBuildingPartRatingRecord
 
     public CodeBuildingPartCatalog codeBuildingPartCatalog() {
         if (_codeBuildingPartCatalog == null)
-            _codeBuildingPartCatalog = new CodeBuildingPartCatalog(this, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_BUILDING_PART_CATALOG_ID_FKEY);
+            _codeBuildingPartCatalog = new CodeBuildingPartCatalog(this, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_PART_CATALOG_ID_FKEY);
 
         return _codeBuildingPartCatalog;
     }
 
     public CodeBuildingMaintenanceStrategy codeBuildingMaintenanceStrategy() {
         if (_codeBuildingMaintenanceStrategy == null)
-            _codeBuildingMaintenanceStrategy = new CodeBuildingMaintenanceStrategy(this, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_BUILDING_MAINTENANCE_STRATEGY_ID_FKEY);
+            _codeBuildingMaintenanceStrategy = new CodeBuildingMaintenanceStrategy(this, Keys.OBJ_BUILDING_PART_RATING__OBJ_BUILDING_PART_RATING_MAINTENANCE_STRATEGY_ID_FKEY);
 
         return _codeBuildingMaintenanceStrategy;
     }

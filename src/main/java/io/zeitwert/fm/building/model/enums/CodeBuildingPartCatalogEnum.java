@@ -33,7 +33,7 @@ public final class CodeBuildingPartCatalogEnum extends EnumerationBase<CodeBuild
 		}
 	}
 
-	public static CodeBuildingPartCatalog getBuildingPartCatalog(String itemId) {
+	public static CodeBuildingPartCatalog getPartCatalog(String itemId) {
 		return INSTANCE.getItem(itemId);
 	}
 

@@ -101,7 +101,7 @@ create table obj_building (
 	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
 	building_nr														varchar(200), -- Identifikation -- TODO make unique key (by tenant demo data)
-	building_insurance_nr									varchar(200), -- Gebäudeversicherung Police Nr
+	insurance_nr													varchar(200), -- Gebäudeversicherung Police Nr
 	plot_nr																varchar(200), -- Parzellen Nr
 	national_building_id									varchar(200), -- EGID (eidgenössischer Gebäudeidentifikator)
 	historic_preservation_id							varchar(40)					references code_historic_preservation(id),
@@ -173,8 +173,8 @@ create table obj_building_part_rating (
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
 	seq_nr																integer							not null default 0,
 	--
-	building_part_catalog_id							varchar(40)					references code_building_part_catalog(id),
-	building_maintenance_strategy_id			varchar(40)					references code_building_maintenance_strategy(id),
+	part_catalog_id							varchar(40)					references code_building_part_catalog(id),
+	maintenance_strategy_id			varchar(40)					references code_building_maintenance_strategy(id),
 	--
 	rating_status_id											varchar(40)					not null references code_building_rating_status(id),
 	rating_date														date,

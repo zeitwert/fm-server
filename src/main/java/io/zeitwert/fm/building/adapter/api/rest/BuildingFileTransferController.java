@@ -4,6 +4,8 @@ package io.zeitwert.fm.building.adapter.api.rest;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +20,12 @@ import io.zeitwert.ddd.collaboration.model.ObjNote;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto;
-import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.TransferMetaDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
@@ -35,8 +37,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
-
-import javax.servlet.ServletException;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/transfer/building/buildings")
@@ -121,7 +121,7 @@ public class BuildingFileTransferController {
 				.name(building.getName())
 				.description(building.getDescription())
 				.buildingNr(building.getBuildingNr())
-				.buildingInsuranceNr(building.getBuildingInsuranceNr())
+				.buildingInsuranceNr(building.getInsuranceNr())
 				.plotNr(building.getPlotNr())
 				.nationalBuildingId(building.getNationalBuildingId())
 				.historicPreservation(building.getHistoricPreservation() != null ? building.getHistoricPreservation().getId() : null)
@@ -147,8 +147,8 @@ public class BuildingFileTransferController {
 				.notInsuredValueYear(building.getNotInsuredValueYear())
 				.thirdPartyValue(building.getThirdPartyValue())
 				.thirdPartyValueYear(building.getThirdPartyValueYear())
-				.buildingPartCatalog(building.getCurrentRating().getBuildingPartCatalog() != null ? building.getCurrentRating().getBuildingPartCatalog().getId() : null)
-				.buildingMaintenanceStrategy(building.getCurrentRating().getBuildingMaintenanceStrategy() != null ? building.getCurrentRating().getBuildingMaintenanceStrategy().getId() : null)
+				.buildingPartCatalog(building.getCurrentRating().getPartCatalog() != null ? building.getCurrentRating().getPartCatalog().getId() : null)
+				.buildingMaintenanceStrategy(building.getCurrentRating().getMaintenanceStrategy() != null ? building.getCurrentRating().getMaintenanceStrategy().getId() : null)
 				.elements(elements)
 				.notes(notes)
 			.build();
@@ -163,7 +163,7 @@ public class BuildingFileTransferController {
 		building.setName(dto.getName());
 		building.setDescription(dto.getDescription());
 		building.setBuildingNr(dto.getBuildingNr());
-		building.setBuildingInsuranceNr(dto.getBuildingInsuranceNr());
+		building.setInsuranceNr(dto.getBuildingInsuranceNr());
 		building.setPlotNr(dto.getPlotNr());
 		building.setNationalBuildingId(dto.getNationalBuildingId());
 		building.setHistoricPreservation(dto.getHistoricPreservation() != null ? appContext.getEnumerated(CodeHistoricPreservationEnum.class, dto.getHistoricPreservation()) : null);
@@ -189,8 +189,8 @@ public class BuildingFileTransferController {
 		building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
 		building.setThirdPartyValue(dto.getThirdPartyValue());
 		building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-		building.getCurrentRating().setBuildingPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
-		building.getCurrentRating().setBuildingMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
+		building.getCurrentRating().setPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
+		building.getCurrentRating().setMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
 		if (dto.getElements() != null) {
 			dto.getElements().forEach((dtoElement) -> {
 				CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());

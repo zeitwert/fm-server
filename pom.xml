@@ -173,9 +173,9 @@
 				<configuration>
 					<jdbc>
 						<driver>org.postgresql.Driver</driver>
-						<url>jdbc:postgresql://localhost:5432/zeitwert</url>
-						<user>zeitwert</user>
-						<password>zeitwert</password>
+						<url>jdbc:postgresql://ec2-52-209-185-5.eu-west-1.compute.amazonaws.com:5432/dfuq1laremufmq</url>
+						<user>vurauzejqtiloc</user>
+						<password>5fbefea311680ea170f1d8a45ef8564b1259048a006f54e739010e7550eab6a4</password>
 					</jdbc>
 				</configuration>
 				<executions>

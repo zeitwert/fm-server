@@ -40,7 +40,7 @@ public class BuildingEnumController {
 	public ResponseEntity<List<BuildingPartWeightDto>> getBuildingPartCatalog(
 			@PathVariable String buildingPartCatalogId) {
 		CodeBuildingPartCatalog buildingPartCatalog = CodeBuildingPartCatalogEnum
-				.getBuildingPartCatalog(buildingPartCatalogId);
+				.getPartCatalog(buildingPartCatalogId);
 		if (buildingPartCatalog == null) {
 			return ResponseEntity.notFound().build();
 		}

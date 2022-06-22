@@ -33,7 +33,7 @@ public final class CodeBuildingMaintenanceStrategyEnum extends EnumerationBase<C
 		}
 	}
 
-	public static CodeBuildingMaintenanceStrategy getBuildingMaintenanceStrategy(String itemId) {
+	public static CodeBuildingMaintenanceStrategy getMaintenanceStrategy(String itemId) {
 		return INSTANCE.getItem(itemId);
 	}
 

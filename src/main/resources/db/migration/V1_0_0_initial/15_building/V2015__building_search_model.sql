@@ -3,7 +3,7 @@ create or replace view obj_building_search
 as
 select  obj_id,
         account_id,
-        'building ' || coalesce(name, ' ') || ' ' || coalesce(building_nr, ' ') || ' ' || coalesce(building_insurance_nr, ' ') || ' ' || coalesce(plot_nr, ' ') || ' ' || coalesce(national_building_id, ' ') || ' ' || coalesce(street, ' ') || ' ' || coalesce(city, ' ') || ' ' || coalesce(zip, ' ') || ' ' as tokens,
+        'building ' || coalesce(name, ' ') || ' ' || coalesce(building_nr, ' ') || ' ' || coalesce(insurance_nr, ' ') || ' ' || coalesce(plot_nr, ' ') || ' ' || coalesce(national_building_id, ' ') || ' ' || coalesce(street, ' ') || ' ' || coalesce(city, ' ') || ' ' || coalesce(zip, ' ') || ' ' as tokens,
         coalesce(description, ' ') || ' '                                                                                                        as text
 from    obj_building_v;
 

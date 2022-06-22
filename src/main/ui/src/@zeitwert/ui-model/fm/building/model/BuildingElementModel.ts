@@ -41,7 +41,7 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	.views((self) => ({
 		get isValidBuilding(): boolean {
 			const building = getParentOfType(self, BuildingModel);
-			return !!building.insuredValue && !!building.insuredValueYear && !!building.buildingPartCatalog && !!building.buildingMaintenanceStrategy;
+			return !!building.insuredValue && !!building.insuredValueYear && !!building.partCatalog && !!building.maintenanceStrategy;
 		},
 	}))
 	.views((self) => ({

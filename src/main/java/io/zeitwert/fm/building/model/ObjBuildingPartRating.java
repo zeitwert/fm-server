@@ -1,15 +1,15 @@
 
 package io.zeitwert.fm.building.model;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import io.zeitwert.ddd.obj.model.ObjPart;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
-
-import java.time.LocalDate;
-import java.util.List;
 
 public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 
@@ -25,13 +25,13 @@ public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 
 	void setRatingUser(ObjUser ratingUser);
 
-	CodeBuildingPartCatalog getBuildingPartCatalog();
+	CodeBuildingPartCatalog getPartCatalog();
 
-	void setBuildingPartCatalog(CodeBuildingPartCatalog buildingPartCatalog);
+	void setPartCatalog(CodeBuildingPartCatalog partCatalog);
 
-	CodeBuildingMaintenanceStrategy getBuildingMaintenanceStrategy();
+	CodeBuildingMaintenanceStrategy getMaintenanceStrategy();
 
-	void setBuildingMaintenanceStrategy(CodeBuildingMaintenanceStrategy strategy);
+	void setMaintenanceStrategy(CodeBuildingMaintenanceStrategy strategy);
 
 	Integer getElementContributions();
 

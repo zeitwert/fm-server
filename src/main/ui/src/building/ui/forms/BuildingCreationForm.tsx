@@ -14,7 +14,7 @@ const BuildingCreationFormModel = new Form(
 		name: new TextField({ required: true }),
 		//
 		buildingNr: new TextField({ required: true }),
-		buildingInsuranceNr: new TextField(),
+		insuranceNr: new TextField(),
 		plotNr: new TextField(),
 		nationalBuildingId: new TextField(),
 		//

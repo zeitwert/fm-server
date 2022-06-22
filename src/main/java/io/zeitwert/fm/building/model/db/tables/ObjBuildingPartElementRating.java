@@ -4,6 +4,7 @@
 package io.zeitwert.fm.building.model.db.tables;
 
 
+import io.zeitwert.fm.building.model.db.Indexes;
 import io.zeitwert.fm.building.model.db.Keys;
 import io.zeitwert.fm.building.model.db.Public;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartElementRatingRecord;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row14;
@@ -60,7 +62,7 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
     /**
      * The column <code>public.obj_building_part_element_rating.parent_part_id</code>.
      */
-    public final TableField<ObjBuildingPartElementRatingRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingPartElementRatingRecord, Integer> PARENT_PART_ID = createField(DSL.name("parent_part_id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.obj_building_part_element_rating.part_list_type_id</code>.
@@ -70,7 +72,7 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
     /**
      * The column <code>public.obj_building_part_element_rating.seq_nr</code>.
      */
-    public final TableField<ObjBuildingPartElementRatingRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingPartElementRatingRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.obj_building_part_element_rating.building_part_id</code>.
@@ -156,6 +158,11 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_BUILDING_PART_ELEMENT_RATING$PART);
+    }
+
+    @Override
     public UniqueKey<ObjBuildingPartElementRatingRecord> getPrimaryKey() {
         return Keys.OBJ_BUILDING_PART_ELEMENT_RATING_PKEY;
     }
@@ -167,11 +174,10 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
 
     @Override
     public List<ForeignKey<ObjBuildingPartElementRatingRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjBuildingPartElementRatingRecord, ?>>asList(Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_OBJ_ID_FKEY, Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_PARENT_PART_ID_FKEY, Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_BUILDING_PART_ID_FKEY);
+        return Arrays.<ForeignKey<ObjBuildingPartElementRatingRecord, ?>>asList(Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_OBJ_ID_FKEY, Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_BUILDING_PART_ID_FKEY);
     }
 
     private transient ObjBuilding _objBuilding;
-    private transient ObjBuildingPartRating _objBuildingPartRating;
     private transient CodeBuildingPart _codeBuildingPart;
 
     public ObjBuilding objBuilding() {
@@ -179,13 +185,6 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
             _objBuilding = new ObjBuilding(this, Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_OBJ_ID_FKEY);
 
         return _objBuilding;
-    }
-
-    public ObjBuildingPartRating objBuildingPartRating() {
-        if (_objBuildingPartRating == null)
-            _objBuildingPartRating = new ObjBuildingPartRating(this, Keys.OBJ_BUILDING_PART_ELEMENT_RATING__OBJ_BUILDING_PART_ELEMENT_RATING_PARENT_PART_ID_FKEY);
-
-        return _objBuildingPartRating;
     }
 
     public CodeBuildingPart codeBuildingPart() {
