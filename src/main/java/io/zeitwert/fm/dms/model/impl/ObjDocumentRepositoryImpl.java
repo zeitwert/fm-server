@@ -1,7 +1,11 @@
 
 package io.zeitwert.fm.dms.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.Record1;
@@ -10,12 +14,16 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.exception.NoDataFoundException;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
@@ -28,19 +36,12 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
-import javax.annotation.PostConstruct;
-
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
-
 @Component("objDocumentRepository")
 public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, ObjDocumentVRecord>
 		implements ObjDocumentRepository {
 
 	private static final String ITEM_TYPE = "obj_document";
+	private static Logger logger = LoggerFactory.getLogger(ObjDocumentRepositoryImpl.class);
 
 	private static final ObjDocumentPartContent DOCUMENT_CONTENT = Tables.OBJ_DOCUMENT_PART_CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> OBJ_ID = DOCUMENT_CONTENT.OBJ_ID;
@@ -49,7 +50,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	private static final TableField<ObjDocumentPartContentRecord, byte[]> CONTENT = DOCUMENT_CONTENT.CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> CREATED_BY_USER_ID = DOCUMENT_CONTENT.CREATED_BY_USER_ID;
 
-	@Autowired
 	//@formatter:off
 	protected ObjDocumentRepositoryImpl(
 		final AppContext appContext,
@@ -106,6 +106,7 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public CodeContentType getContentType(ObjDocument document) {
+		logger.info("getContentType(" + document.getId() + ")");
 		Table<ObjDocumentPartContentRecord> query = this.getMaxContentVersionQuery(document);
 		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getMaxVersionQuery(document));
 		if (maxVersionNr == null) {

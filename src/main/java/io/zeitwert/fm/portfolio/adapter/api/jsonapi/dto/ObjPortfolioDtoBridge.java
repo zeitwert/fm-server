@@ -1,13 +1,10 @@
 
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto;
 
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
@@ -16,6 +13,8 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
 import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
 public class ObjPortfolioDtoBridge
 		extends FMObjDtoBridge<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
@@ -41,32 +40,40 @@ public class ObjPortfolioDtoBridge
 
 	@Override
 	public void toAggregate(ObjPortfolioDto dto, ObjPortfolio pf) {
-		super.toAggregate(dto, pf);
-		pf.setName(dto.getName());
-		pf.setDescription(dto.getDescription());
-		pf.setPortfolioNr(dto.getPortfolioNr());
-		pf.setAccountId(dto.getAccountId());
-		// TODO prevent calculation during insert
-		SessionInfo sessionInfo = pf.getMeta().getSessionInfo();
-		if (dto.getIncludes() != null) {
-			pf.clearIncludeSet();
-			dto.getIncludes().forEach(item -> {
-				Integer id = Integer.parseInt(item.getId());
-				Obj obj = objRepository.get(sessionInfo, id);
-				CodeAggregateType objType = obj.getMeta().getAggregateType();
-				assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
-				pf.addInclude(id);
-			});
-		}
-		if (dto.getExcludes() != null) {
-			pf.clearExcludeSet();
-			dto.getExcludes().forEach(item -> {
-				Integer id = Integer.parseInt(item.getId());
-				Obj obj = objRepository.get(sessionInfo, id);
-				CodeAggregateType objType = obj.getMeta().getAggregateType();
-				assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
-				pf.addExclude(id);
-			});
+		try {
+			pf.getMeta().disableCalc();
+			super.toAggregate(dto, pf);
+
+			pf.setName(dto.getName());
+			pf.setDescription(dto.getDescription());
+			pf.setPortfolioNr(dto.getPortfolioNr());
+			pf.setAccountId(dto.getAccountId());
+			// TODO prevent calculation during insert
+			SessionInfo sessionInfo = pf.getMeta().getSessionInfo();
+			if (dto.getIncludes() != null) {
+				pf.clearIncludeSet();
+				dto.getIncludes().forEach(item -> {
+					Integer id = Integer.parseInt(item.getId());
+					Obj obj = objRepository.get(sessionInfo, id);
+					CodeAggregateType objType = obj.getMeta().getAggregateType();
+					assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
+					pf.addInclude(id);
+				});
+			}
+			if (dto.getExcludes() != null) {
+				pf.clearExcludeSet();
+				dto.getExcludes().forEach(item -> {
+					Integer id = Integer.parseInt(item.getId());
+					Obj obj = objRepository.get(sessionInfo, id);
+					CodeAggregateType objType = obj.getMeta().getAggregateType();
+					assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
+					pf.addExclude(id);
+				});
+			}
+
+		} finally {
+			pf.getMeta().enableCalc();
+			pf.calcAll();
 		}
 	}
 

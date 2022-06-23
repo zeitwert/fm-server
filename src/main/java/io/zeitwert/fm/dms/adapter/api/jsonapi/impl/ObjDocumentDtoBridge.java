@@ -1,6 +1,8 @@
 
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
@@ -8,8 +10,6 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.SessionInfo;
 
 public final class ObjDocumentDtoBridge extends FMObjDtoBridge<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
 
@@ -27,17 +27,23 @@ public final class ObjDocumentDtoBridge extends FMObjDtoBridge<ObjDocument, ObjD
 
 	@Override
 	public void toAggregate(ObjDocumentDto dto, ObjDocument obj) {
-		super.toAggregate(dto, obj);
-		obj.setName(dto.getName());
-		obj.setContentKind(dto.getContentKind() == null ? null
-				: CodeContentKindEnum.getContentKind(
-						dto.getContentKind().getId()));
-		obj.setDocumentKind(
-				dto.getDocumentKind() == null ? null : CodeDocumentKindEnum.getDocumentKind(dto.getDocumentKind().getId()));
-		obj.setDocumentCategory(
-				dto.getDocumentCategory() == null ? null
-						: CodeDocumentCategoryEnum.getDocumentCategory(
-								dto.getDocumentCategory().getId()));
+		try {
+			obj.getMeta().disableCalc();
+			super.toAggregate(dto, obj);
+			obj.setName(dto.getName());
+			obj.setContentKind(dto.getContentKind() == null ? null
+					: CodeContentKindEnum.getContentKind(
+							dto.getContentKind().getId()));
+			obj.setDocumentKind(
+					dto.getDocumentKind() == null ? null : CodeDocumentKindEnum.getDocumentKind(dto.getDocumentKind().getId()));
+			obj.setDocumentCategory(
+					dto.getDocumentCategory() == null ? null
+							: CodeDocumentCategoryEnum.getDocumentCategory(
+									dto.getDocumentCategory().getId()));
+		} finally {
+			obj.getMeta().enableCalc();
+			obj.calcAll();
+		}
 	}
 
 	@Override

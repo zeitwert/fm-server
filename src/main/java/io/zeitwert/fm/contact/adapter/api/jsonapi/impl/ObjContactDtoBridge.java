@@ -1,6 +1,8 @@
 
 package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactPartAddressDto;
 import io.zeitwert.fm.contact.model.ObjContact;
@@ -9,8 +11,6 @@ import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
 import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
 import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.SessionInfo;
 
 public final class ObjContactDtoBridge extends FMObjDtoBridge<ObjContact, ObjContactVRecord, ObjContactDto> {
 
@@ -28,37 +28,45 @@ public final class ObjContactDtoBridge extends FMObjDtoBridge<ObjContact, ObjCon
 
 	@Override
 	public void toAggregate(ObjContactDto dto, ObjContact obj) {
-		super.toAggregate(dto, obj);
-		obj.setAccountId(dto.getAccountId());
-		obj.setContactRole(
-				dto.getContactRole() == null ? null : CodeContactRoleEnum.getContactRole(dto.getContactRole().getId()));
-		obj.setSalutation(
-				dto.getSalutation() == null ? null : CodeSalutationEnum.getSalutation(dto.getSalutation().getId()));
-		obj.setTitle(dto.getTitle() == null ? null : CodeTitleEnum.getTitle(dto.getTitle().getId()));
-		obj.setFirstName(dto.getFirstName());
-		obj.setLastName(dto.getLastName());
-		obj.setDescription(dto.getDescription());
-		obj.setBirthDate(dto.getBirthDate());
-		obj.setPhone(dto.getPhone());
-		obj.setMobile(dto.getMobile());
-		obj.setEmail(dto.getEmail());
-		if (dto.getMailAddresses() != null) {
-			for (ObjContactPartAddressDto address : dto.getMailAddresses()) {
-				if (address.getId() != null) {
-					address.toPart(obj.getMailAddress(address.getId()).get());
-				} else {
-					address.toPart(obj.addMailAddress());
+		try {
+			obj.getMeta().disableCalc();
+			super.toAggregate(dto, obj);
+
+			obj.setAccountId(dto.getAccountId());
+			obj.setContactRole(
+					dto.getContactRole() == null ? null : CodeContactRoleEnum.getContactRole(dto.getContactRole().getId()));
+			obj.setSalutation(
+					dto.getSalutation() == null ? null : CodeSalutationEnum.getSalutation(dto.getSalutation().getId()));
+			obj.setTitle(dto.getTitle() == null ? null : CodeTitleEnum.getTitle(dto.getTitle().getId()));
+			obj.setFirstName(dto.getFirstName());
+			obj.setLastName(dto.getLastName());
+			obj.setDescription(dto.getDescription());
+			obj.setBirthDate(dto.getBirthDate());
+			obj.setPhone(dto.getPhone());
+			obj.setMobile(dto.getMobile());
+			obj.setEmail(dto.getEmail());
+			if (dto.getMailAddresses() != null) {
+				for (ObjContactPartAddressDto address : dto.getMailAddresses()) {
+					if (address.getId() != null) {
+						address.toPart(obj.getMailAddress(address.getId()).get());
+					} else {
+						address.toPart(obj.addMailAddress());
+					}
 				}
 			}
-		}
-		if (dto.getElectronicAddresses() != null) {
-			for (ObjContactPartAddressDto address : dto.getElectronicAddresses()) {
-				if (address.getId() != null) {
-					address.toPart(obj.getElectronicAddress(address.getId()).get());
-				} else {
-					address.toPart(obj.addElectronicAddress());
+			if (dto.getElectronicAddresses() != null) {
+				for (ObjContactPartAddressDto address : dto.getElectronicAddresses()) {
+					if (address.getId() != null) {
+						address.toPart(obj.getElectronicAddress(address.getId()).get());
+					} else {
+						address.toPart(obj.addElectronicAddress());
+					}
 				}
 			}
+
+		} finally {
+			obj.getMeta().enableCalc();
+			obj.calcAll();
 		}
 	}
 

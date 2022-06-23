@@ -3,9 +3,6 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
@@ -32,8 +29,6 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 
 	private static ObjBuildingDtoBridge instance;
 
-	private static Logger logger = LoggerFactory.getLogger(ObjBuildingDtoBridge.class);
-
 	private ObjBuildingDtoBridge() {
 	}
 
@@ -46,11 +41,8 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 
 	@Override
 	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj) {
-		logger.info("buildingDto.toAggregte.start");
-
 		try {
 			obj.getMeta().disableCalc();
-
 			super.toAggregate(dto, obj);
 
 			// @formatter:off
@@ -110,7 +102,6 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			obj.getMeta().enableCalc();
 			obj.calcAll();
 		}
-		logger.info("buildingDto.toAggregte.stop");
 	}
 
 	@Override

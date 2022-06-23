@@ -1,18 +1,18 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
+import java.util.stream.Collectors;
+
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
-import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
+import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.SessionInfo;
-
-import java.util.stream.Collectors;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
 
 public final class ObjAccountDtoBridge extends FMObjDtoBridge<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
 
@@ -30,20 +30,29 @@ public final class ObjAccountDtoBridge extends FMObjDtoBridge<ObjAccount, ObjAcc
 
 	@Override
 	public void toAggregate(ObjAccountDto dto, ObjAccount obj) {
-		super.toAggregate(dto, obj);
-		obj.setName(dto.getName());
-		obj.setDescription(dto.getDescription());
-		obj.setAccountType(
-				dto.getAccountType() == null ? null : CodeAccountTypeEnum.getAccountType(dto.getAccountType().getId()));
-		obj.setClientSegment(
-				dto.getClientSegment() == null ? null : CodeClientSegmentEnum.getClientSegment(dto.getClientSegment().getId()));
-		obj.setReferenceCurrency(
-				dto.getReferenceCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getReferenceCurrency().getId()));
-		if (dto.getAreas() != null) {
-			obj.clearAreaSet();
-			dto.getAreas().forEach(area -> obj.addArea(CodeAreaEnum.getArea(area.getId())));
+		try {
+			obj.getMeta().disableCalc();
+			super.toAggregate(dto, obj);
+
+			obj.setName(dto.getName());
+			obj.setDescription(dto.getDescription());
+			obj.setAccountType(
+					dto.getAccountType() == null ? null : CodeAccountTypeEnum.getAccountType(dto.getAccountType().getId()));
+			obj.setClientSegment(
+					dto.getClientSegment() == null ? null
+							: CodeClientSegmentEnum.getClientSegment(dto.getClientSegment().getId()));
+			obj.setReferenceCurrency(
+					dto.getReferenceCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getReferenceCurrency().getId()));
+			if (dto.getAreas() != null) {
+				obj.clearAreaSet();
+				dto.getAreas().forEach(area -> obj.addArea(CodeAreaEnum.getArea(area.getId())));
+			}
+			obj.setMainContactId(dto.getMainContactId());
+
+		} finally {
+			obj.getMeta().enableCalc();
+			obj.calcAll();
 		}
-		obj.setMainContactId(dto.getMainContactId());
 	}
 
 	@Override
