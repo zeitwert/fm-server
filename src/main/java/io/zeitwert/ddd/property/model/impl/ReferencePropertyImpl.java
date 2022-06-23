@@ -1,17 +1,17 @@
 package io.zeitwert.ddd.property.model.impl;
 
-import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.AggregateRepository;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
-import io.zeitwert.ddd.property.model.base.PropertyBase;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.Objects;
 
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
+import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.ddd.property.model.base.PropertyBase;
 
 public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceProperty<A> {
 
@@ -52,7 +52,7 @@ public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> 
 	@Override
 	public A getValue() {
 		return this.getId() == null ? null
-				: this.repository.get(this.getEntity().getMeta().getSessionInfo(), this.getId());
+				: this.repository.get(this.getEntity().getSessionInfo(), this.getId());
 	}
 
 	@Override

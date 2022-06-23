@@ -1,14 +1,24 @@
 package io.zeitwert.ddd.property.model.base;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jooq.Field;
+import org.jooq.UpdatableRecord;
+
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.EntityPartItem;
 import io.zeitwert.ddd.property.model.EntityWithProperties;
+import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -21,16 +31,6 @@ import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jooq.Field;
-import org.jooq.UpdatableRecord;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 public abstract class EntityWithPropertiesBase implements EntityWithProperties, EntityWithPropertiesSPI {
 
@@ -83,7 +83,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumProperty<E> addEnumProperty(UpdatableRecord<?> dbRecord, Field<String> field,
 			Class<? extends Enumeration<E>> enumClass) {
-		final Enumeration<E> enumeration = this.getMeta().getAppContext().getEnumeration(enumClass);
+		final Enumeration<E> enumeration = this.getAppContext().getEnumeration(enumClass);
 		final EnumProperty<E> property = new EnumPropertyImpl<E>(this, dbRecord, field, enumeration);
 		this.addProperty(property);
 		return property;
@@ -91,7 +91,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <T extends Aggregate> ReferenceProperty<T> addReferenceProperty(UpdatableRecord<?> dbRecord,
 			Field<Integer> field, Class<T> aggregateClass) {
-		final AggregateRepository<T, ?> repository = this.getMeta().getAppContext().getRepository(aggregateClass);
+		final AggregateRepository<T, ?> repository = this.getAppContext().getRepository(aggregateClass);
 		final ReferenceProperty<T> property = new ReferencePropertyImpl<T>(this, dbRecord, field, repository);
 		this.addProperty(property);
 		return property;
@@ -100,7 +100,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(CodePartListType partListType,
 			Class<? extends Enumeration<E>> enumClass) {
 		requireThis(partListType != null, "partListType not null");
-		final Enumeration<E> enumeration = this.getMeta().getAppContext().getEnumeration(enumClass);
+		final Enumeration<E> enumeration = this.getAppContext().getEnumeration(enumClass);
 		final EnumSetProperty<E> property = new EnumSetPropertyImpl<E>(this, partListType, enumeration);
 		this.addProperty(property);
 		return property;
@@ -109,7 +109,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	protected <T extends Aggregate> ReferenceSetProperty<T> addReferenceSetProperty(CodePartListType partListType,
 			Class<T> aggregateClass) {
 		requireThis(partListType != null, "partListType not null");
-		final AggregateRepository<T, ?> repository = this.getMeta().getAppContext().getRepository(aggregateClass);
+		final AggregateRepository<T, ?> repository = this.getAppContext().getRepository(aggregateClass);
 		final ReferenceSetProperty<T> property = new ReferenceSetPropertyImpl<T>(this, partListType, repository);
 		this.addProperty(property);
 		return property;
