@@ -158,64 +158,72 @@ public class BuildingFileTransferController {
 
 	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
 		AppContext appContext = building.getMeta().getAppContext();
-		//@formatter:off
-		building.setOwner(sessionInfo.getUser());
-		building.setName(dto.getName());
-		building.setDescription(dto.getDescription());
-		building.setBuildingNr(dto.getBuildingNr());
-		building.setInsuranceNr(dto.getBuildingInsuranceNr());
-		building.setPlotNr(dto.getPlotNr());
-		building.setNationalBuildingId(dto.getNationalBuildingId());
-		building.setHistoricPreservation(dto.getHistoricPreservation() != null ? appContext.getEnumerated(CodeHistoricPreservationEnum.class, dto.getHistoricPreservation()) : null);
-		building.setStreet(dto.getStreet());
-		building.setZip(dto.getZip());
-		building.setCity(dto.getCity());
-		building.setCountry(dto.getCountry() != null ? appContext.getEnumerated(CodeCountryEnum.class, dto.getCountry()) : null);
-		building.setGeoAddress(dto.getGeoAddress());
-		building.setGeoCoordinates(dto.getGeoCoordinates());
-		building.setGeoZoom(dto.getGeoZoom());
-		building.setCurrency(dto.getCurrency() != null ? appContext.getEnumerated(CodeCurrencyEnum.class, dto.getCurrency()) : null);
-		building.setVolume(dto.getVolume());
-		building.setAreaGross(dto.getAreaGross());
-		building.setAreaNet(dto.getAreaNet());
-		building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
-		building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-		building.setBuildingType(dto.getBuildingType() != null ? appContext.getEnumerated(CodeBuildingTypeEnum.class, dto.getBuildingType()) : null);
-		building.setBuildingSubType(dto.getBuildingSubType() != null ? appContext.getEnumerated(CodeBuildingSubTypeEnum.class, dto.getBuildingSubType()) : null);
-		building.setBuildingYear(dto.getBuildingYear());
-		building.setInsuredValue(dto.getInsuredValue());
-		building.setInsuredValueYear(dto.getInsuredValueYear());
-		building.setNotInsuredValue(dto.getNotInsuredValue());
-		building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
-		building.setThirdPartyValue(dto.getThirdPartyValue());
-		building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-		building.getCurrentRating().setPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
-		building.getCurrentRating().setMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
-		if (dto.getElements() != null) {
-			dto.getElements().forEach((dtoElement) -> {
-				CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
-				ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
-				element.setValuePart(dtoElement.getValuePart());
-				element.setCondition(dtoElement.getCondition());
-				element.setConditionYear(dtoElement.getConditionYear());
-				element.setStrain(dtoElement.getStrain());
-				element.setStrength(dtoElement.getStrength());
-				element.setDescription(dtoElement.getDescription());
-				element.setConditionDescription(dtoElement.getConditionDescription());
-				element.setMeasureDescription(dtoElement.getMeasureDescription());
-			});
+		try {
+			building.getMeta().disableCalc();
+
+			//@formatter:off
+			building.setOwner(sessionInfo.getUser());
+			building.setName(dto.getName());
+			building.setDescription(dto.getDescription());
+			building.setBuildingNr(dto.getBuildingNr());
+			building.setInsuranceNr(dto.getBuildingInsuranceNr());
+			building.setPlotNr(dto.getPlotNr());
+			building.setNationalBuildingId(dto.getNationalBuildingId());
+			building.setHistoricPreservation(dto.getHistoricPreservation() != null ? appContext.getEnumerated(CodeHistoricPreservationEnum.class, dto.getHistoricPreservation()) : null);
+			building.setStreet(dto.getStreet());
+			building.setZip(dto.getZip());
+			building.setCity(dto.getCity());
+			building.setCountry(dto.getCountry() != null ? appContext.getEnumerated(CodeCountryEnum.class, dto.getCountry()) : null);
+			building.setGeoAddress(dto.getGeoAddress());
+			building.setGeoCoordinates(dto.getGeoCoordinates());
+			building.setGeoZoom(dto.getGeoZoom());
+			building.setCurrency(dto.getCurrency() != null ? appContext.getEnumerated(CodeCurrencyEnum.class, dto.getCurrency()) : null);
+			building.setVolume(dto.getVolume());
+			building.setAreaGross(dto.getAreaGross());
+			building.setAreaNet(dto.getAreaNet());
+			building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
+			building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
+			building.setBuildingType(dto.getBuildingType() != null ? appContext.getEnumerated(CodeBuildingTypeEnum.class, dto.getBuildingType()) : null);
+			building.setBuildingSubType(dto.getBuildingSubType() != null ? appContext.getEnumerated(CodeBuildingSubTypeEnum.class, dto.getBuildingSubType()) : null);
+			building.setBuildingYear(dto.getBuildingYear());
+			building.setInsuredValue(dto.getInsuredValue());
+			building.setInsuredValueYear(dto.getInsuredValueYear());
+			building.setNotInsuredValue(dto.getNotInsuredValue());
+			building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
+			building.setThirdPartyValue(dto.getThirdPartyValue());
+			building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
+			building.getCurrentRating().setPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
+			building.getCurrentRating().setMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
+			if (dto.getElements() != null) {
+				dto.getElements().forEach((dtoElement) -> {
+					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
+					ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
+					element.setValuePart(dtoElement.getValuePart());
+					element.setCondition(dtoElement.getCondition());
+					element.setConditionYear(dtoElement.getConditionYear());
+					element.setStrain(dtoElement.getStrain());
+					element.setStrength(dtoElement.getStrength());
+					element.setDescription(dtoElement.getDescription());
+					element.setConditionDescription(dtoElement.getConditionDescription());
+					element.setMeasureDescription(dtoElement.getMeasureDescription());
+				});
+			}
+			if (dto.getNotes() != null) {
+				CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
+				dto.getNotes().forEach((dtoNote) -> {
+					ObjNote note = building.addNote(noteType);
+					note.setSubject(dtoNote.getSubject());
+					note.setContent(dtoNote.getContent());
+					note.setIsPrivate(dtoNote.getIsPrivate());
+					noteRepo.store(note);
+				});
+			}
+			//@formatter:on
+
+		} finally {
+			building.getMeta().enableCalc();
+			building.calcAll();
 		}
-		if (dto.getNotes() != null) {
-			CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
-			dto.getNotes().forEach((dtoNote) -> {
-				ObjNote note = building.addNote(noteType);
-				note.setSubject(dtoNote.getSubject());
-				note.setContent(dtoNote.getContent());
-				note.setIsPrivate(dtoNote.getIsPrivate());
-				noteRepo.store(note);
-			});
-		}
-		//@formatter:on
 	}
 
 	private String getFileName(ObjBuilding building) {

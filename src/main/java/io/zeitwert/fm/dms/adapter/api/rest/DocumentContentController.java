@@ -24,13 +24,10 @@ public class DocumentContentController {
 
 	private final SessionInfo sessionInfo;
 	private final ObjDocumentRepository documentRepository;
-	private final CodeContentTypeEnum contentTypeEnum;
 
-	public DocumentContentController(SessionInfo sessionInfo, ObjDocumentRepository documentRepository,
-			CodeContentTypeEnum contentTypeEnum) {
+	public DocumentContentController(SessionInfo sessionInfo, ObjDocumentRepository documentRepository) {
 		this.sessionInfo = sessionInfo;
 		this.documentRepository = documentRepository;
-		this.contentTypeEnum = contentTypeEnum;
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.GET)
@@ -55,12 +52,12 @@ public class DocumentContentController {
 			@RequestParam("file") MultipartFile file) {
 		try {
 			ObjDocument document = this.documentRepository.get(this.sessionInfo, documentId);
-			CodeContentType contentType = this.contentTypeEnum.getContentType(file.getContentType(),
+			CodeContentType contentType = CodeContentTypeEnum.getContentType(file.getContentType(),
 					file.getOriginalFilename());
 			if (contentType == null) {
 				return ResponseEntity.badRequest().body(null);
 			}
-			this.documentRepository.storeContent(sessionInfo, document, contentType, file.getBytes());
+			document.storeContent(contentType, file.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return ResponseEntity.internalServerError().body(null);

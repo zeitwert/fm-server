@@ -2,6 +2,8 @@
 package io.zeitwert.fm.dms.model.base;
 
 import org.jooq.UpdatableRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -19,6 +21,8 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
+
+	protected static final Logger logger = LoggerFactory.getLogger(ObjDocumentBase.class);
 
 	private final UpdatableRecord<?> dbRecord;
 
@@ -67,6 +71,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	public void storeContent(CodeContentType contentType, byte[] content) {
 		this.getRepository().storeContent(this.getSessionInfo(), this, contentType, content);
 		this.contentType = contentType;
+		this.calcAll();
 	}
 
 	@Override

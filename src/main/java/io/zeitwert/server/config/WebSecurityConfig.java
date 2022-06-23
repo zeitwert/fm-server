@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -75,10 +76,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/app/userInfo/**").permitAll() // TODO revoke
 				.antMatchers("/api/session/login/**").permitAll()
 				.antMatchers("/enum/**").permitAll()
-				.antMatchers("/api/building/projection/**").permitAll() // TODO revoke
-				.antMatchers("/rest/dms/documents/**/content").permitAll() // TODO revoke
-				.antMatchers("/location/building/buildings/**").permitAll() // TODO revoke
-				.antMatchers("/evaluation/building/buildings/**").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/api/building/projection/**").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/rest/building/buildings/location/{id:\\w+}").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/evaluation/building/buildings/**").permitAll() // TODO revoke
 				.antMatchers("/api/test/all").permitAll()
 				.antMatchers("/api/test/**").authenticated()
 			.anyRequest().authenticated();

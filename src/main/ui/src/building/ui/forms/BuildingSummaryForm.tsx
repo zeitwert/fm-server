@@ -39,7 +39,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 							<img
 								className="slds-align_absolute-center"
 								style={{ width: "100%" }}
-								src={Config.getLocationUrl("building", "buildings/" + building.id)}
+								src={Config.getRestUrl("building", "buildings/location/" + building.id)}
 								alt="Lageplan"
 							/>
 						</div>
@@ -60,7 +60,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 		}
 		const data = new FormData();
 		data.append("file", this.imageFile);
-		const url = Config.getRestUrl("dms", "documents/" + building.coverFoto?.id + "/content");
+		const url = Config.getRestUrl("building", "buildings/coverFoto/" + building.id);
 		await API.post(url, data);
 		this.imageFile = undefined;
 		this.props.afterSave();

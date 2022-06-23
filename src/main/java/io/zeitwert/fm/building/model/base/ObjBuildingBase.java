@@ -6,6 +6,8 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import java.math.BigDecimal;
 
 import org.jooq.UpdatableRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -39,6 +41,8 @@ import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
+
+	protected static final Logger logger = LoggerFactory.getLogger(ObjBuildingBase.class);
 
 	static final CodeBuildingPriceIndex DefaultPriceIndex = CodeBuildingPriceIndexEnum.getBuildingPriceIndex("ch-ZRH");
 	static final Integer DefaultGeoZoom = 17;
@@ -152,10 +156,15 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		assertThis(this.getCurrentRating() == null, "no rating");
-		ObjBuildingPartRating rating = this.addRating();
-		rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
-		assertThis(this.getCurrentRating() != null, "valid rating");
+		try {
+			this.disableCalc();
+			assertThis(this.getCurrentRating() == null, "no rating");
+			ObjBuildingPartRating rating = this.addRating();
+			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
+			assertThis(this.getCurrentRating() != null, "valid rating");
+		} finally {
+			this.enableCalc();
+		}
 	}
 
 	@Override

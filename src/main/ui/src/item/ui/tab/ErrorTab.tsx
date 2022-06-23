@@ -15,7 +15,7 @@ export default class ErrorTab extends React.Component<ErrorTabProps> {
 				<p><b>{this.props.validationList.length} Fehler</b></p>
 				<ul className="slds-list_dotted">
 					{
-						this.props.validationList.map(e => <li>{e.validation}</li>)
+						this.props.validationList.map((e, index) => <li key={"v-" + index}>{e.validation}</li>)
 					}
 				</ul>
 			</div>

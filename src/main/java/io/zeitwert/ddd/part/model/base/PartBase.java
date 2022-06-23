@@ -223,6 +223,8 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	protected void beginCalc() {
 		this.isInCalc = true;
+		this.didCalcAll = false;
+		this.didCalcVolatile = false;
 	}
 
 	protected void endCalc() {
@@ -236,7 +238,6 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		}
 		try {
 			this.beginCalc();
-			this.didCalcAll = true;
 			this.doCalcAll();
 			this.getAggregate().calcAll();
 			assertThis(this.didCalcAll, this.getClass().getSimpleName() + ": doCalcAll was propagated");
@@ -256,9 +257,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		}
 		try {
 			this.beginCalc();
-			this.didCalcVolatile = false;
 			this.doCalcVolatile();
-			this.getAggregate().calcVolatile();
 			assertThis(this.didCalcVolatile, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {
 			this.endCalc();

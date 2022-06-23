@@ -155,6 +155,8 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	protected void beginCalc() {
 		this.isInCalc = true;
+		this.didCalcAll = false;
+		this.didCalcVolatile = false;
 	}
 
 	protected void endCalc() {
@@ -168,7 +170,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		}
 		try {
 			this.beginCalc();
-			this.didCalcAll = false;
 			this.clearValidationList();
 			this.doCalcAll();
 			assertThis(this.didCalcAll, this.getClass().getSimpleName() + ": doCalcAll was propagated");
@@ -188,7 +189,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		}
 		try {
 			this.beginCalc();
-			this.didCalcVolatile = false;
 			this.doCalcVolatile();
 			assertThis(this.didCalcVolatile, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {

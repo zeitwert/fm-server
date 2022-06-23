@@ -211,8 +211,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	};
 
 	private reload = async () => {
+		this.buildingStore.load(this.buildingStore.id!);
 		// brute force reload
-		window.location.href = "/building/" + this.props.params.buildingId + "?t=" + (new Date()).getTime();
+		// window.location.href = "/building/" + this.props.params.buildingId + "?t=" + (new Date()).getTime();
 	};
 
 	// private onSavePortlet = async (type: string, data: any) => {

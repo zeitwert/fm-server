@@ -1,8 +1,7 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
-import com.google.maps.ImageResult;
-import com.google.maps.model.Size;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,7 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.google.maps.ImageResult;
+import com.google.maps.model.Size;
 
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeRequestDto;
@@ -20,9 +25,12 @@ import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeResponseDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.service.api.BuildingService;
+import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.enums.CodeContentType;
+import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 
 @RestController("buildingLocationController")
-@RequestMapping("/location/building/buildings")
+@RequestMapping("/rest/building/buildings")
 public class BuildingLocationController {
 
 	private static final Integer DefaultGeoZoom = 17;
@@ -37,7 +45,7 @@ public class BuildingLocationController {
 	@Autowired
 	BuildingService buildingService;
 
-	@GetMapping("/{id}")
+	@GetMapping("/location/{id}")
 	protected ResponseEntity<byte[]> getMap(@PathVariable("id") Integer id) {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
@@ -60,9 +68,8 @@ public class BuildingLocationController {
 		return response;
 	}
 
-	@PostMapping
+	@PostMapping("/location")
 	public ResponseEntity<GeocodeResponseDto> getAddress(@RequestBody GeocodeRequestDto request) {
-
 		if (request.getGeoAddress() != null && !request.getGeoAddress().equals("")) {
 		} else if (request.getCountry() == null) {
 			return ResponseEntity.badRequest().build();
@@ -79,6 +86,25 @@ public class BuildingLocationController {
 		}
 		return ResponseEntity.ok()
 				.body(GeocodeResponseDto.builder().geoCoordinates(coordinates).geoZoom(DefaultGeoZoom).build());
+	}
+
+	@RequestMapping(value = "/coverFoto/{id}", method = RequestMethod.POST)
+	public ResponseEntity<Void> storeCoverFoto(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+		try {
+			ObjBuilding building = this.repo.get(sessionInfo, id);
+			ObjDocument document = building.getCoverFoto();
+			CodeContentType contentType = CodeContentTypeEnum.getContentType(file.getContentType(),
+					file.getOriginalFilename());
+			if (contentType == null) {
+				return ResponseEntity.badRequest().body(null);
+			}
+			document.storeContent(contentType, file.getBytes());
+			building.calcAll();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.internalServerError().body(null);
+		}
+		return ResponseEntity.ok().body(null);
 	}
 
 }

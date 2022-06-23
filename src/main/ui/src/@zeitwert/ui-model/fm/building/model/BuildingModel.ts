@@ -158,7 +158,7 @@ const MstBuildingModel = ObjModel.named("Building")
 					});
 					try {
 						const geocodeResponse: AxiosResponse<GeocodeResponse> = yield API.post(
-							Config.getLocationUrl("building", "buildings"),
+							Config.getRestUrl("building", "buildings/location"),
 							{
 								geoAddress: !!self.geoAddress ? self.geoAddress : undefined,
 								street: self.street,

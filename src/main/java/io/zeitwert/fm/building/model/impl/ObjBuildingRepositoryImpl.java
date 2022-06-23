@@ -148,8 +148,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public void doAfterLoad(ObjBuilding building) {
 		super.doAfterLoad(building);
-		if (building.getMeta().getSessionInfo().getTenant().getExtlKey().equals("demo")) {
-			if (building.getNoteList().size() == 0) {
+		if (building.getNoteList().size() == 0) {
+			if (building.getMeta().getSessionInfo().getTenant().getExtlKey().equals("demo")) {
 				for (int i = 0; i < 8.3 * Math.random(); i++) {
 					ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));
 					note.setSubject("Subject of Note " + (i + 1));

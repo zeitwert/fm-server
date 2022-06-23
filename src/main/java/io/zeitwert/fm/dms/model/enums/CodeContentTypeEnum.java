@@ -44,17 +44,17 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 		return INSTANCE.getItem(itemId);
 	}
 
-	public CodeContentType getContentType(String mimeType, String fileName) {
+	public static CodeContentType getContentType(String mimeType, String fileName) {
 		Optional<CodeContentType> maybeContentType = null;
 		if (mimeType != null && !mimeType.isEmpty()) {
-			maybeContentType = this.getItemByMimeType(mimeType);
+			maybeContentType = getItemByMimeType(mimeType);
 			if (maybeContentType.isPresent()) {
 				return maybeContentType.get();
 			}
 		}
 		if (fileName != null && !fileName.isEmpty() && fileName.indexOf(".") >= 0) {
 			String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-			maybeContentType = this.getItemByExtension(extension);
+			maybeContentType = getItemByExtension(extension);
 			if (maybeContentType.isPresent()) {
 				return maybeContentType.get();
 			}
@@ -62,15 +62,15 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 		return null;
 	}
 
-	public Optional<CodeContentType> getItemByMimeType(String mimeType) {
-		return this.getItems()
+	public static Optional<CodeContentType> getItemByMimeType(String mimeType) {
+		return INSTANCE.getItems()
 				.stream()
 				.filter((CodeContentType cct) -> cct.getMimeType().equalsIgnoreCase(mimeType))
 				.findAny();
 	}
 
-	public Optional<CodeContentType> getItemByExtension(String extension) {
-		return this.getItems()
+	public static Optional<CodeContentType> getItemByExtension(String extension) {
+		return INSTANCE.getItems()
 				.stream()
 				.filter((CodeContentType cct) -> cct.getExtension().equalsIgnoreCase(extension))
 				.findAny();
