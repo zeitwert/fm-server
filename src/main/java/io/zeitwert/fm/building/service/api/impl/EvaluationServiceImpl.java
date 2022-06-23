@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.util.Formatter;
@@ -35,7 +34,6 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 	private final ProjectionService projectionService;
 
-	@Autowired
 	public EvaluationServiceImpl(ProjectionService projectionService) {
 		this.projectionService = projectionService;
 	}

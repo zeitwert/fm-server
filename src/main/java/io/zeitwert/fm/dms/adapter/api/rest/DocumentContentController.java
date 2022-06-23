@@ -1,14 +1,7 @@
 package io.zeitwert.fm.dms.adapter.api.rest;
 
-import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.dms.model.enums.CodeContentType;
-import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
-
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.dms.model.enums.CodeContentType;
+import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
+
 @RestController("documentContentController")
 @RequestMapping("/rest/dms/documents")
 public class DocumentContentController {
@@ -27,7 +26,6 @@ public class DocumentContentController {
 	private final ObjDocumentRepository documentRepository;
 	private final CodeContentTypeEnum contentTypeEnum;
 
-	@Autowired
 	public DocumentContentController(SessionInfo sessionInfo, ObjDocumentRepository documentRepository,
 			CodeContentTypeEnum contentTypeEnum) {
 		this.sessionInfo = sessionInfo;

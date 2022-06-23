@@ -1,16 +1,21 @@
 
 package io.zeitwert.fm.lead.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.lead.model.DocLead;
 import io.zeitwert.fm.lead.model.DocLeadRepository;
@@ -19,19 +24,11 @@ import io.zeitwert.fm.lead.model.db.Tables;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadRecord;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
 
-import javax.annotation.PostConstruct;
-
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
-
 @Component("docLeadDbRepository")
 public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadVRecord> implements DocLeadRepository {
 
 	private static final String ITEM_TYPE = "doc_lead";
 
-	@Autowired
 	//@formatter:off
 	protected DocLeadRepositoryImpl(
 		final AppContext appContext,

@@ -1,8 +1,9 @@
 package io.zeitwert.ddd.doc.model.impl;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -14,15 +15,12 @@ import io.zeitwert.ddd.doc.model.base.DocPartTransitionBase;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocPartTransitionRecord;
 
-import java.util.List;
-
 @Component("docPartTransitionRepository")
 public class DocPartTransitionRepositoryImpl extends DocPartRepositoryBase<Doc, DocPartTransition>
 		implements DocPartTransitionRepository {
 
 	private static final String PART_TYPE = "doc_part_transition";
 
-	@Autowired
 	//@formatter:off
 	protected DocPartTransitionRepositoryImpl(
 		final AppContext appContext,

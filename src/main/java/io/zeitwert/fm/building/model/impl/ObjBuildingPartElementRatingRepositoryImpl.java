@@ -1,8 +1,9 @@
 package io.zeitwert.fm.building.model.impl;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -14,8 +15,6 @@ import io.zeitwert.fm.building.model.base.ObjBuildingPartElementRatingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartElementRatingRecord;
 
-import java.util.List;
-
 @Component("buildingPartElementRatingRepository")
 public class ObjBuildingPartElementRatingRepositoryImpl
 		extends ObjPartRepositoryBase<ObjBuilding, ObjBuildingPartElementRating>
@@ -23,7 +22,6 @@ public class ObjBuildingPartElementRatingRepositoryImpl
 
 	private static final String PART_TYPE = "obj_building_part_element_rating";
 
-	@Autowired
 	//@formatter:off
 	protected ObjBuildingPartElementRatingRepositoryImpl(
 		final AppContext appContext,

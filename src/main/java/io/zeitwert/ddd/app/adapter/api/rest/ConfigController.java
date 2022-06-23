@@ -1,16 +1,10 @@
 
 package io.zeitwert.ddd.app.adapter.api.rest;
 
-import io.zeitwert.ddd.util.ResourceReader;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -22,6 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.zeitwert.ddd.util.ResourceReader;
+
 @RestController("configController")
 @RequestMapping("/config")
 public class ConfigController {
@@ -31,7 +30,6 @@ public class ConfigController {
 
 	private ResourceLoader resourceLoader;
 
-	@Autowired
 	public ConfigController(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}

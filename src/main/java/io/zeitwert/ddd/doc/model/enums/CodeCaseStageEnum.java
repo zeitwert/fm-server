@@ -8,7 +8,6 @@ import org.jooq.Field;
 import org.jooq.Record9;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +31,6 @@ public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 	static protected final Field<String> ACTION = DSL.field("action", String.class);
 	static protected final Field<String> AVAILABLE_ACTIONS = DSL.field("available_actions", String.class);
 
-	@Autowired
 	protected CodeCaseStageEnum(final Enumerations enums, final DSLContext dslContext) {
 		super(enums, dslContext);
 		INSTANCE = this;

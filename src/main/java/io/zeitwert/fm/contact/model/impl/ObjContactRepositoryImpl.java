@@ -1,16 +1,24 @@
 
 package io.zeitwert.fm.contact.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
+import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
@@ -21,16 +29,6 @@ import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
-import javax.annotation.PostConstruct;
-
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
-
 @Component("objContactRepository")
 public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, ObjContactVRecord>
 		implements ObjContactRepository {
@@ -40,7 +38,6 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	private final ObjContactPartAddressRepository addressRepository;
 	private final CodePartListType addressListType;
 
-	@Autowired
 	//@formatter:off
 	protected ObjContactRepositoryImpl(
 		final AppContext appContext,

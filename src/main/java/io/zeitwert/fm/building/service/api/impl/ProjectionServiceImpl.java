@@ -1,5 +1,18 @@
 package io.zeitwert.fm.building.service.api.impl;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Service;
+
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -11,20 +24,6 @@ import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.RestorationElement;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Service;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 @Service("projectionService")
 @DependsOn("codeBuildingPriceIndexEnum")
@@ -41,7 +40,6 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 	private final ObjBuildingRepository buildingRepo;
 
-	@Autowired
 	public ProjectionServiceImpl(SessionInfo sessionInfo, ObjBuildingRepository buildingRepo) {
 		this.sessionInfo = sessionInfo;
 		this.buildingRepo = buildingRepo;

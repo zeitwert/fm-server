@@ -1,20 +1,19 @@
 package io.zeitwert.fm.contact.model.impl;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.base.ObjPartRepositoryBase;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.base.ObjContactPartAddressBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.base.ObjPartRepositoryBase;
-
-import java.util.List;
 
 @Component("contactPartAddressRepository")
 public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<ObjContact, ObjContactPartAddress>
@@ -22,7 +21,6 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 
 	private static final String PART_TYPE = "obj_contact_part_address";
 
-	@Autowired
 	//@formatter:off
 	protected ObjContactPartAddressRepositoryImpl(
 		final AppContext appContext,

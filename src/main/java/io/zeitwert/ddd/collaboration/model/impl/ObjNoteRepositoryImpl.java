@@ -1,19 +1,17 @@
 
 package io.zeitwert.ddd.collaboration.model.impl;
 
-import java.util.List;
-
-import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import static io.zeitwert.ddd.util.Check.requireThis;
 
-import io.crnk.core.queryspec.QuerySpec;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
+import org.springframework.stereotype.Component;
+
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.collaboration.model.ObjNote;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
@@ -32,7 +30,6 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 
 	private static final String ITEM_TYPE = "obj_note";
 
-	@Autowired
 	//@formatter:off
 	protected ObjNoteRepositoryImpl(
 		final AppContext appContext,

@@ -4,7 +4,6 @@ package io.zeitwert.fm.building.model.enums;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,6 @@ public final class CodeBuildingElementDescriptionEnum extends EnumerationBase<Co
 
 	private static CodeBuildingElementDescriptionEnum INSTANCE;
 
-	@Autowired
 	private CodeBuildingElementDescriptionEnum(final Enumerations enums, final DSLContext dslContext) {
 		super(enums, dslContext);
 		INSTANCE = this;

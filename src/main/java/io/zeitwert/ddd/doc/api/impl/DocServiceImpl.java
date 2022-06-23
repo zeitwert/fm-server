@@ -10,7 +10,6 @@ import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -30,7 +29,6 @@ public class DocServiceImpl implements DocService {
 	private final CodeCaseStageEnum caseStageEnum;
 	private final DSLContext dslContext;
 
-	@Autowired
 	DocServiceImpl(final CodeCaseStageEnum caseStageEnum, final DSLContext dslContext) {
 		this.caseStageEnum = caseStageEnum;
 		this.dslContext = dslContext;

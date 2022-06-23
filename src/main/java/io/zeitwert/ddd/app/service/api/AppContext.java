@@ -1,19 +1,18 @@
 
 package io.zeitwert.ddd.app.service.api;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.UpdatableRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.crnk.core.boot.CrnkBoot;
 import io.crnk.core.engine.registry.ResourceRegistry;
@@ -47,7 +46,6 @@ public final class AppContext {
 	private final Repositories repos;
 	private final Enumerations enums;
 
-	@Autowired
 	protected AppContext(final ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher,
 			final DSLContext dslContext, Enumerations enums) {
 		this.applicationContext = applicationContext;

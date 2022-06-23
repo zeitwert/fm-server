@@ -1,7 +1,6 @@
 
 package io.zeitwert.ddd.collaboration.adapter.api.jsonapi.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiAdapter;
@@ -16,7 +15,6 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 public class ObjNoteApiRepositoryImpl extends AggregateApiAdapter<ObjNote, ObjNoteVRecord, ObjNoteDto>
 		implements ObjNoteApiRepository {
 
-	@Autowired
 	public ObjNoteApiRepositoryImpl(final ObjNoteRepository repository, SessionInfo sessionInfo) {
 		super(ObjNoteDto.class, sessionInfo, repository, ObjNoteDtoBridge.getInstance());
 	}

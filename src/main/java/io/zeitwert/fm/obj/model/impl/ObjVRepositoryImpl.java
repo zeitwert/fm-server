@@ -3,17 +3,13 @@ package io.zeitwert.fm.obj.model.impl;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.fm.obj.model.ObjVRepository;
-import io.zeitwert.fm.obj.model.base.ObjVBase;
-
-import javax.annotation.PostConstruct;
-
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.Obj;
@@ -23,13 +19,14 @@ import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.obj.model.base.ObjVBase;
 
 @Component("objRepository")
 public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implements ObjVRepository {
 
 	private static final String ITEM_TYPE = "obj";
 
-	@Autowired
 	//@formatter:off
 	protected ObjVRepositoryImpl(
 		final AppContext appContext,

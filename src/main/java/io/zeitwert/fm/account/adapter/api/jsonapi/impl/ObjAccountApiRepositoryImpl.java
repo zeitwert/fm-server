@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiAdapter;
@@ -16,7 +15,6 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 public class ObjAccountApiRepositoryImpl extends AggregateApiAdapter<ObjAccount, ObjAccountVRecord, ObjAccountDto>
 		implements ObjAccountApiRepository {
 
-	@Autowired
 	public ObjAccountApiRepositoryImpl(final ObjAccountRepository repository, SessionInfo sessionInfo) {
 		super(ObjAccountDto.class, sessionInfo, repository, ObjAccountDtoBridge.getInstance());
 	}

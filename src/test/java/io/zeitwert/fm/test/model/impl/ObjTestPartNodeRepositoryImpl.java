@@ -1,8 +1,9 @@
 package io.zeitwert.fm.test.model.impl;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -14,15 +15,12 @@ import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestPartNodeRecord;
 
-import java.util.List;
-
 @Component("testPartNodeRepository")
 public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest, ObjTestPartNode>
 		implements ObjTestPartNodeRepository {
 
 	private static final String PART_TYPE = "obj_test_part_node";
 
-	@Autowired
 	//@formatter:off
 	protected ObjTestPartNodeRepositoryImpl(
 		final AppContext appContext,

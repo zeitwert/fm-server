@@ -1,20 +1,17 @@
 
 package io.zeitwert.fm.doc.model.impl;
 
-import java.util.List;
-
-import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import static io.zeitwert.ddd.util.Check.assertThis;
 
-import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.fm.doc.model.DocRepository;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
+import org.springframework.stereotype.Component;
+
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.Doc;
@@ -25,13 +22,13 @@ import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.doc.model.DocRepository;
 
 @Component("docRepository")
 public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> implements DocRepository {
 
 	private static final String ITEM_TYPE = "doc";
 
-	@Autowired
 	//@formatter:off
 	protected DocRepositoryImpl(
 		final AppContext appContext,

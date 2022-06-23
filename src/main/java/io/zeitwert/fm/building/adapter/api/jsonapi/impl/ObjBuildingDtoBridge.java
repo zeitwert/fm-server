@@ -3,6 +3,9 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
@@ -29,6 +32,8 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 
 	private static ObjBuildingDtoBridge instance;
 
+	private static Logger logger = LoggerFactory.getLogger(ObjBuildingDtoBridge.class);
+
 	private ObjBuildingDtoBridge() {
 	}
 
@@ -41,60 +46,71 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 
 	@Override
 	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj) {
-		super.toAggregate(dto, obj);
+		logger.info("buildingDto.toAggregte.start");
 
-		// @formatter:off
-		obj.setAccountId(dto.getAccountId());
-		obj.setName(dto.getName());
-		obj.setDescription(dto.getDescription());
-		obj.setBuildingNr(dto.getBuildingNr());
-		obj.setInsuranceNr(dto.getInsuranceNr());
-		obj.setPlotNr(dto.getPlotNr());
-		obj.setNationalBuildingId(dto.getNationalBuildingId());
-		obj.setHistoricPreservation(dto.getHistoricPreservation() == null ? null : CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation().getId()));
+		try {
+			obj.getMeta().disableCalc();
 
-		obj.setBuildingType(dto.getBuildingType() == null ? null : CodeBuildingTypeEnum.getBuildingType(dto.getBuildingType().getId()));
-		obj.setBuildingSubType(dto.getBuildingSubType() == null ? null : CodeBuildingSubTypeEnum.getBuildingSubType(dto.getBuildingSubType().getId()));
-		obj.setBuildingYear(dto.getBuildingYear());
-		obj.setStreet(dto.getStreet());
-		obj.setZip(dto.getZip());
-		obj.setCity(dto.getCity());
-		obj.setCountry(dto.getCountry() == null ? null : CodeCountryEnum.getCountry(dto.getCountry().getId()));
-		obj.setGeoAddress(dto.getGeoAddress());
-		obj.setGeoCoordinates(dto.getGeoCoordinates());
-		obj.setGeoZoom(dto.getGeoZoom());
-		obj.setCurrency(dto.getCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getCurrency().getId()));
-		obj.setVolume(dto.getVolume());
-		obj.setAreaGross(dto.getAreaGross());
-		obj.setAreaNet(dto.getAreaNet());
-		obj.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
-		obj.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-		obj.setInsuredValue(dto.getInsuredValue());
-		obj.setInsuredValueYear(dto.getInsuredValueYear());
-		obj.setNotInsuredValue(dto.getNotInsuredValue());
-		obj.setNotInsuredValueYear(dto.getNotInsuredValueYear());
-		obj.setThirdPartyValue(dto.getThirdPartyValue());
-		obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
+			super.toAggregate(dto, obj);
 
-		if (obj.getCurrentRating() != null) {
-			ObjBuildingPartRating rating = obj.getCurrentRating();
-			rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getPartCatalog(dto.getPartCatalog().getId()));
-			rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
-			rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
-			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() == null ? null : getUserRepository().get(dto.getRatingUser().getId()));
-			dto.getElements().forEach(elementDto -> {
-				ObjBuildingPartElementRating element = null;
-				if (elementDto.getId() == null) {
-					assertThis(elementDto.getBuildingPart() != null, "valid buildingPart");
-					element = rating.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
-				} else {
-					element = rating.getElementById(elementDto.getId());
-				}
-				elementDto.toPart(element);
-			});
+			// @formatter:off
+			obj.setAccountId(dto.getAccountId());
+			obj.setName(dto.getName());
+			obj.setDescription(dto.getDescription());
+			obj.setBuildingNr(dto.getBuildingNr());
+			obj.setInsuranceNr(dto.getInsuranceNr());
+			obj.setPlotNr(dto.getPlotNr());
+			obj.setNationalBuildingId(dto.getNationalBuildingId());
+			obj.setHistoricPreservation(dto.getHistoricPreservation() == null ? null : CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation().getId()));
+
+			obj.setBuildingType(dto.getBuildingType() == null ? null : CodeBuildingTypeEnum.getBuildingType(dto.getBuildingType().getId()));
+			obj.setBuildingSubType(dto.getBuildingSubType() == null ? null : CodeBuildingSubTypeEnum.getBuildingSubType(dto.getBuildingSubType().getId()));
+			obj.setBuildingYear(dto.getBuildingYear());
+			obj.setStreet(dto.getStreet());
+			obj.setZip(dto.getZip());
+			obj.setCity(dto.getCity());
+			obj.setCountry(dto.getCountry() == null ? null : CodeCountryEnum.getCountry(dto.getCountry().getId()));
+			obj.setGeoAddress(dto.getGeoAddress());
+			obj.setGeoCoordinates(dto.getGeoCoordinates());
+			obj.setGeoZoom(dto.getGeoZoom());
+			obj.setCurrency(dto.getCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getCurrency().getId()));
+			obj.setVolume(dto.getVolume());
+			obj.setAreaGross(dto.getAreaGross());
+			obj.setAreaNet(dto.getAreaNet());
+			obj.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
+			obj.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
+			obj.setInsuredValue(dto.getInsuredValue());
+			obj.setInsuredValueYear(dto.getInsuredValueYear());
+			obj.setNotInsuredValue(dto.getNotInsuredValue());
+			obj.setNotInsuredValueYear(dto.getNotInsuredValueYear());
+			obj.setThirdPartyValue(dto.getThirdPartyValue());
+			obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
+
+			if (obj.getCurrentRating() != null) {
+				ObjBuildingPartRating rating = obj.getCurrentRating();
+				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getPartCatalog(dto.getPartCatalog().getId()));
+				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
+				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
+				rating.setRatingDate(dto.getRatingDate());
+				rating.setRatingUser(dto.getRatingUser() == null ? null : getUserRepository().get(dto.getRatingUser().getId()));
+				dto.getElements().forEach(elementDto -> {
+					ObjBuildingPartElementRating element = null;
+					if (elementDto.getId() == null) {
+						assertThis(elementDto.getBuildingPart() != null, "valid buildingPart");
+						element = rating.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
+					} else {
+						element = rating.getElementById(elementDto.getId());
+					}
+					elementDto.toPart(element);
+				});
+			}
+			// @formatter:on
+
+		} finally {
+			obj.getMeta().enableCalc();
+			obj.calcAll();
 		}
-		// @formatter:on
+		logger.info("buildingDto.toAggregte.stop");
 	}
 
 	@Override

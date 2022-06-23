@@ -3,7 +3,6 @@ package io.zeitwert.ddd.app.adapter.api.rest;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -23,7 +22,6 @@ public class MockController {
 
 	private ResourceLoader resourceLoader;
 
-	@Autowired
 	public MockController(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}

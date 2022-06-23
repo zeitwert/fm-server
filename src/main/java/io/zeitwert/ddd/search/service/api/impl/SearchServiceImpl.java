@@ -13,7 +13,6 @@ import org.jooq.Result;
 import org.jooq.SelectWithTiesAfterOffsetStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
@@ -34,7 +33,6 @@ public class SearchServiceImpl implements SearchService {
 	private final CodeAggregateTypeEnum aggregateTypeEnum;
 	private final DSLContext dslContext;
 
-	@Autowired
 	SearchServiceImpl(final CodeAggregateTypeEnum aggregateTypeEnum, final DSLContext dslContext) {
 		this.aggregateTypeEnum = aggregateTypeEnum;
 		this.dslContext = dslContext;

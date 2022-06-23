@@ -1,15 +1,16 @@
 
 package io.zeitwert.ddd.oe.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -27,8 +28,6 @@ import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.SessionService;
 
-import javax.annotation.PostConstruct;
-
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>
 		implements ObjTenantRepository {
@@ -37,7 +36,6 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 
 	private final SessionInfo globalSessionInfo;
 
-	@Autowired
 	//@formatter:off
 	protected ObjTenantRepositoryImpl(
 		final AppContext appContext,

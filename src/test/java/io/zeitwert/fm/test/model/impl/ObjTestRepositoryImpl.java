@@ -1,14 +1,15 @@
 
 package io.zeitwert.fm.test.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -27,8 +28,6 @@ import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
-import javax.annotation.PostConstruct;
-
 @Component("objTestRepository")
 public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
 
@@ -37,7 +36,6 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	private final ObjTestPartNodeRepository nodeRepository;
 	private final CodePartListType nodeListType;
 
-	@Autowired
 	//@formatter:off
 	protected ObjTestRepositoryImpl(
 		final AppContext appContext,

@@ -1,15 +1,16 @@
 
 package io.zeitwert.fm.account.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -26,15 +27,12 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
-import javax.annotation.PostConstruct;
-
 @Component("objAccountRepository")
 public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
 
 	private static final String ITEM_TYPE = "obj_account";
 
-	@Autowired
 	//@formatter:off
 	protected ObjAccountRepositoryImpl(
 		final AppContext appContext,

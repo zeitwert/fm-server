@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiAdapter;
@@ -16,7 +15,6 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 public class ObjDocumentApiRepositoryImpl extends AggregateApiAdapter<ObjDocument, ObjDocumentVRecord, ObjDocumentDto>
 		implements ObjDocumentApiRepository {
 
-	@Autowired
 	public ObjDocumentApiRepositoryImpl(final ObjDocumentRepository repository, SessionInfo sessionInfo) {
 		super(ObjDocumentDto.class, sessionInfo, repository, ObjDocumentDtoBridge.getInstance());
 	}
