@@ -202,15 +202,18 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		this.calcAll();
 	}
 
-	protected boolean isCalcEnabled() {
-		return this.isCalcDisabled == 0;
+	@Override
+	public boolean isCalcEnabled() {
+		return this.isCalcDisabled == 0 && this.getAggregate().getMeta().isCalcEnabled();
 	}
 
-	protected void disableCalc() {
+	@Override
+	public void disableCalc() {
 		this.isCalcDisabled += 1;
 	}
 
-	protected void enableCalc() {
+	@Override
+	public void enableCalc() {
 		this.isCalcDisabled -= 1;
 	}
 

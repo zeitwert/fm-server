@@ -1,10 +1,10 @@
 
 package io.zeitwert.ddd.aggregate.model;
 
+import org.jooq.Record;
+
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
-
-import org.jooq.Record;
 
 /**
  * A DDD Aggregate Root.

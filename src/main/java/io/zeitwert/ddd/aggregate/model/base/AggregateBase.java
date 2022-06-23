@@ -134,15 +134,18 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 				.validationLevel(validationLevel).validation(validation).build());
 	}
 
-	protected boolean isCalcEnabled() {
+	@Override
+	public boolean isCalcEnabled() {
 		return this.isCalcDisabled == 0;
 	}
 
-	protected void disableCalc() {
+	@Override
+	public void disableCalc() {
 		this.isCalcDisabled += 1;
 	}
 
-	protected void enableCalc() {
+	@Override
+	public void enableCalc() {
 		this.isCalcDisabled -= 1;
 	}
 
@@ -152,7 +155,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	protected void beginCalc() {
 		this.isInCalc = true;
-		this.clearValidationList();
 	}
 
 	protected void endCalc() {
@@ -167,6 +169,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		try {
 			this.beginCalc();
 			this.didCalcAll = false;
+			this.clearValidationList();
 			this.doCalcAll();
 			assertThis(this.didCalcAll, this.getClass().getSimpleName() + ": doCalcAll was propagated");
 		} finally {

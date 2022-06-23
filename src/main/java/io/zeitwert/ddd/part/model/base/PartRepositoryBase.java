@@ -113,7 +113,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		assertThis(((PartBase<?>) p).doInitSeqNr > doInitSeqNr, p.getClass().getSimpleName() + ": doInit was propagated");
 		assertThis(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
 
-		// ((PartSPI<A>) p).calcAll();
+		p.calcAll();
 		this.partCache.addPart(p);
 
 		Integer doAfterCreateSeqNr = ((PartBase<?>) p).doAfterCreateSeqNr;
@@ -136,6 +136,9 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 			((PartSPI<?>) part).doAssignParts();
 			assertThis(((PartBase<?>) part).doAssignPartsSeqNr > doAssignPartsSeqNr,
 					part.getClass().getSimpleName() + ": doAssignParts was propagated");
+		}
+		for (P part : parts) {
+			part.calcVolatile();
 		}
 		for (P part : parts) {
 			Integer doAfterLoadSeqNr = ((PartBase<?>) part).doAfterLoadSeqNr;
