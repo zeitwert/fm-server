@@ -3,6 +3,10 @@ package io.zeitwert.fm.dms.model.base;
 
 import org.jooq.UpdatableRecord;
 
+import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKind;
@@ -13,10 +17,6 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.session.model.SessionInfo;
 
 public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
@@ -27,6 +27,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	protected final EnumProperty<CodeDocumentCategory> documentCategory;
 	protected final ReferenceProperty<ObjDocument> templateDocument;
 	protected final EnumProperty<CodeContentKind> contentKind;
+	protected CodeContentType contentType;
 
 	protected ObjDocumentBase(SessionInfo sessionInfo, ObjDocumentRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> documentRecord) {
@@ -47,8 +48,14 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	}
 
 	@Override
+	public void doAfterLoad() {
+		super.doAfterLoad();
+		this.contentType = this.getRepository().getContentType(this);
+	}
+
+	@Override
 	public CodeContentType getContentType() {
-		return this.getRepository().getContentType(this);
+		return this.contentType;
 	}
 
 	@Override
@@ -59,6 +66,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	@Override
 	public void storeContent(CodeContentType contentType, byte[] content) {
 		this.getRepository().storeContent(this.getSessionInfo(), this, contentType, content);
+		this.contentType = contentType;
 	}
 
 	@Override

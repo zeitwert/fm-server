@@ -14,8 +14,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.exception.NoDataFoundException;
 import org.jooq.impl.DSL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -41,7 +39,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 		implements ObjDocumentRepository {
 
 	private static final String ITEM_TYPE = "obj_document";
-	private static Logger logger = LoggerFactory.getLogger(ObjDocumentRepositoryImpl.class);
 
 	private static final ObjDocumentPartContent DOCUMENT_CONTENT = Tables.OBJ_DOCUMENT_PART_CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> OBJ_ID = DOCUMENT_CONTENT.OBJ_ID;
@@ -106,7 +103,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public CodeContentType getContentType(ObjDocument document) {
-		logger.info("getContentType(" + document.getId() + ")");
 		Table<ObjDocumentPartContentRecord> query = this.getMaxContentVersionQuery(document);
 		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getMaxVersionQuery(document));
 		if (maxVersionNr == null) {
