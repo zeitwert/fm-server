@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.util.Formatter;
@@ -82,6 +83,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 
 		List<EvaluationParameter> params = new ArrayList<>();
+		this.addParameter(params, "IH kurzfristig (nächstes Jahr)", "TBD");
+		this.addParameter(params, "IH mittelfristig (2-5 Jahre)", "TBD");
+		this.addParameter(params, "IS kurzfristig (nächstes Jahr)", "TBD");
+		this.addParameter(params, "IS mittelfristig (2-5 Jahre)", "TBD");
 		this.addParameter(params, "Laufzeit", "25 Jahre");
 		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionServiceImpl.DefaultInflationRate) + " %");
 
@@ -91,9 +96,16 @@ public class EvaluationServiceImpl implements EvaluationService {
 		List<EvaluationElement> elements = new ArrayList<>();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 			if (element.getValuePart() > 0) {
+				String description = this.replaceEol(element.getDescription());
+				if (!StringUtils.isEmpty(element.getConditionDescription())) {
+					description += "<br/><b>Zustand</b>: " + element.getConditionDescription();
+				}
+				if (!StringUtils.isEmpty(element.getMeasureDescription())) {
+					description += "<br/><b>Massnahmen</b>: " + element.getMeasureDescription();
+				}
 				EvaluationElement dto = EvaluationElement.builder()
 						.name(element.getBuildingPart().getName())
-						.description(this.replaceEol(element.getDescription()))
+						.description(description)
 						.valuePart(element.getValuePart())
 						.rating(element.getCondition())
 						.ratingColor(getRatingColor(element.getCondition()))
