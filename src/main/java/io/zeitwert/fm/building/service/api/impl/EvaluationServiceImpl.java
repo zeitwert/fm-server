@@ -1,5 +1,7 @@
 package io.zeitwert.fm.building.service.api.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 			value = building.getCurrentRating().getPartCatalog().getName();
 			this.addParameter(facts, "Gebäudekategorie", value);
 		}
-		if (building.getBuildingYear() != null) {
+		if (building.getBuildingYear() > 0) {
 			value = Integer.toString(building.getBuildingYear());
 			this.addParameter(facts, "Baujahr", value);
 		}
@@ -82,15 +84,19 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Gebäudetyp", value);
 		}
 
+		ProjectionResult projectionResult = projectionService.getProjection(building);
+		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
+		String midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF");
+		String longTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF");
+		String averageMaintenance = fmt.formatMonetaryValue(this.getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF");
+
 		List<EvaluationParameter> params = new ArrayList<>();
-		this.addParameter(params, "IH kurzfristig (nächstes Jahr)", "TBD");
-		this.addParameter(params, "IH mittelfristig (2-5 Jahre)", "TBD");
-		this.addParameter(params, "IS kurzfristig (nächstes Jahr)", "TBD");
-		this.addParameter(params, "IS mittelfristig (2-5 Jahre)", "TBD");
 		this.addParameter(params, "Laufzeit", "25 Jahre");
 		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionServiceImpl.DefaultInflationRate) + " %");
-
-		ProjectionResult projectionResult = projectionService.getProjection(building);
+		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
+		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
+		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
+		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance);
 
 		Integer ratingYear = 9999;
 		List<EvaluationElement> elements = new ArrayList<>();
@@ -109,8 +115,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 						.valuePart(element.getValuePart())
 						.rating(element.getCondition())
 						.ratingColor(getRatingColor(element.getCondition()))
-						.restorationYear(getRestorationYear(projectionResult, building, element.getBuildingPart()))
-						.restorationCosts(getRestorationCosts(projectionResult, building, element.getBuildingPart()))
+						.restorationYear(getRestorationYear(projectionResult, element.getBuildingPart()))
+						.restorationCosts(getRestorationCosts(projectionResult, element.getBuildingPart()))
 						.build();
 				elements.add(dto);
 				if (element.getConditionYear() < ratingYear) {
@@ -174,8 +180,31 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return text != null ? text.replace("<br>", SOFT_RETURN) : "";
 	}
 
-	private Integer getRestorationYear(ProjectionResult projectionResult, ObjBuilding building,
-			CodeBuildingPart buildingPart) {
+	private Integer getAverageMaintenanceCosts(ProjectionResult projectionResult, int startYear, int endYear) {
+		requireThis(startYear <= endYear, "valid years");
+		double costs = 0.0;
+		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
+			int yearSinceStart = pp.getYear() - projectionResult.getStartYear();
+			if (startYear <= yearSinceStart && yearSinceStart <= endYear) {
+				costs += pp.getMaintenanceCosts();
+			}
+		}
+		return (int) (Math.round((costs / (endYear - startYear + 1)) / 1000) * 1000);
+	}
+
+	private Integer getRestorationCosts(ProjectionResult projectionResult, int startYear, int endYear) {
+		requireThis(startYear <= endYear, "valid years");
+		double costs = 0.0;
+		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
+			int yearSinceStart = pp.getYear() - projectionResult.getStartYear();
+			if (startYear <= yearSinceStart && yearSinceStart <= endYear) {
+				costs += pp.getRestorationCosts();
+			}
+		}
+		return (int) (Math.round(costs / 1000) * 1000);
+	}
+
+	private Integer getRestorationYear(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
 			for (RestorationElement re : pp.getRestorationElements()) {
 				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {
@@ -186,8 +215,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return null;
 	}
 
-	private Integer getRestorationCosts(ProjectionResult projectionResult, ObjBuilding building,
-			CodeBuildingPart buildingPart) {
+	private Integer getRestorationCosts(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
 			for (RestorationElement re : pp.getRestorationElements()) {
 				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {

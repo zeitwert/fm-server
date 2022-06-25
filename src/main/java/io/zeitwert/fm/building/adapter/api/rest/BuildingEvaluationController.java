@@ -10,6 +10,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.aspose.words.AxisBound;
 import com.aspose.words.Cell;
 import com.aspose.words.Chart;
@@ -37,19 +52,6 @@ import com.aspose.words.WrapType;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -60,8 +62,6 @@ import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
 
-import javax.annotation.PostConstruct;
-
 @RestController("buildingEvaluationController")
 @RequestMapping("/evaluation/building/buildings")
 public class BuildingEvaluationController {
@@ -70,7 +70,8 @@ public class BuildingEvaluationController {
 	private static final int CoverFotoHeight = 230;
 
 	// private static final String OPT_IS_MARKER = "\u058D";
-	private static final String OptimumRenovationMarker = "X";
+	// private static final String OptimumRenovationMarker = "X";
+	private static final String OptimumRenovationMarker = Character.toString((char) 110);
 
 	private Logger logger = LoggerFactory.getLogger(BuildingEvaluationController.class);
 
@@ -286,7 +287,9 @@ public class BuildingEvaluationController {
 				if (restorationYear != null) {
 					Integer delta = (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
 					cell = getNthNextSibling(row.getFirstCell(), delta);
-					cell.getFirstParagraph().appendChild(new Run(doc, OptimumRenovationMarker));
+					Run marker = new Run(doc, OptimumRenovationMarker);
+					marker.getFont().setName("Webdings");
+					cell.getFirstParagraph().appendChild(marker);
 					cell = row.getLastCell();
 					String costs = Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF");
 					cell.getFirstParagraph().appendChild(new Run(doc, costs));

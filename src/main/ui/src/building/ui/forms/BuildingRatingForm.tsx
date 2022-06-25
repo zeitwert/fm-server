@@ -103,16 +103,16 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 													}
 												</FieldGroup>
 											</div>
-											<Select label="Unterhaltsplanung" accessor={this.formState.field("maintenanceStrategy")} size={2} />
-											<Select label="Bewertungsstatus" accessor={this.formState.field("ratingStatus")} size={2} />
-											<Input label="Bewertungsdatum" accessor={this.formState.field("ratingDate")} size={1} />
-											<Select label="Bewertung durch" accessor={this.formState.field("ratingUser")} size={2} />
-											<div className="slds-size_1-of-12" />
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="Optionen">
 													<Checkbox labels={{ label: "Alle Bauteile" }} checked={this.showAllElements} onChange={() => this.showAllElements = !this.showAllElements}></Checkbox>
 												</FieldGroup>
 											</div>
+											<Select label="Unterhaltsplanung" accessor={this.formState.field("maintenanceStrategy")} size={2} />
+											<Input label="Bewertungsdatum" accessor={this.formState.field("ratingDate")} size={1} />
+											<Select label="Bewertung durch" accessor={this.formState.field("ratingUser")} size={2} />
+											<div className="slds-size_1-of-12" />
+											<Select label="Bewertungsstatus" accessor={this.formState.field("ratingStatus")} size={2} />
 										</FieldRow>
 									</FieldGroup>
 								</div>
