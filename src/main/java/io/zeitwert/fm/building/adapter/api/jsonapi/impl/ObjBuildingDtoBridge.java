@@ -201,7 +201,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.thirdPartyValue(obj.getThirdPartyValue())
 			.thirdPartyValueYear(obj.getThirdPartyValueYear());
 		// if (obj.getCurrentRating() != null) {
-		// .buildingPartCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getBuildingPartCatalog(obj.getBuildingPartCatalogId())))
+		// .partCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getPartCatalog(obj.getPartCatalogId())))
 		// .buildingMaintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(obj.getBuildingMaintenanceStrategyId())))
 		//.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a)).toList())
 		// }

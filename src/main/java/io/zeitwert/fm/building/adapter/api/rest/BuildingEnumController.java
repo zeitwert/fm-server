@@ -36,27 +36,28 @@ public class BuildingEnumController {
 		return ResponseEntity.ok().body(CodeBuildingSubTypeEnum.getBuildingSubTypeList(buildingType));
 	}
 
-	@GetMapping("/building/codeBuildingPartCatalog/{buildingPartCatalogId}")
-	public ResponseEntity<List<BuildingPartWeightDto>> getBuildingPartCatalog(
-			@PathVariable String buildingPartCatalogId) {
-		CodeBuildingPartCatalog buildingPartCatalog = CodeBuildingPartCatalogEnum
-				.getPartCatalog(buildingPartCatalogId);
-		if (buildingPartCatalog == null) {
+	@GetMapping("/building/codeBuildingPartCatalog/{partCatalogId}")
+	public ResponseEntity<List<BuildingPartWeightDto>> getPartCatalog(@PathVariable String partCatalogId) {
+		CodeBuildingPartCatalog partCatalog = CodeBuildingPartCatalogEnum.getPartCatalog(partCatalogId);
+		if (partCatalog == null) {
 			return ResponseEntity.notFound().build();
 		}
 		//@formatter:off
-		return ResponseEntity.ok().body(buildingPartCatalog.getPartList().stream().map(p -> {
-			return BuildingPartWeightDto.builder()
-				.part(EnumeratedDto.fromEnum(p.getLeft()))
-				.weight(p.getRight())
-				.lifeTime20(projectionService.getLifetime(p.getLeft(), 0.2))
-				.lifeTime50(projectionService.getLifetime(p.getLeft(), 0.5))
-				.lifeTime70(projectionService.getLifetime(p.getLeft(), 0.7))
-				.lifeTime85(projectionService.getLifetime(p.getLeft(), 0.85))
-				.lifeTime95(projectionService.getLifetime(p.getLeft(), 0.95))
-				.lifeTime100(projectionService.getLifetime(p.getLeft(), 1.0))
-				.build();
-		}).toList());
+		return ResponseEntity.ok()
+			.body(
+				partCatalog.getPartList().stream().map(p -> {
+					return BuildingPartWeightDto.builder()
+						.part(EnumeratedDto.fromEnum(p.getLeft()))
+						.weight(p.getRight())
+						.lifeTime20(projectionService.getLifetime(p.getLeft(), 0.2))
+						.lifeTime50(projectionService.getLifetime(p.getLeft(), 0.5))
+						.lifeTime70(projectionService.getLifetime(p.getLeft(), 0.7))
+						.lifeTime85(projectionService.getLifetime(p.getLeft(), 0.85))
+						.lifeTime95(projectionService.getLifetime(p.getLeft(), 0.95))
+						.lifeTime100(projectionService.getLifetime(p.getLeft(), 1.0))
+						.build();
+				}).toList()
+			);
 		//@formatter:on
 	}
 
