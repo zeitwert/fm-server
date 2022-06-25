@@ -14,9 +14,6 @@ import io.zeitwert.fm.obj.model.FMObj;
 
 public interface ObjBuilding extends FMObj {
 
-	@Override
-	ObjBuildingRepository getRepository();
-
 	Integer getAccountId();
 
 	void setAccountId(Integer id);

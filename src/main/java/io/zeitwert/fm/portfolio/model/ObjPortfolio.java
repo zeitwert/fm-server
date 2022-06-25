@@ -7,9 +7,6 @@ import io.zeitwert.fm.obj.model.FMObj;
 
 public interface ObjPortfolio extends FMObj {
 
-	@Override
-	ObjPortfolioRepository getRepository();
-
 	Integer getAccountId();
 
 	void setAccountId(Integer id);

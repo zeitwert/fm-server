@@ -4,6 +4,8 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.jooq.Record;
+
 import io.crnk.core.resource.meta.MetaInformation;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -23,7 +25,6 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.validation.adapter.api.jsonapi.dto.AggregatePartValidationDto;
 import lombok.Builder;
 import lombok.Data;
-import org.jooq.Record;
 
 @Data
 @Builder
@@ -49,7 +50,7 @@ public class ObjMetaDto implements MetaInformation {
 		// @formatter:off
 		return ObjMetaDto.builder()
 			.sessionId(sessionInfo.getId())
-			.itemType(EnumeratedDto.fromEnum(obj.getRepository().getAggregateType()))
+			.itemType(EnumeratedDto.fromEnum(obj.getMeta().getAggregateType()))
 			.tenant(tenantBridge.fromAggregate(obj.getTenant(), sessionInfo))
 			.owner(userBridge.fromAggregate(obj.getOwner(), sessionInfo))
 			.createdByUser(userBridge.fromAggregate(meta.getCreatedByUser(), sessionInfo))

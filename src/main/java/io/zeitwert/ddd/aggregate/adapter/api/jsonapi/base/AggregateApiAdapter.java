@@ -1,20 +1,21 @@
 
 package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base;
 
+import java.util.List;
+
+import org.jooq.TableRecord;
+
 import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.queryspec.QuerySpec;
+import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBridge;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.crnk.core.repository.ResourceRepositoryBase;
-
-import java.util.List;
-
-import org.jooq.TableRecord;
 
 public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
@@ -77,7 +78,10 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 			throw new BadRequestException("Can only delete existing object (missing id)");
 		}
 		A aggregate = this.repository.get(this.sessionInfo, id);
-		aggregate.delete();
+		if (!(aggregate instanceof Obj)) {
+			throw new BadRequestException("Can only delete an Object");
+		}
+		((Obj) aggregate).delete();
 		this.repository.store(aggregate);
 	}
 

@@ -1,18 +1,15 @@
 package io.zeitwert.fm.test.model;
 
-import io.zeitwert.fm.account.model.enums.CodeArea;
-import io.zeitwert.fm.obj.model.FMObj;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-public interface ObjTest extends FMObj {
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.obj.model.FMObj;
 
-	@Override
-	ObjTestRepository getRepository();
+public interface ObjTest extends FMObj {
 
 	String getShortText();
 

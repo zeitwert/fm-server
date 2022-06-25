@@ -23,6 +23,7 @@ import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -75,7 +76,8 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjBuildingPartElementRatingRepository elementRepo = this.getAggregate().getRepository().getElementRepository();
+		ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
+		ObjBuildingPartElementRatingRepository elementRepo = repo.getElementRepository();
 		List<ObjBuildingPartElementRating> elementList = elementRepo.getPartList(this,
 				this.getRepository().getElementListType());
 		this.elementList.loadPartList(elementList);
@@ -85,8 +87,8 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		if (property == this.elementList) {
-			ObjBuildingPartElementRatingRepository elementRepo = this.getAggregate().getRepository().getElementRepository();
-			return (P) elementRepo.create(this, partListType);
+			ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
+			return (P) repo.getElementRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

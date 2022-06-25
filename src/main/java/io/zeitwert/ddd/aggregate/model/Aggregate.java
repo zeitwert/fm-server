@@ -1,8 +1,6 @@
 
 package io.zeitwert.ddd.aggregate.model;
 
-import org.jooq.Record;
-
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 
@@ -11,19 +9,17 @@ import io.zeitwert.ddd.oe.model.ObjUser;
  */
 public interface Aggregate {
 
-	AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
-
 	AggregateMeta getMeta();
 
 	ObjTenant getTenant();
 
-	ObjUser getOwner();
-
-	void setOwner(ObjUser owner);
-
 	Integer getId();
 
 	String getCaption();
+
+	ObjUser getOwner();
+
+	void setOwner(ObjUser owner);
 
 	/**
 	 * Calculate all the derived fields, typically after a field change.
@@ -36,10 +32,5 @@ public interface Aggregate {
 	 * database.
 	 */
 	void calcVolatile();
-
-	/**
-	 * Delete the Aggregate (i.e. set closed_by_user_id, closed_at)
-	 */
-	void delete();
 
 }
