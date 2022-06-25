@@ -63,7 +63,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 					return false;
 				},
 				isDisabled: (accessor) => {
-					if (["buildingPartCatalog"].indexOf(accessor.fieldref) >= 0) {
+					if (["partCatalog"].indexOf(accessor.fieldref) >= 0) {
 						return !!building.partCatalog;
 					} else if (["elements[].condition", "elements[].conditionYear"].indexOf(accessor.fieldref) >= 0) {
 						return !(accessor.parent as any)?.fieldAccessors.get("valuePart").value;
@@ -206,13 +206,13 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 	private onEditPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>): void => {
 		this.props.store.edit();
 		const building = this.props.store.item!;
-		building.setBuildingPartCatalog(undefined);
+		building.setPartCatalog(undefined);
 	}
 
 	private onSetPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>): void => {
 		const building = this.props.store.item!;
-		const buildingPartCatalog = toJS(this.formState.field("partCatalog").references.getById(e.target.value));
-		building.setBuildingPartCatalog(buildingPartCatalog);
+		const partCatalog = toJS(this.formState.field("partCatalog").references.getById(e.target.value));
+		building.setPartCatalog(partCatalog);
 	}
 
 }

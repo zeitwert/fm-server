@@ -76,10 +76,10 @@ const MstBuildingModel = ObjModel.named("Building")
 			id && (await (self.rootStore as BuildingStore).accountsStore.loadAccount(id));
 			return superSetField("account", id);
 		}
-		async function setBuildingPartCatalog(catalog: Enumerated | undefined) {
+		async function setPartCatalog(catalog: Enumerated | undefined) {
 			self.elements.clear();
 			if (!catalog?.id) {
-				return superSetField("buildingPartCatalog", undefined);
+				return superSetField("partCatalog", undefined);
 			}
 			return flow(function* () {
 				try {
@@ -97,9 +97,9 @@ const MstBuildingModel = ObjModel.named("Building")
 						}
 						self.addElement(element as any);
 					});
-					return superSetField("buildingPartCatalog", catalog);
+					return superSetField("partCatalog", catalog);
 				} catch (error: any) {
-					console.error("Failed to set buildingPartCatalog", error);
+					console.error("Failed to set partCatalog", error);
 				}
 			})();
 		}
@@ -108,8 +108,8 @@ const MstBuildingModel = ObjModel.named("Building")
 				case "account": {
 					return setAccount(value);
 				}
-				case "buildingPartCatalog": {
-					return setBuildingPartCatalog(value);
+				case "partCatalog": {
+					return setPartCatalog(value);
 				}
 				default: {
 					return superSetField(field, value);
@@ -118,7 +118,7 @@ const MstBuildingModel = ObjModel.named("Building")
 		}
 		return {
 			setAccount,
-			setBuildingPartCatalog,
+			setPartCatalog,
 			setField
 		};
 	})
