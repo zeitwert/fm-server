@@ -3,6 +3,7 @@ import { Language } from "./Language";
 import { Locale } from "./Locale";
 
 export interface Formatter {
+
 	currentLocale(): Locale | Language;
 
 	currentLanguage(): Language;
@@ -18,4 +19,5 @@ export interface Formatter {
 	amountFormatter(locale: Locale | Language, currency: Currency, digits: number): Intl.NumberFormat;
 
 	formatAmount(amount: number, currency: Currency, digits?: number, locale?: Locale | Language): string;
+
 }

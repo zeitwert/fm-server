@@ -1,6 +1,7 @@
 import { DataTable, DataTableColumn, DataTableRowActions, Dropdown } from "@salesforce/design-system-react";
 import { toJS } from "mobx";
 import React from "react";
+import { DataTableCellWithText } from "../custom/CustomDataTableCells";
 
 interface ReportLineProps {
 	items?: any;
@@ -129,7 +130,12 @@ export class ReportLine extends React.Component<ReportLineProps, ReportLineState
 								);
 							}
 						}
-						return <DataTableColumn {...props} />;
+						return (
+							<DataTableColumn {...props}>
+								<DataTableCellWithText type={header.type} link={header.link} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick} />
+							</DataTableColumn>
+						);
+						// return <DataTableColumn {...props} />;
 					})
 				}
 				{

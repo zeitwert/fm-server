@@ -19,7 +19,7 @@ const buildingStore = BuildingStoreModel.create({});
 export default class BuildingArea extends React.Component {
 
 	@observable showPreview = false;
-	@observable previewItem: Building | undefined;
+	@observable previewItemId: string | undefined;
 	@observable doImport = false;
 
 	get ctx() {
@@ -58,9 +58,9 @@ export default class BuildingArea extends React.Component {
 								)
 							}
 							{
-								this.showPreview && this.previewItem &&
+								this.showPreview && this.previewItemId &&
 								<SidePanel>
-									<BuildingPreview building={this.previewItem} onClose={this.closePreview} />
+									<BuildingPreview buildingId={this.previewItemId} onClose={this.closePreview} />
 								</SidePanel>
 							}
 						</div>
@@ -71,14 +71,14 @@ export default class BuildingArea extends React.Component {
 		);
 	}
 
-	private openPreview = (item: Building) => {
+	private openPreview = (itemId: string) => {
 		this.showPreview = true;
-		this.previewItem = item;
+		this.previewItemId = itemId;
 	};
 
 	private closePreview = () => {
 		this.showPreview = false;
-		this.previewItem = undefined;
+		this.previewItemId = undefined;
 	};
 
 	private openImport = () => {

@@ -59,7 +59,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 			value = building.getCurrentRating().getPartCatalog().getName();
 			this.addParameter(facts, "Gebäudekategorie", value);
 		}
-		if (building.getBuildingYear() > 0) {
+		if (building.getBuildingYear() != null && building.getBuildingYear() > 0) {
 			value = Integer.toString(building.getBuildingYear());
 			this.addParameter(facts, "Baujahr", value);
 		}
@@ -101,7 +101,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		Integer ratingYear = 9999;
 		List<EvaluationElement> elements = new ArrayList<>();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
-			if (element.getValuePart() > 0) {
+			if (element.getValuePart() != null && element.getValuePart() > 0) {
 				String description = this.replaceEol(element.getDescription());
 				if (!StringUtils.isEmpty(element.getConditionDescription())) {
 					description += "<br/><b>Zustand</b>: " + element.getConditionDescription();

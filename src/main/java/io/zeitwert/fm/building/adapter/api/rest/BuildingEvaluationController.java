@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -204,11 +206,11 @@ public class BuildingEvaluationController {
 		}
 
 		String fileName = this.getFileName(building, saveFormat);
-		ResponseEntity<byte[]> response = ResponseEntity.ok()
-				.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"") // mark file for download
-				.body(outStream.toByteArray());
-
-		return response;
+		// mark file for download
+		ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDisposition(contentDisposition);
+		return ResponseEntity.ok().headers(headers).body(outStream.toByteArray());
 
 	}
 
@@ -279,7 +281,7 @@ public class BuildingEvaluationController {
 		}
 
 		for (EvaluationElement e : evaluationResult.getElements()) {
-			if (e.getValuePart() > 0) {
+			if (e.getValuePart() != null && e.getValuePart() > 0) {
 				Row row = addRenovationTableRow(optRenovationTable);
 				Cell cell = row.getFirstCell();
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
@@ -384,7 +386,7 @@ public class BuildingEvaluationController {
 				cell = (Cell) cell.getNextSibling().getNextSibling().getNextSibling().getNextSibling();
 			}
 			// restorationCosts
-			if (ep.getRestorationCosts() > 0) {
+			if (ep.getRestorationCosts() != null && ep.getRestorationCosts() > 0) {
 				cell.getFirstParagraph().appendChild(new Run(doc, fmt.formatNumber(ep.getRestorationCosts())));
 			}
 			cell = (Cell) cell.getNextSibling();

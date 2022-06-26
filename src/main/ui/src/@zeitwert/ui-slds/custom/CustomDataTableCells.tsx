@@ -17,6 +17,43 @@ export const POSTFIX = "-SelectRow";
 export const PREFIX_LEN = PREFIX.length;
 export const POSTFIX_LEN = POSTFIX.length;
 
+class DataTableCellWithText extends React.Component<any> {
+
+	static displayName = DATA_TABLE_CELL;
+
+	render() {
+		const { children, item, link, displayName, onHover, onClick, ...dtcProps } = this.props;
+		return (
+			<DataTableCell title={children ? children as string : undefined} {...dtcProps}>
+				<div onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick}>
+					{children}
+				</div>
+			</DataTableCell>
+		);
+	}
+
+	private handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+		this.props.onMouseEnter?.(this.getRowId());
+	}
+
+	private handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+		this.props.onMouseLeave?.(this.getRowId());
+	}
+
+	private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		this.props.onClick?.(this.getRowId());
+	}
+
+	private getRowId = (): string => {
+		const td: Element = ReactDOM.findDOMNode(this) as Element;
+		const tr = td.parentElement as Element;
+		const input = tr.firstChild?.firstChild?.firstChild?.firstChild?.firstChild as Element;
+		const idLen = input!.id.length;
+		return input?.id?.substring(PREFIX_LEN, idLen - POSTFIX_LEN);
+	}
+
+}
+
 class DataTableCellWithLink extends React.Component<any> {
 
 	static displayName = DATA_TABLE_CELL;
@@ -57,8 +94,6 @@ class DataTableCellWithLink extends React.Component<any> {
 
 }
 
-DataTableCellWithLink.displayName = DATA_TABLE_CELL;
-
 const DataTableCellWithEntityIcon: React.FunctionComponent<any> = ({ children, item, type, link, ...props }: any) => {
 	const datum = item[type];
 	const linkDatum = item[link];
@@ -77,6 +112,7 @@ const DataTableCellWithEntityIcon: React.FunctionComponent<any> = ({ children, i
 		</DataTableCell>
 	);
 };
+
 DataTableCellWithEntityIcon.displayName = DATA_TABLE_CELL;
 
 const DataTableCellWithDocumentIcon = ({ children, item, ...props }: any) => {
@@ -93,6 +129,7 @@ const DataTableCellWithDocumentIcon = ({ children, item, ...props }: any) => {
 		</DataTableCell>
 	);
 };
+
 DataTableCellWithDocumentIcon.displayName = DATA_TABLE_CELL;
 
 const DataTableCellWithChannelIcon = ({ children, item, type, ...props }: any) => {
@@ -112,6 +149,7 @@ const DataTableCellWithChannelIcon = ({ children, item, type, ...props }: any) =
 		</DataTableCell>
 	);
 };
+
 DataTableCellWithChannelIcon.displayName = DATA_TABLE_CELL;
 
 const DataTableCellForTemperature = ({ children, item, ...props }: any) => {
@@ -122,6 +160,7 @@ const DataTableCellForTemperature = ({ children, item, ...props }: any) => {
 		</DataTableCell>
 	);
 };
+
 DataTableCellForTemperature.displayName = DATA_TABLE_CELL;
 
 const DateDataTableCell: React.FunctionComponent<any> = ({ children, item, displayName, ...props }: any) => {
@@ -131,6 +170,7 @@ const DateDataTableCell: React.FunctionComponent<any> = ({ children, item, displ
 		</DataTableCell>
 	);
 };
+
 DateDataTableCell.displayName = DATA_TABLE_CELL;
 
 const CurrencyDataTableCell: React.FunctionComponent = ({ children, ...props }: any) => {
@@ -143,6 +183,7 @@ const CurrencyDataTableCell: React.FunctionComponent = ({ children, ...props }: 
 		</DataTableCell>
 	);
 };
+
 CurrencyDataTableCell.displayName = DATA_TABLE_CELL;
 
 const AccountDataTableCell: React.FunctionComponent = ({ children, ...props }: any) => {
@@ -152,6 +193,7 @@ const AccountDataTableCell: React.FunctionComponent = ({ children, ...props }: a
 		</DataTableCell>
 	);
 };
+
 AccountDataTableCell.displayName = DATA_TABLE_CELL;
 
 const ItemDataTableCell: React.FunctionComponent<any> = ({ children, ...props }: any) => {
@@ -170,9 +212,11 @@ const ItemDataTableCell: React.FunctionComponent<any> = ({ children, ...props }:
 		</DataTableCell>
 	);
 };
+
 ItemDataTableCell.displayName = DATA_TABLE_CELL;
 
 export {
+	DataTableCellWithText,
 	DataTableCellWithLink,
 	DataTableCellWithEntityIcon,
 	DataTableCellWithDocumentIcon,

@@ -1,6 +1,6 @@
 
 import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
+import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
@@ -183,7 +183,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		return (
 			<>
 				<ButtonGroup variant="list">
-					<Button onClick={() => { window.location.href = Config.getTransferUrl("building", "buildings/" + this.props.params.buildingId!); }}>Export</Button>
+					<Button onClick={this.doExport}>Export</Button>
 				</ButtonGroup>
 			</>
 		);
@@ -210,10 +210,24 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 	};
 
+	private doExport = async () => {
+		const response = await API.get(Config.getTransferUrl("building", "buildings/" + this.props.params.buildingId!));
+		const objectUrl = window.URL.createObjectURL(new Blob([JSON.stringify(response.data, null, 2)]));
+		const contentDisposition = response.headers["content-disposition"];
+		const filename = contentDisposition.match(/filename="(.+)"/)?.[1];
+		if (filename) {
+			const anchor = document.createElement("a");
+			document.body.appendChild(anchor);
+			anchor.href = objectUrl;
+			anchor.download = filename;
+			anchor.click();
+			document.body.removeChild(anchor);
+			window.URL.revokeObjectURL(objectUrl);
+		}
+	}
+
 	private reload = async () => {
 		this.buildingStore.load(this.buildingStore.id!);
-		// brute force reload
-		// window.location.href = "/building/" + this.props.params.buildingId + "?t=" + (new Date()).getTime();
 	};
 
 	// private onSavePortlet = async (type: string, data: any) => {

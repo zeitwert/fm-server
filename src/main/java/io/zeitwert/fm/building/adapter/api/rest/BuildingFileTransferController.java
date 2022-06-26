@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,10 +62,11 @@ public class BuildingFileTransferController {
 		ObjBuilding building = this.buildingRepo.get(sessionInfo, id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
-		ResponseEntity<BuildingTransferDto> response = ResponseEntity.ok()
-				.header("Content-Disposition", "attachment; filename=\"" + fileName + "\"") // mark file for download
-				.body(export);
-		return response;
+		// mark file for download
+		ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDisposition(contentDisposition);
+		return ResponseEntity.ok().headers(headers).body(export);
 	}
 
 	@PostMapping

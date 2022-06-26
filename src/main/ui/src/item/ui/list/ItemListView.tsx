@@ -10,7 +10,7 @@ interface ItemListProps extends ItemListHeaderProps {
 	template?: Template;
 	reportTemplates?: any;
 	isLoading: boolean;
-	onClick?: (item: any) => void;
+	onClick?: (itemId: string) => void;
 }
 
 @observer

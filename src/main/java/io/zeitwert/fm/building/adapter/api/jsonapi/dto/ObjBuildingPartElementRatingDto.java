@@ -89,7 +89,8 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		Double restorationCosts = null;
 		ObjBuilding building = part.getMeta().getAggregate();
 		if (building.getInsuredValue() != null) {
-			if (part.getValuePart() > 0 && part.getCondition() != null && part.getConditionYear() != null) {
+			if (part.getValuePart() != null && part.getValuePart() > 0
+					&& part.getCondition() != null && part.getConditionYear() != null) {
 				//@formatter:off
 
 				ProjectionPeriod renovationPeriod =

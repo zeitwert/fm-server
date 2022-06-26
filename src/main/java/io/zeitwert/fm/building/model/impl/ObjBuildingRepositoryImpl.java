@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNote;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
@@ -143,22 +141,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + buildingId + "]");
 		}
 		return this.doLoad(sessionInfo, buildingId, buildingRecord);
-	}
-
-	@Override
-	public void doAfterLoad(ObjBuilding building) {
-		super.doAfterLoad(building);
-		if (building.getNoteList().size() == 0) {
-			if (building.getMeta().getSessionInfo().getTenant().getExtlKey().equals("demo")) {
-				for (int i = 0; i < 8.3 * Math.random(); i++) {
-					ObjNote note = building.addNote(CodeNoteTypeEnum.getNoteType("note"));
-					note.setSubject("Subject of Note " + (i + 1));
-					note.setContent("Content of Note " + (i + 1));
-					note.setIsPrivate(Math.random() > 0.8);
-					this.getNoteRepository().store(note);
-				}
-			}
-		}
 	}
 
 	@Override

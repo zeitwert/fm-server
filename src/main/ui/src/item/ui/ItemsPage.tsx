@@ -1,6 +1,6 @@
 
 import { Button } from "@salesforce/design-system-react";
-import { Aggregate, AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
 	DataTableCellWithEntityIcon,
@@ -26,7 +26,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	actionButtons?: React.ReactNode[];
 	createEditor?: () => JSX.Element;
 	onAfterCreate?: (store: AggregateStore) => void;
-	onOpenPreview?: (item: Aggregate) => void;
+	onOpenPreview?: (itemId: string) => void;
 }
 
 @inject("session", "showAlert", "showToast")
@@ -101,9 +101,9 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 		);
 	}
 
-	private openPreview = (item: Aggregate) => {
+	private openPreview = (itemId: string) => {
 		const type = EntityTypes[this.props.entityType];
-		type.hasPreview && this.props.onOpenPreview?.(item);
+		type.hasPreview && this.props.onOpenPreview?.(itemId);
 	}
 
 	private openEditor = () => {

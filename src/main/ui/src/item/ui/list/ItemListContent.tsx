@@ -14,7 +14,7 @@ interface ItemListContentProps {
 	reportTemplates?: any;
 	hasMap?: boolean;
 	showMap?: boolean;
-	onClick?: (item: any) => void;
+	onClick?: (itemId: string) => void;
 }
 
 @inject("showToast")
