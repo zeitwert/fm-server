@@ -1,6 +1,6 @@
 
 import { Button } from "@salesforce/design-system-react";
-import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
+import { Aggregate, AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
 	DataTableCellWithEntityIcon,
@@ -13,7 +13,6 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 import { AppCtx } from "../../App";
 import ItemModal from "./ItemModal";
-import ItemPanel from "./ItemPanel";
 import { getNewEntityText } from "./ItemUtils";
 import ItemListController from "./list/ItemListController";
 
@@ -27,6 +26,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	actionButtons?: React.ReactNode[];
 	createEditor?: () => JSX.Element;
 	onAfterCreate?: (store: AggregateStore) => void;
+	onOpenPreview?: (item: Aggregate) => void;
 }
 
 @inject("session", "showAlert", "showToast")
@@ -35,8 +35,8 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 
 	@observable listStore: ItemList;
 	@observable store: AggregateStore;
-	@observable showPanel: boolean = false;
-	@observable panelItem: any | undefined = undefined;
+	//@observable showPanel: boolean = false;
+	//@observable panelItem: any | undefined = undefined;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -74,7 +74,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 								: []
 						)
 					}
-					onClick={this.openPanel}
+					onClick={this.openPreview}
 				/>
 				{
 					this.store?.isInTrx && (
@@ -90,25 +90,20 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 						</ItemModal>
 					)
 				}
-				{
+				{/* {
 					this.showPanel && (
-						<ItemPanel item={this.panelItem} onClose={this.closePanel} />
+						<SidePanel>
+							<ItemPanel item={this.panelItem} onClose={this.closePanel} />
+						</SidePanel>
 					)
-				}
+				} */}
 			</>
 		);
 	}
 
-	private openPanel = (item: any) => {
+	private openPreview = (item: Aggregate) => {
 		const type = EntityTypes[this.props.entityType];
-		if (type.hasPreview) {
-			this.showPanel = true; // TODO
-			this.panelItem = item; // TODO
-		}
-	}
-
-	private closePanel = () => {
-		this.showPanel = false;
+		type.hasPreview && this.props.onOpenPreview?.(item);
 	}
 
 	private openEditor = () => {

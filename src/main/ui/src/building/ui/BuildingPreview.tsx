@@ -1,21 +1,17 @@
 
+import { Building } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import React from "react";
 
-export interface ItemPanelProps {
-	item: any;
+export interface BuildingPreviewProps {
+	building: Building;
 	onClose: () => void;
 }
 
-const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
-	const { item } = props;
-	let { name, /*link,*/ accountName, address } = item;
-	let city: string;
-	let zipMatch = /\d{4}/.exec(address);
-	if (zipMatch) {
-		city = address.substring(zipMatch.index);
-		address = address.substring(0, zipMatch.index - 1);
-	}
+const BuildingPreview: React.FC<BuildingPreviewProps> = observer((props) => {
+	const { building } = props;
+	const { name, street: address, city, zip } = building;
+	const accountName = building.account?.caption;
 	return (
 		<>
 			<div>
@@ -30,7 +26,7 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 				<img
 					className="slds-align_absolute-center"
 					style={{ width: "100%", maxHeight: "200px" }}
-					src={"/demo/building-" + (Math.round(10 * Math.random()) % 10) + ".jpg"}
+					src={building.coverFotoUrl}
 					alt={name}
 				/>
 			</div>
@@ -55,7 +51,7 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 							</dt>
 							<dd>
 								<p className="slds-truncate" title="3500 Deer Creek Rd.">{address}</p>
-								<p className="slds-truncate" title="Palo Alto, CA 94304">{city!}</p>
+								<p className="slds-truncate" title="Palo Alto, CA 94304">{zip} {city}</p>
 							</dd>
 						</dl>
 					</div>
@@ -170,4 +166,4 @@ const ItemPanel: React.FC<ItemPanelProps> = observer((props) => {
 	);
 });
 
-export default ItemPanel;
+export default BuildingPreview;

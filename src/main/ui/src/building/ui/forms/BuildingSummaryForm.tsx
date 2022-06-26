@@ -92,20 +92,8 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 				</div>
 			);
 		}
-		const url = Config.getRestUrl("dms", "documents/" + coverFoto?.id + "/content");
 		return (
 			<>
-				{
-					coverFoto?.contentType?.id && !imageUrl &&
-					<div style={{ width: "100%", minHeight: "200px" }} >
-						<img
-							className="slds-align_absolute-center"
-							style={{ width: "100%" }}
-							src={url}
-							alt="Coverfoto"
-						/>
-					</div>
-				}
 				{
 					!!imageUrl &&
 					<div style={{ width: "100%", minHeight: "200px" }} >
@@ -114,6 +102,17 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 							style={{ width: "100%" }}
 							src={imageUrl}
 							alt="Neues Coverfoto"
+						/>
+					</div>
+				}
+				{
+					!imageUrl && coverFoto?.contentType?.id &&
+					<div style={{ width: "100%", minHeight: "200px" }} >
+						<img
+							className="slds-align_absolute-center"
+							style={{ width: "100%" }}
+							src={building.coverFotoUrl}
+							alt="Coverfoto"
 						/>
 					</div>
 				}

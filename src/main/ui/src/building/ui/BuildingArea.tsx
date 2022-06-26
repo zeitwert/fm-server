@@ -1,12 +1,14 @@
 import { Button } from "@salesforce/design-system-react";
 import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
+import SidePanel from "frame/ui/SidePanel";
 import ItemsPage from "item/ui/ItemsPage";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import BuildingPage from "./BuildingPage";
+import BuildingPreview from "./BuildingPreview";
 import BuildingCreationForm from "./forms/BuildingCreationForm";
 import BuildingImportForm from "./forms/BuildingImportForm";
 
@@ -16,6 +18,8 @@ const buildingStore = BuildingStoreModel.create({});
 @observer
 export default class BuildingArea extends React.Component {
 
+	@observable showPreview = false;
+	@observable previewItem: Building | undefined;
 	@observable doImport = false;
 
 	get ctx() {
@@ -43,6 +47,7 @@ export default class BuildingArea extends React.Component {
 								canCreate
 								createEditor={() => <BuildingCreationForm store={buildingStore} />}
 								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!, this.ctx.session.sessionInfo?.account) }}
+								onOpenPreview={this.openPreview}
 							/>
 							{
 								this.doImport && (
@@ -52,6 +57,12 @@ export default class BuildingArea extends React.Component {
 									/>
 								)
 							}
+							{
+								this.showPreview && this.previewItem &&
+								<SidePanel>
+									<BuildingPreview building={this.previewItem} onClose={this.closePreview} />
+								</SidePanel>
+							}
 						</div>
 					}
 				/>
@@ -59,6 +70,16 @@ export default class BuildingArea extends React.Component {
 			</Routes>
 		);
 	}
+
+	private openPreview = (item: Building) => {
+		this.showPreview = true;
+		this.previewItem = item;
+	};
+
+	private closePreview = () => {
+		this.showPreview = false;
+		this.previewItem = undefined;
+	};
 
 	private openImport = () => {
 		this.doImport = true;
