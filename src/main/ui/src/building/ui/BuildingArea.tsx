@@ -37,7 +37,7 @@ export default class BuildingArea extends React.Component {
 				<Route
 					path=""
 					element={
-						<div>
+						<>
 							<ItemsPage
 								entityType={EntityType.BUILDING}
 								store={buildingStore}
@@ -63,7 +63,7 @@ export default class BuildingArea extends React.Component {
 									<BuildingPreview buildingId={this.previewItemId} onClose={this.closePreview} />
 								</SidePanel>
 							}
-						</div>
+						</>
 					}
 				/>
 				<Route path=":buildingId" element={<BuildingPage />} />
