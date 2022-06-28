@@ -1,0 +1,38 @@
+
+create or replace view migr_obj_tenant_v
+as
+select  o.id,
+        t.tenant_type_id,
+        t.extl_key as key,
+        t.name
+from    obj_tenant t
+join obj o on o.id = t.obj_id;
+
+create or replace function insert_migr_obj_tenant_v()
+returns trigger
+as
+$func$
+declare
+	tenant_id int;
+	new_id int;
+	k_user_id int;
+begin
+	select max(id) into tenant_id from obj_tenant_v where extl_key = new.key;
+	if tenant_id is not null then
+		return null;
+	end if;
+	select id into k_user_id from obj_user_v where email = 'k@zeitwert.io';
+	insert into obj_tenant(obj_id, tenant_type_id, extl_key, name)
+	values (nextval('obj_id_seq'), new.tenant_type_id, new.key, new.name)
+	returning obj_id
+	into new_id;
+	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
+	values (new_id, new_id, 'obj_tenant', new.name, k_user_id, k_user_id);
+	return new;
+end
+$func$
+language plpgsql;
+
+create trigger migr_obj_tenant_v$ins
+instead of insert on migr_obj_tenant_v
+for each row execute procedure insert_migr_obj_tenant_v();
