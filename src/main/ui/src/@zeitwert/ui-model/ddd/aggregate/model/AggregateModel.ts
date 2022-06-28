@@ -46,7 +46,7 @@ const MstAggregateModel = types
 			self.owner = owner;
 		}
 	}))
-	.actions(() => ({
+	.actions((self) => ({
 		// calculation, overwrite if necessary
 		async calcAll() { }
 	}))
@@ -65,6 +65,14 @@ const MstAggregateModel = types
 			} catch (error: any) {
 				console.error(`AggregateModel.setField(${field}, ${value}) CRASHED:`, error);
 			}
+		}
+	}))
+	.actions((self) => ({
+		calcOnServer() {
+			self.rootStore.calcOnServer();
+		},
+		execOperation(operations: string[]) {
+			self.rootStore.execOperation(operations);
 		}
 	}))
 	.views((self) => ({

@@ -20,6 +20,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 	render() {
 		const { building, elementForms, showAllElements, currentElementId, onSelectElement } = this.props;
 		const rowCount = showAllElements ? building.elements.length : building.elements.filter(e => e.valuePart).length;
+		const valuePart100 = building.valuePartSum === 100;
 		let rows: JSX.Element[] = [];
 		let row = 0, index = 0;
 		for (const element of building.elements) {
@@ -52,7 +53,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 					<FieldGroup>
 						<FieldRow>
 							<Static value="" size={2} readOnlyLook="plain" />
-							<Static value={building.valuePartSum.toString()} size={1} align="right" readOnlyLook="plain" error="should be 100%" />
+							<Static value={building.valuePartSum.toString()} size={1} align="right" readOnlyLook="plain" error={!valuePart100 ? "muss 100% sein" : ""} />
 							<Static value="" size={9} readOnlyLook="plain" />
 						</FieldRow>
 					</FieldGroup>
@@ -90,16 +91,14 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 			>
 				<FieldGroup>
 					<FieldRow>
-						<Static value={element.buildingPart?.name} size={2} readOnlyLook="plain" />
+						<Static value={element.buildingPart?.name + " " + element.conditionYear} size={2} readOnlyLook="plain" />
 						<Input id={"cell-" + row + "-0"} accessor={elementForm.field("valuePart")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
-						<Input id={"cell-" + row + "-1"} accessor={elementForm.field("conditionYear")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 1, e.key)} />
 						<Input id={"cell-" + row + "-2"} accessor={elementForm.field("condition")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
-						{/*<Static value={element.restorationAge?.toString()} size={1} align="right" readOnlyLook="plain" />*/}
-						<Static value={element.restorationCosts ? element.restorationCosts + " kCHF" : ""} size={1} align="right" readOnlyLook="plain" />
 						<Static value={element.shortTermRestoration ? element.shortTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
 						<Static value={element.midTermRestoration ? element.midTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
 						<Static value={element.longTermRestoration ? element.longTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
-						<Static value={description} size={3} readOnlyLook="plain" isMultiline />
+						<Static value={element.restorationCosts ? element.restorationCosts + " kCHF" : ""} size={1} align="right" readOnlyLook="plain" />
+						<Static value={description} size={4} readOnlyLook="plain" isMultiline />
 					</FieldRow>
 					<hr style={{ margin: "0.25rem 0" }}></hr>
 				</FieldGroup>

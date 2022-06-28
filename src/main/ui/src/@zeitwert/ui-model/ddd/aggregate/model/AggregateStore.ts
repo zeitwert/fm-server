@@ -1,3 +1,4 @@
+import { session } from "@zeitwert/ui-model/app";
 import Logger from "loglevel";
 import { transaction } from "mobx";
 import {
@@ -12,6 +13,7 @@ import {
 } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateApi } from "../service/AggregateApi";
+import { AggregateMeta } from "./AggregateMeta";
 import { Aggregate, AggregatePayload, AggregateSnapshot, MstAggregate } from "./AggregateModel";
 
 export interface AggregateCounters {
@@ -25,7 +27,7 @@ const MstAggregateStoreModel = types
 	.model("AggregateStore", {
 		id: types.maybe(types.string),
 		inTrx: types.optional(types.boolean, false),
-		storeCount: types.optional(types.number, 0),
+		hasServerTrx: types.optional(types.boolean, false),
 		counters: types.maybe(types.frozen<AggregateCounters>())
 	})
 	.volatile(() => ({
@@ -65,39 +67,6 @@ const MstAggregateStoreModel = types
 			return self.inTrx;
 		}
 	}))
-	// memory transaction management, do not overwrite
-	.actions((self) => ({
-		startTrx() {
-			requireThis(!self.isInTrx, "not in transaction");
-			self.initialState = getSnapshot(self.item as any);
-			self.recorder = recordPatches(self.item as any);
-			self.inTrx = true;
-		},
-		commitTrx() {
-			requireThis(self.isInTrx, "in transaction");
-			self.recorder!.stop();
-			self.inTrx = false;
-		},
-		rollbackTrx() {
-			requireThis(self.isInTrx, "in transaction");
-			applySnapshot(self.item as any, self.initialState);
-			self.recorder!.stop();
-			self.inTrx = false;
-		}
-	}))
-	.views((self) => ({
-		get changes() {
-			const snapshot = self.item!.apiSnapshot;
-			const result = {};
-			self.recorder!.patches.forEach((patch) => {
-				const prop = patch.path.split("/")[1];
-				if (!result[prop]) {
-					result[prop] = snapshot[prop];
-				}
-			});
-			return result as AggregateSnapshot;
-		}
-	}))
 	// overwrite if necessary
 	.actions((self) => ({
 		afterLoad(repository: EntityTypeRepository) {
@@ -113,6 +82,74 @@ const MstAggregateStoreModel = types
 			});
 		}
 	}))
+	// lifecycle, do not overwrite
+	.actions((self) => ({
+		async execOperation(operations: string[]) {
+			requireThis(!self.isNew, "not new");
+			return flow<Aggregate, any[]>(function* (): any {
+				try {
+					let repository: EntityTypeRepository;
+					const id = self.item!.id;
+					const meta: AggregateMeta = { operationList: operations } as unknown as AggregateMeta;
+					session.startNetwork();
+					repository = yield self.api.storeAggregate({ id: self.item!.id, meta: meta } as unknown as Aggregate);
+					self.updateStore(id, repository);
+					return self.item;
+				} catch (error: any) {
+					Logger.error("Failed to calc item", error);
+					return Promise.reject(error);
+				} finally {
+					session.stopNetwork();
+				}
+			})();
+		},
+	}))
+	// (memory) transaction management, do not overwrite
+	.actions((self) => ({
+		startTrx() {
+			requireThis(!self.isInTrx, "not in transaction");
+			self.initialState = getSnapshot(self.item as any);
+			self.recorder = recordPatches(self.item as any);
+			self.inTrx = true;
+		},
+		commitTrx() {
+			requireThis(self.isInTrx, "in transaction");
+			self.recorder!.stop();
+			self.hasServerTrx = false;
+			self.inTrx = false;
+		},
+		async rollbackTrx() {
+			requireThis(self.isInTrx, "in transaction");
+			applySnapshot(self.item as any, self.initialState);
+			self.recorder!.stop();
+			self.inTrx = false;
+			if (self.hasServerTrx) {
+				flow<Aggregate, any[]>(function* (): any {
+					try {
+						yield self.execOperation(["discard"]);
+						self.hasServerTrx = false;
+					} catch (error: any) {
+						Logger.error("Failed to discard item", error);
+						return Promise.reject(error);
+					}
+				})();
+			}
+		}
+	}))
+	.views((self) => ({
+		get changes() {
+			const snapshot = self.item!.apiSnapshot;
+			const result = {};
+			self.recorder!.patches?.forEach((patch) => {
+				const prop = patch.path.split("/")[1];
+				if (!result[prop]) {
+					result[prop] = snapshot[prop];
+				}
+			});
+			return result as AggregateSnapshot;
+		}
+	}))
+	// lifecycle, do not overwrite
 	.actions((self) => ({
 		create(initValues?: AggregatePayload) {
 			transaction(() => {
@@ -125,21 +162,51 @@ const MstAggregateStoreModel = types
 			requireThis(!self.isInTrx, "not in transaction");
 			return flow<Aggregate, any[]>(function* (): any {
 				try {
+					session.startNetwork();
 					const repository = yield self.api.loadAggregate(id);
 					self.updateStore(id, repository);
 					return self.item;
 				} catch (error: any) {
 					Logger.error("Failed to load item", error);
 					return Promise.reject(error);
+				} finally {
+					session.stopNetwork();
 				}
 			})();
 		},
 		edit() {
 			self.startTrx();
 		},
-		async cancel() {
+		cancel() {
 			self.rollbackTrx();
 			return self.item!;
+		},
+		calcOnServer() {
+			requireThis(!self.isNew, "not new");
+			requireThis(self.isInTrx, "in transaction");
+			self.hasServerTrx = true;
+			return flow<Aggregate, any[]>(function* (): any {
+				try {
+					session.startNetwork();
+					let repository: EntityTypeRepository;
+					const id = self.item!.id;
+					repository = yield self.api.storeAggregate(
+						Object.assign(self.changes, {
+							id: self.item!.id,
+							meta: {
+								operationList: ["calculationOnly"]
+							}
+						})
+					);
+					self.updateStore(id, repository);
+					return self.item;
+				} catch (error: any) {
+					Logger.error("Failed to calc item", error);
+					return Promise.reject(error);
+				} finally {
+					session.stopNetwork();
+				}
+			})();
 		},
 		store() {
 			requireThis(self.isInTrx, "in transaction");
@@ -147,6 +214,7 @@ const MstAggregateStoreModel = types
 				try {
 					let repository: EntityTypeRepository;
 					let id: string;
+					session.startNetwork();
 					if (self.isNew) {
 						repository = yield self.api.createAggregate(self.item!.apiSnapshot);
 						id = Object.keys(repository[self.typeName])[Object.keys(repository[self.typeName]).length - 1];
@@ -161,16 +229,17 @@ const MstAggregateStoreModel = types
 					transaction(() => {
 						self.updateStore(id, repository);
 						self.commitTrx();
-						self.storeCount += 1;
 					});
 					return self.item;
 				} catch (error: any) {
 					Logger.error("Failed to store item", error);
 					self.rollbackTrx();
 					return Promise.reject(error);
+				} finally {
+					session.stopNetwork();
 				}
 			})();
-		}
+		},
 		// }))
 		// .actions((self) => ({
 		// 	loadCounters() {

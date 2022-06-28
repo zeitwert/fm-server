@@ -1,11 +1,11 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
-import { DateField, EnumeratedField, FieldGroup, FieldRow, Input, Select, TextField } from "@zeitwert/ui-forms";
-import { BuildingModel, BuildingStore } from "@zeitwert/ui-model";
+import { DateField, EnumeratedField, FieldGroup, FieldRow, Input, Select } from "@zeitwert/ui-forms";
+import { BuildingModel, BuildingStore, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { converters, Field, Form } from "mstform";
+import { Form } from "mstform";
 import React from "react";
 import ElementListRatingForm from "./ElementListRatingForm";
 import ElementRatingForm, { ElementRatingFormModel } from "./ElementRatingForm";
@@ -13,16 +13,11 @@ import ElementRatingForm, { ElementRatingFormModel } from "./ElementRatingForm";
 const BuildingRatingFormModel = new Form(
 	BuildingModel,
 	{
-		id: new Field(converters.string),
-		name: new TextField({ required: true }),
-		//
-		currency: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCurrency" }),
-		//
-		partCatalog: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
-		maintenanceStrategy: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
+		partCatalog: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
+		maintenanceStrategy: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
 		//
 		ratingStatus: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingRatingStatus" }),
-		ratingDate: new DateField(),
+		ratingDate: new DateField({ required: true }),
 		ratingUser: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/objUser" }),
 		//
 		elements: ElementRatingFormModel
@@ -37,6 +32,9 @@ export interface BuildingRatingFormProps {
 export default class BuildingRatingForm extends React.Component<BuildingRatingFormProps> {
 
 	formState: typeof BuildingRatingFormModel.FormStateType;
+
+	@observable
+	isLoading: boolean = false;
 
 	@observable
 	showAllElements: boolean = false;
@@ -59,12 +57,21 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 				isReadOnly: (accessor) => {
 					if (!props.store.isInTrx) {
 						return true;
+					} else {
+						const building = props.store.building;
+						if (!building?.ratingStatus || building.ratingStatus.id !== "open") {
+							return true;
+						}
 					}
 					return false;
 				},
 				isDisabled: (accessor) => {
 					if (["partCatalog"].indexOf(accessor.fieldref) >= 0) {
 						return !!building.partCatalog;
+					} else if (!building.ratingDate || building.ratingDate.getFullYear() < 1000) {
+						return !!accessor.fieldref && (accessor.fieldref !== "ratingDate");
+					} else if (["maintenanceStrategy", "ratingStatus"].indexOf(accessor.fieldref) >= 0) {
+						return true;
 					} else if (["elements[].condition", "elements[].conditionYear"].indexOf(accessor.fieldref) >= 0) {
 						return !(accessor.parent as any)?.fieldAccessors.get("valuePart").value;
 					}
@@ -91,7 +98,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="&nbsp;">
 													{
-														building.partCatalog &&
+														building.partCatalog && building?.ratingStatus?.id === "open" &&
 														<Button
 															variant="icon"
 															iconCategory="utility"
@@ -120,7 +127,57 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 						</Card>
 					</div>
 				</div>
-				<hr style={{ marginTop: "1rem", marginBottom: 0 }} />
+				{
+					!!building.elements.length &&
+					<>
+						<hr style={{ marginTop: "1rem", marginBottom: 0 }} />
+						<Card hasNoHeader heading="" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body slds-card__body_inner">
+								<div className="slds-grid slds-m-top_small">
+									<div className="slds-col slds-size_1-of-1">
+										<FieldGroup>
+											<Grid isVertical={false}>
+												<Col className="slds-size_4-of-12"><b>Bewertung {building.ratingSeqNr ? "#" + building.ratingSeqNr : ""} {building.ratingDate ? " (per " + session.formatter.formatDate(building.ratingDate) + ")" : ""}</b></Col>
+												<Col className="slds-size_3-of-12 slds-align_absolute-center">Instandsetzungszeitpunkt</Col>
+												<Col className="slds-size_5-of-12">&nbsp;</Col>
+											</Grid>
+											<Grid isVertical={false}>
+												<Col className="slds-size_4-of-12">&nbsp;</Col>
+												<Col className="slds-size_1-of-12 slds-align_absolute-center">0 - 1 J.</Col>
+												<Col className="slds-size_1-of-12 slds-align_absolute-center">2 - 5 J.</Col>
+												<Col className="slds-size_1-of-12 slds-align_absolute-center">&gt; 5J.</Col>
+												<Col className="slds-size_5-of-12">&nbsp;</Col>
+											</Grid>
+											<Grid isVertical={false} className="slds-form-element__row slds-text-title_bold">
+												<Col className="slds-size_2-of-12 slds-form-element">Bauteil</Col>
+												<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
+													<div className="slds-float_right">Anteil</div>
+												</Col>
+												<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
+													<div className="slds-float_right">Z/N 100</div>
+												</Col>
+												<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Kurzfristig</Col>
+												<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Mittelfristig</Col>
+												<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Langfristig</Col>
+												<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
+													<div className="slds-float_right">IS Kosten</div>
+												</Col>
+												<Col className="slds-size_4-of-12 slds-form-element">Beschreibung / Zustand / Massnahmen</Col>
+											</Grid>
+										</FieldGroup>
+										<ElementListRatingForm
+											building={building}
+											elementForms={elementForms}
+											showAllElements={this.showAllElements}
+											currentElementId={this.currentElementId}
+											onSelectElement={(id) => this.currentElementId = (this.currentElementId === id ? undefined : id)}
+										/>
+									</div>
+								</div>
+							</div>
+						</Card>
+					</>
+				}
 				{
 					building.elements.map((element, index) => {
 						if (element.id === this.currentElementId) {
@@ -144,75 +201,20 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 						}
 					})
 				}
-				<Card hasNoHeader heading="" bodyClassName="slds-m-around_medium">
-					<div className="slds-card__body slds-card__body_inner">
-						<div className="slds-grid slds-m-top_small">
-							<div className="slds-col slds-size_1-of-1">
-								<FieldGroup>
-									<Grid isVertical={false}>
-										<Col className="slds-size_6-of-12">&nbsp;</Col>
-										<Col className="slds-size_3-of-12 slds-align_absolute-center">Instandsetzungszeitpunkt</Col>
-										<Col className="slds-size_3-of-12">&nbsp;</Col>
-									</Grid>
-									<Grid isVertical={false}>
-										<Col className="slds-size_6-of-12">&nbsp;</Col>
-										<Col className="slds-size_1-of-12 slds-align_absolute-center">0 - 1 J.</Col>
-										<Col className="slds-size_1-of-12 slds-align_absolute-center">2 - 5 J.</Col>
-										<Col className="slds-size_1-of-12 slds-align_absolute-center">&gt; 5J.</Col>
-										<Col className="slds-size_3-of-12">&nbsp;</Col>
-									</Grid>
-									<Grid isVertical={false} className="slds-form-element__row slds-text-title_bold">
-										<Col className="slds-size_2-of-12 slds-form-element">Bauteil</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
-											<div className="slds-float_right">Anteile</div>
-										</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
-											<div className="slds-float_right">Jahr</div>
-										</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
-											<div className="slds-float_right">Z/N 100</div>
-										</Col>
-										{
-											/*
-												<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
-													<div className="slds-float_right">IS Zpt</div>
-												</Col>
-											*/
-										}
-										<Col className="slds-size_1-of-12 slds-form-element slds-clearfix">
-											<div className="slds-float_right">IS Kosten</div>
-										</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Kurzfristig</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Mittelfristig</Col>
-										<Col className="slds-size_1-of-12 slds-form-element slds-align_absolute-center">Langfristig</Col>
-										<Col className="slds-size_3-of-12 slds-form-element">Beschreibung / Zustand / Massnahmen</Col>
-									</Grid>
-								</FieldGroup>
-								<ElementListRatingForm
-									building={building}
-									elementForms={elementForms}
-									showAllElements={this.showAllElements}
-									currentElementId={this.currentElementId}
-									onSelectElement={(id) => this.currentElementId = (this.currentElementId === id ? undefined : id)}
-								/>
-							</div>
-						</div>
-					</div>
-				</Card>
 			</div >
 		);
 	}
 
-	private onEditPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+	private onEditPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		this.props.store.edit();
 		const building = this.props.store.item!;
 		building.setPartCatalog(undefined);
 	}
 
-	private onSetPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+	private onSetPartCatalog = async (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const building = this.props.store.item!;
 		const partCatalog = toJS(this.formState.field("partCatalog").references.getById(e.target.value));
-		building.setPartCatalog(partCatalog);
+		await building.setPartCatalog(partCatalog);
 	}
 
 }

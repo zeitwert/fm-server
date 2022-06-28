@@ -102,7 +102,8 @@ export class JsonApiSerializer {
 					return relations[attribute];
 				}
 				return attribute;
-			}
+			},
+			dataMeta: function (record: any) { return record.meta; }
 		};
 		Object.keys(relations).forEach((key) => (options[key] = { ref: true }));
 		this.jsonApiSerializer = new Serializer(itemType, options);

@@ -1,5 +1,5 @@
 
-import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Button, ButtonGroup, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -36,7 +36,6 @@ enum RIGHT_TABS {
 class BuildingPage extends React.Component<RouteComponentProps> {
 
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
-	@observable isLoaded = false;
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
 
@@ -51,24 +50,28 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.buildingStore.load(this.props.params.buildingId!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.buildingId !== prevProps.params.buildingId) {
 			await this.buildingStore.load(this.props.params.buildingId!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
+
 		const building = this.buildingStore.building!;
+		if (!building) {
+			return null;
+		}
+
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
-		const allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0;
+		let allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0;
+		if (allowEdit && this.activeLeftTabId === LEFT_TABS.RATING) {
+			allowEdit = building.ratingStatus?.id === "open";
+		}
 		const hasError = building.meta?.validationList.length! > 0;
+
 		return (
 			<>
 				<ItemHeader
@@ -180,11 +183,52 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
+		const ratingStatus = this.buildingStore.building?.ratingStatus;
 		return (
 			<>
-				<ButtonGroup variant="list">
-					<Button onClick={this.doExport}>Export</Button>
-				</ButtonGroup>
+				{
+					!this.buildingStore.isInTrx && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 &&
+					<ButtonGroup variant="list">
+						<Button onClick={this.doExport}>Export</Button>
+					</ButtonGroup>
+				}
+				{
+					!this.buildingStore.isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
+					<>
+						{
+							!ratingStatus &&
+							<ButtonGroup variant="list">
+								<Button variant="brand" onClick={this.addRating}>Neue Bewertung</Button>
+							</ButtonGroup>
+						}
+						{
+							ratingStatus?.id === "done" &&
+							<ButtonGroup variant="list">
+								<Button onClick={this.addRating}>Neue Bewertung</Button>
+							</ButtonGroup>
+						}
+						{
+							ratingStatus?.id === "open" &&
+							<ButtonGroup variant="list">
+								<Button onClick={() => this.moveRatingStatus("discard", true)}>Bewertung verwerfen</Button>
+								<Button variant="brand" onClick={() => this.moveRatingStatus("review")}>Bewertung überprüfen</Button>
+							</ButtonGroup>
+						}
+						{
+							ratingStatus?.id === "review" &&
+							<ButtonGroup variant="list">
+								<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
+								<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
+							</ButtonGroup>
+						}
+						{
+							ratingStatus?.id === "done" &&
+							<ButtonGroup variant="list">
+								<Button onClick={() => this.moveRatingStatus("open")}>Bewertung reaktivieren</Button>
+							</ButtonGroup>
+						}
+					</>
+				}
 			</>
 		);
 	}
@@ -225,6 +269,17 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 			window.URL.revokeObjectURL(objectUrl);
 		}
 	}
+
+	private addRating = () => {
+		this.buildingStore.building?.addRating();
+	};
+
+	private moveRatingStatus = async (ratingStatus: string, reload: boolean = false) => {
+		await this.buildingStore.building?.moveRatingStatus(ratingStatus);
+		if (reload) {
+			this.reload();
+		}
+	};
 
 	private reload = async () => {
 		this.buildingStore.load(this.buildingStore.id!);

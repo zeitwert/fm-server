@@ -59,6 +59,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		partCatalog: types.maybe(types.frozen<Enumerated>()),
 		maintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
 		//
+		ratingId: types.maybe(types.number),
+		ratingSeqNr: types.maybe(types.number),
 		ratingStatus: types.maybe(types.frozen<Enumerated>()),
 		ratingDate: types.maybe(faTypes.date),
 		ratingUser: types.maybe(types.frozen<Enumerated>()),
@@ -77,31 +79,11 @@ const MstBuildingModel = ObjModel.named("Building")
 			return superSetField("account", id);
 		}
 		async function setPartCatalog(catalog: Enumerated | undefined) {
+			superSetField("partCatalog", catalog);
 			self.elements.clear();
-			if (!catalog?.id) {
-				return superSetField("partCatalog", undefined);
+			if (!!catalog) {
+				return self.calcOnServer();
 			}
-			return flow(function* () {
-				try {
-					const data = yield API.get(Config.getEnumUrl("building", "codeBuildingPartCatalog/" + catalog.id));
-					data.data.forEach((partWeight: any) => {
-						const element = {
-							buildingPart: partWeight.part,
-							valuePart: partWeight.weight,
-							lifeTime20: partWeight.lifeTime20,
-							lifeTime50: partWeight.lifeTime50,
-							lifeTime70: partWeight.lifeTime70,
-							lifeTime85: partWeight.lifeTime85,
-							lifeTime95: partWeight.lifeTime95,
-							lifeTime100: partWeight.lifeTime100,
-						}
-						self.addElement(element as any);
-					});
-					return superSetField("partCatalog", catalog);
-				} catch (error: any) {
-					console.error("Failed to set partCatalog", error);
-				}
-			})();
 		}
 		async function setField(field: string, value: any) {
 			switch (field) {
@@ -195,8 +177,19 @@ const MstBuildingModel = ObjModel.named("Building")
 			})();
 		}
 	}))
+	.actions((self) => ({
+		async addRating() {
+			await self.execOperation(["addRating", "calculationOnly"]);
+			self.rootStore.startTrx();
+		},
+		moveRatingStatus(ratingStatusId: string) {
+			self.rootStore.startTrx();
+			self.setField("ratingStatus", { id: ratingStatusId, name: "" });
+			return self.rootStore.store();
+		}
+	}))
 	.actions(self => {
-		let timeout: any;
+		let geoTimeout: any;
 		return {
 			afterCreate() {
 				addDisposer(self, reaction(
@@ -204,17 +197,30 @@ const MstBuildingModel = ObjModel.named("Building")
 						return { input: self.geoInput, inTrx: self.rootStore.isInTrx };
 					},
 					() => {
-						if (timeout) {
-							clearTimeout(timeout);
-							timeout = null;
+						if (geoTimeout) {
+							clearTimeout(geoTimeout);
+							geoTimeout = null;
 						}
 						if (self.rootStore.isInTrx && self.isReadyForGeocode) {
-							timeout = setTimeout(() => {
+							geoTimeout = setTimeout(() => {
 								self.resolveGeocode();
 							}, 500);
 						}
 					}
-				))
+				));
+				addDisposer(self, reaction(
+					() => {
+						return { input: self.ratingDate, inTrx: self.rootStore.isInTrx };
+					},
+					() => {
+						if (self.rootStore.isInTrx) {
+							const year = self.ratingDate?.getFullYear();
+							self.elements.forEach(e => {
+								e.setField("conditionYear", year);
+							});
+						}
+					}
+				));
 			}
 		}
 	})

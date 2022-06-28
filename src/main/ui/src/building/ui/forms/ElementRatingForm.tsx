@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, IntField, NumberField, OptionField, RadioButtonGroup, Static, TextArea, TextField } from "@zeitwert/ui-forms";
+import { EnumeratedField, FieldGroup, FieldRow, NumberField, OptionField, RadioButtonGroup, Static, TextArea, TextField } from "@zeitwert/ui-forms";
 import { BuildingElement, StrainOptions, StrengthOptions } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { converters, Field, IRepeatingFormIndexedAccessor, RepeatingForm } from "mstform";
@@ -105,7 +105,6 @@ export const ElementRatingFormModel = new RepeatingForm({
 	buildingPart: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPart" }),
 	valuePart: new NumberField(),
 	condition: new NumberField(),
-	conditionYear: new IntField(),
 	strain: new OptionField(converters.maybe(converters.integer), { options: StrainOptions }),
 	strength: new OptionField(converters.maybe(converters.integer), { options: StrengthOptions }),
 	description: new TextField(),

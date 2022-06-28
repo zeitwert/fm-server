@@ -2,6 +2,7 @@
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import { FC } from "react";
+import { getFieldId } from "./Field";
 
 export interface StaticProps {
 	label?: string;
@@ -15,10 +16,20 @@ export interface StaticProps {
 }
 
 export const Static: FC<StaticProps> = observer((props) => {
+	const fieldId = getFieldId(props);
 	const { label, value, size, error, align, readOnlyLook, isMultiline } = props;
 	return (
 		<div className={"slds-size_" + (size ? size + "-of-12" : "1-of-1")}>
-			<div className={classNames("slds-form-element slds-form-element_readonly", readOnlyLook === "plain" ? "fa-form-element_readonly_plain" : "", error ? "slds-has-error" : "", align ? "slds-form-element-" + align : "")} >
+			<div className={
+				classNames(
+					"slds-form-element slds-form-element_readonly",
+					{
+						"fa-form-element_readonly_plain": readOnlyLook === "plain",
+						"slds-has-error": error,
+						["slds-form-element-" + align]: align
+					}
+				)
+			} >
 				{label && <span className="slds-form-element__label">{label}</span>}
 				<div className="slds-form-element__control">
 					{
@@ -29,9 +40,13 @@ export const Static: FC<StaticProps> = observer((props) => {
 					}
 					{
 						!isMultiline &&
-						<div className={"slds-form-element__static slds-truncate"}>
+						<div className={"slds-form-element__static slds-truncate" + (align ? " slds-form-element-" + align : "")}>
 							{value ? value : <>&nbsp;</>}
 						</div>
+					}
+					{
+						error &&
+						<div className="slds-form-element__help" id={fieldId + "-error"}>{error}</div>
 					}
 				</div>
 			</div>
