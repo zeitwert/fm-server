@@ -133,7 +133,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
 		this.owner.setId(sessionUserId);
 		this.createdByUser.setId(sessionUserId);
-		this.createdAt.setValue(OffsetDateTime.now());
+		this.createdAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
 		this.transitionList.addPart();
 	}
 
@@ -151,7 +151,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = getDocDbRecord();
 		dbRecord.setValue(DocFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setValue(DocFields.MODIFIED_AT, OffsetDateTime.now());
+		dbRecord.setValue(DocFields.MODIFIED_AT, this.getMeta().getSessionInfo().getCurrentTime());
 	}
 
 	@Override

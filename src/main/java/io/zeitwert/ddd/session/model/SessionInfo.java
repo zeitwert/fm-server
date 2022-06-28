@@ -2,6 +2,10 @@
 package io.zeitwert.ddd.session.model;
 
 import io.zeitwert.fm.account.model.enums.CodeLocale;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 
@@ -43,6 +47,14 @@ public class SessionInfo {
 
 	public CodeLocale getLocale() {
 		return this.locale;
+	}
+
+	public LocalDate getCurrentDate() {
+		return LocalDate.now();
+	}
+
+	public OffsetDateTime getCurrentTime() {
+		return OffsetDateTime.now();
 	}
 
 	@Override

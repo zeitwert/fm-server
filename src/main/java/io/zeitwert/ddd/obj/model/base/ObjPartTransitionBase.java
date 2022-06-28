@@ -31,7 +31,7 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 		super.doAfterCreate();
 		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setModifiedAt(OffsetDateTime.now());
+		dbRecord.setModifiedAt(this.getMeta().getSessionInfo().getCurrentTime());
 	}
 
 	public String getChanges() {
