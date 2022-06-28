@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.collaboration.model.ObjNote;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
@@ -32,7 +34,6 @@ import io.zeitwert.fm.building.adapter.api.rest.dto.TransferMetaDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
@@ -195,15 +196,20 @@ public class BuildingFileTransferController {
 			building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
 			building.setThirdPartyValue(dto.getThirdPartyValue());
 			building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
+			building.addRating();
+			assertThis(building.getCurrentRating() != null, "current rating not null");
+			assertThis(dto.getBuildingPartCatalog() != null, "valid buildingPartCatalog");
 			building.getCurrentRating().setPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
-			building.getCurrentRating().setMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
+			//System.out.println("fillFromDto " + building.getCurrentRating().getElementCount() + " elements: " + building.getCurrentRating().getElementList().stream().map(e -> e.getBuildingPart().getId()).collect(Collectors.joining(",")));
+			//building.getCurrentRating().setMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
-					ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
+					ObjBuildingPartElementRating element = building.getCurrentRating().getElement(buildingPart);
+					assertThis(element != null, "part " + buildingPart.getName() + " (" + buildingPart.getId() + ") exists in catalog " + building.getCurrentRating().getPartCatalog().getName() + " (" + building.getCurrentRating().getPartCatalog().getId() + ")");
 					element.setValuePart(dtoElement.getValuePart());
 					element.setCondition(dtoElement.getCondition());
-					element.setConditionYear(dtoElement.getConditionYear());
+					//element.setConditionYear(dtoElement.getConditionYear());
 					element.setStrain(dtoElement.getStrain());
 					element.setStrength(dtoElement.getStrength());
 					element.setDescription(dtoElement.getDescription());
