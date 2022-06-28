@@ -1,4 +1,4 @@
-import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, ButtonGroup, Icon, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
 	Contact,
 	ContactStore,
@@ -30,7 +30,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable contactStore: ContactStore = ContactStoreModel.create({});
-	@observable isLoaded = false;
 
 	@observable updateCount = 0;
 	@observable doEditContact = false;
@@ -48,21 +47,19 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.contactStore.load(this.props.params.contactId!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.contactId !== prevProps.params.contactId) {
 			await this.contactStore.load(this.props.params.contactId!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
 		const contact = this.contactStore.contact!;
+		if (!contact) {
+			return null;
+		}
 		return (
 			<>
 				<ItemHeader

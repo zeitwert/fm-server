@@ -1,4 +1,4 @@
-import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { CaseStage, EntityType, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { StageSelector } from "doc/ui/StageSelector";
@@ -22,7 +22,6 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
-	@observable isLoaded = false;
 
 	constructor(props: any) {
 		super(props);
@@ -36,25 +35,26 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		await this.taskStore.load(this.props.params.taskId!);
 		await this.taskStore.loadTransitions(this.taskStore.task!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.taskId !== prevProps.params.taskId) {
 			await this.taskStore.load(this.props.params.taskId!);
 			await this.taskStore.loadTransitions(this.taskStore.task!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
 		const task = this.taskStore.task!;
+		if (!task) {
+			return null;
+		}
 		return (
 			<>
-				<ItemHeader store={this.taskStore} details={this.getHeaderDetails(task)} />
+				<ItemHeader
+					store={this.taskStore}
+					details={this.getHeaderDetails(task)}
+				/>
 				<ItemGrid>
 					<ItemPath
 						store={this.taskStore}
@@ -98,14 +98,16 @@ class TaskPage extends React.Component<RouteComponentProps> {
 					</ItemLeftPart>
 					<ItemRightPart store={this.taskStore} hideTask hasItemPath />
 				</ItemGrid>
-				{this.doStageSelection && (
-					<StageSelector
-						heading="Close this Task"
-						abstractTargetStage={this.abstractStage!}
-						onStageSelection={(stage: CaseStage) => this.onTransitionToStage(stage)}
-						onCancel={() => (this.doStageSelection = false)}
-					/>
-				)}
+				{
+					this.doStageSelection && (
+						<StageSelector
+							heading="Close this Task"
+							abstractTargetStage={this.abstractStage!}
+							onStageSelection={(stage: CaseStage) => this.onTransitionToStage(stage)}
+							onCancel={() => (this.doStageSelection = false)}
+						/>
+					)
+				}
 			</>
 		);
 	}

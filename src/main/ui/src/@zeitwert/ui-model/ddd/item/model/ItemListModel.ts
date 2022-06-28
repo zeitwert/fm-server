@@ -1,3 +1,4 @@
+import { session } from "@zeitwert/ui-model/app";
 import Logger from "loglevel";
 import { transaction } from "mobx";
 import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
@@ -13,7 +14,6 @@ const MstItemListModel = types
 		templateMap: types.optional(types.map(types.frozen<Template>()), {}),
 		template: types.maybe(types.frozen<Template>()),
 		reportData: types.maybe(types.frozen()),
-		isLoading: types.optional(types.boolean, false),
 		modifiedAt: types.maybe(types.Date)
 	})
 	.views((self) => ({
@@ -27,7 +27,6 @@ const MstItemListModel = types
 	.actions((self) => ({
 		init() {
 			transaction(() => {
-				self.isLoading = false;
 				self.reportData = undefined;
 				self.modifiedAt = undefined;
 			});
@@ -80,7 +79,7 @@ const MstItemListModel = types
 				}
 				return flow(function* () {
 					try {
-						self.isLoading = true;
+						session.startNetwork();
 						self.template = templateId ? yield reportService.template(templateId) : self.template;
 						if (!!self.template) {
 							self.replaceUrls();
@@ -96,11 +95,12 @@ const MstItemListModel = types
 								? new Date(self.reportData.meta?.latestModifiedAt)
 								: undefined;
 						}
-						self.isLoading = false;
 						return self.reportData;
 					} catch (error: any) {
 						Logger.error(`Failed to execute template ${self.template}`, error);
 						return Promise.reject(error);
+					} finally {
+						session.stopNetwork();
 					}
 				})();
 			}

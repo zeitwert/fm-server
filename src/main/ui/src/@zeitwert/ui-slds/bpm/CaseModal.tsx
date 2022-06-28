@@ -1,4 +1,4 @@
-import { Button, Modal, Spinner } from "@salesforce/design-system-react";
+import { Button, Modal } from "@salesforce/design-system-react";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -94,7 +94,7 @@ class CaseModal extends React.Component<CaseModalProps> {
 						border: "none"
 					}}
 				/>
-				{this.isLoading && <Spinner variant="brand" />}
+				{/*this.isLoading && <Spinner variant="brand" />*/}
 			</Modal>
 		);
 	}

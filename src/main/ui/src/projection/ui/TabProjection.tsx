@@ -1,4 +1,5 @@
 
+import { Spinner } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { EMPTY_RESULT, ProjectionResult } from "building/ui/ProjectionResult";
@@ -52,15 +53,7 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 
 	render() {
 		if (this.isLoading) {
-			return (
-				<div className="slds-spinner_container">
-					<div role="status" className="slds-spinner slds-spinner_medium slds-spinner_brand">
-						<span className="slds-assistive-text">Loading</span>
-						<div className="slds-spinner__dot-a"></div>
-						<div className="slds-spinner__dot-b"></div>
-					</div>
-				</div>
-			);
+			return <Spinner variant="brand" size="large" />;
 		}
 		return (
 			<div className="slds-vertical-tabs" style={{ height: "100%" }}>

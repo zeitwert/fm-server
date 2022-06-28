@@ -41,7 +41,8 @@ const MstSessionModel = types
 		sessionInfo: types.maybe(types.frozen<SessionInfo>()),
 		appList: types.maybe(types.frozen<Application[]>()),
 		appInfo: types.maybe(types.frozen<ApplicationInfo>()),
-		areaMap: types.maybe(types.frozen<ApplicationAreaMap>())
+		areaMap: types.maybe(types.frozen<ApplicationAreaMap>()),
+		networkCount: types.optional(types.number, 0)
 	})
 	.volatile(() => ({
 		initialState: {} as any
@@ -60,6 +61,19 @@ const MstSessionModel = types
 		setState(state: SessionState) {
 			sessionStorage.setItem(SESSION_STATE_ITEM, state);
 			self.state = state;
+		}
+	}))
+	.views((self) => ({
+		get isNetworkActive(): boolean {
+			return self.networkCount > 0;
+		}
+	}))
+	.actions((self) => ({
+		startNetwork() {
+			self.networkCount += 1;
+		},
+		stopNetwork() {
+			self.networkCount -= 1;
 		}
 	}))
 	.actions((self) => ({

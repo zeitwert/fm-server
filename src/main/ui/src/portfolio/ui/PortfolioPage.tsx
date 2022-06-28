@@ -1,5 +1,5 @@
 
-import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { EntityType, Portfolio, PortfolioStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -23,7 +23,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable portfolioStore = PortfolioStoreModel.create({});
-	@observable isLoaded = false;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -36,21 +35,19 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.portfolioStore.load(this.props.params.portfolioId!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.portfolioId !== prevProps.params.portfolioId) {
 			await this.portfolioStore.load(this.props.params.portfolioId!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
 		const portfolio = this.portfolioStore.portfolio!;
+		if (!portfolio) {
+			return null;
+		}
 		const isFullWidth = [TAB.DETAILS].indexOf(this.activeLeftTabId) < 0;
 		const customEditorButtons = (
 			<>

@@ -45,7 +45,6 @@ export default class ItemListController extends React.Component<ItemListControll
 				template={store.template}
 				reportData={store.reportData}
 				reportTemplates={this.props.reportTemplates}
-				isLoading={store.isLoading}
 				actionButtons={this.props.actionButtons}
 				onRefresh={() => store.executeTemplate()}
 				onSelectTemplate={(templateId) => store.executeTemplate(templateId)}

@@ -1,4 +1,4 @@
-import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { DocumentStore, DocumentStoreModel, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -20,7 +20,6 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable documentStore: DocumentStore = DocumentStoreModel.create({});
-	@observable isLoaded = false;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -33,21 +32,19 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.documentStore.load(this.props.params.documentId!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.documentId !== prevProps.params.documentId) {
 			await this.documentStore.load(this.props.params.documentId!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
 		const document = this.documentStore.document!;
+		if (!document) {
+			return null;
+		}
 		const headerDetails: HeaderDetail[] = [
 			{ label: "Document", content: document.contentKind?.name },
 			{ label: "Content", content: document.contentType?.name },

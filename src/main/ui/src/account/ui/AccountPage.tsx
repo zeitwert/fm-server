@@ -1,5 +1,5 @@
 
-import { Avatar, Button, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, Button, ButtonGroup, Icon, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, AccountStoreModel, ContactStoreModel, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -26,7 +26,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable accountStore = AccountStoreModel.create({});
 	@observable contactStore = ContactStoreModel.create({});
-	@observable isLoaded = false;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -39,21 +38,21 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.accountStore.load(this.props.params.accountId!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.accountId !== prevProps.params.accountId) {
 			await this.accountStore.load(this.props.params.accountId!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
+
 		const account = this.accountStore.account!;
+		if (!account) {
+			return null;
+		}
+
 		return (
 			<>
 				<ItemHeader

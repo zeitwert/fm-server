@@ -1,5 +1,5 @@
 
-import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, ButtonGroup, Icon, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
 	CaseStage, EntityType, Lead,
 	LeadStore,
@@ -30,7 +30,6 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	@observable leadStore: LeadStore = LeadStoreModel.create({});
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
-	@observable isLoaded = false;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -44,22 +43,20 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		await this.leadStore.load(this.props.params.leadId!);
 		await this.leadStore.loadTransitions(this.leadStore.lead!);
-		this.isLoaded = true;
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.leadId !== prevProps.params.leadId) {
 			await this.leadStore.load(this.props.params.leadId!);
 			await this.leadStore.loadTransitions(this.leadStore.lead!);
-			this.isLoaded = true;
 		}
 	}
 
 	render() {
-		if (!this.isLoaded) {
-			return <Spinner variant="brand" size="large" />;
-		}
 		const lead = this.leadStore.lead!;
+		if (!lead) {
+			return null;
+		}
 		return (
 			<>
 				<ItemHeader
