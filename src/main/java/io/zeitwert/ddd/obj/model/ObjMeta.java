@@ -9,14 +9,6 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 
 public interface ObjMeta extends AggregateMeta {
 
-	OffsetDateTime getCreatedAt();
-
-	ObjUser getCreatedByUser();
-
-	OffsetDateTime getModifiedAt();
-
-	ObjUser getModifiedByUser();
-
 	OffsetDateTime getClosedAt();
 
 	ObjUser getClosedByUser();

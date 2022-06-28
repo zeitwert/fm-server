@@ -6,14 +6,13 @@ import java.util.List;
 
 import org.jooq.Record;
 
-import io.crnk.core.resource.meta.MetaInformation;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.base.ObjFields;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
@@ -22,50 +21,38 @@ import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.ddd.validation.adapter.api.jsonapi.dto.AggregatePartValidationDto;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
-public class ObjMetaDto implements MetaInformation {
+@NoArgsConstructor
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class ObjMetaDto extends AggregateMetaDto {
 
-	private Integer sessionId;
-	private EnumeratedDto itemType;
-	private ObjTenantDto tenant;
-	private ObjUserDto owner;
-	private ObjUserDto createdByUser;
-	private OffsetDateTime createdAt;
-	private ObjUserDto modifiedByUser;
-	private OffsetDateTime modifiedAt;
 	private ObjUserDto closedByUser;
 	private OffsetDateTime closedAt;
 	private List<ObjPartTransitionDto> transitionList;
-	private List<AggregatePartValidationDto> validationList;
 
 	public static ObjMetaDto fromObj(Obj obj, SessionInfo sessionInfo) {
 		ObjMeta meta = obj.getMeta();
-		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
+		AggregateMetaDto.fromAggregate(builder, obj, sessionInfo);
 		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
 		// @formatter:off
-		return ObjMetaDto.builder()
-			.sessionId(sessionInfo.getId())
-			.itemType(EnumeratedDto.fromEnum(obj.getMeta().getAggregateType()))
-			.tenant(tenantBridge.fromAggregate(obj.getTenant(), sessionInfo))
-			.owner(userBridge.fromAggregate(obj.getOwner(), sessionInfo))
-			.createdByUser(userBridge.fromAggregate(meta.getCreatedByUser(), sessionInfo))
-			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(userBridge.fromAggregate(meta.getModifiedByUser(), sessionInfo))
-			.modifiedAt(meta.getModifiedAt())
+		return builder
 			.closedByUser(userBridge.fromAggregate(meta.getClosedByUser(), sessionInfo))
 			.closedAt(meta.getClosedAt())
 			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t, sessionInfo)).toList())
-			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
 	}
 
 	public static ObjMetaDto fromRecord(Record obj, SessionInfo sessionInfo) {
+		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
+		AggregateMetaDto.fromRecord(builder, obj, sessionInfo);
 		ObjTenantRepository tenantRepo = (ObjTenantRepository) AppContext.getInstance().getRepository(ObjTenant.class);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
 		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
@@ -77,8 +64,7 @@ public class ObjMetaDto implements MetaInformation {
 		ObjUserDto closedByUser = closedByUserId == null ? null
 				: userBridge.fromAggregate(userRepo.get(closedByUserId), sessionInfo);
 		// @formatter:off
-		return ObjMetaDto.builder()
-			.sessionId(sessionInfo.getId())
+		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
 			.tenant(tenantBridge.fromAggregate(tenantRepo.get(obj.getValue(ObjFields.TENANT_ID)), sessionInfo))
 			.owner(userBridge.fromAggregate(userRepo.get(obj.getValue(ObjFields.OWNER_ID)), sessionInfo))
