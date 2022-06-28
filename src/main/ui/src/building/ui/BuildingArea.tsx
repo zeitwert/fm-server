@@ -1,5 +1,5 @@
 import { Button } from "@salesforce/design-system-react";
-import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
+import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import SidePanel from "frame/ui/SidePanel";
 import ItemsPage from "item/ui/ItemsPage";
@@ -43,7 +43,7 @@ export default class BuildingArea extends React.Component {
 								store={buildingStore}
 								listDatamart="building.buildings"
 								listTemplate="building.buildings.all"
-								actionButtons={[<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />]}
+								actionButtons={this.getHeaderActions()}
 								canCreate
 								createEditor={() => <BuildingCreationForm store={buildingStore} />}
 								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!, this.ctx.session.sessionInfo?.account) }}
@@ -69,6 +69,14 @@ export default class BuildingArea extends React.Component {
 				<Route path=":buildingId" element={<BuildingPage />} />
 			</Routes>
 		);
+	}
+
+	private getHeaderActions() {
+		if (session.isAdmin) {
+			return [<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />];
+		} else {
+			return [];
+		}
 	}
 
 	private openPreview = (itemId: string) => {

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Data()
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -17,6 +19,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 
 	private String name;
 	private String email;
+	private List<String> roles;
 	private String picture;
 
 }

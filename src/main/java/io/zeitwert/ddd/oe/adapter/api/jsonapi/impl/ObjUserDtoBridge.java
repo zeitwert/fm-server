@@ -47,6 +47,7 @@ public final class ObjUserDtoBridge extends ObjDtoBridge<ObjUser, ObjUserVRecord
 			// user stuff
 			.name(obj.getName())
 			.email(obj.getEmail())
+			.roles(obj.getRoleList().stream().map(r -> r.getId()).toList())
 			.picture(obj.getPicture());
 		// @formatter:on
 		return dtoBuilder.build();

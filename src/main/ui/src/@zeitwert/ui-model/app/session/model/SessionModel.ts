@@ -108,6 +108,7 @@ const MstSessionModel = types
 						self.sessionInfo = sessionInfo;
 						self.appList = appList;
 						self.setApp(sessionInfo.applicationId);
+						self.setLocale(sessionInfo.locale);
 						self.setState(SessionState.open);
 					});
 				} catch (error: any) {
@@ -204,6 +205,16 @@ const MstSessionModel = types
 		get hasExternalAuthentication() {
 			return !!self.sessionInfo && !!self.sessionInfo!.user.extlIdpUserId;
 		}
+	}))
+	.views((self) => ({
+		get isUser(): boolean {
+			const roles = self.sessionInfo?.user?.roles || [];
+			return roles.indexOf("ADMIN")! >= 0;
+		},
+		get isAdmin(): boolean {
+			const roles = self.sessionInfo?.user?.roles || [];
+			return roles.indexOf("ADMIN")! >= 0;
+		},
 	}));
 
 type MstSessionType = typeof MstSessionModel;
