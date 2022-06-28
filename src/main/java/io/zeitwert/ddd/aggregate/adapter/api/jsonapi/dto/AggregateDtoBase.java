@@ -19,12 +19,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor
 public abstract class AggregateDtoBase<A extends Aggregate> {
 
+	public static final String CalculationOnlyOperation = "calculationOnly";
+	public static final String DiscardOperation = "discard";
+
 	protected static final <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> aggrClass) {
 		return AppContext.getInstance().getRepository(aggrClass);
 	}
 
 	@JsonIgnore
 	protected SessionInfo sessionInfo;
+
+	public abstract AggregateMetaDto getMeta();
 
 	@JsonIgnore
 	private A original;

@@ -210,6 +210,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
+	public final void discard(A aggregate) {
+		this.aggregateCache.removeItem(aggregate.getMeta().getSessionInfo(), aggregate.getId());
+	}
+
+	@Override
 	public final void store(A aggregate) {
 
 		this.didBeforeStore = false;
@@ -322,14 +327,14 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	}
 
-	@EventListener
+	@EventListener // TODO unsafe (multi threading, usability)
 	private void handleAggregateStoredEvent(AggregateStoredEvent event) {
 		Integer aggregateId = event.getAggregate().getId();
 		List<A> itemList = this.aggregateCache.getItemList(aggregateId);
 		for (A aggregate : itemList) {
 			((AggregateBase) aggregate).setStale();
 			if (aggregate.getMeta().getSessionInfo() == event.getAggregate().getMeta().getSessionInfo()) {
-				this.aggregateCache.removeItem(aggregate.getMeta().getSessionInfo(), aggregateId);
+				this.discard(aggregate);
 			}
 		}
 	}

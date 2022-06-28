@@ -32,6 +32,11 @@ public interface AggregateRepository<A extends Aggregate, V extends Record> {
 	A get(SessionInfo sessionInfo, Integer id);
 
 	/**
+	 * Discard/rollback in-memory changes to Aggregate
+	 */
+	void discard(A aggregate);
+
+	/**
 	 * Store the Aggregate
 	 */
 	void store(A aggregate);
