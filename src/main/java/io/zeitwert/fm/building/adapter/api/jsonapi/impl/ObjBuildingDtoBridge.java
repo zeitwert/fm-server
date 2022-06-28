@@ -18,6 +18,7 @@ import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
@@ -78,7 +79,9 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			obj.setThirdPartyValue(dto.getThirdPartyValue());
 			obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
 
-			if (obj.getCurrentRating() != null) {
+			if (dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
+				obj.addRating();
+			} else if (obj.getCurrentRating() != null) {
 				ObjBuildingPartRating rating = obj.getCurrentRating();
 				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getPartCatalog(dto.getPartCatalog().getId()));
 				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
@@ -149,6 +152,8 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
 			dtoBuilder
+				.ratingId(rating.getId())
+				.ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count())
 				.partCatalog(EnumeratedDto.fromEnum(rating.getPartCatalog()))
 				.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
 				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
@@ -158,6 +163,11 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		}
 		// @formatter:on
 		return dtoBuilder.build();
+	}
+
+	private boolean isActiveRating(ObjBuildingPartRating rating) {
+		CodeBuildingRatingStatus RatingDiscarded = CodeBuildingRatingStatusEnum.getRatingStatus("discard");
+		return rating.getRatingStatus() == null || rating.getRatingStatus() != RatingDiscarded;
 	}
 
 	@Override

@@ -35,6 +35,8 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "building", resourcePath = "building/buildings", deletable = false)
 public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 
+	public static final String AddRatingOperation = "addRating";
+
 	@JsonApiRelationId
 	private Integer accountId;
 
@@ -89,6 +91,8 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private BigDecimal thirdPartyValue;
 	private Integer thirdPartyValueYear;
 
+	private Integer ratingId;
+	private Integer ratingSeqNr;
 	private EnumeratedDto partCatalog;
 	private EnumeratedDto maintenanceStrategy;
 	private EnumeratedDto ratingStatus;

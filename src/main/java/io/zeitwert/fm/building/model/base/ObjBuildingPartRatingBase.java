@@ -4,8 +4,8 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
+import org.flywaydb.core.internal.util.Pair;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
@@ -94,10 +94,21 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public void setPartCatalog(CodeBuildingPartCatalog partCatalog) {
-		if (!Objects.equals(partCatalog, this.getPartCatalog())) {
+	public void afterSet(Property<?> property) {
+		if (property == this.partCatalog) {
 			this.elementList.clearPartList();
-			this.partCatalog.setValue(partCatalog);
+			if (this.getPartCatalog() != null) {
+				for (Pair<CodeBuildingPart, Integer> part : this.getPartCatalog().getPartList()) {
+					this.addElement(part.getLeft()).setValuePart(part.getRight());
+				}
+			}
+		} else if (property == this.ratingDate) {
+			if (this.getRatingDate() != null) {
+				Integer year = this.getRatingDate().getYear();
+				for (ObjBuildingPartElementRating element : this.getElementList()) {
+					element.setConditionYear(year);
+				}
+			}
 		}
 	}
 

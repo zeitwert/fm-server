@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.building.model.base;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.math.BigDecimal;
 
@@ -28,8 +28,10 @@ import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndex;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndexEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
@@ -44,6 +46,9 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjBuildingBase.class);
 
+	static final CodeBuildingRatingStatus RatingOpen = CodeBuildingRatingStatusEnum.getRatingStatus("open");
+	static final CodeBuildingRatingStatus RatingDone = CodeBuildingRatingStatusEnum.getRatingStatus("done");
+	static final CodeBuildingRatingStatus RatingDiscarded = CodeBuildingRatingStatusEnum.getRatingStatus("discard");
 	static final CodeBuildingPriceIndex DefaultPriceIndex = CodeBuildingPriceIndexEnum.getBuildingPriceIndex("ch-ZRH");
 	static final Integer DefaultGeoZoom = 17;
 
@@ -154,20 +159,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
-	public void doAfterCreate() {
-		super.doAfterCreate();
-		try {
-			this.disableCalc();
-			assertThis(this.getCurrentRating() == null, "no rating");
-			ObjBuildingPartRating rating = this.addRating();
-			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
-			assertThis(this.getCurrentRating() != null, "valid rating");
-		} finally {
-			this.enableCalc();
-		}
-	}
-
-	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
@@ -208,10 +199,36 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	@Override
 	public ObjBuildingPartRating getCurrentRating() {
-		if (this.getRatingCount() > 0) {
-			return this.getRating(this.getRatingCount() - 1);
+		for (int i = this.getRatingCount(); i > 0; i--) {
+			ObjBuildingPartRating rating = this.getRating(i - 1);
+			if (rating.getRatingStatus() == null || rating.getRatingStatus() != RatingDiscarded) {
+				return rating;
+			}
 		}
 		return null;
+	}
+
+	@Override
+	public ObjBuildingPartRating addRating() {
+		ObjBuildingPartRating oldRating = this.getCurrentRating();
+		requireThis(oldRating == null || oldRating.getRatingStatus() == RatingDone, "rating done");
+		ObjBuildingPartRating rating = this.ratingList.addPart();
+		try {
+			rating.getMeta().disableCalc();
+			rating.setRatingStatus(RatingOpen);
+			if (oldRating != null) {
+				rating.setPartCatalog(oldRating.getPartCatalog());
+				rating.setMaintenanceStrategy(oldRating.getMaintenanceStrategy());
+			} else {
+				rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"));
+			}
+			rating.setRatingDate(this.getMeta().getSessionInfo().getCurrentDate());
+			rating.setRatingUser(this.getMeta().getSessionInfo().getUser());
+		} finally {
+			rating.getMeta().enableCalc();
+			rating.calcAll();
+		}
+		return rating;
 	}
 
 	@Override
