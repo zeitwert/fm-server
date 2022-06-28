@@ -7,6 +7,8 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 
 public interface SessionService {
 
+	static final String DEFAULT_LOCALE = "de-CH";
+
 	static final String AUTH_HEADER_PREFIX = "Bearer ";
 
 	/**

@@ -9,6 +9,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.JwtProvider;
+import io.zeitwert.ddd.session.service.api.SessionService;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class SessionInfoProvider {
 	public SessionInfo getSessionInfo(HttpServletRequest request, DSLContext dslContext,
 			ObjTenantRepository tenantRepository, ObjUserRepository userRepository, ObjAccountRepository accountRepository) {
 
-		CodeLocale EN_US = CodeLocaleEnum.getLocale("en-US");
+		CodeLocale DEFAULT_LOCALE = CodeLocaleEnum.getLocale(SessionService.DEFAULT_LOCALE);
 
 		if (request == null) {
 			throw new RuntimeException("Authentication error (missing request)");
@@ -53,7 +54,7 @@ public class SessionInfoProvider {
 			// localhost dev login
 			if (request.getServerName().equals("XYZ--localhost")) {
 				Optional<ObjUser> user = userRepository.getByEmail("hannes@zeitwert.io");
-				return new SessionInfo(user.get().getTenant(), user.get(), null, EN_US);
+				return new SessionInfo(user.get().getTenant(), user.get(), null, DEFAULT_LOCALE);
 			}
 			return SessionInfo.NO_SESSION;
 		}
@@ -89,7 +90,7 @@ public class SessionInfoProvider {
 			throw new RuntimeException("Authentication error (corrupt token, missing accountId)");
 		}
 
-		return new SessionInfo(user.get().getTenant(), user.get(), accountId, EN_US);
+		return new SessionInfo(user.get().getTenant(), user.get(), accountId, DEFAULT_LOCALE);
 
 	}
 

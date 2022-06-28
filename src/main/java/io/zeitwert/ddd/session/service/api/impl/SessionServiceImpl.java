@@ -32,7 +32,7 @@ class SessionServiceImpl implements SessionService {
 
 	@Override
 	public SessionInfo openSession(ObjUser user) {
-		return openSession(user, CodeLocaleEnum.getLocale("en-US"));
+		return openSession(user, CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
 	}
 
 	@Override
