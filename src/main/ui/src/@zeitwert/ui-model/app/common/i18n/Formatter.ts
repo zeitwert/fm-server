@@ -20,4 +20,8 @@ export interface Formatter {
 
 	formatAmount(amount: number, currency: Currency, digits?: number, locale?: Locale | Language): string;
 
+	dateFormatter(locale: Locale | Language): Intl.DateTimeFormat;
+
+	formatDate(date: Date, locale?: Locale | Language): string;
+
 }

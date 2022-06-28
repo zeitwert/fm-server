@@ -1,9 +1,10 @@
-import { Locale, language } from "../Locale";
-import { Language } from "../Language";
 import { Currency } from "../Currency";
 import { Formatter } from "../Formatter";
+import { Language } from "../Language";
+import { language, Locale } from "../Locale";
 
 export class FormatterImpl implements Formatter {
+
 	locale: Locale | Language;
 
 	constructor(locale: Locale | Language) {
@@ -56,4 +57,14 @@ export class FormatterImpl implements Formatter {
 			.format(amount)
 			.replace(/^(\D+)/, "$1 ");
 	}
+
+	dateFormatter(locale: Locale | Language): Intl.DateTimeFormat {
+		return new Intl.DateTimeFormat(locale, {});
+	}
+
+	formatDate(date: Date, locale?: Locale | Language): string {
+		return this.dateFormatter(locale || this.currentLocale())
+			.format(date);
+	}
+
 }
