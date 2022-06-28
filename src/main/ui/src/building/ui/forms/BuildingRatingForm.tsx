@@ -1,14 +1,14 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { DateField, EnumeratedField, FieldGroup, FieldRow, Input, Select } from "@zeitwert/ui-forms";
-import { BuildingModel, BuildingStore, session } from "@zeitwert/ui-model";
+import { BuildingModel, BuildingStore, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import { Form } from "mstform";
 import React from "react";
 import ElementListRatingForm from "./ElementListRatingForm";
-import ElementRatingForm, { ElementRatingFormModel } from "./ElementRatingForm";
+import { ElementRatingFormModel } from "./ElementRatingForm";
 
 const BuildingRatingFormModel = new Form(
 	BuildingModel,
@@ -26,6 +26,8 @@ const BuildingRatingFormModel = new Form(
 
 export interface BuildingRatingFormProps {
 	store: BuildingStore;
+	onOpenElementRating: (element: any, elementForm: any) => void;
+	onCloseElementRating: () => void;
 }
 
 @observer
@@ -83,10 +85,8 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	render() {
 		const building = this.props.store.item!;
-		const elementForms = this.formState.repeatingForm("elements");
-		const isInTrx = this.props.store.isInTrx;
 		return (
-			<div onClick={() => this.currentElementId = undefined} className="fm-rating-container">
+			<div onClick={() => this.onCloseElementRating()} className="fm-rating-container">
 				<div className="slds-grid slds-wrap slds-m-top_small" key={this.currentElementId}>
 					<div className="slds-col slds-size_1-of-1">
 						<Card hasNoHeader heading="" bodyClassName="slds-m-around_medium" style={{ zIndex: 200 }}>
@@ -167,10 +167,10 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 										</FieldGroup>
 										<ElementListRatingForm
 											building={building}
-											elementForms={elementForms}
+											elementForms={this.formState.repeatingForm("elements")}
 											showAllElements={this.showAllElements}
 											currentElementId={this.currentElementId}
-											onSelectElement={(id) => this.currentElementId = (this.currentElementId === id ? undefined : id)}
+											onSelectElement={(id) => (this.currentElementId === id ? this.onCloseElementRating() : this.onOpenElementRating(id))}
 										/>
 									</div>
 								</div>
@@ -178,30 +178,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 						</Card>
 					</>
 				}
-				{
-					building.elements.map((element, index) => {
-						if (element.id === this.currentElementId) {
-							const elementForm = elementForms.index(index);
-							return (
-								<div
-									className={isInTrx ? "fa-isInTrx" : ""}
-									style={{ position: "absolute", right: 0, top: isInTrx ? "4px" : "1px", bottom: 0, width: "calc(25% + 0.75rem)", backgroundColor: "white", zIndex: 100 }}
-									onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
-									key={"elementRating-" + index}
-								>
-									<ElementRatingForm
-										isInTrx={this.props.store.isInTrx}
-										element={element}
-										elementForm={elementForm}
-									/>
-								</div>
-							);
-						} else {
-							return <div key={"elementRating-" + index} />;
-						}
-					})
-				}
-			</div >
+			</div>
 		);
 	}
 
@@ -215,6 +192,26 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 		const building = this.props.store.item!;
 		const partCatalog = toJS(this.formState.field("partCatalog").references.getById(e.target.value));
 		await building.setPartCatalog(partCatalog);
+	}
+
+	private onOpenElementRating = (elementId: string) => {
+		requireThis(!!elementId, "element id not null");
+		this.currentElementId = elementId;
+		let element: any;
+		let elementForm: any;
+		const building = this.props.store.item!;
+		building.elements.forEach((el, index) => {
+			if (el.id === this.currentElementId) {
+				element = el;
+				elementForm = this.formState.repeatingForm("elements").index(index);
+			}
+		});
+		this.props.onOpenElementRating(element, elementForm);
+	}
+
+	private onCloseElementRating = () => {
+		this.props.onCloseElementRating();
+		this.currentElementId = undefined;
 	}
 
 }

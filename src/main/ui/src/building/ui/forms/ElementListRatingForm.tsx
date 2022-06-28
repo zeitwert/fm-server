@@ -3,12 +3,11 @@ import { FieldGroup, FieldRow, Input, Static } from "@zeitwert/ui-forms";
 import { Building, BuildingElement } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { IRepeatingFormIndexedAccessor } from "mstform";
-import { RepeatingFormAccess } from "mstform/dist/src/accessor";
 import React from "react";
 
 export interface ElementListRatingFormProps {
 	building: Building;
-	elementForms: RepeatingFormAccess<any, any, any>;
+	elementForms: any; // RepeatingFormAccess<any, any, any>; ärger mit Typescript
 	showAllElements: boolean;
 	currentElementId: string | undefined;
 	onSelectElement: (id: string) => void;
@@ -91,7 +90,7 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 			>
 				<FieldGroup>
 					<FieldRow>
-						<Static value={element.buildingPart?.name + " " + element.conditionYear} size={2} readOnlyLook="plain" />
+						<Static value={element.buildingPart?.name} size={2} readOnlyLook="plain" />
 						<Input id={"cell-" + row + "-0"} accessor={elementForm.field("valuePart")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
 						<Input id={"cell-" + row + "-2"} accessor={elementForm.field("condition")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
 						<Static value={element.shortTermRestoration ? element.shortTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />

@@ -3,6 +3,7 @@ import { Button, ButtonGroup, Tabs, TabsPanel } from "@salesforce/design-system-
 import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import SidePanel from "frame/ui/SidePanel";
 import ItemEditor from "item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
@@ -16,6 +17,7 @@ import BuildingLocationForm from "./forms/BuildingLocationForm";
 import BuildingRatingForm from "./forms/BuildingRatingForm";
 import BuildingStaticDataForm from "./forms/BuildingStaticDataForm";
 import BuildingSummaryForm from "./forms/BuildingSummaryForm";
+import ElementRatingForm from "./forms/ElementRatingForm";
 
 enum LEFT_TABS {
 	OVERVIEW = 0,
@@ -38,6 +40,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+	@observable currentElement: any;
+	@observable currentElementForm: any;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -96,16 +100,32 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = tabId)}
 							>
 								<TabsPanel label="Stammdaten" classname="abc">
-									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <BuildingStaticDataForm store={this.buildingStore} />}
+									{
+										this.activeLeftTabId === LEFT_TABS.OVERVIEW &&
+										<BuildingStaticDataForm store={this.buildingStore} />
+									}
 								</TabsPanel>
 								<TabsPanel label="Lage">
-									{this.activeLeftTabId === LEFT_TABS.LOCATION && <BuildingLocationForm store={this.buildingStore} />}
+									{
+										this.activeLeftTabId === LEFT_TABS.LOCATION &&
+										<BuildingLocationForm store={this.buildingStore} />
+									}
 								</TabsPanel>
 								<TabsPanel label="Bewertung">
-									{this.activeLeftTabId === LEFT_TABS.RATING && <BuildingRatingForm store={this.buildingStore} />}
+									{
+										this.activeLeftTabId === LEFT_TABS.RATING &&
+										<BuildingRatingForm
+											store={this.buildingStore}
+											onOpenElementRating={this.onOpenElementRating}
+											onCloseElementRating={this.onCloseElementRating}
+										/>
+									}
 								</TabsPanel>
 								<TabsPanel label="Auswertung" disabled={hasError} hasError={hasError}>
-									{this.activeLeftTabId === LEFT_TABS.EVALUATION && <TabProjection itemType="building" itemId={this.buildingStore.building?.id!} />}
+									{
+										this.activeLeftTabId === LEFT_TABS.EVALUATION &&
+										<TabProjection itemType="building" itemId={this.buildingStore.building?.id!} />
+									}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>
@@ -151,6 +171,14 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>
+				{
+					!!this.currentElement &&
+					<SidePanel style={{ top: "110px", bottom: "30px", right: "30px", minWidth: "28rem" }}>
+						<div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+							<ElementRatingForm element={this.currentElement} elementForm={this.currentElementForm} />
+						</div>
+					</SidePanel>
+				}
 			</>
 		);
 	}
@@ -284,6 +312,16 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	private reload = async () => {
 		this.buildingStore.load(this.buildingStore.id!);
 	};
+
+	private onOpenElementRating = (element: any, elementForm: any) => {
+		this.currentElement = element;
+		this.currentElementForm = elementForm;
+	}
+
+	private onCloseElementRating = () => {
+		this.currentElement = undefined;
+		this.currentElementForm = undefined;
+	}
 
 	// private onSavePortlet = async (type: string, data: any) => {
 	// 	let store: DocStore, payload: any, title: string;
