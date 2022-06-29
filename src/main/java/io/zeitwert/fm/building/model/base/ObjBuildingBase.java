@@ -263,10 +263,11 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 			this.addValidation(CodeValidationLevelEnum.ERROR, "Koordinaten der Immobilie fehlen");
 		}
 		if (this.getInsuredValue() == null || this.getInsuredValue().equals(BigDecimal.ZERO)) {
-			this.addValidation(CodeValidationLevelEnum.ERROR, "Gebäudewert muss erfasst werden");
+			this.addValidation(CodeValidationLevelEnum.ERROR, "Versicherungswert muss erfasst werden");
 		}
 		if (this.getInsuredValueYear() == null) {
-			this.addValidation(CodeValidationLevelEnum.ERROR, "Jahr der Bestimmung des Gebäudewerts muss erfasst werden");
+			this.addValidation(CodeValidationLevelEnum.ERROR,
+					"Jahr der Bestimmung des Versicherungswerts muss erfasst werden");
 		}
 		if (this.getCurrentRating() == null) {
 			this.addValidation(CodeValidationLevelEnum.ERROR, "Es fehlt eine Zustandsbewertung");

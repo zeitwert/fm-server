@@ -70,10 +70,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
-		let allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0;
-		if (allowEdit && this.activeLeftTabId === LEFT_TABS.RATING) {
-			allowEdit = building.ratingStatus?.id === "open";
-		}
+		let allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && building.ratingStatus?.id === "open";
 		const hasError = building.meta?.validationList.length! > 0;
 
 		return (
@@ -212,12 +209,27 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 
 	private getHeaderActions() {
 		const ratingStatus = this.buildingStore.building?.ratingStatus;
+		const hasErrors = (this.buildingStore.building?.meta?.validationList?.length! > 0) || false;
 		return (
 			<>
 				{
 					!this.buildingStore.isInTrx && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 &&
 					<ButtonGroup variant="list">
 						<Button onClick={this.doExport}>Export</Button>
+					</ButtonGroup>
+				}
+				{
+					!this.buildingStore.isInTrx && ratingStatus?.id === "open" &&
+					<ButtonGroup variant="list">
+						<Button onClick={() => this.moveRatingStatus("discard", true)}>Bewertung verwerfen</Button>
+						<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={hasErrors}>Bewertung überprüfen</Button>
+					</ButtonGroup>
+				}
+				{
+					!this.buildingStore.isInTrx && ratingStatus?.id === "review" &&
+					<ButtonGroup variant="list">
+						<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
+						<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
 					</ButtonGroup>
 				}
 				{
@@ -233,20 +245,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							ratingStatus?.id === "done" &&
 							<ButtonGroup variant="list">
 								<Button onClick={this.addRating}>Neue Bewertung</Button>
-							</ButtonGroup>
-						}
-						{
-							ratingStatus?.id === "open" &&
-							<ButtonGroup variant="list">
-								<Button onClick={() => this.moveRatingStatus("discard", true)}>Bewertung verwerfen</Button>
-								<Button variant="brand" onClick={() => this.moveRatingStatus("review")}>Bewertung überprüfen</Button>
-							</ButtonGroup>
-						}
-						{
-							ratingStatus?.id === "review" &&
-							<ButtonGroup variant="list">
-								<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
-								<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
 							</ButtonGroup>
 						}
 						{
