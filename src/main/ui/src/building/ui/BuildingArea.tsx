@@ -1,6 +1,7 @@
 import { Button } from "@salesforce/design-system-react";
 import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
+import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import SidePanel from "frame/ui/SidePanel";
 import ItemsPage from "item/ui/ItemsPage";
 import { makeObservable, observable } from "mobx";
@@ -16,7 +17,7 @@ const buildingStore = BuildingStoreModel.create({});
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
-export default class BuildingArea extends React.Component {
+class BuildingArea extends React.Component<RouteComponentProps> {
 
 	@observable showPreview = false;
 	@observable previewItemId: string | undefined;
@@ -26,9 +27,17 @@ export default class BuildingArea extends React.Component {
 		return this.props as any as AppCtx;
 	}
 
-	constructor(props: any) {
+	constructor(props: RouteComponentProps) {
 		super(props);
 		makeObservable(this);
+	}
+
+	componentDidUpdate(prevProps: RouteComponentProps) {
+		// close preview on route change
+		if (this.props.location !== prevProps.location) {
+			this.showPreview = false;
+			this.previewItemId = undefined;
+		}
 	}
 
 	render() {
@@ -112,6 +121,8 @@ export default class BuildingArea extends React.Component {
 	};
 
 }
+
+export default withRouter(BuildingArea);
 
 const initBuilding = (building: Building, account: AccountInfo | undefined) => {
 	building.setField("account", account?.id);
