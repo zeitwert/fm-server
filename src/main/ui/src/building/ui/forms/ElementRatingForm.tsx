@@ -23,10 +23,19 @@ export const ElementRatingFormModel = new RepeatingForm({
 export interface ElementRatingFormProps {
 	elementForm: IRepeatingFormIndexedAccessor<any, any, any>;
 	element: BuildingElement;
+	onClose: () => void;
 }
 
 @observer
 export default class ElementRatingForm extends React.Component<ElementRatingFormProps> {
+
+	componentDidMount() {
+		document.addEventListener("keydown", this.escFunction, false);
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener("keydown", this.escFunction, false);
+	}
 
 	render() {
 		const { element, elementForm } = this.props;
@@ -34,16 +43,14 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 			<div>
 				<div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "100%", backgroundColor: "white" }}>
 
-					{/*
 					<div>
-						<button className="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" title="Close dialog" onClick={() => { }}>
+						<button className="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" title="Close dialog" onClick={() => { this.props.onClose() }}>
 							<svg className="slds-button__icon" aria-hidden="true">
 								<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
 							</svg>
 							<span className="slds-assistive-text">Close</span>
 						</button>
 					</div>
-					*/}
 					<div className="slds-popover__header">
 						<header className="slds-media slds-media_center slds-m-bottom_small">
 							<span className="slds-icon_container slds-icon-standard-account slds-media__figure">
@@ -168,6 +175,12 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 				</div>
 			</div >
 		);
+	}
+
+	escFunction = (event: KeyboardEvent) => {
+		if (event.key === "Escape") {
+			this.props.onClose();
+		}
 	}
 
 }

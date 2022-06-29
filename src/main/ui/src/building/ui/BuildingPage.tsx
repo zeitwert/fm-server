@@ -172,7 +172,11 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					!!this.currentElement &&
 					<SidePanel style={{ top: "110px", bottom: "30px", right: "30px", minWidth: "28rem" }}>
 						<div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-							<ElementRatingForm element={this.currentElement} elementForm={this.currentElementForm} />
+							<ElementRatingForm
+								element={this.currentElement}
+								elementForm={this.currentElementForm}
+								onClose={this.onCloseElementRating}
+							/>
 						</div>
 					</SidePanel>
 				}

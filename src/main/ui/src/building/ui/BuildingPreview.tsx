@@ -22,6 +22,7 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 	}
 
 	async componentDidMount() {
+		document.addEventListener("keydown", this.escFunction, false);
 		this.isLoaded = false;
 		await this.buildingStore.load(this.props.buildingId);
 		this.isLoaded = true;
@@ -33,6 +34,10 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 			await this.buildingStore.load(this.props.buildingId!);
 			this.isLoaded = true;
 		}
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener("keydown", this.escFunction, false);
 	}
 
 	render() {
@@ -217,6 +222,12 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 				}
 			</>
 		);
+	}
+
+	escFunction = (event: KeyboardEvent) => {
+		if (event.key === "Escape") {
+			this.props.onClose?.();
+		}
 	}
 
 }
