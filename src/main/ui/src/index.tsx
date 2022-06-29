@@ -1,4 +1,5 @@
-import { IconSettings, Spinner } from "@salesforce/design-system-react";
+
+import { IconSettings } from "@salesforce/design-system-react";
 import {
 	AppStoreModel,
 	Env, Locale,
@@ -55,7 +56,6 @@ class Frame extends React.Component {
 						<NotificationFrame>
 							<AuthFrame>
 								<App isInit={session.isInit} />
-								{session.isNetworkActive && <Spinner variant="brand" size="large" />}
 							</AuthFrame>
 						</NotificationFrame>
 					</Provider>

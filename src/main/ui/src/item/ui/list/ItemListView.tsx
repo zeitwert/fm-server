@@ -1,4 +1,6 @@
-import { session, Template } from "@zeitwert/ui-model";
+
+import { Spinner } from "@salesforce/design-system-react";
+import { Template } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
@@ -8,6 +10,7 @@ import ItemListHeader, { ItemListHeaderProps } from "./ItemListHeader";
 interface ItemListProps extends ItemListHeaderProps {
 	template?: Template;
 	reportTemplates?: any;
+	isLoading: boolean;
 	onClick?: (itemId: string) => void;
 }
 
@@ -45,7 +48,11 @@ export default class ItemListView extends React.Component<ItemListProps> {
 					onShowMap={(showMap: boolean) => { this.showMap = !this.showMap; }}
 				/>
 				{
-					!session.isNetworkActive &&
+					this.props.isLoading &&
+					<Spinner variant="brand" size="large" />
+				}
+				{
+					!this.props.isLoading &&
 					<ItemListContent
 						template={this.props.template}
 						reportData={this.props.reportData}

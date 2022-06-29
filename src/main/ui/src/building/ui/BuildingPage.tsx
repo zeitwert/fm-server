@@ -1,6 +1,6 @@
 
-import { Button, ButtonGroup, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType } from "@zeitwert/ui-model";
+import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import SidePanel from "frame/ui/SidePanel";
@@ -65,8 +65,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const building = this.buildingStore.building!;
-		if (!building) {
-			return null;
+		if (session.isNetworkActive || !building) {
+			return <Spinner variant="brand" size="large" />;
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;

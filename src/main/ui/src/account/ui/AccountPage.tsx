@@ -1,6 +1,6 @@
 
-import { Avatar, Button, ButtonGroup, Icon, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, AccountStoreModel, ContactStoreModel, EntityType } from "@zeitwert/ui-model";
+import { Avatar, Button, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Account, AccountStoreModel, ContactStoreModel, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
@@ -49,8 +49,8 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const account = this.accountStore.account!;
-		if (!account) {
-			return null;
+		if (session.isNetworkActive || !account) {
+			return <Spinner variant="brand" size="large" />;
 		}
 
 		return (

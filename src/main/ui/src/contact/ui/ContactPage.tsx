@@ -1,10 +1,11 @@
-import { Avatar, ButtonGroup, Icon, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
 	Contact,
 	ContactStore,
 	ContactStoreModel,
 	DATE_FORMAT,
-	EntityType
+	EntityType,
+	session
 } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -57,8 +58,8 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const contact = this.contactStore.contact!;
-		if (!contact) {
-			return null;
+		if (session.isNetworkActive || !contact) {
+			return <Spinner variant="brand" size="large" />;
 		}
 		return (
 			<>

@@ -1,6 +1,6 @@
 
-import { Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { EntityType, Portfolio, PortfolioStoreModel } from "@zeitwert/ui-model";
+import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { EntityType, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import ItemEditor from "item/ui/ItemEditor";
@@ -45,8 +45,8 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const portfolio = this.portfolioStore.portfolio!;
-		if (!portfolio) {
-			return null;
+		if (session.isNetworkActive || !portfolio) {
+			return <Spinner variant="brand" size="large" />;
 		}
 		const isFullWidth = [TAB.DETAILS].indexOf(this.activeLeftTabId) < 0;
 		const customEditorButtons = (
