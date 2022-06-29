@@ -42,6 +42,15 @@ example:
 
 ## Technology Stack
 
+### Spring Boot
+
+**Profiles**
+
+* dev: local Dev Server, against PostgreSql in local container or against Staging Server
+* test: local Test environment, against PostgreSql in local container or against Staging Server
+* staging: Staging Server on heroku
+* prod: Production Sever on heroku
+
 ### Flyway
 
 Trigger manual migration `mvnw flyway:migrate`

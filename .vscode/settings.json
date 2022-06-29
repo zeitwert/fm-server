@@ -15,5 +15,6 @@
 	],
 	"search.exclude": {
 		"**/target": true
-	}
+	},
+	"java.saveActions.organizeImports": true
 }

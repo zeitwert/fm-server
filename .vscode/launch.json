@@ -3,19 +3,12 @@
 	"configurations": [
 		{
 			"type": "java",
-			"name": "Debug Application Dev",
+			"name": "Debug - Dev",
 			"request": "launch",
-			"args": "--spring.profiles.active=dev --agentpath:C:\\ProgramData\\YourKit\\2022.3.103.0EAFCC35\\64\\yjpagent.dll=exceptions=disable,delay=10000,listen=all",
+			"projectName": "zeitwert-server",
 			"mainClass": "io.zeitwert.server.Application",
-			"projectName": "zeitwert-server"
-		},
-		{
-			"type": "java",
-			"name": "Debug Application Prod",
-			"request": "launch",
-			"args": "--spring.profiles.active=prod",
-			"mainClass": "io.zeitwert.server.Application",
-			"projectName": "zeitwert-server"
+			"args": " --agentpath:C:\\ProgramData\\YourKit\\2022.3.103.0EAFCC35\\64\\yjpagent.dll=exceptions=disable,delay=10000,listen=all",
+			"vmArgs": " -Dspring.profiles.active=dev"
 		}
 	]
 }
