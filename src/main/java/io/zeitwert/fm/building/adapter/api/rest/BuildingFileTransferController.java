@@ -22,6 +22,7 @@ import io.zeitwert.ddd.collaboration.model.ObjNote;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -31,11 +32,13 @@ import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.TransferMetaDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
@@ -49,6 +52,9 @@ public class BuildingFileTransferController {
 
 	@Autowired
 	private ObjBuildingRepository buildingRepo;
+
+	@Autowired
+	private ObjUserRepository userRepo;
 
 	@Autowired
 	private ObjNoteRepository noteRepo;
@@ -69,31 +75,16 @@ public class BuildingFileTransferController {
 		return ResponseEntity.ok().headers(headers).body(export);
 	}
 
-	@PostMapping
-	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
-			throws ServletException, IOException {
-		Integer accountId = sessionInfo.getAccountId();
-		if (accountId == null) {
-			return ResponseEntity.badRequest().build();
-		} else if (!dto.getMeta().getAggregate().equals(AGGREGATE)) {
-			return ResponseEntity.unprocessableEntity().build();
-		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
-			return ResponseEntity.unprocessableEntity().build();
-		}
-		ObjBuilding building = buildingRepo.create(sessionInfo);
-		building.setAccountId(accountId);
-		this.fillFromDto(building, dto);
-		buildingRepo.store(building);
-		BuildingTransferDto export = this.getTransferDto(building);
-		return ResponseEntity.ok().body(export);
-	}
-
 	private BuildingTransferDto getTransferDto(ObjBuilding building) {
 		//@formatter:off
 		TransferMetaDto meta = TransferMetaDto
 			.builder()
 				.aggregate(AGGREGATE)
 				.version(VERSION)
+				.createdByUser(building.getMeta().getCreatedByUser().getEmail())
+				.createdAt(building.getMeta().getCreatedAt())
+				.modifiedByUser(building.getMeta().getModifiedByUser() != null ? building.getMeta().getModifiedByUser().getEmail() : null)
+				.modifiedAt(building.getMeta().getModifiedAt())
 			.build();
 		List<BuildingTransferElementRatingDto> elements = building.getCurrentRating().getElementList().stream().map(e -> {
 			return BuildingTransferElementRatingDto
@@ -115,6 +106,10 @@ public class BuildingFileTransferController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
+					.createdByUser(note.getMeta().getCreatedByUser().getEmail())
+					.createdAt(note.getMeta().getCreatedAt())
+					.modifiedByUser(note.getMeta().getModifiedByUser() != null ? note.getMeta().getModifiedByUser().getEmail() : null)
+					.modifiedAt(note.getMeta().getModifiedAt())
 				.build();
 		}).toList();
 		BuildingTransferDto export = BuildingTransferDto
@@ -152,11 +147,37 @@ public class BuildingFileTransferController {
 				.thirdPartyValueYear(building.getThirdPartyValueYear())
 				.buildingPartCatalog(building.getCurrentRating().getPartCatalog() != null ? building.getCurrentRating().getPartCatalog().getId() : null)
 				.buildingMaintenanceStrategy(building.getCurrentRating().getMaintenanceStrategy() != null ? building.getCurrentRating().getMaintenanceStrategy().getId() : null)
+				.ratingStatus(building.getCurrentRating().getRatingStatus().getId())
+				.ratingDate(building.getCurrentRating().getRatingDate())
+				.ratingUser(building.getCurrentRating().getRatingUser() != null ? building.getCurrentRating().getRatingUser().getEmail() : null)
 				.elements(elements)
 				.notes(notes)
 			.build();
 		//@formatter:on
 		return export;
+	}
+
+	private String getFileName(ObjBuilding building) {
+		return (building.getAccount() != null ? building.getAccount().getName() + " " : "") + building.getName() + ".zwbd";
+	}
+
+	@PostMapping
+	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
+			throws ServletException, IOException {
+		Integer accountId = sessionInfo.getAccountId();
+		if (accountId == null) {
+			return ResponseEntity.badRequest().build();
+		} else if (!dto.getMeta().getAggregate().equals(AGGREGATE)) {
+			return ResponseEntity.unprocessableEntity().build();
+		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
+		ObjBuilding building = buildingRepo.create(sessionInfo);
+		building.setAccountId(accountId);
+		this.fillFromDto(building, dto);
+		buildingRepo.store(building);
+		BuildingTransferDto export = this.getTransferDto(building);
+		return ResponseEntity.ok().body(export);
 	}
 
 	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
@@ -172,22 +193,22 @@ public class BuildingFileTransferController {
 			building.setInsuranceNr(dto.getBuildingInsuranceNr());
 			building.setPlotNr(dto.getPlotNr());
 			building.setNationalBuildingId(dto.getNationalBuildingId());
-			building.setHistoricPreservation(dto.getHistoricPreservation() != null ? appContext.getEnumerated(CodeHistoricPreservationEnum.class, dto.getHistoricPreservation()) : null);
+			building.setHistoricPreservation(CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation()));
 			building.setStreet(dto.getStreet());
 			building.setZip(dto.getZip());
 			building.setCity(dto.getCity());
-			building.setCountry(dto.getCountry() != null ? appContext.getEnumerated(CodeCountryEnum.class, dto.getCountry()) : null);
+			building.setCountry(CodeCountryEnum.getCountry(dto.getCountry()));
 			building.setGeoAddress(dto.getGeoAddress());
 			building.setGeoCoordinates(dto.getGeoCoordinates());
 			building.setGeoZoom(dto.getGeoZoom());
-			building.setCurrency(dto.getCurrency() != null ? appContext.getEnumerated(CodeCurrencyEnum.class, dto.getCurrency()) : null);
+			building.setCurrency(CodeCurrencyEnum.getCurrency(dto.getCurrency()));
 			building.setVolume(dto.getVolume());
 			building.setAreaGross(dto.getAreaGross());
 			building.setAreaNet(dto.getAreaNet());
 			building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
 			building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-			building.setBuildingType(dto.getBuildingType() != null ? appContext.getEnumerated(CodeBuildingTypeEnum.class, dto.getBuildingType()) : null);
-			building.setBuildingSubType(dto.getBuildingSubType() != null ? appContext.getEnumerated(CodeBuildingSubTypeEnum.class, dto.getBuildingSubType()) : null);
+			building.setBuildingType(CodeBuildingTypeEnum.getBuildingType(dto.getBuildingType()));
+			building.setBuildingSubType(CodeBuildingSubTypeEnum.getBuildingSubType(dto.getBuildingSubType()));
 			building.setBuildingYear(dto.getBuildingYear());
 			building.setInsuredValue(dto.getInsuredValue());
 			building.setInsuredValueYear(dto.getInsuredValueYear());
@@ -195,12 +216,19 @@ public class BuildingFileTransferController {
 			building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
 			building.setThirdPartyValue(dto.getThirdPartyValue());
 			building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-			building.getCurrentRating().setPartCatalog(dto.getBuildingPartCatalog() != null ? appContext.getEnumerated(CodeBuildingPartCatalogEnum.class, dto.getBuildingPartCatalog()) : null);
-			building.getCurrentRating().setMaintenanceStrategy(dto.getBuildingMaintenanceStrategy() != null ? appContext.getEnumerated(CodeBuildingMaintenanceStrategyEnum.class, dto.getBuildingMaintenanceStrategy()) : null);
+			final ObjBuildingPartRating rating = building.getCurrentRating() != null ? building.getCurrentRating() : building.addRating();
+			rating.setPartCatalog(CodeBuildingPartCatalogEnum.getPartCatalog(dto.getBuildingPartCatalog()));
+			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
+			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
+			rating.setRatingDate(dto.getRatingDate());
+			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
-					ObjBuildingPartElementRating element = building.getCurrentRating().addElement(buildingPart);
+					ObjBuildingPartElementRating element = rating.getElement(buildingPart);
+					if (element == null) {
+						element = rating.addElement(buildingPart);
+					}
 					element.setValuePart(dtoElement.getValuePart());
 					element.setCondition(dtoElement.getCondition());
 					element.setConditionYear(dtoElement.getConditionYear());
@@ -227,10 +255,6 @@ public class BuildingFileTransferController {
 			building.getMeta().enableCalc();
 			building.calcAll();
 		}
-	}
-
-	private String getFileName(ObjBuilding building) {
-		return (building.getAccount() != null ? building.getAccount().getName() + " " : "") + building.getName() + ".zwbd";
 	}
 
 }
