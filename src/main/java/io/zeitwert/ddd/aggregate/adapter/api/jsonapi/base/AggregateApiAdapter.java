@@ -67,11 +67,11 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 			throw new BadRequestException("Can only save existing object (missing id)");
 		}
 		A aggregate = this.repository.get(this.sessionInfo, dto.getId());
-		if (dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
+		if (dto.getMeta() != null && dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
 			this.repository.discard(aggregate);
 		} else {
 			this.bridge.toAggregate(dto, aggregate);
-			if (!dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
+			if (dto.getMeta() == null || !dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
 				this.repository.store(aggregate);
 			}
 		}

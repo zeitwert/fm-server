@@ -79,7 +79,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			obj.setThirdPartyValue(dto.getThirdPartyValue());
 			obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
 
-			if (dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
+			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
 				obj.addRating();
 			} else if (obj.getCurrentRating() != null) {
 				ObjBuildingPartRating rating = obj.getCurrentRating();
