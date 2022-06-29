@@ -8625,6 +8625,11 @@ moment@^2.29.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
+more-highcharts@^0.5.9:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/more-highcharts/-/more-highcharts-0.5.9.tgz#f46f57756712f513e817ae672128e8c6a2d3841c"
+  integrity sha512-dH0qwY1rCkKSYYexLABvQ/glYGyk1fYuqaQAbUhF45PEugbqarfy4ol6RSYFIumxvgPoj2eY6peBilR9Eso2Hw==
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
