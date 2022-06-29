@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data()
@@ -52,6 +53,10 @@ public class BuildingTransferDto {
 
 	private String buildingPartCatalog;
 	private String buildingMaintenanceStrategy;
+
+	private String ratingStatus;
+	private LocalDate ratingDate;
+	private String ratingUser;
 
 	private List<BuildingTransferElementRatingDto> elements;
 

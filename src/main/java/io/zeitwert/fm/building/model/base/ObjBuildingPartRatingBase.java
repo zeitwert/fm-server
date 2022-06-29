@@ -125,7 +125,8 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 
 	@Override
 	public ObjBuildingPartElementRating addElement(CodeBuildingPart buildingPart) {
-		requireThis(this.getElement(buildingPart) == null, "unique element for buildingPart");
+		requireThis(this.getElement(buildingPart) == null,
+				"unique element for buildingPart [" + buildingPart.getId() + "]");
 		ObjBuildingPartElementRating e = this.elementList.addPart();
 		e.setBuildingPart(buildingPart);
 		return e;
