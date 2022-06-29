@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
@@ -42,8 +41,8 @@ public class AggregateTest {
 	@Autowired
 	private CodeCountryEnum countryEnum;
 
-	@Autowired
-	private CodeAreaEnum areaEnum;
+	// @Autowired
+	// private CodeAreaEnum areaEnum;
 
 	@Test
 	public void testAggregate() throws Exception {

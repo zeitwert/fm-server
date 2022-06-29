@@ -1,13 +1,11 @@
 package io.zeitwert.fm.portfolio.model.base;
 
-import io.zeitwert.fm.obj.model.base.FMObjFields;
+import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface ObjPortfolioFields extends FMObjFields {
-
-	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+public interface ObjPortfolioFields extends ObjExtnFields {
 
 	static final Field<String> NAME = DSL.field("name", String.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);

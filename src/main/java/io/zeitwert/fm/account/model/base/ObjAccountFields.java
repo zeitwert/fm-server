@@ -1,13 +1,11 @@
 package io.zeitwert.fm.account.model.base;
 
-import io.zeitwert.fm.obj.model.base.FMObjFields;
+import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface ObjAccountFields extends FMObjFields {
-
-	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+public interface ObjAccountFields extends ObjExtnFields {
 
 	static final Field<String> KEY = DSL.field("intl_key", String.class);
 	static final Field<String> NAME = DSL.field("name", String.class);

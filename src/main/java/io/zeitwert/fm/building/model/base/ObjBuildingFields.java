@@ -1,15 +1,13 @@
 package io.zeitwert.fm.building.model.base;
 
+import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
+
 import java.math.BigDecimal;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-import io.zeitwert.fm.obj.model.base.FMObjFields;
-
-public interface ObjBuildingFields extends FMObjFields {
-
-	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+public interface ObjBuildingFields extends ObjExtnFields {
 
 	// database fields
 	static final Field<Integer> ACCOUNT_ID = DSL.field("account_id", Integer.class);

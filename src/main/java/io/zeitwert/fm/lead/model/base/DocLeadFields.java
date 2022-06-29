@@ -1,13 +1,11 @@
 package io.zeitwert.fm.lead.model.base;
 
-import io.zeitwert.fm.doc.model.base.FMDocFields;
+import io.zeitwert.ddd.doc.model.base.DocExtnFields;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface DocLeadFields extends FMDocFields {
-
-	static final Field<Integer> DOC_ID = DSL.field("doc_id", Integer.class);
+public interface DocLeadFields extends DocExtnFields {
 
 	static final Field<Integer> ACCOUNT_ID = DSL.field("account_id", Integer.class);
 	static final Field<String> SUBJECT = DSL.field("subject", String.class);

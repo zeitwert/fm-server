@@ -1,15 +1,13 @@
 package io.zeitwert.fm.contact.model.base;
 
-import io.zeitwert.fm.obj.model.base.FMObjFields;
+import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
 
 import java.time.LocalDate;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface ObjContactFields extends FMObjFields {
-
-	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+public interface ObjContactFields extends ObjExtnFields {
 
 	static final Field<Integer> ACCOUNT_ID = DSL.field("account_id", Integer.class);
 	static final Field<String> CONTACT_ROLE_ID = DSL.field("contact_role_id", String.class);

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.fm.obj.model.base.FMObjFields;
+import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,9 +9,7 @@ import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.impl.DSL;
 
-public interface ObjTestFields extends FMObjFields {
-
-	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+public interface ObjTestFields extends ObjExtnFields {
 
 	static final Field<String> SHORT_TEXT = DSL.field("short_text", String.class);
 	static final Field<String> LONG_TEXT = DSL.field("long_text", String.class);

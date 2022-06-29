@@ -1,13 +1,12 @@
+
 package io.zeitwert.ddd.oe.model.base;
 
-import io.zeitwert.ddd.obj.model.base.ObjFields;
+import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface ObjUserFields extends ObjFields {
-
-	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+public interface ObjUserFields extends ObjExtnFields {
 
 	static final Field<String> EMAIL = DSL.field("email", String.class);
 	static final Field<String> NAME = DSL.field("name", String.class);
