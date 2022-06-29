@@ -22,4 +22,6 @@ public interface ObjUser extends Obj {
 
 	List<CodeUserRole> getRoleList();
 
+	boolean hasRole(CodeUserRole role);
+
 }

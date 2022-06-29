@@ -46,6 +46,11 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		return roles.stream().map(r -> CodeUserRoleEnum.getUserRole(r)).toList();
 	}
 
+	public boolean hasRole(CodeUserRole role) {
+		List<String> roles = List.of(this.dbRecord.getValue(ObjUserFields.ROLE_LIST).split(","));
+		return roles.contains(role.getId());
+	}
+
 	public String getPicture() {
 		return this.dbRecord.getValue(ObjUserFields.PICTURE);
 	}

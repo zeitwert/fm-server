@@ -7,8 +7,8 @@ do nothing;
 
 insert into code_user_role(id, name)
 values
-('APP-ADMIN', 'Application Admin (Super User)'),
-('ADMIN', 'Advisor or Account Admin'),
-('USER', 'Advisor or Account User')
+('appAdmin', 'Application Admin (Super User)'),
+('admin', 'Advisor or Account Admin'),
+('user', 'Advisor or Account User')
 on conflict(id)
 do nothing;

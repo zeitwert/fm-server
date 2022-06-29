@@ -223,11 +223,11 @@ const MstSessionModel = types
 	.views((self) => ({
 		get isUser(): boolean {
 			const roles = self.sessionInfo?.user?.roles || [];
-			return roles.indexOf("ADMIN")! >= 0;
+			return roles.indexOf("user")! >= 0;
 		},
 		get isAdmin(): boolean {
 			const roles = self.sessionInfo?.user?.roles || [];
-			return roles.indexOf("ADMIN")! >= 0;
+			return roles.indexOf("admin")! >= 0;
 		},
 	}));
 

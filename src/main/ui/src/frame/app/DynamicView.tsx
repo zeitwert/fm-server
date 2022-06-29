@@ -68,6 +68,6 @@ export default withRouter(DynamicView);
 
 class UnderConstruction extends React.Component {
 	render() {
-		return <img src="/assets/img/under-construction.jpg" alt="Under construction" />;
+		return <div />;
 	}
 }

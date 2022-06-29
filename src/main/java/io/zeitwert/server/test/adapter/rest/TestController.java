@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// 'APP-ADMIN', 'Application Admin (Super User)'
-// 'ADMIN', 'Advisor or Account Admin'
-// 'USER', 'Advisor or Account User'
+// 'appAdmin', 'Application Admin (Super User)'
+// 'admin', 'Advisor or Account Admin'
+// 'user', 'Advisor or Account User'
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController("sessionTestController")
@@ -26,21 +26,21 @@ public class TestController {
 	}
 
 	@GetMapping("/user")
-	@PreAuthorize("hasRole('APP-ADMIN') or hasRole('SAAS-ADMIN') or hasRole('SAAS-USER') or hasRole('ACCOUNT-ADMIN') or hasRole('ACCOUNT-USER')")
+	@PreAuthorize("hasRole('user')")
 	public String userAccess() {
 		return "User Content.";
 	}
 
-	@GetMapping("/app")
-	@PreAuthorize("hasRole('SAAS-ADMIN')")
-	public String moderatorAccess() {
-		return "Moderator Board.";
-	}
-
 	@GetMapping("/admin")
-	@PreAuthorize("hasRole('SAAS-ADMIN') or hasRole('ACCOUNT-ADMIN')")
+	@PreAuthorize("hasRole('admin')")
 	public String adminAccess() {
 		return "Admin Board.";
+	}
+
+	@GetMapping("/appAdmin")
+	@PreAuthorize("hasRole('appAdmin')")
+	public String moderatorAccess() {
+		return "Moderator Board.";
 	}
 
 }
