@@ -94,6 +94,16 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
+	public void afterAdd(Property<?> property) {
+		if (property == this.elementList) {
+			if (this.getRatingDate() != null) {
+				Integer year = this.getRatingDate().getYear();
+				this.getElement(this.getElementCount() - 1).setConditionYear(year);
+			}
+		}
+	}
+
+	@Override
 	public void afterSet(Property<?> property) {
 		if (property == this.partCatalog) {
 			this.elementList.clearPartList();
