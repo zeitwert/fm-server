@@ -58,6 +58,8 @@ export const LoginModel = types
 				await session.login(self.email!, self.password!, self.account);
 				if (!session.isAuthenticated) {
 					alert("Could not log in!");
+				} else {
+					window.location.href = "/";
 				}
 			}
 		}
