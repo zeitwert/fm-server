@@ -9,6 +9,7 @@ create table code_note_type (
 
 create table obj_note (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
 	--
 	note_type_id													varchar(40)					not null references code_note_type(id) deferrable initially deferred,
 	subject																varchar(100),
@@ -22,8 +23,7 @@ create table obj_note (
 
 create or replace view obj_note_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

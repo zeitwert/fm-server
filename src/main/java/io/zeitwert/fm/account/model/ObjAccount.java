@@ -13,6 +13,8 @@ import io.zeitwert.fm.account.model.enums.CodeCurrency;
 
 public interface ObjAccount extends FMObj {
 
+	String getKey();
+
 	String getName();
 
 	void setName(String name);

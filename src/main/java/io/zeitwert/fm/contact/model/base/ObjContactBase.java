@@ -71,6 +71,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjContactFields.OBJ_ID, objId);
+		this.dbRecord.setValue(ObjContactFields.TENANT_ID, tenantId);
 	}
 
 	@Override
@@ -84,6 +85,12 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public void setAccountId(Integer id) {
+		super.account.setId(id);
+		this.dbRecord.setValue(ObjContactFields.ACCOUNT_ID, id);
 	}
 
 	private ObjContactPartAddress addAddress(CodeAddressChannel addressChannel) {

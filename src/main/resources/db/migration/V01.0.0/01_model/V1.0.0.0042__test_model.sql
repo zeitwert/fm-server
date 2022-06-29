@@ -1,6 +1,7 @@
 
 create table obj_test (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
 	-- simple fields
 	short_text														varchar(200),
 	long_text															text,
@@ -18,8 +19,7 @@ create table obj_test (
 
 create or replace view obj_test_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

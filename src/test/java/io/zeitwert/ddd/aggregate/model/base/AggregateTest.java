@@ -27,7 +27,7 @@ import java.time.LocalDate;
 @ActiveProfiles("test")
 public class AggregateTest {
 
-	private static final String USER_EMAIL = "martin@zeitwert.io";
+	private static final String USER_EMAIL = "k@zeitwert.io";
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
@@ -62,6 +62,7 @@ public class AggregateTest {
 
 		assertNotNull(test1a.getMeta().getCreatedByUser(), "createdByUser not null");
 		assertNotNull(test1a.getMeta().getCreatedAt(), "createdAt not null");
+		assertEquals(1, test1a.getMeta().getTransitionList().size());
 
 		testRepository.store(test1a);
 		test1a = null;
@@ -72,6 +73,7 @@ public class AggregateTest {
 
 		assertNotNull(test1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(test1b.getMeta().getModifiedAt(), "modifiedAt not null");
+		assertEquals(2, test1b.getMeta().getTransitionList().size());
 
 	}
 
@@ -149,36 +151,36 @@ public class AggregateTest {
 
 	}
 
-	@Test
-	public void testAreas() throws Exception {
+	// @Test
+	// public void testAreas() throws Exception {
 
-		ObjTest test1a = testRepository.create(sessionInfo);
-		Integer test1Id = test1a.getId();
+	// ObjTest test1a = testRepository.create(sessionInfo);
+	// Integer test1Id = test1a.getId();
 
-		test1a.addArea(areaEnum.getItem("safety_net"));
-		assertEquals(1, test1a.getAreaSet().size());
+	// test1a.addArea(areaEnum.getItem("safety_net"));
+	// assertEquals(1, test1a.getAreaSet().size());
 
-		test1a.addArea(areaEnum.getItem("real_estate"));
-		assertEquals(2, test1a.getAreaSet().size());
+	// test1a.addArea(areaEnum.getItem("real_estate"));
+	// assertEquals(2, test1a.getAreaSet().size());
 
-		test1a.addArea(areaEnum.getItem("investment"));
-		assertEquals(3, test1a.getAreaSet().size());
+	// test1a.addArea(areaEnum.getItem("investment"));
+	// assertEquals(3, test1a.getAreaSet().size());
 
-		test1a.removeArea(areaEnum.getItem("real_estate"));
-		assertEquals(2, test1a.getAreaSet().size());
-		assertTrue(test1a.getAreaSet().contains(areaEnum.getItem("safety_net")));
-		assertTrue(test1a.getAreaSet().contains(areaEnum.getItem("investment")));
+	// test1a.removeArea(areaEnum.getItem("real_estate"));
+	// assertEquals(2, test1a.getAreaSet().size());
+	// assertTrue(test1a.getAreaSet().contains(areaEnum.getItem("safety_net")));
+	// assertTrue(test1a.getAreaSet().contains(areaEnum.getItem("investment")));
 
-		testRepository.store(test1a);
-		test1a = null;
+	// testRepository.store(test1a);
+	// test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
+	// ObjTest test1b = testRepository.get(sessionInfo, test1Id);
 
-		assertEquals(2, test1b.getAreaSet().size());
-		assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("safety_net")));
-		assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("investment")));
+	// assertEquals(2, test1b.getAreaSet().size());
+	// assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("safety_net")));
+	// assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("investment")));
 
-	}
+	// }
 
 	private void initObjTest(ObjTest test, String name, String userEmail, String countryId) {
 		assertEquals("[, ]", test.getCaption());

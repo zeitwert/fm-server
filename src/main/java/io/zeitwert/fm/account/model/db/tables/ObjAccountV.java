@@ -45,11 +45,6 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     }
 
     /**
-     * The column <code>public.obj_account_v.tenant_id</code>.
-     */
-    public final TableField<ObjAccountVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_account_v.obj_type_id</code>.
      */
     public final TableField<ObjAccountVRecord, String> OBJ_TYPE_ID = createField(DSL.name("obj_type_id"), SQLDataType.VARCHAR(40), this, "");
@@ -105,6 +100,11 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     public final TableField<ObjAccountVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_account_v.tenant_id</code>.
+     */
+    public final TableField<ObjAccountVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_account_v.intl_key</code>.
      */
     public final TableField<ObjAccountVRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
@@ -144,7 +144,7 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     }
 
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    hh.obj_id,\n    hh.intl_key,\n    hh.name,\n    hh.description,\n    hh.account_type_id,\n    hh.client_segment_id,\n    hh.main_contact_id,\n    hh.reference_currency_id\n   FROM (obj_account hh\n     JOIN obj ON ((obj.id = hh.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    hh.obj_id,\n    hh.tenant_id,\n    hh.intl_key,\n    hh.name,\n    hh.description,\n    hh.account_type_id,\n    hh.client_segment_id,\n    hh.main_contact_id,\n    hh.reference_currency_id\n   FROM (obj_account hh\n     JOIN obj ON ((obj.id = hh.obj_id)));"));
     }
 
     /**
@@ -208,7 +208,7 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, Integer, String> fieldsRow() {
+    public Row19<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, String, String, Integer, String> fieldsRow() {
         return (Row19) super.fieldsRow();
     }
 }

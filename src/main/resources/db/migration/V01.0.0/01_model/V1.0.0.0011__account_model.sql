@@ -49,6 +49,7 @@ create table code_currency (
 
 create table obj_account (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
 	--
 	intl_key															varchar(60),
 	name																	varchar(100),
@@ -66,10 +67,13 @@ alter table doc
 add constraint doc$account
 foreign key (account_id) references obj_account(obj_id) deferrable initially deferred;
 
+alter table obj
+add constraint obj$account
+foreign key (account_id) references obj_account(obj_id) deferrable initially deferred;
+
 create or replace view obj_account_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

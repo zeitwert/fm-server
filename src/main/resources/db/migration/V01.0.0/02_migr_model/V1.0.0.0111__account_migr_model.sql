@@ -36,8 +36,8 @@ begin
 	values (nextval('obj_id_seq'), tnt_id, 'obj_account', owner_id, owner_id, new.name)
 	returning id
 	into new_id;
-	insert into obj_account(obj_id, intl_key, name, description, account_type_id, client_segment_id, reference_currency_id)
-	values (new_id, new.key, new.name, new.description, new.account_type_id, new.client_segment, new.reference_currency);
+	insert into obj_account(obj_id, tenant_id, intl_key, name, description, account_type_id, client_segment_id, reference_currency_id)
+	values (new_id, tnt_id, new.key, new.name, new.description, new.account_type_id, new.client_segment, new.reference_currency);
 	return new;
 end
 $func$

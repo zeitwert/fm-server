@@ -43,4 +43,5 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ObjTenantRecord, CodeTenantTypeRecord> OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY = Internal.createForeignKey(ObjTenant.OBJ_TENANT, DSL.name("obj_tenant_tenant_type_id_fkey"), new TableField[] { ObjTenant.OBJ_TENANT.TENANT_TYPE_ID }, Keys.CODE_TENANT_TYPE_PKEY, new TableField[] { CodeTenantType.CODE_TENANT_TYPE.ID }, true);
+    public static final ForeignKey<ObjUserRecord, ObjTenantRecord> OBJ_USER__OBJ_USER_TENANT_ID_FKEY = Internal.createForeignKey(ObjUser.OBJ_USER, DSL.name("obj_user_tenant_id_fkey"), new TableField[] { ObjUser.OBJ_USER.TENANT_ID }, Keys.OBJ_TENANT_PKEY, new TableField[] { ObjTenant.OBJ_TENANT.OBJ_ID }, true);
 }

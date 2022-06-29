@@ -68,6 +68,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjTestFields.OBJ_ID, objId);
+		this.dbRecord.setValue(ObjTestFields.TENANT_ID, tenantId);
 	}
 
 	@Override

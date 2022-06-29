@@ -42,6 +42,14 @@ alter table obj
 add constraint obj$tenant
 foreign key (tenant_id) references obj_tenant(obj_id) deferrable initially deferred;
 
+alter table obj_part_transition
+add constraint obj_part_transition$tenant
+foreign key (tenant_id) references obj_tenant(obj_id) deferrable initially deferred;
+
 alter table doc
 add constraint doc$tenant
+foreign key (tenant_id) references obj_tenant(obj_id) deferrable initially deferred;
+
+alter table doc_part_transition
+add constraint doc_part_transition$tenant
 foreign key (tenant_id) references obj_tenant(obj_id) deferrable initially deferred;

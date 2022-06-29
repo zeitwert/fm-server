@@ -85,12 +85,19 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 	public void doInit(Integer docId, Integer tenantId) {
 		super.doInit(docId, tenantId);
 		this.leadRecord.setValue(DocLeadFields.DOC_ID, docId);
+		this.leadRecord.setValue(DocLeadFields.TENANT_ID, tenantId);
 	}
 
 	@Override
 	public void doStore() {
 		super.doStore();
 		this.leadRecord.store();
+	}
+
+	@Override
+	public void setAccountId(Integer id) {
+		super.account.setId(id);
+		this.leadRecord.setValue(DocLeadFields.ACCOUNT_ID, id);
 	}
 
 	@Override

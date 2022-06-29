@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -51,6 +51,11 @@ public class ObjNote extends TableImpl<ObjNoteRecord> {
      * The column <code>public.obj_note.obj_id</code>.
      */
     public final TableField<ObjNoteRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_note.tenant_id</code>.
+     */
+    public final TableField<ObjNoteRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_note.note_type_id</code>.
@@ -166,11 +171,11 @@ public class ObjNote extends TableImpl<ObjNoteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, Boolean, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, Integer, String, String, String, Boolean, Integer> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

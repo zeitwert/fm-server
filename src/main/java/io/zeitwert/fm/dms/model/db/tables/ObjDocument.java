@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -51,6 +51,16 @@ public class ObjDocument extends TableImpl<ObjDocumentRecord> {
      * The column <code>public.obj_document.obj_id</code>.
      */
     public final TableField<ObjDocumentRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_document.tenant_id</code>.
+     */
+    public final TableField<ObjDocumentRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_document.account_id</code>.
+     */
+    public final TableField<ObjDocumentRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_document.document_kind_id</code>.
@@ -190,11 +200,11 @@ public class ObjDocument extends TableImpl<ObjDocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, Integer, Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

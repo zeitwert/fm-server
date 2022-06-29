@@ -45,11 +45,6 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     }
 
     /**
-     * The column <code>public.obj_contact_v.tenant_id</code>.
-     */
-    public final TableField<ObjContactVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_contact_v.obj_type_id</code>.
      */
     public final TableField<ObjContactVRecord, String> OBJ_TYPE_ID = createField(DSL.name("obj_type_id"), SQLDataType.VARCHAR(40), this, "");
@@ -105,6 +100,16 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     public final TableField<ObjContactVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_contact_v.tenant_id</code>.
+     */
+    public final TableField<ObjContactVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_contact_v.account_id</code>.
+     */
+    public final TableField<ObjContactVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_contact_v.intl_key</code>.
      */
     public final TableField<ObjContactVRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
@@ -113,11 +118,6 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
      * The column <code>public.obj_contact_v.description</code>.
      */
     public final TableField<ObjContactVRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.obj_contact_v.account_id</code>.
-     */
-    public final TableField<ObjContactVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_contact_v.contact_role_id</code>.
@@ -169,7 +169,7 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     }
 
     private ObjContactV(Name alias, Table<ObjContactVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_contact_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ct.obj_id,\n    ct.intl_key,\n    ct.description,\n    ct.account_id,\n    ct.contact_role_id,\n    ct.salutation_id,\n    ct.title_id,\n    ct.first_name,\n    ct.last_name,\n    ct.birth_date,\n    ct.phone,\n    ct.mobile,\n    ct.email\n   FROM (obj_contact ct\n     JOIN obj ON ((obj.id = ct.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_contact_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ct.obj_id,\n    ct.tenant_id,\n    ct.account_id,\n    ct.intl_key,\n    ct.description,\n    ct.contact_role_id,\n    ct.salutation_id,\n    ct.title_id,\n    ct.first_name,\n    ct.last_name,\n    ct.birth_date,\n    ct.phone,\n    ct.mobile,\n    ct.email\n   FROM (obj_contact ct\n     JOIN obj ON ((obj.id = ct.obj_id)));"));
     }
 
     /**

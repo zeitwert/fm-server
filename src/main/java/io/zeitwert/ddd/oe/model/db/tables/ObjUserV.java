@@ -45,11 +45,6 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     /**
-     * The column <code>public.obj_user_v.tenant_id</code>.
-     */
-    public final TableField<ObjUserVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_user_v.obj_type_id</code>.
      */
     public final TableField<ObjUserVRecord, String> OBJ_TYPE_ID = createField(DSL.name("obj_type_id"), SQLDataType.VARCHAR(40), this, "");
@@ -105,6 +100,11 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     public final TableField<ObjUserVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_user_v.tenant_id</code>.
+     */
+    public final TableField<ObjUserVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_user_v.email</code>.
      */
     public final TableField<ObjUserVRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100), this, "");
@@ -144,7 +144,7 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     private ObjUserV(Name alias, Table<ObjUserVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.tenant_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
     }
 
     /**
@@ -208,7 +208,7 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
+    public Row19<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
         return (Row19) super.fieldsRow();
     }
 }

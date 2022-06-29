@@ -53,6 +53,16 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     public final TableField<ObjBuildingRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.obj_building.tenant_id</code>.
+     */
+    public final TableField<ObjBuildingRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_building.account_id</code>.
+     */
+    public final TableField<ObjBuildingRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>public.obj_building.intl_key</code>.
      */
     public final TableField<ObjBuildingRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
@@ -66,11 +76,6 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
      * The column <code>public.obj_building.description</code>.
      */
     public final TableField<ObjBuildingRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.obj_building.account_id</code>.
-     */
-    public final TableField<ObjBuildingRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_building.building_nr</code>.

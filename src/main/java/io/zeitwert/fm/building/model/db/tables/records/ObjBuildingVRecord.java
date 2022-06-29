@@ -7,6 +7,7 @@ package io.zeitwert.fm.building.model.db.tables.records;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingV;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import org.jooq.impl.TableRecordImpl;
@@ -21,213 +22,213 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.obj_building_v.tenant_id</code>.
-     */
-    public void setTenantId(Integer value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_building_v.tenant_id</code>.
-     */
-    public Integer getTenantId() {
-        return (Integer) get(0);
-    }
-
-    /**
      * Setter for <code>public.obj_building_v.obj_type_id</code>.
      */
     public void setObjTypeId(String value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.obj_type_id</code>.
      */
     public String getObjTypeId() {
-        return (String) get(1);
+        return (String) get(0);
     }
 
     /**
      * Setter for <code>public.obj_building_v.id</code>.
      */
     public void setId(Integer value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.id</code>.
      */
     public Integer getId() {
-        return (Integer) get(2);
+        return (Integer) get(1);
     }
 
     /**
      * Setter for <code>public.obj_building_v.owner_id</code>.
      */
     public void setOwnerId(Integer value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.owner_id</code>.
      */
     public Integer getOwnerId() {
-        return (Integer) get(3);
+        return (Integer) get(2);
     }
 
     /**
      * Setter for <code>public.obj_building_v.caption</code>.
      */
     public void setCaption(String value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.caption</code>.
      */
     public String getCaption() {
-        return (String) get(4);
+        return (String) get(3);
     }
 
     /**
      * Setter for <code>public.obj_building_v.created_by_user_id</code>.
      */
     public void setCreatedByUserId(Integer value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.created_by_user_id</code>.
      */
     public Integer getCreatedByUserId() {
-        return (Integer) get(5);
+        return (Integer) get(4);
     }
 
     /**
      * Setter for <code>public.obj_building_v.created_at</code>.
      */
     public void setCreatedAt(OffsetDateTime value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(6);
+        return (OffsetDateTime) get(5);
     }
 
     /**
      * Setter for <code>public.obj_building_v.modified_by_user_id</code>.
      */
     public void setModifiedByUserId(Integer value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.modified_by_user_id</code>.
      */
     public Integer getModifiedByUserId() {
-        return (Integer) get(7);
+        return (Integer) get(6);
     }
 
     /**
      * Setter for <code>public.obj_building_v.modified_at</code>.
      */
     public void setModifiedAt(OffsetDateTime value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.modified_at</code>.
      */
     public OffsetDateTime getModifiedAt() {
-        return (OffsetDateTime) get(8);
+        return (OffsetDateTime) get(7);
     }
 
     /**
      * Setter for <code>public.obj_building_v.closed_by_user_id</code>.
      */
     public void setClosedByUserId(Integer value) {
-        set(9, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.closed_by_user_id</code>.
      */
     public Integer getClosedByUserId() {
-        return (Integer) get(9);
+        return (Integer) get(8);
     }
 
     /**
      * Setter for <code>public.obj_building_v.closed_at</code>.
      */
     public void setClosedAt(OffsetDateTime value) {
-        set(10, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.closed_at</code>.
      */
     public OffsetDateTime getClosedAt() {
-        return (OffsetDateTime) get(10);
+        return (OffsetDateTime) get(9);
+    }
+
+    /**
+     * Setter for <code>public.obj_building_v.rating_status_id</code>.
+     */
+    public void setRatingStatusId(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.rating_status_id</code>.
+     */
+    public String getRatingStatusId() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.obj_building_v.rating_date</code>.
+     */
+    public void setRatingDate(LocalDate value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.rating_date</code>.
+     */
+    public LocalDate getRatingDate() {
+        return (LocalDate) get(11);
+    }
+
+    /**
+     * Setter for <code>public.obj_building_v.rating_user_id</code>.
+     */
+    public void setRatingUserId(Integer value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.rating_user_id</code>.
+     */
+    public Integer getRatingUserId() {
+        return (Integer) get(12);
     }
 
     /**
      * Setter for <code>public.obj_building_v.obj_id</code>.
      */
     public void setObjId(Integer value) {
-        set(11, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.obj_id</code>.
      */
     public Integer getObjId() {
-        return (Integer) get(11);
+        return (Integer) get(13);
     }
 
     /**
-     * Setter for <code>public.obj_building_v.intl_key</code>.
+     * Setter for <code>public.obj_building_v.tenant_id</code>.
      */
-    public void setIntlKey(String value) {
-        set(12, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_building_v.intl_key</code>.
-     */
-    public String getIntlKey() {
-        return (String) get(12);
-    }
-
-    /**
-     * Setter for <code>public.obj_building_v.name</code>.
-     */
-    public void setName(String value) {
-        set(13, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_building_v.name</code>.
-     */
-    public String getName() {
-        return (String) get(13);
-    }
-
-    /**
-     * Setter for <code>public.obj_building_v.description</code>.
-     */
-    public void setDescription(String value) {
+    public void setTenantId(Integer value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>public.obj_building_v.description</code>.
+     * Getter for <code>public.obj_building_v.tenant_id</code>.
      */
-    public String getDescription() {
-        return (String) get(14);
+    public Integer getTenantId() {
+        return (Integer) get(14);
     }
 
     /**
@@ -245,395 +246,437 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
     }
 
     /**
+     * Setter for <code>public.obj_building_v.intl_key</code>.
+     */
+    public void setIntlKey(String value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.intl_key</code>.
+     */
+    public String getIntlKey() {
+        return (String) get(16);
+    }
+
+    /**
+     * Setter for <code>public.obj_building_v.name</code>.
+     */
+    public void setName(String value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.name</code>.
+     */
+    public String getName() {
+        return (String) get(17);
+    }
+
+    /**
+     * Setter for <code>public.obj_building_v.description</code>.
+     */
+    public void setDescription(String value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.description</code>.
+     */
+    public String getDescription() {
+        return (String) get(18);
+    }
+
+    /**
      * Setter for <code>public.obj_building_v.building_nr</code>.
      */
     public void setBuildingNr(String value) {
-        set(16, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.building_nr</code>.
      */
     public String getBuildingNr() {
-        return (String) get(16);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>public.obj_building_v.insurance_nr</code>.
      */
     public void setInsuranceNr(String value) {
-        set(17, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.insurance_nr</code>.
      */
     public String getInsuranceNr() {
-        return (String) get(17);
+        return (String) get(20);
     }
 
     /**
      * Setter for <code>public.obj_building_v.plot_nr</code>.
      */
     public void setPlotNr(String value) {
-        set(18, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.plot_nr</code>.
      */
     public String getPlotNr() {
-        return (String) get(18);
+        return (String) get(21);
     }
 
     /**
      * Setter for <code>public.obj_building_v.national_building_id</code>.
      */
     public void setNationalBuildingId(String value) {
-        set(19, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.national_building_id</code>.
      */
     public String getNationalBuildingId() {
-        return (String) get(19);
+        return (String) get(22);
     }
 
     /**
      * Setter for <code>public.obj_building_v.historic_preservation_id</code>.
      */
     public void setHistoricPreservationId(String value) {
-        set(20, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.historic_preservation_id</code>.
      */
     public String getHistoricPreservationId() {
-        return (String) get(20);
+        return (String) get(23);
     }
 
     /**
      * Setter for <code>public.obj_building_v.street</code>.
      */
     public void setStreet(String value) {
-        set(21, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.street</code>.
      */
     public String getStreet() {
-        return (String) get(21);
+        return (String) get(24);
     }
 
     /**
      * Setter for <code>public.obj_building_v.zip</code>.
      */
     public void setZip(String value) {
-        set(22, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.zip</code>.
      */
     public String getZip() {
-        return (String) get(22);
+        return (String) get(25);
     }
 
     /**
      * Setter for <code>public.obj_building_v.city</code>.
      */
     public void setCity(String value) {
-        set(23, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.city</code>.
      */
     public String getCity() {
-        return (String) get(23);
+        return (String) get(26);
     }
 
     /**
      * Setter for <code>public.obj_building_v.country_id</code>.
      */
     public void setCountryId(String value) {
-        set(24, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.country_id</code>.
      */
     public String getCountryId() {
-        return (String) get(24);
+        return (String) get(27);
     }
 
     /**
      * Setter for <code>public.obj_building_v.geo_address</code>.
      */
     public void setGeoAddress(String value) {
-        set(25, value);
+        set(28, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.geo_address</code>.
      */
     public String getGeoAddress() {
-        return (String) get(25);
+        return (String) get(28);
     }
 
     /**
      * Setter for <code>public.obj_building_v.geo_coordinates</code>.
      */
     public void setGeoCoordinates(String value) {
-        set(26, value);
+        set(29, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.geo_coordinates</code>.
      */
     public String getGeoCoordinates() {
-        return (String) get(26);
+        return (String) get(29);
     }
 
     /**
      * Setter for <code>public.obj_building_v.geo_zoom</code>.
      */
     public void setGeoZoom(Integer value) {
-        set(27, value);
+        set(30, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.geo_zoom</code>.
      */
     public Integer getGeoZoom() {
-        return (Integer) get(27);
+        return (Integer) get(30);
     }
 
     /**
      * Setter for <code>public.obj_building_v.cover_foto_id</code>.
      */
     public void setCoverFotoId(Integer value) {
-        set(28, value);
+        set(31, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.cover_foto_id</code>.
      */
     public Integer getCoverFotoId() {
-        return (Integer) get(28);
+        return (Integer) get(31);
     }
 
     /**
      * Setter for <code>public.obj_building_v.currency_id</code>.
      */
     public void setCurrencyId(String value) {
-        set(29, value);
+        set(32, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.currency_id</code>.
      */
     public String getCurrencyId() {
-        return (String) get(29);
+        return (String) get(32);
     }
 
     /**
      * Setter for <code>public.obj_building_v.volume</code>.
      */
     public void setVolume(BigDecimal value) {
-        set(30, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.volume</code>.
      */
     public BigDecimal getVolume() {
-        return (BigDecimal) get(30);
+        return (BigDecimal) get(33);
     }
 
     /**
      * Setter for <code>public.obj_building_v.area_gross</code>.
      */
     public void setAreaGross(BigDecimal value) {
-        set(31, value);
+        set(34, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.area_gross</code>.
      */
     public BigDecimal getAreaGross() {
-        return (BigDecimal) get(31);
+        return (BigDecimal) get(34);
     }
 
     /**
      * Setter for <code>public.obj_building_v.area_net</code>.
      */
     public void setAreaNet(BigDecimal value) {
-        set(32, value);
+        set(35, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.area_net</code>.
      */
     public BigDecimal getAreaNet() {
-        return (BigDecimal) get(32);
+        return (BigDecimal) get(35);
     }
 
     /**
      * Setter for <code>public.obj_building_v.nr_of_floors_above_ground</code>.
      */
     public void setNrOfFloorsAboveGround(Integer value) {
-        set(33, value);
+        set(36, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.nr_of_floors_above_ground</code>.
      */
     public Integer getNrOfFloorsAboveGround() {
-        return (Integer) get(33);
+        return (Integer) get(36);
     }
 
     /**
      * Setter for <code>public.obj_building_v.nr_of_floors_below_ground</code>.
      */
     public void setNrOfFloorsBelowGround(Integer value) {
-        set(34, value);
+        set(37, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.nr_of_floors_below_ground</code>.
      */
     public Integer getNrOfFloorsBelowGround() {
-        return (Integer) get(34);
+        return (Integer) get(37);
     }
 
     /**
      * Setter for <code>public.obj_building_v.building_type_id</code>.
      */
     public void setBuildingTypeId(String value) {
-        set(35, value);
+        set(38, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.building_type_id</code>.
      */
     public String getBuildingTypeId() {
-        return (String) get(35);
+        return (String) get(38);
     }
 
     /**
      * Setter for <code>public.obj_building_v.building_sub_type_id</code>.
      */
     public void setBuildingSubTypeId(String value) {
-        set(36, value);
+        set(39, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.building_sub_type_id</code>.
      */
     public String getBuildingSubTypeId() {
-        return (String) get(36);
+        return (String) get(39);
     }
 
     /**
      * Setter for <code>public.obj_building_v.building_year</code>.
      */
     public void setBuildingYear(Integer value) {
-        set(37, value);
+        set(40, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.building_year</code>.
      */
     public Integer getBuildingYear() {
-        return (Integer) get(37);
+        return (Integer) get(40);
     }
 
     /**
      * Setter for <code>public.obj_building_v.insured_value</code>.
      */
     public void setInsuredValue(BigDecimal value) {
-        set(38, value);
+        set(41, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.insured_value</code>.
      */
     public BigDecimal getInsuredValue() {
-        return (BigDecimal) get(38);
+        return (BigDecimal) get(41);
     }
 
     /**
      * Setter for <code>public.obj_building_v.insured_value_year</code>.
      */
     public void setInsuredValueYear(Integer value) {
-        set(39, value);
+        set(42, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.insured_value_year</code>.
      */
     public Integer getInsuredValueYear() {
-        return (Integer) get(39);
+        return (Integer) get(42);
     }
 
     /**
      * Setter for <code>public.obj_building_v.not_insured_value</code>.
      */
     public void setNotInsuredValue(BigDecimal value) {
-        set(40, value);
+        set(43, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.not_insured_value</code>.
      */
     public BigDecimal getNotInsuredValue() {
-        return (BigDecimal) get(40);
+        return (BigDecimal) get(43);
     }
 
     /**
      * Setter for <code>public.obj_building_v.not_insured_value_year</code>.
      */
     public void setNotInsuredValueYear(Integer value) {
-        set(41, value);
+        set(44, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.not_insured_value_year</code>.
      */
     public Integer getNotInsuredValueYear() {
-        return (Integer) get(41);
+        return (Integer) get(44);
     }
 
     /**
      * Setter for <code>public.obj_building_v.third_party_value</code>.
      */
     public void setThirdPartyValue(BigDecimal value) {
-        set(42, value);
+        set(45, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.third_party_value</code>.
      */
     public BigDecimal getThirdPartyValue() {
-        return (BigDecimal) get(42);
+        return (BigDecimal) get(45);
     }
 
     /**
      * Setter for <code>public.obj_building_v.third_party_value_year</code>.
      */
     public void setThirdPartyValueYear(Integer value) {
-        set(43, value);
+        set(46, value);
     }
 
     /**
      * Getter for <code>public.obj_building_v.third_party_value_year</code>.
      */
     public Integer getThirdPartyValueYear() {
-        return (Integer) get(43);
+        return (Integer) get(46);
     }
 
     // -------------------------------------------------------------------------
@@ -650,10 +693,9 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
     /**
      * Create a detached, initialised ObjBuildingVRecord
      */
-    public ObjBuildingVRecord(Integer tenantId, String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, String intlKey, String name, String description, Integer accountId, String buildingNr, String insuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, Integer coverFotoId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear) {
+    public ObjBuildingVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId, Integer objId, Integer tenantId, Integer accountId, String intlKey, String name, String description, String buildingNr, String insuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, Integer coverFotoId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear) {
         super(ObjBuildingV.OBJ_BUILDING_V);
 
-        setTenantId(tenantId);
         setObjTypeId(objTypeId);
         setId(id);
         setOwnerId(ownerId);
@@ -664,11 +706,15 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
         setModifiedAt(modifiedAt);
         setClosedByUserId(closedByUserId);
         setClosedAt(closedAt);
+        setRatingStatusId(ratingStatusId);
+        setRatingDate(ratingDate);
+        setRatingUserId(ratingUserId);
         setObjId(objId);
+        setTenantId(tenantId);
+        setAccountId(accountId);
         setIntlKey(intlKey);
         setName(name);
         setDescription(description);
-        setAccountId(accountId);
         setBuildingNr(buildingNr);
         setInsuranceNr(insuranceNr);
         setPlotNr(plotNr);

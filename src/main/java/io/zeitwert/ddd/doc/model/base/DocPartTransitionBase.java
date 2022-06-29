@@ -27,7 +27,7 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	public DocPartTransitionBase(PartRepository<Doc, ?> repository, Doc doc, UpdatableRecord<?> dbRecord) {
 		super(repository, doc, dbRecord);
 		this.user = this.addReferenceProperty(dbRecord, DocPartTransitionFields.USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(dbRecord, DocPartTransitionFields.MODIFIED_AT);
+		this.modifiedAt = this.addSimpleProperty(dbRecord, DocPartTransitionFields.TIMESTAMP);
 		this.oldCaseStage = this.addEnumProperty(dbRecord, DocPartTransitionFields.OLD_CASE_STAGE_ID,
 				CodeCaseStageEnum.class);
 		this.newCaseStage = this.addEnumProperty(dbRecord, DocPartTransitionFields.NEW_CASE_STAGE_ID,
@@ -39,9 +39,10 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		DocPartTransitionRecord dbRecord = (DocPartTransitionRecord) this.getDbRecord();
+		dbRecord.setTenantId(this.getMeta().getSessionInfo().getTenant().getId());
 		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1); // TODO
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setModifiedAt(this.getMeta().getSessionInfo().getCurrentTime());
+		dbRecord.setTimestamp(this.getMeta().getSessionInfo().getCurrentTime());
 		dbRecord.setOldCaseStageId(null);
 		dbRecord.setNewCaseStageId(null);
 	}

@@ -4,7 +4,6 @@
 package io.zeitwert.ddd.doc.model.db.tables;
 
 
-import io.zeitwert.ddd.doc.model.db.Indexes;
 import io.zeitwert.ddd.doc.model.db.Keys;
 import io.zeitwert.ddd.doc.model.db.Public;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row14;
@@ -66,6 +64,11 @@ public class Doc extends TableImpl<DocRecord> {
     public final TableField<DocRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.doc.account_id</code>.
+     */
+    public final TableField<DocRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.doc.owner_id</code>.
      */
     public final TableField<DocRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -94,11 +97,6 @@ public class Doc extends TableImpl<DocRecord> {
      * The column <code>public.doc.assignee_id</code>.
      */
     public final TableField<DocRecord, Integer> ASSIGNEE_ID = createField(DSL.name("assignee_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.doc.account_id</code>.
-     */
-    public final TableField<DocRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.doc.created_by_user_id</code>.
@@ -156,11 +154,6 @@ public class Doc extends TableImpl<DocRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOC$IS_IN_WORK);
     }
 
     @Override
@@ -226,7 +219,7 @@ public class Doc extends TableImpl<DocRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Integer, String, Integer, Integer, String, String, String, Boolean, Integer, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
+    public Row14<Integer, String, Integer, Integer, Integer, String, String, String, Boolean, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
         return (Row14) super.fieldsRow();
     }
 }

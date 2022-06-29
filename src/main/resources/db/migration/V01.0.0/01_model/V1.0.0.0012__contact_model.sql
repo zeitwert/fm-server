@@ -34,11 +34,11 @@ create table code_contact_role (
 
 create table obj_contact (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
+	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
 	intl_key															varchar(60),
 	description														text,
-	--
-	account_id													integer								not null references obj_account(obj_id),
 	--
 	contact_role_id												varchar(40)					references code_contact_role(id),
 	salutation_id													varchar(40)					references code_salutation(id),
@@ -59,8 +59,7 @@ foreign key (main_contact_id) references obj_contact(obj_id) deferrable initiall
 
 create or replace view obj_contact_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

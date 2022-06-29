@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @JsonApiResource(type = "account", resourcePath = "account/accounts", deletable = false)
 public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 
+	private String key;
 	private String name;
 	private String description;
 	private EnumeratedDto accountType;

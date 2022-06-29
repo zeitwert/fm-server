@@ -33,6 +33,7 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.account.model.ObjAccount;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
@@ -42,6 +43,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	protected final SimpleProperty<Integer> id;
 	protected final ReferenceProperty<ObjTenant> tenant;
+	protected final ReferenceProperty<ObjAccount> account;
 	protected final ReferenceProperty<ObjUser> owner;
 	protected final SimpleProperty<String> caption;
 	protected final ReferenceProperty<ObjUser> createdByUser;
@@ -64,6 +66,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.docDbRecord = docDbRecord;
 		this.id = this.addSimpleProperty(docDbRecord, DocFields.ID);
 		this.tenant = this.addReferenceProperty(docDbRecord, DocFields.TENANT_ID, ObjTenant.class);
+		this.account = this.addReferenceProperty(docDbRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 		this.owner = this.addReferenceProperty(docDbRecord, DocFields.OWNER_ID, ObjUser.class);
 		this.caption = this.addSimpleProperty(docDbRecord, DocFields.CAPTION);
 		this.createdByUser = this.addReferenceProperty(docDbRecord, DocFields.CREATED_BY_USER_ID, ObjUser.class);
@@ -146,6 +149,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doBeforeStore() {
+		this.transitionList.addPart();
 		super.doBeforeStore();
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);

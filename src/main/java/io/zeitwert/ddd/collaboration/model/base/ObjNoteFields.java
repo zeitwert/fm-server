@@ -1,15 +1,17 @@
+
 package io.zeitwert.ddd.collaboration.model.base;
 
-import io.zeitwert.ddd.item.model.base.ItemFields;
+import io.zeitwert.ddd.obj.model.base.ObjFields;
 
 import java.time.OffsetDateTime;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
-public interface ObjNoteFields extends ItemFields {
+public interface ObjNoteFields extends ObjFields {
 
 	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
+	static final Field<Integer> TENANT_ID = DSL.field("tenant_id", Integer.class);
 
 	static final Field<Integer> RELATED_TO_ID = DSL.field("related_to_id", Integer.class);
 	static final Field<String> NOTE_TYPE_ID = DSL.field("note_type_id", String.class);

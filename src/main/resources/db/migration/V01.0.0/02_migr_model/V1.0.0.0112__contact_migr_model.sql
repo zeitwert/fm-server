@@ -45,6 +45,7 @@ begin
 		--
 		intl_key,
 		--
+		tenant_id,
 		account_id,
 		--
 		contact_role_id,
@@ -64,6 +65,7 @@ begin
 		--
 		new.key,
 		--
+		tenant_id,
 		account_id,
 		--
 		new.contact_role_id,

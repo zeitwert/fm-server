@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,6 +53,11 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
      * The column <code>public.obj_user.obj_id</code>.
      */
     public final TableField<ObjUserRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_user.tenant_id</code>.
+     */
+    public final TableField<ObjUserRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_user.email</code>.
@@ -129,7 +134,7 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.OBJ_USER$EMAIL);
+        return Arrays.<Index>asList(Indexes.OBJ_USER$EMAIL, Indexes.OBJ_USER$TENANT);
     }
 
     @Override
@@ -140,6 +145,20 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     @Override
     public List<UniqueKey<ObjUserRecord>> getKeys() {
         return Arrays.<UniqueKey<ObjUserRecord>>asList(Keys.OBJ_USER_PKEY, Keys.EMAIL_UNIQUE);
+    }
+
+    @Override
+    public List<ForeignKey<ObjUserRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ObjUserRecord, ?>>asList(Keys.OBJ_USER__OBJ_USER_TENANT_ID_FKEY);
+    }
+
+    private transient ObjTenant _objTenant;
+
+    public ObjTenant objTenant() {
+        if (_objTenant == null)
+            _objTenant = new ObjTenant(this, Keys.OBJ_USER__OBJ_USER_TENANT_ID_FKEY);
+
+        return _objTenant;
     }
 
     @Override
@@ -169,11 +188,11 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

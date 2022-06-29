@@ -8,6 +8,7 @@ public interface AggregateFields {
 
 	static final Field<Integer> ID = DSL.field("id", Integer.class);
 	static final Field<Integer> TENANT_ID = DSL.field("tenant_id", Integer.class);
+	static final Field<Integer> ACCOUNT_ID = DSL.field("account_id", Integer.class);
 	static final Field<Integer> OWNER_ID = DSL.field("owner_id", Integer.class);
 	static final Field<String> CAPTION = DSL.field("caption", String.class);
 

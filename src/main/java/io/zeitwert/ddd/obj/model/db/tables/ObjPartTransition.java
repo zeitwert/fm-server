@@ -19,7 +19,7 @@ import org.jooq.Index;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,6 +57,11 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
     public final TableField<ObjPartTransitionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.obj_part_transition.tenant_id</code>.
+     */
+    public final TableField<ObjPartTransitionRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>public.obj_part_transition.obj_id</code>.
      */
     public final TableField<ObjPartTransitionRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -82,9 +87,9 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
     public final TableField<ObjPartTransitionRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.obj_part_transition.modified_at</code>.
+     * The column <code>public.obj_part_transition.timestamp</code>.
      */
-    public final TableField<ObjPartTransitionRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+    public final TableField<ObjPartTransitionRecord, OffsetDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.obj_part_transition.changes</code>.
@@ -131,7 +136,7 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.OBJ_PART_TRANSITION$PART);
+        return Arrays.<Index>asList(Indexes.OBJ_PART_TRANSITION$ACTIVITY, Indexes.OBJ_PART_TRANSITION$PART);
     }
 
     @Override
@@ -185,11 +190,11 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, Integer, String, Integer, Integer, OffsetDateTime, JSON> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, Integer, Integer, Integer, String, Integer, Integer, OffsetDateTime, JSON> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

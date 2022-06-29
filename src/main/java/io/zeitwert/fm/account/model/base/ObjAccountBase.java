@@ -32,6 +32,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	private final UpdatableRecord<?> dbRecord;
 
+	protected final SimpleProperty<String> key;
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 	protected final EnumProperty<CodeAccountType> accountType;
@@ -44,6 +45,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 			UpdatableRecord<?> accountRecord) {
 		super(sessionInfo, repository, objRecord);
 		this.dbRecord = accountRecord;
+		this.key = this.addSimpleProperty(dbRecord, ObjAccountFields.KEY);
 		this.name = this.addSimpleProperty(dbRecord, ObjAccountFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjAccountFields.DESCRIPTION);
 		this.accountType = this.addEnumProperty(dbRecord, ObjAccountFields.ACCOUNT_TYPE_ID,
@@ -65,6 +67,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjAccountFields.OBJ_ID, objId);
+		this.dbRecord.setValue(ObjAccountFields.TENANT_ID, tenantId);
 	}
 
 	@Override

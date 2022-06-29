@@ -11,7 +11,7 @@ public interface DocPartTransition extends DocPart<Doc> {
 
 	ObjUser getUser();
 
-	OffsetDateTime getModifiedAt();
+	OffsetDateTime getTimestamp();
 
 	CodeCaseStage getOldCaseStage();
 

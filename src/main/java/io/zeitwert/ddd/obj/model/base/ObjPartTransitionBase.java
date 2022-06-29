@@ -22,7 +22,7 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	public ObjPartTransitionBase(PartRepository<Obj, ?> repository, Obj obj, UpdatableRecord<?> dbRecord) {
 		super(repository, obj, dbRecord);
 		this.user = this.addReferenceProperty(dbRecord, ObjPartTransitionFields.USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.MODIFIED_AT);
+		this.modifiedAt = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.TIMESTAMP);
 		this.changes = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.CHANGES);
 	}
 
@@ -30,8 +30,9 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
+		dbRecord.setTenantId(this.getMeta().getSessionInfo().getTenant().getId());
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setModifiedAt(this.getMeta().getSessionInfo().getCurrentTime());
+		dbRecord.setTimestamp(this.getMeta().getSessionInfo().getCurrentTime());
 	}
 
 	public String getChanges() {

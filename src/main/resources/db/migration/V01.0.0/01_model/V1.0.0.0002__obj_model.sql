@@ -7,6 +7,7 @@ create table obj (
 	id																		integer												not null,
 	obj_type_id														varchar(40)										not null references code_aggregate_type(id),
 	tenant_id															integer												not null, -- references obj_tenant(obj_id),
+	account_id														integer,											-- references obj_account(obj_id) deferrable initially deferred,
 	owner_id															integer												not null, -- references obj_user(obj_id),
 	caption																varchar(200),
 	--
@@ -19,6 +20,9 @@ create table obj (
 	--
 	primary key (id)
 );
+
+create index obj$account
+on     obj(account_id);
 
 create table obj_part_item (
 	obj_id																integer												not null references obj(id) deferrable initially deferred,
@@ -33,13 +37,14 @@ create table obj_part_item (
 
 create table obj_part_transition (
 	id																		integer												not null,
+	tenant_id															integer												not null, -- references obj_tenant(obj_id),
 	obj_id																integer												not null references obj(id) deferrable initially deferred,
 	parent_part_id												integer												not null default 0,
 	part_list_type_id											varchar(40)										not null references code_part_list_type(id),
 	seq_nr																integer												not null,
 	--
 	user_id																integer												not null, -- references obj_user(obj_id),
-	modified_at														timestamp with time zone			not null default now()::timestamp,
+	timestamp															timestamp with time zone			not null default now()::timestamp,
 	--
 	changes																json,
 	--
@@ -48,3 +53,25 @@ create table obj_part_transition (
 
 create index obj_part_transition$part
 on     obj_part_transition(obj_id, parent_part_id, part_list_type_id, seq_nr);
+
+create index obj_part_transition$activity
+on     obj_part_transition(tenant_id, timestamp);
+
+create or replace view obj_activity_v
+as
+select oc.id                  obj_id,
+       oc.obj_type_id         obj_type_id,
+       'created'              change,
+       oc.created_at          dateTime,
+       oc.created_by_user_id  user_id
+from   obj  oc
+where  oc.created_at is not null
+union all
+select om.id                  obj_id,
+       om.obj_type_id         obj_type_id,
+       'modified'             change,
+       om.modified_at         dateTime,
+       om.modified_by_user_id user_id
+from   obj  om
+where  om.modified_at is not null
+order by dateTime desc;

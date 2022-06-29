@@ -19,7 +19,7 @@ import org.jooq.Index;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,6 +57,11 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
     public final TableField<DocPartTransitionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.doc_part_transition.tenant_id</code>.
+     */
+    public final TableField<DocPartTransitionRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>public.doc_part_transition.doc_id</code>.
      */
     public final TableField<DocPartTransitionRecord, Integer> DOC_ID = createField(DSL.name("doc_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -82,9 +87,9 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
     public final TableField<DocPartTransitionRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.doc_part_transition.modified_at</code>.
+     * The column <code>public.doc_part_transition.timestamp</code>.
      */
-    public final TableField<DocPartTransitionRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+    public final TableField<DocPartTransitionRecord, OffsetDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("(now())::timestamp without time zone", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     /**
      * The column <code>public.doc_part_transition.old_case_stage_id</code>.
@@ -141,7 +146,7 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOC_PART_TRANSITION$PART);
+        return Arrays.<Index>asList(Indexes.DOC_PART_TRANSITION$ACTIVITY, Indexes.DOC_PART_TRANSITION$PART);
     }
 
     @Override
@@ -211,11 +216,11 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, Integer, Integer, String, Integer, Integer, OffsetDateTime, String, String, JSON> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Integer, Integer, Integer, Integer, String, Integer, Integer, OffsetDateTime, String, String, JSON> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

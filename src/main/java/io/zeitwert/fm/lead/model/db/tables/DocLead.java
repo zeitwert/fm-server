@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row19;
+import org.jooq.Row21;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,6 +53,21 @@ public class DocLead extends TableImpl<DocLeadRecord> {
     public final TableField<DocLeadRecord, Integer> DOC_ID = createField(DSL.name("doc_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.doc_lead.tenant_id</code>.
+     */
+    public final TableField<DocLeadRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.doc_lead.account_id</code>.
+     */
+    public final TableField<DocLeadRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.doc_lead.contact_id</code>.
+     */
+    public final TableField<DocLeadRecord, Integer> CONTACT_ID = createField(DSL.name("contact_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.doc_lead.intl_key</code>.
      */
     public final TableField<DocLeadRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
@@ -66,11 +81,6 @@ public class DocLead extends TableImpl<DocLeadRecord> {
      * The column <code>public.doc_lead.description</code>.
      */
     public final TableField<DocLeadRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.doc_lead.contact_id</code>.
-     */
-    public final TableField<DocLeadRecord, Integer> CONTACT_ID = createField(DSL.name("contact_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.doc_lead.lead_source_id</code>.
@@ -231,11 +241,11 @@ public class DocLead extends TableImpl<DocLeadRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row19 type methods
+    // Row21 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Integer, String, String, String, Integer, String, String, String, String, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row19) super.fieldsRow();
+    public Row21<Integer, Integer, Integer, Integer, String, String, String, String, String, String, String, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row21) super.fieldsRow();
     }
 }

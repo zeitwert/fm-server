@@ -22,5 +22,6 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index OBJ_PART_TRANSITION$ACTIVITY = Internal.createIndex(DSL.name("obj_part_transition$activity"), ObjPartTransition.OBJ_PART_TRANSITION, new OrderField[] { ObjPartTransition.OBJ_PART_TRANSITION.TENANT_ID, ObjPartTransition.OBJ_PART_TRANSITION.TIMESTAMP }, false);
     public static final Index OBJ_PART_TRANSITION$PART = Internal.createIndex(DSL.name("obj_part_transition$part"), ObjPartTransition.OBJ_PART_TRANSITION, new OrderField[] { ObjPartTransition.OBJ_PART_TRANSITION.OBJ_ID, ObjPartTransition.OBJ_PART_TRANSITION.PARENT_PART_ID, ObjPartTransition.OBJ_PART_TRANSITION.PART_LIST_TYPE_ID, ObjPartTransition.OBJ_PART_TRANSITION.SEQ_NR }, false);
 }

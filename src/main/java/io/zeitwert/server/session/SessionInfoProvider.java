@@ -28,7 +28,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 @Configuration
-@Profile({ "dev", "prod" })
+@Profile({ "dev", "staging", "prod" })
 public class SessionInfoProvider {
 
 	public static final String AUTH_HEADER_PREFIX = "Bearer ";

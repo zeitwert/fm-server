@@ -9,8 +9,14 @@ values (
 	(select id from obj_user_v where email = 'martin@zeitwert.io')
 );
 
-insert into obj_portfolio(obj_id, intl_key, name, account_id)
-values ((select max(id) from obj), 'p1', 'Gesamtbestand', (select obj_id from obj_account where intl_key = '3043'));
+insert into obj_portfolio(obj_id, tenant_id, intl_key, name, account_id)
+values (
+	(select max(id) from obj),
+	(select id from obj_tenant_v where extl_key = 'demo'),
+	'p1',
+	'Gesamtbestand',
+	(select obj_id from obj_account where intl_key = '3043')
+);
 
 insert into obj_part_item(obj_id, part_list_type_id, seq_nr, item_id)
 values ((select obj_id from obj_portfolio where intl_key = 'p1'), 'portfolio.includeList', 1, (select obj_id from obj_account where intl_key = '3043'));
@@ -25,8 +31,14 @@ values (
 	(select id from obj_user_v where email = 'martin@zeitwert.io')
 );
 
-insert into obj_portfolio(obj_id, intl_key, name, account_id)
-values ((select max(id) from obj), 'p2', 'Finanzvermögen', (select obj_id from obj_account where intl_key = '3043'));
+insert into obj_portfolio(obj_id, tenant_id, intl_key, name, account_id)
+values (
+	(select max(id) from obj),
+	(select id from obj_tenant_v where extl_key = 'demo'),
+	'p2',
+	'Finanzvermögen',
+	(select obj_id from obj_account where intl_key = '3043')
+);
 
 insert into obj_part_item(obj_id, part_list_type_id, seq_nr, item_id)
 values ((select obj_id from obj_portfolio where intl_key = 'p2'), 'portfolio.includeList', 1, (select obj_id from obj_building where zip = '3043' and name = 'Turnhalle'));
@@ -47,8 +59,14 @@ values (
 	(select id from obj_user_v where email = 'martin@zeitwert.io')
 );
 
-insert into obj_portfolio(obj_id, intl_key, name, account_id)
-values ((select max(id) from obj), 'p3', 'Verwaltungsvermögen', (select obj_id from obj_account where intl_key = '3043'));
+insert into obj_portfolio(obj_id, tenant_id, intl_key, name, account_id)
+values (
+	(select max(id) from obj),
+	(select id from obj_tenant_v where extl_key = 'demo'),
+	'p3',
+	'Verwaltungsvermögen',
+	(select obj_id from obj_account where intl_key = '3043')
+);
 
 insert into obj_part_item(obj_id, part_list_type_id, seq_nr, item_id)
 values ((select obj_id from obj_portfolio where intl_key = 'p3'), 'portfolio.includeList', 1, (select obj_id from obj_account where intl_key = '3043'));

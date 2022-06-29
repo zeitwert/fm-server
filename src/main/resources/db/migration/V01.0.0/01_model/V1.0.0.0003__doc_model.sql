@@ -40,6 +40,7 @@ create table doc (
 	id																		integer												not null,
 	doc_type_id														varchar(40)										not null references code_aggregate_type(id),
 	tenant_id															integer												not null, -- references obj_tenant(obj_id),
+	account_id														integer,											-- references obj_account(obj_id) deferrable initially deferred,
 	owner_id															integer 											not null, -- references obj_user(obj_id) not null,
 	caption																varchar(200),
 	--
@@ -47,8 +48,6 @@ create table doc (
 	case_stage_id													varchar(40)										not null references code_case_stage(id) deferrable initially deferred,
 	is_in_work														boolean,
 	assignee_id														integer,											-- references obj(obj_id),
-	--
-	account_id														integer,											-- references obj_account(obj_id) deferrable initially deferred,
 	--
 	created_by_user_id										integer												not null, -- references obj_user(obj_id),
 	created_at														timestamp with time zone			not null default now()::timestamp,
@@ -58,8 +57,8 @@ create table doc (
 	primary key (id)
 );
 
-create index doc$is_in_work
-on     doc(is_in_work);
+create index doc$account
+on     doc(account_id);
 
 create table doc_part_item (
 	doc_id																integer												not null references doc(id) deferrable initially deferred,
@@ -74,13 +73,14 @@ create table doc_part_item (
 
 create table doc_part_transition (
 	id																		integer												not null,
+	tenant_id															integer												not null, -- references obj_tenant(obj_id),
 	doc_id																integer												not null references doc(id) deferrable initially deferred,
 	parent_part_id												integer												not null default 0,
 	part_list_type_id											varchar(40)										not null references code_part_list_type(id),
 	seq_nr																integer												not null,
 	--
 	user_id																integer												not null, -- references obj_user(obj_id),
-	modified_at														timestamp with time zone			not null default now()::timestamp,
+	timestamp															timestamp with time zone			not null default now()::timestamp,
 	--
 	old_case_stage_id											varchar(40)										references code_case_stage(id) deferrable initially deferred,
 	new_case_stage_id											varchar(40)										references code_case_stage(id) deferrable initially deferred,	
@@ -92,3 +92,6 @@ create table doc_part_transition (
 
 create index doc_part_transition$part
 on     doc_part_transition(doc_id, parent_part_id, part_list_type_id, seq_nr);
+
+create index doc_part_transition$activity
+on     doc_part_transition(tenant_id, timestamp);

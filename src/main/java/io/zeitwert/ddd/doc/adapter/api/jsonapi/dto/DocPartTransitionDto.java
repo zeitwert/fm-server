@@ -19,7 +19,7 @@ public class DocPartTransitionDto {
 
 	private ObjUserDto user;
 
-	private OffsetDateTime modifiedAt;
+	private OffsetDateTime timestamp;
 
 	private CodeCaseStage oldCaseStage;
 
@@ -31,7 +31,7 @@ public class DocPartTransitionDto {
 		return DocPartTransitionDto.builder()
 			.seqNr(transition.getSeqNr())
 			.user(userBridge.fromAggregate(transition.getUser(), sessionInfo))
-			.modifiedAt(transition.getModifiedAt())
+			.timestamp(transition.getTimestamp())
 			.oldCaseStage(transition.getOldCaseStage())
 			.newCaseStage(transition.getNewCaseStage())
 			.build();

@@ -18,7 +18,7 @@ public class ObjPartTransitionDto {
 
 	private ObjUserDto user;
 
-	private OffsetDateTime modifiedAt;
+	private OffsetDateTime timestamp;
 
 	public static ObjPartTransitionDto fromPart(ObjPartTransition transition, SessionInfo sessionInfo) {
 		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
@@ -26,7 +26,7 @@ public class ObjPartTransitionDto {
 		return ObjPartTransitionDto.builder()
 			.seqNr(transition.getSeqNr())
 			.user(userBridge.fromAggregate(transition.getUser(), sessionInfo))
-			.modifiedAt(transition.getModifiedAt())
+			.timestamp(transition.getTimestamp())
 			.build();
 		// @formatter:on
 	}

@@ -17,12 +17,13 @@ create table code_lead_rating (
 
 create table doc_lead (
 	doc_id																integer not null references doc(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
+	account_id														integer							references obj_account(obj_id) deferrable initially deferred,
+	contact_id														integer 						references obj_contact(obj_id) deferrable initially deferred,
 	--
 	intl_key															varchar(60),
 	subject																varchar(100) not null,
 	description														text,
-	--
-	contact_id														integer references obj_contact(obj_id) deferrable initially deferred,
 	--
 	lead_source_id												varchar(40) not null references code_lead_source(id),
 	--
@@ -46,8 +47,7 @@ create table doc_lead (
 
 create or replace view doc_lead_v
 as
-select	doc.tenant_id,
-				doc.doc_type_id,
+select	doc.doc_type_id,
 				doc.id,
 				doc.owner_id,
 				doc.assignee_id,
@@ -56,8 +56,6 @@ select	doc.tenant_id,
 				doc.case_def_id,
 				doc.case_stage_id,
 				doc.is_in_work,
-				--
-				doc.account_id,
 				--
 				doc.created_by_user_id,
 				doc.created_at,

@@ -61,6 +61,8 @@ begin
 		subject,
 		description,
 		--
+		tenant_id,
+		account_id,
 		contact_id,
 		--
 		lead_source_id,
@@ -87,6 +89,8 @@ begin
 		new.subject,
 		new.description,
 		--
+		tenant_id,
+		account_id,
 		contact_id,
 		--
 		new.lead_source_id,

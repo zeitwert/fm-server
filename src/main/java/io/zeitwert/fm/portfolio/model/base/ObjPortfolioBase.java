@@ -14,12 +14,10 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.Property;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.obj.model.ObjVRepository;
@@ -34,7 +32,6 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 	protected final SimpleProperty<String> portfolioNr;
-	protected final ReferenceProperty<ObjAccount> account;
 	protected final ReferenceSetProperty<ObjBuilding> includeSet;
 	protected final ReferenceSetProperty<ObjBuilding> excludeSet;
 	protected final ReferenceSetProperty<ObjBuilding> buildingSet;
@@ -46,7 +43,6 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		this.name = this.addSimpleProperty(dbRecord, ObjPortfolioFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjPortfolioFields.DESCRIPTION);
 		this.portfolioNr = this.addSimpleProperty(dbRecord, ObjPortfolioFields.PORTFOLIO_NR);
-		this.account = this.addReferenceProperty(dbRecord, ObjPortfolioFields.ACCOUNT_ID, ObjAccount.class);
 		this.includeSet = this.addReferenceSetProperty(this.getRepository().getIncludeSetType(), ObjBuilding.class);
 		this.excludeSet = this.addReferenceSetProperty(this.getRepository().getExcludeSetType(), ObjBuilding.class);
 		this.buildingSet = this.addReferenceSetProperty(this.getRepository().getBuildingSetType(), ObjBuilding.class);
@@ -61,6 +57,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjPortfolioFields.OBJ_ID, objId);
+		this.dbRecord.setValue(ObjPortfolioFields.TENANT_ID, tenantId);
 	}
 
 	@Override
@@ -81,6 +78,12 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	@Override
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		return super.addPart(property, partListType);
+	}
+
+	@Override
+	public void setAccountId(Integer id) {
+		super.account.setId(id);
+		this.dbRecord.setValue(ObjPortfolioFields.ACCOUNT_ID, id);
 	}
 
 	@Override

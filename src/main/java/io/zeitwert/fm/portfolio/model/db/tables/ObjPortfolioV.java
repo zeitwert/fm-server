@@ -45,11 +45,6 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     }
 
     /**
-     * The column <code>public.obj_portfolio_v.tenant_id</code>.
-     */
-    public final TableField<ObjPortfolioVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_portfolio_v.obj_type_id</code>.
      */
     public final TableField<ObjPortfolioVRecord, String> OBJ_TYPE_ID = createField(DSL.name("obj_type_id"), SQLDataType.VARCHAR(40), this, "");
@@ -105,6 +100,16 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     public final TableField<ObjPortfolioVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_portfolio_v.tenant_id</code>.
+     */
+    public final TableField<ObjPortfolioVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_portfolio_v.account_id</code>.
+     */
+    public final TableField<ObjPortfolioVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_portfolio_v.intl_key</code>.
      */
     public final TableField<ObjPortfolioVRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
@@ -120,11 +125,6 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     public final TableField<ObjPortfolioVRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.obj_portfolio_v.account_id</code>.
-     */
-    public final TableField<ObjPortfolioVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_portfolio_v.portfolio_nr</code>.
      */
     public final TableField<ObjPortfolioVRecord, String> PORTFOLIO_NR = createField(DSL.name("portfolio_nr"), SQLDataType.VARCHAR(200), this, "");
@@ -134,7 +134,7 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     }
 
     private ObjPortfolioV(Name alias, Table<ObjPortfolioVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_portfolio_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    pf.obj_id,\n    pf.intl_key,\n    pf.name,\n    pf.description,\n    pf.account_id,\n    pf.portfolio_nr\n   FROM (obj_portfolio pf\n     JOIN obj ON ((obj.id = pf.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_portfolio_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    pf.obj_id,\n    pf.tenant_id,\n    pf.account_id,\n    pf.intl_key,\n    pf.name,\n    pf.description,\n    pf.portfolio_nr\n   FROM (obj_portfolio pf\n     JOIN obj ON ((obj.id = pf.obj_id)));"));
     }
 
     /**
@@ -198,7 +198,7 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, Integer, String> fieldsRow() {
+    public Row17<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, Integer, String, String, String, String> fieldsRow() {
         return (Row17) super.fieldsRow();
     }
 }

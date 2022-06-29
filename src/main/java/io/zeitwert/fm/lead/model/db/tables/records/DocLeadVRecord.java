@@ -20,269 +20,269 @@ public class DocLeadVRecord extends TableRecordImpl<DocLeadVRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.doc_lead_v.tenant_id</code>.
-     */
-    public void setTenantId(Integer value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_lead_v.tenant_id</code>.
-     */
-    public Integer getTenantId() {
-        return (Integer) get(0);
-    }
-
-    /**
      * Setter for <code>public.doc_lead_v.doc_type_id</code>.
      */
     public void setDocTypeId(String value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.doc_type_id</code>.
      */
     public String getDocTypeId() {
-        return (String) get(1);
+        return (String) get(0);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.id</code>.
      */
     public void setId(Integer value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.id</code>.
      */
     public Integer getId() {
-        return (Integer) get(2);
+        return (Integer) get(1);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.owner_id</code>.
      */
     public void setOwnerId(Integer value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.owner_id</code>.
      */
     public Integer getOwnerId() {
-        return (Integer) get(3);
+        return (Integer) get(2);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.assignee_id</code>.
      */
     public void setAssigneeId(Integer value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.assignee_id</code>.
      */
     public Integer getAssigneeId() {
-        return (Integer) get(4);
+        return (Integer) get(3);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.caption</code>.
      */
     public void setCaption(String value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.caption</code>.
      */
     public String getCaption() {
-        return (String) get(5);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.case_def_id</code>.
      */
     public void setCaseDefId(String value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.case_def_id</code>.
      */
     public String getCaseDefId() {
-        return (String) get(6);
+        return (String) get(5);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.case_stage_id</code>.
      */
     public void setCaseStageId(String value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.case_stage_id</code>.
      */
     public String getCaseStageId() {
-        return (String) get(7);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.is_in_work</code>.
      */
     public void setIsInWork(Boolean value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.is_in_work</code>.
      */
     public Boolean getIsInWork() {
-        return (Boolean) get(8);
-    }
-
-    /**
-     * Setter for <code>public.doc_lead_v.account_id</code>.
-     */
-    public void setAccountId(Integer value) {
-        set(9, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_lead_v.account_id</code>.
-     */
-    public Integer getAccountId() {
-        return (Integer) get(9);
+        return (Boolean) get(7);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.created_by_user_id</code>.
      */
     public void setCreatedByUserId(Integer value) {
-        set(10, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.created_by_user_id</code>.
      */
     public Integer getCreatedByUserId() {
-        return (Integer) get(10);
+        return (Integer) get(8);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.created_at</code>.
      */
     public void setCreatedAt(OffsetDateTime value) {
-        set(11, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(11);
+        return (OffsetDateTime) get(9);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.modified_by_user_id</code>.
      */
     public void setModifiedByUserId(Integer value) {
-        set(12, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.modified_by_user_id</code>.
      */
     public Integer getModifiedByUserId() {
-        return (Integer) get(12);
+        return (Integer) get(10);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.modified_at</code>.
      */
     public void setModifiedAt(OffsetDateTime value) {
-        set(13, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.modified_at</code>.
      */
     public OffsetDateTime getModifiedAt() {
-        return (OffsetDateTime) get(13);
+        return (OffsetDateTime) get(11);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.doc_id</code>.
      */
     public void setDocId(Integer value) {
-        set(14, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.doc_id</code>.
      */
     public Integer getDocId() {
+        return (Integer) get(12);
+    }
+
+    /**
+     * Setter for <code>public.doc_lead_v.tenant_id</code>.
+     */
+    public void setTenantId(Integer value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_lead_v.tenant_id</code>.
+     */
+    public Integer getTenantId() {
+        return (Integer) get(13);
+    }
+
+    /**
+     * Setter for <code>public.doc_lead_v.account_id</code>.
+     */
+    public void setAccountId(Integer value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_lead_v.account_id</code>.
+     */
+    public Integer getAccountId() {
         return (Integer) get(14);
-    }
-
-    /**
-     * Setter for <code>public.doc_lead_v.intl_key</code>.
-     */
-    public void setIntlKey(String value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_lead_v.intl_key</code>.
-     */
-    public String getIntlKey() {
-        return (String) get(15);
-    }
-
-    /**
-     * Setter for <code>public.doc_lead_v.subject</code>.
-     */
-    public void setSubject(String value) {
-        set(16, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_lead_v.subject</code>.
-     */
-    public String getSubject() {
-        return (String) get(16);
-    }
-
-    /**
-     * Setter for <code>public.doc_lead_v.description</code>.
-     */
-    public void setDescription(String value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_lead_v.description</code>.
-     */
-    public String getDescription() {
-        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.doc_lead_v.contact_id</code>.
      */
     public void setContactId(Integer value) {
-        set(18, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.doc_lead_v.contact_id</code>.
      */
     public Integer getContactId() {
-        return (Integer) get(18);
+        return (Integer) get(15);
+    }
+
+    /**
+     * Setter for <code>public.doc_lead_v.intl_key</code>.
+     */
+    public void setIntlKey(String value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_lead_v.intl_key</code>.
+     */
+    public String getIntlKey() {
+        return (String) get(16);
+    }
+
+    /**
+     * Setter for <code>public.doc_lead_v.subject</code>.
+     */
+    public void setSubject(String value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_lead_v.subject</code>.
+     */
+    public String getSubject() {
+        return (String) get(17);
+    }
+
+    /**
+     * Setter for <code>public.doc_lead_v.description</code>.
+     */
+    public void setDescription(String value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_lead_v.description</code>.
+     */
+    public String getDescription() {
+        return (String) get(18);
     }
 
     /**
@@ -495,10 +495,9 @@ public class DocLeadVRecord extends TableRecordImpl<DocLeadVRecord> {
     /**
      * Create a detached, initialised DocLeadVRecord
      */
-    public DocLeadVRecord(Integer tenantId, String docTypeId, Integer id, Integer ownerId, Integer assigneeId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer accountId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, String intlKey, String subject, String description, Integer contactId, String leadSourceId, String salutationId, String titleId, String firstName, String lastName, String phone, String mobile, String email, String leadRatingId, String street, String zip, String city, String state, String countryId) {
+    public DocLeadVRecord(String docTypeId, Integer id, Integer ownerId, Integer assigneeId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, Integer contactId, String intlKey, String subject, String description, String leadSourceId, String salutationId, String titleId, String firstName, String lastName, String phone, String mobile, String email, String leadRatingId, String street, String zip, String city, String state, String countryId) {
         super(DocLeadV.DOC_LEAD_V);
 
-        setTenantId(tenantId);
         setDocTypeId(docTypeId);
         setId(id);
         setOwnerId(ownerId);
@@ -507,16 +506,17 @@ public class DocLeadVRecord extends TableRecordImpl<DocLeadVRecord> {
         setCaseDefId(caseDefId);
         setCaseStageId(caseStageId);
         setIsInWork(isInWork);
-        setAccountId(accountId);
         setCreatedByUserId(createdByUserId);
         setCreatedAt(createdAt);
         setModifiedByUserId(modifiedByUserId);
         setModifiedAt(modifiedAt);
         setDocId(docId);
+        setTenantId(tenantId);
+        setAccountId(accountId);
+        setContactId(contactId);
         setIntlKey(intlKey);
         setSubject(subject);
         setDescription(description);
-        setContactId(contactId);
         setLeadSourceId(leadSourceId);
         setSalutationId(salutationId);
         setTitleId(titleId);

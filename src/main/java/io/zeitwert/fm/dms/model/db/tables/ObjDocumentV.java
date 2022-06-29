@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row17;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -43,11 +43,6 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
     public Class<ObjDocumentVRecord> getRecordType() {
         return ObjDocumentVRecord.class;
     }
-
-    /**
-     * The column <code>public.obj_document_v.tenant_id</code>.
-     */
-    public final TableField<ObjDocumentVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_document_v.obj_type_id</code>.
@@ -105,6 +100,16 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
     public final TableField<ObjDocumentVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_document_v.tenant_id</code>.
+     */
+    public final TableField<ObjDocumentVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_document_v.account_id</code>.
+     */
+    public final TableField<ObjDocumentVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_document_v.document_kind_id</code>.
      */
     public final TableField<ObjDocumentVRecord, String> DOCUMENT_KIND_ID = createField(DSL.name("document_kind_id"), SQLDataType.VARCHAR(40), this, "");
@@ -134,7 +139,7 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
     }
 
     private ObjDocumentV(Name alias, Table<ObjDocumentVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_document_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    d.obj_id,\n    d.document_kind_id,\n    d.content_kind_id,\n    d.name,\n    d.document_category_id,\n    d.template_document_id\n   FROM (obj_document d\n     JOIN obj ON ((obj.id = d.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_document_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    d.obj_id,\n    d.tenant_id,\n    d.account_id,\n    d.document_kind_id,\n    d.content_kind_id,\n    d.name,\n    d.document_category_id,\n    d.template_document_id\n   FROM (obj_document d\n     JOIN obj ON ((obj.id = d.obj_id)));"));
     }
 
     /**
@@ -194,11 +199,11 @@ public class ObjDocumentV extends TableImpl<ObjDocumentVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row17 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<Integer, String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, Integer> fieldsRow() {
-        return (Row17) super.fieldsRow();
+    public Row18<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }

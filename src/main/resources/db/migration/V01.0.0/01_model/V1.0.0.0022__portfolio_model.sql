@@ -1,12 +1,12 @@
 
 create table obj_portfolio (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
+	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
 	intl_key															varchar(60),
 	name																	varchar(100),
 	description														text,
-	--
-	account_id													integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
 	portfolio_nr													varchar(200), -- Identifikation
 	--
@@ -15,8 +15,7 @@ create table obj_portfolio (
 
 create or replace view obj_portfolio_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

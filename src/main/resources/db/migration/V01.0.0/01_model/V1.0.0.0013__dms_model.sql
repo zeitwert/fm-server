@@ -36,6 +36,8 @@ create table code_content_type (
 
 create table obj_document (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
+	account_id														integer							references obj_account(obj_id) deferrable initially deferred,
 	--
 	document_kind_id											varchar(40)					not null references code_document_kind(id) deferrable initially deferred,
 	content_kind_id												varchar(40)					not null references code_content_kind(id) deferrable initially deferred,
@@ -62,8 +64,7 @@ create table obj_document_part_content (
 
 create or replace view obj_document_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

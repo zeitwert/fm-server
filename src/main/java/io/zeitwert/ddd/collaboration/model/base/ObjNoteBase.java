@@ -45,6 +45,7 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjNoteFields.OBJ_ID, objId);
+		this.dbRecord.setValue(ObjNoteFields.TENANT_ID, tenantId);
 	}
 
 	@Override

@@ -23,4 +23,5 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index OBJ_USER$EMAIL = Internal.createIndex(DSL.name("obj_user$email"), ObjUser.OBJ_USER, new OrderField[] { ObjUser.OBJ_USER.EMAIL }, false);
+    public static final Index OBJ_USER$TENANT = Internal.createIndex(DSL.name("obj_user$tenant"), ObjUser.OBJ_USER, new OrderField[] { ObjUser.OBJ_USER.TENANT_ID }, false);
 }

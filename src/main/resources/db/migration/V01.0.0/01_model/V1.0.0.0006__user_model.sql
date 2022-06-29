@@ -9,6 +9,7 @@ create table code_user_role (
 
 create table obj_user (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
 	--
 	email																	varchar(100)				not null,
 	name																	varchar(100)				not null,
@@ -26,6 +27,9 @@ create table obj_user (
 
 create index obj_user$email
 on     obj_user(email);
+
+create index obj_user$tenant
+on     obj_user(tenant_id);
 
 alter table obj
 add constraint obj$owner
@@ -65,8 +69,7 @@ foreign key (user_id) references obj_user(obj_id) deferrable initially deferred;
 
 create or replace view obj_user_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				obj.id,
 				obj.owner_id,
 				obj.caption,

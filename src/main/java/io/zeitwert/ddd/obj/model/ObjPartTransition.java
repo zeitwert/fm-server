@@ -12,7 +12,7 @@ public interface ObjPartTransition extends ObjPart<Obj> {
 
 	ObjUser getUser();
 
-	OffsetDateTime getModifiedAt();
+	OffsetDateTime getTimestamp();
 
 	String getChanges();
 

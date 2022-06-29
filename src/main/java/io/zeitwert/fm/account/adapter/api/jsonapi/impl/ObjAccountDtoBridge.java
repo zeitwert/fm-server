@@ -64,6 +64,7 @@ public final class ObjAccountDtoBridge extends FMObjDtoBridge<ObjAccount, ObjAcc
 		this.fromAggregate(dtoBuilder, obj, sessionInfo);
 		// @formatter:off
 		return dtoBuilder
+			.key(obj.getKey())
 			.name(obj.getName())
 			.description(obj.getDescription())
 			.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))
@@ -84,6 +85,7 @@ public final class ObjAccountDtoBridge extends FMObjDtoBridge<ObjAccount, ObjAcc
 		this.fromRecord(dtoBuilder, obj, sessionInfo);
 		// @formatter:off
 		return dtoBuilder
+			.key(obj.getIntlKey())
 			.name(obj.getName())
 			.description(obj.getDescription())
 			.accountType(EnumeratedDto.fromEnum(CodeAccountTypeEnum.getAccountType(obj.getAccountTypeId())))

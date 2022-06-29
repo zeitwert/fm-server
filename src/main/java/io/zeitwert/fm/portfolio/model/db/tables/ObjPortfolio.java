@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,6 +53,16 @@ public class ObjPortfolio extends TableImpl<ObjPortfolioRecord> {
     public final TableField<ObjPortfolioRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>public.obj_portfolio.tenant_id</code>.
+     */
+    public final TableField<ObjPortfolioRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_portfolio.account_id</code>.
+     */
+    public final TableField<ObjPortfolioRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>public.obj_portfolio.intl_key</code>.
      */
     public final TableField<ObjPortfolioRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
@@ -66,11 +76,6 @@ public class ObjPortfolio extends TableImpl<ObjPortfolioRecord> {
      * The column <code>public.obj_portfolio.description</code>.
      */
     public final TableField<ObjPortfolioRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.obj_portfolio.account_id</code>.
-     */
-    public final TableField<ObjPortfolioRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.obj_portfolio.portfolio_nr</code>.
@@ -152,11 +157,11 @@ public class ObjPortfolio extends TableImpl<ObjPortfolioRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, Integer, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, Integer, Integer, String, String, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

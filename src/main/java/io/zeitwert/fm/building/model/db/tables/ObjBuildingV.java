@@ -8,6 +8,7 @@ import io.zeitwert.fm.building.model.db.Public;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import org.jooq.Field;
@@ -43,11 +44,6 @@ public class ObjBuildingV extends TableImpl<ObjBuildingVRecord> {
     public Class<ObjBuildingVRecord> getRecordType() {
         return ObjBuildingVRecord.class;
     }
-
-    /**
-     * The column <code>public.obj_building_v.tenant_id</code>.
-     */
-    public final TableField<ObjBuildingVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_building_v.obj_type_id</code>.
@@ -100,9 +96,34 @@ public class ObjBuildingV extends TableImpl<ObjBuildingVRecord> {
     public final TableField<ObjBuildingVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
+     * The column <code>public.obj_building_v.rating_status_id</code>.
+     */
+    public final TableField<ObjBuildingVRecord, String> RATING_STATUS_ID = createField(DSL.name("rating_status_id"), SQLDataType.VARCHAR(40), this, "");
+
+    /**
+     * The column <code>public.obj_building_v.rating_date</code>.
+     */
+    public final TableField<ObjBuildingVRecord, LocalDate> RATING_DATE = createField(DSL.name("rating_date"), SQLDataType.LOCALDATE, this, "");
+
+    /**
+     * The column <code>public.obj_building_v.rating_user_id</code>.
+     */
+    public final TableField<ObjBuildingVRecord, Integer> RATING_USER_ID = createField(DSL.name("rating_user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_building_v.obj_id</code>.
      */
     public final TableField<ObjBuildingVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_building_v.tenant_id</code>.
+     */
+    public final TableField<ObjBuildingVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_building_v.account_id</code>.
+     */
+    public final TableField<ObjBuildingVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_building_v.intl_key</code>.
@@ -118,11 +139,6 @@ public class ObjBuildingV extends TableImpl<ObjBuildingVRecord> {
      * The column <code>public.obj_building_v.description</code>.
      */
     public final TableField<ObjBuildingVRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.obj_building_v.account_id</code>.
-     */
-    public final TableField<ObjBuildingVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_building_v.building_nr</code>.
@@ -269,7 +285,7 @@ public class ObjBuildingV extends TableImpl<ObjBuildingVRecord> {
     }
 
     private ObjBuildingV(Name alias, Table<ObjBuildingVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_building_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    b.obj_id,\n    b.intl_key,\n    b.name,\n    b.description,\n    b.account_id,\n    b.building_nr,\n    b.insurance_nr,\n    b.plot_nr,\n    b.national_building_id,\n    b.historic_preservation_id,\n    b.street,\n    b.zip,\n    b.city,\n    b.country_id,\n    b.geo_address,\n    b.geo_coordinates,\n    b.geo_zoom,\n    b.cover_foto_id,\n    b.currency_id,\n    b.volume,\n    b.area_gross,\n    b.area_net,\n    b.nr_of_floors_above_ground,\n    b.nr_of_floors_below_ground,\n    b.building_type_id,\n    b.building_sub_type_id,\n    b.building_year,\n    b.insured_value,\n    b.insured_value_year,\n    b.not_insured_value,\n    b.not_insured_value_year,\n    b.third_party_value,\n    b.third_party_value_year\n   FROM (obj_building b\n     JOIN obj ON ((obj.id = b.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_building_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ( SELECT r.rating_status_id\n           FROM obj_building_part_rating r\n          WHERE ((r.obj_id = obj.id) AND (r.seq_nr = ( SELECT max(rr.seq_nr) AS max\n                   FROM obj_building_part_rating rr\n                  WHERE ((rr.obj_id = obj.id) AND ((rr.rating_status_id)::text = ANY ((ARRAY['open'::character varying, 'review'::character varying, 'done'::character varying])::text[]))))))) AS rating_status_id,\n    ( SELECT r.rating_date\n           FROM obj_building_part_rating r\n          WHERE ((r.obj_id = obj.id) AND (r.seq_nr = ( SELECT max(rr.seq_nr) AS max\n                   FROM obj_building_part_rating rr\n                  WHERE ((rr.obj_id = obj.id) AND ((rr.rating_status_id)::text = ANY ((ARRAY['open'::character varying, 'review'::character varying, 'done'::character varying])::text[]))))))) AS rating_date,\n    ( SELECT r.rating_user_id\n           FROM obj_building_part_rating r\n          WHERE ((r.obj_id = obj.id) AND (r.seq_nr = ( SELECT max(rr.seq_nr) AS max\n                   FROM obj_building_part_rating rr\n                  WHERE ((rr.obj_id = obj.id) AND ((rr.rating_status_id)::text = ANY ((ARRAY['open'::character varying, 'review'::character varying, 'done'::character varying])::text[]))))))) AS rating_user_id,\n    b.obj_id,\n    b.tenant_id,\n    b.account_id,\n    b.intl_key,\n    b.name,\n    b.description,\n    b.building_nr,\n    b.insurance_nr,\n    b.plot_nr,\n    b.national_building_id,\n    b.historic_preservation_id,\n    b.street,\n    b.zip,\n    b.city,\n    b.country_id,\n    b.geo_address,\n    b.geo_coordinates,\n    b.geo_zoom,\n    b.cover_foto_id,\n    b.currency_id,\n    b.volume,\n    b.area_gross,\n    b.area_net,\n    b.nr_of_floors_above_ground,\n    b.nr_of_floors_below_ground,\n    b.building_type_id,\n    b.building_sub_type_id,\n    b.building_year,\n    b.insured_value,\n    b.insured_value_year,\n    b.not_insured_value,\n    b.not_insured_value_year,\n    b.third_party_value,\n    b.third_party_value_year\n   FROM (obj_building b\n     JOIN obj ON ((obj.id = b.obj_id)));"));
     }
 
     /**

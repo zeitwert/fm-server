@@ -93,12 +93,12 @@ create table code_building_price_index_value (
 
 create table obj_building (
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
+	tenant_id															integer							not null references obj_tenant(obj_id) deferrable initially deferred,
+	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
 	intl_key															varchar(60),
 	name																	varchar(100),
 	description														text,
-	--
-	account_id														integer							not null references obj_account(obj_id) deferrable initially deferred,
 	--
 	building_nr														varchar(200), -- Identifikation
 	insurance_nr													varchar(200), -- Gebäudeversicherung Police Nr
@@ -138,25 +138,6 @@ create table obj_building (
 	--
 	primary key (obj_id)
 );
-
-create or replace view obj_building_v
-as
-select	obj.tenant_id,
-				obj.obj_type_id,
-				obj.id,
-				obj.owner_id,
-				obj.caption,
-				--
-				obj.created_by_user_id,
-				obj.created_at,
-				obj.modified_by_user_id,
-				obj.modified_at,
-				obj.closed_by_user_id,
-				obj.closed_at,
-				--
-				b.*
-from		obj_building b
-join obj on obj.id = b.obj_id;
 
 create table code_building_rating_status (
 	id																		varchar(40)					not null,
@@ -219,3 +200,56 @@ create table obj_building_part_element_rating (
 
 create index obj_building_part_element_rating$part
 on     obj_building_part_element_rating(obj_id, parent_part_id, part_list_type_id, seq_nr);
+
+create or replace view obj_building_v
+as
+select	obj.obj_type_id,
+				obj.id,
+				obj.owner_id,
+				obj.caption,
+				--
+				obj.created_by_user_id,
+				obj.created_at,
+				obj.modified_by_user_id,
+				obj.modified_at,
+				obj.closed_by_user_id,
+				obj.closed_at,
+				--
+				(
+					select	r.rating_status_id
+					from		obj_building_part_rating r
+					where		r.obj_id = obj.id
+						and		r.seq_nr = (
+										select	max(rr.seq_nr)
+										from		obj_building_part_rating rr
+										where		rr.obj_id = obj.id
+											and		rr.rating_status_id in ('open', 'review', 'done')
+									)
+				) rating_status_id,
+				(
+					select	r.rating_date
+					from		obj_building_part_rating r
+					where		r.obj_id = obj.id
+						and		r.seq_nr = (
+										select	max(rr.seq_nr)
+										from		obj_building_part_rating rr
+										where		rr.obj_id = obj.id
+											and		rr.rating_status_id in ('open', 'review', 'done')
+									)
+				) rating_date,
+				(
+					select	r.rating_user_id
+					from		obj_building_part_rating r
+					where		r.obj_id = obj.id
+						and		r.seq_nr = (
+										select	max(rr.seq_nr)
+										from		obj_building_part_rating rr
+										where		rr.obj_id = obj.id
+											and		rr.rating_status_id in ('open', 'review', 'done')
+									)
+				) rating_user_id,
+				--
+				b.*
+				--
+from		obj_building b
+join obj on obj.id = b.obj_id;

@@ -18,7 +18,6 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
-import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
@@ -53,8 +52,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	static final Integer DefaultGeoZoom = 17;
 
 	private final UpdatableRecord<?> dbRecord;
-
-	protected final ReferenceProperty<ObjAccount> account;
 
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
@@ -102,8 +99,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		super(sessionInfo, repository, objRecord);
 
 		this.dbRecord = contactRecord;
-
-		this.account = this.addReferenceProperty(dbRecord, ObjBuildingFields.ACCOUNT_ID, ObjAccount.class);
 
 		this.name = this.addSimpleProperty(dbRecord, ObjBuildingFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjBuildingFields.DESCRIPTION);
@@ -156,6 +151,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	public void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		this.dbRecord.setValue(ObjBuildingFields.OBJ_ID, objId);
+		this.dbRecord.setValue(ObjBuildingFields.TENANT_ID, tenantId);
 	}
 
 	@Override
@@ -178,6 +174,12 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 			return (P) this.getRepository().getRatingRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
+	}
+
+	@Override
+	public void setAccountId(Integer id) {
+		super.account.setId(id);
+		this.dbRecord.setValue(ObjBuildingFields.ACCOUNT_ID, id);
 	}
 
 	@Override

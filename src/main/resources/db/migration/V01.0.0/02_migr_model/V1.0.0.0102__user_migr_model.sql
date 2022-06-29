@@ -32,8 +32,8 @@ begin
 	values (nextval('obj_id_seq'), tenant_id, 'obj_user', new.name, k_user_id, k_user_id)
 	returning id
 	into new_id;
-	insert into obj_user(obj_id, email, name, password, role_list, picture)
-	values (new_id, new.email, new.name, new.password, new.role_list, new.picture);
+	insert into obj_user(obj_id, tenant_id, email, name, password, role_list, picture)
+	values (new_id, tenant_id, new.email, new.name, new.password, new.role_list, new.picture);
 	return new;
 end
 $func$

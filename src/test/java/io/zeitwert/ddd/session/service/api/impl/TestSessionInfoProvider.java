@@ -23,7 +23,7 @@ public class TestSessionInfoProvider {
 	@SessionScope
 	public SessionInfo getSessionInfo(ObjUserRepository userRepository) {
 
-		String userEmail = "martin@zeitwert.io";
+		String userEmail = "k@zeitwert.io";
 		Optional<ObjUser> user = userRepository.getByEmail(userEmail);
 		if (user.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");

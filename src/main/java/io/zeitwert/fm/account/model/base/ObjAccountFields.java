@@ -9,6 +9,7 @@ public interface ObjAccountFields extends FMObjFields {
 
 	static final Field<Integer> OBJ_ID = DSL.field("obj_id", Integer.class);
 
+	static final Field<String> KEY = DSL.field("intl_key", String.class);
 	static final Field<String> NAME = DSL.field("name", String.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
 	static final Field<String> ACCOUNT_TYPE_ID = DSL.field("account_type_id", String.class);
