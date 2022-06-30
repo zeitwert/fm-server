@@ -59,9 +59,9 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 				</div>
 				<div className="slds-popover__header">
 					<header className="slds-media slds-media_center slds-m-bottom_small">
-						<span className="slds-icon_container slds-icon-standard-account slds-media__figure">
+						<span className="slds-icon_container slds-icon-custom-custom24 slds-media__figure">
 							<svg className="slds-icon slds-icon_small" aria-hidden="true">
-								<use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#store"></use>
+								<use xlinkHref="/assets/icons/custom-sprite/svg/symbols.svg#custom24"></use>
 							</svg>
 						</span>
 						<div className="slds-media__body">
@@ -142,6 +142,13 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 						</div>
 					</footer>
 				</div>
+				<footer className="slds-popover__footer" style={{ position: "absolute", bottom: 0, width: "100%" }}>
+					<div className="slds-grid slds-grid_vertical-align-center">
+						<button className="slds-button slds-button_neutral slds-col_bump-left" onClick={() => window.location.href = "/building/" + building.id}>
+							Immobilie öffnen
+						</button>
+					</div>
+				</footer>
 				{
 					false &&
 					<div className="slds-popover__body">

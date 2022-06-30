@@ -30,14 +30,16 @@ export default class BuildingMap extends React.Component<BuildingMapProps> {
 
 	render() {
 		const buildings = this.props.buildings;
-		if (buildings.length === 1) {
+		if (buildings.length === 0) {
+			return <div><p>Keine Immobilien ausgewählt oder keine Koordinaten berechnet.</p></div>;
+		} else if (buildings.length === 1) {
 			const { name, lat, lng } = buildings[0];
 			const { zoom } = this.props;
 			return (
 				<GoogleMapReact
 					bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
 					defaultCenter={{ lat: lat, lng: lng }}
-					defaultZoom={zoom ? zoom : 7}
+					defaultZoom={zoom ? zoom : 16}
 					onZoomAnimationStart={this.onZoom}
 				>
 					<SimpleMarker text={name} lat={lat} lng={lng} />

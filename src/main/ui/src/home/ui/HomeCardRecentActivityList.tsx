@@ -37,7 +37,7 @@ export default class HomeCardRecentActivityList extends React.Component {
 			>
 				{
 					!this.activityList.length &&
-					<p className="slds-m-horizontal_medium">No recent activity records yet.</p>
+					<p className="slds-m-horizontal_medium">Noch keine Aktivität.</p>
 				}
 				{
 					!!this.activityList.length &&

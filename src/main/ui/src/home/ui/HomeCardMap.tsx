@@ -30,9 +30,6 @@ export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 	}
 
 	render() {
-		if (!this.buildingList.length) {
-			return null;
-		}
 		return (
 			<Card
 				icon={<Icon category="standard" name="location" size="small" />}
@@ -40,7 +37,14 @@ export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none"
 			>
-				<BuildingMap buildings={toJS(this.buildingList)} onClick={(building) => this.props.onClick?.(building.id)} />
+				{
+					!this.buildingList.length &&
+					<p className="slds-m-horizontal_medium">Keine Immobilien vorhanden oder keine Koordinaten berechnet.</p>
+				}
+				{
+					!!this.buildingList.length &&
+					<BuildingMap buildings={toJS(this.buildingList)} onClick={(building) => this.props.onClick?.(building.id)} />
+				}
 			</Card>
 		);
 	}
