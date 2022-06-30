@@ -70,7 +70,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
-		let allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && building.ratingStatus?.id === "open";
+		let allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && (!building.ratingStatus || building.ratingStatus.id !== "review");
 		const hasError = building.meta?.validationList.length! > 0;
 
 		return (

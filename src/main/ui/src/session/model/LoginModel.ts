@@ -29,7 +29,7 @@ export const LoginModel = types
 			return !!self.tenant;
 		},
 		get tenantLogoUrl(): string | undefined {
-			return !!self.tenant ? `/account/${self.tenant.extlKey}/login-logo.jpg` : "/account/login-logo.jpg";
+			return !!self.tenant ? `/tenant/${self.tenant.extlKey}/login-logo.jpg` : "/tenant/login-logo.jpg";
 		},
 	}))
 	.actions((self) => ({

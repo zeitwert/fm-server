@@ -17,14 +17,14 @@ import { RouteComponentProps, withRouter } from "./withRouter";
 const AreaMap: {
 	[id: string]: React.FunctionComponent | React.ComponentClass;
 } = {
-	HomeArea: HomeArea,
-	PortfolioArea: PortfolioArea,
 	AccountArea: AccountArea,
-	ContactArea: ContactArea,
 	BuildingArea: BuildingArea,
 	BuildingReportArea: BuildingReportArea,
+	ContactArea: ContactArea,
 	DocumentArea: DocumentArea,
+	HomeArea: HomeArea,
 	LeadArea: LeadArea,
+	PortfolioArea: PortfolioArea,
 	TaskArea: TaskArea
 };
 
