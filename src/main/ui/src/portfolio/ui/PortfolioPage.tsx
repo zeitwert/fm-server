@@ -45,7 +45,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const portfolio = this.portfolioStore.portfolio!;
-		if (session.isNetworkActive || !portfolio) {
+		if ((session.isNetworkActive || !portfolio) && !this.portfolioStore.isInTrx) {
 			return <Spinner variant="brand" size="large" />;
 		}
 		const isFullWidth = [TAB.DETAILS].indexOf(this.activeLeftTabId) < 0;

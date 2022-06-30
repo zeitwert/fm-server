@@ -36,6 +36,11 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	allBuildings: Enumerated[] = [];
 
 	@computed
+	get allObjects(): Enumerated[] {
+		return this.allAccounts.concat(this.allPortfolios).concat(this.allBuildings);
+	}
+
+	@computed
 	get availableAccounts(): Enumerated[] {
 		const portfolio = this.props.store.item! as Portfolio;
 		return this.allAccounts
@@ -61,6 +66,11 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 			.filter(bldg => !portfolio.includes.find(incl => incl.id === bldg.id))
 			.filter(bldg => !portfolio.excludes.find(excl => excl.id === bldg.id))
 			.sort((a, b) => a.name < b.name ? -1 : 1);
+	}
+
+	@computed
+	get availableObjects(): Enumerated[] {
+		return this.availableAccounts.concat(this.availablePortfolios).concat(this.availableBuildings);
 	}
 
 	constructor(props: PortfolioStaticDataFormProps) {
@@ -97,7 +107,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		this.allAccounts = Object.values(allAccounts.account).map(acct => {
 			return {
 				id: acct.id,
-				name: acct.caption,
+				name: "Kunde: " + acct.caption,
 				itemType: acct.meta.itemType
 			}
 		});
@@ -105,7 +115,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		this.allPortfolios = Object.values(allPortfolios.portfolio).map(pf => {
 			return {
 				id: pf.id,
-				name: pf.caption,
+				name: "Portfolio: " + pf.caption,
 				itemType: pf.meta.itemType
 			}
 		});
@@ -113,7 +123,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		this.allBuildings = Object.values(allBuildings.building).map(bldg => {
 			return {
 				id: bldg.id,
-				name: bldg.caption,
+				name: "Immobilie: " + bldg.caption,
 				itemType: bldg.meta.itemType
 			}
 		});
@@ -170,7 +180,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 				<div className="slds-grid slds-wrap slds-m-top_small">
 					<div className="slds-col slds-size_1-of-2">
 						<Card heading="Einzuschliessende Elemente" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body xslds-card__body_inner">
+							<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "200px", overflowY: "auto" }}>
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 									<thead>
 										<tr className="slds-line-height_reset">
@@ -217,7 +227,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 					</div>
 					<div className="slds-col slds-size_1-of-2">
 						<Card heading="Auszuschliessende Elemente" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body xslds-card__body_inner">
+							<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "200px", overflowY: "auto" }}>
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 									<thead>
 										<tr className="slds-line-height_reset">
@@ -272,26 +282,10 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 									<FieldGroup>
 										<FieldRow>
 											<Select
-												label="Immobilie:"
+												label="Kunde / Portfolio / Immobilie:"
 												value={undefined}
-												values={this.availableBuildings}
-												onChange={(e) => { this.addIncludeObj(this.allBuildings, e.target.value?.toString()) }}
-											/>
-										</FieldRow>
-										<FieldRow>
-											<Select
-												label="Portfolio:"
-												value={undefined}
-												values={this.availablePortfolios}
-												onChange={(e) => { this.addIncludeObj(this.allPortfolios, e.target.value?.toString()) }}
-											/>
-										</FieldRow>
-										<FieldRow>
-											<Select
-												label="Kunde:"
-												value={undefined}
-												values={this.availableAccounts}
-												onChange={(e) => { this.addIncludeObj(this.allAccounts, e.target.value?.toString()) }}
+												values={this.availableObjects}
+												onChange={(e) => { this.addIncludeObj(this.allObjects, e.target.value?.toString()) }}
 											/>
 										</FieldRow>
 									</FieldGroup>
@@ -307,26 +301,10 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 									<FieldGroup>
 										<FieldRow>
 											<Select
-												label="Immobilie:"
+												label="Kunde / Portfolio / Immobilie:"
 												value={undefined}
-												values={this.availableBuildings}
-												onChange={(e) => { this.addExcludeObj(this.allBuildings, e.target.value?.toString()) }}
-											/>
-										</FieldRow>
-										<FieldRow>
-											<Select
-												label="Portfolio:"
-												value={undefined}
-												values={this.availablePortfolios}
-												onChange={(e) => { this.addExcludeObj(this.allPortfolios, e.target.value?.toString()) }}
-											/>
-										</FieldRow>
-										<FieldRow>
-											<Select
-												label="Kunde:"
-												value={undefined}
-												values={this.availableAccounts}
-												onChange={(e) => { this.addExcludeObj(this.allAccounts, e.target.value?.toString()) }}
+												values={this.availableObjects}
+												onChange={(e) => { this.addExcludeObj(this.allObjects, e.target.value?.toString()) }}
 											/>
 										</FieldRow>
 									</FieldGroup>
@@ -336,7 +314,6 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 					</div>
 				</div>
 				{
-					!this.props.store.isInTrx &&
 					<div className="slds-grid slds-wrap slds-m-top_small">
 						<div className="slds-col slds-size_1-of-1">
 							<Card heading="Aktuelles Resultat" bodyClassName="slds-m-around_medium">
@@ -380,12 +357,16 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	private addIncludeObj = (collection: Enumerated[], id: string): void => {
 		const obj = id ? collection.find(c => c.id === id) : undefined;
-		obj && this.props.store.item!.addIncludeObj(toJS(obj));
+		if (obj) {
+			this.props.store.portfolio!.addIncludeObj(toJS(obj));
+		}
 	}
 
 	private addExcludeObj = (collection: Enumerated[], id: string): void => {
 		const obj = id ? collection.find(c => c.id === id) : undefined;
-		obj && this.props.store.item!.addExcludeObj(toJS(obj));
+		if (obj) {
+			this.props.store.portfolio!.addExcludeObj(toJS(obj));
+		}
 	}
 
 }
