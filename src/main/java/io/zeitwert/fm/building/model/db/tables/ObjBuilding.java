@@ -4,6 +4,7 @@
 package io.zeitwert.fm.building.model.db.tables;
 
 
+import io.zeitwert.fm.building.model.db.Indexes;
 import io.zeitwert.fm.building.model.db.Keys;
 import io.zeitwert.fm.building.model.db.Public;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -253,6 +255,11 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_BUILDING$ACCOUNT);
     }
 
     @Override

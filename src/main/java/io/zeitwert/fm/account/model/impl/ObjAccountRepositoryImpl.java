@@ -17,7 +17,6 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -63,8 +62,8 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	}
 
 	@Override
-	protected String getAccountIdField() {
-		return ObjFields.ID.getName();
+	protected boolean hasAccountId() {
+		return true;
 	}
 
 	@Override

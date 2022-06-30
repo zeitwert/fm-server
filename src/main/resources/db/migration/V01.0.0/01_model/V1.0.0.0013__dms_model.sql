@@ -65,7 +65,7 @@ create table obj_document_part_content (
 create or replace view obj_document_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				d.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

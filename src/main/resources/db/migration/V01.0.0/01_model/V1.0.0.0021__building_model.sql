@@ -139,6 +139,9 @@ create table obj_building (
 	primary key (obj_id)
 );
 
+create index obj_building$account
+on obj_building(account_id);
+
 create table code_building_rating_status (
 	id																		varchar(40)					not null,
 	--
@@ -204,7 +207,7 @@ on     obj_building_part_element_rating(obj_id, parent_part_id, part_list_type_i
 create or replace view obj_building_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				b.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

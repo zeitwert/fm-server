@@ -45,10 +45,13 @@ create table doc_lead (
 	primary key (doc_id)
 );
 
+create index doc_lead$account
+on doc_lead(account_id);
+
 create or replace view doc_lead_v
 as
 select	doc.doc_type_id,
-				doc.id,
+				dl.doc_id as id,
 				doc.owner_id,
 				doc.assignee_id,
 				doc.caption,

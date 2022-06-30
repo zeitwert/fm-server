@@ -108,8 +108,8 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
-	protected String getAccountIdField() {
-		return ObjPortfolioFields.ACCOUNT_ID.getName();
+	protected boolean hasAccountId() {
+		return true;
 	}
 
 	@Override

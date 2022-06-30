@@ -22,9 +22,6 @@ create table obj (
 	constraint account_id check(obj_type_id not in ('obj_contact', 'obj_building', 'obj_portfolio') or account_id is not null)
 );
 
-create index obj$account
-on     obj(account_id);
-
 create table obj_part_item (
 	obj_id																integer												not null references obj(id) deferrable initially deferred,
 	parent_part_id												integer												not null default 0, -- reference to parent part (optional)

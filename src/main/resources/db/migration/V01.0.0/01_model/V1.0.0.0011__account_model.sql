@@ -74,7 +74,7 @@ foreign key (account_id) references obj_account(obj_id) deferrable initially def
 create or replace view obj_account_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				a.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--
@@ -85,6 +85,8 @@ select	obj.obj_type_id,
 				obj.closed_by_user_id,
 				obj.closed_at,
 				--
-				hh.*
-from		obj_account hh
-join obj on obj.id = hh.obj_id;
+				a.obj_id as account_id,
+				--
+				a.*
+from		obj_account a
+join obj on obj.id = a.obj_id;

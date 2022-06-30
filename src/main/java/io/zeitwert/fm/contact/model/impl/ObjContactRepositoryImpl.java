@@ -81,8 +81,8 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
-	protected String getAccountIdField() {
-		return ObjContactFields.ACCOUNT_ID.getName();
+	protected boolean hasAccountId() {
+		return true;
 	}
 
 	@Override

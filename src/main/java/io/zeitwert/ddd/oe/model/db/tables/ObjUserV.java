@@ -144,7 +144,7 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     private ObjUserV(Name alias, Table<ObjUserVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.tenant_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.obj_type_id,\n    u.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.tenant_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.picture\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
     }
 
     /**

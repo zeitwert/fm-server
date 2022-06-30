@@ -70,7 +70,7 @@ foreign key (user_id) references obj_user(obj_id) deferrable initially deferred;
 create or replace view obj_user_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				u.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

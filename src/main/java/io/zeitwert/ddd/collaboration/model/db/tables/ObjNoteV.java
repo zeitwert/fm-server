@@ -134,7 +134,7 @@ public class ObjNoteV extends TableImpl<ObjNoteVRecord> {
     }
 
     private ObjNoteV(Name alias, Table<ObjNoteVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_note_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    n.obj_id,\n    n.tenant_id,\n    n.note_type_id,\n    n.subject,\n    n.content,\n    n.is_private,\n    n.related_to_id\n   FROM (obj_note n\n     JOIN obj ON ((obj.id = n.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_note_v\" as  SELECT obj.obj_type_id,\n    n.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    n.obj_id,\n    n.tenant_id,\n    n.note_type_id,\n    n.subject,\n    n.content,\n    n.is_private,\n    n.related_to_id\n   FROM (obj_note n\n     JOIN obj ON ((obj.id = n.obj_id)));"));
     }
 
     /**

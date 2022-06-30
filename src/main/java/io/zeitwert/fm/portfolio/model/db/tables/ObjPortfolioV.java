@@ -134,7 +134,7 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     }
 
     private ObjPortfolioV(Name alias, Table<ObjPortfolioVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_portfolio_v\" as  SELECT obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    pf.obj_id,\n    pf.tenant_id,\n    pf.account_id,\n    pf.intl_key,\n    pf.name,\n    pf.description,\n    pf.portfolio_nr\n   FROM (obj_portfolio pf\n     JOIN obj ON ((obj.id = pf.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_portfolio_v\" as  SELECT obj.obj_type_id,\n    pf.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    pf.obj_id,\n    pf.tenant_id,\n    pf.account_id,\n    pf.intl_key,\n    pf.name,\n    pf.description,\n    pf.portfolio_nr\n   FROM (obj_portfolio pf\n     JOIN obj ON ((obj.id = pf.obj_id)));"));
     }
 
     /**

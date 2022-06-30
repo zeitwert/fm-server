@@ -4,6 +4,7 @@
 package io.zeitwert.fm.lead.model.db.tables;
 
 
+import io.zeitwert.fm.lead.model.db.Indexes;
 import io.zeitwert.fm.lead.model.db.Keys;
 import io.zeitwert.fm.lead.model.db.Public;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadRecord;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row21;
@@ -188,6 +190,11 @@ public class DocLead extends TableImpl<DocLeadRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.DOC_LEAD$ACCOUNT);
     }
 
     @Override

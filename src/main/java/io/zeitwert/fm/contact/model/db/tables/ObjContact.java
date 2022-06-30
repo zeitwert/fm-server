@@ -4,6 +4,7 @@
 package io.zeitwert.fm.contact.model.db.tables;
 
 
+import io.zeitwert.fm.contact.model.db.Indexes;
 import io.zeitwert.fm.contact.model.db.Keys;
 import io.zeitwert.fm.contact.model.db.Public;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row14;
@@ -154,6 +156,11 @@ public class ObjContact extends TableImpl<ObjContactRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.OBJ_CONTACT$ACCOUNT);
     }
 
     @Override

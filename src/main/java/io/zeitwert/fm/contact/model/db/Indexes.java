@@ -4,6 +4,7 @@
 package io.zeitwert.fm.contact.model.db;
 
 
+import io.zeitwert.fm.contact.model.db.tables.ObjContact;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAddress;
 
 import org.jooq.Index;
@@ -22,5 +23,6 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index OBJ_CONTACT$ACCOUNT = Internal.createIndex(DSL.name("obj_contact$account"), ObjContact.OBJ_CONTACT, new OrderField[] { ObjContact.OBJ_CONTACT.ACCOUNT_ID }, false);
     public static final Index OBJ_CONTACT_PART_ADDRESS$PART = Internal.createIndex(DSL.name("obj_contact_part_address$part"), ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS, new OrderField[] { ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS.OBJ_ID, ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS.PARENT_PART_ID, ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS.PART_LIST_TYPE_ID, ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS.SEQ_NR }, false);
 }

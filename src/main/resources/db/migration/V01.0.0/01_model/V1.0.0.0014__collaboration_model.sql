@@ -24,7 +24,7 @@ create table obj_note (
 create or replace view obj_note_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				n.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

@@ -57,9 +57,6 @@ create table doc (
 	primary key (id)
 );
 
-create index doc$account
-on     doc(account_id);
-
 create table doc_part_item (
 	doc_id																integer												not null references doc(id) deferrable initially deferred,
 	parent_part_id												integer												not null default 0, -- reference to parent part (optional)

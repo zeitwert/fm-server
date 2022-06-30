@@ -129,7 +129,7 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     }
 
     private ObjTenantV(Name alias, Table<ObjTenantVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_tenant_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    obj.id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    t.obj_id,\n    t.tenant_type_id,\n    t.name,\n    t.description,\n    t.extl_key\n   FROM (obj_tenant t\n     JOIN obj ON ((obj.id = t.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_tenant_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    t.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    t.obj_id,\n    t.tenant_type_id,\n    t.name,\n    t.description,\n    t.extl_key\n   FROM (obj_tenant t\n     JOIN obj ON ((obj.id = t.obj_id)));"));
     }
 
     /**

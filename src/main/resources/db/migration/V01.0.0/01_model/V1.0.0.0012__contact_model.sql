@@ -53,6 +53,9 @@ create table obj_contact (
 	primary key (obj_id)
 );
 
+create index obj_contact$account
+on obj_contact(account_id);
+
 alter table obj_account
 add constraint obj_account$main_contact
 foreign key (main_contact_id) references obj_contact(obj_id) deferrable initially deferred;
@@ -60,7 +63,7 @@ foreign key (main_contact_id) references obj_contact(obj_id) deferrable initiall
 create or replace view obj_contact_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				ct.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

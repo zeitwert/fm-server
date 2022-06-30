@@ -13,10 +13,13 @@ create table obj_portfolio (
 	primary key (obj_id)
 );
 
+create index obj_portfolio$account
+on obj_portfolio(account_id);
+
 create or replace view obj_portfolio_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				pf.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

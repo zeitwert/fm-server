@@ -20,7 +20,7 @@ create table obj_test (
 create or replace view obj_test_v
 as
 select	obj.obj_type_id,
-				obj.id,
+				ot.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

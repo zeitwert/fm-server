@@ -76,11 +76,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	}
 
 	@Override
-	protected String getAccountIdField() {
-		return null;
-	}
-
-	@Override
 	public ObjDocument doCreate(SessionInfo sessionInfo) {
 		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
 	}

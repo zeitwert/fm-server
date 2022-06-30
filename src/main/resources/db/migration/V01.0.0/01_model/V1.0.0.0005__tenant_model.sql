@@ -23,7 +23,7 @@ create or replace view obj_tenant_v
 as
 select	obj.tenant_id,
 				obj.obj_type_id,
-				obj.id,
+				t.obj_id as id,
 				obj.owner_id,
 				obj.caption,
 				--

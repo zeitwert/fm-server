@@ -4,6 +4,7 @@
 package io.zeitwert.fm.building.model.db;
 
 
+import io.zeitwert.fm.building.model.db.tables.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartRating;
 
@@ -23,6 +24,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index OBJ_BUILDING$ACCOUNT = Internal.createIndex(DSL.name("obj_building$account"), ObjBuilding.OBJ_BUILDING, new OrderField[] { ObjBuilding.OBJ_BUILDING.ACCOUNT_ID }, false);
     public static final Index OBJ_BUILDING_PART_ELEMENT_RATING$PART = Internal.createIndex(DSL.name("obj_building_part_element_rating$part"), ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING, new OrderField[] { ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING.OBJ_ID, ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING.PARENT_PART_ID, ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING.PART_LIST_TYPE_ID, ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING.SEQ_NR }, false);
     public static final Index OBJ_BUILDING_PART_RATING$PART = Internal.createIndex(DSL.name("obj_building_part_rating$part"), ObjBuildingPartRating.OBJ_BUILDING_PART_RATING, new OrderField[] { ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.OBJ_ID, ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.PARENT_PART_ID, ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.PART_LIST_TYPE_ID, ObjBuildingPartRating.OBJ_BUILDING_PART_RATING.SEQ_NR }, false);
 }

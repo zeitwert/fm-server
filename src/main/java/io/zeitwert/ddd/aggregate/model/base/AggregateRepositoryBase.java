@@ -94,8 +94,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.partRepositories.add(partRepository);
 	}
 
-	protected String getAccountIdField() {
-		return null;
+	protected boolean hasAccountId() {
+		return false;
 	}
 
 	/**
@@ -264,18 +264,14 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	@Override
 	public final List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
-		//@formatter:off
-		querySpec.addFilter(PathSpec.of(AggregateFields.TENANT_ID.getName()).filter(FilterOperator.EQ, sessionInfo.getTenant().getId()));
-		if (this.getAccountIdField() != null && sessionInfo.hasAccount()) {
+		String tenantField = AggregateFields.TENANT_ID.getName();
+		Integer tenantId = sessionInfo.getTenant().getId();
+		querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
+		if (this.hasAccountId() && sessionInfo.hasAccount()) {
+			String accountField = AggregateFields.ACCOUNT_ID.getName();
 			Integer accountId = sessionInfo.getAccountId();
-			querySpec.addFilter(
-				FilterSpec.or(
-					PathSpec.of(this.getAccountIdField()).filter(FilterOperator.EQ, accountId),
-					PathSpec.of(this.getAccountIdField()).filter(FilterOperator.EQ, null)
-				)
-			);
+			querySpec.addFilter(PathSpec.of(accountField).filter(FilterOperator.EQ, accountId));
 		}
-		//@formatter:on
 		return this.doFind(sessionInfo, querySpec);
 	}
 
@@ -321,6 +317,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		} else {
 			sortFields = List.of(table.field("id").desc());
 		}
+
 		recordList = select.orderBy(sortFields).limit(querySpec.getOffset(), querySpec.getLimit()).fetch();
 
 		return recordList;
