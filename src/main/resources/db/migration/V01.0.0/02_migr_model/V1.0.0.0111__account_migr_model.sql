@@ -31,11 +31,10 @@ begin
 	if account_id is not null then
 		return null;
 	end if;
+	select nextval('obj_id_seq') into new_id;
 	select id into owner_id from obj_user_v where email = new.owner;
-	insert into obj(id, tenant_id, obj_type_id, owner_id, created_by_user_id, caption)
-	values (nextval('obj_id_seq'), tnt_id, 'obj_account', owner_id, owner_id, new.name)
-	returning id
-	into new_id;
+	insert into obj(id, tenant_id, account_id, obj_type_id, owner_id, created_by_user_id, caption)
+	values (new_id, tnt_id, new_id, 'obj_account', owner_id, owner_id, new.name);
 	insert into obj_account(obj_id, tenant_id, intl_key, name, description, account_type_id, client_segment_id, reference_currency_id)
 	values (new_id, tnt_id, new.key, new.name, new.description, new.account_type_id, new.client_segment, new.reference_currency);
 	return new;

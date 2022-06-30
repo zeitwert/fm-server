@@ -18,7 +18,8 @@ create table obj (
 	closed_by_user_id											integer,											-- references obj_user(obj_id),
 	closed_at															timestamp with time zone,
 	--
-	primary key (id)
+	primary key (id),
+	constraint account_id check(obj_type_id not in ('obj_contact', 'obj_building', 'obj_portfolio') or account_id is not null)
 );
 
 create index obj$account

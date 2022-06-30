@@ -10,6 +10,7 @@ import org.jooq.impl.DSL;
 public interface ObjContactFields extends ObjExtnFields {
 
 	static final Field<Integer> ACCOUNT_ID = DSL.field("account_id", Integer.class);
+
 	static final Field<String> CONTACT_ROLE_ID = DSL.field("contact_role_id", String.class);
 	static final Field<String> SALUTATION_ID = DSL.field("salutation_id", String.class);
 	static final Field<String> TITLE_ID = DSL.field("title_id", String.class);

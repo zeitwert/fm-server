@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
@@ -23,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -154,6 +156,13 @@ public class Obj extends TableImpl<ObjRecord> {
     @Override
     public List<UniqueKey<ObjRecord>> getKeys() {
         return Arrays.<UniqueKey<ObjRecord>>asList(Keys.OBJ_PKEY);
+    }
+
+    @Override
+    public List<Check<ObjRecord>> getChecks() {
+        return Arrays.<Check<ObjRecord>>asList(
+              Internal.createCheck(this, DSL.name("account_id"), "((((obj_type_id)::text <> ALL ((ARRAY['obj_contact'::character varying, 'obj_building'::character varying, 'obj_portfolio'::character varying])::text[])) OR (account_id IS NOT NULL)))", true)
+        );
     }
 
     @Override

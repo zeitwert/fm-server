@@ -7,6 +7,8 @@ import org.jooq.impl.DSL;
 
 public interface ObjAccountFields extends ObjExtnFields {
 
+	static final Field<Integer> ACCOUNT_ID = DSL.field("account_id", Integer.class);
+
 	static final Field<String> KEY = DSL.field("intl_key", String.class);
 	static final Field<String> NAME = DSL.field("name", String.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
