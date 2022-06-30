@@ -36,8 +36,8 @@ begin
 	select id into tenant_id from obj_tenant_v where extl_key = new.tenant;
 	select id into owner_id from obj_user_v where email = new.owner;
 	select id into account_id from obj_account_v where intl_key = new.account;
-	insert into obj(id, tenant_id, obj_type_id, owner_id, created_by_user_id, caption)
-	values (nextval('obj_id_seq'), tenant_id, 'obj_contact', owner_id, owner_id, new.first_name || ' ' || new.last_name)
+	insert into obj(id, tenant_id, account_id, obj_type_id, owner_id, created_by_user_id, caption)
+	values (nextval('obj_id_seq'), tenant_id, account_id, 'obj_contact', owner_id, owner_id, new.first_name || ' ' || new.last_name)
 	returning id
 	into new_id;
 	insert into obj_contact(

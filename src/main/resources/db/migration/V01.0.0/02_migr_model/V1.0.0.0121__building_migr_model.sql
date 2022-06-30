@@ -59,8 +59,8 @@ begin
 	values (cover_foto_id, tnt_id, 'obj_document', owner_id, owner_id);
 	insert into obj_document(obj_id, tenant_id, document_kind_id, content_kind_id, name)
 	values (cover_foto_id, tnt_id, 'standalone', 'foto', 'Coverfoto');
-	insert into obj(id, tenant_id, obj_type_id, owner_id, created_by_user_id, caption)
-	values (nextval('obj_id_seq'), tnt_id, 'obj_building', owner_id, owner_id, new.name || ' (' || hh_name || ')')
+	insert into obj(id, tenant_id, account_id, obj_type_id, owner_id, created_by_user_id, caption)
+	values (nextval('obj_id_seq'), tnt_id, account_id, 'obj_building', owner_id, owner_id, new.name || ' (' || hh_name || ')')
 	returning id
 	into new_id;
 	insert into obj_building(
