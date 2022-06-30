@@ -176,8 +176,9 @@ const HoverMarkerStyle = {
 	height: HoverSize,
 	left: -HoverSize / 2,
 	top: -HoverSize / 2,
+	zIndex: 1000,
 	backgroundColor: "#add8e6",
-	border: "3px solid #3f51b5"
+	border: "4px solid #3f51b5"
 };
 
 const DefaultTextStyle = {

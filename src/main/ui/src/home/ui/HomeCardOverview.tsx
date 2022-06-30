@@ -48,22 +48,20 @@ export default class HomeCardOverview extends React.Component {
 			>
 				<Grid>
 					<Row nowrap>
-						<Col totalCols={12} cols={8}>
+						<Col totalCols={12} cols={4}>
+						</Col>
+						<Col totalCols={12} cols={4}>
+							<img src={this.overview?.accountImageUrl} alt="Account flag" />
+						</Col>
+						<Col totalCols={12} cols={4}>
+						</Col>
+					</Row>
+					<Row nowrap className="slds-p-top_small">
+						<Col totalCols={12} cols={12}>
 							<Grid>
 								{this.fact(this.overview?.buildingCount, "Immobilie", "Immobilien")}
 								{this.fact(this.overview?.portfolioCount, "Portfolio", "Portfolios")}
-								{this.fact(this.overview?.ratingCount, "Bewertung", "laufende Bewertungen")}
-							</Grid>
-						</Col>
-						<Col totalCols={12} cols={4}>
-							<div className="slds-clearfix">
-								<img src={this.overview?.accountImageUrl} />
-							</div>
-						</Col>
-					</Row>
-					<Row nowrap>
-						<Col totalCols={12} cols={12}>
-							<Grid>
+								{this.fact(this.overview?.ratingCount, "Bewertung", "Bewertungen")}
 								{this.fact(this.overview?.insuranceValue, "kCHF Versicherungswert")}
 								{this.fact(this.overview?.timeValue, "kCHF Zeitwert")}
 								{this.fact(this.overview?.shortTermRenovationCosts, "kCHF IS kurzfristig")}

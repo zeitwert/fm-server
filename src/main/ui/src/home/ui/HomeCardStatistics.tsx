@@ -19,13 +19,12 @@ export default class HomeCardStatistics extends React.Component {
 			>
 				<Grid className="fa-height-100">
 					<Row nowrap>
-						<Col totalCols={10} cols={6}>
+						<Col totalCols={12} cols={6}>
 							<div>
-								<h2>Gebäudezustand in %</h2>
-								<HighchartsReact highcharts={Highcharts} options={chartOptions} />
+								<h3>Gebäudezustand</h3>
 							</div>
 						</Col>
-						<Col totalCols={10} cols={5}>
+						<Col totalCols={12} cols={6}>
 							<div className="slds-clearfix">
 								<div className="slds-float_right">
 									<h2>Z/N Portfolio</h2>
@@ -36,6 +35,11 @@ export default class HomeCardStatistics extends React.Component {
 									<p className="slds-text-heading_large">0.79</p>
 								</div>
 							</div>
+						</Col>
+					</Row>
+					<Row nowrap>
+						<Col totalCols={12} cols={12}>
+							<HighchartsReact highcharts={Highcharts} options={chartOptions} />
 						</Col>
 					</Row>
 				</Grid>
@@ -50,53 +54,53 @@ const chartOptions = {
 		plotBackgroundColor: null,
 		plotBorderWidth: null,
 		plotShadow: false,
-		type: 'pie'
+		type: "pie"
 	},
 	title: {
-		text: ''
+		text: ""
 	},
 	credits: {
 		enabled: false
 	},
 	tooltip: {
-		pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+		pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>"
 	},
 	accessibility: {
 		point: {
-			valueSuffix: '%'
+			valueSuffix: "%"
 		}
 	},
 	plotOptions: {
 		pie: {
 			allowPointSelect: true,
-			cursor: 'pointer',
+			cursor: "pointer",
 			shadow: false,
 			dataLabels: {
 				enabled: false,
-				format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+				format: "<b>{point.name}</b>: {point.percentage:.1f} %"
 			},
 			showInLegend: true
 		}
 	},
 	series: [{
-		name: 'Condition',
+		name: "Condition",
 		colorByPoint: true,
-		size: '90%',
-		innerSize: '75%',
+		size: "90%",
+		innerSize: "70%",
 		data: [{
-			name: 'gut',
+			name: "gut",
 			color: "green",
 			y: 21
 		}, {
-			name: 'mittel',
+			name: "mittel",
 			color: "lightgreen",
 			y: 53
 		}, {
-			name: 'schlecht',
+			name: "schlecht",
 			color: "orange",
 			y: 17
 		}, {
-			name: 'sehr schlecht',
+			name: "sehr schlecht",
 			color: "red",
 			y: 9
 		}]
