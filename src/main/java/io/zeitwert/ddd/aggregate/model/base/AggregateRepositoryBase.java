@@ -328,7 +328,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@EventListener // TODO unsafe (multi threading, usability)
-	private void handleAggregateStoredEvent(AggregateStoredEvent event) {
+	public void handleAggregateStoredEvent(AggregateStoredEvent event) {
 		Integer aggregateId = event.getAggregate().getId();
 		List<A> itemList = this.aggregateCache.getItemList(aggregateId);
 		for (A aggregate : itemList) {

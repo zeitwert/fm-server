@@ -19,7 +19,7 @@ import org.jooq.UpdatableRecord;
 public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements DocPartTransition {
 
 	protected final ReferenceProperty<ObjUser> user;
-	protected final SimpleProperty<OffsetDateTime> modifiedAt;
+	protected final SimpleProperty<OffsetDateTime> timestamp;
 	protected final EnumProperty<CodeCaseStage> oldCaseStage;
 	protected final EnumProperty<CodeCaseStage> newCaseStage;
 	protected final SimpleProperty<JSON> changes;
@@ -27,7 +27,7 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	public DocPartTransitionBase(PartRepository<Doc, ?> repository, Doc doc, UpdatableRecord<?> dbRecord) {
 		super(repository, doc, dbRecord);
 		this.user = this.addReferenceProperty(dbRecord, DocPartTransitionFields.USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(dbRecord, DocPartTransitionFields.TIMESTAMP);
+		this.timestamp = this.addSimpleProperty(dbRecord, DocPartTransitionFields.TIMESTAMP);
 		this.oldCaseStage = this.addEnumProperty(dbRecord, DocPartTransitionFields.OLD_CASE_STAGE_ID,
 				CodeCaseStageEnum.class);
 		this.newCaseStage = this.addEnumProperty(dbRecord, DocPartTransitionFields.NEW_CASE_STAGE_ID,

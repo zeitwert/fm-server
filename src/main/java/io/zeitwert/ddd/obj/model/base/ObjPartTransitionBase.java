@@ -16,13 +16,13 @@ import org.jooq.UpdatableRecord;
 public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements ObjPartTransition {
 
 	protected final ReferenceProperty<ObjUser> user;
-	protected final SimpleProperty<OffsetDateTime> modifiedAt;
+	protected final SimpleProperty<OffsetDateTime> timestamp;
 	protected final SimpleProperty<JSON> changes;
 
 	public ObjPartTransitionBase(PartRepository<Obj, ?> repository, Obj obj, UpdatableRecord<?> dbRecord) {
 		super(repository, obj, dbRecord);
 		this.user = this.addReferenceProperty(dbRecord, ObjPartTransitionFields.USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.TIMESTAMP);
+		this.timestamp = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.TIMESTAMP);
 		this.changes = this.addSimpleProperty(dbRecord, ObjPartTransitionFields.CHANGES);
 	}
 

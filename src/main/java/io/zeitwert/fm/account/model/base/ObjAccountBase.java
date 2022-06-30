@@ -81,6 +81,10 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+		if (super.account.getId() == null) {
+			super.account.setId(this.getId());
+			super.doStore();
+		}
 	}
 
 	@Override

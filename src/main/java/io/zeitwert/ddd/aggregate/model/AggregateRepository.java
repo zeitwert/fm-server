@@ -39,6 +39,7 @@ public interface AggregateRepository<A extends Aggregate, V extends Record> {
 	/**
 	 * Store the Aggregate
 	 */
+	// @Transactional(propagation = Propagation.MANDATORY) TODO
 	void store(A aggregate);
 
 	/**
