@@ -1,40 +1,20 @@
+
 import { Icon } from "@salesforce/design-system-react";
-import {
-	Aggregate,
-	EntityType,
-	IconCategory,
-	Task,
-	TaskStoreModel
-} from "@zeitwert/ui-model";
+import { Aggregate, EntityType, EntityTypes, Task, TaskStoreModel } from "@zeitwert/ui-model";
 import { TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
+import moment from "moment";
 import React from "react";
 
-export interface User {
-	id: string;
-	name: string;
-}
-
-export interface Building {
-	id: string;
-	name: string;
-	image: string;
-}
-
-export interface ActivityType {
-	type: string;
-	iconCategory: IconCategory;
-	iconName: string;
-}
-
 export interface Activity {
-	id: string;
-	building: Building;
-	type: ActivityType;
-	action: string;
-	user: User;
-	date: string;
+	objTypeId: string;
+	objId: number;
+	objCaption: string;
+	seqNr: number;
+	timestamp: string;
+	user: string;
+	changes: string;
 }
 
 export interface HomeCardRecentActivityProps {
@@ -47,6 +27,7 @@ export interface HomeCardRecentActivityProps {
 export default class HomeCardRecentActivity extends React.Component<HomeCardRecentActivityProps> {
 
 	@observable item?: Aggregate;
+	rtf = new Intl.RelativeTimeFormat('de', { style: 'narrow' });
 
 	constructor(props: HomeCardRecentActivityProps) {
 		super(props);
@@ -55,22 +36,17 @@ export default class HomeCardRecentActivity extends React.Component<HomeCardRece
 
 	render() {
 		const { activity, isExpanded, onClick } = this.props;
-		const { building, user } = activity;
+		const type = EntityTypes[activity.objTypeId.substring(4)];
+		const timestamp = moment(activity.timestamp).fromNow();
 		return (
 			<TimelineItem
-				name={building.name + " (" + building.id + ")"}
-				type={activity.type.type}
-				icon={
-					<Icon
-						category={activity.type.iconCategory}
-						name={activity.type.iconName}
-						className="slds-timeline__icon"
-					/>
-				}
-				date={""}
-				body={<span>{activity.action}<br />{user.name + ", " + activity.date}</span>}
+				icon={<Icon category={type.iconCategory} name={type.iconName} className="slds-timeline__icon" />}
+				name={activity.objCaption}
+				date={timestamp}
+				type={"what"}
+				body={<span>{activity.user}<br />{activity.seqNr ? "Modifikation" : "Eröffnung"}</span>}
 				detail={<></>}
-				onClick={(event: any) => { event.preventDefault(); onClick && onClick(); }}
+				onClick={(event: any) => { event.preventDefault(); onClick?.(); }}
 				onToggle={() => this.loadItem()}
 				isExpanded={isExpanded}
 			/>
@@ -81,7 +57,7 @@ export default class HomeCardRecentActivity extends React.Component<HomeCardRece
 		if (!this.item) {
 			return <></>;
 		}
-		switch (activity.type.type) {
+		switch (activity.objTypeId) {
 			case EntityType.TASK:
 				const task = this.item as Task;
 				return (
@@ -99,9 +75,9 @@ export default class HomeCardRecentActivity extends React.Component<HomeCardRece
 			return;
 		}
 		const { activity } = this.props;
-		switch (activity.type.type) {
+		switch (activity.objTypeId) {
 			case EntityType.TASK:
-				this.item = await TaskStoreModel.create().load(activity.id);
+				this.item = await TaskStoreModel.create().load(activity.objId.toString());
 				break;
 			default:
 				break;

@@ -5,6 +5,7 @@ package io.zeitwert.ddd.obj.model.db;
 
 
 import io.zeitwert.ddd.obj.model.db.tables.Obj;
+import io.zeitwert.ddd.obj.model.db.tables.ObjActivityV;
 import io.zeitwert.ddd.obj.model.db.tables.ObjPartItem;
 import io.zeitwert.ddd.obj.model.db.tables.ObjPartTransition;
 
@@ -19,6 +20,11 @@ public class Tables {
      * The table <code>public.obj</code>.
      */
     public static final Obj OBJ = Obj.OBJ;
+
+    /**
+     * The table <code>public.obj_activity_v</code>.
+     */
+    public static final ObjActivityV OBJ_ACTIVITY_V = ObjActivityV.OBJ_ACTIVITY_V;
 
     /**
      * The table <code>public.obj_part_item</code>.

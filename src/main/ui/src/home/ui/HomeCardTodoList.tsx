@@ -1,22 +1,25 @@
-import { Button, Card } from "@salesforce/design-system-react";
+
+import { Button, Card, Icon } from "@salesforce/design-system-react";
+import { API, Config, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-interface Todo {
-	id: string;
-	description: string;
-	dueDate: string;
-	owner: string;
-	priority: number;
+interface Rating {
+	buildingId: number;
+	buildingName: string;
+	buildingOwner: string;
+	buildingAddress: string;
+	ratingDate: string;
+	ratingUser: string;
 }
 
 @inject("appStore", "session")
 @observer
 export default class HomeCardTodoList extends React.Component {
 
-	@observable todoList: Todo[] = [];
+	@observable ratingList: Rating[] = [];
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -28,38 +31,34 @@ export default class HomeCardTodoList extends React.Component {
 	}
 
 	componentDidMount() {
-		this.loadTodoList();
+		this.loadRatingList();
 	}
 
 	render() {
 		return (
 			<Card
-				heading={<b>{"To Do"}</b>}
+				icon={<Icon category="custom" name="custom24" size="small" />}
+				heading={<b>{"Laufende Bewertungen"}</b>}
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none slds-p-horizontal_small slds-card__body_with_header_footer"
-				footer={<Button>Show more</Button>}
+				footer={<Button>Mehr ...</Button>}
 			>
-				{!this.todoList.length && <p className="slds-m-horizontal_medium">No todo items.</p>}
 				{
-					this.todoList.length &&
+					!this.ratingList.length &&
+					<p className="slds-m-horizontal_medium">Keine laufenden Bewertungen.</p>
+				}
+				{
+					!!this.ratingList.length &&
 					<div>
 						{
-							this.todoList.map((todo: Todo, index: number) => (
+							this.ratingList.map((rating: Rating, index: number) => (
 								<article className="slds-tile slds-media" key={"todo-" + index}>
-									<div className="slds-media__figure" key={"todo-d-" + index}>
-										<div className="slds-checkbox">
-											<input type="checkbox" name="options" id={"todo-xxx-" + todo.id} value={"todo-xxx-" + todo.id} />
-											<label className="slds-checkbox__label" htmlFor={"todo-xxx-" + todo.id}>
-												<span className="slds-checkbox_faux"></span>
-											</label>
-										</div>
-									</div>
 									<div className="slds-media__body">
 										<h3 className="slds-tile__title slds-truncate">
-											<a href="/#">{todo.description}</a>
+											<a href={"/building/" + rating.buildingId}>{rating.buildingName}, {rating.buildingAddress}</a>
 										</h3>
 										<div className="slds-tile__detail">
-											<p className="slds-truncate">{todo.dueDate}, {todo.owner}</p>
+											<p className="slds-truncate">Begehung am {rating.ratingDate}, {rating.ratingUser}</p>
 										</div>
 									</div>
 								</article>
@@ -71,37 +70,9 @@ export default class HomeCardTodoList extends React.Component {
 		);
 	}
 
-	private loadTodoList() {
-		this.todoList = [
-			{
-				id: "1",
-				description: "Report für Gemeinderatssitzung",
-				dueDate: "bis Dienstag",
-				owner: "Margaret Muster",
-				priority: 2
-			},
-			{
-				id: "2",
-				description: "Investitionsplanung finalisieren",
-				dueDate: "bis 02.11.2020",
-				owner: "Peter Ziegler",
-				priority: 2
-			},
-			{
-				id: "3",
-				description: "Neue Begehung Musterstrasse 142",
-				dueDate: "bis 04.11.2020",
-				owner: "Martin Frey",
-				priority: 1
-			},
-			{
-				id: "4",
-				description: "Unterlagen Objektstrategie Musterstrasse 19",
-				dueDate: "bis 10.01.2021",
-				owner: "Peter Mustermann",
-				priority: 0
-			},
-		];
+	private async loadRatingList() {
+		const rsp = await API.get(Config.getRestUrl("home", "activeRatings/" + session.sessionInfo?.account.id))
+		this.ratingList = rsp.data;
 	}
 
 }

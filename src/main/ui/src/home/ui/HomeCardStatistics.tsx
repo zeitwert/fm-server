@@ -1,4 +1,4 @@
-import { Card } from "@salesforce/design-system-react";
+import { Card, Icon } from "@salesforce/design-system-react";
 import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
@@ -12,7 +12,8 @@ export default class HomeCardStatistics extends React.Component {
 	render() {
 		return (
 			<Card
-				heading={<b>{"Statistik"}</b>}
+				icon={<Icon category="standard" name="metrics" size="small" />}
+				heading={<b>{"Auswertung des Tages"}</b>}
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none slds-p-around_small"
 			>

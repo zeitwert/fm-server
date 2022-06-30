@@ -5,6 +5,7 @@ package io.zeitwert.ddd.obj.model.db;
 
 
 import io.zeitwert.ddd.obj.model.db.tables.Obj;
+import io.zeitwert.ddd.obj.model.db.tables.ObjActivityV;
 import io.zeitwert.ddd.obj.model.db.tables.ObjPartItem;
 import io.zeitwert.ddd.obj.model.db.tables.ObjPartTransition;
 
@@ -34,6 +35,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.obj</code>.
      */
     public final Obj OBJ = Obj.OBJ;
+
+    /**
+     * The table <code>public.obj_activity_v</code>.
+     */
+    public final ObjActivityV OBJ_ACTIVITY_V = ObjActivityV.OBJ_ACTIVITY_V;
 
     /**
      * The table <code>public.obj_part_item</code>.
@@ -69,6 +75,7 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             Obj.OBJ,
+            ObjActivityV.OBJ_ACTIVITY_V,
             ObjPartItem.OBJ_PART_ITEM,
             ObjPartTransition.OBJ_PART_TRANSITION);
     }

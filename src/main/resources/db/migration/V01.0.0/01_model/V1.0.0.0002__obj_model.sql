@@ -57,19 +57,17 @@ on     obj_part_transition(tenant_id, timestamp);
 
 create or replace view obj_activity_v
 as
-select oc.id                  obj_id,
-       oc.obj_type_id         obj_type_id,
-       'created'              change,
-       oc.created_at          dateTime,
-       oc.created_by_user_id  user_id
-from   obj  oc
-where  oc.created_at is not null
-union all
-select om.id                  obj_id,
-       om.obj_type_id         obj_type_id,
-       'modified'             change,
-       om.modified_at         dateTime,
-       om.modified_by_user_id user_id
-from   obj  om
-where  om.modified_at is not null
-order by dateTime desc;
+select	o.id,
+				opt.seq_nr,
+				opt.timestamp,
+				opt.user_id,
+				opt.tenant_id,
+				opt.changes,
+				o.owner_id,
+				o.account_id,
+				o.obj_type_id,
+				o.caption
+from		obj_part_transition opt
+left join obj o
+on			opt.obj_id = o.id
+order by timestamp desc;

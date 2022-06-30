@@ -1,5 +1,6 @@
-import { Button, Card } from "@salesforce/design-system-react";
-import { EntityType } from "@zeitwert/ui-model";
+
+import { Card, Icon } from "@salesforce/design-system-react";
+import { API, Config, session } from "@zeitwert/ui-model";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { AppCtx } from "App";
 import { makeObservable, observable } from "mobx";
@@ -29,90 +30,37 @@ export default class HomeCardRecentActivityList extends React.Component {
 	render() {
 		return (
 			<Card
-				heading={<b>{"Recent Activity (" + this.activityList.length + ")"}</b>}
+				icon={<Icon category="standard" name="recent" size="small" />}
+				heading={<b>{"Letzte Aktivitäten"}</b>}
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none slds-p-horizontal_small slds-card__body_with_header_footer"
-				footer={<Button>Show more</Button>}
 			>
-				{!this.activityList.length && <p className="slds-m-horizontal_medium">No recent activity records yet.</p>}
-				{this.activityList.length &&
-					<>
-						<Timeline>
-							{this.activityList.map((activity: Activity, index: number) => (
+				{
+					!this.activityList.length &&
+					<p className="slds-m-horizontal_medium">No recent activity records yet.</p>
+				}
+				{
+					!!this.activityList.length &&
+					<Timeline>
+						{
+							this.activityList.map((activity: Activity, index: number) => (
 								<HomeCardRecentActivity
-									key={index}
+									key={"ra-" + index}
 									activity={activity}
 									onClick={() => null}
 									isExpanded={false}
 								/>
-							))}
-						</Timeline>
-					</>
+							))
+						}
+					</Timeline>
 				}
 			</Card >
 		);
 	}
 
-	private loadActivityList() {
-		this.activityList = [
-			{
-				id: "1",
-				building: {
-					id: "1362-123-14",
-					name: "Bürogebäude Verwaltung",
-					image: "tbd"
-				},
-				type: {
-					type: EntityType.BUILDING,
-					iconCategory: "standard",
-					iconName: "store",
-				},
-				action: "Bauteil Wärmeerzeugung geändert",
-				user: {
-					id: "one",
-					name: "Martin Rüegg"
-				},
-				date: "gestern"
-			},
-			{
-				id: "2",
-				building: {
-					id: "2300 1208",
-					name: "Geschäftshaus mit Saal",
-					image: "tbd"
-				},
-				type: {
-					type: EntityType.BUILDING,
-					iconCategory: "standard",
-					iconName: "store",
-				},
-				action: "Bauteil Fenster geändert",
-				user: {
-					id: "one",
-					name: "Peter Ziegler"
-				},
-				date: "12.09.2020"
-			},
-			{
-				id: "3",
-				building: {
-					id: "00-27-4872-5",
-					name: "Neufeld",
-					image: "tbd"
-				},
-				type: {
-					type: EntityType.BUILDING,
-					iconCategory: "standard",
-					iconName: "store",
-				},
-				action: "Stammdaten geändert",
-				user: {
-					id: "one",
-					name: "Anna Muster"
-				},
-				date: "04.08.2020"
-			},
-		];
+	private async loadActivityList() {
+		const rsp = await API.get(Config.getRestUrl("home", "recentActivity/" + session.sessionInfo?.account.id))
+		this.activityList = rsp.data;
 	}
 
 }
