@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -71,8 +70,6 @@ public class BuildingEvaluationController {
 	private static final int CoverFotoWidth = 400;
 	private static final int CoverFotoHeight = 230;
 
-	// private static final String OPT_IS_MARKER = "\u058D";
-	// private static final String OptimumRenovationMarker = "X";
 	private static final String OptimumRenovationMarker = Character.toString((char) 110);
 
 	private Logger logger = LoggerFactory.getLogger(BuildingEvaluationController.class);
@@ -94,6 +91,9 @@ public class BuildingEvaluationController {
 
 	@Value("classpath:templates/Building Evaluation Template.docx")
 	Resource templateFile;
+
+	@Value("classpath:templates/missing.jpg")
+	Resource missingImage;
 
 	ClassLoader classLoader = this.getClass().getClassLoader();
 
@@ -168,11 +168,14 @@ public class BuildingEvaluationController {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
 
-		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
-			return ResponseEntity.badRequest().body("Coverfoto missing".getBytes(StandardCharsets.UTF_8));
-		} else if (building.getGeoCoordinates() == null) {
-			return ResponseEntity.badRequest().body("Coordinates missing".getBytes(StandardCharsets.UTF_8));
-		}
+		// if (building.getCoverFoto() == null ||
+		// building.getCoverFoto().getContentType() == null) {
+		// return ResponseEntity.badRequest().body("Coverfoto
+		// missing".getBytes(StandardCharsets.UTF_8));
+		// } else if (building.getGeoCoordinates() == null) {
+		// return ResponseEntity.badRequest().body("Coordinates
+		// missing".getBytes(StandardCharsets.UTF_8));
+		// }
 
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
@@ -214,19 +217,19 @@ public class BuildingEvaluationController {
 
 	}
 
-	private void insertCoverFoto(Document doc, ObjBuilding building) {
+	private void insertCoverFoto(Document doc, ObjBuilding building) throws IOException {
 
+		byte[] imageContent;
 		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
-			return;
+			imageContent = missingImage.getInputStream().readAllBytes();
+		} else {
+			imageContent = building.getCoverFoto().getContent();
 		}
-
-		// String contentType = building.getCoverFoto().getContentType().getExtension();
-		byte[] content = building.getCoverFoto().getContent();
 
 		DocumentBuilder builder = new DocumentBuilder(doc);
 		try {
 			builder.moveToBookmark("CoverFoto");
-			Shape coverFoto = builder.insertImage(content);
+			Shape coverFoto = builder.insertImage(imageContent);
 			coverFoto.setAspectRatioLocked(true);
 			// adjust either width or height
 			if (coverFoto.getWidth() / coverFoto.getHeight() > ((double) CoverFotoWidth) / ((double) CoverFotoHeight)) {
@@ -246,23 +249,25 @@ public class BuildingEvaluationController {
 
 	}
 
-	private void insertLocationImage(Document doc, ObjBuilding building) {
+	private void insertLocationImage(Document doc, ObjBuilding building) throws IOException {
 
+		byte[] imageContent;
 		if (building.getGeoCoordinates() == null) {
-			return;
-		}
-
-		String address = building.getGeoCoordinates().substring(4);
-		ImageResult ir = buildingService.getMap(building.getName(), address, new Size(1200, 1200), building.getGeoZoom());
-
-		if (ir == null) {
-			return;
+			imageContent = missingImage.getInputStream().readAllBytes();
+		} else {
+			String address = building.getGeoCoordinates().substring(4);
+			ImageResult ir = buildingService.getMap(building.getName(), address, new Size(1200, 1200), building.getGeoZoom());
+			if (ir == null) {
+				imageContent = missingImage.getInputStream().readAllBytes();
+			} else {
+				imageContent = ir.imageData;
+			}
 		}
 
 		DocumentBuilder builder = new DocumentBuilder(doc);
 		try {
 			builder.moveToBookmark("Location");
-			builder.insertImage(ir.imageData, 360, 360);
+			builder.insertImage(imageContent, 360, 360);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

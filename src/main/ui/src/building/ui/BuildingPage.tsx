@@ -70,8 +70,11 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
-		let allowEdit = [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION, LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && (!building.ratingStatus || building.ratingStatus.id !== "review");
-		const hasError = building.meta?.validationList.length! > 0;
+		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
+		const allowEditRating = building.ratingStatus && building.ratingStatus.id === "open";
+		const allowEdit = ([LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 && allowEditStaticData) || ([LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && allowEditRating);
+		const hasValidation = building.meta?.validationList?.length! > 0;
+		const hasError = building.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
 
 		return (
 			<>
@@ -159,7 +162,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							</TabsPanel>
 								*/
 							}
-							<TabsPanel label="Fehler" disabled={!hasError} hasError={hasError}>
+							<TabsPanel label="Fehler" disabled={!hasValidation} hasError={hasValidation}>
 								{
 									this.activeRightTabId === RIGHT_TABS.ERRORS &&
 									<ErrorTab validationList={building.meta?.validationList!} />

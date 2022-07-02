@@ -117,7 +117,7 @@ const MstBuildingModel = ObjModel.named("Building")
 			if (self.coverFoto?.id && self.coverFoto?.contentType?.id) {
 				return Config.getRestUrl("dms", "documents/" + self.coverFoto?.id + "/content");
 			}
-			return "/demo/building-" + (Math.round(10 * Math.random()) % 10) + ".jpg";
+			return "/missing.jpg";
 		},
 		get valuePartSum() {
 			return self.elements.reduce((sum, element) => { return sum + (element.valuePart || 0.0); }, 0.0);
