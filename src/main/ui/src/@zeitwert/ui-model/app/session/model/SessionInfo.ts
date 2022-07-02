@@ -12,6 +12,7 @@ export interface TenantInfo {
 	caption: string;
 	name: string;
 	extlKey: string;
+	tenantType: Enumerated;
 }
 
 export interface AccountInfo {

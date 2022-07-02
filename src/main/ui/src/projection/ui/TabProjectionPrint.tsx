@@ -1,6 +1,6 @@
 
 import { Button, ButtonGroup } from "@salesforce/design-system-react";
-import { Config } from "@zeitwert/ui-model";
+import { Config, session } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -17,9 +17,12 @@ export default class TabProjectionPrint extends React.Component<TabProjectionPri
 			<ButtonGroup variant="list">
 				<Button onClick={() => this.doExport("pdf")}>Drucken PDF</Button>
 			</ButtonGroup>
-			<ButtonGroup variant="list">
-				<Button onClick={() => this.doExport("docx")}>Drucken DOCX</Button>
-			</ButtonGroup>
+			{
+				session.isAdvisor &&
+				<ButtonGroup variant="list">
+					<Button onClick={() => this.doExport("docx")}>Drucken DOCX</Button>
+				</ButtonGroup>
+			}
 		</>;
 	}
 

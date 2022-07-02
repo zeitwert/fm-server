@@ -4,6 +4,9 @@ package io.zeitwert.ddd.oe.model.base;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
+import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
+import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
+import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
@@ -11,6 +14,7 @@ import org.jooq.UpdatableRecord;
 
 public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
+	protected final EnumProperty<CodeTenantType> tenantType;
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 
@@ -20,6 +24,7 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 			UpdatableRecord<?> tenantRecord) {
 		super(sessionInfo, repository, objRecord);
 		this.dbRecord = tenantRecord;
+		this.tenantType = this.addEnumProperty(dbRecord, ObjTenantFields.TENANT_TYPE_ID, CodeTenantTypeEnum.class);
 		this.name = this.addSimpleProperty(dbRecord, ObjTenantFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjTenantFields.DESCRIPTION);
 	}

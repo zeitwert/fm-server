@@ -1,5 +1,6 @@
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.dto;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 
 	private String name;
 	private String extlKey;
+	private EnumeratedDto tenantType;
 
 }

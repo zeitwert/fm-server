@@ -210,15 +210,12 @@ const MstSessionModel = types
 		};
 	})
 	.views((self) => ({
-		get translator(): Translator {
-			return new TranslatorImpl(self.locale as Locale);
+		get isAdvisor(): boolean {
+			return self.sessionInfo?.tenant.tenantType.id === "advisor";
 		},
-		get formatter(): Formatter {
-			return new FormatterImpl(self.locale as Locale);
+		get isCommunity(): boolean {
+			return self.sessionInfo?.tenant.tenantType.id === "advisor";
 		},
-		get hasExternalAuthentication() {
-			return !!self.sessionInfo && !!self.sessionInfo!.user.extlIdpUserId;
-		}
 	}))
 	.views((self) => ({
 		get isUser(): boolean {
@@ -229,6 +226,17 @@ const MstSessionModel = types
 			const roles = self.sessionInfo?.user?.roles || [];
 			return roles.indexOf("admin")! >= 0;
 		},
+	}))
+	.views((self) => ({
+		get translator(): Translator {
+			return new TranslatorImpl(self.locale as Locale);
+		},
+		get formatter(): Formatter {
+			return new FormatterImpl(self.locale as Locale);
+		},
+		get hasExternalAuthentication() {
+			return !!self.sessionInfo && !!self.sessionInfo!.user.extlIdpUserId;
+		}
 	}));
 
 type MstSessionType = typeof MstSessionModel;

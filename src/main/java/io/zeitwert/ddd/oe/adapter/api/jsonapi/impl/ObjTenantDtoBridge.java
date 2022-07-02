@@ -1,11 +1,13 @@
 
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.impl;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoBridge;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
+import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 public final class ObjTenantDtoBridge extends ObjDtoBridge<ObjTenant, ObjTenantVRecord, ObjTenantDto> {
@@ -43,7 +45,8 @@ public final class ObjTenantDtoBridge extends ObjDtoBridge<ObjTenant, ObjTenantV
 			.owner(ObjUserDtoBridge.getInstance().fromAggregate(obj.getOwner(), sessionInfo))
 			// tenant stuff
 			.name(obj.getName())
-			.extlKey(obj.getExtlKey());
+			.extlKey(obj.getExtlKey())
+			.tenantType(EnumeratedDto.fromEnum(obj.getTenantType()));
 		// @formatter:on
 		return dtoBuilder.build();
 	}
@@ -63,7 +66,8 @@ public final class ObjTenantDtoBridge extends ObjDtoBridge<ObjTenant, ObjTenantV
 			.owner(ObjUserDtoBridge.getInstance().fromAggregate(owner, sessionInfo))
 			// tenant stuff
 			.name(obj.getName())
-			.extlKey(obj.getExtlKey());
+			.extlKey(obj.getExtlKey())
+			.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())));
 		// @formatter:on
 		return dtoBuilder.build();
 	}

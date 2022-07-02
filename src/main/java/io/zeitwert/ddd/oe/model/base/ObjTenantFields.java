@@ -7,6 +7,7 @@ import org.jooq.impl.DSL;
 
 public interface ObjTenantFields extends ObjExtnFields {
 
+	static final Field<String> TENANT_TYPE_ID = DSL.field("tenant_type_id", String.class);
 	static final Field<String> EXTL_KEY = DSL.field("extl_key", String.class);
 	static final Field<String> NAME = DSL.field("name", String.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
