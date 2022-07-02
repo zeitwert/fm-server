@@ -17,6 +17,7 @@ export interface TenantInfo {
 export interface AccountInfo {
 	id: string;
 	name: string;
+	key: string;
 	itemType: CodeItemType | undefined;
 }
 
