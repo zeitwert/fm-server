@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextField } from "@zeitwert/ui-forms";
+import { EnumeratedField, FieldGroup, FieldRow, Input, IntField, NumberField, Select, TextField } from "@zeitwert/ui-forms";
 import { Building, BuildingModel, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -12,11 +12,10 @@ const BuildingCreationFormModel = new Form(
 	{
 		id: new Field(converters.string),
 		name: new TextField({ required: true }),
-		//
 		buildingNr: new TextField({ required: true }),
-		insuranceNr: new TextField(),
-		plotNr: new TextField(),
-		nationalBuildingId: new TextField(),
+		//
+		insuredValue: new NumberField({ required: true }),
+		insuredValueYear: new IntField({ required: true, minValue: 1000, maxLength: 4 }),
 		//
 		street: new TextField({ required: true }),
 		zip: new TextField({ required: true }),
@@ -110,6 +109,16 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 										</FieldRow>
 									</FieldGroup>
 								</div>
+							</div>
+						</Card>
+						<Card heading="Bewertung" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body slds-card__body_inner">
+								<FieldGroup>
+									<FieldRow>
+										<Input label="Versicherungswert (kCHF)" accessor={this.formState.field("insuredValue")} size={8} />
+										<Input label="Jahr" accessor={this.formState.field("insuredValueYear")} size={4} />
+									</FieldRow>
+								</FieldGroup>
 							</div>
 						</Card>
 						<Card heading="Addresse" bodyClassName="slds-m-around_medium">

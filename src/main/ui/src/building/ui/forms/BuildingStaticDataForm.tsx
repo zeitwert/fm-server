@@ -35,7 +35,7 @@ const BuildingStaticDataFormModel = new Form(
 		city: new TextField(),
 		country: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCountry" }),
 		//
-		buildingYear: new IntField({ minValue: 1800, maxLength: 4 }),
+		buildingYear: new IntField({ minValue: 1000, maxLength: 4 }),
 		volume: new NumberField(),
 		areaGross: new NumberField(),
 		areaNet: new NumberField(),
