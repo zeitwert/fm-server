@@ -24,7 +24,7 @@ export default class LifeEventTimelineItem extends React.Component<LifeEventTime
 
 	render() {
 		const anniversary = this.props.lifeEvent!;
-		const type = EntityTypes[EntityType.LIFE_EVENT/*ANNIVERSARY*/];
+		const type = EntityTypes[EntityType.TASK/*ANNIVERSARY*/];
 		return (
 			<TimelineItem
 				name={anniversary.name! ? anniversary.name! : "Noname"}

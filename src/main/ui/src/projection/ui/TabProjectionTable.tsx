@@ -19,24 +19,24 @@ const NumericCell: React.FunctionComponent<any> = ({ children, displayName, ...p
 NumericCell.displayName = DATA_TABLE_CELL;
 
 const columns = [
-	<DataTableColumn key="year" label="Jahr" property="year" width="8%" />,
-	<DataTableColumn key="originalValue" label="Neuwert (indexiert)" property="originalValue" width="8%">
+	<DataTableColumn key="year" label="Jahr" property="year" width="1%" />,
+	<DataTableColumn key="originalValue" label="Neuwert (indexiert)" property="originalValue" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="timeRate" label="ZN Wert" property="timeRate" width="5%">
+	<DataTableColumn key="timeRate" label="ZN Wert" property="timeRate" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="timeValue" label="Zustandswert" property="timeValue" width="8%">
+	<DataTableColumn key="timeValue" label="Zustandswert" property="timeValue" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="maintenanceCosts" label="IH Kosten" property="maintenanceCosts" width="8%">
+	<DataTableColumn key="maintenanceCosts" label="IH Kosten" property="maintenanceCosts" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="restorationCosts" label="IS Kosten" property="restorationCosts" width="8%">
+	<DataTableColumn key="restorationCosts" label="IS Kosten" property="restorationCosts" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="restorationPart" label="IS Element" property="restorationPart" width="20%" truncate={true} />,
-	<DataTableColumn key="restorationBuilding" label="IS Gebäude" property="restorationBuilding" width="40%" truncate={true} />,
+	<DataTableColumn key="restorationPart" label="IS Element" property="restorationPart" width="1%" truncate={true} />,
+	<DataTableColumn key="restorationBuilding" label="IS Gebäude" property="restorationBuilding" width="100%" truncate={true} />,
 	/*
 		<DataTableColumn key="techPart" label="Technikanteil" property="techPart" width="5%">
 			<NumericCell />

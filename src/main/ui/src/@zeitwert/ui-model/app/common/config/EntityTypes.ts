@@ -1,14 +1,14 @@
 
 export enum EntityType {
-	PORTFOLIO = "portfolio",
 	ACCOUNT = "account",
+	BUILDING = "building",
 	CONTACT = "contact",
 	DOCUMENT = "document",
-	BUILDING = "building",
-	LIFE_EVENT = "lifeEvent",
-	TASK = "task",
+	LEAD = "lead",
 	NOTE = "note",
-	LEAD = "lead"
+	PORTFOLIO = "portfolio",
+	TASK = "task",
+	TEST = "test",
 }
 
 export enum EntityGender {
@@ -31,16 +31,6 @@ export interface EntityTypeInfo {
 }
 
 export const EntityTypes: { [type: string]: EntityTypeInfo } = {
-	[EntityType.PORTFOLIO]: {
-		label: "Portfolios",
-		labelSingular: "Portfolio",
-		gender: EntityGender.NEUTER,
-		type: EntityType.PORTFOLIO,
-		iconCategory: "standard",
-		iconName: "store_group",
-		isFavoritable: true,
-		hasPreview: false
-	},
 	[EntityType.ACCOUNT]: {
 		label: "Kunden",
 		labelSingular: "Kunde",
@@ -50,6 +40,16 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		iconName: "account",
 		isFavoritable: true,
 		hasPreview: false
+	},
+	[EntityType.BUILDING]: {
+		label: "Immobilien",
+		labelSingular: "Immobilie",
+		gender: EntityGender.FEMALE,
+		type: EntityType.BUILDING,
+		iconCategory: "custom",
+		iconName: "custom24",
+		isFavoritable: true,
+		hasPreview: true
 	},
 	[EntityType.CONTACT]: {
 		label: "Kontakte",
@@ -71,24 +71,14 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		isFavoritable: false,
 		hasPreview: false
 	},
-	[EntityType.BUILDING]: {
-		label: "Immobilien",
-		labelSingular: "Immobilie",
-		gender: EntityGender.FEMALE,
-		type: EntityType.BUILDING,
-		iconCategory: "custom",
-		iconName: "custom24",
-		isFavoritable: true,
-		hasPreview: true
-	},
-	[EntityType.TASK]: {
-		label: "Aufgaben",
-		labelSingular: "Aufgabe",
-		gender: EntityGender.FEMALE,
-		type: EntityType.TASK,
+	[EntityType.LEAD]: {
+		label: "Leads",
+		labelSingular: "Lead",
+		gender: EntityGender.MALE,
+		type: EntityType.LEAD,
 		iconCategory: "standard",
-		iconName: "task",
-		isFavoritable: false,
+		iconName: "lead",
+		isFavoritable: true,
 		hasPreview: false
 	},
 	[EntityType.NOTE]: {
@@ -101,14 +91,34 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		isFavoritable: false,
 		hasPreview: false
 	},
-	[EntityType.LEAD]: {
-		label: "Leads",
-		labelSingular: "Lead",
-		gender: EntityGender.MALE,
-		type: EntityType.LEAD,
+	[EntityType.PORTFOLIO]: {
+		label: "Portfolios",
+		labelSingular: "Portfolio",
+		gender: EntityGender.NEUTER,
+		type: EntityType.PORTFOLIO,
 		iconCategory: "standard",
-		iconName: "lead",
+		iconName: "store_group",
 		isFavoritable: true,
 		hasPreview: false
-	}
+	},
+	[EntityType.TASK]: {
+		label: "Aufgaben",
+		labelSingular: "Aufgabe",
+		gender: EntityGender.FEMALE,
+		type: EntityType.TASK,
+		iconCategory: "standard",
+		iconName: "task",
+		isFavoritable: false,
+		hasPreview: false
+	},
+	[EntityType.TEST]: {
+		label: "Tests",
+		labelSingular: "Test",
+		gender: EntityGender.MALE,
+		type: EntityType.TEST,
+		iconCategory: "standard",
+		iconName: "task2",
+		isFavoritable: false,
+		hasPreview: false
+	},
 };
