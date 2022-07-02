@@ -12,7 +12,7 @@ export interface TabProjectionPrintProps {
 export default class TabProjectionPrint extends React.Component<TabProjectionPrintProps> {
 
 	render() {
-		const url = Config.getEvaluationUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId + "?format=pdf&inline=true");
+		const url = Config.getEvaluationUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId + "?format=pdf&inline=true#view=fit");
 		return <iframe src={url} title="Kosten" height="100%" width="100%" />;
 	}
 
