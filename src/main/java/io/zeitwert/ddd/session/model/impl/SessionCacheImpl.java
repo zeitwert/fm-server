@@ -32,12 +32,13 @@ public class SessionCacheImpl<A extends Aggregate> implements SessionCache<A> {
 	@Override
 	public void addItem(SessionInfo sessionInfo, A aggregate) {
 		if (!sessionMap.containsKey(sessionInfo)) {
-			System.out.println(
-					"cache.create "
-							+ " " + System.identityHashCode(sessionInfo)
-							+ " " + sessionInfo.getClass().getSimpleName()
-							+ " " + (sessionInfo.getUser() != null ? sessionInfo.getUser().getEmail() : "[no user]")
-							+ " " + aggregate.getMeta().getAggregateType().getId());
+			// System.out.println(
+			// "cache.create "
+			// + " " + System.identityHashCode(sessionInfo)
+			// + " " + sessionInfo.getClass().getSimpleName()
+			// + " " + (sessionInfo.getUser() != null ? sessionInfo.getUser().getEmail() :
+			// "[no user]")
+			// + " " + aggregate.getMeta().getAggregateType().getId());
 			sessionMap.put(sessionInfo, new ConcurrentHashMap<>());
 		}
 		// System.out.println(

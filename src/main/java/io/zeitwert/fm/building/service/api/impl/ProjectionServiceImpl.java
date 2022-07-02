@@ -29,9 +29,6 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 @DependsOn("codeBuildingPriceIndexEnum")
 public class ProjectionServiceImpl implements ProjectionService {
 
-	public static final int DefaultDuration = 25;
-	public static final double DefaultInflationRate = 1.0;
-
 	static final List<String> FullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10",
 			"P63", "P64", "P65", "P66");
 	static final List<String> HalfTechRates = List.of("P12", "P60", "P61", "P62");
@@ -145,11 +142,10 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		List<ProjectionPeriod> buildingPeriodList = new ArrayList<>();
 
-		double techValue = 0;
+		double techPart = 0;
 		for (ObjBuildingPartElementRating part : projectionResult.getElementMap().values()) {
-			techValue += part.getValuePart() * getTechRate(part.getBuildingPart());
+			techPart += part.getValuePart() / 100 * getTechRate(part.getBuildingPart());
 		}
-		double techPart = techValue / 100;
 		double techRate = getTechRate(techPart);
 
 		for (int year = projectionResult.getStartYear(); year <= projectionResult.getEndYear(); year++) {
@@ -169,6 +165,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				originalValue += elementValue;
 				timeValue += elementValue * elementPeriod.getTimeValue() / 100.0;
 				double elementRestorationCosts = elementValue * elementPeriod.getRestorationCosts() / 100.0;
+				elementRestorationCosts = this.roundProgressive(elementRestorationCosts);
 				restorationCosts += elementRestorationCosts;
 				if (elementRestorationCosts != 0) {
 					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
@@ -187,6 +184,11 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 			double maintenanceRate = techRate * this.getMaintenanceRate(timeValue / originalValue) / 100.0;
 			double maintenanceCosts = maintenanceRate * originalValue;
+
+			originalValue = this.roundProgressive(originalValue);
+			timeValue = this.roundProgressive(timeValue);
+			restorationCosts = this.roundProgressive(restorationCosts);
+			maintenanceCosts = this.roundProgressive(maintenanceCosts);
 
 			//@formatter:off
 			ProjectionPeriod buildingPeriod =
@@ -217,6 +219,19 @@ public class ProjectionServiceImpl implements ProjectionService {
 			.build();
 		//@formatter:on
 
+	}
+
+	@Override
+	public double roundProgressive(double value) {
+		double absValue = Math.abs(value);
+		if (absValue < 2000) {
+			return 100 * Math.round(value / 100);
+		} else if (absValue < 5000) {
+			return 200 * Math.round(value / 200);
+		} else if (absValue < 10000) {
+			return 500 * Math.round(value / 500);
+		}
+		return 1000 * Math.round(value / 1000);
 	}
 
 	//@formatter:off

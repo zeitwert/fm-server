@@ -92,7 +92,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		List<EvaluationParameter> params = new ArrayList<>();
 		this.addParameter(params, "Laufzeit", "25 Jahre");
-		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionServiceImpl.DefaultInflationRate) + " %");
+		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
 		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
 		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
 		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
@@ -128,9 +128,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		List<EvaluationPeriod> periods = new ArrayList<>();
 		int aggrCosts = 0;
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			int maintenanceCosts = 1000 * (int) Math.round(pp.getMaintenanceCosts() / 1000);
-			int restorationCosts = 1000 * (int) Math.round(pp.getRestorationCosts() / 1000);
-			int totalCosts = maintenanceCosts + restorationCosts;
+			int totalCosts = (int) (pp.getMaintenanceCosts() + pp.getRestorationCosts());
 			aggrCosts += totalCosts;
 			String restorationElement = "";
 			if (pp.getRestorationElements().size() == 1) {
@@ -138,10 +136,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 			}
 			EvaluationPeriod eps = EvaluationPeriod.builder()
 					.year(pp.getYear())
-					.originalValue(1000 * (int) Math.round(pp.getOriginalValue() / 1000))
-					.timeValue(1000 * (int) Math.round(pp.getTimeValue() / 1000))
-					.maintenanceCosts(maintenanceCosts)
-					.restorationCosts(restorationCosts)
+					.originalValue((int) pp.getOriginalValue())
+					.timeValue((int) pp.getTimeValue())
+					.maintenanceCosts((int) pp.getMaintenanceCosts())
+					.restorationCosts((int) pp.getRestorationCosts())
 					.restorationElement(restorationElement)
 					.totalCosts(totalCosts)
 					.aggrCosts(aggrCosts)
@@ -149,10 +147,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 			periods.add(eps);
 			if (pp.getRestorationElements().size() > 1) {
 				for (RestorationElement re : pp.getRestorationElements()) {
-					restorationCosts = 1000 * (int) Math.round(re.getRestorationCosts() / 1000);
 					restorationElement = re.getBuildingPart().getName();
 					EvaluationPeriod epd = EvaluationPeriod.builder()
-							.restorationCosts(restorationCosts)
+							.restorationCosts((int) re.getRestorationCosts())
 							.restorationElement(restorationElement)
 							.build();
 					periods.add(epd);
@@ -180,7 +177,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return text != null ? text.replace("<br>", SOFT_RETURN) : "";
 	}
 
-	private Integer getAverageMaintenanceCosts(ProjectionResult projectionResult, int startYear, int endYear) {
+	private int getAverageMaintenanceCosts(ProjectionResult projectionResult, int startYear, int endYear) {
 		requireThis(startYear <= endYear, "valid years");
 		double costs = 0.0;
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
@@ -189,10 +186,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 				costs += pp.getMaintenanceCosts();
 			}
 		}
-		return (int) (Math.round((costs / (endYear - startYear + 1)) / 1000) * 1000);
+		return (int) projectionService.roundProgressive(costs / (endYear - startYear + 1));
 	}
 
-	private Integer getRestorationCosts(ProjectionResult projectionResult, int startYear, int endYear) {
+	private int getRestorationCosts(ProjectionResult projectionResult, int startYear, int endYear) {
 		requireThis(startYear <= endYear, "valid years");
 		double costs = 0.0;
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
@@ -201,7 +198,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 				costs += pp.getRestorationCosts();
 			}
 		}
-		return (int) (Math.round(costs / 1000) * 1000);
+		return (int) projectionService.roundProgressive(costs);
 	}
 
 	private Integer getRestorationYear(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
@@ -219,7 +216,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
 			for (RestorationElement re : pp.getRestorationElements()) {
 				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {
-					return 1000 * (int) Math.round(re.getRestorationCosts() / 1000.0);
+					return (int) projectionService.roundProgressive(re.getRestorationCosts());
 				}
 			}
 		}

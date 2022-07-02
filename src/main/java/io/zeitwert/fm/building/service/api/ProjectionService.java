@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface ProjectionService {
 
+	static final int DefaultDuration = 25;
+	static final double DefaultInflationRate = 1.0;
+
 	/**
 	 * Get the accumulated cost projection for a given portfolio
 	 * 
@@ -25,6 +28,14 @@ public interface ProjectionService {
 	 * @return cost projection
 	 */
 	ProjectionResult getProjection(ObjBuilding building);
+
+	/**
+	 * Round to increasing stepsize with increasing value
+	 * 
+	 * @param value the value to round
+	 * @return rounded value
+	 */
+	double roundProgressive(double value);
 
 	/**
 	 * Get the cost projection for a given element
