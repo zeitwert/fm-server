@@ -9,7 +9,7 @@ import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
 import ErrorTab from "item/ui/tab/ErrorTab";
 import NotesTab from "item/ui/tab/NotesTab";
-import { makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
 import React from "react";
@@ -43,6 +43,21 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable currentElement: any;
 	@observable currentElementForm: any;
 
+	@computed
+	get hasValidations(): boolean {
+		return this.buildingStore.building?.meta?.validationList?.length! > 0;
+	}
+
+	@computed
+	get hasErrors(): boolean {
+		return this.buildingStore.building?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
+	}
+
+	@computed
+	get hasActiveRating(): boolean {
+		return ["open", "review"].indexOf(this.buildingStore.building?.ratingStatus?.id || "") >= 0;
+	}
+
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
@@ -73,8 +88,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
 		const allowEditRating = building.ratingStatus && building.ratingStatus.id === "open";
 		const allowEdit = ([LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 && allowEditStaticData) || ([LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && allowEditRating);
-		const hasValidation = building.meta?.validationList?.length! > 0;
-		const hasError = building.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
 
 		return (
 			<>
@@ -111,7 +124,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 										<BuildingLocationForm store={this.buildingStore} />
 									}
 								</TabsPanel>
-								<TabsPanel label="Bewertung">
+								<TabsPanel label={<span>Bewertung{this.hasActiveRating && <abbr className="slds-required">*</abbr>}</span>}>
 									{
 										this.activeLeftTabId === LEFT_TABS.RATING &&
 										<BuildingRatingForm
@@ -121,7 +134,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 										/>
 									}
 								</TabsPanel>
-								<TabsPanel label="Auswertung" disabled={hasError} hasError={hasError}>
+								<TabsPanel label="Auswertung" disabled={this.buildingStore.isInTrx || this.hasErrors} hasError={this.hasErrors}>
 									{
 										this.activeLeftTabId === LEFT_TABS.EVALUATION &&
 										<TabProjection itemType="building" itemId={this.buildingStore.building?.id!} />
@@ -162,12 +175,15 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							</TabsPanel>
 								*/
 							}
-							<TabsPanel label="Fehler" disabled={!hasValidation} hasError={hasValidation}>
-								{
-									this.activeRightTabId === RIGHT_TABS.ERRORS &&
-									<ErrorTab validationList={building.meta?.validationList!} />
-								}
-							</TabsPanel>
+							{
+								this.hasValidations &&
+								<TabsPanel label="Fehler" hasError={this.hasValidations}>
+									{
+										this.activeRightTabId === RIGHT_TABS.ERRORS &&
+										<ErrorTab validationList={building.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>
@@ -215,32 +231,19 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
-		const ratingStatus = this.buildingStore.building?.ratingStatus;
-		const hasErrors = (this.buildingStore.building?.meta?.validationList?.length! > 0) || false;
+		const isInTrx = this.buildingStore.isInTrx;
+		const building = this.buildingStore.building;
+		const ratingStatus = building?.ratingStatus;
 		return (
 			<>
 				{
-					!this.buildingStore.isInTrx && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 &&
+					!isInTrx && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 &&
 					<ButtonGroup variant="list">
 						<Button onClick={this.doExport}>Export</Button>
 					</ButtonGroup>
 				}
 				{
-					!this.buildingStore.isInTrx && ratingStatus?.id === "open" &&
-					<ButtonGroup variant="list">
-						<Button onClick={() => this.moveRatingStatus("discard", true)}>Bewertung verwerfen</Button>
-						<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={hasErrors}>Bewertung überprüfen</Button>
-					</ButtonGroup>
-				}
-				{
-					!this.buildingStore.isInTrx && ratingStatus?.id === "review" &&
-					<ButtonGroup variant="list">
-						<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
-						<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
-					</ButtonGroup>
-				}
-				{
-					!this.buildingStore.isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
+					!isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
 					<>
 						{
 							!ratingStatus &&
@@ -249,18 +252,37 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							</ButtonGroup>
 						}
 						{
-							ratingStatus?.id === "done" &&
+							ratingStatus?.id === "open" &&
 							<ButtonGroup variant="list">
-								<Button onClick={this.addRating}>Neue Bewertung</Button>
+								<Button onClick={() => this.moveRatingStatus("discard", true)}>Bewertung verwerfen</Button>
+								<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={this.hasValidations}>Bewertung überprüfen</Button>
+							</ButtonGroup>
+						}
+						{
+							ratingStatus?.id === "review" &&
+							<ButtonGroup variant="list">
+								<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
+								<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
 							</ButtonGroup>
 						}
 						{
 							ratingStatus?.id === "done" &&
-							<ButtonGroup variant="list">
-								<Button onClick={() => this.moveRatingStatus("open")}>Bewertung reaktivieren</Button>
-							</ButtonGroup>
+							<>
+								<ButtonGroup variant="list">
+									<Button onClick={this.addRating}>Neue Bewertung</Button>
+								</ButtonGroup>
+								<ButtonGroup variant="list">
+									<Button onClick={() => this.moveRatingStatus("open")}>Bewertung reaktivieren</Button>
+								</ButtonGroup>
+							</>
 						}
 					</>
+				}
+				{
+					session.isAdvisor && !this.hasErrors && !isInTrx && [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0 &&
+					<ButtonGroup variant="list">
+						<Button onClick={() => this.doGenDocx(building?.id!)}>Generate Word</Button>
+					</ButtonGroup>
 				}
 			</>
 		);
@@ -301,6 +323,10 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 			document.body.removeChild(anchor);
 			window.URL.revokeObjectURL(objectUrl);
 		}
+	}
+
+	private doGenDocx = (id: string) => {
+		window.location.href = Config.getEvaluationUrl("building", "buildings/" + id + "?format=docx");
 	}
 
 	private addRating = () => {

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -162,8 +163,10 @@ public class BuildingEvaluationController {
 	}
 
 	@GetMapping("/{id}")
-	protected ResponseEntity<byte[]> exportBuilding(@PathVariable("id") Integer id,
-			@RequestParam(required = false, name = "format") String format)
+	protected ResponseEntity<byte[]> exportBuilding(
+			@PathVariable("id") Integer id,
+			@RequestParam(required = false, name = "format") String format,
+			@RequestParam(required = false, name = "inline") Boolean isInline)
 			throws Exception {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
@@ -210,10 +213,14 @@ public class BuildingEvaluationController {
 
 		String fileName = this.getFileName(building, saveFormat);
 		// mark file for download
-		ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentDisposition(contentDisposition);
-		return ResponseEntity.ok().headers(headers).body(outStream.toByteArray());
+		if (isInline) {
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers).body(outStream.toByteArray());
+		} else {
+			ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
+			headers.setContentDisposition(contentDisposition);
+			return ResponseEntity.ok().headers(headers).body(outStream.toByteArray());
+		}
 
 	}
 
