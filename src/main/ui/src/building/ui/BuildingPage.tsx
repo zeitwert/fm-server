@@ -1,5 +1,5 @@
 
-import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Button, ButtonGroup, Modal, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -42,6 +42,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
 	@observable currentElement: any;
 	@observable currentElementForm: any;
+	@observable showConfirmation: boolean = false;
 
 	@computed
 	get hasValidations(): boolean {
@@ -188,6 +189,15 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					</ItemRightPart>
 				</ItemGrid>
 				{
+					this.showConfirmation &&
+					<Confirmation
+						title="Bewertung verwerfen"
+						explanation={"Sie sind dabei die aktuelle Bewertung zu löschen.\nDie Daten der Bewertung gehen verloren.\nSind Sie sicher?"}
+						onCancel={() => this.showConfirmation = false}
+						onOk={() => { this.moveRatingStatus("discard", true); this.showConfirmation = false; }}
+					/>
+				}
+				{
 					!!this.currentElement &&
 					<SidePanel style={{ top: "110px", bottom: "30px", right: "30px", minWidth: "28rem" }}>
 						<div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -254,7 +264,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 						{
 							ratingStatus?.id === "open" &&
 							<ButtonGroup variant="list">
-								<Button onClick={() => this.moveRatingStatus("discard", true)}>Bewertung verwerfen</Button>
+								<Button variant="text-destructive" onClick={this.showDiscardConfirmation}>Bewertung verwerfen</Button>
 								<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={this.hasValidations}>Bewertung überprüfen</Button>
 							</ButtonGroup>
 						}
@@ -340,6 +350,11 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 	};
 
+	private showDiscardConfirmation = () => {
+		console.log("showDiscardConfirmation");
+		this.showConfirmation = true;
+	}
+
 	private reload = async () => {
 		this.buildingStore.load(this.buildingStore.id!);
 	};
@@ -354,29 +369,37 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		this.currentElementForm = undefined;
 	}
 
-	// private onSavePortlet = async (type: string, data: any) => {
-	// 	let store: DocStore, payload: any, title: string;
-	// 	switch (type) {
-	// 		case ActivityFormTypes.TASK:
-	// 			title = "Task";
-	// 			store = TaskStoreModel.create({});
-	// 			payload = FormParser.parseTask(data, this.ctx.session.sessionInfo!.user);
-	// 			break;
-	// 		default:
-	// 			throw new Error("Undefined store set");
-	// 	}
-	// 	try {
-	// 		store.create(payload);
-	// 		await store.store();
-	// 		this.ctx.showToast("success", title + " stored");
-	// 	} catch (error: any) {
-	// 		this.ctx.showAlert(
-	// 			"error",
-	// 			"Could not store " + title + ": " + (error.detail ? error.detail : error.title ? error.title : error)
-	// 		);
-	// 	}
-	// };
-
 }
 
 export default withRouter(BuildingPage);
+
+interface ConfirmationProps {
+	title: string;
+	explanation: string;
+	onOk: () => void;
+	onCancel: () => void;
+}
+
+class Confirmation extends React.Component<ConfirmationProps> {
+
+	render() {
+		console.log("conf.render", this.props.explanation);
+		return <Modal
+			isOpen={true}
+			footer={[
+				<Button label="Abbrechen" onClick={this.props.onCancel} />,
+				<Button label="OK" variant="brand" onClick={this.props.onOk} />,
+			]}
+			onRequestClose={this.props.onCancel}
+			heading={this.props.title}
+			prompt="warning"
+		>
+			<div className="slds-m-around_medium">
+				{
+					this.props.explanation.split("\n").map((x, index) => <p key={"part-" + index}>{x}</p>)
+				}
+			</div>
+		</Modal>;
+	}
+
+}
