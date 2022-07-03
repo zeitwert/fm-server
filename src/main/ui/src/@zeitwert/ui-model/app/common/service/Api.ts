@@ -23,7 +23,7 @@ function getConfig(config?: AxiosRequestConfig): AxiosRequestConfig {
 	const headers = getDefaultHeaders();
 	const configHeaders = config ? config.headers || {} : {};
 	return {
-		//withCredentials: true, // allow server to set cookies
+		withCredentials: true, // allow server to set cookies
 		...config,
 		headers: { ...headers, ...configHeaders }
 	};
