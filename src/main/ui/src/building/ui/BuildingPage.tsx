@@ -88,7 +88,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
 		const allowEditRating = building.ratingStatus && building.ratingStatus.id === "open";
-		const allowEdit = ([LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 && allowEditStaticData) || ([LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && allowEditRating);
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -253,7 +253,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					</ButtonGroup>
 				}
 				{
-					!isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
+					!session.isReadOnly && !isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
 					<>
 						{
 							!ratingStatus &&

@@ -9,6 +9,7 @@ insert into code_user_role(id, name)
 values
 ('appAdmin', 'Application Admin (Super User)'),
 ('admin', 'Advisor or Account Admin'),
-('user', 'Advisor or Account User')
+('user', 'Advisor or Account User'),
+('readOnly', 'Advisor or Account Read-Only User')
 on conflict(id)
 do nothing;

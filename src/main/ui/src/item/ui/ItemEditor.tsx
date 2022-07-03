@@ -1,4 +1,4 @@
-import { AggregateStore, EntityType } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "App";
 import { action } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -32,7 +32,7 @@ export default class ItemEditor extends React.Component<ItemEditorProps> {
 		} = this.props;
 		const buttons = (
 			<ItemEditorButtons
-				showEditButtons={showEditButtons || false}
+				showEditButtons={!session.isReadOnly && (showEditButtons || false)}
 				doEdit={store.isInTrx}
 				allowStore={true/* TODO */}
 				onOpenEditor={action(() => this.onOpen())}

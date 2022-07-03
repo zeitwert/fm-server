@@ -218,6 +218,10 @@ const MstSessionModel = types
 		},
 	}))
 	.views((self) => ({
+		get isReadOnly(): boolean {
+			const roles = self.sessionInfo?.user?.roles || [];
+			return roles.indexOf("readOnly")! >= 0;
+		},
 		get isUser(): boolean {
 			const roles = self.sessionInfo?.user?.roles || [];
 			return roles.indexOf("user")! >= 0;
