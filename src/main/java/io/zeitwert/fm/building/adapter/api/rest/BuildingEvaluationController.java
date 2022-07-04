@@ -259,7 +259,7 @@ public class BuildingEvaluationController {
 	private void insertLocationImage(Document doc, ObjBuilding building) throws IOException {
 
 		byte[] imageContent;
-		if (building.getGeoCoordinates() == null) {
+		if (building.getGeoCoordinates() == null || building.getGeoCoordinates().equals("")) {
 			imageContent = missingImage.getInputStream().readAllBytes();
 		} else {
 			String address = building.getGeoCoordinates().substring(4);

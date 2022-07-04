@@ -261,7 +261,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		if (this.getCoverFoto() == null || this.getCoverFoto().getContentType() == null) {
 			this.addValidation(CodeValidationLevelEnum.WARNING, "Für den Druck muss ein Coverfoto hochgeladen werden");
 		}
-		if (this.getGeoCoordinates() == null) {
+		if (this.getGeoCoordinates() == null || this.getGeoCoordinates().equals("")) {
 			this.addValidation(CodeValidationLevelEnum.WARNING, "Koordinaten der Immobilie fehlen");
 		}
 		if (this.getInsuredValue() == null || this.getInsuredValue().equals(BigDecimal.ZERO)) {
