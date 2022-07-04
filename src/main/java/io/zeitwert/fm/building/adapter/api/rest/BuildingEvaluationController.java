@@ -214,7 +214,7 @@ public class BuildingEvaluationController {
 		String fileName = this.getFileName(building, saveFormat);
 		// mark file for download
 		HttpHeaders headers = new HttpHeaders();
-		if (isInline) {
+		if (isInline != null && isInline) {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers).body(outStream.toByteArray());
 		} else {
 			ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
