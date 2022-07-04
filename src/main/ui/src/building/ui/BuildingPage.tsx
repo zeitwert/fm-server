@@ -125,7 +125,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 										<BuildingLocationForm store={this.buildingStore} />
 									}
 								</TabsPanel>
-								<TabsPanel label={<span>Bewertung{this.hasActiveRating && <abbr className="slds-required">*</abbr>}</span>}>
+								<TabsPanel label={<span>Bewertung{this.hasActiveRating && <abbr style={{ color: "#014486" }}> *</abbr>}</span>}>
 									{
 										this.activeLeftTabId === LEFT_TABS.RATING &&
 										<BuildingRatingForm
@@ -178,7 +178,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							}
 							{
 								this.hasValidations &&
-								<TabsPanel label="Fehler" hasError={this.hasValidations}>
+								<TabsPanel label="Validierungen" hasError={this.hasValidations}>
 									{
 										this.activeRightTabId === RIGHT_TABS.ERRORS &&
 										<ErrorTab validationList={building.meta?.validationList!} />
