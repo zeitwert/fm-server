@@ -20,13 +20,13 @@ NumericCell.displayName = DATA_TABLE_CELL;
 
 const columns = [
 	<DataTableColumn key="year" label="Jahr" property="year" width="1%" />,
-	<DataTableColumn key="originalValue" label="Neuwert (indexiert)" property="originalValue" width="1%">
+	<DataTableColumn key="originalValue" label="Neuwert" property="originalValue" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
 	<DataTableColumn key="timeRate" label="ZN Wert" property="timeRate" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="timeValue" label="Zustandswert" property="timeValue" width="1%">
+	<DataTableColumn key="timeValue" label="Zeitwert" property="timeValue" width="1%">
 		<NumericCell />
 	</DataTableColumn>,
 	<DataTableColumn key="maintenanceCosts" label="IH Kosten" property="maintenanceCosts" width="1%">

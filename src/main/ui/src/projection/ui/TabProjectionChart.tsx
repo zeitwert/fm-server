@@ -97,7 +97,7 @@ const ValueOptions = {
 	},
 	series: [
 		{
-			name: "Neuwert (indexiert)",
+			name: "Neuwert",
 			data: [] as number[],
 			color: "#000000",
 		},
