@@ -2,8 +2,7 @@
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import { FC } from "react";
-import { getComponentProps } from "..";
-import { Field, FieldProps, getFieldId } from "./Field";
+import { Field, FieldProps, getComponentProps, getFieldId } from "./Field";
 
 export interface InputProps extends FieldProps {
 	id?: string;

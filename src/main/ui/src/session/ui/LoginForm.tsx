@@ -1,36 +1,9 @@
 
 import { Button, Card, MediaObject } from "@salesforce/design-system-react";
-import { EnumeratedField, Input, Select, TextField } from "@zeitwert/ui-forms";
-import { Enumerated, Session } from "@zeitwert/ui-model";
+import { Enumerated, session, Session, TenantInfo } from "@zeitwert/ui-model";
+import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
-import { Instance } from "mobx-state-tree";
-import { AnyFormState, Form, Query } from "mstform";
-import React from "react";
-import { isValidEmail, LoginData, LoginModel } from "session/model/LoginModel";
-
-const loadAccounts = async (q: Query): Promise<Enumerated[]> => {
-	if (isValidEmail(q.email)) {
-		const userInfoResponse = await LoginData.loadAccounts(q.email!);
-		if (userInfoResponse) {
-			return userInfoResponse.accounts;
-		}
-	}
-	return [];
-};
-
-export const LoginFormModel = new Form(
-	LoginModel,
-	{
-		email: new TextField({ required: true }),
-		password: new TextField({ required: true }),
-		account: new EnumeratedField({
-			source: loadAccounts,
-			dependentQuery: (accessor) => {
-				return { email: accessor.node.email };
-			}
-		}),
-	}
-);
+import React, { ChangeEvent } from "react";
 
 export interface LoginFormProps {
 	session: Session;
@@ -48,21 +21,31 @@ const CARD_HEADER =
 @observer
 export default class LoginForm extends React.Component<LoginFormProps> {
 
-	private formState: AnyFormState;
+	@observable email: string | undefined = undefined;
+	@observable password: string | undefined = undefined;
+	@observable account: Enumerated | undefined = undefined;
+
+	@observable tenant: TenantInfo | undefined = undefined;
+	@observable.ref accounts: Enumerated[] = [];
+
+	@computed get isEmailValid(): boolean {
+		return !!this.email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(this.email);
+	}
+
+	@computed get tenantLogoUrl(): string | undefined {
+		return !!this.tenant ? `/tenant/${this.tenant.extlKey}/login-logo.jpg` : "/tenant/login-logo.jpg";
+	}
+
+	@computed get isReadyForLogin(): boolean {
+		return this.isEmailValid && !!this.password && !!this.account;
+	}
 
 	constructor(props: LoginFormProps) {
 		super(props);
-		this.formState = LoginFormModel.state(LoginData);
-		this.formState.field("account").references.autoLoadReaction();
-	}
-
-	componentWillUnmount() {
-		this.formState.field("account").references.clearAutoLoadReaction();
+		makeObservable(this);
 	}
 
 	render() {
-		const loginModel = this.formState.node as Instance<typeof LoginModel>;
-		const { session } = this.props;
 		return (
 			<div className="slds-grid slds-wrap slds-m-top_xx-large" style={{ marginTop: "15em" }}>
 				<div className="slds-col slds-size_1-of-3" />
@@ -71,20 +54,39 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 						<div className="slds-grid slds-wrap">
 							<div className="slds-col slds-size_2-of-3">
 								<div className="slds-card__body slds-card__body_inner">
-									<Input label="Email" accessor={this.formState.field("email")} placeholder="email address ..." />
-									<Input label="Passwort" accessor={this.formState.field("password")} type="password" placeholder="password ..." />
+									<div className="slds-form-element">
+										<label className="slds-form-element__label" htmlFor="email">Email <abbr className="slds-required"></abbr></label>
+										<div className="slds-form-element__control">
+											<input type="text" id="email" placeholder="email address…" className="slds-input" onChange={this.setEmail} />
+										</div>
+									</div>
+									<div className="slds-form-element">
+										<label className="slds-form-element__label" htmlFor="password">Passwort <abbr className="slds-required"></abbr></label>
+										<div className="slds-form-element__control">
+											<input type="password" id="password" placeholder="passwort…" className="slds-input" onChange={this.setPassword} />
+										</div>
+									</div>
 									{
-										LoginData.hasTenant && LoginData.accounts?.length > 1 &&
-										<Select label="Kunde" accessor={this.formState.field("account")} placeholder="account" />
+										this.accounts?.length > 1 &&
+										<div className="slds-form-element">
+											<label className="slds-form-element__label" htmlFor="account">Kunde <abbr className="slds-required"></abbr></label>
+											<div className="slds-form-element__control">
+												<div className="slds-select_container">
+													<select className="slds-select" id="account" onChange={this.setAccount}>
+														<option value="">Kunde…</option>
+														{
+															this.accounts.map(a => <option value={a.id}>{a.name}</option>)
+														}
+													</select>
+												</div>
+											</div>
+										</div>
 									}
 								</div>
 							</div>
 							<div className="slds-col slds-size_1-of-3">
 								<div className="slds-card__body slds-card__body_inner" style={{ marginTop: "34px", marginRight: "1rem" }}>
-									{
-										LoginData.hasTenant &&
-										<img src={LoginData.tenantLogoUrl} alt="Tenant Logo" style={{ height: "144px" }} />
-									}
+									<img src={this.tenantLogoUrl} alt="Tenant Logo" style={{ height: "144px" }} />
 								</div>
 							</div>
 						</div>
@@ -93,8 +95,8 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 								label="Login"
 								type="submit"
 								variant="brand"
-								disabled={!loginModel.isReadyForLogin}
-								onClick={() => loginModel.login(session)}
+								disabled={!this.isReadyForLogin}
+								onClick={this.login}
 							/>
 						</footer>
 					</Card>
@@ -104,5 +106,38 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		);
 	}
 
-}
+	private setEmail = async (email: ChangeEvent<HTMLInputElement>) => {
+		this.email = email.target.value;
+		this.tenant = undefined;
+		this.accounts = [];
+		this.account = undefined;
+		if (this.isEmailValid) {
+			const userInfo = await session.userInfo(this.email);
+			this.tenant = userInfo?.tenant;
+			this.accounts = userInfo?.accounts || [];
+			if (this.accounts?.length === 1) {
+				this.account = this.accounts[0];
+			}
+		}
+	}
 
+	private setPassword = (password: ChangeEvent<HTMLInputElement>) => {
+		this.password = password.target.value;
+	}
+
+	private setAccount = (account: ChangeEvent<HTMLSelectElement>) => {
+		this.account = this.accounts.find(a => account.target.value === a.id);
+	}
+
+	private login = async () => {
+		if (this.isReadyForLogin) {
+			await session.login(this.email!, this.password!, this.account);
+			if (!session.isAuthenticated) {
+				alert("Could not log in!");
+			} else {
+				window.location.href = "/";
+			}
+		}
+	}
+
+}

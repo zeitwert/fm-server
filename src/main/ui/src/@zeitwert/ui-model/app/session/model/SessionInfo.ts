@@ -26,7 +26,7 @@ export interface UserInfo {
 	id: string;
 	caption: string;
 	name: string;
-	tenant: Enumerated;
+	tenant: TenantInfo;
 	emailProvider: Enumerated;
 	email: string;
 	extlIdpUserId?: string;
