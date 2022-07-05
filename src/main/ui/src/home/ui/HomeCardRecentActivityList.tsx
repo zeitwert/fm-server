@@ -47,7 +47,7 @@ export default class HomeCardRecentActivityList extends React.Component {
 								<HomeCardRecentActivity
 									key={"ra-" + index}
 									activity={activity}
-									onClick={() => null}
+									onClick={() => this.onClick(activity.objTypeId, activity.objId)}
 									isExpanded={false}
 								/>
 							))
@@ -61,6 +61,11 @@ export default class HomeCardRecentActivityList extends React.Component {
 	private async loadActivityList() {
 		const rsp = await API.get(Config.getRestUrl("home", "recentActivity/" + session.sessionInfo?.account.id))
 		this.activityList = rsp.data;
+	}
+
+	private onClick = (objTypeId: string, id: number) => {
+		const type = objTypeId.substring(4);
+		window.location.href = "/" + type + "/" + id;
 	}
 
 }

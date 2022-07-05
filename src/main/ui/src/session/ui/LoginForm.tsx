@@ -75,7 +75,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 													<select className="slds-select" id="account" onChange={this.setAccount}>
 														<option value="">Kunde…</option>
 														{
-															this.accounts.map(a => <option value={a.id}>{a.name}</option>)
+															this.accounts.map(a => <option value={a.id} key={"acct-" + a.id}>{a.name}</option>)
 														}
 													</select>
 												</div>

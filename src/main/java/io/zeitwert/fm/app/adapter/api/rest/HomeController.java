@@ -111,7 +111,11 @@ public class HomeController {
 
 	@GetMapping("/recentActivity/{accountId}")
 	public ResponseEntity<List<HomeActivityResponse>> getRecentActivity(@PathVariable("accountId") Integer accountId) {
-		Result<ObjActivityVRecord> result = this.dslContext.selectFrom(Tables.OBJ_ACTIVITY_V).limit(10).fetch();
+		ObjAccount account = this.accountRepository.get(this.sessionInfo, accountId);
+		Result<ObjActivityVRecord> result = this.dslContext.selectFrom(Tables.OBJ_ACTIVITY_V)
+				.where(Tables.OBJ_ACTIVITY_V.TENANT_ID.eq(account.getTenant().getId())
+						.and(Tables.OBJ_ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
+				.limit(20).fetch();
 		return ResponseEntity.ok(result.stream().map(record -> this.getActivityResponse(record)).toList());
 	}
 
