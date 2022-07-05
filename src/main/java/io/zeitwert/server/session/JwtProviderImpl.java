@@ -1,4 +1,4 @@
-package io.zeitwert.server.session.jwt;
+package io.zeitwert.server.session;
 
 import java.util.Date;
 import java.util.Map;
@@ -9,15 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.session.model.impl.UserDetailsImpl;
-import io.zeitwert.ddd.session.service.api.JwtProvider;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.zeitwert.ddd.session.service.api.JwtProvider;
 
 @Service
 public class JwtProviderImpl implements JwtProvider {
@@ -31,7 +29,7 @@ public class JwtProviderImpl implements JwtProvider {
 	private int jwtExpirationMs;
 
 	public String createJwt(Authentication authentication, Integer accountId) {
-		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+		ZeitwertUserDetails userPrincipal = (ZeitwertUserDetails) authentication.getPrincipal();
 		//@formatter:off
 		return Jwts.builder()
 			.setSubject((userPrincipal.getUsername()))
@@ -39,7 +37,7 @@ public class JwtProviderImpl implements JwtProvider {
 			.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 			.addClaims(
 				Map.of(
-					TENANT_CLAIM, userPrincipal.getTenant(),
+					TENANT_CLAIM, userPrincipal.getTenantId(),
 					ACCOUNT_CLAIM, accountId
 				)
 			)

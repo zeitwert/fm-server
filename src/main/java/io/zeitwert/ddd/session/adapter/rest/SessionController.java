@@ -1,31 +1,31 @@
 
 package io.zeitwert.ddd.session.adapter.rest;
 
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.adapter.rest.dto.LoginRequest;
-import io.zeitwert.ddd.session.adapter.rest.dto.LoginResponse;
-import io.zeitwert.ddd.session.adapter.rest.dto.SessionInfoReponse;
-import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.ddd.session.model.impl.UserDetailsImpl;
-import io.zeitwert.ddd.session.service.api.JwtProvider;
-import io.zeitwert.ddd.session.service.api.SessionService;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+
+import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.session.adapter.rest.dto.LoginRequest;
+import io.zeitwert.ddd.session.adapter.rest.dto.LoginResponse;
+import io.zeitwert.ddd.session.adapter.rest.dto.SessionInfoReponse;
+import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.service.api.JwtProvider;
+import io.zeitwert.ddd.session.service.api.SessionService;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.server.session.ZeitwertUserDetails;
 
 @RestController("sessionController")
 @RequestMapping("/api/session")
@@ -53,15 +53,15 @@ public class SessionController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		Integer accountId = loginRequest.getAccountId();
 		String jwt = jwtProvider.createJwt(authentication, accountId);
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
 		//@formatter:off
 		return ResponseEntity.ok(
 			LoginResponse.builder()
 				.token(jwt)
-				.id(userDetails.getId())
+				.id(userDetails.getUserId())
 				.username(userDetails.getUsername())
-				.email(userDetails.getEmail())
+				.email(userDetails.getUsername())
 				.accountId(accountId)
 				.roles(roles)
 				.build()

@@ -1,9 +1,5 @@
 package io.zeitwert.server.session;
 
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.impl.UserDetailsImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,8 +7,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.oe.model.ObjUserRepository;
+
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class ZeitwertUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	ObjUserRepository userRepository;
@@ -22,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		ObjUser user = userRepository.getByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
-		return UserDetailsImpl.build(user);
+		return ZeitwertUserDetails.build(user);
 	}
 
 }

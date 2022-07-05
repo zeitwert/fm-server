@@ -22,9 +22,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import io.zeitwert.server.session.AuthenticationJWTFilter;
 import io.zeitwert.server.session.SessionCookieFilter;
-import io.zeitwert.server.session.jwt.AuthEntryPointJwt;
-import io.zeitwert.server.session.jwt.AuthTokenFilter;
+import io.zeitwert.server.session.ZeitwertAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -38,11 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	UserDetailsService userDetailsService;
 
 	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
+	private ZeitwertAuthenticationEntryPoint unauthorizedHandler;
 
 	@Bean
-	public AuthTokenFilter authenticationJwtTokenFilter() {
-		return new AuthTokenFilter();
+	public AuthenticationJWTFilter authenticationJwtTokenFilter() {
+		return new AuthenticationJWTFilter();
 	}
 
 	@Override
@@ -69,12 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
 			.authorizeRequests()
+				.antMatchers("/api/app/userInfo/**").permitAll() // TODO revoke
+				.antMatchers("/api/session/login/**").permitAll()
 				.antMatchers("/*").permitAll()
 				.antMatchers("/static/**").permitAll()
 				.antMatchers("/assets/**").permitAll()
 				.antMatchers("/demo/**").permitAll()
-				.antMatchers("/api/app/userInfo/**").permitAll() // TODO revoke
-				.antMatchers("/api/session/login/**").permitAll()
 				.antMatchers("/enum/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/building/projection/**").permitAll() // TODO revoke
 				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // TODO revoke

@@ -1,8 +1,6 @@
 package io.zeitwert.server.session;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,7 +8,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.filter.GenericFilterBean;
 
 public class SessionCookieFilter extends GenericFilterBean {
 
@@ -21,11 +22,11 @@ public class SessionCookieFilter extends GenericFilterBean {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse resp = (HttpServletResponse) response;
 		String requestUrl = req.getRequestURL().toString();
 		boolean isRelevant = requestUrl.contains("/api/app/userInfo") || requestUrl.contains("/api/session");
 		if (isRelevant) {
 			String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+			HttpServletResponse resp = (HttpServletResponse) response;
 			resp.setHeader(HttpHeaders.SET_COOKIE, SESSION_COOKIE_NAME + "=" + sessionId + SID_ATTRIBUTES);
 		}
 		chain.doFilter(request, response);

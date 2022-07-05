@@ -1,4 +1,4 @@
-package io.zeitwert.server.session.jwt;
+package io.zeitwert.server.session;
 
 import java.io.IOException;
 
@@ -13,9 +13,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+public class ZeitwertAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZeitwertAuthenticationEntryPoint.class);
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
