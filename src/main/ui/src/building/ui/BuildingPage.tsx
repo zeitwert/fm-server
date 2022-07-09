@@ -253,7 +253,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					</ButtonGroup>
 				}
 				{
-					!session.isReadOnly && !isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
+					!session.isReadOnlyUser && !isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
 					<>
 						{
 							!ratingStatus &&
@@ -289,7 +289,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					</>
 				}
 				{
-					session.isAdvisor && !this.hasErrors && !isInTrx && [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0 &&
+					session.isAdvisorTenant && !this.hasErrors && !isInTrx && [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0 &&
 					<ButtonGroup variant="list">
 						<Button onClick={() => this.doGenDocx(building?.id!)}>Generate Word</Button>
 					</ButtonGroup>

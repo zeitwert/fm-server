@@ -69,7 +69,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					}}
 					actionButtons={
 						(actionButtons || []).concat(
-							!session.isReadOnly && canCreate
+							!session.isReadOnlyUser && canCreate
 								? [<Button key="new" label={newText} onClick={this.openEditor} />]
 								: []
 						)

@@ -32,7 +32,7 @@ export default class ItemEditor extends React.Component<ItemEditorProps> {
 		} = this.props;
 		const buttons = (
 			<ItemEditorButtons
-				showEditButtons={!session.isReadOnly && (showEditButtons || false)}
+				showEditButtons={!session.isReadOnlyUser && (showEditButtons || false)}
 				doEdit={store.isInTrx}
 				allowStore={true/* TODO */}
 				onOpenEditor={action(() => this.onOpen())}

@@ -210,23 +210,23 @@ const MstSessionModel = types
 		};
 	})
 	.views((self) => ({
-		get isAdvisor(): boolean {
+		get isAdvisorTenant(): boolean {
 			return self.sessionInfo?.tenant.tenantType.id === "advisor";
 		},
-		get isCommunity(): boolean {
+		get isCommunityTenant(): boolean {
 			return self.sessionInfo?.tenant.tenantType.id === "advisor";
 		},
 	}))
 	.views((self) => ({
-		get isReadOnly(): boolean {
+		get isReadOnlyUser(): boolean {
 			const roles = self.sessionInfo?.user?.roles || [];
 			return roles.indexOf("readOnly")! >= 0;
 		},
-		get isUser(): boolean {
+		get isNormalUser(): boolean {
 			const roles = self.sessionInfo?.user?.roles || [];
 			return roles.indexOf("user")! >= 0;
 		},
-		get isAdmin(): boolean {
+		get isAdminUser(): boolean {
 			const roles = self.sessionInfo?.user?.roles || [];
 			return roles.indexOf("admin")! >= 0;
 		},

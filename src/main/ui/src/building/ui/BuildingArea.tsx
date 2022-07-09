@@ -81,7 +81,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
-		if (session.isAdmin) {
+		if (session.isAdminUser) {
 			return [<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />];
 		} else {
 			return [];
