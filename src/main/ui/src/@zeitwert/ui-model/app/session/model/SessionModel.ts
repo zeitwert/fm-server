@@ -66,7 +66,7 @@ const MstSessionModel = types
 	.views((self) => ({
 		get isNetworkActive(): boolean {
 			return self.networkCount > 0;
-		}
+		},
 	}))
 	.actions((self) => ({
 		startNetwork() {
@@ -134,6 +134,7 @@ const MstSessionModel = types
 	}))
 	.extend((self) => {
 		const isAuthenticated = observable.box(!!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM));
+		const isAuthAfterGlow = observable.box(false);
 		return {
 			views: {
 				get isAuthenticated() {
@@ -141,7 +142,10 @@ const MstSessionModel = types
 				},
 				get isInit() {
 					return self.state === SessionState.open && !!self.sessionInfo;
-				}
+				},
+				get doShowLoginForm(): boolean {
+					return !isAuthenticated.get() || isAuthAfterGlow.get();
+				},
 			},
 			actions: {
 				initSession() {
@@ -169,7 +173,7 @@ const MstSessionModel = types
 					return flow(function* () {
 						try {
 							self.clear(SessionState.pendingAuth);
-							const loginResponse: AxiosResponse<LoginInfo> = yield API.post(
+							const loginResponse: AxiosResponse<LoginInfo> = yield API.login(
 								Config.getApiUrl("session", LOGIN_URL),
 								{
 									email: email,
@@ -180,7 +184,10 @@ const MstSessionModel = types
 							if (loginResponse.status === 200) {
 								sessionStorage.setItem(AUTH_HEADER_ITEM, loginResponse.data.tokenType + " " + loginResponse.data.token);
 								yield self.init();
-								isAuthenticated.set(!!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM));
+								const isAuth = !!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM);
+								isAuthAfterGlow.set(isAuth);
+								isAuthenticated.set(isAuth);
+								isAuth && setTimeout(() => isAuthAfterGlow.set(false), 2000);
 							} else {
 								self.setState(SessionState.close);
 								Logger.error("Authentication failed");
@@ -203,6 +210,7 @@ const MstSessionModel = types
 							sessionStorage.removeItem(SESSION_INFO_ITEM);
 							sessionStorage.removeItem(AUTH_HEADER_ITEM);
 							isAuthenticated.set(false);
+							window.location.replace("/");
 						}
 					})();
 				}

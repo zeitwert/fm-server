@@ -1,8 +1,8 @@
 
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
+import LoginForm from "frame/LoginForm";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import LoginForm from "session/ui/LoginForm";
 import { RouteComponentProps, withRouter } from "./app/withRouter";
 
 @inject("logger", "session", "showAlert")
@@ -26,11 +26,17 @@ class AuthFrame extends React.Component<RouteComponentProps> {
 
 	render() {
 		const session = this.ctx.session;
+		if (!session.isAuthenticated && this.props.location.pathname !== "/") {
+			window.location.href = "/";
+		}
 		return (
 			<div className="fa-flip-card">
 				<div className={"fa-flip-card-inner" + (session.isAuthenticated ? " fa-is-authenticated" : "")}>
 					<div className="fa-flip-card-front" style={{ zIndex: -1 }}>
-						<LoginForm session={session} />
+						{
+							session.doShowLoginForm &&
+							<LoginForm session={session} />
+						}
 					</div>
 					<div className="fa-flip-card-back">
 						{this.props.children}

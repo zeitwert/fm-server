@@ -351,7 +351,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	};
 
 	private showDiscardConfirmation = () => {
-		console.log("showDiscardConfirmation");
 		this.showConfirmation = true;
 	}
 
@@ -383,7 +382,6 @@ interface ConfirmationProps {
 class Confirmation extends React.Component<ConfirmationProps> {
 
 	render() {
-		console.log("conf.render", this.props.explanation);
 		return <Modal
 			isOpen={true}
 			footer={[

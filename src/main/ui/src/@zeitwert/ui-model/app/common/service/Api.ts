@@ -80,6 +80,9 @@ export const API = {
 	get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return Axios.get(url, getConfig(config));
 	},
+	login<T = any>(url: string, data?: any): AxiosPromise<T> {
+		return Axios.create().post(url, data, getConfig());
+	},
 	post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return Axios.post(url, data, getConfig(config));
 	},
