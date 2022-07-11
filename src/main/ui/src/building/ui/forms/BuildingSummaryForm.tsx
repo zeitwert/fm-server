@@ -123,7 +123,7 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 					</div>
 				}
 				{
-					!imageUrl && coverFoto?.contentType?.id &&
+					!imageUrl &&
 					<div style={{ width: "100%", minHeight: "200px" }} >
 						<img
 							className="slds-align_absolute-center"
