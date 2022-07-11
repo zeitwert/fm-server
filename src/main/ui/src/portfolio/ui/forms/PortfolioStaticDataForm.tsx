@@ -179,7 +179,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 				</div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
 					<div className="slds-col slds-size_1-of-2">
-						<Card heading="Einzuschliessende Elemente" bodyClassName="slds-m-around_medium">
+						<Card heading={`Einzuschliessende Elemente (${portfolio.includes.length})`} bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "200px", overflowY: "auto" }}>
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 									<thead>
@@ -226,7 +226,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 						</Card>
 					</div>
 					<div className="slds-col slds-size_1-of-2">
-						<Card heading="Auszuschliessende Elemente" bodyClassName="slds-m-around_medium">
+						<Card heading={`Auszuschliessende Elemente (${portfolio.excludes.length})`} bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "200px", overflowY: "auto" }}>
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 									<thead>
@@ -273,11 +273,11 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 						</Card>
 					</div>
 				</div>
-				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-2">
-						<Card heading="Hinzufügen" bodyClassName="slds-m-around_medium">
-							{
-								this.props.store.isInTrx &&
+				{
+					this.props.store.isInTrx &&
+					<div className="slds-grid slds-wrap slds-m-top_small">
+						<div className="slds-col slds-size_1-of-2">
+							<Card heading="Neu einschliessen" bodyClassName="slds-m-around_medium">
 								<div className="slds-card__body xslds-card__body_inner">
 									<FieldGroup>
 										<FieldRow>
@@ -290,13 +290,10 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 										</FieldRow>
 									</FieldGroup>
 								</div>
-							}
-						</Card>
-					</div>
-					<div className="slds-col slds-size_1-of-2">
-						<Card heading="Hinzufügen" bodyClassName="slds-m-around_medium">
-							{
-								this.props.store.isInTrx &&
+							</Card>
+						</div>
+						<div className="slds-col slds-size_1-of-2">
+							<Card heading="Neu ausschliessen" bodyClassName="slds-m-around_medium">
 								<div className="slds-card__body xslds-card__body_inner">
 									<FieldGroup>
 										<FieldRow>
@@ -309,14 +306,14 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 										</FieldRow>
 									</FieldGroup>
 								</div>
-							}
-						</Card>
+							</Card>
+						</div>
 					</div>
-				</div>
+				}
 				{
 					<div className="slds-grid slds-wrap slds-m-top_small">
 						<div className="slds-col slds-size_1-of-1">
-							<Card heading="Aktuelles Resultat" bodyClassName="slds-m-around_medium">
+							<Card heading={`Aktuelles Resultat (${portfolio.buildings.length})`} bodyClassName="slds-m-around_medium">
 								<div className="slds-card__body xslds-card__body_inner">
 									<table className="slds-table slds-table_cell-buffer slds-table_bordered">
 										<thead>
