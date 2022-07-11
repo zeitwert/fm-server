@@ -60,13 +60,13 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 										<div className="slds-form-element">
 											<label className="slds-form-element__label" htmlFor="email">Email <abbr className="slds-required"></abbr></label>
 											<div className="slds-form-element__control">
-												<input type="text" id="username" name="username" autoComplete="username" placeholder="email address…" className="slds-input" onChange={this.setEmail} />
+												<input type="text" id="username" name="username" autoComplete="username" placeholder="Email…" className="slds-input" onChange={this.setEmail} />
 											</div>
 										</div>
 										<div className="slds-form-element">
 											<label className="slds-form-element__label" htmlFor="password">Passwort <abbr className="slds-required"></abbr></label>
 											<div className="slds-form-element__control">
-												<input type="password" id="password" name="password" autoComplete="current-password" placeholder="passwort…" className="slds-input" onChange={this.setPassword} />
+												<input type="password" id="password" name="password" autoComplete="current-password" placeholder="Passwort…" className="slds-input" onChange={this.setPassword} />
 											</div>
 										</div>
 										{

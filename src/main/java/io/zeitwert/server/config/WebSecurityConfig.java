@@ -69,19 +69,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
 			.authorizeRequests()
-				.antMatchers("/api/app/userInfo/**").permitAll() // TODO revoke
-				.antMatchers("/api/session/login/**").permitAll()
-				.antMatchers("/*").permitAll()
-				.antMatchers("/static/**").permitAll()
-				.antMatchers("/assets/**").permitAll()
-				.antMatchers("/demo/**").permitAll()
-				.antMatchers("/enum/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/app/userInfo/**").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.POST, "/api/session/login/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/demo/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/enum/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/tenant/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/account/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/building/projection/**").permitAll() // TODO revoke
 				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // TODO revoke
 				.antMatchers(HttpMethod.GET, "/rest/building/buildings/location/{id:\\w+}").permitAll() // TODO revoke
 				.antMatchers(HttpMethod.GET, "/evaluation/building/buildings/**").permitAll() // TODO revoke
-				.antMatchers("/api/test/all").permitAll()
-				.antMatchers("/api/test/**").authenticated()
+				.antMatchers(HttpMethod.GET, "/api/test/all").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/test/**").authenticated()
 			.anyRequest().authenticated();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new SessionCookieFilter(), FilterSecurityInterceptor.class);
