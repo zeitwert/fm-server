@@ -1,5 +1,5 @@
 
-import { Button, Card, Icon } from "@salesforce/design-system-react";
+import { Card, Icon } from "@salesforce/design-system-react";
 import { API, Config, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
@@ -41,7 +41,7 @@ export default class HomeCardTodoList extends React.Component {
 				heading={<b>{"Laufende Bewertungen"}</b>}
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none slds-p-horizontal_small slds-card__body_with_header_footer"
-				footer={<Button>Mehr ...</Button>}
+			//footer={<Button>Mehr ...</Button>}
 			>
 				{
 					!this.ratingList.length &&
