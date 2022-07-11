@@ -155,7 +155,6 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 													</div>
 												</div>
 											}
-											{/*<input type="file" accept={item.coverFoto?.supportedContentTypes} onChange={this.readFile} size={8} />*/}
 											{
 												!!this.props.imageFile &&
 												<>

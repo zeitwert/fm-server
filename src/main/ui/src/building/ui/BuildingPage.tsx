@@ -50,8 +50,18 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	}
 
 	@computed
+	get validationCount(): number {
+		return this.buildingStore.building?.meta?.validationList?.length || 0;
+	}
+
+	@computed
 	get hasErrors(): boolean {
 		return this.buildingStore.building?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
+	}
+
+	@computed
+	get hasCoverFoto(): boolean {
+		return !!this.buildingStore.building?.coverFoto?.contentTypeId;
 	}
 
 	@computed
@@ -90,6 +100,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const allowEditRating = building.ratingStatus && building.ratingStatus.id === "open";
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
+		const notesCount = this.buildingStore.notesStore.notes.length;
+
 		return (
 			<>
 				<ItemHeader
@@ -113,13 +125,13 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 								selectedIndex={this.activeLeftTabId}
 								onSelect={(tabId: number) => (this.activeLeftTabId = tabId)}
 							>
-								<TabsPanel label="Stammdaten" classname="abc">
+								<TabsPanel label="Stammdaten">
 									{
 										this.activeLeftTabId === LEFT_TABS.OVERVIEW &&
 										<BuildingStaticDataForm store={this.buildingStore} />
 									}
 								</TabsPanel>
-								<TabsPanel label="Lage">
+								<TabsPanel label={<span>Lage{!building.geoCoordinates && <abbr className="slds-required"> *</abbr>}</span>}>
 									{
 										this.activeLeftTabId === LEFT_TABS.LOCATION &&
 										<BuildingLocationForm store={this.buildingStore} />
@@ -150,13 +162,13 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							selectedIndex={this.activeRightTabId}
 							onSelect={(tabId: number) => (this.activeRightTabId = tabId)}
 						>
-							<TabsPanel label="Steckbrief">
+							<TabsPanel label={<span>Steckbrief{!this.hasCoverFoto && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
 									<BuildingSummaryForm building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Notizen"}>
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab
@@ -178,7 +190,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							}
 							{
 								this.hasValidations &&
-								<TabsPanel label="Validierungen" hasError={this.hasValidations}>
+								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
 									{
 										this.activeRightTabId === RIGHT_TABS.ERRORS &&
 										<ErrorTab validationList={building.meta?.validationList!} />
