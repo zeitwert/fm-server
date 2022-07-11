@@ -6,8 +6,8 @@ import {
 	LeadStoreModel,
 	session
 } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
 import { StageSelector } from "doc/ui/StageSelector";
+import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import FormItemEditor from "item/ui/FormItemEditor";
 import ItemDetailView from "item/ui/ItemDetailView";

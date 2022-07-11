@@ -2,7 +2,7 @@ import { Card } from "@salesforce/design-system-react";
 import { CaseStage, CaseStageType, DocStore } from "@zeitwert/ui-model";
 import { CasePath } from "@zeitwert/ui-slds/bpm/CasePath";
 import { CasePathStage, StageType } from "@zeitwert/ui-slds/bpm/CasePathStage";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

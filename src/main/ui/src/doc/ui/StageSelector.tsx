@@ -1,6 +1,6 @@
 import { Button, Combobox, Modal } from "@salesforce/design-system-react";
 import { API, CaseStage, Config } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable, transaction } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

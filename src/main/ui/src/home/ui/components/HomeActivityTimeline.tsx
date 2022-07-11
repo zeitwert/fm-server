@@ -1,7 +1,7 @@
 import { Card } from "@salesforce/design-system-react";
 import { ActivityStore, ActivityStoreModel } from "@zeitwert/ui-model";
 import ActivityPortletTimeline from "activity/timeline/ActivityPortletTimeline";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

@@ -2,7 +2,7 @@ import { FormApi } from "@finadvise/forms";
 import { Card } from "@salesforce/design-system-react";
 import { FormWrapper } from "@zeitwert/ui-forms";
 import { AggregateStore, EntityType, ItemPartStore } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { action, computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

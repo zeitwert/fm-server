@@ -1,8 +1,8 @@
 import { Button } from "@salesforce/design-system-react";
 import { AggregateStore, Doc, DocStore, Document, Enumerated, Obj, ObjStore } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
 import DocumentsWidget from "dms/ui/DocumentsWidget";
 import { DocumentViewer } from "dms/ui/DocumentViewer";
+import { AppCtx } from "frame/App";
 import AppGlobalModal from "frame/ui/AppGlobalModal";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

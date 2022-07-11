@@ -7,8 +7,8 @@ import {
 	DataTableCellWithLink
 } from "@zeitwert/ui-slds/custom/CustomDataTableCells";
 import { ReportViewer } from "@zeitwert/ui-slds/report/ReportViewer";
-import { AppCtx } from "App";
 import classNames from "classnames";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

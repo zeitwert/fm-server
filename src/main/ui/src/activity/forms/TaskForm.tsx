@@ -5,7 +5,7 @@ import Datepicker from "@zeitwert/ui-slds/common/Datepicker";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import GenericUserCombobox, { ComboboxItem } from "@zeitwert/ui-slds/custom/GenericUserCombobox";
 import { ActivityFormTypes, ActivityProps } from "activity/ActivityPortlet";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import moment from "moment";

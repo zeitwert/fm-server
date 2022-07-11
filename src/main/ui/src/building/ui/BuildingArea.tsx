@@ -1,6 +1,6 @@
 import { Button } from "@salesforce/design-system-react";
 import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import SidePanel from "frame/ui/SidePanel";
 import ItemsPage from "item/ui/ItemsPage";

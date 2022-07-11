@@ -9,9 +9,9 @@ import {
 	DOCUMENT_API, Enumerated
 } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
-import { AppCtx } from "App";
 import { DocumentCatalog } from "dms/ui/DocumentCatalog";
 import DocumentsWidget from "dms/ui/DocumentsWidget";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

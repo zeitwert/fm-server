@@ -1,6 +1,6 @@
 import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
-import { AppCtx } from "App";
 import BuildingPreview from "building/ui/BuildingPreview";
+import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import SidePanel from "frame/ui/SidePanel";
 import { makeObservable, observable } from "mobx";

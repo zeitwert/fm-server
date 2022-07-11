@@ -16,7 +16,7 @@ import React from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import * as ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import App, { AppCtx } from "./App";
+import App, { AppCtx } from "./frame/App";
 import AuthFrame from "./frame/AuthFrame";
 import NotificationFrame from "./frame/NotificationFrame";
 
@@ -26,7 +26,7 @@ configure({
 });
 
 // This is important for various things (calendar included).
-moment.locale(Locale.en_gb);
+moment.locale(Locale.de_ch);
 
 const logLevel: Logger.LogLevelDesc = Env.getParam("LOG_LEVEL") as Logger.LogLevelDesc;
 Logger.setLevel(logLevel);
@@ -37,7 +37,7 @@ const navigator = new NavigatorImpl(session);
 // Base stores.
 const appStore = AppStoreModel.create({});
 
-const store: AppCtx = {
+const appCtx: AppCtx = {
 	appStore,
 	logger: Logger,
 	navigator,
@@ -52,7 +52,7 @@ class Frame extends React.Component {
 		return (
 			<BrowserRouter>
 				<IconSettings iconPath="/assets/icons">
-					<Provider {...store}>
+					<Provider {...appCtx}>
 						<NotificationFrame>
 							<AuthFrame>
 								<App isInit={session.isInit} />

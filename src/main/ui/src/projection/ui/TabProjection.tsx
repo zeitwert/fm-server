@@ -1,8 +1,8 @@
 
 import { Spinner } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
 import { EMPTY_RESULT, ProjectionResult } from "building/ui/ProjectionResult";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

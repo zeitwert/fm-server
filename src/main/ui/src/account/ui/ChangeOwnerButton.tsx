@@ -3,7 +3,7 @@ import { AccountStore, UserInfo } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import { AppCtx } from "../../App";
+import { AppCtx } from "../../frame/App";
 import ChangeOwnerModal from "./ChangeOwnerModal";
 
 interface ChangeOwnerButtonProps {

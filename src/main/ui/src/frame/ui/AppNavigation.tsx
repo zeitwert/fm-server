@@ -1,6 +1,6 @@
 import { AppLauncher, AppLauncherExpandableSection, AppLauncherTile, Avatar, GlobalNavigationBar, GlobalNavigationBarDropdown, GlobalNavigationBarLink, GlobalNavigationBarRegion } from "@salesforce/design-system-react";
 import { ApplicationArea, MenuItem } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

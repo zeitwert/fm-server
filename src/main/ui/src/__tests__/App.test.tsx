@@ -1,5 +1,5 @@
 import { Language, Locale, Session, SessionModel } from "@zeitwert/ui-model";
-import App from "App";
+import App from "frame/App";
 import { createBrowserHistory } from "history";
 import { observer, Provider } from "mobx-react";
 import React from "react";

@@ -1,6 +1,6 @@
 import { Combobox, Icon } from "@salesforce/design-system-react";
 import { Account, GenericUser, GenericUserType, UserInfo } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

@@ -1,10 +1,10 @@
 
 import AccountArea from "account/ui/AccountArea";
-import { AppCtx } from "App";
 import BuildingArea from "building/ui/BuildingArea";
 import BuildingReportArea from "building/ui/BuildingReportArea";
 import ContactArea from "contact/ui/ContactArea";
 import DocumentArea from "dms/ui/DocumentArea";
+import { AppCtx } from "frame/App";
 import HomeArea from "home/ui/HomeArea";
 import LeadArea from "lead/ui/LeadArea";
 import { inject, observer } from "mobx-react";

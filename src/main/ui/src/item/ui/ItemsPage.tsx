@@ -11,7 +11,7 @@ import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import { AppCtx } from "../../App";
+import { AppCtx } from "../../frame/App";
 import ItemModal from "./ItemModal";
 import { getNewEntityText } from "./ItemUtils";
 import ItemListController from "./list/ItemListController";

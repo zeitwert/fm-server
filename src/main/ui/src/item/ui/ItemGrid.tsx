@@ -3,8 +3,8 @@ import { AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
 import { FormParser } from "activity/forms/FormParser";
-import { AppCtx } from "App";
 import classNames from "classnames";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

@@ -1,6 +1,6 @@
 
 import { GlobalHeader, GlobalHeaderSearch } from "@salesforce/design-system-react";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import AppNavigation from "./AppNavigation";

@@ -1,6 +1,6 @@
 import { Input, InputIcon, MenuDropdown } from "@salesforce/design-system-react";
 import { MENU_DROPDOWN_TRIGGER } from "@salesforce/design-system-react/utilities/constants";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { inject } from "mobx-react";
 import moment from "moment";
 import React from "react";

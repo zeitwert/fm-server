@@ -1,7 +1,7 @@
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { CaseStage, EntityType, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
 import { StageSelector } from "doc/ui/StageSelector";
+import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import FormItemEditor from "item/ui/FormItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";

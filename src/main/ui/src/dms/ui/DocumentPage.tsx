@@ -1,6 +1,6 @@
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { DocumentStore, DocumentStoreModel, EntityType, session } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import FormItemEditor from "item/ui/FormItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";

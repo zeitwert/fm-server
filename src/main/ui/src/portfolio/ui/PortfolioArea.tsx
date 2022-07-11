@@ -1,6 +1,6 @@
 
 import { AccountInfo, EntityType, Portfolio, PortfolioStore, PortfolioStoreModel } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
 import React from "react";

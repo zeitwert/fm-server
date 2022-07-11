@@ -2,7 +2,7 @@
 import { Card, Icon } from "@salesforce/design-system-react";
 import { API, Config, session } from "@zeitwert/ui-model";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

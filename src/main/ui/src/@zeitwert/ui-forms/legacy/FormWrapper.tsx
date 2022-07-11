@@ -1,6 +1,6 @@
 import { Form, FormEventsProps } from "@finadvise/forms";
 import { Config, FORM_API, jsonApiFetch } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";

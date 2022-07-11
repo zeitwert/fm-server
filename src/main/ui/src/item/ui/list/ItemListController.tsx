@@ -1,5 +1,5 @@
 import { ItemList } from "@zeitwert/ui-model";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import ItemListView from "item/ui/list/ItemListView";
 import { inject, observer } from "mobx-react";
 import React from "react";

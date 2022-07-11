@@ -1,8 +1,8 @@
 import { inject } from "mobx-react";
 import React from "react";
-import { AppCtx } from "../App";
+import { AppCtx } from "./App";
 
-interface ErrorBoundaryProps {}
+interface ErrorBoundaryProps { }
 
 interface ErrorBoundaryState {
 	hasError: boolean;

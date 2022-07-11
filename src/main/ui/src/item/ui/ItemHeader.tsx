@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Icon, MediaObject, PageHeaderControl } from "@sale
 import { AggregateStore } from "@zeitwert/ui-model";
 import ButtonStateful from "@zeitwert/ui-slds/common/ButtonStateful";
 import { PageHeader } from "@zeitwert/ui-slds/content/PageHeader";
-import { AppCtx } from "App";
+import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
