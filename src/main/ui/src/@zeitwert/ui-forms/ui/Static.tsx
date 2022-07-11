@@ -35,7 +35,7 @@ export const Static: FC<StaticProps> = observer((props) => {
 					{
 						isMultiline &&
 						<div className="slds-form-element__static">
-							<p style={{ whiteSpace: "pre-line" }} dangerouslySetInnerHTML={{ __html: value ? value : "<>&nbsp;</>" }} />
+							<p style={{ whiteSpace: "pre-line" }} dangerouslySetInnerHTML={{ __html: value ? value : "&nbsp;" }} />
 						</div>
 					}
 					{
