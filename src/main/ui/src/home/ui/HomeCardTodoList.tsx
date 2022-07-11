@@ -38,7 +38,7 @@ export default class HomeCardTodoList extends React.Component {
 		return (
 			<Card
 				icon={<Icon category="custom" name="custom24" size="small" />}
-				heading={<b>{"Laufende Bewertungen"}</b>}
+				heading={<b>{`Laufende Bewertungen (${this.ratingList.length})`}</b>}
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none slds-p-horizontal_small slds-card__body_with_header_footer"
 			//footer={<Button>Mehr ...</Button>}
@@ -55,10 +55,10 @@ export default class HomeCardTodoList extends React.Component {
 								<article className="slds-tile slds-media" key={"todo-" + index}>
 									<div className="slds-media__body">
 										<h3 className="slds-tile__title slds-truncate">
-											<a href={"/building/" + rating.buildingId}>{rating.buildingName}, {rating.buildingAddress}</a>
+											<a href={"/building/" + rating.buildingId}><b>{rating.buildingName}</b>, {rating.buildingAddress}</a>
 										</h3>
 										<div className="slds-tile__detail">
-											<p className="slds-truncate">Begehung am {rating.ratingDate}, {rating.ratingUser}</p>
+											<p className="slds-truncate">Begehung am {rating.ratingDate}{rating.ratingUser ? ` (${rating.ratingUser})` : ""}</p>
 										</div>
 									</div>
 								</article>

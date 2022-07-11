@@ -2,8 +2,7 @@
 import { IconSettings } from "@salesforce/design-system-react";
 import {
 	AppStoreModel,
-	Env, Locale,
-	session, unregisterServiceWorker
+	Env, Locale, session, unregisterServiceWorker
 } from "@zeitwert/ui-model";
 import "assets/app.css";
 import { NavigatorImpl } from "frame/app/impl/NavigationImpl";
@@ -11,7 +10,7 @@ import Logger from "loglevel";
 import { configure } from "mobx";
 import { observer, Provider } from "mobx-react";
 import moment from "moment";
-import "moment/locale/en-gb";
+import "moment/locale/de-ch";
 import React from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import * as ReactDOM from "react-dom";

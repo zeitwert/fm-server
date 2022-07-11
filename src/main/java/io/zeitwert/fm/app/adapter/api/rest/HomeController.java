@@ -1,4 +1,23 @@
+
 package io.zeitwert.fm.app.adapter.api.rest;
+
+import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.ddd.obj.model.db.Tables;
+import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
+import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.util.Formatter;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeRatingResponse;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
+import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,23 +30,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.obj.model.db.Tables;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeRatingResponse;
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
 @RestController("homeController")
 @RequestMapping("/rest/home")
@@ -103,7 +105,7 @@ public class HomeController {
 			.buildingName(record.getName())
 			.buildingOwner(userRepository.get(this.sessionInfo, record.getOwnerId()).getCaption())
 			.buildingAddress(record.getStreet() + " " + record.getZip() + " " + record.getCity())
-			.ratingDate(record.getRatingDate().toString())
+			.ratingDate(Formatter.INSTANCE.formatDate(record.getRatingDate()))
 			.ratingUser(record.getRatingUserId() != null ? userRepository.get(this.sessionInfo, record.getRatingUserId()).getCaption() : null)
 		.build();
 		//@formatter:on
