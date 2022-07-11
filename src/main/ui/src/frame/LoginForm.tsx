@@ -94,7 +94,8 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 								</div>
 							</div>
 							{
-								this.hasLoginFailed && <LoginAlert clearError={() => this.hasLoginFailed = false} />
+								this.hasLoginFailed &&
+								<LoginAlert clearError={() => this.hasLoginFailed = false} />
 							}
 							<footer className="slds-card__footer">
 								<Button
@@ -168,7 +169,7 @@ const LoginAlert = (props: { clearError: () => void }) => {
 				<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
 			</svg>
 		</span>
-		<h2>Could not login!</h2>
+		<h2>Anmeldung nicht erfolgreich (falsches Passwort)!</h2>
 		<div className="slds-notify__close">
 			<button className="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse" title="Close" onClick={props.clearError}>
 				<svg className="slds-button__icon" aria-hidden="true">

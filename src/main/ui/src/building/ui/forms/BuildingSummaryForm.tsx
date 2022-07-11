@@ -1,5 +1,5 @@
 
-import { Button, Card, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Button, Card, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow } from "@zeitwert/ui-forms";
 import { API, Building, Config } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
@@ -15,6 +15,8 @@ export interface BuildingSummaryFormProps {
 export default class BuildingSummaryForm extends React.Component<BuildingSummaryFormProps> {
 
 	@observable imageFile: File | undefined;
+	@observable isUploading: boolean = false;
+	@observable hasUploadError: boolean = false;
 
 	constructor(props: BuildingSummaryFormProps) {
 		super(props);
@@ -27,6 +29,14 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 			<div>
 				<Tabs variant="scoped">
 					<TabsPanel key="cover" label="Cover">
+						{
+							this.isUploading &&
+							<Spinner variant="brand" size="large" />
+						}
+						{
+							this.hasUploadError &&
+							<UploadAlert clearError={() => this.hasUploadError = false} />
+						}
 						<CoverUploadForm
 							building={building}
 							imageFile={this.imageFile}
@@ -54,16 +64,23 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 	}
 
 	private uploadFile = async () => {
-		const { building } = this.props;
 		if (!this.imageFile) {
 			return;
 		}
-		const data = new FormData();
-		data.append("file", this.imageFile);
-		const url = Config.getRestUrl("building", "buildings/coverFoto/" + building.id);
-		await API.post(url, data);
-		this.imageFile = undefined;
-		this.props.afterSave();
+		try {
+			this.isUploading = true;
+			this.hasUploadError = false;
+			const data = new FormData();
+			data.append("file", this.imageFile);
+			const url = Config.getRestUrl("building", "buildings/coverFoto/" + this.props.building.id);
+			await API.post(url, data);
+			this.imageFile = undefined;
+			this.props.afterSave();
+		} catch (e) {
+			this.hasUploadError = true;
+		} finally {
+			this.isUploading = false;
+		}
 	}
 
 }
@@ -173,162 +190,22 @@ class CoverUploadForm extends React.Component<CoverUploadFormProps> {
 }
 
 
-/*
-
-
-				<div className="slds-popover__header">
-					<header className="slds-media slds-media_center slds-m-bottom_small">
-						<span className="slds-icon_container slds-icon-standard-account slds-media__figure">
-							<svg className="slds-icon slds-icon_small" aria-hidden="true">
-								<use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#store"></use>
-							</svg>
-						</span>
-						<div className="slds-media__body">
-							<h2 className="slds-text-heading_medium slds-hyphenate" id="panel-heading-id">
-								<a href="/#">{item.name}</a>
-							</h2>
-						</div>
-					</header>
-					<footer className="slds-grid slds-wrap slds-grid_pull-padded">
-						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
-							<dl>
-								<dt>
-									<p className="slds-popover_panel__label slds-truncate" title="Billing Address">Address</p>
-								</dt>
-								<dd>
-									<p className="slds-truncate" title="3500 Deer Creek Rd.">{item.street}</p>
-									<p className="slds-truncate" title="Palo Alto, CA 94304">{item.zip} {item.city}</p>
-								</dd>
-							</dl>
-						</div>
-						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
-							<dl>
-								<dt>
-									<p className="slds-popover_panel__label slds-truncate" title="Account">Account</p>
-								</dt>
-								<dd>
-									<a href="/#">{item.account?.name}</a>
-								</dd>
-							</dl>
-						</div>
-						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
-							<dl>
-								<dt>
-									<p className="slds-popover_panel__label slds-truncate" title="Website">Website</p>
-								</dt>
-								<dd>
-									<a href="/#">www.zeitwert.io</a>
-								</dd>
-							</dl>
-						</div>
-						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
-							<dl>
-								<dt>
-									<p className="slds-popover_panel__label slds-truncate" title="Account Owner">Account Owner</p>
-								</dt>
-								<dd>
-									<a href="/#">{item.owner.name}</a>
-								</dd>
-							</dl>
-						</div>
-						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
-							<dl>
-								<dt>
-									<p className="slds-popover_panel__label slds-truncate" title="Website">Document</p>
-								</dt>
-								<dd>
-									<a href="/#">{item.coverFoto?.contentKind?.name}</a>
-								</dd>
-							</dl>
-						</div>
-						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
-							<dl>
-								<dt>
-									<p className="slds-popover_panel__label slds-truncate" title="Account Owner">Content</p>
-								</dt>
-								<dd>
-									<a href="/#">{item.coverFoto?.contentType?.name}</a>
-								</dd>
-							</dl>
-						</div>
-					</footer>
-				</div>
-
-				<div className="slds-popover__body">
-					<dl className="slds-popover__body-list">
-						<dt className="slds-m-bottom_small">
-							<div className="slds-media slds-media_center">
-								<div className="slds-media__figure">
-									<span className="slds-icon_container slds-icon-standard-opportunity">
-										<svg className="slds-icon slds-icon_small" aria-hidden="true">
-											<use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use>
-										</svg>
-										<span className="slds-assistive-text">Opportunities</span>
-									</span>
-								</div>
-								<div className="slds-media__body">
-									<p className="slds-text-heading_small slds-hyphenate">Opportunities (2+)</p>
-								</div>
-							</div>
-						</dt>
-						<dd className="slds-m-top_x-small">
-							<p className="slds-truncate" title="Tesla - Mule ESB">
-								<a href="/#">Tesla - Mule ESB</a>
-							</p>
-							<dl className="slds-list_horizontal slds-wrap slds-text-body_small">
-								<dt className="slds-item_label slds-text-color_weak slds-truncate" title="Value">Value</dt>
-								<dd className="slds-item_detail slds-text-color_weak slds-truncate" title="$500,000">$500,000</dd>
-								<dt className="slds-item_label slds-text-color_weak slds-truncate" title="Close Date">Close Date</dt>
-								<dd className="slds-item_detail slds-text-color_weak slds-truncate" title="Dec 15, 2015">Dec 15, 2015</dd>
-							</dl>
-						</dd>
-						<dd className="slds-m-top_x-small">
-							<p className="slds-truncate" title="Tesla - Anypoint Studios">
-								<a href="/#">Tesla - Anypoint Studios</a>
-							</p>
-							<dl className="slds-list_horizontal slds-wrap slds-text-body_small">
-								<dt className="slds-item_label slds-text-color_weak slds-truncate" title="Value">Value</dt>
-								<dd className="slds-item_detail slds-text-color_weak slds-truncate" title="$60,000">$60,000</dd>
-								<dt className="slds-item_label slds-text-color_weak slds-truncate" title="Close Date">Close Date</dt>
-								<dd className="slds-item_detail slds-text-color_weak slds-truncate" title="Jan 15, 2016">Jan 15, 2016</dd>
-							</dl>
-						</dd>
-						<dd className="slds-m-top_x-small slds-text-align_right">
-							<a href="/#" title="View all Opportunities">View All</a>
-						</dd>
-					</dl>
-					<dl className="slds-popover__body-list">
-						<dt className="slds-m-bottom_small">
-							<div className="slds-media slds-media_center">
-								<div className="slds-media__figure">
-									<span className="slds-icon_container slds-icon-standard-case">
-										<svg className="slds-icon slds-icon_small" aria-hidden="true">
-											<use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#case"></use>
-										</svg>
-										<span className="slds-assistive-text">Cases</span>
-									</span>
-								</div>
-								<div className="slds-media__body">
-									<p className="slds-text-heading_small slds-hyphenate">Cases (1)</p>
-								</div>
-							</div>
-						</dt>
-						<dd className="slds-m-top_x-small">
-							<p className="slds-truncate" title="Tesla - Anypoint Studios">
-								<a href="/#">Tesla - Anypoint Studios</a>
-							</p>
-							<dl className="slds-list_horizontal slds-wrap slds-text-body_small">
-								<dt className="slds-item_label slds-text-color_weak slds-truncate" title="Value">Value</dt>
-								<dd className="slds-item_detail slds-text-color_weak slds-truncate" title="$60,000">$60,000</dd>
-								<dt className="slds-item_label slds-text-color_weak slds-truncate" title="Close Date">Close Date</dt>
-								<dd className="slds-item_detail slds-text-color_weak slds-truncate" title="Jan 15, 2016">Jan 15, 2016</dd>
-							</dl>
-						</dd>
-						<dd className="slds-m-top_x-small slds-text-align_right">
-							<a href="/#" title="View all Opportunities">View All</a>
-						</dd>
-					</dl>
-				</div>
-
-
-*/
+const UploadAlert = (props: { clearError: () => void }) => {
+	return <div className="slds-notify slds-notify_alert slds-alert_error" role="alert">
+		<span className="slds-assistive-text">error</span>
+		<span className="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+			<svg className="slds-icon slds-icon_x-small" aria-hidden="true">
+				<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+			</svg>
+		</span>
+		<h2>Upload nicht erfolgreich (allenfalls ist Bild zu gross, max. 4MB)!</h2>
+		<div className="slds-notify__close">
+			<button className="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse" title="Close" onClick={props.clearError}>
+				<svg className="slds-button__icon" aria-hidden="true">
+					<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+				</svg>
+				<span className="slds-assistive-text">Close</span>
+			</button>
+		</div>
+	</div>
+};
