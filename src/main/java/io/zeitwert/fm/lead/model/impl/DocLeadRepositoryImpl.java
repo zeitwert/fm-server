@@ -27,7 +27,7 @@ import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
 @Component("docLeadDbRepository")
 public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadVRecord> implements DocLeadRepository {
 
-	private static final String ITEM_TYPE = "doc_lead";
+	private static final String AGGREGATE_TYPE = "doc_lead";
 
 	//@formatter:off
 	protected DocLeadRepositoryImpl(
@@ -40,7 +40,7 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 			DocLeadRepository.class,
 			DocLead.class,
 			DocLeadBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

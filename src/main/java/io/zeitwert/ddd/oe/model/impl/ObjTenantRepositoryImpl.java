@@ -32,7 +32,7 @@ import io.zeitwert.ddd.session.service.api.SessionService;
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>
 		implements ObjTenantRepository {
 
-	private static final String ITEM_TYPE = "obj_tenant";
+	private static final String AGGREGATE_TYPE = "obj_tenant";
 
 	private final SessionInfo globalSessionInfo;
 
@@ -49,7 +49,7 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 			ObjTenantRepository.class,
 			ObjTenant.class,
 			ObjTenantBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

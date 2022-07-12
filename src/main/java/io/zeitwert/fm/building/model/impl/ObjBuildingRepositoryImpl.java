@@ -38,7 +38,7 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
 		implements ObjBuildingRepository {
 
-	private static final String ITEM_TYPE = "obj_building";
+	private static final String AGGREGATE_TYPE = "obj_building";
 
 	private final ObjBuildingPartRatingRepository ratingRepository;
 	private final CodePartListType ratingListType;
@@ -61,7 +61,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 			ObjBuildingRepository.class,
 			ObjBuilding.class,
 			ObjBuildingBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

@@ -28,7 +28,7 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRecord>
 		implements ObjNoteRepository {
 
-	private static final String ITEM_TYPE = "obj_note";
+	private static final String AGGREGATE_TYPE = "obj_note";
 
 	//@formatter:off
 	protected ObjNoteRepositoryImpl(
@@ -41,7 +41,7 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 			ObjNoteRepository.class,
 			ObjNote.class,
 			ObjNoteBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

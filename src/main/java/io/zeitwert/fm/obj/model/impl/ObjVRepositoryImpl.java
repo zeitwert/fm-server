@@ -25,7 +25,7 @@ import io.zeitwert.fm.obj.model.base.ObjVBase;
 @Component("objRepository")
 public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implements ObjVRepository {
 
-	private static final String ITEM_TYPE = "obj";
+	private static final String AGGREGATE_TYPE = "obj";
 
 	//@formatter:off
 	protected ObjVRepositoryImpl(
@@ -39,7 +39,7 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 			ObjVRepository.class,
 			Obj.class,
 			ObjVBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

@@ -36,7 +36,7 @@ import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio, ObjPortfolioVRecord>
 		implements ObjPortfolioRepository {
 
-	private static final String ITEM_TYPE = "obj_portfolio";
+	private static final String AGGREGATE_TYPE = "obj_portfolio";
 
 	private final ObjVRepository objVRepository;
 	private final ObjAccountRepository accountRepository;
@@ -60,7 +60,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 			ObjPortfolioRepository.class,
 			ObjPortfolio.class,
 			ObjPortfolioBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

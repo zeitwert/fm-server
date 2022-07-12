@@ -27,7 +27,16 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 		final DocPartTransitionRepository transitionRepository,
 		final ObjNoteRepository noteRepository
 	) {
-		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext, transitionRepository, noteRepository);
+		super(
+			repoIntfClass,
+			intfClass,
+			baseClass,
+			aggregateTypeId,
+			appContext,
+			dslContext,
+			transitionRepository,
+			noteRepository
+		);
 	}
 	//@formatter:on
 

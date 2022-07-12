@@ -31,7 +31,7 @@ import io.zeitwert.ddd.session.service.api.SessionService;
 @Component("objUserRepository")
 public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRecord> implements ObjUserRepository {
 
-	private static final String ITEM_TYPE = "obj_user";
+	private static final String AGGREGATE_TYPE = "obj_user";
 
 	private final SessionInfo globalSessionInfo;
 
@@ -48,7 +48,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 			ObjUserRepository.class,
 			ObjUser.class,
 			ObjUserBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

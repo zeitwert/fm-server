@@ -30,7 +30,7 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
 
-	private static final String ITEM_TYPE = "obj_account";
+	private static final String AGGREGATE_TYPE = "obj_account";
 
 	//@formatter:off
 	protected ObjAccountRepositoryImpl(
@@ -44,7 +44,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 			ObjAccountRepository.class,
 			ObjAccount.class,
 			ObjAccountBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

@@ -38,7 +38,7 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, ObjDocumentVRecord>
 		implements ObjDocumentRepository {
 
-	private static final String ITEM_TYPE = "obj_document";
+	private static final String AGGREGATE_TYPE = "obj_document";
 
 	private static final ObjDocumentPartContent DOCUMENT_CONTENT = Tables.OBJ_DOCUMENT_PART_CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> OBJ_ID = DOCUMENT_CONTENT.OBJ_ID;
@@ -59,7 +59,7 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 			ObjDocumentRepository.class,
 			ObjDocument.class,
 			ObjDocumentBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

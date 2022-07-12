@@ -33,7 +33,7 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, ObjContactVRecord>
 		implements ObjContactRepository {
 
-	private static final String ITEM_TYPE = "obj_contact";
+	private static final String AGGREGATE_TYPE = "obj_contact";
 
 	private final ObjContactPartAddressRepository addressRepository;
 	private final CodePartListType addressListType;
@@ -51,7 +51,7 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 			ObjContactRepository.class,
 			ObjContact.class,
 			ObjContactBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

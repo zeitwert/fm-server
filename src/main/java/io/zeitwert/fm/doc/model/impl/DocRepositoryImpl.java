@@ -27,7 +27,7 @@ import io.zeitwert.fm.doc.model.DocRepository;
 @Component("docRepository")
 public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> implements DocRepository {
 
-	private static final String ITEM_TYPE = "doc";
+	private static final String AGGREGATE_TYPE = "doc";
 
 	//@formatter:off
 	protected DocRepositoryImpl(
@@ -40,7 +40,7 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 			DocRepository.class,
 			Doc.class,
 			DocBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,

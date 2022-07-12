@@ -31,7 +31,7 @@ import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 @Component("objTestRepository")
 public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
 
-	private static final String ITEM_TYPE = "obj_test";
+	private static final String AGGREGATE_TYPE = "obj_test";
 
 	private final ObjTestPartNodeRepository nodeRepository;
 	private final CodePartListType nodeListType;
@@ -49,7 +49,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 			ObjTestRepository.class,
 			ObjTest.class,
 			ObjTestBase.class,
-			ITEM_TYPE,
+			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
 			transitionRepository,
