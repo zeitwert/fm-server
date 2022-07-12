@@ -154,11 +154,11 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@Override
 	public List<P> getPartList(A aggregate, CodePartListType partListType) {
 		return this.partCache.getParts(aggregate).stream()
-				.filter(p -> isAggregateLevel(p) && partListType.getId().equals(p.getPartListTypeId())).toList();
+				.filter(p -> isAggregateLevel(p) && partListType.getId().equals(p.getMeta().getPartListTypeId())).toList();
 	}
 
 	private boolean isAggregateLevel(Part<?> part) {
-		return part.getParentPartId() == null || part.getParentPartId() == 0;
+		return part.getMeta().getParentPartId() == null || part.getMeta().getParentPartId() == 0;
 	}
 
 	@Override
@@ -166,7 +166,8 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	public List<P> getPartList(Part<?> parent, CodePartListType partListType) {
 		A aggregate = (A) parent.getMeta().getAggregate();
 		return this.partCache.getParts(aggregate).stream()
-				.filter(p -> (p.getParentPartId().equals(parent.getId())) && partListType.getId().equals(p.getPartListTypeId()))
+				.filter(p -> (p.getMeta().getParentPartId().equals(parent.getId()))
+						&& partListType.getId().equals(p.getMeta().getPartListTypeId()))
 				.toList();
 	}
 

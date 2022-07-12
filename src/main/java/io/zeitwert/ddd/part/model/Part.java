@@ -7,17 +7,9 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
  */
 public interface Part<A extends Aggregate> {
 
-	PartRepository<A, ?> getRepository();
-
 	PartMeta<A> getMeta();
 
 	Integer getId();
-
-	Integer getParentPartId();
-
-	String getPartListTypeId();
-
-	Integer getSeqNr();
 
 	/**
 	 * Calculate all the derived fields, typically after a field change.

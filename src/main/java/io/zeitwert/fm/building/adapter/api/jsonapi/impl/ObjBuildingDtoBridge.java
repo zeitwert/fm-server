@@ -88,7 +88,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			} else if (dto.getRatingSeqNr() != null && dto.getRatingSeqNr() >= 0) {
 				final ObjBuildingPartRating rating =
 					obj.getCurrentRating() == null ||
-					dto.getRatingSeqNr() > obj.getCurrentRating().getSeqNr()
+					dto.getRatingSeqNr() > obj.getCurrentRating().getMeta().getSeqNr()
 						? obj.addRating()
 						: obj.getCurrentRating();
 				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getPartCatalog(dto.getPartCatalog().getId()));

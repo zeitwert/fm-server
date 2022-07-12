@@ -7,11 +7,19 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 
 public interface PartMeta<A extends Aggregate> {
 
+	PartRepository<A, ?> getRepository();
+
 	SessionInfo getSessionInfo();
 
 	AppContext getAppContext();
 
 	A getAggregate();
+
+	Integer getParentPartId();
+
+	String getPartListTypeId();
+
+	Integer getSeqNr();
 
 	PartStatus getStatus();
 
