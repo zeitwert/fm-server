@@ -40,43 +40,43 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String authToken = this.getJwtFromHeader(request);
-		if (!StringUtils.hasText(authToken)) {
-			chain.doFilter(request, response);
-			return;
-		}
+		if (StringUtils.hasText(authToken)) {
 
-		try {
+			try {
 
-			Claims claims = this.getClaims(authToken);
-			String userEmail = claims.getSubject();
-			if (!StringUtils.hasText(userEmail)) {
-				throw new RuntimeException("Authentication error (invalid email claim)");
-			}
+				Claims claims = this.getClaims(authToken);
+				String userEmail = claims.getSubject();
+				if (!StringUtils.hasText(userEmail)) {
+					throw new RuntimeException("Authentication error (invalid email claim)");
+				}
 
-			ZeitwertUserDetails userDetails = (ZeitwertUserDetails) userDetailsService.loadUserByUsername(userEmail);
-			if (!this.isValidToken(claims, userDetails)) {
+				ZeitwertUserDetails userDetails = (ZeitwertUserDetails) userDetailsService.loadUserByUsername(userEmail);
+				if (!this.isValidToken(claims, userDetails)) {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					return;
+				}
+
+				Integer accountId = (Integer) claims.get(JwtProvider.ACCOUNT_CLAIM);
+				userDetails.setAccountId(accountId);
+				if (accountId == null) {
+					throw new RuntimeException("Authentication error (invalid accountId claim)");
+				}
+
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+						null,
+						userDetails.getAuthorities());
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			} catch (ExpiredJwtException e) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				return;
+			} catch (Exception exception) {
+				throw new RuntimeException("Authentication error", exception);
 			}
 
-			Integer accountId = (Integer) claims.get(JwtProvider.ACCOUNT_CLAIM);
-			userDetails.setAccountId(accountId);
-			if (accountId == null) {
-				throw new RuntimeException("Authentication error (invalid accountId claim)");
-			}
-
-			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-					null,
-					userDetails.getAuthorities());
-			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			chain.doFilter(request, response);
-
-		} catch (ExpiredJwtException e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} catch (Exception exception) {
-			throw new RuntimeException("Authentication error (corrupt or missing token)");
 		}
+
+		chain.doFilter(request, response);
 
 	}
 
