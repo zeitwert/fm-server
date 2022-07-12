@@ -4,6 +4,7 @@ package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base;
 import java.util.List;
 
 import org.jooq.TableRecord;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.queryspec.QuerySpec;
@@ -36,6 +37,7 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 
 	@Override
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public <S extends D> S create(S dto) {
 		if (dto.getId() != null) {
 			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
@@ -47,12 +49,14 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 	}
 
 	@Override
+	@Transactional
 	public D findOne(Integer objId, QuerySpec querySpec) {
 		A aggregate = this.repository.get(this.sessionInfo, objId);
 		return this.bridge.fromAggregate(aggregate, this.sessionInfo);
 	}
 
 	@Override
+	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
 		List<V> itemList = this.repository.find(this.sessionInfo, querySpec);
 		ResourceList<D> list = new DefaultResourceList<>();
@@ -62,6 +66,7 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 
 	@Override
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public <S extends D> S save(S dto) {
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
@@ -80,6 +85,7 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 	}
 
 	@Override
+	@Transactional
 	public void delete(Integer id) {
 		if (id == null) {
 			throw new BadRequestException("Can only delete existing object (missing id)");
