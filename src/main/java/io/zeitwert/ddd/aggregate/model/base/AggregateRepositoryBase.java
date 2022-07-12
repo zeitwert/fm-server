@@ -17,7 +17,6 @@ import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.context.event.EventListener;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
@@ -34,9 +33,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
-import io.zeitwert.ddd.session.model.SessionCache;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.ddd.session.model.impl.SessionCacheImpl;
 import io.zeitwert.ddd.util.SqlUtils;
 import javassist.util.proxy.ProxyFactory;
 
@@ -49,7 +46,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private final Class<?>[] proxyFactoryParamTypeList;
 
 	private final DSLContext dslContext;
-	private final SessionCache<A> aggregateCache = new SessionCacheImpl<>();
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
 	private boolean didAfterCreate = false;
@@ -77,7 +73,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 	//@formatter:on
 
-	protected final AppContext getAppContext() {
+	protected AppContext getAppContext() {
 		return this.appContext;
 	}
 
@@ -132,7 +128,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.doInitParts(aggregate);
 
 		aggregate.calcAll();
-		this.aggregateCache.addItem(sessionInfo, aggregate);
 
 		this.didAfterCreate = false;
 		this.doAfterCreate(aggregate);
@@ -164,10 +159,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public final A get(SessionInfo sessionInfo, Integer id) {
 
 		requireThis(id != null, "id not null");
-		if (this.aggregateCache.hasItem(sessionInfo, id)) {
-			return this.aggregateCache.getItem(sessionInfo, id);
-		}
-
 		A aggregate = this.doLoad(sessionInfo, id);
 
 		this.doInitParts(aggregate);
@@ -178,7 +169,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		assertThis(((AggregateBase) aggregate).doAssignPartsSeqNr > doAssignPartsSeqNr,
 				aggregate.getClass().getSimpleName() + ": doAssignParts was propagated");
 
-		this.aggregateCache.addItem(sessionInfo, aggregate);
 		aggregate.calcVolatile();
 
 		this.didAfterLoad = false;
@@ -211,7 +201,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	@Override
 	public final void discard(A aggregate) {
-		this.aggregateCache.removeItem(aggregate.getMeta().getSessionInfo(), aggregate.getId());
+		((AggregateBase) aggregate).setStale();
 	}
 
 	@Override
@@ -257,7 +247,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		((AggregateSPI) aggregate).doAfterStore();
 		assertThis(((AggregateBase) aggregate).doAfterStoreSeqNr > doAfterStoreSeqNr,
 				aggregate.getClass().getSimpleName() + ": doAfterStore was propagated");
-
+		this.discard(aggregate);
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
 	}
@@ -324,16 +314,17 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	}
 
-	@EventListener // TODO unsafe (multi threading, usability)
-	public void handleAggregateStoredEvent(AggregateStoredEvent event) {
-		Integer aggregateId = event.getAggregate().getId();
-		List<A> itemList = this.aggregateCache.getItemList(aggregateId);
-		for (A aggregate : itemList) {
-			((AggregateBase) aggregate).setStale();
-			if (aggregate.getMeta().getSessionInfo() == event.getAggregate().getMeta().getSessionInfo()) {
-				this.discard(aggregate);
-			}
-		}
-	}
+	// @EventListener
+	// public void handleAggregateStoredEvent(AggregateStoredEvent event) {
+	// Integer aggregateId = event.getAggregate().getId();
+	// List<A> itemList = this.aggregateCache.getItemList(aggregateId);
+	// for (A aggregate : itemList) {
+	// ((AggregateBase) aggregate).setStale();
+	// if (aggregate.getMeta().getSessionInfo() ==
+	// event.getAggregate().getMeta().getSessionInfo()) {
+	// this.discard(aggregate);
+	// }
+	// }
+	// }
 
 }
