@@ -16,14 +16,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; TODO
 //import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import io.zeitwert.server.session.AuthenticationJWTFilter;
-import io.zeitwert.server.session.SessionCookieFilter;
 import io.zeitwert.server.session.ZeitwertAuthenticationEntryPoint;
 
 @Configuration
@@ -67,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and()
 			.csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/api/app/userInfo/**").permitAll() // TODO revoke
 				.antMatchers(HttpMethod.POST, "/api/session/login/**").permitAll()
@@ -86,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/test/**").authenticated()
 			.anyRequest().authenticated();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-		http.addFilterAfter(new SessionCookieFilter(), FilterSecurityInterceptor.class);
+		//http.addFilterAfter(new SessionCookieFilter(), FilterSecurityInterceptor.class);
 		http.headers().frameOptions().disable();
 		//@formatter:on
 	}
