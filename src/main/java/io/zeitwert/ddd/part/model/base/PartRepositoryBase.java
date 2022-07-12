@@ -12,6 +12,7 @@ import org.jooq.UpdatableRecord;
 import org.springframework.context.event.EventListener;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
@@ -24,13 +25,12 @@ import javassist.util.proxy.ProxyFactory;
 public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		implements PartRepository<A, P>, PartRepositorySPI<A, P> {
 
+	private final Class<? extends Part<A>> intfClass;
 	private final AppContext appContext;
 	private final DSLContext dslContext;
 
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] paramTypeList;
-
-	private final PartCache<A, P> partCache = new PartCache<>();
 
 	//@formatter:off
 	protected PartRepositoryBase(
@@ -41,6 +41,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		final AppContext appContext,
 		final DSLContext dslContext
 	) {
+		this.intfClass = intfClass;
 		this.appContext = appContext;
 		appContext.addPartRepository(partTypeId, intfClass, this);
 		this.dslContext = dslContext;
@@ -64,9 +65,18 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		return true;
 	}
 
+	private final boolean hasPartCache(A aggregate) {
+		return ((AggregateBase) aggregate).hasPartCache(this.intfClass);
+	}
+
 	@Override
 	public final void init(A aggregate) {
-		this.partCache.initParts(aggregate);
+		((AggregateBase) aggregate).initPartCache(this.intfClass);
+	}
+
+	@SuppressWarnings("unchecked")
+	private final PartCache<P> getPartCache(A aggregate) {
+		return (PartCache<P>) ((AggregateBase) aggregate).getPartCache(this.intfClass);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -101,8 +111,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@SuppressWarnings("unchecked")
 	private P create(A aggregate, Part<?> parent, CodePartListType partListType) {
 
-		requireThis(this.partCache.isInitialised(aggregate),
-				this.getClass().getSimpleName() + ": aggregate " + aggregate.getId() + " initialised");
+		requireThis(this.hasPartCache(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
 
 		P p = this.doCreate(aggregate);
 		assertThis(p != null, "part created");
@@ -114,7 +123,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		assertThis(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
 
 		p.calcAll();
-		this.partCache.addPart(p);
+		this.getPartCache(aggregate).addPart(p);
 
 		Integer doAfterCreateSeqNr = ((PartBase<?>) p).doAfterCreateSeqNr;
 		((PartSPI<A>) p).doAfterCreate();
@@ -130,7 +139,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@Override
 	public final void load(A aggregate) {
 		List<P> parts = this.doLoad(aggregate);
-		parts.forEach(p -> this.partCache.addPart(p));
+		parts.forEach(p -> this.getPartCache(aggregate).addPart(p));
 		for (P part : parts) {
 			Integer doAssignPartsSeqNr = ((PartBase<?>) part).doAssignPartsSeqNr;
 			((PartSPI<?>) part).doAssignParts();
@@ -153,7 +162,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 
 	@Override
 	public List<P> getPartList(A aggregate, CodePartListType partListType) {
-		return this.partCache.getParts(aggregate).stream()
+		return this.getPartCache(aggregate).getParts().stream()
 				.filter(p -> isAggregateLevel(p) && partListType.getId().equals(p.getMeta().getPartListTypeId())).toList();
 	}
 
@@ -165,7 +174,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@SuppressWarnings("unchecked")
 	public List<P> getPartList(Part<?> parent, CodePartListType partListType) {
 		A aggregate = (A) parent.getMeta().getAggregate();
-		return this.partCache.getParts(aggregate).stream()
+		return this.getPartCache(aggregate).getParts().stream()
 				.filter(p -> (p.getMeta().getParentPartId().equals(parent.getId()))
 						&& partListType.getId().equals(p.getMeta().getPartListTypeId()))
 				.toList();
@@ -174,8 +183,8 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@Override
 	@SuppressWarnings("unchecked")
 	public final void store(A aggregate) {
-		requireThis(this.partCache.isInitialised(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
-		List<P> allParts = this.partCache.getParts(aggregate);
+		requireThis(this.hasPartCache(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
+		List<P> allParts = this.getPartCache(aggregate).getParts();
 		List<P> activeParts = allParts.stream().filter(p -> p.getMeta().getStatus() != PartStatus.DELETED).toList();
 		for (P part : activeParts) {
 			Integer doBeforeStoreSeqNr = ((PartBase<?>) part).doBeforeStoreSeqNr;
@@ -200,7 +209,10 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@EventListener
 	@SuppressWarnings("unchecked")
 	public void handleAggregateStoredEvent(AggregateStoredEvent event) {
-		this.partCache.clearParts((A) event.getAggregate());
+		A aggregate = (A) event.getAggregate();
+		if (this.hasPartCache(aggregate)) {
+			this.getPartCache(aggregate).clearParts();
+		}
 	}
 
 }

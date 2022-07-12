@@ -2,9 +2,12 @@
 package io.zeitwert.ddd.aggregate.model.base;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jooq.Record;
 
@@ -12,6 +15,8 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.base.PartCache;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.validation.model.AggregatePartValidation;
@@ -24,6 +29,8 @@ import io.zeitwert.ddd.validation.model.impl.AggregatePartValidationImpl;
 public abstract class AggregateBase extends EntityWithPropertiesBase implements Aggregate, AggregateMeta, AggregateSPI {
 
 	private boolean isStale = false;
+	private Map<Class<? extends Part<?>>, PartCache<?>> partCaches = new ConcurrentHashMap<>();
+
 	private int isCalcDisabled = 0;
 	private boolean isInCalc = false;
 	private List<AggregatePartValidation> validationList = new ArrayList<>();
@@ -57,6 +64,20 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	void setStale() {
 		this.isStale = true;
+	}
+
+	public boolean hasPartCache(Class<? extends Part<?>> clazz) {
+		return this.partCaches.containsKey(clazz);
+	}
+
+	public void initPartCache(Class<? extends Part<?>> clazz) {
+		requireThis(!hasPartCache(clazz), "not yet initialised");
+		this.partCaches.put(clazz, new PartCache<>());
+	}
+
+	public PartCache<?> getPartCache(Class<? extends Part<?>> clazz) {
+		requireThis(hasPartCache(clazz), "initialised");
+		return this.partCaches.get(clazz);
 	}
 
 	@Override
