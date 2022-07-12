@@ -137,7 +137,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 									<div className="slds-col slds-size_1-of-1">
 										<FieldGroup>
 											<Grid isVertical={false}>
-												<Col className="slds-size_4-of-12"><b>Bewertung {building.ratingSeqNr ? "#" + building.ratingSeqNr : ""} {building.ratingDate ? " (per " + session.formatter.formatDate(building.ratingDate) + ")" : ""}</b></Col>
+												<Col className="slds-size_4-of-12"><b>Bewertung {"#" + (building.ratingSeqNr! + 1)} {building.ratingDate ? " (per " + session.formatter.formatDate(building.ratingDate) + ")" : ""}</b></Col>
 												<Col className="slds-size_3-of-12 slds-align_absolute-center">Instandsetzungszeitpunkt</Col>
 												<Col className="slds-size_5-of-12">&nbsp;</Col>
 											</Grid>

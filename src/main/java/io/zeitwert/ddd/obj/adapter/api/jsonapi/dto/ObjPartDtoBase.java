@@ -2,6 +2,8 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
+import io.zeitwert.ddd.part.model.base.PartSPI;
+import io.zeitwert.ddd.part.model.base.PartStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -9,19 +11,31 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @NoArgsConstructor
 @SuperBuilder
 public abstract class ObjPartDtoBase<O extends Obj, P extends ObjPart<O>> {
 
+	public static final String ServerNewIdPrefix = "New:";
+
 	@Getter(value = AccessLevel.NONE)
 	@Setter(value = AccessLevel.NONE)
 	private String id;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING)
-	public Integer getId() {
+	@JsonProperty("id")
+	public String getDtoId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@JsonIgnore
+	public Integer getPartId() {
 		try {
 			return Integer.valueOf(this.id);
 		} catch (NumberFormatException nfe) {
@@ -29,15 +43,12 @@ public abstract class ObjPartDtoBase<O extends Obj, P extends ObjPart<O>> {
 		}
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public void toPart(P part) {
 	}
 
 	public static void fromPart(ObjPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, ObjPart<?> part) {
-		dtoBuilder.id(String.valueOf(part.getId()));
+		boolean isNew = ((PartSPI<?>) part).getStatus() == PartStatus.CREATED;
+		dtoBuilder.id(isNew ? ServerNewIdPrefix + part.getId() : String.valueOf(part.getId()));
 	}
 
 }

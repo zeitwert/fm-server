@@ -5,7 +5,10 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.part.model.base.PartSPI;
+import io.zeitwert.ddd.part.model.base.PartStatus;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -16,6 +19,7 @@ import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
@@ -81,23 +85,31 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
 				obj.addRating();
-			} else if (obj.getCurrentRating() != null) {
-				ObjBuildingPartRating rating = obj.getCurrentRating();
+			} else if (dto.getRatingSeqNr() != null && dto.getRatingSeqNr() >= 0) {
+				final ObjBuildingPartRating rating =
+					obj.getCurrentRating() == null ||
+					dto.getRatingSeqNr() > obj.getCurrentRating().getSeqNr()
+						? obj.addRating()
+						: obj.getCurrentRating();
 				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalogEnum.getPartCatalog(dto.getPartCatalog().getId()));
 				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
 				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
 				rating.setRatingDate(dto.getRatingDate());
 				rating.setRatingUser(dto.getRatingUser() == null ? null : getUserRepository().get(dto.getRatingUser().getId()));
-				dto.getElements().forEach(elementDto -> {
-					ObjBuildingPartElementRating element = null;
-					if (elementDto.getId() == null) {
-						assertThis(elementDto.getBuildingPart() != null, "valid buildingPart");
-						element = rating.addElement(CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId()));
-					} else {
-						element = rating.getElementById(elementDto.getId());
-					}
-					elementDto.toPart(element);
-				});
+				if (dto.getElements() != null) {
+					dto.getElements().forEach(elementDto -> {
+						ObjBuildingPartElementRating element = null;
+						if (elementDto.getPartId() == null) {
+							assertThis(elementDto.getBuildingPart() != null, "valid dto buildingPart");
+							CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementDto.getBuildingPart().getId());
+							assertThis(rating.getElement(buildingPart) != null, "valid rating buildingPart");
+							element = rating.getElement(buildingPart);
+						} else {
+							element = rating.getElementById(elementDto.getPartId());
+						}
+						elementDto.toPart(element);
+					});
+				}
 			}
 			// @formatter:on
 
@@ -151,9 +163,10 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.thirdPartyValueYear(obj.getThirdPartyValueYear());
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
+			boolean isNew = ((PartSPI<?>) rating).getStatus() == PartStatus.CREATED;
 			dtoBuilder
-				.ratingId(rating.getId())
-				.ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count())
+				.ratingId(isNew ? ObjPartDtoBase.ServerNewIdPrefix + rating.getId() : String.valueOf(rating.getId()))
+				.ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count() - 1)
 				.partCatalog(EnumeratedDto.fromEnum(rating.getPartCatalog()))
 				.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
 				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))

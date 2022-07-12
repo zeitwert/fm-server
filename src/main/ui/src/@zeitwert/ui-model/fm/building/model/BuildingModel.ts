@@ -59,7 +59,7 @@ const MstBuildingModel = ObjModel.named("Building")
 		partCatalog: types.maybe(types.frozen<Enumerated>()),
 		maintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
 		//
-		ratingId: types.maybe(types.number),
+		ratingId: types.maybe(types.string),
 		ratingSeqNr: types.maybe(types.number),
 		ratingStatus: types.maybe(types.frozen<Enumerated>()),
 		ratingDate: types.maybe(faTypes.date),

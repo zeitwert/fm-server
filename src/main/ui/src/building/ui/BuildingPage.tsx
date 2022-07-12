@@ -397,8 +397,8 @@ class Confirmation extends React.Component<ConfirmationProps> {
 		return <Modal
 			isOpen={true}
 			footer={[
-				<Button label="Abbrechen" onClick={this.props.onCancel} />,
-				<Button label="OK" variant="brand" onClick={this.props.onOk} />,
+				<Button label="Abbrechen" key="cancel" onClick={this.props.onCancel} />,
+				<Button label="OK" variant="brand" key="ok" onClick={this.props.onOk} />,
 			]}
 			onRequestClose={this.props.onCancel}
 			heading={this.props.title}

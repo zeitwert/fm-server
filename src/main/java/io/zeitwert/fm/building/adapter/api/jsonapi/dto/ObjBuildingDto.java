@@ -91,7 +91,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private BigDecimal thirdPartyValue;
 	private Integer thirdPartyValueYear;
 
-	private Integer ratingId;
+	private String ratingId;
 	private Integer ratingSeqNr;
 	private EnumeratedDto partCatalog;
 	private EnumeratedDto maintenanceStrategy;

@@ -78,9 +78,9 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 			this.bridge.toAggregate(dto, aggregate);
 			if (dto.getMeta() == null || !dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
 				this.repository.store(aggregate);
+				aggregate = this.repository.get(this.sessionInfo, dto.getId());
 			}
 		}
-		aggregate = this.repository.get(this.sessionInfo, dto.getId());
 		return (S) this.bridge.fromAggregate(aggregate, this.sessionInfo);
 	}
 

@@ -47,8 +47,8 @@ public final class ObjContactDtoBridge extends FMObjDtoBridge<ObjContact, ObjCon
 			obj.setEmail(dto.getEmail());
 			if (dto.getMailAddresses() != null) {
 				for (ObjContactPartAddressDto address : dto.getMailAddresses()) {
-					if (address.getId() != null) {
-						address.toPart(obj.getMailAddress(address.getId()).get());
+					if (address.getPartId() != null) {
+						address.toPart(obj.getMailAddress(address.getPartId()).get());
 					} else {
 						address.toPart(obj.addMailAddress());
 					}
@@ -56,8 +56,8 @@ public final class ObjContactDtoBridge extends FMObjDtoBridge<ObjContact, ObjCon
 			}
 			if (dto.getElectronicAddresses() != null) {
 				for (ObjContactPartAddressDto address : dto.getElectronicAddresses()) {
-					if (address.getId() != null) {
-						address.toPart(obj.getElectronicAddress(address.getId()).get());
+					if (address.getPartId() != null) {
+						address.toPart(obj.getElectronicAddress(address.getPartId()).get());
 					} else {
 						address.toPart(obj.addElectronicAddress());
 					}
