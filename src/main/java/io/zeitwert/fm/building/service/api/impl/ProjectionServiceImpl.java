@@ -345,17 +345,17 @@ public class ProjectionServiceImpl implements ProjectionService {
 	//@formatter:on
 
 		requireThis(buildingPart != null, "buildingPart not null");
-		Double startYear = 0.0;
-		Double restorationYear = 0.0;
-		Double restorationCosts = 0.0;
+		int startYear = 0;
+		int restorationYear = 0;
+		double restorationCosts = 0.0;
 		if ((condition / 100) > buildingPart.getOptimalRestoreTimeValue()) {
-			startYear = Math.floor(getRelativeAge(buildingPart, condition / 100));
-			restorationYear = Math.floor(getRelativeAge(buildingPart, buildingPart.getOptimalRestoreTimeValue())) + 1;
+			startYear = (int) Math.floor(getRelativeAge(buildingPart, condition / 100));
+			restorationYear = (int) Math.floor(getRelativeAge(buildingPart, buildingPart.getOptimalRestoreTimeValue())) + 1;
 			restorationCosts = buildingPart.getRestoreCostPerc() / 100 - buildingPart.getOptimalRestoreTimeValue();
 		} else {
 			restorationCosts = (buildingPart.getRestoreCostPerc() - condition) / 100;
 		}
-		int duration = Double.valueOf(restorationYear - startYear).intValue();
+		int duration = restorationYear - startYear;
 
 		return ProjectionPeriod.builder()
 				.year(conditionYear + duration)

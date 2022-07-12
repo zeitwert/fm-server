@@ -65,7 +65,8 @@ public class HomeController {
 				.filter(b -> Objects.equals(b.getRatingStatusId(), "open") || Objects
 						.equals(b.getRatingStatusId(), "review"))
 				.count();
-		Integer insuranceValue = buildingList.stream().map(b -> b.getInsuredValue().intValue()).reduce(0, (a, b) -> a + b);
+		Integer insuranceValue = buildingList.stream()
+				.map(b -> b.getInsuredValue() != null ? b.getInsuredValue().intValue() : 0).reduce(0, (a, b) -> a + b);
 		//@formatter:off
 		return ResponseEntity.ok(
 			HomeOverviewResponse.builder()
