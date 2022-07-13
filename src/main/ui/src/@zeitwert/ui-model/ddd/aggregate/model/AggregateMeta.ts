@@ -17,5 +17,6 @@ export interface AggregateMeta {
 	modifiedByUser: UserInfo;
 	modifiedAt: Date;
 	validationList: Validation[];
+	clientVersion: number;
 	operationList: string[];
 }

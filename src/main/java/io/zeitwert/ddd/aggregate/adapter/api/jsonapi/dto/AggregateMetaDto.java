@@ -24,6 +24,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class AggregateMetaDto implements MetaInformation {
 
+	// Meta from Server
 	private Integer sessionId;
 	private EnumeratedDto itemType;
 	private ObjTenantDto tenant;
@@ -34,6 +35,9 @@ public class AggregateMetaDto implements MetaInformation {
 	private ObjUserDto modifiedByUser;
 	private OffsetDateTime modifiedAt;
 	private List<AggregatePartValidationDto> validationList;
+
+	// Meta from Client
+	private Integer clientVersion;
 	private List<String> operationList;
 
 	public boolean hasOperation(String operation) {

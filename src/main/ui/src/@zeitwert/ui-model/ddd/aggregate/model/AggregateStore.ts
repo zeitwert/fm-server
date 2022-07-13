@@ -13,7 +13,6 @@ import {
 } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateApi } from "../service/AggregateApi";
-import { AggregateMeta } from "./AggregateMeta";
 import { Aggregate, AggregatePayload, AggregateSnapshot, MstAggregate } from "./AggregateModel";
 
 export interface AggregateCounters {
@@ -90,9 +89,13 @@ const MstAggregateStoreModel = types
 				try {
 					let repository: EntityTypeRepository;
 					const id = self.item!.id;
-					const meta: AggregateMeta = { operationList: operations } as unknown as AggregateMeta;
 					session.startNetwork();
-					repository = yield self.api.storeAggregate({ id: self.item!.id, meta: meta } as unknown as Aggregate);
+					repository = yield self.api.storeAggregate({
+						id: self.item!.id,
+						meta: {
+							operationList: operations
+						}
+					} as unknown as Aggregate);
 					self.updateStore(id, repository);
 					return self.item;
 				} catch (error: any) {
@@ -191,12 +194,15 @@ const MstAggregateStoreModel = types
 					let repository: EntityTypeRepository;
 					const id = self.item!.id;
 					repository = yield self.api.storeAggregate(
-						Object.assign(self.changes, {
-							id: self.item!.id,
-							meta: {
-								operationList: ["calculationOnly"]
+						Object.assign(
+							self.changes,
+							{
+								id: self.item!.id,
+								meta: {
+									operationList: ["calculationOnly"]
+								}
 							}
-						})
+						)
 					);
 					self.updateStore(id, repository);
 					return self.item;
@@ -220,9 +226,15 @@ const MstAggregateStoreModel = types
 						id = Object.keys(repository[self.typeName])[Object.keys(repository[self.typeName]).length - 1];
 					} else {
 						repository = yield self.api.storeAggregate(
-							Object.assign(self.changes, {
-								id: self.item!.id
-							})
+							Object.assign(
+								self.changes,
+								{
+									id: self.item!.id,
+									meta: {
+										clientVersion: self.item?.meta?.version
+									}
+								}
+							)
 						);
 						id = self.item!.id;
 					}

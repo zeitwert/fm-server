@@ -4,9 +4,14 @@ package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base;
 import java.util.List;
 
 import org.jooq.TableRecord;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.crnk.core.engine.document.ErrorData;
+import io.crnk.core.engine.document.ErrorDataBuilder;
+import io.crnk.core.engine.http.HttpStatus;
 import io.crnk.core.exception.BadRequestException;
+import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
@@ -22,9 +27,7 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 		extends ResourceRepositoryBase<D, Integer> {
 
 	private final SessionInfo sessionInfo;
-
 	private final AggregateRepository<A, V> repository;
-
 	private final AggregateDtoBridge<A, V, D> bridge;
 
 	public AggregateApiAdapter(Class<D> dtoClass, SessionInfo sessionInfo, AggregateRepository<A, V> repository,
@@ -51,8 +54,12 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 	@Override
 	@Transactional
 	public D findOne(Integer objId, QuerySpec querySpec) {
-		A aggregate = this.repository.get(this.sessionInfo, objId);
-		return this.bridge.fromAggregate(aggregate, this.sessionInfo);
+		try {
+			A aggregate = this.repository.get(this.sessionInfo, objId);
+			return this.bridge.fromAggregate(aggregate, this.sessionInfo);
+		} catch (NoDataFoundException x) {
+			throw new ResourceNotFoundException(repository.getAggregateType().getName() + "[" + objId + "]");
+		}
 	}
 
 	@Override
@@ -70,16 +77,36 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 	public <S extends D> S save(S dto) {
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
+		} else if (dto.getMeta() == null) {
+			throw new BadRequestException("Missing meta information (version or operation)");
+		} else if (dto.getMeta().getClientVersion() == null
+				&& !dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)
+				&& !dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
+			throw new BadRequestException("Missing meta information (version or operation)");
 		}
+		// TODO don't fetch aggregate again, already done in findOne just before
 		A aggregate = this.repository.get(this.sessionInfo, dto.getId());
-		if (dto.getMeta() != null && dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
+		if (dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
 			this.repository.discard(aggregate);
-		} else {
+		} else if (dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
 			this.bridge.toAggregate(dto, aggregate);
-			if (dto.getMeta() == null || !dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
-				this.repository.store(aggregate);
-				aggregate = this.repository.get(this.sessionInfo, dto.getId());
+		} else {
+			if (dto.getMeta().getClientVersion() == null) {
+				throw new BadRequestException("Missing version");
+			} else if (dto.getMeta().getClientVersion().intValue() != aggregate.getMeta().getVersion().intValue()) {
+				ErrorData errorData = new ErrorDataBuilder()
+						.setStatus("" + HttpStatus.CONFLICT_409)
+						.setTitle("Fehler beim Speichern")
+						.setDetail("Sie versuchten eine veraltete Version zu speichern."
+								+ " Benutzer " + aggregate.getMeta().getModifiedByUser().getCaption()
+								+ " hat das Objekt in der Zwischenzeit bereits geändert."
+								+ " Ihre Änderungen wurden verworfen und die aktuelle Version geladen.")
+						.build();
+				throw new BadRequestException(HttpStatus.CONFLICT_409, errorData);
 			}
+			this.bridge.toAggregate(dto, aggregate);
+			this.repository.store(aggregate);
+			aggregate = this.repository.get(this.sessionInfo, dto.getId());
 		}
 		return (S) this.bridge.fromAggregate(aggregate, this.sessionInfo);
 	}
