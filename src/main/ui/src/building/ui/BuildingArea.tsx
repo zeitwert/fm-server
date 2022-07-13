@@ -108,7 +108,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 
 	private onImport = async (content: string) => {
 		try {
-			const rsp = await API.post(Config.getTransferUrl("building", "buildings"), content, { headers: { "Content-Type": "application/json" } });
+			const rsp = await API.post(Config.getRestUrl("building", "buildings"), content, { headers: { "Content-Type": "application/json" } });
 			this.doImport = false;
 			this.ctx.showToast("success", `Building imported`);
 			window.location.href = "building/" + rsp.data.id;

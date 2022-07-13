@@ -44,7 +44,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 
 @RestController("buildingFileTransferController")
-@RequestMapping("/transfer/building/buildings")
+@RequestMapping("/rest/building/buildings")
 public class BuildingFileTransferController {
 
 	private static final String AGGREGATE = "zeitwert/building";
@@ -73,6 +73,25 @@ public class BuildingFileTransferController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDisposition(contentDisposition);
 		return ResponseEntity.ok().headers(headers).body(export);
+	}
+
+	@PostMapping
+	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
+			throws ServletException, IOException {
+		Integer accountId = sessionInfo.getAccountId();
+		if (accountId == null) {
+			return ResponseEntity.badRequest().build();
+		} else if (!dto.getMeta().getAggregate().equals(AGGREGATE)) {
+			return ResponseEntity.unprocessableEntity().build();
+		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
+		ObjBuilding building = buildingRepo.create(sessionInfo);
+		building.setAccountId(accountId);
+		this.fillFromDto(building, dto);
+		buildingRepo.store(building);
+		BuildingTransferDto export = this.getTransferDto(building);
+		return ResponseEntity.ok().body(export);
 	}
 
 	private BuildingTransferDto getTransferDto(ObjBuilding building) {
@@ -159,25 +178,6 @@ public class BuildingFileTransferController {
 
 	private String getFileName(ObjBuilding building) {
 		return (building.getAccount() != null ? building.getAccount().getName() + " " : "") + building.getName() + ".zwbd";
-	}
-
-	@PostMapping
-	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
-			throws ServletException, IOException {
-		Integer accountId = sessionInfo.getAccountId();
-		if (accountId == null) {
-			return ResponseEntity.badRequest().build();
-		} else if (!dto.getMeta().getAggregate().equals(AGGREGATE)) {
-			return ResponseEntity.unprocessableEntity().build();
-		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
-			return ResponseEntity.unprocessableEntity().build();
-		}
-		ObjBuilding building = buildingRepo.create(sessionInfo);
-		building.setAccountId(accountId);
-		this.fillFromDto(building, dto);
-		buildingRepo.store(building);
-		BuildingTransferDto export = this.getTransferDto(building);
-		return ResponseEntity.ok().body(export);
 	}
 
 	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
