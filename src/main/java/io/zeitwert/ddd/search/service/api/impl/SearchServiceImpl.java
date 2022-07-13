@@ -21,6 +21,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
+import io.zeitwert.ddd.session.model.SessionInfo;
 
 @Service("searchService")
 public class SearchServiceImpl implements SearchService {
@@ -30,6 +31,11 @@ public class SearchServiceImpl implements SearchService {
 	private static final Field<String> ITEM_TYPE_ID = SEARCH_TABLE.field("item_type_id", String.class);
 	private static final Field<Integer> ITEM_ID = SEARCH_TABLE.field("item_id", Integer.class);
 
+	private static final String OBJ_TABLE_NAME = "obj";
+	private static final Table<?> OBJ_TABLE = AppContext.getInstance().getSchema().getTable(OBJ_TABLE_NAME);
+	private static final Field<Integer> TENANT_ID = OBJ_TABLE.field("tenant_id", Integer.class);
+	private static final Field<Integer> ACCOUNT_ID = OBJ_TABLE.field("account_id", Integer.class);
+
 	private final CodeAggregateTypeEnum aggregateTypeEnum;
 	private final DSLContext dslContext;
 
@@ -38,12 +44,15 @@ public class SearchServiceImpl implements SearchService {
 		this.dslContext = dslContext;
 	}
 
-	public List<SearchResult> find(String searchText, int maxResultSize) {
-		return this.find(List.of(), searchText, maxResultSize);
+	public List<SearchResult> find(SessionInfo sessionInfo, String searchText, int maxResultSize) {
+		return this.find(sessionInfo, List.of(), searchText, maxResultSize);
 	}
 
-	public List<SearchResult> find(List<String> itemTypes, String searchText, int maxResultSize) {
+	public List<SearchResult> find(SessionInfo sessionInfo, List<String> itemTypes, String searchText,
+			int maxResultSize) {
 
+		Condition tenantCondition = TENANT_ID.eq(sessionInfo.getTenant().getId());
+		Condition accountCondition = ACCOUNT_ID.isNull().or(ACCOUNT_ID.eq(sessionInfo.getAccountId()));
 		Condition itemTypeCondition = itemTypes != null ? ITEM_TYPE_ID.in(itemTypes) : DSL.noCondition();
 		String searchToken = "'" + searchText + "':*";
 		Condition searchCondition = DSL.noCondition()
@@ -62,7 +71,7 @@ public class SearchServiceImpl implements SearchService {
 			.from(SEARCH_TABLE)
 			.join(Tables.OBJ)
 			.on(Tables.OBJ.ID.eq(ITEM_ID))
-			.where(DSL.and(searchCondition, itemTypeCondition))
+			.where(DSL.and(searchCondition, tenantCondition).and(accountCondition).and(itemTypeCondition))
 			.orderBy(DSL.field("(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc", BigDecimal.class, searchToken, searchToken, searchToken))
 			.limit(0, maxResultSize);
 		//@formatter:on

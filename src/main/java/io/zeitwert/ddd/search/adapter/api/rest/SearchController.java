@@ -36,7 +36,7 @@ public class SearchController {
 	@GetMapping()
 	public ResponseEntity<List<SearchResultDto>> find(@RequestParam String searchText,
 			@RequestParam(required = false) List<String> itemTypes) {
-		List<SearchResult> items = this.searchService.find(itemTypes, searchText, SEARCH_RESULT_SIZE);
+		List<SearchResult> items = this.searchService.find(this.sessionInfo, itemTypes, searchText, SEARCH_RESULT_SIZE);
 		Collections.sort(items, Collections.reverseOrder());
 		return ResponseEntity.ok(
 				items.stream().limit(SEARCH_RESULT_SIZE).map(sr -> SearchResultDto.fromItem(sr, this.sessionInfo)).toList());
