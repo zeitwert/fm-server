@@ -194,6 +194,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			// eslint-disable-next-line
 			if (error.status == 409) { // version conflict
 				await this.leadStore.load(this.props.params.leadId!);
 			}
