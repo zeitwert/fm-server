@@ -1,8 +1,9 @@
 
 import { Button, ButtonGroup, Modal, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
+import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypes, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import NotFound from "frame/ui/NotFound";
 import SidePanel from "frame/ui/SidePanel";
 import ItemEditor from "item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
@@ -91,8 +92,10 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const building = this.buildingStore.building!;
-		if (session.isNetworkActive || !building) {
+		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (!building) {
+			return <NotFound entityType={EntityTypes[EntityType.BUILDING]} id={this.props.params.buildingId!} />;
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;

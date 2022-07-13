@@ -1,7 +1,7 @@
 
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
-	CaseStage, EntityType, Lead,
+	CaseStage, EntityType, EntityTypes, Lead,
 	LeadStore,
 	LeadStoreModel,
 	session
@@ -9,6 +9,7 @@ import {
 import { StageSelector } from "doc/ui/StageSelector";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import NotFound from "frame/ui/NotFound";
 import FormItemEditor from "item/ui/FormItemEditor";
 import ItemDetailView from "item/ui/ItemDetailView";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
@@ -55,8 +56,10 @@ class LeadPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const lead = this.leadStore.lead!;
-		if (session.isNetworkActive || !lead) {
+		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (!lead) {
+			return <NotFound entityType={EntityTypes[EntityType.LEAD]} id={this.props.params.buildingId!} />;
 		}
 		return (
 			<>

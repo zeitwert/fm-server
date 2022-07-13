@@ -1,8 +1,9 @@
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { CaseStage, EntityType, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
+import { CaseStage, EntityType, EntityTypes, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import { StageSelector } from "doc/ui/StageSelector";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import NotFound from "frame/ui/NotFound";
 import FormItemEditor from "item/ui/FormItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
@@ -46,9 +47,12 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const task = this.taskStore.task!;
-		if (session.isNetworkActive || !task) {
+		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (!task) {
+			return <NotFound entityType={EntityTypes[EntityType.TASK]} id={this.props.params.buildingId!} />;
 		}
+
 		return (
 			<>
 				<ItemHeader

@@ -1,7 +1,8 @@
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { DocumentStore, DocumentStoreModel, EntityType, session } from "@zeitwert/ui-model";
+import { DocumentStore, DocumentStoreModel, EntityType, EntityTypes, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import NotFound from "frame/ui/NotFound";
 import FormItemEditor from "item/ui/FormItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
@@ -42,8 +43,10 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const document = this.documentStore.document!;
-		if (session.isNetworkActive || !document) {
+		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (!document) {
+			return <NotFound entityType={EntityTypes[EntityType.DOCUMENT]} id={this.props.params.buildingId!} />;
 		}
 		const headerDetails: HeaderDetail[] = [
 			{ label: "Document", content: document.contentKind?.name },

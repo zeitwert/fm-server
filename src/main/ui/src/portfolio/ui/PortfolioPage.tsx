@@ -1,8 +1,9 @@
 
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { EntityType, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
+import { EntityType, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import NotFound from "frame/ui/NotFound";
 import ItemEditor from "item/ui/ItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
@@ -45,8 +46,10 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const portfolio = this.portfolioStore.portfolio!;
-		if ((session.isNetworkActive || !portfolio) && !this.portfolioStore.isInTrx) {
+		if (session.isNetworkActive && !this.portfolioStore.isInTrx) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (!portfolio) {
+			return <NotFound entityType={EntityTypes[EntityType.PORTFOLIO]} id={this.props.params.buildingId!} />;
 		}
 		const isFullWidth = [TAB.DETAILS].indexOf(this.activeLeftTabId) < 0;
 		const customEditorButtons = (

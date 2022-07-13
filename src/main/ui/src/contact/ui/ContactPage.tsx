@@ -5,10 +5,12 @@ import {
 	ContactStoreModel,
 	DATE_FORMAT,
 	EntityType,
+	EntityTypes,
 	session
 } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import NotFound from "frame/ui/NotFound";
 import FormItemEditor from "item/ui/FormItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
@@ -58,8 +60,10 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const contact = this.contactStore.contact!;
-		if (session.isNetworkActive || !contact) {
+		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (!contact) {
+			return <NotFound entityType={EntityTypes[EntityType.CONTACT]} id={this.props.params.buildingId!} />;
 		}
 		return (
 			<>

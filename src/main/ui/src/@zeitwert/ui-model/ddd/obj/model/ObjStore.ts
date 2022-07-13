@@ -21,9 +21,13 @@ const MstObjStoreModel = AggregateStoreModel
 	.actions((self) => {
 		const superLoad = self.load;
 		const load = async (id: string) => {
-			const item = await superLoad(id);
-			await self.notesStore.loadNotes(id);
-			return item;
+			try {
+				const item = await superLoad(id);
+				await self.notesStore.loadNotes(id);
+				return item;
+			} catch (error: any) {
+				return Promise.reject(error);
+			}
 		}
 		return { load };
 	})
