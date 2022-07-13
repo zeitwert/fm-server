@@ -109,18 +109,21 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 								</div>
 							</div>
 						</Card>
-						<Card heading="Lage" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Input label="Koordinaten" accessor={this.formState.field("geoCoordinates")} size={8} />
-											<Input label="Zoom" accessor={this.formState.field("geoZoom")} size={4} />
-										</FieldRow>
-									</FieldGroup>
+						{
+							false &&
+							<Card heading="Lage" bodyClassName="slds-m-around_medium">
+								<div className="slds-card__body slds-card__body_inner">
+									<div className="slds-form" role="list">
+										<FieldGroup>
+											<FieldRow>
+												<Input label="Koordinaten" accessor={this.formState.field("geoCoordinates")} size={8} />
+												<Input label="Zoom" accessor={this.formState.field("geoZoom")} size={4} />
+											</FieldRow>
+										</FieldGroup>
+									</div>
 								</div>
-							</div>
-						</Card>
+							</Card>
+						}
 					</div>
 					<div className="slds-col slds-size_2-of-3" key={"d-" + building.geoZoom + "-" + this.props.store.isInTrx}>
 						<div style={{ height: "50vh", width: "98%" }}>

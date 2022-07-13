@@ -119,6 +119,12 @@ const MstBuildingModel = ObjModel.named("Building")
 			}
 			return "/missing.jpg";
 		},
+		get locationUrl(): string | undefined {
+			if (self.geoCoordinates) {
+				return Config.getRestUrl("building", "buildings/location/" + self.id);
+			}
+			return "/missing.jpg";
+		},
 		get valuePartSum() {
 			return self.elements.reduce((sum, element) => { return sum + (element.valuePart || 0.0); }, 0.0);
 		}
@@ -127,7 +133,7 @@ const MstBuildingModel = ObjModel.named("Building")
 		get isReadyForGeocode(): boolean {
 			if (!!self.geoAddress) {
 				return true;
-			} else if (!!self.street && !!self.zip && !!self.city && !!self.country) {
+			} else if (!!self.zip && !!self.city && !!self.country) {
 				return true;
 			}
 			return false;
@@ -135,8 +141,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		get geoInput(): string {
 			if (!!self.geoAddress) {
 				return self.geoAddress;
-			} else if (!!self.street && !!self.zip && !!self.city && !!self.country) {
-				return self.street + ", " + self.zip + " " + self.city + ", " + self.country;
+			} else if (!!self.zip && !!self.city && !!self.country) {
+				return (self.street ? self.street + ", " : "") + self.zip + " " + self.city + ", " + self.country;
 			}
 			return "";
 		},

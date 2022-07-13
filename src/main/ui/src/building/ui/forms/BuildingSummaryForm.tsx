@@ -49,7 +49,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 							<img
 								className="slds-align_absolute-center"
 								style={{ width: "100%" }}
-								src={Config.getRestUrl("building", "buildings/location/" + building.id)}
+								src={building.locationUrl}
 								alt="Lageplan"
 							/>
 						</div>
