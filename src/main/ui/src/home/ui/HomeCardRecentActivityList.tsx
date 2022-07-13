@@ -33,7 +33,8 @@ export default class HomeCardRecentActivityList extends React.Component {
 				icon={<Icon category="standard" name="recent" size="small" />}
 				heading={<b>{"Letzte Aktivitäten"}</b>}
 				className="fa-height-100"
-				bodyClassName="slds-m-around_none slds-p-horizontal_small slds-card__body_with_header_footer"
+				bodyClassName="slds-m-around_none slds-p-horizontal_small"
+				footer={<></>}
 			>
 				{
 					!this.activityList.length &&

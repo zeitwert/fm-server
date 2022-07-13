@@ -40,8 +40,7 @@ export default class HomeCardTodoList extends React.Component {
 				icon={<Icon category="custom" name="custom24" size="small" />}
 				heading={<b>{`Laufende Bewertungen (${this.ratingList.length})`}</b>}
 				className="fa-height-100"
-				bodyClassName="slds-m-around_none slds-p-horizontal_small slds-card__body_with_header_footer"
-			//footer={<Button>Mehr ...</Button>}
+				bodyClassName="slds-m-around_none slds-p-horizontal_small"
 			>
 				{
 					!this.ratingList.length &&

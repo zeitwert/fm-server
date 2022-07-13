@@ -106,7 +106,7 @@
   height: 100%;
 }
 .slds-card.fa-height-100 > .slds-card__header + .slds-card__body {
-  height: calc(100% - 44px);
+  height: calc(100% - 48px);
 }
 .slds-card.fa-height-100.with-footer > .slds-card__header + .slds-card__body {
   height: calc(100% - 88px);
@@ -2082,3 +2082,5 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   display: block;
   left: calc(100% - 5px);
 }
+
+/*# sourceMappingURL=app.css.map */
