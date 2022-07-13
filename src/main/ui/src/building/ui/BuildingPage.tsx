@@ -356,7 +356,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	}
 
 	private doGenDocx = (id: string) => {
-		window.location.href = Config.getEvaluationUrl("building", "buildings/" + id + "?format=docx");
+		window.location.href = Config.getRestUrl("building", "buildings/" + id + "/evaluation?format=docx");
 	}
 
 	private addRating = () => {

@@ -45,7 +45,7 @@ public class BuildingLocationController {
 	@Autowired
 	BuildingService buildingService;
 
-	@GetMapping("/location/{id}")
+	@GetMapping("/{id}/location")
 	protected ResponseEntity<byte[]> getMap(@PathVariable("id") Integer id) {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
@@ -88,7 +88,7 @@ public class BuildingLocationController {
 				.body(GeocodeResponseDto.builder().geoCoordinates(coordinates).geoZoom(DefaultGeoZoom).build());
 	}
 
-	@RequestMapping(value = "/coverFoto/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}/coverFoto", method = RequestMethod.POST)
 	public ResponseEntity<Void> storeCoverFoto(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
 		try {
 			ObjBuilding building = this.repo.get(sessionInfo, id);

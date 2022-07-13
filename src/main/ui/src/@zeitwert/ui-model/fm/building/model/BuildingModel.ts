@@ -121,7 +121,7 @@ const MstBuildingModel = ObjModel.named("Building")
 		},
 		get locationUrl(): string | undefined {
 			if (self.geoCoordinates) {
-				return Config.getRestUrl("building", "buildings/location/" + self.id);
+				return Config.getRestUrl("building", "buildings/" + self.id + "/location");
 			}
 			return "/missing.jpg";
 		},

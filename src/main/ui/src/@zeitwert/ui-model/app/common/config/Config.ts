@@ -3,6 +3,11 @@ import { Env } from "./Env";
 export type HttpMethod = "get" | "delete" | "head" | "post" | "put" | "patch";
 
 export const Config = {
+	getEnumUrl(module: string, enumName: string) {
+		return Env.getParam("API_BASE_URL")
+			.replace("{type}", "enum")
+			.replace("{api}", module + "/" + enumName);
+	},
 	getApiUrl(module: string, url: string) {
 		return Env.getParam("API_BASE_URL")
 			.replace("{type}", "api")
@@ -13,19 +18,9 @@ export const Config = {
 			.replace("{type}", "rest")
 			.replace("{api}", module + "/" + url);
 	},
-	getEnumUrl(module: string, enumName: string) {
-		return Env.getParam("API_BASE_URL")
-			.replace("{type}", "enum")
-			.replace("{api}", module + "/" + enumName);
-	},
 	getTransferUrl(module: string, url: string) {
 		return Env.getParam("API_BASE_URL")
 			.replace("{type}", "transfer")
-			.replace("{api}", module + "/" + url);
-	},
-	getEvaluationUrl(module: string, url: string) {
-		return Env.getParam("API_BASE_URL")
-			.replace("{type}", "evaluation")
 			.replace("{api}", module + "/" + url);
 	},
 	getTenantConfigUrl(tenant: string, url: string) {

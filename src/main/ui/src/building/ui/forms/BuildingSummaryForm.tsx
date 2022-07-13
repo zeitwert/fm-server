@@ -72,7 +72,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 			this.hasUploadError = false;
 			const data = new FormData();
 			data.append("file", this.imageFile);
-			const url = Config.getRestUrl("building", "buildings/coverFoto/" + this.props.building.id);
+			const url = Config.getRestUrl("building", "buildings/" + this.props.building.id + "/coverFoto");
 			await API.post(url, data);
 			this.imageFile = undefined;
 			this.props.afterSave();

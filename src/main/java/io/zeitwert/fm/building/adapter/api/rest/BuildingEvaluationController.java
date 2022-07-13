@@ -65,7 +65,7 @@ import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
 
 @RestController("buildingEvaluationController")
-@RequestMapping("/evaluation/building/buildings")
+@RequestMapping("/rest/building/buildings")
 public class BuildingEvaluationController {
 
 	private static final int CoverFotoWidth = 400;
@@ -162,7 +162,7 @@ public class BuildingEvaluationController {
 		}
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{id}/evaluation")
 	protected ResponseEntity<byte[]> exportBuilding(
 			@PathVariable("id") Integer id,
 			@RequestParam(required = false, name = "format") String format,
