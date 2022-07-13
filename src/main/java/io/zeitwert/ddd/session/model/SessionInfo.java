@@ -5,7 +5,10 @@ import io.zeitwert.fm.account.model.enums.CodeLocale;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 
@@ -17,6 +20,7 @@ public class SessionInfo {
 	private final ObjUser user;
 	private final Integer accountId;
 	private final CodeLocale locale;
+	private final Map<Integer, Aggregate> aggregates = new ConcurrentHashMap<>();
 
 	public SessionInfo(ObjTenant tenant, ObjUser user, Integer accountId, CodeLocale locale) {
 		this.tenant = tenant;
@@ -47,6 +51,18 @@ public class SessionInfo {
 
 	public CodeLocale getLocale() {
 		return this.locale;
+	}
+
+	public boolean hasAggregate(Integer id) {
+		return this.aggregates.containsKey(id);
+	}
+
+	public Aggregate getAggregate(Integer id) {
+		return this.aggregates.get(id);
+	}
+
+	public Aggregate addAggregate(Aggregate aggregate) {
+		return this.aggregates.put(aggregate.getId(), aggregate);
 	}
 
 	public LocalDate getCurrentDate() {

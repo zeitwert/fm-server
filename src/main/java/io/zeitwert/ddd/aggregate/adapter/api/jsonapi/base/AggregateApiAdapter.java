@@ -56,6 +56,7 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 	public D findOne(Integer objId, QuerySpec querySpec) {
 		try {
 			A aggregate = this.repository.get(this.sessionInfo, objId);
+			this.sessionInfo.addAggregate(aggregate);
 			return this.bridge.fromAggregate(aggregate, this.sessionInfo);
 		} catch (NoDataFoundException x) {
 			throw new ResourceNotFoundException(repository.getAggregateType().getName() + "[" + objId + "]");
@@ -84,8 +85,9 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 				&& !dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
 			throw new BadRequestException("Missing meta information (version or operation)");
 		}
-		// TODO don't fetch aggregate again, already done in findOne just before
-		A aggregate = this.repository.get(this.sessionInfo, dto.getId());
+		A aggregate = this.sessionInfo.hasAggregate(dto.getId())
+				? (A) this.sessionInfo.getAggregate(dto.getId())
+				: this.repository.get(this.sessionInfo, dto.getId());
 		if (dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
 			this.repository.discard(aggregate);
 		} else if (dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
@@ -113,11 +115,14 @@ public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRe
 
 	@Override
 	@Transactional
+	@SuppressWarnings("unchecked")
 	public void delete(Integer id) {
 		if (id == null) {
 			throw new BadRequestException("Can only delete existing object (missing id)");
 		}
-		A aggregate = this.repository.get(this.sessionInfo, id);
+		A aggregate = this.sessionInfo.hasAggregate(id)
+				? (A) this.sessionInfo.getAggregate(id)
+				: this.repository.get(this.sessionInfo, id);
 		if (!(aggregate instanceof Obj)) {
 			throw new BadRequestException("Can only delete an Object");
 		}
