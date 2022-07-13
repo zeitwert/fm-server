@@ -11,6 +11,7 @@ export interface Validation {
 export interface AggregateMeta {
 	itemType: Enumerated;
 	tenant: Enumerated;
+	version: number;
 	createdByUser: UserInfo;
 	createdAt: Date;
 	modifiedByUser: UserInfo;

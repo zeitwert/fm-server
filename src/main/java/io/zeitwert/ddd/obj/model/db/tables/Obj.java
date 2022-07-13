@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -110,6 +110,11 @@ public class Obj extends TableImpl<ObjRecord> {
      */
     public final TableField<ObjRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
+    /**
+     * The column <code>public.obj.version</code>.
+     */
+    public final TableField<ObjRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
     private Obj(Name alias, Table<ObjRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -192,11 +197,11 @@ public class Obj extends TableImpl<ObjRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

@@ -42,6 +42,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final ReferenceProperty<ObjAccount> account;
 	protected final ReferenceProperty<ObjUser> owner;
 	protected final SimpleProperty<String> caption;
+	protected final SimpleProperty<Integer> version;
 	protected final ReferenceProperty<ObjUser> createdByUser;
 	protected final SimpleProperty<OffsetDateTime> createdAt;
 	protected final ReferenceProperty<ObjUser> modifiedByUser;
@@ -63,6 +64,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.account = this.addReferenceProperty(objDbRecord, ObjFields.ACCOUNT_ID, ObjAccount.class);
 		this.owner = this.addReferenceProperty(objDbRecord, ObjFields.OWNER_ID, ObjUser.class);
 		this.caption = this.addSimpleProperty(objDbRecord, ObjFields.CAPTION);
+		this.version = this.addSimpleProperty(objDbRecord, ObjFields.VERSION);
 		this.createdByUser = this.addReferenceProperty(objDbRecord, ObjFields.CREATED_BY_USER_ID, ObjUser.class);
 		this.createdAt = this.addSimpleProperty(objDbRecord, ObjFields.CREATED_AT);
 		this.modifiedByUser = this.addReferenceProperty(objDbRecord, ObjFields.MODIFIED_BY_USER_ID, ObjUser.class);
@@ -140,6 +142,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.transitionList.addPart();
 		super.doBeforeStore();
 		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
+		dbRecord.setValue(ObjFields.VERSION, this.getMeta().getVersion() + 1);
 		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(ObjFields.MODIFIED_AT, this.getMeta().getSessionInfo().getCurrentTime());
 	}

@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row14;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -118,6 +118,11 @@ public class Doc extends TableImpl<DocRecord> {
      */
     public final TableField<DocRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
+    /**
+     * The column <code>public.doc.version</code>.
+     */
+    public final TableField<DocRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
     private Doc(Name alias, Table<DocRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -215,11 +220,11 @@ public class Doc extends TableImpl<DocRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Integer, String, Integer, Integer, Integer, String, String, String, Boolean, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row15<Integer, String, Integer, Integer, Integer, String, String, String, Boolean, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

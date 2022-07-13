@@ -28,6 +28,7 @@ public class AggregateMetaDto implements MetaInformation {
 	private EnumeratedDto itemType;
 	private ObjTenantDto tenant;
 	private ObjUserDto owner;
+	private Integer version;
 	private ObjUserDto createdByUser;
 	private OffsetDateTime createdAt;
 	private ObjUserDto modifiedByUser;
@@ -50,6 +51,7 @@ public class AggregateMetaDto implements MetaInformation {
 			.itemType(EnumeratedDto.fromEnum(aggregate.getMeta().getAggregateType()))
 			.tenant(tenantBridge.fromAggregate(aggregate.getTenant(), sessionInfo))
 			.owner(userBridge.fromAggregate(aggregate.getOwner(), sessionInfo))
+			.version(meta.getVersion())
 			.createdByUser(userBridge.fromAggregate(meta.getCreatedByUser(), sessionInfo))
 			.createdAt(meta.getCreatedAt())
 			.modifiedByUser(userBridge.fromAggregate(meta.getModifiedByUser(), sessionInfo))

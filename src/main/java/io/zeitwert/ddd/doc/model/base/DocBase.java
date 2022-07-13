@@ -46,6 +46,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	protected final ReferenceProperty<ObjAccount> account;
 	protected final ReferenceProperty<ObjUser> owner;
 	protected final SimpleProperty<String> caption;
+	protected final SimpleProperty<Integer> version;
 	protected final ReferenceProperty<ObjUser> createdByUser;
 	protected final SimpleProperty<OffsetDateTime> createdAt;
 	protected final ReferenceProperty<ObjUser> modifiedByUser;
@@ -69,6 +70,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.account = this.addReferenceProperty(docDbRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 		this.owner = this.addReferenceProperty(docDbRecord, DocFields.OWNER_ID, ObjUser.class);
 		this.caption = this.addSimpleProperty(docDbRecord, DocFields.CAPTION);
+		this.version = this.addSimpleProperty(docDbRecord, DocFields.VERSION);
 		this.createdByUser = this.addReferenceProperty(docDbRecord, DocFields.CREATED_BY_USER_ID, ObjUser.class);
 		this.createdAt = this.addSimpleProperty(docDbRecord, DocFields.CREATED_AT);
 		this.modifiedByUser = this.addReferenceProperty(docDbRecord, DocFields.MODIFIED_BY_USER_ID, ObjUser.class);
@@ -154,6 +156,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
 		this.isInWork.setValue(isInWork);
 		UpdatableRecord<?> dbRecord = getDocDbRecord();
+		dbRecord.setValue(DocFields.VERSION, this.getMeta().getVersion() + 1);
 		dbRecord.setValue(DocFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setValue(DocFields.MODIFIED_AT, this.getMeta().getSessionInfo().getCurrentTime());
 	}

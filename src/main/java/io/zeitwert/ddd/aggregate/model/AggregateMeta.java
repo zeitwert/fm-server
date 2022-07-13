@@ -25,6 +25,8 @@ public interface AggregateMeta {
 
 	AppContext getAppContext();
 
+	Integer getVersion();
+
 	OffsetDateTime getCreatedAt();
 
 	ObjUser getCreatedByUser();
