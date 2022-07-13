@@ -40,32 +40,32 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 	render() {
 		const { element, elementForm } = this.props;
 		return (
-			<div>
-				<div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "100%", backgroundColor: "white" }}>
+			<div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "100%", backgroundColor: "white" }}>
 
-					<div>
-						<button className="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" title="Close dialog" onClick={() => { this.props.onClose() }}>
-							<svg className="slds-button__icon" aria-hidden="true">
-								<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+				<div>
+					<button className="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" title="Close dialog" onClick={() => { this.props.onClose() }}>
+						<svg className="slds-button__icon" aria-hidden="true">
+							<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+						</svg>
+						<span className="slds-assistive-text">Close</span>
+					</button>
+				</div>
+				<div className="slds-popover__header">
+					<header className="slds-media slds-media_center slds-m-bottom_small">
+						<span className="slds-icon_container slds-icon-standard-account slds-media__figure">
+							<svg className="slds-icon slds-icon_small" aria-hidden="true">
+								<use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#store"></use>
 							</svg>
-							<span className="slds-assistive-text">Close</span>
-						</button>
-					</div>
-					<div className="slds-popover__header">
-						<header className="slds-media slds-media_center slds-m-bottom_small">
-							<span className="slds-icon_container slds-icon-standard-account slds-media__figure">
-								<svg className="slds-icon slds-icon_small" aria-hidden="true">
-									<use xlinkHref="/assets/icons/standard-sprite/svg/symbols.svg#store"></use>
-								</svg>
-							</span>
-							<div className="slds-media__body">
-								<h2 className="slds-text-heading_medium slds-hyphenate" id="panel-heading-id">
-									{element.buildingPart?.name}
-								</h2>
-							</div>
-						</header>
-					</div>
+						</span>
+						<div className="slds-media__body">
+							<h2 className="slds-text-heading_medium slds-hyphenate" id="panel-heading-id">
+								{element.buildingPart?.name}
+							</h2>
+						</div>
+					</header>
+				</div>
 
+				<div style={{ position: "absolute", top: "61px", left: "0", bottom: "0", right: "0", overflowY: "auto" }}>
 					<div className="slds-grid slds-wrap slds-m-top_none" style={{ padding: "1rem" }}>
 						<div className="slds-col slds-size_1-of-1">
 
@@ -172,8 +172,9 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 
 						</div>
 					</div>
+
 				</div>
-			</div >
+			</div>
 		);
 	}
 
