@@ -679,6 +679,34 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
         return (Integer) get(46);
     }
 
+    /**
+     * Setter for <code>public.obj_building_v.part_catalog_id</code>.
+     */
+    public void setPartCatalogId(String value) {
+        set(47, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.part_catalog_id</code>.
+     */
+    public String getPartCatalogId() {
+        return (String) get(47);
+    }
+
+    /**
+     * Setter for <code>public.obj_building_v.maintenance_strategy_id</code>.
+     */
+    public void setMaintenanceStrategyId(String value) {
+        set(48, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_v.maintenance_strategy_id</code>.
+     */
+    public String getMaintenanceStrategyId() {
+        return (String) get(48);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -693,7 +721,7 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
     /**
      * Create a detached, initialised ObjBuildingVRecord
      */
-    public ObjBuildingVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId, Integer objId, Integer tenantId, Integer accountId, String intlKey, String name, String description, String buildingNr, String insuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, Integer coverFotoId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear) {
+    public ObjBuildingVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId, Integer objId, Integer tenantId, Integer accountId, String intlKey, String name, String description, String buildingNr, String insuranceNr, String plotNr, String nationalBuildingId, String historicPreservationId, String street, String zip, String city, String countryId, String geoAddress, String geoCoordinates, Integer geoZoom, Integer coverFotoId, String currencyId, BigDecimal volume, BigDecimal areaGross, BigDecimal areaNet, Integer nrOfFloorsAboveGround, Integer nrOfFloorsBelowGround, String buildingTypeId, String buildingSubTypeId, Integer buildingYear, BigDecimal insuredValue, Integer insuredValueYear, BigDecimal notInsuredValue, Integer notInsuredValueYear, BigDecimal thirdPartyValue, Integer thirdPartyValueYear, String partCatalogId, String maintenanceStrategyId) {
         super(ObjBuildingV.OBJ_BUILDING_V);
 
         setObjTypeId(objTypeId);
@@ -743,5 +771,7 @@ public class ObjBuildingVRecord extends TableRecordImpl<ObjBuildingVRecord> {
         setNotInsuredValueYear(notInsuredValueYear);
         setThirdPartyValue(thirdPartyValue);
         setThirdPartyValueYear(thirdPartyValueYear);
+        setPartCatalogId(partCatalogId);
+        setMaintenanceStrategyId(maintenanceStrategyId);
     }
 }

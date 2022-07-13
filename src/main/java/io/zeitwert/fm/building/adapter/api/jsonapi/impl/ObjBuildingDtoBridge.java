@@ -7,6 +7,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.part.model.base.PartStatus;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -188,6 +189,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		if (obj == null) {
 			return null;
 		}
+		ObjUser ratingUser = obj.getRatingUserId() != null ? getUserRepository().get(obj.getRatingUserId()) : null;
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj, sessionInfo);
 		// @formatter:off
@@ -222,12 +224,14 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.notInsuredValue(obj.getNotInsuredValue())
 			.notInsuredValueYear(obj.getNotInsuredValueYear())
 			.thirdPartyValue(obj.getThirdPartyValue())
-			.thirdPartyValueYear(obj.getThirdPartyValueYear());
-		// if (obj.getCurrentRating() != null) {
-		// .partCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getPartCatalog(obj.getPartCatalogId())))
-		// .buildingMaintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getBuildingMaintenanceStrategy(obj.getBuildingMaintenanceStrategyId())))
-		//.elements(obj.getElementList().stream().map(a -> ObjBuildingPartElementDto.fromPart(a)).toList())
-		// }
+			.thirdPartyValueYear(obj.getThirdPartyValueYear())
+			// .ratingId(isNew ? ObjPartDtoBase.ServerNewIdPrefix + rating.getId() : String.valueOf(rating.getId()))
+			// .ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count() - 1)
+			.partCatalog(EnumeratedDto.fromEnum(CodeBuildingPartCatalogEnum.getPartCatalog(obj.getPartCatalogId())))
+			.maintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(obj.getMaintenanceStrategyId())))
+			.ratingStatus(EnumeratedDto.fromEnum(CodeBuildingRatingStatusEnum.getRatingStatus(obj.getRatingStatusId())))
+			.ratingDate(obj.getRatingDate())
+			.ratingUser(ObjUserDtoBridge.getInstance().fromAggregate(ratingUser, sessionInfo));
 		// @formatter:on
 		return dtoBuilder.build();
 	}

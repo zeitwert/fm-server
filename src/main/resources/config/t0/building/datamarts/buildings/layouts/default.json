@@ -13,7 +13,7 @@
 			},
 			{
 				"id": "address",
-				"label": "Address",
+				"label": "Addresse",
 				"value": "address"
 			},
 			{
@@ -22,20 +22,18 @@
 				"value": "nr"
 			},
 			{
-				"id": "account",
-				"label": "Account",
-				"value": "accountName",
-				"template": "link",
-				"link": "accountLink"
+				"id": "status",
+				"label": "Status",
+				"value": "statusName"
 			},
 			{
 				"id": "type",
-				"label": "Type",
+				"label": "Typ",
 				"value": "buildingType"
 			},
 			{
 				"id": "owner",
-				"label": "Owner",
+				"label": "Verantwortlich",
 				"value": "owner"
 			}
 		],
@@ -46,6 +44,7 @@
 				"nr": "{{buildingNr}}",
 				"name": "{{name}}",
 				"link": "/building/{{id}}",
+				"statusName": "{{ratingStatus.name}}",
 				"accountId": "{{account.id}}",
 				"accountName": "{{account.caption}}",
 				"accountLink": "/account/{{account.id}}",
