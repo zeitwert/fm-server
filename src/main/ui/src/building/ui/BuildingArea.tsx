@@ -89,8 +89,13 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	private openPreview = (itemId: string) => {
-		this.showPreview = true;
-		this.previewItemId = itemId;
+		if (this.previewItemId === itemId) {
+			this.showPreview = false;
+			this.previewItemId = undefined;
+		} else {
+			this.showPreview = true;
+			this.previewItemId = itemId;
+		}
 	};
 
 	private closePreview = () => {
