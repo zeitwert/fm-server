@@ -122,6 +122,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		try {
 			this.disableCalc();
 			this.owner.setId(sessionUserId);
+			this.version.setValue(0);
 			this.createdByUser.setId(sessionUserId);
 			this.createdAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
 			this.transitionList.addPart();
@@ -141,10 +142,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	public void doBeforeStore() {
 		this.transitionList.addPart();
 		super.doBeforeStore();
-		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
-		dbRecord.setValue(ObjFields.VERSION, this.getMeta().getVersion() + 1);
-		dbRecord.setValue(ObjFields.MODIFIED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setValue(ObjFields.MODIFIED_AT, this.getMeta().getSessionInfo().getCurrentTime());
+		this.version.setValue(this.version.getValue() + 1);
+		this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
+		this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
 	}
 
 	@Override
@@ -155,9 +155,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@Override
 	public void delete() {
-		UpdatableRecord<?> dbRecord = (UpdatableRecord<?>) getObjDbRecord();
-		dbRecord.setValue(ObjFields.CLOSED_BY_USER_ID, this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setValue(ObjFields.CLOSED_AT, this.getMeta().getSessionInfo().getCurrentTime());
+		this.closedByUser.setValue(this.getMeta().getSessionInfo().getUser());
+		this.closedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
 	}
 
 	@Override
