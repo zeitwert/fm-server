@@ -1,6 +1,6 @@
 
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { EntityType, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
+import { EntityType, EntityTypeInfo, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
@@ -21,6 +21,8 @@ enum TAB {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class PortfolioPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.PORTFOLIO];
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable portfolioStore = PortfolioStoreModel.create({});
@@ -49,7 +51,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive && !this.portfolioStore.isInTrx) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!portfolio) {
-			return <NotFound entityType={EntityTypes[EntityType.PORTFOLIO]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.portfolioId!} />;
 		}
 		const isFullWidth = [TAB.DETAILS].indexOf(this.activeLeftTabId) < 0;
 		const customEditorButtons = (
@@ -130,18 +132,21 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.portfolioStore.cancel();
+		this.portfolioStore.cancel();
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.portfolioStore.store();
-			this.ctx.showToast("success", `Portfolio stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.portfolioStore.load(this.props.params.portfolioId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Portfolio: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};

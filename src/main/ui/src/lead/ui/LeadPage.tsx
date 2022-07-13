@@ -1,7 +1,7 @@
 
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import {
-	CaseStage, EntityType, EntityTypes, Lead,
+	CaseStage, EntityType, EntityTypeInfo, EntityTypes, Lead,
 	LeadStore,
 	LeadStoreModel,
 	session
@@ -27,6 +27,8 @@ enum TAB {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class LeadPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.LEAD];
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable leadStore: LeadStore = LeadStoreModel.create({});
@@ -59,7 +61,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!lead) {
-			return <NotFound entityType={EntityTypes[EntityType.LEAD]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
 		return (
 			<>
@@ -183,18 +185,21 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.leadStore.cancel();
+		this.leadStore.cancel();
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.leadStore.store();
-			this.ctx.showToast("success", `Lead stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.leadStore.load(this.props.params.leadId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Lead: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};

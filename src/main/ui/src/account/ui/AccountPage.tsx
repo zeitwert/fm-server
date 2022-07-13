@@ -1,6 +1,6 @@
 
 import { Avatar, Button, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypes, session } from "@zeitwert/ui-model";
+import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
@@ -23,6 +23,8 @@ enum TAB {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class AccountPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.ACCOUNT];
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable accountStore = AccountStoreModel.create({});
@@ -53,7 +55,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!account) {
-			return <NotFound entityType={EntityTypes[EntityType.ACCOUNT]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.accountId!} />;
 		}
 
 		return (
@@ -155,18 +157,21 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.accountStore.cancel();
+		this.accountStore.cancel();
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.accountStore.store();
-			this.ctx.showToast("success", `Account stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.accountStore.load(this.props.params.accountId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Account: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};

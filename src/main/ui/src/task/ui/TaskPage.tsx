@@ -1,5 +1,5 @@
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { CaseStage, EntityType, EntityTypes, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
+import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import { StageSelector } from "doc/ui/StageSelector";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -19,6 +19,9 @@ enum TAB {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class TaskPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.TASK];
+
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
 	@observable doStageSelection = false;
@@ -50,7 +53,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!task) {
-			return <NotFound entityType={EntityTypes[EntityType.TASK]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.taskId!} />;
 		}
 
 		return (
@@ -147,18 +150,21 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.taskStore.cancel();
+		this.taskStore.cancel();
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.taskStore.store();
-			this.ctx.showToast("success", `Task stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.taskStore.load(this.props.params.taskId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Task: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};

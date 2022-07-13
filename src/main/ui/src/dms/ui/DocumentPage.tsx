@@ -1,5 +1,5 @@
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { DocumentStore, DocumentStoreModel, EntityType, EntityTypes, session } from "@zeitwert/ui-model";
+import { DocumentStore, DocumentStoreModel, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
@@ -18,6 +18,8 @@ enum TAB {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class DocumentPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.DOCUMENT];
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable documentStore: DocumentStore = DocumentStoreModel.create({});
@@ -46,7 +48,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!document) {
-			return <NotFound entityType={EntityTypes[EntityType.DOCUMENT]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
 		}
 		const headerDetails: HeaderDetail[] = [
 			{ label: "Document", content: document.contentKind?.name },
@@ -101,18 +103,21 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.documentStore.cancel();
+		this.documentStore.cancel();
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.documentStore.store();
-			this.ctx.showToast("success", `Document stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.documentStore.load(this.props.params.documentId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Document: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};

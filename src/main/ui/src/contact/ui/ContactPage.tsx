@@ -5,6 +5,7 @@ import {
 	ContactStoreModel,
 	DATE_FORMAT,
 	EntityType,
+	EntityTypeInfo,
 	EntityTypes,
 	session
 } from "@zeitwert/ui-model";
@@ -30,6 +31,8 @@ enum TAB {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class ContactPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.CONTACT];
 
 	@observable activeLeftTabId = TAB.DETAILS;
 	@observable contactStore: ContactStore = ContactStoreModel.create({});
@@ -63,7 +66,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!contact) {
-			return <NotFound entityType={EntityTypes[EntityType.CONTACT]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
 		}
 		return (
 			<>
@@ -191,7 +194,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.contactStore.cancel();
+		this.contactStore.cancel();
 		this.doEditContact = false;
 		this.isChannelsModalOpen = false;
 		this.isAddressesModalOpen = false;
@@ -202,12 +205,15 @@ class ContactPage extends React.Component<RouteComponentProps> {
 			const item = await this.contactStore.store();
 			this.isChannelsModalOpen = false;
 			this.isAddressesModalOpen = false;
-			this.ctx.showToast("success", `Contact stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.contactStore.load(this.props.params.contactId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Contact: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};

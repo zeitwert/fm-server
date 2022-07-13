@@ -114,14 +114,14 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.store!.cancel();
+		this.store!.cancel();
 	};
 
 	private closeEditor = async () => {
 		const type = EntityTypes[this.props.entityType];
 		try {
 			await this.store!.store();
-			this.ctx.showToast("success", `New ${type.labelSingular} ${this.store!.id} created`);
+			this.ctx.showToast("success", `${type.labelSingular} gespeichert`);
 			this.props.navigate("/" + this.store.typeName + "/" + this.store!.id);
 		} catch (error: any) {
 			this.ctx.showAlert(

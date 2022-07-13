@@ -1,6 +1,6 @@
 
 import { Button, ButtonGroup, Modal, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypes, session } from "@zeitwert/ui-model";
+import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
@@ -37,6 +37,8 @@ enum RIGHT_TABS {
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class BuildingPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.BUILDING];
 
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
@@ -95,7 +97,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!building) {
-			return <NotFound entityType={EntityTypes[EntityType.BUILDING]} id={this.props.params.buildingId!} />;
+			return <NotFound entityType={this.entityType} id={this.props.params.buildingId!} />;
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
@@ -318,18 +320,21 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	};
 
 	private cancelEditor = async () => {
-		await this.buildingStore.cancel();
+		this.buildingStore.cancel();
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.buildingStore.store();
-			this.ctx.showToast("success", `Building stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {
+			if (error.status == 409) { // version conflict
+				await this.buildingStore.load(this.props.params.buildingId!);
+			}
 			this.ctx.showAlert(
 				"error",
-				"Could not store Building: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
 	};
