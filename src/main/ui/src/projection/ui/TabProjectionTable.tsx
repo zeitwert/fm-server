@@ -7,7 +7,7 @@ import { ProjectionResult } from "../../building/ui/ProjectionResult";
 
 const CCY_FMT = new Intl.NumberFormat('de-CH', { /*style: 'currency', currency: 'CHF',*/ maximumFractionDigits: 0 });
 const NR_FMT = new Intl.NumberFormat('de-CH', { minimumFractionDigits: 6 });
-const PC_FMT = new Intl.NumberFormat('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const PC_FMT = new Intl.NumberFormat('de-CH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
 const NumericCell: React.FunctionComponent<any> = ({ children, displayName, ...props }: any) => {
 	return (
@@ -18,25 +18,40 @@ const NumericCell: React.FunctionComponent<any> = ({ children, displayName, ...p
 };
 NumericCell.displayName = DATA_TABLE_CELL;
 
+const TextCell: React.FunctionComponent<any> = ({ children, displayName, ...props }: any) => {
+	return (
+		<DataTableCell {...props} >
+			<div className="slds-truncate">
+				{children}
+			</div>
+		</DataTableCell>
+	);
+};
+TextCell.displayName = DATA_TABLE_CELL;
+
 const columns = [
-	<DataTableColumn key="year" label="Jahr" property="year" width="1%" />,
-	<DataTableColumn key="originalValue" label="Neuwert" property="originalValue" width="1%">
+	<DataTableColumn key="year" label="Jahr" property="year" width="5%" />,
+	<DataTableColumn key="originalValue" label="Neuwert" property="originalValue" width="8%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="timeRate" label="ZN Wert" property="timeRate" width="1%">
+	<DataTableColumn key="timeRate" label="ZN Wert" property="timeRate" width="5%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="timeValue" label="Zeitwert" property="timeValue" width="1%">
+	<DataTableColumn key="timeValue" label="Zeitwert" property="timeValue" width="8%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="maintenanceCosts" label="IH Kosten" property="maintenanceCosts" width="1%">
+	<DataTableColumn key="maintenanceCosts" label="IH Kosten" property="maintenanceCosts" width="8%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="restorationCosts" label="IS Kosten" property="restorationCosts" width="1%">
+	<DataTableColumn key="restorationCosts" label="IS Kosten" property="restorationCosts" width="8%">
 		<NumericCell />
 	</DataTableColumn>,
-	<DataTableColumn key="restorationPart" label="IS Element" property="restorationPart" width="1%" truncate={true} />,
-	<DataTableColumn key="restorationBuilding" label="IS Gebäude" property="restorationBuilding" width="100%" truncate={true} />,
+	<DataTableColumn key="restorationPart" label="IS Element" property="restorationPart" width="28%" truncate={true}>
+		<TextCell />
+	</DataTableColumn>,
+	<DataTableColumn key="restorationBuilding" label="IS Gebäude" property="restorationBuilding" width="30%" truncate={true}>
+		<TextCell />
+	</DataTableColumn>,
 	/*
 		<DataTableColumn key="techPart" label="Technikanteil" property="techPart" width="5%">
 			<NumericCell />
@@ -84,8 +99,8 @@ export default class TabProjectionTable extends React.Component<TabProjectionTab
 				maintenanceCosts: period.maintenanceCosts ? CCY_FMT.format(period.maintenanceCosts) : "",
 			};
 			if (period.restorationElements.length === 1) {
-				rows[0].restorationPart = period.restorationElements[0].buildingPart.name;
-				rows[0].restorationBuilding = period.restorationElements[0].building.name;
+				rows[0].restorationPart = period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name;
+				rows[0].restorationBuilding = period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name;
 			} else if (period.restorationElements.length > 1) {
 				period.restorationElements.forEach((re, index) => {
 					rows[rows.length + 1] = {
@@ -98,18 +113,26 @@ export default class TabProjectionTable extends React.Component<TabProjectionTab
 			}
 			return rows;
 		});
+		// Align column headers right
 		setTimeout(() => {
-			document.querySelectorAll("th").forEach(tce => {
-				if (["Jahr", "IS Element", "IS Gebäude"].indexOf(tce.getAttribute("aria-label")!) < 0) {
-					tce.getElementsByTagName("div")[0].classList.add("slds-float_right");
+			document.querySelectorAll("th").forEach(th => {
+				if (["Jahr", "IS Element", "IS Gebäude"].indexOf(th.getAttribute("aria-label")!) < 0) {
+					th.getElementsByTagName("div")[0].classList.add("slds-float_right");
+				}
+			});
+			document.querySelectorAll("td").forEach(td => {
+				if (td.classList.contains("slds-truncate")) {
+					td.style.maxWidth = "1px";
 				}
 			});
 		}, 10);
 		return (
-			<div style={{ overflow: "auto", height: "100%" }}>
-				<DataTable items={timeValues} striped>
-					{columns}
-				</DataTable>
+			<div style={{ position: "relative", overflow: "auto", height: "100%" }}>
+				<div style={{ position: "absolute", top: "0", left: "0", bottom: "0", right: "0" }}>
+					<DataTable items={timeValues} striped fixedHeader>
+						{columns}
+					</DataTable>
+				</div>
 			</div>
 		);
 	}
