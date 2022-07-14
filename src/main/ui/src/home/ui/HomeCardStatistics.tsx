@@ -18,7 +18,7 @@ export default class HomeCardStatistics extends React.Component {
 				bodyClassName="slds-m-around_none slds-p-around_small"
 			>
 				<Grid className="fa-height-100">
-					<Row nowrap>
+					<Row nowrap className="slds-m-left_small slds-m-right_small">
 						<Col totalCols={12} cols={6}>
 							<div>
 								<h3>Gebäudezustand</h3>
@@ -54,7 +54,8 @@ const chartOptions = {
 		plotBackgroundColor: null,
 		plotBorderWidth: null,
 		plotShadow: false,
-		type: "pie"
+		type: "pie",
+		height: 300
 	},
 	title: {
 		text: ""
