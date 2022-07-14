@@ -2,7 +2,7 @@
 import { IconSettings } from "@salesforce/design-system-react";
 import {
 	AppStoreModel,
-	Env, Locale, session, unregisterServiceWorker
+	Env, Locale, observeMutation, session, unregisterServiceWorker
 } from "@zeitwert/ui-model";
 import "assets/app.css";
 import { NavigatorImpl } from "frame/app/impl/NavigationImpl";
@@ -18,6 +18,17 @@ import { BrowserRouter } from "react-router-dom";
 import App, { AppCtx } from "./frame/App";
 import AuthFrame from "./frame/AuthFrame";
 import NotificationFrame from "./frame/NotificationFrame";
+
+// Lightning Modal sets body.style.overflow to inherit, revert this when it happens
+observeMutation("body", {
+	attributeFilter: ["style"], // Only the "style" attribute
+	attributeOldValue: true,   // Report also the oldValue
+}, (m) => {
+	console.trace("MUTATION", m);            // Mutation object
+	if (m.oldValue === "overflow: hidden;") {
+		document.getElementsByTagName("body")[0].style.overflow = "hidden";
+	}
+});
 
 // TODO: remove when implemented: https://mobx.js.org/actions.html#asynchronous-actions
 configure({
