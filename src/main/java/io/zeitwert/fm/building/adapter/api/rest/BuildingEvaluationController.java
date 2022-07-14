@@ -171,15 +171,6 @@ public class BuildingEvaluationController {
 
 		ObjBuilding building = this.repo.get(sessionInfo, id);
 
-		// if (building.getCoverFoto() == null ||
-		// building.getCoverFoto().getContentType() == null) {
-		// return ResponseEntity.badRequest().body("Coverfoto
-		// missing".getBytes(StandardCharsets.UTF_8));
-		// } else if (building.getGeoCoordinates() == null) {
-		// return ResponseEntity.badRequest().body("Coordinates
-		// missing".getBytes(StandardCharsets.UTF_8));
-		// }
-
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		Document doc = new Document(templateFile.getInputStream());
@@ -292,8 +283,9 @@ public class BuildingEvaluationController {
 			yearCell.getFirstParagraph().appendChild(new Run(doc, Integer.toString(evaluationResult.getStartYear() + i)));
 		}
 
+		int totalRestorationCosts = 0;
 		for (EvaluationElement e : evaluationResult.getElements()) {
-			if (e.getValuePart() != null && e.getValuePart() > 0) {
+			if (e.getValuePart() != null && e.getValuePart() > 0 && !e.getName().equals("Total")) {
 				Row row = addRenovationTableRow(optRenovationTable);
 				Cell cell = row.getFirstCell();
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
@@ -305,13 +297,22 @@ public class BuildingEvaluationController {
 					marker.getFont().setName("Webdings");
 					cell.getFirstParagraph().appendChild(marker);
 					cell = row.getLastCell();
-					String costs = Formatter.INSTANCE.formatMonetaryValue(e.getRestorationCosts(), "CHF");
+					String costs = Formatter.INSTANCE.formatNumber(e.getRestorationCosts());
 					cell.getFirstParagraph().appendChild(new Run(doc, costs));
 					cell = (Cell) cell.getPreviousSibling();
 					cell.getFirstParagraph().appendChild(new Run(doc, Integer.toString(restorationYear)));
+					totalRestorationCosts += e.getRestorationCosts() != null ? e.getRestorationCosts() : 0;
 				}
 			}
 		}
+
+		Row row = addRenovationTableRow(optRenovationTable);
+		Cell cell = row.getFirstCell();
+		cell.getFirstParagraph().appendChild(new Run(doc, "Total"));
+		cell = row.getLastCell();
+		String costs = Formatter.INSTANCE.formatNumber(totalRestorationCosts);
+		cell.getFirstParagraph().appendChild(new Run(doc, costs));
+
 		optRenovationTable.getFirstRow().getNextSibling().getNextSibling().remove();
 
 	}

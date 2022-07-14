@@ -90,15 +90,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 		String longTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF");
 		String averageMaintenance = fmt.formatMonetaryValue(this.getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF");
 
-		List<EvaluationParameter> params = new ArrayList<>();
-		this.addParameter(params, "Laufzeit", "25 Jahre");
-		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
-		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
-		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
-		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
-		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance);
-
 		Integer ratingYear = 9999;
+		int elementCount = 0;
+		int totalValuePart = 0;
+		int totalRating = 0;
 		List<EvaluationElement> elements = new ArrayList<>();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 			if (element.getValuePart() != null && element.getValuePart() > 0) {
@@ -122,8 +117,29 @@ public class EvaluationServiceImpl implements EvaluationService {
 				if (element.getConditionYear() < ratingYear) {
 					ratingYear = element.getConditionYear();
 				}
+				elementCount += 1;
+				totalValuePart += element.getValuePart();
+				totalRating += element.getCondition();
 			}
 		}
+
+		totalRating = (int) Math.round(totalRating / elementCount);
+		EvaluationElement dto = EvaluationElement.builder()
+				.name("Total")
+				.valuePart(totalValuePart)
+				.rating(totalRating)
+				.ratingColor(getRatingColor(totalRating))
+				.build();
+		elements.add(dto);
+
+		List<EvaluationParameter> params = new ArrayList<>();
+		this.addParameter(params, "Laufzeit", "25 Jahre");
+		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
+		this.addParameter(params, "Gewichteter Z/N Wert", "" + totalRating);
+		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
+		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
+		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
+		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance);
 
 		List<EvaluationPeriod> periods = new ArrayList<>();
 		int aggrCosts = 0;
