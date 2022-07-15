@@ -3,7 +3,7 @@
 	"version": "0.0.1-SNAPSHOT",
 	"license": "UNLICENSED",
 	"scripts": {
-		"build-css": "sass src/assets/app.scss src/assets/app.css --no-source-map",
+		"build-css": "sass src/assets/app.scss src/assets/app.css",
 		"watch-css": "sass src/assets/app.scss src/assets/app.css --watch",
 		"start-js": "react-app-rewired start",
 		"build-js": "react-app-rewired build",

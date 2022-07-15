@@ -73,46 +73,46 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 								<FieldGroup legend="Baulicher Zustand">
 									<FieldRow>
 										<div style={{ position: "relative", fontWeight: "bolder", fontSize: "12px", color: "#909090", minWidth: "94%", minHeight: "160px", marginTop: "10px" }}>
-											<div id="d">
-												<div id="h">
-													<div id="h1">Zustand</div>
-													<div id="h4">Z/N 100</div>
-													<div id="h5">Jahre</div>
+											<div id="condition">
+												<div className="h">
+													<div className="h1">Zustand</div>
+													<div className="h4">Z/N 100</div>
+													<div className="h5">Jahre</div>
 												</div>
-												<div id="d1">
-													<div id="d11" className="slds-align_absolute-center">Schadhaft</div>
-													<div id="d12" className="slds-align_absolute-center">Stark</div>
-													<div id="d13" className="slds-align_absolute-center">Mittel</div>
-													<div id="d14" className="slds-align_absolute-center">Leicht</div>
+												<div className="d1">
+													<div className="d11 slds-align_absolute-center">Schadhaft</div>
+													<div className="d12 slds-align_absolute-center">Stark</div>
+													<div className="d13 slds-align_absolute-center">Mittel</div>
+													<div className="d14 slds-align_absolute-center">Leicht</div>
 												</div>
-												<div id="d2">
-													<div id="d21">Intakt</div>
-													<div id="d22"><div id="d22t"><span>Gebraucht</span></div></div>
-													<div id="d23"><div id="d23t"><span>Neu</span></div></div>
+												<div className="d2">
+													<div className="d21">Intakt</div>
+													<div className="d22"><div className="d22t"><span>Gebraucht</span></div></div>
+													<div className="d23"><div className="d23t"><span>Neu</span></div></div>
 												</div>
-												<div id="d3">
-													<div id="d31"></div>
-													<div id="d32"></div>
-													<div id="d33"></div>
-													<div id="d34"></div>
-													<div id="zn" className={element.condition ? "zn-" + (5 * Math.round(element.condition! / 5)) : ""}>
+												<div className="d3">
+													<div className="d31"></div>
+													<div className="d32"></div>
+													<div className="d33"></div>
+													<div className="d34"></div>
+													<div className={"zn " + (element.condition ? "zn-" + (5 * Math.round(element.condition! / 5)) : "")}>
 													</div>
 												</div>
-												<div id="d4">
-													<div id="t20" className="slds-align_absolute-center">20</div>
-													<div id="t50" className="slds-align_absolute-center">50</div>
-													<div id="t70" className="slds-align_absolute-center">70</div>
-													<div id="t85" className="slds-align_absolute-center">85</div>
-													<div id="t95" className="slds-align_absolute-center">95</div>
-													<div id="t100" className="slds-align_absolute-center">100</div>
+												<div className="d4">
+													<div className="t20 slds-align_absolute-center">20</div>
+													<div className="t50 slds-align_absolute-center">50</div>
+													<div className="t70 slds-align_absolute-center">70</div>
+													<div className="t85 slds-align_absolute-center">85</div>
+													<div className="t95 slds-align_absolute-center">95</div>
+													<div className="t100 slds-align_absolute-center">100</div>
 												</div>
-												<div id="d5">
-													<div id="t20" className="slds-align_absolute-center">{element.lifeTime20}</div>
-													<div id="t50" className="slds-align_absolute-center">{element.lifeTime50}</div>
-													<div id="t70" className="slds-align_absolute-center">{element.lifeTime70}</div>
-													<div id="t85" className="slds-align_absolute-center">{element.lifeTime85}</div>
-													<div id="t95" className="slds-align_absolute-center">{element.lifeTime95}</div>
-													<div id="t100" className="slds-align_absolute-center">{element.lifeTime100}</div>
+												<div className="d5">
+													<div className="t20 slds-align_absolute-center">{element.lifeTime20}</div>
+													<div className="t50 slds-align_absolute-center">{element.lifeTime50}</div>
+													<div className="t70 slds-align_absolute-center">{element.lifeTime70}</div>
+													<div className="t85 slds-align_absolute-center">{element.lifeTime85}</div>
+													<div className="t95 slds-align_absolute-center">{element.lifeTime95}</div>
+													<div className="t100 slds-align_absolute-center">{element.lifeTime100}</div>
 												</div>
 											</div>
 										</div>

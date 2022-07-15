@@ -1740,47 +1740,42 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   background-color: #d8e6fe;
 }
 
-#d {
+#condition {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 160px;
 }
-
-#h {
+#condition .h {
   position: absolute;
   left: 0;
   top: 0;
   width: 80px;
   height: 160px;
 }
-
-#h1 {
+#condition .h .h1 {
   position: absolute;
   left: 14px;
   top: 26px;
   width: 70px;
   height: 20px;
 }
-
-#h4 {
+#condition .h .h4 {
   position: absolute;
   left: 14px;
   top: 116px;
   width: 70px;
   height: 20px;
 }
-
-#h5 {
+#condition .h .h5 {
   position: absolute;
   left: 14px;
   top: 138px;
   width: 70px;
   height: 20px;
 }
-
-#d1 {
+#condition .d1 {
   position: absolute;
   left: 80px;
   top: 4px;
@@ -1788,18 +1783,15 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   height: 74px;
   border-left: 1px solid #808080;
   border-right: 1px solid #808080;
-  opacity: 100%;
 }
-
-#d11 {
+#condition .d1 .d11 {
   position: absolute;
   top: -10px;
   left: 10px;
   right: 10px;
   height: 20px;
 }
-
-#d12 {
+#condition .d1 .d12 {
   position: absolute;
   top: 38px;
   left: 0;
@@ -1807,8 +1799,7 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   height: 36px;
   border-right: 1px solid #808080;
 }
-
-#d13 {
+#condition .d1 .d13 {
   position: absolute;
   top: 38px;
   left: 46.1538461538%;
@@ -1816,34 +1807,29 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   height: 36px;
   border-right: 1px solid #808080;
 }
-
-#d14 {
+#condition .d1 .d14 {
   position: absolute;
   top: 38px;
   left: 76.9230769231%;
   width: 23.0769230769%;
   height: 36px;
 }
-
-#d2 {
+#condition .d2 {
   position: absolute;
   left: calc(80px + (100% - 80px - 24px) * 65 / 80);
   top: 4px;
   width: calc((100% - 80px - 24px) * 15 / 80);
   height: 74px;
   border-right: 1px solid #808080;
-  opacity: 100%;
 }
-
-#d21 {
+#condition .d2 .d21 {
   position: absolute;
   top: -10px;
   left: 10px;
   right: 10px;
   height: 20px;
 }
-
-#d22 {
+#condition .d2 .d22 {
   position: absolute;
   top: 38px;
   left: 0;
@@ -1851,8 +1837,7 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   height: 36px;
   border-right: 1px solid #808080;
 }
-
-#d22t {
+#condition .d2 .d22 .d22t {
   position: absolute;
   top: 27px;
   left: 50%;
@@ -1860,20 +1845,17 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   transform: rotate(-90deg);
   transform-origin: left center;
 }
-
-#d22t span {
+#condition .d2 .d22 .d22t span {
   margin-left: 2px;
 }
-
-#d23 {
+#condition .d2 .d23 {
   position: absolute;
   top: 38px;
   left: 66.6666666667%;
   width: 33.3333333333%;
   height: 36px;
 }
-
-#d23t {
+#condition .d2 .d23 .d23t {
   position: absolute;
   top: 27px;
   left: 50%;
@@ -1881,20 +1863,17 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   transform: rotate(-90deg);
   transform-origin: left center;
 }
-
-#d23t span {
+#condition .d2 .d23 .d23t span {
   margin-left: 2px;
 }
-
-#d3 {
+#condition .d3 {
   position: absolute;
   left: 80px;
   top: 88px;
   width: calc(100% - 80px - 24px);
   height: 14px;
 }
-
-#d31 {
+#condition .d3 .d31 {
   position: absolute;
   left: 0;
   width: 37.5%;
@@ -1903,8 +1882,7 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   background-color: #e54f29;
   border: 1px solid #c33a18;
 }
-
-#d32 {
+#condition .d3 .d32 {
   position: absolute;
   left: 37.5%;
   width: 25%;
@@ -1913,8 +1891,7 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   background-color: #faa724;
   border: 1px solid #e68f05;
 }
-
-#d33 {
+#condition .d3 .d33 {
   position: absolute;
   left: 62.5%;
   width: 18.75%;
@@ -1923,8 +1900,7 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   background-color: #78c06b;
   border: 1px solid #59ae4a;
 }
-
-#d34 {
+#condition .d3 .d34 {
   position: absolute;
   left: 81.25%;
   width: 18.75%;
@@ -1933,60 +1909,7 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   background-color: #338721;
   border: 1px solid #245e17;
 }
-
-#d4 {
-  position: absolute;
-  left: 80px;
-  top: 116px;
-  width: calc(100% - 80px - 24px);
-  height: 14px;
-}
-
-#d5 {
-  position: absolute;
-  left: 80px;
-  top: 138px;
-  width: calc(100% - 80px - 24px);
-  height: 14px;
-}
-
-#t20 {
-  position: absolute;
-  left: calc(0% - 20px);
-  width: 40px;
-}
-
-#t50 {
-  position: absolute;
-  left: calc(37.5% - 20px);
-  width: 40px;
-}
-
-#t70 {
-  position: absolute;
-  left: calc(62.5% - 20px);
-  width: 40px;
-}
-
-#t85 {
-  position: absolute;
-  left: calc(81.25% - 20px);
-  width: 40px;
-}
-
-#t95 {
-  position: absolute;
-  left: calc(93.75% - 20px);
-  width: 40px;
-}
-
-#t100 {
-  position: absolute;
-  left: calc(100% - 20px);
-  width: 40px;
-}
-
-#zn {
+#condition .d3 .zn {
   display: none;
   position: absolute;
   left: calc(37.5% - 5px);
@@ -1997,90 +1920,117 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   border: 1px solid #015aa0;
   border-radius: 3px;
 }
-
-#zn.zn-20 {
+#condition .d3 .zn.zn-20 {
   display: block;
   left: calc(0% - 5px);
 }
-
-#zn.zn-25 {
+#condition .d3 .zn.zn-25 {
   display: block;
   left: calc(6.25% - 5px);
 }
-
-#zn.zn-30 {
+#condition .d3 .zn.zn-30 {
   display: block;
   left: calc(12.5% - 5px);
 }
-
-#zn.zn-35 {
+#condition .d3 .zn.zn-35 {
   display: block;
   left: calc(18.75% - 5px);
 }
-
-#zn.zn-40 {
+#condition .d3 .zn.zn-40 {
   display: block;
   left: calc(25% - 5px);
 }
-
-#zn.zn-45 {
+#condition .d3 .zn.zn-45 {
   display: block;
   left: calc(31.25% - 5px);
 }
-
-#zn.zn-50 {
+#condition .d3 .zn.zn-50 {
   display: block;
   left: calc(37.5% - 5px);
 }
-
-#zn.zn-55 {
+#condition .d3 .zn.zn-55 {
   display: block;
   left: calc(43.75% - 5px);
 }
-
-#zn.zn-60 {
+#condition .d3 .zn.zn-60 {
   display: block;
   left: calc(50% - 5px);
 }
-
-#zn.zn-65 {
+#condition .d3 .zn.zn-65 {
   display: block;
   left: calc(56.25% - 5px);
 }
-
-#zn.zn-70 {
+#condition .d3 .zn.zn-70 {
   display: block;
   left: calc(62.5% - 5px);
 }
-
-#zn.zn-75 {
+#condition .d3 .zn.zn-75 {
   display: block;
   left: calc(68.75% - 5px);
 }
-
-#zn.zn-80 {
+#condition .d3 .zn.zn-80 {
   display: block;
   left: calc(75% - 5px);
 }
-
-#zn.zn-85 {
+#condition .d3 .zn.zn-85 {
   display: block;
   left: calc(81.25% - 5px);
 }
-
-#zn.zn-90 {
+#condition .d3 .zn.zn-90 {
   display: block;
   left: calc(87.5% - 5px);
 }
-
-#zn.zn-95 {
+#condition .d3 .zn.zn-95 {
   display: block;
   left: calc(93.75% - 5px);
 }
-
-#zn.zn-100 {
+#condition .d3 .zn.zn-100 {
   display: block;
   left: calc(100% - 5px);
+}
+#condition .d4 {
+  position: absolute;
+  left: 80px;
+  top: 116px;
+  width: calc(100% - 80px - 24px);
+  height: 14px;
+}
+#condition .d5 {
+  position: absolute;
+  left: 80px;
+  top: 138px;
+  width: calc(100% - 80px - 24px);
+  height: 14px;
+}
+#condition .t20 {
+  position: absolute;
+  left: calc(0% - 20px);
+  width: 40px;
+}
+#condition .t50 {
+  position: absolute;
+  left: calc(37.5% - 20px);
+  width: 40px;
+}
+#condition .t70 {
+  position: absolute;
+  left: calc(62.5% - 20px);
+  width: 40px;
+}
+#condition .t85 {
+  position: absolute;
+  left: calc(81.25% - 20px);
+  width: 40px;
+}
+#condition .t95 {
+  position: absolute;
+  left: calc(93.75% - 20px);
+  width: 40px;
+}
+#condition .t100 {
+  position: absolute;
+  left: calc(100% - 20px);
+  width: 40px;
 }
 
 /*# sourceMappingURL=app.css.map */

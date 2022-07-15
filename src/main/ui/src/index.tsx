@@ -24,7 +24,6 @@ observeMutation("body", {
 	attributeFilter: ["style"], // Only the "style" attribute
 	attributeOldValue: true,   // Report also the oldValue
 }, (m) => {
-	console.trace("MUTATION", m);            // Mutation object
 	if (m.oldValue === "overflow: hidden;") {
 		document.getElementsByTagName("body")[0].style.overflow = "hidden";
 	}
