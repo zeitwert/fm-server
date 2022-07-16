@@ -12,9 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.collaboration.model.ObjNote;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.base.DocBase;
@@ -33,8 +32,7 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	protected DocRepositoryImpl(
 		final AppContext appContext,
 		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository,
-		final ObjNoteRepository noteRepository
+		final DocPartTransitionRepository transitionRepository
 	) {
 		super(
 			DocRepository.class,
@@ -43,8 +41,7 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 			AGGREGATE_TYPE,
 			appContext,
 			dslContext,
-			transitionRepository,
-			noteRepository
+			transitionRepository
 		);
 	}
 	//@formatter:on

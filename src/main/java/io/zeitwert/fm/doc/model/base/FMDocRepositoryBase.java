@@ -6,17 +6,19 @@ import org.jooq.Record;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.doc.model.FMDocRepository;
 
 public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> extends DocRepositoryBase<O, V>
 		implements FMDocRepository<O, V> {
 
-	//@formatter:off
+	private final ObjNoteRepository noteRepository;
+
+//@formatter:off
 	protected FMDocRepositoryBase(
 		final Class<? extends AggregateRepository<O, V>> repoIntfClass,
 		final Class<? extends Doc> intfClass,
@@ -34,10 +36,15 @@ public abstract class FMDocRepositoryBase<O extends FMDoc, V extends Record> ext
 			aggregateTypeId,
 			appContext,
 			dslContext,
-			transitionRepository,
-			noteRepository
+			transitionRepository
 		);
+		this.noteRepository = noteRepository;
 	}
 	//@formatter:on
+
+	@Override
+	public ObjNoteRepository getNoteRepository() {
+		return this.noteRepository;
+	}
 
 }

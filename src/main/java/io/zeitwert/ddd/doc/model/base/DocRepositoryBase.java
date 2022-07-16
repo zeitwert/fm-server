@@ -9,7 +9,6 @@ import org.jooq.exception.NoDataFoundException;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
@@ -27,7 +26,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	private final DocPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
-	final ObjNoteRepository noteRepository;
 	private final CodePartListType areaSetType;
 
 	//@formatter:off
@@ -38,13 +36,11 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		final String aggregateTypeId,
 		final AppContext appContext,
 		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository,
-		final ObjNoteRepository noteRepository
+		final DocPartTransitionRepository transitionRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
-		this.noteRepository = noteRepository;
 		this.areaSetType = this.getAppContext().getPartListType(DocFields.AREA_SET);
 	}
 	//@formatter:on
@@ -61,11 +57,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	@Override
 	public CodePartListType getTransitionListType() {
 		return this.transitionListType;
-	}
-
-	@Override
-	public ObjNoteRepository getNoteRepository() {
-		return this.noteRepository;
 	}
 
 	@Override

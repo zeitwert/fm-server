@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
@@ -41,8 +40,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
-		final SessionService sessionService,
-		final ObjNoteRepository noteRepository
+		final SessionService sessionService
 	) {
 		super(
 			ObjUserRepository.class,
@@ -52,8 +50,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 			appContext,
 			dslContext,
 			transitionRepository,
-			itemRepository,
-			noteRepository
+			itemRepository
 		);
 		this.globalSessionInfo = sessionService.getGlobalSession();
 	}

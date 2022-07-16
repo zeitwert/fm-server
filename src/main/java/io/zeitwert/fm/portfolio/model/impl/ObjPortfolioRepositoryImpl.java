@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;

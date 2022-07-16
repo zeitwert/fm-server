@@ -18,10 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNote;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
-import io.zeitwert.ddd.collaboration.model.enums.CodeNoteType;
-import io.zeitwert.ddd.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
@@ -42,6 +38,10 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/rest/building/buildings")

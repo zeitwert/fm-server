@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.lead.model.DocLead;
 import io.zeitwert.fm.lead.model.DocLeadRepository;

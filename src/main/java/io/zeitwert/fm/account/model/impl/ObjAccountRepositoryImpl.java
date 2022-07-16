@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.collaboration.model.ObjNoteRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -24,6 +23,7 @@ import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objAccountRepository")
