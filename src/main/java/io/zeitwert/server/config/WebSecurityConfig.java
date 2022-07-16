@@ -21,8 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import io.zeitwert.server.session.AuthenticationJWTFilter;
-import io.zeitwert.server.session.ZeitwertAuthenticationEntryPoint;
+import io.zeitwert.server.session.service.api.impl.AuthenticationJWTFilter;
+import io.zeitwert.server.session.service.api.impl.ZeitwertAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity

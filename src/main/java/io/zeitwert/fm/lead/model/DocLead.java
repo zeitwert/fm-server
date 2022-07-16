@@ -9,9 +9,9 @@ import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.lead.model.enums.CodeLeadRating;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSource;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 
 import java.util.Set;
 

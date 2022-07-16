@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeArea;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.obj.model.FMObj;
 
 public interface ObjTest extends FMObj {

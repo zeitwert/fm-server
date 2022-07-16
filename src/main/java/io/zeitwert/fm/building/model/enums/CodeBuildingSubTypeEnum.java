@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.Enumerations;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingSubTypeRecord;

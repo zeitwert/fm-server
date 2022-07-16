@@ -4,6 +4,8 @@
 package io.zeitwert.ddd.oe.model.db;
 
 
+import io.zeitwert.ddd.oe.model.db.tables.CodeCountry;
+import io.zeitwert.ddd.oe.model.db.tables.CodeLocale;
 import io.zeitwert.ddd.oe.model.db.tables.CodeTenantType;
 import io.zeitwert.ddd.oe.model.db.tables.CodeUserRole;
 import io.zeitwert.ddd.oe.model.db.tables.ObjTenant;
@@ -17,6 +19,16 @@ import io.zeitwert.ddd.oe.model.db.tables.ObjUserV;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.code_country</code>.
+     */
+    public static final CodeCountry CODE_COUNTRY = CodeCountry.CODE_COUNTRY;
+
+    /**
+     * The table <code>public.code_locale</code>.
+     */
+    public static final CodeLocale CODE_LOCALE = CodeLocale.CODE_LOCALE;
 
     /**
      * The table <code>public.code_tenant_type</code>.

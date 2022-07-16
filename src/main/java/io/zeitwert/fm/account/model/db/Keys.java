@@ -7,16 +7,12 @@ package io.zeitwert.fm.account.model.db;
 import io.zeitwert.fm.account.model.db.tables.CodeAccountType;
 import io.zeitwert.fm.account.model.db.tables.CodeArea;
 import io.zeitwert.fm.account.model.db.tables.CodeClientSegment;
-import io.zeitwert.fm.account.model.db.tables.CodeCountry;
 import io.zeitwert.fm.account.model.db.tables.CodeCurrency;
-import io.zeitwert.fm.account.model.db.tables.CodeLocale;
 import io.zeitwert.fm.account.model.db.tables.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.CodeAccountTypeRecord;
 import io.zeitwert.fm.account.model.db.tables.records.CodeAreaRecord;
 import io.zeitwert.fm.account.model.db.tables.records.CodeClientSegmentRecord;
-import io.zeitwert.fm.account.model.db.tables.records.CodeCountryRecord;
 import io.zeitwert.fm.account.model.db.tables.records.CodeCurrencyRecord;
-import io.zeitwert.fm.account.model.db.tables.records.CodeLocaleRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 
 import org.jooq.ForeignKey;
@@ -40,9 +36,7 @@ public class Keys {
     public static final UniqueKey<CodeAccountTypeRecord> CODE_ACCOUNT_TYPE_PKEY = Internal.createUniqueKey(CodeAccountType.CODE_ACCOUNT_TYPE, DSL.name("code_account_type_pkey"), new TableField[] { CodeAccountType.CODE_ACCOUNT_TYPE.ID }, true);
     public static final UniqueKey<CodeAreaRecord> CODE_AREA_PKEY = Internal.createUniqueKey(CodeArea.CODE_AREA, DSL.name("code_area_pkey"), new TableField[] { CodeArea.CODE_AREA.ID }, true);
     public static final UniqueKey<CodeClientSegmentRecord> CODE_CLIENT_SEGMENT_PKEY = Internal.createUniqueKey(CodeClientSegment.CODE_CLIENT_SEGMENT, DSL.name("code_client_segment_pkey"), new TableField[] { CodeClientSegment.CODE_CLIENT_SEGMENT.ID }, true);
-    public static final UniqueKey<CodeCountryRecord> CODE_COUNTRY_PKEY = Internal.createUniqueKey(CodeCountry.CODE_COUNTRY, DSL.name("code_country_pkey"), new TableField[] { CodeCountry.CODE_COUNTRY.ID }, true);
     public static final UniqueKey<CodeCurrencyRecord> CODE_CURRENCY_PKEY = Internal.createUniqueKey(CodeCurrency.CODE_CURRENCY, DSL.name("code_currency_pkey"), new TableField[] { CodeCurrency.CODE_CURRENCY.ID }, true);
-    public static final UniqueKey<CodeLocaleRecord> CODE_LOCALE_PKEY = Internal.createUniqueKey(CodeLocale.CODE_LOCALE, DSL.name("code_locale_pkey"), new TableField[] { CodeLocale.CODE_LOCALE.ID }, true);
     public static final UniqueKey<ObjAccountRecord> OBJ_ACCOUNT_PKEY = Internal.createUniqueKey(ObjAccount.OBJ_ACCOUNT, DSL.name("obj_account_pkey"), new TableField[] { ObjAccount.OBJ_ACCOUNT.OBJ_ID }, true);
 
     // -------------------------------------------------------------------------

@@ -1,8 +1,6 @@
 
 package io.zeitwert.ddd.session.model;
 
-import io.zeitwert.fm.account.model.enums.CodeLocale;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -11,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 
 public class SessionInfo {
 

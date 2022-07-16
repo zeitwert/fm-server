@@ -4,6 +4,8 @@
 package io.zeitwert.ddd.oe.model.db;
 
 
+import io.zeitwert.ddd.oe.model.db.tables.CodeCountry;
+import io.zeitwert.ddd.oe.model.db.tables.CodeLocale;
 import io.zeitwert.ddd.oe.model.db.tables.CodeTenantType;
 import io.zeitwert.ddd.oe.model.db.tables.CodeUserRole;
 import io.zeitwert.ddd.oe.model.db.tables.ObjTenant;
@@ -31,6 +33,16 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.code_country</code>.
+     */
+    public final CodeCountry CODE_COUNTRY = CodeCountry.CODE_COUNTRY;
+
+    /**
+     * The table <code>public.code_locale</code>.
+     */
+    public final CodeLocale CODE_LOCALE = CodeLocale.CODE_LOCALE;
 
     /**
      * The table <code>public.code_tenant_type</code>.
@@ -78,6 +90,8 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            CodeCountry.CODE_COUNTRY,
+            CodeLocale.CODE_LOCALE,
             CodeTenantType.CODE_TENANT_TYPE,
             CodeUserRole.CODE_USER_ROLE,
             ObjTenant.OBJ_TENANT,

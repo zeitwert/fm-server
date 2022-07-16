@@ -15,6 +15,5 @@ public interface ObjFields extends AggregateFields {
 	static final Field<Integer> CLOSED_BY_USER_ID = DSL.field("closed_by_user_id", Integer.class);
 
 	static final String TRANSITION_LIST = "obj.transitionList";
-	static final String AREA_SET = "obj.areaSet";
 
 }

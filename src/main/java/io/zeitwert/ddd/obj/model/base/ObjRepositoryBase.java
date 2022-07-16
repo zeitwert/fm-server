@@ -33,7 +33,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	private final ObjPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
 	private final ObjPartItemRepository itemRepository;
-	private final CodePartListType areaSetType;
 
 	//@formatter:off
 	protected ObjRepositoryBase(
@@ -50,7 +49,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(ObjFields.TRANSITION_LIST);
 		this.itemRepository = itemRepository;
-		this.areaSetType = this.getAppContext().getPartListType(ObjFields.AREA_SET);
 	}
 	//@formatter:on
 
@@ -72,11 +70,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	@Override
 	public ObjPartItemRepository getItemRepository() {
 		return this.itemRepository;
-	}
-
-	@Override
-	public CodePartListType getAreaSetType() {
-		return this.areaSetType;
 	}
 
 	@Override

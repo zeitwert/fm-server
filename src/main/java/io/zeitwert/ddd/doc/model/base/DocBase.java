@@ -11,7 +11,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.doc.api.DocService;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocMeta;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
@@ -19,6 +18,7 @@ import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.ddd.doc.service.api.DocService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
@@ -29,7 +29,6 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.account.model.ObjAccount;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
@@ -39,7 +38,6 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	protected final SimpleProperty<Integer> id;
 	protected final ReferenceProperty<ObjTenant> tenant;
-	protected final ReferenceProperty<ObjAccount> account;
 	protected final ReferenceProperty<ObjUser> owner;
 	protected final SimpleProperty<String> caption;
 	protected final SimpleProperty<Integer> version;
@@ -63,7 +61,6 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.docDbRecord = docDbRecord;
 		this.id = this.addSimpleProperty(docDbRecord, DocFields.ID);
 		this.tenant = this.addReferenceProperty(docDbRecord, DocFields.TENANT_ID, ObjTenant.class);
-		this.account = this.addReferenceProperty(docDbRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 		this.owner = this.addReferenceProperty(docDbRecord, DocFields.OWNER_ID, ObjUser.class);
 		this.caption = this.addSimpleProperty(docDbRecord, DocFields.CAPTION);
 		this.version = this.addSimpleProperty(docDbRecord, DocFields.VERSION);

@@ -13,8 +13,6 @@ public interface ObjRepository<O extends Obj, V extends Record> extends Aggregat
 
 	ObjPartItemRepository getItemRepository();
 
-	CodePartListType getAreaSetType();
-
 	/**
 	 * Delete the Obj (i.e. set closed_at and store)
 	 */

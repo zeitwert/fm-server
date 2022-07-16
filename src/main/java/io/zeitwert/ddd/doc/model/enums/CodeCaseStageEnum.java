@@ -12,7 +12,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.app.service.api.Enumerations;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 
 @Component("codeCaseStageEnum")

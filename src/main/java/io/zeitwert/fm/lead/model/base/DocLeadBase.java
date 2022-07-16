@@ -16,9 +16,8 @@ import io.zeitwert.fm.lead.model.enums.CodeLeadRating;
 import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSource;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
-
-import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
+import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;

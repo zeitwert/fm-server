@@ -40,29 +40,26 @@ public class SqlUtils {
 		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
 	}
 
-	public static String toString(Object value) {
-		if (value.getClass().isArray() && ((Object[]) value).length == 1) {
-			return SqlUtils.toString(((Object[]) value)[0]);
-		} else if (value instanceof Collection<?> && ((Collection<?>) value).size() == 1) {
-			return SqlUtils.toString(((Collection<?>) value).stream().toList().get(0));
-		}
-		return value == null ? null : String.valueOf(value);
+	public static Condition andFilter(DSLContext dslContext, Condition whereClause, Table<?> table,
+			Field<Integer> idField, FilterSpec filter) {
+		return whereClause.and(filter(dslContext, table, idField, filter));
 	}
 
-	private static Integer toInteger(Object value) {
-		if (value == null) {
-			return null;
-		} else if (value.getClass().isArray() && ((Object[]) value).length == 1) {
-			return toInteger(((Object[]) value)[0]);
-		} else if (value instanceof Collection<?> && ((Collection<?>) value).size() == 1) {
-			return toInteger(((Collection<?>) value).stream().toList().get(0));
-		} else if (value.getClass() == Integer.class) {
-			return (Integer) value;
-		} else if (value.getClass() == String.class) {
-			return Integer.valueOf((String) value);
-		}
-		assertThis(false, value + " (" + value.getClass() + ") is an integer");
-		return null;
+	public static Condition orFilter(DSLContext dslContext, Condition whereClause, Table<?> table, Field<Integer> idField,
+			FilterSpec filter) {
+		List<Condition> conditions = filter.getExpression().stream()
+				.map(f -> filter(dslContext, table, idField, f)).toList();
+		return whereClause.and(DSL.or(conditions));
+	}
+
+	public static List<SortField<?>> sortFilter(Table<?> table, List<SortSpec> sortSpec) {
+		//@formatter:off
+		return sortSpec.stream()
+			.map(s -> {
+				return table.field(StringUtils.toSnakeCase(s.getPath().toString()))
+				.sort(s.getDirection().equals(Direction.ASC) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
+			}).collect(Collectors.toList());
+		//@formatter:on
 	}
 
 	private static Condition searchFilter(DSLContext dslContext, Field<Integer> idField, FilterSpec filter) {
@@ -85,6 +82,22 @@ public class SqlUtils {
 		//@formatter:on
 	}
 
+	private static Integer toInteger(Object value) {
+		if (value == null) {
+			return null;
+		} else if (value.getClass().isArray() && ((Object[]) value).length == 1) {
+			return toInteger(((Object[]) value)[0]);
+		} else if (value instanceof Collection<?> && ((Collection<?>) value).size() == 1) {
+			return toInteger(((Collection<?>) value).stream().toList().get(0));
+		} else if (value.getClass() == Integer.class) {
+			return (Integer) value;
+		} else if (value.getClass() == String.class) {
+			return Integer.valueOf((String) value);
+		}
+		assertThis(false, value + " (" + value.getClass() + ") is an integer");
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Condition integerFilter(Field<Integer> field, FilterSpec filter) {
 		if (filter.getValue() instanceof Collection) {
@@ -93,7 +106,7 @@ public class SqlUtils {
 			}
 			assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		} else {
-			Integer value = SqlUtils.toInteger(filter.getValue());
+			Integer value = toInteger(filter.getValue());
 			if (filter.getOperator() == FilterOperator.EQ) {
 				if (value != null) {
 					return field.eq(value);
@@ -226,47 +239,25 @@ public class SqlUtils {
 
 	@SuppressWarnings("unchecked")
 	private static Condition filter(DSLContext dslContext, Table<?> table, Field<Integer> idField, FilterSpec filter) {
-		String fieldName = StringUtils.toSnakeCase(SqlUtils.getPath(filter));
+		String fieldName = StringUtils.toSnakeCase(getPath(filter));
 		if (fieldName.equals("search_text")) {
-			return SqlUtils.searchFilter(dslContext, idField, filter);
+			return searchFilter(dslContext, idField, filter);
 		}
 		Field<?> field = table.field(fieldName);
 		assertThis(field != null, "known field " + fieldName);
 		if (field.getType() == Integer.class) {
-			return SqlUtils.integerFilter((Field<Integer>) field, filter);
+			return integerFilter((Field<Integer>) field, filter);
 		} else if (field.getType() == String.class) {
-			return SqlUtils.stringFilter((Field<String>) field, filter);
+			return stringFilter((Field<String>) field, filter);
 		} else if (field.getType() == Boolean.class) {
-			return SqlUtils.booleanFilter((Field<Boolean>) field, filter);
+			return booleanFilter((Field<Boolean>) field, filter);
 		} else if (field.getType() == LocalDateTime.class) {
-			return SqlUtils.localDateTimeFilter((Field<LocalDateTime>) field, filter);
+			return localDateTimeFilter((Field<LocalDateTime>) field, filter);
 		} else if (field.getType() == OffsetDateTime.class) {
-			return SqlUtils.offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
+			return offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
 		}
 		assertThis(false, "supported field type " + fieldName + ": " + field.getType());
 		return DSL.falseCondition();
-	}
-
-	public static Condition andFilter(DSLContext dslContext, Condition whereClause, Table<?> table,
-			Field<Integer> idField, FilterSpec filter) {
-		return whereClause.and(SqlUtils.filter(dslContext, table, idField, filter));
-	}
-
-	public static Condition orFilter(DSLContext dslContext, Condition whereClause, Table<?> table, Field<Integer> idField,
-			FilterSpec filter) {
-		List<Condition> conditions = filter.getExpression().stream()
-				.map(f -> SqlUtils.filter(dslContext, table, idField, f)).toList();
-		return whereClause.and(DSL.or(conditions));
-	}
-
-	public static List<SortField<?>> sortFilter(Table<?> table, List<SortSpec> sortSpec) {
-		//@formatter:off
-		return sortSpec.stream()
-			.map(s -> {
-				return table.field(StringUtils.toSnakeCase(s.getPath().toString()))
-				.sort(s.getDirection().equals(Direction.ASC) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
-			}).collect(Collectors.toList());
-		//@formatter:on
 	}
 
 }

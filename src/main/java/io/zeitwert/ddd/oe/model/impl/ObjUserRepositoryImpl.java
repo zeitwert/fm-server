@@ -25,7 +25,7 @@ import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.ddd.session.service.api.SessionService;
+import io.zeitwert.server.session.service.api.SessionService;
 
 @Component("objUserRepository")
 public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRecord> implements ObjUserRepository {

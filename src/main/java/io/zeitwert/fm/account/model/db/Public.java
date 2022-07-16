@@ -7,9 +7,7 @@ package io.zeitwert.fm.account.model.db;
 import io.zeitwert.fm.account.model.db.tables.CodeAccountType;
 import io.zeitwert.fm.account.model.db.tables.CodeArea;
 import io.zeitwert.fm.account.model.db.tables.CodeClientSegment;
-import io.zeitwert.fm.account.model.db.tables.CodeCountry;
 import io.zeitwert.fm.account.model.db.tables.CodeCurrency;
-import io.zeitwert.fm.account.model.db.tables.CodeLocale;
 import io.zeitwert.fm.account.model.db.tables.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.ObjAccountSearch;
 import io.zeitwert.fm.account.model.db.tables.ObjAccountV;
@@ -51,19 +49,9 @@ public class Public extends SchemaImpl {
     public final CodeClientSegment CODE_CLIENT_SEGMENT = CodeClientSegment.CODE_CLIENT_SEGMENT;
 
     /**
-     * The table <code>public.code_country</code>.
-     */
-    public final CodeCountry CODE_COUNTRY = CodeCountry.CODE_COUNTRY;
-
-    /**
      * The table <code>public.code_currency</code>.
      */
     public final CodeCurrency CODE_CURRENCY = CodeCurrency.CODE_CURRENCY;
-
-    /**
-     * The table <code>public.code_locale</code>.
-     */
-    public final CodeLocale CODE_LOCALE = CodeLocale.CODE_LOCALE;
 
     /**
      * The table <code>public.obj_account</code>.
@@ -99,9 +87,7 @@ public class Public extends SchemaImpl {
             CodeAccountType.CODE_ACCOUNT_TYPE,
             CodeArea.CODE_AREA,
             CodeClientSegment.CODE_CLIENT_SEGMENT,
-            CodeCountry.CODE_COUNTRY,
             CodeCurrency.CODE_CURRENCY,
-            CodeLocale.CODE_LOCALE,
             ObjAccount.OBJ_ACCOUNT,
             ObjAccountSearch.OBJ_ACCOUNT_SEARCH,
             ObjAccountV.OBJ_ACCOUNT_V);

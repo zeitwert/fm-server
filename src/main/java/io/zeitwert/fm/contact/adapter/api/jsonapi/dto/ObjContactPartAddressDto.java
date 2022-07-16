@@ -9,9 +9,9 @@ import lombok.experimental.SuperBuilder;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannelEnum;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
+import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 
 @Data()
 @EqualsAndHashCode(callSuper = true)

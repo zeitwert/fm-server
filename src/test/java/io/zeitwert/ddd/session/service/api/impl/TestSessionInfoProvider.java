@@ -1,9 +1,9 @@
 package io.zeitwert.ddd.session.service.api.impl;
 
-import io.zeitwert.fm.account.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 import java.util.Optional;

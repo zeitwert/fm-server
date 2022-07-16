@@ -1,7 +1,7 @@
 
 package io.zeitwert.ddd.enums.model.base;
 
-import io.zeitwert.ddd.app.service.api.Enumerations;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 

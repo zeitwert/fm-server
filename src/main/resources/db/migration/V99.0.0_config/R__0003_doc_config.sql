@@ -2,8 +2,7 @@
 insert into code_part_list_type(id, name)
 values
 ('doc.transitionList', 'Transitions'),
-('doc.noteList', 'Notes'),
-('doc.areaSet', 'Areas')
+('doc.noteList', 'Notes')
 on conflict(id)
 do nothing;
 

@@ -25,7 +25,6 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.account.model.ObjAccount;
 
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
@@ -35,7 +34,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	protected final SimpleProperty<Integer> id;
 	protected final ReferenceProperty<ObjTenant> tenant;
-	protected final ReferenceProperty<ObjAccount> account;
 	protected final ReferenceProperty<ObjUser> owner;
 	protected final SimpleProperty<String> caption;
 	protected final SimpleProperty<Integer> version;
@@ -57,7 +55,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.objDbRecord = objDbRecord;
 		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
 		this.tenant = this.addReferenceProperty(objDbRecord, ObjFields.TENANT_ID, ObjTenant.class);
-		this.account = this.addReferenceProperty(objDbRecord, ObjFields.ACCOUNT_ID, ObjAccount.class);
 		this.owner = this.addReferenceProperty(objDbRecord, ObjFields.OWNER_ID, ObjUser.class);
 		this.caption = this.addSimpleProperty(objDbRecord, ObjFields.CAPTION);
 		this.version = this.addSimpleProperty(objDbRecord, ObjFields.VERSION);

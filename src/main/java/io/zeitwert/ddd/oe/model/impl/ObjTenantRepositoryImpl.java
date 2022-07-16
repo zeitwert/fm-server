@@ -25,7 +25,7 @@ import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.ddd.session.service.api.SessionService;
+import io.zeitwert.server.session.service.api.SessionService;
 
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>

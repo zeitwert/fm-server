@@ -3,8 +3,8 @@ package io.zeitwert.fm.building.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;

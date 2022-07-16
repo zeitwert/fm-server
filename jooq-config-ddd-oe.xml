@@ -5,7 +5,9 @@
 		<database>
 			<name>org.jooq.meta.postgres.PostgresDatabase</name>
 			<includes>
-				  code_tenant.*
+				  code_country
+				| code_locale
+				| code_tenant.*
 				| obj_tenant.*
 				| code_user.*
 				| obj_user.*

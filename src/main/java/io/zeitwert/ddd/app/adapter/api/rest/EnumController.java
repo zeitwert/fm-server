@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.Enumerations;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
@@ -58,9 +58,6 @@ public class EnumController {
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
 		List<ObjUserVRecord> userList = userRepository.find(sessionInfo, querySpec);
-		// return ResponseEntity
-		// .ok(userList.stream().map(user ->
-		// ObjUserDtoBridge.getInstance().fromRecord(user, sessionInfo)).toList());
 		return ResponseEntity.ok(userList.stream()
 				.map(user -> EnumeratedDto.builder().id(user.getId().toString()).name(user.getName()).build()).toList());
 	}

@@ -10,8 +10,8 @@ import io.zeitwert.fm.lead.model.DocLead;
 import io.zeitwert.fm.lead.model.db.tables.records.DocLeadVRecord;
 import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 import java.util.stream.Collectors;
