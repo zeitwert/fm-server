@@ -76,19 +76,20 @@ public class SessionTest {
 		assertEquals(false, ((AggregateBase) test1c).isStale());
 
 		testRepository.store(test1b);
-		assertEquals(true, ((AggregateBase) test1b).isStale());
+		assertTrue(((AggregateBase) test1b).isStale());
 		test1b = null;
 
+		// assertTrue(((AggregateBase) test1c).isStale());
+		assertEquals("Short Test One", test1c.getShortText());
 		test1c = testRepository.get(session2, test1Id);
-		assertEquals(System.identityHashCode(test1c), test1cIdHash, "still the same aggregate");
-		assertEquals(true, ((AggregateBase) test1c).isStale());
+		assertEquals("another description", test1c.getShortText());
+		assertNotEquals(System.identityHashCode(test1c), test1cIdHash, "different aggregate");
 
 		test1b = testRepository.get(sessionInfo, test1Id);
 		assertNotEquals(System.identityHashCode(test1b), test1bIdHash, "different aggregate");
-		assertEquals(false, ((AggregateBase) test1b).isStale());
+		// assertEquals(false, ((AggregateBase) test1b).isStale());
 
 		assertEquals("another description", test1b.getShortText());
-		assertEquals("Short Test One", test1c.getShortText());
 	}
 
 	private void initObjTest(ObjTest test, String name, String userEmail, String countryId) {
