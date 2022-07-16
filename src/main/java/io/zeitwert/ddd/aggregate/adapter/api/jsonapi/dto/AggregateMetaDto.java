@@ -11,8 +11,8 @@ import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.validation.adapter.api.jsonapi.dto.AggregatePartValidationDto;
 import lombok.Data;
@@ -47,8 +47,8 @@ public class AggregateMetaDto implements MetaInformation {
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate,
 			SessionInfo sessionInfo) {
 		AggregateMeta meta = aggregate.getMeta();
-		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		builder
 			.sessionId(sessionInfo.getId())

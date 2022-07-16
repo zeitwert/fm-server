@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -35,7 +35,7 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
+		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
 		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

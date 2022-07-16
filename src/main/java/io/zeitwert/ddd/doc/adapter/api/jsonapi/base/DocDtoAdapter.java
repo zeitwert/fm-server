@@ -1,20 +1,20 @@
 package io.zeitwert.ddd.doc.adapter.api.jsonapi.base;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBridge;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocMetaDto;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.base.DocFields;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 import org.jooq.TableRecord;
 
-public abstract class DocDtoBridge<A extends Doc, V extends TableRecord<?>, D extends DocDtoBase<A>>
-		extends AggregateDtoBridge<A, V, D> {
+public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D extends DocDtoBase<A>>
+		extends AggregateDtoAdapter<A, V, D> {
 
 	@Override
 	public void toAggregate(D dto, A doc) {
@@ -23,7 +23,7 @@ public abstract class DocDtoBridge<A extends Doc, V extends TableRecord<?>, D ex
 	}
 
 	protected void fromAggregate(DocDtoBase.DocDtoBaseBuilder<?, ?, ?> dtoBuilder, A doc, SessionInfo sessionInfo) {
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		dtoBuilder
 			.sessionInfo(sessionInfo)
@@ -37,7 +37,7 @@ public abstract class DocDtoBridge<A extends Doc, V extends TableRecord<?>, D ex
 	protected void fromRecord(DocDtoBase.DocDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> doc,
 			SessionInfo sessionInfo) {
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		dtoBuilder
 			.sessionInfo(sessionInfo)

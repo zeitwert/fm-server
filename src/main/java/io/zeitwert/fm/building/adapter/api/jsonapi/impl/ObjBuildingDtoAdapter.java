@@ -6,7 +6,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.part.model.base.PartStatus;
@@ -29,18 +29,18 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 import io.zeitwert.fm.building.service.api.ProjectionService;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
 
-public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
+public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
 
-	private static ObjBuildingDtoBridge instance;
+	private static ObjBuildingDtoAdapter instance;
 
-	private ObjBuildingDtoBridge() {
+	private ObjBuildingDtoAdapter() {
 	}
 
-	public static final ObjBuildingDtoBridge getInstance() {
+	public static final ObjBuildingDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjBuildingDtoBridge();
+			instance = new ObjBuildingDtoAdapter();
 		}
 		return instance;
 	}
@@ -125,7 +125,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj, sessionInfo);
 		ProjectionService projectionService = AppContext.getInstance().getBean(ProjectionService.class);
@@ -231,7 +231,7 @@ public final class ObjBuildingDtoBridge extends FMObjDtoBridge<ObjBuilding, ObjB
 			.maintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(obj.getMaintenanceStrategyId())))
 			.ratingStatus(EnumeratedDto.fromEnum(CodeBuildingRatingStatusEnum.getRatingStatus(obj.getRatingStatusId())))
 			.ratingDate(obj.getRatingDate())
-			.ratingUser(ObjUserDtoBridge.getInstance().fromAggregate(ratingUser, sessionInfo));
+			.ratingUser(ObjUserDtoAdapter.getInstance().fromAggregate(ratingUser, sessionInfo));
 		// @formatter:on
 		return dtoBuilder.build();
 	}

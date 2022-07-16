@@ -3,7 +3,7 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
 import org.springframework.stereotype.Controller;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiAdapter;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.building.adapter.api.jsonapi.ObjBuildingApiRepository;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
@@ -12,11 +12,12 @@ import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 
 @Controller("objBuildingApiRepository")
-public class ObjBuildingApiRepositoryImpl extends AggregateApiAdapter<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto>
+public class ObjBuildingApiRepositoryImpl
+		extends AggregateApiRepositoryBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto>
 		implements ObjBuildingApiRepository {
 
 	public ObjBuildingApiRepositoryImpl(final ObjBuildingRepository repository, SessionInfo sessionInfo) {
-		super(ObjBuildingDto.class, sessionInfo, repository, ObjBuildingDtoBridge.getInstance());
+		super(ObjBuildingDto.class, sessionInfo, repository, ObjBuildingDtoAdapter.getInstance());
 	}
 
 }

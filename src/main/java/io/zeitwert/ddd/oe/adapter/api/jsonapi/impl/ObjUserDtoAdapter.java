@@ -1,22 +1,22 @@
 
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoBridge;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
-public final class ObjUserDtoBridge extends ObjDtoBridge<ObjUser, ObjUserVRecord, ObjUserDto> {
+public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVRecord, ObjUserDto> {
 
-	private static ObjUserDtoBridge instance;
+	private static ObjUserDtoAdapter instance;
 
-	private ObjUserDtoBridge() {
+	private ObjUserDtoAdapter() {
 	}
 
-	public static final ObjUserDtoBridge getInstance() {
+	public static final ObjUserDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjUserDtoBridge();
+			instance = new ObjUserDtoAdapter();
 		}
 		return instance;
 	}

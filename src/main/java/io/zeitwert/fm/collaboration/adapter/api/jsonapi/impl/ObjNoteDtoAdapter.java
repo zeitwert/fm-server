@@ -2,23 +2,23 @@
 package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoBridge;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 
-public final class ObjNoteDtoBridge extends ObjDtoBridge<ObjNote, ObjNoteVRecord, ObjNoteDto> {
+public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVRecord, ObjNoteDto> {
 
-	private static ObjNoteDtoBridge instance;
+	private static ObjNoteDtoAdapter instance;
 
-	private ObjNoteDtoBridge() {
+	private ObjNoteDtoAdapter() {
 	}
 
-	public static final ObjNoteDtoBridge getInstance() {
+	public static final ObjNoteDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjNoteDtoBridge();
+			instance = new ObjNoteDtoAdapter();
 		}
 		return instance;
 	}

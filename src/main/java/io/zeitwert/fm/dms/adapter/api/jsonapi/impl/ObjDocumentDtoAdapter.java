@@ -9,18 +9,18 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
 
-public final class ObjDocumentDtoBridge extends FMObjDtoBridge<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
+public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
 
-	private static ObjDocumentDtoBridge instance;
+	private static ObjDocumentDtoAdapter instance;
 
-	private ObjDocumentDtoBridge() {
+	private ObjDocumentDtoAdapter() {
 	}
 
-	public static final ObjDocumentDtoBridge getInstance() {
+	public static final ObjDocumentDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjDocumentDtoBridge();
+			instance = new ObjDocumentDtoAdapter();
 		}
 		return instance;
 	}

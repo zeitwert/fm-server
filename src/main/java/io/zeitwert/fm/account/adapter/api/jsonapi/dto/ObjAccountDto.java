@@ -7,7 +7,7 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
-import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoBridge;
+import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
@@ -53,7 +53,7 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 			} else if (this.mainContactId != null) {
 				contact = getRepository(ObjContact.class).get(this.sessionInfo, this.mainContactId);
 			}
-			this.mainContactDto = ObjContactDtoBridge.getInstance().fromAggregate(contact, this.sessionInfo);
+			this.mainContactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact, this.sessionInfo);
 		}
 		return this.mainContactDto;
 	}
@@ -70,7 +70,7 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 		if (this.contactsDto == null) {
 			if (this.getOriginal() != null) {
 				this.contactsDto = this.getOriginal().getContacts().stream()
-						.map(c -> ObjContactDtoBridge.getInstance().fromAggregate(c, this.sessionInfo)).toList();
+						.map(c -> ObjContactDtoAdapter.getInstance().fromAggregate(c, this.sessionInfo)).toList();
 			} else {
 			}
 		}

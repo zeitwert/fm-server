@@ -17,21 +17,21 @@ import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBridge;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
-public abstract class AggregateApiAdapter<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>>
+public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
 	private final SessionInfo sessionInfo;
 	private final AggregateRepository<A, V> repository;
-	private final AggregateDtoBridge<A, V, D> bridge;
+	private final AggregateDtoAdapter<A, V, D> bridge;
 
-	public AggregateApiAdapter(Class<D> dtoClass, SessionInfo sessionInfo, AggregateRepository<A, V> repository,
-			AggregateDtoBridge<A, V, D> bridge) {
+	public AggregateApiRepositoryBase(Class<D> dtoClass, SessionInfo sessionInfo, AggregateRepository<A, V> repository,
+			AggregateDtoAdapter<A, V, D> bridge) {
 		super(dtoClass);
 		this.sessionInfo = sessionInfo;
 		this.repository = repository;

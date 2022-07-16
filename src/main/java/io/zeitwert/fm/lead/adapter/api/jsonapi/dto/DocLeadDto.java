@@ -6,10 +6,10 @@ import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
-import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoBridge;
+import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.FMDocDtoBase;
 import io.zeitwert.fm.lead.model.DocLead;
@@ -45,7 +45,7 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 			} else if (this.accountId != null) {
 				account = getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
 			}
-			this.accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(account, this.sessionInfo);
+			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, this.sessionInfo);
 		}
 		return this.accountDto;
 	}
@@ -69,7 +69,7 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 			} else if (this.contactId != null) {
 				contact = getRepository(ObjContact.class).get(this.sessionInfo, this.contactId);
 			}
-			this.contactDto = ObjContactDtoBridge.getInstance().fromAggregate(contact, this.sessionInfo);
+			this.contactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact, this.sessionInfo);
 		}
 		return this.contactDto;
 	}

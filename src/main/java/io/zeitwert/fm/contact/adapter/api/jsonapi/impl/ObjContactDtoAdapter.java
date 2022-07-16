@@ -10,18 +10,18 @@ import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
 import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
 import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
 import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
 
-public final class ObjContactDtoBridge extends FMObjDtoBridge<ObjContact, ObjContactVRecord, ObjContactDto> {
+public final class ObjContactDtoAdapter extends FMObjDtoAdapter<ObjContact, ObjContactVRecord, ObjContactDto> {
 
-	private static ObjContactDtoBridge instance;
+	private static ObjContactDtoAdapter instance;
 
-	private ObjContactDtoBridge() {
+	private ObjContactDtoAdapter() {
 	}
 
-	public static final ObjContactDtoBridge getInstance() {
+	public static final ObjContactDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjContactDtoBridge();
+			instance = new ObjContactDtoAdapter();
 		}
 		return instance;
 	}

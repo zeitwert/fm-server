@@ -14,8 +14,8 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -40,7 +40,7 @@ public class ObjMetaDto extends AggregateMetaDto {
 		ObjMeta meta = obj.getMeta();
 		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
 		AggregateMetaDto.fromAggregate(builder, obj, sessionInfo);
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		return builder
 			.closedByUser(userBridge.fromAggregate(meta.getClosedByUser(), sessionInfo))
@@ -55,8 +55,8 @@ public class ObjMetaDto extends AggregateMetaDto {
 		AggregateMetaDto.fromRecord(builder, obj, sessionInfo);
 		ObjTenantRepository tenantRepo = (ObjTenantRepository) AppContext.getInstance().getRepository(ObjTenant.class);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
-		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		Integer modifiedByUserId = obj.getValue(ObjFields.MODIFIED_BY_USER_ID);
 		ObjUserDto modifiedByUser = modifiedByUserId == null ? null
 				: userBridge.fromAggregate(userRepo.get(modifiedByUserId), sessionInfo);

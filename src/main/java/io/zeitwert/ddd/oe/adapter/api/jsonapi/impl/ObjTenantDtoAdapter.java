@@ -2,7 +2,7 @@
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoBridge;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -10,16 +10,16 @@ import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
-public final class ObjTenantDtoBridge extends ObjDtoBridge<ObjTenant, ObjTenantVRecord, ObjTenantDto> {
+public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenantVRecord, ObjTenantDto> {
 
-	private static ObjTenantDtoBridge instance;
+	private static ObjTenantDtoAdapter instance;
 
-	private ObjTenantDtoBridge() {
+	private ObjTenantDtoAdapter() {
 	}
 
-	public static final ObjTenantDtoBridge getInstance() {
+	public static final ObjTenantDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjTenantDtoBridge();
+			instance = new ObjTenantDtoAdapter();
 		}
 		return instance;
 	}
@@ -42,7 +42,7 @@ public final class ObjTenantDtoBridge extends ObjDtoBridge<ObjTenant, ObjTenantV
 			.sessionInfo(sessionInfo)
 			.id(obj.getId())
 			.caption(obj.getCaption())
-			.owner(ObjUserDtoBridge.getInstance().fromAggregate(obj.getOwner(), sessionInfo))
+			.owner(ObjUserDtoAdapter.getInstance().fromAggregate(obj.getOwner(), sessionInfo))
 			// tenant stuff
 			.name(obj.getName())
 			.extlKey(obj.getExtlKey())
@@ -63,7 +63,7 @@ public final class ObjTenantDtoBridge extends ObjDtoBridge<ObjTenant, ObjTenantV
 			.sessionInfo(sessionInfo)
 			.id(obj.getId())
 			.caption(obj.getCaption())
-			.owner(ObjUserDtoBridge.getInstance().fromAggregate(owner, sessionInfo))
+			.owner(ObjUserDtoAdapter.getInstance().fromAggregate(owner, sessionInfo))
 			// tenant stuff
 			.name(obj.getName())
 			.extlKey(obj.getExtlKey())

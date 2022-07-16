@@ -14,11 +14,11 @@ import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
-import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoBridge;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import lombok.Data;
@@ -52,7 +52,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			} else if (this.accountId != null) {
 				account = getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
 			}
-			this.accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(account, this.sessionInfo);
+			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, this.sessionInfo);
 		}
 		return this.accountDto;
 	}
@@ -115,7 +115,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			} else if (this.coverFotoId != null) {
 				cf = getRepository(ObjDocument.class).get(this.sessionInfo, this.coverFotoId);
 			}
-			this.coverFotoDto = ObjDocumentDtoBridge.getInstance().fromAggregate(cf, this.sessionInfo);
+			this.coverFotoDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(cf, this.sessionInfo);
 		}
 		return this.coverFotoDto;
 	}

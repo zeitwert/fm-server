@@ -7,13 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.session.service.api.SessionService;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 
@@ -32,11 +32,11 @@ public class SessionInfoReponse {
 		if (sessionInfo == null) {
 			return null;
 		}
-		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		ObjAccount account = sessionInfo.hasAccount() ? accountRepository.get(sessionInfo, sessionInfo.getAccountId())
 				: null;
-		ObjAccountDto accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(account, sessionInfo);
+		ObjAccountDto accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, sessionInfo);
 		String defaultApp = sessionInfo.getUser().hasRole(CodeUserRoleEnum.getUserRole("admin")) ? "adminFm" : "userFm";
 		// @formatter:off
 		return SessionInfoReponse.builder()

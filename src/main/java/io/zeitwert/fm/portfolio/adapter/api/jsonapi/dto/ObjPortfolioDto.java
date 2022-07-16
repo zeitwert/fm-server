@@ -6,7 +6,7 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoBridge;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
 			if (this.getOriginal() != null) {
-				this.accountDto = ObjAccountDtoBridge.getInstance().fromAggregate(this.getOriginal().getAccount(),
+				this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(this.getOriginal().getAccount(),
 						this.sessionInfo);
 			} else if (this.accountId != null) {
 			}

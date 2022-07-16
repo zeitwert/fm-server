@@ -11,13 +11,13 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoBridge;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
-public class ObjPortfolioDtoBridge
-		extends FMObjDtoBridge<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
+public class ObjPortfolioDtoAdapter
+		extends FMObjDtoAdapter<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
 
 	protected static final ObjVRepository objRepository = (ObjVRepository) getRepository(Obj.class);
 
@@ -26,14 +26,14 @@ public class ObjPortfolioDtoBridge
 			CodeAggregateTypeEnum.getAggregateType("obj_account"),
 			CodeAggregateTypeEnum.getAggregateType("obj_building"));
 
-	private static ObjPortfolioDtoBridge instance;
+	private static ObjPortfolioDtoAdapter instance;
 
-	private ObjPortfolioDtoBridge() {
+	private ObjPortfolioDtoAdapter() {
 	}
 
-	public static final ObjPortfolioDtoBridge getInstance() {
+	public static final ObjPortfolioDtoAdapter getInstance() {
 		if (instance == null) {
-			instance = new ObjPortfolioDtoBridge();
+			instance = new ObjPortfolioDtoAdapter();
 		}
 		return instance;
 	}

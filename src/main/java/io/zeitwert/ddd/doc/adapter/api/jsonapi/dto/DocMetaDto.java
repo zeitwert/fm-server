@@ -13,8 +13,8 @@ import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoBridge;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -53,8 +53,8 @@ public class DocMetaDto extends AggregateMetaDto {
 		AggregateMetaDto.fromRecord(builder, doc, sessionInfo);
 		ObjTenantRepository tenantRepo = (ObjTenantRepository) AppContext.getInstance().getRepository(ObjTenant.class);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
-		ObjTenantDtoBridge tenantBridge = ObjTenantDtoBridge.getInstance();
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		Integer modifiedByUserId = doc.getValue(DocFields.MODIFIED_BY_USER_ID);
 		ObjUserDto modifiedByUser = modifiedByUserId == null ? null
 				: userBridge.fromAggregate(userRepo.get(modifiedByUserId), sessionInfo);

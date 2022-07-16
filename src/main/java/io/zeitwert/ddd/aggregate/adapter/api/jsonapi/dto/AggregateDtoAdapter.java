@@ -9,7 +9,7 @@ import io.zeitwert.ddd.session.model.SessionInfo;
 
 import org.jooq.TableRecord;
 
-public abstract class AggregateDtoBridge<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>> {
+public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>> {
 
 	protected static final <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> aggrClass) {
 		return AppContext.getInstance().getRepository(aggrClass);

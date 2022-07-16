@@ -3,7 +3,7 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoBridge;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class ObjPartTransitionDto {
 	private OffsetDateTime timestamp;
 
 	public static ObjPartTransitionDto fromPart(ObjPartTransition transition, SessionInfo sessionInfo) {
-		ObjUserDtoBridge userBridge = ObjUserDtoBridge.getInstance();
+		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		return ObjPartTransitionDto.builder()
 			.seqNr(transition.getSeqNr())
