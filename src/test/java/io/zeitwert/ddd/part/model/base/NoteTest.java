@@ -14,6 +14,7 @@ import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
@@ -68,13 +69,14 @@ public class NoteTest {
 		ObjNote note1a1 = test1a.addNote(CodeNoteTypeEnum.getNoteType("note"));
 		initNote(note1a1, "Subject 2", "Content 2", false);
 		noteRepository.store(note1a1);
+
 		ObjNote note1a2 = test1a.addNote(CodeNoteTypeEnum.getNoteType("note"));
 		initNote(note1a2, "Subject 3", "Content 3", false);
 		noteRepository.store(note1a2);
 
 		assertEquals(3, test1a.getNoteList().size());
 
-		List<ObjNote> test1aNoteList = test1a.getNoteList();
+		List<ObjNoteVRecord> test1aNoteList = test1a.getNoteList();
 		Set<Integer> idSet = test1aNoteList.stream().map(n -> n.getId()).collect(Collectors.toSet());
 		assertEquals(Set.of(note1a0.getId(), note1a1.getId(), note1a2.getId()), idSet);
 		assertEquals(note1a0.getId(), test1aNoteList.get(0).getId());
@@ -87,16 +89,16 @@ public class NoteTest {
 		test1a.removeNote(note1a1.getId());
 		test1aNoteList = test1a.getNoteList();
 		assertEquals(2, test1aNoteList.size());
-		assertEquals(note1a2.getId(), test1aNoteList.get(1).getId());
-		// assertEquals(note1a2, test1a.getNoteById(note1a2.getId()));
+		assertEquals(note1a0.getId(), test1aNoteList.get(0).getId());
 		assertEquals(note1a0.getSubject(), test1aNoteList.get(0).getSubject());
+		assertEquals(note1a2.getId(), test1aNoteList.get(1).getId());
 		assertEquals(note1a2.getSubject(), test1aNoteList.get(1).getSubject());
 
 		testRepository.store(test1a);
 		test1a = null;
 
 		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
-		List<ObjNote> test1bNoteList = test1b.getNoteList();
+		List<ObjNoteVRecord> test1bNoteList = test1b.getNoteList();
 
 		assertEquals(2, test1bNoteList.size());
 		assertEquals("Subject 1,Subject 3", String.join(",", test1bNoteList.stream().map(n -> n.getSubject()).toList()));
@@ -105,24 +107,28 @@ public class NoteTest {
 		ObjNote note1b2 = test1b.addNote(CodeNoteTypeEnum.getNoteType("note"));
 		initNote(note1b2, "Subject 4", "Content 4", false);
 		noteRepository.store(note1b2);
-		test1b.getNoteList().get(1).setIsPrivate(true);
-		noteRepository.store(test1b.getNoteList().get(1));
+
+		ObjNoteVRecord note1b1v = test1b.getNoteList().get(1);
+		ObjNote note1b1 = noteRepository.get(sessionInfo, note1b1v.getId());
+		note1b1.setIsPrivate(true);
+		noteRepository.store(note1b1);
 
 		testRepository.store(test1b);
 		test1b = null;
 
 		ObjTest test1c = testRepository.get(sessionInfo, test1Id);
-		List<ObjNote> test1cNoteList = test1c.getNoteList();
+		List<ObjNoteVRecord> test1cNoteList = test1c.getNoteList();
 
 		assertEquals(3, test1cNoteList.size());
 		assertEquals("Subject 1,Subject 3,Subject 4",
 				String.join(",", test1cNoteList.stream().map(n -> n.getSubject()).toList()));
+		assertTrue(test1c.getNoteList().get(1).getIsPrivate());
 
 		// Test privacy
 		SessionInfo otherSession = TestSessionInfoProvider.getOtherSession(userRepository);
 
 		ObjTest test1d = testRepository.get(otherSession, test1Id);
-		List<ObjNote> test1dNoteList = test1d.getNoteList();
+		List<ObjNoteVRecord> test1dNoteList = test1d.getNoteList();
 
 		assertEquals(2, test1dNoteList.size());
 		assertEquals("Subject 1,Subject 4",

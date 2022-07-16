@@ -125,10 +125,10 @@ public class BuildingFileTransferController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
-					.createdByUser(note.getMeta().getCreatedByUser().getEmail())
-					.createdAt(note.getMeta().getCreatedAt())
-					.modifiedByUser(note.getMeta().getModifiedByUser() != null ? note.getMeta().getModifiedByUser().getEmail() : null)
-					.modifiedAt(note.getMeta().getModifiedAt())
+					.createdByUser(userRepo.get(note.getCreatedByUserId()).getEmail())
+					.createdAt(note.getCreatedAt())
+					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(note.getModifiedByUserId()).getEmail() : null)
+					.modifiedAt(note.getModifiedAt())
 				.build();
 		}).toList();
 		BuildingTransferDto export = BuildingTransferDto

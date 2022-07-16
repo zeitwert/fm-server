@@ -7,6 +7,7 @@ import io.zeitwert.ddd.doc.model.base.DocBase;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.doc.model.FMDocRepository;
@@ -29,10 +30,11 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 		return (FMDocRepository<? extends FMDoc, ? extends Record>) super.getRepository();
 	}
 
-	public List<ObjNote> getNoteList() {
+	public List<ObjNoteVRecord> getNoteList() {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
 		return noteRepository.getByForeignKey(this.getSessionInfo(), "related_to_id", this.getId()).stream()
-				.map(onv -> noteRepository.get(this.getSessionInfo(), onv.getId())).toList();
+				.filter(onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getSessionInfo().getUser().getId()))
+				.toList();
 	}
 
 	public ObjNote addNote(CodeNoteType noteType) {

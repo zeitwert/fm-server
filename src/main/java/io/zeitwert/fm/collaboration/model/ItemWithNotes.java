@@ -1,12 +1,13 @@
 package io.zeitwert.fm.collaboration.model;
 
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 
 import java.util.List;
 
 public interface ItemWithNotes {
 
-	List<ObjNote> getNoteList();
+	List<ObjNoteVRecord> getNoteList();
 
 	ObjNote addNote(CodeNoteType noteType);
 
