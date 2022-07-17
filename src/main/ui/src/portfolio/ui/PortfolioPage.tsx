@@ -1,21 +1,28 @@
 
 import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { EntityType, EntityTypeInfo, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
+import { ActivityPortlet } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
 import ItemEditor from "item/ui/ItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
-import { makeObservable, observable } from "mobx";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
+import ErrorTab from "item/ui/tab/ErrorTab";
+import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
 import React from "react";
 import PortfolioStaticDataForm from "./forms/PortfolioStaticDataForm";
 
-enum TAB {
+enum LEFT_TABS {
 	DETAILS = 0,
 	EVALUATION = 1,
+}
+
+enum RIGHT_TABS {
+	ACTIVITY = 0,
+	ERRORS = 1,
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -24,8 +31,24 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.PORTFOLIO];
 
-	@observable activeLeftTabId = TAB.DETAILS;
 	@observable portfolioStore = PortfolioStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
+	@observable activeRightTabId = RIGHT_TABS.ACTIVITY;
+
+	@computed
+	get hasValidations(): boolean {
+		return this.portfolioStore.portfolio?.meta?.validationList?.length! > 0;
+	}
+
+	@computed
+	get validationCount(): number {
+		return this.portfolioStore.portfolio?.meta?.validationList?.length || 0;
+	}
+
+	@computed
+	get hasErrors(): boolean {
+		return this.portfolioStore.portfolio?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
+	}
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -47,17 +70,22 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
+
 		const portfolio = this.portfolioStore.portfolio!;
-		if (session.isNetworkActive && !this.portfolioStore.isInTrx) {
+		if (session.isNetworkActive) {
 			return <Spinner variant="brand" size="large" />;
 		} else if (!portfolio) {
 			return <NotFound entityType={this.entityType} id={this.props.params.portfolioId!} />;
 		}
-		const isFullWidth = [TAB.DETAILS].indexOf(this.activeLeftTabId) < 0;
+
+		const isFullWidth = [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
+		const allowEdit = [LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0;
+
 		const customEditorButtons = (
 			<>
 			</>
 		);
+
 		return (
 			<>
 				<ItemHeader
@@ -67,35 +95,58 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 				<ItemGrid>
 					<ItemLeftPart isFullWidth={isFullWidth}>
 						<ItemEditor
+							key={"portfolio-" + this.portfolioStore.portfolio?.id}
 							store={this.portfolioStore}
 							entityType={EntityType.PORTFOLIO}
-							showEditButtons={this.activeLeftTabId === TAB.DETAILS}
+							showEditButtons={allowEdit}
 							customButtons={customEditorButtons}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
-							key={"portfolio-" + this.portfolioStore.portfolio?.id}
 						>
 							<Tabs
 								className="full-height"
 								selectedIndex={this.activeLeftTabId}
 								onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
 							>
-								<TabsPanel label="Details">
-									{this.activeLeftTabId === TAB.DETAILS && <PortfolioStaticDataForm store={this.portfolioStore} />}
+								<TabsPanel label="Stammdaten">
+									{
+										this.activeLeftTabId === LEFT_TABS.DETAILS &&
+										<PortfolioStaticDataForm store={this.portfolioStore} />
+									}
 								</TabsPanel>
 								<TabsPanel label="Auswertung">
-									{this.activeLeftTabId === TAB.EVALUATION && <TabProjection itemType="portfolio" itemId={this.portfolioStore.portfolio?.id!} />}
+									{
+										this.activeLeftTabId === LEFT_TABS.EVALUATION &&
+										<TabProjection itemType="portfolio" itemId={this.portfolioStore.portfolio?.id!} />
+									}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
-					<>
-						{
-							!isFullWidth &&
-							<ItemRightPart store={this.portfolioStore} />
-						}
-					</>
+					<ItemRightPart isFullWidth={isFullWidth}>
+						<Tabs
+							className="full-height"
+							selectedIndex={this.activeRightTabId}
+							onSelect={(tabId: number) => (this.activeRightTabId = tabId)}
+						>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									<ActivityPortlet {...Object.assign({}, this.props, { item: portfolio, onSave: async () => { } })} />
+								}
+							</TabsPanel>
+							{
+								this.hasValidations &&
+								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
+									{
+										this.activeRightTabId === RIGHT_TABS.ERRORS &&
+										<ErrorTab validationList={portfolio.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 			</>
 		);

@@ -1,3 +1,4 @@
+
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import moment from "moment";
 import { DateFormat, EntityType, faTypes } from "../../../app/common";
@@ -14,11 +15,11 @@ const MstActivityModel = DocModel.named("Activity")
 		get isUpcoming() {
 			return moment(self.date).diff(moment()) > 0;
 		},
-		get isOverdue() {
-			return !this.isUpcoming && !this.isPast;
-		},
 		get isPast() {
 			return !this.isUpcoming && (!self.isInWork || self.isBusinessProcess);
+		},
+		get isOverdue() {
+			return !this.isUpcoming && !this.isPast;
 		}
 	}))
 	.views((self) => ({
@@ -35,7 +36,6 @@ const MstActivityModel = DocModel.named("Activity")
 					"."
 				);
 			}
-
 			switch (self.type.type) {
 				case EntityType.TASK:
 					if (self.isUpcoming) {

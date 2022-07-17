@@ -3,7 +3,7 @@ import { Activity, DateFormat } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
-import { makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import moment from "moment";
 import React from "react";
@@ -16,23 +16,43 @@ interface ActivityPortletTimelineProps extends RouteComponentProps {
 @observer
 class ActivityPortletTimeline extends React.Component<ActivityPortletTimelineProps> {
 
-	@observable isUpcomingActivitiesOpen = true;
-	@observable isOverdueActivitiesOpen = true;
+	@observable activities: Activity[] = [];
+	@observable isUpcomingActivitiesOpen = false;
+	@observable isOverdueActivitiesOpen = false;
 	@observable isPastActivitiesOpen = true;
 	@observable pastActivityOpenStates = new Map<string, boolean>();
+
+	@computed
+	get upcomingActivities(): Activity[] {
+		return this.activities.filter((a) => a.isUpcoming);
+	}
+
+	@computed
+	get overdueActivities(): Activity[] {
+		return this.activities.filter((a) => a.isOverdue);
+	}
+
+	@computed
+	get pastActivities(): Activity[] {
+		return this.activities.filter((a) => a.isPast);
+	}
 
 	constructor(props: ActivityPortletTimelineProps) {
 		super(props);
 		makeObservable(this);
 	}
 
+	async componentDidMount() {
+		this.activities = this.props.activities;
+	}
+
+	async componentDidUpdate(prevProps: RouteComponentProps) {
+		this.activities = this.props.activities;
+	}
+
 	render() {
-		const { activities } = this.props;
-		const upcomingActivities = activities.filter((a) => a.isUpcoming);
-		const overdueActivities = activities.filter((a) => a.isOverdue);
 		const pastActivities = new Map<string, Activity[]>();
-		activities
-			.filter((a) => a.isPast)
+		this.pastActivities
 			.forEach((a) => {
 				const key = moment(a.date).format("YYYY-MM");
 				let month: Activity[] = [];
@@ -48,25 +68,25 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 				<ExpandableSection
 					id="upcoming-activities"
 					/* @ts-ignore */
-					title="Upcoming"
+					title="Bevorstehend"
 					isOpen={this.isUpcomingActivitiesOpen}
 					onToggleOpen={() => (this.isUpcomingActivitiesOpen = !this.isUpcomingActivitiesOpen)}
 				>
-					{this.renderTimeline(upcomingActivities, "No upcoming activities.", true)}
+					{this.renderTimeline(this.upcomingActivities, "Keine bevorstehende Aktivitäten.", true)}
 				</ExpandableSection>
 				<ExpandableSection
 					id="overdue-activities"
 					/* @ts-ignore */
-					title="Overdue"
+					title="Überfällig"
 					isOpen={this.isOverdueActivitiesOpen}
 					onToggleOpen={() => (this.isOverdueActivitiesOpen = !this.isOverdueActivitiesOpen)}
 				>
-					{this.renderTimeline(overdueActivities, "No overdue activities.", true)}
+					{this.renderTimeline(this.overdueActivities, "Keine überfälligen Aktivitäten.", true)}
 				</ExpandableSection>
 				<ExpandableSection
 					id="past-activities"
 					/* @ts-ignore */
-					title="Past"
+					title="Vergangenheit"
 					isOpen={this.isPastActivitiesOpen}
 					onToggleOpen={() => (this.isPastActivitiesOpen = !this.isPastActivitiesOpen)}
 				>
@@ -96,7 +116,7 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 
 	private renderPastActivities(activities: Map<string, Activity[]>) {
 		if (!activities?.size) {
-			return <p className="slds-m-horizontal_medium">No past activities.</p>;
+			return <p className="slds-m-horizontal_medium">Keine vergangene Aktivitäten.</p>;
 		}
 		const items: JSX.Element[] = [];
 		activities.forEach((activities, key) => {
@@ -123,7 +143,7 @@ class ActivityPortletTimeline extends React.Component<ActivityPortletTimelinePro
 							: this.pastActivityOpenStates.set(key, true)
 					}
 				>
-					{this.renderTimeline(activities, "No past activities.", false)}
+					{this.renderTimeline(activities, "Keine vergangene Aktivitäten.", false)}
 				</ExpandableSection>
 			);
 		});
