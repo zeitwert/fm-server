@@ -15,7 +15,7 @@ const BuildingLocationFormModel = new Form(
 		street: new TextField(),
 		zip: new TextField(),
 		city: new TextField(),
-		country: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeCountry" }),
+		country: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/codeCountry" }),
 		//
 		geoAddress: new TextField(),
 		geoCoordinates: new TextField(),

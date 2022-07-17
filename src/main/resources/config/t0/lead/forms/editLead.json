@@ -207,7 +207,7 @@
 										"storage": "Full",
 										"identity": "id",
 										"enableAutocomplete": false,
-										"queryUrl": "{{enumBaseUrl}}/account/codeCountry",
+										"queryUrl": "{{enumBaseUrl}}/oe/codeCountry",
 										"path": "",
 										"formatItem": "{{$item.name}}",
 										"enabled": "{{!lead.contact}}"

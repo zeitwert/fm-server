@@ -62,12 +62,12 @@
 											"ignore": "{{!!control.enabled}}",
 											"dataSource": "Rest",
 											"storage": "Id",
-											"lookupUrl": "{{enumBaseUrl}}/base/codeCountry/{{$id}}",
+											"lookupUrl": "{{enumBaseUrl}}/oe/codeCountry/{{$id}}",
 											"identity": "id",
 											"enableAutocomplete": false,
 											"isRequired": false,
 											"enabled": true,
-											"queryUrl": "{{enumBaseUrl}}/base/codeCountry",
+											"queryUrl": "{{enumBaseUrl}}/oe/codeCountry",
 											"formatItem": "{{$item.caption}}"
 										},
 										{

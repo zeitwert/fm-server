@@ -53,7 +53,7 @@ example:
 
 ### Build
 
-Heroku-like build: `mvnw -Dskip.jooq.generation -DskipTests clean dependency:list install`
+Heroku-like build: `mvnw -DskipTests clean dependency:list install`
 
 
 ### Flyway

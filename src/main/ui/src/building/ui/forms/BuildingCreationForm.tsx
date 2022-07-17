@@ -20,7 +20,7 @@ const BuildingCreationFormModel = new Form(
 		street: new TextField({ required: true }),
 		zip: new TextField({ required: true }),
 		city: new TextField({ required: true }),
-		country: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/account/codeCountry" }),
+		country: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/oe/codeCountry" }),
 	}
 );
 
