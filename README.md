@@ -65,9 +65,9 @@ Trigger manual migration `mvnw flyway:migrate`
 **Code Generation**
 Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/db` (according to definition in jooq XML config files).
 
-Sources can be generated (after database has been set up through flyway) with `mvnw generate-sources`;
+Sources can be generated (after database has been set up through flyway) with `mvnw -Dskip.jooq.generation=false generate-sources`;
 
-Generating sources for only a single component can be done like this: `mvnw jooq-codegen:generate@jooq-codegen-crm-contact`.
+Generating sources for only a single component can be done like this: `mvnw -Dskip.jooq.generation=false jooq-codegen:generate@jooq-codegen-fm-account`.
 
 **Subclassing Records (instead of manual proxying)**
 UpdatableRecord cannot be subclassed, since instantiation seems to be hardcoded.

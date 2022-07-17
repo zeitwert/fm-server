@@ -29,7 +29,7 @@
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<lombok.version>1.18.22</lombok.version>
-		<jooq-codegen.version>3.14.11</jooq-codegen.version>
+		<jooq-codegen.version>3.14.15</jooq-codegen.version>
 		<javassist.version>3.29.0-GA</javassist.version>
 		<aspose-words.version>22.4</aspose-words.version>
 		<google-maps.version>2.0.0</google-maps.version>
@@ -37,6 +37,7 @@
 		<node.version>v16.14.0</node.version>
 		<yarn.version>v1.22.5</yarn.version>
 		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
+		<skip.jooq.generation>true</skip.jooq.generation>
 	</properties>
 
 	<repositories>
