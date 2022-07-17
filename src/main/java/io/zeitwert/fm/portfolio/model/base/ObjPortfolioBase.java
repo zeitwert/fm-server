@@ -100,29 +100,27 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	private void calcBuildingSet() {
 		this.buildingSet.clearItems();
 		for (Integer objId : this.includeSet.getItems()) {
-			this.getBuildings(objId).forEach(b -> this.buildingSet.addItem(b.getId()));
+			this.getBuildingIds(objId).forEach(id -> this.buildingSet.addItem(id));
 		}
 		for (Integer objId : this.excludeSet.getItems()) {
-			this.getBuildings(objId).forEach(b -> this.buildingSet.removeItem(b.getId()));
+			this.getBuildingIds(objId).forEach(id -> this.buildingSet.removeItem(id));
 		}
 	}
 
-	private Set<Obj> getBuildings(Integer id) {
+	private Set<Integer> getBuildingIds(Integer id) {
 		SessionInfo sessionInfo = this.getMeta().getSessionInfo();
 		ObjVRepository objRepo = this.getRepository().getObjVRepository();
 		Obj obj = objRepo.get(sessionInfo, id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		if (objType == CodeAggregateTypeEnum.getAggregateType("obj_building")) {
-			return Set.of(obj);
+			return Set.of(obj.getId());
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_portfolio")) {
 			ObjPortfolio pf = this.getRepository().get(sessionInfo, id);
-			return pf.getBuildingSet().stream().map(buildingId -> objRepo.get(sessionInfo, buildingId))
-					.collect(Collectors.toSet());
+			return pf.getBuildingSet();
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_account")) {
 			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepository()
 					.getByForeignKey(sessionInfo, "account_id", id);
-			return buildings.stream().map(bldg -> objRepo.get(sessionInfo, bldg.getId()))
-					.collect(Collectors.toSet());
+			return buildings.stream().map(bldg -> bldg.getId()).collect(Collectors.toSet());
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());
 	}

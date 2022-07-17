@@ -129,11 +129,16 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
-		this.owner.setId(sessionUserId);
-		this.version.setValue(0);
-		this.createdByUser.setId(sessionUserId);
-		this.createdAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
-		this.transitionList.addPart();
+		try {
+			this.disableCalc();
+			this.owner.setId(sessionUserId);
+			this.version.setValue(0);
+			this.createdByUser.setId(sessionUserId);
+			this.createdAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+			this.transitionList.addPart();
+		} finally {
+			this.enableCalc();
+		}
 	}
 
 	@Override
@@ -148,10 +153,15 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.transitionList.addPart();
 		super.doBeforeStore();
 		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
-		this.isInWork.setValue(isInWork);
-		this.version.setValue(this.version.getValue() + 1);
-		this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
-		this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+		try {
+			this.disableCalc();
+			this.isInWork.setValue(isInWork);
+			this.version.setValue(this.version.getValue() + 1);
+			this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
+			this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+		} finally {
+			this.enableCalc();
+		}
 	}
 
 	@Override

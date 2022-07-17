@@ -135,9 +135,14 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	public void doBeforeStore() {
 		this.transitionList.addPart();
 		super.doBeforeStore();
-		this.version.setValue(this.version.getValue() + 1);
-		this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
-		this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+		try {
+			this.disableCalc();
+			this.version.setValue(this.version.getValue() + 1);
+			this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
+			this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+		} finally {
+			this.enableCalc();
+		}
 	}
 
 	@Override
