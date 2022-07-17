@@ -200,7 +200,7 @@ export class PageHeaderDetailLabel extends React.Component {
 					className="slds-m-bottom_xx-small" /*{...props}*/
 				>
 					{children}
-				</Text>
+				</Text> as any
 			);
 		}
 
@@ -221,7 +221,7 @@ export class PageHeaderDetailBody extends React.Component {
 					className="slds-m-bottom_xx-small" /*{...props}*/
 				>
 					{children}
-				</Text>
+				</Text> as any
 			);
 		}
 

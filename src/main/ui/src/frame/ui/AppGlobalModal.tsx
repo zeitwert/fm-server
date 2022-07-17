@@ -19,6 +19,7 @@ export interface AppGlobalModalProps {
 @inject("appStore")
 @observer
 export default class AppGlobalModal extends React.Component<AppGlobalModalProps> {
+
 	@observable isActionProcessing = false;
 	@observable isActionProcessed = false;
 
@@ -69,7 +70,7 @@ export default class AppGlobalModal extends React.Component<AppGlobalModalProps>
 				</div>
 			</div>,
 			document.getElementById("root")!
-		);
+		) as any;
 	}
 
 	private handleKeyDown = (e: any) => {

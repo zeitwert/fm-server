@@ -54,10 +54,11 @@ https://github.com/salesforce/design-system-react/blob/master/docs/create-react-
 
 ```sh
 cp node_modules/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css public/
-cp node_modules/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css plugin/outlook/assets/styles
 cp -r node_modules/@salesforce-ux/design-system/assets/icons public/assets
-cp -r node_modules/@salesforce-ux/design-system/assets/icons plugin/outlook/assets
 cp -r node_modules/\@salesforce/design-system-react/assets/images public/assets
+
+cp node_modules/@salesforce-ux/design-system/assets/styles/salesforce-lightning-design-system.min.css plugin/outlook/assets/styles
+cp -r node_modules/@salesforce-ux/design-system/assets/icons plugin/outlook/assets
 cp -r node_modules/\@salesforce/design-system-react/assets/images plugin/outlook/assets
 ```
 

@@ -10,13 +10,13 @@ interface ErrorBoundaryState {
 
 @inject("showAlert")
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
 
 	constructor(props: ErrorBoundaryProps) {
 		super(props);
-
 		this.state = { hasError: false };
 	}
 
@@ -36,6 +36,6 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
 		if (!this.state.hasError) {
 			return this.props.children;
 		}
-		return <></>;
+		return <></> as any;
 	}
 }

@@ -38,7 +38,7 @@ class DynamicView extends React.Component<RouteComponentProps> {
 
 	render() {
 		const componentName = this.componentName(this.props.params.path!)!;
-		const DynamicComponent = DynamicView.component(componentName);
+		const DynamicComponent = DynamicView.component(componentName) as any;
 		if (DynamicComponent) {
 			return (
 				<ErrorBoundary>
