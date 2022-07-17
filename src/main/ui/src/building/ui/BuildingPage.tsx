@@ -215,7 +215,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					/>
 				}
 				{
-					!!this.currentElement &&
+					this.activeLeftTabId === LEFT_TABS.RATING && !!this.currentElement &&
 					<SidePanel style={{ top: "110px", bottom: "30px", right: "30px", minWidth: "28rem" }}>
 						<div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
 							<ElementRatingForm
