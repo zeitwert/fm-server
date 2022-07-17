@@ -1,4 +1,4 @@
-package io.zeitwert.server.session.service.api.impl;
+package io.zeitwert.server.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,7 @@ import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.service.api.SessionService;
 
 @Configuration

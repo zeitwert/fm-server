@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.adapter.rest.dto.LoginRequest;
 import io.zeitwert.server.session.adapter.rest.dto.LoginResponse;
 import io.zeitwert.server.session.adapter.rest.dto.SessionInfoReponse;
 import io.zeitwert.server.session.service.api.JwtProvider;
 import io.zeitwert.server.session.service.api.SessionService;
-import io.zeitwert.server.session.service.api.impl.ZeitwertUserDetails;
 
 @RestController("sessionController")
 @RequestMapping("/api/session")

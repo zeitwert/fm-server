@@ -1,4 +1,4 @@
-package io.zeitwert.server.config;
+package io.zeitwert.server.config.security;
 
 import java.util.List;
 
@@ -20,9 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import io.zeitwert.server.session.service.api.impl.AuthenticationJWTFilter;
-import io.zeitwert.server.session.service.api.impl.ZeitwertAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity

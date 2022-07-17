@@ -1,4 +1,4 @@
-package io.zeitwert.server.config;
+package io.zeitwert.server.config.misc;
 
 import java.time.format.DateTimeFormatter;
 

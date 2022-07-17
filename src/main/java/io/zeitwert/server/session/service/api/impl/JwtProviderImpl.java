@@ -15,6 +15,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.service.api.JwtProvider;
 
 @Service

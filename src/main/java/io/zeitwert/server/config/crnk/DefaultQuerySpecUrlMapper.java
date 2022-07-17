@@ -1,4 +1,5 @@
-package io.zeitwert.server.crnk;
+
+package io.zeitwert.server.config.crnk;
 
 import org.springframework.context.annotation.Configuration;
 

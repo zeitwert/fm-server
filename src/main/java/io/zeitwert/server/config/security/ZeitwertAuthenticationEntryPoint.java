@@ -1,4 +1,4 @@
-package io.zeitwert.server.session.service.api.impl;
+package io.zeitwert.server.config.security;
 
 import java.io.IOException;
 

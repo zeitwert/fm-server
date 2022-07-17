@@ -1,4 +1,5 @@
-package io.zeitwert.server.crnk;
+
+package io.zeitwert.server.config.crnk;
 
 public class DefaultQueryPathResolver extends io.crnk.core.queryspec.internal.DefaultQueryPathResolver {
 
