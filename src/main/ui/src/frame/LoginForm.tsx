@@ -1,9 +1,11 @@
 
-import { Button, Card, MediaObject } from "@salesforce/design-system-react";
-import { Enumerated, session, Session, TenantInfo } from "@zeitwert/ui-model";
+import { Button, Card, Checkbox, MediaObject } from "@salesforce/design-system-react";
+import { Enumerated, LOGIN_INFO_ITEM, session, Session, TenantInfo } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React, { ChangeEvent } from "react";
+import ReactMarkdown from "react-markdown";
+import disclaimer from "./pilot/disclaimer";
 
 export interface LoginFormProps {
 	session: Session;
@@ -17,6 +19,10 @@ const CARD_HEADER =
 		canTruncate
 	/>;
 
+interface LoginInfo {
+	hasAcceptedDisclaimer?: boolean;
+}
+
 @inject("appStore", "session")
 @observer
 export default class LoginForm extends React.Component<LoginFormProps> {
@@ -28,6 +34,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	@observable tenant: TenantInfo | undefined = undefined;
 	@observable.ref accounts: Enumerated[] = [];
 
+	@observable didAcceptDisclaimer: boolean = false;
 	@observable hasLoginFailed: boolean = false;
 
 	@computed get isEmailValid(): boolean {
@@ -38,13 +45,21 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		return !!this.tenant ? `/tenant/${this.tenant.extlKey}/login-logo.jpg` : "/tenant/login-logo.jpg";
 	}
 
+	@computed get needDisclaimer(): boolean {
+		return !!this.tenant && this.tenant.tenantType.id === "community";
+	}
+
 	@computed get isReadyForLogin(): boolean {
+		if (this.needDisclaimer && !this.didAcceptDisclaimer) {
+			return false;
+		}
 		return this.isEmailValid && !!this.password && !!this.account;
 	}
 
 	constructor(props: LoginFormProps) {
 		super(props);
 		makeObservable(this);
+		this.didAcceptDisclaimer = this.hasAcceptedDisclaimer();
 	}
 
 	render() {
@@ -84,6 +99,33 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 													</div>
 												</div>
 											</div>
+										}
+										{
+											this.needDisclaimer &&
+											<>
+												<div className="slds-form-element slds-m-top_medium">
+													<div className="slds-notify slds-notify_alert" role="alert">
+														<span className="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+															<svg className="slds-icon slds-icon_x-small" aria-hidden="true">
+																<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+															</svg>
+														</span>
+														<h2><b>Pilotvereinbarung</b></h2>
+													</div>
+													<ReactMarkdown className="fa-note-content slds-m-top_medium">
+														{disclaimer}
+													</ReactMarkdown>
+													<div className="slds-form-element slds-m-top_medium">
+														<Checkbox
+															id="accept-disclaimer"
+															labels={{ label: "Ich akzeptiere die Pilotvereinbarung" }}
+															checked={this.didAcceptDisclaimer}
+															onChange={this.acceptDisclaimer}
+															disabled={this.didAcceptDisclaimer}
+														/>
+													</div>
+												</div>
+											</>
 										}
 									</div>
 								</div>
@@ -138,6 +180,25 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	private setAccount = (account: ChangeEvent<HTMLSelectElement>) => {
 		this.account = this.accounts.find(a => account.target.value === a.id);
 		this.hasLoginFailed = false;
+	}
+
+	private getLoginInfo = (): LoginInfo => {
+		const loginInfo = localStorage.getItem(LOGIN_INFO_ITEM);
+		if (loginInfo) {
+			return JSON.parse(loginInfo);
+		}
+		return {};
+	}
+
+	private hasAcceptedDisclaimer = (): boolean => {
+		return !!this.getLoginInfo().hasAcceptedDisclaimer;
+	}
+
+	private acceptDisclaimer = (): void => {
+		const loginInfo = this.getLoginInfo();
+		loginInfo.hasAcceptedDisclaimer = true;
+		localStorage.setItem(LOGIN_INFO_ITEM, JSON.stringify(loginInfo));
+		this.didAcceptDisclaimer = this.hasAcceptedDisclaimer();
 	}
 
 	private login = async (evt: any, src: string) => {
