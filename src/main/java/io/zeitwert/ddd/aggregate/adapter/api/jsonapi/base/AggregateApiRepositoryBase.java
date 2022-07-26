@@ -118,7 +118,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	@SuppressWarnings("unchecked")
 	public void delete(Integer id) {
 		if (id == null) {
-			throw new BadRequestException("Can only delete existing object (missing id)");
+			throw new ResourceNotFoundException("Can only delete existing object (missing id)");
 		}
 		A aggregate = this.sessionInfo.hasAggregate(id)
 				? (A) this.sessionInfo.getAggregate(id)

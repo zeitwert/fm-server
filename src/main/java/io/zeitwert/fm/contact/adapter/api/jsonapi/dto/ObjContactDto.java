@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-@JsonApiResource(type = "contact", resourcePath = "contact/contacts", deletable = false)
+@JsonApiResource(type = "contact", resourcePath = "contact/contacts")
 public class ObjContactDto extends FMObjDtoBase<ObjContact> {
 
 	@JsonApiRelationId

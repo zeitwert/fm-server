@@ -25,6 +25,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.crnk.core.queryspec.Direction;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
+import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.queryspec.SortSpec;
 
 public class SqlUtils {
@@ -38,6 +39,10 @@ public class SqlUtils {
 
 	private static String getPath(FilterSpec filter) {
 		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
+	}
+
+	public static boolean hasFilterFor(QuerySpec querySpec, String fieldName) {
+		return querySpec.getFilters().stream().anyMatch(f -> getPath(f).equals(fieldName));
 	}
 
 	public static Condition andFilter(DSLContext dslContext, Condition whereClause, Table<?> table,
@@ -80,6 +85,26 @@ public class SqlUtils {
 				.limit(0, 20)
 			);
 		//@formatter:on
+	}
+
+	private static Condition closedFilter(DSLContext dslContext, Table<?> table, FilterSpec filter) {
+		Field<?> field = table.field("closed_at");
+		assertThis(field != null, "known field closed_at");
+		Boolean value = filter.getValue();
+		if (value) {
+			if (filter.getOperator() == FilterOperator.EQ) {
+				return field.isNotNull();
+			} else if (filter.getOperator() == FilterOperator.NEQ) {
+				return field.isNull();
+			}
+		} else if (!value) {
+			if (filter.getOperator() == FilterOperator.EQ) {
+				return field.isNull();
+			} else if (filter.getOperator() == FilterOperator.NEQ) {
+				return field.isNotNull();
+			}
+		}
+		return DSL.trueCondition();
 	}
 
 	private static Integer toInteger(Object value) {
@@ -242,6 +267,8 @@ public class SqlUtils {
 		String fieldName = StringUtils.toSnakeCase(getPath(filter));
 		if (fieldName.equals("search_text")) {
 			return searchFilter(dslContext, idField, filter);
+		} else if (fieldName.equals("is_closed")) {
+			return closedFilter(dslContext, table, filter);
 		}
 		Field<?> field = table.field(fieldName);
 		assertThis(field != null, "known field " + fieldName);

@@ -47,7 +47,7 @@ example:
 **Profiles**
 
 * dev: local Dev Server, against PostgreSql in local container or against Staging Server
-* test: local Test environment, against PostgreSql in local container or against Staging Server
+* test: local Test environment, against PostgreSql in local container or against Staging Database
 * staging: Staging Server on heroku
 * prod: Production Sever on heroku
 

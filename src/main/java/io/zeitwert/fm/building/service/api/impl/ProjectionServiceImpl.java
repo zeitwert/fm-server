@@ -71,7 +71,10 @@ public class ProjectionServiceImpl implements ProjectionService {
 		int startYear = this.getMinProjectionDate(buildings);
 		//@formatter:off
 		for (ObjBuilding building : buildings) {
+			EnumeratedDto buildingEnum = this.getAsEnumerated(building);
 			for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
+				EnumeratedDto elementEnum = this.getAsEnumerated(element);
+				EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
 				if (element.getValuePart() != null && element.getConditionYear() != null) {
 					if (element.getValuePart() > 0 && element.getCondition() > 0) {
 						List<ProjectionPeriod> elementPeriodList = this.getProjection(
@@ -82,10 +85,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 							/* startYear     => */ startYear,
 							/* duration      => */ duration
 						);
-						EnumeratedDto elementEnum = this.getAsEnumerated(element);
-						EnumeratedDto buildingEnum = this.getAsEnumerated(building);
-						EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
-						elementList.add(RestorationElement.builder().element(elementEnum).building(buildingEnum).buildingPart(buildingPartEnum).build());
+						elementList.add(RestorationElement.builder().building(buildingEnum).element(elementEnum).buildingPart(buildingPartEnum).build());
 						elementMap.put(elementEnum, element);
 						elementResultMap.put(elementEnum.getId(), elementPeriodList);
 					}

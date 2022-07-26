@@ -46,6 +46,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable currentElement: any;
 	@observable currentElementForm: any;
 	@observable showConfirmation: boolean = false;
+	@observable confirmationTitle: string = "";
+	@observable confirmationDetails: string = "";
+	@observable confirmationAction: () => void = () => { };
 
 	@computed
 	get hasValidations(): boolean {
@@ -103,7 +106,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
 		const allowEditRating = building.ratingStatus && building.ratingStatus.id === "open";
-		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
+		const isActive = !building.meta?.closedAt;
+		let allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
+		allowEdit = isActive && allowEdit;
 
 		const notesCount = this.buildingStore.notesStore.notes.length;
 
@@ -208,10 +213,10 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 				{
 					this.showConfirmation &&
 					<Confirmation
-						title="Bewertung verwerfen"
-						explanation={"Sie sind dabei die aktuelle Bewertung zu löschen.\nDie Daten der Bewertung gehen verloren.\nSind Sie sicher?"}
+						title={this.confirmationTitle}
+						explanation={this.confirmationDetails}
 						onCancel={() => this.showConfirmation = false}
-						onOk={() => { this.moveRatingStatus("discard", true); this.showConfirmation = false; }}
+						onOk={this.confirmationAction}
 					/>
 				}
 				{
@@ -258,8 +263,16 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
-		const isInTrx = this.buildingStore.isInTrx;
 		const building = this.buildingStore.building;
+		if (!!building?.meta?.closedAt) {
+			return (
+				<ButtonGroup variant="list">
+					<Button onClick={() => { }}>Immobilie reaktivieren</Button>
+				</ButtonGroup>
+			);
+		}
+		const isNew = this.buildingStore.isNew;
+		const isInTrx = this.buildingStore.isInTrx;
 		const ratingStatus = building?.ratingStatus;
 		return (
 			<>
@@ -267,6 +280,12 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					!isInTrx && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 &&
 					<ButtonGroup variant="list">
 						<Button onClick={this.doExport}>Export</Button>
+					</ButtonGroup>
+				}
+				{
+					!isNew && !isInTrx &&
+					<ButtonGroup variant="list">
+						<Button variant="text-destructive" onClick={this.showDeleteConfirmation}>Immobilie löschen</Button>
 					</ButtonGroup>
 				}
 				{
@@ -372,6 +391,20 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	};
 
 	private showDiscardConfirmation = () => {
+		this.confirmationTitle = "Bewertung verwerfen";
+		this.confirmationDetails = "Sie sind dabei die aktuelle Bewertung zu löschen.\nDie Daten der Bewertung gehen verloren.\nSind Sie sicher?";
+		this.confirmationAction = () => { this.moveRatingStatus("discard", true); this.showConfirmation = false; };
+		this.showConfirmation = true;
+	}
+
+	private showDeleteConfirmation = () => {
+		this.confirmationTitle = "Immobilie löschen";
+		this.confirmationDetails = "Sie sind dabei die aktuelle Immobilie zu löschen.\nSind Sie sicher?";
+		this.confirmationAction = async () => {
+			await this.buildingStore.delete();
+			this.showConfirmation = false;
+			window.location.replace("/building");
+		};
 		this.showConfirmation = true;
 	}
 

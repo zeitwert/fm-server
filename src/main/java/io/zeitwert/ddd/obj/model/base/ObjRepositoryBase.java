@@ -22,6 +22,7 @@ import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;
 
@@ -102,7 +103,9 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 
 	@Override
 	protected List<V> doFind(SessionInfo sessionInfo, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
-		querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
+		if (!SqlUtils.hasFilterFor(querySpec, "isClosed")) {
+			querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
+		}
 		return super.doFind(sessionInfo, table, idField, querySpec);
 	}
 

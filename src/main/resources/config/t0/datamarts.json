@@ -67,7 +67,11 @@
 		"module": "building",
 		"name": "Building List",
 		"provider": "api",
-		"params": {},
+		"params": {
+			"isClosed": {
+				"type": "boolean"
+			}
+		},
 		"config": {
 			"module": "building",
 			"url": "buildings?include[building]=account&page[offset]=0&page[limit]=500",

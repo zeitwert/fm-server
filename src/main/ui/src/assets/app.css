@@ -129,10 +129,6 @@
 }
 
 /* Modal */
-.slds-modal__content {
-  min-height: 20rem;
-}
-
 .slds-slider {
   position: relative;
 }

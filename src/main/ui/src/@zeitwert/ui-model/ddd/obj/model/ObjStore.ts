@@ -1,5 +1,7 @@
 
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { session } from "@zeitwert/ui-model/app/session";
+import Logger from "loglevel";
+import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateStoreModel } from "../../aggregate/model/AggregateStore";
 import { StoreWithNotesModel } from "../../collaboration/model/StoreWithNotes";
@@ -40,6 +42,20 @@ const MstObjStoreModel = AggregateStoreModel
 		return { afterLoad };
 	})
 	.actions((self) => ({
+		delete() {
+			requireThis(!self.isInTrx, "not in transaction");
+			return flow<void, any[]>(function* (): any {
+				try {
+					session.startNetwork();
+					yield self.api.deleteAggregate(self.item!.id);
+				} catch (error: any) {
+					Logger.error("Failed to delete item", error);
+					return Promise.reject(error);
+				} finally {
+					session.stopNetwork();
+				}
+			})();
+		},
 		async updateDocuments() {
 			//await Promise.all(self.item!.documents.map((doc: Document) => DOCUMENT_API.storeItem(doc.apiSnapshot)));
 		}

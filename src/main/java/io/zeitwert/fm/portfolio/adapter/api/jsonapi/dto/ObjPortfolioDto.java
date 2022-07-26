@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-@JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios", deletable = false)
+@JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
 public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 
 	@JsonIgnore

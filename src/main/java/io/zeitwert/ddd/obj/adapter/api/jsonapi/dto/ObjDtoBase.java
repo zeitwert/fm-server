@@ -1,6 +1,7 @@
 
 package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 
+import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiMetaInformation;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.ddd.obj.model.Obj;
@@ -17,5 +18,10 @@ public abstract class ObjDtoBase<O extends Obj> extends AggregateDtoBase<O> {
 
 	@JsonApiMetaInformation
 	private ObjMetaDto meta;
+
+	@JsonApiField(readable = false, filterable = true)
+	public Boolean getIsClosed() {
+		return null;
+	}
 
 }

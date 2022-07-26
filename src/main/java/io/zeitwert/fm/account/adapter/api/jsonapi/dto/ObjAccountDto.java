@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-@JsonApiResource(type = "account", resourcePath = "account/accounts", deletable = false)
+@JsonApiResource(type = "account", resourcePath = "account/accounts")
 public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 
 	private String key;

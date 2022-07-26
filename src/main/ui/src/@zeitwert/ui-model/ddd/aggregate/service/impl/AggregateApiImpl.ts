@@ -114,7 +114,7 @@ export abstract class AggregateApiImpl<S extends AggregateSnapshot> implements A
 	async deleteAggregate(id: string) {
 		const url = Config.getApiUrl(
 			this.module,
-			this.itemPath + "/" + id + (!!this.includes ? "?" + this.includes : "")
+			this.itemPath + "/" + id
 		);
 		await API.delete(url, { headers: API_HEADERS });
 	}

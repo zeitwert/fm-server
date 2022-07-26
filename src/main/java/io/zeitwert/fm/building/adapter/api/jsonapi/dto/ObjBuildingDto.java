@@ -32,7 +32,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-@JsonApiResource(type = "building", resourcePath = "building/buildings", deletable = false)
+@JsonApiResource(type = "building", resourcePath = "building/buildings")
 public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 
 	public static final String AddRatingOperation = "addRating";

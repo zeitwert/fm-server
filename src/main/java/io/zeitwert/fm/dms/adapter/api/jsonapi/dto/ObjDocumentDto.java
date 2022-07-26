@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-@JsonApiResource(type = "document", resourcePath = "document/documents", deletable = false)
+@JsonApiResource(type = "document", resourcePath = "document/documents")
 public class ObjDocumentDto extends FMObjDtoBase<ObjDocument> {
 
 	private String name;

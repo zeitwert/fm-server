@@ -11,7 +11,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.SortField;
 import org.jooq.Table;
 import org.jooq.UpdatableRecord;
@@ -290,15 +289,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 			}
 		}
 
-		//@formatter:off
-		 SelectConditionStep<V> select = (SelectConditionStep<V>) this.dslContext
-			.select()
-			.from(table)
-			.where(whereClause);
-		//@formatter:on
-
 		// Sort.
-		Result<V> recordList = null;
 		List<SortField<?>> sortFields = List.of();
 		if (querySpec.getSort().size() > 0) {
 			sortFields = SqlUtils.sortFilter(table, querySpec.getSort());
@@ -308,9 +299,17 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 			sortFields = List.of(table.field("id").desc());
 		}
 
-		recordList = select.orderBy(sortFields).limit(querySpec.getOffset(), querySpec.getLimit()).fetch();
-
-		return recordList;
+		//@formatter:off
+		return
+			(Result<V>)
+				this.dslContext
+						.select()
+						.from(table)
+						.where(whereClause)
+						.orderBy(sortFields)
+						.limit(querySpec.getOffset(), querySpec.getLimit())
+						.fetch();
+		//@formatter:on
 
 	}
 
