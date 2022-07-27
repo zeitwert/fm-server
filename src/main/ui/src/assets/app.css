@@ -1742,6 +1742,9 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   top: 0;
   width: 100%;
   height: 160px;
+  font-weight: normal;
+  font-size: 11px;
+  color: #202020;
 }
 #condition .h {
   position: absolute;
@@ -1775,92 +1778,81 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   position: absolute;
   left: 80px;
   top: 4px;
-  width: calc((100% - 80px - 24px) * 65 / 80);
+  width: calc((100% - 80px - 24px) * 15 / 80);
   height: 74px;
   border-left: 1px solid #808080;
   border-right: 1px solid #808080;
 }
-#condition .d1 .d11 {
+#condition .d1 .d1h1 {
   position: absolute;
   top: -10px;
   left: 10px;
   right: 10px;
   height: 20px;
 }
-#condition .d1 .d12 {
+#condition .d1 .d1t1 {
   position: absolute;
   top: 38px;
   left: 0;
-  width: 46.1538461538%;
+  width: 33.3333333333%;
   height: 36px;
   border-right: 1px solid #808080;
 }
-#condition .d1 .d13 {
+#condition .d1 .d1t2 {
   position: absolute;
   top: 38px;
-  left: 46.1538461538%;
+  left: 33.3333333333%;
+  width: 66.6666666667%;
+  height: 36px;
+}
+#condition .d1 .txt {
+  position: absolute;
+  top: 27px;
+  left: 50%;
+  text-align: left;
+  transform: rotate(-90deg);
+  transform-origin: left center;
+}
+#condition .d1 .txt span {
+  margin-left: 2px;
+}
+#condition .d2 {
+  position: absolute;
+  left: calc(80px + (100% - 80px - 24px) * 15 / 80);
+  top: 4px;
+  width: calc((100% - 80px - 24px) * 65 / 80);
+  height: 74px;
+  border-right: 1px solid #808080;
+}
+#condition .d2 .d2h1 {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  right: 10px;
+  height: 20px;
+}
+#condition .d2 .d2t1 {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 23.0769230769%;
+  height: 36px;
+  border-right: 1px solid #808080;
+}
+#condition .d2 .d2t2 {
+  position: absolute;
+  top: 38px;
+  left: 23.0769230769%;
   width: 30.7692307692%;
   height: 36px;
   border-right: 1px solid #808080;
 }
-#condition .d1 .d14 {
+#condition .d2 .d2t3 {
   position: absolute;
   top: 38px;
-  left: 76.9230769231%;
-  width: 23.0769230769%;
+  left: 53.8461538462%;
+  width: 46.1538461538%;
   height: 36px;
-}
-#condition .d2 {
-  position: absolute;
-  left: calc(80px + (100% - 80px - 24px) * 65 / 80);
-  top: 4px;
-  width: calc((100% - 80px - 24px) * 15 / 80);
-  height: 74px;
-  border-right: 1px solid #808080;
-}
-#condition .d2 .d21 {
-  position: absolute;
-  top: -10px;
-  left: 10px;
-  right: 10px;
-  height: 20px;
-}
-#condition .d2 .d22 {
-  position: absolute;
-  top: 38px;
-  left: 0;
-  width: 66.6666666667%;
-  height: 36px;
-  border-right: 1px solid #808080;
-}
-#condition .d2 .d22 .d22t {
-  position: absolute;
-  top: 27px;
-  left: 50%;
-  text-align: left;
-  transform: rotate(-90deg);
-  transform-origin: left center;
-}
-#condition .d2 .d22 .d22t span {
-  margin-left: 2px;
-}
-#condition .d2 .d23 {
-  position: absolute;
-  top: 38px;
-  left: 66.6666666667%;
-  width: 33.3333333333%;
-  height: 36px;
-}
-#condition .d2 .d23 .d23t {
-  position: absolute;
-  top: 27px;
-  left: 50%;
-  text-align: left;
-  transform: rotate(-90deg);
-  transform-origin: left center;
-}
-#condition .d2 .d23 .d23t span {
-  margin-left: 2px;
 }
 #condition .d3 {
   position: absolute;
@@ -1869,16 +1861,25 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   width: calc(100% - 80px - 24px);
   height: 14px;
 }
-#condition .d3 .d31 {
+#condition .d3 .d3p1 {
   position: absolute;
   left: 0;
-  width: 37.5%;
+  width: 18.75%;
   top: 0px;
   bottom: 0px;
-  background-color: #e54f29;
-  border: 1px solid #c33a18;
+  background-color: #338721;
+  border: 1px solid #245e17;
 }
-#condition .d3 .d32 {
+#condition .d3 .d3p2 {
+  position: absolute;
+  left: 18.75%;
+  width: 18.75%;
+  top: 0px;
+  bottom: 0px;
+  background-color: #78c06b;
+  border: 1px solid #59ae4a;
+}
+#condition .d3 .d3p3 {
   position: absolute;
   left: 37.5%;
   width: 25%;
@@ -1887,23 +1888,14 @@ div.fm-rating-body div.selected div.slds-form-element__row {
   background-color: #faa724;
   border: 1px solid #e68f05;
 }
-#condition .d3 .d33 {
+#condition .d3 .d3p4 {
   position: absolute;
   left: 62.5%;
-  width: 18.75%;
+  width: 37.5%;
   top: 0px;
   bottom: 0px;
-  background-color: #78c06b;
-  border: 1px solid #59ae4a;
-}
-#condition .d3 .d34 {
-  position: absolute;
-  left: 81.25%;
-  width: 18.75%;
-  top: 0px;
-  bottom: 0px;
-  background-color: #338721;
-  border: 1px solid #245e17;
+  background-color: #e54f29;
+  border: 1px solid #c33a18;
 }
 #condition .d3 .zn {
   display: none;
@@ -1918,35 +1910,35 @@ div.fm-rating-body div.selected div.slds-form-element__row {
 }
 #condition .d3 .zn.zn-20 {
   display: block;
-  left: calc(0% - 5px);
+  left: calc(100% - 5px);
 }
 #condition .d3 .zn.zn-25 {
   display: block;
-  left: calc(6.25% - 5px);
+  left: calc(93.75% - 5px);
 }
 #condition .d3 .zn.zn-30 {
   display: block;
-  left: calc(12.5% - 5px);
+  left: calc(87.5% - 5px);
 }
 #condition .d3 .zn.zn-35 {
   display: block;
-  left: calc(18.75% - 5px);
+  left: calc(81.25% - 5px);
 }
 #condition .d3 .zn.zn-40 {
   display: block;
-  left: calc(25% - 5px);
+  left: calc(75% - 5px);
 }
 #condition .d3 .zn.zn-45 {
   display: block;
-  left: calc(31.25% - 5px);
+  left: calc(68.75% - 5px);
 }
 #condition .d3 .zn.zn-50 {
   display: block;
-  left: calc(37.5% - 5px);
+  left: calc(62.5% - 5px);
 }
 #condition .d3 .zn.zn-55 {
   display: block;
-  left: calc(43.75% - 5px);
+  left: calc(56.25% - 5px);
 }
 #condition .d3 .zn.zn-60 {
   display: block;
@@ -1954,35 +1946,35 @@ div.fm-rating-body div.selected div.slds-form-element__row {
 }
 #condition .d3 .zn.zn-65 {
   display: block;
-  left: calc(56.25% - 5px);
+  left: calc(43.75% - 5px);
 }
 #condition .d3 .zn.zn-70 {
   display: block;
-  left: calc(62.5% - 5px);
+  left: calc(37.5% - 5px);
 }
 #condition .d3 .zn.zn-75 {
   display: block;
-  left: calc(68.75% - 5px);
+  left: calc(31.25% - 5px);
 }
 #condition .d3 .zn.zn-80 {
   display: block;
-  left: calc(75% - 5px);
+  left: calc(25% - 5px);
 }
 #condition .d3 .zn.zn-85 {
   display: block;
-  left: calc(81.25% - 5px);
+  left: calc(18.75% - 5px);
 }
 #condition .d3 .zn.zn-90 {
   display: block;
-  left: calc(87.5% - 5px);
+  left: calc(12.5% - 5px);
 }
 #condition .d3 .zn.zn-95 {
   display: block;
-  left: calc(93.75% - 5px);
+  left: calc(6.25% - 5px);
 }
 #condition .d3 .zn.zn-100 {
   display: block;
-  left: calc(100% - 5px);
+  left: calc(0% - 5px);
 }
 #condition .d4 {
   position: absolute;
@@ -2000,32 +1992,32 @@ div.fm-rating-body div.selected div.slds-form-element__row {
 }
 #condition .t20 {
   position: absolute;
-  left: calc(0% - 20px);
+  left: calc(100% - 20px);
   width: 40px;
 }
 #condition .t50 {
   position: absolute;
-  left: calc(37.5% - 20px);
+  left: calc(62.5% - 20px);
   width: 40px;
 }
 #condition .t70 {
   position: absolute;
-  left: calc(62.5% - 20px);
+  left: calc(37.5% - 20px);
   width: 40px;
 }
 #condition .t85 {
   position: absolute;
-  left: calc(81.25% - 20px);
+  left: calc(18.75% - 20px);
   width: 40px;
 }
 #condition .t95 {
   position: absolute;
-  left: calc(93.75% - 20px);
+  left: calc(6.25% - 20px);
   width: 40px;
 }
 #condition .t100 {
   position: absolute;
-  left: calc(100% - 20px);
+  left: calc(0% - 20px);
   width: 40px;
 }
 
