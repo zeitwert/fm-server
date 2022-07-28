@@ -72,12 +72,14 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 					</header>
 					<footer className="slds-grid slds-wrap slds-grid_pull-padded">
 						<div className="slds-p-horizontal_small slds-p-vertical_small slds-align_absolute-center">
-							<img
-								className="slds-align_absolute-center"
-								style={{ maxWidth: "100%", maxHeight: "300px" }}
-								src={building.coverFotoUrl}
-								alt={name}
-							/>
+							<a href={`/building/${building.id}`}>
+								<img
+									className="slds-align_absolute-center"
+									style={{ maxWidth: "100%", maxHeight: "300px" }}
+									src={building.coverFotoUrl}
+									alt={name}
+								/>
+							</a>
 						</div>
 						<div className="slds-p-horizontal_small slds-size_1-of-2 slds-p-bottom_x-small">
 							<dl>
