@@ -7,7 +7,8 @@ import {
 	EntityType,
 	EntityTypeInfo,
 	EntityTypes,
-	session
+	session,
+	UserInfo
 } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -145,17 +146,18 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderDetails(contact: Contact): HeaderDetail[] {
+		const contactOwner: UserInfo = contact.owner as UserInfo;
 		return [
 			{
 				label: "Owner",
-				content: contact.owner!.caption,
+				content: contactOwner.caption,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={contact.owner!.picture}
-						imgAlt={contact.owner!.caption}
-						label={contact.owner!.caption}
+						imgSrc={contactOwner.picture}
+						imgAlt={contactOwner.caption}
+						label={contactOwner.caption}
 					/>
 				),
 				link: "/user/" + contact.owner!.id

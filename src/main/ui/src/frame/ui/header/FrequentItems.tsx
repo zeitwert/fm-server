@@ -78,7 +78,7 @@ export default class FrequentItems extends React.Component<FrequentItemsProps> {
 									</Link>
 								</div>
 								<div className="slds-text-body_small">
-									{item.owner.caption} ⋅ {/*item.meta!.touches*/} touches
+									{(item.owner as UserInfo).caption} ⋅ {/*item.meta!.touches*/} touches
 								</div>
 							</>
 						}

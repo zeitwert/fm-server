@@ -13,6 +13,7 @@ const BuildingCreationFormModel = new Form(
 		id: new Field(converters.string),
 		name: new TextField({ required: true }),
 		buildingNr: new TextField({ required: true }),
+		owner: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/oe/objUser" }),
 		//
 		insuredValue: new NumberField({ required: true }),
 		insuredValueYear: new IntField({ required: true, minValue: 1000, maxLength: 4 }),
@@ -102,10 +103,11 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} />
+											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} size={3} />
+											<Input label="Name" type="text" accessor={this.formState.field("name")} size={9} />
 										</FieldRow>
 										<FieldRow>
-											<Input label="Gebäudenummer" accessor={this.formState.field("buildingNr")} />
+											<Select label="Verantwortlich" accessor={this.formState.field("owner")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

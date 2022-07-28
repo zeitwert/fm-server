@@ -1,5 +1,5 @@
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
+import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, session, Task, TaskStore, TaskStoreModel, UserInfo } from "@zeitwert/ui-model";
 import { StageSelector } from "doc/ui/StageSelector";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -121,17 +121,18 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	private getHeaderDetails(task: Task): HeaderDetail[] {
 		//const refItem = task.refDoc ? task.refDoc : task.refObj;
+		const taskOwner: UserInfo = task.owner as UserInfo;
 		return [
 			{
 				label: "Owner",
-				content: task.owner!.caption,
+				content: taskOwner.caption,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={task.owner!.picture}
-						imgAlt={task.owner!.caption}
-						label={task.owner!.caption}
+						imgSrc={taskOwner.picture}
+						imgAlt={taskOwner.caption}
+						label={taskOwner.caption}
 					/>
 				),
 				link: "/user/" + task.owner!.id

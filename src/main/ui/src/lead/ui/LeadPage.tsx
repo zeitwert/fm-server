@@ -4,7 +4,8 @@ import {
 	CaseStage, EntityType, EntityTypeInfo, EntityTypes, Lead,
 	LeadStore,
 	LeadStoreModel,
-	session
+	session,
+	UserInfo
 } from "@zeitwert/ui-model";
 import { StageSelector } from "doc/ui/StageSelector";
 import { AppCtx } from "frame/App";
@@ -130,17 +131,18 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderDetails(lead: Lead): HeaderDetail[] {
+		const leadOwner: UserInfo = lead.owner as UserInfo;
 		const details: HeaderDetail[] = [
 			{
 				label: "Owner",
-				content: lead.owner!.caption,
+				content: leadOwner.caption,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={lead.owner!.picture}
-						imgAlt={lead.owner!.caption}
-						label={lead.owner!.caption}
+						imgSrc={leadOwner.picture}
+						imgAlt={leadOwner.caption}
+						label={leadOwner.caption}
 					/>
 				),
 				link: "/user/" + lead.owner!.id

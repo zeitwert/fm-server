@@ -45,7 +45,7 @@ export default class HomeRecentItems extends React.Component {
 								<Col className="slds-size_8-of-12 slds-truncate">
 									<Link to={"/" + item.type.type + "/" + item.id}>{item.caption}</Link>
 									<div className="slds-text-body_small">
-										{item.owner.name} ⋅ {DateFormat.relativeTime(new Date(), item.meta!.modifiedAt)}
+										{item.owner!.name} ⋅ {DateFormat.relativeTime(new Date(), item.meta!.modifiedAt)}
 									</div>
 								</Col>
 								<Col className="slds-text-align_right">

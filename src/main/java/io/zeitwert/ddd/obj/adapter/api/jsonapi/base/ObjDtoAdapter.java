@@ -17,8 +17,9 @@ public abstract class ObjDtoAdapter<O extends Obj, V extends TableRecord<?>, D e
 
 	@Override
 	public void toAggregate(D dto, O obj) {
-		// obj.setOwner(dto.getOwner() != null ?
-		// getUserRepository().get(dto.getOwner().getId()) : null);
+		if (dto.getOwner() != null) {
+			obj.setOwner(getUserRepository().get(dto.getOwner().getId()));
+		}
 	}
 
 	protected void fromAggregate(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj, SessionInfo sessionInfo) {

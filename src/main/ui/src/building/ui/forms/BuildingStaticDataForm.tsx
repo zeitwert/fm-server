@@ -23,6 +23,7 @@ const BuildingStaticDataFormModel = new Form(
 		id: new Field(converters.string),
 		name: new TextField({ required: true }),
 		description: new TextField(),
+		owner: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/oe/objUser" }),
 		//
 		buildingNr: new TextField({ required: true }),
 		insuranceNr: new TextField(),
@@ -127,6 +128,9 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 										<FieldRow>
 											<Input label="Nr" accessor={this.formState.field("buildingNr")} size={3} />
 											<Input label="Name" type="text" accessor={this.formState.field("name")} size={9} />
+										</FieldRow>
+										<FieldRow>
+											<Select label="Verantwortlich" accessor={this.formState.field("owner")} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

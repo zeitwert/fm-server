@@ -266,7 +266,7 @@ export class TaskForm extends React.Component<ActivityProps, TaskFormState> {
 		return {
 			id: item.id,
 			label: item.caption,
-			subTitle: item.owner.caption,
+			subTitle: (item.owner as UserInfo).caption,
 			icon: <Icon category={item.type.iconCategory} name={item.type.iconName} size="small" />
 		};
 	}

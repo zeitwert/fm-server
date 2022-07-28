@@ -1,6 +1,6 @@
 
 import { Avatar, Button, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
+import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
@@ -109,6 +109,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderDetails(account: Account): HeaderDetail[] {
+		const accountOwner: UserInfo = account.owner as UserInfo;
 		return [
 			{ label: "Type", content: account.accountType?.name },
 			{ label: "Client Segment", content: account.clientSegment?.name },
@@ -126,14 +127,14 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			{ label: "Phone", content: account.mainContact?.phone },
 			{
 				label: "Owner",
-				content: account.owner!.caption,
+				content: accountOwner.caption,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={account.owner!.picture}
-						imgAlt={account.owner!.caption}
-						label={account.owner!.caption}
+						imgSrc={accountOwner.picture}
+						imgAlt={accountOwner.caption}
+						label={accountOwner.caption}
 					/>
 				),
 				link: "/user/" + account.owner!.id

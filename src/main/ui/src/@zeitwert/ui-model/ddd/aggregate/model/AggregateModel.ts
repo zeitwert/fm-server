@@ -1,4 +1,5 @@
-import { Optional } from "@zeitwert/ui-model";
+
+import { Enumerated, Optional } from "@zeitwert/ui-model";
 import { toJS, transaction } from "mobx";
 import { applyPatch, getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeInfo, EntityTypes } from "../../../app/common/config/EntityTypes";
@@ -13,7 +14,7 @@ const MstAggregateModel = types
 		//
 		meta: types.maybe(types.frozen<AggregateMeta>()),
 		//
-		owner: types.frozen<UserInfo>()
+		owner: types.maybe(types.frozen<Enumerated>())
 	})
 	.views((self) => ({
 		get isNew(): boolean {

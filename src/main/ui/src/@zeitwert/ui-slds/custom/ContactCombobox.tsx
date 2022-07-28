@@ -1,5 +1,5 @@
 import { Combobox, Icon } from "@salesforce/design-system-react";
-import { Contact } from "@zeitwert/ui-model";
+import { Contact, UserInfo } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -44,7 +44,7 @@ export default class ContactCombobox extends React.Component<ContactComboboxProp
 		return {
 			id: contact.id,
 			label: contact.caption,
-			subTitle: contact.owner.caption,
+			subTitle: (contact.owner as UserInfo).caption,
 			icon: <Icon category="standard" name="contact" size="small" />
 		};
 	}
