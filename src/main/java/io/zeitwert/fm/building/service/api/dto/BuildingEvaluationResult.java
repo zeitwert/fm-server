@@ -19,6 +19,9 @@ public class BuildingEvaluationResult {
 	private List<EvaluationParameter> facts;
 	private List<EvaluationParameter> params;
 
+	private List<EvaluationParameter> onePageFacts;
+	private List<EvaluationParameter> onePageParams;
+
 	private Integer ratingYear;
 
 	private List<EvaluationElement> elements;

@@ -84,6 +84,20 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Gebäudetyp", value);
 		}
 
+		List<EvaluationParameter> onePageFacts = new ArrayList<>();
+		if (building.getCurrentRating().getPartCatalog() != null) {
+			value = building.getCurrentRating().getPartCatalog().getName();
+			this.addParameter(onePageFacts, "Gebäudekategorie", value);
+		}
+		if (building.getBuildingYear() != null && building.getBuildingYear() > 0) {
+			value = Integer.toString(building.getBuildingYear());
+			this.addParameter(onePageFacts, "Baujahr", value);
+		}
+		if (building.getInsuredValue() != null) {
+			value = fmt.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
+			this.addParameter(onePageFacts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
+		}
+
 		ProjectionResult projectionResult = projectionService.getProjection(building);
 		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
 		String midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF");
@@ -141,6 +155,15 @@ public class EvaluationServiceImpl implements EvaluationService {
 		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
 		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance);
 
+		List<EvaluationParameter> onePageParams = new ArrayList<>();
+		this.addParameter(onePageParams, "Laufzeit", "25 Jahre");
+		this.addParameter(onePageParams, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
+		this.addParameter(onePageParams, "Gewichteter Z/N Wert", "" + totalRating);
+		this.addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
+		this.addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
+		this.addParameter(onePageParams, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
+		this.addParameter(onePageParams, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance);
+
 		List<EvaluationPeriod> periods = new ArrayList<>();
 		int aggrCosts = 0;
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
@@ -182,6 +205,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 				.accountName(building.getAccount().getName())
 				.facts(facts)
 				.params(params)
+				.onePageFacts(onePageFacts)
+				.onePageParams(onePageParams)
 				.ratingYear(ratingYear)
 				.elements(elements)
 				.startYear(projectionResult.getStartYear())
