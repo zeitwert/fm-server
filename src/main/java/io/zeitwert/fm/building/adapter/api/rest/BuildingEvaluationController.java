@@ -542,7 +542,7 @@ public class BuildingEvaluationController {
 			builder.write(e.getName());
 
 			cell = (Cell) cell.getNextSibling();
-			int valuePart = (int) Math.round(160.0 * e.getValuePart() / maxValuePart);
+			int valuePart = (int) Math.round(76.0 * e.getValuePart() / maxValuePart);
 			builder.moveTo(cell.getFirstParagraph());
 			builder.write(new String(new char[valuePart]).replace('\0', 'I'));
 
@@ -588,7 +588,7 @@ public class BuildingEvaluationController {
 	}
 
 	private double getRatingLineVOffset(int lineNr) {
-		return 105.0 * POINTS_PER_MM + 8 + 11.84 * lineNr;
+		return 98.8 * POINTS_PER_MM + 11.84 * lineNr;
 	}
 
 	private double getRatingHOffset(int rating) {
