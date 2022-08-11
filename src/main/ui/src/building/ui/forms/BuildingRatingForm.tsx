@@ -98,7 +98,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="&nbsp;">
 													{
-														building.partCatalog && building?.ratingStatus?.id === "open" &&
+														!this.props.store.inTrx && building.partCatalog && building?.ratingStatus?.id === "open" &&
 														<Button
 															variant="icon"
 															iconCategory="utility"
