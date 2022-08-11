@@ -19,6 +19,7 @@ enum LEFT_TABS {
 	DETAILS = "static-data",
 	CASES = "cases",
 }
+const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -79,8 +80,8 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						>
 							<Tabs
 								className="full-height"
-								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
 									{this.activeLeftTabId === LEFT_TABS.DETAILS && <AccountStaticDataForm store={this.accountStore} />}

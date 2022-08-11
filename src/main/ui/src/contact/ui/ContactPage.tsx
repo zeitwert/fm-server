@@ -28,6 +28,7 @@ enum LEFT_TABS {
 	CHANNELS = "channels",
 	ADDRESSES = "addresses",
 }
+const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -102,8 +103,8 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							{(editor) => (
 								<Tabs
 									className="full-height"
-									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
+									selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+									onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 								>
 									<TabsPanel label="Details">
 										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}

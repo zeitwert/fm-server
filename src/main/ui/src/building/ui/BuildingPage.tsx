@@ -26,6 +26,7 @@ enum LEFT_TABS {
 	RATING = "rating",
 	EVALUATION = "evaluation",
 }
+const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	SUMMARY = "summary",
@@ -33,6 +34,7 @@ enum RIGHT_TABS {
 	//ACTIVITY = 1,
 	ERRORS = "errors",
 }
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -133,8 +135,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 						>
 							<Tabs
 								className="full-height"
-								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Stammdaten">
 									{
@@ -170,8 +172,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					<ItemRightPart isFullWidth={isFullWidth}>
 						<Tabs
 							className="full-height"
-							selectedIndex={this.activeRightTabId}
-							onSelect={(tabId: number) => (this.activeRightTabId = Object.values(RIGHT_TABS)[tabId])}
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
 							<TabsPanel label={<span>Steckbrief{!this.hasCoverFoto && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
