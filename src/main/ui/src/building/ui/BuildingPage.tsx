@@ -21,17 +21,17 @@ import BuildingSummaryForm from "./forms/BuildingSummaryForm";
 import ElementRatingForm from "./forms/ElementRatingForm";
 
 enum LEFT_TABS {
-	OVERVIEW = 0,
-	LOCATION = 1,
-	RATING = 2,
-	EVALUATION = 3,
+	OVERVIEW = "static-data",
+	LOCATION = "location",
+	RATING = "rating",
+	EVALUATION = "evaluation",
 }
 
 enum RIGHT_TABS {
-	SUMMARY = 0,
-	NOTES = 1,
+	SUMMARY = "summary",
+	NOTES = "notes",
 	//ACTIVITY = 1,
-	ERRORS = 2,
+	ERRORS = "errors",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -102,6 +102,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		} else if (!building) {
 			return <NotFound entityType={this.entityType} id={this.props.params.buildingId!} />;
 		}
+		session.setHelpContext(`${EntityType.BUILDING}-${this.activeLeftTabId}`);
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
@@ -133,7 +134,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<Tabs
 								className="full-height"
 								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId: number) => (this.activeLeftTabId = tabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
 							>
 								<TabsPanel label="Stammdaten">
 									{
@@ -170,7 +171,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 						<Tabs
 							className="full-height"
 							selectedIndex={this.activeRightTabId}
-							onSelect={(tabId: number) => (this.activeRightTabId = tabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = Object.values(RIGHT_TABS)[tabId])}
 						>
 							<TabsPanel label={<span>Steckbrief{!this.hasCoverFoto && <abbr className="slds-required"> *</abbr>}</span>}>
 								{

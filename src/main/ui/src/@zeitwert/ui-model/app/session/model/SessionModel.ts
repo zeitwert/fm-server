@@ -41,8 +41,9 @@ const MstSessionModel = types
 		sessionInfo: types.maybe(types.frozen<SessionInfo>()),
 		appList: types.maybe(types.frozen<Application[]>()),
 		appInfo: types.maybe(types.frozen<ApplicationInfo>()),
-		areaMap: types.maybe(types.frozen<ApplicationAreaMap>()),
-		networkCount: types.optional(types.number, 0)
+		appAreaMap: types.maybe(types.frozen<ApplicationAreaMap>()),
+		helpContext: types.optional(types.string, ""),
+		networkActivityCount: types.optional(types.number, 0)
 	})
 	.volatile(() => ({
 		initialState: {} as any
@@ -65,15 +66,20 @@ const MstSessionModel = types
 	}))
 	.views((self) => ({
 		get isNetworkActive(): boolean {
-			return self.networkCount > 0;
+			return self.networkActivityCount > 0;
 		},
 	}))
 	.actions((self) => ({
 		startNetwork() {
-			self.networkCount += 1;
+			self.networkActivityCount += 1;
 		},
 		stopNetwork() {
-			self.networkCount -= 1;
+			self.networkActivityCount -= 1;
+		}
+	}))
+	.actions((self) => ({
+		setHelpContext(ctx: string) {
+			self.helpContext = ctx;
 		}
 	}))
 	.actions((self) => ({
@@ -86,7 +92,7 @@ const MstSessionModel = types
 				self.sessionInfo = undefined;
 				self.appList = undefined;
 				self.appInfo = undefined;
-				self.areaMap = undefined;
+				self.appAreaMap = undefined;
 			});
 		},
 		setApp(appId: string) {
@@ -94,7 +100,7 @@ const MstSessionModel = types
 				try {
 					const appResponse = yield API.get(Config.getApiUrl("app", APP_LIST_URL + "/" + appId));
 					self.appInfo = appResponse.data;
-					self.areaMap = self.appInfo!.areas.reduce(
+					self.appAreaMap = self.appInfo!.areas.reduce(
 						(map: ApplicationAreaMap, area: ApplicationArea): ApplicationAreaMap => {
 							area.appId = appId;
 							map[area.id] = area;

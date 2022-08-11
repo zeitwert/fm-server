@@ -10,9 +10,9 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-enum TAB {
-	DETAILS = 0,
-	ORDERS = 1
+enum LEFT_TABS {
+	DETAILS = "static-data",
+	ORDERS = "orders",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -21,7 +21,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.DOCUMENT];
 
-	@observable activeLeftTabId = TAB.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable documentStore: DocumentStore = DocumentStoreModel.create({});
 
 	get ctx() {
@@ -50,6 +50,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 		} else if (!document) {
 			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
 		}
+		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
 		const headerDetails: HeaderDetail[] = [
 			{ label: "Document", content: document.contentKind?.name },
 			{ label: "Content", content: document.contentType?.name },
@@ -68,7 +69,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 							entityType={EntityType.DOCUMENT}
 							formId="dms/editDocument"
 							itemAlias={EntityType.DOCUMENT}
-							showEditButtons={this.activeLeftTabId === TAB.DETAILS}
+							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
@@ -78,13 +79,13 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
 								>
 									<TabsPanel label="Details">
-										{this.activeLeftTabId === TAB.DETAILS && editor}
+										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
 									</TabsPanel>
 									<TabsPanel label="Orders">
-										{this.activeLeftTabId === TAB.ORDERS && (
+										{this.activeLeftTabId === LEFT_TABS.ORDERS && (
 											<p className="slds-p-around_medium">tbd</p>
 										)}
 									</TabsPanel>

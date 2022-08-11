@@ -20,9 +20,9 @@ import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-enum TAB {
-	DETAILS = 0,
-	ACCOUNT = 1
+enum LEFT_TABS {
+	DETAILS = "static-data",
+	ACCOUNT = "account",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -31,7 +31,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.LEAD];
 
-	@observable activeLeftTabId = TAB.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable leadStore: LeadStore = LeadStoreModel.create({});
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
@@ -64,6 +64,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		} else if (!lead) {
 			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
+		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);
 		return (
 			<>
 				<ItemHeader
@@ -85,7 +86,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							entityType={EntityType.LEAD}
 							formId="lead/editLead"
 							itemAlias={EntityType.LEAD}
-							showEditButtons={this.activeLeftTabId === TAB.DETAILS}
+							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
@@ -95,14 +96,14 @@ class LeadPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
 								>
 									<TabsPanel label="Details">
-										{this.activeLeftTabId === TAB.DETAILS && editor}
+										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
 									</TabsPanel>
 									{/* @ts-ignore */}
 									<TabsPanel label="Account" disabled={!lead.account}>
-										{lead.account && this.activeLeftTabId === TAB.ACCOUNT && (
+										{lead.account && this.activeLeftTabId === LEFT_TABS.ACCOUNT && (
 											<div className="slds-m-horizontal_medium">
 												<ItemDetailView
 													formId="account/editAccount"

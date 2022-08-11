@@ -41,6 +41,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
+		session.setHelpContext(EntityType.BUILDING);
 		return (
 			<Routes>
 				<Route

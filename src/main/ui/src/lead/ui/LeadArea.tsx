@@ -1,4 +1,4 @@
-import { EntityType, LeadStoreModel } from "@zeitwert/ui-model";
+import { EntityType, LeadStoreModel, session } from "@zeitwert/ui-model";
 import ItemsPage from "item/ui/ItemsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
@@ -6,6 +6,7 @@ import LeadPage from "./LeadPage";
 
 export default class LeadArea extends React.Component {
 	render() {
+		session.setHelpContext(EntityType.LEAD);
 		return (
 			<Routes>
 				<Route

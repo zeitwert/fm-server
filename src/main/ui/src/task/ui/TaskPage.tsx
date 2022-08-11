@@ -12,8 +12,8 @@ import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-enum TAB {
-	DETAILS = 0
+enum LEFT_TABS {
+	DETAILS = "static-data",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -22,7 +22,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.TASK];
 
-	@observable activeLeftTabId = TAB.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
@@ -55,6 +55,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		} else if (!task) {
 			return <NotFound entityType={this.entityType} id={this.props.params.taskId!} />;
 		}
+		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
 
 		return (
 			<>
@@ -84,7 +85,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 									await this.taskStore.task!.setField("reminderDate", undefined);
 								}
 							}}
-							showEditButtons={this.activeLeftTabId === TAB.DETAILS}
+							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
@@ -94,10 +95,10 @@ class TaskPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
 								>
 									<TabsPanel label="Details">
-										{this.activeLeftTabId === TAB.DETAILS && editor}
+										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
 									</TabsPanel>
 								</Tabs>
 							)}

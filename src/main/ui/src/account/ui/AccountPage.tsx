@@ -15,9 +15,9 @@ import AccountTabOrders from "./AccountTabOrders";
 import ChangeOwnerButton from "./ChangeOwnerButton";
 import AccountStaticDataForm from "./forms/AccountStaticDataForm";
 
-enum TAB {
-	DETAILS = 0,
-	CASES = 1
+enum LEFT_TABS {
+	DETAILS = "static-data",
+	CASES = "cases",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -26,7 +26,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.ACCOUNT];
 
-	@observable activeLeftTabId = TAB.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable accountStore = AccountStoreModel.create({});
 	@observable contactStore = ContactStoreModel.create({});
 
@@ -57,6 +57,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		} else if (!account) {
 			return <NotFound entityType={this.entityType} id={this.props.params.accountId!} />;
 		}
+		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
 
 		return (
 			<>
@@ -70,18 +71,22 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						<ItemEditor
 							store={this.accountStore}
 							entityType={EntityType.ACCOUNT}
-							showEditButtons={this.activeLeftTabId === TAB.DETAILS}
+							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
 							key={"account-" + this.accountStore.account?.id}
 						>
-							<Tabs className="full-height" selectedIndex={this.activeLeftTabId} onSelect={(tabId: any) => (this.activeLeftTabId = tabId)} >
+							<Tabs
+								className="full-height"
+								selectedIndex={this.activeLeftTabId}
+								onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
+							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === TAB.DETAILS && <AccountStaticDataForm store={this.accountStore} />}
+									{this.activeLeftTabId === LEFT_TABS.DETAILS && <AccountStaticDataForm store={this.accountStore} />}
 								</TabsPanel>
 								<TabsPanel label={"Cases (" + this.accountStore.counters?.docCount + ")"}>
-									{this.activeLeftTabId === TAB.CASES && (
+									{this.activeLeftTabId === LEFT_TABS.CASES && (
 										<AccountTabOrders
 											account={this.accountStore.account!}
 											template="doc.docs.by-account"

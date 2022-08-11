@@ -1,3 +1,4 @@
+import { session } from "@zeitwert/ui-model";
 import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import BuildingPreview from "building/ui/BuildingPreview";
 import { AppCtx } from "frame/App";
@@ -37,6 +38,7 @@ class HomePage extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
+		session.setHelpContext("dashboard");
 		return (
 			<>
 				<Grid className="fa-height-100">

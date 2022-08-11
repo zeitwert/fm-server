@@ -16,13 +16,13 @@ import React from "react";
 import PortfolioStaticDataForm from "./forms/PortfolioStaticDataForm";
 
 enum LEFT_TABS {
-	DETAILS = 0,
-	EVALUATION = 1,
+	DETAILS = "static-data",
+	EVALUATION = "evaluation",
 }
 
 enum RIGHT_TABS {
-	ACTIVITY = 0,
-	ERRORS = 1,
+	ACTIVITY = "activity",
+	ERRORS = "errors",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -77,6 +77,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		} else if (!portfolio) {
 			return <NotFound entityType={this.entityType} id={this.props.params.portfolioId!} />;
 		}
+		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
 
 		const isFullWidth = [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const allowEdit = [LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0;
@@ -107,7 +108,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							<Tabs
 								className="full-height"
 								selectedIndex={this.activeLeftTabId}
-								onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
 							>
 								<TabsPanel label="Stammdaten">
 									{
@@ -128,7 +129,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 						<Tabs
 							className="full-height"
 							selectedIndex={this.activeRightTabId}
-							onSelect={(tabId: number) => (this.activeRightTabId = tabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = Object.values(RIGHT_TABS)[tabId])}
 						>
 							<TabsPanel label="Aktivität">
 								{

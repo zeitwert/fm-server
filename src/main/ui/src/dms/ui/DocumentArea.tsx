@@ -1,4 +1,4 @@
-import { DocumentStoreModel, EntityType } from "@zeitwert/ui-model";
+import { DocumentStoreModel, EntityType, session } from "@zeitwert/ui-model";
 import ItemsPage from "item/ui/ItemsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
@@ -6,6 +6,7 @@ import DocumentPage from "./DocumentPage";
 
 export default class DocumentArea extends React.Component {
 	render() {
+		session.setHelpContext(EntityType.DOCUMENT);
 		return (
 			<Routes>
 				<Route

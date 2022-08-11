@@ -27,7 +27,7 @@ export class NavigatorImpl implements Navigator {
 	navigateTo(areaId: string, target: NavigationTarget, action: NavigationAction) {
 		areaId = target.applicationAreaId === SELF_TARGET ? areaId : target.applicationAreaId;
 
-		const areaPath = this.session!.areaMap![areaId].path;
+		const areaPath = this.session!.appAreaMap![areaId].path;
 		if (action.actionType === ROUTE_ACTION) {
 			const targetUrl = areaPath.startsWith("/") ? areaPath : "/" + areaPath;
 			this._params = action.params;

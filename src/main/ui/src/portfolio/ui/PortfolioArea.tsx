@@ -1,5 +1,5 @@
 
-import { AccountInfo, EntityType, Portfolio, PortfolioStore, PortfolioStoreModel } from "@zeitwert/ui-model";
+import { AccountInfo, EntityType, Portfolio, PortfolioStore, PortfolioStoreModel, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
@@ -19,6 +19,7 @@ export default class PortfolioArea extends React.Component {
 	}
 
 	render() {
+		session.setHelpContext(EntityType.PORTFOLIO);
 		return (
 			<Routes>
 				<Route

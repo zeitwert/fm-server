@@ -23,10 +23,10 @@ import React from "react";
 import ContactTabAddresses from "./ContactTabAddresses";
 import ContactTabChannels from "./ContactTabChannels";
 
-enum TAB {
-	DETAILS = 0,
-	CHANNELS = 1,
-	ADDRESSES = 2
+enum LEFT_TABS {
+	DETAILS = "static-data",
+	CHANNELS = "channels",
+	ADDRESSES = "addresses",
 }
 
 @inject("appStore", "session", "showAlert", "showToast")
@@ -35,7 +35,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.CONTACT];
 
-	@observable activeLeftTabId = TAB.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable contactStore: ContactStore = ContactStoreModel.create({});
 
 	@observable updateCount = 0;
@@ -69,6 +69,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 		} else if (!contact) {
 			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
 		}
+		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
 		return (
 			<>
 				<ItemHeader
@@ -89,9 +90,9 @@ class ContactPage extends React.Component<RouteComponentProps> {
 									: ""
 							}}
 							showEditButtons={
-								this.activeLeftTabId === TAB.DETAILS ||
-								this.activeLeftTabId === TAB.CHANNELS ||
-								this.activeLeftTabId === TAB.ADDRESSES
+								this.activeLeftTabId === LEFT_TABS.DETAILS ||
+								this.activeLeftTabId === LEFT_TABS.CHANNELS ||
+								this.activeLeftTabId === LEFT_TABS.ADDRESSES
 							}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
@@ -102,10 +103,10 @@ class ContactPage extends React.Component<RouteComponentProps> {
 								<Tabs
 									className="full-height"
 									selectedIndex={this.activeLeftTabId}
-									onSelect={(tabId: any) => (this.activeLeftTabId = tabId)}
+									onSelect={(tabId: number) => (this.activeLeftTabId = Object.values(LEFT_TABS)[tabId])}
 								>
 									<TabsPanel label="Details">
-										{this.activeLeftTabId === TAB.DETAILS && editor}
+										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
 									</TabsPanel>
 									<TabsPanel
 										label={
@@ -114,7 +115,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 											")"
 										}
 									>
-										{this.activeLeftTabId === TAB.CHANNELS && (
+										{this.activeLeftTabId === LEFT_TABS.CHANNELS && (
 											<ContactTabChannels
 												key={this.updateCount}
 												store={this.contactStore}
@@ -127,7 +128,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 											"Addresses (" + this.contactStore.contact?.postalAddresses.length + ")"
 										}
 									>
-										{this.activeLeftTabId === TAB.ADDRESSES && (
+										{this.activeLeftTabId === LEFT_TABS.ADDRESSES && (
 											<ContactTabAddresses
 												key={this.updateCount}
 												store={this.contactStore}
@@ -186,11 +187,11 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	private openEditor = () => {
 		this.contactStore.edit();
-		if (this.activeLeftTabId === TAB.DETAILS) {
+		if (this.activeLeftTabId === LEFT_TABS.DETAILS) {
 			this.doEditContact = true;
-		} else if (this.activeLeftTabId === TAB.CHANNELS) {
+		} else if (this.activeLeftTabId === LEFT_TABS.CHANNELS) {
 			this.isChannelsModalOpen = true;
-		} else if (this.activeLeftTabId === TAB.ADDRESSES) {
+		} else if (this.activeLeftTabId === LEFT_TABS.ADDRESSES) {
 			this.isAddressesModalOpen = true;
 		}
 	};
