@@ -47,58 +47,39 @@ public class EvaluationServiceImpl implements EvaluationService {
 		String value = null;
 
 		List<EvaluationParameter> facts = new ArrayList<>();
-		if (building.getCurrentRating().getRatingUser() != null) {
-			value = building.getCurrentRating().getRatingUser().getName();
-			this.addParameter(facts, "Begehung durch", value);
+		List<EvaluationParameter> onePageFacts = new ArrayList<>();
+
+		if (building.getBuildingNr() != null) {
+			value = building.getBuildingNr();
+			this.addParameter(facts, "Gebäudenummer", value);
+			this.addParameter(onePageFacts, "Gebäudenummer", value);
+		}
+		if (building.getCurrentRating().getPartCatalog() != null) {
+			value = building.getCurrentRating().getPartCatalog().getName();
+			this.addParameter(facts, "Gebäudekategorie", value);
+			this.addParameter(onePageFacts, "Gebäudekategorie", value);
+		}
+		if (building.getBuildingYear() != null && building.getBuildingYear() > 0) {
+			value = Integer.toString(building.getBuildingYear());
+			this.addParameter(facts, "Baujahr", value);
+			this.addParameter(onePageFacts, "Baujahr", value);
+		}
+		if (building.getInsuredValue() != null) {
+			value = fmt.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
+			this.addParameter(facts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
+			this.addParameter(onePageFacts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
+		}
+		if (building.getVolume() != null) {
+			value = fmt.formatNumber(building.getVolume()) + " m³";
+			this.addParameter(facts, "Volumen Rauminhalt SIA 416", value);
 		}
 		if (building.getCurrentRating().getRatingDate() != null) {
 			value = fmt.formatDate(building.getCurrentRating().getRatingDate());
 			this.addParameter(facts, "Begehung am", value);
 		}
-		if (building.getCurrentRating().getPartCatalog() != null) {
-			value = building.getCurrentRating().getPartCatalog().getName();
-			this.addParameter(facts, "Gebäudekategorie", value);
-		}
-		if (building.getBuildingYear() != null && building.getBuildingYear() > 0) {
-			value = Integer.toString(building.getBuildingYear());
-			this.addParameter(facts, "Baujahr", value);
-		}
-		if (building.getInsuredValue() != null) {
-			value = fmt.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
-			this.addParameter(facts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
-		}
-		if (building.getVolume() != null) {
-			value = fmt.formatNumber(building.getVolume()) + " m³";
-			this.addParameter(facts, "Volumen RI", value);
-		}
-		if (building.getAreaGross() != null && building.getAreaGross().longValue() > 0) {
-			value = fmt.formatNumber(building.getAreaGross()) + " m²";
-			this.addParameter(facts, "Fläche GF", value);
-		}
-		if (building.getBuildingType() != null) {
-			value = building.getBuildingType().getName();
-			this.addParameter(facts, "Gebäudeart", value);
-		}
-		if (building.getBuildingSubType() != null) {
-			value = building.getBuildingSubType().getName();
-			this.addParameter(facts, "Gebäudetyp", value);
-		}
-
-		List<EvaluationParameter> onePageFacts = new ArrayList<>();
-		if (building.getCurrentRating().getPartCatalog() != null) {
-			value = building.getCurrentRating().getPartCatalog().getName();
-			this.addParameter(onePageFacts, "Gebäudekategorie", value);
-		}
-		if (building.getBuildingYear() != null && building.getBuildingYear() > 0) {
-			value = Integer.toString(building.getBuildingYear());
-			this.addParameter(onePageFacts, "Baujahr", value);
-		}
-		if (building.getInsuredValue() != null) {
-			value = fmt.formatMonetaryValue(1000 * building.getInsuredValue().doubleValue(), "CHF");
-			this.addParameter(onePageFacts, "GV-Neuwert (" + building.getInsuredValueYear() + ")", value);
-		}
 
 		ProjectionResult projectionResult = projectionService.getProjection(building);
+		String timeValue = fmt.formatMonetaryValue(projectionResult.getPeriodList().get(0).getTimeValue(), "CHF");
 		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
 		String midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF");
 		String longTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF");
@@ -147,18 +128,19 @@ public class EvaluationServiceImpl implements EvaluationService {
 		elements.add(dto);
 
 		List<EvaluationParameter> params = new ArrayList<>();
-		this.addParameter(params, "Laufzeit", "25 Jahre");
+		this.addParameter(params, "Laufzeit (Zeithorizont)", "25 Jahre");
 		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
-		this.addParameter(params, "Gewichteter Z/N Wert", "" + totalRating);
+		this.addParameter(params, "Z/N Wert", "" + totalRating);
+		this.addParameter(params, "Zeitwert", "" + timeValue);
 		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
 		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
 		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
 		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance);
 
 		List<EvaluationParameter> onePageParams = new ArrayList<>();
-		this.addParameter(onePageParams, "Laufzeit", "25 Jahre");
-		this.addParameter(onePageParams, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
-		this.addParameter(onePageParams, "Gewichteter Z/N Wert", "" + totalRating);
+		this.addParameter(onePageParams, "Laufzeit (Zeithorizont); Teuerung",
+				"25 Jahre; " + String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
+		this.addParameter(onePageParams, "Zeitwert (Z/N Wert: " + totalRating + ")", "" + timeValue);
 		this.addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
 		this.addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
 		this.addParameter(onePageParams, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);

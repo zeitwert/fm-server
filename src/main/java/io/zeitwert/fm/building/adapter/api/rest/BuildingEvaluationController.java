@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -577,6 +578,15 @@ public class BuildingEvaluationController {
 		}
 
 		onePagerDetailsTable.getFirstRow().getNextSibling().getNextSibling().remove();
+
+		Cell cell = ((Row) onePagerDetailsTable.getFirstRow().getNextSibling()).getFirstCell();
+		cell.getCellFormat().getBorders().getBottom().setColor(Color.BLACK);
+		cell.getCellFormat().getBorders().getBottom().setLineWidth(1);
+		for (int i = 0; i < 13; i++) {
+			cell = (Cell) cell.getNextSibling();
+			cell.getCellFormat().getBorders().getBottom().setColor(Color.BLACK);
+			cell.getCellFormat().getBorders().getBottom().setLineWidth(1);
+		}
 
 	}
 
