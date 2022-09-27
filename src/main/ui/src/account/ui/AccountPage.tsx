@@ -11,13 +11,11 @@ import ItemModal from "item/ui/ItemModal";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import AccountTabOrders from "./AccountTabOrders";
 import ChangeOwnerButton from "./ChangeOwnerButton";
 import AccountStaticDataForm from "./forms/AccountStaticDataForm";
 
 enum LEFT_TABS {
-	DETAILS = "static-data",
-	CASES = "cases",
+	OVERVIEW = "static-data",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
@@ -27,7 +25,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.ACCOUNT];
 
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable accountStore = AccountStoreModel.create({});
 	@observable contactStore = ContactStoreModel.create({});
 
@@ -60,6 +58,11 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		}
 		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
 
+		const allowEditStaticData = session.isAdminUser;
+		const isActive = !account.meta?.closedAt;
+		let allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
+		allowEdit = isActive && allowEdit;
+
 		return (
 			<>
 				<ItemHeader
@@ -70,13 +73,13 @@ class AccountPage extends React.Component<RouteComponentProps> {
 				<ItemGrid>
 					<ItemLeftPart>
 						<ItemEditor
+							key={"account-" + this.accountStore.account?.id}
 							store={this.accountStore}
 							entityType={EntityType.ACCOUNT}
-							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
+							showEditButtons={allowEdit}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
-							key={"account-" + this.accountStore.account?.id}
 						>
 							<Tabs
 								className="full-height"
@@ -84,8 +87,10 @@ class AccountPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === LEFT_TABS.DETAILS && <AccountStaticDataForm store={this.accountStore} />}
+									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <AccountStaticDataForm store={this.accountStore} />}
 								</TabsPanel>
+								{
+									/*
 								<TabsPanel label={"Cases (" + this.accountStore.counters?.docCount + ")"}>
 									{this.activeLeftTabId === LEFT_TABS.CASES && (
 										<AccountTabOrders
@@ -94,6 +99,8 @@ class AccountPage extends React.Component<RouteComponentProps> {
 										/>
 									)}
 								</TabsPanel>
+									*/
+								}
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>

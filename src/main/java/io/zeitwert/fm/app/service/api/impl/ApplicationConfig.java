@@ -57,11 +57,11 @@ class ApplicationConfig {
 	private final AppMenuAction userAction = AppMenuAction.builder().id("user").name("Benutzer").navigation(DefaultNavigation).icon("").build();
 	private final ApplicationArea userArea = ApplicationArea.builder().id("user").name("Benutzer").icon("standard:user").path("user").component("UserArea").menu(EmptyMenu).menuAction(userAction).build();
 
-	private final Application adminFmApp = Application.builder().id("adminFm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo adminFmAppMenu = ApplicationInfo.builder().id("adminFm").name("zeitwert: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
+	private final Application fmAdminApp = Application.builder().id("adminFm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
+	private final ApplicationInfo fmAdminAppMenu = ApplicationInfo.builder().id("adminFm").name("zeitwert: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
 
-	private final Application userFmApp = Application.builder().id("userFm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo userFmAppMenu = ApplicationInfo.builder().id("userFm").name("zeitwert: fm").areas(List.of(homeArea, portfolioArea, buildingArea)).defaultArea(homeArea.getId()).build();
+	private final Application fmUserApp = Application.builder().id("userFm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
+	private final ApplicationInfo fmUserAppMenu = ApplicationInfo.builder().id("userFm").name("zeitwert: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
 
 	private final Application adminAdminApp = Application.builder().id("adminAdmin").name("zeitwert: admin").icon("config").description("Applikationskonfiguration").build();
 	private final ApplicationInfo adminAdminAppMenu = ApplicationInfo.builder().id("adminAdmin").name("zeitwert: admin").areas(List.of(userArea, tenantArea, documentArea)).defaultArea(userArea.getId()).build();
@@ -87,19 +87,19 @@ class ApplicationConfig {
 		Areas.put(tenantArea.getId(), tenantArea);
 		Areas.put(userArea.getId(), userArea);
 
-		ApplicationMap.put(adminFmApp.getId(), adminFmApp);
-		ApplicationMenus.put(adminFmApp.getId(), adminFmAppMenu);
+		ApplicationMap.put(fmAdminApp.getId(), fmAdminApp);
+		ApplicationMenus.put(fmAdminApp.getId(), fmAdminAppMenu);
 
-		ApplicationMap.put(userFmApp.getId(), userFmApp);
-		ApplicationMenus.put(userFmApp.getId(), userFmAppMenu);
+		ApplicationMap.put(fmUserApp.getId(), fmUserApp);
+		ApplicationMenus.put(fmUserApp.getId(), fmUserAppMenu);
 
 		ApplicationMap.put(adminAdminApp.getId(), adminAdminApp);
 		ApplicationMenus.put(adminAdminApp.getId(), adminAdminAppMenu);
 
-		AdminApplications.add(adminFmApp);
+		AdminApplications.add(fmAdminApp);
 		AdminApplications.add(adminAdminApp);
 
-		UserApplications.add(userFmApp);
+		UserApplications.add(fmUserApp);
 
 	}
 
