@@ -7,7 +7,6 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.RequestContext;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -25,9 +24,6 @@ public abstract class AggregateDtoBase<A extends Aggregate> {
 	protected static final <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> aggrClass) {
 		return AppContext.getInstance().getRepository(aggrClass);
 	}
-
-	@JsonIgnore
-	protected RequestContext requestCtx;
 
 	public abstract AggregateMetaDto getMeta();
 

@@ -26,6 +26,7 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
 @DependsOn({ "codeAggregateTypeEnum", "codePartListTypeEnum" })
@@ -41,14 +42,16 @@ public final class AppContext {
 	private final DSLContext dslContext;
 	private final Repositories repos;
 	private final Enumerations enums;
+	private final RequestContext requestContext;
 
 	protected AppContext(final ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher,
-			final DSLContext dslContext, Enumerations enums) {
+			final DSLContext dslContext, Enumerations enums, RequestContext requestContext) {
 		this.applicationContext = applicationContext;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.dslContext = dslContext;
 		this.repos = new Repositories();
 		this.enums = enums;
+		this.requestContext = requestContext;
 		AppContext.INSTANCE = this;
 	}
 
@@ -62,6 +65,10 @@ public final class AppContext {
 			SCHEMA = this.dslContext.meta().getSchemas(AppContext.SCHEMA_NAME).get(0);
 		}
 		return SCHEMA;
+	}
+
+	public RequestContext getRequestContext() {
+		return this.requestContext;
 	}
 
 	public void addRepository(String aggregateTypeId, final Class<? extends Aggregate> intfClass,

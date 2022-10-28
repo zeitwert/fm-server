@@ -10,7 +10,6 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
@@ -39,10 +38,10 @@ public class ObjPortfolioDtoAdapter
 	}
 
 	@Override
-	public void toAggregate(ObjPortfolioDto dto, ObjPortfolio pf, RequestContext requestCtx) {
+	public void toAggregate(ObjPortfolioDto dto, ObjPortfolio pf) {
 		try {
 			pf.getMeta().disableCalc();
-			super.toAggregate(dto, pf, requestCtx);
+			super.toAggregate(dto, pf);
 
 			pf.setName(dto.getName());
 			pf.setDescription(dto.getDescription());
@@ -53,7 +52,7 @@ public class ObjPortfolioDtoAdapter
 				pf.clearIncludeSet();
 				dto.getIncludes().forEach(item -> {
 					Integer id = Integer.parseInt(item.getId());
-					Obj obj = objRepository.get(requestCtx, id);
+					Obj obj = objRepository.get(id);
 					CodeAggregateType objType = obj.getMeta().getAggregateType();
 					assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 					pf.addInclude(id);
@@ -63,7 +62,7 @@ public class ObjPortfolioDtoAdapter
 				pf.clearExcludeSet();
 				dto.getExcludes().forEach(item -> {
 					Integer id = Integer.parseInt(item.getId());
-					Obj obj = objRepository.get(requestCtx, id);
+					Obj obj = objRepository.get(id);
 					CodeAggregateType objType = obj.getMeta().getAggregateType();
 					assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 					pf.addExclude(id);
@@ -77,32 +76,32 @@ public class ObjPortfolioDtoAdapter
 	}
 
 	@Override
-	public ObjPortfolioDto fromAggregate(ObjPortfolio pf, RequestContext requestCtx) {
+	public ObjPortfolioDto fromAggregate(ObjPortfolio pf) {
 		if (pf == null) {
 			return null;
 		}
 		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder().original(pf);
-		this.fromAggregate(dtoBuilder, pf, requestCtx);
+		this.fromAggregate(dtoBuilder, pf);
 		// @formatter:off
 		return dtoBuilder
 			.name(pf.getName())
 			.description(pf.getDescription())
 			.portfolioNr(pf.getPortfolioNr())
 			.accountId(pf.getAccountId())
-			.includes(pf.getIncludeSet().stream().map(a -> getObj(requestCtx, a)).collect(Collectors.toSet()))
-			.excludes(pf.getExcludeSet().stream().map(a -> getObj(requestCtx, a)).collect(Collectors.toSet()))
-			.buildings(pf.getBuildingSet().stream().map(a -> getObj(requestCtx, a)).collect(Collectors.toSet()))
+			.includes(pf.getIncludeSet().stream().map(a -> getObj(a)).collect(Collectors.toSet()))
+			.excludes(pf.getExcludeSet().stream().map(a -> getObj(a)).collect(Collectors.toSet()))
+			.buildings(pf.getBuildingSet().stream().map(a -> getObj(a)).collect(Collectors.toSet()))
 			.build();
 		// @formatter:on
 	}
 
 	@Override
-	public ObjPortfolioDto fromRecord(ObjPortfolioVRecord obj, RequestContext requestCtx) {
+	public ObjPortfolioDto fromRecord(ObjPortfolioVRecord obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, requestCtx);
+		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
 			.name(obj.getName())
@@ -113,8 +112,8 @@ public class ObjPortfolioDtoAdapter
 		// @formatter:on
 	}
 
-	private static EnumeratedDto getObj(RequestContext requestCtx, Integer id) {
-		Obj obj = objRepository.get(requestCtx, id);
+	private static EnumeratedDto getObj(Integer id) {
+		Obj obj = objRepository.get(id);
 		// @formatter:off
 		return EnumeratedDto.builder()
 			.id(obj.getId().toString())

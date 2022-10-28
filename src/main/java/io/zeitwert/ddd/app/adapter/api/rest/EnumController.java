@@ -25,7 +25,6 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 @RestController("enumController")
 @RequestMapping("/enum")
@@ -40,22 +39,19 @@ public class EnumController {
 	@Autowired
 	ObjUserRepository userRepository;
 
-	@Autowired
-	RequestContext requestCtx;
-
 	@GetMapping("/oe/objTenant")
 	public ResponseEntity<List<EnumeratedDto>> getTenants() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<ObjTenantVRecord> tenantList = tenantRepository.find(requestCtx, querySpec);
+		List<ObjTenantVRecord> tenantList = tenantRepository.find(querySpec);
 		return ResponseEntity.ok(tenantList.stream()
 				.map(tenant -> EnumeratedDto.builder().id(tenant.getId().toString()).name(tenant.getName()).build()).toList());
 	}
 
 	@GetMapping("/oe/objTenant/{idOrExtlKey}")
 	public ResponseEntity<ObjTenant> getTenant(@PathVariable String idOrExtlKey) {
-		Optional<ObjTenant> tenant = tenantRepository.getByExtlKey(requestCtx, idOrExtlKey);
+		Optional<ObjTenant> tenant = tenantRepository.getByExtlKey(idOrExtlKey);
 		if (tenant.isEmpty()) {
-			tenant = Optional.of(tenantRepository.get(requestCtx, Integer.valueOf(idOrExtlKey)));
+			tenant = Optional.of(tenantRepository.get(Integer.valueOf(idOrExtlKey)));
 		}
 		if (tenant.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -66,16 +62,16 @@ public class EnumController {
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<ObjUserVRecord> userList = userRepository.find(requestCtx, querySpec);
+		List<ObjUserVRecord> userList = userRepository.find(querySpec);
 		return ResponseEntity.ok(userList.stream()
 				.map(user -> EnumeratedDto.builder().id(user.getId().toString()).name(user.getName()).build()).toList());
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
-		Optional<ObjUser> user = userRepository.getByEmail(requestCtx, idOrEmail);
+		Optional<ObjUser> user = userRepository.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
-			user = Optional.of(userRepository.get(requestCtx, Integer.valueOf(idOrEmail)));
+			user = Optional.of(userRepository.get(Integer.valueOf(idOrEmail)));
 		}
 		if (user.isEmpty()) {
 			return ResponseEntity.notFound().build();

@@ -21,7 +21,7 @@ public interface AggregateMeta {
 
 	CodeAggregateType getAggregateType();
 
-	RequestContext getSessionInfo();
+	RequestContext getRequestContext();
 
 	AppContext getAppContext();
 

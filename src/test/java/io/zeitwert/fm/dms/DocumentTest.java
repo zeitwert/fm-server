@@ -42,7 +42,7 @@ public class DocumentTest {
 		assertTrue(documentRepository != null, "documentRepository not null");
 		assertEquals("obj_document", documentRepository.getAggregateType().getId());
 
-		ObjDocument document1a = documentRepository.create(requestCtx.getTenant().getId(), requestCtx);
+		ObjDocument document1a = documentRepository.create(requestCtx.getTenant().getId());
 
 		assertNotNull(document1a, "test not null");
 		assertNotNull(document1a.getId(), "id not null");
@@ -65,7 +65,7 @@ public class DocumentTest {
 
 		document1a = null;
 
-		ObjDocument document1b = documentRepository.get(requestCtx, document1Id);
+		ObjDocument document1b = documentRepository.get(document1Id);
 		Integer document1bIdHash = System.identityHashCode(document1b);
 
 		assertNotEquals(document1aIdHash, document1bIdHash);

@@ -9,7 +9,7 @@ public interface PartMeta<A extends Aggregate> {
 
 	PartRepository<A, ?> getRepository();
 
-	RequestContext getSessionInfo();
+	RequestContext getRequestContext();
 
 	AppContext getAppContext();
 

@@ -9,7 +9,6 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVRecord, ObjUserDto> {
 
@@ -28,8 +27,8 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	}
 
 	@Override
-	public void toAggregate(ObjUserDto dto, ObjUser obj, RequestContext requestCtx) {
-		super.toAggregate(dto, obj, requestCtx);
+	public void toAggregate(ObjUserDto dto, ObjUser obj) {
+		super.toAggregate(dto, obj);
 		// if (dto.getTenant() != null) {
 		// obj.setTenant(dto.getTenant());
 		// }
@@ -44,14 +43,14 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	}
 
 	@Override
-	public ObjUserDto fromAggregate(ObjUser obj, RequestContext requestCtx) {
+	public ObjUserDto fromAggregate(ObjUser obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, requestCtx);
+		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant(), requestCtx))
+				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant()))
 				.email(obj.getEmail())
 				.role(obj.getRole().getId())
 				.name(obj.getName())
@@ -60,7 +59,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 				.build();
 	}
 
-	public EnumeratedDto asEnumerated(ObjUser obj, RequestContext requestCtx) {
+	public EnumeratedDto asEnumerated(ObjUser obj) {
 		if (obj == null) {
 			return null;
 		}
@@ -72,15 +71,15 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	}
 
 	@Override
-	public ObjUserDto fromRecord(ObjUserVRecord obj, RequestContext requestCtx) {
+	public ObjUserDto fromRecord(ObjUserVRecord obj) {
 		if (obj == null) {
 			return null;
 		}
-		ObjTenant tenant = getTenantRepository().get(requestCtx, obj.getTenantId());
+		ObjTenant tenant = getTenantRepository().get(obj.getTenantId());
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, requestCtx);
+		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
-				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(tenant, requestCtx))
+				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(tenant))
 				.email(obj.getEmail())
 				.role(obj.getRoleList())
 				.name(obj.getName())

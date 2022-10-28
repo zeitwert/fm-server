@@ -2,7 +2,6 @@
 package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactPartAddressDto;
 import io.zeitwert.fm.contact.model.ObjContact;
@@ -27,10 +26,10 @@ public final class ObjContactDtoAdapter extends FMObjDtoAdapter<ObjContact, ObjC
 	}
 
 	@Override
-	public void toAggregate(ObjContactDto dto, ObjContact obj, RequestContext requestCtx) {
+	public void toAggregate(ObjContactDto dto, ObjContact obj) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj, requestCtx);
+			super.toAggregate(dto, obj);
 
 			obj.setAccountId(dto.getAccountId());
 			obj.setContactRole(
@@ -71,12 +70,12 @@ public final class ObjContactDtoAdapter extends FMObjDtoAdapter<ObjContact, ObjC
 	}
 
 	@Override
-	public ObjContactDto fromAggregate(ObjContact obj, RequestContext requestCtx) {
+	public ObjContactDto fromAggregate(ObjContact obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, requestCtx);
+		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
 			.accountId(obj.getAccountId())
@@ -97,12 +96,12 @@ public final class ObjContactDtoAdapter extends FMObjDtoAdapter<ObjContact, ObjC
 	}
 
 	@Override
-	public ObjContactDto fromRecord(ObjContactVRecord obj, RequestContext requestCtx) {
+	public ObjContactDto fromRecord(ObjContactVRecord obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, requestCtx);
+		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
 			.accountId(obj.getAccountId())

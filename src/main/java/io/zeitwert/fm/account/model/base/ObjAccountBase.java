@@ -26,7 +26,6 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
@@ -41,9 +40,9 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final ReferenceProperty<ObjContact> mainContact;
 	protected final EnumSetProperty<CodeArea> areaSet;
 
-	protected ObjAccountBase(RequestContext requestCtx, ObjAccountRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjAccountBase(ObjAccountRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> accountRecord) {
-		super(requestCtx, repository, objRecord);
+		super(repository, objRecord);
 		this.dbRecord = accountRecord;
 		this.key = this.addSimpleProperty(dbRecord, ObjAccountFields.KEY);
 		this.name = this.addSimpleProperty(dbRecord, ObjAccountFields.NAME);
@@ -94,10 +93,9 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	@Override
 	public List<ObjContact> getContacts() {
-		RequestContext requestCtx = this.getMeta().getSessionInfo();
 		ObjContactRepository contactRepo = (ObjContactRepository) this.getAppContext().getRepository(ObjContact.class);
-		return contactRepo.getByForeignKey(requestCtx, "accountId", this.getId()).stream()
-				.map(c -> contactRepo.get(requestCtx, c.getId())).toList();
+		return contactRepo.getByForeignKey("accountId", this.getId()).stream().map(c -> contactRepo.get(c.getId()))
+				.toList();
 	}
 
 	@Override

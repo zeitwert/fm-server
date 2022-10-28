@@ -53,7 +53,7 @@ public class BuildingTest {
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
 		ObjAccount account = this.getOrCreateTestAccount(requestCtx);
-		ObjBuilding building1a = buildingRepository.create(requestCtx.getTenant().getId(), requestCtx);
+		ObjBuilding building1a = buildingRepository.create(requestCtx.getTenant().getId());
 
 		assertNotNull(building1a, "test not null");
 		assertNotNull(building1a.getId(), "id not null");
@@ -102,7 +102,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1a);
 		building1a = null;
 
-		ObjBuilding building1b = buildingRepository.get(requestCtx, building1Id);
+		ObjBuilding building1b = buildingRepository.get(building1Id);
 		Integer building1bIdHash = System.identityHashCode(building1b);
 		assertNotEquals(building1aIdHash, building1bIdHash);
 		assertNotNull(building1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
@@ -135,7 +135,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1b);
 		building1b = null;
 
-		ObjBuilding building1c = buildingRepository.get(requestCtx, building1Id);
+		ObjBuilding building1c = buildingRepository.get(building1Id);
 
 		assertEquals(21, building1c.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(21, building1c.getCurrentRating().getElementList().size(), "element count 22");
@@ -149,16 +149,16 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getOrCreateTestAccount(RequestContext requestCtx) {
-		Optional<ObjAccount> maybeAccount = this.accountRepository.getByKey(requestCtx, ACCT_KEY);
+		Optional<ObjAccount> maybeAccount = this.accountRepository.getByKey(ACCT_KEY);
 		if (maybeAccount.isPresent()) {
 			return maybeAccount.get();
 		}
-		ObjAccount account = this.accountRepository.create(requestCtx.getTenant().getId(), requestCtx);
+		ObjAccount account = this.accountRepository.create(requestCtx.getTenant().getId());
 		account.setName("Building Test Account");
 		account.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
 		account.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
 		this.accountRepository.store(account);
-		return this.accountRepository.get(requestCtx, account.getId());
+		return this.accountRepository.get(account.getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

@@ -153,9 +153,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 				),
 				link: "/user/" + account.owner!.id
 			},
-			session.isKernelTenant
-				? { label: "Mandant", content: account.tenant?.name }
-				: { label: "", content: "" },
+			{ label: "Mandant", content: account.tenant?.name },
 		];
 	}
 

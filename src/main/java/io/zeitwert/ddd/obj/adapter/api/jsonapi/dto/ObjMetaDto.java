@@ -16,7 +16,6 @@ import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.RequestContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -32,36 +31,36 @@ public class ObjMetaDto extends AggregateMetaDto {
 	private OffsetDateTime closedAt;
 	private List<ObjPartTransitionDto> transitionList;
 
-	public static ObjMetaDto fromObj(Obj obj, RequestContext requestCtx) {
+	public static ObjMetaDto fromObj(Obj obj) {
 		ObjMeta meta = obj.getMeta();
 		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
-		AggregateMetaDto.fromAggregate(builder, obj, requestCtx);
+		AggregateMetaDto.fromAggregate(builder, obj);
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		return builder
-			.closedByUser(userDtoAdapter.asEnumerated(meta.getClosedByUser(), requestCtx))
+			.closedByUser(userDtoAdapter.asEnumerated(meta.getClosedByUser()))
 			.closedAt(meta.getClosedAt())
-			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t, requestCtx)).toList())
+			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
 			.build();
 		// @formatter:on
 	}
 
-	public static ObjMetaDto fromRecord(Record obj, RequestContext requestCtx) {
+	public static ObjMetaDto fromRecord(Record obj) {
 		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
-		AggregateMetaDto.fromRecord(builder, obj, requestCtx);
+		AggregateMetaDto.fromRecord(builder, obj);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		Integer modifiedByUserId = obj.getValue(ObjFields.MODIFIED_BY_USER_ID);
 		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null
-				: userDtoAdapter.asEnumerated(userRepo.get(requestCtx, modifiedByUserId), requestCtx);
+				: userDtoAdapter.asEnumerated(userRepo.get(modifiedByUserId));
 		Integer closedByUserId = obj.getValue(ObjFields.CLOSED_BY_USER_ID);
 		EnumeratedDto closedByUser = closedByUserId == null ? null
-				: userDtoAdapter.asEnumerated(userRepo.get(requestCtx, closedByUserId), requestCtx);
+				: userDtoAdapter.asEnumerated(userRepo.get(closedByUserId));
 		// @formatter:off
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
-			.owner(userDtoAdapter.asEnumerated(userRepo.get(requestCtx, obj.getValue(ObjFields.OWNER_ID)), requestCtx))
-			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(requestCtx, obj.getValue(ObjFields.CREATED_BY_USER_ID)), requestCtx))
+			.owner(userDtoAdapter.asEnumerated(userRepo.get(obj.getValue(ObjFields.OWNER_ID))))
+			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(obj.getValue(ObjFields.CREATED_BY_USER_ID))))
 			.createdAt(obj.get(ObjFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(obj.get(ObjFields.MODIFIED_AT))

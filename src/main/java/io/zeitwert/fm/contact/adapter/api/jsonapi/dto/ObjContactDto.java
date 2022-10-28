@@ -42,9 +42,9 @@ public class ObjContactDto extends FMObjDtoBase<ObjContact> {
 			if (this.getOriginal() != null) {
 				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				account = getRepository(ObjAccount.class).get(this.requestCtx, this.accountId);
+				account = getRepository(ObjAccount.class).get(this.accountId);
 			}
-			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, this.requestCtx);
+			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account);
 		}
 		return this.accountDto;
 	}

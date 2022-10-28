@@ -2,7 +2,6 @@ package io.zeitwert.ddd.aggregate.model.base;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 import java.util.List;
 
@@ -29,10 +28,9 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	/**
 	 * Create a new Aggregate instance (purely technical)
 	 * 
-	 * @param requestCtx requestCtx
 	 * @return new Aggregate
 	 */
-	A doCreate(RequestContext requestCtx);
+	A doCreate();
 
 	/**
 	 * Initialize Parts of new Aggregate instance
@@ -55,7 +53,7 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * @param id aggregate id
 	 * @return instantiated Aggregate
 	 */
-	A doLoad(RequestContext requestCtx, Integer id);
+	A doLoad(Integer id);
 
 	/**
 	 * Load Parts from database and attach to Aggregate
@@ -95,9 +93,8 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	/**
 	 * Find aggregates (ids) according to given Query
 	 * 
-	 * @param requestCtx requestCtx
-	 * @param querySpec  query
+	 * @param querySpec query
 	 */
-	List<V> doFind(RequestContext requestCtx, QuerySpec querySpec);
+	List<V> doFind(QuerySpec querySpec);
 
 }

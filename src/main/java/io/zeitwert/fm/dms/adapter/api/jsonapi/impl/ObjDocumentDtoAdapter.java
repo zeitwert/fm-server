@@ -2,7 +2,6 @@
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
@@ -26,10 +25,10 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public void toAggregate(ObjDocumentDto dto, ObjDocument obj, RequestContext requestCtx) {
+	public void toAggregate(ObjDocumentDto dto, ObjDocument obj) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj, requestCtx);
+			super.toAggregate(dto, obj);
 			obj.setName(dto.getName());
 			obj.setContentKind(dto.getContentKind() == null ? null
 					: CodeContentKindEnum.getContentKind(
@@ -47,12 +46,12 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public ObjDocumentDto fromAggregate(ObjDocument obj, RequestContext requestCtx) {
+	public ObjDocumentDto fromAggregate(ObjDocument obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, requestCtx);
+		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
 			.name(obj.getName())
@@ -66,12 +65,12 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public ObjDocumentDto fromRecord(ObjDocumentVRecord obj, RequestContext requestCtx) {
+	public ObjDocumentDto fromRecord(ObjDocumentVRecord obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, requestCtx);
+		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
 			.name(obj.getName())

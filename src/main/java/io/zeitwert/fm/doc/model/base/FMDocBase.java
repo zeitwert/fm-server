@@ -6,7 +6,6 @@ import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.base.DocBase;
 import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -24,9 +23,8 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	protected final ReferenceProperty<ObjAccount> account;
 
-	protected FMDocBase(RequestContext requestCtx, DocRepository<? extends Doc, ? extends Record> repository,
-			UpdatableRecord<?> docRecord) {
-		super(requestCtx, repository, docRecord);
+	protected FMDocBase(DocRepository<? extends Doc, ? extends Record> repository, UpdatableRecord<?> docRecord) {
+		super(repository, docRecord);
 		this.account = this.addReferenceProperty(docRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 	}
 
@@ -38,14 +36,15 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	public List<ObjNoteVRecord> getNoteList() {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		return noteRepository.getByForeignKey(this.getSessionInfo(), "related_to_id", this.getId()).stream()
-				.filter(onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getSessionInfo().getUser().getId()))
+		return noteRepository.getByForeignKey("related_to_id", this.getId()).stream()
+				.filter(
+						onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getRequestContext().getUser().getId()))
 				.toList();
 	}
 
 	public ObjNote addNote(CodeNoteType noteType) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		ObjNote note = noteRepository.create(this.getTenantId(), this.getSessionInfo());
+		ObjNote note = noteRepository.create(this.getTenantId());
 		note.setNoteType(noteType);
 		note.setRelatedToId(this.getId());
 		return note;
@@ -53,7 +52,7 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	public void removeNote(Integer noteId) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		ObjNote note = noteRepository.get(this.getSessionInfo(), noteId);
+		ObjNote note = noteRepository.get(noteId);
 		noteRepository.delete(note);
 	}
 

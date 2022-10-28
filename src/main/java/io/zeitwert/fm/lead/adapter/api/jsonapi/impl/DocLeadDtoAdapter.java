@@ -12,7 +12,6 @@ import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 import java.util.stream.Collectors;
 
@@ -31,8 +30,8 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public void toAggregate(DocLeadDto dto, DocLead doc, RequestContext requestCtx) {
-		super.toAggregate(dto, doc, requestCtx);
+	public void toAggregate(DocLeadDto dto, DocLead doc) {
+		super.toAggregate(dto, doc);
 		doc.setAccountId(dto.getAccountId());
 		doc.setSubject(dto.getSubject());
 		if (dto.getAreas() != null) {
@@ -61,12 +60,12 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public DocLeadDto fromAggregate(DocLead doc, RequestContext requestCtx) {
+	public DocLeadDto fromAggregate(DocLead doc) {
 		if (doc == null) {
 			return null;
 		}
 		DocLeadDto.DocLeadDtoBuilder<?, ?> dtoBuilder = DocLeadDto.builder().original(doc);
-		this.fromAggregate(dtoBuilder, doc, requestCtx);
+		this.fromAggregate(dtoBuilder, doc);
 		// @formatter:off
 		return dtoBuilder
 			.accountId(doc.getAccountId())
@@ -93,12 +92,12 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public DocLeadDto fromRecord(DocLeadVRecord doc, RequestContext requestCtx) {
+	public DocLeadDto fromRecord(DocLeadVRecord doc) {
 		if (doc == null) {
 			return null;
 		}
 		DocLeadDto.DocLeadDtoBuilder<?, ?> dtoBuilder = DocLeadDto.builder().original(null);
-		this.fromRecord(dtoBuilder, doc, requestCtx);
+		this.fromRecord(dtoBuilder, doc);
 		// @formatter:off
 		return dtoBuilder
 			.accountId(doc.getAccountId())

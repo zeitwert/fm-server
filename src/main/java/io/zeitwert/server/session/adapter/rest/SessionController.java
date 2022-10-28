@@ -75,7 +75,7 @@ public class SessionController {
 	}
 
 	@GetMapping("/session")
-	public ResponseEntity<SessionInfoReponse> getSessionInfo() {
+	public ResponseEntity<SessionInfoReponse> getRequestContext() {
 		if (this.requestCtx == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}

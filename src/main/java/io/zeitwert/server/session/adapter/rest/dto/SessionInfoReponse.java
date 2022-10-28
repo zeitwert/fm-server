@@ -35,8 +35,8 @@ public class SessionInfoReponse {
 		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
-		ObjAccount account = requestCtx.hasAccount() ? accountRepository.get(requestCtx, requestCtx.getAccountId()) : null;
-		ObjAccountDto accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, requestCtx);
+		ObjAccount account = requestCtx.hasAccount() ? accountRepository.get(requestCtx.getAccountId()) : null;
+		ObjAccountDto accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account);
 		ObjUser user = requestCtx.getUser();
 		String defaultApp = null;
 		if (user.hasRole(CodeUserRoleEnum.APP_ADMIN)) {
@@ -47,8 +47,8 @@ public class SessionInfoReponse {
 			defaultApp = "fm";
 		}
 		return SessionInfoReponse.builder()
-			.tenant(tenantDtoAdapter.fromAggregate(requestCtx.getTenant(), requestCtx))
-			.user(userDtoAdapter.fromAggregate(requestCtx.getUser(), requestCtx))
+			.tenant(tenantDtoAdapter.fromAggregate(requestCtx.getTenant()))
+			.user(userDtoAdapter.fromAggregate(requestCtx.getUser()))
 			.account(accountDto)
 			.locale(requestCtx.getLocale().getId())
 			.applicationId(defaultApp)

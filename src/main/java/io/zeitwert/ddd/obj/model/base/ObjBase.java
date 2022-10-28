@@ -27,7 +27,6 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
-	private final RequestContext requestCtx;
 	private final ObjRepository<? extends Obj, ? extends Record> repository;
 	private final UpdatableRecord<?> objDbRecord;
 
@@ -47,9 +46,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final PartListProperty<ObjPartTransition> transitionList;
 
-	protected ObjBase(RequestContext requestCtx, ObjRepository<? extends Obj, ? extends Record> repository,
-			UpdatableRecord<?> objDbRecord) {
-		this.requestCtx = requestCtx;
+	protected ObjBase(ObjRepository<? extends Obj, ? extends Record> repository, UpdatableRecord<?> objDbRecord) {
 		this.repository = repository;
 		this.objDbRecord = objDbRecord;
 		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
@@ -73,8 +70,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public RequestContext getSessionInfo() {
-		return this.requestCtx;
+	public RequestContext getRequestContext() {
+		return this.getAppContext().getRequestContext();
 	}
 
 	@Override
@@ -111,13 +108,13 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+		Integer sessionUserId = this.getMeta().getRequestContext().getUser().getId();
 		try {
 			this.disableCalc();
 			this.owner.setId(sessionUserId);
 			this.version.setValue(0);
 			this.createdByUser.setId(sessionUserId);
-			this.createdAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+			this.createdAt.setValue(this.getAppContext().getRequestContext().getCurrentTime());
 			this.transitionList.addPart();
 		} finally {
 			this.enableCalc();
@@ -138,8 +135,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		try {
 			this.disableCalc();
 			this.version.setValue(this.version.getValue() + 1);
-			this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
-			this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+			RequestContext requestCtx = this.getMeta().getRequestContext();
+			this.modifiedByUser.setValue(requestCtx.getUser());
+			this.modifiedAt.setValue(requestCtx.getCurrentTime());
 		} finally {
 			this.enableCalc();
 		}
@@ -153,8 +151,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@Override
 	public void delete() {
-		this.closedByUser.setValue(this.getMeta().getSessionInfo().getUser());
-		this.closedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+		RequestContext requestCtx = this.getMeta().getRequestContext();
+		this.closedByUser.setValue(requestCtx.getUser());
+		this.closedAt.setValue(requestCtx.getCurrentTime());
 	}
 
 	@Override

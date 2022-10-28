@@ -51,9 +51,9 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 			if (this.getOriginal() != null) {
 				contact = this.getOriginal().getMainContact();
 			} else if (this.mainContactId != null) {
-				contact = getRepository(ObjContact.class).get(this.requestCtx, this.mainContactId);
+				contact = getRepository(ObjContact.class).get(this.mainContactId);
 			}
-			this.mainContactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact, this.requestCtx);
+			this.mainContactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact);
 		}
 		return this.mainContactDto;
 	}
@@ -70,7 +70,7 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 		if (this.contactsDto == null) {
 			if (this.getOriginal() != null) {
 				this.contactsDto = this.getOriginal().getContacts().stream()
-						.map(c -> ObjContactDtoAdapter.getInstance().fromAggregate(c, this.requestCtx)).toList();
+						.map(c -> ObjContactDtoAdapter.getInstance().fromAggregate(c)).toList();
 			} else {
 			}
 		}

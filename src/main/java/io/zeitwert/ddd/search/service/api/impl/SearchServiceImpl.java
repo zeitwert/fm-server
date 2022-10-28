@@ -38,21 +38,22 @@ public class SearchServiceImpl implements SearchService {
 
 	private final CodeAggregateTypeEnum aggregateTypeEnum;
 	private final DSLContext dslContext;
+	private final RequestContext requestContext;
 
-	SearchServiceImpl(final CodeAggregateTypeEnum aggregateTypeEnum, final DSLContext dslContext) {
+	SearchServiceImpl(CodeAggregateTypeEnum aggregateTypeEnum, DSLContext dslContext, RequestContext requestContext) {
 		this.aggregateTypeEnum = aggregateTypeEnum;
 		this.dslContext = dslContext;
+		this.requestContext = requestContext;
 	}
 
-	public List<SearchResult> find(RequestContext requestCtx, String searchText, int maxResultSize) {
-		return this.find(requestCtx, List.of(), searchText, maxResultSize);
+	public List<SearchResult> find(String searchText, int maxResultSize) {
+		return this.find(List.of(), searchText, maxResultSize);
 	}
 
-	public List<SearchResult> find(RequestContext requestCtx, List<String> itemTypes, String searchText,
-			int maxResultSize) {
+	public List<SearchResult> find(List<String> itemTypes, String searchText, int maxResultSize) {
 
-		Condition tenantCondition = TENANT_ID.eq(requestCtx.getTenant().getId());
-		Condition accountCondition = ACCOUNT_ID.isNull().or(ACCOUNT_ID.eq(requestCtx.getAccountId()));
+		Condition tenantCondition = TENANT_ID.eq(this.requestContext.getTenant().getId());
+		Condition accountCondition = ACCOUNT_ID.isNull().or(ACCOUNT_ID.eq(this.requestContext.getAccountId()));
 		Condition itemTypeCondition = itemTypes != null ? ITEM_TYPE_ID.in(itemTypes) : DSL.noCondition();
 		String searchToken = "'" + searchText + "':*";
 		Condition searchCondition = DSL.noCondition()

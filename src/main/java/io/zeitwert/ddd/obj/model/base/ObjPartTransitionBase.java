@@ -9,6 +9,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.jooq.JSON;
 import org.jooq.UpdatableRecord;
@@ -31,8 +32,9 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 		super.doAfterCreate();
 		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
 		dbRecord.setTenantId(this.getAggregate().getTenantId());
-		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
-		dbRecord.setTimestamp(this.getMeta().getSessionInfo().getCurrentTime());
+		RequestContext requestCtx = this.getMeta().getRequestContext();
+		dbRecord.setUserId(requestCtx.getUser().getId());
+		dbRecord.setTimestamp(requestCtx.getCurrentTime());
 	}
 
 	public String getChanges() {

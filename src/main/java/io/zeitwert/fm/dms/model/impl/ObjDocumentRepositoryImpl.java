@@ -76,24 +76,24 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	}
 
 	@Override
-	public ObjDocument doCreate(RequestContext requestCtx) {
-		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
+	public ObjDocument doCreate() {
+		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
 	}
 
 	@Override
-	public ObjDocument doLoad(RequestContext requestCtx, Integer objId) {
+	public ObjDocument doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjDocumentRecord documentRecord = this.getDSLContext().fetchOne(Tables.OBJ_DOCUMENT,
 				Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId));
 		if (documentRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(requestCtx, objId, documentRecord);
+		return this.doLoad(objId, documentRecord);
 	}
 
 	@Override
-	public List<ObjDocumentVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
-		return this.doFind(requestCtx, Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
+	public List<ObjDocumentVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
 	}
 
 	@Override

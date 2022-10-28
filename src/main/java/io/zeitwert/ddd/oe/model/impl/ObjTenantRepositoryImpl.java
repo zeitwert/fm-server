@@ -23,7 +23,6 @@ import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
 import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>
@@ -58,32 +57,32 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	}
 
 	@Override
-	public ObjTenant doCreate(RequestContext requestCtx) {
-		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_TENANT));
+	public ObjTenant doCreate() {
+		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_TENANT));
 	}
 
 	@Override
-	public ObjTenant doLoad(RequestContext requestCtx, Integer objId) {
+	public ObjTenant doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjTenantRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
 		if (tenantRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(requestCtx, objId, tenantRecord);
+		return this.doLoad(objId, tenantRecord);
 	}
 
 	@Override
-	public List<ObjTenantVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
-		return this.doFind(requestCtx, Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
+	public List<ObjTenantVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}
 
-	public Optional<ObjTenant> getByExtlKey(RequestContext requestCtx, String extlKey) {
+	public Optional<ObjTenant> getByExtlKey(String extlKey) {
 		ObjTenantVRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT_V,
 				Tables.OBJ_TENANT_V.EXTL_KEY.eq(extlKey));
 		if (tenantRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(requestCtx, tenantRecord.getId()));
+		return Optional.of(this.get(tenantRecord.getId()));
 	}
 
 }

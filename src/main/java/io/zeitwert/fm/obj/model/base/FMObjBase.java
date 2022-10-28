@@ -5,7 +5,6 @@ import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -23,9 +22,8 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 
 	protected final ReferenceProperty<ObjAccount> account;
 
-	protected FMObjBase(RequestContext requestCtx, ObjRepository<? extends Obj, ? extends Record> repository,
-			UpdatableRecord<?> objRecord) {
-		super(requestCtx, repository, objRecord);
+	protected FMObjBase(ObjRepository<? extends Obj, ? extends Record> repository, UpdatableRecord<?> objRecord) {
+		super(repository, objRecord);
 		this.account = this.addReferenceProperty(objRecord, ObjFields.ACCOUNT_ID, ObjAccount.class);
 	}
 
@@ -38,15 +36,16 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 	@Override
 	public List<ObjNoteVRecord> getNoteList() {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		return noteRepository.getByForeignKey(this.getSessionInfo(), "related_to_id", this.getId()).stream()
-				.filter(onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getSessionInfo().getUser().getId()))
+		return noteRepository.getByForeignKey("related_to_id", this.getId()).stream()
+				.filter(
+						onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getRequestContext().getUser().getId()))
 				.toList();
 	}
 
 	@Override
 	public ObjNote addNote(CodeNoteType noteType) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		ObjNote note = noteRepository.create(this.getTenantId(), this.getSessionInfo());
+		ObjNote note = noteRepository.create(this.getTenantId());
 		note.setNoteType(noteType);
 		note.setRelatedToId(this.getId());
 		return note;
@@ -55,7 +54,7 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 	@Override
 	public void removeNote(Integer noteId) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		ObjNote note = noteRepository.get(this.getSessionInfo(), noteId);
+		ObjNote note = noteRepository.get(noteId);
 		noteRepository.delete(note);
 	}
 

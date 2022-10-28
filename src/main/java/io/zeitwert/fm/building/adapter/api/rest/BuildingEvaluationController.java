@@ -186,7 +186,7 @@ public class BuildingEvaluationController {
 			@RequestParam(required = false, name = "format") String format,
 			@RequestParam(required = false, name = "inline") Boolean isInline) {
 
-		ObjBuilding building = this.repo.get(requestCtx, id);
+		ObjBuilding building = this.repo.get(id);
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		try {

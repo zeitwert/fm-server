@@ -4,7 +4,6 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.ddd.session.model.RequestContext;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,12 +19,12 @@ public class ObjPartTransitionDto {
 
 	private OffsetDateTime timestamp;
 
-	public static ObjPartTransitionDto fromPart(ObjPartTransition transition, RequestContext requestCtx) {
+	public static ObjPartTransitionDto fromPart(ObjPartTransition transition) {
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		return ObjPartTransitionDto.builder()
 			.seqNr(transition.getSeqNr())
-			.user(userDtoAdapter.asEnumerated(transition.getUser(), requestCtx))
+			.user(userDtoAdapter.asEnumerated(transition.getUser()))
 			.timestamp(transition.getTimestamp())
 			.build();
 		// @formatter:on

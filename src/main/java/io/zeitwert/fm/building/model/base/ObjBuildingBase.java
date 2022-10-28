@@ -18,7 +18,6 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -93,10 +92,10 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	protected final PartListProperty<ObjBuildingPartRating> ratingList;
 
-	protected ObjBuildingBase(RequestContext requestCtx, ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjBuildingBase(ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
 
-		super(requestCtx, repository, objRecord);
+		super(repository, objRecord);
 
 		this.dbRecord = contactRecord;
 
@@ -224,8 +223,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 			} else {
 				rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"));
 			}
-			rating.setRatingDate(this.getMeta().getSessionInfo().getCurrentDate());
-			rating.setRatingUser(this.getMeta().getSessionInfo().getUser());
+			rating.setRatingDate(this.getMeta().getRequestContext().getCurrentDate());
+			rating.setRatingUser(this.getMeta().getRequestContext().getUser());
 		} finally {
 			rating.getMeta().enableCalc();
 			rating.calcAll();

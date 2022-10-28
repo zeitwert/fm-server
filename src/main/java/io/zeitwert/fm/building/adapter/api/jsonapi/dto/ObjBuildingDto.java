@@ -49,9 +49,9 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			if (this.getOriginal() != null) {
 				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				account = getRepository(ObjAccount.class).get(this.requestCtx, this.accountId);
+				account = getRepository(ObjAccount.class).get(this.accountId);
 			}
-			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, this.requestCtx);
+			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account);
 		}
 		return this.accountDto;
 	}
@@ -112,9 +112,9 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			if (this.getOriginal() != null) {
 				cf = this.getOriginal().getCoverFoto();
 			} else if (this.coverFotoId != null) {
-				cf = getRepository(ObjDocument.class).get(this.requestCtx, this.coverFotoId);
+				cf = getRepository(ObjDocument.class).get(this.coverFotoId);
 			}
-			this.coverFotoDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(cf, this.requestCtx);
+			this.coverFotoDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(cf);
 		}
 		return this.coverFotoDto;
 	}

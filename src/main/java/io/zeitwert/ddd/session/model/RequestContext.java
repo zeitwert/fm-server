@@ -13,8 +13,6 @@ import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 
 public class RequestContext {
 
-	public final static RequestContext NO_SESSION = new RequestContext(null, null, null);
-
 	private final ObjUser user;
 	private final Integer accountId;
 	private final CodeLocale locale;
@@ -68,7 +66,7 @@ public class RequestContext {
 
 	@Override
 	public String toString() {
-		return "SessionInfo("
+		return "RequestContext("
 				+ "user: " + (user != null ? user.getId() : "null")
 				+ ", accountId: " + accountId
 				+ ", locale: " + (locale != null ? locale.getId() : "null")

@@ -17,7 +17,6 @@ import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends AggregateRepositoryBase<D, V>
 		implements DocRepository<D, V> {
@@ -62,8 +61,8 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
 	}
 
-	protected D doCreate(RequestContext requestCtx, UpdatableRecord<?> extnRecord) {
-		return newAggregate(requestCtx, this.getDSLContext().newRecord(Tables.DOC), extnRecord);
+	protected D doCreate(UpdatableRecord<?> extnRecord) {
+		return newAggregate(this.getDSLContext().newRecord(Tables.DOC), extnRecord);
 	}
 
 	// TODO get rid of
@@ -73,12 +72,12 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		((DocBase) doc).doInitWorkflow(caseDefId, defaultCaseStage);
 	}
 
-	protected D doLoad(RequestContext requestCtx, Integer docId, UpdatableRecord<?> extnRecord) {
+	protected D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null || extnRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return newAggregate(requestCtx, docRecord, extnRecord);
+		return newAggregate(docRecord, extnRecord);
 	}
 
 	@Override

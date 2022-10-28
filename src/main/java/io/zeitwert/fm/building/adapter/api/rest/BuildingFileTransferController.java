@@ -65,7 +65,7 @@ public class BuildingFileTransferController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		ObjBuilding building = this.buildingRepo.get(requestCtx, id);
+		ObjBuilding building = this.buildingRepo.get(id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
 		// mark file for download
@@ -86,7 +86,7 @@ public class BuildingFileTransferController {
 		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = buildingRepo.create(requestCtx.getTenant().getId(), requestCtx);
+		ObjBuilding building = buildingRepo.create(requestCtx.getTenant().getId());
 		building.setAccountId(accountId);
 		this.fillFromDto(building, dto);
 		buildingRepo.store(building);
@@ -125,9 +125,9 @@ public class BuildingFileTransferController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
-					.createdByUser(userRepo.get(this.requestCtx, note.getCreatedByUserId()).getEmail())
+					.createdByUser(userRepo.get(note.getCreatedByUserId()).getEmail())
 					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(this.requestCtx, note.getModifiedByUserId()).getEmail() : null)
+					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(note.getModifiedByUserId()).getEmail() : null)
 					.modifiedAt(note.getModifiedAt())
 				.build();
 		}).toList();
@@ -221,7 +221,7 @@ public class BuildingFileTransferController {
 			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(this.requestCtx, dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());

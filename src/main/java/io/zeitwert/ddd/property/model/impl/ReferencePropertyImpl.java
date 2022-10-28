@@ -52,7 +52,7 @@ public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> 
 	@Override
 	public A getValue() {
 		return this.getId() == null ? null
-				: this.repository.get(this.getEntity().getSessionInfo(), this.getId());
+				: this.repository.get(this.getId());
 	}
 
 	@Override

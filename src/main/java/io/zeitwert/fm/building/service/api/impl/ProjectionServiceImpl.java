@@ -14,7 +14,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -33,18 +32,15 @@ public class ProjectionServiceImpl implements ProjectionService {
 			"P63", "P64", "P65", "P66");
 	static final List<String> HalfTechRates = List.of("P12", "P60", "P61", "P62");
 
-	private final RequestContext requestCtx;
-
 	private final ObjBuildingRepository buildingRepo;
 
-	public ProjectionServiceImpl(RequestContext requestCtx, ObjBuildingRepository buildingRepo) {
-		this.requestCtx = requestCtx;
+	public ProjectionServiceImpl(ObjBuildingRepository buildingRepo) {
 		this.buildingRepo = buildingRepo;
 	}
 
 	public ProjectionResult getProjection(ObjPortfolio portfolio) {
 		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream()
-				.map(id -> this.buildingRepo.get(requestCtx, id))
+				.map(id -> this.buildingRepo.get(id))
 				.collect(Collectors.toSet());
 		int duration = DefaultDuration;
 		return this.getProjectionDetails(buildings, duration);

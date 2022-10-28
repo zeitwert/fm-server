@@ -23,7 +23,6 @@ import io.zeitwert.ddd.oe.model.base.ObjUserBase;
 import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 @Component("objUserRepository")
 public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRecord> implements ObjUserRepository {
@@ -57,32 +56,32 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	}
 
 	@Override
-	public ObjUser doCreate(RequestContext requestCtx) {
-		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_USER));
+	public ObjUser doCreate() {
+		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_USER));
 	}
 
 	@Override
-	public ObjUser doLoad(RequestContext requestCtx, Integer objId) {
+	public ObjUser doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjUserRecord userRecord = this.getDSLContext().fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(objId));
 		if (userRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(requestCtx, objId, userRecord);
+		return this.doLoad(objId, userRecord);
 	}
 
 	@Override
-	public List<ObjUserVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
-		return this.doFind(requestCtx, Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, querySpec);
+	public List<ObjUserVRecord> doFind(QuerySpec querySpec) {
+		return this.doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, querySpec);
 	}
 
 	@Override
-	public Optional<ObjUser> getByEmail(RequestContext requestCtx, String email) {
+	public Optional<ObjUser> getByEmail(String email) {
 		ObjUserVRecord userRecord = this.getDSLContext().fetchOne(Tables.OBJ_USER_V, Tables.OBJ_USER_V.EMAIL.eq(email));
 		if (userRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(requestCtx, userRecord.getId()));
+		return Optional.of(this.get(userRecord.getId()));
 	}
 
 }

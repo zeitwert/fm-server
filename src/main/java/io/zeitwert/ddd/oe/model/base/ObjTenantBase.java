@@ -13,7 +13,6 @@ import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 import java.util.List;
 
@@ -28,9 +27,8 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
 	private final UpdatableRecord<?> dbRecord;
 
-	public ObjTenantBase(RequestContext requestCtx, ObjTenantRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> tenantRecord) {
-		super(requestCtx, repository, objRecord);
+	public ObjTenantBase(ObjTenantRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> tenantRecord) {
+		super(repository, objRecord);
 		this.dbRecord = tenantRecord;
 		this.tenantType = this.addEnumProperty(dbRecord, ObjTenantFields.TENANT_TYPE_ID, CodeTenantTypeEnum.class);
 		this.name = this.addSimpleProperty(dbRecord, ObjTenantFields.NAME);
@@ -67,10 +65,8 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
 	@Override
 	public List<ObjUser> getUsers() {
-		RequestContext requestCtx = this.getMeta().getSessionInfo();
 		ObjUserRepository userRepo = (ObjUserRepository) this.getAppContext().getRepository(ObjUser.class);
-		return userRepo.getByForeignKey(requestCtx, "tenantId", this.getId()).stream()
-				.map(c -> userRepo.get(requestCtx, c.getId())).toList();
+		return userRepo.getByForeignKey("tenantId", this.getId()).stream().map(c -> userRepo.get(c.getId())).toList();
 	}
 
 	@Override

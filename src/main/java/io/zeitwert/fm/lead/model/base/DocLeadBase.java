@@ -22,7 +22,6 @@ import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.jooq.UpdatableRecord;
 
@@ -50,9 +49,8 @@ public abstract class DocLeadBase extends FMDocBase implements DocLead {
 	protected final EnumProperty<CodeCountry> country;
 	protected final EnumSetProperty<CodeArea> areaSet;
 
-	protected DocLeadBase(RequestContext requestCtx, DocLeadRepository repository, UpdatableRecord<?> docRecord,
-			UpdatableRecord<?> leadRecord) {
-		super(requestCtx, repository, docRecord);
+	protected DocLeadBase(DocLeadRepository repository, UpdatableRecord<?> docRecord, UpdatableRecord<?> leadRecord) {
+		super(repository, docRecord);
 		this.leadRecord = leadRecord;
 		this.account = this.addReferenceProperty(leadRecord, DocLeadFields.ACCOUNT_ID, ObjAccount.class);
 		this.subject = this.addSimpleProperty(leadRecord, DocLeadFields.SUBJECT);

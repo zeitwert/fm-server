@@ -11,7 +11,6 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.part.model.base.PartStatus;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
@@ -46,10 +45,10 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 	}
 
 	@Override
-	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj, RequestContext requestCtx) {
+	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj, requestCtx);
+			super.toAggregate(dto, obj);
 
 			// @formatter:off
 			obj.setAccountId(dto.getAccountId());
@@ -97,7 +96,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
 				rating.setRatingDate(dto.getRatingDate());
 				Integer userId = dto.getRatingUser() == null ? null : Integer.parseInt(dto.getRatingUser().getId());
-				rating.setRatingUser(userId == null ? null : getUserRepository().get(requestCtx, userId));
+				rating.setRatingUser(userId == null ? null : getUserRepository().get(userId));
 				if (dto.getElements() != null) {
 					dto.getElements().forEach(elementDto -> {
 						ObjBuildingPartElementRating element = null;
@@ -122,13 +121,13 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 	}
 
 	@Override
-	public ObjBuildingDto fromAggregate(ObjBuilding obj, RequestContext requestCtx) {
+	public ObjBuildingDto fromAggregate(ObjBuilding obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, requestCtx);
+		this.fromAggregate(dtoBuilder, obj);
 		ProjectionService projectionService = AppContext.getInstance().getBean(ProjectionService.class);
 		// @formatter:off
 		dtoBuilder
@@ -173,7 +172,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 				.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
 				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
 				.ratingDate(rating.getRatingDate())
-				.ratingUser(userDtoAdapter.asEnumerated(rating.getRatingUser(), requestCtx))
+				.ratingUser(userDtoAdapter.asEnumerated(rating.getRatingUser()))
 				.elements(obj.getCurrentRating().getElementList().stream().map(a -> ObjBuildingPartElementRatingDto.fromPart(a, projectionService)).toList());
 		}
 		// @formatter:on
@@ -186,14 +185,14 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 	}
 
 	@Override
-	public ObjBuildingDto fromRecord(ObjBuildingVRecord obj, RequestContext requestCtx) {
+	public ObjBuildingDto fromRecord(ObjBuildingVRecord obj) {
 		if (obj == null) {
 			return null;
 		}
-		ObjUser ratingUser = obj.getRatingUserId() != null ? getUserRepository().get(requestCtx, obj.getRatingUserId())
+		ObjUser ratingUser = obj.getRatingUserId() != null ? getUserRepository().get(obj.getRatingUserId())
 				: null;
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, requestCtx);
+		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		dtoBuilder = dtoBuilder
 			.accountId(obj.getAccountId())
@@ -233,7 +232,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 			.maintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(obj.getMaintenanceStrategyId())))
 			.ratingStatus(EnumeratedDto.fromEnum(CodeBuildingRatingStatusEnum.getRatingStatus(obj.getRatingStatusId())))
 			.ratingDate(obj.getRatingDate())
-			.ratingUser(ObjUserDtoAdapter.getInstance().asEnumerated(ratingUser, requestCtx));
+			.ratingUser(ObjUserDtoAdapter.getInstance().asEnumerated(ratingUser));
 		// @formatter:on
 		return dtoBuilder.build();
 	}

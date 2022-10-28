@@ -67,8 +67,8 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	}
 
 	@Override
-	public RequestContext getSessionInfo() {
-		return this.getAggregate().getMeta().getSessionInfo();
+	public RequestContext getRequestContext() {
+		return this.getAggregate().getMeta().getRequestContext();
 	}
 
 	protected UpdatableRecord<?> getDbRecord() {

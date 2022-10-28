@@ -16,7 +16,7 @@ import io.zeitwert.server.config.security.ZeitwertUserDetails;
 
 @Configuration
 @Profile({ "dev", "staging", "prod" })
-public class SessionInfoProvider {
+public class RequestContextProvider {
 
 	static final String DEFAULT_LOCALE = "de-CH";
 
@@ -24,11 +24,11 @@ public class SessionInfoProvider {
 	@Autowired
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public RequestContext getSessionInfo(ObjUserRepository userRepo) {
+	public RequestContext getRequestContext(ObjUserRepository userRepo) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
-		ObjUser user = userRepo.get(null, userDetails.getUserId());
+		ObjUser user = userRepo.get(userDetails.getUserId());
 		return new RequestContext(user, userDetails.getAccountId(), CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
 
 	}

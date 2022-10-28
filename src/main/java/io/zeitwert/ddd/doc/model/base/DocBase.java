@@ -31,7 +31,6 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
-	private final RequestContext requestCtx;
 	private final DocRepository<? extends Doc, ? extends Record> repository;
 	private final UpdatableRecord<?> docDbRecord;
 
@@ -53,9 +52,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	private final PartListProperty<DocPartTransition> transitionList;
 
-	protected DocBase(RequestContext requestCtx, DocRepository<? extends Doc, ? extends Record> repository,
-			UpdatableRecord<?> docDbRecord) {
-		this.requestCtx = requestCtx;
+	protected DocBase(DocRepository<? extends Doc, ? extends Record> repository, UpdatableRecord<?> docDbRecord) {
 		this.repository = repository;
 		this.docDbRecord = docDbRecord;
 		this.id = this.addSimpleProperty(docDbRecord, DocFields.ID);
@@ -81,8 +78,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public RequestContext getSessionInfo() {
-		return this.requestCtx;
+	public RequestContext getRequestContext() {
+		return this.getAppContext().getRequestContext();
 	}
 
 	@Override
@@ -128,13 +125,13 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		Integer sessionUserId = this.getMeta().getSessionInfo().getUser().getId();
+		Integer sessionUserId = this.getMeta().getRequestContext().getUser().getId();
 		try {
 			this.disableCalc();
 			this.owner.setId(sessionUserId);
 			this.version.setValue(0);
 			this.createdByUser.setId(sessionUserId);
-			this.createdAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+			this.createdAt.setValue(this.getMeta().getRequestContext().getCurrentTime());
 			this.transitionList.addPart();
 		} finally {
 			this.enableCalc();
@@ -157,8 +154,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 			this.disableCalc();
 			this.isInWork.setValue(isInWork);
 			this.version.setValue(this.version.getValue() + 1);
-			this.modifiedByUser.setValue(this.getMeta().getSessionInfo().getUser());
-			this.modifiedAt.setValue(this.getMeta().getSessionInfo().getCurrentTime());
+			this.modifiedByUser.setValue(this.getMeta().getRequestContext().getUser());
+			this.modifiedAt.setValue(this.getMeta().getRequestContext().getCurrentTime());
 		} finally {
 			this.enableCalc();
 		}

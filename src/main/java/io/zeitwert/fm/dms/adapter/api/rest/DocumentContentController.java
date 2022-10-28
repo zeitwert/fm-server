@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
@@ -22,17 +21,15 @@ import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 @RequestMapping("/rest/dms/documents")
 public class DocumentContentController {
 
-	private final RequestContext requestCtx;
 	private final ObjDocumentRepository documentRepository;
 
-	public DocumentContentController(RequestContext requestCtx, ObjDocumentRepository documentRepository) {
-		this.requestCtx = requestCtx;
+	public DocumentContentController(ObjDocumentRepository documentRepository) {
 		this.documentRepository = documentRepository;
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getContent(@PathVariable Integer documentId) {
-		ObjDocument document = this.documentRepository.get(this.requestCtx, documentId);
+		ObjDocument document = this.documentRepository.get(documentId);
 		CodeContentType contentType = document.getContentType();
 		if (contentType == null) {
 			return ResponseEntity.notFound().build();
@@ -51,7 +48,7 @@ public class DocumentContentController {
 	public ResponseEntity<Void> storeContent(@PathVariable Integer documentId,
 			@RequestParam("file") MultipartFile file) {
 		try {
-			ObjDocument document = this.documentRepository.get(this.requestCtx, documentId);
+			ObjDocument document = this.documentRepository.get(documentId);
 			CodeContentType contentType = CodeContentTypeEnum.getContentType(file.getContentType(),
 					file.getOriginalFilename());
 			if (contentType == null) {

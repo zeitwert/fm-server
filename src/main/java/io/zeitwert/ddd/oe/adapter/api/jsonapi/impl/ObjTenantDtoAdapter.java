@@ -8,7 +8,6 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenantVRecord, ObjTenantDto> {
 
@@ -27,8 +26,8 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 	}
 
 	@Override
-	public void toAggregate(ObjTenantDto dto, ObjTenant obj, RequestContext requestCtx) {
-		super.toAggregate(dto, obj, requestCtx);
+	public void toAggregate(ObjTenantDto dto, ObjTenant obj) {
+		super.toAggregate(dto, obj);
 		obj.setTenantType(
 				dto.getTenantType() == null ? null : CodeTenantTypeEnum.getTenantType(dto.getTenantType().getId()));
 		obj.setName(dto.getName());
@@ -37,12 +36,12 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 	}
 
 	@Override
-	public ObjTenantDto fromAggregate(ObjTenant obj, RequestContext requestCtx) {
+	public ObjTenantDto fromAggregate(ObjTenant obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, requestCtx);
+		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.name(obj.getName())
 				.description(obj.getDescription())
@@ -51,7 +50,7 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 				.build();
 	}
 
-	public EnumeratedDto asEnumerated(ObjTenant obj, RequestContext requestCtx) {
+	public EnumeratedDto asEnumerated(ObjTenant obj) {
 		if (obj == null) {
 			return null;
 		}
@@ -63,12 +62,12 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 	}
 
 	@Override
-	public ObjTenantDto fromRecord(ObjTenantVRecord obj, RequestContext requestCtx) {
+	public ObjTenantDto fromRecord(ObjTenantVRecord obj) {
 		if (obj == null) {
 			return null;
 		}
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, requestCtx);
+		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.name(obj.getName())
 				.description(obj.getDescription())

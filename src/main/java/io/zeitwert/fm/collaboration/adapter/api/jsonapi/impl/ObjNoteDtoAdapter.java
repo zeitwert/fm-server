@@ -3,7 +3,6 @@ package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
@@ -24,8 +23,8 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public void toAggregate(ObjNoteDto dto, ObjNote note, RequestContext requestCtx) {
-		super.toAggregate(dto, note, requestCtx);
+	public void toAggregate(ObjNoteDto dto, ObjNote note) {
+		super.toAggregate(dto, note);
 		note.setRelatedToId(Integer.parseInt(dto.getRelatedToId()));
 		note.setNoteType(dto.getNoteType() == null ? null : CodeNoteTypeEnum.getNoteType(dto.getNoteType().getId()));
 		note.setSubject(dto.getSubject());
@@ -34,12 +33,12 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public ObjNoteDto fromAggregate(ObjNote note, RequestContext requestCtx) {
+	public ObjNoteDto fromAggregate(ObjNote note) {
 		if (note == null) {
 			return null;
 		}
 		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder().original(note);
-		this.fromAggregate(dtoBuilder, note, requestCtx);
+		this.fromAggregate(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder
 			.relatedToId(note.getRelatedToId().toString())
@@ -52,12 +51,12 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public ObjNoteDto fromRecord(ObjNoteVRecord note, RequestContext requestCtx) {
+	public ObjNoteDto fromRecord(ObjNoteVRecord note) {
 		if (note == null) {
 			return null;
 		}
 		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder().original(null);
-		this.fromRecord(dtoBuilder, note, requestCtx);
+		this.fromRecord(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder
 			.relatedToId(note.getRelatedToId().toString())

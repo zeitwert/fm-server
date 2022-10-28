@@ -7,7 +7,6 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.jooq.TableRecord;
 
@@ -34,10 +33,10 @@ public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRe
 		return userRepository;
 	}
 
-	public abstract void toAggregate(D dto, A aggregate, RequestContext requestCtx);
+	public abstract void toAggregate(D dto, A aggregate);
 
-	public abstract D fromAggregate(A aggregate, RequestContext requestCtx);
+	public abstract D fromAggregate(A aggregate);
 
-	public abstract D fromRecord(V obj, RequestContext requestCtx);
+	public abstract D fromRecord(V obj);
 
 }

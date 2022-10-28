@@ -44,8 +44,7 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
 			if (this.getOriginal() != null) {
-				this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(this.getOriginal().getAccount(),
-						this.requestCtx);
+				this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(this.getOriginal().getAccount());
 			} else if (this.accountId != null) {
 			}
 		}

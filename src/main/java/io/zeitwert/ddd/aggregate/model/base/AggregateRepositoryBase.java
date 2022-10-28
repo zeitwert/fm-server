@@ -69,7 +69,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.proxyFactoryParamTypeList = new Class<?>[] { RequestContext.class, repoIntfClass, UpdatableRecord.class, UpdatableRecord.class };
+		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, UpdatableRecord.class, UpdatableRecord.class };
 	}
 	//@formatter:on
 
@@ -98,12 +98,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	 * Create a new aggregate, used from both create and load to create a new object
 	 */
 	@SuppressWarnings("unchecked")
-	protected final A newAggregate(RequestContext requestCtx, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> extnRecord) {
+	protected final A newAggregate(UpdatableRecord<?> objRecord, UpdatableRecord<?> extnRecord) {
 		A aggregate = null;
 		try {
 			aggregate = (A) this.proxyFactory.create(proxyFactoryParamTypeList,
-					new Object[] { requestCtx, this, objRecord, extnRecord }, PropertyHandler.INSTANCE);
+					new Object[] { this, objRecord, extnRecord }, PropertyHandler.INSTANCE);
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {
 			e.printStackTrace();
@@ -116,10 +115,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract Integer nextAggregateId();
 
 	@Override
-	public final A create(Integer tenantId, RequestContext requestCtx) {
+	public final A create(Integer tenantId) {
 
 		Integer aggregateId = this.nextAggregateId();
-		A aggregate = this.doCreate(requestCtx);
+		A aggregate = this.doCreate();
 
 		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
 		((AggregateSPI) aggregate).doInit(aggregateId, tenantId);
@@ -138,7 +137,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public abstract A doCreate(RequestContext requestCtx);
+	public abstract A doCreate();
 
 	@Override
 	public final void doInitParts(A aggregate) {
@@ -157,10 +156,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public final A get(RequestContext requestCtx, Integer id) {
+	public final A get(Integer id) {
 
 		requireThis(id != null, "id not null");
-		A aggregate = this.doLoad(requestCtx, id);
+		A aggregate = this.doLoad(id);
 
 		this.doInitParts(aggregate);
 		this.doLoadParts(aggregate);
@@ -180,7 +179,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public abstract A doLoad(RequestContext requestCtx, Integer id);
+	public abstract A doLoad(Integer id);
 
 	@Override
 	public final void doLoadParts(A aggregate) {
@@ -254,8 +253,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public final List<V> find(RequestContext requestCtx, QuerySpec querySpec) {
+	public final List<V> find(QuerySpec querySpec) {
 		String tenantField = AggregateFields.TENANT_ID.getName();
+		RequestContext requestCtx = this.appContext.getRequestContext();
 		Integer tenantId = requestCtx.getTenant().getId();
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
@@ -265,21 +265,21 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 			Integer accountId = requestCtx.getAccountId();
 			querySpec.addFilter(PathSpec.of(accountField).filter(FilterOperator.EQ, accountId));
 		}
-		return this.doFind(requestCtx, querySpec);
+		return this.doFind(querySpec);
 	}
 
 	@Override
-	public abstract List<V> doFind(RequestContext requestCtx, QuerySpec querySpec);
+	public abstract List<V> doFind(QuerySpec querySpec);
 
 	@Override
-	public final List<V> getByForeignKey(RequestContext requestCtx, String fkName, Integer targetId) {
+	public final List<V> getByForeignKey(String fkName, Integer targetId) {
 		QuerySpec querySpec = new QuerySpec(Aggregate.class);
 		querySpec.addFilter(PathSpec.of(fkName).filter(FilterOperator.EQ, targetId));
-		return this.doFind(requestCtx, querySpec);
+		return this.doFind(querySpec);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<V> doFind(RequestContext requestCtx, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
 
 		Condition whereClause = DSL.noCondition();
 
@@ -326,8 +326,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	// List<A> itemList = this.aggregateCache.getItemList(aggregateId);
 	// for (A aggregate : itemList) {
 	// ((AggregateBase) aggregate).setStale();
-	// if (aggregate.getMeta().getSessionInfo() ==
-	// event.getAggregate().getMeta().getSessionInfo()) {
+	// if (aggregate.getMeta().getRequestContext() ==
+	// event.getAggregate().getMeta().getRequestContext()) {
 	// this.discard(aggregate);
 	// }
 	// }

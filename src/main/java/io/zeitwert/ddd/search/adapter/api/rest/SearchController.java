@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.search.adapter.api.rest.dto.SearchResultDto;
 import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
-import io.zeitwert.ddd.session.model.RequestContext;
 
 @RestController("searchController")
 @RequestMapping("/api/search")
@@ -23,20 +22,17 @@ public class SearchController {
 
 	private final SearchService searchService;
 
-	private final RequestContext requestCtx;
-
-	SearchController(SearchService searchService, RequestContext requestCtx) {
+	SearchController(SearchService searchService) {
 		this.searchService = searchService;
-		this.requestCtx = requestCtx;
 	}
 
 	@GetMapping()
 	public ResponseEntity<List<SearchResultDto>> find(@RequestParam String searchText,
 			@RequestParam(required = false) List<String> itemTypes) {
-		List<SearchResult> items = this.searchService.find(this.requestCtx, itemTypes, searchText, SEARCH_RESULT_SIZE);
+		List<SearchResult> items = this.searchService.find(itemTypes, searchText, SEARCH_RESULT_SIZE);
 		Collections.sort(items, Collections.reverseOrder());
 		return ResponseEntity.ok(
-				items.stream().limit(SEARCH_RESULT_SIZE).map(sr -> SearchResultDto.fromItem(sr, this.requestCtx)).toList());
+				items.stream().limit(SEARCH_RESULT_SIZE).map(sr -> SearchResultDto.fromItem(sr)).toList());
 	}
 
 }
