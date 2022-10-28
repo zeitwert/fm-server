@@ -28,11 +28,8 @@ class ApplicationServiceImpl implements ApplicationService {
 			return appConfig.AppAdminApplications;
 		} else if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.ADMIN)) {
 			return appConfig.AdminApplications;
-		} else if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.USER)
-				|| sessionInfo.getUser().hasRole(CodeUserRoleEnum.SUPER_USER)) {
-			return appConfig.UserApplications;
 		}
-		return List.of();
+		return appConfig.UserApplications;
 	}
 
 	public Application getApplication(String id) {

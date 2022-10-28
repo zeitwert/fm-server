@@ -63,6 +63,10 @@ const MstSessionModel = types
 		setState(state: SessionState) {
 			sessionStorage.setItem(SESSION_STATE_ITEM, state);
 			self.state = state;
+			if (self.state === SessionState.close) {
+				sessionStorage.removeItem(SESSION_INFO_ITEM);
+				sessionStorage.removeItem(AUTH_HEADER_ITEM);
+			}
 		}
 	}))
 	.views((self) => ({
@@ -112,6 +116,7 @@ const MstSessionModel = types
 					self.sessionInfo = Object.assign({}, self.sessionInfo, { applicationId: appId });
 					sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(self.sessionInfo));
 				} catch (error: any) {
+					self.setState(SessionState.close);
 					Logger.error("Failed to load application", error);
 				}
 			})();
@@ -221,8 +226,6 @@ const MstSessionModel = types
 							Logger.error("Logout failed", error);
 						} finally {
 							self.clear(SessionState.close);
-							sessionStorage.removeItem(SESSION_INFO_ITEM);
-							sessionStorage.removeItem(AUTH_HEADER_ITEM);
 							isAuthenticated.set(false);
 							window.location.replace("/");
 						}
@@ -244,10 +247,10 @@ const MstSessionModel = types
 	}))
 	.views((self) => ({
 		get isUser(): boolean {
-			return ["readOnly", "user", "super_user"].indexOf(self.sessionInfo?.user?.role!) >= 0;
+			return ["read_only", "user", "super_user"].indexOf(self.sessionInfo?.user?.role!) >= 0;
 		},
 		get hasReadOnlyRole(): boolean {
-			return "readOnly" === self.sessionInfo?.user?.role;
+			return "read_only" === self.sessionInfo?.user?.role;
 		},
 		get hasUserRole(): boolean {
 			return "user" === self.sessionInfo?.user?.role;

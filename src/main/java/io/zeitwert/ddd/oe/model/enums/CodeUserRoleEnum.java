@@ -20,6 +20,8 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 	public static CodeUserRole USER;
 	// elevated user, needs account (so either in advisor or community tenant)
 	public static CodeUserRole SUPER_USER;
+	// read-only user, needs account (so either in advisor or community tenant)
+	public static CodeUserRole READ_ONLY;
 
 	// admin for a advisor or community tenant (1 tenant, n users, 1 .. n accounts)
 	// login to advisor or community tenant, without account
@@ -42,6 +44,7 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 		}
 		USER = getUserRole("user");
 		SUPER_USER = getUserRole("super_user");
+		READ_ONLY = getUserRole("read_only");
 		ADMIN = getUserRole("admin");
 		APP_ADMIN = getUserRole("app_admin");
 	}

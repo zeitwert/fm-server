@@ -14,7 +14,7 @@ insert into migr_obj_user_v(tenant,name,email,password,role_list,picture) values
 --
 ('staefa', 'Admin', 'admin@staefa.ch', '{noop}admin', 'admin', 'https://randomuser.me/api/portraits/lego/0.jpg'),
 ('staefa', 'Martin Frey', 'martin.frey@staefa.ch', '{noop}comunas', 'super_user', '/demo/comunas/martin.jpg'),
-('staefa', 'Marlies Morger', 'marlies.morger@staefa.ch', '{noop}comunas', 'readOnly', null);
+('staefa', 'Marlies Morger', 'marlies.morger@staefa.ch', '{noop}comunas', 'read_only', null);
 
 update obj_user
 set    role_list = 'app_admin'

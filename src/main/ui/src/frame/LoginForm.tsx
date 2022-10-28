@@ -43,7 +43,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	}
 
 	@computed get needAccount(): boolean {
-		return !!this.tenant && !!this.userRole && ["user", "super_user"].indexOf(this.userRole) >= 0;
+		return !!this.tenant && !!this.userRole && ["user", "super_user", "read_only"].indexOf(this.userRole) >= 0;
 	}
 
 	@computed get tenantLogoUrl(): string | undefined {
@@ -171,7 +171,6 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		if (this.isEmailValid) {
 			const userInfo = await session.userInfo(this.email);
 			this.userRole = userInfo?.role;
-			console.log("setEmail", this.userRole, userInfo, this.needAccount);
 			this.tenant = userInfo?.tenant;
 			this.accounts = userInfo?.accounts || [];
 			if (this.accounts?.length === 1) {
@@ -238,7 +237,7 @@ const LoginAlert = (props: { clearError: () => void }) => {
 				<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
 			</svg>
 		</span>
-		<h2>Anmeldung nicht erfolgreich (falsches Passwort)!</h2>
+		<h2>Anmeldung nicht erfolgreich!</h2>
 		<div className="slds-notify__close">
 			<button className="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse" title="Close" onClick={props.clearError}>
 				<svg className="slds-button__icon" aria-hidden="true">
