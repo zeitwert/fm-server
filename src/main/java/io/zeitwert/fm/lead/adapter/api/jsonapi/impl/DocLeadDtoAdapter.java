@@ -31,8 +31,8 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public void toAggregate(DocLeadDto dto, DocLead doc) {
-		super.toAggregate(dto, doc);
+	public void toAggregate(DocLeadDto dto, DocLead doc, SessionInfo sessionInfo) {
+		super.toAggregate(dto, doc, sessionInfo);
 		doc.setAccountId(dto.getAccountId());
 		doc.setSubject(dto.getSubject());
 		if (dto.getAreas() != null) {

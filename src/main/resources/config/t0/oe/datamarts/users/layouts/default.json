@@ -1,0 +1,48 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "email",
+				"label": "Email",
+				"value": "email"
+			},
+			{
+				"id": "role",
+				"label": "Role",
+				"value": "role"
+			},
+			{
+				"id": "tenant",
+				"label": "Tenant",
+				"value": "tenant"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/user/{{id}}",
+				"role": "{{role}}",
+				"email": "{{email}}",
+				"tenant": "{{tenant.name}}",
+				"owner": "{{meta.owner.name}}"
+			}
+		]
+	}
+}

@@ -54,7 +54,7 @@
 				"contentTypeId": "{{contentType.id}}",
 				"contentType": "{{contentType.name}}",
 				"status": "{{documentStatus.name}}",
-				"owner": "{{owner.caption}}"
+				"owner": "{{meta.owner.name}}"
 			}
 		]
 	}

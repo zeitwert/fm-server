@@ -24,8 +24,8 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public void toAggregate(ObjNoteDto dto, ObjNote note) {
-		super.toAggregate(dto, note);
+	public void toAggregate(ObjNoteDto dto, ObjNote note, SessionInfo sessionInfo) {
+		super.toAggregate(dto, note, sessionInfo);
 		note.setRelatedToId(Integer.parseInt(dto.getRelatedToId()));
 		note.setNoteType(dto.getNoteType() == null ? null : CodeNoteTypeEnum.getNoteType(dto.getNoteType().getId()));
 		note.setSubject(dto.getSubject());

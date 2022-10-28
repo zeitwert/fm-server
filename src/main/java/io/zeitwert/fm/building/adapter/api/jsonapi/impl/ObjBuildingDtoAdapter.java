@@ -46,10 +46,10 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 	}
 
 	@Override
-	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj) {
+	public void toAggregate(ObjBuildingDto dto, ObjBuilding obj, SessionInfo sessionInfo) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj);
+			super.toAggregate(dto, obj, sessionInfo);
 
 			// @formatter:off
 			obj.setAccountId(dto.getAccountId());
@@ -96,7 +96,8 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
 				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
 				rating.setRatingDate(dto.getRatingDate());
-				rating.setRatingUser(dto.getRatingUser() == null ? null : getUserRepository().get(dto.getRatingUser().getId()));
+				Integer userId = dto.getRatingUser() == null ? null : Integer.parseInt(dto.getRatingUser().getId());
+				rating.setRatingUser(userId == null ? null : getUserRepository().get(sessionInfo, userId));
 				if (dto.getElements() != null) {
 					dto.getElements().forEach(elementDto -> {
 						ObjBuildingPartElementRating element = null;
@@ -125,7 +126,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
+		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj, sessionInfo);
 		ProjectionService projectionService = AppContext.getInstance().getBean(ProjectionService.class);
@@ -172,7 +173,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 				.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
 				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
 				.ratingDate(rating.getRatingDate())
-				.ratingUser(userBridge.fromAggregate(rating.getRatingUser(), sessionInfo))
+				.ratingUser(userDtoAdapter.asEnumerated(rating.getRatingUser(), sessionInfo))
 				.elements(obj.getCurrentRating().getElementList().stream().map(a -> ObjBuildingPartElementRatingDto.fromPart(a, projectionService)).toList());
 		}
 		// @formatter:on
@@ -189,7 +190,8 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 		if (obj == null) {
 			return null;
 		}
-		ObjUser ratingUser = obj.getRatingUserId() != null ? getUserRepository().get(obj.getRatingUserId()) : null;
+		ObjUser ratingUser = obj.getRatingUserId() != null ? getUserRepository().get(sessionInfo, obj.getRatingUserId())
+				: null;
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj, sessionInfo);
 		// @formatter:off
@@ -231,7 +233,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 			.maintenanceStrategy(EnumeratedDto.fromEnum(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(obj.getMaintenanceStrategyId())))
 			.ratingStatus(EnumeratedDto.fromEnum(CodeBuildingRatingStatusEnum.getRatingStatus(obj.getRatingStatusId())))
 			.ratingDate(obj.getRatingDate())
-			.ratingUser(ObjUserDtoAdapter.getInstance().fromAggregate(ratingUser, sessionInfo));
+			.ratingUser(ObjUserDtoAdapter.getInstance().asEnumerated(ratingUser, sessionInfo));
 		// @formatter:on
 		return dtoBuilder.build();
 	}

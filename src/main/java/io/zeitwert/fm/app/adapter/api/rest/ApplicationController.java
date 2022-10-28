@@ -35,8 +35,8 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
-		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(email);
+		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
+		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(sessionInfo, email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -51,8 +51,8 @@ public class ApplicationController {
 				.id(user.getId())
 				.email(user.getEmail())
 				.name(user.getName())
-				.tenant(tenantBridge.fromAggregate(user.getTenant(), sessionInfo))
-				.roles(user.getRoleList().stream().map(r -> r.getId()).toList())
+				.tenant(tenantDtoAdapter.fromAggregate(user.getTenant(), sessionInfo))
+				.role(user.getRole().getId())
 				.accounts(accountsDto)
 				.build()
 		);

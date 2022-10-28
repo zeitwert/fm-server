@@ -3,6 +3,8 @@ package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.oe.model.ObjTenant;
+import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -15,7 +17,15 @@ public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRe
 		return AppContext.getInstance().getRepository(aggrClass);
 	}
 
+	private static ObjTenantRepository tenantRepository = null;
 	private static ObjUserRepository userRepository = null;
+
+	protected ObjTenantRepository getTenantRepository() {
+		if (tenantRepository == null) {
+			tenantRepository = (ObjTenantRepository) getRepository(ObjTenant.class);
+		}
+		return tenantRepository;
+	}
 
 	protected ObjUserRepository getUserRepository() {
 		if (userRepository == null) {
@@ -24,7 +34,7 @@ public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRe
 		return userRepository;
 	}
 
-	public abstract void toAggregate(D dto, A aggregate);
+	public abstract void toAggregate(D dto, A aggregate, SessionInfo sessionInfo);
 
 	public abstract D fromAggregate(A aggregate, SessionInfo sessionInfo);
 

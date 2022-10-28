@@ -11,6 +11,8 @@ public interface Aggregate {
 
 	AggregateMeta getMeta();
 
+	Integer getTenantId();
+
 	ObjTenant getTenant();
 
 	Integer getId();

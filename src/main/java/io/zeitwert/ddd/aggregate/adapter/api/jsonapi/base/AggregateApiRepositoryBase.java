@@ -28,14 +28,14 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 
 	private final SessionInfo sessionInfo;
 	private final AggregateRepository<A, V> repository;
-	private final AggregateDtoAdapter<A, V, D> bridge;
+	private final AggregateDtoAdapter<A, V, D> dtoAdapter;
 
 	public AggregateApiRepositoryBase(Class<D> dtoClass, SessionInfo sessionInfo, AggregateRepository<A, V> repository,
-			AggregateDtoAdapter<A, V, D> bridge) {
+			AggregateDtoAdapter<A, V, D> dtoAdapter) {
 		super(dtoClass);
 		this.sessionInfo = sessionInfo;
 		this.repository = repository;
-		this.bridge = bridge;
+		this.dtoAdapter = dtoAdapter;
 	}
 
 	@Override
@@ -45,10 +45,17 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 		if (dto.getId() != null) {
 			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
 		}
-		A aggregate = this.repository.create(this.sessionInfo);
-		this.bridge.toAggregate(dto, aggregate);
-		this.repository.store(aggregate);
-		return (S) this.bridge.fromAggregate(aggregate, this.sessionInfo);
+		try {
+			Integer tenantId = dto.getTenant() != null
+					? Integer.parseInt(dto.getTenant().getId())
+					: sessionInfo.getTenant().getId();
+			A aggregate = this.repository.create(tenantId, this.sessionInfo);
+			this.dtoAdapter.toAggregate(dto, aggregate, this.sessionInfo);
+			this.repository.store(aggregate);
+			return (S) this.dtoAdapter.fromAggregate(aggregate, this.sessionInfo);
+		} catch (Exception x) {
+			throw new RuntimeException("crashed on create", x);
+		}
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 		try {
 			A aggregate = this.repository.get(this.sessionInfo, objId);
 			this.sessionInfo.addAggregate(aggregate);
-			return this.bridge.fromAggregate(aggregate, this.sessionInfo);
+			return this.dtoAdapter.fromAggregate(aggregate, this.sessionInfo);
 		} catch (NoDataFoundException x) {
 			throw new ResourceNotFoundException(repository.getAggregateType().getName() + "[" + objId + "]");
 		}
@@ -66,10 +73,14 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	@Override
 	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
-		List<V> itemList = this.repository.find(this.sessionInfo, querySpec);
-		ResourceList<D> list = new DefaultResourceList<>();
-		list.addAll(itemList.stream().map(item -> this.bridge.fromRecord(item, this.sessionInfo)).toList());
-		return list;
+		try {
+			List<V> itemList = this.repository.find(this.sessionInfo, querySpec);
+			ResourceList<D> list = new DefaultResourceList<>();
+			list.addAll(itemList.stream().map(item -> this.dtoAdapter.fromRecord(item, this.sessionInfo)).toList());
+			return list;
+		} catch (Exception x) {
+			throw new RuntimeException("crashed on findAll", x);
+		}
 	}
 
 	@Override
@@ -85,32 +96,36 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 				&& !dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
 			throw new BadRequestException("Missing meta information (version or operation)");
 		}
-		A aggregate = this.sessionInfo.hasAggregate(dto.getId())
-				? (A) this.sessionInfo.getAggregate(dto.getId())
-				: this.repository.get(this.sessionInfo, dto.getId());
-		if (dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
-			this.repository.discard(aggregate);
-		} else if (dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
-			this.bridge.toAggregate(dto, aggregate);
-		} else {
-			if (dto.getMeta().getClientVersion() == null) {
-				throw new BadRequestException("Missing version");
-			} else if (dto.getMeta().getClientVersion().intValue() != aggregate.getMeta().getVersion().intValue()) {
-				ErrorData errorData = new ErrorDataBuilder()
-						.setStatus("" + HttpStatus.CONFLICT_409)
-						.setTitle("Fehler beim Speichern")
-						.setDetail("Sie versuchten eine veraltete Version zu speichern."
-								+ " Benutzer " + aggregate.getMeta().getModifiedByUser().getCaption()
-								+ " hat das Objekt in der Zwischenzeit bereits geändert."
-								+ " Ihre Änderungen wurden verworfen und die aktuelle Version geladen.")
-						.build();
-				throw new BadRequestException(HttpStatus.CONFLICT_409, errorData);
+		try {
+			A aggregate = this.sessionInfo.hasAggregate(dto.getId())
+					? (A) this.sessionInfo.getAggregate(dto.getId())
+					: this.repository.get(this.sessionInfo, dto.getId());
+			if (dto.getMeta().hasOperation(AggregateDtoBase.DiscardOperation)) {
+				this.repository.discard(aggregate);
+			} else if (dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
+				this.dtoAdapter.toAggregate(dto, aggregate, this.sessionInfo);
+			} else {
+				if (dto.getMeta().getClientVersion() == null) {
+					throw new BadRequestException("Missing version");
+				} else if (dto.getMeta().getClientVersion().intValue() != aggregate.getMeta().getVersion().intValue()) {
+					ErrorData errorData = new ErrorDataBuilder()
+							.setStatus("" + HttpStatus.CONFLICT_409)
+							.setTitle("Fehler beim Speichern")
+							.setDetail("Sie versuchten eine veraltete Version zu speichern."
+									+ " Benutzer " + aggregate.getMeta().getModifiedByUser().getCaption()
+									+ " hat das Objekt in der Zwischenzeit bereits geändert."
+									+ " Ihre Änderungen wurden verworfen und die aktuelle Version geladen.")
+							.build();
+					throw new BadRequestException(HttpStatus.CONFLICT_409, errorData);
+				}
+				this.dtoAdapter.toAggregate(dto, aggregate, this.sessionInfo);
+				this.repository.store(aggregate);
+				aggregate = this.repository.get(this.sessionInfo, dto.getId());
 			}
-			this.bridge.toAggregate(dto, aggregate);
-			this.repository.store(aggregate);
-			aggregate = this.repository.get(this.sessionInfo, dto.getId());
+			return (S) this.dtoAdapter.fromAggregate(aggregate, this.sessionInfo);
+		} catch (Exception x) {
+			throw new RuntimeException("crashed on save", x);
 		}
-		return (S) this.bridge.fromAggregate(aggregate, this.sessionInfo);
 	}
 
 	@Override
@@ -120,14 +135,18 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 		if (id == null) {
 			throw new ResourceNotFoundException("Can only delete existing object (missing id)");
 		}
-		A aggregate = this.sessionInfo.hasAggregate(id)
-				? (A) this.sessionInfo.getAggregate(id)
-				: this.repository.get(this.sessionInfo, id);
-		if (!(aggregate instanceof Obj)) {
-			throw new BadRequestException("Can only delete an Object");
+		try {
+			A aggregate = this.sessionInfo.hasAggregate(id)
+					? (A) this.sessionInfo.getAggregate(id)
+					: this.repository.get(this.sessionInfo, id);
+			if (!(aggregate instanceof Obj)) {
+				throw new BadRequestException("Can only delete an Object");
+			}
+			((Obj) aggregate).delete();
+			this.repository.store(aggregate);
+		} catch (Exception x) {
+			throw new RuntimeException("crashed on delete", x);
 		}
-		((Obj) aggregate).delete();
-		this.repository.store(aggregate);
 	}
 
 }

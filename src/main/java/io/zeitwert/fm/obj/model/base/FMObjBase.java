@@ -46,7 +46,7 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 	@Override
 	public ObjNote addNote(CodeNoteType noteType) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		ObjNote note = noteRepository.create(this.getSessionInfo());
+		ObjNote note = noteRepository.create(this.getTenantId(), this.getSessionInfo());
 		note.setNoteType(noteType);
 		note.setRelatedToId(this.getId());
 		return note;

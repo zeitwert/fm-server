@@ -16,6 +16,14 @@ import io.zeitwert.ddd.oe.model.db.tables.records.CodeTenantTypeRecord;
 @DependsOn({ "flyway", "flywayInitializer" })
 public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 
+	// Kernel Tenant (Nr 1)
+	// placeholder to do application administration (tenants, users)
+	public static CodeTenantType KERNEL;
+	// An Advisor Tenant may contain multiple Accounts
+	public static CodeTenantType ADVISOR;
+	// Container for 1 dedicated Account
+	public static CodeTenantType COMMUNITY;
+
 	private static CodeTenantTypeEnum INSTANCE;
 
 	protected CodeTenantTypeEnum(final Enumerations enums, final DSLContext dslContext) {
@@ -28,6 +36,9 @@ public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 		for (final CodeTenantTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_TENANT_TYPE).fetch()) {
 			this.addItem(new CodeTenantType(this, item.getId(), item.getName()));
 		}
+		KERNEL = getTenantType("kernel");
+		ADVISOR = getTenantType("advisor");
+		COMMUNITY = getTenantType("community");
 	}
 
 	public static CodeTenantType getTenantType(String tenantType) {

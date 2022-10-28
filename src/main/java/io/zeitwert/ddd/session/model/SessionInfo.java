@@ -13,27 +13,21 @@ import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 
 public class SessionInfo {
 
-	public final static SessionInfo NO_SESSION = new SessionInfo(null, null, null, null);
+	public final static SessionInfo NO_SESSION = new SessionInfo(null, null, null);
 
-	private final ObjTenant tenant;
 	private final ObjUser user;
 	private final Integer accountId;
 	private final CodeLocale locale;
 	private final Map<Integer, Aggregate> aggregates = new ConcurrentHashMap<>();
 
-	public SessionInfo(ObjTenant tenant, ObjUser user, Integer accountId, CodeLocale locale) {
-		this.tenant = tenant;
+	public SessionInfo(ObjUser user, Integer accountId, CodeLocale locale) {
 		this.user = user;
 		this.accountId = accountId;
 		this.locale = locale;
 	}
 
-	public Integer getId() {
-		return System.identityHashCode(this);
-	}
-
 	public ObjTenant getTenant() {
-		return this.tenant;
+		return this.getUser().getTenant();
 	}
 
 	public ObjUser getUser() {
@@ -75,8 +69,7 @@ public class SessionInfo {
 	@Override
 	public String toString() {
 		return "SessionInfo("
-				+ "tenant: " + (tenant != null ? tenant.getId() : "null")
-				+ ", user: " + (user != null ? user.getId() : "null")
+				+ "user: " + (user != null ? user.getId() : "null")
 				+ ", accountId: " + accountId
 				+ ", locale: " + (locale != null ? locale.getId() : "null")
 				+ ")";

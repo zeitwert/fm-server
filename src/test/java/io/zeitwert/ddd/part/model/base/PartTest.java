@@ -61,7 +61,7 @@ public class PartTest {
 		CodePartListType nodeListType = testRepository.getNodeListType();
 		assertTrue(CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST).equals(nodeListType), "nodeListType");
 
-		ObjTest test1a = testRepository.create(sessionInfo);
+		ObjTest test1a = testRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 		// assertTrue(((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).isInitialised(test1a));
 		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
@@ -182,7 +182,7 @@ public class PartTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = userRepository.getByEmail(userEmail).get();
+		ObjUser user = userRepository.getByEmail(sessionInfo, userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = countryEnum.getItem(countryId);
 		test.setCountry(country);

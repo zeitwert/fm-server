@@ -18,7 +18,6 @@ import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.ddd.doc.service.api.DocService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
@@ -87,16 +86,17 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
+	public Integer getTenantId() {
+		return this.tenant.getId();
+	}
+
+	@Override
 	public DocRepository<? extends Doc, ? extends Record> getRepository() {
 		return this.repository;
 	}
 
 	protected final UpdatableRecord<?> getDocDbRecord() {
 		return this.docDbRecord;
-	}
-
-	protected DocService getDocService() {
-		return this.getAppContext().getBean(DocService.class);
 	}
 
 	public CodeAggregateType getAggregateType() {

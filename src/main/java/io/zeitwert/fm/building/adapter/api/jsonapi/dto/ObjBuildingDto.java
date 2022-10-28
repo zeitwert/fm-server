@@ -12,7 +12,6 @@ import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -97,7 +96,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private EnumeratedDto maintenanceStrategy;
 	private EnumeratedDto ratingStatus;
 	private LocalDate ratingDate;
-	private ObjUserDto ratingUser;
+	private EnumeratedDto ratingUser;
 	private List<ObjBuildingPartElementRatingDto> elements;
 
 	@JsonApiRelationId

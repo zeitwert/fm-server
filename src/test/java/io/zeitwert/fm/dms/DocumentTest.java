@@ -42,7 +42,7 @@ public class DocumentTest {
 		assertTrue(documentRepository != null, "documentRepository not null");
 		assertEquals("obj_document", documentRepository.getAggregateType().getId());
 
-		ObjDocument document1a = documentRepository.create(sessionInfo);
+		ObjDocument document1a = documentRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 
 		assertNotNull(document1a, "test not null");
 		assertNotNull(document1a.getId(), "id not null");

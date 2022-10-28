@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.search.adapter.api.rest.dto.SearchResultDto;
 import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
 import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.ddd.util.CustomFilters;
 
 @RestController("searchController")
 @RequestMapping("/api/search")
@@ -27,10 +25,9 @@ public class SearchController {
 
 	private final SessionInfo sessionInfo;
 
-	SearchController(AppContext appContext, SearchService searchService, SessionInfo sessionInfo) {
+	SearchController(SearchService searchService, SessionInfo sessionInfo) {
 		this.searchService = searchService;
 		this.sessionInfo = sessionInfo;
-		appContext.addFilterOperator(CustomFilters.IN);
 	}
 
 	@GetMapping()

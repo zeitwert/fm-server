@@ -27,6 +27,30 @@
 		}
 	},
 	{
+		"id": "oe.tenants",
+		"module": "oe",
+		"name": "Tenant List",
+		"provider": "api",
+		"params": {},
+		"config": {
+			"module": "oe",
+			"url": "tenants",
+			"accept": "application/vnd.api+json"
+		}
+	},
+	{
+		"id": "oe.users",
+		"module": "oe",
+		"name": "User List",
+		"provider": "api",
+		"params": {},
+		"config": {
+			"module": "oe",
+			"url": "users",
+			"accept": "application/vnd.api+json"
+		}
+	},
+	{
 		"id": "account.accounts",
 		"module": "account",
 		"name": "Account List",

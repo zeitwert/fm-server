@@ -9,9 +9,6 @@ import io.crnk.core.resource.meta.MetaInformation;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.ddd.validation.adapter.api.jsonapi.dto.AggregatePartValidationDto;
@@ -25,14 +22,12 @@ import lombok.experimental.SuperBuilder;
 public class AggregateMetaDto implements MetaInformation {
 
 	// Meta from Server
-	private Integer sessionId;
 	private EnumeratedDto itemType;
-	private ObjTenantDto tenant;
-	private ObjUserDto owner;
+	private EnumeratedDto owner;
 	private Integer version;
-	private ObjUserDto createdByUser;
+	private EnumeratedDto createdByUser;
 	private OffsetDateTime createdAt;
-	private ObjUserDto modifiedByUser;
+	private EnumeratedDto modifiedByUser;
 	private OffsetDateTime modifiedAt;
 	private List<AggregatePartValidationDto> validationList;
 
@@ -47,18 +42,15 @@ public class AggregateMetaDto implements MetaInformation {
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate,
 			SessionInfo sessionInfo) {
 		AggregateMeta meta = aggregate.getMeta();
-		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
-		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
+		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		builder
-			.sessionId(sessionInfo.getId())
 			.itemType(EnumeratedDto.fromEnum(aggregate.getMeta().getAggregateType()))
-			.tenant(tenantBridge.fromAggregate(aggregate.getTenant(), sessionInfo))
-			.owner(userBridge.fromAggregate(aggregate.getOwner(), sessionInfo))
+			.owner(userDtoAdapter.asEnumerated(aggregate.getOwner(), sessionInfo))
 			.version(meta.getVersion())
-			.createdByUser(userBridge.fromAggregate(meta.getCreatedByUser(), sessionInfo))
+			.createdByUser(userDtoAdapter.asEnumerated(meta.getCreatedByUser(), sessionInfo))
 			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(userBridge.fromAggregate(meta.getModifiedByUser(), sessionInfo))
+			.modifiedByUser(userDtoAdapter.asEnumerated(meta.getModifiedByUser(), sessionInfo))
 			.modifiedAt(meta.getModifiedAt())
 			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
@@ -68,7 +60,6 @@ public class AggregateMetaDto implements MetaInformation {
 	public static void fromRecord(AggregateMetaDtoBuilder<?, ?> builder, Record aggregate, SessionInfo sessionInfo) {
 		// @formatter:off
 		builder
-			.sessionId(sessionInfo.getId())
 			.build();
 		// @formatter:on
 	}

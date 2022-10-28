@@ -49,6 +49,9 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	@Override
 	public void addItem(Integer aggregateId) {
 		assertThis(aggregateId != null, "aggregateId not null");
+		if (aggregateId == null) {
+			return; // make compiler happy (potential null pointer)
+		}
 		if (!this.hasItem(aggregateId)) {
 			EntityPartItem part = (EntityPartItem) this.getEntity().addItem(this, this.partListType);
 			part.setItemId(aggregateId.toString());
@@ -75,6 +78,9 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	@Override
 	public void removeItem(Integer aggregateId) {
 		assertThis(aggregateId != null, "aggregateId not null");
+		if (aggregateId == null) {
+			return; // make compiler happy (potential null pointer)
+		}
 		if (this.hasItem(aggregateId)) {
 			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(aggregateId.toString())).findAny()
 					.get();

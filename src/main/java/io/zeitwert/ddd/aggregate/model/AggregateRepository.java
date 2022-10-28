@@ -21,8 +21,13 @@ public interface AggregateRepository<A extends Aggregate, V extends Record> {
 
 	/**
 	 * Create a new Aggregate instance
+	 * 
+	 * @param tenantId    the tenant in which to create the instance (could be
+	 *                    different from session, e.g. new Tenant in
+	 *                    Kernel-Admin-Session)
+	 * @param sessionInfo the sessionInfo
 	 */
-	A create(SessionInfo sessionInfo);
+	A create(Integer tenantId, SessionInfo sessionInfo);
 
 	/**
 	 * Lookup an Aggregate with given id

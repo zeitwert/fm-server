@@ -29,8 +29,8 @@ public class SessionInfoProvider {
 		CodeLocale DEFAULT_LOCALE = CodeLocaleEnum.getLocale(SessionService.DEFAULT_LOCALE);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
-		ObjUser user = userRepo.get(userDetails.getUserId());
-		return new SessionInfo(user.getTenant(), user, userDetails.getAccountId(), DEFAULT_LOCALE);
+		ObjUser user = userRepo.get(null, userDetails.getUserId());
+		return new SessionInfo(user, userDetails.getAccountId(), DEFAULT_LOCALE);
 
 	}
 

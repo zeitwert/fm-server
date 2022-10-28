@@ -49,6 +49,9 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	@Override
 	public void addItem(E item) {
 		assertThis(item != null, "item not null");
+		if (item == null) {
+			return; // make compiler happy (potential null pointer)
+		}
 		if (!this.hasItem(item)) {
 			EntityPartItem part = this.getEntity().addItem(this, this.partListType);
 			part.setItemId(item.getId());
@@ -75,6 +78,9 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	@Override
 	public void removeItem(E item) {
 		assertThis(item != null, "item not null");
+		if (item == null) {
+			return; // make compiler happy (potential null pointer)
+		}
 		if (this.hasItem(item)) {
 			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(item.getId())).findAny().get();
 			((PartSPI<?>) part).delete();

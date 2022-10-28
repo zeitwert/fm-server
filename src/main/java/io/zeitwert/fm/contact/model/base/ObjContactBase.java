@@ -160,7 +160,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	}
 
 	protected void calcCaption() {
-		this.caption.setValue((this.getFirstName() + " " + this.getLastName()).trim());
+		this.setCaption((this.getFirstName() + " " + this.getLastName()).trim());
 	}
 
 }

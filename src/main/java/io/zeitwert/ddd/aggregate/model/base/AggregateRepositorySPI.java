@@ -27,8 +27,9 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	Integer nextAggregateId();
 
 	/**
-	 * Create a new Aggregate instance
+	 * Create a new Aggregate instance (purely technical)
 	 * 
+	 * @param sessionInfo sessionInfo
 	 * @return new Aggregate
 	 */
 	A doCreate(SessionInfo sessionInfo);

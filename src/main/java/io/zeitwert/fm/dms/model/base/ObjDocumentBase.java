@@ -94,7 +94,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	}
 
 	protected void calcCaption() {
-		this.caption.setValue(this.getName());
+		this.setCaption(this.getName());
 	}
 
 }

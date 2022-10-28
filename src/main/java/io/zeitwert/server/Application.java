@@ -28,7 +28,7 @@ public class Application {
 		executor.setCorePoolSize(10);
 		executor.setMaxPoolSize(10);
 		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("zeitwert-");
+		executor.setThreadNamePrefix("zw-");
 		executor.initialize();
 		return executor;
 	}

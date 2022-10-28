@@ -52,7 +52,7 @@
 				"mainContactLink": "/contact/{{mainContact.id}}",
 				"phone": "=> nvl(mainContact.mobile, mainContact.phone)",
 				"email": "{{mainContact.email}}",
-				"owner": "{{owner.caption}}"
+				"owner": "{{meta.owner.name}}"
 			}
 		]
 	}

@@ -48,7 +48,7 @@ public class SessionTest {
 	@Test
 	public void testSessionHandling() throws Exception {
 
-		ObjTest test1a = testRepository.create(sessionInfo);
+		ObjTest test1a = testRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 		Integer test1Id = test1a.getId();
 		Integer test1aIdHash = System.identityHashCode(test1a);
@@ -60,7 +60,7 @@ public class SessionTest {
 		assertNotEquals(test1aIdHash, test1bIdHash);
 		assertEquals(sessionInfo, test1b.getMeta().getSessionInfo());
 
-		ObjUser user = userRepository.getByEmail(USER_EMAIL).get();
+		ObjUser user = userRepository.getByEmail(sessionInfo, USER_EMAIL).get();
 		SessionInfo session2 = sessionService.openSession(user);
 
 		ObjTest test1c = testRepository.get(session2, test1Id);
@@ -103,7 +103,7 @@ public class SessionTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = userRepository.getByEmail(userEmail).get();
+		ObjUser user = userRepository.getByEmail(sessionInfo, userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = countryEnum.getItem(countryId);
 		test.setCountry(country);

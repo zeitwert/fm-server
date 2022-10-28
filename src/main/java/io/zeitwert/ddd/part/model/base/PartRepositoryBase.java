@@ -115,6 +115,9 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 
 		P p = this.doCreate(aggregate);
 		assertThis(p != null, "part created");
+		if (p == null) {
+			return null; // make compiler happy (potential null pointer)
+		}
 
 		Integer partId = this.hasPartId() ? this.nextPartId() : null;
 		Integer doInitSeqNr = ((PartBase<?>) p).doInitSeqNr;

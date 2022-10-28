@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// 'appAdmin', 'Application Admin (Super User)'
-// 'admin', 'Advisor or Account Admin'
-// 'user', 'Advisor or Account User'
+// 'appAdmin', 'Application Admin'
+// 'admin', 'Advisor or Community Admin'
+// 'user', 'Advisor or Community User'
+// 'super_user', 'Advisor or Community Super User (elevated privileges)'
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController("sessionTestController")
@@ -31,16 +32,22 @@ public class TestController {
 		return "User Content.";
 	}
 
+	@GetMapping("/super_user")
+	@PreAuthorize("hasRole('super_user')")
+	public String superUserAccess() {
+		return "SuperUser Content.";
+	}
+
 	@GetMapping("/admin")
 	@PreAuthorize("hasRole('admin')")
 	public String adminAccess() {
-		return "Admin Board.";
+		return "Admin Content.";
 	}
 
 	@GetMapping("/appAdmin")
-	@PreAuthorize("hasRole('appAdmin')")
+	@PreAuthorize("hasRole('app_admin')")
 	public String moderatorAccess() {
-		return "Moderator Board.";
+		return "Application Admin Content.";
 	}
 
 }

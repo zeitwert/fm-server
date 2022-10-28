@@ -113,7 +113,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	}
 
 	private void calcCaption() {
-		this.caption.setValue("[" + this.getString(this.getShortText()) + ", "
+		this.setCaption("[" + this.getString(this.getShortText()) + ", "
 				+ this.getString(this.getLongText()) + "]"
 				+ (this.getRefTestId() == null ? "" : " (" + this.getString(this.getRefTest().getCaption()) + ")"));
 	}

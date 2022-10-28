@@ -254,7 +254,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	private void calcCaption() {
-		this.caption.setValue(this.getName() + " (" + this.getZip() + " " + this.getCity() + ")");
+		this.setCaption(this.getName() + " (" + this.getZip() + " " + this.getCity() + ")");
 	}
 
 	private void validateElements() {

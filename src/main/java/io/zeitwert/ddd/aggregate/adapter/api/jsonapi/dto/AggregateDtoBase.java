@@ -6,7 +6,7 @@ import io.crnk.core.resource.annotations.JsonApiId;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +44,10 @@ public abstract class AggregateDtoBase<A extends Aggregate> {
 
 	private String caption;
 
-	private ObjUserDto owner;
+	// Read: for orderbooks, write: for creation
+	private EnumeratedDto tenant;
+
+	// Read: for orderbooks, write: for updates
+	private EnumeratedDto owner;
 
 }

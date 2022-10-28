@@ -90,6 +90,9 @@ public class SqlUtils {
 	private static Condition closedFilter(DSLContext dslContext, Table<?> table, FilterSpec filter) {
 		Field<?> field = table.field("closed_at");
 		assertThis(field != null, "known field closed_at");
+		if (field == null) {
+			return null; // make compiler happy (potential null pointer)
+		}
 		Boolean value = filter.getValue();
 		if (value) {
 			if (filter.getOperator() == FilterOperator.EQ) {
@@ -189,7 +192,7 @@ public class SqlUtils {
 			return field.lt(value);
 		} else if (filter.getOperator() == FilterOperator.LE) {
 			return field.le(value);
-		} else if (filter.getOperator() == FilterOperator.LIKE) {
+		} else if (filter.getOperator() == FilterOperator.LIKE && value != null) {
 			return DSL.lower(field).like(value.replace("*", "%"));
 		}
 
@@ -272,6 +275,9 @@ public class SqlUtils {
 		}
 		Field<?> field = table.field(fieldName);
 		assertThis(field != null, "known field " + fieldName);
+		if (field == null) {
+			return null; // make compiler happy (potential null pointer)
+		}
 		if (field.getType() == Integer.class) {
 			return integerFilter((Field<Integer>) field, filter);
 		} else if (field.getType() == String.class) {

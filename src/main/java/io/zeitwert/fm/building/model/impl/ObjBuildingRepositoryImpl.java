@@ -158,7 +158,9 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private void addCoverFoto(ObjBuilding building) {
 		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
-		ObjDocument coverFoto = documentRepo.create(building.getMeta().getSessionInfo());
+		Integer tenantId = building.getTenantId();
+		SessionInfo sessionInfo = building.getMeta().getSessionInfo();
+		ObjDocument coverFoto = documentRepo.create(tenantId, sessionInfo);
 		coverFoto.setName("CoverFoto");
 		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
 		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));

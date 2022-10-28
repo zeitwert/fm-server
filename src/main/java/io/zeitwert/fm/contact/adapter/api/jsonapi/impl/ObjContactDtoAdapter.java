@@ -27,10 +27,10 @@ public final class ObjContactDtoAdapter extends FMObjDtoAdapter<ObjContact, ObjC
 	}
 
 	@Override
-	public void toAggregate(ObjContactDto dto, ObjContact obj) {
+	public void toAggregate(ObjContactDto dto, ObjContact obj, SessionInfo sessionInfo) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj);
+			super.toAggregate(dto, obj, sessionInfo);
 
 			obj.setAccountId(dto.getAccountId());
 			obj.setContactRole(

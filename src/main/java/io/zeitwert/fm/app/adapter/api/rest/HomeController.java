@@ -116,7 +116,7 @@ public class HomeController {
 	public ResponseEntity<List<HomeActivityResponse>> getRecentActivity(@PathVariable("accountId") Integer accountId) {
 		ObjAccount account = this.accountRepository.get(this.sessionInfo, accountId);
 		Result<ObjActivityVRecord> result = this.dslContext.selectFrom(Tables.OBJ_ACTIVITY_V)
-				.where(Tables.OBJ_ACTIVITY_V.TENANT_ID.eq(account.getTenant().getId())
+				.where(Tables.OBJ_ACTIVITY_V.TENANT_ID.eq(account.getTenantId())
 						.and(Tables.OBJ_ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
 				.limit(20).fetch();
 		return ResponseEntity.ok(result.stream().map(record -> this.getActivityResponse(record)).toList());
@@ -129,7 +129,7 @@ public class HomeController {
 				.objCaption(record.getCaption())
 				.seqNr(record.getSeqNr())
 				.timestamp(record.getTimestamp())
-				.user(this.userRepository.get(record.getUserId()).getCaption())
+				.user(this.userRepository.get(this.sessionInfo, record.getUserId()).getCaption())
 				.changes(null)
 				.build();
 	}

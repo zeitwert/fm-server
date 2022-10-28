@@ -39,17 +39,16 @@ public class ObjPortfolioDtoAdapter
 	}
 
 	@Override
-	public void toAggregate(ObjPortfolioDto dto, ObjPortfolio pf) {
+	public void toAggregate(ObjPortfolioDto dto, ObjPortfolio pf, SessionInfo sessionInfo) {
 		try {
 			pf.getMeta().disableCalc();
-			super.toAggregate(dto, pf);
+			super.toAggregate(dto, pf, sessionInfo);
 
 			pf.setName(dto.getName());
 			pf.setDescription(dto.getDescription());
 			pf.setPortfolioNr(dto.getPortfolioNr());
 			pf.setAccountId(dto.getAccountId());
 			// TODO prevent calculation during insert
-			SessionInfo sessionInfo = pf.getMeta().getSessionInfo();
 			if (dto.getIncludes() != null) {
 				pf.clearIncludeSet();
 				dto.getIncludes().forEach(item -> {

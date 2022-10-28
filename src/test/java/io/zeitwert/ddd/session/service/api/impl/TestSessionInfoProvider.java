@@ -1,6 +1,5 @@
 package io.zeitwert.ddd.session.service.api.impl;
 
-import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
@@ -22,26 +21,21 @@ public class TestSessionInfoProvider {
 	@Autowired
 	@SessionScope
 	public SessionInfo getSessionInfo(ObjUserRepository userRepository) {
-
 		String userEmail = "k@zeitwert.io";
-		Optional<ObjUser> user = userRepository.getByEmail(userEmail);
+		Optional<ObjUser> user = userRepository.getByEmail(null, userEmail);
 		if (user.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
 		}
-		ObjTenant tenant = user.get().getTenant();
-
-		return new SessionInfo(tenant, user.get(), null, CodeLocaleEnum.getLocale("en-US"));
-
+		return new SessionInfo(user.get(), null, CodeLocaleEnum.getLocale("en-US"));
 	}
 
 	public static SessionInfo getOtherSession(ObjUserRepository userRepository) {
 		String userEmail = "hannes@zeitwert.io";
-		Optional<ObjUser> user = userRepository.getByEmail(userEmail);
+		Optional<ObjUser> user = userRepository.getByEmail(null, userEmail);
 		if (user.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
 		}
-		ObjTenant tenant = user.get().getTenant();
-		return new SessionInfo(tenant, user.get(), null, CodeLocaleEnum.getLocale("en-US"));
+		return new SessionInfo(user.get(), null, CodeLocaleEnum.getLocale("en-US"));
 	}
 
 }

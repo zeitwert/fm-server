@@ -50,7 +50,7 @@
 				"accountLink": "/account/{{account.id}}",
 				"buildingType": "{{buildingType.name}}",
 				"address": "{{street}} {{zip}} {{city}}",
-				"owner": "{{owner.caption}}"
+				"owner": "{{meta.owner.name}}"
 			}
 		]
 	}

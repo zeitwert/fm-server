@@ -61,6 +61,9 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 
 	public P getPartById(Integer partId) {
 		assertThis(partId != null, "valid partId");
+		if (partId == null) {
+			return null; // make compiler happy (potential null pointer)
+		}
 		Optional<P> part = this.partList.stream().filter(p -> partId.equals(p.getId())).findAny();
 		assertThis(part.isPresent(), "part with id " + partId + " must exist");
 		return part.get();

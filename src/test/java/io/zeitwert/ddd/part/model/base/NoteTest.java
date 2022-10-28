@@ -55,7 +55,7 @@ public class NoteTest {
 		assertTrue(testRepository != null, "testRepository not null");
 		assertEquals("obj_test", testRepository.getAggregateType().getId());
 
-		ObjTest test1a = testRepository.create(sessionInfo);
+		ObjTest test1a = testRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
 		Integer test1Id = test1a.getId();
 
@@ -146,7 +146,7 @@ public class NoteTest {
 		test.setNr(BigDecimal.valueOf(42));
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
-		ObjUser user = userRepository.getByEmail(userEmail).get();
+		ObjUser user = userRepository.getByEmail(sessionInfo, userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = countryEnum.getItem(countryId);
 		test.setCountry(country);

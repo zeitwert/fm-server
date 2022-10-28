@@ -12,13 +12,6 @@ public interface SessionService {
 	static final String AUTH_HEADER_PREFIX = "Bearer ";
 
 	/**
-	 * Global session for shared objects (e.g. ObjTenant, ObjUser)
-	 * 
-	 * @return global session
-	 */
-	SessionInfo getGlobalSession();
-
-	/**
 	 * Server session: open session for given user
 	 * 
 	 * @param user user

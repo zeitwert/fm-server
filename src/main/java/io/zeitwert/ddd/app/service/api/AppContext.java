@@ -14,10 +14,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import io.crnk.core.boot.CrnkBoot;
-import io.crnk.core.engine.registry.ResourceRegistry;
-import io.crnk.core.queryspec.FilterOperator;
-import io.crnk.core.queryspec.mapper.DefaultQuerySpecUrlMapper;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
@@ -32,7 +28,7 @@ import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 
 @Service("appContext")
-@DependsOn({ "crnkBoot", "codeAggregateTypeEnum", "codePartListTypeEnum" })
+@DependsOn({ "codeAggregateTypeEnum", "codePartListTypeEnum" })
 public final class AppContext {
 
 	private static final String SCHEMA_NAME = "public";
@@ -43,7 +39,6 @@ public final class AppContext {
 	private final ApplicationContext applicationContext;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final DSLContext dslContext;
-	private final CrnkBoot crnkBoot;
 	private final Repositories repos;
 	private final Enumerations enums;
 
@@ -52,7 +47,6 @@ public final class AppContext {
 		this.applicationContext = applicationContext;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.dslContext = dslContext;
-		this.crnkBoot = applicationContext.getBean(CrnkBoot.class);
 		this.repos = new Repositories();
 		this.enums = enums;
 		AppContext.INSTANCE = this;
@@ -114,15 +108,6 @@ public final class AppContext {
 
 	public <R extends UpdatableRecord<?>> R newRecord(Table<R> recordType) {
 		return this.dslContext.newRecord(recordType);
-	}
-
-	public ResourceRegistry getResourceRegistry() {
-		return this.crnkBoot.getResourceRegistry();
-	}
-
-	public void addFilterOperator(FilterOperator filter) {
-		DefaultQuerySpecUrlMapper mapper = (DefaultQuerySpecUrlMapper) this.crnkBoot.getUrlMapper();
-		mapper.addSupportedOperator(filter);
 	}
 
 	public void publishApplicationEvent(ApplicationEvent applicationEvent) {

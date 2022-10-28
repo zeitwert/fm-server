@@ -9,6 +9,7 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
@@ -32,16 +33,23 @@ public class SessionInfoReponse {
 		if (sessionInfo == null) {
 			return null;
 		}
-		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
-		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
-		ObjAccount account = sessionInfo.hasAccount() ? accountRepository.get(sessionInfo, sessionInfo.getAccountId())
-				: null;
-		ObjAccountDto accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, sessionInfo);
-		String defaultApp = sessionInfo.getUser().hasRole(CodeUserRoleEnum.getUserRole("admin")) ? "adminFm" : "userFm";
+		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
+		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
+		ObjAccount account = sessionInfo.hasAccount() ? accountRepository.get(sessionInfo, sessionInfo.getAccountId()) : null;
+		ObjAccountDto accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, sessionInfo);
+		ObjUser user = sessionInfo.getUser();
+		String defaultApp = null;
+		if (user.hasRole(CodeUserRoleEnum.APP_ADMIN)) {
+			defaultApp = "appAdmin";
+		} else if (user.hasRole(CodeUserRoleEnum.ADMIN)) {
+			defaultApp = "tenantAdmin";
+		} else {
+			defaultApp = "fm";
+		}
 		return SessionInfoReponse.builder()
-			.tenant(tenantBridge.fromAggregate(sessionInfo.getTenant(), sessionInfo))
-			.user(userBridge.fromAggregate(sessionInfo.getUser(), sessionInfo))
+			.tenant(tenantDtoAdapter.fromAggregate(sessionInfo.getTenant(), sessionInfo))
+			.user(userDtoAdapter.fromAggregate(sessionInfo.getUser(), sessionInfo))
 			.account(accountDto)
 			.locale(SessionService.DEFAULT_LOCALE)
 			.applicationId(defaultApp)

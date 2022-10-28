@@ -57,10 +57,10 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 				}
 
 				Integer accountId = (Integer) claims.get(JwtProvider.ACCOUNT_CLAIM);
-				userDetails.setAccountId(accountId);
-				if (accountId == null) {
+				if (!(userDetails.isAdmin() || userDetails.isAppAdmin()) && accountId == null) {
 					throw new RuntimeException("Authentication error (invalid accountId claim)");
 				}
+				userDetails.setAccountId(accountId);
 
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
 						null,

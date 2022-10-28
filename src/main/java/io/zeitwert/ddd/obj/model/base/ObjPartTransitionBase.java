@@ -30,7 +30,7 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
-		dbRecord.setTenantId(this.getMeta().getSessionInfo().getTenant().getId());
+		dbRecord.setTenantId(this.getAggregate().getTenantId());
 		dbRecord.setUserId(this.getMeta().getSessionInfo().getUser().getId());
 		dbRecord.setTimestamp(this.getMeta().getSessionInfo().getCurrentTime());
 	}

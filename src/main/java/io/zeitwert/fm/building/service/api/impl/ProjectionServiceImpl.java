@@ -247,6 +247,9 @@ public class ProjectionServiceImpl implements ProjectionService {
 	//@formatter:on
 
 		requireThis(buildingPart != null, "buildingPart not null");
+		if (buildingPart == null) {
+			return null; // make compiler happy (potential null pointer)
+		}
 		requireThis(conditionYear <= startYear, "valid start year (" + conditionYear + "<=" + startYear + ")");
 		requireThis(0 <= condition && condition <= 1.0, "valid condition (0 <=" + condition + " <= 1)");
 		requireThis(duration <= 100, "duration <= 100");
@@ -345,6 +348,9 @@ public class ProjectionServiceImpl implements ProjectionService {
 	//@formatter:on
 
 		requireThis(buildingPart != null, "buildingPart not null");
+		if (buildingPart == null) {
+			return null; // make compiler happy (potential null pointer)
+		}
 		int startYear = 0;
 		int restorationYear = 0;
 		double restorationCosts = 0.0;

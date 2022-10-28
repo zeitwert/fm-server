@@ -12,8 +12,8 @@ public abstract class FMDocDtoAdapter<A extends FMDoc, V extends TableRecord<?>,
 		extends DocDtoAdapter<A, V, D> {
 
 	@Override
-	public void toAggregate(D dto, A obj) {
-		super.toAggregate(dto, obj);
+	public void toAggregate(D dto, A obj, SessionInfo sessionInfo) {
+		super.toAggregate(dto, obj, sessionInfo);
 	}
 
 	@Override

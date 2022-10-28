@@ -1,0 +1,36 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "tenantType",
+				"label": "Type",
+				"value": "tenantType"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/tenant/{{id}}",
+				"tenantType": "{{tenantType.name}}",
+				"owner": "{{meta.owner.name}}"
+			}
+		]
+	}
+}

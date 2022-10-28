@@ -29,10 +29,10 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 	}
 
 	@Override
-	public void toAggregate(ObjAccountDto dto, ObjAccount obj) {
+	public void toAggregate(ObjAccountDto dto, ObjAccount obj, SessionInfo sessionInfo) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj);
+			super.toAggregate(dto, obj, sessionInfo);
 
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());

@@ -17,7 +17,6 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
@@ -32,8 +31,6 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		implements ObjTenantRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_tenant";
-
-	private final SessionInfo globalSessionInfo;
 
 	//@formatter:off
 	protected ObjTenantRepositoryImpl(
@@ -53,7 +50,6 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 			transitionRepository,
 			itemRepository
 		);
-		this.globalSessionInfo = sessionService.getGlobalSession();
 	}
 	//@formatter:on
 
@@ -65,19 +61,17 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 
 	@Override
 	public ObjTenant doCreate(SessionInfo sessionInfo) {
-		throw new RuntimeException("cannot create a Tenant");
+		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_TENANT));
 	}
 
 	@Override
 	public ObjTenant doLoad(SessionInfo sessionInfo, Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjRecord objRecord = this.getDSLContext().fetchOne(io.zeitwert.ddd.obj.model.db.Tables.OBJ,
-				io.zeitwert.ddd.obj.model.db.Tables.OBJ.ID.eq(objId));
 		ObjTenantRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
-		if (objRecord == null || tenantRecord == null) {
+		if (tenantRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return newAggregate(sessionInfo, objRecord, tenantRecord);
+		return this.doLoad(sessionInfo, objId, tenantRecord);
 	}
 
 	@Override
@@ -85,18 +79,13 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		return this.doFind(sessionInfo, Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}
 
-	@Override
-	public ObjTenant get(Integer id) {
-		return this.get(this.globalSessionInfo, id);
-	}
-
-	public Optional<ObjTenant> getByExtlKey(String extlKey) {
+	public Optional<ObjTenant> getByExtlKey(SessionInfo sessionInfo, String extlKey) {
 		ObjTenantVRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT_V,
 				Tables.OBJ_TENANT_V.EXTL_KEY.eq(extlKey));
 		if (tenantRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(this.globalSessionInfo, tenantRecord.getId()));
+		return Optional.of(this.get(sessionInfo, tenantRecord.getId()));
 	}
 
 }

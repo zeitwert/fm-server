@@ -45,7 +45,7 @@
 				"accountLink": "/account/{{account.id}}",
 				"phone": "=> nvl(mobile, phone)",
 				"email": "{{email}}",
-				"owner": "{{owner.caption}}"
+				"owner": "{{meta.owner.name}}"
 			}
 		]
 	}

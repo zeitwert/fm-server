@@ -57,16 +57,17 @@ class ApplicationConfig {
 	private final AppMenuAction userAction = AppMenuAction.builder().id("user").name("Benutzer").navigation(DefaultNavigation).icon("").build();
 	private final ApplicationArea userArea = ApplicationArea.builder().id("user").name("Benutzer").icon("standard:user").path("user").component("UserArea").menu(EmptyMenu).menuAction(userAction).build();
 
-	private final Application fmAdminApp = Application.builder().id("adminFm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo fmAdminAppMenu = ApplicationInfo.builder().id("adminFm").name("zeitwert: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
+	private final Application fmApp = Application.builder().id("fm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
+	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
 
-	private final Application fmUserApp = Application.builder().id("userFm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo fmUserAppMenu = ApplicationInfo.builder().id("userFm").name("zeitwert: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
+	private final Application tenantAdminApp = Application.builder().id("tenantAdmin").name("ZEitWERT: admin").icon("config").description("Mandantenadministration").build();
+	private final ApplicationInfo tenantAdminAppMenu = ApplicationInfo.builder().id("adminMenu").name("ZEitWERT: admin").areas(List.of(tenantArea, accountArea, userArea)).defaultArea(userArea.getId()).build();
 
-	private final Application adminAdminApp = Application.builder().id("adminAdmin").name("zeitwert: admin").icon("config").description("Applikationskonfiguration").build();
-	private final ApplicationInfo adminAdminAppMenu = ApplicationInfo.builder().id("adminAdmin").name("zeitwert: admin").areas(List.of(userArea, tenantArea, documentArea)).defaultArea(userArea.getId()).build();
+	private final Application appAdminApp = Application.builder().id("appAdmin").name("ZEitWERT: appAdmin").icon("config").description("Applikationsadministration").build();
+	private final ApplicationInfo appAdminAppMenu = ApplicationInfo.builder().id("appAdminMenu").name("ZEitWERT: appAdmin").areas(List.of(tenantArea, accountArea, userArea)).defaultArea(tenantArea.getId()).build();
 	//@formatter:on
 
+	final List<Application> AppAdminApplications = new ArrayList<>();
 	final List<Application> AdminApplications = new ArrayList<>();
 	final List<Application> UserApplications = new ArrayList<>();
 	final Map<String, Application> ApplicationMap = new HashMap<>();
@@ -87,19 +88,20 @@ class ApplicationConfig {
 		Areas.put(tenantArea.getId(), tenantArea);
 		Areas.put(userArea.getId(), userArea);
 
-		ApplicationMap.put(fmAdminApp.getId(), fmAdminApp);
-		ApplicationMenus.put(fmAdminApp.getId(), fmAdminAppMenu);
+		ApplicationMap.put(fmApp.getId(), fmApp);
+		ApplicationMenus.put(fmApp.getId(), fmAppMenu);
 
-		ApplicationMap.put(fmUserApp.getId(), fmUserApp);
-		ApplicationMenus.put(fmUserApp.getId(), fmUserAppMenu);
+		ApplicationMap.put(tenantAdminApp.getId(), tenantAdminApp);
+		ApplicationMenus.put(tenantAdminApp.getId(), tenantAdminAppMenu);
 
-		ApplicationMap.put(adminAdminApp.getId(), adminAdminApp);
-		ApplicationMenus.put(adminAdminApp.getId(), adminAdminAppMenu);
+		ApplicationMap.put(appAdminApp.getId(), appAdminApp);
+		ApplicationMenus.put(appAdminApp.getId(), appAdminAppMenu);
 
-		AdminApplications.add(fmAdminApp);
-		AdminApplications.add(adminAdminApp);
+		UserApplications.add(fmApp);
 
-		UserApplications.add(fmUserApp);
+		AdminApplications.add(tenantAdminApp);
+
+		AppAdminApplications.add(appAdminApp);
 
 	}
 

@@ -5,11 +5,15 @@ values
 on conflict(id)
 do nothing;
 
+delete from code_user_role
+where id = 'appAdmin';
+
 insert into code_user_role(id, name)
 values
-('appAdmin', 'Application Admin (Super User)'),
-('admin', 'Advisor or Account Admin'),
-('user', 'Advisor or Account User'),
-('readOnly', 'Advisor or Account Read-Only User')
+('app_admin', 'Application Admin'),
+('admin', 'Advisor or Community Tenant Admin'),
+('super_user', 'Advisor or Community Tenant User (elevated privileges)'),
+('user', 'Advisor or Community Tenant User'),
+('readOnly', 'Advisor or Community Tenant User Read-Only')
 on conflict(id)
-do nothing;
+do update set name = excluded.name;

@@ -29,6 +29,7 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
@@ -114,13 +115,13 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public abstract Integer nextAggregateId();
 
 	@Override
-	public final A create(SessionInfo sessionInfo) {
+	public final A create(Integer tenantId, SessionInfo sessionInfo) {
 
 		Integer aggregateId = this.nextAggregateId();
 		A aggregate = this.doCreate(sessionInfo);
 
 		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
-		((AggregateSPI) aggregate).doInit(aggregateId, sessionInfo.getTenant().getId());
+		((AggregateSPI) aggregate).doInit(aggregateId, tenantId);
 		assertThis(((AggregateBase) aggregate).doInitSeqNr > doInitSeqNr,
 				aggregate.getClass().getSimpleName() + ": doInit was propagated");
 
@@ -255,7 +256,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public final List<V> find(SessionInfo sessionInfo, QuerySpec querySpec) {
 		String tenantField = AggregateFields.TENANT_ID.getName();
 		Integer tenantId = sessionInfo.getTenant().getId();
-		querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
+		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
+			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
+		}
 		if (this.hasAccountId() && sessionInfo.hasAccount()) {
 			String accountField = AggregateFields.ACCOUNT_ID.getName();
 			Integer accountId = sessionInfo.getAccountId();
@@ -291,13 +294,16 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 		// Sort.
 		List<SortField<?>> sortFields = List.of();
-		if (querySpec.getSort().size() > 0) {
+		if (querySpec != null && querySpec.getSort().size() > 0) {
 			sortFields = SqlUtils.sortFilter(table, querySpec.getSort());
 		} else if (table.field("modified_at") != null) {
 			sortFields = List.of(table.field("modified_at").desc());
 		} else {
 			sortFields = List.of(table.field("id").desc());
 		}
+
+		Number offset = querySpec == null ? null : querySpec.getOffset();
+		Number limit = querySpec == null ? null : querySpec.getLimit();
 
 		//@formatter:off
 		return
@@ -307,7 +313,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 						.from(table)
 						.where(whereClause)
 						.orderBy(sortFields)
-						.limit(querySpec.getOffset(), querySpec.getLimit())
+						.limit(offset, limit)
 						.fetch();
 		//@formatter:on
 

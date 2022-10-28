@@ -31,17 +31,18 @@ public class JwtProviderImpl implements JwtProvider {
 
 	public String createJwt(Authentication authentication, Integer accountId) {
 		ZeitwertUserDetails userPrincipal = (ZeitwertUserDetails) authentication.getPrincipal();
+		Map<String, Object> claims = null;
+		if (accountId == null) {
+			claims = Map.of(TENANT_CLAIM, userPrincipal.getTenantId());
+		} else {
+			claims = Map.of(TENANT_CLAIM, userPrincipal.getTenantId(), ACCOUNT_CLAIM, accountId);
+		}
 		//@formatter:off
 		return Jwts.builder()
 			.setSubject((userPrincipal.getUsername()))
 			.setIssuedAt(new Date())
 			.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-			.addClaims(
-				Map.of(
-					TENANT_CLAIM, userPrincipal.getTenantId(),
-					ACCOUNT_CLAIM, accountId
-				)
-			)
+			.addClaims(claims)
 			.signWith(SignatureAlgorithm.HS512, jwtSecret)
 			.compact();
 		//@formatter:on

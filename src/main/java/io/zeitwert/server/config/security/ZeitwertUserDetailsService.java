@@ -18,7 +18,7 @@ public class ZeitwertUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		ObjUser user = userRepository.getByEmail(email)
+		ObjUser user = userRepository.getByEmail(null, email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 		return ZeitwertUserDetails.build(user);
 	}

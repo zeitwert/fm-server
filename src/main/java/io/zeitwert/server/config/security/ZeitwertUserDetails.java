@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.base.ObjUserBase;
+import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 
 public class ZeitwertUserDetails implements UserDetails {
 
@@ -25,8 +26,8 @@ public class ZeitwertUserDetails implements UserDetails {
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public static ZeitwertUserDetails build(ObjUser user) {
-		List<SimpleGrantedAuthority> authorities = user.getRoleList().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getId())).toList();
+		List<SimpleGrantedAuthority> authorities = List
+				.of(user.getRole() == null ? null : new SimpleGrantedAuthority(user.getRole().getId()));
 		return new ZeitwertUserDetails(user, authorities);
 	}
 
@@ -34,7 +35,7 @@ public class ZeitwertUserDetails implements UserDetails {
 		this.userId = user.getId();
 		this.userEmail = user.getEmail();
 		this.userPassword = ((ObjUserBase) user).getPassword();
-		this.tenantId = user.getTenant().getId();
+		this.tenantId = user.getTenantId();
 		this.authorities = authorities;
 	}
 
@@ -67,6 +68,14 @@ public class ZeitwertUserDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
+	}
+
+	public boolean isAdmin() {
+		return authorities.stream().anyMatch((a) -> CodeUserRoleEnum.ADMIN.getId().equals(a.getAuthority()));
+	}
+
+	public boolean isAppAdmin() {
+		return authorities.stream().anyMatch((a) -> CodeUserRoleEnum.APP_ADMIN.getId().equals(a.getAuthority()));
 	}
 
 	@Override

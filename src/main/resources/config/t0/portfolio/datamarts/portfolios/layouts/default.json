@@ -33,7 +33,7 @@
 				"accountId": "{{account.id}}",
 				"accountName": "{{account.caption}}",
 				"accountLink": "/account/{{account.id}}",
-				"owner": "{{owner.caption}}"
+				"owner": "{{meta.owner.name}}"
 			}
 		]
 	}

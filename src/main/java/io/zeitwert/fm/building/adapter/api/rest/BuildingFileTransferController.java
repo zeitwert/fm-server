@@ -86,7 +86,7 @@ public class BuildingFileTransferController {
 		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = buildingRepo.create(sessionInfo);
+		ObjBuilding building = buildingRepo.create(sessionInfo.getTenant().getId(), sessionInfo);
 		building.setAccountId(accountId);
 		this.fillFromDto(building, dto);
 		buildingRepo.store(building);
@@ -125,9 +125,9 @@ public class BuildingFileTransferController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
-					.createdByUser(userRepo.get(note.getCreatedByUserId()).getEmail())
+					.createdByUser(userRepo.get(this.sessionInfo, note.getCreatedByUserId()).getEmail())
 					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(note.getModifiedByUserId()).getEmail() : null)
+					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(this.sessionInfo, note.getModifiedByUserId()).getEmail() : null)
 					.modifiedAt(note.getModifiedAt())
 				.build();
 		}).toList();
@@ -221,7 +221,7 @@ public class BuildingFileTransferController {
 			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(this.sessionInfo, dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());

@@ -53,7 +53,7 @@ public class BuildingTest {
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
 		ObjAccount account = this.getOrCreateTestAccount(sessionInfo);
-		ObjBuilding building1a = buildingRepository.create(sessionInfo);
+		ObjBuilding building1a = buildingRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 
 		assertNotNull(building1a, "test not null");
 		assertNotNull(building1a.getId(), "id not null");
@@ -153,7 +153,7 @@ public class BuildingTest {
 		if (maybeAccount.isPresent()) {
 			return maybeAccount.get();
 		}
-		ObjAccount account = this.accountRepository.create(sessionInfo);
+		ObjAccount account = this.accountRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 		account.setName("Building Test Account");
 		account.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
 		account.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));

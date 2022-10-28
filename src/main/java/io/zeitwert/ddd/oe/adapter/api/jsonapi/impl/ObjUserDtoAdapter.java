@@ -1,34 +1,46 @@
 
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.impl;
 
+import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
+import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
 public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVRecord, ObjUserDto> {
 
-	private static ObjUserDtoAdapter instance;
+	private static EnumeratedDto AGGREGATE_TYPE;
+	private static ObjUserDtoAdapter INSTANCE;
 
 	private ObjUserDtoAdapter() {
 	}
 
 	public static final ObjUserDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjUserDtoAdapter();
+		if (INSTANCE == null) {
+			AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_user"));
+			INSTANCE = new ObjUserDtoAdapter();
 		}
-		return instance;
+		return INSTANCE;
 	}
 
 	@Override
-	public void toAggregate(ObjUserDto dto, ObjUser obj) {
-		super.toAggregate(dto, obj);
-		// @formatter:off
+	public void toAggregate(ObjUserDto dto, ObjUser obj, SessionInfo sessionInfo) {
+		super.toAggregate(dto, obj, sessionInfo);
+		// if (dto.getTenant() != null) {
+		// obj.setTenant(dto.getTenant());
+		// }
+		obj.setEmail(dto.getEmail());
+		if (dto.getPassword() != null) {
+			obj.setPassword("{noop}" + dto.getPassword());
+		}
+		obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole()));
 		obj.setName(dto.getName());
-		// obj.setEmail(dto.getEmail());
+		obj.setDescription(dto.getDescription());
 		// obj.setPicture(dto.getPicture());
-		// @formatter:on
 	}
 
 	@Override
@@ -36,21 +48,27 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		// @formatter:off
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(obj);
-		// @formatter:off
-		dtoBuilder // we do not user super.fromAggregate, since meta would cause infinite loop (and we dont need it)
-			.sessionInfo(sessionInfo)
-			.id(obj.getId())
-			.caption(obj.getCaption())
-			//.owner(ObjUserDtoBridge.getInstance().fromAggregate(obj.getOwner(), sessionInfo))
-			// user stuff
-			.name(obj.getName())
-			.email(obj.getEmail())
-			.roles(obj.getRoleList().stream().map(r -> r.getId()).toList())
-			.picture(obj.getPicture());
-		// @formatter:on
-		return dtoBuilder.build();
+		this.fromAggregate(dtoBuilder, obj, sessionInfo);
+		return dtoBuilder
+				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant(), sessionInfo))
+				.email(obj.getEmail())
+				.role(obj.getRole().getId())
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.picture(obj.getPicture())
+				.build();
+	}
+
+	public EnumeratedDto asEnumerated(ObjUser obj, SessionInfo sessionInfo) {
+		if (obj == null) {
+			return null;
+		}
+		return EnumeratedDto.builder()
+				.id("" + obj.getId())
+				.itemType(AGGREGATE_TYPE)
+				.name(obj.getCaption())
+				.build();
 	}
 
 	@Override
@@ -58,20 +76,17 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		// @formatter:off
-		//ObjUser owner = getUserRepository().get(obj.getOwnerId());
+		ObjTenant tenant = getTenantRepository().get(sessionInfo, obj.getTenantId());
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
-		dtoBuilder
-			.sessionInfo(sessionInfo)
-			.id(obj.getId())
-			.caption(obj.getCaption())
-			//.owner(ObjUserDtoBridge.getInstance().fromAggregate(owner, sessionInfo))
-			// user stuff
-			.name(obj.getName())
-			.email(obj.getEmail())
-			.picture(obj.getPicture());
-		// @formatter:on
-		return dtoBuilder.build();
+		this.fromRecord(dtoBuilder, obj, sessionInfo);
+		return dtoBuilder
+				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(tenant, sessionInfo))
+				.email(obj.getEmail())
+				.role(obj.getRoleList())
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.picture(obj.getPicture())
+				.build();
 	}
 
 }

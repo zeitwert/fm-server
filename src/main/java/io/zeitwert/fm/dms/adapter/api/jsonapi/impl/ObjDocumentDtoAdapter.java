@@ -26,10 +26,10 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public void toAggregate(ObjDocumentDto dto, ObjDocument obj) {
+	public void toAggregate(ObjDocumentDto dto, ObjDocument obj, SessionInfo sessionInfo) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj);
+			super.toAggregate(dto, obj, sessionInfo);
 			obj.setName(dto.getName());
 			obj.setContentKind(dto.getContentKind() == null ? null
 					: CodeContentKindEnum.getContentKind(

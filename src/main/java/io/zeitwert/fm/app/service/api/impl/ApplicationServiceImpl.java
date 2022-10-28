@@ -11,7 +11,6 @@ import io.zeitwert.ddd.app.model.Application;
 import io.zeitwert.ddd.app.model.ApplicationArea;
 import io.zeitwert.ddd.app.model.ApplicationInfo;
 import io.zeitwert.ddd.app.service.api.ApplicationService;
-import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.SessionInfo;
 
@@ -21,16 +20,16 @@ class ApplicationServiceImpl implements ApplicationService {
 
 	private static final ApplicationConfig appConfig = new ApplicationConfig();
 
-	private static final CodeUserRole AdminRole = CodeUserRoleEnum.getUserRole("admin");
-	private static final CodeUserRole UserRole = CodeUserRoleEnum.getUserRole("user");
-
 	@Autowired
 	private SessionInfo sessionInfo;
 
 	public List<Application> getAllApplications() {
-		if (sessionInfo.getUser().hasRole(AdminRole)) {
+		if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.APP_ADMIN)) {
+			return appConfig.AppAdminApplications;
+		} else if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.ADMIN)) {
 			return appConfig.AdminApplications;
-		} else if (sessionInfo.getUser().hasRole(UserRole)) {
+		} else if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.USER)
+				|| sessionInfo.getUser().hasRole(CodeUserRoleEnum.SUPER_USER)) {
 			return appConfig.UserApplications;
 		}
 		return List.of();

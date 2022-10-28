@@ -66,7 +66,7 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	}
 
 	private void calcCaption() {
-		this.caption.setValue("Notiz");
+		this.setCaption("Notiz");
 	}
 
 }

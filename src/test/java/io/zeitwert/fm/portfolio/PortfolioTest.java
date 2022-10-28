@@ -44,7 +44,7 @@ public class PortfolioTest {
 		assertTrue(buildingRepository != null, "buildingRepository not null");
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
-		ObjPortfolio pf1a = portfolioRepository.create(sessionInfo);
+		ObjPortfolio pf1a = portfolioRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
 		// Integer pf1Id = pf1a.getId();
 		// Integer pf1aIdHash = System.identityHashCode(pf1a);
 

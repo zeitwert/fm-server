@@ -94,7 +94,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	private void calcCaption() {
-		this.caption.setValue(this.getName());
+		this.setCaption(this.getName());
 	}
 
 	private void calcBuildingSet() {

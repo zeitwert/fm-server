@@ -15,7 +15,6 @@ import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.service.api.ObjService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
@@ -32,17 +31,17 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	private final ObjRepository<? extends Obj, ? extends Record> repository;
 	private final UpdatableRecord<?> objDbRecord;
 
-	protected final SimpleProperty<Integer> id;
-	protected final ReferenceProperty<ObjTenant> tenant;
-	protected final ReferenceProperty<ObjUser> owner;
-	protected final SimpleProperty<String> caption;
-	protected final SimpleProperty<Integer> version;
-	protected final ReferenceProperty<ObjUser> createdByUser;
-	protected final SimpleProperty<OffsetDateTime> createdAt;
-	protected final ReferenceProperty<ObjUser> modifiedByUser;
-	protected final SimpleProperty<OffsetDateTime> modifiedAt;
-	protected final ReferenceProperty<ObjUser> closedByUser;
-	protected final SimpleProperty<OffsetDateTime> closedAt;
+	private final SimpleProperty<Integer> id;
+	private final ReferenceProperty<ObjTenant> tenant;
+	private final ReferenceProperty<ObjUser> owner;
+	private final SimpleProperty<String> caption;
+	private final SimpleProperty<Integer> version;
+	private final ReferenceProperty<ObjUser> createdByUser;
+	private final SimpleProperty<OffsetDateTime> createdAt;
+	private final ReferenceProperty<ObjUser> modifiedByUser;
+	private final SimpleProperty<OffsetDateTime> modifiedAt;
+	private final ReferenceProperty<ObjUser> closedByUser;
+	private final SimpleProperty<OffsetDateTime> closedAt;
 
 	private final SimpleProperty<String> objTypeId;
 
@@ -79,16 +78,17 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
+	public Integer getTenantId() {
+		return this.tenant.getId();
+	}
+
+	@Override
 	public ObjRepository<? extends Obj, ? extends Record> getRepository() {
 		return this.repository;
 	}
 
 	protected final UpdatableRecord<?> getObjDbRecord() {
 		return this.objDbRecord;
-	}
-
-	protected ObjService getObjService() {
-		return this.getAppContext().getBean(ObjService.class);
 	}
 
 	public CodeAggregateType getAggregateType() {
@@ -169,6 +169,10 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public ObjPartItem addItem(Property<?> property, CodePartListType partListType) {
 		return this.getRepository().getItemRepository().create(this, partListType);
+	}
+
+	protected void setCaption(String caption) {
+		this.caption.setValue(caption);
 	}
 
 }

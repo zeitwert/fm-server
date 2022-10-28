@@ -12,11 +12,7 @@ import io.zeitwert.ddd.doc.model.DocMeta;
 import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.SessionInfo;
@@ -51,19 +47,16 @@ public class DocMetaDto extends AggregateMetaDto {
 	public static DocMetaDto fromRecord(Record doc, SessionInfo sessionInfo) {
 		DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
 		AggregateMetaDto.fromRecord(builder, doc, sessionInfo);
-		ObjTenantRepository tenantRepo = (ObjTenantRepository) AppContext.getInstance().getRepository(ObjTenant.class);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
-		ObjTenantDtoAdapter tenantBridge = ObjTenantDtoAdapter.getInstance();
-		ObjUserDtoAdapter userBridge = ObjUserDtoAdapter.getInstance();
+		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		Integer modifiedByUserId = doc.getValue(DocFields.MODIFIED_BY_USER_ID);
-		ObjUserDto modifiedByUser = modifiedByUserId == null ? null
-				: userBridge.fromAggregate(userRepo.get(modifiedByUserId), sessionInfo);
+		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null
+				: userDtoAdapter.asEnumerated(userRepo.get(sessionInfo, modifiedByUserId), sessionInfo);
 		// @formatter:off
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(doc.get(DocFields.DOC_TYPE_ID))))
-			.tenant(tenantBridge.fromAggregate(tenantRepo.get(doc.getValue(DocFields.TENANT_ID)), sessionInfo))
-			.owner(userBridge.fromAggregate(userRepo.get(doc.getValue(DocFields.OWNER_ID)), sessionInfo))
-			.createdByUser(userBridge.fromAggregate(userRepo.get(doc.getValue(DocFields.CREATED_BY_USER_ID)), sessionInfo))
+			.owner(userDtoAdapter.asEnumerated(userRepo.get(sessionInfo, doc.getValue(DocFields.OWNER_ID)), sessionInfo))
+			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(sessionInfo, doc.getValue(DocFields.CREATED_BY_USER_ID)), sessionInfo))
 			.createdAt(doc.get(DocFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(doc.get(DocFields.MODIFIED_AT))

@@ -107,7 +107,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	private void calcCaption() {
-		this.caption.setValue(this.getName());
+		this.setCaption(this.getName());
 	}
 
 }
