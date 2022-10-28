@@ -1,6 +1,6 @@
 
 import { Button, Card, Checkbox, MediaObject } from "@salesforce/design-system-react";
-import { Enumerated, LOGIN_INFO_ITEM, session, Session, TenantInfo } from "@zeitwert/ui-model";
+import { COMMUNITY_TENANT, Enumerated, LOGIN_INFO_ITEM, session, Session, TenantInfo } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React, { ChangeEvent } from "react";
@@ -29,6 +29,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 
 	@observable email: string | undefined = undefined;
 	@observable password: string | undefined = undefined;
+	@observable userRole: string | undefined = undefined;
 	@observable account: Enumerated | undefined = undefined;
 
 	@observable tenant: TenantInfo | undefined = undefined;
@@ -41,19 +42,23 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		return !!this.email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(this.email);
 	}
 
+	@computed get needAccount(): boolean {
+		return !!this.tenant && !!this.userRole && ["user", "super_user"].indexOf(this.userRole) >= 0;
+	}
+
 	@computed get tenantLogoUrl(): string | undefined {
 		return !!this.tenant ? `/tenant/${this.tenant.extlKey}/login-logo.jpg` : "/tenant/login-logo.jpg";
 	}
 
 	@computed get needDisclaimer(): boolean {
-		return !!this.tenant && this.tenant.tenantType.id === "community";
+		return !!this.tenant && this.tenant.tenantType.id === COMMUNITY_TENANT;
 	}
 
 	@computed get isReadyForLogin(): boolean {
 		if (this.needDisclaimer && !this.didAcceptDisclaimer) {
 			return false;
 		}
-		return this.isEmailValid && !!this.password && !!this.account;
+		return this.isEmailValid && !!this.userRole && !!this.password && (!this.needAccount || !!this.account);
 	}
 
 	constructor(props: LoginFormProps) {
@@ -85,7 +90,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 											</div>
 										</div>
 										{
-											this.accounts?.length > 1 &&
+											this.needAccount && this.accounts?.length > 1 &&
 											<div className="slds-form-element">
 												<label className="slds-form-element__label" htmlFor="account">Kunde <abbr className="slds-required"></abbr></label>
 												<div className="slds-form-element__control">
@@ -158,12 +163,15 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 
 	private setEmail = async (email: ChangeEvent<HTMLInputElement>) => {
 		this.email = email.target.value;
+		this.userRole = undefined;
 		this.tenant = undefined;
 		this.accounts = [];
 		this.account = undefined;
 		this.hasLoginFailed = false;
 		if (this.isEmailValid) {
 			const userInfo = await session.userInfo(this.email);
+			this.userRole = userInfo?.role;
+			console.log("setEmail", this.userRole, userInfo, this.needAccount);
 			this.tenant = userInfo?.tenant;
 			this.accounts = userInfo?.accounts || [];
 			if (this.accounts?.length === 1) {

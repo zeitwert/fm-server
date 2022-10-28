@@ -58,6 +58,8 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		}
 		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
 
+		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+
 		return (
 			<>
 				<ItemHeader
@@ -86,7 +88,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 									await this.taskStore.task!.setField("reminderDate", undefined);
 								}
 							}}
-							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
+							showEditButtons={allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}

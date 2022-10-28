@@ -1,4 +1,4 @@
-import { AggregateStore, EntityType, session } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { action } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -8,7 +8,7 @@ import { ItemEditorButtons } from "./ItemEditorButtons";
 interface ItemEditorProps {
 	store: AggregateStore;
 	entityType: EntityType;
-	showEditButtons?: boolean;
+	showEditButtons: boolean;
 	customButtons?: JSX.Element;
 	onOpen?: () => void;
 	onCancel: () => Promise<void>;
@@ -32,7 +32,7 @@ export default class ItemEditor extends React.Component<ItemEditorProps> {
 		} = this.props;
 		const buttons = (
 			<ItemEditorButtons
-				showEditButtons={!session.isReadOnlyUser && (showEditButtons || false)}
+				showEditButtons={showEditButtons}
 				doEdit={store.isInTrx}
 				allowStore={true/* TODO */}
 				onOpenEditor={action(() => this.onOpen())}

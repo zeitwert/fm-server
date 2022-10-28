@@ -42,7 +42,7 @@ export default class ItemModal extends React.Component<ItemModalProps> {
 			/>
 		);
 		return (
-			<FormItemEditor {...Object.assign({}, this.props, { showEditButtons: true })}>
+			<FormItemEditor {...Object.assign({}, this.props, { showEditButtons: false })}>
 				{
 					(editor) => {
 						return (

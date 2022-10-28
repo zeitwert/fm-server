@@ -71,6 +71,10 @@ class ContactPage extends React.Component<RouteComponentProps> {
 			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
 		}
 		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
+
+		const isActive = !contact.meta?.closedAt;
+		const allowEdit = ([LEFT_TABS.DETAILS, LEFT_TABS.CHANNELS, LEFT_TABS.ADDRESSES].indexOf(this.activeLeftTabId) >= 0);
+
 		return (
 			<>
 				<ItemHeader
@@ -90,11 +94,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 									? contact.age + " years old, " + moment(contact.birthDate).format(DATE_FORMAT)
 									: ""
 							}}
-							showEditButtons={
-								this.activeLeftTabId === LEFT_TABS.DETAILS ||
-								this.activeLeftTabId === LEFT_TABS.CHANNELS ||
-								this.activeLeftTabId === LEFT_TABS.ADDRESSES
-							}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}

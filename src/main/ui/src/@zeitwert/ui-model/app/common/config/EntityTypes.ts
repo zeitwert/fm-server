@@ -8,7 +8,9 @@ export enum EntityType {
 	NOTE = "note",
 	PORTFOLIO = "portfolio",
 	TASK = "task",
+	TENANT = "tenant",
 	TEST = "test",
+	USER = "user",
 }
 
 export enum EntityGender {
@@ -118,6 +120,26 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.TEST,
 		iconCategory: "standard",
 		iconName: "task2",
+		isFavoritable: false,
+		hasPreview: false
+	},
+	[EntityType.TENANT]: {
+		label: "Mandanten",
+		labelSingular: "Mandant",
+		gender: EntityGender.MALE,
+		type: EntityType.TENANT,
+		iconCategory: "standard",
+		iconName: "employee_organization",
+		isFavoritable: false,
+		hasPreview: false
+	},
+	[EntityType.USER]: {
+		label: "Benutzer",
+		labelSingular: "Benutzer",
+		gender: EntityGender.MALE,
+		type: EntityType.USER,
+		iconCategory: "standard",
+		iconName: "user",
 		isFavoritable: false,
 		hasPreview: false
 	},

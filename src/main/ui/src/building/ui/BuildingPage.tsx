@@ -108,10 +108,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
-		const allowEditRating = building.ratingStatus && building.ratingStatus.id === "open";
+		const allowEditRating = !!building.ratingStatus && building.ratingStatus.id === "open";
 		const isActive = !building.meta?.closedAt;
-		let allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
-		allowEdit = isActive && allowEdit;
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
 		const notesCount = this.buildingStore.notesStore.notes.length;
 
@@ -128,7 +127,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							key={"building-" + this.buildingStore.building?.id}
 							store={this.buildingStore}
 							entityType={EntityType.BUILDING}
-							showEditButtons={allowEdit}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
@@ -292,7 +291,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					</ButtonGroup>
 				}
 				{
-					!session.isReadOnlyUser && !isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
+					!session.hasReadOnlyRole && !isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
 					<>
 						{
 							!ratingStatus &&

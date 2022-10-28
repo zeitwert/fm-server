@@ -1,6 +1,6 @@
 
 import { Button } from "@salesforce/design-system-react";
-import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel, session } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
 	DataTableCellWithEntityIcon,
@@ -21,7 +21,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	store: AggregateStore;
 	listDatamart: string;
 	listTemplate: string;
-	canCreate?: boolean;
+	canCreate: boolean;
 	createFormId?: string;
 	actionButtons?: React.ReactNode[];
 	createEditor?: () => JSX.Element;
@@ -69,7 +69,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					}}
 					actionButtons={
 						(actionButtons || []).concat(
-							!session.isReadOnlyUser && canCreate
+							canCreate
 								? [<Button key="new" label={newText} onClick={this.openEditor} />]
 								: []
 						)

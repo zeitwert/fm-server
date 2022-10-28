@@ -66,6 +66,9 @@ class LeadPage extends React.Component<RouteComponentProps> {
 			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
 		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);
+
+		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+
 		return (
 			<>
 				<ItemHeader
@@ -87,7 +90,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							entityType={EntityType.LEAD}
 							formId="lead/editLead"
 							itemAlias={EntityType.LEAD}
-							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
+							showEditButtons={allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}

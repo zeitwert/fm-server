@@ -6,16 +6,6 @@ import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
 import React from "react";
 
-// const loadContacts = async (q: Query): Promise<Enumerated[]> => {
-// 	if (q.buildingType?.id) {
-// 		const subTypesResponse = await axios.get(Config.getEnumUrl("building", "codeBuildingSubType/" + q.buildingType.id));
-// 		if (subTypesResponse) {
-// 			return subTypesResponse.data;
-// 		}
-// 	}
-// 	return [];
-// };
-
 const AccountStaticDataFormModel = new Form(
 	AccountModel,
 	{
@@ -26,7 +16,6 @@ const AccountStaticDataFormModel = new Form(
 		//
 		accountType: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeAccountType", required: true }),
 		clientSegment: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeClientSegment" }),
-		//mainContact: new EnumeratedField({ source: loadContacts }),
 	}
 );
 
@@ -65,11 +54,6 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 				},
 			}
 		);
-		//this.formState.field("buildingSubType").references.autoLoadReaction();
-	}
-
-	componentWillUnmount() {
-		//this.formState.field("buildingSubType").references.clearAutoLoadReaction();
 	}
 
 	render() {
@@ -87,12 +71,6 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 											<Select label="Typ" accessor={this.formState.field("accountType")} size={3} />
 											<Select label="Segment" accessor={this.formState.field("clientSegment")} size={3} />
 										</FieldRow>
-										{/*
-										<FieldRow>
-											<Select label="Hauptkontakt" accessor={this.formState.field("mainContact")} size={6} />
-											<MultiSelect label="Bereiche" accessor={this.formState.field("area")} size={6} />
-										</FieldRow>
-										*/}
 										<FieldRow>
 											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />
 										</FieldRow>

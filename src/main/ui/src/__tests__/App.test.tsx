@@ -19,7 +19,6 @@ const session: Session = SessionModel.create({
 		user: {
 			id: "hob",
 			name: "Hannes Brunner",
-			emailProvider: { id: "exchange" },
 			email: "hannes_brunner@hotmail.com"
 		},
 		locale: Locale.en_us,

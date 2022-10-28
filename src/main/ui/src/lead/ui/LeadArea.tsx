@@ -17,7 +17,7 @@ export default class LeadArea extends React.Component {
 							store={LeadStoreModel.create({})}
 							listDatamart="lead.leads"
 							listTemplate="lead.leads.my-open"
-							canCreate
+							canCreate={session.isUser && !session.hasReadOnlyRole}
 							createFormId="lead/editLead"
 						/>
 					}

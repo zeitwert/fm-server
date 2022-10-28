@@ -1,3 +1,4 @@
+
 import { Button } from "@salesforce/design-system-react";
 import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
@@ -54,7 +55,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 								listDatamart="building.buildings"
 								listTemplate="building.buildings.all"
 								actionButtons={this.getHeaderActions()}
-								canCreate
+								canCreate={session.isUser && !session.hasReadOnlyRole}
 								createEditor={() => <BuildingCreationForm store={buildingStore} />}
 								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!, this.ctx.session.sessionInfo?.account) }}
 								onOpenPreview={this.openPreview}
@@ -82,7 +83,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
-		if (session.isAdminUser) {
+		if (session.hasSuperUserRole) {
 			return [<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />];
 		} else {
 			return [];

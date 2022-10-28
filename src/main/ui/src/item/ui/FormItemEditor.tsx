@@ -108,7 +108,7 @@ export default class FormItemEditor extends React.Component<FormItemEditorProps>
 		);
 		return (
 			<>
-				<div className="slds-m-horizontal_medium slds-text-align_right" style={{ position: "absolute", right: "0", top: "3px" }}				>
+				<div className="slds-m-horizontal_medium slds-text-align_right" style={{ position: "absolute", right: "0", top: "3px" }}>
 					{buttons}
 				</div>
 				{children(editor)}

@@ -21,9 +21,17 @@ export default class AppHeader extends React.Component {
 		if (!this.ctx.session.sessionInfo) {
 			return <></>;
 		}
+		let logoSrc: string;
+		if (!this.ctx.session.appInfo?.id) {
+			logoSrc = "/logo.png";
+		} else if (this.ctx.session.sessionInfo.account) {
+			logoSrc = `/account/${this.ctx.session.sessionInfo.account.key}/banner.png`;
+		} else {
+			logoSrc = `/tenant/${this.ctx.session.sessionInfo.tenant.id}/logo.png`;
+		}
 		return (
 			<GlobalHeader
-				logoSrc={this.ctx.session.appInfo?.id ? `/account/${this.ctx.session.sessionInfo.account.key}/banner.png` : "/logo.png"}
+				logoSrc={logoSrc}
 				navigation={<AppNavigation />}
 				onSkipToContent={() => this.ctx.logger.debug(">>> Skip to Content Clicked")}
 				onSkipToNav={() => this.ctx.logger.debug(">>> Skip to Nav Clicked")}

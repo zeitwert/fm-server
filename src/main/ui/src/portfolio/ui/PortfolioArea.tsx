@@ -30,7 +30,7 @@ export default class PortfolioArea extends React.Component {
 							store={portfolioStore}
 							listDatamart="portfolio.portfolios"
 							listTemplate="portfolio.portfolios.all"
-							canCreate
+							canCreate={session.isUser && !session.hasReadOnlyRole}
 							createEditor={() => <PortfolioCreationForm store={portfolioStore} />}
 							onAfterCreate={(store: PortfolioStore) => { initPortfolio(store.item!, this.ctx.session.sessionInfo?.account) }}
 						/>

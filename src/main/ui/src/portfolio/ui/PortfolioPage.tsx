@@ -82,6 +82,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
 
 		const isFullWidth = [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
+		const isActive = !portfolio.meta?.closedAt;
 		const allowEdit = [LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0;
 
 		const customEditorButtons = (
@@ -101,7 +102,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							key={"portfolio-" + this.portfolioStore.portfolio?.id}
 							store={this.portfolioStore}
 							entityType={EntityType.PORTFOLIO}
-							showEditButtons={allowEdit}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							customButtons={customEditorButtons}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}

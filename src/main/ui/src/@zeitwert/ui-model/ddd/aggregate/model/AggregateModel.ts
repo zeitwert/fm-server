@@ -14,6 +14,7 @@ const MstAggregateModel = types
 		//
 		meta: types.maybe(types.frozen<AggregateMeta>()),
 		//
+		tenant: types.maybe(types.frozen<Enumerated>()),
 		owner: types.maybe(types.frozen<Enumerated>())
 	})
 	.views((self) => ({

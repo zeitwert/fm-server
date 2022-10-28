@@ -88,7 +88,6 @@ export default class Profile extends React.Component<ProfileProps> {
 							body={
 								<HeaderProfileCustomContent
 									name={user?.caption}
-									emailProvider={user?.emailProvider?.name}
 									email={user?.email}
 									tenant={sessionInfo?.tenant?.caption}
 									account={sessionInfo?.account}

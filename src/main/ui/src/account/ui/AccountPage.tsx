@@ -1,5 +1,5 @@
 
-import { Avatar, Button, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -7,11 +7,9 @@ import NotFound from "frame/ui/NotFound";
 import ItemEditor from "item/ui/ItemEditor";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
-import ItemModal from "item/ui/ItemModal";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import ChangeOwnerButton from "./ChangeOwnerButton";
 import AccountStaticDataForm from "./forms/AccountStaticDataForm";
 
 enum LEFT_TABS {
@@ -58,10 +56,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		}
 		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
 
-		const allowEditStaticData = session.isAdminUser;
+		const allowEditStaticData = session.isAdmin || session.hasSuperUserRole;
 		const isActive = !account.meta?.closedAt;
-		let allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
-		allowEdit = isActive && allowEdit;
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -76,7 +73,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							key={"account-" + this.accountStore.account?.id}
 							store={this.accountStore}
 							entityType={EntityType.ACCOUNT}
-							showEditButtons={allowEdit}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
@@ -107,6 +104,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 					<ItemRightPart store={this.accountStore} />
 				</ItemGrid>
 				{
+					/*
 					this.contactStore.isInTrx &&
 					<ItemModal
 						entityType={EntityType.CONTACT}
@@ -116,6 +114,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						onClose={this.closeContactEditor}
 						onCancel={this.cancelContactEditor}
 					/>
+					*/
 				}
 			</>
 		);
@@ -126,6 +125,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		return [
 			{ label: "Type", content: account.accountType?.name },
 			{ label: "Client Segment", content: account.clientSegment?.name },
+			/*
 			{
 				label: "Main Contact",
 				content: account.mainContact?.caption,
@@ -138,9 +138,10 @@ class AccountPage extends React.Component<RouteComponentProps> {
 				url: "mailto:" + account.mainContact?.email
 			},
 			{ label: "Phone", content: account.mainContact?.phone },
+			*/
 			{
 				label: "Owner",
-				content: accountOwner.caption,
+				content: accountOwner.name,
 				icon: (
 					<Avatar
 						variant="user"
@@ -152,16 +153,23 @@ class AccountPage extends React.Component<RouteComponentProps> {
 				),
 				link: "/user/" + account.owner!.id
 			},
+			session.isKernelTenant
+				? { label: "Mandant", content: account.tenant?.name }
+				: { label: "", content: "" },
 		];
 	}
 
 	private getHeaderActions() {
 		return (
 			<>
-				<ButtonGroup variant="list">
-					<Button onClick={this.openContactEditor}>Add Contact</Button>
-				</ButtonGroup>
-				<ChangeOwnerButton accountStore={this.accountStore} />
+				{
+					/*
+					<ButtonGroup variant="list">
+						<Button onClick={this.openContactEditor}>Add Contact</Button>
+					</ButtonGroup>
+					<ChangeOwnerButton accountStore={this.accountStore} />
+					*/
+				}
 			</>
 		);
 	}
@@ -190,31 +198,31 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			);
 		}
 	};
-
-	private openContactEditor = () => {
-		this.contactStore.create({
-			owner: this.ctx.session.sessionInfo!.user
-		});
-		this.contactStore.contact!.setAccount(this.accountStore.id!);
-	};
-
-	private cancelContactEditor = async () => {
-		await this.contactStore.cancel();
-	};
-
-	private closeContactEditor = async () => {
-		try {
-			await this.contactStore.store();
-			this.ctx.showToast("success", `New Contact ${this.contactStore.id} created`);
-			this.props.navigate("/contact/" + this.contactStore.id);
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				"Could not create new Contact: " + (error.detail ? error.detail : error.title ? error.title : error)
-			);
-		}
-	};
-
+	/*
+		private openContactEditor = () => {
+			this.contactStore.create({
+				owner: this.ctx.session.sessionInfo!.user
+			});
+			this.contactStore.contact!.setAccount(this.accountStore.id!);
+		};
+	
+		private cancelContactEditor = async () => {
+			await this.contactStore.cancel();
+		};
+	
+		private closeContactEditor = async () => {
+			try {
+				await this.contactStore.store();
+				this.ctx.showToast("success", `New Contact ${this.contactStore.id} created`);
+				this.props.navigate("/contact/" + this.contactStore.id);
+			} catch (error: any) {
+				this.ctx.showAlert(
+					"error",
+					"Could not create new Contact: " + (error.detail ? error.detail : error.title ? error.title : error)
+				);
+			}
+		};
+	*/
 }
 
 export default withRouter(AccountPage);

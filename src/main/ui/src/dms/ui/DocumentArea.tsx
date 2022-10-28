@@ -17,7 +17,7 @@ export default class DocumentArea extends React.Component {
 							store={DocumentStoreModel.create({})}
 							listDatamart="dms.documents"
 							listTemplate="dms.documents.all"
-							canCreate
+							canCreate={!session.hasReadOnlyRole}
 							createFormId="dms/editDocument"
 						/>
 					}

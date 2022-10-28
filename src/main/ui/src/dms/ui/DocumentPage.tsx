@@ -52,6 +52,10 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
 		}
 		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
+
+		const isActive = !document.meta?.closedAt;
+		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+
 		const headerDetails: HeaderDetail[] = [
 			{ label: "Document", content: document.contentKind?.name },
 			{ label: "Content", content: document.contentType?.name },
@@ -70,7 +74,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 							entityType={EntityType.DOCUMENT}
 							formId="dms/editDocument"
 							itemAlias={EntityType.DOCUMENT}
-							showEditButtons={this.activeLeftTabId === LEFT_TABS.DETAILS}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}

@@ -18,7 +18,8 @@ import {
 import { FormatterImpl } from "../../common/i18n/impl/FormatterImpl";
 import { TranslatorImpl } from "../../common/i18n/impl/TranslatorImpl";
 import { Application, ApplicationArea, ApplicationAreaMap, ApplicationInfo } from "./Application";
-import { LoginInfo, SessionInfo, UserInfo } from "./SessionInfo";
+import { LoginInfo } from "./LoginInfo";
+import { ADVISOR_TENANT, COMMUNITY_TENANT, KERNEL_TENANT, SessionInfo, UserInfo } from "./SessionInfo";
 
 export enum SessionState {
 	close = "close",
@@ -108,6 +109,8 @@ const MstSessionModel = types
 						},
 						{} as ApplicationAreaMap
 					);
+					self.sessionInfo = Object.assign({}, self.sessionInfo, { applicationId: appId });
+					sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(self.sessionInfo));
 				} catch (error: any) {
 					Logger.error("Failed to load application", error);
 				}
@@ -115,13 +118,18 @@ const MstSessionModel = types
 		}
 	}))
 	.actions((self) => ({
-		init() {
+		init(oldSessionInfo?: SessionInfo) {
 			return flow(function* () {
 				try {
 					self.clear(SessionState.pendingOpen);
-					const sessionResponse: AxiosResponse<SessionInfo> = yield API.get(Config.getApiUrl("session", SESSION_URL));
-					const sessionInfo = sessionResponse.data;
-					sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(sessionInfo));
+					let sessionInfo: SessionInfo;
+					if (!oldSessionInfo) {
+						const sessionResponse: AxiosResponse<SessionInfo> = yield API.get(Config.getApiUrl("session", SESSION_URL));
+						sessionInfo = sessionResponse.data;
+						sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(sessionInfo));
+					} else {
+						sessionInfo = oldSessionInfo;
+					}
 					const appListResponse = yield API.get(Config.getApiUrl("app", APP_LIST_URL));
 					const appList = appListResponse.data;
 					transaction(() => {
@@ -157,7 +165,7 @@ const MstSessionModel = types
 				initSession() {
 					const sessionInfo = sessionStorage.getItem(SESSION_INFO_ITEM);
 					if (!!sessionInfo) {
-						return self.init();
+						return self.init(JSON.parse(sessionInfo));
 					}
 					return Promise.resolve();
 				},
@@ -224,25 +232,37 @@ const MstSessionModel = types
 		};
 	})
 	.views((self) => ({
+		get isKernelTenant(): boolean {
+			return self.sessionInfo?.tenant.tenantType.id === KERNEL_TENANT;
+		},
 		get isAdvisorTenant(): boolean {
-			return self.sessionInfo?.tenant.tenantType.id === "advisor";
+			return self.sessionInfo?.tenant.tenantType.id === ADVISOR_TENANT;
 		},
 		get isCommunityTenant(): boolean {
-			return self.sessionInfo?.tenant.tenantType.id === "advisor";
+			return self.sessionInfo?.tenant.tenantType.id === COMMUNITY_TENANT;
 		},
 	}))
 	.views((self) => ({
-		get isReadOnlyUser(): boolean {
-			const roles = self.sessionInfo?.user?.roles || [];
-			return roles.indexOf("readOnly")! >= 0;
+		get isUser(): boolean {
+			return ["readOnly", "user", "super_user"].indexOf(self.sessionInfo?.user?.role!) >= 0;
 		},
-		get isNormalUser(): boolean {
-			const roles = self.sessionInfo?.user?.roles || [];
-			return roles.indexOf("user")! >= 0;
+		get hasReadOnlyRole(): boolean {
+			return "readOnly" === self.sessionInfo?.user?.role;
 		},
-		get isAdminUser(): boolean {
-			const roles = self.sessionInfo?.user?.roles || [];
-			return roles.indexOf("admin")! >= 0;
+		get hasUserRole(): boolean {
+			return "user" === self.sessionInfo?.user?.role;
+		},
+		get hasSuperUserRole(): boolean {
+			return "super_user" === self.sessionInfo?.user?.role;
+		},
+		get isAdmin(): boolean {
+			return ["admin", "app_admin"].indexOf(self.sessionInfo?.user?.role!) >= 0;
+		},
+		get hasAdminRole(): boolean {
+			return "admin" === self.sessionInfo?.user?.role;
+		},
+		get hasAppAdminRole(): boolean {
+			return "app_admin" === self.sessionInfo?.user?.role;
 		},
 	}))
 	.views((self) => ({

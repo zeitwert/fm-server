@@ -1,11 +1,11 @@
+
 import { CodeItemType, Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { Locale } from "../../common";
 import { Application } from "./Application";
 
-export enum EmailProvider {
-	GOOGLE = "google",
-	MICROSOFT = "exchange"
-}
+export const KERNEL_TENANT = "kernel";
+export const ADVISOR_TENANT = "advisor";
+export const COMMUNITY_TENANT = "community";
 
 export interface TenantInfo {
 	id: string;
@@ -15,34 +15,23 @@ export interface TenantInfo {
 	tenantType: Enumerated;
 }
 
-export interface AccountInfo {
-	id: string;
-	name: string;
-	key: string;
-	itemType: CodeItemType | undefined;
-}
-
 export interface UserInfo {
 	id: string;
 	caption: string;
 	name: string;
 	tenant: TenantInfo;
-	emailProvider: Enumerated;
 	email: string;
 	extlIdpUserId?: string;
 	picture?: string;
-	roles: string[];
+	role: string;
 	accounts: AccountInfo[];
 }
 
-export interface LoginInfo {
-	id: number;
-	email: string;
-	username: string;
-	accountId: number;
-	tokenType: string;
-	token: string;
-	roles: string[];
+export interface AccountInfo {
+	id: string;
+	name: string;
+	key: string;
+	itemType: CodeItemType | undefined;
 }
 
 export interface SessionInfo {

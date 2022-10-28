@@ -22,4 +22,10 @@ export * from "./portfolio/service/PortfolioApi";
 export * from "./task/model/TaskModel";
 export * from "./task/model/TaskStore";
 export * from "./task/service/TaskApi";
+export * from "./tenant/model/TenantModel";
+export * from "./tenant/model/TenantStore";
+export * from "./tenant/service/TenantApi";
+export * from "./user/model/UserModel";
+export * from "./user/model/UserStore";
+export * from "./user/service/UserApi";
 

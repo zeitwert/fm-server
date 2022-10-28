@@ -17,7 +17,7 @@ export default class ContactArea extends React.Component {
 							store={ContactStoreModel.create({})}
 							listDatamart="contact.contacts"
 							listTemplate="contact.contacts.all"
-							canCreate
+							canCreate={session.isUser && !session.hasReadOnlyRole}
 							createFormId="contact/editContact"
 						/>
 					}

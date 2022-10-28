@@ -11,6 +11,8 @@ import { inject, observer } from "mobx-react";
 import PortfolioArea from "portfolio/ui/PortfolioArea";
 import React from "react";
 import TaskArea from "task/ui/TaskArea";
+import TenantArea from "tenant/ui/TenantArea";
+import UserArea from "user/ui/UserArea";
 import ErrorBoundary from "../ErrorBoundary";
 import { RouteComponentProps, withRouter } from "./withRouter";
 
@@ -25,7 +27,9 @@ const AreaMap: {
 	HomeArea: HomeArea,
 	LeadArea: LeadArea,
 	PortfolioArea: PortfolioArea,
-	TaskArea: TaskArea
+	TaskArea: TaskArea,
+	TenantArea: TenantArea,
+	UserArea: UserArea
 };
 
 @inject("logger", "session")

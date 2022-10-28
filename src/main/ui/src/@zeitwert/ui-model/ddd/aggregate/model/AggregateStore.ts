@@ -13,7 +13,7 @@ import {
 } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateApi } from "../service/AggregateApi";
-import { Aggregate, AggregatePayload, AggregateSnapshot, MstAggregate } from "./AggregateModel";
+import { Aggregate, AggregateSnapshot, MstAggregate } from "./AggregateModel";
 
 export interface AggregateCounters {
 	docCount: number;
@@ -154,7 +154,7 @@ const MstAggregateStoreModel = types
 	}))
 	// lifecycle, do not overwrite
 	.actions((self) => ({
-		create(initValues?: AggregatePayload) {
+		create(initValues?: any /*AggregatePayload*/) {
 			transaction(() => {
 				self.id = undefined;
 				self.setItem(Object.assign({}, initValues, { id: "##NEW##" }));
