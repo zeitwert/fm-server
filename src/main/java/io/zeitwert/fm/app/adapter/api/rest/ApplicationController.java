@@ -15,7 +15,7 @@ import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
@@ -25,7 +25,7 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 public class ApplicationController {
 
 	@Autowired
-	SessionInfo sessionInfo;
+	RequestContext requestCtx;
 
 	@Autowired
 	ObjUserRepository userRepository;
@@ -36,12 +36,12 @@ public class ApplicationController {
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
 		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
-		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(sessionInfo, email);
+		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(requestCtx, email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		ObjUser user = maybeUser.get();
-		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(sessionInfo, user.getTenant());
+		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(requestCtx, user.getTenant());
 		List<EnumeratedDto> accountsDto = accounts.stream()
 				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
 				.toList();
@@ -51,7 +51,7 @@ public class ApplicationController {
 				.id(user.getId())
 				.email(user.getEmail())
 				.name(user.getName())
-				.tenant(tenantDtoAdapter.fromAggregate(user.getTenant(), sessionInfo))
+				.tenant(tenantDtoAdapter.fromAggregate(user.getTenant(), requestCtx))
 				.role(user.getRole().getId())
 				.accounts(accountsDto)
 				.build()

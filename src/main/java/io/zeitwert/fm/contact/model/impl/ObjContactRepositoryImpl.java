@@ -17,7 +17,7 @@ import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
@@ -86,24 +86,24 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	}
 
 	@Override
-	public ObjContact doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_CONTACT));
+	public ObjContact doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_CONTACT));
 	}
 
 	@Override
-	public ObjContact doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjContact doLoad(RequestContext requestCtx, Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjContactRecord contactRecord = this.getDSLContext().fetchOne(Tables.OBJ_CONTACT,
 				Tables.OBJ_CONTACT.OBJ_ID.eq(objId));
 		if (contactRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, contactRecord);
+		return this.doLoad(requestCtx, objId, contactRecord);
 	}
 
 	@Override
-	public List<ObjContactVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
+	public List<ObjContactVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, querySpec);
 	}
 
 	@Override

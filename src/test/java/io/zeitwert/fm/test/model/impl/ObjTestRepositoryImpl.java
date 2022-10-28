@@ -16,7 +16,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -80,23 +80,23 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	}
 
 	@Override
-	public ObjTest doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_TEST));
+	public ObjTest doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_TEST));
 	}
 
 	@Override
-	public ObjTest doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjTest doLoad(RequestContext requestCtx, Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
 		if (testRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, testRecord);
+		return this.doLoad(requestCtx, objId, testRecord);
 	}
 
 	@Override
-	public List<ObjTestVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
+	public List<ObjTestVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, querySpec);
 	}
 
 }

@@ -4,7 +4,7 @@ package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 import java.util.stream.Collectors;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
@@ -29,10 +29,10 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 	}
 
 	@Override
-	public void toAggregate(ObjAccountDto dto, ObjAccount obj, SessionInfo sessionInfo) {
+	public void toAggregate(ObjAccountDto dto, ObjAccount obj, RequestContext requestCtx) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj, sessionInfo);
+			super.toAggregate(dto, obj, requestCtx);
 
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
@@ -56,12 +56,12 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 	}
 
 	@Override
-	public ObjAccountDto fromAggregate(ObjAccount obj, SessionInfo sessionInfo) {
+	public ObjAccountDto fromAggregate(ObjAccount obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, sessionInfo);
+		this.fromAggregate(dtoBuilder, obj, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.key(obj.getKey())
@@ -77,12 +77,12 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 	}
 
 	@Override
-	public ObjAccountDto fromRecord(ObjAccountVRecord obj, SessionInfo sessionInfo) {
+	public ObjAccountDto fromRecord(ObjAccountVRecord obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, sessionInfo);
+		this.fromRecord(dtoBuilder, obj, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.key(obj.getIntlKey())

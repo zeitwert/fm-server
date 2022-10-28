@@ -2,7 +2,7 @@
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
@@ -26,10 +26,10 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public void toAggregate(ObjDocumentDto dto, ObjDocument obj, SessionInfo sessionInfo) {
+	public void toAggregate(ObjDocumentDto dto, ObjDocument obj, RequestContext requestCtx) {
 		try {
 			obj.getMeta().disableCalc();
-			super.toAggregate(dto, obj, sessionInfo);
+			super.toAggregate(dto, obj, requestCtx);
 			obj.setName(dto.getName());
 			obj.setContentKind(dto.getContentKind() == null ? null
 					: CodeContentKindEnum.getContentKind(
@@ -47,12 +47,12 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public ObjDocumentDto fromAggregate(ObjDocument obj, SessionInfo sessionInfo) {
+	public ObjDocumentDto fromAggregate(ObjDocument obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
 		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, sessionInfo);
+		this.fromAggregate(dtoBuilder, obj, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.name(obj.getName())
@@ -66,12 +66,12 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 	}
 
 	@Override
-	public ObjDocumentDto fromRecord(ObjDocumentVRecord obj, SessionInfo sessionInfo) {
+	public ObjDocumentDto fromRecord(ObjDocumentVRecord obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
 		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, sessionInfo);
+		this.fromRecord(dtoBuilder, obj, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.name(obj.getName())

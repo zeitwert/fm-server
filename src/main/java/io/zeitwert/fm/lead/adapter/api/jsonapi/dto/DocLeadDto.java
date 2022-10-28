@@ -43,9 +43,9 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 			if (this.getOriginal() != null) {
 				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				account = getRepository(ObjAccount.class).get(this.sessionInfo, this.accountId);
+				account = getRepository(ObjAccount.class).get(this.requestCtx, this.accountId);
 			}
-			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, this.sessionInfo);
+			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account, this.requestCtx);
 		}
 		return this.accountDto;
 	}
@@ -67,9 +67,9 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 			if (this.getOriginal() != null) {
 				contact = this.getOriginal().getContact();
 			} else if (this.contactId != null) {
-				contact = getRepository(ObjContact.class).get(this.sessionInfo, this.contactId);
+				contact = getRepository(ObjContact.class).get(this.requestCtx, this.contactId);
 			}
-			this.contactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact, this.sessionInfo);
+			this.contactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact, this.requestCtx);
 		}
 		return this.contactDto;
 	}

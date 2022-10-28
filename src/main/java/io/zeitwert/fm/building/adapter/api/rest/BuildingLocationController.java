@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeRequestDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeResponseDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -40,7 +40,7 @@ public class BuildingLocationController {
 	private ObjBuildingRepository repo;
 
 	@Autowired
-	SessionInfo sessionInfo;
+	RequestContext requestCtx;
 
 	@Autowired
 	BuildingService buildingService;
@@ -48,7 +48,7 @@ public class BuildingLocationController {
 	@GetMapping("/{id}/location")
 	protected ResponseEntity<byte[]> getMap(@PathVariable("id") Integer id) {
 
-		ObjBuilding building = this.repo.get(sessionInfo, id);
+		ObjBuilding building = this.repo.get(requestCtx, id);
 
 		String coordinates = building.getGeoCoordinates();
 		Integer zoom = building.getGeoZoom() != null ? building.getGeoZoom() : DefaultGeoZoom;
@@ -91,7 +91,7 @@ public class BuildingLocationController {
 	@RequestMapping(value = "/{id}/coverFoto", method = RequestMethod.POST)
 	public ResponseEntity<Void> storeCoverFoto(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
 		try {
-			ObjBuilding building = this.repo.get(sessionInfo, id);
+			ObjBuilding building = this.repo.get(requestCtx, id);
 			ObjDocument document = building.getCoverFoto();
 			CodeContentType contentType = CodeContentTypeEnum.getContentType(file.getContentType(),
 					file.getOriginalFilename());

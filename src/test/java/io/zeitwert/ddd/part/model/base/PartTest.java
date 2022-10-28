@@ -20,7 +20,7 @@ import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -39,7 +39,7 @@ public class PartTest {
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
 	@Autowired
 	private ObjUserRepository userRepository;
@@ -61,7 +61,7 @@ public class PartTest {
 		CodePartListType nodeListType = testRepository.getNodeListType();
 		assertTrue(CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST).equals(nodeListType), "nodeListType");
 
-		ObjTest test1a = testRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId(), requestCtx);
 		// assertTrue(((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).isInitialised(test1a));
 		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
@@ -130,7 +130,7 @@ public class PartTest {
 		// testNodeRepository).isInitialised(test1a));
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
+		ObjTest test1b = testRepository.get(requestCtx, test1Id);
 
 		assertEquals(2, test1b.getNodeList().size());
 		assertEquals(2, testNodeRepository.getPartList(test1b, nodeListType).size());
@@ -154,7 +154,7 @@ public class PartTest {
 		// testNodeRepository).isInitialised(test1b));
 		test1b = null;
 
-		ObjTest test1c = testRepository.get(sessionInfo, test1Id);
+		ObjTest test1c = testRepository.get(requestCtx, test1Id);
 
 		assertEquals(3, test1c.getNodeList().size());
 		assertEquals(3, testNodeRepository.getPartList(test1c, nodeListType).size());
@@ -182,7 +182,7 @@ public class PartTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = userRepository.getByEmail(sessionInfo, userEmail).get();
+		ObjUser user = userRepository.getByEmail(requestCtx, userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = countryEnum.getItem(countryId);
 		test.setCountry(country);

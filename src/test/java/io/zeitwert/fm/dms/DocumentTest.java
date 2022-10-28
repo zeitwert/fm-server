@@ -16,7 +16,7 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.Application;
 
 import java.nio.charset.StandardCharsets;
@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 public class DocumentTest {
 
 	@Autowired
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
 	@Autowired
 	private ObjDocumentRepository documentRepository;
@@ -42,7 +42,7 @@ public class DocumentTest {
 		assertTrue(documentRepository != null, "documentRepository not null");
 		assertEquals("obj_document", documentRepository.getAggregateType().getId());
 
-		ObjDocument document1a = documentRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjDocument document1a = documentRepository.create(requestCtx.getTenant().getId(), requestCtx);
 
 		assertNotNull(document1a, "test not null");
 		assertNotNull(document1a.getId(), "id not null");
@@ -59,13 +59,13 @@ public class DocumentTest {
 
 		this.documentRepository.store(document1a);
 
-		documentRepository.storeContent(sessionInfo, document1a, PNG, TEST_PNG_CONTENT.getBytes(StandardCharsets.UTF_8));
+		documentRepository.storeContent(requestCtx, document1a, PNG, TEST_PNG_CONTENT.getBytes(StandardCharsets.UTF_8));
 		assertEquals(PNG, documentRepository.getContentType(document1a));
 		assertEquals(TEST_PNG_CONTENT, new String(documentRepository.getContent(document1a), StandardCharsets.UTF_8));
 
 		document1a = null;
 
-		ObjDocument document1b = documentRepository.get(sessionInfo, document1Id);
+		ObjDocument document1b = documentRepository.get(requestCtx, document1Id);
 		Integer document1bIdHash = System.identityHashCode(document1b);
 
 		assertNotEquals(document1aIdHash, document1bIdHash);
@@ -75,7 +75,7 @@ public class DocumentTest {
 		assertEquals(PNG, documentRepository.getContentType(document1b));
 		assertEquals(TEST_PNG_CONTENT, new String(documentRepository.getContent(document1b), StandardCharsets.UTF_8));
 
-		documentRepository.storeContent(sessionInfo, document1b, JPG, TEST_JPG_CONTENT.getBytes(StandardCharsets.UTF_8));
+		documentRepository.storeContent(requestCtx, document1b, JPG, TEST_JPG_CONTENT.getBytes(StandardCharsets.UTF_8));
 		assertEquals(JPG, documentRepository.getContentType(document1b));
 		assertEquals(TEST_JPG_CONTENT, new String(documentRepository.getContent(document1b), StandardCharsets.UTF_8));
 

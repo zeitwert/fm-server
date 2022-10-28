@@ -10,7 +10,7 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.validation.adapter.api.jsonapi.dto.AggregatePartValidationDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,24 +40,24 @@ public class AggregateMetaDto implements MetaInformation {
 	}
 
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate,
-			SessionInfo sessionInfo) {
+			RequestContext requestCtx) {
 		AggregateMeta meta = aggregate.getMeta();
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		builder
 			.itemType(EnumeratedDto.fromEnum(aggregate.getMeta().getAggregateType()))
-			.owner(userDtoAdapter.asEnumerated(aggregate.getOwner(), sessionInfo))
+			.owner(userDtoAdapter.asEnumerated(aggregate.getOwner(), requestCtx))
 			.version(meta.getVersion())
-			.createdByUser(userDtoAdapter.asEnumerated(meta.getCreatedByUser(), sessionInfo))
+			.createdByUser(userDtoAdapter.asEnumerated(meta.getCreatedByUser(), requestCtx))
 			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(userDtoAdapter.asEnumerated(meta.getModifiedByUser(), sessionInfo))
+			.modifiedByUser(userDtoAdapter.asEnumerated(meta.getModifiedByUser(), requestCtx))
 			.modifiedAt(meta.getModifiedAt())
 			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
 	}
 
-	public static void fromRecord(AggregateMetaDtoBuilder<?, ?> builder, Record aggregate, SessionInfo sessionInfo) {
+	public static void fromRecord(AggregateMetaDtoBuilder<?, ?> builder, Record aggregate, RequestContext requestCtx) {
 		// @formatter:off
 		builder
 			.build();

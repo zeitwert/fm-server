@@ -10,27 +10,26 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
-import io.zeitwert.server.session.service.api.SessionService;
 
 @Configuration
 @Profile({ "dev", "staging", "prod" })
 public class SessionInfoProvider {
 
+	static final String DEFAULT_LOCALE = "de-CH";
+
 	@Bean
 	@Autowired
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public SessionInfo getSessionInfo(ObjUserRepository userRepo) {
+	public RequestContext getSessionInfo(ObjUserRepository userRepo) {
 
-		CodeLocale DEFAULT_LOCALE = CodeLocaleEnum.getLocale(SessionService.DEFAULT_LOCALE);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
 		ObjUser user = userRepo.get(null, userDetails.getUserId());
-		return new SessionInfo(user, userDetails.getAccountId(), DEFAULT_LOCALE);
+		return new RequestContext(user, userDetails.getAccountId(), CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
 
 	}
 

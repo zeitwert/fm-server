@@ -16,7 +16,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
@@ -122,8 +122,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public ObjBuilding doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
+	public ObjBuilding doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
 	}
 
 	@Override
@@ -133,14 +133,14 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public ObjBuilding doLoad(SessionInfo sessionInfo, Integer buildingId) {
+	public ObjBuilding doLoad(RequestContext requestCtx, Integer buildingId) {
 		requireThis(buildingId != null, "objId not null");
 		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
 				Tables.OBJ_BUILDING.OBJ_ID.eq(buildingId));
 		if (buildingRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + buildingId + "]");
 		}
-		return this.doLoad(sessionInfo, buildingId, buildingRecord);
+		return this.doLoad(requestCtx, buildingId, buildingRecord);
 	}
 
 	@Override
@@ -152,15 +152,15 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public List<ObjBuildingVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
+	public List<ObjBuildingVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
 	}
 
 	private void addCoverFoto(ObjBuilding building) {
 		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
 		Integer tenantId = building.getTenantId();
-		SessionInfo sessionInfo = building.getMeta().getSessionInfo();
-		ObjDocument coverFoto = documentRepo.create(tenantId, sessionInfo);
+		RequestContext requestCtx = building.getMeta().getSessionInfo();
+		ObjDocument coverFoto = documentRepo.create(tenantId, requestCtx);
 		coverFoto.setName("CoverFoto");
 		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
 		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));

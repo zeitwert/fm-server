@@ -21,7 +21,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("searchService")
 public class SearchServiceImpl implements SearchService {
@@ -44,15 +44,15 @@ public class SearchServiceImpl implements SearchService {
 		this.dslContext = dslContext;
 	}
 
-	public List<SearchResult> find(SessionInfo sessionInfo, String searchText, int maxResultSize) {
-		return this.find(sessionInfo, List.of(), searchText, maxResultSize);
+	public List<SearchResult> find(RequestContext requestCtx, String searchText, int maxResultSize) {
+		return this.find(requestCtx, List.of(), searchText, maxResultSize);
 	}
 
-	public List<SearchResult> find(SessionInfo sessionInfo, List<String> itemTypes, String searchText,
+	public List<SearchResult> find(RequestContext requestCtx, List<String> itemTypes, String searchText,
 			int maxResultSize) {
 
-		Condition tenantCondition = TENANT_ID.eq(sessionInfo.getTenant().getId());
-		Condition accountCondition = ACCOUNT_ID.isNull().or(ACCOUNT_ID.eq(sessionInfo.getAccountId()));
+		Condition tenantCondition = TENANT_ID.eq(requestCtx.getTenant().getId());
+		Condition accountCondition = ACCOUNT_ID.isNull().or(ACCOUNT_ID.eq(requestCtx.getAccountId()));
 		Condition itemTypeCondition = itemTypes != null ? ITEM_TYPE_ID.in(itemTypes) : DSL.noCondition();
 		String searchToken = "'" + searchText + "':*";
 		Condition searchCondition = DSL.noCondition()

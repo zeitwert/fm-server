@@ -5,11 +5,11 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EntityPartItem;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public interface EntityWithPropertiesSPI {
 
-	SessionInfo getSessionInfo();
+	RequestContext getSessionInfo();
 
 	AppContext getAppContext();
 

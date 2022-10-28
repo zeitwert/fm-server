@@ -13,7 +13,7 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class PartBase<A extends Aggregate> extends EntityWithPropertiesBase
 		implements Part<A>, PartMeta<A>, PartSPI<A> {
@@ -67,7 +67,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	}
 
 	@Override
-	public SessionInfo getSessionInfo() {
+	public RequestContext getSessionInfo() {
 		return this.getAggregate().getMeta().getSessionInfo();
 	}
 

@@ -27,11 +27,11 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
-	private final SessionInfo sessionInfo;
+	private final RequestContext requestCtx;
 	private final DocRepository<? extends Doc, ? extends Record> repository;
 	private final UpdatableRecord<?> docDbRecord;
 
@@ -53,9 +53,9 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	private final PartListProperty<DocPartTransition> transitionList;
 
-	protected DocBase(SessionInfo sessionInfo, DocRepository<? extends Doc, ? extends Record> repository,
+	protected DocBase(RequestContext requestCtx, DocRepository<? extends Doc, ? extends Record> repository,
 			UpdatableRecord<?> docDbRecord) {
-		this.sessionInfo = sessionInfo;
+		this.requestCtx = requestCtx;
 		this.repository = repository;
 		this.docDbRecord = docDbRecord;
 		this.id = this.addSimpleProperty(docDbRecord, DocFields.ID);
@@ -81,8 +81,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public SessionInfo getSessionInfo() {
-		return this.sessionInfo;
+	public RequestContext getSessionInfo() {
+		return this.requestCtx;
 	}
 
 	@Override

@@ -23,8 +23,7 @@ import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
 import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
-import io.zeitwert.ddd.session.model.SessionInfo;
-import io.zeitwert.server.session.service.api.SessionService;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTenantVRecord>
@@ -37,8 +36,7 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final SessionService sessionService
+		final ObjPartItemRepository itemRepository
 	) {
 		super(
 			ObjTenantRepository.class,
@@ -60,32 +58,32 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 	}
 
 	@Override
-	public ObjTenant doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_TENANT));
+	public ObjTenant doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_TENANT));
 	}
 
 	@Override
-	public ObjTenant doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjTenant doLoad(RequestContext requestCtx, Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjTenantRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(objId));
 		if (tenantRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, tenantRecord);
+		return this.doLoad(requestCtx, objId, tenantRecord);
 	}
 
 	@Override
-	public List<ObjTenantVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
+	public List<ObjTenantVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}
 
-	public Optional<ObjTenant> getByExtlKey(SessionInfo sessionInfo, String extlKey) {
+	public Optional<ObjTenant> getByExtlKey(RequestContext requestCtx, String extlKey) {
 		ObjTenantVRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT_V,
 				Tables.OBJ_TENANT_V.EXTL_KEY.eq(extlKey));
 		if (tenantRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(sessionInfo, tenantRecord.getId()));
+		return Optional.of(this.get(requestCtx, tenantRecord.getId()));
 	}
 
 }

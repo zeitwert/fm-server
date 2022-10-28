@@ -10,7 +10,7 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.jooq.TableRecord;
 
@@ -18,40 +18,40 @@ public abstract class ObjDtoAdapter<O extends Obj, V extends TableRecord<?>, D e
 		extends AggregateDtoAdapter<O, V, D> {
 
 	@Override
-	public void toAggregate(D dto, O obj, SessionInfo sessionInfo) {
+	public void toAggregate(D dto, O obj, RequestContext requestCtx) {
 		if (dto.getOwner() != null) {
-			obj.setOwner(getUserRepository().get(sessionInfo, Integer.parseInt(dto.getOwner().getId())));
+			obj.setOwner(getUserRepository().get(requestCtx, Integer.parseInt(dto.getOwner().getId())));
 		}
 	}
 
-	protected void fromAggregate(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj, SessionInfo sessionInfo) {
+	protected void fromAggregate(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj, RequestContext requestCtx) {
 		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		dtoBuilder
-			.sessionInfo(sessionInfo)
-			.tenant(tenantDtoAdapter.asEnumerated(obj.getTenant(), sessionInfo))
-			.meta(ObjMetaDto.fromObj(obj, sessionInfo))
+			.requestCtx(requestCtx)
+			.tenant(tenantDtoAdapter.asEnumerated(obj.getTenant(), requestCtx))
+			.meta(ObjMetaDto.fromObj(obj, requestCtx))
 			.id(obj.getId())
 			.caption(obj.getCaption())
-			.owner(userDtoAdapter.asEnumerated(obj.getOwner(), sessionInfo));
+			.owner(userDtoAdapter.asEnumerated(obj.getOwner(), requestCtx));
 		// @formatter:on
 	}
 
 	protected void fromRecord(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> obj,
-			SessionInfo sessionInfo) {
+			RequestContext requestCtx) {
 		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
-		ObjTenant tenant = getTenantRepository().get(sessionInfo, obj.get(ObjFields.TENANT_ID));
+		ObjTenant tenant = getTenantRepository().get(requestCtx, obj.get(ObjFields.TENANT_ID));
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
-		ObjUser owner = getUserRepository().get(sessionInfo, obj.get(ObjFields.OWNER_ID));
+		ObjUser owner = getUserRepository().get(requestCtx, obj.get(ObjFields.OWNER_ID));
 		// @formatter:off
 		dtoBuilder
-			.sessionInfo(sessionInfo)
-			.tenant(tenantDtoAdapter.asEnumerated(tenant, sessionInfo))
-			.meta(ObjMetaDto.fromRecord(obj, sessionInfo))
+			.requestCtx(requestCtx)
+			.tenant(tenantDtoAdapter.asEnumerated(tenant, requestCtx))
+			.meta(ObjMetaDto.fromRecord(obj, requestCtx))
 			.id(obj.get(ObjFields.ID))
 			.caption(obj.get(ObjFields.CAPTION))
-			.owner(userDtoAdapter.asEnumerated(owner, sessionInfo));
+			.owner(userDtoAdapter.asEnumerated(owner, requestCtx));
 		// @formatter:on
 	}
 

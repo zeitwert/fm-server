@@ -2,7 +2,7 @@
 package io.zeitwert.fm.building;
 
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
@@ -38,7 +38,7 @@ public class BuildingTest {
 	private static final String ACCT_KEY = "##test##building";
 
 	@Autowired
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
 	@Autowired
 	private ObjAccountRepository accountRepository;
@@ -52,8 +52,8 @@ public class BuildingTest {
 		assertTrue(buildingRepository != null, "buildingRepository not null");
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = this.getOrCreateTestAccount(sessionInfo);
-		ObjBuilding building1a = buildingRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjAccount account = this.getOrCreateTestAccount(requestCtx);
+		ObjBuilding building1a = buildingRepository.create(requestCtx.getTenant().getId(), requestCtx);
 
 		assertNotNull(building1a, "test not null");
 		assertNotNull(building1a.getId(), "id not null");
@@ -102,7 +102,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1a);
 		building1a = null;
 
-		ObjBuilding building1b = buildingRepository.get(sessionInfo, building1Id);
+		ObjBuilding building1b = buildingRepository.get(requestCtx, building1Id);
 		Integer building1bIdHash = System.identityHashCode(building1b);
 		assertNotEquals(building1aIdHash, building1bIdHash);
 		assertNotNull(building1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
@@ -135,7 +135,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1b);
 		building1b = null;
 
-		ObjBuilding building1c = buildingRepository.get(sessionInfo, building1Id);
+		ObjBuilding building1c = buildingRepository.get(requestCtx, building1Id);
 
 		assertEquals(21, building1c.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(21, building1c.getCurrentRating().getElementList().size(), "element count 22");
@@ -148,17 +148,17 @@ public class BuildingTest {
 
 	}
 
-	private ObjAccount getOrCreateTestAccount(SessionInfo sessionInfo) {
-		Optional<ObjAccount> maybeAccount = this.accountRepository.getByKey(sessionInfo, ACCT_KEY);
+	private ObjAccount getOrCreateTestAccount(RequestContext requestCtx) {
+		Optional<ObjAccount> maybeAccount = this.accountRepository.getByKey(requestCtx, ACCT_KEY);
 		if (maybeAccount.isPresent()) {
 			return maybeAccount.get();
 		}
-		ObjAccount account = this.accountRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjAccount account = this.accountRepository.create(requestCtx.getTenant().getId(), requestCtx);
 		account.setName("Building Test Account");
 		account.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
 		account.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
 		this.accountRepository.store(account);
-		return this.accountRepository.get(sessionInfo, account.getId());
+		return this.accountRepository.get(requestCtx, account.getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

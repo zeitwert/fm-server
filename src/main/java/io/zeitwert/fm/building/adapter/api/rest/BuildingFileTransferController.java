@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto;
@@ -60,12 +60,12 @@ public class BuildingFileTransferController {
 	private ObjNoteRepository noteRepo;
 
 	@Autowired
-	SessionInfo sessionInfo;
+	RequestContext requestCtx;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		ObjBuilding building = this.buildingRepo.get(sessionInfo, id);
+		ObjBuilding building = this.buildingRepo.get(requestCtx, id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
 		// mark file for download
@@ -78,7 +78,7 @@ public class BuildingFileTransferController {
 	@PostMapping
 	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
 			throws ServletException, IOException {
-		Integer accountId = sessionInfo.getAccountId();
+		Integer accountId = requestCtx.getAccountId();
 		if (accountId == null) {
 			return ResponseEntity.badRequest().build();
 		} else if (!dto.getMeta().getAggregate().equals(AGGREGATE)) {
@@ -86,7 +86,7 @@ public class BuildingFileTransferController {
 		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = buildingRepo.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjBuilding building = buildingRepo.create(requestCtx.getTenant().getId(), requestCtx);
 		building.setAccountId(accountId);
 		this.fillFromDto(building, dto);
 		buildingRepo.store(building);
@@ -125,9 +125,9 @@ public class BuildingFileTransferController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
-					.createdByUser(userRepo.get(this.sessionInfo, note.getCreatedByUserId()).getEmail())
+					.createdByUser(userRepo.get(this.requestCtx, note.getCreatedByUserId()).getEmail())
 					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(this.sessionInfo, note.getModifiedByUserId()).getEmail() : null)
+					.modifiedByUser(note.getModifiedByUserId() != null ? userRepo.get(this.requestCtx, note.getModifiedByUserId()).getEmail() : null)
 					.modifiedAt(note.getModifiedAt())
 				.build();
 		}).toList();
@@ -186,7 +186,7 @@ public class BuildingFileTransferController {
 			building.getMeta().disableCalc();
 
 			//@formatter:off
-			building.setOwner(sessionInfo.getUser());
+			building.setOwner(requestCtx.getUser());
 			building.setName(dto.getName());
 			building.setDescription(dto.getDescription());
 			building.setBuildingNr(dto.getBuildingNr());
@@ -221,7 +221,7 @@ public class BuildingFileTransferController {
 			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(this.sessionInfo, dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null ? userRepo.getByEmail(this.requestCtx, dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());

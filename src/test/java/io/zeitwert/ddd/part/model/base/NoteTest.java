@@ -18,7 +18,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.session.service.api.impl.TestSessionInfoProvider;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class NoteTest {
 
 	@Autowired
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
 	@Autowired
 	private ObjUserRepository userRepository;
@@ -55,7 +55,7 @@ public class NoteTest {
 		assertTrue(testRepository != null, "testRepository not null");
 		assertEquals("obj_test", testRepository.getAggregateType().getId());
 
-		ObjTest test1a = testRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId(), requestCtx);
 		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
 		Integer test1Id = test1a.getId();
 
@@ -97,7 +97,7 @@ public class NoteTest {
 		testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(sessionInfo, test1Id);
+		ObjTest test1b = testRepository.get(requestCtx, test1Id);
 		List<ObjNoteVRecord> test1bNoteList = test1b.getNoteList();
 
 		assertEquals(2, test1bNoteList.size());
@@ -109,14 +109,14 @@ public class NoteTest {
 		noteRepository.store(note1b2);
 
 		ObjNoteVRecord note1b1v = test1b.getNoteList().get(1);
-		ObjNote note1b1 = noteRepository.get(sessionInfo, note1b1v.getId());
+		ObjNote note1b1 = noteRepository.get(requestCtx, note1b1v.getId());
 		note1b1.setIsPrivate(true);
 		noteRepository.store(note1b1);
 
 		testRepository.store(test1b);
 		test1b = null;
 
-		ObjTest test1c = testRepository.get(sessionInfo, test1Id);
+		ObjTest test1c = testRepository.get(requestCtx, test1Id);
 		List<ObjNoteVRecord> test1cNoteList = test1c.getNoteList();
 
 		assertEquals(3, test1cNoteList.size());
@@ -125,7 +125,7 @@ public class NoteTest {
 		assertTrue(test1c.getNoteList().get(1).getIsPrivate());
 
 		// Test privacy
-		SessionInfo otherSession = TestSessionInfoProvider.getOtherSession(userRepository);
+		RequestContext otherSession = TestSessionInfoProvider.getOtherSession(userRepository);
 
 		ObjTest test1d = testRepository.get(otherSession, test1Id);
 		List<ObjNoteVRecord> test1dNoteList = test1d.getNoteList();
@@ -146,7 +146,7 @@ public class NoteTest {
 		test.setNr(BigDecimal.valueOf(42));
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
-		ObjUser user = userRepository.getByEmail(sessionInfo, userEmail).get();
+		ObjUser user = userRepository.getByEmail(requestCtx, userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = countryEnum.getItem(countryId);
 		test.setCountry(country);

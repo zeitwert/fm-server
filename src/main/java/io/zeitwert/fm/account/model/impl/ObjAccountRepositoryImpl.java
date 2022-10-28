@@ -16,7 +16,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
@@ -67,34 +67,34 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	}
 
 	@Override
-	public ObjAccount doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
+	public ObjAccount doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
 	}
 
 	@Override
-	public ObjAccount doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjAccount doLoad(RequestContext requestCtx, Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjAccountRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT,
 				Tables.OBJ_ACCOUNT.OBJ_ID.eq(objId));
 		if (accountRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, accountRecord);
+		return this.doLoad(requestCtx, objId, accountRecord);
 	}
 
 	@Override
-	public Optional<ObjAccount> getByKey(SessionInfo sessionInfo, String key) {
+	public Optional<ObjAccount> getByKey(RequestContext requestCtx, String key) {
 		ObjAccountVRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
 				Tables.OBJ_ACCOUNT_V.INTL_KEY.eq(key));
 		if (accountRecord == null) {
 			return Optional.empty();
 		}
-		return Optional.of(this.get(sessionInfo, accountRecord.getId()));
+		return Optional.of(this.get(requestCtx, accountRecord.getId()));
 	}
 
 	@Override
-	public List<ObjAccountVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, querySpec);
+	public List<ObjAccountVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, querySpec);
 	}
 
 }

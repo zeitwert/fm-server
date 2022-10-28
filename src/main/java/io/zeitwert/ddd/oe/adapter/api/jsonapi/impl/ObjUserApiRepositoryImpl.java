@@ -9,15 +9,15 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 @Controller("objUserApiRepository")
 public class ObjUserApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjUser, ObjUserVRecord, ObjUserDto>
 		implements ObjUserApiRepository {
 
-	public ObjUserApiRepositoryImpl(ObjUserRepository repository, SessionInfo sessionInfo) {
-		super(ObjUserDto.class, sessionInfo, repository, ObjUserDtoAdapter.getInstance());
+	public ObjUserApiRepositoryImpl(ObjUserRepository repository, RequestContext requestCtx) {
+		super(ObjUserDto.class, requestCtx, repository, ObjUserDtoAdapter.getInstance());
 	}
 
 }

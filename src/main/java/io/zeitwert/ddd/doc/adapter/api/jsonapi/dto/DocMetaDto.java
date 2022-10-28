@@ -15,7 +15,7 @@ import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -32,31 +32,31 @@ public class DocMetaDto extends AggregateMetaDto {
 	private List<String> availableActions; // TODO implement
 	private List<DocPartTransitionDto> transitionList;
 
-	public static DocMetaDto fromDoc(Doc doc, SessionInfo sessionInfo) {
+	public static DocMetaDto fromDoc(Doc doc, RequestContext requestCtx) {
 		DocMeta meta = doc.getMeta();
 		DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
-		AggregateMetaDto.fromAggregate(builder, doc, sessionInfo);
+		AggregateMetaDto.fromAggregate(builder, doc, requestCtx);
 		// @formatter:off
 		return builder
 			.caseStage(EnumeratedDto.fromEnum(doc.getCaseStage()))
-			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v, sessionInfo)).toList())
+			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v, requestCtx)).toList())
 			.build();
 		// @formatter:on
 	}
 
-	public static DocMetaDto fromRecord(Record doc, SessionInfo sessionInfo) {
+	public static DocMetaDto fromRecord(Record doc, RequestContext requestCtx) {
 		DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
-		AggregateMetaDto.fromRecord(builder, doc, sessionInfo);
+		AggregateMetaDto.fromRecord(builder, doc, requestCtx);
 		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		Integer modifiedByUserId = doc.getValue(DocFields.MODIFIED_BY_USER_ID);
 		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null
-				: userDtoAdapter.asEnumerated(userRepo.get(sessionInfo, modifiedByUserId), sessionInfo);
+				: userDtoAdapter.asEnumerated(userRepo.get(requestCtx, modifiedByUserId), requestCtx);
 		// @formatter:off
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(doc.get(DocFields.DOC_TYPE_ID))))
-			.owner(userDtoAdapter.asEnumerated(userRepo.get(sessionInfo, doc.getValue(DocFields.OWNER_ID)), sessionInfo))
-			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(sessionInfo, doc.getValue(DocFields.CREATED_BY_USER_ID)), sessionInfo))
+			.owner(userDtoAdapter.asEnumerated(userRepo.get(requestCtx, doc.getValue(DocFields.OWNER_ID)), requestCtx))
+			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(requestCtx, doc.getValue(DocFields.CREATED_BY_USER_ID)), requestCtx))
 			.createdAt(doc.get(DocFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(doc.get(DocFields.MODIFIED_AT))

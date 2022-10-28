@@ -5,7 +5,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -39,7 +39,7 @@ public class HomeController {
 	DSLContext dslContext;
 
 	@Autowired
-	SessionInfo sessionInfo;
+	RequestContext requestCtx;
 
 	@Autowired
 	ObjUserRepository userRepository;
@@ -55,11 +55,11 @@ public class HomeController {
 
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
-		ObjAccount account = this.accountRepository.get(this.sessionInfo, accountId);
+		ObjAccount account = this.accountRepository.get(this.requestCtx, accountId);
 		String accountImageUrl = "/account/" + account.getKey() + "/logo.jpg";
-		List<ObjPortfolioVRecord> portfolioList = this.portfolioRepository.find(this.sessionInfo,
+		List<ObjPortfolioVRecord> portfolioList = this.portfolioRepository.find(this.requestCtx,
 				new QuerySpec(ObjPortfolio.class));
-		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(this.sessionInfo,
+		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(this.requestCtx,
 				new QuerySpec(ObjBuilding.class));
 		Integer ratingCount = (int) buildingList.stream()
 				.filter(b -> Objects.equals(b.getRatingStatusId(), "open") || Objects
@@ -87,7 +87,7 @@ public class HomeController {
 
 	@GetMapping("/activeRatings/{accountId}")
 	public ResponseEntity<List<HomeRatingResponse>> getActiveRatings(@PathVariable("accountId") Integer accountId) {
-		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(this.sessionInfo,
+		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(this.requestCtx,
 				new QuerySpec(ObjBuilding.class));
 		//@formatter:off
 		List<HomeRatingResponse> rrList = buildingList
@@ -104,17 +104,17 @@ public class HomeController {
 		return HomeRatingResponse.builder()
 			.buildingId(record.getId())
 			.buildingName(record.getName())
-			.buildingOwner(userRepository.get(this.sessionInfo, record.getOwnerId()).getCaption())
+			.buildingOwner(userRepository.get(this.requestCtx, record.getOwnerId()).getCaption())
 			.buildingAddress(record.getStreet() + " " + record.getZip() + " " + record.getCity())
 			.ratingDate(Formatter.INSTANCE.formatDate(record.getRatingDate()))
-			.ratingUser(record.getRatingUserId() != null ? userRepository.get(this.sessionInfo, record.getRatingUserId()).getCaption() : null)
+			.ratingUser(record.getRatingUserId() != null ? userRepository.get(this.requestCtx, record.getRatingUserId()).getCaption() : null)
 		.build();
 		//@formatter:on
 	}
 
 	@GetMapping("/recentActivity/{accountId}")
 	public ResponseEntity<List<HomeActivityResponse>> getRecentActivity(@PathVariable("accountId") Integer accountId) {
-		ObjAccount account = this.accountRepository.get(this.sessionInfo, accountId);
+		ObjAccount account = this.accountRepository.get(this.requestCtx, accountId);
 		Result<ObjActivityVRecord> result = this.dslContext.selectFrom(Tables.OBJ_ACTIVITY_V)
 				.where(Tables.OBJ_ACTIVITY_V.TENANT_ID.eq(account.getTenantId())
 						.and(Tables.OBJ_ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
@@ -129,7 +129,7 @@ public class HomeController {
 				.objCaption(record.getCaption())
 				.seqNr(record.getSeqNr())
 				.timestamp(record.getTimestamp())
-				.user(this.userRepository.get(this.sessionInfo, record.getUserId()).getCaption())
+				.user(this.userRepository.get(this.requestCtx, record.getUserId()).getCaption())
 				.changes(null)
 				.build();
 	}

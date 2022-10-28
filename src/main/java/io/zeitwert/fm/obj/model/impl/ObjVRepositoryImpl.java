@@ -17,7 +17,7 @@ import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.ObjVBase;
 
@@ -53,22 +53,22 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 	}
 
 	@Override
-	public Obj doCreate(SessionInfo sessionInfo) {
+	public Obj doCreate(RequestContext requestCtx) {
 		throw new RuntimeException("cannot create an Obj");
 	}
 
 	@Override
-	public Obj doLoad(SessionInfo sessionInfo, Integer objId) {
+	public Obj doLoad(RequestContext requestCtx, Integer objId) {
 		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.newAggregate(sessionInfo, objRecord, null);
+		return this.newAggregate(requestCtx, objRecord, null);
 	}
 
 	@Override
-	public List<ObjRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ, Tables.OBJ.ID, querySpec);
+	public List<ObjRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ, Tables.OBJ.ID, querySpec);
 	}
 
 }

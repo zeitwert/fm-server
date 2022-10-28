@@ -18,18 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.adapter.rest.dto.LoginRequest;
 import io.zeitwert.server.session.adapter.rest.dto.LoginResponse;
 import io.zeitwert.server.session.adapter.rest.dto.SessionInfoReponse;
 import io.zeitwert.server.session.service.api.JwtProvider;
-import io.zeitwert.server.session.service.api.SessionService;
 
 @RestController("sessionController")
 @RequestMapping("/api/session")
 public class SessionController {
+
+	public final static String AUTH_HEADER_PREFIX = "Bearer ";
 
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -44,7 +45,7 @@ public class SessionController {
 	JwtProvider jwtProvider;
 
 	@Autowired
-	SessionInfo sessionInfo;
+	RequestContext requestCtx;
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -75,15 +76,15 @@ public class SessionController {
 
 	@GetMapping("/session")
 	public ResponseEntity<SessionInfoReponse> getSessionInfo() {
-		if (this.sessionInfo == null) {
+		if (this.requestCtx == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		return ResponseEntity.ok(SessionInfoReponse.fromSession(sessionInfo, accountRepository));
+		return ResponseEntity.ok(SessionInfoReponse.fromRequest(requestCtx, accountRepository));
 	}
 
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
-		if (authHeader == null || !authHeader.startsWith(SessionService.AUTH_HEADER_PREFIX)) {
+		if (authHeader == null || !authHeader.startsWith(AUTH_HEADER_PREFIX)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		// TODO logout

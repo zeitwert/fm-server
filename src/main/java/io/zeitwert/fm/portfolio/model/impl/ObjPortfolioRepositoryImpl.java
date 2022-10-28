@@ -17,7 +17,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -113,24 +113,24 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	}
 
 	@Override
-	public ObjPortfolio doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
+	public ObjPortfolio doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
 	}
 
 	@Override
-	public ObjPortfolio doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjPortfolio doLoad(RequestContext requestCtx, Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjPortfolioRecord portfolioRecord = this.getDSLContext().fetchOne(Tables.OBJ_PORTFOLIO,
 				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));
 		if (portfolioRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, portfolioRecord);
+		return this.doLoad(requestCtx, objId, portfolioRecord);
 	}
 
 	@Override
-	public List<ObjPortfolioVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, querySpec);
+	public List<ObjPortfolioVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, querySpec);
 	}
 
 }

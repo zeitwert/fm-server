@@ -11,16 +11,16 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 
-public class SessionInfo {
+public class RequestContext {
 
-	public final static SessionInfo NO_SESSION = new SessionInfo(null, null, null);
+	public final static RequestContext NO_SESSION = new RequestContext(null, null, null);
 
 	private final ObjUser user;
 	private final Integer accountId;
 	private final CodeLocale locale;
 	private final Map<Integer, Aggregate> aggregates = new ConcurrentHashMap<>();
 
-	public SessionInfo(ObjUser user, Integer accountId, CodeLocale locale) {
+	public RequestContext(ObjUser user, Integer accountId, CodeLocale locale) {
 		this.user = user;
 		this.accountId = accountId;
 		this.locale = locale;

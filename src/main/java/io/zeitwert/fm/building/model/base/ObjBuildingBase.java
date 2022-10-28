@@ -18,7 +18,7 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -93,10 +93,10 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	protected final PartListProperty<ObjBuildingPartRating> ratingList;
 
-	protected ObjBuildingBase(SessionInfo sessionInfo, ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjBuildingBase(RequestContext requestCtx, ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
 
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 
 		this.dbRecord = contactRecord;
 

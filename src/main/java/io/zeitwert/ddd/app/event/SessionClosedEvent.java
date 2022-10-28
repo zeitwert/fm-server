@@ -1,20 +1,20 @@
 package io.zeitwert.ddd.app.event;
 
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.springframework.context.ApplicationEvent;
 
 public class SessionClosedEvent extends ApplicationEvent {
 
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
-	public SessionClosedEvent(Object source, SessionInfo sessionInfo) {
+	public SessionClosedEvent(Object source, RequestContext requestCtx) {
 		super(source);
-		this.sessionInfo = sessionInfo;
+		this.requestCtx = requestCtx;
 	}
 
-	public SessionInfo getSessionInfo() {
-		return this.sessionInfo;
+	public RequestContext getSessionInfo() {
+		return this.requestCtx;
 	}
 
 }

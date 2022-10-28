@@ -4,7 +4,7 @@ package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.ObjDocumentApiRepository;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -16,8 +16,8 @@ public class ObjDocumentApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjDocument, ObjDocumentVRecord, ObjDocumentDto>
 		implements ObjDocumentApiRepository {
 
-	public ObjDocumentApiRepositoryImpl(final ObjDocumentRepository repository, SessionInfo sessionInfo) {
-		super(ObjDocumentDto.class, sessionInfo, repository, ObjDocumentDtoAdapter.getInstance());
+	public ObjDocumentApiRepositoryImpl(final ObjDocumentRepository repository, RequestContext requestCtx) {
+		super(ObjDocumentDto.class, requestCtx, repository, ObjDocumentDtoAdapter.getInstance());
 	}
 
 }

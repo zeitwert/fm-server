@@ -12,7 +12,7 @@ import io.zeitwert.ddd.app.model.ApplicationArea;
 import io.zeitwert.ddd.app.model.ApplicationInfo;
 import io.zeitwert.ddd.app.service.api.ApplicationService;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("applicationService")
 @DependsOn("codeUserRoleEnum")
@@ -21,12 +21,12 @@ class ApplicationServiceImpl implements ApplicationService {
 	private static final ApplicationConfig appConfig = new ApplicationConfig();
 
 	@Autowired
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
 	public List<Application> getAllApplications() {
-		if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.APP_ADMIN)) {
+		if (requestCtx.getUser().hasRole(CodeUserRoleEnum.APP_ADMIN)) {
 			return appConfig.AppAdminApplications;
-		} else if (sessionInfo.getUser().hasRole(CodeUserRoleEnum.ADMIN)) {
+		} else if (requestCtx.getUser().hasRole(CodeUserRoleEnum.ADMIN)) {
 			return appConfig.AdminApplications;
 		}
 		return appConfig.UserApplications;

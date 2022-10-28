@@ -13,7 +13,7 @@ import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.Application;
 
 @SpringBootTest(classes = Application.class)
@@ -21,7 +21,7 @@ import io.zeitwert.server.Application;
 public class PortfolioTest {
 
 	@Autowired
-	private SessionInfo sessionInfo;
+	private RequestContext requestCtx;
 
 	@Autowired
 	private ObjPortfolioRepository portfolioRepository;
@@ -44,7 +44,7 @@ public class PortfolioTest {
 		assertTrue(buildingRepository != null, "buildingRepository not null");
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
-		ObjPortfolio pf1a = portfolioRepository.create(sessionInfo.getTenant().getId(), sessionInfo);
+		ObjPortfolio pf1a = portfolioRepository.create(requestCtx.getTenant().getId(), requestCtx);
 		// Integer pf1Id = pf1a.getId();
 		// Integer pf1aIdHash = System.identityHashCode(pf1a);
 
@@ -69,7 +69,7 @@ public class PortfolioTest {
 		// this.portfolioRepository.store(pf1a);
 		// pf1a = null;
 
-		// ObjPortfolio pf1b = portfolioRepository.get(sessionInfo, pf1Id).get();
+		// ObjPortfolio pf1b = portfolioRepository.get(requestCtx, pf1Id).get();
 		// Integer pf1bIdHash = System.identityHashCode(pf1b);
 
 		// assertNotEquals(pf1aIdHash, pf1bIdHash);

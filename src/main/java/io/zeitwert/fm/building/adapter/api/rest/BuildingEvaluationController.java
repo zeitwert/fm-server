@@ -57,7 +57,7 @@ import com.aspose.words.WrapType;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -100,7 +100,7 @@ public class BuildingEvaluationController {
 	private BuildingService buildingService;
 
 	@Autowired
-	SessionInfo sessionInfo;
+	RequestContext requestCtx;
 
 	@Autowired
 	EvaluationService evaluationService;
@@ -186,7 +186,7 @@ public class BuildingEvaluationController {
 			@RequestParam(required = false, name = "format") String format,
 			@RequestParam(required = false, name = "inline") Boolean isInline) {
 
-		ObjBuilding building = this.repo.get(sessionInfo, id);
+		ObjBuilding building = this.repo.get(requestCtx, id);
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		try {

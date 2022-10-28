@@ -6,7 +6,7 @@ import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.base.DocBase;
 import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -24,9 +24,9 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	protected final ReferenceProperty<ObjAccount> account;
 
-	protected FMDocBase(SessionInfo sessionInfo, DocRepository<? extends Doc, ? extends Record> repository,
+	protected FMDocBase(RequestContext requestCtx, DocRepository<? extends Doc, ? extends Record> repository,
 			UpdatableRecord<?> docRecord) {
-		super(sessionInfo, repository, docRecord);
+		super(requestCtx, repository, docRecord);
 		this.account = this.addReferenceProperty(docRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 	}
 

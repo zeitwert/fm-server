@@ -24,7 +24,7 @@ import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
@@ -44,9 +44,9 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	private final PartListProperty<ObjContactPartAddress> addressList;
 
-	protected ObjContactBase(SessionInfo sessionInfo, ObjContactRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjContactBase(RequestContext requestCtx, ObjContactRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 		this.dbRecord = contactRecord;
 		this.account = this.addReferenceProperty(dbRecord, ObjContactFields.ACCOUNT_ID, ObjAccount.class);
 		this.contactRole = this.addEnumProperty(dbRecord, ObjContactFields.CONTACT_ROLE_ID, CodeContactRoleEnum.class);

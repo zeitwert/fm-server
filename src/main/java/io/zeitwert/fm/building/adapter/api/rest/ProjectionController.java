@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
@@ -23,7 +23,7 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 @RequestMapping("/api/projection")
 public class ProjectionController {
 
-	private final SessionInfo sessionInfo;
+	private final RequestContext requestCtx;
 
 	private final ObjPortfolioRepository portfolioRepo;
 
@@ -31,10 +31,10 @@ public class ProjectionController {
 
 	private final ProjectionService projectionService;
 
-	public ProjectionController(SessionInfo sessionInfo,
+	public ProjectionController(RequestContext requestCtx,
 			ObjPortfolioRepository portfolioRepo, ObjBuildingRepository buildingRepo,
 			ProjectionService projectionService) {
-		this.sessionInfo = sessionInfo;
+		this.requestCtx = requestCtx;
 		this.portfolioRepo = portfolioRepo;
 		this.buildingRepo = buildingRepo;
 		this.projectionService = projectionService;
@@ -44,14 +44,14 @@ public class ProjectionController {
 	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer portfolioId)
 			throws InterruptedException, ExecutionException {
 		return ResponseEntity
-				.ok(this.projectionService.getProjection(this.portfolioRepo.get(sessionInfo, portfolioId)));
+				.ok(this.projectionService.getProjection(this.portfolioRepo.get(requestCtx, portfolioId)));
 	}
 
 	@GetMapping("/buildings/{buildingId}")
 	ResponseEntity<ProjectionResult> getBuildingProjection(@PathVariable Integer buildingId)
 			throws InterruptedException, ExecutionException {
 		return ResponseEntity
-				.ok(this.projectionService.getProjection(this.buildingRepo.get(sessionInfo, buildingId)));
+				.ok(this.projectionService.getProjection(this.buildingRepo.get(requestCtx, buildingId)));
 	}
 
 	@GetMapping("/elements/{elementId}")

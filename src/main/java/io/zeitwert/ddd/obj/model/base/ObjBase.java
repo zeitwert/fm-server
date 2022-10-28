@@ -23,11 +23,11 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
-	private final SessionInfo sessionInfo;
+	private final RequestContext requestCtx;
 	private final ObjRepository<? extends Obj, ? extends Record> repository;
 	private final UpdatableRecord<?> objDbRecord;
 
@@ -47,9 +47,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final PartListProperty<ObjPartTransition> transitionList;
 
-	protected ObjBase(SessionInfo sessionInfo, ObjRepository<? extends Obj, ? extends Record> repository,
+	protected ObjBase(RequestContext requestCtx, ObjRepository<? extends Obj, ? extends Record> repository,
 			UpdatableRecord<?> objDbRecord) {
-		this.sessionInfo = sessionInfo;
+		this.requestCtx = requestCtx;
 		this.repository = repository;
 		this.objDbRecord = objDbRecord;
 		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
@@ -73,8 +73,8 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public SessionInfo getSessionInfo() {
-		return this.sessionInfo;
+	public RequestContext getSessionInfo() {
+		return this.requestCtx;
 	}
 
 	@Override

@@ -2,15 +2,15 @@ package io.zeitwert.fm.obj.model.base;
 
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.jooq.UpdatableRecord;
 
 public abstract class ObjVBase extends ObjBase {
 
-	public ObjVBase(SessionInfo sessionInfo, ObjVRepository repository, UpdatableRecord<?> objRecord,
+	public ObjVBase(RequestContext requestCtx, ObjVRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> extnRecord) {
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 	}
 
 }

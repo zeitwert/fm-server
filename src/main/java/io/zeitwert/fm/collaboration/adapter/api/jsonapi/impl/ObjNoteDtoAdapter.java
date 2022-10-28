@@ -3,7 +3,7 @@ package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
@@ -24,8 +24,8 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public void toAggregate(ObjNoteDto dto, ObjNote note, SessionInfo sessionInfo) {
-		super.toAggregate(dto, note, sessionInfo);
+	public void toAggregate(ObjNoteDto dto, ObjNote note, RequestContext requestCtx) {
+		super.toAggregate(dto, note, requestCtx);
 		note.setRelatedToId(Integer.parseInt(dto.getRelatedToId()));
 		note.setNoteType(dto.getNoteType() == null ? null : CodeNoteTypeEnum.getNoteType(dto.getNoteType().getId()));
 		note.setSubject(dto.getSubject());
@@ -34,12 +34,12 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public ObjNoteDto fromAggregate(ObjNote note, SessionInfo sessionInfo) {
+	public ObjNoteDto fromAggregate(ObjNote note, RequestContext requestCtx) {
 		if (note == null) {
 			return null;
 		}
 		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder().original(note);
-		this.fromAggregate(dtoBuilder, note, sessionInfo);
+		this.fromAggregate(dtoBuilder, note, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.relatedToId(note.getRelatedToId().toString())
@@ -52,12 +52,12 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapter<ObjNote, ObjNoteVReco
 	}
 
 	@Override
-	public ObjNoteDto fromRecord(ObjNoteVRecord note, SessionInfo sessionInfo) {
+	public ObjNoteDto fromRecord(ObjNoteVRecord note, RequestContext requestCtx) {
 		if (note == null) {
 			return null;
 		}
 		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder().original(null);
-		this.fromRecord(dtoBuilder, note, sessionInfo);
+		this.fromRecord(dtoBuilder, note, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.relatedToId(note.getRelatedToId().toString())

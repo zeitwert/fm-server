@@ -12,7 +12,7 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
@@ -25,9 +25,9 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	private final UpdatableRecord<?> dbRecord;
 
-	public ObjUserBase(SessionInfo sessionInfo, ObjUserRepository repository, UpdatableRecord<?> objRecord,
+	public ObjUserBase(RequestContext requestCtx, ObjUserRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> userRecord) {
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 		this.dbRecord = userRecord;
 		this.email = this.addSimpleProperty(dbRecord, ObjUserFields.EMAIL);
 		this.password = this.addSimpleProperty(dbRecord, ObjUserFields.PASSWORD);

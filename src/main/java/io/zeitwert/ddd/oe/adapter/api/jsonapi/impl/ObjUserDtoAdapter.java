@@ -9,7 +9,7 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVRecord, ObjUserDto> {
 
@@ -28,8 +28,8 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	}
 
 	@Override
-	public void toAggregate(ObjUserDto dto, ObjUser obj, SessionInfo sessionInfo) {
-		super.toAggregate(dto, obj, sessionInfo);
+	public void toAggregate(ObjUserDto dto, ObjUser obj, RequestContext requestCtx) {
+		super.toAggregate(dto, obj, requestCtx);
 		// if (dto.getTenant() != null) {
 		// obj.setTenant(dto.getTenant());
 		// }
@@ -44,14 +44,14 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	}
 
 	@Override
-	public ObjUserDto fromAggregate(ObjUser obj, SessionInfo sessionInfo) {
+	public ObjUserDto fromAggregate(ObjUser obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(obj);
-		this.fromAggregate(dtoBuilder, obj, sessionInfo);
+		this.fromAggregate(dtoBuilder, obj, requestCtx);
 		return dtoBuilder
-				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant(), sessionInfo))
+				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant(), requestCtx))
 				.email(obj.getEmail())
 				.role(obj.getRole().getId())
 				.name(obj.getName())
@@ -60,7 +60,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 				.build();
 	}
 
-	public EnumeratedDto asEnumerated(ObjUser obj, SessionInfo sessionInfo) {
+	public EnumeratedDto asEnumerated(ObjUser obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
@@ -72,15 +72,15 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	}
 
 	@Override
-	public ObjUserDto fromRecord(ObjUserVRecord obj, SessionInfo sessionInfo) {
+	public ObjUserDto fromRecord(ObjUserVRecord obj, RequestContext requestCtx) {
 		if (obj == null) {
 			return null;
 		}
-		ObjTenant tenant = getTenantRepository().get(sessionInfo, obj.getTenantId());
+		ObjTenant tenant = getTenantRepository().get(requestCtx, obj.getTenantId());
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
-		this.fromRecord(dtoBuilder, obj, sessionInfo);
+		this.fromRecord(dtoBuilder, obj, requestCtx);
 		return dtoBuilder
-				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(tenant, sessionInfo))
+				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(tenant, requestCtx))
 				.email(obj.getEmail())
 				.role(obj.getRoleList())
 				.name(obj.getName())

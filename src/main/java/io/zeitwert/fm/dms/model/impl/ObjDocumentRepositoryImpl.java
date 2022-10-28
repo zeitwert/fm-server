@@ -20,7 +20,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -76,24 +76,24 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	}
 
 	@Override
-	public ObjDocument doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
+	public ObjDocument doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
 	}
 
 	@Override
-	public ObjDocument doLoad(SessionInfo sessionInfo, Integer objId) {
+	public ObjDocument doLoad(RequestContext requestCtx, Integer objId) {
 		requireThis(objId != null, "objId not null");
 		ObjDocumentRecord documentRecord = this.getDSLContext().fetchOne(Tables.OBJ_DOCUMENT,
 				Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId));
 		if (documentRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(sessionInfo, objId, documentRecord);
+		return this.doLoad(requestCtx, objId, documentRecord);
 	}
 
 	@Override
-	public List<ObjDocumentVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
+	public List<ObjDocumentVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, querySpec);
 	}
 
 	@Override
@@ -114,14 +114,15 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	}
 
 	@Override
-	public void storeContent(SessionInfo sessionInfo, ObjDocument document, CodeContentType contentType, byte[] content) {
+	public void storeContent(RequestContext requestCtx, ObjDocument document, CodeContentType contentType,
+			byte[] content) {
 		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getMaxVersionQuery(document));
 		maxVersionNr = maxVersionNr == null ? 1 : maxVersionNr + 1;
 		//@formatter:off
 		this.getDSLContext()
 			.insertInto(DOCUMENT_CONTENT)
 			.columns(OBJ_ID, VERSION_NR, CONTENT_TYPE_ID, CONTENT, CREATED_BY_USER_ID)
-			.values(document.getId(), maxVersionNr, contentType.getId(), content, sessionInfo.getUser().getId())
+			.values(document.getId(), maxVersionNr, contentType.getId(), content, requestCtx.getUser().getId())
 			.execute();
 		//@formatter:on
 	}

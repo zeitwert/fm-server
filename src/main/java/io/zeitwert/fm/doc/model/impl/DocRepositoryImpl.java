@@ -20,7 +20,7 @@ import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.doc.model.DocRepository;
 
 @Component("docRepository")
@@ -53,23 +53,23 @@ public class DocRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> impleme
 	}
 
 	@Override
-	public DocBase doCreate(SessionInfo sessionInfo) {
+	public DocBase doCreate(RequestContext requestCtx) {
 		assertThis(false, "cannot create a doc");
 		return null;
 	}
 
 	@Override
-	public Doc doLoad(SessionInfo sessionInfo, Integer docId) {
+	public Doc doLoad(RequestContext requestCtx, Integer docId) {
 		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return this.newAggregate(sessionInfo, docRecord, null);
+		return this.newAggregate(requestCtx, docRecord, null);
 	}
 
 	@Override
-	public List<DocRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.DOC, Tables.DOC.ID, querySpec);
+	public List<DocRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.DOC, Tables.DOC.ID, querySpec);
 	}
 
 	@Override

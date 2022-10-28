@@ -2,7 +2,7 @@
 package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
 
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.fm.obj.model.FMObj;
 
@@ -12,19 +12,19 @@ public abstract class FMObjDtoAdapter<O extends FMObj, V extends TableRecord<?>,
 		extends ObjDtoAdapter<O, V, D> {
 
 	@Override
-	public void toAggregate(D dto, O obj, SessionInfo sessionInfo) {
-		super.toAggregate(dto, obj, sessionInfo);
+	public void toAggregate(D dto, O obj, RequestContext requestCtx) {
+		super.toAggregate(dto, obj, requestCtx);
 	}
 
 	@Override
-	protected void fromAggregate(FMObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj, SessionInfo sessionInfo) {
-		super.fromAggregate(dtoBuilder, obj, sessionInfo);
+	protected void fromAggregate(FMObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj, RequestContext requestCtx) {
+		super.fromAggregate(dtoBuilder, obj, requestCtx);
 	}
 
 	@Override
 	protected void fromRecord(FMObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> obj,
-			SessionInfo sessionInfo) {
-		super.fromRecord(dtoBuilder, obj, sessionInfo);
+			RequestContext requestCtx) {
+		super.fromRecord(dtoBuilder, obj, requestCtx);
 	}
 
 }

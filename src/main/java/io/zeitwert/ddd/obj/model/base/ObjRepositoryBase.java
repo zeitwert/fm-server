@@ -21,7 +21,7 @@ import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;
@@ -78,16 +78,16 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return this.getDSLContext().nextval(OBJ_ID_SEQ).intValue();
 	}
 
-	protected O doCreate(SessionInfo sessionInfo, UpdatableRecord<?> extnRecord) {
-		return newAggregate(sessionInfo, this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
+	protected O doCreate(RequestContext requestCtx, UpdatableRecord<?> extnRecord) {
+		return newAggregate(requestCtx, this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
 	}
 
-	protected O doLoad(SessionInfo sessionInfo, Integer objId, UpdatableRecord<?> extnRecord) {
+	protected O doLoad(RequestContext requestCtx, Integer objId, UpdatableRecord<?> extnRecord) {
 		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return newAggregate(sessionInfo, objRecord, extnRecord);
+		return newAggregate(requestCtx, objRecord, extnRecord);
 	}
 
 	@Override
@@ -102,11 +102,11 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	@Override
-	protected List<V> doFind(SessionInfo sessionInfo, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected List<V> doFind(RequestContext requestCtx, Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
 		if (!SqlUtils.hasFilterFor(querySpec, "isClosed")) {
 			querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
 		}
-		return super.doFind(sessionInfo, table, idField, querySpec);
+		return super.doFind(requestCtx, table, idField, querySpec);
 	}
 
 }

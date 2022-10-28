@@ -12,7 +12,7 @@ import io.zeitwert.fm.lead.model.enums.CodeLeadRatingEnum;
 import io.zeitwert.fm.lead.model.enums.CodeLeadSourceEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import java.util.stream.Collectors;
 
@@ -31,8 +31,8 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public void toAggregate(DocLeadDto dto, DocLead doc, SessionInfo sessionInfo) {
-		super.toAggregate(dto, doc, sessionInfo);
+	public void toAggregate(DocLeadDto dto, DocLead doc, RequestContext requestCtx) {
+		super.toAggregate(dto, doc, requestCtx);
 		doc.setAccountId(dto.getAccountId());
 		doc.setSubject(dto.getSubject());
 		if (dto.getAreas() != null) {
@@ -61,12 +61,12 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public DocLeadDto fromAggregate(DocLead doc, SessionInfo sessionInfo) {
+	public DocLeadDto fromAggregate(DocLead doc, RequestContext requestCtx) {
 		if (doc == null) {
 			return null;
 		}
 		DocLeadDto.DocLeadDtoBuilder<?, ?> dtoBuilder = DocLeadDto.builder().original(doc);
-		this.fromAggregate(dtoBuilder, doc, sessionInfo);
+		this.fromAggregate(dtoBuilder, doc, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.accountId(doc.getAccountId())
@@ -93,12 +93,12 @@ public final class DocLeadDtoAdapter extends FMDocDtoAdapter<DocLead, DocLeadVRe
 	}
 
 	@Override
-	public DocLeadDto fromRecord(DocLeadVRecord doc, SessionInfo sessionInfo) {
+	public DocLeadDto fromRecord(DocLeadVRecord doc, RequestContext requestCtx) {
 		if (doc == null) {
 			return null;
 		}
 		DocLeadDto.DocLeadDtoBuilder<?, ?> dtoBuilder = DocLeadDto.builder().original(null);
-		this.fromRecord(dtoBuilder, doc, sessionInfo);
+		this.fromRecord(dtoBuilder, doc, requestCtx);
 		// @formatter:off
 		return dtoBuilder
 			.accountId(doc.getAccountId())

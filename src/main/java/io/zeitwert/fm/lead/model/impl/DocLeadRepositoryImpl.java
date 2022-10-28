@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.lead.model.DocLead;
@@ -56,23 +56,23 @@ public class DocLeadRepositoryImpl extends FMDocRepositoryBase<DocLead, DocLeadV
 	}
 
 	@Override
-	public DocLead doCreate(SessionInfo sessionInfo) {
-		return this.doCreate(sessionInfo, this.getDSLContext().newRecord(Tables.DOC_LEAD));
+	public DocLead doCreate(RequestContext requestCtx) {
+		return this.doCreate(requestCtx, this.getDSLContext().newRecord(Tables.DOC_LEAD));
 	}
 
 	@Override
-	public DocLead doLoad(SessionInfo sessionInfo, Integer docId) {
+	public DocLead doLoad(RequestContext requestCtx, Integer docId) {
 		requireThis(docId != null, "docId not null");
 		DocLeadRecord leadRecord = this.getDSLContext().fetchOne(Tables.DOC_LEAD, Tables.DOC_LEAD.DOC_ID.eq(docId));
 		if (leadRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return this.doLoad(sessionInfo, docId, leadRecord);
+		return this.doLoad(requestCtx, docId, leadRecord);
 	}
 
 	@Override
-	public List<DocLeadVRecord> doFind(SessionInfo sessionInfo, QuerySpec querySpec) {
-		return this.doFind(sessionInfo, Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
+	public List<DocLeadVRecord> doFind(RequestContext requestCtx, QuerySpec querySpec) {
+		return this.doFind(requestCtx, Tables.DOC_LEAD_V, Tables.DOC_LEAD_V.ID, querySpec);
 	}
 
 }

@@ -9,7 +9,7 @@ import org.jooq.Record;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.validation.model.AggregatePartValidation;
 
 /**
@@ -21,7 +21,7 @@ public interface AggregateMeta {
 
 	CodeAggregateType getAggregateType();
 
-	SessionInfo getSessionInfo();
+	RequestContext getSessionInfo();
 
 	AppContext getAppContext();
 

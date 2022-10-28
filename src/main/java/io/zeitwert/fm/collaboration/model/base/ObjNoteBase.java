@@ -9,7 +9,7 @@ import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -25,9 +25,9 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	protected final SimpleProperty<String> content;
 	protected final SimpleProperty<Boolean> isPrivate;
 
-	protected ObjNoteBase(SessionInfo sessionInfo, ObjNoteRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjNoteBase(RequestContext requestCtx, ObjNoteRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> noteRecord) {
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 		this.dbRecord = noteRecord;
 		this.relatedToId = this.addSimpleProperty(dbRecord, ObjNoteFields.RELATED_TO_ID);
 		this.noteType = this.addEnumProperty(dbRecord, ObjNoteFields.NOTE_TYPE_ID, CodeNoteTypeEnum.class);

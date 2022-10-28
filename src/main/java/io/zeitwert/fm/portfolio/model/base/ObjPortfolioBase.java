@@ -17,7 +17,7 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.obj.model.ObjVRepository;
@@ -36,9 +36,10 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	protected final ReferenceSetProperty<ObjBuilding> excludeSet;
 	protected final ReferenceSetProperty<ObjBuilding> buildingSet;
 
-	protected ObjPortfolioBase(SessionInfo sessionInfo, ObjPortfolioRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjPortfolioBase(RequestContext requestCtx, ObjPortfolioRepository repository,
+			UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> portfolioRecord) {
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 		this.dbRecord = portfolioRecord;
 		this.name = this.addSimpleProperty(dbRecord, ObjPortfolioFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjPortfolioFields.DESCRIPTION);
@@ -108,18 +109,18 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	private Set<Integer> getBuildingIds(Integer id) {
-		SessionInfo sessionInfo = this.getMeta().getSessionInfo();
+		RequestContext requestCtx = this.getMeta().getSessionInfo();
 		ObjVRepository objRepo = this.getRepository().getObjVRepository();
-		Obj obj = objRepo.get(sessionInfo, id);
+		Obj obj = objRepo.get(requestCtx, id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		if (objType == CodeAggregateTypeEnum.getAggregateType("obj_building")) {
 			return Set.of(obj.getId());
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_portfolio")) {
-			ObjPortfolio pf = this.getRepository().get(sessionInfo, id);
+			ObjPortfolio pf = this.getRepository().get(requestCtx, id);
 			return pf.getBuildingSet();
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_account")) {
 			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepository()
-					.getByForeignKey(sessionInfo, "account_id", id);
+					.getByForeignKey(requestCtx, "account_id", id);
 			return buildings.stream().map(bldg -> bldg.getId()).collect(Collectors.toSet());
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());

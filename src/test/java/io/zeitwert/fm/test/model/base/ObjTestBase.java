@@ -18,7 +18,7 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.session.model.SessionInfo;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,9 +42,9 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	protected final EnumSetProperty<CodeArea> areaSet;
 	protected final PartListProperty<ObjTestPartNode> nodeList;
 
-	protected ObjTestBase(SessionInfo sessionInfo, ObjTestRepository repository, UpdatableRecord<?> objRecord,
+	protected ObjTestBase(RequestContext requestCtx, ObjTestRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> testRecord) {
-		super(sessionInfo, repository, objRecord);
+		super(requestCtx, repository, objRecord);
 		this.dbRecord = testRecord;
 		this.shortText = this.addSimpleProperty(dbRecord, ObjTestFields.SHORT_TEXT);
 		this.longText = this.addSimpleProperty(dbRecord, ObjTestFields.LONG_TEXT);
