@@ -11,5 +11,7 @@ public interface ObjTenantFields extends ObjExtnFields {
 	static final Field<String> EXTL_KEY = DSL.field("extl_key", String.class);
 	static final Field<String> NAME = DSL.field("name", String.class);
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
+	static final Field<Integer> LOGO_IMAGE = DSL.field("logo_img_id", Integer.class);
+	static final Field<Integer> BANNER_IMAGE = DSL.field("banner_img_id", Integer.class);
 
 }

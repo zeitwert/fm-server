@@ -28,7 +28,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 		return (
 			<div>
 				<Tabs variant="scoped">
-					<TabsPanel key="cover" label="Cover">
+					<TabsPanel key="avatar" label="Avatar">
 						{
 							this.isUploading &&
 							<Spinner variant="brand" size="large" />
@@ -45,16 +45,6 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 							onFileChange={this.onFileChange}
 							onUpload={this.uploadFile}
 						/>
-					</TabsPanel>
-					<TabsPanel key="location" label="Lage">
-						<div>
-							<img
-								className="slds-align_absolute-center"
-								style={{ width: "100%" }}
-								src={building.locationUrl}
-								alt="Lageplan"
-							/>
-						</div>
 					</TabsPanel>
 				</Tabs>
 			</div>

@@ -38,6 +38,10 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
@@ -154,10 +158,24 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
+	public void doAfterCreate() {
+		super.doAfterCreate();
+		this.addCoverFoto();
+	}
+
+	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
 		this.ratingList.loadPartList(ratingRepo.getPartList(this, this.getRepository().getRatingListType()));
+	}
+
+	@Override
+	public void doBeforeStore() {
+		super.doBeforeStore();
+		if (this.getCoverFotoId() == null) {
+			this.addCoverFoto();
+		}
 	}
 
 	@Override
@@ -293,6 +311,17 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 				}
 			}
 		}
+	}
+
+	private void addCoverFoto() {
+		ObjDocumentRepository documentRepo = this.getRepository().getDocumentRepository();
+		ObjDocument coverFoto = documentRepo.create(this.getTenantId());
+		coverFoto.setName("CoverFoto");
+		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
+		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
+		coverFoto.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("foto"));
+		documentRepo.store(coverFoto);
+		this.coverFoto.setId(coverFoto.getId());
 	}
 
 }

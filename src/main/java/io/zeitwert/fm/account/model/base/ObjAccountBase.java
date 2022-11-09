@@ -15,6 +15,11 @@ import io.zeitwert.fm.account.model.enums.CodeArea;
 import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -37,6 +42,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final EnumProperty<CodeAccountType> accountType;
 	protected final EnumProperty<CodeClientSegment> clientSegment;
 	protected final EnumProperty<CodeCurrency> referenceCurrency;
+	protected final ReferenceProperty<ObjDocument> logoImage;
+	protected final ReferenceProperty<ObjDocument> bannerImage;
 	protected final ReferenceProperty<ObjContact> mainContact;
 	protected final EnumSetProperty<CodeArea> areaSet;
 
@@ -53,6 +60,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 				CodeClientSegmentEnum.class);
 		this.referenceCurrency = this.addEnumProperty(dbRecord, ObjAccountFields.REFERENCE_CURRENCY_ID,
 				CodeCurrencyEnum.class);
+		this.logoImage = this.addReferenceProperty(dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
+		this.bannerImage = this.addReferenceProperty(dbRecord, ObjAccountFields.BANNER_IMAGE, ObjDocument.class);
 		this.mainContact = this.addReferenceProperty(dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);
 		this.areaSet = this.addEnumSetProperty(this.getRepository().getAreaSetType(), CodeAreaEnum.class);
 	}
@@ -70,10 +79,28 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	@Override
+	public void doAfterCreate() {
+		super.doAfterCreate();
+		this.addLogoImage();
+		this.addBannerImage();
+	}
+
+	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
 		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+	}
+
+	@Override
+	public void doBeforeStore() {
+		super.doBeforeStore();
+		if (this.getLogoImageId() == null) {
+			this.addLogoImage();
+		}
+		if (this.getBannerImageId() == null) {
+			this.addBannerImage();
+		}
 	}
 
 	@Override
@@ -106,6 +133,28 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	private void calcCaption() {
 		this.setCaption(this.getName());
+	}
+
+	private void addLogoImage() {
+		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocument image = documentRepo.create(this.getTenantId());
+		image.setName("Logo");
+		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));
+		image.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
+		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("logo"));
+		documentRepo.store(image);
+		this.logoImage.setId(image.getId());
+	}
+
+	private void addBannerImage() {
+		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocument image = documentRepo.create(this.getTenantId());
+		image.setName("Banner");
+		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));
+		image.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
+		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("banner"));
+		documentRepo.store(image);
+		this.bannerImage.setId(image.getId());
 	}
 
 }

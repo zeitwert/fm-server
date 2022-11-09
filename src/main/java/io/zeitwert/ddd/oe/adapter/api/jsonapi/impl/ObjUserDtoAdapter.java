@@ -55,7 +55,6 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 				.role(obj.getRole().getId())
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.picture(obj.getPicture())
 				.build();
 	}
 
@@ -84,7 +83,6 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 				.role(obj.getRoleList())
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.picture(obj.getPicture())
 				.build();
 	}
 

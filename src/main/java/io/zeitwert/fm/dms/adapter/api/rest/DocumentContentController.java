@@ -34,18 +34,15 @@ public class DocumentContentController {
 		if (contentType == null) {
 			return ResponseEntity.notFound().build();
 		}
-		return this.getContentResponse(document.getName(), contentType, document.getContent());
-	}
-
-	private ResponseEntity<byte[]> getContentResponse(String name, CodeContentType contentType, byte[] content) {
-		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename(name).build();
+		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename(document.getName()).build();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDisposition(contentDisposition);
-		return ResponseEntity.ok().contentType(contentType.getMediaType()).headers(headers).body(content);
+		return ResponseEntity.ok().contentType(contentType.getMediaType()).headers(headers).body(document.getContent());
+
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.POST)
-	public ResponseEntity<Void> storeContent(@PathVariable Integer documentId,
+	public ResponseEntity<Void> setContent(@PathVariable Integer documentId,
 			@RequestParam("file") MultipartFile file) {
 		try {
 			ObjDocument document = this.documentRepository.get(documentId);

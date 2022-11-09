@@ -3,6 +3,7 @@ package io.zeitwert.ddd.oe.model;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
+import io.zeitwert.fm.dms.model.ObjDocument;
 
 public interface ObjUser extends Obj {
 
@@ -21,6 +22,10 @@ public interface ObjUser extends Obj {
 	String getDescription();
 
 	void setDescription(String description);
+
+	Integer getAvatarImageId();
+
+	ObjDocument getAvatarImage();
 
 	String getPicture();
 

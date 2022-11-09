@@ -78,8 +78,6 @@ public interface ObjBuilding extends FMObj {
 
 	Integer getCoverFotoId();
 
-	void setCoverFotoId(Integer id);
-
 	ObjDocument getCoverFoto();
 
 	CodeCurrency getCurrency();

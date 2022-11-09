@@ -7,7 +7,10 @@ do nothing;
 
 insert into code_document_category(id, name)
 values
-('foto', 'Foto')
+('avatar', 'Avatar'),
+('banner', 'Banner'),
+('foto', 'Foto'),
+('logo', 'Logo')
 on conflict(id)
 do nothing;
 

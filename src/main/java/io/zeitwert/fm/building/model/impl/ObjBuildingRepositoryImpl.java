@@ -26,11 +26,7 @@ import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
-import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
-import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objBuildingRepository")
@@ -39,6 +35,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private static final String AGGREGATE_TYPE = "obj_building";
 
+	private final ObjDocumentRepository documentRepository;
 	private final ObjBuildingPartRatingRepository ratingRepository;
 	private final CodePartListType ratingListType;
 	private final ObjBuildingPartElementRatingRepository elementRepository;
@@ -53,6 +50,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
 		final ObjNoteRepository noteRepository,
+		final ObjDocumentRepository documentRepository,
 		final ObjBuildingPartRatingRepository ratingRepository,
 		final ObjBuildingPartElementRatingRepository elementRepository
 	) {
@@ -67,6 +65,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 			itemRepository,
 			noteRepository
 		);
+		this.documentRepository = documentRepository;
 		this.ratingRepository = ratingRepository;
 		this.ratingListType = this.getAppContext().getPartListType(ObjBuildingFields.RATING_LIST);
 		this.elementRepository = elementRepository;
@@ -83,6 +82,11 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		this.addPartRepository(this.getItemRepository());
 		this.addPartRepository(this.getRatingRepository());
 		this.addPartRepository(this.getElementRepository());
+	}
+
+	@Override
+	public ObjDocumentRepository getDocumentRepository() {
+		return this.documentRepository;
 	}
 
 	@Override
@@ -126,12 +130,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public void doAfterCreate(ObjBuilding building) {
-		super.doAfterCreate(building);
-		this.addCoverFoto(building);
-	}
-
-	@Override
 	public ObjBuilding doLoad(Integer buildingId) {
 		requireThis(buildingId != null, "objId not null");
 		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
@@ -143,28 +141,8 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public void doBeforeStore(ObjBuilding building) {
-		super.doBeforeStore(building);
-		if (building.getCoverFotoId() == null) {
-			this.addCoverFoto(building);
-		}
-	}
-
-	@Override
 	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
-	}
-
-	private void addCoverFoto(ObjBuilding building) {
-		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
-		Integer tenantId = building.getTenantId();
-		ObjDocument coverFoto = documentRepo.create(tenantId);
-		coverFoto.setName("CoverFoto");
-		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));
-		coverFoto.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
-		coverFoto.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("foto"));
-		documentRepo.store(coverFoto);
-		building.setCoverFotoId(coverFoto.getId());
 	}
 
 }

@@ -8,6 +8,7 @@ import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.account.model.enums.CodeArea;
 import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 
@@ -34,6 +35,14 @@ public interface ObjAccount extends FMObj {
 	CodeCurrency getReferenceCurrency();
 
 	void setReferenceCurrency(CodeCurrency currency);
+
+	Integer getLogoImageId();
+
+	ObjDocument getLogoImage();
+
+	Integer getBannerImageId();
+
+	ObjDocument getBannerImage();
 
 	Set<CodeArea> getAreaSet();
 

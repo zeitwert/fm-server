@@ -24,6 +24,5 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 	private String role;
 	private String name;
 	private String description;
-	private String picture;
 
 }

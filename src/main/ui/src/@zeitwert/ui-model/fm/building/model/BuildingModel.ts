@@ -113,6 +113,9 @@ const MstBuildingModel = ObjModel.named("Building")
 		}
 	}))
 	.views((self) => ({
+		get hasCoverFoto(): boolean {
+			return !!self.coverFoto?.id && !!self.coverFoto?.contentType?.id;
+		},
 		get coverFotoUrl(): string | undefined {
 			if (self.coverFoto?.id && self.coverFoto?.contentType?.id) {
 				return Config.getRestUrl("dms", "documents/" + self.coverFoto?.id + "/content");

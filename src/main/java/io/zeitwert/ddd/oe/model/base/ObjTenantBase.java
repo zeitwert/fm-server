@@ -11,8 +11,14 @@ import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
+import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 
 import java.util.List;
 
@@ -24,6 +30,8 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> extlKey;
 	protected final SimpleProperty<String> description;
+	protected final ReferenceProperty<ObjDocument> logoImage;
+	protected final ReferenceProperty<ObjDocument> bannerImage;
 
 	private final UpdatableRecord<?> dbRecord;
 
@@ -34,6 +42,8 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		this.name = this.addSimpleProperty(dbRecord, ObjTenantFields.NAME);
 		this.extlKey = this.addSimpleProperty(dbRecord, ObjTenantFields.EXTL_KEY);
 		this.description = this.addSimpleProperty(dbRecord, ObjTenantFields.DESCRIPTION);
+		this.logoImage = this.addReferenceProperty(dbRecord, ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
+		this.bannerImage = this.addReferenceProperty(dbRecord, ObjTenantFields.BANNER_IMAGE, ObjDocument.class);
 	}
 
 	@Override
@@ -48,8 +58,26 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	}
 
 	@Override
+	public void doAfterCreate() {
+		super.doAfterCreate();
+		this.addLogoImage();
+		this.addBannerImage();
+	}
+
+	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
+	}
+
+	@Override
+	public void doBeforeStore() {
+		super.doBeforeStore();
+		if (this.getLogoImageId() == null) {
+			this.addLogoImage();
+		}
+		if (this.getBannerImageId() == null) {
+			this.addBannerImage();
+		}
 	}
 
 	@Override
@@ -77,6 +105,28 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
 	private void calcCaption() {
 		this.setCaption(this.getName());
+	}
+
+	private void addLogoImage() {
+		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocument image = documentRepo.create(this.getTenantId());
+		image.setName("Logo");
+		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));
+		image.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
+		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("logo"));
+		documentRepo.store(image);
+		this.logoImage.setId(image.getId());
+	}
+
+	private void addBannerImage() {
+		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocument image = documentRepo.create(this.getTenantId());
+		image.setName("Banner");
+		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));
+		image.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
+		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("banner"));
+		documentRepo.store(image);
+		this.bannerImage.setId(image.getId());
 	}
 
 }

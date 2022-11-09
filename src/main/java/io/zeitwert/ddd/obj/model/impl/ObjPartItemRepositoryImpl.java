@@ -54,7 +54,7 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 		Result<ObjPartItemRecord> dbRecords = this.getDSLContext()
 			.selectFrom(Tables.OBJ_PART_ITEM)
 			.where(Tables.OBJ_PART_ITEM.OBJ_ID.eq(obj.getId()))
-			.orderBy(Tables.OBJ_PART_ITEM.SEQ_NR)
+			.orderBy(Tables.OBJ_PART_ITEM.PART_LIST_TYPE_ID, Tables.OBJ_PART_ITEM.SEQ_NR)
 			.fetchInto(Tables.OBJ_PART_ITEM);
 		//@formatter:on
 		return dbRecords.map(dbRecord -> this.newPart(obj, dbRecord));
