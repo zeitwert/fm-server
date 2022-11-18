@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -93,6 +93,11 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
      * The column <code>public.obj_user.picture</code>.
      */
     public final TableField<ObjUserRecord, String> PICTURE = createField(DSL.name("picture"), SQLDataType.VARCHAR(400), this, "");
+
+    /**
+     * The column <code>public.obj_user.avatar_img_id</code>.
+     */
+    public final TableField<ObjUserRecord, Integer> AVATAR_IMG_ID = createField(DSL.name("avatar_img_id"), SQLDataType.INTEGER, this, "");
 
     private ObjUser(Name alias, Table<ObjUserRecord> aliased) {
         this(alias, aliased, null);
@@ -188,11 +193,11 @@ public class ObjUser extends TableImpl<ObjUserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, Integer, String, String, String, String, String, Boolean, String> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Integer, Integer, String, String, String, String, String, Boolean, String, Integer> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

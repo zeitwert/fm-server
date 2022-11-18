@@ -140,14 +140,14 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		const details: HeaderDetail[] = [
 			{
 				label: "Owner",
-				content: leadOwner.caption,
+				content: leadOwner.name,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={leadOwner.picture}
-						imgAlt={leadOwner.caption}
-						label={leadOwner.caption}
+						imgSrc={session.avatarUrl(leadOwner.id)}
+						imgAlt={leadOwner.name}
+						label={leadOwner.name}
 					/>
 				),
 				link: "/user/" + lead.owner!.id

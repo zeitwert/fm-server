@@ -17,6 +17,11 @@
 				"value": "accountType"
 			},
 			{
+				"id": "tenant",
+				"label": "Mandant",
+				"value": "tenant"
+			},
+			{
 				"id": "mainContact",
 				"label": "Main Contact",
 				"value": "mainContactName",
@@ -46,6 +51,7 @@
 				"name": "{{name}}",
 				"link": "/account/{{id}}",
 				"accountType": "{{accountType.name}}",
+				"tenant": "{{tenant.name}}",
 				"clientSegment": "{{clientSegment.name}}",
 				"mainContactId": "{{mainContact.id}}",
 				"mainContactName": "{{mainContact.caption}}",

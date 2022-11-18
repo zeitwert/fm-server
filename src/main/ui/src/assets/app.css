@@ -540,6 +540,34 @@ We have added the border property to demonstrate that the flip itself goes out o
   justify-content: right;
 }
 
+.fa-file-upload {
+  position: relative;
+}
+
+.fa-file-upload-empty {
+  border: 2px dashed lightgrey;
+  border-radius: 10px;
+}
+
+.fa-file-upload-buttons {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fa-file-upload .slds-file-selector {
+  display: none;
+}
+
+.fa-file-upload:hover .slds-file-selector {
+  display: block;
+}
+
 @media (min-width: 80em) {
   [class*=slds-x-large-size--],
 [class*=slds-x-large-size_] {

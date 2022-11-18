@@ -152,14 +152,14 @@ class ContactPage extends React.Component<RouteComponentProps> {
 		return [
 			{
 				label: "Owner",
-				content: contactOwner.caption,
+				content: contactOwner.name,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={contactOwner.picture}
-						imgAlt={contactOwner.caption}
-						label={contactOwner.caption}
+						imgSrc={session.avatarUrl(contactOwner.id)}
+						imgAlt={contactOwner.name}
+						label={contactOwner.name}
 					/>
 				),
 				link: "/user/" + contact.owner!.id

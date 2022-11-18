@@ -5,7 +5,7 @@ import { AccountApi } from "../AccountApi";
 const MODULE = "account";
 const PATH = "accounts";
 const TYPE = "account";
-const INCLUDES = "include[account]=contacts,mainContact";
+const INCLUDES = "include[account]=contacts,mainContact,logo,banner";
 
 export class AccountApiImpl extends AggregateApiImpl<AccountSnapshot> implements AccountApi {
 	constructor() {
@@ -13,10 +13,9 @@ export class AccountApiImpl extends AggregateApiImpl<AccountSnapshot> implements
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["contacts", "refObj", "documents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
-			//refObj: "obj",
-			//documents: "document",
+			logo: "document",
+			banner: "document",
 			mainContact: "contact",
-			//holdings: "holding"
 		};
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}

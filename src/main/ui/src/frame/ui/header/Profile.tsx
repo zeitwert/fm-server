@@ -1,7 +1,7 @@
 
 import { Avatar, Button, GlobalHeaderProfile, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_PROFILE } from "@salesforce/design-system-react/utilities/constants";
-import { Session } from "@zeitwert/ui-model";
+import { session } from "@zeitwert/ui-model";
 import React from "react";
 
 const HeaderProfileCustomContent = (props: any) => (
@@ -55,7 +55,6 @@ const HeaderProfileCustomContent = (props: any) => (
 );
 
 interface ProfileProps {
-	session?: Session;
 	onLogout?: () => void;
 }
 
@@ -64,7 +63,7 @@ export default class Profile extends React.Component<ProfileProps> {
 	static displayName = GLOBAL_HEADER_PROFILE;
 
 	render() {
-		const { session, onLogout } = this.props;
+		const { onLogout } = this.props;
 		const sessionInfo = session?.sessionInfo;
 		const user = sessionInfo?.user;
 		return (
@@ -74,7 +73,7 @@ export default class Profile extends React.Component<ProfileProps> {
 					<Avatar
 						variant="user"
 						size="medium"
-						imgSrc={user!.picture}
+						imgSrc={session.avatarUrl(user!.id)}
 						imgAlt={user!.caption}
 						label={user!.caption}
 					/>

@@ -247,7 +247,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		// 			<Avatar
 		// 				variant="user"
 		// 				size="small"
-		// 				imgSrc={building.owner!.picture}
+		// 				imgSrc={session.avatarUrl(building.owner!.id)}
 		// 				imgAlt={building.owner!.caption}
 		// 				label={building.owner!.caption}
 		// 			/>

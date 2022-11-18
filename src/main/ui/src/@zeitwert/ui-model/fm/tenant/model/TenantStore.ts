@@ -2,6 +2,7 @@
 import { EntityTypeRepository } from "@zeitwert/ui-model/app";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
+import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
 import { StoreWithUsersModel } from "../../user/model/StoreWithUsers";
 import { TENANT_API } from "../service/TenantApi";
 import { Tenant, TenantModel, TenantSnapshot } from "./TenantModel";
@@ -10,6 +11,7 @@ const MstTenantStoreModel = ObjStoreModel
 	.named("TenantStore")
 	.props({
 		usersStore: types.optional(StoreWithUsersModel, {}),
+		documentsStore: types.optional(StoreWithDocumentsModel, {}),
 		tenant: types.maybe(TenantModel)
 	})
 	.views((self) => ({
@@ -28,6 +30,7 @@ const MstTenantStoreModel = ObjStoreModel
 		const afterLoad = (repository: EntityTypeRepository) => {
 			superAfterLoad(repository);
 			self.usersStore.afterLoad(repository);
+			self.documentsStore.afterLoad(repository);
 		}
 		return { afterLoad };
 	})

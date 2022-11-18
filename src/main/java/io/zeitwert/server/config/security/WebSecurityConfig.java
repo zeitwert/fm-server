@@ -73,9 +73,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/demo/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/enum/**").permitAll()
-				// tenant and account pictures
-				.antMatchers(HttpMethod.GET, "/tenant/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/account/**").permitAll()
+				// user, tenant and account pictures
+				.antMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
+				.antMatchers(HttpMethod.GET, "/rest/oe/tenants/**/{logo|banner}").permitAll()
+				.antMatchers(HttpMethod.GET, "/rest/account/accounts/**/{logo|banner}").permitAll()
 				// ui paths
 				.antMatchers(HttpMethod.GET, "/account/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/contact/*").permitAll()

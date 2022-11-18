@@ -9,6 +9,9 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
 import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
+import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
@@ -75,6 +78,52 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 			}
 		}
 		return this.contactsDto;
+	}
+
+	@JsonApiRelationId
+	private Integer logoId;
+
+	@JsonIgnore
+	private ObjDocumentDto logoDto;
+
+	@JsonApiRelation(serialize = SerializeType.LAZY)
+	public ObjDocumentDto getLogo() {
+		if (this.logoDto == null) {
+			ObjDocument logo = null;
+			if (this.getOriginal() != null) {
+				logo = this.getOriginal().getLogoImage();
+			} else if (this.logoId != null) {
+				logo = getRepository(ObjDocument.class).get(this.logoId);
+			}
+			this.logoDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(logo);
+		}
+		return this.logoDto;
+	}
+
+	public void setLogo(ObjDocumentDto logo) {
+	}
+
+	@JsonApiRelationId
+	private Integer bannerId;
+
+	@JsonIgnore
+	private ObjDocumentDto bannerDto;
+
+	@JsonApiRelation(serialize = SerializeType.LAZY)
+	public ObjDocumentDto getBanner() {
+		if (this.bannerDto == null) {
+			ObjDocument banner = null;
+			if (this.getOriginal() != null) {
+				banner = this.getOriginal().getBannerImage();
+			} else if (this.bannerId != null) {
+				banner = getRepository(ObjDocument.class).get(this.bannerId);
+			}
+			this.bannerDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(banner);
+		}
+		return this.bannerDto;
+	}
+
+	public void setBanner(ObjDocumentDto banner) {
 	}
 
 }

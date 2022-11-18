@@ -2,6 +2,7 @@ import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithContactsModel } from "../../contact/model/StoreWithContacts";
+import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
 import { ACCOUNT_API } from "../service/AccountApi";
 import { Account, AccountModel, AccountSnapshot } from "./AccountModel";
 
@@ -9,6 +10,7 @@ const MstAccountStoreModel = ObjStoreModel
 	.named("AccountStore")
 	.props({
 		contactsStore: types.optional(StoreWithContactsModel, {}),
+		documentsStore: types.optional(StoreWithDocumentsModel, {}),
 		account: types.maybe(AccountModel)
 	})
 	.views((self) => ({
@@ -27,6 +29,7 @@ const MstAccountStoreModel = ObjStoreModel
 		const afterLoad = (repository: EntityTypeRepository) => {
 			superAfterLoad(repository);
 			self.contactsStore.afterLoad(repository);
+			self.documentsStore.afterLoad(repository);
 		}
 		return { afterLoad };
 	})

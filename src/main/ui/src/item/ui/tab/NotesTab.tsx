@@ -118,7 +118,7 @@ class NoteView extends React.Component<NoteViewProps> {
 		const note = this.props.note;
 		const isPrivate = note.isPrivate;
 		const userName = note.meta?.modifiedByUser?.caption || note.meta?.createdByUser?.caption;
-		const userPicture = note.meta?.modifiedByUser?.picture || note.meta?.createdByUser?.picture || "/assets/images/avatar1.jpg";
+		const userPicture = session.avatarUrl(note.meta?.modifiedByUser?.id);
 		const time = DateFormat.relativeTime(new Date(), (note.meta?.modifiedAt || note.meta?.createdAt)!);
 
 		return (
@@ -224,7 +224,7 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 				<div className="slds-media slds-comment slds-hint-parent">
 					<div className="slds-media__figure">
 						<a className="slds-avatar slds-avatar_circle slds-avatar_medium" href="/#">
-							<img alt={session.sessionInfo?.user.caption} src={session.sessionInfo?.user.picture} title={session.sessionInfo?.user.caption} />
+							<img alt={session.sessionInfo?.user.caption} src={session.avatarUrl(session.sessionInfo?.user.id)} title={session.sessionInfo?.user.caption} />
 						</a>
 					</div>
 					<div className="slds-media__body">

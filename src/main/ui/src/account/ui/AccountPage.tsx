@@ -1,21 +1,29 @@
 
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
+import { ActivityPortlet } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
 import ItemEditor from "item/ui/ItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
-import { makeObservable, observable } from "mobx";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
+import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import AccountStaticDataForm from "./forms/AccountStaticDataForm";
+import AccountSummaryForm from "./forms/AccountSummaryForm";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+enum RIGHT_TABS {
+	SUMMARY = "summary",
+	ACTIVITY = "activity",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -23,9 +31,20 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.ACCOUNT];
 
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable accountStore = AccountStoreModel.create({});
 	@observable contactStore = ContactStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+
+	@computed
+	get hasLogo(): boolean {
+		return !!this.accountStore.account?.logo?.contentTypeId;
+	}
+
+	@computed
+	get hasBanner(): boolean {
+		return !!this.accountStore.account?.banner?.contentTypeId;
+	}
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -101,7 +120,26 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.accountStore} />
+					<ItemRightPart isFullWidth={false}>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={<span>Steckbrief{(!this.hasLogo || !this.hasBanner) && <abbr className="slds-required"> *</abbr>}</span>}>
+								{
+									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									<AccountSummaryForm account={account} afterSave={this.reload} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									<ActivityPortlet {...Object.assign({}, this.props, { item: account, onSave: () => null as unknown as Promise<any> })} />
+								}
+							</TabsPanel>
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 				{
 					/*
@@ -146,9 +184,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={accountOwner.picture}
-						imgAlt={accountOwner.caption}
-						label={accountOwner.caption}
+						imgSrc={session.avatarUrl(accountOwner.id)}
+						imgAlt={accountOwner.name}
+						label={accountOwner.name}
 					/>
 				),
 				link: "/user/" + account.owner!.id
@@ -221,6 +259,11 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			}
 		};
 	*/
+
+	private reload = async () => {
+		this.accountStore.load(this.accountStore.id!);
+	};
+
 }
 
 export default withRouter(AccountPage);

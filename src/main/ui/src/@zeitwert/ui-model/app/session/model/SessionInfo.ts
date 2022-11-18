@@ -22,7 +22,6 @@ export interface UserInfo {
 	tenant: TenantInfo;
 	email: string;
 	extlIdpUserId?: string;
-	picture?: string;
 	role: string;
 	accounts: AccountInfo[];
 }

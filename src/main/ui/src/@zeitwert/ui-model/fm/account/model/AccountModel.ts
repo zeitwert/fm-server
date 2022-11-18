@@ -1,9 +1,11 @@
+import { Config } from "@zeitwert/ui-model/app";
 import { toJS } from "mobx";
 import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { ContactRole } from "../../contact/model/ContactEnums";
 import { ContactModel } from "../../contact/model/ContactModel";
+import { DocumentModel } from "../../dms/model/DocumentModel";
 
 export interface AccountStatistics {
 }
@@ -21,6 +23,9 @@ const MstAccountModel = ObjModel.named("Account")
 		//
 		contacts: types.optional(types.array(types.reference(ContactModel)), []),
 		mainContact: types.maybe(types.reference(ContactModel)),
+		//
+		banner: types.maybe(types.reference(DocumentModel)),
+		logo: types.maybe(types.reference(DocumentModel)),
 		//
 		statistics: types.frozen<AccountStatistics>()
 	})
@@ -85,6 +90,28 @@ const MstAccountModel = ObjModel.named("Account")
 					item.contactRole?.id !== "extended_family"
 			);
 		}
+	}))
+	.views((self) => ({
+		get hasLogo(): boolean {
+			return !!self.logo?.id && !!self.logo?.contentType?.id;
+		},
+		get logoUrl(): string | undefined {
+			if (self.logo?.id && self.logo?.contentType?.id) {
+				return Config.getRestUrl("dms", "documents/" + self.logo?.id + "/content");
+			}
+			return "/missing.jpg";
+		},
+	}))
+	.views((self) => ({
+		get hasBanner(): boolean {
+			return !!self.banner?.id && !!self.banner?.contentType?.id;
+		},
+		get bannerUrl(): string | undefined {
+			if (self.banner?.id && self.banner?.contentType?.id) {
+				return Config.getRestUrl("dms", "documents/" + self.banner?.id + "/content");
+			}
+			return "/missing.jpg";
+		},
 	}))
 	.views((self) => ({
 		get formSnapshot(): AccountSnapshot & {

@@ -1,21 +1,29 @@
 
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { EntityType, EntityTypeInfo, EntityTypes, session, User, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
+import { ActivityPortlet } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
 import ItemEditor from "item/ui/ItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
-import { makeObservable, observable } from "mobx";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
+import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import UserStaticDataForm from "./forms/UserStaticDataForm";
+import UserSummaryForm from "./forms/UserSummaryForm";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+enum RIGHT_TABS {
+	SUMMARY = "summary",
+	ACTIVITY = "activity",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -23,8 +31,14 @@ class UserPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.USER];
 
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable userStore = UserStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+
+	@computed
+	get hasAvatar(): boolean {
+		return !!this.userStore.user?.avatar?.contentTypeId;
+	}
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -100,7 +114,26 @@ class UserPage extends React.Component<RouteComponentProps> {
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.userStore} />
+					<ItemRightPart isFullWidth={false}>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={<span>Steckbrief{!this.hasAvatar && <abbr className="slds-required"> *</abbr>}</span>}>
+								{
+									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									<UserSummaryForm user={user} afterSave={this.reload} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									<ActivityPortlet {...Object.assign({}, this.props, { item: user, onSave: () => null as unknown as Promise<any> })} />
+								}
+							</TabsPanel>
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 			</>
 		);
@@ -113,14 +146,15 @@ class UserPage extends React.Component<RouteComponentProps> {
 			{ label: "Name", content: user.name },
 			{
 				label: "Owner",
-				content: owner.caption,
+				content: owner.name,
 				icon: (
+					!!owner.id &&
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={owner.picture}
-						imgAlt={owner.caption}
-						label={owner.caption}
+						imgSrc={session.avatarUrl(owner.id)}
+						imgAlt={owner.name}
+						label={owner.name}
 					/>
 				),
 				link: "/user/" + user.owner!.id
@@ -159,6 +193,10 @@ class UserPage extends React.Component<RouteComponentProps> {
 				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 		}
+	};
+
+	private reload = async () => {
+		this.userStore.load(this.userStore.id!);
 	};
 
 }

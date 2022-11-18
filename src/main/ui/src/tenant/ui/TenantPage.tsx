@@ -2,23 +2,31 @@
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, session, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
 import AccountCreationForm from "account/ui/forms/AccountCreationForm";
+import { ActivityPortlet } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
 import ItemEditor from "item/ui/ItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemGrid";
 import ItemHeader, { HeaderDetail } from "item/ui/ItemHeader";
 import ItemModal from "item/ui/ItemModal";
-import { makeObservable, observable } from "mobx";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
+import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import UserCreationForm from "user/ui/forms/UserCreationForm";
 import TenantStaticDataForm from "./forms/TenantStaticDataForm";
+import TenantSummaryForm from "./forms/TenantSummaryForm";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+enum RIGHT_TABS {
+	SUMMARY = "summary",
+	ACTIVITY = "activity",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -26,10 +34,21 @@ class TenantPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.TENANT];
 
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable tenantStore = TenantStoreModel.create({});
 	@observable accountStore = AccountStoreModel.create({});
 	@observable userStore = UserStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+
+	@computed
+	get hasLogo(): boolean {
+		return !!this.tenantStore.tenant?.logo?.contentTypeId;
+	}
+
+	@computed
+	get hasBanner(): boolean {
+		return !!this.tenantStore.tenant?.banner?.contentTypeId;
+	}
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -105,7 +124,26 @@ class TenantPage extends React.Component<RouteComponentProps> {
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.tenantStore} />
+					<ItemRightPart isFullWidth={false}>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={<span>Steckbrief{(!this.hasLogo || !this.hasBanner) && <abbr className="slds-required"> *</abbr>}</span>}>
+								{
+									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									<TenantSummaryForm tenant={tenant} afterSave={this.reload} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									<ActivityPortlet {...Object.assign({}, this.props, { item: tenant, onSave: () => null as unknown as Promise<any> })} />
+								}
+							</TabsPanel>
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 				{
 					this.accountStore.isInTrx &&
@@ -140,14 +178,14 @@ class TenantPage extends React.Component<RouteComponentProps> {
 			{ label: "Type", content: tenant.tenantType?.name },
 			{
 				label: "Owner",
-				content: tenantOwner.caption,
+				content: tenantOwner.name,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={tenantOwner.picture}
-						imgAlt={tenantOwner.caption}
-						label={tenantOwner.caption}
+						imgSrc={session.avatarUrl(tenantOwner.id)}
+						imgAlt={tenantOwner.name}
+						label={tenantOwner.name}
 					/>
 				),
 				link: "/user/" + tenant.owner!.id
@@ -248,6 +286,10 @@ class TenantPage extends React.Component<RouteComponentProps> {
 				"Could not create new User: " + (error.detail ? error.detail : error.title ? error.title : error)
 			);
 		}
+	};
+
+	private reload = async () => {
+		this.tenantStore.load(this.tenantStore.id!);
 	};
 
 }

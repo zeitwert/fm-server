@@ -1,6 +1,6 @@
 
 import { Button, Card, Checkbox, MediaObject } from "@salesforce/design-system-react";
-import { COMMUNITY_TENANT, Enumerated, LOGIN_INFO_ITEM, session, Session, TenantInfo } from "@zeitwert/ui-model";
+import { COMMUNITY_TENANT, Config, Enumerated, LOGIN_INFO_ITEM, session, Session, TenantInfo } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React, { ChangeEvent } from "react";
@@ -46,8 +46,13 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		return !!this.tenant && !!this.userRole && ["user", "super_user", "read_only"].indexOf(this.userRole) >= 0;
 	}
 
-	@computed get tenantLogoUrl(): string | undefined {
-		return !!this.tenant ? `/tenant/${this.tenant.extlKey}/login-logo.jpg` : "/tenant/login-logo.jpg";
+	@computed get logoUrl(): string | undefined {
+		if (!!this.account) {
+			return Config.getRestUrl("account", `accounts/${this.account.id}/logo`);
+		} else if (!!this.tenant) {
+			return Config.getRestUrl("oe", `tenants/${this.tenant.id}/logo`);
+		}
+		return "/zw-logo.jpg";
 	}
 
 	@computed get needDisclaimer(): boolean {
@@ -136,7 +141,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 								</div>
 								<div className="slds-col slds-size_1-of-3">
 									<div className="slds-card__body slds-card__body_inner" style={{ marginTop: "34px", marginRight: "1rem" }}>
-										<img src={this.tenantLogoUrl} alt="Tenant Logo" style={{ height: "144px" }} />
+										<img src={this.logoUrl} alt="Logo" style={{ height: "144px" }} />
 									</div>
 								</div>
 							</div>

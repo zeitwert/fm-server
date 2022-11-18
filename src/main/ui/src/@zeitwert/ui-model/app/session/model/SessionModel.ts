@@ -278,6 +278,11 @@ const MstSessionModel = types
 		get hasExternalAuthentication() {
 			return !!self.sessionInfo && !!self.sessionInfo!.user.extlIdpUserId;
 		}
+	}))
+	.views((self) => ({
+		avatarUrl(userId: string | undefined): string {
+			return userId ? Config.getRestUrl("oe", `users/${userId}/avatar`) : "/assets/images/avatar1.jpg";
+		},
 	}));
 
 type MstSessionType = typeof MstSessionModel;

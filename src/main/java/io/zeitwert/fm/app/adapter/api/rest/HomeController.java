@@ -52,7 +52,6 @@ public class HomeController {
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
 		ObjAccount account = this.accountRepository.get(accountId);
-		String accountImageUrl = "/account/" + account.getKey() + "/logo.jpg";
 		List<ObjPortfolioVRecord> portfolioList = this.portfolioRepository.find(new QuerySpec(ObjPortfolio.class));
 		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(new QuerySpec(ObjBuilding.class));
 		Integer ratingCount = (int) buildingList.stream()
@@ -66,7 +65,6 @@ public class HomeController {
 			HomeOverviewResponse.builder()
 				.accountId(accountId)
 				.accountName(account.getName())
-				.accountImageUrl(accountImageUrl)
 				.buildingCount(buildingList.size())
 				.portfolioCount(portfolioList.size())
 				.ratingCount(ratingCount)

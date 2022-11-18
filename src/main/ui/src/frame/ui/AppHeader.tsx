@@ -1,5 +1,6 @@
 
 import { GlobalHeader, GlobalHeaderSearch } from "@salesforce/design-system-react";
+import { Config } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -23,11 +24,11 @@ export default class AppHeader extends React.Component {
 		}
 		let logoSrc: string;
 		if (!this.ctx.session.appInfo?.id) {
-			logoSrc = "/logo.png";
+			logoSrc = "/zw-banner.jpg";
 		} else if (this.ctx.session.sessionInfo.account) {
-			logoSrc = `/account/${this.ctx.session.sessionInfo.account.key}/banner.png`;
+			logoSrc = Config.getRestUrl("account", `accounts/${this.ctx.session.sessionInfo.account.id}/banner`);
 		} else {
-			logoSrc = `/tenant/${this.ctx.session.sessionInfo.tenant.id}/logo.png`;
+			logoSrc = Config.getRestUrl("oe", `tenants/${this.ctx.session.sessionInfo.tenant.id}/banner`);
 		}
 		return (
 			<GlobalHeader
@@ -41,7 +42,7 @@ export default class AppHeader extends React.Component {
 				{/*<FrequentItems store={this.ctx.appStore} user={this.ctx.session.sessionInfo!.user} />*/}
 				<Help />
 				<Setup />
-				<Profile session={this.ctx.session} />
+				<Profile />
 			</GlobalHeader>
 		);
 	}

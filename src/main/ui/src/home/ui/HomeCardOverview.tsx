@@ -8,6 +8,7 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 
 interface Overview {
+	accountId: number;
 	accountName: string;
 	buildingCount: number;
 	portfolioCount: number;
@@ -16,7 +17,6 @@ interface Overview {
 	shortTermRenovationCosts: number;
 	midTermRenovationCosts: number;
 	ratingCount: number;
-	accountImageUrl: string;
 }
 
 @inject("appStore", "session")
@@ -39,6 +39,7 @@ export default class HomeCardOverview extends React.Component {
 	}
 
 	render() {
+		const accountImageUrl = Config.getRestUrl("account", `accounts/${this.overview?.accountId}/logo`);
 		return (
 			<Card
 				icon={<Icon category="standard" name="account" size="small" />}
@@ -51,7 +52,7 @@ export default class HomeCardOverview extends React.Component {
 						<Col totalCols={12} cols={4}>
 						</Col>
 						<Col totalCols={12} cols={4}>
-							<img src={this.overview?.accountImageUrl} alt="Account flag" />
+							<img src={accountImageUrl} alt="Account flag" />
 						</Col>
 						<Col totalCols={12} cols={4}>
 						</Col>

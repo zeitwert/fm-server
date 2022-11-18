@@ -29,6 +29,9 @@ public class DocumentContentController {
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getContent(@PathVariable Integer documentId) {
+		if (documentId == null) {
+			return ResponseEntity.notFound().build();
+		}
 		ObjDocument document = this.documentRepository.get(documentId);
 		CodeContentType contentType = document.getContentType();
 		if (contentType == null) {
@@ -38,7 +41,6 @@ public class DocumentContentController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDisposition(contentDisposition);
 		return ResponseEntity.ok().contentType(contentType.getMediaType()).headers(headers).body(document.getContent());
-
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.POST)

@@ -10,7 +10,6 @@ public class HomeOverviewResponse {
 
 	private Integer accountId;
 	private String accountName;
-	private String accountImageUrl;
 
 	private Integer buildingCount;
 	private Integer portfolioCount;

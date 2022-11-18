@@ -1,7 +1,7 @@
 
 import { Avatar, Button, GlobalHeaderNotifications, MediaObject, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_NOTIFICATIONS } from "@salesforce/design-system-react/utilities/constants";
-import { DateFormat } from "@zeitwert/ui-model";
+import { DateFormat, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -123,7 +123,7 @@ export default class Notifications extends React.Component<NotificationsProps> {
 								<Avatar
 									variant="user"
 									size="medium"
-									imgSrc={notification.user.picture}
+									imgSrc={session.avatarUrl(notification.user.id)}
 									imgAlt={notification.user.caption}
 									label={notification.user.caption}
 								/>

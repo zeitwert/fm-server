@@ -129,14 +129,14 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		return [
 			{
 				label: "Owner",
-				content: taskOwner.caption,
+				content: taskOwner.name,
 				icon: (
 					<Avatar
 						variant="user"
 						size="small"
-						imgSrc={taskOwner.picture}
-						imgAlt={taskOwner.caption}
-						label={taskOwner.caption}
+						imgSrc={session.avatarUrl(taskOwner.id)}
+						imgAlt={taskOwner.name}
+						label={taskOwner.name}
 					/>
 				),
 				link: "/user/" + task.owner!.id

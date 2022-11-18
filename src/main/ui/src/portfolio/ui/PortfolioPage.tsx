@@ -166,7 +166,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		// 			<Avatar
 		// 				variant="user"
 		// 				size="small"
-		// 				imgSrc={portfolio.owner!.picture}
+		// 				imgSrc={session.avatarUrl(portfolio.owner!.id)}
 		// 				imgAlt={portfolio.owner!.caption}
 		// 				label={portfolio.owner!.caption}
 		// 			/>
