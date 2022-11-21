@@ -129,7 +129,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		List<EvaluationParameter> params = new ArrayList<>();
 		this.addParameter(params, "Laufzeit (Zeithorizont)", "25 Jahre");
-		this.addParameter(params, "Teuerung", String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
+		this.addParameter(params, "Teuerung", String.format("%.1f", building.getInflationRate()) + " %");
 		this.addParameter(params, "Z/N Wert", "" + totalRating);
 		this.addParameter(params, "Zeitwert", "" + timeValue);
 		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
@@ -139,7 +139,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		List<EvaluationParameter> onePageParams = new ArrayList<>();
 		this.addParameter(onePageParams, "Laufzeit (Zeithorizont); Teuerung",
-				"25 Jahre; " + String.format("%.1f", ProjectionService.DefaultInflationRate) + " %");
+				"25 Jahre; " + String.format("%.1f", building.getInflationRate()) + " %");
 		this.addParameter(onePageParams, "Zeitwert (Z/N Wert: " + totalRating + ")", "" + timeValue);
 		this.addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
 		this.addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);

@@ -154,8 +154,8 @@ public interface ObjBuilding extends FMObj {
 
 	void removeRating(Integer ratingId);
 
-	double getBuildingValue(int year);
+	double getInflationRate();
 
-	double getBuildingValue(int year, double inflationRate);
+	double getBuildingValue(int year);
 
 }

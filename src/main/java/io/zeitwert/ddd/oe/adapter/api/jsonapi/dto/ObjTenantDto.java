@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,6 +33,7 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 	private String description;
 	private String extlKey;
 	private EnumeratedDto tenantType;
+	private BigDecimal inflationRate;
 	private List<EnumeratedDto> users;
 
 	@JsonApiRelationId

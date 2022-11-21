@@ -44,10 +44,6 @@ public class CodeBuildingPriceIndex extends EnumeratedBase {
 		return indexPerYear.get(targetYear) / indexPerYear.get(origYear);
 	}
 
-	public double priceAt(int origYear, double origPrice, int targetYear) {
-		return this.indexAt(origYear, targetYear) * origPrice;
-	}
-
 	public double priceAt(int origYear, double origPrice, int targetYear, double inflationRate) {
 		double targetPrice = this.indexAt(origYear, targetYear) * origPrice;
 		if (targetYear > maxIndexYear && inflationRate > 0) {

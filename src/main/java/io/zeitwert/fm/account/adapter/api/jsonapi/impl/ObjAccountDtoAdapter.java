@@ -42,6 +42,7 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 							: CodeClientSegmentEnum.getClientSegment(dto.getClientSegment().getId()));
 			obj.setReferenceCurrency(
 					dto.getReferenceCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getReferenceCurrency().getId()));
+			obj.setInflationRate(dto.getInflationRate());
 			if (dto.getAreas() != null) {
 				obj.clearAreaSet();
 				dto.getAreas().forEach(area -> obj.addArea(CodeAreaEnum.getArea(area.getId())));
@@ -61,18 +62,17 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 		}
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj);
-		// @formatter:off
 		return dtoBuilder
-			.key(obj.getKey())
-			.name(obj.getName())
-			.description(obj.getDescription())
-			.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))
-			.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
-			.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
-			.areas(obj.getAreaSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
-			.mainContactId(obj.getMainContactId())
-			.build();
-		// @formatter:on
+				.key(obj.getKey())
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))
+				.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
+				.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
+				.inflationRate(obj.getInflationRate())
+				.areas(obj.getAreaSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
+				.mainContactId(obj.getMainContactId())
+				.build();
 	}
 
 	@Override
@@ -82,18 +82,18 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 		}
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj);
-		// @formatter:off
 		return dtoBuilder
-			.key(obj.getIntlKey())
-			.name(obj.getName())
-			.description(obj.getDescription())
-			.accountType(EnumeratedDto.fromEnum(CodeAccountTypeEnum.getAccountType(obj.getAccountTypeId())))
-			.clientSegment(EnumeratedDto.fromEnum(CodeClientSegmentEnum.getClientSegment(obj.getClientSegmentId())))
-			.referenceCurrency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getReferenceCurrencyId())))
-			//.areas(obj.getAreaSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
-			.mainContactId(obj.getMainContactId())
-			.build();
-		// @formatter:on
+				.key(obj.getIntlKey())
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.accountType(EnumeratedDto.fromEnum(CodeAccountTypeEnum.getAccountType(obj.getAccountTypeId())))
+				.clientSegment(EnumeratedDto.fromEnum(CodeClientSegmentEnum.getClientSegment(obj.getClientSegmentId())))
+				.referenceCurrency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getReferenceCurrencyId())))
+				.inflationRate(obj.getInflationRate())
+				// .areas(obj.getAreaSet().stream().map(a ->
+				// EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
+				.mainContactId(obj.getMainContactId())
+				.build();
 	}
 
 }

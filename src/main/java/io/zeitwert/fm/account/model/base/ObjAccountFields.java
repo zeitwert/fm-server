@@ -2,6 +2,8 @@ package io.zeitwert.fm.account.model.base;
 
 import io.zeitwert.ddd.obj.model.base.ObjExtnFields;
 
+import java.math.BigDecimal;
+
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 
@@ -15,6 +17,7 @@ public interface ObjAccountFields extends ObjExtnFields {
 	static final Field<String> ACCOUNT_TYPE_ID = DSL.field("account_type_id", String.class);
 	static final Field<String> CLIENT_SEGMENT_ID = DSL.field("client_segment_id", String.class);
 	static final Field<String> REFERENCE_CURRENCY_ID = DSL.field("reference_currency_id", String.class);
+	static final Field<BigDecimal> INFLATION_RATE = DSL.field("inflation_rate", BigDecimal.class);
 	static final Field<Integer> LOGO_IMAGE = DSL.field("logo_img_id", Integer.class);
 	static final Field<Integer> BANNER_IMAGE = DSL.field("banner_img_id", Integer.class);
 	static final Field<Integer> MAIN_CONTACT_ID = DSL.field("main_contact_id", Integer.class);

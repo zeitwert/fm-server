@@ -20,6 +20,7 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.UpdatableRecord;
@@ -30,6 +31,7 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> extlKey;
 	protected final SimpleProperty<String> description;
+	protected final SimpleProperty<BigDecimal> inflationRate;
 	protected final ReferenceProperty<ObjDocument> logoImage;
 	protected final ReferenceProperty<ObjDocument> bannerImage;
 
@@ -42,6 +44,7 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		this.name = this.addSimpleProperty(dbRecord, ObjTenantFields.NAME);
 		this.extlKey = this.addSimpleProperty(dbRecord, ObjTenantFields.EXTL_KEY);
 		this.description = this.addSimpleProperty(dbRecord, ObjTenantFields.DESCRIPTION);
+		this.inflationRate = this.addSimpleProperty(dbRecord, ObjTenantFields.INFLATION_RATE);
 		this.logoImage = this.addReferenceProperty(dbRecord, ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
 		this.bannerImage = this.addReferenceProperty(dbRecord, ObjTenantFields.BANNER_IMAGE, ObjDocument.class);
 	}

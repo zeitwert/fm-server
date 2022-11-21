@@ -8,6 +8,7 @@ import io.zeitwert.ddd.oe.model.db.Keys;
 import io.zeitwert.ddd.oe.model.db.Public;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -81,6 +82,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      * The column <code>public.obj_tenant.banner_img_id</code>.
      */
     public final TableField<ObjTenantRecord, Integer> BANNER_IMG_ID = createField(DSL.name("banner_img_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_tenant.inflation_rate</code>.
+     */
+    public final TableField<ObjTenantRecord, BigDecimal> INFLATION_RATE = createField(DSL.name("inflation_rate"), SQLDataType.NUMERIC, this, "");
 
     private ObjTenant(Name alias, Table<ObjTenantRecord> aliased) {
         this(alias, aliased, null);
@@ -171,11 +177,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, String, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, String, Integer, Integer, BigDecimal> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

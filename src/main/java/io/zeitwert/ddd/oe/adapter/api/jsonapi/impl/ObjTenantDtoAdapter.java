@@ -33,6 +33,7 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 		obj.setName(dto.getName());
 		obj.setExtlKey(dto.getExtlKey());
 		obj.setDescription(dto.getDescription());
+		obj.setInflationRate(dto.getInflationRate());
 	}
 
 	@Override
@@ -43,10 +44,11 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.name(obj.getName())
-				.description(obj.getDescription())
-				.extlKey(obj.getExtlKey())
 				.tenantType(EnumeratedDto.fromEnum(obj.getTenantType()))
+				.name(obj.getName())
+				.extlKey(obj.getExtlKey())
+				.description(obj.getDescription())
+				.inflationRate(obj.getInflationRate())
 				.build();
 	}
 
@@ -69,10 +71,11 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapter<ObjTenant, ObjTenan
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
-				.name(obj.getName())
-				.description(obj.getDescription())
-				.extlKey(obj.getExtlKey())
 				.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))
+				.name(obj.getName())
+				.extlKey(obj.getExtlKey())
+				.description(obj.getDescription())
+				.inflationRate(obj.getInflationRate())
 				.build();
 	}
 

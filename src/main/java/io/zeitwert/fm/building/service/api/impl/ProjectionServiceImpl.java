@@ -156,7 +156,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				List<ProjectionPeriod> elementPeriods = projectionResult.getElementResultMap().get(elementEnum.getId());
 				ProjectionPeriod elementPeriod = elementPeriods.get(year - elementPeriods.get(0).getYear());
 				ObjBuilding building = projectionResult.getBuilding(elementEnum);
-				double buildingValue = building.getBuildingValue(year, DefaultInflationRate);
+				double buildingValue = building.getBuildingValue(year);
 				double elementValue = buildingValue * element.getValuePart() / 100.0;
 				originalValue += elementValue;
 				timeValue += elementValue * elementPeriod.getTimeValue() / 100.0;

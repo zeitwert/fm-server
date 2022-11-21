@@ -11,7 +11,6 @@ import java.util.List;
 public interface ProjectionService {
 
 	static final int DefaultDuration = 25;
-	static final double DefaultInflationRate = 1.0;
 
 	/**
 	 * Get the accumulated cost projection for a given portfolio

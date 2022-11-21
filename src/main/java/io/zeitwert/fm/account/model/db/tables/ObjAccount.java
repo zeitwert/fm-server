@@ -8,6 +8,7 @@ import io.zeitwert.fm.account.model.db.Keys;
 import io.zeitwert.fm.account.model.db.Public;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -101,6 +102,11 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
      * The column <code>public.obj_account.banner_img_id</code>.
      */
     public final TableField<ObjAccountRecord, Integer> BANNER_IMG_ID = createField(DSL.name("banner_img_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_account.inflation_rate</code>.
+     */
+    public final TableField<ObjAccountRecord, BigDecimal> INFLATION_RATE = createField(DSL.name("inflation_rate"), SQLDataType.NUMERIC, this, "");
 
     private ObjAccount(Name alias, Table<ObjAccountRecord> aliased) {
         this(alias, aliased, null);
@@ -207,11 +213,11 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, Integer, String, String, String, String, String, Integer, String, Integer, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Integer, Integer, String, String, String, String, String, Integer, String, Integer, Integer, BigDecimal> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

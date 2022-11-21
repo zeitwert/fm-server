@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
+import { EnumeratedField, FieldGroup, FieldRow, Input, NumberField, Select, TextArea, TextField } from "@zeitwert/ui-forms";
 import { TenantModel, TenantStore } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
@@ -13,6 +13,7 @@ const TenantStaticDataFormModel = new Form(
 		key: new TextField(),
 		name: new TextField({ required: true }),
 		description: new TextField(),
+		inflationRate: new NumberField(),
 		//
 		tenantType: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/codeTenantType", required: true }),
 	}
@@ -69,6 +70,9 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 											<Input label="Name" type="text" accessor={this.formState.field("name")} size={6} />
 											<Select label="Typ" accessor={this.formState.field("tenantType")} size={4} />
 											<Input label="Key" accessor={this.formState.field("key")} size={2} />
+										</FieldRow>
+										<FieldRow>
+											<Input label="Inflationsrate (in %)" accessor={this.formState.field("inflationRate")} size={3} />
 										</FieldRow>
 										<FieldRow>
 											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />

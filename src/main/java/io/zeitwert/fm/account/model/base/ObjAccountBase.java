@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.account.model.base;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.UpdatableRecord;
@@ -42,6 +43,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final EnumProperty<CodeAccountType> accountType;
 	protected final EnumProperty<CodeClientSegment> clientSegment;
 	protected final EnumProperty<CodeCurrency> referenceCurrency;
+	protected final SimpleProperty<BigDecimal> inflationRate;
 	protected final ReferenceProperty<ObjDocument> logoImage;
 	protected final ReferenceProperty<ObjDocument> bannerImage;
 	protected final ReferenceProperty<ObjContact> mainContact;
@@ -60,6 +62,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 				CodeClientSegmentEnum.class);
 		this.referenceCurrency = this.addEnumProperty(dbRecord, ObjAccountFields.REFERENCE_CURRENCY_ID,
 				CodeCurrencyEnum.class);
+		this.inflationRate = this.addSimpleProperty(dbRecord, ObjAccountFields.INFLATION_RATE);
 		this.logoImage = this.addReferenceProperty(dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
 		this.bannerImage = this.addReferenceProperty(dbRecord, ObjAccountFields.BANNER_IMAGE, ObjDocument.class);
 		this.mainContact = this.addReferenceProperty(dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);

@@ -20,6 +20,7 @@ const MstAccountModel = ObjModel.named("Account")
 		clientSegment: types.maybe(types.frozen<Enumerated>()),
 		areas: types.optional(types.array(types.frozen<Enumerated>()), []),
 		referenceCurrency: types.maybe(types.frozen<Enumerated>()),
+		inflationRate: types.maybe(types.number),
 		//
 		contacts: types.optional(types.array(types.reference(ContactModel)), []),
 		mainContact: types.maybe(types.reference(ContactModel)),

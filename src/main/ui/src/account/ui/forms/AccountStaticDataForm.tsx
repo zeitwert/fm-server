@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, Input, Select, Static, TextArea, TextField } from "@zeitwert/ui-forms";
+import { EnumeratedField, FieldGroup, FieldRow, Input, NumberField, Select, Static, TextArea, TextField } from "@zeitwert/ui-forms";
 import { AccountModel, AccountStore } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
@@ -13,6 +13,7 @@ const AccountStaticDataFormModel = new Form(
 		key: new TextField({ required: true }),
 		name: new TextField({ required: true }),
 		description: new TextField(),
+		inflationRate: new NumberField(),
 		//
 		accountType: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeAccountType", required: true }),
 		clientSegment: new EnumeratedField({ source: "{{enumBaseUrl}}/account/codeClientSegment" }),
@@ -67,9 +68,12 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 									<FieldGroup>
 										<FieldRow>
 											<Input label="Name" type="text" accessor={this.formState.field("name")} size={4} />
-											<Static label="Key" value={this.props.store.account?.key} size={2} />
+											<Static label="Schlüssel" value={this.props.store.account?.key} size={2} />
 											<Select label="Typ" accessor={this.formState.field("accountType")} size={3} />
 											<Select label="Segment" accessor={this.formState.field("clientSegment")} size={3} />
+										</FieldRow>
+										<FieldRow>
+											<Input label="Inflationsrate (in %)" accessor={this.formState.field("inflationRate")} size={3} />
 										</FieldRow>
 										<FieldRow>
 											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />

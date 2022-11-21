@@ -5,6 +5,7 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
 import io.zeitwert.fm.dms.model.ObjDocument;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ObjTenant extends Obj {
@@ -24,6 +25,10 @@ public interface ObjTenant extends Obj {
 	String getDescription();
 
 	void setDescription(String description);
+
+	BigDecimal getInflationRate();
+
+	void setInflationRate(BigDecimal rate);
 
 	Integer getLogoImageId();
 

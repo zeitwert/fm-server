@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 	private EnumeratedDto accountType;
 	private EnumeratedDto clientSegment;
 	private EnumeratedDto referenceCurrency;
+	private BigDecimal inflationRate;
 	private Set<EnumeratedDto> areas;
 
 	@JsonApiRelationId

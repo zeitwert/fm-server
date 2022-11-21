@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.account.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -35,6 +36,10 @@ public interface ObjAccount extends FMObj {
 	CodeCurrency getReferenceCurrency();
 
 	void setReferenceCurrency(CodeCurrency currency);
+
+	BigDecimal getInflationRate();
+
+	void setInflationRate(BigDecimal rate);
 
 	Integer getLogoImageId();
 
