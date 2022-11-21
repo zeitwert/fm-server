@@ -52,18 +52,8 @@ const columns = [
 	<DataTableColumn key="restorationBuilding" label="IS Gebäude" property="restorationBuilding" width="30%" truncate={true}>
 		<TextCell />
 	</DataTableColumn>,
-	/*
-		<DataTableColumn key="techPart" label="Technikanteil" property="techPart" width="5%">
-			<NumericCell />
-		</DataTableColumn>,
-		<DataTableColumn key="techRate" label="Technikrate" property="techRate" width="5%">
-			<NumericCell />
-		</DataTableColumn>,
-		<DataTableColumn key="maintenanceRate" label="IH Rate" property="maintenanceRate" width="5%">
-			<NumericCell />
-		</DataTableColumn>,
-	*/
 ];
+
 /*
 slds-float_right
 	<DataTableColumn key="restorationBacklog" label="IS Rückstände" property="restorationBacklog" />,
@@ -99,8 +89,8 @@ export default class TabProjectionTable extends React.Component<TabProjectionTab
 				maintenanceCosts: period.maintenanceCosts ? CCY_FMT.format(period.maintenanceCosts) : "",
 			};
 			if (period.restorationElements.length === 1) {
-				rows[0].restorationPart = period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name + " " + period.restorationElements[0].buildingPart.name;
-				rows[0].restorationBuilding = period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name + " " + period.restorationElements[0].building.name;
+				rows[0].restorationPart = period.restorationElements[0].buildingPart.name;
+				rows[0].restorationBuilding = period.restorationElements[0].building.name;
 			} else if (period.restorationElements.length > 1) {
 				period.restorationElements.forEach((re, index) => {
 					rows[rows.length + 1] = {
@@ -117,7 +107,9 @@ export default class TabProjectionTable extends React.Component<TabProjectionTab
 		setTimeout(() => {
 			document.querySelectorAll("th").forEach(th => {
 				if (["Jahr", "IS Element", "IS Gebäude"].indexOf(th.getAttribute("aria-label")!) < 0) {
-					th.getElementsByTagName("div")[0].classList.add("slds-float_right");
+					const thDiv = th.querySelectorAll("div")[2];
+					thDiv.style.flexDirection = "row-reverse";
+					thDiv.style.paddingRight = "0.75em";
 				}
 			});
 			document.querySelectorAll("td").forEach(td => {
