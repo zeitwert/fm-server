@@ -5,10 +5,9 @@ import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocMetaDto;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.base.DocFields;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjUser;
 
 import org.jooq.TableRecord;
 
@@ -18,7 +17,7 @@ public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D e
 	@Override
 	public void toAggregate(D dto, A doc) {
 		if (dto.getOwner() != null) {
-			doc.setOwner(getUserRepository().get(Integer.parseInt(dto.getOwner().getId())));
+			doc.setOwner(getUser(Integer.parseInt(dto.getOwner().getId())));
 		}
 	}
 
@@ -36,17 +35,15 @@ public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D e
 	}
 
 	protected void fromRecord(DocDtoBase.DocDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> doc) {
-		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
-		ObjTenant tenant = getTenantRepository().get(doc.get(DocFields.TENANT_ID));
-		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
-		ObjUser owner = getUserRepository().get(doc.get(DocFields.OWNER_ID));
+		EnumeratedDto tenant = getTenantEnumerated(doc.get(DocFields.TENANT_ID));
+		EnumeratedDto owner = getUserEnumerated(doc.get(DocFields.OWNER_ID));
 		// @formatter:off
 		dtoBuilder
-			.tenant(tenantDtoAdapter.asEnumerated(tenant))
+			.tenant(tenant)
 			.meta(DocMetaDto.fromRecord(doc))
 			.id(doc.get(DocFields.ID))
 			.caption(doc.get(DocFields.CAPTION))
-			.owner(userDtoAdapter.asEnumerated(owner));
+			.owner(owner);
 		// @formatter:on
 	}
 

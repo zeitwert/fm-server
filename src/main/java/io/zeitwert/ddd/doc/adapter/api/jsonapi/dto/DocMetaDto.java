@@ -12,9 +12,7 @@ import io.zeitwert.ddd.doc.model.DocMeta;
 import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -46,16 +44,14 @@ public class DocMetaDto extends AggregateMetaDto {
 	public static DocMetaDto fromRecord(Record doc) {
 		DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
 		AggregateMetaDto.fromRecord(builder, doc);
-		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
-		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
+		UserService userService = (UserService) AppContext.getInstance().getBean(UserService.class);
 		Integer modifiedByUserId = doc.getValue(DocFields.MODIFIED_BY_USER_ID);
-		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null
-				: userDtoAdapter.asEnumerated(userRepo.get(modifiedByUserId));
+		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null : userService.getUserEnumerated(modifiedByUserId);
 		// @formatter:off
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(doc.get(DocFields.DOC_TYPE_ID))))
-			.owner(userDtoAdapter.asEnumerated(userRepo.get(doc.getValue(DocFields.OWNER_ID))))
-			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(doc.getValue(DocFields.CREATED_BY_USER_ID))))
+			.owner(userService.getUserEnumerated(doc.getValue(DocFields.OWNER_ID)))
+			.createdByUser(userService.getUserEnumerated(doc.getValue(DocFields.CREATED_BY_USER_ID)))
 			.createdAt(doc.get(DocFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(doc.get(DocFields.MODIFIED_AT))

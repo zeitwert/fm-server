@@ -5,7 +5,6 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
@@ -74,11 +73,11 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		ObjTenant tenant = getTenantRepository().get(obj.getTenantId());
+		EnumeratedDto tenant = getTenantEnumerated(obj.getTenantId());
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
-				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(tenant))
+				.tenant(tenant)
 				.email(obj.getEmail())
 				.role(obj.getRoleList())
 				.name(obj.getName())

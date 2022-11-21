@@ -31,6 +31,7 @@
 		<lombok.version>1.18.22</lombok.version>
 		<jooq-codegen.version>3.14.15</jooq-codegen.version>
 		<javassist.version>3.29.0-GA</javassist.version>
+		<coffeine.version>3.1.1</coffeine.version>
 		<aspose-words.version>22.4</aspose-words.version>
 		<google-maps.version>2.0.0</google-maps.version>
 		<frontend-src-dir>${project.basedir}/src/main/ui</frontend-src-dir>
@@ -87,6 +88,11 @@
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>${javassist.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+			<version>${coffeine.version}</version>
 		</dependency>
 
 		<!-- Aspose, Google Maps -->

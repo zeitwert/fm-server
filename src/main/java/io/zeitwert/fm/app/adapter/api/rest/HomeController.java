@@ -4,7 +4,7 @@ package io.zeitwert.fm.app.adapter.api.rest;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -38,7 +38,7 @@ public class HomeController {
 	DSLContext dslContext;
 
 	@Autowired
-	ObjUserRepository userRepository;
+	UserService userService;
 
 	@Autowired
 	ObjAccountRepository accountRepository;
@@ -95,10 +95,10 @@ public class HomeController {
 		return HomeRatingResponse.builder()
 			.buildingId(record.getId())
 			.buildingName(record.getName())
-			.buildingOwner(userRepository.get(record.getOwnerId()).getCaption())
+			.buildingOwner(userService.getUser(record.getOwnerId()).getCaption())
 			.buildingAddress(record.getStreet() + " " + record.getZip() + " " + record.getCity())
 			.ratingDate(Formatter.INSTANCE.formatDate(record.getRatingDate()))
-			.ratingUser(record.getRatingUserId() != null ? userRepository.get(record.getRatingUserId()).getCaption() : null)
+			.ratingUser(record.getRatingUserId() != null ? userService.getUser(record.getRatingUserId()).getCaption() : null)
 		.build();
 		//@formatter:on
 	}
@@ -120,7 +120,7 @@ public class HomeController {
 				.objCaption(record.getCaption())
 				.seqNr(record.getSeqNr())
 				.timestamp(record.getTimestamp())
-				.user(this.userRepository.get(record.getUserId()).getCaption())
+				.user(this.userService.getUser(record.getUserId()).getCaption())
 				.changes(null)
 				.build();
 	}

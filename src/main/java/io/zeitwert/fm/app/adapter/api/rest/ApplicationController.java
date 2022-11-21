@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
@@ -24,7 +24,7 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 public class ApplicationController {
 
 	@Autowired
-	ObjUserRepository userRepository;
+	UserService userService;
 
 	@Autowired
 	AccountService accountService;
@@ -32,7 +32,7 @@ public class ApplicationController {
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
 		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
-		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(email);
+		Optional<ObjUser> maybeUser = this.userService.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}

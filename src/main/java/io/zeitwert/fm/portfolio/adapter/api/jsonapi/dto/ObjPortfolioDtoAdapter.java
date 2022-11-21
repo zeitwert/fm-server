@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
@@ -18,7 +19,8 @@ import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 public class ObjPortfolioDtoAdapter
 		extends FMObjDtoAdapter<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
 
-	protected static final ObjVRepository objRepository = (ObjVRepository) getRepository(Obj.class);
+	protected static final ObjVRepository objRepository = (ObjVRepository) AppContext.getInstance()
+			.getRepository(Obj.class);
 
 	private static final List<CodeAggregateType> OBJ_TYPES = List.of(
 			CodeAggregateTypeEnum.getAggregateType("obj_portfolio"),

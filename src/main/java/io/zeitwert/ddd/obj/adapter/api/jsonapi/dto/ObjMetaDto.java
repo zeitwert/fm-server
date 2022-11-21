@@ -14,8 +14,7 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -48,19 +47,16 @@ public class ObjMetaDto extends AggregateMetaDto {
 	public static ObjMetaDto fromRecord(Record obj) {
 		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
 		AggregateMetaDto.fromRecord(builder, obj);
-		ObjUserRepository userRepo = (ObjUserRepository) AppContext.getInstance().getRepository(ObjUser.class);
-		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
+		UserService userService = (UserService) AppContext.getInstance().getBean(UserService.class);
 		Integer modifiedByUserId = obj.getValue(ObjFields.MODIFIED_BY_USER_ID);
-		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null
-				: userDtoAdapter.asEnumerated(userRepo.get(modifiedByUserId));
+		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null : userService.getUserEnumerated(modifiedByUserId);
 		Integer closedByUserId = obj.getValue(ObjFields.CLOSED_BY_USER_ID);
-		EnumeratedDto closedByUser = closedByUserId == null ? null
-				: userDtoAdapter.asEnumerated(userRepo.get(closedByUserId));
+		EnumeratedDto closedByUser = closedByUserId == null ? null : userService.getUserEnumerated(closedByUserId);
 		// @formatter:off
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
-			.owner(userDtoAdapter.asEnumerated(userRepo.get(obj.getValue(ObjFields.OWNER_ID))))
-			.createdByUser(userDtoAdapter.asEnumerated(userRepo.get(obj.getValue(ObjFields.CREATED_BY_USER_ID))))
+			.owner(userService.getUserEnumerated(obj.getValue(ObjFields.OWNER_ID)))
+			.createdByUser(userService.getUserEnumerated(obj.getValue(ObjFields.CREATED_BY_USER_ID)))
 			.createdAt(obj.get(ObjFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(obj.get(ObjFields.MODIFIED_AT))

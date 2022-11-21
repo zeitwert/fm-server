@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
@@ -34,9 +33,6 @@ public class SessionController {
 
 	@Autowired
 	AuthenticationManager authenticationManager;
-
-	@Autowired
-	ObjUserRepository userRepository;
 
 	@Autowired
 	ObjAccountRepository accountRepository;

@@ -25,6 +25,8 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
+import io.zeitwert.ddd.oe.service.api.TenantService;
+import io.zeitwert.ddd.oe.service.api.UserService;
 
 @RestController("enumController")
 @RequestMapping("/enum")
@@ -34,24 +36,30 @@ public class EnumController {
 	Enumerations enumerations;
 
 	@Autowired
-	ObjTenantRepository tenantRepository;
+	ObjTenantRepository tenantRepo;
 
 	@Autowired
-	ObjUserRepository userRepository;
+	TenantService tenantService;
+
+	@Autowired
+	ObjUserRepository userRepo;
+
+	@Autowired
+	UserService userService;
 
 	@GetMapping("/oe/objTenant")
 	public ResponseEntity<List<EnumeratedDto>> getTenants() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<ObjTenantVRecord> tenantList = tenantRepository.find(querySpec);
+		List<ObjTenantVRecord> tenantList = tenantRepo.find(querySpec);
 		return ResponseEntity.ok(tenantList.stream()
 				.map(tenant -> EnumeratedDto.builder().id(tenant.getId().toString()).name(tenant.getName()).build()).toList());
 	}
 
 	@GetMapping("/oe/objTenant/{idOrExtlKey}")
 	public ResponseEntity<ObjTenant> getTenant(@PathVariable String idOrExtlKey) {
-		Optional<ObjTenant> tenant = tenantRepository.getByExtlKey(idOrExtlKey);
+		Optional<ObjTenant> tenant = tenantService.getByExtlKey(idOrExtlKey);
 		if (tenant.isEmpty()) {
-			tenant = Optional.of(tenantRepository.get(Integer.valueOf(idOrExtlKey)));
+			tenant = Optional.of(tenantService.getTenant(Integer.valueOf(idOrExtlKey)));
 		}
 		if (tenant.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -62,16 +70,16 @@ public class EnumController {
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<ObjUserVRecord> userList = userRepository.find(querySpec);
+		List<ObjUserVRecord> userList = userRepo.find(querySpec);
 		return ResponseEntity.ok(userList.stream()
 				.map(user -> EnumeratedDto.builder().id(user.getId().toString()).name(user.getName()).build()).toList());
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
-		Optional<ObjUser> user = userRepository.getByEmail(idOrEmail);
+		Optional<ObjUser> user = userService.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
-			user = Optional.of(userRepository.get(Integer.valueOf(idOrEmail)));
+			user = Optional.of(userService.getUser(Integer.valueOf(idOrEmail)));
 		}
 		if (user.isEmpty()) {
 			return ResponseEntity.notFound().build();
