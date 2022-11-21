@@ -7,6 +7,8 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.service.api.UserService;
 
+import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
 	private final ObjUserRepository userRepository;
+	private final Map<Integer, OffsetDateTime> objTouchMap = new HashMap<>();
 	private final Cache<Integer, ObjUser> objCache = Caffeine.newBuilder().maximumSize(100).recordStats().build();
 	private final Cache<Integer, EnumeratedDto> enumCache = Caffeine.newBuilder().maximumSize(100).recordStats().build();
 
@@ -62,6 +65,16 @@ public class UserServiceImpl implements UserService {
 			this.enumCache.put(userId, user);
 		}
 		return user;
+	}
+
+	public OffsetDateTime touch(Integer userId) {
+		OffsetDateTime timestamp = OffsetDateTime.now();
+		this.objTouchMap.put(userId, timestamp);
+		return timestamp;
+	}
+
+	public OffsetDateTime getLastTouch(Integer userId) {
+		return this.objTouchMap.get(userId);
 	}
 
 	public Map<String, Integer> getStatistics() {

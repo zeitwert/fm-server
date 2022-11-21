@@ -22,6 +22,11 @@
 				"value": "role"
 			},
 			{
+				"id": "lastTouch",
+				"label": "Letze Aktion",
+				"value": "lastTouch"
+			},
+			{
 				"id": "tenant",
 				"label": "Tenant",
 				"value": "tenant"
@@ -40,6 +45,7 @@
 				"link": "/user/{{id}}",
 				"role": "{{role}}",
 				"email": "{{email}}",
+				"lastTouch": "{{lastTouch}}",
 				"tenant": "{{tenant.name}}",
 				"owner": "{{meta.owner.name}}"
 			}

@@ -4,6 +4,7 @@ package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.ObjPortfolioApiRepository;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto.ObjPortfolioDto;
@@ -17,8 +18,9 @@ public class ObjPortfolioApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto>
 		implements ObjPortfolioApiRepository {
 
-	public ObjPortfolioApiRepositoryImpl(final ObjPortfolioRepository repository, RequestContext requestCtx) {
-		super(ObjPortfolioDto.class, requestCtx, repository, ObjPortfolioDtoAdapter.getInstance());
+	public ObjPortfolioApiRepositoryImpl(ObjPortfolioRepository repository, RequestContext requestCtx,
+			UserService userService) {
+		super(ObjPortfolioDto.class, requestCtx, userService, repository, ObjPortfolioDtoAdapter.getInstance());
 	}
 
 }

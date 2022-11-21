@@ -11,6 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
@@ -21,8 +24,20 @@ public abstract class AggregateDtoBase<A extends Aggregate> {
 	public static final String CalculationOnlyOperation = "calculationOnly";
 	public static final String DiscardOperation = "discard";
 
+	private static final Map<Class<?>, ?> serviceMap = new HashMap<>();
+
 	protected static final <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> aggrClass) {
 		return AppContext.getInstance().getRepository(aggrClass);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected static final <T> T getService(Class<T> serviceClass) {
+		T service = (T) serviceMap.get(serviceClass);
+		if (service == null) {
+			service = AppContext.getInstance().getBean(serviceClass);
+			((Map<Class<T>, T>) ((Object) serviceMap)).put(serviceClass, service);
+		}
+		return service;
 	}
 
 	public abstract AggregateMetaDto getMeta();

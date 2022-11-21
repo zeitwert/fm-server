@@ -4,6 +4,7 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.building.adapter.api.jsonapi.ObjBuildingApiRepository;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
@@ -16,8 +17,9 @@ public class ObjBuildingApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto>
 		implements ObjBuildingApiRepository {
 
-	public ObjBuildingApiRepositoryImpl(final ObjBuildingRepository repository, RequestContext requestCtx) {
-		super(ObjBuildingDto.class, requestCtx, repository, ObjBuildingDtoAdapter.getInstance());
+	public ObjBuildingApiRepositoryImpl(ObjBuildingRepository repository, RequestContext requestCtx,
+			UserService userService) {
+		super(ObjBuildingDto.class, requestCtx, userService, repository, ObjBuildingDtoAdapter.getInstance());
 	}
 
 }

@@ -4,6 +4,7 @@ package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
+import io.zeitwert.ddd.oe.service.api.UserService;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.ObjContactApiRepository;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
@@ -16,8 +17,9 @@ public class ObjContactApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjContact, ObjContactVRecord, ObjContactDto>
 		implements ObjContactApiRepository {
 
-	public ObjContactApiRepositoryImpl(final ObjContactRepository repository, RequestContext requestCtx) {
-		super(ObjContactDto.class, requestCtx, repository, ObjContactDtoAdapter.getInstance());
+	public ObjContactApiRepositoryImpl(ObjContactRepository repository, RequestContext requestCtx,
+			UserService userService) {
+		super(ObjContactDto.class, requestCtx, userService, repository, ObjContactDtoAdapter.getInstance());
 	}
 
 }
