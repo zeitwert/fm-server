@@ -22,7 +22,7 @@ export interface UserInfo {
 	tenant: TenantInfo;
 	email: string;
 	extlIdpUserId?: string;
-	role: string;
+	role: Enumerated;
 	accounts: AccountInfo[];
 }
 

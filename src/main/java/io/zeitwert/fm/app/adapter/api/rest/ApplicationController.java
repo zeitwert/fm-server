@@ -48,7 +48,7 @@ public class ApplicationController {
 				.email(user.getEmail())
 				.name(user.getName())
 				.tenant(tenantDtoAdapter.fromAggregate(user.getTenant()))
-				.role(user.getRole().getId())
+				.role(EnumeratedDto.fromEnum(user.getRole()))
 				.accounts(accountsDto)
 				.build()
 		);

@@ -15,7 +15,7 @@ public class UserInfoResponse {
 	private String name;
 	private String email;
 	private ObjTenantDto tenant;
-	private String role;
+	private EnumeratedDto role;
 	private List<EnumeratedDto> accounts;
 
 }

@@ -29,7 +29,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 
 	@observable email: string | undefined = undefined;
 	@observable password: string | undefined = undefined;
-	@observable userRole: string | undefined = undefined;
+	@observable userRole: Enumerated | undefined = undefined;
 	@observable account: Enumerated | undefined = undefined;
 
 	@observable tenant: TenantInfo | undefined = undefined;
@@ -43,7 +43,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	}
 
 	@computed get needAccount(): boolean {
-		return !!this.tenant && !!this.userRole && ["user", "super_user", "read_only"].indexOf(this.userRole) >= 0;
+		return !!this.tenant && !!this.userRole && ["user", "super_user", "read_only"].indexOf(this.userRole.id) >= 0;
 	}
 
 	@computed get logoUrl(): string | undefined {

@@ -11,9 +11,9 @@ where id in ('appAdmin', 'readOnly');
 insert into code_user_role(id, name)
 values
 ('app_admin', 'Application Admin'),
-('admin', 'Advisor or Community Tenant Admin'),
-('super_user', 'Advisor or Community Tenant User (elevated privileges)'),
-('user', 'Advisor or Community Tenant User'),
-('read_only', 'Advisor or Community Tenant User Read-Only')
+('admin', 'Tenant Admin'),
+('super_user', 'Super User'),
+('user', 'User'),
+('read_only', 'Read-Only User')
 on conflict(id)
 do update set name = excluded.name;

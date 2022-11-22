@@ -1,9 +1,8 @@
 package io.zeitwert.server.session.adapter.rest.dto;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -16,6 +15,6 @@ public class LoginResponse {
 	private String username;
 	private String email;
 	private Integer accountId;
-	private List<String> roles;
+	private EnumeratedDto role;
 
 }

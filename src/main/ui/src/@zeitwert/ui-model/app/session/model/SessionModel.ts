@@ -247,25 +247,25 @@ const MstSessionModel = types
 	}))
 	.views((self) => ({
 		get isUser(): boolean {
-			return ["read_only", "user", "super_user"].indexOf(self.sessionInfo?.user?.role!) >= 0;
+			return ["read_only", "user", "super_user"].indexOf(self.sessionInfo?.user?.role?.id!) >= 0;
 		},
 		get hasReadOnlyRole(): boolean {
-			return "read_only" === self.sessionInfo?.user?.role;
+			return "read_only" === self.sessionInfo?.user?.role?.id;
 		},
 		get hasUserRole(): boolean {
-			return "user" === self.sessionInfo?.user?.role;
+			return "user" === self.sessionInfo?.user?.role?.id;
 		},
 		get hasSuperUserRole(): boolean {
-			return "super_user" === self.sessionInfo?.user?.role;
+			return "super_user" === self.sessionInfo?.user?.role?.id;
 		},
 		get isAdmin(): boolean {
-			return ["admin", "app_admin"].indexOf(self.sessionInfo?.user?.role!) >= 0;
+			return ["admin", "app_admin"].indexOf(self.sessionInfo?.user?.role?.id!) >= 0;
 		},
 		get hasAdminRole(): boolean {
-			return "admin" === self.sessionInfo?.user?.role;
+			return "admin" === self.sessionInfo?.user?.role?.id;
 		},
 		get hasAppAdminRole(): boolean {
-			return "app_admin" === self.sessionInfo?.user?.role;
+			return "app_admin" === self.sessionInfo?.user?.role?.id;
 		},
 	}))
 	.views((self) => ({

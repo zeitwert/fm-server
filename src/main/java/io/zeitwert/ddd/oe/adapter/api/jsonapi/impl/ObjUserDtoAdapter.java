@@ -35,7 +35,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		if (dto.getPassword() != null) {
 			obj.setPassword("{noop}" + dto.getPassword());
 		}
-		obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole()));
+		obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole().getId()));
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
 	}
@@ -50,7 +50,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		return dtoBuilder
 				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant()))
 				.email(obj.getEmail())
-				.role(obj.getRole().getId())
+				.role(EnumeratedDto.fromEnum(obj.getRole()))
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.build();
@@ -78,7 +78,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		return dtoBuilder
 				.tenant(tenant)
 				.email(obj.getEmail())
-				.role(obj.getRoleList())
+				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(obj.getRoleList())))
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.build();

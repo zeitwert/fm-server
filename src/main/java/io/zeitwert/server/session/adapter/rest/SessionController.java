@@ -1,8 +1,6 @@
 
 package io.zeitwert.server.session.adapter.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
@@ -51,7 +51,7 @@ public class SessionController {
 		Integer accountId = loginRequest.getAccountId();
 		String jwt = jwtProvider.createJwt(authentication, accountId);
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) authentication.getPrincipal();
-		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
+		String role = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList().get(0);
 		//@formatter:off
 		return ResponseEntity.ok(
 			LoginResponse.builder()
@@ -60,7 +60,7 @@ public class SessionController {
 				.username(userDetails.getUsername())
 				.email(userDetails.getUsername())
 				.accountId(accountId)
-				.roles(roles)
+				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(role)))
 				.build()
 		);
 		//@formatter:on

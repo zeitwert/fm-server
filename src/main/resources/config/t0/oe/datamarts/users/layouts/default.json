@@ -43,7 +43,7 @@
 				"id": "{{id}}",
 				"name": "{{name}}",
 				"link": "/user/{{id}}",
-				"role": "{{role}}",
+				"role": "{{role.name}}",
 				"email": "{{email}}",
 				"lastTouch": "{{lastTouch}}",
 				"tenant": "{{tenant.name}}",

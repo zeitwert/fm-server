@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, Input, TextArea, TextField } from "@zeitwert/ui-forms";
+import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
 import { UserModel, UserStore } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
@@ -13,7 +13,7 @@ const UserStaticDataFormModel = new Form(
 		tenant: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/objTenant", required: true }),
 		email: new TextField({ required: true }),
 		name: new TextField({ required: true }),
-		role: new TextField({ required: true }),
+		role: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/codeUserRole", required: true }),
 		description: new TextField(),
 	}
 );
@@ -65,7 +65,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 										<FieldRow>
 											<Input label="Name" type="text" accessor={this.formState.field("name")} size={6} />
 											<Input label="Email" type="text" accessor={this.formState.field("email")} size={4} />
-											<Input label="Rolle" type="text" accessor={this.formState.field("role")} size={2} />
+											<Select label="Rolle" accessor={this.formState.field("role")} size={2} />
 										</FieldRow>
 										<FieldRow>
 											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />

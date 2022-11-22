@@ -14,7 +14,7 @@ const UserCreationFormModel = new Form(
 		owner: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/oe/objUser" }),
 		email: new TextField({ required: true }),
 		password: new TextField({ required: true }),
-		role: new TextField({ required: true }),
+		role: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/codeUserRole", required: true }),
 		name: new TextField({ required: true }),
 		description: new TextField(),
 	}
@@ -74,7 +74,7 @@ export default class UserCreationForm extends React.Component<UserCreationFormPr
 										</FieldRow>
 										<FieldRow>
 											<Input label="Email" type="text" accessor={this.formState.field("email")} size={6} />
-											<Input label="Rolle" type="text" accessor={this.formState.field("role")} size={6} />
+											<Select label="Rolle" accessor={this.formState.field("role")} size={6} />
 										</FieldRow>
 										<FieldRow>
 											<Input label="Name" type="text" accessor={this.formState.field("name")} size={6} />

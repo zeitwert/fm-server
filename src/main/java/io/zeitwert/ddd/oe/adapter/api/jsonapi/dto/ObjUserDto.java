@@ -36,7 +36,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 	private EnumeratedDto tenant;
 	private String email;
 	private String password;
-	private String role;
+	private EnumeratedDto role;
 	private String name;
 	private String description;
 
