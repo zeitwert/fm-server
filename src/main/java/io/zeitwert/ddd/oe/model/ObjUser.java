@@ -27,10 +27,6 @@ public interface ObjUser extends Obj {
 
 	ObjDocument getAvatarImage();
 
-	String getPicture();
-
-	void setPicture(String picture);
-
 	CodeUserRole getRole();
 
 	boolean hasRole(CodeUserRole role);

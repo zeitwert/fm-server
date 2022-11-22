@@ -67,28 +67,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// login
 				.antMatchers(HttpMethod.GET, "/api/app/userInfo/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/api/session/login/**").permitAll()
-				// static assets
+				// enumerations
+				.antMatchers(HttpMethod.GET, "/enum/**").permitAll()
+				// static content
 				.antMatchers(HttpMethod.GET, "/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/demo/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/enum/**").permitAll()
 				// user, tenant and account pictures
 				.antMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/oe/tenants/**/{logo|banner}").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/account/accounts/**/{logo|banner}").permitAll()
-				// ui paths
-				.antMatchers(HttpMethod.GET, "/account/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/contact/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/building/*").permitAll()
-				// statistics
-				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// special paths via <img src="" />
 				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // TODO revoke
 				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/location").permitAll() // TODO revoke
 				// special paths via <iframe src="" />
 				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/evaluation").permitAll() // TODO revoke
+				// statistics
+				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// test paths
 				.antMatchers(HttpMethod.GET, "/api/test/all").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/test/**").authenticated()

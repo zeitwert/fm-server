@@ -38,7 +38,6 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole()));
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
-		// obj.setPicture(dto.getPicture());
 	}
 
 	@Override
