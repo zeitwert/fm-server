@@ -3,6 +3,8 @@ package io.zeitwert.fm.building.service.api.impl;
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,8 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 @DependsOn("codeBuildingPriceIndexEnum")
 public class ProjectionServiceImpl implements ProjectionService {
 
+	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+
 	static final List<String> FullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10",
 			"P63", "P64", "P65", "P66");
 	static final List<String> HalfTechRates = List.of("P12", "P60", "P61", "P62");
@@ -43,12 +47,16 @@ public class ProjectionServiceImpl implements ProjectionService {
 				.map(id -> this.buildingRepo.get(id))
 				.collect(Collectors.toSet());
 		int duration = DefaultDuration;
-		return this.getProjectionDetails(buildings, duration);
+		String fileName = portfolio.getAccount().getName() + " " + portfolio.getName();
+		fileName += " " + monthFormatter.format(OffsetDateTime.now());
+		return this.getProjectionDetails(buildings, duration, fileName);
 	}
 
 	public ProjectionResult getProjection(ObjBuilding building) {
 		int duration = DefaultDuration;
-		return this.getProjectionDetails(Set.of(building), duration);
+		String fileName = building.getAccount().getName() + " " + building.getName();
+		fileName += " " + monthFormatter.format(OffsetDateTime.now());
+		return this.getProjectionDetails(Set.of(building), duration, fileName);
 	}
 
 	/**
@@ -60,7 +68,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 	 * @param duration
 	 * @return
 	 */
-	private ProjectionResult getProjectionDetails(Set<ObjBuilding> buildings, Integer duration) {
+	private ProjectionResult getProjectionDetails(Set<ObjBuilding> buildings, Integer duration, String fileName) {
 		List<RestorationElement> elementList = new ArrayList<>();
 		Map<EnumeratedDto, ObjBuildingPartElementRating> elementMap = new HashMap<>();
 		Map<String, List<ProjectionPeriod>> elementResultMap = new HashMap<>();
@@ -90,6 +98,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 		}
 		ProjectionResult rawResult =
 			ProjectionResult.builder()
+				.fileName(fileName)
 				.startYear(startYear)
 				.duration(duration)
 				.elementList(elementList)
@@ -206,6 +215,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		//@formatter:off
 		return ProjectionResult.builder()
+			.fileName(projectionResult.getFileName())
 			.startYear(projectionResult.getStartYear())
 			.duration(projectionResult.getDuration())
 			.elementList(projectionResult.getElementList())

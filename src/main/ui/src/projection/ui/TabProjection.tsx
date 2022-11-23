@@ -98,7 +98,7 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 				<div className="slds-vertical-tabs__content slds-show" id="rep-content" role="tabpanel">
 					{this.reportType === ReportType.CHART && <TabProjectionChart projection={this.projection} key={"portf-chart-" + this.loadNr} />}
 					{this.reportType === ReportType.TABLE && <TabProjectionTable projection={this.projection} key={"portf-table-" + this.loadNr} />}
-					{this.reportType === ReportType.PRINT && <TabProjectionPrint itemType={this.props.itemType} itemId={this.props.itemId} key={"portf-print-" + this.loadNr} />}
+					{this.reportType === ReportType.PRINT && <TabProjectionPrint itemType={this.props.itemType} itemId={this.props.itemId} fileName={this.projection.fileName} key={"portf-print-" + this.loadNr} />}
 				</div>
 			</div>
 		);

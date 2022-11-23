@@ -194,13 +194,13 @@ const MstSessionModel = types
 				tenantInfo(id: string): Promise<LoginTenantInfo | undefined> {
 					return flow(function* () {
 						try {
-							const userInfoResponse: AxiosResponse<LoginTenantInfo> = yield API.get(Config.getRestUrl("app", TENANT_INFO_URL + "/" + id));
-							if (userInfoResponse.status === 200) {
-								return userInfoResponse.data;
+							const tenantInfoResponse: AxiosResponse<LoginTenantInfo> = yield API.get(Config.getRestUrl("app", TENANT_INFO_URL + "/" + id));
+							if (tenantInfoResponse.status === 200) {
+								return tenantInfoResponse.data;
 							}
 							return undefined;
 						} catch (error: any) {
-							Logger.error("User info failed", error);
+							Logger.error("Tenant info failed", error);
 							return undefined;
 						}
 					})();

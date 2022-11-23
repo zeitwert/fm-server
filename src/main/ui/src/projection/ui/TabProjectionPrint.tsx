@@ -6,14 +6,16 @@ import React from "react";
 export interface TabProjectionPrintProps {
 	itemType: "building" | "portfolio";
 	itemId: string;
+	fileName: string;
 }
 
 @observer
 export default class TabProjectionPrint extends React.Component<TabProjectionPrintProps> {
 
 	render() {
-		const url = Config.getRestUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId + "/evaluation?format=pdf&inline=true#view=fit");
-		return <iframe src={url} title="Kosten" height="100%" width="100%" />;
+		const fileName = this.props.fileName;
+		const url = Config.getRestUrl(this.props.itemType, this.props.itemType + "s/" + this.props.itemId + `/evaluation/${fileName}?format=pdf&inline=true#view=fit`);
+		return <iframe src={url} title="Auswertung" height="100%" width="100%" />;
 	}
 
 }

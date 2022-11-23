@@ -180,6 +180,14 @@ public class BuildingEvaluationController {
 		}
 	}
 
+	@GetMapping("/{id}/evaluation/{viewerFileName}")
+	protected ResponseEntity<byte[]> exportBuildingWithFileName(
+			@PathVariable("id") Integer id,
+			@RequestParam(required = false, name = "format") String format,
+			@RequestParam(required = false, name = "inline") Boolean isInline) {
+		return this.exportBuilding(id, format, isInline);
+	}
+
 	@GetMapping("/{id}/evaluation")
 	protected ResponseEntity<byte[]> exportBuilding(
 			@PathVariable("id") Integer id,
@@ -222,13 +230,13 @@ public class BuildingEvaluationController {
 				doc.save(outStream, saveFormat);
 			}
 
-			String fileName = this.getFileName(building, saveFormat);
 			// mark file for download
 			HttpHeaders headers = new HttpHeaders();
 			if (isInline != null && isInline) {
 				return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers)
 						.body(outStream.toByteArray());
 			} else {
+				String fileName = this.getFileName(evaluationResult.getFileName(), saveFormat);
 				ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
 				headers.setContentDisposition(contentDisposition);
 				return ResponseEntity.ok().headers(headers).body(outStream.toByteArray());
@@ -617,9 +625,8 @@ public class BuildingEvaluationController {
 		return format != null && "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
 	}
 
-	private String getFileName(ObjBuilding building, int saveFormat) {
-		return (building.getAccount() != null ? building.getAccount().getName() + " " : "") + building.getName()
-				+ (saveFormat == SaveFormat.DOCX ? ".docx" : ".pdf");
+	private String getFileName(String fileName, int saveFormat) {
+		return fileName + (saveFormat == SaveFormat.DOCX ? ".docx" : ".pdf");
 	}
 
 }

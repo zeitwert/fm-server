@@ -185,6 +185,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 				.address(building.getStreet() + ", " + building.getZip() + " " + building.getCity() + ", "
 						+ building.getCountry().getName())
 				.accountName(building.getAccount().getName())
+				.fileName(projectionResult.getFileName())
 				.facts(facts)
 				.params(params)
 				.onePageFacts(onePageFacts)
