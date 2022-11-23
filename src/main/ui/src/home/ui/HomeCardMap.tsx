@@ -14,6 +14,7 @@ export interface HomeCardMapProps {
 @observer
 export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 
+	@observable buildingCount: number = 0;
 	@observable buildingList: Building[] = [];
 
 	get ctx() {
@@ -38,8 +39,12 @@ export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 				bodyClassName="slds-m-around_none"
 			>
 				{
-					!this.buildingList.length &&
-					<p className="slds-m-horizontal_medium">Keine Immobilien vorhanden oder keine Koordinaten berechnet.</p>
+					!this.buildingList.length && !!this.buildingCount &&
+					<p className="slds-m-horizontal_medium">Keine Koordinaten berechnet (aus {this.buildingCount} Gebäuden).</p>
+				}
+				{
+					!this.buildingList.length && !this.buildingCount &&
+					<p className="slds-m-horizontal_medium">Keine Immobilien vorhanden.</p>
 				}
 				{
 					!!this.buildingList.length &&
@@ -51,6 +56,7 @@ export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 
 	private loadBuildingList = async () => {
 		const rsp = await API.get(Config.getApiUrl("building", "buildings"))
+		this.buildingCount = rsp.data.data.length;
 		this.buildingList = rsp.data.data.map((b: any) => this.toBuilding(b)).filter((b: Building) => !!b);
 	}
 

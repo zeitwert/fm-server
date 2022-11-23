@@ -60,8 +60,8 @@ export default class HomeCardOverview extends React.Component {
 					<Row nowrap className="slds-p-top_small">
 						<Col totalCols={12} cols={12}>
 							<Grid>
-								{this.fact(this.overview?.buildingCount, "Immobilie", "Immobilien")}
-								{this.fact(this.overview?.portfolioCount, "Portfolio", "Portfolios")}
+								{this.fact(this.overview?.buildingCount, "Immobilie", "Immobilien", "/building")}
+								{this.fact(this.overview?.portfolioCount, "Portfolio", "Portfolios", "/portfolio")}
 								{this.fact(this.overview?.ratingCount, "Bewertung", "Bewertungen")}
 								{this.fact(this.overview?.insuranceValue, "kCHF Versicherungswert")}
 								{this.fact(this.overview?.timeValue, "kCHF Zeitwert")}
@@ -80,7 +80,7 @@ export default class HomeCardOverview extends React.Component {
 		this.overview = rsp.data;
 	}
 
-	private fact = (nr?: number, name?: string, multiName?: string) => {
+	private fact = (nr?: number, name?: string, multiName?: string, url?: string) => {
 		if (nr === undefined || nr === null) {
 			return <></>;
 		}
@@ -93,7 +93,14 @@ export default class HomeCardOverview extends React.Component {
 				</div>
 			</Col>
 			<Col totalCols={12} cols={8} className="slds-p-left_x-small">
-				<p className="slds-text-heading_medium slds-p-top_x-small slds-truncate">{nr === 1 ? name : multiName || name}</p>
+				<p className="slds-text-heading_medium slds-p-top_x-small slds-truncate">
+					{
+						!url && (nr === 1 ? name : multiName || name)
+					}
+					{
+						!!url && <a href={url}>{nr === 1 ? name : multiName || name}</a>
+					}
+				</p>
 			</Col>
 		</Row>;
 	}
