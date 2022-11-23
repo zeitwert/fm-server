@@ -4,7 +4,9 @@ import { toJS } from "mobx";
 import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
+import { AccountModel } from "../../account/model/AccountModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
+import { UserModel } from "../../user/model/UserModel";
 
 export interface TenantStatistics {
 }
@@ -18,6 +20,8 @@ const MstTenantModel = ObjModel.named("Tenant")
 		//
 		tenantType: types.maybe(types.frozen<Enumerated>()),
 		//
+		users: types.optional(types.array(types.reference(UserModel)), []),
+		accounts: types.optional(types.array(types.reference(AccountModel)), []),
 		banner: types.maybe(types.reference(DocumentModel)),
 		logo: types.maybe(types.reference(DocumentModel)),
 	})

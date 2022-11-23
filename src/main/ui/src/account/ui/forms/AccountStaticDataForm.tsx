@@ -61,22 +61,46 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 		return (
 			<div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-1">
-						<Card heading="Information" bodyClassName="slds-m-around_medium">
+					<div className="slds-col slds-size_1-of-2">
+						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} size={4} />
-											<Static label="Schlüssel" value={this.props.store.account?.key} size={2} />
-											<Select label="Typ" accessor={this.formState.field("accountType")} size={3} />
-											<Select label="Segment" accessor={this.formState.field("clientSegment")} size={3} />
+											<Input label="Name" type="text" accessor={this.formState.field("name")} size={8} />
+											<Static label="Schlüssel" value={this.props.store.account?.key} size={4} />
 										</FieldRow>
+										<FieldRow>
+											<Select label="Typ" accessor={this.formState.field("accountType")} size={6} />
+											<Select label="Segment" accessor={this.formState.field("clientSegment")} size={6} />
+										</FieldRow>
+									</FieldGroup>
+								</div>
+							</div>
+						</Card>
+					</div>
+					<div className="slds-col slds-size_1-of-2">
+						<Card heading="&nbsp;" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body slds-card__body_inner">
+								<div className="slds-form" role="list">
+									<FieldGroup>
+										<FieldRow>
+											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={4} />
+										</FieldRow>
+									</FieldGroup>
+								</div>
+							</div>
+						</Card>
+					</div>
+				</div>
+				<div className="slds-grid slds-wrap slds-m-top_small">
+					<div className="slds-col slds-size_1-of-1">
+						<Card heading="Berechnungsparameter" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body slds-card__body_inner">
+								<div className="slds-form" role="list">
+									<FieldGroup>
 										<FieldRow>
 											<Input label="Inflationsrate (in %)" accessor={this.formState.field("inflationRate")} size={3} />
-										</FieldRow>
-										<FieldRow>
-											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={12} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

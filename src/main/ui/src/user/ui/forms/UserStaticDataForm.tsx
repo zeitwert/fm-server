@@ -105,7 +105,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<TextArea label="Beschreibung" accessor={this.formState.field("description")} />
+											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={4} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

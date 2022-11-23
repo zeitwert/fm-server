@@ -1,5 +1,5 @@
 
-import { EntityType, session, User, UserStore, UserStoreModel } from "@zeitwert/ui-model";
+import { EntityType, Enumerated, session, User, UserStore, UserStoreModel } from "@zeitwert/ui-model";
 import { withRouter } from "frame/app/withRouter";
 import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
@@ -50,5 +50,9 @@ const initUser = (user: User) => {
 	if (!session.isKernelTenant) {
 		user.setField("tenant", session.sessionInfo?.tenant);
 	}
-	user.setField("role", "user");
+	const userRoleEnum: Enumerated = {
+		id: "user",
+		name: "User"
+	};
+	user.setField("role", userRoleEnum);
 }

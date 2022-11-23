@@ -198,6 +198,8 @@ class TenantPage extends React.Component<RouteComponentProps> {
 			<>
 				<ButtonGroup variant="list">
 					<Button onClick={this.openUserEditor}>Add User</Button>
+				</ButtonGroup>
+				<ButtonGroup variant="list">
 					<Button onClick={this.openAccountEditor}>Add Account</Button>
 				</ButtonGroup>
 			</>
@@ -230,7 +232,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	};
 
 	private openAccountEditor = () => {
-		const tenant = this.tenantStore.item!;
+		const tenant = this.tenantStore.tenant!;
 		const tenantEnum: Enumerated = {
 			id: tenant.id,
 			name: tenant.caption!
@@ -259,15 +261,19 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	};
 
 	private openUserEditor = () => {
-		const tenant = this.tenantStore.item!;
+		const tenant = this.tenantStore.tenant!;
 		const tenantEnum: Enumerated = {
 			id: tenant.id,
 			name: tenant.caption!
 		};
+		const roleEnum: Enumerated = {
+			id: "user",
+			name: "User"
+		};
 		this.userStore.create({
 			tenant: tenantEnum,
 			owner: this.ctx.session.sessionInfo!.user,
-			role: "user"
+			role: roleEnum
 		});
 	};
 

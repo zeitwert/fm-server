@@ -3,6 +3,7 @@ package io.zeitwert.ddd.oe.model;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.dms.model.ObjDocument;
 
 import java.math.BigDecimal;
@@ -26,6 +27,10 @@ public interface ObjTenant extends Obj {
 
 	void setDescription(String description);
 
+	List<ObjUser> getUsers();
+
+	List<ObjAccount> getAccounts();
+
 	BigDecimal getInflationRate();
 
 	void setInflationRate(BigDecimal rate);
@@ -37,7 +42,5 @@ public interface ObjTenant extends Obj {
 	Integer getBannerImageId();
 
 	ObjDocument getBannerImage();
-
-	List<ObjUser> getUsers();
 
 }

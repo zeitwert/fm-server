@@ -14,6 +14,8 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -98,6 +100,12 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	public List<ObjUser> getUsers() {
 		ObjUserRepository userRepo = (ObjUserRepository) this.getAppContext().getRepository(ObjUser.class);
 		return userRepo.getByForeignKey("tenantId", this.getId()).stream().map(c -> userRepo.get(c.getId())).toList();
+	}
+
+	@Override
+	public List<ObjAccount> getAccounts() {
+		ObjAccountRepository accountRepo = (ObjAccountRepository) this.getAppContext().getRepository(ObjAccount.class);
+		return accountRepo.getByForeignKey("tenantId", this.getId()).stream().map(c -> accountRepo.get(c.getId())).toList();
 	}
 
 	@Override
