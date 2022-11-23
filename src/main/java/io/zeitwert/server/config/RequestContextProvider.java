@@ -28,8 +28,11 @@ public class RequestContextProvider {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
+
 		ObjUser user = userService.getUser(userDetails.getUserId());
-		return new RequestContext(user, userDetails.getAccountId(), CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
+		Integer tenantId = userDetails.getTenantId();
+		Integer accountId = userDetails.getAccountId();
+		return new RequestContext(user, tenantId, accountId, CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
 
 	}
 

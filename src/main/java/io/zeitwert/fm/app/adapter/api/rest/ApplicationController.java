@@ -12,16 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
+import io.zeitwert.ddd.oe.service.api.TenantService;
 import io.zeitwert.ddd.oe.service.api.UserService;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
+import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 
 @RestController("fmApplicationController")
-@RequestMapping("/api/app")
+@RequestMapping("/rest/app")
 public class ApplicationController {
+
+	@Autowired
+	TenantService tenantService;
 
 	@Autowired
 	UserService userService;
@@ -31,25 +36,37 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
 		Optional<ObjUser> maybeUser = this.userService.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		ObjUser user = maybeUser.get();
-		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(user.getTenant());
-		List<EnumeratedDto> accountsDto = accounts.stream()
-				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
-				.toList();
 		//@formatter:off
 		return ResponseEntity.ok(
 			UserInfoResponse.builder()
 				.id(user.getId())
 				.email(user.getEmail())
 				.name(user.getName())
-				.tenant(tenantDtoAdapter.fromAggregate(user.getTenant()))
 				.role(EnumeratedDto.fromEnum(user.getRole()))
-				.accounts(accountsDto)
+				.tenants(user.getTenantSet().stream().map(t -> tenantService.getTenantEnumerated(t.getId())).toList())
+				.build()
+		);
+		//@formatter:on
+	}
+
+	@GetMapping("/tenantInfo/{id}")
+	public ResponseEntity<TenantInfoResponse> tenantInfo(@PathVariable("id") Integer id) {
+		ObjTenant tenant = this.tenantService.getTenant(id);
+		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(tenant);
+		List<EnumeratedDto> accountDtos = accounts.stream()
+				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
+				.toList();
+		//@formatter:off
+		return ResponseEntity.ok(
+			TenantInfoResponse.builder()
+				.id(id)
+				.tenantType(EnumeratedDto.fromEnum(tenant.getTenantType()))
+				.accounts(accountDtos)
 				.build()
 		);
 		//@formatter:on

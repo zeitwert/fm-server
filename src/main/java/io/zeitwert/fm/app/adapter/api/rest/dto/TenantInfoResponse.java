@@ -8,13 +8,10 @@ import java.util.List;
 
 @Data
 @Builder
-public class UserInfoResponse {
+public class TenantInfoResponse {
 
 	private Integer id;
-	private String name;
-	private String email;
-
-	private EnumeratedDto role;
-	private List<EnumeratedDto> tenants;
+	private EnumeratedDto tenantType;
+	private List<EnumeratedDto> accounts;
 
 }

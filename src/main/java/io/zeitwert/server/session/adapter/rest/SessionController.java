@@ -15,9 +15,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
+import io.zeitwert.ddd.oe.service.api.TenantService;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.adapter.rest.dto.LoginRequest;
@@ -26,13 +31,16 @@ import io.zeitwert.server.session.adapter.rest.dto.SessionInfoReponse;
 import io.zeitwert.server.session.service.api.JwtProvider;
 
 @RestController("sessionController")
-@RequestMapping("/api/session")
+@RequestMapping("/rest/session")
 public class SessionController {
 
 	public final static String AUTH_HEADER_PREFIX = "Bearer ";
 
 	@Autowired
 	AuthenticationManager authenticationManager;
+
+	@Autowired
+	TenantService tenantService;
 
 	@Autowired
 	ObjAccountRepository accountRepository;
@@ -48,8 +56,10 @@ public class SessionController {
 		Authentication authToken = this.getAuthToken(loginRequest);
 		Authentication authentication = authenticationManager.authenticate(authToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Integer tenantId = loginRequest.getTenantId();
+		requireThis(tenantId != null, "tenantId not null");
 		Integer accountId = loginRequest.getAccountId();
-		String jwt = jwtProvider.createJwt(authentication, accountId);
+		String jwt = jwtProvider.createJwt(authentication, tenantId, accountId);
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) authentication.getPrincipal();
 		String role = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList().get(0);
 		//@formatter:off
@@ -75,7 +85,9 @@ public class SessionController {
 		if (this.requestCtx == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		return ResponseEntity.ok(SessionInfoReponse.fromRequest(requestCtx, accountRepository));
+		ObjTenant tenant = tenantService.getTenant(this.requestCtx.getTenantId());
+		ObjAccount account = requestCtx.hasAccount() ? this.accountRepository.get(requestCtx.getAccountId()) : null;
+		return ResponseEntity.ok(SessionInfoReponse.fromRequest(requestCtx, tenant, account));
 	}
 
 	@PostMapping("/logout")

@@ -10,7 +10,7 @@ import java.util.Set;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.ddd.property.model.EntityPartItem;
+import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
@@ -20,7 +20,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 
 	private final CodePartListType partListType;
 
-	private Set<EntityPartItem> itemSet = new HashSet<>();
+	private Set<AggregatePartItem<?>> itemSet = new HashSet<>();
 
 	// repository is not used, since checking it is too expensive (for now)
 	public ReferenceSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
@@ -53,7 +53,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 			return; // make compiler happy (potential null pointer)
 		}
 		if (!this.hasItem(aggregateId)) {
-			EntityPartItem part = (EntityPartItem) this.getEntity().addItem(this, this.partListType);
+			AggregatePartItem<?> part = (AggregatePartItem<?>) this.getEntity().addItem(this, this.partListType);
 			part.setItemId(aggregateId.toString());
 			this.itemSet.add(part);
 			this.getEntity().afterAdd(this);
@@ -67,7 +67,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 
 	@Override
 	public boolean hasItem(Integer aggregateId) {
-		for (EntityPartItem part : this.itemSet) {
+		for (AggregatePartItem<?> part : this.itemSet) {
 			if (part.getItemId().equals(aggregateId.toString())) {
 				return true;
 			}
@@ -82,7 +82,8 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 			return; // make compiler happy (potential null pointer)
 		}
 		if (this.hasItem(aggregateId)) {
-			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(aggregateId.toString())).findAny()
+			AggregatePartItem<?> part = this.itemSet.stream().filter(p -> p.getItemId().equals(aggregateId.toString()))
+					.findAny()
 					.get();
 			((PartSPI<?>) part).delete();
 			this.itemSet.remove(part);
@@ -92,13 +93,13 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 
 	public void doBeforeStore() {
 		int seqNr = 0;
-		for (Iterator<EntityPartItem> it = this.itemSet.iterator(); it.hasNext();) {
+		for (Iterator<AggregatePartItem<?>> it = this.itemSet.iterator(); it.hasNext();) {
 			it.next().setSeqNr(seqNr++);
 		}
 	}
 
 	@Override
-	public void loadReferenceSet(Collection<? extends EntityPartItem> partList) {
+	public void loadReferenceSet(Collection<? extends AggregatePartItem<?>> partList) {
 		this.itemSet.clear();
 		partList.forEach(p -> this.itemSet.add(p));
 	}

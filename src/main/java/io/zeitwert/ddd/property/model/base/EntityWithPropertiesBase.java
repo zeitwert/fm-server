@@ -15,10 +15,11 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.property.model.EntityPartItem;
+import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.EntityWithProperties;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
+import io.zeitwert.ddd.property.model.ItemSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -27,6 +28,7 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.impl.EnumPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.EnumSetPropertyImpl;
+import io.zeitwert.ddd.property.model.impl.ItemSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
@@ -58,7 +60,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	@Override
-	public EntityPartItem addItem(Property<?> property, CodePartListType partListType) {
+	public AggregatePartItem<?> addItem(Property<?> property, CodePartListType partListType) {
 		throw new NoSuchMethodError(
 				this.getClass().getSimpleName() + ".addItem() [" + property.getName() + ", " + partListType + "]");
 	}
@@ -102,6 +104,14 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		requireThis(partListType != null, "partListType not null");
 		final Enumeration<E> enumeration = this.getAppContext().getEnumeration(enumClass);
 		final EnumSetProperty<E> property = new EnumSetPropertyImpl<E>(this, partListType, enumeration);
+		this.addProperty(property);
+		return property;
+	}
+
+	protected <Item extends AggregatePartItem<?>> ItemSetProperty<Item> addItemSetProperty(
+			CodePartListType partListType) {
+		requireThis(partListType != null, "partListType not null");
+		final ItemSetProperty<Item> property = new ItemSetPropertyImpl<Item>(this, partListType);
 		this.addProperty(property);
 		return property;
 	}

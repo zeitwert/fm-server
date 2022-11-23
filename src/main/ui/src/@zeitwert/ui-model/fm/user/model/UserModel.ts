@@ -1,6 +1,6 @@
 
 import { Config } from "@zeitwert/ui-model/app";
-import { Enumerated } from "@zeitwert/ui-model/ddd";
+import { Enumerated, EnumeratedModel } from "@zeitwert/ui-model/ddd";
 import { toJS } from "mobx";
 import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
@@ -13,9 +13,11 @@ const MstUserModel = ObjModel.named("User")
 	.props({
 		email: types.maybe(types.string),
 		password: types.maybe(types.string),
-		role: types.maybe(types.frozen<Enumerated>()),
 		name: types.maybe(types.string),
 		description: types.maybe(types.string),
+		//
+		role: types.maybe(types.frozen<Enumerated>()),
+		tenants: types.optional(types.array(EnumeratedModel), []),
 		//
 		avatar: types.maybe(types.reference(DocumentModel)),
 	})
@@ -29,6 +31,15 @@ const MstUserModel = ObjModel.named("User")
 			}
 			return "/missing.jpg";
 		},
+	}))
+	.actions((self) => ({
+		addTenant(tenant: Enumerated) {
+			self.tenants.push(tenant);
+		},
+		removeTenant(id: string) {
+			const index = self.tenants.findIndex((t) => t.id === id);
+			self.tenants.splice(index, 1);
+		}
 	}))
 	.views((self) => ({
 		get formSnapshot(): UserSnapshot {

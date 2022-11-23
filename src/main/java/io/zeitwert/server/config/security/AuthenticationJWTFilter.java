@@ -56,6 +56,12 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 					return;
 				}
 
+				Integer tenantId = (Integer) claims.get(JwtProvider.TENANT_CLAIM);
+				if (tenantId == null) {
+					throw new RuntimeException("Authentication error (invalid tenantId claim)");
+				}
+				userDetails.setTenantId(tenantId);
+
 				Integer accountId = (Integer) claims.get(JwtProvider.ACCOUNT_CLAIM);
 				if (!(userDetails.isAdmin() || userDetails.isAppAdmin()) && accountId == null) {
 					throw new RuntimeException("Authentication error (invalid accountId claim)");

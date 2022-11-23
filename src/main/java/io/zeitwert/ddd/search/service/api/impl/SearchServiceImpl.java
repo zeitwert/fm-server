@@ -52,7 +52,7 @@ public class SearchServiceImpl implements SearchService {
 
 	public List<SearchResult> find(List<String> itemTypes, String searchText, int maxResultSize) {
 
-		Condition tenantCondition = TENANT_ID.eq(this.requestContext.getTenant().getId());
+		Condition tenantCondition = TENANT_ID.eq(this.requestContext.getTenantId());
 		Condition accountCondition = ACCOUNT_ID.isNull().or(ACCOUNT_ID.eq(this.requestContext.getAccountId()));
 		Condition itemTypeCondition = itemTypes != null ? ITEM_TYPE_ID.in(itemTypes) : DSL.noCondition();
 		String searchToken = "'" + searchText + "':*";

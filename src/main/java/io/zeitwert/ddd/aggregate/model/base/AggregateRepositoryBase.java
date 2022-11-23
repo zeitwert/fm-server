@@ -256,7 +256,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public final List<V> find(QuerySpec querySpec) {
 		String tenantField = AggregateFields.TENANT_ID.getName();
 		RequestContext requestCtx = this.appContext.getRequestContext();
-		Integer tenantId = requestCtx.getTenant().getId();
+		Integer tenantId = requestCtx.getTenantId();
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
 		}

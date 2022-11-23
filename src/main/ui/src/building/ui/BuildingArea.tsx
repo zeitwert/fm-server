@@ -1,6 +1,6 @@
 
 import { Button } from "@salesforce/design-system-react";
-import { AccountInfo, API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, session } from "@zeitwert/ui-model";
+import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, Enumerated, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import SidePanel from "frame/ui/SidePanel";
@@ -131,7 +131,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 
 export default withRouter(BuildingArea);
 
-const initBuilding = (building: Building, account: AccountInfo | undefined) => {
+const initBuilding = (building: Building, account: Enumerated | undefined) => {
 	building.setField("account", account?.id);
 	building.setField("country", { id: "ch", name: "Switzerland" });
 	building.setField("currency", { id: "chf", name: "CHF" });

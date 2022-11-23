@@ -29,13 +29,13 @@ public class JwtProviderImpl implements JwtProvider {
 	@Value("${zeitwert.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
-	public String createJwt(Authentication authentication, Integer accountId) {
+	public String createJwt(Authentication authentication, Integer tenantId, Integer accountId) {
 		ZeitwertUserDetails userPrincipal = (ZeitwertUserDetails) authentication.getPrincipal();
 		Map<String, Object> claims = null;
 		if (accountId == null) {
-			claims = Map.of(TENANT_CLAIM, userPrincipal.getTenantId());
+			claims = Map.of(TENANT_CLAIM, tenantId);
 		} else {
-			claims = Map.of(TENANT_CLAIM, userPrincipal.getTenantId(), ACCOUNT_CLAIM, accountId);
+			claims = Map.of(TENANT_CLAIM, tenantId, ACCOUNT_CLAIM, accountId);
 		}
 		//@formatter:off
 		return Jwts.builder()

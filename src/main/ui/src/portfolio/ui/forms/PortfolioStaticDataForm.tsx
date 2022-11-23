@@ -155,7 +155,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 											value={portfolio.account?.id}
 											values={[{ id: portfolio.account!.id!, name: portfolio.account!.name!, itemType: portfolio.account!.meta?.itemType }]}
 											onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
-											readOnly={!this.props.store.isInTrx}
+											readOnly={isInTrx}
 											disabled={true}
 										/>
 									</FieldRow>
@@ -210,7 +210,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 													<td data-label="Aktion">
 														{
 															isInTrx &&
-															<button className="slds-button slds-button_icon slds-button_icon-error" title="Remove" onClick={() => { portfolio.removeIncludeObj(item.id) }}>
+															<button className="slds-button slds-button_icon slds-button_icon-error" title="Entfernen" onClick={() => { portfolio.removeIncludeObj(item.id) }}>
 																<svg className="slds-button__icon" aria-hidden="true">
 																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
 																</svg>
@@ -274,7 +274,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 					</div>
 				</div>
 				{
-					this.props.store.isInTrx &&
+					isInTrx &&
 					<div className="slds-grid slds-wrap slds-m-top_small">
 						<div className="slds-col slds-size_1-of-2">
 							<Card heading="Neu einschliessen" bodyClassName="slds-m-around_medium">

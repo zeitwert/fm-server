@@ -16,4 +16,6 @@ public interface ObjUserFields extends ObjExtnFields {
 	static final Field<String> ROLE_LIST = DSL.field("role_list", String.class);
 	static final Field<Integer> AVATAR_IMAGE = DSL.field("avatar_img_id", Integer.class);
 
+	static final String TENANT_LIST = "user.tenantList";
+
 }

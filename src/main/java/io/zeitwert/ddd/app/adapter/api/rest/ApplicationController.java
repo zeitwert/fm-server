@@ -14,7 +14,7 @@ import io.zeitwert.ddd.app.model.ApplicationInfo;
 import io.zeitwert.ddd.app.service.api.ApplicationService;
 
 @RestController("applicationController")
-@RequestMapping("/api/app")
+@RequestMapping("/rest/app")
 public class ApplicationController {
 
 	private final ApplicationService applicationService;

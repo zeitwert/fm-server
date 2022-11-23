@@ -17,8 +17,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> implements PartListProperty<P> {
 
 	private final CodePartListType partListType;
-
-	private List<P> partList = new ArrayList<>();
+	private final List<P> partList = new ArrayList<>();
 
 	public PartListPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType) {
 		super(entity);

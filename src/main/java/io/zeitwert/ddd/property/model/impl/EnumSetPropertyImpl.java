@@ -4,7 +4,7 @@ import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
-import io.zeitwert.ddd.property.model.EntityPartItem;
+import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
@@ -20,7 +20,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	private final CodePartListType partListType;
 	private final Enumeration<E> enumeration;
 
-	private Set<EntityPartItem> itemSet = new HashSet<>();
+	private Set<AggregatePartItem<?>> itemSet = new HashSet<>();
 
 	public EnumSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
 			Enumeration<E> enumeration) {
@@ -53,7 +53,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 			return; // make compiler happy (potential null pointer)
 		}
 		if (!this.hasItem(item)) {
-			EntityPartItem part = this.getEntity().addItem(this, this.partListType);
+			AggregatePartItem<?> part = this.getEntity().addItem(this, this.partListType);
 			part.setItemId(item.getId());
 			this.itemSet.add(part);
 			this.getEntity().afterAdd(this);
@@ -67,7 +67,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 
 	@Override
 	public boolean hasItem(E item) {
-		for (EntityPartItem part : this.itemSet) {
+		for (AggregatePartItem<?> part : this.itemSet) {
 			if (part.getItemId().equals(item.getId())) {
 				return true;
 			}
@@ -82,7 +82,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 			return; // make compiler happy (potential null pointer)
 		}
 		if (this.hasItem(item)) {
-			EntityPartItem part = this.itemSet.stream().filter(p -> p.getItemId().equals(item.getId())).findAny().get();
+			AggregatePartItem<?> part = this.itemSet.stream().filter(p -> p.getItemId().equals(item.getId())).findAny().get();
 			((PartSPI<?>) part).delete();
 			this.itemSet.remove(part);
 			this.getEntity().afterRemove(this);
@@ -91,13 +91,13 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 
 	public void doBeforeStore() {
 		int seqNr = 0;
-		for (EntityPartItem item : this.itemSet) {
+		for (AggregatePartItem<?> item : this.itemSet) {
 			item.setSeqNr(seqNr++);
 		}
 	}
 
 	@Override
-	public void loadEnumSet(Collection<? extends EntityPartItem> partList) {
+	public void loadEnumSet(Collection<? extends AggregatePartItem<?>> partList) {
 		this.itemSet.clear();
 		partList.forEach(p -> this.itemSet.add(p));
 	}

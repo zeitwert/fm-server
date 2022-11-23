@@ -68,9 +68,9 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 	}
 
 	async componentDidMount() {
-		const userInfoResponse = await session.userInfo(session.sessionInfo!.user.email);
-		if (userInfoResponse) {
-			this.accounts = userInfoResponse.accounts;
+		const tenantInfo = await session.tenantInfo(session.sessionInfo!.tenant.id);
+		if (tenantInfo) {
+			this.accounts = tenantInfo.accounts;
 		}
 	}
 

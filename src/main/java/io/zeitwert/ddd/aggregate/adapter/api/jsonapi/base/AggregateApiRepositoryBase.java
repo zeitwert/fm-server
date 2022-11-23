@@ -53,7 +53,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 			this.userService.touch(this.requestCtx.getUser().getId());
 			Integer tenantId = dto.getTenant() != null
 					? Integer.parseInt(dto.getTenant().getId())
-					: requestCtx.getTenant().getId();
+					: requestCtx.getTenantId();
 			A aggregate = this.repository.create(tenantId);
 			this.dtoAdapter.toAggregate(dto, aggregate);
 			this.repository.store(aggregate);

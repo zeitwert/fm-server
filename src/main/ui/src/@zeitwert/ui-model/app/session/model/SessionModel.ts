@@ -18,8 +18,8 @@ import {
 import { FormatterImpl } from "../../common/i18n/impl/FormatterImpl";
 import { TranslatorImpl } from "../../common/i18n/impl/TranslatorImpl";
 import { Application, ApplicationArea, ApplicationAreaMap, ApplicationInfo } from "./Application";
-import { LoginInfo } from "./LoginInfo";
-import { ADVISOR_TENANT, COMMUNITY_TENANT, KERNEL_TENANT, SessionInfo, UserInfo } from "./SessionInfo";
+import { LoginInfo, LoginTenantInfo, LoginUserInfo } from "./LoginInfo";
+import { ADVISOR_TENANT, COMMUNITY_TENANT, KERNEL_TENANT, SessionInfo } from "./SessionInfo";
 
 export enum SessionState {
 	close = "close",
@@ -30,8 +30,11 @@ export enum SessionState {
 }
 
 const USER_INFO_URL = "userInfo";
+const TENANT_INFO_URL = "tenantInfo";
+
 const LOGIN_URL = "login";
 const LOGOUT_URL = "logout";
+
 const SESSION_URL = "session";
 const APP_LIST_URL = "applications";
 
@@ -103,7 +106,7 @@ const MstSessionModel = types
 		setApp(appId: string) {
 			return flow(function* () {
 				try {
-					const appResponse = yield API.get(Config.getApiUrl("app", APP_LIST_URL + "/" + appId));
+					const appResponse = yield API.get(Config.getRestUrl("app", APP_LIST_URL + "/" + appId));
 					self.appInfo = appResponse.data;
 					self.appAreaMap = self.appInfo!.areas.reduce(
 						(map: ApplicationAreaMap, area: ApplicationArea): ApplicationAreaMap => {
@@ -129,13 +132,13 @@ const MstSessionModel = types
 					self.clear(SessionState.pendingOpen);
 					let sessionInfo: SessionInfo;
 					if (!oldSessionInfo) {
-						const sessionResponse: AxiosResponse<SessionInfo> = yield API.get(Config.getApiUrl("session", SESSION_URL));
+						const sessionResponse: AxiosResponse<SessionInfo> = yield API.get(Config.getRestUrl("session", SESSION_URL));
 						sessionInfo = sessionResponse.data;
 						sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(sessionInfo));
 					} else {
 						sessionInfo = oldSessionInfo;
 					}
-					const appListResponse = yield API.get(Config.getApiUrl("app", APP_LIST_URL));
+					const appListResponse = yield API.get(Config.getRestUrl("app", APP_LIST_URL));
 					const appList = appListResponse.data;
 					transaction(() => {
 						self.sessionInfo = sessionInfo;
@@ -174,10 +177,10 @@ const MstSessionModel = types
 					}
 					return Promise.resolve();
 				},
-				userInfo(email: string): Promise<UserInfo | undefined> {
+				userInfo(email: string): Promise<LoginUserInfo | undefined> {
 					return flow(function* () {
 						try {
-							const userInfoResponse: AxiosResponse<UserInfo> = yield API.get(Config.getApiUrl("app", USER_INFO_URL + "/" + email));
+							const userInfoResponse: AxiosResponse<LoginUserInfo> = yield API.get(Config.getRestUrl("app", USER_INFO_URL + "/" + email));
 							if (userInfoResponse.status === 200) {
 								return userInfoResponse.data;
 							}
@@ -188,15 +191,30 @@ const MstSessionModel = types
 						}
 					})();
 				},
-				login(email: string, password: string, account: any) {
+				tenantInfo(id: string): Promise<LoginTenantInfo | undefined> {
+					return flow(function* () {
+						try {
+							const userInfoResponse: AxiosResponse<LoginTenantInfo> = yield API.get(Config.getRestUrl("app", TENANT_INFO_URL + "/" + id));
+							if (userInfoResponse.status === 200) {
+								return userInfoResponse.data;
+							}
+							return undefined;
+						} catch (error: any) {
+							Logger.error("User info failed", error);
+							return undefined;
+						}
+					})();
+				},
+				login(email: string, password: string, tenant: any, account: any) {
 					return flow(function* () {
 						try {
 							self.clear(SessionState.pendingAuth);
 							const loginResponse: AxiosResponse<LoginInfo> = yield API.login(
-								Config.getApiUrl("session", LOGIN_URL),
+								Config.getRestUrl("session", LOGIN_URL),
 								{
 									email: email,
 									password: password,
+									tenantId: tenant?.id,
 									accountId: account?.id
 								}
 							);
@@ -221,7 +239,7 @@ const MstSessionModel = types
 				logout() {
 					return flow(function* () {
 						try {
-							yield API.post(Config.getApiUrl("session", LOGOUT_URL), {});
+							yield API.post(Config.getRestUrl("session", LOGOUT_URL), {});
 						} catch (error: any) {
 							Logger.error("Logout failed", error);
 						} finally {
@@ -276,7 +294,7 @@ const MstSessionModel = types
 			return new FormatterImpl(self.locale as Locale);
 		},
 		get hasExternalAuthentication() {
-			return !!self.sessionInfo && !!self.sessionInfo!.user.extlIdpUserId;
+			return !!self.sessionInfo && false /*!!self.sessionInfo!.user.extlIdpUserId*/;
 		}
 	}))
 	.views((self) => ({

@@ -2,7 +2,7 @@ package io.zeitwert.ddd.property.model.base;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.property.model.EntityPartItem;
+import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
@@ -12,7 +12,7 @@ public interface EntityWithPropertiesSPI {
 
 	<P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType);
 
-	EntityPartItem addItem(Property<?> property, CodePartListType partListType);
+	AggregatePartItem<?> addItem(Property<?> property, CodePartListType partListType);
 
 	void afterSet(Property<?> property);
 

@@ -7,29 +7,30 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeLocale;
 
 public class RequestContext {
 
 	private final ObjUser user;
+	private final Integer tenantId;
 	private final Integer accountId;
 	private final CodeLocale locale;
 	private final Map<Integer, Aggregate> aggregates = new ConcurrentHashMap<>();
 
-	public RequestContext(ObjUser user, Integer accountId, CodeLocale locale) {
+	public RequestContext(ObjUser user, Integer tenantId, Integer accountId, CodeLocale locale) {
 		this.user = user;
+		this.tenantId = tenantId;
 		this.accountId = accountId;
 		this.locale = locale;
 	}
 
-	public ObjTenant getTenant() {
-		return this.getUser().getTenant();
-	}
-
 	public ObjUser getUser() {
 		return this.user;
+	}
+
+	public Integer getTenantId() {
+		return this.tenantId;
 	}
 
 	public boolean hasAccount() {

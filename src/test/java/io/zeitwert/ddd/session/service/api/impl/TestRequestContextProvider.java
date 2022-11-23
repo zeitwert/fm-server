@@ -22,11 +22,12 @@ public class TestRequestContextProvider {
 	@SessionScope
 	public RequestContext getRequestContext(ObjUserRepository userRepository) {
 		String userEmail = "k@zeitwert.io";
-		Optional<ObjUser> user = userRepository.getByEmail(userEmail);
-		if (user.isEmpty()) {
+		Optional<ObjUser> maybeUser = userRepository.getByEmail(userEmail);
+		if (maybeUser.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
 		}
-		return new RequestContext(user.get(), null, CodeLocaleEnum.getLocale("en-US"));
+		ObjUser user = maybeUser.get();
+		return new RequestContext(user, user.getTenantId(), null, CodeLocaleEnum.getLocale("en-US"));
 	}
 
 }

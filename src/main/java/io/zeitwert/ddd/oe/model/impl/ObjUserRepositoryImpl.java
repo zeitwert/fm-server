@@ -20,14 +20,19 @@ import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.base.ObjUserBase;
+import io.zeitwert.ddd.oe.model.base.ObjUserFields;
 import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
+import io.zeitwert.ddd.oe.service.api.TenantService;
+import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 @Component("objUserRepository")
 public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRecord> implements ObjUserRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_user";
+
+	private final CodePartListType tenantListType;
 
 	//@formatter:off
 	protected ObjUserRepositoryImpl(
@@ -46,6 +51,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 			transitionRepository,
 			itemRepository
 		);
+		this.tenantListType = this.getAppContext().getPartListType(ObjUserFields.TENANT_LIST);
 	}
 	//@formatter:on
 
@@ -53,6 +59,17 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
+	}
+
+	@Override
+	public CodePartListType getTenantSetType() {
+		return this.tenantListType;
+	}
+
+	@Override
+	public TenantService getTenantService() {
+		return this.getAppContext().getBean(TenantService.class);
 	}
 
 	@Override

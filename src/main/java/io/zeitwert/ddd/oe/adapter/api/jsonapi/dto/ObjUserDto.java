@@ -20,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -33,12 +34,13 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 
 	private static final DateTimeFormatter touchFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-	private EnumeratedDto tenant;
 	private String email;
-	private String password;
-	private EnumeratedDto role;
+	private String password; // write: change password
 	private String name;
 	private String description;
+
+	private EnumeratedDto role;
+	List<EnumeratedDto> tenants;
 
 	public String getLastTouch() {
 		OffsetDateTime lastTouch = AggregateDtoBase.getService(UserService.class).getLastTouch(this.getId());

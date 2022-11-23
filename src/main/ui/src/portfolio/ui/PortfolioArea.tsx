@@ -1,5 +1,5 @@
 
-import { AccountInfo, EntityType, Portfolio, PortfolioStore, PortfolioStoreModel, session } from "@zeitwert/ui-model";
+import { EntityType, Enumerated, Portfolio, PortfolioStore, PortfolioStoreModel, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
@@ -43,6 +43,6 @@ export default class PortfolioArea extends React.Component {
 
 }
 
-const initPortfolio = (portfolio: Portfolio, account: AccountInfo | undefined) => {
+const initPortfolio = (portfolio: Portfolio, account: Enumerated | undefined) => {
 	portfolio.setField("account", account?.id);
 }

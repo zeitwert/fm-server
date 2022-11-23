@@ -61,7 +61,7 @@ public class PartTest {
 		CodePartListType nodeListType = testRepository.getNodeListType();
 		assertTrue(CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST).equals(nodeListType), "nodeListType");
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId());
+		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
 		// assertTrue(((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).isInitialised(test1a));
 		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");

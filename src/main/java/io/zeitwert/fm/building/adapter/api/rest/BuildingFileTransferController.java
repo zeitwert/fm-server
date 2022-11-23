@@ -86,7 +86,7 @@ public class BuildingFileTransferController {
 		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = buildingRepo.create(requestCtx.getTenant().getId());
+		ObjBuilding building = buildingRepo.create(requestCtx.getTenantId());
 		building.setAccountId(accountId);
 		this.fillFromDto(building, dto);
 		buildingRepo.store(building);

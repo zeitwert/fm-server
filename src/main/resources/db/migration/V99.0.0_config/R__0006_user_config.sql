@@ -5,6 +5,12 @@ values
 on conflict(id)
 do nothing;
 
+insert into code_part_list_type(id, name)
+values
+('user.tenantList', 'Tenants')
+on conflict(id)
+do nothing;
+
 delete from code_user_role
 where id in ('appAdmin', 'readOnly');
 

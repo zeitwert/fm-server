@@ -31,13 +31,19 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		// if (dto.getTenant() != null) {
 		// obj.setTenant(dto.getTenant());
 		// }
+
 		obj.setEmail(dto.getEmail());
 		if (dto.getPassword() != null) {
 			obj.setPassword("{noop}" + dto.getPassword());
 		}
-		obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole().getId()));
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
+
+		obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole().getId()));
+		obj.clearTenantSet();
+		for (EnumeratedDto tenant : dto.getTenants()) {
+			obj.addTenant(this.getTenant(Integer.parseInt(tenant.getId())));
+		}
 	}
 
 	@Override
@@ -48,11 +54,11 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.tenant(ObjTenantDtoAdapter.getInstance().asEnumerated(obj.getTenant()))
 				.email(obj.getEmail())
-				.role(EnumeratedDto.fromEnum(obj.getRole()))
 				.name(obj.getName())
 				.description(obj.getDescription())
+				.role(EnumeratedDto.fromEnum(obj.getRole()))
+				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated(t.getId())).toList())
 				.build();
 	}
 
@@ -72,15 +78,13 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		EnumeratedDto tenant = getTenantEnumerated(obj.getTenantId());
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
-				.tenant(tenant)
 				.email(obj.getEmail())
-				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(obj.getRoleList())))
 				.name(obj.getName())
 				.description(obj.getDescription())
+				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(obj.getRoleList())))
 				.build();
 	}
 

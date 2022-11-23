@@ -59,9 +59,9 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	}
 
 	async componentDidMount() {
-		const userInfoResponse = await session.userInfo(session.sessionInfo!.user.email);
-		if (userInfoResponse) {
-			this.accounts = userInfoResponse.accounts;
+		const tenantInfo = await session.tenantInfo(session.sessionInfo!.tenant.id);
+		if (tenantInfo) {
+			this.accounts = tenantInfo.accounts;
 		}
 	}
 

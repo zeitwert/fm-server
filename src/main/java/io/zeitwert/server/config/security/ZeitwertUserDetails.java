@@ -35,7 +35,6 @@ public class ZeitwertUserDetails implements UserDetails {
 		this.userId = user.getId();
 		this.userEmail = user.getEmail();
 		this.userPassword = ((ObjUserBase) user).getPassword();
-		this.tenantId = user.getTenantId();
 		this.authorities = authorities;
 	}
 
@@ -55,6 +54,10 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	public Integer getTenantId() {
 		return this.tenantId;
+	}
+
+	public void setTenantId(Integer tenantId) {
+		this.tenantId = tenantId;
 	}
 
 	public Integer getAccountId() {

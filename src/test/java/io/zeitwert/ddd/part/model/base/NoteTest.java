@@ -54,7 +54,7 @@ public class NoteTest {
 		assertTrue(testRepository != null, "testRepository not null");
 		assertEquals("obj_test", testRepository.getAggregateType().getId());
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId());
+		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
 		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
 		Integer test1Id = test1a.getId();
 

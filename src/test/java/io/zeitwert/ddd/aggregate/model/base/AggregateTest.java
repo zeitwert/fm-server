@@ -50,7 +50,7 @@ public class AggregateTest {
 		assertTrue(testRepository != null, "objTestRepository not null");
 		assertEquals("obj_test", testRepository.getAggregateType().getId());
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId());
+		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 		assertNotNull(test1a, "test not null");
 		assertNotNull(test1a.getId(), "id not null");
@@ -83,7 +83,7 @@ public class AggregateTest {
 		CodeCountry ch = countryEnum.getItem("ch");
 		CodeCountry de = countryEnum.getItem("de");
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId());
+		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
 		Integer test1Id = test1a.getId();
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 
@@ -100,7 +100,7 @@ public class AggregateTest {
 		assertEquals(user.getId(), test1a.getOwner().getId());
 		assertEquals(ch, test1a.getCountry());
 
-		ObjTest test2a = testRepository.create(requestCtx.getTenant().getId());
+		ObjTest test2a = testRepository.create(requestCtx.getTenantId());
 		this.initObjTest(test2a, "Two", USER_EMAIL, "de");
 		Integer test2Id = test2a.getId();
 		testRepository.store(test2a);

@@ -44,7 +44,7 @@ public class SessionTest {
 	@Test
 	public void testSessionHandling() throws Exception {
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenant().getId());
+		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 		Integer test1Id = test1a.getId();
 		Integer test1aIdHash = System.identityHashCode(test1a);
