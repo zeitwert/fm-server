@@ -1,5 +1,6 @@
 import { DataTable, DataTableColumn, DataTableRowActions, Dropdown } from "@salesforce/design-system-react";
-import { toJS } from "mobx";
+import { makeObservable, observable, toJS } from "mobx";
+import { observer } from "mobx-react";
 import React from "react";
 import { DataTableCellWithText } from "../custom/CustomDataTableCells";
 
@@ -21,12 +22,6 @@ interface SortColumn {
 	sortDirection: "asc" | "desc" | undefined;
 }
 
-interface LineReportState {
-	items: any[];
-	selection: any[];
-	isStateChange: boolean;
-}
-
 interface HeaderInfo {
 	id: string;
 	label: string;
@@ -38,57 +33,19 @@ interface HeaderInfo {
 	sortable?: boolean;
 }
 
-export class LineReport extends React.Component<LineReportProps, LineReportState> {
+@observer
+export class LineReport extends React.Component<LineReportProps> {
 
-	static getDerivedStateFromProps(props: any, state: any) {
-		// guard against call after setState (from handleSort, f.ex.)
-		if (state.isStateChange) {
-			return { isStateChange: false };
-		}
-		const itemsWithId = (props.items?.data as any[]).map((item, index) => {
-			return Object.assign(item, {
-				id: (item.id || index).toString()
-			});
-		});
-		return {
-			items: itemsWithId
-		};
+	@observable items: any[] = [];
+	@observable sortProperty?: string;
+	@observable sortDirection?: string;
+	@observable selection: any[] = [];
+
+	constructor(props: LineReportProps) {
+		super(props);
+		makeObservable(this);
+		this.prepareItems();
 	}
-
-	state: LineReportState = {
-		items: [],
-		selection: [],
-		isStateChange: false
-	};
-
-	private handleChanged = (event: any, data: any) => {
-		// if (this.props.onClick) {
-		// 	this.props.onClick(data.selection?.[0]);
-		// }
-		this.setState({ selection: data.selection });
-	};
-
-	private handleSort = (sortColumn: SortColumn) => {
-		const sortProperty = sortColumn.property;
-		const sortDirection = sortColumn.sortDirection;
-		const newState = {
-			items: [...this.state.items],
-			isStateChange: true
-		};
-		newState.items = newState.items.sort((a, b) => {
-			let val = 0;
-			if (a[sortProperty] > b[sortProperty]) {
-				val = 1;
-			} else if (a[sortProperty] < b[sortProperty]) {
-				val = -1;
-			}
-			if (sortDirection === "desc") {
-				val *= -1;
-			}
-			return val;
-		});
-		this.setState(newState);
-	};
 
 	render() {
 		const { items, options, dataTableCellTemplates, isJoined, fixedLayout, fixedHeader, maxColumns, onMouseEnter, onMouseLeave, onClick } = this.props;
@@ -102,27 +59,29 @@ export class LineReport extends React.Component<LineReportProps, LineReportState
 		return (
 			<DataTable
 				id="line-report"
-				items={this.state.items}
+				items={this.items}
 				joined={isJoined === false ? false : true}
 				fixedLayout={fixedLayout === false ? false : true}
 				fixedHeader={fixedHeader === false ? false : true}
 				onRowChange={this.handleChanged}
 				onSort={this.handleSort}
-				selection={this.state.selection}
+				selection={this.selection}
 				selectRows={options ? "checkbox" : undefined}
 			>
 				{
 					header.map((header: HeaderInfo, index: number) => {
-						const props = {
+						const columnProps = {
 							key: header.value,
 							label: header.label,
 							property: header.value,
 							width: header.width ? header.width : undefined,
-							sortable: header.sortable !== undefined ? header.sortable : true
+							sortable: header.sortable !== undefined ? header.sortable : true,
+							isSorted: header.value === this.sortProperty,
+							sortDirection: this.sortDirection
 						};
 						const T: any = dataTableCellTemplates?.[header.template || ""] || DataTableCellWithText;
 						return (
-							<DataTableColumn {...props}>
+							<DataTableColumn {...columnProps}>
 								<T
 									type={header.type}
 									link={header.link}
@@ -142,5 +101,37 @@ export class LineReport extends React.Component<LineReportProps, LineReportState
 			</DataTable>
 		);
 	}
+
+	private prepareItems() {
+		let items = (this.props.items?.data as any[]).map((item, index) => {
+			return Object.assign(item, {
+				id: (item.id || index).toString()
+			});
+		});
+		if (this.sortProperty) {
+			items = items.sort((a, b) => {
+				if (a[this.sortProperty!] > b[this.sortProperty!]) {
+					return this.sortDirection === "desc" ? -1 : 1;
+				} else if (a[this.sortProperty!] < b[this.sortProperty!]) {
+					return this.sortDirection === "desc" ? 1 : -1;
+				}
+				return 0;
+			});
+		}
+		this.items = items;
+	}
+
+	private handleChanged = (event: any, data: any) => {
+		// if (this.props.onClick) {
+		// 	this.props.onClick(data.selection?.[0]);
+		// }
+		this.setState({ selection: data.selection });
+	};
+
+	private handleSort = (sortColumn: SortColumn) => {
+		this.sortProperty = sortColumn.property;
+		this.sortDirection = sortColumn.sortDirection;
+		this.prepareItems();
+	};
 
 }
