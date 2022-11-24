@@ -48,7 +48,7 @@ export default class AccountTabOrders extends React.Component<AccountTabOrdersPr
 				layout={this.docListStore.template?.layout}
 				data={this.docListStore.reportData}
 				options={{ fixedHeader: false }}
-				templates={{
+				dataTableCellTemplates={{
 					link: DataTableCellWithLink,
 					entityIcon: DataTableCellWithEntityIcon
 				}}

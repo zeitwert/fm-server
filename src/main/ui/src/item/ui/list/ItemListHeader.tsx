@@ -13,13 +13,10 @@ export interface ItemListHeaderProps {
 	templateList: Enumerated[];
 	defaultTemplateId: string;
 	actionButtons: React.ReactNode[];
-	hasMap?: boolean;
-	showMap?: boolean;
 	modifiedAt?: Date;
 	reportData: any;
 	onRefresh: () => void;
 	onSelectTemplate: (templateId: string) => void;
-	onShowMap?: (showMap: boolean) => void;
 }
 
 @observer
@@ -48,7 +45,7 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 	}
 
 	render() {
-		const { label, iconCategory, iconName, templateList, actionButtons, reportData, hasMap, onRefresh, onSelectTemplate } = this.props;
+		const { label, iconCategory, iconName, templateList, actionButtons, reportData, onRefresh, onSelectTemplate } = this.props;
 		const actions = () => (
 			// @ts-ignore
 			<PageHeaderControl>
@@ -120,32 +117,6 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 					/>
 				</PageHeaderControl>
 				*/}
-				{
-					hasMap &&
-					/* @ts-ignore */
-					<PageHeaderControl>
-						<ButtonGroup variant="list">
-							<Button
-								assistiveText={{ icon: "Line" }}
-								iconCategory="utility"
-								iconName="rows"
-								iconVariant={this.props.showMap ? "border-filled" : "brand"}
-								variant="icon"
-								className="slds-button_icon"
-								onClick={() => this.props.onShowMap?.(false)}
-							/>
-							<Button
-								assistiveText={{ icon: "Map" }}
-								iconCategory="utility"
-								iconName="location"
-								iconVariant={this.props.showMap ? "brand" : "border-filled"}
-								variant="icon"
-								className="slds-button_icon"
-								onClick={() => this.props.onShowMap?.(true)}
-							/>
-						</ButtonGroup>
-					</PageHeaderControl>
-				}
 				{/* @ts-ignore */}
 				<PageHeaderControl>
 					<Button

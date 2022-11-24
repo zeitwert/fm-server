@@ -29,7 +29,6 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	render() {
-		console.log("render", this.props.title, this.props.documentId, this.imageFile);
 		const minHeight = this.props.minHeight || "200px";
 		if (this.isUploading) {
 			return <Spinner variant="brand" size="large" />;
@@ -133,7 +132,6 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	private readFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("readFile", this.props.title, this.props.documentId);
 		e.preventDefault();
 		if (e.target?.files?.[0]) {
 			this.onFileChange(e.target?.files?.[0]);

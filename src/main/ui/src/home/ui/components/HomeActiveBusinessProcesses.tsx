@@ -142,7 +142,7 @@ export default class HomeActiveBusinessProcesses extends React.Component<HomeAct
 					<ReportViewer
 						layout={this.docListStore.template.layout}
 						data={final}
-						templates={{
+						dataTableCellTemplates={{
 							channelIcon: DataTableCellWithChannelIcon,
 							temperature: DataTableCellForTemperature,
 							link: DataTableCellWithLink,

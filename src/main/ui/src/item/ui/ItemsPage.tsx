@@ -61,7 +61,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					iconName={type.iconName}
 					defaultTemplate={listTemplate}
 					store={this.listStore}
-					reportTemplates={{
+					dataTableCellTemplates={{
 						date: DateDataTableCell,
 						link: DataTableCellWithLink,
 						documentIcon: DataTableCellWithDocumentIcon,

@@ -1,5 +1,5 @@
 import { KanbanBoard } from "./KanbanBoard";
-import { ReportLine } from "./ReportLine";
+import { LineReport } from "./LineReport";
 
 export enum LayoutType {
 	Line = "line",
@@ -10,7 +10,7 @@ interface ReportViewerProps {
 	className?: string;
 	layout: any;
 	data: any;
-	templates?: any;
+	dataTableCellTemplates?: any;
 	maxColumns?: number;
 	options?: any;
 	onMouseEnter?: (itemId: string) => void;
@@ -19,16 +19,16 @@ interface ReportViewerProps {
 }
 
 export function ReportViewer(props: ReportViewerProps) {
-	const { layout, data, templates, maxColumns, onMouseEnter, onMouseLeave, onClick } = props;
+	const { layout, data, dataTableCellTemplates, maxColumns, onMouseEnter, onMouseLeave, onClick } = props;
 	if (!layout || !data?.data) {
 		return null;
 	}
 	switch (layout.layoutType) {
 		default:
 		case LayoutType.Line:
-			return <ReportLine
+			return <LineReport
 				items={data}
-				templates={templates}
+				dataTableCellTemplates={dataTableCellTemplates}
 				maxColumns={maxColumns}
 				{...props.options}
 				onMouseEnter={onMouseEnter}

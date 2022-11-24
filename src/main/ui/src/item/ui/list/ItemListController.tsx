@@ -10,7 +10,7 @@ interface ItemListControllerProps {
 	iconName: string;
 	defaultTemplate: string;
 	store: ItemList;
-	reportTemplates?: any;
+	dataTableCellTemplates?: any;
 	actionButtons: React.ReactNode[];
 	onClick?: (item: any) => void;
 }
@@ -44,7 +44,7 @@ export default class ItemListController extends React.Component<ItemListControll
 				modifiedAt={store.modifiedAt}
 				template={store.template}
 				reportData={store.reportData}
-				reportTemplates={this.props.reportTemplates}
+				dataTableCellTemplates={this.props.dataTableCellTemplates}
 				isLoading={store.isLoading}
 				actionButtons={this.props.actionButtons}
 				onRefresh={() => store.executeTemplate()}

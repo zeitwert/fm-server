@@ -3,10 +3,10 @@ import { toJS } from "mobx";
 import React from "react";
 import { DataTableCellWithText } from "../custom/CustomDataTableCells";
 
-interface ReportLineProps {
+interface LineReportProps {
 	items?: any;
 	options?: any[];
-	templates?: any;
+	dataTableCellTemplates?: any;
 	isJoined?: boolean;
 	fixedLayout?: boolean;
 	fixedHeader?: boolean;
@@ -21,7 +21,7 @@ interface SortColumn {
 	sortDirection: "asc" | "desc" | undefined;
 }
 
-interface ReportLineState {
+interface LineReportState {
 	items: any[];
 	selection: any[];
 	isStateChange: boolean;
@@ -38,19 +38,24 @@ interface HeaderInfo {
 	sortable?: boolean;
 }
 
-export class ReportLine extends React.Component<ReportLineProps, ReportLineState> {
+export class LineReport extends React.Component<LineReportProps, LineReportState> {
 
 	static getDerivedStateFromProps(props: any, state: any) {
 		// guard against call after setState (from handleSort, f.ex.)
 		if (state.isStateChange) {
 			return { isStateChange: false };
 		}
+		const itemsWithId = (props.items?.data as any[]).map((item, index) => {
+			return Object.assign(item, {
+				id: (item.id ? item.id : index).toString()
+			});
+		});
 		return {
-			items: props.items ? props.items.data : undefined
+			items: itemsWithId
 		};
 	}
 
-	state: ReportLineState = {
+	state: LineReportState = {
 		items: [],
 		selection: [],
 		isStateChange: false
@@ -86,7 +91,7 @@ export class ReportLine extends React.Component<ReportLineProps, ReportLineState
 	};
 
 	render() {
-		const { items, options, templates, isJoined, fixedLayout, fixedHeader, maxColumns, onMouseEnter, onMouseLeave, onClick } = this.props;
+		const { items, options, dataTableCellTemplates, isJoined, fixedLayout, fixedHeader, maxColumns, onMouseEnter, onMouseLeave, onClick } = this.props;
 		if (!items) {
 			return <div />;
 		}
@@ -94,15 +99,10 @@ export class ReportLine extends React.Component<ReportLineProps, ReportLineState
 		if (maxColumns) {
 			header = header.slice(0, maxColumns);
 		}
-		const itemsWithId = this.state.items.map((item, index) => {
-			return Object.assign(item, {
-				id: (item.id ? item.id : index).toString()
-			});
-		});
 		return (
 			<DataTable
 				id="line-report"
-				items={itemsWithId}
+				items={this.state.items}
 				joined={isJoined === false ? false : true}
 				fixedLayout={fixedLayout === false ? false : true}
 				fixedHeader={fixedHeader === false ? false : true}
@@ -120,22 +120,18 @@ export class ReportLine extends React.Component<ReportLineProps, ReportLineState
 							width: header.width ? header.width : undefined,
 							sortable: header.sortable !== undefined ? header.sortable : true
 						};
-						if (templates) {
-							const T: any = templates[header.template || ""];
-							if (T) {
-								return (
-									<DataTableColumn {...props}>
-										<T type={header.type} link={header.link} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick} />
-									</DataTableColumn>
-								);
-							}
-						}
+						const T: any = dataTableCellTemplates?.[header.template || ""] || DataTableCellWithText;
 						return (
 							<DataTableColumn {...props}>
-								<DataTableCellWithText type={header.type} link={header.link} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick} />
+								<T
+									type={header.type}
+									link={header.link}
+									onMouseEnter={onMouseEnter}
+									onMouseLeave={onMouseLeave}
+									onClick={onClick}
+								/>
 							</DataTableColumn>
 						);
-						// return <DataTableColumn {...props} />;
 					})
 				}
 				{
