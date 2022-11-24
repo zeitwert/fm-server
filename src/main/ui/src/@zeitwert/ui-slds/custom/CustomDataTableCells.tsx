@@ -6,7 +6,6 @@ import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import CustomIcon from "@zeitwert/ui-slds/custom/CustomIcon";
 import { DocumentUtils } from "dms/utils/DocumentUtils";
 import React from "react";
-import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 
 const TEMPERATURE_TRESHOLD = 25;
@@ -25,7 +24,11 @@ class DataTableCellWithText extends React.Component<any> {
 		const { children, item, link, displayName, onHover, onClick, ...dtcProps } = this.props;
 		return (
 			<DataTableCell title={children ? children as string : undefined} {...dtcProps}>
-				<div onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick}>
+				<div
+					onMouseEnter={this.handleMouseEnter}
+					onMouseLeave={this.handleMouseLeave}
+					onClick={this.handleClick}
+				>
 					{children}
 				</div>
 			</DataTableCell>
@@ -33,23 +36,15 @@ class DataTableCellWithText extends React.Component<any> {
 	}
 
 	private handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-		this.props.onMouseEnter?.(this.getRowId());
+		this.props.onMouseEnter?.(this.props.item.id);
 	}
 
 	private handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-		this.props.onMouseLeave?.(this.getRowId());
+		this.props.onMouseLeave?.(this.props.item.id);
 	}
 
 	private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-		this.props.onClick?.(this.getRowId());
-	}
-
-	private getRowId = (): string => {
-		const td: Element = ReactDOM.findDOMNode(this) as Element;
-		const tr = td.parentElement as Element;
-		const input = tr.firstChild?.firstChild?.firstChild?.firstChild?.firstChild as Element;
-		const idLen = input!.id.length;
-		return input?.id?.substring(PREFIX_LEN, idLen - POSTFIX_LEN);
+		this.props.onClick?.(this.props.item.id);
 	}
 
 }
@@ -63,7 +58,11 @@ class DataTableCellWithLink extends React.Component<any> {
 		const datum = item[link];
 		return (
 			<DataTableCell title={children ? children as string : undefined} {...dtcProps}>
-				<div onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick}>
+				<div
+					onMouseEnter={this.handleMouseEnter}
+					onMouseLeave={this.handleMouseLeave}
+					onClick={this.handleClick}
+				>
 					<Link to={datum}>
 						{children}
 					</Link>
@@ -73,23 +72,15 @@ class DataTableCellWithLink extends React.Component<any> {
 	}
 
 	private handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-		this.props.onMouseEnter?.(this.getRowId());
+		this.props.onMouseEnter?.(this.props.item.id);
 	}
 
 	private handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-		this.props.onMouseLeave?.(this.getRowId());
+		this.props.onMouseLeave?.(this.props.item.id);
 	}
 
 	private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-		this.props.onClick?.(this.getRowId());
-	}
-
-	private getRowId = (): string => {
-		const td: Element = ReactDOM.findDOMNode(this) as Element;
-		const tr = td.parentElement as Element;
-		const input = tr.firstChild?.firstChild?.firstChild?.firstChild?.firstChild as Element;
-		const idLen = input!.id.length;
-		return input?.id?.substring(PREFIX_LEN, idLen - POSTFIX_LEN);
+		this.props.onClick?.(this.props.item.id);
 	}
 
 }
@@ -100,14 +91,16 @@ const DataTableCellWithEntityIcon: React.FunctionComponent<any> = ({ children, i
 	const entityType = EntityTypes[datum.substring(4)];
 	return (
 		<DataTableCell {...props}>
-			{entityType && (
-				<Icon
-					containerClassName="slds-m-right_small"
-					category={entityType.iconCategory}
-					name={entityType.iconName}
-					size="small"
-				/>
-			)}
+			{
+				entityType && (
+					<Icon
+						containerClassName="slds-m-right_small"
+						category={entityType.iconCategory}
+						name={entityType.iconName}
+						size="small"
+					/>
+				)
+			}
 			{link ? <Link to={linkDatum}>{children}</Link> : children}
 		</DataTableCell>
 	);
@@ -137,14 +130,16 @@ const DataTableCellWithChannelIcon = ({ children, item, type, ...props }: any) =
 	const channelType = channels.filter((channel) => channel.type === typeDatum)[0];
 	return (
 		<DataTableCell {...props}>
-			{channelType && (
-				<CustomIcon
-					containerClassName="slds-m-right_small"
-					category={channelType.iconCategory}
-					name={channelType.iconName}
-					size="small"
-				/>
-			)}
+			{
+				channelType && (
+					<CustomIcon
+						containerClassName="slds-m-right_small"
+						category={channelType.iconCategory}
+						name={channelType.iconName}
+						size="small"
+					/>
+				)
+			}
 			{children}
 		</DataTableCell>
 	);

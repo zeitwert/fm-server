@@ -38,20 +38,6 @@ export default class ItemListContent extends React.Component<ItemListContentProp
 		switch (layout.layoutType) {
 			default:
 			case LayoutType.Line:
-				options = {
-					options: [
-						{
-							id: 0,
-							label: "Add to Group",
-							value: "1"
-						},
-						{
-							id: 1,
-							label: "Publish",
-							value: "2"
-						}
-					]
-				};
 				break;
 			case LayoutType.Kanban:
 				options = {

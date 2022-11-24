@@ -35,8 +35,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 
 	@observable listStore: ItemList;
 	@observable store: AggregateStore;
-	//@observable showPanel: boolean = false;
-	//@observable panelItem: any | undefined = undefined;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -90,13 +88,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 						</ItemModal>
 					)
 				}
-				{/* {
-					this.showPanel && (
-						<SidePanel>
-							<ItemPanel item={this.panelItem} onClose={this.closePanel} />
-						</SidePanel>
-					)
-				} */}
 			</>
 		);
 	}

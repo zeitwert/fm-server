@@ -47,7 +47,7 @@ export class LineReport extends React.Component<LineReportProps, LineReportState
 		}
 		const itemsWithId = (props.items?.data as any[]).map((item, index) => {
 			return Object.assign(item, {
-				id: (item.id ? item.id : index).toString()
+				id: (item.id || index).toString()
 			});
 		});
 		return {
