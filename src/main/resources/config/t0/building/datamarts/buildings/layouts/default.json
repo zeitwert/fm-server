@@ -35,6 +35,11 @@
 				"id": "owner",
 				"label": "Verantwortlich",
 				"value": "owner"
+			},
+			{
+				"id": "modifiedBy",
+				"label": "Letzte Modifikation",
+				"value": "modifiedBy"
 			}
 		],
 		"data": [
@@ -50,7 +55,8 @@
 				"accountLink": "/account/{{account.id}}",
 				"buildingType": "{{buildingType.name}}",
 				"address": "{{street}} {{zip}} {{city}}",
-				"owner": "{{meta.owner.name}}"
+				"owner": "{{meta.owner.name}}",
+				"modifiedBy": "{{meta.modifiedByUser.name}}"
 			}
 		]
 	}
