@@ -73,6 +73,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
+				// ui paths (necessary for hyperlinks, since JWT is not propagated) // TODO revoke
+				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/user/*").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/account/*").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/contact/*").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/building/*").permitAll() // TODO revoke
 				// user, tenant and account pictures
 				.antMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/oe/tenants/**/{logo|banner}").permitAll()
