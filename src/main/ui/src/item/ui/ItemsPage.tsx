@@ -1,6 +1,6 @@
 
 import { Button } from "@salesforce/design-system-react";
-import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel, session } from "@zeitwert/ui-model";
 import {
 	DataTableCellWithDocumentIcon,
 	DataTableCellWithEntityIcon,
@@ -35,6 +35,8 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 
 	@observable listStore: ItemList;
 	@observable store: AggregateStore;
+	@observable sortProperty?: string;
+	@observable sortDirection?: "asc" | "desc" | undefined;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -45,6 +47,8 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 		makeObservable(this);
 		this.listStore = ItemListModel.create({ datamart: props.listDatamart });
 		this.store = this.props.store;
+		this.sortProperty = session.userPrefs.getUserPref(this.props.entityType, "sortProperty");
+		this.sortDirection = session.userPrefs.getUserPref(this.props.entityType, "sortDirection");
 	}
 
 	render() {
@@ -72,7 +76,10 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 								: []
 						)
 					}
+					sortProperty={this.sortProperty}
+					sortDirection={this.sortDirection}
 					onClick={this.openPreview}
+					onSort={this.storeSort}
 				/>
 				{
 					this.store?.isInTrx && (
@@ -95,6 +102,13 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	private openPreview = (itemId: string) => {
 		const type = EntityTypes[this.props.entityType];
 		type.hasPreview && this.props.onOpenPreview?.(itemId);
+	}
+
+	private storeSort = (property: string, direction: "asc" | "desc" | undefined): void => {
+		session.userPrefs.setUserPref(this.props.entityType, "sortProperty", property);
+		session.userPrefs.setUserPref(this.props.entityType, "sortDirection", direction);
+		this.sortProperty = property;
+		this.sortDirection = direction;
 	}
 
 	private openEditor = () => {

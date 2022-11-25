@@ -11,10 +11,13 @@ interface LineReportProps {
 	isJoined?: boolean;
 	fixedLayout?: boolean;
 	fixedHeader?: boolean;
+	sortProperty?: string;
+	sortDirection?: "asc" | "desc" | undefined;
 	maxColumns?: number;
 	onMouseEnter?: (itemId: string) => void;
 	onMouseLeave?: (itemId: string) => void;
 	onClick?: (itemId: string) => void;
+	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
 }
 
 interface SortColumn {
@@ -37,13 +40,18 @@ interface HeaderInfo {
 export class LineReport extends React.Component<LineReportProps> {
 
 	@observable items: any[] = [];
-	@observable sortProperty?: string;
-	@observable sortDirection?: string;
 	@observable selection: any[] = [];
 
 	constructor(props: LineReportProps) {
 		super(props);
 		makeObservable(this);
+		this.prepareItems();
+	}
+
+	componentDidUpdate(prevProps: Readonly<LineReportProps>, prevState: Readonly<{}>, snapshot?: any): void {
+		if (this.props.sortProperty === prevProps.sortProperty && this.props.sortDirection === prevProps.sortDirection) {
+			return;
+		}
 		this.prepareItems();
 	}
 
@@ -76,8 +84,8 @@ export class LineReport extends React.Component<LineReportProps> {
 							property: header.value,
 							width: header.width ? header.width : undefined,
 							sortable: header.sortable !== undefined ? header.sortable : true,
-							isSorted: header.value === this.sortProperty,
-							sortDirection: this.sortDirection
+							isSorted: header.value === this.props.sortProperty,
+							sortDirection: this.props.sortDirection
 						};
 						const T: any = dataTableCellTemplates?.[header.template || ""] || DataTableCellWithText;
 						return (
@@ -108,12 +116,12 @@ export class LineReport extends React.Component<LineReportProps> {
 				id: (item.id || index).toString()
 			});
 		});
-		if (this.sortProperty) {
+		if (this.props.sortProperty) {
 			items = items.sort((a, b) => {
-				if (a[this.sortProperty!] > b[this.sortProperty!]) {
-					return this.sortDirection === "desc" ? -1 : 1;
-				} else if (a[this.sortProperty!] < b[this.sortProperty!]) {
-					return this.sortDirection === "desc" ? 1 : -1;
+				if (a[this.props.sortProperty!] > b[this.props.sortProperty!]) {
+					return this.props.sortDirection === "desc" ? -1 : 1;
+				} else if (a[this.props.sortProperty!] < b[this.props.sortProperty!]) {
+					return this.props.sortDirection === "desc" ? 1 : -1;
 				}
 				return 0;
 			});
@@ -129,9 +137,7 @@ export class LineReport extends React.Component<LineReportProps> {
 	};
 
 	private handleSort = (sortColumn: SortColumn) => {
-		this.sortProperty = sortColumn.property;
-		this.sortDirection = sortColumn.sortDirection;
-		this.prepareItems();
+		this.props.onSort?.(sortColumn.property, sortColumn.sortDirection);
 	};
 
 }

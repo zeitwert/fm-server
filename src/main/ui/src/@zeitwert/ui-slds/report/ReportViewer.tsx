@@ -13,13 +13,16 @@ interface ReportViewerProps {
 	dataTableCellTemplates?: any;
 	maxColumns?: number;
 	options?: any;
+	sortProperty?: string;
+	sortDirection?: "asc" | "desc" | undefined;
 	onMouseEnter?: (itemId: string) => void;
 	onMouseLeave?: (itemId: string) => void;
 	onClick?: (itemId: string) => void;
+	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
 }
 
 export function ReportViewer(props: ReportViewerProps) {
-	const { layout, data, dataTableCellTemplates, maxColumns, onMouseEnter, onMouseLeave, onClick } = props;
+	const { layout, data, dataTableCellTemplates, maxColumns, sortProperty, sortDirection, onMouseEnter, onMouseLeave, onClick, onSort } = props;
 	if (!layout || !data?.data) {
 		return null;
 	}
@@ -30,12 +33,19 @@ export function ReportViewer(props: ReportViewerProps) {
 				items={data}
 				dataTableCellTemplates={dataTableCellTemplates}
 				maxColumns={maxColumns}
+				sortProperty={sortProperty}
+				sortDirection={sortDirection}
 				{...props.options}
 				onMouseEnter={onMouseEnter}
 				onMouseLeave={onMouseLeave}
 				onClick={onClick}
+				onSort={onSort}
 			/>;
 		case LayoutType.Kanban:
-			return <KanbanBoard items={data.data} {...layout.layout} {...props.options} />;
+			return <KanbanBoard
+				items={data.data}
+				{...layout.layout}
+				{...props.options}
+			/>;
 	}
 }

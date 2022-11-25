@@ -8,8 +8,11 @@ import React from "react";
 interface ItemListContentProps {
 	template?: Template;
 	reportData: any;
+	sortProperty?: string;
+	sortDirection?: "asc" | "desc" | undefined;
 	dataTableCellTemplates?: any;
 	onClick?: (itemId: string) => void;
+	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
 }
 
 @inject("showToast")
@@ -61,8 +64,11 @@ export default class ItemListContent extends React.Component<ItemListContentProp
 				layout={layout}
 				data={this.reportData}
 				dataTableCellTemplates={this.props.dataTableCellTemplates}
+				sortProperty={this.props.sortProperty}
+				sortDirection={this.props.sortDirection}
 				options={options}
 				onClick={this.props.onClick}
+				onSort={this.props.onSort}
 			/>
 		);
 	}

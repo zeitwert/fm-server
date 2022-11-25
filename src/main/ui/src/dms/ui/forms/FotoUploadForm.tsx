@@ -145,7 +145,6 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	private onFileChange = (f: File | undefined) => {
-		console.log("onFileChange", this.props.title, this.props.documentId, f);
 		this.imageFileSeqNr += 1;
 		this.imageFile = f;
 	}

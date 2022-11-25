@@ -12,7 +12,10 @@ interface ItemListControllerProps {
 	store: ItemList;
 	dataTableCellTemplates?: any;
 	actionButtons: React.ReactNode[];
+	sortProperty?: string;
+	sortDirection?: "asc" | "desc" | undefined;
 	onClick?: (item: any) => void;
+	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
 }
 
 @inject("logger", "showToast")
@@ -44,12 +47,15 @@ export default class ItemListController extends React.Component<ItemListControll
 				modifiedAt={store.modifiedAt}
 				template={store.template}
 				reportData={store.reportData}
+				sortProperty={this.props.sortProperty}
+				sortDirection={this.props.sortDirection}
 				dataTableCellTemplates={this.props.dataTableCellTemplates}
 				isLoading={store.isLoading}
 				actionButtons={this.props.actionButtons}
 				onRefresh={() => store.executeTemplate()}
 				onSelectTemplate={(templateId) => store.executeTemplate(templateId)}
 				onClick={this.props.onClick}
+				onSort={this.props.onSort}
 			/>
 		);
 	}

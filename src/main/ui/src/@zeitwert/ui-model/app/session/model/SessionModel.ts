@@ -20,6 +20,7 @@ import { TranslatorImpl } from "../../common/i18n/impl/TranslatorImpl";
 import { Application, ApplicationArea, ApplicationAreaMap, ApplicationInfo } from "./Application";
 import { LoginInfo, LoginTenantInfo, LoginUserInfo } from "./LoginInfo";
 import { ADVISOR_TENANT, COMMUNITY_TENANT, KERNEL_TENANT, SessionInfo } from "./SessionInfo";
+import userPrefs, { UserPrefs } from "./UserPrefs";
 
 export enum SessionState {
 	close = "close",
@@ -287,6 +288,9 @@ const MstSessionModel = types
 		},
 	}))
 	.views((self) => ({
+		get userPrefs(): UserPrefs {
+			return userPrefs;
+		},
 		get translator(): Translator {
 			return new TranslatorImpl(self.locale as Locale);
 		},

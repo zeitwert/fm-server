@@ -8,9 +8,12 @@ import ItemListHeader, { ItemListHeaderProps } from "./ItemListHeader";
 
 interface ItemListProps extends ItemListHeaderProps {
 	template?: Template;
+	sortProperty?: string;
+	sortDirection?: "asc" | "desc" | undefined;
 	dataTableCellTemplates?: any;
 	isLoading: boolean;
 	onClick?: (itemId: string) => void;
+	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
 }
 
 @observer
@@ -40,8 +43,11 @@ export default class ItemListView extends React.Component<ItemListProps> {
 					<ItemListContent
 						template={this.props.template}
 						reportData={this.props.reportData}
+						sortProperty={this.props.sortProperty}
+						sortDirection={this.props.sortDirection}
 						dataTableCellTemplates={this.props.dataTableCellTemplates}
 						onClick={this.props.onClick}
+						onSort={this.props.onSort}
 					/>
 				}
 			</>
