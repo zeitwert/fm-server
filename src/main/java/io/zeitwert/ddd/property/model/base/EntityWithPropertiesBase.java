@@ -12,6 +12,7 @@ import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
@@ -93,8 +94,23 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <T extends Aggregate> ReferenceProperty<T> addReferenceProperty(UpdatableRecord<?> dbRecord,
 			Field<Integer> field, Class<T> aggregateClass) {
+		ReferenceProperty<T> property = null;
+		AggregateCache<T> cache = this.getAppContext().getCache(aggregateClass);
+		if (cache != null) {
+			property = new ReferencePropertyImpl<T>(this, dbRecord, field, (id) -> cache.get(id));
+		} else {
+			AggregateRepository<T, ?> repository = this.getAppContext().getRepository(aggregateClass);
+			property = new ReferencePropertyImpl<T>(this, dbRecord, field, (id) -> repository.get(id));
+		}
+		this.addProperty(property);
+		return property;
+	}
+
+	protected <T extends Aggregate> ReferenceSetProperty<T> addReferenceSetProperty(CodePartListType partListType,
+			Class<T> aggregateClass) {
+		requireThis(partListType != null, "partListType not null");
 		final AggregateRepository<T, ?> repository = this.getAppContext().getRepository(aggregateClass);
-		final ReferenceProperty<T> property = new ReferencePropertyImpl<T>(this, dbRecord, field, repository);
+		final ReferenceSetProperty<T> property = new ReferenceSetPropertyImpl<T>(this, partListType, repository);
 		this.addProperty(property);
 		return property;
 	}
@@ -112,15 +128,6 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 			CodePartListType partListType) {
 		requireThis(partListType != null, "partListType not null");
 		final ItemSetProperty<Item> property = new ItemSetPropertyImpl<Item>(this, partListType);
-		this.addProperty(property);
-		return property;
-	}
-
-	protected <T extends Aggregate> ReferenceSetProperty<T> addReferenceSetProperty(CodePartListType partListType,
-			Class<T> aggregateClass) {
-		requireThis(partListType != null, "partListType not null");
-		final AggregateRepository<T, ?> repository = this.getAppContext().getRepository(aggregateClass);
-		final ReferenceSetProperty<T> property = new ReferenceSetPropertyImpl<T>(this, partListType, repository);
 		this.addProperty(property);
 		return property;
 	}

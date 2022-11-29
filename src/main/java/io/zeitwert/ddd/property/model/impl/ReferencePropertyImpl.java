@@ -8,23 +8,26 @@ import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
 
 public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceProperty<A> {
 
+	public interface AggregateResolver<A extends Aggregate> {
+		A get(Integer id);
+	}
+
 	private final UpdatableRecord<?> dbRecord;
 	private final Field<Integer> field;
-	private final AggregateRepository<A, ?> repository;
+	private final AggregateResolver<A> resolver;
 
 	public ReferencePropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, Field<Integer> field,
-			AggregateRepository<A, ?> repository) {
+			AggregateResolver<A> resolver) {
 		super(entity);
 		this.dbRecord = dbRecord;
 		this.field = field;
-		this.repository = repository;
+		this.resolver = resolver;
 	}
 
 	@Override
@@ -43,16 +46,14 @@ public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> 
 		if (Objects.equals(this.getId(), id)) {
 			return;
 		}
-		assertThis(this.isValidAggregateId(id),
-				"valid aggregate id [" + this.repository.getAggregateType().getId() + ": " + id + "]");
+		assertThis(this.isValidAggregateId(id), "valid aggregate id [" + id + "]");
 		this.dbRecord.setValue(this.field, id);
 		this.getEntity().afterSet(this);
 	}
 
 	@Override
 	public A getValue() {
-		return this.getId() == null ? null
-				: this.repository.get(this.getId());
+		return this.getId() == null ? null : this.resolver.get(this.getId());
 	}
 
 	@Override
