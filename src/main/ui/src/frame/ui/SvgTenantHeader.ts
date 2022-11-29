@@ -7,6 +7,7 @@ export const SvgHeader = `
 			fill: #333;
 		}
 	</style>
-	<text x="20" y="60" class="tenant">{tenant}</text>
+	<image x="5" y="5" height="70" width="70" href="{logo}"/>
+	<text x="80" y="60" class="tenant">{tenant}</text>
 </svg>
 `;

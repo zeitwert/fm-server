@@ -10,7 +10,7 @@ export interface FotoUploadFormProps {
 	documentId: string | undefined;
 	documentContentUrl: string | undefined; // GET | POST
 	supportedContentTypes: string | undefined;
-	afterUpload: () => void;
+	afterUpload: () => Promise<void>;
 	title: string;
 	minHeight?: string;
 }
@@ -18,7 +18,7 @@ export interface FotoUploadFormProps {
 @observer
 export default class FotoUploadForm extends React.Component<FotoUploadFormProps> {
 
-	imageFile: File | undefined = new File([], "empty");
+	@observable imageFile: File | undefined = new File([], "empty");
 	@observable imageFileSeqNr: number = 1;
 	@observable isUploading: boolean = false;
 	@observable hasUploadError: boolean = false;
@@ -29,6 +29,7 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	render() {
+		console.log("render", this.props, this.imageFile?.size);
 		const minHeight = this.props.minHeight || "200px";
 		if (this.isUploading) {
 			return <Spinner variant="brand" size="large" />;
@@ -49,7 +50,7 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 				</>
 			);
 		}
-		const imageUrl = this.imageFileSeqNr && this.imageFile?.size ? URL.createObjectURL(this.imageFile) : undefined;
+		const imageUrl = this.imageFile?.size ? URL.createObjectURL(this.imageFile) : undefined;
 		return (
 			<div className="fa-file-upload">
 				<>
@@ -132,6 +133,7 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	private readFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("readFile");
 		e.preventDefault();
 		if (e.target?.files?.[0]) {
 			this.onFileChange(e.target?.files?.[0]);
@@ -161,8 +163,9 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 			const url = Config.getRestUrl("dms", "documents/" + this.props.documentId + "/content");
 			await API.post(url, data);
 			this.imageFile = undefined;
-			this.props.afterUpload();
+			await this.props.afterUpload();
 		} catch (e) {
+			console.error("doUpload", 2);
 			this.hasUploadError = true;
 		} finally {
 			this.isUploading = false;

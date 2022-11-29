@@ -97,10 +97,7 @@ const MstAccountModel = ObjModel.named("Account")
 			return !!self.logo?.id && !!self.logo?.contentType?.id;
 		},
 		get logoUrl(): string | undefined {
-			if (self.logo?.id && self.logo?.contentType?.id) {
-				return Config.getRestUrl("dms", "documents/" + self.logo?.id + "/content");
-			}
-			return "/missing.jpg";
+			return Config.getRestUrl("account", "accounts/" + self.id + "/logo");
 		},
 	}))
 	.views((self) => ({
@@ -108,10 +105,7 @@ const MstAccountModel = ObjModel.named("Account")
 			return !!self.banner?.id && !!self.banner?.contentType?.id;
 		},
 		get bannerUrl(): string | undefined {
-			if (self.banner?.id && self.banner?.contentType?.id) {
-				return Config.getRestUrl("dms", "documents/" + self.banner?.id + "/content");
-			}
-			return "/missing.jpg";
+			return Config.getRestUrl("account", "accounts/" + self.id + "/banner");
 		},
 	}))
 	.views((self) => ({

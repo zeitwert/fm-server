@@ -97,7 +97,9 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
 	private void loadContent() {
 		this.contentType = this.getRepository().getContentType(this);
-		this.content = this.getRepository().getContent(this);
+		if (this.contentType != null) {
+			this.content = this.getRepository().getContent(this);
+		}
 	}
 
 	@Override

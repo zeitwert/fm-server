@@ -24,7 +24,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 							documentId={building.coverFoto?.id}
 							documentContentUrl={building.hasCoverFoto ? building.coverFotoUrl : undefined}
 							supportedContentTypes={building.coverFoto?.supportedContentTypes}
-							afterUpload={() => this.props.afterSave && this.props.afterSave()}
+							afterUpload={async () => this.props.afterSave && this.props.afterSave()}
 						/>
 					</TabsPanel>
 					<TabsPanel key="location" label="Lage">

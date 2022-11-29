@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
@@ -21,9 +22,11 @@ import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 @RequestMapping("/rest/dms/documents")
 public class DocumentContentController {
 
+	private final ObjDocumentRepository documentRepo;
 	private final ObjDocumentCache documentCache;
 
-	public DocumentContentController(ObjDocumentCache documentCache) {
+	public DocumentContentController(ObjDocumentRepository documentRepo, ObjDocumentCache documentCache) {
+		this.documentRepo = documentRepo;
 		this.documentCache = documentCache;
 	}
 
@@ -33,6 +36,7 @@ public class DocumentContentController {
 			return ResponseEntity.notFound().build();
 		}
 		ObjDocument document = this.documentCache.get(documentId);
+		System.out.println("document.getContent " + documentId + " " + System.identityHashCode(document));
 		CodeContentType contentType = document.getContentType();
 		if (contentType == null) {
 			return ResponseEntity.notFound().build();
@@ -52,7 +56,8 @@ public class DocumentContentController {
 			if (contentType == null) {
 				return ResponseEntity.badRequest().body(null);
 			}
-			ObjDocument document = this.documentCache.get(documentId);
+			ObjDocument document = this.documentRepo.get(documentId);
+			System.out.println("document.storeContent " + documentId + " " + System.identityHashCode(document));
 			document.storeContent(contentType, file.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();

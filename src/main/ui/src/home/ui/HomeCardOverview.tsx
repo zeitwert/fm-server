@@ -1,5 +1,5 @@
 
-import { Card, Icon } from "@salesforce/design-system-react";
+import { Card, Icon, Spinner } from "@salesforce/design-system-react";
 import { API, Config, session } from "@zeitwert/ui-model";
 import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
 import { AppCtx } from "frame/App";
@@ -24,6 +24,7 @@ interface Overview {
 export default class HomeCardOverview extends React.Component {
 
 	@observable overview: Overview | undefined;
+	@observable isLoading: boolean = true;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -39,7 +40,7 @@ export default class HomeCardOverview extends React.Component {
 	}
 
 	render() {
-		const accountImageUrl = Config.getRestUrl("account", `accounts/${this.overview?.accountId}/logo`);
+		const accountImageUrl = Config.getRestUrl("account", `accounts/${this.overview?.accountId}/banner`);
 		return (
 			<Card
 				icon={<Icon category="standard" name="account" size="small" />}
@@ -47,30 +48,37 @@ export default class HomeCardOverview extends React.Component {
 				className="fa-height-100"
 				bodyClassName="slds-m-around_none slds-p-around_small slds-card__body_with_header_footer"
 			>
-				<Grid>
-					<Row nowrap>
-						<Col totalCols={12} cols={4}>
-						</Col>
-						<Col totalCols={12} cols={4}>
-							<img src={accountImageUrl} alt="Account flag" />
-						</Col>
-						<Col totalCols={12} cols={4}>
-						</Col>
-					</Row>
-					<Row nowrap className="slds-p-top_small">
-						<Col totalCols={12} cols={12}>
-							<Grid>
-								{this.fact(this.overview?.buildingCount, "Immobilie", "Immobilien", "/building")}
-								{this.fact(this.overview?.portfolioCount, "Portfolio", "Portfolios", "/portfolio")}
-								{this.fact(this.overview?.ratingCount, "Bewertung", "Bewertungen")}
-								{this.fact(this.overview?.insuranceValue, "kCHF Versicherungswert")}
-								{this.fact(this.overview?.timeValue, "kCHF Zeitwert")}
-								{this.fact(this.overview?.shortTermRenovationCosts, "kCHF IS kurzfristig")}
-								{this.fact(this.overview?.midTermRenovationCosts, "kCHF IS mittelfristig")}
-							</Grid>
-						</Col>
-					</Row>
-				</Grid>
+				{
+					this.isLoading &&
+					<Spinner variant="brand" size="large" />
+				}
+				{
+					!this.isLoading &&
+					<Grid>
+						<Row nowrap>
+							<Col totalCols={12} cols={4}>
+							</Col>
+							<Col totalCols={12} cols={4}>
+								<img src={accountImageUrl} alt="Account flag" />
+							</Col>
+							<Col totalCols={12} cols={4}>
+							</Col>
+						</Row>
+						<Row nowrap className="slds-p-top_small">
+							<Col totalCols={12} cols={12}>
+								<Grid>
+									{this.fact(this.overview?.buildingCount, "Immobilie", "Immobilien", "/building")}
+									{this.fact(this.overview?.portfolioCount, "Portfolio", "Portfolios", "/portfolio")}
+									{this.fact(this.overview?.ratingCount, "Bewertung", "Bewertungen")}
+									{this.fact(this.overview?.insuranceValue, "kCHF Versicherungswert")}
+									{this.fact(this.overview?.timeValue, "kCHF Zeitwert")}
+									{this.fact(this.overview?.shortTermRenovationCosts, "kCHF IS kurzfristig")}
+									{this.fact(this.overview?.midTermRenovationCosts, "kCHF IS mittelfristig")}
+								</Grid>
+							</Col>
+						</Row>
+					</Grid>
+				}
 			</Card>
 		);
 	}
@@ -78,6 +86,7 @@ export default class HomeCardOverview extends React.Component {
 	private async loadOverview() {
 		const rsp = await API.get(Config.getRestUrl("home", "overview/" + session.sessionInfo?.account.id))
 		this.overview = rsp.data;
+		this.isLoading = false;
 	}
 
 	private fact = (nr?: number, name?: string, multiName?: string, url?: string) => {

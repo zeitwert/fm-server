@@ -24,7 +24,7 @@ export default class UserSummaryForm extends React.Component<UserSummaryFormProp
 							documentId={user.avatar?.id}
 							documentContentUrl={user.hasAvatar ? user.avatarUrl : undefined}
 							supportedContentTypes={user.avatar?.supportedContentTypes}
-							afterUpload={() => this.props.afterSave && this.props.afterSave()}
+							afterUpload={async () => this.props.afterSave && this.props.afterSave()}
 						/>
 					</TabsPanel>
 				</Tabs>

@@ -24,7 +24,7 @@ export default class TenantSummaryForm extends React.Component<TenantSummaryForm
 							documentId={tenant.logo?.id}
 							documentContentUrl={tenant.hasLogo ? tenant.logoUrl : undefined}
 							supportedContentTypes={tenant.logo?.supportedContentTypes}
-							afterUpload={() => this.props.afterSave && this.props.afterSave()}
+							afterUpload={async () => this.props.afterSave && this.props.afterSave()}
 						/>
 						<div className="slds-p-top_small" />
 						<FotoUploadForm
@@ -32,7 +32,7 @@ export default class TenantSummaryForm extends React.Component<TenantSummaryForm
 							documentId={tenant.banner?.id}
 							documentContentUrl={tenant.hasBanner ? tenant.bannerUrl : undefined}
 							supportedContentTypes={tenant.banner?.supportedContentTypes}
-							afterUpload={() => this.props.afterSave && this.props.afterSave()}
+							afterUpload={async () => this.props.afterSave && this.props.afterSave()}
 						/>
 					</TabsPanel>
 				</Tabs>
