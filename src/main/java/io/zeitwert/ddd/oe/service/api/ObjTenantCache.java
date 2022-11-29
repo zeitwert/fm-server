@@ -1,18 +1,18 @@
 package io.zeitwert.ddd.oe.service.api;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-
 import java.util.Map;
 import java.util.Optional;
 
-public interface TenantService {
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.model.ObjTenant;
 
-	ObjTenant getTenant(Integer tenantId);
+public interface ObjTenantCache {
+
+	ObjTenant get(Integer tenantId);
+
+	EnumeratedDto getAsEnumerated(Integer tenantId);
 
 	Optional<ObjTenant> getByExtlKey(String extlKey);
-
-	EnumeratedDto getTenantEnumerated(Integer tenantId);
 
 	Map<String, Integer> getStatistics();
 

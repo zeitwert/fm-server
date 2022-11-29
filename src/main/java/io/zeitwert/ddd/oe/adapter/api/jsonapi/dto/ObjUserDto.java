@@ -1,5 +1,11 @@
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.dto;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -8,7 +14,7 @@ import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -17,12 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data()
 @NoArgsConstructor
@@ -43,7 +43,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 	List<EnumeratedDto> tenants;
 
 	public String getLastTouch() {
-		OffsetDateTime lastTouch = AggregateDtoBase.getService(UserService.class).getLastTouch(this.getId());
+		OffsetDateTime lastTouch = AggregateDtoBase.getService(ObjUserCache.class).getLastTouch(this.getId());
 		return lastTouch != null ? touchFmt.format(lastTouch) : null;
 	}
 

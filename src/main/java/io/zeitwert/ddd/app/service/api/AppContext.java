@@ -3,6 +3,9 @@ package io.zeitwert.ddd.app.service.api;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -18,6 +21,7 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.app.service.api.impl.Repositories;
 import io.zeitwert.ddd.enums.model.Enumerated;
@@ -41,6 +45,7 @@ public final class AppContext {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final DSLContext dslContext;
 	private final Repositories repos;
+	private Map<Class<? extends Aggregate>, AggregateCache<?>> cacheByIntf = new HashMap<>();
 	private final Enumerations enums;
 	private final RequestContext requestContext;
 
@@ -78,6 +83,15 @@ public final class AppContext {
 
 	public <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> intfClass) {
 		return this.repos.getRepository(intfClass);
+	}
+
+	public void addCache(Class<? extends Aggregate> intfClass, AggregateCache<? extends Aggregate> cache) {
+		this.cacheByIntf.put(intfClass, cache);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <Aggr extends Aggregate> AggregateCache<Aggr> getCache(Class<Aggr> intfClass) {
+		return (AggregateCache<Aggr>) this.cacheByIntf.get(intfClass);
 	}
 
 	public <A extends Aggregate> void addPartRepository(String partTypeId, final Class<? extends Part<A>> intfClass,

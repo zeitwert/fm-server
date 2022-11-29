@@ -10,7 +10,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
 
@@ -24,12 +24,12 @@ public class RequestContextProvider {
 	@Autowired
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public RequestContext getRequestContext(UserService userService) {
+	public RequestContext getRequestContext(ObjUserCache userCache) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
 
-		ObjUser user = userService.getUser(userDetails.getUserId());
+		ObjUser user = userCache.get(userDetails.getUserId());
 		Integer tenantId = userDetails.getTenantId();
 		Integer accountId = userDetails.getAccountId();
 		return new RequestContext(user, tenantId, accountId, CodeLocaleEnum.getLocale(DEFAULT_LOCALE));

@@ -24,7 +24,7 @@ import io.zeitwert.ddd.oe.model.base.ObjUserFields;
 import io.zeitwert.ddd.oe.model.db.Tables;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.ddd.oe.service.api.TenantService;
+import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 @Component("objUserRepository")
@@ -68,8 +68,8 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	}
 
 	@Override
-	public TenantService getTenantService() {
-		return this.getAppContext().getBean(TenantService.class);
+	public ObjTenantCache getTenantCache() {
+		return this.getAppContext().getBean(ObjTenantCache.class);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Controller("objUserApiRepository")
@@ -18,8 +18,8 @@ public class ObjUserApiRepositoryImpl
 		implements ObjUserApiRepository {
 
 	public ObjUserApiRepositoryImpl(ObjUserRepository repository, RequestContext requestCtx,
-			UserService userService) {
-		super(ObjUserDto.class, requestCtx, userService, repository, ObjUserDtoAdapter.getInstance());
+			ObjUserCache userCache) {
+		super(ObjUserDto.class, requestCtx, userCache, repository, ObjUserDtoAdapter.getInstance());
 	}
 
 }

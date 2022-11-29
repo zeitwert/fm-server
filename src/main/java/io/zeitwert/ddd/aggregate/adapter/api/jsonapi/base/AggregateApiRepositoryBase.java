@@ -16,28 +16,28 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
 	private final RequestContext requestCtx;
-	private final UserService userService;
+	private final ObjUserCache userCache;
 	private final AggregateRepository<A, V> repository;
 	private final AggregateDtoAdapter<A, V, D> dtoAdapter;
 
-	public AggregateApiRepositoryBase(Class<D> dtoClass, RequestContext requestCtx, UserService userService,
+	public AggregateApiRepositoryBase(Class<D> dtoClass, RequestContext requestCtx, ObjUserCache userCache,
 			AggregateRepository<A, V> repository,
 			AggregateDtoAdapter<A, V, D> dtoAdapter) {
 		super(dtoClass);
 		this.requestCtx = requestCtx;
-		this.userService = userService;
+		this.userCache = userCache;
 		this.repository = repository;
 		this.dtoAdapter = dtoAdapter;
 	}
@@ -50,7 +50,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
 		}
 		try {
-			this.userService.touch(this.requestCtx.getUser().getId());
+			this.userCache.touch(this.requestCtx.getUser().getId());
 			Integer tenantId = dto.getTenant() != null
 					? Integer.parseInt(dto.getTenant().getId())
 					: requestCtx.getTenantId();
@@ -67,7 +67,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	@Transactional
 	public D findOne(Integer objId, QuerySpec querySpec) {
 		try {
-			this.userService.touch(this.requestCtx.getUser().getId());
+			this.userCache.touch(this.requestCtx.getUser().getId());
 			A aggregate = this.repository.get(objId);
 			this.requestCtx.addAggregate(aggregate);
 			return this.dtoAdapter.fromAggregate(aggregate);
@@ -80,7 +80,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
 		try {
-			this.userService.touch(this.requestCtx.getUser().getId());
+			this.userCache.touch(this.requestCtx.getUser().getId());
 			List<V> itemList = this.repository.find(querySpec);
 			ResourceList<D> list = new DefaultResourceList<>();
 			list.addAll(itemList.stream().map(item -> this.dtoAdapter.fromRecord(item)).toList());
@@ -94,7 +94,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public <S extends D> S save(S dto) {
-		this.userService.touch(this.requestCtx.getUser().getId());
+		this.userCache.touch(this.requestCtx.getUser().getId());
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		} else if (dto.getMeta() == null) {
@@ -140,7 +140,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public void delete(Integer id) {
-		this.userService.touch(this.requestCtx.getUser().getId());
+		this.userCache.touch(this.requestCtx.getUser().getId());
 		if (id == null) {
 			throw new ResourceNotFoundException("Can only delete existing object (missing id)");
 		}

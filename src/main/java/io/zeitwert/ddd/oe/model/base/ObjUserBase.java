@@ -1,6 +1,9 @@
 
 package io.zeitwert.ddd.oe.model.base;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.obj.model.ObjPartItem;
@@ -11,7 +14,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
-import io.zeitwert.ddd.oe.service.api.TenantService;
+import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.ItemSetProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -23,9 +26,6 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
@@ -129,10 +129,10 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	@Override
 	public Set<ObjTenant> getTenantSet() {
-		TenantService tenantService = this.getRepository().getTenantService();
+		ObjTenantCache tenantCache = this.getRepository().getTenantCache();
 		return this.tenantSet.getItems()
 				.stream()
-				.map(itemId -> tenantService.getTenant(Integer.parseInt(itemId)))
+				.map(itemId -> tenantCache.get(Integer.parseInt(itemId)))
 				.collect(Collectors.toSet());
 	}
 

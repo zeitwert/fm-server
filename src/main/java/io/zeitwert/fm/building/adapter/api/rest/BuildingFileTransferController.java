@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
@@ -54,7 +54,7 @@ public class BuildingFileTransferController {
 	private ObjBuildingRepository buildingRepo;
 
 	@Autowired
-	private UserService userService;
+	private ObjUserCache userCache;
 
 	@Autowired
 	private ObjNoteRepository noteRepo;
@@ -125,9 +125,9 @@ public class BuildingFileTransferController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
-					.createdByUser(userService.getUser(note.getCreatedByUserId()).getEmail())
+					.createdByUser(userCache.get(note.getCreatedByUserId()).getEmail())
 					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null ? userService.getUser(note.getModifiedByUserId()).getEmail() : null)
+					.modifiedByUser(note.getModifiedByUserId() != null ? userCache.get(note.getModifiedByUserId()).getEmail() : null)
 					.modifiedAt(note.getModifiedAt())
 				.build();
 		}).toList();
@@ -221,7 +221,7 @@ public class BuildingFileTransferController {
 			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? userService.getByEmail(dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null ? userCache.getByEmail(dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());

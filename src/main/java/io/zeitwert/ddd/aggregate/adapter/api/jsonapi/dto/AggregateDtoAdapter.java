@@ -1,48 +1,48 @@
 package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto;
 
+import org.jooq.TableRecord;
+
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.service.api.TenantService;
-import io.zeitwert.ddd.oe.service.api.UserService;
-
-import org.jooq.TableRecord;
+import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 
 public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>> {
 
-	private static TenantService tenantService = null;
-	private static UserService userService = null;
-
-	protected TenantService getTenantService() {
-		if (tenantService == null) {
-			tenantService = (TenantService) AppContext.getInstance().getBean(TenantService.class);
-		}
-		return tenantService;
-	}
-
-	protected UserService getUserService() {
-		if (userService == null) {
-			userService = (UserService) AppContext.getInstance().getBean(UserService.class);
-		}
-		return userService;
-	}
+	private static ObjTenantCache tenantCache = null;
+	private static ObjUserCache userCache = null;
 
 	protected ObjTenant getTenant(Integer tenantId) {
-		return this.getTenantService().getTenant(tenantId);
+		return this.getTenantCache().get(tenantId);
 	}
 
 	protected EnumeratedDto getTenantEnumerated(Integer tenantId) {
-		return this.getTenantService().getTenantEnumerated(tenantId);
+		return this.getTenantCache().getAsEnumerated(tenantId);
+	}
+
+	private ObjTenantCache getTenantCache() {
+		if (tenantCache == null) {
+			tenantCache = (ObjTenantCache) AppContext.getInstance().getBean(ObjTenantCache.class);
+		}
+		return tenantCache;
 	}
 
 	protected ObjUser getUser(Integer userId) {
-		return this.getUserService().getUser(userId);
+		return this.getUserCache().get(userId);
 	}
 
 	protected EnumeratedDto getUserEnumerated(Integer userId) {
-		return this.getUserService().getUserEnumerated(userId);
+		return this.getUserCache().getAsEnumerated(userId);
+	}
+
+	private ObjUserCache getUserCache() {
+		if (userCache == null) {
+			userCache = (ObjUserCache) AppContext.getInstance().getBean(ObjUserCache.class);
+		}
+		return userCache;
 	}
 
 	public abstract void toAggregate(D dto, A aggregate);

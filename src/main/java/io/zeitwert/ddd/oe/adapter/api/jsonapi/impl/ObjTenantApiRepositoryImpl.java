@@ -10,7 +10,7 @@ import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Controller("objTenantApiRepository")
@@ -20,8 +20,8 @@ public class ObjTenantApiRepositoryImpl
 		implements ObjTenantApiRepository {
 
 	public ObjTenantApiRepositoryImpl(ObjTenantRepository repository, RequestContext requestCtx,
-			UserService userService) {
-		super(ObjTenantDto.class, requestCtx, userService, repository, ObjTenantDtoAdapter.getInstance());
+			ObjUserCache userCache) {
+		super(ObjTenantDto.class, requestCtx, userCache, repository, ObjTenantDtoAdapter.getInstance());
 	}
 
 }

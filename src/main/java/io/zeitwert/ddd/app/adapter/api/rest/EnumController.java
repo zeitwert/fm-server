@@ -25,8 +25,8 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.ddd.oe.service.api.TenantService;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 
 @RestController("enumController")
 @RequestMapping("/enum")
@@ -39,13 +39,13 @@ public class EnumController {
 	ObjTenantRepository tenantRepo;
 
 	@Autowired
-	TenantService tenantService;
+	ObjTenantCache tenantCache;
 
 	@Autowired
 	ObjUserRepository userRepo;
 
 	@Autowired
-	UserService userService;
+	ObjUserCache userCache;
 
 	@GetMapping("/oe/objTenant")
 	public ResponseEntity<List<EnumeratedDto>> getTenants() {
@@ -57,9 +57,9 @@ public class EnumController {
 
 	@GetMapping("/oe/objTenant/{idOrExtlKey}")
 	public ResponseEntity<ObjTenant> getTenant(@PathVariable String idOrExtlKey) {
-		Optional<ObjTenant> tenant = tenantService.getByExtlKey(idOrExtlKey);
+		Optional<ObjTenant> tenant = tenantCache.getByExtlKey(idOrExtlKey);
 		if (tenant.isEmpty()) {
-			tenant = Optional.of(tenantService.getTenant(Integer.valueOf(idOrExtlKey)));
+			tenant = Optional.of(tenantCache.get(Integer.valueOf(idOrExtlKey)));
 		}
 		if (tenant.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -77,9 +77,9 @@ public class EnumController {
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
-		Optional<ObjUser> user = userService.getByEmail(idOrEmail);
+		Optional<ObjUser> user = userCache.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
-			user = Optional.of(userService.getUser(Integer.valueOf(idOrEmail)));
+			user = Optional.of(userCache.get(Integer.valueOf(idOrEmail)));
 		}
 		if (user.isEmpty()) {
 			return ResponseEntity.notFound().build();

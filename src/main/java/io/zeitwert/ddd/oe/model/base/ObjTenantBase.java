@@ -1,6 +1,11 @@
 
 package io.zeitwert.ddd.oe.model.base;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.jooq.UpdatableRecord;
+
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
@@ -21,11 +26,6 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.jooq.UpdatableRecord;
 
 public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
