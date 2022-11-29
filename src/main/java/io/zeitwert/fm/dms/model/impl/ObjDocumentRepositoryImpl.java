@@ -98,8 +98,8 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public CodeContentType getContentType(ObjDocument document) {
-		Table<ObjDocumentPartContentRecord> query = this.getMaxContentVersionQuery(document);
-		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getMaxVersionQuery(document));
+		Table<ObjDocumentPartContentRecord> query = this.getContentWithMaxVersionQuery(document);
+		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getContentMaxVersionQuery(document));
 		if (maxVersionNr == null) {
 			return null;
 		}
@@ -109,30 +109,31 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public byte[] getContent(ObjDocument document) {
-		Table<ObjDocumentPartContentRecord> query = this.getMaxContentVersionQuery(document);
+		Table<ObjDocumentPartContentRecord> query = this.getContentWithMaxVersionQuery(document);
 		return this.getDSLContext().fetchOne(query).getContent();
 	}
 
 	@Override
 	public void storeContent(RequestContext requestCtx, ObjDocument document, CodeContentType contentType,
 			byte[] content) {
-		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getMaxVersionQuery(document));
-		maxVersionNr = maxVersionNr == null ? 1 : maxVersionNr + 1;
+		Integer versionNr = this.getDSLContext().fetchValue(this.getContentMaxVersionQuery(document));
+		versionNr = versionNr == null ? 1 : versionNr + 1;
 		//@formatter:off
 		this.getDSLContext()
 			.insertInto(DOCUMENT_CONTENT)
 			.columns(OBJ_ID, VERSION_NR, CONTENT_TYPE_ID, CONTENT, CREATED_BY_USER_ID)
-			.values(document.getId(), maxVersionNr, contentType.getId(), content, requestCtx.getUser().getId())
+			.values(document.getId(), versionNr, contentType.getId(), content, requestCtx.getUser().getId())
 			.execute();
 		//@formatter:on
+		this.store(document); // modifiedBy, trigger event
 	}
 
-	private Table<ObjDocumentPartContentRecord> getMaxContentVersionQuery(ObjDocument document) {
-		SelectConditionStep<Record1<Integer>> maxVersionQuery = this.getMaxVersionQuery(document);
+	private Table<ObjDocumentPartContentRecord> getContentWithMaxVersionQuery(ObjDocument document) {
+		SelectConditionStep<Record1<Integer>> maxVersionQuery = this.getContentMaxVersionQuery(document);
 		return DOCUMENT_CONTENT.where(OBJ_ID.eq(document.getId()).and(VERSION_NR.eq(maxVersionQuery)));
 	}
 
-	private SelectConditionStep<Record1<Integer>> getMaxVersionQuery(ObjDocument document) {
+	private SelectConditionStep<Record1<Integer>> getContentMaxVersionQuery(ObjDocument document) {
 		return this.getDSLContext().select(DSL.max(VERSION_NR)).from(DOCUMENT_CONTENT).where(OBJ_ID.eq(document.getId()));
 	}
 

@@ -30,7 +30,9 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	protected final EnumProperty<CodeDocumentCategory> documentCategory;
 	protected final ReferenceProperty<ObjDocument> templateDocument;
 	protected final EnumProperty<CodeContentKind> contentKind;
+
 	protected CodeContentType contentType;
+	protected byte[] content;
 
 	protected ObjDocumentBase(ObjDocumentRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> documentRecord) {
@@ -53,7 +55,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	@Override
 	public void doAfterLoad() {
 		super.doAfterLoad();
-		this.contentType = this.getRepository().getContentType(this);
+		this.loadContent();
 	}
 
 	@Override
@@ -63,13 +65,14 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
 	@Override
 	public byte[] getContent() {
-		return this.getRepository().getContent(this);
+		return this.content;
 	}
 
 	@Override
 	public void storeContent(CodeContentType contentType, byte[] content) {
 		this.getRepository().storeContent(this.getRequestContext(), this, contentType, content);
 		this.contentType = contentType;
+		this.content = content;
 		this.calcAll();
 	}
 
@@ -84,6 +87,17 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public void doAfterStore() {
+		super.doAfterStore();
+		this.loadContent();
+	}
+
+	private void loadContent() {
+		this.contentType = this.getRepository().getContentType(this);
+		this.content = this.getRepository().getContent(this);
 	}
 
 	@Override
