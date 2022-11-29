@@ -1,23 +1,25 @@
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data()
 @NoArgsConstructor
@@ -43,10 +45,13 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
+			ObjAccount account = null;
 			if (this.getOriginal() != null) {
-				this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(this.getOriginal().getAccount());
+				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
+				account = getService(ObjAccountCache.class).get(this.accountId);
 			}
+			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account);
 		}
 		return this.accountDto;
 	}

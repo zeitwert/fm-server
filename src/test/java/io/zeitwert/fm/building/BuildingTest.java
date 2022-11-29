@@ -1,6 +1,19 @@
 
 package io.zeitwert.fm.building;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -18,19 +31,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.server.Application;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("test")
 public class BuildingTest {
@@ -41,7 +41,7 @@ public class BuildingTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjAccountRepository accountRepository;
+	private ObjAccountRepository accountCache;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepository;
@@ -149,16 +149,16 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getOrCreateTestAccount(RequestContext requestCtx) {
-		Optional<ObjAccount> maybeAccount = this.accountRepository.getByKey(ACCT_KEY);
+		Optional<ObjAccount> maybeAccount = this.accountCache.getByKey(ACCT_KEY);
 		if (maybeAccount.isPresent()) {
 			return maybeAccount.get();
 		}
-		ObjAccount account = this.accountRepository.create(requestCtx.getTenantId());
+		ObjAccount account = this.accountCache.create(requestCtx.getTenantId());
 		account.setName("Building Test Account");
 		account.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
 		account.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
-		this.accountRepository.store(account);
-		return this.accountRepository.get(account.getId());
+		this.accountCache.store(account);
+		return this.accountCache.get(account.getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

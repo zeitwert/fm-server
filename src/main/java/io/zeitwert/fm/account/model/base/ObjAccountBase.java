@@ -6,24 +6,6 @@ import java.util.List;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.model.enums.CodeClientSegment;
-import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
-import io.zeitwert.fm.account.model.enums.CodeAccountType;
-import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
-import io.zeitwert.fm.account.model.enums.CodeArea;
-import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
-import io.zeitwert.fm.contact.model.ObjContact;
-import io.zeitwert.fm.contact.model.ObjContactRepository;
-import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
-import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
-import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
-import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -32,6 +14,24 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.account.model.enums.CodeAccountType;
+import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
+import io.zeitwert.fm.account.model.enums.CodeArea;
+import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
+import io.zeitwert.fm.account.model.enums.CodeClientSegment;
+import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.dms.model.ObjDocument;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 

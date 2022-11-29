@@ -1,19 +1,19 @@
 
 package io.zeitwert.fm.portfolio;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.Application;
 
 @SpringBootTest(classes = Application.class)
@@ -24,10 +24,10 @@ public class PortfolioTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjPortfolioRepository portfolioRepository;
+	private ObjAccountRepository accountCache;
 
 	@Autowired
-	private ObjAccountRepository accountRepository;
+	private ObjPortfolioRepository portfolioRepository;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepository;
@@ -38,8 +38,8 @@ public class PortfolioTest {
 		assertTrue(portfolioRepository != null, "portfolioRepository not null");
 		assertEquals("obj_portfolio", portfolioRepository.getAggregateType().getId());
 
-		assertTrue(accountRepository != null, "accountRepository not null");
-		assertEquals("obj_account", accountRepository.getAggregateType().getId());
+		assertTrue(accountCache != null, "accountRepository not null");
+		assertEquals("obj_account", accountCache.getAggregateType().getId());
 
 		assertTrue(buildingRepository != null, "buildingRepository not null");
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());

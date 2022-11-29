@@ -18,7 +18,7 @@ import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 public class AccountDocumentController {
 
 	@Autowired
-	private ObjAccountRepository repo;
+	private ObjAccountRepository accountCache;
 
 	@Autowired
 	RequestContext requestCtx;
@@ -28,7 +28,7 @@ public class AccountDocumentController {
 
 	@RequestMapping(value = "/{id}/{img}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImage(@PathVariable Integer id, @PathVariable String img) {
-		ObjAccount account = this.repo.get(id);
+		ObjAccount account = this.accountCache.get(id);
 		Integer documentId = null;
 		if ("logo".equals(img)) {
 			documentId = account.getLogoImageId();

@@ -1,25 +1,26 @@
 package io.zeitwert.fm.contact.adapter.api.jsonapi.dto;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data()
 @NoArgsConstructor
@@ -42,7 +43,7 @@ public class ObjContactDto extends FMObjDtoBase<ObjContact> {
 			if (this.getOriginal() != null) {
 				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				account = getRepository(ObjAccount.class).get(this.accountId);
+				account = getService(ObjAccountCache.class).get(this.accountId);
 			}
 			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account);
 		}

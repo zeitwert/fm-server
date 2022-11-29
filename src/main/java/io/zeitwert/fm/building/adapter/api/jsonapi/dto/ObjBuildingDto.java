@@ -15,6 +15,7 @@ import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
@@ -49,7 +50,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 			if (this.getOriginal() != null) {
 				account = this.getOriginal().getAccount();
 			} else if (this.accountId != null) {
-				account = getRepository(ObjAccount.class).get(this.accountId);
+				account = getService(ObjAccountCache.class).get(this.accountId);
 			}
 			this.accountDto = ObjAccountDtoAdapter.getInstance().fromAggregate(account);
 		}

@@ -1,23 +1,6 @@
 
 package io.zeitwert.fm.app.adapter.api.rest;
 
-import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.obj.model.db.Tables;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
-import io.zeitwert.ddd.oe.service.api.UserService;
-import io.zeitwert.ddd.util.Formatter;
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeRatingResponse;
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +13,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.ddd.obj.model.db.Tables;
+import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
+import io.zeitwert.ddd.util.Formatter;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeRatingResponse;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
+import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+
 @RestController("homeController")
 @RequestMapping("/rest/home")
 public class HomeController {
@@ -38,10 +38,10 @@ public class HomeController {
 	DSLContext dslContext;
 
 	@Autowired
-	UserService userService;
+	ObjUserCache userCache;
 
 	@Autowired
-	ObjAccountRepository accountRepository;
+	ObjAccountCache accountCache;
 
 	@Autowired
 	ObjBuildingRepository buildingRepository;
@@ -51,7 +51,7 @@ public class HomeController {
 
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
-		ObjAccount account = this.accountRepository.get(accountId);
+		ObjAccount account = this.accountCache.get(accountId);
 		List<ObjPortfolioVRecord> portfolioList = this.portfolioRepository.find(new QuerySpec(ObjPortfolio.class));
 		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(new QuerySpec(ObjBuilding.class));
 		Integer ratingCount = (int) buildingList.stream()
@@ -95,17 +95,17 @@ public class HomeController {
 		return HomeRatingResponse.builder()
 			.buildingId(record.getId())
 			.buildingName(record.getName())
-			.buildingOwner(userService.getUser(record.getOwnerId()).getCaption())
+			.buildingOwner(userCache.get(record.getOwnerId()).getCaption())
 			.buildingAddress(record.getStreet() + " " + record.getZip() + " " + record.getCity())
 			.ratingDate(Formatter.INSTANCE.formatDate(record.getRatingDate()))
-			.ratingUser(record.getRatingUserId() != null ? userService.getUser(record.getRatingUserId()).getCaption() : null)
+			.ratingUser(record.getRatingUserId() != null ? userCache.get(record.getRatingUserId()).getCaption() : null)
 		.build();
 		//@formatter:on
 	}
 
 	@GetMapping("/recentActivity/{accountId}")
 	public ResponseEntity<List<HomeActivityResponse>> getRecentActivity(@PathVariable("accountId") Integer accountId) {
-		ObjAccount account = this.accountRepository.get(accountId);
+		ObjAccount account = this.accountCache.get(accountId);
 		Result<ObjActivityVRecord> result = this.dslContext.selectFrom(Tables.OBJ_ACTIVITY_V)
 				.where(Tables.OBJ_ACTIVITY_V.TENANT_ID.eq(account.getTenantId())
 						.and(Tables.OBJ_ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
@@ -120,7 +120,7 @@ public class HomeController {
 				.objCaption(record.getCaption())
 				.seqNr(record.getSeqNr())
 				.timestamp(record.getTimestamp())
-				.user(this.userService.getUser(record.getUserId()).getCaption())
+				.user(this.userCache.get(record.getUserId()).getCaption())
 				.changes(null)
 				.build();
 	}

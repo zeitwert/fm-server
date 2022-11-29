@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.service.api.TenantService;
-import io.zeitwert.ddd.oe.service.api.UserService;
+import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
 import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse;
@@ -26,17 +26,17 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 public class ApplicationController {
 
 	@Autowired
-	TenantService tenantService;
+	ObjTenantCache tenantCache;
 
 	@Autowired
-	UserService userService;
+	ObjUserCache userCache;
 
 	@Autowired
 	AccountService accountService;
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		Optional<ObjUser> maybeUser = this.userService.getByEmail(email);
+		Optional<ObjUser> maybeUser = this.userCache.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -48,7 +48,7 @@ public class ApplicationController {
 				.email(user.getEmail())
 				.name(user.getName())
 				.role(EnumeratedDto.fromEnum(user.getRole()))
-				.tenants(user.getTenantSet().stream().map(t -> tenantService.getTenantEnumerated(t.getId())).toList())
+				.tenants(user.getTenantSet().stream().map(t -> tenantCache.getAsEnumerated(t.getId())).toList())
 				.build()
 		);
 		//@formatter:on
@@ -56,7 +56,7 @@ public class ApplicationController {
 
 	@GetMapping("/tenantInfo/{id}")
 	public ResponseEntity<TenantInfoResponse> tenantInfo(@PathVariable("id") Integer id) {
-		ObjTenant tenant = this.tenantService.getTenant(id);
+		ObjTenant tenant = this.tenantCache.get(id);
 		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(tenant);
 		List<EnumeratedDto> accountDtos = accounts.stream()
 				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
