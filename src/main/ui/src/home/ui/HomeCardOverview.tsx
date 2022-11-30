@@ -84,7 +84,7 @@ export default class HomeCardOverview extends React.Component {
 	}
 
 	private async loadOverview() {
-		const rsp = await API.get(Config.getRestUrl("home", "overview/" + session.sessionInfo?.account.id))
+		const rsp = await API.get(Config.getRestUrl("home", "overview/" + session.sessionInfo?.account?.id))
 		this.overview = rsp.data;
 		this.isLoading = false;
 	}

@@ -1,8 +1,10 @@
 
 import { AxiosResponse } from "axios";
+import { Canvg, presets } from "canvg";
+import AppBanner from "frame/ui/AppBannerSvg";
 import Logger from "loglevel";
-import { observable, transaction } from "mobx";
-import { applySnapshot, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { observable, reaction, transaction } from "mobx";
+import { addDisposer, applySnapshot, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import {
 	API,
 	AUTH_HEADER_ITEM,
@@ -39,11 +41,14 @@ const LOGOUT_URL = "logout";
 const SESSION_URL = "session";
 const APP_LIST_URL = "applications";
 
+const preset = presets.offscreen();
+
 const MstSessionModel = types
 	.model("Session", {
 		state: types.optional(types.string, sessionStorage.getItem(SESSION_STATE_ITEM) || SessionState.close),
 		locale: types.maybe(types.enumeration((Languages as string[]).concat(Locales as string[]))),
 		sessionInfo: types.maybe(types.frozen<SessionInfo>()),
+		bannerUrl: types.optional(types.string, ""),
 		appList: types.maybe(types.frozen<Application[]>()),
 		appInfo: types.maybe(types.frozen<ApplicationInfo>()),
 		appAreaMap: types.maybe(types.frozen<ApplicationAreaMap>()),
@@ -252,6 +257,60 @@ const MstSessionModel = types
 				}
 			}
 		};
+	})
+	.actions(self => {
+		return {
+			afterCreate() {
+				addDisposer(self, reaction(
+					() => {
+						return {
+							sessionInfo: self.sessionInfo
+						};
+					},
+					async () => {
+						let logoUrl = "";
+						let title = "";
+						let subTitle = "";
+						if (!self.appInfo?.id) {
+							self.bannerUrl = "/zw-banner.jpg";
+						} else {
+							if (self.sessionInfo?.account) {
+								logoUrl = !!self.sessionInfo?.account.logo?.contentType ? Config.getRestUrl("account", "accounts/" + self.sessionInfo?.account.id + "/logo") : "";
+								title = self.sessionInfo?.account.caption;
+								subTitle = self.sessionInfo.tenant.caption;
+							} else if (self.sessionInfo) {
+								logoUrl = !!self.sessionInfo.tenant.logo?.contentType ? Config.getRestUrl("oe", "tenants/" + self.sessionInfo.tenant.id + "/logo") : "";
+								title = self.sessionInfo.tenant.caption;
+								subTitle = self.sessionInfo.tenant.tenantType.name;
+							}
+							let svg = AppBanner
+								.replace("{title}", title)
+								.replace("{subTitle}", subTitle);
+							if (!!logoUrl) {
+								svg = svg.replace("{logo}", logoUrl);
+							} else {
+								svg = svg.replace("{logo}", "")
+									.replace("<text x=\"50\"", "<text x=\"5\"")
+									.replace("<text x=\"51\"", "<text x=\"5\"");
+							}
+							return flow(function* () {
+								try {
+									const canvas = new OffscreenCanvas(300, 50);
+									const ctx = canvas.getContext("2d")!;
+									const v = yield Canvg.from(ctx, svg, preset);
+									yield v.render(); // render only first frame, ignoring animations and mouse.
+									const blob = yield canvas.convertToBlob();
+									self.bannerUrl = URL.createObjectURL(blob);
+								} catch (error: any) {
+									Logger.error("Failed to get metadata form definition");
+									return Promise.reject(error);
+								}
+							})();
+						}
+					}
+				));
+			}
+		}
 	})
 	.views((self) => ({
 		get isKernelTenant(): boolean {

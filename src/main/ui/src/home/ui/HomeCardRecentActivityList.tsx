@@ -60,7 +60,7 @@ export default class HomeCardRecentActivityList extends React.Component {
 	}
 
 	private async loadActivityList() {
-		const rsp = await API.get(Config.getRestUrl("home", "recentActivity/" + session.sessionInfo?.account.id))
+		const rsp = await API.get(Config.getRestUrl("home", "recentActivity/" + session.sessionInfo?.account?.id))
 		this.activityList = rsp.data;
 	}
 

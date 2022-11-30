@@ -1,11 +1,12 @@
 
 import { Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, API, Config } from "@zeitwert/ui-model";
+import { Account } from "@zeitwert/ui-model";
 import { Canvg, presets } from "canvg";
 import FotoUploadForm from "dms/ui/forms/FotoUploadForm";
+import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { SvgHeader as AccountSvgHeader } from "../../../frame/ui/SvgAccountHeader";
+import AppBanner from "../../../frame/ui/AppBannerSvg";
 
 export interface AccountSummaryFormProps {
 	account: Account;
@@ -15,7 +16,16 @@ export interface AccountSummaryFormProps {
 const preset = presets.offscreen();
 
 @observer
-export default class TenantSummaryForm extends React.Component<AccountSummaryFormProps> {
+export default class AccountSummaryForm extends React.Component<AccountSummaryFormProps> {
+
+	@observable hasBanner: boolean = false;
+	@observable bannerUrl: string | undefined;
+
+	constructor(props: AccountSummaryFormProps) {
+		super(props);
+		makeObservable(this);
+		this.afterLogoUpload();
+	}
 
 	render() {
 		const { account } = this.props;
@@ -28,67 +38,55 @@ export default class TenantSummaryForm extends React.Component<AccountSummaryFor
 							documentId={account.logo?.id}
 							documentContentUrl={account.hasLogo ? account.logoUrl : undefined}
 							supportedContentTypes={account.logo?.supportedContentTypes}
-							afterUpload={this.afterLogoUpload}
+							onFileChange={this.afterLogoFileChange}
+							afterUpload={this.props.afterSave}
 						/>
 						<div className="slds-p-top_small" />
-						<FotoUploadForm
-							title="Banner"
-							documentId={account.banner?.id}
-							documentContentUrl={account.hasBanner ? account.bannerUrl : undefined}
-							supportedContentTypes=""
-							afterUpload={async () => this.props.afterSave && this.props.afterSave()}
-						/>
+						<div className="slds-p-bottom_small" style={{ fontWeight: 700 }}>Banner</div>
+						{
+							this.hasBanner &&
+							<img width={300} height={50} src={this.bannerUrl} alt="Banner" />
+						}
 					</TabsPanel>
 				</Tabs>
 			</div>
 		);
 	}
 
-	private afterLogoUpload = async () => {
-		console.log("afterLogoUpload", this.props.account.bannerUrl);
-		const blob = await this.toPng({ width: 300, height: 50, svg: this.props.account.bannerUrl });
-		console.log("afterLogoUpload.1");
-		const imageFile = new File([blob], "banner.png");
-		console.log("afterLogoUpload.2");
-		const data = new FormData();
-		console.log("afterLogoUpload.3");
-		data.append("file", imageFile);
-		console.log("afterLogoUpload.4");
-		const url = Config.getRestUrl("dms", "documents/" + this.props.account.banner?.id + "/content");
-		console.log("afterLogoUpload.5");
-		await API.post(url, data);
-		console.log("afterLogoUpload.6");
-		this.props.afterSave && this.props.afterSave();
-		console.log("afterLogoUpload.7");
-	}
-
-	private toPng = async (data: any): Promise<Blob> => {
-		console.log("toPng", data);
-		const { width, height } = data;
+	private afterLogoFileChange = async (f: File | undefined) => {
 		const { account } = this.props;
-		const svggg = AccountSvgHeader
-			.replace("{logo}", Config.getRestUrl("account", "accounts/" + account.id + "/logo"))
-			.replace("{account}", account.caption!)
-			.replace("{tenant}", account.tenant!.name);
-		console.log("toPng.1");
-		const canvas = new OffscreenCanvas(width, height);
-		const ctx = canvas.getContext("2d")!;
-		console.log("toPng.2");
-		const v = await Canvg.from(ctx, svggg, preset);
-		console.log("toPng.3a");
-		await timeout(1000);
-		console.log("toPng.3b");
-		await v.render(); // render only first frame, ignoring animations and mouse.
-		console.log("toPng.4");
-		return await canvas.convertToBlob();
-		// console.log("blob", blob);
-		// const pngUrl = URL.createObjectURL(blob);
-		// console.log("url", pngUrl);
-		// return pngUrl
+		if (f != null && !!f.size) {
+			const logoUrl = URL.createObjectURL(f);
+			this.createBannerUrl(true, logoUrl, account.caption!, account.tenant?.name!);
+		} else {
+			return this.afterLogoUpload();
+		}
 	}
 
-}
+	private afterLogoUpload = async () => {
+		const { account } = this.props;
+		this.createBannerUrl(account.hasLogo, account.logoUrl!, account.caption!, account.tenant?.name!);
+	}
 
-function timeout(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
+	private createBannerUrl = async (hasLogo: boolean, logoUrl: string, title: string, subTitle: string): Promise<void> => {
+		let svg = AppBanner
+			.replace("{title}", title)
+			.replace("{subTitle}", subTitle);
+		if (hasLogo) {
+			svg = svg.replace("{logo}", logoUrl);
+		} else {
+			svg = svg.replace("{logo}", "")
+				.replace("<text x=\"50\"", "<text x=\"5\"")
+				.replace("<text x=\"51\"", "<text x=\"5\"");
+		}
+		const canvas = new OffscreenCanvas(300, 50);
+		const ctx = canvas.getContext("2d")!;
+		const v = await Canvg.from(ctx, svg, preset);
+		await v.render(); // render only first frame, ignoring animations and mouse.
+		const blob = await canvas.convertToBlob();
+		const bannerUrl = URL.createObjectURL(blob);
+		this.hasBanner = true;
+		this.bannerUrl = bannerUrl;
+	}
+
 }

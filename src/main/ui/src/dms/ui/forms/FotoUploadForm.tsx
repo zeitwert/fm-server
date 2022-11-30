@@ -7,11 +7,12 @@ import { observer } from "mobx-react";
 import React from "react";
 
 export interface FotoUploadFormProps {
+	title: string;
 	documentId: string | undefined;
 	documentContentUrl: string | undefined; // GET | POST
 	supportedContentTypes: string | undefined;
-	afterUpload: () => Promise<void>;
-	title: string;
+	onFileChange?: (f: File | undefined) => void;
+	afterUpload?: () => void;
 	minHeight?: string;
 }
 
@@ -29,7 +30,6 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	render() {
-		console.log("render", this.props, this.imageFile?.size);
 		const minHeight = this.props.minHeight || "200px";
 		if (this.isUploading) {
 			return <Spinner variant="brand" size="large" />;
@@ -133,7 +133,6 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	}
 
 	private readFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("readFile");
 		e.preventDefault();
 		if (e.target?.files?.[0]) {
 			this.onFileChange(e.target?.files?.[0]);
@@ -149,6 +148,7 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 	private onFileChange = (f: File | undefined) => {
 		this.imageFileSeqNr += 1;
 		this.imageFile = f;
+		this.props.onFileChange?.(f);
 	}
 
 	private doUpload = async () => {
@@ -163,7 +163,7 @@ export default class FotoUploadForm extends React.Component<FotoUploadFormProps>
 			const url = Config.getRestUrl("dms", "documents/" + this.props.documentId + "/content");
 			await API.post(url, data);
 			this.imageFile = undefined;
-			await this.props.afterUpload();
+			this.props.afterUpload?.();
 		} catch (e) {
 			console.error("doUpload", 2);
 			this.hasUploadError = true;

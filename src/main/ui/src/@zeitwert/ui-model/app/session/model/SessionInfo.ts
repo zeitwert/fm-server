@@ -7,12 +7,21 @@ export const KERNEL_TENANT = "kernel";
 export const ADVISOR_TENANT = "advisor";
 export const COMMUNITY_TENANT = "community";
 
+export interface DocumentInfo {
+	id: string;
+	caption: string;
+	name: string;
+	contentKind: Enumerated;
+	contentType: Enumerated | undefined;
+}
+
 export interface TenantInfo {
 	id: string;
 	caption: string;
 	name: string;
 	extlKey: string;
 	tenantType: Enumerated;
+	logo: DocumentInfo | undefined;
 }
 
 export interface UserInfo {
@@ -24,10 +33,18 @@ export interface UserInfo {
 	role: Enumerated;
 }
 
+export interface AccountInfo {
+	id: string;
+	caption: string;
+	name: string;
+	accountType: Enumerated;
+	logo: DocumentInfo | undefined;
+}
+
 export interface SessionInfo {
 	tenant: TenantInfo;
 	user: UserInfo;
-	account: Enumerated;
+	account?: AccountInfo;
 	locale: Locale;
 	applicationId: string;
 	applications: Application[];

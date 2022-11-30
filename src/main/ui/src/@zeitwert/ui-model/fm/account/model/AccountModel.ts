@@ -1,9 +1,9 @@
+
 import { Config } from "@zeitwert/ui-model/app";
 import { toJS } from "mobx";
 import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
-import { ContactRole } from "../../contact/model/ContactEnums";
 import { ContactModel } from "../../contact/model/ContactModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
 
@@ -25,39 +25,17 @@ const MstAccountModel = ObjModel.named("Account")
 		contacts: types.optional(types.array(types.reference(ContactModel)), []),
 		mainContact: types.maybe(types.reference(ContactModel)),
 		//
-		banner: types.maybe(types.reference(DocumentModel)),
 		logo: types.maybe(types.reference(DocumentModel)),
 		//
 		statistics: types.frozen<AccountStatistics>()
 	})
 	.views((self) => ({
-		get marriageContacts() {
-			return self.contacts.filter((c) => {
-				return (
-					c.contactRole?.id === ContactRole.SPOUSE ||
-					c.contactRole?.id === ContactRole.CHILD ||
-					c.contactRole?.id === ContactRole.PARENT ||
-					c.contactRole?.id === ContactRole.SIBLING
-				);
-			});
+		get hasLogo(): boolean {
+			return !!self.logo?.id && !!self.logo?.contentType?.id;
 		},
-		get externalContacts() {
-			return self.contacts.filter(
-				(c) => c.contactRole?.id !== ContactRole.SPOUSE && c.contactRole?.id !== ContactRole.CHILD
-			);
-		}
-	}))
-	.views((self) => ({
-		getNoChildrenUnder(age: number) {
-			return self.contacts.filter((c) => c.contactRole?.id === ContactRole.CHILD).filter((c) => c.age < age)
-				.length;
-		}
-	}))
-	.actions((self) => ({
-		resetStatistics() {
-			self.statistics = {
-			};
-		}
+		get logoUrl(): string | undefined {
+			return Config.getRestUrl("account", "accounts/" + self.id + "/logo");
+		},
 	}))
 	.views((self) => ({
 		get mainContactSnapshot(): any {
@@ -71,53 +49,11 @@ const MstAccountModel = ObjModel.named("Account")
 		}
 	}))
 	.views((self) => ({
-		get familyContacts(): any[] {
-			return self.contactsSnapshot.filter(
-				(item) =>
-					item.contactRole?.id === "spouse" ||
-					item.contactRole?.id === "child" ||
-					item.contactRole?.id === "parent" ||
-					item.contactRole?.id === "sibling" ||
-					item.contactRole?.id === "extended_family"
-			);
-		},
-		get otherContacts(): any[] {
-			return self.contactsSnapshot.filter(
-				(item) =>
-					item.contactRole?.id !== "spouse" &&
-					item.contactRole?.id !== "child" &&
-					item.contactRole?.id !== "parent" &&
-					item.contactRole?.id !== "sibling" &&
-					item.contactRole?.id !== "extended_family"
-			);
-		}
-	}))
-	.views((self) => ({
-		get hasLogo(): boolean {
-			return !!self.logo?.id && !!self.logo?.contentType?.id;
-		},
-		get logoUrl(): string | undefined {
-			return Config.getRestUrl("account", "accounts/" + self.id + "/logo");
-		},
-	}))
-	.views((self) => ({
-		get hasBanner(): boolean {
-			return !!self.banner?.id && !!self.banner?.contentType?.id;
-		},
-		get bannerUrl(): string | undefined {
-			return Config.getRestUrl("account", "accounts/" + self.id + "/banner");
-		},
-	}))
-	.views((self) => ({
 		get formSnapshot(): AccountSnapshot & {
 			contactsInfo?: any[];
-			familyContacts?: any[];
-			otherContacts?: any[];
 		} {
 			return Object.assign({}, toJS(getSnapshot(self)), {
 				contactsInfo: self.contactsSnapshot,
-				familyContacts: self.familyContacts,
-				otherContacts: self.otherContacts
 			});
 		}
 	}));

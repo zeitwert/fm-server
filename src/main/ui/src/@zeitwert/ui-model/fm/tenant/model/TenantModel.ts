@@ -30,21 +30,7 @@ const MstTenantModel = ObjModel.named("Tenant")
 			return !!self.logo?.id && !!self.logo?.contentType?.id;
 		},
 		get logoUrl(): string | undefined {
-			if (self.logo?.id && self.logo?.contentType?.id) {
-				return Config.getRestUrl("dms", "documents/" + self.logo?.id + "/content");
-			}
-			return "/missing.jpg";
-		},
-	}))
-	.views((self) => ({
-		get hasBanner(): boolean {
-			return !!self.banner?.id && !!self.banner?.contentType?.id;
-		},
-		get bannerUrl(): string | undefined {
-			if (self.banner?.id && self.banner?.contentType?.id) {
-				return Config.getRestUrl("dms", "documents/" + self.banner?.id + "/content");
-			}
-			return "/missing.jpg";
+			return Config.getRestUrl("dms", "documents/" + self.logo?.id + "/content");
 		},
 	}))
 	.views((self) => ({

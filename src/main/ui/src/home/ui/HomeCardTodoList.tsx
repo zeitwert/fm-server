@@ -70,7 +70,7 @@ export default class HomeCardTodoList extends React.Component {
 	}
 
 	private async loadRatingList() {
-		const rsp = await API.get(Config.getRestUrl("home", "activeRatings/" + session.sessionInfo?.account.id))
+		const rsp = await API.get(Config.getRestUrl("home", "activeRatings/" + session.sessionInfo?.account?.id))
 		this.ratingList = rsp.data;
 	}
 

@@ -41,11 +41,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		return !!this.accountStore.account?.logo?.contentTypeId;
 	}
 
-	@computed
-	get hasBanner(): boolean {
-		return !!this.accountStore.account?.banner?.contentTypeId;
-	}
-
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
@@ -126,7 +121,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Steckbrief{(!this.hasLogo || !this.hasBanner) && <abbr className="slds-required"> *</abbr>}</span>}>
+							<TabsPanel label={<span>Steckbrief{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
 									<AccountSummaryForm account={account} afterSave={this.reload} />
