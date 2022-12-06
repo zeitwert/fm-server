@@ -63,6 +63,7 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
+				.tenantInfoId(obj.getTenantId())
 				.key(obj.getKey())
 				.name(obj.getName())
 				.description(obj.getDescription())
@@ -83,6 +84,7 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
+				.tenantInfoId(obj.getTenantId())
 				.key(obj.getIntlKey())
 				.name(obj.getName())
 				.description(obj.getDescription())

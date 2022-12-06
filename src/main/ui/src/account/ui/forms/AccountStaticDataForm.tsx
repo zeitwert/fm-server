@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { EnumeratedField, FieldGroup, FieldRow, Input, NumberField, Select, Static, TextArea, TextField } from "@zeitwert/ui-forms";
-import { AccountModel, AccountStore } from "@zeitwert/ui-model";
+import { Account, AccountModel, AccountStore } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
 import React from "react";
@@ -58,6 +58,7 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 	}
 
 	render() {
+		const account = this.props.store.item! as Account;
 		return (
 			<div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
@@ -100,7 +101,7 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Input label="Inflationsrate (in %)" accessor={this.formState.field("inflationRate")} size={3} />
+											<Input label={`Inflationsrate in % (Mandant: ${account.tenantInfo?.inflationRate || 0}%)`} accessor={this.formState.field("inflationRate")} size={3} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

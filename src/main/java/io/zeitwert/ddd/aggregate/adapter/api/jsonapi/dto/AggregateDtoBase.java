@@ -37,6 +37,12 @@ public abstract class AggregateDtoBase<A extends Aggregate> {
 	@JsonApiId
 	private Integer id;
 
+	// For explicit filtering in SaaS session
+	@JsonApiField(readable = false, filterable = true)
+	public Integer getTenantId() {
+		return null;
+	}
+
 	@JsonApiField(readable = false, filterable = true)
 	public String getSearchText() {
 		return null;

@@ -1,7 +1,8 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { EnumeratedField, FieldGroup, FieldRow, Input, NumberField, Select, TextArea, TextField } from "@zeitwert/ui-forms";
-import { Tenant, TenantModel, TenantStore } from "@zeitwert/ui-model";
+import { ACCOUNT_API, Enumerated, TenantModel, TenantStore, USER_API } from "@zeitwert/ui-model";
+import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import { converters, Field, Form } from "mstform";
 import React from "react";
@@ -28,8 +29,15 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 
 	formState: typeof TenantStaticDataFormModel.FormStateType;
 
+	@observable
+	users: Enumerated[] = [];
+
+	@observable
+	accounts: Enumerated[] = [];
+
 	constructor(props: TenantStaticDataFormProps) {
 		super(props);
+		makeObservable(this);
 		this.formState = TenantStaticDataFormModel.state(
 			this.props.store.item!,
 			{
@@ -57,9 +65,27 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 		);
 	}
 
+	async componentDidMount() {
+		const users = await USER_API.getAggregates("filter[tenantId]=" + this.props.store.id);
+		this.users = Object.values(users.user || {})?.map(user => {
+			return {
+				id: user.id,
+				name: user.caption,
+				itemType: user.meta.itemType
+			}
+		});
+		const accounts = await ACCOUNT_API.getAggregates("filter[tenantId]=" + this.props.store.id);
+		this.accounts = Object.values(accounts.account || {}).map(acct => {
+			return {
+				id: acct.id,
+				name: acct.caption,
+				itemType: acct.meta.itemType
+			}
+		});
+	}
+
 	render() {
 		const isInTrx = this.props.store.isInTrx;
-		const tenant = this.props.store.item! as Tenant;
 		return (
 			<div>
 				<div className="slds-grid slds-wrap slds-m-top_small">
@@ -125,7 +151,7 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 										</thead>
 										<tbody>
 											{
-												tenant.users.map(item => (
+												this.users.map(item => (
 													<tr className="slds-hint-parent" key={"include-" + item.id}>
 														<th data-label="Benutzer" scope="row">
 															<div className="slds-truncate">
@@ -153,7 +179,7 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 										</thead>
 										<tbody>
 											{
-												tenant.accounts.map(item => (
+												this.accounts.map(item => (
 													<tr className="slds-hint-parent" key={"exclude-" + item.id}>
 														<th data-label="Kunde" scope="row">
 															<div className="slds-truncate">

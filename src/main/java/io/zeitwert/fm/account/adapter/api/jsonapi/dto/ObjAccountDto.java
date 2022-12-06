@@ -14,6 +14,9 @@ import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.dto.ObjTenantDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.zeitwert.ddd.oe.model.ObjTenant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -42,6 +45,26 @@ public class ObjAccountDto extends FMObjDtoBase<ObjAccount> {
 	private EnumeratedDto referenceCurrency;
 	private BigDecimal inflationRate;
 	private Set<EnumeratedDto> areas;
+
+	@JsonApiRelationId
+	private Integer tenantInfoId;
+
+	@JsonIgnore
+	private ObjTenantDto tenantInfoDto;
+
+	@JsonApiRelation(serialize = SerializeType.LAZY)
+	public ObjTenantDto getTenantInfo() {
+		if (this.tenantInfoDto == null) {
+			ObjTenant tenant = null;
+			if (this.getOriginal() != null) {
+				tenant = this.getOriginal().getTenant();
+			} else if (this.tenantInfoId != null) {
+				tenant = getRepository(ObjTenant.class).get(this.tenantInfoId);
+			}
+			this.tenantInfoDto = ObjTenantDtoAdapter.getInstance().fromAggregate(tenant);
+		}
+		return this.tenantInfoDto;
+	}
 
 	@JsonApiRelationId
 	private Integer mainContactId;

@@ -7,9 +7,6 @@ import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -20,7 +17,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -37,36 +33,6 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 	private String extlKey;
 	private EnumeratedDto tenantType;
 	private BigDecimal inflationRate;
-
-	@JsonIgnore
-	private List<ObjUserDto> usersDto;
-
-	@JsonApiRelation(serialize = SerializeType.LAZY)
-	public List<? extends ObjUserDto> getUsers() {
-		if (this.usersDto == null) {
-			if (this.getOriginal() != null) {
-				this.usersDto = this.getOriginal().getUsers().stream()
-						.map(c -> ObjUserDtoAdapter.getInstance().fromAggregate(c)).toList();
-			} else {
-			}
-		}
-		return this.usersDto;
-	}
-
-	@JsonIgnore
-	private List<ObjAccountDto> accountsDto;
-
-	@JsonApiRelation(serialize = SerializeType.LAZY)
-	public List<? extends ObjAccountDto> getAccounts() {
-		if (this.accountsDto == null) {
-			if (this.getOriginal() != null) {
-				this.accountsDto = this.getOriginal().getAccounts().stream()
-						.map(c -> ObjAccountDtoAdapter.getInstance().fromAggregate(c)).toList();
-			} else {
-			}
-		}
-		return this.accountsDto;
-	}
 
 	@JsonApiRelationId
 	private Integer logoId;
