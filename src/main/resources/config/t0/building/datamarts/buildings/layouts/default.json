@@ -37,6 +37,11 @@
 				"value": "owner"
 			},
 			{
+				"id": "insuranceValue",
+				"label": "GV Neuwert",
+				"value": "insuranceValue"
+			},
+			{
 				"id": "modifiedBy",
 				"label": "Letzte Modifikation",
 				"value": "modifiedBy"
@@ -49,6 +54,7 @@
 				"nr": "{{buildingNr}}",
 				"name": "{{name}}",
 				"link": "/building/{{id}}",
+				"insuranceValue": "{{insuredValue}} kCHF ({{insuredValueYear}})",
 				"statusName": "{{ratingStatus.name}}",
 				"accountId": "{{account.id}}",
 				"accountName": "{{account.caption}}",
@@ -56,7 +62,7 @@
 				"buildingType": "{{buildingType.name}}",
 				"address": "{{street}} {{zip}} {{city}}",
 				"owner": "{{meta.owner.name}}",
-				"modifiedBy": "{{meta.modifiedByUser.name}}"
+				"modifiedBy": "{{meta.modifiedByUser.name}} {{meta.modifiedAt}}"
 			}
 		]
 	}
