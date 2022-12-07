@@ -14,8 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; TODO
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -42,7 +42,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder.userDetailsService(userDetailsService)/* .passwordEncoder(passwordEncoder()) */;
+		authenticationManagerBuilder
+				.userDetailsService(userDetailsService)
+				.passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
@@ -51,10 +53,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return super.authenticationManagerBean();
 	}
 
-	// @Bean
-	// public PasswordEncoder passwordEncoder() {
-	// return new BCryptPasswordEncoder();
-	// }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -65,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
 				// monitoring
-				.antMatchers("/actuator/**").permitAll()
+				//.antMatchers("/actuator/**").permitAll()
 				// login
 				.antMatchers(HttpMethod.GET, "/rest/app/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/rest/session/login/**").permitAll()
@@ -98,7 +100,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/test/**").authenticated()
 			.anyRequest().authenticated();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-		//http.addFilterAfter(new SessionCookieFilter(), FilterSecurityInterceptor.class);
 		http.headers().frameOptions().disable();
 		//@formatter:on
 	}

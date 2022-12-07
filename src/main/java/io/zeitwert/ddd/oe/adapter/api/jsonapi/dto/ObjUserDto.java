@@ -35,12 +35,14 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 	private static final DateTimeFormatter touchFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
 	private String email;
-	private String password; // write: change password
 	private String name;
 	private String description;
 
 	private EnumeratedDto role;
 	List<EnumeratedDto> tenants;
+
+	private Boolean needPasswordChange; // write: change password
+	private String password; // write: change password
 
 	public String getLastTouch() {
 		OffsetDateTime lastTouch = AggregateDtoBase.getService(ObjUserCache.class).getLastTouch(this.getId());

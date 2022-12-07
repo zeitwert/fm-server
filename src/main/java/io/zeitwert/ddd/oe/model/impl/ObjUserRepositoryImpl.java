@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -32,6 +33,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 
 	private static final String AGGREGATE_TYPE = "obj_user";
 
+	private final PasswordEncoder passwordEncoder;
 	private final CodePartListType tenantListType;
 
 	//@formatter:off
@@ -39,7 +41,8 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository
+		final ObjPartItemRepository itemRepository,
+		final PasswordEncoder passwordEncoder
 	) {
 		super(
 			ObjUserRepository.class,
@@ -51,6 +54,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 			transitionRepository,
 			itemRepository
 		);
+		this.passwordEncoder = passwordEncoder;
 		this.tenantListType = this.getAppContext().getPartListType(ObjUserFields.TENANT_LIST);
 	}
 	//@formatter:on
@@ -60,6 +64,11 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
+	}
+
+	@Override
+	public PasswordEncoder getPasswordEncoder() {
+		return this.passwordEncoder;
 	}
 
 	@Override

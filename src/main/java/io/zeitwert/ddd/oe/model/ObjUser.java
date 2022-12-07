@@ -13,6 +13,10 @@ public interface ObjUser extends Obj {
 
 	void setEmail(String email);
 
+	Boolean getNeedPasswordChange();
+
+	void setNeedPasswordChange(Boolean needPasswordChange);
+
 	String getPassword();
 
 	void setPassword(String password);

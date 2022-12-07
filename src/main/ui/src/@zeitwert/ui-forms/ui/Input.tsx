@@ -19,8 +19,8 @@ export const Input: FC<InputProps> = observer((props) => {
 	const fieldId = id || getFieldId(props);
 	return (
 		<Field {...props}>
-			{readOnly && inputProps.value && <span>{inputProps.value}</span>}
 			{readOnly && !inputProps.value && <span>&nbsp;</span>}
+			{readOnly && inputProps.value && <span>{inputProps.value}</span>}
 			{
 				!readOnly &&
 				<input

@@ -12,7 +12,6 @@ export interface UserStatistics {
 const MstUserModel = ObjModel.named("User")
 	.props({
 		email: types.maybe(types.string),
-		password: types.maybe(types.string),
 		name: types.maybe(types.string),
 		description: types.maybe(types.string),
 		//
@@ -20,6 +19,9 @@ const MstUserModel = ObjModel.named("User")
 		tenants: types.optional(types.array(EnumeratedModel), []),
 		//
 		avatar: types.maybe(types.reference(DocumentModel)),
+		//
+		password: types.maybe(types.string),
+		needPasswordChange: types.maybe(types.boolean),
 	})
 	.views((self) => ({
 		get hasAvatar(): boolean {

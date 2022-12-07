@@ -53,31 +53,33 @@ public class SessionController {
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-		Authentication authToken = this.getAuthToken(loginRequest);
-		Authentication authentication = authenticationManager.authenticate(authToken);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		Integer tenantId = loginRequest.getTenantId();
-		requireThis(tenantId != null, "tenantId not null");
-		Integer accountId = loginRequest.getAccountId();
-		String jwt = jwtProvider.createJwt(authentication, tenantId, accountId);
-		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) authentication.getPrincipal();
-		String role = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList().get(0);
-		//@formatter:off
-		return ResponseEntity.ok(
-			LoginResponse.builder()
-				.token(jwt)
-				.id(userDetails.getUserId())
-				.username(userDetails.getUsername())
-				.email(userDetails.getUsername())
-				.accountId(accountId)
-				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(role)))
-				.build()
-		);
-		//@formatter:on
+		try {
+			Authentication authToken = this.getAuthToken(loginRequest.getEmail(), loginRequest.getPassword());
+			Authentication authentication = authenticationManager.authenticate(authToken);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			Integer tenantId = loginRequest.getTenantId();
+			requireThis(tenantId != null, "tenantId not null");
+			Integer accountId = loginRequest.getAccountId();
+			String jwt = jwtProvider.createJwt(authentication, tenantId, accountId);
+			ZeitwertUserDetails userDetails = (ZeitwertUserDetails) authentication.getPrincipal();
+			String role = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList().get(0);
+			LoginResponse loginResponse = LoginResponse.builder()
+					.token(jwt)
+					.id(userDetails.getUserId())
+					.username(userDetails.getUsername())
+					.email(userDetails.getUsername())
+					.accountId(accountId)
+					.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(role)))
+					.build();
+			return ResponseEntity.ok(loginResponse);
+		} catch (Exception e) {
+			System.err.println("Login failed: " + e);
+			throw new RuntimeException(e);
+		}
 	}
 
-	private Authentication getAuthToken(LoginRequest loginRequest) {
-		return new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+	private Authentication getAuthToken(String email, String password) {
+		return new UsernamePasswordAuthenticationToken(email, password);
 	}
 
 	@GetMapping("/session")

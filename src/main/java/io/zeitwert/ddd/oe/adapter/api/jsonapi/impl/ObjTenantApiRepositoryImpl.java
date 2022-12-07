@@ -1,7 +1,6 @@
 
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.impl;
 
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
@@ -14,7 +13,6 @@ import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Controller("objTenantApiRepository")
-@DependsOn("objUserApiRepository")
 public class ObjTenantApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjTenant, ObjTenantVRecord, ObjTenantDto>
 		implements ObjTenantApiRepository {

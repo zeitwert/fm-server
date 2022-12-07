@@ -5,12 +5,11 @@ import { FC } from "react";
 import { Field, FieldProps, getComponentProps, getFieldId } from "./Field";
 
 export interface CheckboxProps extends FieldProps {
-	type?: "text" | "password";
 	checked?: boolean;
 }
 
 export const Checkbox: FC<CheckboxProps> = observer((props) => {
-	const { accessor, type, align } = props;
+	const { accessor, align } = props;
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
 	const fieldId = getFieldId(props);
 	return (
@@ -23,7 +22,7 @@ export const Checkbox: FC<CheckboxProps> = observer((props) => {
 				!readOnly &&
 				<input
 					id={fieldId}
-					type={type || "text"}
+					type={"checkbox"}
 					className={classNames("slds-input", align ? "slds-text-align_" + align : "")}
 					{...inputProps}
 				/>

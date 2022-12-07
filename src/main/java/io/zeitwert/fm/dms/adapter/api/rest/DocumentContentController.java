@@ -36,7 +36,6 @@ public class DocumentContentController {
 			return ResponseEntity.notFound().build();
 		}
 		ObjDocument document = this.documentCache.get(documentId);
-		System.out.println("document.getContent " + documentId + " " + System.identityHashCode(document));
 		CodeContentType contentType = document.getContentType();
 		if (contentType == null) {
 			return ResponseEntity.notFound().build();
@@ -57,7 +56,6 @@ public class DocumentContentController {
 				return ResponseEntity.badRequest().body(null);
 			}
 			ObjDocument document = this.documentRepo.get(documentId);
-			System.out.println("document.storeContent " + documentId + " " + System.identityHashCode(document));
 			document.storeContent(contentType, file.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -30,12 +30,13 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	protected final SimpleProperty<String> email;
-	protected final SimpleProperty<String> password;
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 	protected final ReferenceProperty<ObjDocument> avatarImage;
 	protected final SimpleProperty<String> role;
 	protected final ItemSetProperty<ObjPartItem> tenantSet;
+	protected final SimpleProperty<Boolean> needPasswordChange;
+	protected final SimpleProperty<String> password;
 
 	private final UpdatableRecord<?> dbRecord;
 
@@ -43,12 +44,13 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		super(repository, objRecord);
 		this.dbRecord = userRecord;
 		this.email = this.addSimpleProperty(dbRecord, ObjUserFields.EMAIL);
-		this.password = this.addSimpleProperty(dbRecord, ObjUserFields.PASSWORD);
 		this.name = this.addSimpleProperty(dbRecord, ObjUserFields.NAME);
 		this.description = this.addSimpleProperty(dbRecord, ObjUserFields.DESCRIPTION);
 		this.avatarImage = this.addReferenceProperty(dbRecord, ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
 		this.role = this.addSimpleProperty(dbRecord, ObjUserFields.ROLE_LIST);
 		this.tenantSet = this.addItemSetProperty(this.getRepository().getTenantSetType());
+		this.needPasswordChange = this.addSimpleProperty(dbRecord, ObjUserFields.NEED_PASSWORD_CHANGE);
+		this.password = this.addSimpleProperty(dbRecord, ObjUserFields.PASSWORD);
 	}
 
 	@Override
@@ -86,6 +88,10 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	public void setRole(CodeUserRole role) {
 		this.dbRecord.setValue(ObjUserFields.ROLE_LIST, role == null ? null : role.getId());
+	}
+
+	public void setPassword(String password) {
+		this.dbRecord.setValue(ObjUserFields.PASSWORD, this.getRepository().getPasswordEncoder().encode(password));
 	}
 
 	@Override
