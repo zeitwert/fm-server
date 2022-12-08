@@ -59,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
+	// TODO Revoke unnecessary permissions
 	protected void configure(HttpSecurity http) throws Exception {
 		//@formatter:off
 		http.cors().and()
@@ -77,22 +78,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
-				// ui paths (necessary for hyperlinks, since JWT is not propagated) // TODO revoke
-				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll() // TODO revoke
-				.antMatchers(HttpMethod.GET, "/user/*").permitAll() // TODO revoke
-				.antMatchers(HttpMethod.GET, "/account/*").permitAll() // TODO revoke
-				.antMatchers(HttpMethod.GET, "/contact/*").permitAll() // TODO revoke
-				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll() // TODO revoke
-				.antMatchers(HttpMethod.GET, "/building/*").permitAll() // TODO revoke
+				// ui paths (necessary for hyperlinks, since JWT is not propagated) // revoke
+				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/user/*").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/account/*").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/contact/*").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/building/*").permitAll() // revoke
 				// user, tenant and account pictures
 				.antMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/oe/tenants/**/{logo|banner}").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/account/accounts/**/{logo|banner}").permitAll()
 				// special paths via <img src="" />
-				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // TODO revoke
-				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/location").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/location").permitAll() // revoke
 				// special paths via <iframe src="" />
-				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/evaluation/**").permitAll() // TODO revoke
+				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/evaluation/**").permitAll() // revoke
 				// statistics
 				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// test paths
