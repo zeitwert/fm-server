@@ -3,7 +3,6 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
@@ -26,7 +25,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
-import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
 
 public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
@@ -127,54 +125,52 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj);
-		ProjectionService projectionService = AppContext.getInstance().getBean(ProjectionService.class);
-		// @formatter:off
 		dtoBuilder
-			.accountId(obj.getAccountId())
-			.buildingType(EnumeratedDto.fromEnum(obj.getBuildingType()))
-			.buildingSubType(EnumeratedDto.fromEnum(obj.getBuildingSubType()))
-			.name(obj.getName())
-			.description(obj.getDescription())
-			.buildingNr(obj.getBuildingNr())
-			.insuranceNr(obj.getInsuranceNr())
-			.plotNr(obj.getPlotNr())
-			.nationalBuildingId(obj.getNationalBuildingId())
-			.historicPreservation(EnumeratedDto.fromEnum(obj.getHistoricPreservation()))
-			.buildingYear(obj.getBuildingYear())
-			.street(obj.getStreet())
-			.zip(obj.getZip())
-			.city(obj.getCity())
-			.country(EnumeratedDto.fromEnum(obj.getCountry()))
-			.geoAddress(obj.getGeoAddress())
-			.geoCoordinates(obj.getGeoCoordinates())
-			.geoZoom(obj.getGeoZoom())
-			.coverFotoId(obj.getCoverFotoId())
-			.currency(EnumeratedDto.fromEnum(obj.getCurrency()))
-			.volume(obj.getVolume())
-			.areaGross(obj.getAreaGross())
-			.areaNet(obj.getAreaNet())
-			.nrOfFloorsAboveGround(obj.getNrOfFloorsAboveGround())
-			.nrOfFloorsBelowGround(obj.getNrOfFloorsBelowGround())
-			.insuredValue(obj.getInsuredValue())
-			.insuredValueYear(obj.getInsuredValueYear())
-			.notInsuredValue(obj.getNotInsuredValue())
-			.notInsuredValueYear(obj.getNotInsuredValueYear())
-			.thirdPartyValue(obj.getThirdPartyValue())
-			.thirdPartyValueYear(obj.getThirdPartyValueYear());
+				.accountId(obj.getAccountId())
+				.buildingType(EnumeratedDto.fromEnum(obj.getBuildingType()))
+				.buildingSubType(EnumeratedDto.fromEnum(obj.getBuildingSubType()))
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.buildingNr(obj.getBuildingNr())
+				.insuranceNr(obj.getInsuranceNr())
+				.plotNr(obj.getPlotNr())
+				.nationalBuildingId(obj.getNationalBuildingId())
+				.historicPreservation(EnumeratedDto.fromEnum(obj.getHistoricPreservation()))
+				.buildingYear(obj.getBuildingYear())
+				.street(obj.getStreet())
+				.zip(obj.getZip())
+				.city(obj.getCity())
+				.country(EnumeratedDto.fromEnum(obj.getCountry()))
+				.geoAddress(obj.getGeoAddress())
+				.geoCoordinates(obj.getGeoCoordinates())
+				.geoZoom(obj.getGeoZoom())
+				.coverFotoId(obj.getCoverFotoId())
+				.currency(EnumeratedDto.fromEnum(obj.getCurrency()))
+				.volume(obj.getVolume())
+				.areaGross(obj.getAreaGross())
+				.areaNet(obj.getAreaNet())
+				.nrOfFloorsAboveGround(obj.getNrOfFloorsAboveGround())
+				.nrOfFloorsBelowGround(obj.getNrOfFloorsBelowGround())
+				.insuredValue(obj.getInsuredValue())
+				.insuredValueYear(obj.getInsuredValueYear())
+				.notInsuredValue(obj.getNotInsuredValue())
+				.notInsuredValueYear(obj.getNotInsuredValueYear())
+				.thirdPartyValue(obj.getThirdPartyValue())
+				.thirdPartyValueYear(obj.getThirdPartyValueYear());
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
 			boolean isNew = ((PartSPI<?>) rating).getStatus() == PartStatus.CREATED;
 			dtoBuilder
-				.ratingId(isNew ? ObjPartDtoBase.ServerNewIdPrefix + rating.getId() : String.valueOf(rating.getId()))
-				.ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count() - 1)
-				.partCatalog(EnumeratedDto.fromEnum(rating.getPartCatalog()))
-				.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
-				.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
-				.ratingDate(rating.getRatingDate())
-				.ratingUser(userDtoAdapter.asEnumerated(rating.getRatingUser()))
-				.elements(obj.getCurrentRating().getElementList().stream().map(a -> ObjBuildingPartElementRatingDto.fromPart(a, projectionService)).toList());
+					.ratingId(isNew ? ObjPartDtoBase.ServerNewIdPrefix + rating.getId() : String.valueOf(rating.getId()))
+					.ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count() - 1)
+					.partCatalog(EnumeratedDto.fromEnum(rating.getPartCatalog()))
+					.maintenanceStrategy(EnumeratedDto.fromEnum(rating.getMaintenanceStrategy()))
+					.ratingStatus(EnumeratedDto.fromEnum(rating.getRatingStatus()))
+					.ratingDate(rating.getRatingDate())
+					.ratingUser(userDtoAdapter.asEnumerated(rating.getRatingUser()))
+					.elements(obj.getCurrentRating().getElementList().stream()
+							.map(a -> ObjBuildingPartElementRatingDto.fromPart(a)).toList());
 		}
-		// @formatter:on
 		return dtoBuilder.build();
 	}
 

@@ -1,16 +1,12 @@
 package io.zeitwert.fm.building.service.api.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.fm.util.NumericUtils.roundProgressive;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
@@ -18,45 +14,18 @@ import org.springframework.stereotype.Service;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
-import io.zeitwert.fm.building.service.api.dto.RestorationElement;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 
 @Service("projectionService")
 @DependsOn("codeBuildingPriceIndexEnum")
 public class ProjectionServiceImpl implements ProjectionService {
 
-	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
-
-	static final List<String> FullTechRates = List.of("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10",
-			"P63", "P64", "P65", "P66");
-	static final List<String> HalfTechRates = List.of("P12", "P60", "P61", "P62");
-
-	private final ObjBuildingRepository buildingRepo;
-
-	public ProjectionServiceImpl(ObjBuildingRepository buildingRepo) {
-		this.buildingRepo = buildingRepo;
-	}
-
-	public ProjectionResult getProjection(ObjPortfolio portfolio) {
-		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream()
-				.map(id -> this.buildingRepo.get(id))
-				.collect(Collectors.toSet());
-		int duration = DefaultDuration;
-		String fileName = portfolio.getAccount().getName() + " " + portfolio.getName();
-		fileName += " " + monthFormatter.format(OffsetDateTime.now());
-		return this.getProjectionDetails(buildings, duration, fileName);
-	}
-
-	public ProjectionResult getProjection(ObjBuilding building) {
-		int duration = DefaultDuration;
-		String fileName = building.getAccount().getName() + " " + building.getName();
-		fileName += " " + monthFormatter.format(OffsetDateTime.now());
-		return this.getProjectionDetails(Set.of(building), duration, fileName);
+	public ProjectionResult getProjection(ObjBuilding building, int duration) {
+		return this.getProjection(Set.of(building), duration);
 	}
 
 	/**
@@ -68,8 +37,8 @@ public class ProjectionServiceImpl implements ProjectionService {
 	 * @param duration
 	 * @return
 	 */
-	private ProjectionResult getProjectionDetails(Set<ObjBuilding> buildings, Integer duration, String fileName) {
-		List<RestorationElement> elementList = new ArrayList<>();
+	public ProjectionResult getProjection(Set<ObjBuilding> buildings, int duration) {
+		List<ProjectionElement> elementList = new ArrayList<>();
 		Map<EnumeratedDto, ObjBuildingPartElementRating> elementMap = new HashMap<>();
 		Map<String, List<ProjectionPeriod>> elementResultMap = new HashMap<>();
 		int startYear = this.getMinProjectionDate(buildings);
@@ -81,15 +50,14 @@ public class ProjectionServiceImpl implements ProjectionService {
 				EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
 				if (element.getValuePart() != null && element.getConditionYear() != null) {
 					if (element.getValuePart() > 0 && element.getCondition() > 0) {
-						List<ProjectionPeriod> elementPeriodList = this.getProjection(
-							/* buildingPart  => */ element.getBuildingPart(),
+						List<ProjectionPeriod> elementPeriodList = element.getBuildingPart().getProjection(
 							/* elementValue  => */ 100.0,
 							/* conditionYear => */ element.getConditionYear(),
 							/* condition     => */ element.getCondition() / 100.0,
 							/* startYear     => */ startYear,
 							/* duration      => */ duration
 						);
-						elementList.add(RestorationElement.builder().building(buildingEnum).element(elementEnum).buildingPart(buildingPartEnum).build());
+						elementList.add(ProjectionElement.builder().building(buildingEnum).element(elementEnum).buildingPart(buildingPartEnum).build());
 						elementMap.put(elementEnum, element);
 						elementResultMap.put(elementEnum.getId(), elementPeriodList);
 					}
@@ -98,7 +66,6 @@ public class ProjectionServiceImpl implements ProjectionService {
 		}
 		ProjectionResult rawResult =
 			ProjectionResult.builder()
-				.fileName(fileName)
 				.startYear(startYear)
 				.duration(duration)
 				.elementList(elementList)
@@ -149,16 +116,16 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		double techPart = 0;
 		for (ObjBuildingPartElementRating part : projectionResult.getElementMap().values()) {
-			techPart += part.getValuePart() / 100 * getTechRate(part.getBuildingPart());
+			techPart += part.getValuePart() / 100 * part.getBuildingPart().getTechRate();
 		}
-		double techRate = getTechRate(techPart);
+		double techRate = CodeBuildingPart.getTechRate(techPart);
 
 		for (int year = projectionResult.getStartYear(); year <= projectionResult.getEndYear(); year++) {
 
 			double originalValue = 0;
 			double timeValue = 0;
 			double restorationCosts = 0;
-			List<RestorationElement> restorationElements = new ArrayList<>();
+			List<ProjectionElement> restorationElements = new ArrayList<>();
 
 			for (EnumeratedDto elementEnum : projectionResult.getElementMap().keySet()) {
 				ObjBuildingPartElementRating element = projectionResult.getElement(elementEnum);
@@ -170,13 +137,13 @@ public class ProjectionServiceImpl implements ProjectionService {
 				originalValue += elementValue;
 				timeValue += elementValue * elementPeriod.getTimeValue() / 100.0;
 				double elementRestorationCosts = elementValue * elementPeriod.getRestorationCosts() / 100.0;
-				elementRestorationCosts = this.roundProgressive(elementRestorationCosts);
+				elementRestorationCosts = roundProgressive(elementRestorationCosts);
 				restorationCosts += elementRestorationCosts;
 				if (elementRestorationCosts != 0) {
 					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
 					EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
 					//@formatter:off
-					RestorationElement restorationElement = RestorationElement.builder()
+					ProjectionElement restorationElement = ProjectionElement.builder()
 						.element(elementEnum)
 						.building(buildingEnum)
 						.buildingPart(buildingPartEnum)
@@ -187,13 +154,13 @@ public class ProjectionServiceImpl implements ProjectionService {
 				}
 			}
 
-			double maintenanceRate = techRate * this.getMaintenanceRate(timeValue / originalValue) / 100.0;
+			double maintenanceRate = techRate * CodeBuildingPart.getMaintenanceRate(timeValue / originalValue) / 100.0;
 			double maintenanceCosts = maintenanceRate * originalValue;
 
-			originalValue = this.roundProgressive(originalValue);
-			timeValue = this.roundProgressive(timeValue);
-			restorationCosts = this.roundProgressive(restorationCosts);
-			maintenanceCosts = this.roundProgressive(maintenanceCosts);
+			originalValue = roundProgressive(originalValue);
+			timeValue = roundProgressive(timeValue);
+			restorationCosts = roundProgressive(restorationCosts);
+			maintenanceCosts = roundProgressive(maintenanceCosts);
 
 			//@formatter:off
 			ProjectionPeriod buildingPeriod =
@@ -215,7 +182,6 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		//@formatter:off
 		return ProjectionResult.builder()
-			.fileName(projectionResult.getFileName())
 			.startYear(projectionResult.getStartYear())
 			.duration(projectionResult.getDuration())
 			.elementList(projectionResult.getElementList())
@@ -225,219 +191,6 @@ public class ProjectionServiceImpl implements ProjectionService {
 			.build();
 		//@formatter:on
 
-	}
-
-	@Override
-	public double roundProgressive(double value) {
-		double absValue = Math.abs(value);
-		if (absValue < 2000) {
-			return 100 * Math.round(value / 100);
-		} else if (absValue < 5000) {
-			return 200 * Math.round(value / 200);
-		} else if (absValue < 10000) {
-			return 500 * Math.round(value / 500);
-		}
-		return 1000 * Math.round(value / 1000);
-	}
-
-	//@formatter:off
-	@Override
-	public List<ProjectionPeriod> getProjection(
-		CodeBuildingPart buildingPart,
-		double elementValue,
-		int conditionYear,
-		double condition,
-		int startYear,
-		int duration
-	) {
-	//@formatter:on
-
-		requireThis(buildingPart != null, "buildingPart not null");
-		if (buildingPart == null) {
-			return null; // make compiler happy (potential null pointer)
-		}
-		requireThis(conditionYear <= startYear, "valid start year (" + conditionYear + "<=" + startYear + ")");
-		requireThis(0 <= condition && condition <= 1.0, "valid condition (0 <=" + condition + " <= 1)");
-		requireThis(duration <= 100, "duration <= 100");
-
-		final int MaxProjectionYear = startYear + (int) Math.min(100.0, duration);
-		final double RestorationTimeValue = buildingPart.getOptimalRestoreTimeValue();
-		final double TotalRestorationCosts = buildingPart.getRestoreCostPerc() / 100;
-		final double TimeValueAfterRestoration = buildingPart.getAfterRestoreTimeValue();
-		final double RelativeAgeAfterRestoration = this.getRelativeAge(buildingPart, TimeValueAfterRestoration);
-
-		final List<ProjectionPeriod> periodList = new ArrayList<>();
-
-		double relativeAge = this.getRelativeAge(buildingPart, condition);
-		double timeValue = condition;
-		double techPart = this.getTechRate(buildingPart);
-		double techRate = this.getTechRate(techPart);
-
-		for (int simYear = conditionYear; simYear <= MaxProjectionYear; simYear++) {
-			boolean needRestoration = timeValue <= RestorationTimeValue;
-			double restorationCosts = 0.0;
-			if (needRestoration) {
-				restorationCosts = (TotalRestorationCosts - timeValue) * elementValue;
-				relativeAge = RelativeAgeAfterRestoration;
-			}
-			double maintenanceRate = this.getMaintenanceRate(timeValue) / 100.0;
-			if (simYear >= startYear) {
-				//@formatter:off
-				ProjectionPeriod period = ProjectionPeriod.builder()
-					.year(simYear)
-					.originalValue(elementValue)
-					.timeValue(timeValue * elementValue)
-					.restorationCosts(restorationCosts)
-					.techPart(techPart)
-					.techRate(techRate)
-					.maintenanceRate(maintenanceRate)
-					.maintenanceCosts(maintenanceRate * techRate * elementValue)
-					.build();
-				//@formatter:on
-				periodList.add(period);
-			}
-			relativeAge += 1;
-			timeValue = this.getTimeValue(buildingPart, relativeAge);
-		}
-		// assertThis(periodList.get(0).getYear() == startYear, "valid start year");
-		assertThis(periodList.size() == duration + 1, "valid duration");
-		return periodList;
-	}
-
-	private double getTechRate(CodeBuildingPart buildingPart) {
-		String id = buildingPart.getId();
-		if (FullTechRates.contains(id)) {
-			return 1.0;
-		} else if (HalfTechRates.contains(id)) {
-			return 0.5;
-		}
-		return 0.0;
-	}
-
-	private double getTechRate(double techPart) {
-		return this.getRatio(techPart, 0.09, 0.22, 0.5, 1.0);
-	}
-
-	private double getMaintenanceRate(double timeValue) {
-		if (timeValue >= 1.0) {
-			return 0.5;
-		} else if (timeValue >= 0.94) {
-			return getRatio(timeValue, 0.94, 1.0, 0.64, 0.5);
-		} else if (timeValue >= 0.85) {
-			return getRatio(timeValue, 0.85, 0.94, 1.1, 0.64);
-		} else if (timeValue >= 0.75) {
-			return getRatio(timeValue, 0.75, 0.85, 2.0, 1.1);
-		} else if (timeValue >= 0.67) {
-			return getRatio(timeValue, 0.67, 0.75, 2.0, 2.0);
-		} else if (timeValue >= 0.60) {
-			return getRatio(timeValue, 0.60, 0.67, 0.5, 2.0);
-		}
-		return getRatio(timeValue, 0.00, 0.60, 0.75, 0.5);
-	}
-
-	private double getRatio(double value, double lowBound, double highBound, double lowValue, double highValue) {
-		if (value <= lowBound) {
-			return lowValue;
-		} else if (value >= highBound) {
-			return highValue;
-		}
-		return lowValue + (value - lowBound) / (highBound - lowBound) * (highValue - lowValue);
-	}
-
-	//@formatter:off
-	public ProjectionPeriod getNextRestoration(
-		CodeBuildingPart buildingPart,
-		double elementValue,
-		int conditionYear,
-		double condition
-	) {
-	//@formatter:on
-
-		requireThis(buildingPart != null, "buildingPart not null");
-		if (buildingPart == null) {
-			return null; // make compiler happy (potential null pointer)
-		}
-		int startYear = 0;
-		int restorationYear = 0;
-		double restorationCosts = 0.0;
-		if ((condition / 100) > buildingPart.getOptimalRestoreTimeValue()) {
-			startYear = (int) Math.floor(getRelativeAge(buildingPart, condition / 100));
-			restorationYear = (int) Math.floor(getRelativeAge(buildingPart, buildingPart.getOptimalRestoreTimeValue())) + 1;
-			restorationCosts = buildingPart.getRestoreCostPerc() / 100 - buildingPart.getOptimalRestoreTimeValue();
-		} else {
-			restorationCosts = (buildingPart.getRestoreCostPerc() - condition) / 100;
-		}
-		int duration = restorationYear - startYear;
-
-		return ProjectionPeriod.builder()
-				.year(conditionYear + duration)
-				.originalValue(elementValue)
-				.timeValue(buildingPart.getOptimalRestoreTimeValue())
-				.restorationCosts(Math.round(restorationCosts * elementValue))
-				.build();
-	}
-
-	public double getTimeValue(CodeBuildingPart buildingPart, double relativeAge) {
-		if (buildingPart.getLinearDuration() > 0 && relativeAge <= buildingPart.getLinearDuration()) {
-			return 1 - relativeAge / buildingPart.getLinearDuration() * (1 - buildingPart.getLinearTimeValue());
-		}
-		//@formatter:off
-		return
-			buildingPart.getC0() +
-			buildingPart.getC1() * relativeAge +
-			buildingPart.getC2() * Math.pow(relativeAge, 2) +
-			buildingPart.getC3() * Math.pow(relativeAge, 3) +
-			buildingPart.getC4() * Math.pow(relativeAge, 4) +
-			buildingPart.getC5() * Math.pow(relativeAge, 5) +
-			buildingPart.getC6() * Math.pow(relativeAge, 6) +
-			buildingPart.getC7() * Math.pow(relativeAge, 7) +
-			buildingPart.getC8() * Math.pow(relativeAge, 8) +
-			buildingPart.getC9() * Math.pow(relativeAge, 9) +
-			buildingPart.getC10() * Math.pow(relativeAge, 10);
-		//@formatter:on
-	}
-
-	public double getRelativeAge(CodeBuildingPart buildingPart, double timeValue) {
-		if (timeValue > buildingPart.getLinearTimeValue()) {
-			return (1 - timeValue) / (1 - buildingPart.getLinearTimeValue()) * buildingPart.getLinearDuration();
-		}
-		final double PRECISION = 0.0001;
-		double prevT;
-		double t;
-		int i = 0;
-		t = buildingPart.getOptimalRestoreDuration();
-		prevT = t;
-		while (Math.abs(this.getTimeValue(buildingPart, t) - timeValue) > PRECISION && i < 10) {
-			t = prevT - (this.getTimeValue(buildingPart, prevT) - timeValue) / fDerivative(buildingPart, prevT);
-			i += 1;
-			prevT = t;
-		}
-		return t;
-	}
-
-	public Integer getLifetime(CodeBuildingPart buildingPart, double timeValue) {
-		double optimalTimeValue = buildingPart.getOptimalRestoreTimeValue();
-		if (timeValue <= optimalTimeValue) {
-			return 0;
-		}
-		return (int) Math
-				.floor(this.getRelativeAge(buildingPart, optimalTimeValue) - this.getRelativeAge(buildingPart, timeValue)) + 1;
-	}
-
-	private double fDerivative(CodeBuildingPart buildingPart, double relativeAge) {
-		//@formatter:off
-		return
-			buildingPart.getC1() +
-			2 * buildingPart.getC2() * relativeAge +
-			3 * buildingPart.getC3() * Math.pow(relativeAge, 2) +
-			4 * buildingPart.getC4() * Math.pow(relativeAge, 3) +
-			5 * buildingPart.getC5() * Math.pow(relativeAge, 4) +
-			6 * buildingPart.getC6() * Math.pow(relativeAge, 5) +
-			7 * buildingPart.getC7() * Math.pow(relativeAge, 6) +
-			8 * buildingPart.getC8() * Math.pow(relativeAge, 7) +
-			9 * buildingPart.getC9() * Math.pow(relativeAge, 8) +
-			10 * buildingPart.getC10() * Math.pow(relativeAge, 9);
-		//@formatter:on
 	}
 
 }

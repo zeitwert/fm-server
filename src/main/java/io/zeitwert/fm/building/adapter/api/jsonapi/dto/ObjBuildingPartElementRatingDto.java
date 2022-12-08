@@ -13,7 +13,6 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingElementDescriptionEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
@@ -78,8 +77,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		}
 	}
 
-	public static ObjBuildingPartElementRatingDto fromPart(ObjBuildingPartElementRating part,
-			ProjectionService projectionService) {
+	public static ObjBuildingPartElementRatingDto fromPart(ObjBuildingPartElementRating part) {
 		if (part == null) {
 			return null;
 		}
@@ -91,45 +89,43 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		if (building.getInsuredValue() != null) {
 			if (part.getValuePart() != null && part.getValuePart() > 0
 					&& part.getCondition() != null && part.getConditionYear() != null) {
-				//@formatter:off
-
-				ProjectionPeriod renovationPeriod =
-					projectionService.getNextRestoration(
-						part.getBuildingPart(),
+				ProjectionPeriod renovationPeriod = part.getBuildingPart().getNextRestoration(
 						1000000.0,
 						part.getConditionYear(),
-						part.getCondition()
-					);
-				//@formatter:on
+						part.getCondition());
 				restorationYear = renovationPeriod.getYear();
 				double elementValue = part.getValuePart() / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
 				restorationCosts = (double) Math.round(renovationPeriod.getRestorationCosts() / 1000000.0 * elementValue);
 			}
 		}
-		// @formatter:off
+		Set<EnumeratedDto> materialDescriptions = part.getMaterialDescriptionSet().stream()
+				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		Set<EnumeratedDto> conditionDescriptions = part.getConditionDescriptionSet().stream()
+				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		Set<EnumeratedDto> measureDescriptions = part.getMeasureDescriptionSet().stream()
+				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
 		return dtoBuilder
-			.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
-			.valuePart(part.getValuePart())
-			.condition(part.getCondition())
-			.conditionYear(part.getConditionYear())
-			.strain(part.getStrain())
-			.strength(part.getStrength())
-			.description(part.getDescription())
-			.conditionDescription(part.getConditionDescription())
-			.measureDescription(part.getMeasureDescription())
-			.materialDescriptions(part.getMaterialDescriptionSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
-			.conditionDescriptions(part.getConditionDescriptionSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
-			.measureDescriptions(part.getMeasureDescriptionSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
-			.restorationYear(restorationYear)
-			.restorationCosts(restorationCosts)
-			.lifeTime20(projectionService.getLifetime(part.getBuildingPart(), 0.2))
-			.lifeTime50(projectionService.getLifetime(part.getBuildingPart(), 0.5))
-			.lifeTime70(projectionService.getLifetime(part.getBuildingPart(), 0.7))
-			.lifeTime85(projectionService.getLifetime(part.getBuildingPart(), 0.85))
-			.lifeTime95(projectionService.getLifetime(part.getBuildingPart(), 0.95))
-			.lifeTime100(projectionService.getLifetime(part.getBuildingPart(), 1.0))
-			.build();
-		// @formatter:on
+				.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
+				.valuePart(part.getValuePart())
+				.condition(part.getCondition())
+				.conditionYear(part.getConditionYear())
+				.strain(part.getStrain())
+				.strength(part.getStrength())
+				.description(part.getDescription())
+				.conditionDescription(part.getConditionDescription())
+				.measureDescription(part.getMeasureDescription())
+				.materialDescriptions(materialDescriptions)
+				.conditionDescriptions(conditionDescriptions)
+				.measureDescriptions(measureDescriptions)
+				.restorationYear(restorationYear)
+				.restorationCosts(restorationCosts)
+				.lifeTime20(part.getBuildingPart().getLifetime(0.2))
+				.lifeTime50(part.getBuildingPart().getLifetime(0.5))
+				.lifeTime70(part.getBuildingPart().getLifetime(0.7))
+				.lifeTime85(part.getBuildingPart().getLifetime(0.85))
+				.lifeTime95(part.getBuildingPart().getLifetime(0.95))
+				.lifeTime100(part.getBuildingPart().getLifetime(1.0))
+				.build();
 	}
 
 }

@@ -24,39 +24,36 @@ public final class CodeBuildingPartEnum extends EnumerationBase<CodeBuildingPart
 	}
 
 	@PostConstruct
-	//@formatter:off
 	private void init() {
 		for (final CodeBuildingPartRecord item : this.getDslContext().selectFrom(Tables.CODE_BUILDING_PART).fetch()) {
-			this.addItem(
-				new CodeBuildingPart(
-					this,
-					item.getId(),
-					item.getName(),
-					item.getOptRestoreDuration().doubleValue(),
-					item.getOptRestoreTimeValue().doubleValue(),
-					item.getMaxRestoreDuration().doubleValue(),
-					item.getMaxRestoreTimeValue().doubleValue(),
-					item.getAfterRestoreTimeValue().doubleValue(),
-					item.getLinearDuration().doubleValue(),
-					item.getLinearTimeValue().doubleValue(),
-					item.getRestoreCostPerc().doubleValue(),
-					item.getNewBuildCostPerc().doubleValue(),
-					item.getC10().doubleValue(),
-					item.getC9().doubleValue(),
-					item.getC8().doubleValue(),
-					item.getC7().doubleValue(),
-					item.getC6().doubleValue(),
-					item.getC5().doubleValue(),
-					item.getC4().doubleValue(),
-					item.getC3().doubleValue(),
-					item.getC2().doubleValue(),
-					item.getC1().doubleValue(),
-					item.getC0().doubleValue()
-				)
-			);
+			CodeBuildingPart part = CodeBuildingPart.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.optimalRestoreDuration(item.getOptRestoreDuration().doubleValue())
+					.optimalRestoreTimeValue(item.getOptRestoreTimeValue().doubleValue())
+					.maximalRestoreDuration(item.getMaxRestoreDuration().doubleValue())
+					.maximalRestoreTimeValue(item.getMaxRestoreTimeValue().doubleValue())
+					.afterRestoreTimeValue(item.getAfterRestoreTimeValue().doubleValue())
+					.linearDuration(item.getLinearDuration().doubleValue())
+					.linearTimeValue(item.getLinearTimeValue().doubleValue())
+					.restoreCostPerc(item.getRestoreCostPerc().doubleValue())
+					.newBuildCostPerc(item.getNewBuildCostPerc().doubleValue())
+					.c10(item.getC10().doubleValue())
+					.c9(item.getC9().doubleValue())
+					.c8(item.getC8().doubleValue())
+					.c7(item.getC7().doubleValue())
+					.c6(item.getC6().doubleValue())
+					.c5(item.getC5().doubleValue())
+					.c4(item.getC4().doubleValue())
+					.c3(item.getC3().doubleValue())
+					.c2(item.getC2().doubleValue())
+					.c1(item.getC1().doubleValue())
+					.c0(item.getC0().doubleValue())
+					.build();
+			this.addItem(part);
 		}
 	}
-	//@formatter:on
 
 	public static CodeBuildingPart getBuildingPart(String itemId) {
 		return INSTANCE.getItem(itemId);

@@ -3,7 +3,6 @@ package io.zeitwert.fm.building.adapter.api.rest;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,14 +17,10 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
-import io.zeitwert.fm.building.service.api.ProjectionService;
 
 @RestController("buildingEnumController")
 @RequestMapping("/enum")
 public class BuildingEnumController {
-
-	@Autowired
-	private ProjectionService projectionService;
 
 	@GetMapping("/building/codeBuildingSubType/{buildingTypeId}")
 	public ResponseEntity<List<CodeBuildingSubType>> getBuildingSubTypeList(@PathVariable String buildingTypeId) {
@@ -42,23 +37,20 @@ public class BuildingEnumController {
 		if (partCatalog == null) {
 			return ResponseEntity.notFound().build();
 		}
-		//@formatter:off
 		return ResponseEntity.ok()
-			.body(
-				partCatalog.getPartList().stream().map(p -> {
-					return BuildingPartWeightDto.builder()
-						.part(EnumeratedDto.fromEnum(p.getLeft()))
-						.weight(p.getRight())
-						.lifeTime20(projectionService.getLifetime(p.getLeft(), 0.2))
-						.lifeTime50(projectionService.getLifetime(p.getLeft(), 0.5))
-						.lifeTime70(projectionService.getLifetime(p.getLeft(), 0.7))
-						.lifeTime85(projectionService.getLifetime(p.getLeft(), 0.85))
-						.lifeTime95(projectionService.getLifetime(p.getLeft(), 0.95))
-						.lifeTime100(projectionService.getLifetime(p.getLeft(), 1.0))
-						.build();
-				}).toList()
-			);
-		//@formatter:on
+				.body(
+						partCatalog.getPartList().stream().map(p -> {
+							return BuildingPartWeightDto.builder()
+									.part(EnumeratedDto.fromEnum(p.getLeft()))
+									.weight(p.getRight())
+									.lifeTime20(p.getLeft().getLifetime(0.2))
+									.lifeTime50(p.getLeft().getLifetime(0.5))
+									.lifeTime70(p.getLeft().getLifetime(0.7))
+									.lifeTime85(p.getLeft().getLifetime(0.85))
+									.lifeTime95(p.getLeft().getLifetime(0.95))
+									.lifeTime100(p.getLeft().getLifetime(1.0))
+									.build();
+						}).toList());
 	}
 
 }

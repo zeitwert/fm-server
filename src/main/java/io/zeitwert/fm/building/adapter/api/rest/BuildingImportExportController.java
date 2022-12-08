@@ -45,7 +45,7 @@ import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/rest/building/buildings")
-public class BuildingFileTransferController {
+public class BuildingImportExportController {
 
 	private static final String AGGREGATE = "zeitwert/building";
 	private static final String VERSION = "1.0";
