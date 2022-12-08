@@ -13,6 +13,7 @@ import TabProjectionTable from "./TabProjectionTable";
 export interface TabProjectionProps {
 	itemType: "building" | "portfolio";
 	itemId: string;
+	fileName: string;
 }
 
 enum ReportType {
@@ -39,7 +40,7 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 	}
 
 	get url() {
-		return this.props.itemType + "s/" + this.props.itemId;
+		return this.props.itemType + "s/" + this.props.itemId + "/projection";
 	}
 
 	constructor(props: any) {
@@ -98,7 +99,7 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 				<div className="slds-vertical-tabs__content slds-show" id="rep-content" role="tabpanel">
 					{this.reportType === ReportType.CHART && <TabProjectionChart projection={this.projection} key={"portf-chart-" + this.loadNr} />}
 					{this.reportType === ReportType.TABLE && <TabProjectionTable projection={this.projection} key={"portf-table-" + this.loadNr} />}
-					{this.reportType === ReportType.PRINT && <TabProjectionPrint itemType={this.props.itemType} itemId={this.props.itemId} fileName={this.projection.fileName} key={"portf-print-" + this.loadNr} />}
+					{this.reportType === ReportType.PRINT && <TabProjectionPrint itemType={this.props.itemType} itemId={this.props.itemId} fileName={this.props.fileName} key={"portf-print-" + this.loadNr} />}
 				</div>
 			</div>
 		);
@@ -106,7 +107,7 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 
 	private loadProjection = async (url: string) => {
 		this.isLoading = true;
-		this.projection = await (await API.get(Config.getRestUrl("projection", url))).data;
+		this.projection = await (await API.get(Config.getRestUrl(this.props.itemType, url))).data;
 		this.loadNr++;
 		this.isLoading = false;
 	};

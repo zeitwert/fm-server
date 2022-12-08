@@ -20,7 +20,6 @@ export interface ProjectionPeriod {
 }
 
 export interface ProjectionResult {
-	fileName: string;
 	startYear: number;
 	duration: number;
 	endYear: number;
@@ -29,7 +28,6 @@ export interface ProjectionResult {
 }
 
 export const EMPTY_RESULT = {
-	fileName: "",
 	startYear: 0,
 	duration: 0,
 	endYear: 0,

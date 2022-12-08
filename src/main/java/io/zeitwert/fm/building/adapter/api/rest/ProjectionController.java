@@ -2,9 +2,7 @@ package io.zeitwert.fm.building.adapter.api.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,54 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
-import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 
 @RestController("projectionController")
 @RequestMapping("/rest/projection")
 public class ProjectionController {
-
-	private final ObjPortfolioRepository portfolioRepo;
-
-	private final ObjBuildingRepository buildingRepo;
-
-	private final ProjectionService projectionService;
-
-	public ProjectionController(
-			ObjPortfolioRepository portfolioRepo,
-			ObjBuildingRepository buildingRepo,
-			ProjectionService projectionService) {
-		this.portfolioRepo = portfolioRepo;
-		this.buildingRepo = buildingRepo;
-		this.projectionService = projectionService;
-	}
-
-	@GetMapping("/portfolios/{portfolioId}")
-	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer portfolioId)
-			throws InterruptedException, ExecutionException {
-		Set<ObjBuilding> buildings = this.portfolioRepo
-				.get(portfolioId)
-				.getBuildingSet()
-				.stream()
-				.map((id) -> buildingRepo.get(id))
-				.collect(Collectors.toSet());
-		return ResponseEntity
-				.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
-	}
-
-	@GetMapping("/buildings/{buildingId}")
-	ResponseEntity<ProjectionResult> getBuildingProjection(@PathVariable Integer buildingId)
-			throws InterruptedException, ExecutionException {
-		Set<ObjBuilding> buildings = Set.of(this.buildingRepo.get(buildingId));
-		return ResponseEntity
-				.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
-	}
 
 	@GetMapping("/elements/{elementId}")
 	ResponseEntity<List<ProjectionPeriod>> getElementProjection(@PathVariable String elementId)
