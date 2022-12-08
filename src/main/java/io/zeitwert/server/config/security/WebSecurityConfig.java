@@ -97,8 +97,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// statistics
 				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// test paths
-				.antMatchers(HttpMethod.GET, "/api/test/all").permitAll()
-				.antMatchers(HttpMethod.GET, "/api/test/**").authenticated()
+				.antMatchers(HttpMethod.GET, "/rest/test/all").permitAll()
+				.antMatchers(HttpMethod.GET, "/rest/test/**").authenticated()
 			.anyRequest().authenticated();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.headers().frameOptions().disable();

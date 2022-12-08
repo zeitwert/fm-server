@@ -15,7 +15,7 @@ import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
 
 @RestController("searchController")
-@RequestMapping("/api/search")
+@RequestMapping("/rest/search")
 public class SearchController {
 
 	private static final Integer SEARCH_RESULT_SIZE = 10;
