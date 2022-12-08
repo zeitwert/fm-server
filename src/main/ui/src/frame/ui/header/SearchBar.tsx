@@ -71,7 +71,7 @@ class SearchBar extends React.Component<RouteComponentProps> {
 			this.options = [];
 		} else {
 			this.options = [];
-			API.get(Config.getApiUrl("search", "?searchText=" + s)).then((response) => {
+			API.get(Config.getRestUrl("search", "?searchText=" + s)).then((response) => {
 				this.options = response.data.map((item: any) => {
 					const type = item.itemType.id.substring(4);
 					const entityType = EntityTypes[type];

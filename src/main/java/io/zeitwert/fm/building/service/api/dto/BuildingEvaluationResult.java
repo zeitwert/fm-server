@@ -14,7 +14,6 @@ public class BuildingEvaluationResult {
 	private String description;
 	private String address;
 	private String accountName;
-	private String fileName;
 
 	private List<EvaluationParameter> facts;
 	private List<EvaluationParameter> params;

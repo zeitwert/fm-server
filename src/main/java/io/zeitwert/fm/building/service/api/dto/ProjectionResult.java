@@ -17,9 +17,8 @@ public class ProjectionResult {
 
 	private Integer startYear;
 	private Integer duration;
-	private List<RestorationElement> elementList;
+	private List<ProjectionElement> elementList;
 	private List<ProjectionPeriod> periodList;
-	private String fileName;
 
 	@JsonIgnore
 	private Map<EnumeratedDto, ObjBuildingPartElementRating> elementMap;

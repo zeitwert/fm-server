@@ -1,49 +1,29 @@
 
-package io.zeitwert.fm.building.adapter.api.rest;
+package io.zeitwert.fm.building.service.api.impl;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import com.aspose.words.AxisBound;
 import com.aspose.words.Cell;
 import com.aspose.words.Chart;
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
-import com.aspose.words.FolderFontSource;
-import com.aspose.words.FontSettings;
-import com.aspose.words.License;
 import com.aspose.words.MarkerSymbol;
 import com.aspose.words.Node;
 import com.aspose.words.NodeType;
 import com.aspose.words.PdfEncryptionDetails;
 import com.aspose.words.PdfPermissions;
 import com.aspose.words.PdfSaveOptions;
-import com.aspose.words.PhysicalFontInfo;
 import com.aspose.words.RelativeHorizontalPosition;
 import com.aspose.words.RelativeVerticalPosition;
 import com.aspose.words.ReportingEngine;
@@ -60,16 +40,16 @@ import com.google.maps.model.Size;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.service.api.BuildingService;
+import io.zeitwert.fm.building.service.api.DocumentGenerationService;
 import io.zeitwert.fm.building.service.api.EvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
+import io.zeitwert.server.config.aspose.AsposeConfig;
 
-@RestController("buildingEvaluationController")
-@RequestMapping("/rest/building/buildings")
-public class BuildingEvaluationController {
+@Component("buildingDocumentGenerationService")
+public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
 	private static final double POINTS_PER_MM = 2.834647454889553;
 
@@ -91,10 +71,8 @@ public class BuildingEvaluationController {
 	static final int OnePageBasicDataTable = 6;
 	static final int OnePageEvaluationTable = 7;
 
-	private Logger logger = LoggerFactory.getLogger(BuildingEvaluationController.class);
-
 	@Autowired
-	private ObjBuildingRepository repo;
+	private AsposeConfig asposeConfig;
 
 	@Autowired
 	private BuildingService buildingService;
@@ -105,102 +83,26 @@ public class BuildingEvaluationController {
 	@Autowired
 	EvaluationService evaluationService;
 
-	@Value("classpath:license/Aspose.Words.Java.lic")
-	Resource licenseFile;
-
 	@Value("classpath:templates/Building Evaluation Template.docx")
 	Resource templateFile;
 
 	@Value("classpath:templates/missing.jpg")
 	Resource missingImage;
 
-	ClassLoader classLoader = this.getClass().getClassLoader();
-
-	File fontsDirectory;
-
-	FontSettings fontSettings;
-
 	ReportingEngine engine = new ReportingEngine();
 
-	@PostConstruct
-	protected void initLicense() throws Exception {
-
-		License lic = new License();
-		lic.setLicense(licenseFile.getInputStream());
-
-		ReportingEngine.setUseReflectionOptimization(false);
+	public DocumentGenerationServiceImpl() {
 		engine.getKnownTypes().add(BuildingEvaluationResult.class);
-
 	}
 
-	@PostConstruct
-	protected void initFonts() throws Exception {
+	public void generateEvaluationReport(ObjBuilding building, ByteArrayOutputStream stream, int format) {
 
-		File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-		this.fontsDirectory = new File(tmpDir, "fonts");
-		if (!this.fontsDirectory.exists()) {
-			this.fontsDirectory.mkdirs();
-		}
-		logger.info("initFonts: " + this.fontsDirectory.getAbsolutePath());
-
-		this.copyStream2File("trebuc");
-		this.copyStream2File("trebucbd");
-		this.copyStream2File("trebucbi");
-		this.copyStream2File("trabucit");
-		this.copyStream2File("webdings");
-		this.copyStream2File("wingding");
-
-		this.fontSettings = new FontSettings();
-		this.fontSettings.setFontsFolder(this.fontsDirectory.getAbsolutePath(), false);
-
-		listFonts();
-	}
-
-	private void copyStream2File(String fontName) throws IOException {
-		InputStream is = classLoader.getResourceAsStream("fonts/" + fontName + ".ttf");
-		if (is != null) {
-			File f = new File(this.fontsDirectory.getAbsolutePath() + "/" + fontName + ".ttf");
-			f.deleteOnExit();
-			try (FileOutputStream out = new FileOutputStream(f)) {
-				IOUtils.copy(is, out);
-			}
-		}
-	}
-
-	private void listFonts() {
-		// Get available fonts in folder
-		for (PhysicalFontInfo fontInfo : (Iterable<PhysicalFontInfo>) new FolderFontSource(fontsDirectory.getAbsolutePath(),
-				false)
-				.getAvailableFonts()) {
-			logger.info(
-					"Font family: " + fontInfo.getFontFamilyName()
-							+ ", version: " + fontInfo.getVersion()
-							+ ", font: " + fontInfo.getFullFontName()
-							+ ", path : " + fontInfo.getFilePath());
-		}
-	}
-
-	@GetMapping("/{id}/evaluation/{viewerFileName}")
-	protected ResponseEntity<byte[]> exportBuildingWithFileName(
-			@PathVariable("id") Integer id,
-			@RequestParam(required = false, name = "format") String format,
-			@RequestParam(required = false, name = "inline") Boolean isInline) {
-		return this.exportBuilding(id, format, isInline);
-	}
-
-	@GetMapping("/{id}/evaluation")
-	protected ResponseEntity<byte[]> exportBuilding(
-			@PathVariable("id") Integer id,
-			@RequestParam(required = false, name = "format") String format,
-			@RequestParam(required = false, name = "inline") Boolean isInline) {
-
-		ObjBuilding building = this.repo.get(id);
 		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
 
 		try {
 
 			Document doc = new Document(templateFile.getInputStream());
-			doc.setFontSettings(this.fontSettings);
+			doc.setFontSettings(asposeConfig.getFontSettings());
 
 			this.insertCoverFoto(doc, building);
 			this.insertLocationImage(doc, building);
@@ -211,12 +113,9 @@ public class BuildingEvaluationController {
 			this.fillOnePagerCostsChart(doc, evaluationResult);
 			this.fillOnePager(doc, evaluationResult);
 
-			int saveFormat = this.getSaveFormat(format);
-			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-			if (saveFormat == SaveFormat.PDF) {
+			if (format == SaveFormat.PDF) {
 				PdfSaveOptions saveOptions = new PdfSaveOptions();
-				saveOptions.setSaveFormat(saveFormat);
+				saveOptions.setSaveFormat(format);
 				// Create encryption details and set user password = 1
 				int year = Calendar.getInstance().get(Calendar.YEAR);
 				PdfEncryptionDetails encryptionDetails = new PdfEncryptionDetails(null, "zeit" + year + "wert");
@@ -225,21 +124,9 @@ public class BuildingEvaluationController {
 				// Allow printing
 				encryptionDetails.setPermissions(PdfPermissions.PRINTING);
 				saveOptions.setEncryptionDetails(encryptionDetails);
-				doc.save(outStream, saveOptions);
+				doc.save(stream, saveOptions);
 			} else {
-				doc.save(outStream, saveFormat);
-			}
-
-			// mark file for download
-			HttpHeaders headers = new HttpHeaders();
-			if (isInline != null && isInline) {
-				return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers)
-						.body(outStream.toByteArray());
-			} else {
-				String fileName = this.getFileName(evaluationResult.getFileName(), saveFormat);
-				ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
-				headers.setContentDisposition(contentDisposition);
-				return ResponseEntity.ok().headers(headers).body(outStream.toByteArray());
+				doc.save(stream, format);
 			}
 
 		} catch (Exception x) {
@@ -276,8 +163,7 @@ public class BuildingEvaluationController {
 			coverFoto.setTop(170);
 			coverFoto.setLeft(-coverFoto.getWidth() - 20);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Could not insert cover foto", e);
 		}
 
 	}
@@ -302,8 +188,7 @@ public class BuildingEvaluationController {
 			builder.moveToBookmark(LocationBookmark);
 			builder.insertImage(imageContent, 360, 360);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Could not insert location image", e);
 		}
 
 	}
@@ -619,14 +504,6 @@ public class BuildingEvaluationController {
 			return getNthNextSibling(cell.getNextSibling(), n - 1);
 		}
 		return (Cell) cell;
-	}
-
-	private int getSaveFormat(String format) {
-		return format != null && "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
-	}
-
-	private String getFileName(String fileName, int saveFormat) {
-		return fileName + (saveFormat == SaveFormat.DOCX ? ".docx" : ".pdf");
 	}
 
 }

@@ -13,7 +13,7 @@ public class ProjectionPeriod {
 	private double originalValue;
 	private double timeValue;
 	private double restorationCosts;
-	private List<RestorationElement> restorationElements;
+	private List<ProjectionElement> restorationElements;
 
 	private double techPart;
 	private double techRate;

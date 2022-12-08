@@ -106,7 +106,7 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 
 	private loadProjection = async (url: string) => {
 		this.isLoading = true;
-		this.projection = await (await API.get(Config.getApiUrl("projection", url))).data;
+		this.projection = await (await API.get(Config.getRestUrl("projection", url))).data;
 		this.loadNr++;
 		this.isLoading = false;
 	};

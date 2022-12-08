@@ -1,10 +1,13 @@
 package io.zeitwert.fm.building.service.api.impl;
 
+import static io.zeitwert.fm.util.NumericUtils.roundProgressive;
+
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
@@ -19,13 +22,11 @@ import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationParameter;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
-import io.zeitwert.fm.building.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
-import io.zeitwert.fm.building.service.api.dto.RestorationElement;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 
-@Service("evaluationService")
+@Service("buildingEvaluationService")
 public class EvaluationServiceImpl implements EvaluationService {
 
 	public static final String SOFT_RETURN = "\u000B";
@@ -41,6 +42,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		this.projectionService = projectionService;
 	}
 
+	@Override
 	public BuildingEvaluationResult getEvaluation(ObjBuilding building) {
 
 		Formatter fmt = Formatter.INSTANCE;
@@ -78,7 +80,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Begehung am", value);
 		}
 
-		ProjectionResult projectionResult = projectionService.getProjection(building);
+		ProjectionResult projectionResult = projectionService.getProjection(Set.of(building),
+				ProjectionService.DefaultDuration);
 		String timeValue = fmt.formatMonetaryValue(projectionResult.getPeriodList().get(0).getTimeValue(), "CHF");
 		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
 		String midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF");
@@ -167,7 +170,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 					.build();
 			periods.add(eps);
 			if (pp.getRestorationElements().size() > 1) {
-				for (RestorationElement re : pp.getRestorationElements()) {
+				for (ProjectionElement re : pp.getRestorationElements()) {
 					restorationElement = re.getBuildingPart().getName();
 					EvaluationPeriod epd = EvaluationPeriod.builder()
 							.restorationCosts((int) re.getRestorationCosts())
@@ -185,7 +188,6 @@ public class EvaluationServiceImpl implements EvaluationService {
 				.address(building.getStreet() + ", " + building.getZip() + " " + building.getCity() + ", "
 						+ building.getCountry().getName())
 				.accountName(building.getAccount().getName())
-				.fileName(projectionResult.getFileName())
 				.facts(facts)
 				.params(params)
 				.onePageFacts(onePageFacts)
@@ -210,7 +212,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 				costs += pp.getMaintenanceCosts();
 			}
 		}
-		return (int) projectionService.roundProgressive(costs / (endYear - startYear + 1));
+		return (int) roundProgressive(costs / (endYear - startYear + 1));
 	}
 
 	private int getRestorationCosts(ProjectionResult projectionResult, int startYear, int endYear) {
@@ -222,12 +224,12 @@ public class EvaluationServiceImpl implements EvaluationService {
 				costs += pp.getRestorationCosts();
 			}
 		}
-		return (int) projectionService.roundProgressive(costs);
+		return (int) roundProgressive(costs);
 	}
 
 	private Integer getRestorationYear(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			for (RestorationElement re : pp.getRestorationElements()) {
+			for (ProjectionElement re : pp.getRestorationElements()) {
 				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {
 					return pp.getYear();
 				}
@@ -238,9 +240,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 	private Integer getRestorationCosts(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
 		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			for (RestorationElement re : pp.getRestorationElements()) {
+			for (ProjectionElement re : pp.getRestorationElements()) {
 				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {
-					return (int) projectionService.roundProgressive(re.getRestorationCosts());
+					return (int) roundProgressive(re.getRestorationCosts());
 				}
 			}
 		}
@@ -263,10 +265,6 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 		return GOOD_RATING;
 
-	}
-
-	public PortfolioEvaluationResult getEvaluation(ObjPortfolio portfolio) {
-		return null;
 	}
 
 }

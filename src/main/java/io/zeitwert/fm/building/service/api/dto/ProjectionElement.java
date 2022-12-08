@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data()
 @Builder
-public class RestorationElement {
+public class ProjectionElement {
 
 	private EnumeratedDto element;
 	private EnumeratedDto building;

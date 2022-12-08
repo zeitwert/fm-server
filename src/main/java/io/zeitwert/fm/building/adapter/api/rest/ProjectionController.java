@@ -2,7 +2,9 @@ package io.zeitwert.fm.building.adapter.api.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
@@ -19,7 +22,7 @@ import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 
 @RestController("projectionController")
-@RequestMapping("/api/projection")
+@RequestMapping("/rest/projection")
 public class ProjectionController {
 
 	private final ObjPortfolioRepository portfolioRepo;
@@ -40,15 +43,22 @@ public class ProjectionController {
 	@GetMapping("/portfolios/{portfolioId}")
 	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer portfolioId)
 			throws InterruptedException, ExecutionException {
+		Set<ObjBuilding> buildings = this.portfolioRepo
+				.get(portfolioId)
+				.getBuildingSet()
+				.stream()
+				.map((id) -> buildingRepo.get(id))
+				.collect(Collectors.toSet());
 		return ResponseEntity
-				.ok(this.projectionService.getProjection(this.portfolioRepo.get(portfolioId)));
+				.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
 	}
 
 	@GetMapping("/buildings/{buildingId}")
 	ResponseEntity<ProjectionResult> getBuildingProjection(@PathVariable Integer buildingId)
 			throws InterruptedException, ExecutionException {
+		Set<ObjBuilding> buildings = Set.of(this.buildingRepo.get(buildingId));
 		return ResponseEntity
-				.ok(this.projectionService.getProjection(this.buildingRepo.get(buildingId)));
+				.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
 	}
 
 	@GetMapping("/elements/{elementId}")
@@ -59,8 +69,7 @@ public class ProjectionController {
 		final double condition = 1;
 		final int duration = 50;
 		final double value = 1000000.0;
-		List<ProjectionPeriod> projection = this.projectionService.getProjection(buildingPart, value, startYear, condition,
-				startYear, duration);
+		List<ProjectionPeriod> projection = buildingPart.getProjection(value, startYear, condition, startYear, duration);
 		return ResponseEntity.ok(projection);
 	}
 
@@ -71,7 +80,7 @@ public class ProjectionController {
 		List<Double> timeValues = new ArrayList<Double>();
 		int year = 0;
 		for (int t = 0; t < 100; t++) {
-			Double timeValue = this.projectionService.getTimeValue(buildingPart, (double) year);
+			Double timeValue = buildingPart.getTimeValue((double) year);
 			timeValues.add(timeValue);
 			if (timeValue <= buildingPart.getOptimalRestoreTimeValue()) {
 				year = 0;
@@ -85,7 +94,7 @@ public class ProjectionController {
 	ResponseEntity<Double> getRelativeAge(@PathVariable String elementId, @PathVariable Double timeValue)
 			throws InterruptedException, ExecutionException {
 		CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
-		return ResponseEntity.ok(this.projectionService.getRelativeAge(buildingPart, timeValue));
+		return ResponseEntity.ok(buildingPart.getRelativeAge(timeValue));
 	}
 
 	@GetMapping("/elements/{elementId}/nextRestoration/{conditionYear}/{condition}")
@@ -95,7 +104,7 @@ public class ProjectionController {
 			throws InterruptedException, ExecutionException {
 		CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
 		return ResponseEntity
-				.ok(this.projectionService.getNextRestoration(buildingPart, 1000000, conditionYear, condition));
+				.ok(buildingPart.getNextRestoration(1000000, conditionYear, condition));
 	}
 
 }
