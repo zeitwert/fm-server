@@ -57,16 +57,8 @@ public class BuildingDocumentController {
 		return ResponseEntity.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
 	}
 
-	@GetMapping("/{id}/evaluation/{viewerFileName}")
-	protected ResponseEntity<byte[]> exportBuildingWithFileName(
-			@PathVariable("id") Integer id,
-			@RequestParam(required = false, name = "format") String format,
-			@RequestParam(required = false, name = "inline") Boolean isInline) {
-		return this.exportBuilding(id, format, isInline);
-	}
-
 	@GetMapping("/{id}/evaluation")
-	protected ResponseEntity<byte[]> exportBuilding(
+	protected ResponseEntity<byte[]> getBuildingEvaluation(
 			@PathVariable("id") Integer id,
 			@RequestParam(required = false, name = "format") String format,
 			@RequestParam(required = false, name = "inline") Boolean isInline) {

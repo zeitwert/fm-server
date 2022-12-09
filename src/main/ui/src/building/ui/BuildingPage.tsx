@@ -77,14 +77,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		return ["open", "review"].indexOf(this.buildingStore.building?.ratingStatus?.id || "") >= 0;
 	}
 
-	@computed
-	get fileName(): string {
-		const accountName = this.buildingStore.building?.account?.name || "";
-		const buildingName = this.buildingStore.building?.name || "";
-		const dateFormatOptions = { year: "numeric", month: "2-digit", day: "2-digit" } as any;
-		return `${accountName} - ${buildingName} - ${new Date().toLocaleDateString("de-DE", dateFormatOptions)}.pdf`;
-	}
-
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
@@ -173,7 +165,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 										<TabProjection
 											itemType="building"
 											itemId={this.buildingStore.building?.id!}
-											fileName={this.fileName}
 										/>
 									}
 								</TabsPanel>

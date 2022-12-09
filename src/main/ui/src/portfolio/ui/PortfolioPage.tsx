@@ -52,14 +52,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		return this.portfolioStore.portfolio?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
 	}
 
-	@computed
-	get fileName(): string {
-		const accountName = this.portfolioStore.portfolio?.account?.name || "";
-		const portfolioName = this.portfolioStore.portfolio?.name || "";
-		const dateFormatOptions = { year: "numeric", month: "2-digit", day: "2-digit" } as any;
-		return `${accountName} - ${portfolioName} - ${new Date().toLocaleDateString("de-DE", dateFormatOptions)}.pdf`;
-	}
-
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
@@ -133,7 +125,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 										<TabProjection
 											itemType="portfolio"
 											itemId={this.portfolioStore.portfolio?.id!}
-											fileName={this.fileName}
 										/>
 									}
 								</TabsPanel>
