@@ -54,4 +54,12 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 				CodeBuildingElementDescriptionEnum.class);
 	}
 
+	@Override
+	public Integer getCondition(Integer year) {
+		CodeBuildingPart buildingPart = this.buildingPart.getValue();
+		double relativeAgeAtRating = buildingPart.getRelativeAge(this.getCondition() / 100.0);
+		double relativeAgeAtYear = relativeAgeAtRating + (year - this.getConditionYear());
+		return (int) Math.round(buildingPart.getTimeValue(relativeAgeAtYear) * 100.0);
+	}
+
 }

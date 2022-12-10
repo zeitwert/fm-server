@@ -51,4 +51,6 @@ public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 
 	void removeElement(Integer elementId);
 
+	Integer getCondition(Integer year);
+
 }

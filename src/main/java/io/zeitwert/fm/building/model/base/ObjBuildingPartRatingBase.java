@@ -143,6 +143,19 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
+	public Integer getCondition(Integer year) {
+		Integer condition = 0;
+		Integer valuePart = 0;
+		for (ObjBuildingPartElementRating element : this.getElementList()) {
+			if (element.getValuePart() != null) {
+				valuePart += element.getValuePart();
+				condition += element.getValuePart() * element.getCondition(year);
+			}
+		}
+		return valuePart > 0 ? condition / valuePart : null;
+	}
+
+	@Override
 	protected void doCalcAll() {
 		super.doCalcAll();
 		this.doCalcVolatile();

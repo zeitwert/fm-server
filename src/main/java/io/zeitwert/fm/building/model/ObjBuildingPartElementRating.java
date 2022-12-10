@@ -1,11 +1,11 @@
 
 package io.zeitwert.fm.building.model;
 
+import java.util.Set;
+
 import io.zeitwert.ddd.obj.model.ObjPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingElementDescription;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-
-import java.util.Set;
 
 public interface ObjBuildingPartElementRating extends ObjPart<ObjBuilding> {
 
@@ -68,5 +68,7 @@ public interface ObjBuildingPartElementRating extends ObjPart<ObjBuilding> {
 	void addMeasureDescription(CodeBuildingElementDescription description);
 
 	void removeMeasureDescription(CodeBuildingElementDescription description);
+
+	Integer getCondition(Integer year);
 
 }

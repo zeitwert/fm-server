@@ -26,17 +26,7 @@ import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndex;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndexEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
-import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
-import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingType;
-import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
-import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
+import io.zeitwert.fm.building.model.enums.*;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -103,44 +93,45 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 		this.dbRecord = contactRecord;
 
-		this.name = this.addSimpleProperty(dbRecord, ObjBuildingFields.NAME);
-		this.description = this.addSimpleProperty(dbRecord, ObjBuildingFields.DESCRIPTION);
-		this.buildingNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.BUILDING_NR);
-		this.insuranceNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.INSURANCE_NR);
-		this.plotNr = this.addSimpleProperty(dbRecord, ObjBuildingFields.PLOT_NR);
-		this.nationalBuildingId = this.addSimpleProperty(dbRecord, ObjBuildingFields.NATIONAL_BUILDING_ID);
-		this.historicPreservation = this.addEnumProperty(dbRecord, ObjBuildingFields.HISTORIC_PRESERVERATION_ID,
+		this.name = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NAME);
+		this.description = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.DESCRIPTION);
+		this.buildingNr = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.BUILDING_NR);
+		this.insuranceNr = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.INSURANCE_NR);
+		this.plotNr = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.PLOT_NR);
+		this.nationalBuildingId = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NATIONAL_BUILDING_ID);
+		this.historicPreservation = this.addEnumProperty(this.dbRecord, ObjBuildingFields.HISTORIC_PRESERVERATION_ID,
 				CodeHistoricPreservationEnum.class);
 
-		this.street = this.addSimpleProperty(dbRecord, ObjBuildingFields.STREET);
-		this.zip = this.addSimpleProperty(dbRecord, ObjBuildingFields.ZIP);
-		this.city = this.addSimpleProperty(dbRecord, ObjBuildingFields.CITY);
-		this.country = this.addEnumProperty(dbRecord, ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.currency = this.addEnumProperty(dbRecord, ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
+		this.street = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.STREET);
+		this.zip = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.ZIP);
+		this.city = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.CITY);
+		this.country = this.addEnumProperty(this.dbRecord, ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
+		this.currency = this.addEnumProperty(this.dbRecord, ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
 
-		this.geoAddress = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_ADDRESS);
-		this.geoCoordinates = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_COORDINATES);
-		this.geoZoom = this.addSimpleProperty(dbRecord, ObjBuildingFields.GEO_ZOOM);
+		this.geoAddress = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.GEO_ADDRESS);
+		this.geoCoordinates = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.GEO_COORDINATES);
+		this.geoZoom = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.GEO_ZOOM);
 
-		this.coverFoto = this.addReferenceProperty(dbRecord, ObjBuildingFields.COVER_FOTO_ID, ObjDocument.class);
+		this.coverFoto = this.addReferenceProperty(this.dbRecord, ObjBuildingFields.COVER_FOTO_ID, ObjDocument.class);
 
-		this.volume = this.addSimpleProperty(dbRecord, ObjBuildingFields.VOLUME);
-		this.areaGross = this.addSimpleProperty(dbRecord, ObjBuildingFields.AREA_GROSS);
-		this.areaNet = this.addSimpleProperty(dbRecord, ObjBuildingFields.AREA_NET);
-		this.nrOfFloorsAboveGround = this.addSimpleProperty(dbRecord, ObjBuildingFields.NR_OF_FLOORS_ABOVE_GROUND);
-		this.nrOfFloorsBelowGround = this.addSimpleProperty(dbRecord, ObjBuildingFields.NR_OF_FLOORS_BELOW_GROUND);
+		this.volume = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.VOLUME);
+		this.areaGross = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.AREA_GROSS);
+		this.areaNet = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.AREA_NET);
+		this.nrOfFloorsAboveGround = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NR_OF_FLOORS_ABOVE_GROUND);
+		this.nrOfFloorsBelowGround = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NR_OF_FLOORS_BELOW_GROUND);
 
-		this.buildingType = this.addEnumProperty(dbRecord, ObjBuildingFields.BUILDING_TYPE_ID, CodeBuildingTypeEnum.class);
-		this.buildingSubType = this.addEnumProperty(dbRecord, ObjBuildingFields.BUILDING_SUB_TYPE_ID,
+		this.buildingType = this.addEnumProperty(this.dbRecord, ObjBuildingFields.BUILDING_TYPE_ID,
+				CodeBuildingTypeEnum.class);
+		this.buildingSubType = this.addEnumProperty(this.dbRecord, ObjBuildingFields.BUILDING_SUB_TYPE_ID,
 				CodeBuildingSubTypeEnum.class);
-		this.buildingYear = this.addSimpleProperty(dbRecord, ObjBuildingFields.BUILDING_YEAR);
+		this.buildingYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.BUILDING_YEAR);
 
-		this.insuredValue = this.addSimpleProperty(dbRecord, ObjBuildingFields.INSURED_VALUE);
-		this.insuredValueYear = this.addSimpleProperty(dbRecord, ObjBuildingFields.INSURED_VALUE_YEAR);
-		this.notInsuredValue = this.addSimpleProperty(dbRecord, ObjBuildingFields.NOT_INSURED_VALUE);
-		this.notInsuredValueYear = this.addSimpleProperty(dbRecord, ObjBuildingFields.NOT_INSURED_VALUE_YEAR);
-		this.thirdPartyValue = this.addSimpleProperty(dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE);
-		this.thirdPartyValueYear = this.addSimpleProperty(dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
+		this.insuredValue = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.INSURED_VALUE);
+		this.insuredValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.INSURED_VALUE_YEAR);
+		this.notInsuredValue = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NOT_INSURED_VALUE);
+		this.notInsuredValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NOT_INSURED_VALUE_YEAR);
+		this.thirdPartyValue = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE);
+		this.thirdPartyValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
 
 		this.ratingList = this.addPartListProperty(this.getRepository().getRatingListType());
 	}
@@ -209,7 +200,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public double getBuildingValue(int year) {
 		if (this.getInsuredValueYear() != null && this.getInsuredValue() != null) {
-			return DefaultPriceIndex.priceAt(this.getInsuredValueYear(), 1000.0 * this.getInsuredValue().doubleValue(), year,
+			return ObjBuildingBase.DefaultPriceIndex.priceAt(this.getInsuredValueYear(),
+					1000.0 * this.getInsuredValue().doubleValue(), year,
 					this.getInflationRate());
 		}
 		return 0;
@@ -219,7 +211,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	public ObjBuildingPartRating getCurrentRating() {
 		for (int i = this.getRatingCount(); i > 0; i--) {
 			ObjBuildingPartRating rating = this.getRating(i - 1);
-			if (rating.getRatingStatus() == null || rating.getRatingStatus() != RatingDiscarded) {
+			if (rating.getRatingStatus() == null || rating.getRatingStatus() != ObjBuildingBase.RatingDiscarded) {
 				return rating;
 			}
 		}
@@ -227,13 +219,22 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
+	public Integer getCondition(Integer year) {
+		ObjBuildingPartRating rating = this.getCurrentRating();
+		if (rating != null) {
+			return rating.getCondition(year);
+		}
+		return null;
+	}
+
+	@Override
 	public ObjBuildingPartRating addRating() {
 		ObjBuildingPartRating oldRating = this.getCurrentRating();
-		requireThis(oldRating == null || oldRating.getRatingStatus() == RatingDone, "rating done");
+		requireThis(oldRating == null || oldRating.getRatingStatus() == ObjBuildingBase.RatingDone, "rating done");
 		ObjBuildingPartRating rating = this.ratingList.addPart();
 		try {
 			rating.getMeta().disableCalc();
-			rating.setRatingStatus(RatingOpen);
+			rating.setRatingStatus(ObjBuildingBase.RatingOpen);
 			if (oldRating != null) {
 				rating.setPartCatalog(oldRating.getPartCatalog());
 				rating.setMaintenanceStrategy(oldRating.getMaintenanceStrategy());
@@ -277,7 +278,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		if (this.getCoverFoto() == null || this.getCoverFoto().getContentType() == null) {
 			this.addValidation(CodeValidationLevelEnum.WARNING, "Für den Druck muss ein Coverfoto hochgeladen werden");
 		}
-		if (this.getGeoCoordinates() == null || this.getGeoCoordinates().equals("")) {
+		if (this.getGeoCoordinates() == null || "".equals(this.getGeoCoordinates())) {
 			this.addValidation(CodeValidationLevelEnum.WARNING, "Koordinaten der Immobilie fehlen");
 		}
 		if (this.getInsuredValue() == null || this.getInsuredValue().equals(BigDecimal.ZERO)) {
