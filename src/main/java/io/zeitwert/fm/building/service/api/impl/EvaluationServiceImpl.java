@@ -80,7 +80,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Begehung am", value);
 		}
 
-		ProjectionResult projectionResult = projectionService.getProjection(Set.of(building),
+		ProjectionResult projectionResult = this.projectionService.getProjection(Set.of(building),
 				ProjectionService.DefaultDuration);
 		String timeValue = fmt.formatMonetaryValue(projectionResult.getPeriodList().get(0).getTimeValue(), "CHF");
 		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
@@ -90,11 +90,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		Integer ratingYear = 9999;
 		int elementCount = 0;
-		int totalValuePart = 0;
+		int totalWeight = 0;
 		int totalRating = 0;
 		List<EvaluationElement> elements = new ArrayList<>();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
-			if (element.getValuePart() != null && element.getValuePart() > 0) {
+			if (element.getWeight() != null && element.getWeight() > 0) {
 				String description = this.replaceEol(element.getDescription());
 				if (!StringUtils.isEmpty(element.getConditionDescription())) {
 					description += "<br/><b>Zustand</b>: " + element.getConditionDescription();
@@ -105,18 +105,18 @@ public class EvaluationServiceImpl implements EvaluationService {
 				EvaluationElement dto = EvaluationElement.builder()
 						.name(element.getBuildingPart().getName())
 						.description(description)
-						.valuePart(element.getValuePart())
+						.weight(element.getWeight())
 						.rating(element.getCondition())
-						.ratingColor(getRatingColor(element.getCondition()))
-						.restorationYear(getRestorationYear(projectionResult, element.getBuildingPart()))
-						.restorationCosts(getRestorationCosts(projectionResult, element.getBuildingPart()))
+						.ratingColor(this.getRatingColor(element.getCondition()))
+						.restorationYear(this.getRestorationYear(projectionResult, element.getBuildingPart()))
+						.restorationCosts(this.getRestorationCosts(projectionResult, element.getBuildingPart()))
 						.build();
 				elements.add(dto);
 				if (element.getConditionYear() < ratingYear) {
 					ratingYear = element.getConditionYear();
 				}
 				elementCount += 1;
-				totalValuePart += element.getValuePart();
+				totalWeight += element.getWeight();
 				totalRating += element.getCondition();
 			}
 		}
@@ -124,9 +124,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 		totalRating = (int) Math.round(totalRating / elementCount);
 		EvaluationElement dto = EvaluationElement.builder()
 				.name("Total")
-				.valuePart(totalValuePart)
+				.weight(totalWeight)
 				.rating(totalRating)
-				.ratingColor(getRatingColor(totalRating))
+				.ratingColor(this.getRatingColor(totalRating))
 				.build();
 		elements.add(dto);
 

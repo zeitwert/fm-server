@@ -109,7 +109,7 @@ public class BuildingImportExportController {
 			return BuildingTransferElementRatingDto
 				.builder()
 					.buildingPart(e.getBuildingPart().getId())
-					.valuePart(e.getValuePart())
+					.weight(e.getWeight())
 					.condition(e.getCondition())
 					.conditionYear(e.getConditionYear())
 					.strain(e.getStrain())
@@ -229,7 +229,7 @@ public class BuildingImportExportController {
 					if (element == null) {
 						element = rating.addElement(buildingPart);
 					}
-					element.setValuePart(dtoElement.getValuePart());
+					element.setWeight(dtoElement.getWeight());
 					element.setCondition(dtoElement.getCondition());
 					//element.setConditionYear(dtoElement.getConditionYear());
 					element.setStrain(dtoElement.getStrain());

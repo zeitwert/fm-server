@@ -207,7 +207,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		int totalRestorationCosts = 0;
 		for (EvaluationElement e : evaluationResult.getElements()) {
-			if (e.getValuePart() != null && e.getValuePart() > 0 && !e.getName().equals("Total")) {
+			if (e.getWeight() != null && e.getWeight() > 0 && !e.getName().equals("Total")) {
 				Row row = addRenovationTableRow(optRenovationTable);
 				Cell cell = row.getFirstCell();
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
@@ -419,11 +419,11 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		List<EvaluationElement> elements = evaluationResult.getElements().stream()
 				.filter(e -> !e.getName().equals("Total"))
-				.filter(e -> e.getValuePart() != null && e.getValuePart() > 0)
+				.filter(e -> e.getWeight() != null && e.getWeight() > 0)
 				.toList();
 
-		Integer maxValuePart = elements.stream()
-				.map(a -> a.getValuePart())
+		Integer maxWeight = elements.stream()
+				.map(a -> a.getWeight())
 				.reduce(0, (a, b) -> Math.max(a, b));
 
 		int lineNr = 1;
@@ -436,14 +436,14 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 			builder.write(e.getName());
 
 			cell = (Cell) cell.getNextSibling();
-			int valuePart = (int) Math.round(76.0 * e.getValuePart() / maxValuePart);
+			int weight = (int) Math.round(76.0 * e.getWeight() / maxWeight);
 			builder.moveTo(cell.getFirstParagraph());
-			builder.write(new String(new char[valuePart]).replace('\0', 'I'));
+			builder.write(new String(new char[weight]).replace('\0', 'I'));
 
-			String valuePartPC = Formatter.INSTANCE.formatValueWithUnit(e.getValuePart(), "%");
+			String weightPC = Formatter.INSTANCE.formatValueWithUnit(e.getWeight(), "%");
 			cell = (Cell) cell.getNextSibling();
 			builder.moveTo(cell.getFirstParagraph());
-			builder.write(valuePartPC);
+			builder.write(weightPC);
 
 			Shape shape = shapeBuilder.insertShape(ShapeType.FLOW_CHART_CONNECTOR, 8, 8);
 			shape.setStroked(false);

@@ -13,9 +13,9 @@ public interface ObjBuildingPartElementRating extends ObjPart<ObjBuilding> {
 
 	void setBuildingPart(CodeBuildingPart buildingPart);
 
-	Integer getValuePart();
+	Integer getWeight();
 
-	void setValuePart(Integer valuePart);
+	void setWeight(Integer weight);
 
 	Integer getCondition();
 

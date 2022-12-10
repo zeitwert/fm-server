@@ -79,7 +79,7 @@
 								"label": "Value (%)",
 								"type": "number",
 								"alignment": "right",
-								"accessor": "valuePart"
+								"accessor": "weight"
 							},
 							{
 								"label": "Condition",

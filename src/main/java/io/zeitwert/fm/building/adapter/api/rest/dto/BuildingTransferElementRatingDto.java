@@ -8,7 +8,7 @@ import lombok.Data;
 public class BuildingTransferElementRatingDto {
 
 	private String buildingPart;
-	private Integer valuePart;
+	private Integer weight;
 	private Integer condition;
 	private Integer conditionYear;
 	private Integer strain;

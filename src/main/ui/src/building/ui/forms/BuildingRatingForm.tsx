@@ -75,7 +75,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 					} else if (["maintenanceStrategy", "ratingStatus"].indexOf(accessor.fieldref) >= 0) {
 						return true;
 					} else if (["elements[].condition", "elements[].conditionYear"].indexOf(accessor.fieldref) >= 0) {
-						return !(accessor.parent as any)?.fieldAccessors.get("valuePart").value;
+						return !(accessor.parent as any)?.fieldAccessors.get("weight").value;
 					}
 					return false;
 				},

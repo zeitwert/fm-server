@@ -106,16 +106,16 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
     }
 
     /**
-     * Setter for <code>public.obj_building_part_element_rating.value_part</code>.
+     * Setter for <code>public.obj_building_part_element_rating.weight</code>.
      */
-    public void setValuePart(Integer value) {
+    public void setWeight(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.obj_building_part_element_rating.value_part</code>.
+     * Getter for <code>public.obj_building_part_element_rating.weight</code>.
      */
-    public Integer getValuePart() {
+    public Integer getWeight() {
         return (Integer) get(6);
     }
 
@@ -272,7 +272,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
 
     @Override
     public Field<Integer> field7() {
-        return ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING.VALUE_PART;
+        return ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING.WEIGHT;
     }
 
     @Override
@@ -342,7 +342,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
 
     @Override
     public Integer component7() {
-        return getValuePart();
+        return getWeight();
     }
 
     @Override
@@ -412,7 +412,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
 
     @Override
     public Integer value7() {
-        return getValuePart();
+        return getWeight();
     }
 
     @Override
@@ -488,7 +488,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
 
     @Override
     public ObjBuildingPartElementRatingRecord value7(Integer value) {
-        setValuePart(value);
+        setWeight(value);
         return this;
     }
 
@@ -567,7 +567,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
     /**
      * Create a detached, initialised ObjBuildingPartElementRatingRecord
      */
-    public ObjBuildingPartElementRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String buildingPartId, Integer valuePart, Integer condition, Integer conditionYear, Integer strain, Integer strength, String description, String conditionDescription, String measureDescription) {
+    public ObjBuildingPartElementRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String buildingPartId, Integer weight, Integer condition, Integer conditionYear, Integer strain, Integer strength, String description, String conditionDescription, String measureDescription) {
         super(ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING);
 
         setId(id);
@@ -576,7 +576,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
         setPartListTypeId(partListTypeId);
         setSeqNr(seqNr);
         setBuildingPartId(buildingPartId);
-        setValuePart(valuePart);
+        setWeight(weight);
         setCondition(condition);
         setConditionYear(conditionYear);
         setStrain(strain);

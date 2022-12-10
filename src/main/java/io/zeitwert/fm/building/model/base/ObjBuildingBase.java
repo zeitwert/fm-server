@@ -299,7 +299,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 						"Summe der Bauteilwerte muss 100% sein (ist " + this.getCurrentRating().getElementContributions() + "%)");
 			}
 			for (ObjBuildingPartElementRating element : this.getCurrentRating().getElementList()) {
-				if (element.getValuePart() != null && element.getValuePart() != 0) {
+				if (element.getWeight() != null && element.getWeight() != 0) {
 					if (element.getCondition() == null || element.getCondition() == 0) {
 						this.addValidation(CodeValidationLevelEnum.ERROR,
 								"Zustand für Element [" + element.getBuildingPart().getName() + "] muss erfasst werden");

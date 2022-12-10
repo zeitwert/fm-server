@@ -80,9 +80,9 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
     public final TableField<ObjBuildingPartElementRatingRecord, String> BUILDING_PART_ID = createField(DSL.name("building_part_id"), SQLDataType.VARCHAR(40), this, "");
 
     /**
-     * The column <code>public.obj_building_part_element_rating.value_part</code>.
+     * The column <code>public.obj_building_part_element_rating.weight</code>.
      */
-    public final TableField<ObjBuildingPartElementRatingRecord, Integer> VALUE_PART = createField(DSL.name("value_part"), SQLDataType.INTEGER, this, "");
+    public final TableField<ObjBuildingPartElementRatingRecord, Integer> WEIGHT = createField(DSL.name("weight"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_building_part_element_rating.condition</code>.

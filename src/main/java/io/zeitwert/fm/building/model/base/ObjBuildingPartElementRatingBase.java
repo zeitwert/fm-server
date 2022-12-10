@@ -19,7 +19,7 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 		implements ObjBuildingPartElementRating {
 
 	protected final EnumProperty<CodeBuildingPart> buildingPart;
-	protected final SimpleProperty<Integer> valuePart;
+	protected final SimpleProperty<Integer> weight;
 	protected final SimpleProperty<Integer> condition;
 	protected final SimpleProperty<Integer> conditionYear;
 	protected final SimpleProperty<Integer> strain;
@@ -37,7 +37,7 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 		ObjBuildingRepository repo = (ObjBuildingRepository) obj.getMeta().getRepository();
 		this.buildingPart = this.addEnumProperty(dbRecord, ObjBuildingPartElementRatingFields.BUILDING_PART_ID,
 				CodeBuildingPartEnum.class);
-		this.valuePart = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.VALUE_PART);
+		this.weight = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.WEIGHT);
 		this.condition = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION);
 		this.conditionYear = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION_YEAR);
 		this.strain = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.STRAIN);

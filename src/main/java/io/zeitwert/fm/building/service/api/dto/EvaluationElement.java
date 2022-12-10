@@ -11,7 +11,7 @@ public class EvaluationElement {
 	private String name;
 	private String description;
 
-	private Integer valuePart;
+	private Integer weight;
 	private Integer rating;
 	private Color ratingColor;
 

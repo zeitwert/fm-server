@@ -108,8 +108,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		getElementById(id: string): BuildingElement | undefined {
 			return !id ? undefined : self.elements.filter(e => e.id === id)?.[0];
 		},
-		get valuePartSum() {
-			return self.elements.reduce((sum, element) => { return sum + (element.valuePart || 0.0); }, 0.0);
+		get weightSum() {
+			return self.elements.reduce((sum, element) => { return sum + (element.weight || 0.0); }, 0.0);
 		}
 	}))
 	.views((self) => ({
@@ -128,8 +128,8 @@ const MstBuildingModel = ObjModel.named("Building")
 			}
 			return "/missing.jpg";
 		},
-		get valuePartSum() {
-			return self.elements.reduce((sum, element) => { return sum + (element.valuePart || 0.0); }, 0.0);
+		get weightSum() {
+			return self.elements.reduce((sum, element) => { return sum + (element.weight || 0.0); }, 0.0);
 		}
 	}))
 	.views((self) => ({

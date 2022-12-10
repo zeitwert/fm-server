@@ -37,6 +37,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 	 * @param duration
 	 * @return
 	 */
+	@Override
 	public ProjectionResult getProjection(Set<ObjBuilding> buildings, int duration) {
 		List<ProjectionElement> elementList = new ArrayList<>();
 		Map<EnumeratedDto, ObjBuildingPartElementRating> elementMap = new HashMap<>();
@@ -48,8 +49,8 @@ public class ProjectionServiceImpl implements ProjectionService {
 			for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 				EnumeratedDto elementEnum = this.getAsEnumerated(element);
 				EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
-				if (element.getValuePart() != null && element.getConditionYear() != null) {
-					if (element.getValuePart() > 0 && element.getCondition() > 0) {
+				if (element.getWeight() != null && element.getConditionYear() != null) {
+					if (element.getWeight() > 0 && element.getCondition() > 0) {
 						List<ProjectionPeriod> elementPeriodList = element.getBuildingPart().getProjection(
 							/* elementValue  => */ 100.0,
 							/* conditionYear => */ element.getConditionYear(),
@@ -90,8 +91,8 @@ public class ProjectionServiceImpl implements ProjectionService {
 	private int getMinProjectionDate(ObjBuilding building) {
 		int projectionYear = building.getInsuredValueYear();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
-			if (element.getValuePart() != null && element.getConditionYear() != null) {
-				if (element.getValuePart() > 0 && element.getConditionYear() > projectionYear) {
+			if (element.getWeight() != null && element.getConditionYear() != null) {
+				if (element.getWeight() > 0 && element.getConditionYear() > projectionYear) {
 					projectionYear = element.getConditionYear();
 				}
 			}
@@ -116,7 +117,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		double techPart = 0;
 		for (ObjBuildingPartElementRating part : projectionResult.getElementMap().values()) {
-			techPart += part.getValuePart() / 100 * part.getBuildingPart().getTechRate();
+			techPart += part.getWeight() / 100 * part.getBuildingPart().getTechRate();
 		}
 		double techRate = CodeBuildingPart.getTechRate(techPart);
 
@@ -133,7 +134,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				ProjectionPeriod elementPeriod = elementPeriods.get(year - elementPeriods.get(0).getYear());
 				ObjBuilding building = projectionResult.getBuilding(elementEnum);
 				double buildingValue = building.getBuildingValue(year);
-				double elementValue = buildingValue * element.getValuePart() / 100.0;
+				double elementValue = buildingValue * element.getWeight() / 100.0;
 				originalValue += elementValue;
 				timeValue += elementValue * elementPeriod.getTimeValue() / 100.0;
 				double elementRestorationCosts = elementValue * elementPeriod.getRestorationCosts() / 100.0;

@@ -14,6 +14,9 @@
 		"org.mockito.Answers.*"
 	],
 	"search.exclude": {
+		"**/bin": true,
+		"**/build": true,
+		"**/model/db": true,
 		"**/target": true
 	},
 	"java.saveActions.organizeImports": true,

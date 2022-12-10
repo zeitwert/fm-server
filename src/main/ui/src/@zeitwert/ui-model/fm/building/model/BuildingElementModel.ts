@@ -17,7 +17,7 @@ export const MidTermYears: number = 5;
 const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	.props({
 		buildingPart: types.maybe(types.frozen<Enumerated>()),
-		valuePart: types.maybe(types.number),
+		weight: types.maybe(types.number),
 		condition: types.maybe(types.number),
 		conditionYear: types.maybe(types.number),
 		strain: types.maybe(types.number),
@@ -46,7 +46,7 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	}))
 	.views((self) => ({
 		get isValidElement(): boolean {
-			return self.isValidBuilding && !!self.valuePart && !!self.condition && !!self.conditionYear;
+			return self.isValidBuilding && !!self.weight && !!self.condition && !!self.conditionYear;
 		},
 	}))
 	.views((self) => {

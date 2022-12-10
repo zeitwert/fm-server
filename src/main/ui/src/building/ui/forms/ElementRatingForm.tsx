@@ -8,7 +8,7 @@ import React from "react";
 export const ElementRatingFormModel = new RepeatingForm({
 	id: new Field(converters.string),
 	buildingPart: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPart" }),
-	valuePart: new NumberField(),
+	weight: new NumberField(),
 	condition: new NumberField(),
 	strain: new OptionField(converters.maybe(converters.integer), { options: StrainOptions }),
 	strength: new OptionField(converters.maybe(converters.integer), { options: StrengthOptions }),

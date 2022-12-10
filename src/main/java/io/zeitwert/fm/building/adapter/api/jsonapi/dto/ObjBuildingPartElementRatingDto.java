@@ -25,7 +25,7 @@ import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding, ObjBuildingPartElementRating> {
 
 	private EnumeratedDto buildingPart;
-	private Integer valuePart;
+	private Integer weight;
 	private Integer condition;
 	private Integer conditionYear;
 	private Integer strain;
@@ -48,11 +48,12 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 	private Set<EnumeratedDto> conditionDescriptions;
 	private Set<EnumeratedDto> measureDescriptions;
 
+	@Override
 	public void toPart(ObjBuildingPartElementRating part) {
 		super.toPart(part);
 		part.setBuildingPart(
 				this.buildingPart == null ? null : CodeBuildingPartEnum.getBuildingPart(this.buildingPart.getId()));
-		part.setValuePart(this.valuePart);
+		part.setWeight(this.weight);
 		part.setCondition(this.condition);
 		part.setConditionYear(this.conditionYear);
 		part.setStrain(this.strain);
@@ -87,14 +88,14 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		Double restorationCosts = null;
 		ObjBuilding building = part.getMeta().getAggregate();
 		if (building.getInsuredValue() != null) {
-			if (part.getValuePart() != null && part.getValuePart() > 0
+			if (part.getWeight() != null && part.getWeight() > 0
 					&& part.getCondition() != null && part.getConditionYear() != null) {
 				ProjectionPeriod renovationPeriod = part.getBuildingPart().getNextRestoration(
 						1000000.0,
 						part.getConditionYear(),
 						part.getCondition());
 				restorationYear = renovationPeriod.getYear();
-				double elementValue = part.getValuePart() / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
+				double elementValue = part.getWeight() / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
 				restorationCosts = (double) Math.round(renovationPeriod.getRestorationCosts() / 1000000.0 * elementValue);
 			}
 		}
@@ -106,7 +107,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
 		return dtoBuilder
 				.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
-				.valuePart(part.getValuePart())
+				.weight(part.getWeight())
 				.condition(part.getCondition())
 				.conditionYear(part.getConditionYear())
 				.strain(part.getStrain())

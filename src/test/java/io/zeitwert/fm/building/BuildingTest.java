@@ -49,11 +49,11 @@ public class BuildingTest {
 	@Test
 	public void testBuilding() throws Exception {
 
-		assertTrue(buildingRepository != null, "buildingRepository not null");
-		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
+		assertTrue(this.buildingRepository != null, "buildingRepository not null");
+		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = this.getOrCreateTestAccount(requestCtx);
-		ObjBuilding building1a = buildingRepository.create(requestCtx.getTenantId());
+		ObjAccount account = this.getOrCreateTestAccount(this.requestCtx);
+		ObjBuilding building1a = this.buildingRepository.create(this.requestCtx.getTenantId());
 
 		assertNotNull(building1a, "test not null");
 		assertNotNull(building1a.getId(), "id not null");
@@ -76,7 +76,7 @@ public class BuildingTest {
 		ObjBuildingPartElementRating e1 = building1a.getCurrentRating().getElement(bp1);
 		e1.setCondition(100);
 		e1.setConditionYear(2000);
-		e1.setValuePart(50);
+		e1.setWeight(50);
 		Integer e1id = e1.getId();
 
 		assertEquals(22, building1a.getCurrentRating().getElementCount(), "element count 22");
@@ -90,7 +90,7 @@ public class BuildingTest {
 		ObjBuildingPartElementRating e2 = building1a.getCurrentRating().getElement(bp2);
 		e2.setCondition(100);
 		e2.setConditionYear(2000);
-		e2.setValuePart(50);
+		e2.setWeight(50);
 		Integer e2id = e2.getId();
 
 		this.checkBuilding(building1a);
@@ -102,7 +102,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1a);
 		building1a = null;
 
-		ObjBuilding building1b = buildingRepository.get(building1Id);
+		ObjBuilding building1b = this.buildingRepository.get(building1Id);
 		Integer building1bIdHash = System.identityHashCode(building1b);
 		assertNotEquals(building1aIdHash, building1bIdHash);
 		assertNotNull(building1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
@@ -118,7 +118,7 @@ public class BuildingTest {
 		ObjBuildingPartElementRating e3 = building1b.getCurrentRating().getElement(bp3);
 		e3.setCondition(100);
 		e3.setConditionYear(2000);
-		e3.setValuePart(50);
+		e3.setWeight(50);
 		Integer e3id = e3.getId();
 
 		building1b.getCurrentRating().removeElement(e2id);
@@ -135,7 +135,7 @@ public class BuildingTest {
 		this.buildingRepository.store(building1b);
 		building1b = null;
 
-		ObjBuilding building1c = buildingRepository.get(building1Id);
+		ObjBuilding building1c = this.buildingRepository.get(building1Id);
 
 		assertEquals(21, building1c.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(21, building1c.getCurrentRating().getElementList().size(), "element count 22");
