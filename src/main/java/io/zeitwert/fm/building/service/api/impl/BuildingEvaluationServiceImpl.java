@@ -16,7 +16,7 @@ import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.service.api.EvaluationService;
+import io.zeitwert.fm.building.service.api.BuildingEvaluationService;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
@@ -27,18 +27,18 @@ import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 
 @Service("buildingEvaluationService")
-public class EvaluationServiceImpl implements EvaluationService {
+public class BuildingEvaluationServiceImpl implements BuildingEvaluationService {
 
 	public static final String SOFT_RETURN = "\u000B";
 
-	public static final Color VERY_BAD_RATING = new Color(229, 79, 41);
-	public static final Color BAD_RATING = new Color(250, 167, 36);
-	public static final Color OK_RATING = new Color(120, 192, 107);
-	public static final Color GOOD_RATING = new Color(51, 135, 33);
+	public static final Color VERY_BAD_CONDITION = new Color(229, 79, 41);
+	public static final Color BAD_CONDITION = new Color(250, 167, 36);
+	public static final Color OK_CONDITION = new Color(120, 192, 107);
+	public static final Color GOOD_CONDITION = new Color(51, 135, 33);
 
 	private final ProjectionService projectionService;
 
-	public EvaluationServiceImpl(ProjectionService projectionService) {
+	public BuildingEvaluationServiceImpl(ProjectionService projectionService) {
 		this.projectionService = projectionService;
 	}
 
@@ -47,6 +47,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 		Formatter fmt = Formatter.INSTANCE;
 		String value = null;
+
+		ProjectionResult projectionResult = this.projectionService.getProjection(Set.of(building),
+				ProjectionService.DefaultDuration);
 
 		List<EvaluationParameter> facts = new ArrayList<>();
 		List<EvaluationParameter> onePageFacts = new ArrayList<>();
@@ -80,8 +83,6 @@ public class EvaluationServiceImpl implements EvaluationService {
 			this.addParameter(facts, "Begehung am", value);
 		}
 
-		ProjectionResult projectionResult = this.projectionService.getProjection(Set.of(building),
-				ProjectionService.DefaultDuration);
 		String timeValue = fmt.formatMonetaryValue(projectionResult.getPeriodList().get(0).getTimeValue(), "CHF");
 		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
 		String midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF");
@@ -91,7 +92,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		Integer ratingYear = 9999;
 		int elementCount = 0;
 		int totalWeight = 0;
-		int totalRating = 0;
+		int totalCondition = 0;
 		List<EvaluationElement> elements = new ArrayList<>();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 			if (element.getWeight() != null && element.getWeight() > 0) {
@@ -106,34 +107,34 @@ public class EvaluationServiceImpl implements EvaluationService {
 						.name(element.getBuildingPart().getName())
 						.description(description)
 						.weight(element.getWeight())
-						.rating(element.getCondition())
-						.ratingColor(this.getRatingColor(element.getCondition()))
+						.condition(element.getCondition())
+						.conditionColor(this.getConditionColor(element.getCondition()))
 						.restorationYear(this.getRestorationYear(projectionResult, element.getBuildingPart()))
 						.restorationCosts(this.getRestorationCosts(projectionResult, element.getBuildingPart()))
 						.build();
 				elements.add(dto);
-				if (element.getConditionYear() < ratingYear) {
-					ratingYear = element.getConditionYear();
+				if (element.getRatingYear() < ratingYear) {
+					ratingYear = element.getRatingYear();
 				}
 				elementCount += 1;
 				totalWeight += element.getWeight();
-				totalRating += element.getCondition();
+				totalCondition += element.getCondition();
 			}
 		}
 
-		totalRating = (int) Math.round(totalRating / elementCount);
+		totalCondition = (int) Math.round(totalCondition / elementCount);
 		EvaluationElement dto = EvaluationElement.builder()
 				.name("Total")
 				.weight(totalWeight)
-				.rating(totalRating)
-				.ratingColor(this.getRatingColor(totalRating))
+				.condition(totalCondition)
+				.conditionColor(this.getConditionColor(totalCondition))
 				.build();
 		elements.add(dto);
 
 		List<EvaluationParameter> params = new ArrayList<>();
 		this.addParameter(params, "Laufzeit (Zeithorizont)", "25 Jahre");
 		this.addParameter(params, "Teuerung", String.format("%.1f", building.getInflationRate()) + " %");
-		this.addParameter(params, "Z/N Wert", "" + totalRating);
+		this.addParameter(params, "Z/N Wert", "" + totalCondition);
 		this.addParameter(params, "Zeitwert", "" + timeValue);
 		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
 		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
@@ -143,7 +144,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		List<EvaluationParameter> onePageParams = new ArrayList<>();
 		this.addParameter(onePageParams, "Laufzeit (Zeithorizont); Teuerung",
 				"25 Jahre; " + String.format("%.1f", building.getInflationRate()) + " %");
-		this.addParameter(onePageParams, "Zeitwert (Z/N Wert: " + totalRating + ")", "" + timeValue);
+		this.addParameter(onePageParams, "Zeitwert (Z/N Wert: " + totalCondition + ")", "" + timeValue);
 		this.addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration);
 		this.addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration);
 		this.addParameter(onePageParams, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration);
@@ -255,15 +256,17 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 	}
 
-	private Color getRatingColor(Integer rating) {
-		if (rating < 50) {
-			return VERY_BAD_RATING;
-		} else if (rating < 70) {
-			return BAD_RATING;
-		} else if (rating < 85) {
-			return OK_RATING;
+	private Color getConditionColor(Integer condition) {
+		if (condition == null) {
+			return null;
+		} else if (condition < 50) {
+			return VERY_BAD_CONDITION;
+		} else if (condition < 70) {
+			return BAD_CONDITION;
+		} else if (condition < 85) {
+			return OK_CONDITION;
 		}
-		return GOOD_RATING;
+		return GOOD_CONDITION;
 
 	}
 

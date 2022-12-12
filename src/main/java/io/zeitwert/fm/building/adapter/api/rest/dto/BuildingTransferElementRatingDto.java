@@ -10,7 +10,7 @@ public class BuildingTransferElementRatingDto {
 	private String buildingPart;
 	private Integer weight;
 	private Integer condition;
-	private Integer conditionYear;
+	private Integer ratingYear;
 	private Integer strain;
 	private Integer strength;
 	private String description;

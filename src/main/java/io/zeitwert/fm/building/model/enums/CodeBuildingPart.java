@@ -60,7 +60,7 @@ public class CodeBuildingPart extends EnumeratedBase {
 	 */
 	public ProjectionPeriod getNextRestoration(
 			double elementValue,
-			int conditionYear,
+			int ratingYear,
 			double condition) {
 
 		int startYear = 0;
@@ -76,7 +76,7 @@ public class CodeBuildingPart extends EnumeratedBase {
 		int duration = restorationYear - startYear;
 
 		return ProjectionPeriod.builder()
-				.year(conditionYear + duration)
+				.year(ratingYear + duration)
 				.originalValue(elementValue)
 				.timeValue(this.getOptimalRestoreTimeValue())
 				.restorationCosts(Math.round(restorationCosts * elementValue))
@@ -168,13 +168,13 @@ public class CodeBuildingPart extends EnumeratedBase {
 	 */
 	public List<ProjectionPeriod> getProjection(
 			double elementValue,
-			int conditionYear,
+			int ratingYear,
 			double condition,
 			int startYear,
 			int duration) {
 		//@formatter:on
 
-		requireThis(conditionYear <= startYear, "valid start year (" + conditionYear + "<=" + startYear + ")");
+		requireThis(ratingYear <= startYear, "valid start year (" + ratingYear + "<=" + startYear + ")");
 		requireThis(0 <= condition && condition <= 1.0, "valid condition (0 <=" + condition + " <= 1)");
 		requireThis(duration <= 100, "duration <= 100");
 
@@ -191,7 +191,7 @@ public class CodeBuildingPart extends EnumeratedBase {
 		double techPart = this.getTechRate();
 		double techRate = getTechRate(techPart);
 
-		for (int simYear = conditionYear; simYear <= MaxProjectionYear; simYear++) {
+		for (int simYear = ratingYear; simYear <= MaxProjectionYear; simYear++) {
 			boolean needRestoration = timeValue <= RestorationTimeValue;
 			double restorationCosts = 0.0;
 			if (needRestoration) {

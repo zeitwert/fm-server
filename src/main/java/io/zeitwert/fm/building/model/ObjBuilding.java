@@ -156,7 +156,7 @@ public interface ObjBuilding extends FMObj {
 
 	double getInflationRate();
 
-	Integer getCondition(Integer year);
+	Integer getCondition(int year);
 
 	double getBuildingValue(int year);
 

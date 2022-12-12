@@ -44,7 +44,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 
 	protected final PartListProperty<ObjBuildingPartElementRating> elementList;
 
-	protected Integer elementContributions = null;
+	protected Integer elementWeights = null;
 
 	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj,
 			UpdatableRecord<?> dbRecord) {
@@ -98,7 +98,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		if (property == this.elementList) {
 			if (this.getRatingDate() != null) {
 				Integer year = this.getRatingDate().getYear();
-				this.getElement(this.getElementCount() - 1).setConditionYear(year);
+				this.getElement(this.getElementCount() - 1).setRatingYear(year);
 			}
 		}
 	}
@@ -116,15 +116,20 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 			if (this.getRatingDate() != null) {
 				Integer year = this.getRatingDate().getYear();
 				for (ObjBuildingPartElementRating element : this.getElementList()) {
-					element.setConditionYear(year);
+					element.setRatingYear(year);
 				}
 			}
 		}
 	}
 
 	@Override
-	public Integer getElementContributions() {
-		return this.elementContributions;
+	public Integer getRatingYear() {
+		return this.getRatingDate() != null ? this.getRatingDate().getYear() : null;
+	}
+
+	@Override
+	public Integer getElementWeights() {
+		return this.elementWeights;
 	}
 
 	@Override
@@ -143,16 +148,31 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public Integer getCondition(Integer year) {
+	public Integer getCondition() {
+		if (this.getRatingYear() == null || this.elementWeights == 0) {
+			return null;
+		}
 		Integer condition = 0;
-		Integer weight = 0;
 		for (ObjBuildingPartElementRating element : this.getElementList()) {
 			if (element.getWeight() != null) {
-				weight += element.getWeight();
+				condition += element.getWeight() * element.getCondition();
+			}
+		}
+		return condition / this.elementWeights;
+	}
+
+	@Override
+	public Integer getCondition(Integer year) {
+		if (year == null || year < this.getRatingYear() || this.elementWeights == 0) {
+			return null;
+		}
+		Integer condition = 0;
+		for (ObjBuildingPartElementRating element : this.getElementList()) {
+			if (element.getWeight() != null) {
 				condition += element.getWeight() * element.getCondition(year);
 			}
 		}
-		return weight > 0 ? condition / weight : null;
+		return condition / this.elementWeights;
 	}
 
 	@Override
@@ -164,14 +184,14 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@Override
 	protected void doCalcVolatile() {
 		super.doCalcVolatile();
-		this.calcElementContributions();
+		this.calcElementWeights();
 	}
 
-	private void calcElementContributions() {
-		this.elementContributions = 0;
+	private void calcElementWeights() {
+		this.elementWeights = 0;
 		for (ObjBuildingPartElementRating element : this.getElementList()) {
 			if (element.getWeight() != null) {
-				this.elementContributions += element.getWeight();
+				this.elementWeights += element.getWeight();
 			}
 		}
 	}

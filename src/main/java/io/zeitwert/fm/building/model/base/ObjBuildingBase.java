@@ -219,7 +219,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
-	public Integer getCondition(Integer year) {
+	public Integer getCondition(int year) {
 		ObjBuildingPartRating rating = this.getCurrentRating();
 		if (rating != null) {
 			return rating.getCondition(year);
@@ -294,16 +294,16 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 			if (this.getCurrentRating().getRatingDate() == null) {
 				this.addValidation(CodeValidationLevelEnum.ERROR, "Datum der Zustandsbewertung muss erfasst werden");
 			}
-			if (this.getCurrentRating().getElementContributions() != 100) {
+			if (this.getCurrentRating().getElementWeights() != 100) {
 				this.addValidation(CodeValidationLevelEnum.ERROR,
-						"Summe der Bauteilwerte muss 100% sein (ist " + this.getCurrentRating().getElementContributions() + "%)");
+						"Summe der Bauteilanteile muss 100% sein (ist " + this.getCurrentRating().getElementWeights() + "%)");
 			}
 			for (ObjBuildingPartElementRating element : this.getCurrentRating().getElementList()) {
 				if (element.getWeight() != null && element.getWeight() != 0) {
 					if (element.getCondition() == null || element.getCondition() == 0) {
 						this.addValidation(CodeValidationLevelEnum.ERROR,
 								"Zustand für Element [" + element.getBuildingPart().getName() + "] muss erfasst werden");
-					} else if (element.getConditionYear() == null || element.getConditionYear() < 1800) {
+					} else if (element.getRatingYear() == null || element.getRatingYear() < 1800) {
 						this.addValidation(CodeValidationLevelEnum.ERROR,
 								"Jahr der Zustandsbewertung für Element [" + element.getBuildingPart().getName()
 										+ "] muss erfasst werden");

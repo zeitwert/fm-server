@@ -78,18 +78,18 @@ public class BuildingImportExportController {
 	@PostMapping
 	public ResponseEntity<BuildingTransferDto> importBuilding(@RequestBody BuildingTransferDto dto)
 			throws ServletException, IOException {
-		Integer accountId = requestCtx.getAccountId();
+		Integer accountId = this.requestCtx.getAccountId();
 		if (accountId == null) {
 			return ResponseEntity.badRequest().build();
-		} else if (!dto.getMeta().getAggregate().equals(AGGREGATE)) {
+		} else if (!AGGREGATE.equals(dto.getMeta().getAggregate())) {
 			return ResponseEntity.unprocessableEntity().build();
-		} else if (!dto.getMeta().getVersion().equals(VERSION)) {
+		} else if (!VERSION.equals(dto.getMeta().getVersion())) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = buildingRepo.create(requestCtx.getTenantId());
+		ObjBuilding building = this.buildingRepo.create(this.requestCtx.getTenantId());
 		building.setAccountId(accountId);
 		this.fillFromDto(building, dto);
-		buildingRepo.store(building);
+		this.buildingRepo.store(building);
 		BuildingTransferDto export = this.getTransferDto(building);
 		return ResponseEntity.ok().body(export);
 	}
@@ -111,7 +111,7 @@ public class BuildingImportExportController {
 					.buildingPart(e.getBuildingPart().getId())
 					.weight(e.getWeight())
 					.condition(e.getCondition())
-					.conditionYear(e.getConditionYear())
+					.ratingYear(e.getRatingYear())
 					.strain(e.getStrain())
 					.strength(e.getStrength())
 					.description(e.getDescription())
@@ -125,9 +125,9 @@ public class BuildingImportExportController {
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
-					.createdByUser(userCache.get(note.getCreatedByUserId()).getEmail())
+					.createdByUser(this.userCache.get(note.getCreatedByUserId()).getEmail())
 					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null ? userCache.get(note.getModifiedByUserId()).getEmail() : null)
+					.modifiedByUser(note.getModifiedByUserId() != null ? this.userCache.get(note.getModifiedByUserId()).getEmail() : null)
 					.modifiedAt(note.getModifiedAt())
 				.build();
 		}).toList();
@@ -186,7 +186,7 @@ public class BuildingImportExportController {
 			building.getMeta().disableCalc();
 
 			//@formatter:off
-			building.setOwner(requestCtx.getUser());
+			building.setOwner(this.requestCtx.getUser());
 			building.setName(dto.getName());
 			building.setDescription(dto.getDescription());
 			building.setBuildingNr(dto.getBuildingNr());
@@ -221,7 +221,7 @@ public class BuildingImportExportController {
 			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? userCache.getByEmail(dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null ? this.userCache.getByEmail(dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
@@ -231,7 +231,7 @@ public class BuildingImportExportController {
 					}
 					element.setWeight(dtoElement.getWeight());
 					element.setCondition(dtoElement.getCondition());
-					//element.setConditionYear(dtoElement.getConditionYear());
+					//element.setRatingYear(dtoElement.getRatingYear());
 					element.setStrain(dtoElement.getStrain());
 					element.setStrength(dtoElement.getStrength());
 					element.setDescription(dtoElement.getDescription());
@@ -246,7 +246,7 @@ public class BuildingImportExportController {
 					note.setSubject(dtoNote.getSubject());
 					note.setContent(dtoNote.getContent());
 					note.setIsPrivate(dtoNote.getIsPrivate());
-					noteRepo.store(note);
+					this.noteRepo.store(note);
 				});
 			}
 			//@formatter:on

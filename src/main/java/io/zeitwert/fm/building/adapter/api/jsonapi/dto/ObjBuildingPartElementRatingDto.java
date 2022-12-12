@@ -27,7 +27,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 	private EnumeratedDto buildingPart;
 	private Integer weight;
 	private Integer condition;
-	private Integer conditionYear;
+	private Integer ratingYear;
 	private Integer strain;
 	private Integer strength;
 	private String description;
@@ -55,7 +55,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 				this.buildingPart == null ? null : CodeBuildingPartEnum.getBuildingPart(this.buildingPart.getId()));
 		part.setWeight(this.weight);
 		part.setCondition(this.condition);
-		part.setConditionYear(this.conditionYear);
+		part.setRatingYear(this.ratingYear);
 		part.setStrain(this.strain);
 		part.setStrength(this.strength);
 		part.setDescription(this.description);
@@ -89,10 +89,10 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		ObjBuilding building = part.getMeta().getAggregate();
 		if (building.getInsuredValue() != null) {
 			if (part.getWeight() != null && part.getWeight() > 0
-					&& part.getCondition() != null && part.getConditionYear() != null) {
+					&& part.getCondition() != null && part.getRatingYear() != null) {
 				ProjectionPeriod renovationPeriod = part.getBuildingPart().getNextRestoration(
 						1000000.0,
-						part.getConditionYear(),
+						part.getRatingYear(),
 						part.getCondition());
 				restorationYear = renovationPeriod.getYear();
 				double elementValue = part.getWeight() / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
@@ -109,7 +109,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 				.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
 				.weight(part.getWeight())
 				.condition(part.getCondition())
-				.conditionYear(part.getConditionYear())
+				.ratingYear(part.getRatingYear())
 				.strain(part.getStrain())
 				.strength(part.getStrength())
 				.description(part.getDescription())

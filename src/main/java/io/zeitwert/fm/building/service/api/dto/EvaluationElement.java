@@ -12,8 +12,8 @@ public class EvaluationElement {
 	private String description;
 
 	private Integer weight;
-	private Integer rating;
-	private Color ratingColor;
+	private Integer condition;
+	private Color conditionColor;
 
 	private Integer restorationYear;
 	private Integer restorationCosts;

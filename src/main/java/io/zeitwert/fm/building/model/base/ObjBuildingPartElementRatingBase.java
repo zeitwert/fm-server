@@ -21,7 +21,7 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 	protected final EnumProperty<CodeBuildingPart> buildingPart;
 	protected final SimpleProperty<Integer> weight;
 	protected final SimpleProperty<Integer> condition;
-	protected final SimpleProperty<Integer> conditionYear;
+	protected final SimpleProperty<Integer> ratingYear;
 	protected final SimpleProperty<Integer> strain;
 	protected final SimpleProperty<Integer> strength;
 	protected final SimpleProperty<String> description;
@@ -39,7 +39,7 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 				CodeBuildingPartEnum.class);
 		this.weight = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.WEIGHT);
 		this.condition = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION);
-		this.conditionYear = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION_YEAR);
+		this.ratingYear = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION_YEAR);
 		this.strain = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.STRAIN);
 		this.strength = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.STRENGTH);
 		this.description = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.DESCRIPTION);
@@ -58,7 +58,7 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 	public Integer getCondition(Integer year) {
 		CodeBuildingPart buildingPart = this.buildingPart.getValue();
 		double relativeAgeAtRating = buildingPart.getRelativeAge(this.getCondition() / 100.0);
-		double relativeAgeAtYear = relativeAgeAtRating + (year - this.getConditionYear());
+		double relativeAgeAtYear = relativeAgeAtRating + (year - this.getRatingYear());
 		return (int) Math.round(buildingPart.getTimeValue(relativeAgeAtYear) * 100.0);
 	}
 

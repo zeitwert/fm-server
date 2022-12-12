@@ -29,7 +29,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 	}
 
 	/**
-	 * - get startYear (max(building.element.conditionYear))
+	 * - get startYear (max(building.element.ratingYear))
 	 * - for all elements of all buildings:
 	 * -
 	 * 
@@ -49,11 +49,11 @@ public class ProjectionServiceImpl implements ProjectionService {
 			for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 				EnumeratedDto elementEnum = this.getAsEnumerated(element);
 				EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
-				if (element.getWeight() != null && element.getConditionYear() != null) {
+				if (element.getWeight() != null && element.getRatingYear() != null) {
 					if (element.getWeight() > 0 && element.getCondition() > 0) {
 						List<ProjectionPeriod> elementPeriodList = element.getBuildingPart().getProjection(
 							/* elementValue  => */ 100.0,
-							/* conditionYear => */ element.getConditionYear(),
+							/* ratingYear    => */ element.getRatingYear(),
 							/* condition     => */ element.getCondition() / 100.0,
 							/* startYear     => */ startYear,
 							/* duration      => */ duration
@@ -91,9 +91,9 @@ public class ProjectionServiceImpl implements ProjectionService {
 	private int getMinProjectionDate(ObjBuilding building) {
 		int projectionYear = building.getInsuredValueYear();
 		for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
-			if (element.getWeight() != null && element.getConditionYear() != null) {
-				if (element.getWeight() > 0 && element.getConditionYear() > projectionYear) {
-					projectionYear = element.getConditionYear();
+			if (element.getWeight() != null && element.getRatingYear() != null) {
+				if (element.getWeight() > 0 && element.getRatingYear() > projectionYear) {
+					projectionYear = element.getRatingYear();
 				}
 			}
 		}

@@ -19,6 +19,8 @@ public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 
 	LocalDate getRatingDate();
 
+	Integer getRatingYear();
+
 	void setRatingDate(LocalDate ratingDate);
 
 	ObjUser getRatingUser();
@@ -32,8 +34,6 @@ public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 	CodeBuildingMaintenanceStrategy getMaintenanceStrategy();
 
 	void setMaintenanceStrategy(CodeBuildingMaintenanceStrategy strategy);
-
-	Integer getElementContributions();
 
 	Integer getElementCount();
 
@@ -50,6 +50,10 @@ public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 	ObjBuildingPartElementRating addElement(CodeBuildingPart buildingPart);
 
 	void removeElement(Integer elementId);
+
+	Integer getElementWeights();
+
+	Integer getCondition();
 
 	Integer getCondition(Integer year);
 

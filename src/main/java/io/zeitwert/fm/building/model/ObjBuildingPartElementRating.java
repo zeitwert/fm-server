@@ -21,9 +21,9 @@ public interface ObjBuildingPartElementRating extends ObjPart<ObjBuilding> {
 
 	void setCondition(Integer condition);
 
-	Integer getConditionYear();
+	Integer getRatingYear();
 
-	void setConditionYear(Integer condition);
+	void setRatingYear(Integer year);
 
 	Integer getStrain();
 

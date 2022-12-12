@@ -13,9 +13,7 @@ public class EvaluationBuilding {
 	private String name;
 	private String description;
 	private String buildingNr;
-	private String street;
-	private String zip;
-	private String city;
+	private String address;
 
 	private Integer insuredValue;
 	private Integer insuredValueYear;

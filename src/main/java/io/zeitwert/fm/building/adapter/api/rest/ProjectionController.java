@@ -54,14 +54,14 @@ public class ProjectionController {
 		return ResponseEntity.ok(buildingPart.getRelativeAge(timeValue));
 	}
 
-	@GetMapping("/elements/{elementId}/nextRestoration/{conditionYear}/{condition}")
+	@GetMapping("/elements/{elementId}/nextRestoration/{ratingYear}/{condition}")
 	ResponseEntity<ProjectionPeriod> getNextRestoration(@PathVariable String elementId,
-			@PathVariable Integer conditionYear,
+			@PathVariable Integer ratingYear,
 			@PathVariable Double condition)
 			throws InterruptedException, ExecutionException {
 		CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
 		return ResponseEntity
-				.ok(buildingPart.getNextRestoration(1000000, conditionYear, condition));
+				.ok(buildingPart.getNextRestoration(1000000, ratingYear, condition));
 	}
 
 }

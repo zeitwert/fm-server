@@ -70,12 +70,12 @@ public class BuildingTest {
 
 		assertEquals(22, building1a.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(22, building1a.getCurrentRating().getElementList().size(), "element count 22");
-		assertEquals(100, building1a.getCurrentRating().getElementContributions(), "element contributions 100");
+		assertEquals(100, building1a.getCurrentRating().getElementWeights(), "element contributions 100");
 
 		CodeBuildingPart bp1 = CodeBuildingPartEnum.getBuildingPart("P2");
 		ObjBuildingPartElementRating e1 = building1a.getCurrentRating().getElement(bp1);
 		e1.setCondition(100);
-		e1.setConditionYear(2000);
+		e1.setRatingYear(2000);
 		e1.setWeight(50);
 		Integer e1id = e1.getId();
 
@@ -89,7 +89,7 @@ public class BuildingTest {
 		CodeBuildingPart bp2 = CodeBuildingPartEnum.getBuildingPart("P3");
 		ObjBuildingPartElementRating e2 = building1a.getCurrentRating().getElement(bp2);
 		e2.setCondition(100);
-		e2.setConditionYear(2000);
+		e2.setRatingYear(2000);
 		e2.setWeight(50);
 		Integer e2id = e2.getId();
 
@@ -117,7 +117,7 @@ public class BuildingTest {
 		CodeBuildingPart bp3 = CodeBuildingPartEnum.getBuildingPart("P4");
 		ObjBuildingPartElementRating e3 = building1b.getCurrentRating().getElement(bp3);
 		e3.setCondition(100);
-		e3.setConditionYear(2000);
+		e3.setRatingYear(2000);
 		e3.setWeight(50);
 		Integer e3id = e3.getId();
 

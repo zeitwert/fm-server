@@ -42,7 +42,7 @@ import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.service.api.BuildingService;
 import io.zeitwert.fm.building.service.api.DocumentGenerationService;
-import io.zeitwert.fm.building.service.api.EvaluationService;
+import io.zeitwert.fm.building.service.api.BuildingEvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
@@ -81,7 +81,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	RequestContext requestCtx;
 
 	@Autowired
-	EvaluationService evaluationService;
+	BuildingEvaluationService evaluationService;
 
 	@Value("classpath:templates/Building Evaluation Template.docx")
 	Resource templateFile;
@@ -92,21 +92,22 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	ReportingEngine engine = new ReportingEngine();
 
 	public DocumentGenerationServiceImpl() {
-		engine.getKnownTypes().add(BuildingEvaluationResult.class);
+		this.engine.getKnownTypes().add(BuildingEvaluationResult.class);
 	}
 
+	@Override
 	public void generateEvaluationReport(ObjBuilding building, ByteArrayOutputStream stream, int format) {
 
-		BuildingEvaluationResult evaluationResult = evaluationService.getEvaluation(building);
+		BuildingEvaluationResult evaluationResult = this.evaluationService.getEvaluation(building);
 
 		try {
 
-			Document doc = new Document(templateFile.getInputStream());
-			doc.setFontSettings(asposeConfig.getFontSettings());
+			Document doc = new Document(this.templateFile.getInputStream());
+			doc.setFontSettings(this.asposeConfig.getFontSettings());
 
 			this.insertCoverFoto(doc, building);
 			this.insertLocationImage(doc, building);
-			engine.buildReport(doc, evaluationResult, "building");
+			this.engine.buildReport(doc, evaluationResult, "building");
 			this.fillOptRenovationTable(doc, evaluationResult);
 			this.fillCostsChart(doc, evaluationResult);
 			this.fillCostsTable(doc, evaluationResult);
@@ -141,7 +142,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		byte[] imageContent;
 		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
-			imageContent = missingImage.getInputStream().readAllBytes();
+			imageContent = this.missingImage.getInputStream().readAllBytes();
 		} else {
 			imageContent = building.getCoverFoto().getContent();
 		}
@@ -171,13 +172,14 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	private void insertLocationImage(Document doc, ObjBuilding building) throws IOException {
 
 		byte[] imageContent;
-		if (building.getGeoCoordinates() == null || building.getGeoCoordinates().equals("")) {
-			imageContent = missingImage.getInputStream().readAllBytes();
+		if (building.getGeoCoordinates() == null || "".equals(building.getGeoCoordinates())) {
+			imageContent = this.missingImage.getInputStream().readAllBytes();
 		} else {
 			String address = building.getGeoCoordinates().substring(4);
-			ImageResult ir = buildingService.getMap(building.getName(), address, new Size(1200, 1200), building.getGeoZoom());
+			ImageResult ir = this.buildingService.getMap(building.getName(), address, new Size(1200, 1200),
+					building.getGeoZoom());
 			if (ir == null) {
-				imageContent = missingImage.getInputStream().readAllBytes();
+				imageContent = this.missingImage.getInputStream().readAllBytes();
 			} else {
 				imageContent = ir.imageData;
 			}
@@ -207,14 +209,14 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		int totalRestorationCosts = 0;
 		for (EvaluationElement e : evaluationResult.getElements()) {
-			if (e.getWeight() != null && e.getWeight() > 0 && !e.getName().equals("Total")) {
-				Row row = addRenovationTableRow(optRenovationTable);
+			if (e.getWeight() != null && e.getWeight() > 0 && !"Total".equals(e.getName())) {
+				Row row = this.addRenovationTableRow(optRenovationTable);
 				Cell cell = row.getFirstCell();
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
 				Integer restorationYear = e.getRestorationYear();
 				if (restorationYear != null) {
 					Integer delta = (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
-					cell = getNthNextSibling(row.getFirstCell(), delta);
+					cell = this.getNthNextSibling(row.getFirstCell(), delta);
 					builder.moveTo(cell.getFirstParagraph());
 					builder.write(OptimumRenovationMarker);
 					cell = row.getLastCell();
@@ -229,7 +231,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 			}
 		}
 
-		Row row = addRenovationTableRow(optRenovationTable);
+		Row row = this.addRenovationTableRow(optRenovationTable);
 		Cell cell = row.getFirstCell();
 		builder.getFont().setBold(true);
 		builder.moveTo(cell.getFirstParagraph());
@@ -301,7 +303,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		Formatter fmt = Formatter.INSTANCE;
 
 		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
-			Row row = addCostsTableRow(costsTable);
+			Row row = this.addCostsTableRow(costsTable);
 			Cell cell = row.getFirstCell();
 			if (ep.getYear() != null) { // only yearly summary records
 				// year
@@ -388,7 +390,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		shapeBuilder.moveToBookmark(OnePagerBookmark);
 
 		Cell yearCell = onePagerDetailsTable.getLastRow().getFirstCell();
-		yearCell = getNthNextSibling(yearCell, 8);
+		yearCell = this.getNthNextSibling(yearCell, 8);
 		for (int i = 0; i <= 25; i++) {
 			yearCell = (Cell) yearCell.getNextSibling();
 			builder.moveTo(yearCell.getFirstParagraph());
@@ -403,22 +405,22 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 			Shape shape = shapeBuilder.insertShape(ShapeType.FLOW_CHART_CONNECTOR, 8, 8);
 			shape.setStroked(false);
-			shape.setFillColor(titleElement.getRatingColor());
+			shape.setFillColor(titleElement.getConditionColor());
 			shape.setWrapType(WrapType.NONE);
 			shape.setAllowOverlap(true);
 			shape.setRelativeHorizontalPosition(RelativeHorizontalPosition.PAGE);
 			shape.setRelativeVerticalPosition(RelativeVerticalPosition.PAGE);
 			shape.setTop(this.getRatingLineVOffset(0));
-			shape.setLeft(this.getRatingHOffset(titleElement.getRating()));
+			shape.setLeft(this.getRatingHOffset(titleElement.getCondition()));
 
-			titleCell = getNthNextSibling(titleRow.getFirstCell(), 13);
+			titleCell = this.getNthNextSibling(titleRow.getFirstCell(), 13);
 			builder.moveTo(titleCell.getFirstParagraph());
-			builder.write("" + titleElement.getRating());
+			builder.write("" + titleElement.getCondition());
 
 		}
 
 		List<EvaluationElement> elements = evaluationResult.getElements().stream()
-				.filter(e -> !e.getName().equals("Total"))
+				.filter(e -> !"Total".equals(e.getName()))
 				.filter(e -> e.getWeight() != null && e.getWeight() > 0)
 				.toList();
 
@@ -429,7 +431,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		int lineNr = 1;
 		for (EvaluationElement e : elements) {
 
-			Row row = addOnePageTableRow(onePagerDetailsTable);
+			Row row = this.addOnePageTableRow(onePagerDetailsTable);
 
 			Cell cell = row.getFirstCell();
 			builder.moveTo(cell.getFirstParagraph());
@@ -447,22 +449,22 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 			Shape shape = shapeBuilder.insertShape(ShapeType.FLOW_CHART_CONNECTOR, 8, 8);
 			shape.setStroked(false);
-			shape.setFillColor(e.getRatingColor());
+			shape.setFillColor(e.getConditionColor());
 			shape.setWrapType(WrapType.NONE);
 			shape.setAllowOverlap(true);
 			shape.setRelativeHorizontalPosition(RelativeHorizontalPosition.PAGE);
 			shape.setRelativeVerticalPosition(RelativeVerticalPosition.PAGE);
 			shape.setTop(this.getRatingLineVOffset(lineNr));
-			shape.setLeft(this.getRatingHOffset(e.getRating()));
+			shape.setLeft(this.getRatingHOffset(e.getCondition()));
 
-			cell = getNthNextSibling(row.getFirstCell(), 13);
+			cell = this.getNthNextSibling(row.getFirstCell(), 13);
 			builder.moveTo(cell.getFirstParagraph());
-			builder.write("" + e.getRating());
+			builder.write("" + e.getCondition());
 
 			Integer restorationYear = e.getRestorationYear();
 			if (restorationYear != null) {
 				Integer delta = 15 + (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
-				cell = getNthNextSibling(row.getFirstCell(), delta);
+				cell = this.getNthNextSibling(row.getFirstCell(), delta);
 				builder.moveTo(cell.getFirstParagraph());
 				builder.write(OptimumRenovationMarker);
 			}
@@ -501,7 +503,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 	private Cell getNthNextSibling(Node cell, int n) {
 		if (n >= 0) {
-			return getNthNextSibling(cell.getNextSibling(), n - 1);
+			return this.getNthNextSibling(cell.getNextSibling(), n - 1);
 		}
 		return (Cell) cell;
 	}
