@@ -43,8 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder
-				.userDetailsService(userDetailsService)
-				.passwordEncoder(passwordEncoder());
+				.userDetailsService(this.userDetailsService)
+				.passwordEncoder(this.passwordEncoder());
 	}
 
 	@Bean
@@ -64,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		//@formatter:off
 		http.cors().and()
 			.csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+			.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
 				// monitoring
@@ -94,13 +94,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/location").permitAll() // revoke
 				// special paths via <iframe src="" />
 				.antMatchers(HttpMethod.GET, "/rest/building/buildings/{id:\\w+}/evaluation/**").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/rest/portfolio/portfolios/{id:\\w+}/evaluation/**").permitAll() // revoke
 				// statistics
 				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// test paths
 				.antMatchers(HttpMethod.GET, "/rest/test/all").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/test/**").authenticated()
 			.anyRequest().authenticated();
-		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(this.authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.headers().frameOptions().disable();
 		//@formatter:on
 	}

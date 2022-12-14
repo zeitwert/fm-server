@@ -43,4 +43,10 @@ public interface ObjPortfolio extends FMObj {
 
 	void removeExclude(Integer exclude);
 
+	double getInflationRate();
+
+	Integer getCondition(int year);
+
+	double getPortfolioValue(int year);
+
 }

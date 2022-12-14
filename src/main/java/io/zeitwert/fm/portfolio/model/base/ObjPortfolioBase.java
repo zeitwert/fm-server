@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.portfolio.model.base;
 
+import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Set;
@@ -39,9 +40,9 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 			UpdatableRecord<?> portfolioRecord) {
 		super(repository, objRecord);
 		this.dbRecord = portfolioRecord;
-		this.name = this.addSimpleProperty(dbRecord, ObjPortfolioFields.NAME);
-		this.description = this.addSimpleProperty(dbRecord, ObjPortfolioFields.DESCRIPTION);
-		this.portfolioNr = this.addSimpleProperty(dbRecord, ObjPortfolioFields.PORTFOLIO_NR);
+		this.name = this.addSimpleProperty(this.dbRecord, ObjPortfolioFields.NAME);
+		this.description = this.addSimpleProperty(this.dbRecord, ObjPortfolioFields.DESCRIPTION);
+		this.portfolioNr = this.addSimpleProperty(this.dbRecord, ObjPortfolioFields.PORTFOLIO_NR);
 		this.includeSet = this.addReferenceSetProperty(this.getRepository().getIncludeSetType(), ObjBuilding.class);
 		this.excludeSet = this.addReferenceSetProperty(this.getRepository().getExcludeSetType(), ObjBuilding.class);
 		this.buildingSet = this.addReferenceSetProperty(this.getRepository().getBuildingSetType(), ObjBuilding.class);
@@ -83,6 +84,32 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
 		this.dbRecord.setValue(ObjPortfolioFields.ACCOUNT_ID, id);
+	}
+
+	@Override
+	public double getInflationRate() {
+		BigDecimal inflationRate = this.getAccount().getInflationRate();
+		inflationRate = inflationRate != null ? inflationRate : this.getTenant().getInflationRate();
+		return inflationRate != null ? inflationRate.doubleValue() : 0;
+	}
+
+	@Override
+	public double getPortfolioValue(int year) {
+		// if (this.getInsuredValueYear() != null && this.getInsuredValue() != null) {
+		// return ObjBuildingBase.DefaultPriceIndex.priceAt(this.getInsuredValueYear(),
+		// 1000.0 * this.getInsuredValue().doubleValue(), year,
+		// this.getInflationRate());
+		// }
+		return 0;
+	}
+
+	@Override
+	public Integer getCondition(int year) {
+		// ObjBuildingPartRating rating = this.getCurrentRating();
+		// if (rating != null) {
+		// return rating.getCondition(year);
+		// }
+		return null;
 	}
 
 	@Override
