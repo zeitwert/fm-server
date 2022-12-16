@@ -17,14 +17,13 @@ import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.Formatter;
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.service.api.BuildingService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
 import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
+import io.zeitwert.fm.portfolio.service.api.PortfolioService;
 import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.server.config.aspose.AsposeConfig;
 
@@ -54,7 +53,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	private AsposeConfig asposeConfig;
 
 	@Autowired
-	private BuildingService buildingService;
+	private PortfolioService portfolioService;
 
 	@Autowired
 	RequestContext requestCtx;
@@ -83,12 +82,12 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 			Document doc = new Document(this.templateFile.getInputStream());
 			doc.setFontSettings(this.asposeConfig.getFontSettings());
 
-			// this.insertLocationImage(doc, building);
 			this.engine.buildReport(doc, evaluationResult, "portfolio");
 			this.fillBuildingStateChart(doc, evaluationResult);
 			this.fillValueChart(doc, evaluationResult);
 			this.fillCostsChart(doc, evaluationResult);
 			this.fillCostsTable(doc, evaluationResult);
+			this.insertLocationImage(doc, portfolio);
 			this.fillBuildingStateChartNames(doc, evaluationResult);
 
 			if (format == SaveFormat.PDF) {
@@ -115,26 +114,32 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 	}
 
-	private void insertLocationImage(Document doc, ObjBuilding building) throws IOException {
+	private void insertLocationImage(Document doc, ObjPortfolio portfolio) throws IOException {
 
 		byte[] imageContent;
-		if (building.getGeoCoordinates() == null || "".equals(building.getGeoCoordinates())) {
+		ImageResult ir = this.portfolioService.getMap(portfolio, new Size(1200, 1200));
+		if (ir == null) {
 			imageContent = this.missingImage.getInputStream().readAllBytes();
 		} else {
-			String address = building.getGeoCoordinates().substring(4);
-			ImageResult ir = this.buildingService.getMap(building.getName(), address, new Size(1200, 1200),
-					building.getGeoZoom());
-			if (ir == null) {
-				imageContent = this.missingImage.getInputStream().readAllBytes();
-			} else {
-				imageContent = ir.imageData;
-			}
+			imageContent = ir.imageData;
 		}
 
 		DocumentBuilder builder = new DocumentBuilder(doc);
 		try {
 			builder.moveToBookmark(CoverfotoBookmark);
-			builder.insertImage(imageContent, 360, 360);
+			Shape coverFoto = builder.insertImage(imageContent);
+			coverFoto.setAspectRatioLocked(true);
+			// adjust either width or height
+			if (coverFoto.getWidth() / coverFoto.getHeight() > ((double) CoverFotoWidth) / ((double) CoverFotoHeight)) {
+				coverFoto.setWidth(CoverFotoWidth);
+			} else {
+				coverFoto.setHeight(CoverFotoHeight);
+			}
+			coverFoto.setWrapType(WrapType.NONE);
+			coverFoto.setRelativeHorizontalPosition(RelativeHorizontalPosition.RIGHT_MARGIN);
+			coverFoto.setRelativeVerticalPosition(RelativeVerticalPosition.TOP_MARGIN);
+			coverFoto.setTop(170);
+			coverFoto.setLeft(-coverFoto.getWidth() - 20);
 		} catch (Exception e) {
 			throw new RuntimeException("Could not insert location image", e);
 		}

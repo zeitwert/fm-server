@@ -1,10 +1,10 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
+import javax.servlet.ServletException;
+
 import java.io.IOException;
 import java.util.List;
-
-import javax.servlet.ServletException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ContentDisposition;
@@ -38,6 +38,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
+import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -49,6 +50,9 @@ public class BuildingImportExportController {
 
 	private static final String AGGREGATE = "zeitwert/building";
 	private static final String VERSION = "1.0";
+
+	@Autowired
+	private ObjBuildingCache buildingCache;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepo;
@@ -65,7 +69,7 @@ public class BuildingImportExportController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		ObjBuilding building = this.buildingRepo.get(id);
+		ObjBuilding building = this.buildingCache.get(id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
 		// mark file for download
