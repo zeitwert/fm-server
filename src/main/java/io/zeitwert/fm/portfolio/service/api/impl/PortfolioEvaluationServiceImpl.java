@@ -1,46 +1,31 @@
 package io.zeitwert.fm.portfolio.service.api.impl;
 
-import static io.zeitwert.fm.util.NumericUtils.roundProgressive;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 import java.awt.Color;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.util.Check;
-import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 import io.zeitwert.fm.building.service.api.ProjectionService;
-import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
-import io.zeitwert.fm.building.service.api.dto.EvaluationParameter;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
+import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
-import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
 import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
-import io.zeitwert.fm.util.NumericUtils;
 
 @Service("portfolioEvaluationService")
 public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationService {
@@ -65,8 +50,6 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 
 	@Override
 	public PortfolioEvaluationResult getEvaluation(ObjPortfolio portfolio) {
-
-		Formatter fmt = Formatter.INSTANCE;
 
 		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream().map(id -> this.buildingCache.get(id))
 				.collect(Collectors.toSet());
@@ -95,12 +78,6 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 			buildingList.add(evaluationBuilding);
 		}
 		buildingList.sort((b1, b2) -> b1.compareTo(b2));
-
-		String timeValue = fmt.formatMonetaryValue(projectionResult.getPeriodList().get(0).getTimeValue(), "CHF");
-		String shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF");
-		String midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF");
-		String longTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF");
-		String averageMaintenance = fmt.formatMonetaryValue(this.getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF");
 
 		// List of evaluation elements, grouped by building part, with summed up
 		// restoration costs
@@ -135,50 +112,6 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 				elements.add(ee);
 			}
 		}
-
-		// Integer ratingYear = 9999;
-		// int elementCount = 0;
-		// int totalWeight = 0;
-		int totalRating = 0;
-		// for (ObjBuildingPartElementRating element :
-		// portfolio.getCurrentRating().getElementList()) {
-		// if (element.getWeight() != null && element.getWeight() > 0) {
-		// String description = this.replaceEol(element.getDescription());
-		// if (!StringUtils.isEmpty(element.getConditionDescription())) {
-		// description += "<br/><b>Zustand</b>: " + element.getConditionDescription();
-		// }
-		// if (!StringUtils.isEmpty(element.getMeasureDescription())) {
-		// description += "<br/><b>Massnahmen</b>: " + element.getMeasureDescription();
-		// }
-		// EvaluationElement dto = EvaluationElement.builder()
-		// .name(element.getBuildingPart().getName())
-		// .description(description)
-		// .weight(element.getWeight())
-		// .rating(element.getCondition())
-		// .ratingColor(this.getRatingColor(element.getCondition()))
-		// .restorationYear(this.getRestorationYear(projectionResult,
-		// element.getBuildingPart()))
-		// .restorationCosts(this.getRestorationCosts(projectionResult,
-		// element.getBuildingPart()))
-		// .build();
-		// elements.add(dto);
-		// if (element.getRatingYear() < ratingYear) {
-		// ratingYear = element.getRatingYear();
-		// }
-		// elementCount += 1;
-		// totalWeight += element.getWeight();
-		// totalRating += element.getCondition();
-		// }
-		// }
-
-		// totalRating = (int) Math.round(totalRating / elementCount);
-		// EvaluationElement dto = EvaluationElement.builder()
-		// .name("Total")
-		// .weight(totalWeight)
-		// .rating(totalRating)
-		// .ratingColor(this.getRatingColor(totalRating))
-		// .build();
-		// elements.add(dto);
 
 		List<EvaluationPeriod> periods = new ArrayList<>();
 		int aggrCosts = 0;
@@ -220,58 +153,6 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 
 	private String replaceEol(String text) {
 		return text != null ? text.replace("<br>", PortfolioEvaluationServiceImpl.SOFT_RETURN) : "";
-	}
-
-	private int getAverageMaintenanceCosts(ProjectionResult projectionResult, int startYear, int endYear) {
-		Check.requireThis(startYear <= endYear, "valid years");
-		double costs = 0.0;
-		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			int yearSinceStart = pp.getYear() - projectionResult.getStartYear();
-			if (startYear <= yearSinceStart && yearSinceStart <= endYear) {
-				costs += pp.getMaintenanceCosts();
-			}
-		}
-		return (int) NumericUtils.roundProgressive(costs / (endYear - startYear + 1));
-	}
-
-	private int getRestorationCosts(ProjectionResult projectionResult, int startYear, int endYear) {
-		Check.requireThis(startYear <= endYear, "valid years");
-		double costs = 0.0;
-		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			int yearSinceStart = pp.getYear() - projectionResult.getStartYear();
-			if (startYear <= yearSinceStart && yearSinceStart <= endYear) {
-				costs += pp.getRestorationCosts();
-			}
-		}
-		return (int) NumericUtils.roundProgressive(costs);
-	}
-
-	private Integer getRestorationYear(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
-		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			for (ProjectionElement re : pp.getRestorationElements()) {
-				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {
-					return pp.getYear();
-				}
-			}
-		}
-		return null;
-	}
-
-	private Integer getRestorationCosts(ProjectionResult projectionResult, CodeBuildingPart buildingPart) {
-		for (ProjectionPeriod pp : projectionResult.getPeriodList()) {
-			for (ProjectionElement re : pp.getRestorationElements()) {
-				if (re.getBuildingPart().getId().equals(buildingPart.getId())) {
-					return (int) NumericUtils.roundProgressive(re.getRestorationCosts());
-				}
-			}
-		}
-		return null;
-	}
-
-	private void addParameter(List<EvaluationParameter> list, String name, String value) {
-		if (value != null) {
-			list.add(EvaluationParameter.builder().name(name).value(value).build());
-		}
 	}
 
 	private Color getConditionColor(Integer condition) {

@@ -1,13 +1,11 @@
 
 package io.zeitwert.fm.portfolio.service.api.impl;
 
-import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.stream.DoubleStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,19 +15,17 @@ import org.springframework.stereotype.Component;
 import com.aspose.words.*;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
-
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.service.api.BuildingService;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
-import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
-import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
-import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
+import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
+import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.server.config.aspose.AsposeConfig;
 
 @Component("portfolioDocumentGenerationService")
@@ -38,9 +34,8 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	private static final int CoverFotoWidth = 400;
 	private static final int CoverFotoHeight = 230;
 
-	private static final String OptimumRenovationMarker = Character.toString((char) 110);
-
 	static final String CoverfotoBookmark = "CoverFoto";
+	static final String BuildingStateBookmark = "BuildingState";
 	static final String LocationBookmark = "Location";
 
 	static final int BuildingTable = 0;
@@ -49,11 +44,11 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 	static final int OptimalRenovationTable = 3;
 
-	static final int BuildingStateChart = 2;
-	static final int ValueValueChart = 3;
-	static final int ValueCostChart = 4;
-	static final int CostsAccumulatedChart = 5;
-	static final int CostsDetailChart = 6;
+	static final int BuildingStateChart = 6;
+	static final int ValueValueChart = 7;
+	static final int ValueCostChart = 8;
+	static final int CostsAccumulatedChart = 9;
+	static final int CostsDetailChart = 10;
 
 	@Autowired
 	private AsposeConfig asposeConfig;
@@ -94,6 +89,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 			this.fillValueChart(doc, evaluationResult);
 			this.fillCostsChart(doc, evaluationResult);
 			this.fillCostsTable(doc, evaluationResult);
+			this.fillBuildingStateChartNames(doc, evaluationResult);
 
 			if (format == SaveFormat.PDF) {
 				PdfSaveOptions saveOptions = new PdfSaveOptions();
@@ -161,8 +157,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		double[] badOriginalValues = new double[4 * badBuildings.size() + 2];
 		double[] badTimeValues = new double[4 * badBuildings.size() + 2];
 
-		double totalValue = buildings.stream().map(b -> b.getInsuredValue()).reduce(0, (a, b) -> a + b);
-
 		int cumulatedValue = 0;
 		int index = 0;
 		for (EvaluationBuilding bldg : goodBuildings) {
@@ -202,7 +196,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		badTimeValues[0] = 0;
 		badOriginalValues[1] = cumulatedValue;
 		badTimeValues[1] = 0;
-		index = 1;
+		index = 2;
 		for (EvaluationBuilding bldg : badBuildings) {
 			badOriginalValues[index] = cumulatedValue;
 			badTimeValues[index] = bldg.getCondition();
@@ -225,10 +219,63 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		ChartSeries goodSeries = valueChart.getSeries().add("Z/N 100", goodOriginalValues, goodTimeValues);
 		ChartSeries okSeries = valueChart.getSeries().add("Z/N 100", okOriginalValues, okTimeValues);
 		ChartSeries badSeries = valueChart.getSeries().add("Z/N 100", badOriginalValues, badTimeValues);
-		valueChart.getAxisX().setCategoryType(2);
 		goodSeries.getFormat().getFill().setForeColor(PortfolioEvaluationServiceImpl.GOOD_CONDITION);
 		okSeries.getFormat().getFill().setForeColor(PortfolioEvaluationServiceImpl.OK_CONDITION);
 		badSeries.getFormat().getFill().setForeColor(PortfolioEvaluationServiceImpl.BAD_CONDITION);
+
+		// format x-axis
+		ChartAxis xAxis = valueChart.getAxisX();
+		xAxis.setCategoryType(2);
+		double totalValue = buildings.stream().map(b -> b.getInsuredValue()).reduce(0, (a, b) -> a + b);
+		double targetStep = totalValue / 20;
+		double targetDim = Math.floor(Math.log10(targetStep));
+		double stepSize = Math.pow(10, targetDim);
+		if (targetStep < 1.4 * stepSize) {
+			xAxis.setMajorUnit(stepSize);
+		} else if (targetStep < 3 * stepSize) {
+			xAxis.setMajorUnit(2 * stepSize);
+		} else {
+			xAxis.setMajorUnit(5 * stepSize);
+		}
+
+	}
+
+	private void fillBuildingStateChartNames(Document doc, PortfolioEvaluationResult evaluationResult) {
+
+		List<EvaluationBuilding> buildings = evaluationResult.getBuildings();
+		buildings.sort((a, b) -> b.getCondition() - a.getCondition());
+
+		// write building names
+		double totalValue = buildings.stream().map(b -> b.getInsuredValue()).reduce(0, (a, b) -> a + b);
+		int cumulatedValue = 0;
+		try {
+			DocumentBuilder shapeBuilder = new DocumentBuilder(doc);
+			shapeBuilder.moveToBookmark(BuildingStateBookmark);
+			cumulatedValue = 0;
+			for (EvaluationBuilding bldg : buildings) {
+				if (bldg.getInsuredValue() > 0.02 * totalValue) {
+					Shape textbox = shapeBuilder.insertShape(ShapeType.TEXT_BOX, 8, 8);
+					textbox.setRelativeHorizontalPosition(RelativeHorizontalPosition.PAGE);
+					textbox.setRelativeVerticalPosition(RelativeVerticalPosition.PAGE);
+					Paragraph paragraph = new Paragraph(doc);
+					paragraph.appendChild(new Run(doc, bldg.getName()));
+					textbox.appendChild(paragraph);
+					textbox.setStroked(false);
+					textbox.setFilled(false);
+					textbox.setWrapType(WrapType.NONE);
+					textbox.setAllowOverlap(true);
+					textbox.setTop(225);
+					int offset = cumulatedValue + bldg.getInsuredValue() / 2;
+					textbox.setLeft(115 + (offset / totalValue * 685 - 200));
+					textbox.setWidth(400);
+					textbox.setHeight(100);
+					textbox.setRotation(-90);
+				}
+				cumulatedValue += bldg.getInsuredValue();
+			}
+		} catch (Exception x) {
+			System.err.println(x.getMessage());
+		}
 
 	}
 
@@ -280,7 +327,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		int periodCount = (int) evaluationResult.getPeriods().stream().filter(p -> p.getYear() != null).count();
 		String[] years = new String[periodCount];
-		double[] timeValues = new double[periodCount];
 		double[] cumMaintenanceCosts = new double[periodCount];
 		double[] cumTotalCosts = new double[periodCount];
 		double[] maintenanceCosts = new double[periodCount];
@@ -290,7 +336,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
 			if (ep.getYear() != null && ep.getYear() > 0) { // only yearly summary records
 				years[index] = ep.getYear().toString();
-				timeValues[index] = ep.getTimeValue();
 				cumMaintenanceCosts[index] = index > 0
 						? cumMaintenanceCosts[index - 1] + ep.getMaintenanceCosts()
 						: ep.getMaintenanceCosts();
@@ -306,7 +351,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		Shape valueChartShape = (Shape) doc.getChild(NodeType.SHAPE, CostsAccumulatedChart, true);
 		Chart valueChart = valueChartShape.getChart();
 		valueChart.getSeries().clear();
-		valueChart.getSeries().add("Kumulierter Zeitwert", years, timeValues);
 		valueChart.getSeries().add("Kumulierte IH Kosten", years, cumMaintenanceCosts);
 		valueChart.getSeries().add("Kumulierte IH+IS Kosten", years, cumTotalCosts);
 
@@ -316,9 +360,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		valueChart.getSeries().get(1).getMarker().setSymbol(MarkerSymbol.CIRCLE);
 		valueChart.getSeries().get(1).getMarker().setSize(5);
-
-		valueChart.getSeries().get(2).getMarker().setSymbol(MarkerSymbol.CIRCLE);
-		valueChart.getSeries().get(2).getMarker().setSize(5);
 
 		Shape costChartShape = (Shape) doc.getChild(NodeType.SHAPE, CostsDetailChart, true);
 		Chart costChart = costChartShape.getChart();
@@ -390,13 +431,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		Row clonedRow = (Row) templateRow.deepClone(true);
 		table.appendChild(clonedRow);
 		return clonedRow;
-	}
-
-	private Cell getNthNextSibling(Node cell, int n) {
-		if (n >= 0) {
-			return this.getNthNextSibling(cell.getNextSibling(), n - 1);
-		}
-		return (Cell) cell;
 	}
 
 }

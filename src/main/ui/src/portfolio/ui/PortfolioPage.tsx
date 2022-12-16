@@ -1,6 +1,6 @@
 
-import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { EntityType, EntityTypeInfo, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
+import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Config, EntityType, EntityTypeInfo, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
 import { ActivityPortlet } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -95,6 +95,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 				<ItemHeader
 					store={this.portfolioStore}
 					details={this.getHeaderDetails(portfolio)}
+					customActions={this.getHeaderActions()}
 				/>
 				<ItemGrid>
 					<ItemLeftPart isFullWidth={isFullWidth}>
@@ -185,6 +186,28 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		// ];
 	}
 
+	private getHeaderActions() {
+		const portfolio = this.portfolioStore.portfolio;
+		if (!!portfolio?.meta?.closedAt) {
+			return (
+				<ButtonGroup variant="list">
+					<Button onClick={() => { }}>Portfolio reaktivieren</Button>
+				</ButtonGroup>
+			);
+		}
+		const isInTrx = this.portfolioStore.isInTrx;
+		return (
+			<>
+				{
+					session.isAdvisorTenant && !this.hasErrors && !isInTrx && [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0 &&
+					<ButtonGroup variant="list">
+						<Button onClick={() => this.doGenDocx(portfolio?.id!)}>Generate Word</Button>
+					</ButtonGroup>
+				}
+			</>
+		);
+	}
+
 	private openEditor = () => {
 		this.portfolioStore.edit();
 	};
@@ -209,6 +232,10 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 			);
 		}
 	};
+
+	private doGenDocx = (id: string) => {
+		window.location.href = Config.getRestUrl("portfolio", "portfolios/" + id + "/evaluation?format=docx");
+	}
 
 }
 
