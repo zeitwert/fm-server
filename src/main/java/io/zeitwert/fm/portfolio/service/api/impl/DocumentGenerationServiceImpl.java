@@ -254,22 +254,28 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 			cumulatedValue = 0;
 			for (EvaluationBuilding bldg : buildings) {
 				if (bldg.getInsuredValue() > 0.02 * totalValue) {
+
 					Shape textbox = shapeBuilder.insertShape(ShapeType.TEXT_BOX, 8, 8);
 					textbox.setRelativeHorizontalPosition(RelativeHorizontalPosition.PAGE);
 					textbox.setRelativeVerticalPosition(RelativeVerticalPosition.PAGE);
-					Paragraph paragraph = new Paragraph(doc);
-					paragraph.appendChild(new Run(doc, bldg.getName()));
-					textbox.appendChild(paragraph);
+					textbox.setWidth(400);
+					textbox.setHeight(100);
 					textbox.setStroked(false);
 					textbox.setFilled(false);
 					textbox.setWrapType(WrapType.NONE);
 					textbox.setAllowOverlap(true);
-					textbox.setTop(225);
+
+					Paragraph paragraph = new Paragraph(doc);
+					Run run = new Run(doc, bldg.getName());
+					run.getFont().setSize(8);
+					paragraph.appendChild(run);
+					textbox.appendChild(paragraph);
+
+					textbox.setTop(228);
 					int offset = cumulatedValue + bldg.getInsuredValue() / 2;
-					textbox.setLeft(115 + (offset / totalValue * 685 - 200));
-					textbox.setWidth(400);
-					textbox.setHeight(100);
+					textbox.setLeft(112 + (offset / totalValue * 689 - 200));
 					textbox.setRotation(-90);
+
 				}
 				cumulatedValue += bldg.getInsuredValue();
 			}

@@ -54,6 +54,12 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 				CodeBuildingElementDescriptionEnum.class);
 	}
 
+	// @Override
+	// public Integer getRatingYear() {
+	// return this.ratingYear.getValue() != null ? this.ratingYear.getValue() :
+	// this.getParent().getRatingYear();
+	// }
+
 	@Override
 	public Integer getCondition(Integer year) {
 		CodeBuildingPart buildingPart = this.buildingPart.getValue();

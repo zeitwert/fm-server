@@ -93,7 +93,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
 				rating.setRatingDate(dto.getRatingDate());
 				Integer userId = dto.getRatingUser() == null ? null : Integer.parseInt(dto.getRatingUser().getId());
-				rating.setRatingUser(userId == null ? null : getUser(userId));
+				rating.setRatingUser(userId == null ? null : this.getUser(userId));
 				if (dto.getElements() != null) {
 					dto.getElements().forEach(elementDto -> {
 						ObjBuildingPartElementRating element = null;
@@ -106,6 +106,9 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 							element = rating.getElementById(elementDto.getPartId());
 						}
 						elementDto.toPart(element);
+						if (element.getRatingYear() == null && rating.getRatingDate() != null) {
+							element.setRatingYear(rating.getRatingDate().getYear());
+						}
 					});
 				}
 			}
@@ -184,7 +187,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 		if (obj == null) {
 			return null;
 		}
-		EnumeratedDto ratingUser = obj.getRatingUserId() != null ? getUserEnumerated(obj.getRatingUserId()) : null;
+		EnumeratedDto ratingUser = obj.getRatingUserId() != null ? this.getUserEnumerated(obj.getRatingUserId()) : null;
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
