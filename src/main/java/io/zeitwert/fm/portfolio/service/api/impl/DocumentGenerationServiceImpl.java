@@ -230,7 +230,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		// format x-axis
 		ChartAxis xAxis = valueChart.getAxisX();
-		xAxis.setCategoryType(2);
+		xAxis.setCategoryType(AxisCategoryType.TIME);
 		double totalValue = buildings.stream().map(b -> b.getInsuredValue()).reduce(0, (a, b) -> a + b);
 		double targetStep = totalValue / 20;
 		double targetDim = Math.floor(Math.log10(targetStep));
