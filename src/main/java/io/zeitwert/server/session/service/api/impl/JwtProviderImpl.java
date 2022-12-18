@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.service.api.JwtProvider;
@@ -23,12 +21,10 @@ public class JwtProviderImpl implements JwtProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtProviderImpl.class);
 
-	@Value("${zeitwert.app.jwtSecret}")
-	private String jwtSecret;
-
 	@Value("${zeitwert.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
+	@Override
 	public String createJwt(Authentication authentication, Integer tenantId, Integer accountId) {
 		ZeitwertUserDetails userPrincipal = (ZeitwertUserDetails) authentication.getPrincipal();
 		Map<String, Object> claims = null;
@@ -37,23 +33,22 @@ public class JwtProviderImpl implements JwtProvider {
 		} else {
 			claims = Map.of(TENANT_CLAIM, tenantId, ACCOUNT_CLAIM, accountId);
 		}
-		//@formatter:off
 		return Jwts.builder()
-			.setSubject((userPrincipal.getUsername()))
-			.setIssuedAt(new Date())
-			.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-			.addClaims(claims)
-			.signWith(SignatureAlgorithm.HS512, jwtSecret)
-			.compact();
-		//@formatter:on
+				.setSubject((userPrincipal.getUsername()))
+				.setExpiration(new Date((new Date()).getTime() + this.jwtExpirationMs))
+				.addClaims(claims)
+				.signWith(JWT_SECRET_KEY)
+				.compact();
 	}
 
+	@Override
 	public boolean isValidJwt(String authToken) {
 		try {
-			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+			Jwts.parserBuilder()
+					.setSigningKey(JWT_SECRET_KEY)
+					.build()
+					.parseClaimsJws(authToken);
 			return true;
-		} catch (SignatureException e) {
-			logger.error("Invalid JWT signature: {}", e.getMessage());
 		} catch (MalformedJwtException e) {
 			logger.error("Invalid JWT token: {}", e.getMessage());
 		} catch (ExpiredJwtException e) {

@@ -2,16 +2,15 @@ package io.zeitwert.server.config.security;
 
 import static io.zeitwert.ddd.util.Check.requireThis;
 
-import java.io.IOException;
-import java.util.Date;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,11 +25,6 @@ import io.jsonwebtoken.Jwts;
 import io.zeitwert.server.session.service.api.JwtProvider;
 
 public class AuthenticationJWTFilter extends OncePerRequestFilter {
-
-	public static final String AUTH_HEADER_PREFIX = "Bearer ";
-
-	@Value("${zeitwert.app.jwtSecret}")
-	private String jwtSecret;
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -50,7 +44,7 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 					throw new RuntimeException("Authentication error (invalid email claim)");
 				}
 
-				ZeitwertUserDetails userDetails = (ZeitwertUserDetails) userDetailsService.loadUserByUsername(userEmail);
+				ZeitwertUserDetails userDetails = (ZeitwertUserDetails) this.userDetailsService.loadUserByUsername(userEmail);
 				if (!this.isValidToken(claims, userDetails)) {
 					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 					return;
@@ -91,17 +85,17 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 			return null;
 		}
 		String authHeader = request.getHeader("Authorization");
-		return authHeader.substring(AUTH_HEADER_PREFIX.length());
+		return authHeader.substring(JwtProvider.AUTH_HEADER_PREFIX.length());
 	}
 
 	private boolean hasJwt(HttpServletRequest request) {
 		String authHeader = request.getHeader("Authorization");
-		return StringUtils.hasText(authHeader) && authHeader.startsWith(AUTH_HEADER_PREFIX);
+		return StringUtils.hasText(authHeader) && authHeader.startsWith(JwtProvider.AUTH_HEADER_PREFIX);
 	}
 
 	public boolean isValidToken(Claims claims, UserDetails userDetails) {
 		final String user = claims.getSubject();
-		return (user.equals(userDetails.getUsername()) && !isTokenExpired(claims));
+		return (user.equals(userDetails.getUsername()) && !this.isTokenExpired(claims));
 	}
 
 	private boolean isTokenExpired(Claims claims) {
@@ -111,7 +105,11 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 
 	private Claims getClaims(String token) {
 		requireThis(token != null && token.length() > 0, "valid JWT (" + token + ")");
-		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+		return Jwts.parserBuilder()
+				.setSigningKey(JwtProvider.JWT_SECRET_KEY)
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
 	}
 
 }

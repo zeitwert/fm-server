@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.7</version>
+		<version>2.7.6</version>
 		<relativePath />
 	</parent>
 
@@ -25,15 +25,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>16</maven.compiler.release>
 		<compiler.version>3.10.1</compiler.version>
-		<flyway.version>8.5.12</flyway.version>
+		<flyway.version>9.10.1</flyway.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
-		<jjwt.version>0.9.1</jjwt.version>
-		<lombok.version>1.18.22</lombok.version>
-		<jooq-codegen.version>3.14.15</jooq-codegen.version>
-		<javassist.version>3.29.0-GA</javassist.version>
-		<coffeine.version>3.1.1</coffeine.version>
-		<aspose-words.version>22.4</aspose-words.version>
-		<google-maps.version>2.0.0</google-maps.version>
+		<jjwt.version>0.11.5</jjwt.version>
+		<lombok.version>1.18.24</lombok.version>
+		<jooq-codegen.version>3.17.6</jooq-codegen.version>
+		<javassist.version>3.29.2-GA</javassist.version>
+		<caffeine.version>3.1.2</caffeine.version>
+		<aspose-words.version>22.12</aspose-words.version>
+		<google-maps.version>2.1.2</google-maps.version>
 		<frontend-src-dir>${project.basedir}/src/main/ui</frontend-src-dir>
 		<node.version>v16.14.0</node.version>
 		<yarn.version>v1.22.5</yarn.version>
@@ -62,8 +62,20 @@
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
+			<artifactId>jjwt-api</artifactId>
 			<version>${jjwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${jjwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.crnk</groupId>
@@ -92,7 +104,7 @@
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
-			<version>${coffeine.version}</version>
+			<version>${caffeine.version}</version>
 		</dependency>
 
 		<!-- Aspose, Google Maps -->

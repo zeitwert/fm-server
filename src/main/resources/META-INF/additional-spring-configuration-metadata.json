@@ -1,0 +1,39 @@
+{
+	"properties": [
+		{
+			"name": "crnk.default-page-limit",
+			"type": "java.lang.String",
+			"description": "A description for 'crnk.default-page-limit'"
+		},
+		{
+			"name": "crnk.enabled",
+			"type": "java.lang.String",
+			"description": "A description for 'crnk.enabled'"
+		},
+		{
+			"name": "crnk.path-prefix",
+			"type": "java.lang.String",
+			"description": "A description for 'crnk.path-prefix'"
+		},
+		{
+			"name": "crnk.max-page-limit",
+			"type": "java.lang.String",
+			"description": "A description for 'crnk.max-page-limit'"
+		},
+		{
+			"name": "crnk.allow-unknown-attributes",
+			"type": "java.lang.String",
+			"description": "A description for 'crnk.allow-unknown-attributes'"
+		},
+		{
+			"name": "crnk.return404-on-null",
+			"type": "java.lang.String",
+			"description": "A description for 'crnk.return404-on-null'"
+		},
+		{
+			"name": "zeitwert.app.jwtExpirationMs",
+			"type": "java.lang.String",
+			"description": "A description for 'zeitwert.app.jwtExpirationMs'"
+		}
+	]
+}

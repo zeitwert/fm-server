@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +43,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
+		@Lazy // break cycle from WebSecurityConfig
 		final PasswordEncoder passwordEncoder
 	) {
 		super(
