@@ -1,7 +1,8 @@
 
 import { Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Building } from "@zeitwert/ui-model";
+import { API, Building } from "@zeitwert/ui-model";
 import FotoUploadForm from "dms/ui/forms/FotoUploadForm";
+import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -12,6 +13,21 @@ export interface BuildingSummaryFormProps {
 
 @observer
 export default class BuildingSummaryForm extends React.Component<BuildingSummaryFormProps> {
+
+	@observable
+	objectURL: string | undefined;
+
+	constructor(props: BuildingSummaryFormProps) {
+		super(props);
+		makeObservable(this);
+	}
+
+	async componentDidMount(): Promise<void> {
+		const { building } = this.props;
+		const res = await API.get(building.locationUrl!, { responseType: "blob" });
+		const blob = await res.data;
+		this.objectURL = URL.createObjectURL(blob);
+	}
 
 	render() {
 		const { building } = this.props;
@@ -32,7 +48,7 @@ export default class BuildingSummaryForm extends React.Component<BuildingSummary
 							<img
 								className="slds-align_absolute-center"
 								style={{ width: "100%" }}
-								src={building.locationUrl}
+								src={this.objectURL}
 								alt="Lageplan"
 							/>
 						</div>

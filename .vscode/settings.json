@@ -31,8 +31,8 @@
 	],
 	"java.completion.importOrder": [
 		"#",
-		"javax",
 		"java",
+		"javax",
 		"org",
 		"",
 	],
@@ -44,5 +44,6 @@
 		"addDeprecated",
 		"stringConcatToTextBlock",
 		"invertEquals"
-	]
+	],
+	"java.compile.nullAnalysis.mode": "disabled"
 }

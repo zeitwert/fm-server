@@ -2,13 +2,13 @@ package io.zeitwert.server.config.security;
 
 import static io.zeitwert.ddd.util.Check.requireThis;
 
+import java.io.IOException;
+import java.util.Date;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -71,7 +71,7 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 			} catch (ExpiredJwtException e) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			} catch (Exception exception) {
-				throw new RuntimeException("Authentication error", exception);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			}
 
 		}
