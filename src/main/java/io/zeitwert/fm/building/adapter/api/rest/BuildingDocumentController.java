@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.aspose.words.SaveFormat;
 
@@ -32,6 +35,7 @@ import com.aspose.words.SaveFormat;
 public class BuildingDocumentController {
 
 	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+	static final MediaType ZIP_CONTENT = new MediaType(MimeType.valueOf("application/zip"));
 
 	@Autowired
 	private ObjBuildingCache cache;
@@ -52,24 +56,33 @@ public class BuildingDocumentController {
 	}
 
 	@GetMapping("/{id}/projection")
-	ResponseEntity<ProjectionResult> getBuildingProjection(@PathVariable Integer id) {
+	public ResponseEntity<ProjectionResult> getBuildingProjection(@PathVariable Integer id) {
 		Set<ObjBuilding> buildings = Set.of(this.cache.get(id));
 		return ResponseEntity.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
 	}
 
-	@GetMapping("/{id}/evaluation/{title}")
-	protected ResponseEntity<byte[]> getBuildingEvaluationWithTitle(
-			@PathVariable("id") Integer id,
+	@GetMapping("/{ids}/evaluation/{title}")
+	public ResponseEntity<byte[]> getBuildingEvaluationWithTitle(
+			@PathVariable("ids") String ids,
 			@RequestParam(required = false, name = "format") String format,
 			@RequestParam(required = false, name = "inline") Boolean isInline) {
-		return this.getBuildingEvaluation(id, format, isInline);
+		return this.getBuildingEvaluation(ids, format, isInline);
 	}
 
-	@GetMapping("/{id}/evaluation")
-	protected ResponseEntity<byte[]> getBuildingEvaluation(
-			@PathVariable("id") Integer id,
+	@GetMapping("/{ids}/evaluation")
+	public ResponseEntity<byte[]> getBuildingEvaluation(
+			@PathVariable("ids") String ids,
 			@RequestParam(required = false, name = "format") String format,
 			@RequestParam(required = false, name = "inline") Boolean isInline) {
+		String[] idList = ids.split(",");
+		if (idList.length == 1) {
+			return this.getBuildingEvaluation(Integer.parseInt(idList[0]), format, isInline);
+		} else {
+			return this.getBuildingEvaluation(idList, format);
+		}
+	}
+
+	private ResponseEntity<byte[]> getBuildingEvaluation(Integer id, String format, Boolean isInline) {
 		ObjBuilding building = this.cache.get(id);
 		if (building == null) {
 			return ResponseEntity.notFound().build();
@@ -89,7 +102,44 @@ public class BuildingDocumentController {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers)
 					.body(stream.toByteArray());
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage().getBytes());
+		}
+	}
+
+	private ResponseEntity<byte[]> getBuildingEvaluation(String[] ids, String format) {
+		for (String id : ids) {
+			ObjBuilding building = this.cache.get(Integer.parseInt(id));
+			if (building == null) {
+				return ResponseEntity.notFound().build();
+			}
+		}
+		String dateTimeNow = monthFormatter.format(OffsetDateTime.now());
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+			for (String id : ids) {
+				ObjBuilding building = this.cache.get(Integer.parseInt(id));
+				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+					this.documentGeneration.generateEvaluationReport(building, stream, this.getSaveFormat(format));
+					String fileName = building.getAccount().getName() + " - " + building.getName();
+					fileName += " - " + dateTimeNow;
+					fileName = this.getFileName(fileName, this.getSaveFormat(format));
+					ZipEntry entry = new ZipEntry(fileName);
+					entry.setSize(stream.size());
+					zos.putNextEntry(entry);
+					zos.write(stream.toByteArray());
+					zos.closeEntry();
+				} catch (Exception e) {
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage().getBytes());
+				}
+			}
+			zos.close();
+			// mark file for download
+			String zipFileName = "Gebäudeauswertungen - " + dateTimeNow + ".zip";
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentDisposition(ContentDisposition.builder("attachment").filename(zipFileName).build());
+			return ResponseEntity.ok().contentType(ZIP_CONTENT).headers(headers)
+					.body(baos.toByteArray());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage().getBytes());
 		}
 	}
 

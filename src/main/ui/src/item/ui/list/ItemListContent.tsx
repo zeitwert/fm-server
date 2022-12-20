@@ -13,6 +13,7 @@ interface ItemListContentProps {
 	dataTableCellTemplates?: any;
 	onClick?: (itemId: string) => void;
 	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
+	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 @inject("showToast")
@@ -69,6 +70,7 @@ export default class ItemListContent extends React.Component<ItemListContentProp
 				options={options}
 				onClick={this.props.onClick}
 				onSort={this.props.onSort}
+				onSelectionChange={this.props.onSelectionChange}
 			/>
 		);
 	}

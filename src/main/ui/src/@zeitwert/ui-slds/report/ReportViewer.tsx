@@ -19,10 +19,11 @@ interface ReportViewerProps {
 	onMouseLeave?: (itemId: string) => void;
 	onClick?: (itemId: string) => void;
 	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
+	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 export function ReportViewer(props: ReportViewerProps) {
-	const { layout, data, dataTableCellTemplates, maxColumns, sortProperty, sortDirection, onMouseEnter, onMouseLeave, onClick, onSort } = props;
+	const { layout, data, dataTableCellTemplates, maxColumns, sortProperty, sortDirection, onMouseEnter, onMouseLeave, onClick, onSort, onSelectionChange } = props;
 	if (!layout || !data?.data) {
 		return null;
 	}
@@ -40,6 +41,7 @@ export function ReportViewer(props: ReportViewerProps) {
 				onMouseLeave={onMouseLeave}
 				onClick={onClick}
 				onSort={onSort}
+				onSelectionChange={onSelectionChange}
 			/>;
 		case LayoutType.Kanban:
 			return <KanbanBoard

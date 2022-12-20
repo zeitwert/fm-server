@@ -22,6 +22,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 
 	@observable showPreview = false;
 	@observable previewItemId: string | undefined;
+	@observable selection: string[] = [];
 	@observable doImport = false;
 
 	get ctx() {
@@ -59,6 +60,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 								createEditor={() => <BuildingCreationForm store={buildingStore} />}
 								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!, this.ctx.session.sessionInfo?.account) }}
 								onOpenPreview={this.openPreview}
+								onSelectionChange={this.onSelectionChange}
 							/>
 							{
 								this.doImport && (
@@ -83,11 +85,11 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
+		const actions = this.selection.length ? [<Button key="print" label={"Bewertungen drucken"} onClick={this.printEvaluations} />] : [];
 		if (session.hasSuperUserRole) {
-			return [<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />];
-		} else {
-			return [];
+			actions.push(<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />);
 		}
+		return actions;
 	}
 
 	private openPreview = (itemId: string) => {
@@ -103,6 +105,14 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	private closePreview = () => {
 		this.showPreview = false;
 		this.previewItemId = undefined;
+	};
+
+	private onSelectionChange = (selectedItems: any[]) => {
+		this.selection = selectedItems.map(s => s.id);
+	};
+
+	private printEvaluations = () => {
+		window.location.href = Config.getRestUrl("building", "buildings/" + this.selection.join(",") + "/evaluation?format=pdf");
 	};
 
 	private openImport = () => {

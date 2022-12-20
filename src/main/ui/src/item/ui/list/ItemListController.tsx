@@ -16,6 +16,7 @@ interface ItemListControllerProps {
 	sortDirection?: "asc" | "desc" | undefined;
 	onClick?: (item: any) => void;
 	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
+	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 @inject("logger", "showToast")
@@ -56,6 +57,7 @@ export default class ItemListController extends React.Component<ItemListControll
 				onSelectTemplate={(templateId) => store.executeTemplate(templateId)}
 				onClick={this.props.onClick}
 				onSort={this.props.onSort}
+				onSelectionChange={this.props.onSelectionChange}
 			/>
 		);
 	}

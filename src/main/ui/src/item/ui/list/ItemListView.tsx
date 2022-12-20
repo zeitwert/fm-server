@@ -14,6 +14,7 @@ interface ItemListProps extends ItemListHeaderProps {
 	isLoading: boolean;
 	onClick?: (itemId: string) => void;
 	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
+	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 @observer
@@ -48,6 +49,7 @@ export default class ItemListView extends React.Component<ItemListProps> {
 						dataTableCellTemplates={this.props.dataTableCellTemplates}
 						onClick={this.props.onClick}
 						onSort={this.props.onSort}
+						onSelectionChange={this.props.onSelectionChange}
 					/>
 				}
 			</>

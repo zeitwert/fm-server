@@ -18,6 +18,7 @@ interface LineReportProps {
 	onMouseLeave?: (itemId: string) => void;
 	onClick?: (itemId: string) => void;
 	onSort?: (property: string, direction: "asc" | "desc" | undefined) => void;
+	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 interface SortColumn {
@@ -40,7 +41,7 @@ interface HeaderInfo {
 export class LineReport extends React.Component<LineReportProps> {
 
 	@observable items: any[] = [];
-	@observable selection: any[] = [];
+	@observable selection: string[] = [];
 
 	constructor(props: LineReportProps) {
 		super(props);
@@ -56,7 +57,7 @@ export class LineReport extends React.Component<LineReportProps> {
 	}
 
 	render() {
-		const { items, options, dataTableCellTemplates, isJoined, fixedLayout, fixedHeader, maxColumns, onMouseEnter, onMouseLeave, onClick } = this.props;
+		const { items, options, dataTableCellTemplates, isJoined, fixedLayout, fixedHeader, maxColumns, onMouseEnter, onMouseLeave, onClick, onSelectionChange } = this.props;
 		if (!items) {
 			return <div />;
 		}
@@ -73,8 +74,8 @@ export class LineReport extends React.Component<LineReportProps> {
 				fixedHeader={fixedHeader === false ? false : true}
 				onRowChange={this.handleChanged}
 				onSort={this.handleSort}
-				selection={this.selection}
-				selectRows={options ? "checkbox" : undefined}
+				selection={toJS(this.selection)}
+				selectRows={options || onSelectionChange ? "checkbox" : undefined}
 			>
 				{
 					header.map((header: HeaderInfo, index: number) => {
@@ -130,10 +131,8 @@ export class LineReport extends React.Component<LineReportProps> {
 	}
 
 	private handleChanged = (event: any, data: any) => {
-		// if (this.props.onClick) {
-		// 	this.props.onClick(data.selection?.[0]);
-		// }
-		this.setState({ selection: data.selection });
+		this.selection = data.selection;
+		this.props.onSelectionChange?.(this.selection);
 	};
 
 	private handleSort = (sortColumn: SortColumn) => {

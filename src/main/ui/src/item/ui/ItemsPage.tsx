@@ -27,6 +27,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	createEditor?: () => JSX.Element;
 	onAfterCreate?: (store: AggregateStore) => void;
 	onOpenPreview?: (itemId: string) => void;
+	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 @inject("session", "showAlert", "showToast")
@@ -80,6 +81,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					sortDirection={this.sortDirection}
 					onClick={this.openPreview}
 					onSort={this.storeSort}
+					onSelectionChange={this.props.onSelectionChange}
 				/>
 				{
 					this.store?.isInTrx && (
