@@ -1,5 +1,7 @@
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+delete from obj_building_part_element_rating;
+
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8253|Schulstrasse 5|best. Schulhaus Zentrum|13886'), 'P1', 35, 80, 2010,'Stahlbetondecken, Mauerwerk'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8253|Schulstrasse 5|best. Schulhaus Zentrum|13886'), 'P2', 4, 50, 2010,'Ziegeleindeckung, schadhaft'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8253|Schulstrasse 5|best. Schulhaus Zentrum|13886'), 'P3', 0, 0, 2010,''),
@@ -456,7 +458,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '3032|Hofenstrasse 54|Wohnhaus (private Kindertagesstätte)|768'), 'P49', 0, 0, 2012,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '3032|Hofenstrasse 54|Wohnhaus (private Kindertagesstätte)|768'), 'P2', 8, 90, 2012,'Falzziegeldach m. Lukarnen und Dachfl.fenster');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '3032|Hofenstrasse 54|Wohnhaus (private Kindertagesstätte)|768'), 'P3', 0, 0, 2012,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '3032|Hofenstrasse 54|Wohnhaus (private Kindertagesstätte)|768'), 'P4', 7, 90, 2012,'Riegel mit verp. Ausfachungen'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '3032|Hofenstrasse 54|Wohnhaus (private Kindertagesstätte)|768'), 'P5', 10, 90, 2012,'Holz, Doppelvergl., Holzläden'),
@@ -842,7 +844,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9220|Hoffnungsgut/(Thurblick)|Kindergartenpavillon, Gartenhaus|772'), 'P9', 4, 90, 2013,'Neue Sicherungen mit FI-Schaltern'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9220|Hoffnungsgut/(Thurblick)|Kindergartenpavillon, Gartenhaus|772'), 'P6', 0, 90, 2013,'WW: E-Boiler, Heizung vom Nachbargebäude');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9220|Hoffnungsgut/(Thurblick)|Kindergartenpavillon, Gartenhaus|772'), 'P7', 3, 90, 2013,'Radiatoren mit Thermostaten'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9220|Hoffnungsgut/(Thurblick)|Kindergartenpavillon, Gartenhaus|772'), 'P54', 1, 90, 2013,'Moderne Apparate, keine Mängel bekannt'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9220|Hoffnungsgut/(Thurblick)|Kindergartenpavillon, Gartenhaus|772'), 'P55', 3, 90, 2013,'Durchfluss gewährleistet'),
@@ -1263,7 +1265,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5620|Wohlerstrasse|Casino|8672'), 'P60', 0, 0, 2012,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5620|Wohlerstrasse|Casino|8672'), 'P61', 0, 0, 2012,'');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5620|Wohlerstrasse|Casino|8672'), 'P62', 0, 0, 2012,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5620|Obertorplatz|Stadtschulhaus|17099'), 'P48', 40, 90, 2012,'massiv'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5620|Obertorplatz|Stadtschulhaus|17099'), 'P49', 0, 0, 2012,''),
@@ -1684,7 +1686,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9470|Churerstrasse 119|Turnhalle|1699'), 'P60', 0, 0, 2013,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9470|Churerstrasse 119|Turnhalle|1699'), 'P61', 0, 0, 2013,'');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9470|Churerstrasse 119|Turnhalle|1699'), 'P62', 0, 0, 2013,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9470|Volksgartenstrasse 1|Kindergarten Kappeli mit Wohnung und Garage|1444'), 'P48', 42, 90, 2013,'Mauerwerk mit Holzbalkendecken, tw. Glasbausteine'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9470|Volksgartenstrasse 1|Kindergarten Kappeli mit Wohnung und Garage|1444'), 'P49', 0, 0, 2013,''),
@@ -2140,7 +2142,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8468|Mülibachstrasse 18|Schulhaus mit Turnhalle|10153'), 'P62', 0, 0, 2015,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8468|Mülibachstrasse 20|Haus Mülibach|2224'), 'P48', 27, 85, 2015,'Mauerwerk, kl. Risse vorhanden');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8468|Mülibachstrasse 20|Haus Mülibach|2224'), 'P49', 0, 0, 2015,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8468|Mülibachstrasse 20|Haus Mülibach|2224'), 'P2', 15, 60, 2015,'Falzziegel, tw. undicht, Unterdach aus Holz, Vordach aus Glas'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8468|Mülibachstrasse 20|Haus Mülibach|2224'), 'P3', 4, 0, 2015,''),
@@ -2701,7 +2703,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8335|Jakob Stutz-Str. 7|Kiga Unterhittnau und Wohnung|1449'), 'P58', 8, 80, 2017,'D: Putz (tw. mit Rissen), Holzkassetten, gestrichen, Gipskartonplatten, gestrichen\nW: Putz (tw. Risse), Holzverkleidungen, gestrichen\nB: Linoleum, Keramik, Holzboden, Steinplatten, Parkettboden, Laminat, Teppich'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8335|Jakob Stutz-Str. 7|Kiga Unterhittnau und Wohnung|1449'), 'P59', 4, 90, 2017,'Küche mit Glaskeramikkochfeld und Geschirrspüler, neuwertig');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8335|Jakob Stutz-Str. 7|Kiga Unterhittnau und Wohnung|1449'), 'P60', 0, 0, 2017,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8335|Jakob Stutz-Str. 7|Kiga Unterhittnau und Wohnung|1449'), 'P61', 0, 0, 2017,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8335|Jakob Stutz-Str. 7|Kiga Unterhittnau und Wohnung|1449'), 'P62', 0, 0, 2017,''),
@@ -3192,7 +3194,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '1111|Teststrasse.|Testgebäude1|1025'), 'P7', 4, 0, 2013,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '1111|Teststrasse.|Testgebäude1|1025'), 'P52', 3, 0, 2013,'');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '1111|Teststrasse.|Testgebäude1|1025'), 'P53', 3, 0, 2013,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '1111|Teststrasse.|Testgebäude1|1025'), 'P8', 5, 0, 2013,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '1111|Teststrasse.|Testgebäude1|1025'), 'P57', 11, 0, 2013,''),
@@ -3648,7 +3650,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9471|Volksgartenstrasse 38|Feuerwehr- & Zivilschutzanlage|18049'), 'P49', 10, 90, 2016,'Holzbau'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9471|Volksgartenstrasse 38|Feuerwehr- & Zivilschutzanlage|18049'), 'P2', 0, 0, 2016,'');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9471|Volksgartenstrasse 38|Feuerwehr- & Zivilschutzanlage|18049'), 'P3', 10, 70, 2016,'Kiesklebedach auf Holzunterkontruktion, die bituminöse Schicht löst\nsich an einzelnen Stellen und ist nicht mehr dicht, Oblichtkuppeln'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9471|Volksgartenstrasse 38|Feuerwehr- & Zivilschutzanlage|18049'), 'P4', 6, 90, 2016,'Mauerwerk, Stahlbeton, tw. verputzt'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '9471|Volksgartenstrasse 38|Feuerwehr- & Zivilschutzanlage|18049'), 'P5', 15, 90, 2016,'Sektionaltore, doppelverglaste Aluminiumfenster mit Rafflamellenstoren,\nOblichter'),
@@ -4069,7 +4071,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '4303|Kirchgasse|Kirchturm|583'), 'P2', 4, 80, 2019,'Ziegeldach (Bieberschwanz) ohne Unterdach'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '4303|Kirchgasse|Kirchturm|583'), 'P3', 0, 0, 2019,'-');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '4303|Kirchgasse|Kirchturm|583'), 'P4', 24, 70, 2019,'Mauerwerk, verputzt, Natursteingewände'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '4303|Kirchgasse|Kirchturm|583'), 'P5', 4, 70, 2019,'Holzläden'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '4303|Kirchgasse|Kirchturm|583'), 'P6', 0, 0, 2019,'-'),
@@ -4525,7 +4527,7 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8564|Schulstrasse 1|Primarschule Sonterswil  Erweiterungsbau|4808'), 'P4', 7, 90, 2020,'Mauerwerk, verputzt. Keine Mängel sichtbar.'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8564|Schulstrasse 1|Primarschule Sonterswil  Erweiterungsbau|4808'), 'P5', 10, 80, 2020,'Holzmetall-Fenster, Manuelle Storen, Alte Holzfenster, tw. einfach verglast, tw. nicht isoliert (Kindergarten), elektrische Rolläden, Eingangstür : Holz mit IV-Glaseinsätzen, Holzmetallfenster');
 
-insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,value_part,condition,condition_year,description) values
+insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,building_part_id,weight,condition,condition_year,description) values
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8564|Schulstrasse 1|Primarschule Sonterswil  Erweiterungsbau|4808'), 'P50', 6, 80, 2020,'Sicherungen tw. defekt'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8564|Schulstrasse 1|Primarschule Sonterswil  Erweiterungsbau|4808'), 'P51', 1, 80, 2020,'Alte Beleuchtung im Lehrerzimmer'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '8564|Schulstrasse 1|Primarschule Sonterswil  Erweiterungsbau|4808'), 'P6', 1, 80, 2020,'Ölheizung ''90, Boiler'),
@@ -4857,3 +4859,21 @@ insert into obj_building_part_element_rating(id,part_list_type_id,obj_id,buildin
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5425|Aemmert, Schladstrasse 21|Mehrzweckhalle|6029'), 'P60', 0, 0, 2021,''),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5425|Aemmert, Schladstrasse 21|Mehrzweckhalle|6029'), 'P61', 3, 80, 2021,'Küchenabluft'),
 (nextval('obj_part_id_seq'), 'building.elementRatingList', (select id from obj_building_v where zip||'|'||street||'|'||name||'|'||volume = '5425|Aemmert, Schladstrasse 21|Mehrzweckhalle|6029'), 'P62', 0, 0, 2021,'');
+
+-- populate rating
+update	obj_building_part_rating r
+set			rating_date = (
+					select	to_date(max(e.condition_year) || '0630', 'YYYYMMDD')
+					from		obj_building_part_element_rating e
+					where		e.obj_id = r.obj_id
+					group by e.obj_id
+				);
+
+-- link elements to (first) rating
+update	obj_building_part_element_rating e
+set			seq_nr = 0,
+				parent_part_id = (
+					select  min(r.id)
+					from    obj_building_part_rating r
+					where   r.obj_id = e.obj_id
+				);

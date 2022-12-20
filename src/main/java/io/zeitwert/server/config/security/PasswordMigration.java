@@ -24,8 +24,8 @@ public class PasswordMigration {
 		System.out.println("Password Migration");
 		for (Record user : this.dbContext.selectFrom("obj_user_v").where("password like '{noop}%'").fetch()) {
 			Integer id = ((Integer) user.get("id"));
-			String email = ((String) user.get("email")).substring(6);
-			String pwd = ((String) user.get("password")).substring(6);
+			String email = ((String) user.get("email"));
+			String pwd = ((String) user.get("password")).substring(6); // remove {noop}
 			String newPwd = pwdEncoder.encode(pwd);
 			System.out.println(email + " (" + id + "): " + pwd + " => " + newPwd);
 			this.dbContext.update(Tables.OBJ_USER)
