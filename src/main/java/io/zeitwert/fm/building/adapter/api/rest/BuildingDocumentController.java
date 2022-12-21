@@ -122,6 +122,7 @@ public class BuildingDocumentController {
 					String fileName = building.getAccount().getName() + " - " + building.getName();
 					fileName += " - " + dateTimeNow;
 					fileName = this.getFileName(fileName, this.getSaveFormat(format));
+					fileName = fileName.replace("/", " ");
 					ZipEntry entry = new ZipEntry(fileName);
 					entry.setSize(stream.size());
 					zos.putNextEntry(entry);
