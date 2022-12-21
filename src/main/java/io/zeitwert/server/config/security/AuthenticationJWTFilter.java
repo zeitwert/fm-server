@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.zeitwert.server.session.service.api.JwtProvider;
 
@@ -33,10 +32,11 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
-		String authToken = this.getJwtFromHeader(request);
-		if (StringUtils.hasText(authToken)) {
+		try {
 
-			try {
+			String authToken = this.getJwtFromHeader(request);
+
+			if (StringUtils.hasText(authToken)) {
 
 				Claims claims = this.getClaims(authToken);
 				String userEmail = claims.getSubject();
@@ -68,15 +68,13 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			} catch (ExpiredJwtException e) {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			} catch (Exception exception) {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			}
 
-		}
+			chain.doFilter(request, response);
 
-		chain.doFilter(request, response);
+		} catch (Exception exception) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		}
 
 	}
 
