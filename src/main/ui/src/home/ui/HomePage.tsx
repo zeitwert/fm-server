@@ -1,5 +1,5 @@
 import { session } from "@zeitwert/ui-model";
-import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import BuildingPreview from "building/ui/BuildingPreview";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";

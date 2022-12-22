@@ -1,5 +1,5 @@
 import { MediaObject } from "@salesforce/design-system-react";
-import { Col, ColumnAlignment, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, ColumnAlignment, Grid } from "@zeitwert/ui-slds";
 import { Text, TextCategory, TextType } from "@zeitwert/ui-slds/common/Text";
 import classNames from "classnames";
 import React from "react";

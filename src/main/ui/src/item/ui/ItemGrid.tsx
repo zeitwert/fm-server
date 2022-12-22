@@ -1,6 +1,6 @@
 import { Card, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { ActivityFormTypes, ActivityPortlet } from "activity/ActivityPortlet";
 import { FormParser } from "activity/forms/FormParser";
 import classNames from "classnames";

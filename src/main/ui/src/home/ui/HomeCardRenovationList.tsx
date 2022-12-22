@@ -1,5 +1,5 @@
 import { Button, Card } from "@salesforce/design-system-react";
-import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

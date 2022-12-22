@@ -1,5 +1,5 @@
 import { Card, Icon } from "@salesforce/design-system-react";
-import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { inject, observer } from "mobx-react";

@@ -8,7 +8,7 @@ import {
 	DocumentStoreModel,
 	DOCUMENT_API, Enumerated
 } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { DocumentCatalog } from "dms/ui/DocumentCatalog";
 import DocumentsWidget from "dms/ui/DocumentsWidget";
 import { AppCtx } from "frame/App";

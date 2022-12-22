@@ -1,6 +1,6 @@
 import { Icon } from "@salesforce/design-system-react";
 import { Currency, DateFormat, DocStore } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { Timeline, TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
 import { AppCtx } from "frame/App";
 import { inject, observer } from "mobx-react";

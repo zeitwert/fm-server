@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Card, Icon, Tooltip } from "@salesforce/design-system-react";
 import { deepFind } from "@zeitwert/ui-model";
-import { Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Grid } from "@zeitwert/ui-slds";
 import { AppCtx } from "frame/App";
 import { inject, observer } from "mobx-react";
 import React from "react";

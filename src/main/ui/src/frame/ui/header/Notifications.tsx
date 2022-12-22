@@ -2,7 +2,7 @@
 import { Avatar, Button, GlobalHeaderNotifications, MediaObject, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_NOTIFICATIONS } from "@salesforce/design-system-react/utilities/constants";
 import { DateFormat, session } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 interface GridProps {
 	tag?: string;
@@ -9,7 +9,7 @@ interface GridProps {
 	style?: React.CSSProperties;
 }
 
-export class Grid extends React.Component<GridProps> {
+export class Grid extends React.Component<PropsWithChildren<GridProps>> {
 	render() {
 		const { className, isFrame, isVertical, children, tag, ...props } = this.props;
 		const Tag = tag || "div";
@@ -29,6 +29,7 @@ export class Grid extends React.Component<GridProps> {
 	public static defaultProps: Partial<GridProps> = {
 		isVertical: true
 	};
+
 }
 
 export enum ColumnAlignment {
@@ -58,7 +59,7 @@ interface ColProps {
 	style?: React.CSSProperties;
 }
 
-export class Col extends React.Component<ColProps> {
+export class Col extends React.Component<PropsWithChildren<ColProps>> {
 	render() {
 		const {
 			tag,
@@ -135,7 +136,7 @@ interface RowProps {
 	className?: string;
 }
 
-export class Row extends React.Component<RowProps> {
+export class Row extends React.Component<PropsWithChildren<RowProps>> {
 	render() {
 		const {
 			className,
@@ -170,7 +171,7 @@ export class Row extends React.Component<RowProps> {
 					if (!React.isValidElement(child)) {
 						return;
 					}
-					cnt += child.props["cols"] || 1;
+					cnt += child.props?.["cols"] || 1;
 				});
 				return cnt;
 			})();
@@ -200,4 +201,5 @@ export class Row extends React.Component<RowProps> {
 		const childProps = Object.keys(colProps).reduce(propAggregator, {});
 		return React.cloneElement(child, childProps);
 	};
+
 }

@@ -1,6 +1,6 @@
 import { ExpandableSection } from "@salesforce/design-system-react";
 import { Activity, DateFormat } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { Timeline } from "@zeitwert/ui-slds/timeline/Timeline";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import { computed, makeObservable, observable } from "mobx";

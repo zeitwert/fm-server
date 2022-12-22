@@ -1,7 +1,7 @@
 
 import { Card, Icon, Spinner } from "@salesforce/design-system-react";
 import { API, Config, session } from "@zeitwert/ui-model";
-import { Col, Grid, Row } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

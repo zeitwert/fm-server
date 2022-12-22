@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import classNames from "classnames";
 import React from "react";
 

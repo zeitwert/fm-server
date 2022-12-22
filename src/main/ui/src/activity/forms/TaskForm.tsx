@@ -1,8 +1,8 @@
 
 import { Button, Checkbox, Combobox, Icon, Input, Textarea, Tooltip } from "@salesforce/design-system-react";
 import { Account, Aggregate, API, Config, Enumerated, GenericUserType, UserInfo } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import Datepicker from "@zeitwert/ui-slds/common/Datepicker";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
 import GenericUserCombobox, { ComboboxItem } from "@zeitwert/ui-slds/custom/GenericUserCombobox";
 import { ActivityFormTypes, ActivityProps } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";

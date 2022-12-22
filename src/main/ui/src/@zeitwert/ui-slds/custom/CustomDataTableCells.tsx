@@ -2,7 +2,7 @@
 import { DataTableCell, Icon } from "@salesforce/design-system-react";
 import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/constants";
 import { channels, DateFormat, EntityTypes, NumberFormat } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import CustomIcon from "@zeitwert/ui-slds/custom/CustomIcon";
 import { DocumentUtils } from "dms/utils/DocumentUtils";
 import React from "react";
