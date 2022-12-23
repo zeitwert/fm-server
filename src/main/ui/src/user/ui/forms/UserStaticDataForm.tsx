@@ -1,23 +1,13 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { EnumeratedField, FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
-import { Enumerated, TENANT_API, User, UserModel, UserStore } from "@zeitwert/ui-model";
+import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { Enumerated, TENANT_API, User, UserStore } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { converters, Field, Form } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-
-const UserStaticDataFormModel = new Form(
-	UserModel,
-	{
-		id: new Field(converters.string),
-		tenant: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/objTenant", required: true }),
-		email: new TextField({ required: true }),
-		name: new TextField({ required: true }),
-		role: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/codeUserRole", required: true }),
-		description: new TextField(),
-	}
-);
+import UserFormModel from "./UserFormModel";
 
 export interface UserStaticDataFormProps {
 	store: UserStore;
@@ -26,7 +16,14 @@ export interface UserStaticDataFormProps {
 @observer
 export default class UserStaticDataForm extends React.Component<UserStaticDataFormProps> {
 
-	formState: typeof UserStaticDataFormModel.FormStateType;
+	FORM_OPTIONS: FormStateOptions<typeof UserFormModel> = {
+		isReadOnly: (accessor) => {
+			if (!this.props.store.isInTrx) {
+				return true;
+			}
+			return false;
+		},
+	};
 
 	@observable
 	allTenants: Enumerated[] = [];
@@ -42,28 +39,6 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 	constructor(props: UserStaticDataFormProps) {
 		super(props);
 		makeObservable(this);
-		this.formState = UserStaticDataFormModel.state(
-			this.props.store.item!,
-			{
-				converterOptions: {
-					decimalSeparator: ".",
-					thousandSeparator: "'",
-					renderThousands: true,
-				},
-				isReadOnly: (accessor) => {
-					if (!this.props.store.isInTrx) {
-						return true;
-					}
-					return false;
-				},
-				isDisabled: (accessor) => {
-					return false;
-				},
-				isRequired: (accessor) => {
-					return false;
-				},
-			}
-		);
 	}
 
 	async componentDidMount() {
@@ -81,40 +56,38 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 		const isInTrx = this.props.store.isInTrx;
 		const user = this.props.store.item! as User;
 		return (
-			<div>
-				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-2">
+			<SldsForm formModel={UserFormModel} options={this.FORM_OPTIONS} item={this.props.store.user!}>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={1} totalCols={2}>
 						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="Email" type="text" accessor={this.formState.field("email")} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
+								<FieldGroup>
+									<FieldRow>
+										<Input label="Name" type="text" fieldName="name" />
+									</FieldRow>
+									<FieldRow>
+										<Input label="Email" type="text" fieldName="email" />
+									</FieldRow>
+								</FieldGroup>
 							</div>
 						</Card>
-					</div>
-					<div className="slds-col slds-size_1-of-2">
+					</Col>
+					<Col cols={1} totalCols={2}>
 						<Card heading="&nbsp;" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<TextArea label="Beschreibung" accessor={this.formState.field("description")} rows={4} />
+											<TextArea label="Beschreibung" fieldName="description" rows={4} />
 										</FieldRow>
 									</FieldGroup>
 								</div>
 							</div>
 						</Card>
-					</div>
-				</div>
-				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-2">
+					</Col>
+				</Grid>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={1} totalCols={2}>
 						<Card heading="Autorisierung" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body xslds-card__body_inner">
 								<FieldGroup>
@@ -178,22 +151,20 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 								</div>
 							</Card>
 						}
-					</div>
-					<div className="slds-col slds-size_1-of-2">
+					</Col>
+					<Col cols={1} totalCols={2}>
 						<Card heading="&nbsp;" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Select label="Rolle" accessor={this.formState.field("role")} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
+								<FieldGroup>
+									<FieldRow>
+										<Select label="Rolle" fieldName="role" />
+									</FieldRow>
+								</FieldGroup>
 							</div>
 						</Card>
-					</div>
-				</div>
-			</div>
+					</Col>
+				</Grid>
+			</SldsForm>
 		);
 	}
 

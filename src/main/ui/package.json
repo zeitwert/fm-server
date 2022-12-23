@@ -5,8 +5,10 @@
 	"scripts": {
 		"build-css": "sass src/assets/app.scss src/assets/app.css",
 		"watch-css": "sass src/assets/app.scss src/assets/app.css --watch",
-		"start-js": "react-app-rewired start",
-		"build-js": "react-app-rewired build",
+		"start-jsx": "react-app-rewired start",
+		"build-jsx": "react-app-rewired build",
+		"start-js": "react-app-rewired --openssl-legacy-provider start",
+		"build-js": "react-app-rewired --openssl-legacy-provider build",
 		"analyze": "source-map-explorer 'build/static/js/*.js'",
 		"start": "npm-run-all -p watch-css start-js",
 		"build": "npm-run-all -s build-css build-js",

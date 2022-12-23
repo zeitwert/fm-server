@@ -1,21 +1,13 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { FieldGroup, FieldRow, Input, Select, TextArea, TextField } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { converters, Field, Form } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-
-const PortfolioStaticDataFormModel = new Form(
-	PortfolioModel,
-	{
-		id: new Field(converters.string),
-		name: new TextField({ required: true }),
-		portfolioNr: new TextField(),
-		description: new TextField(),
-	}
-);
+import PortfolioFormModel from "./PortfolioFormModel";
 
 export interface PortfolioStaticDataFormProps {
 	store: PortfolioStore;
@@ -24,7 +16,14 @@ export interface PortfolioStaticDataFormProps {
 @observer
 export default class PortfolioStaticDataForm extends React.Component<PortfolioStaticDataFormProps> {
 
-	formState: typeof PortfolioStaticDataFormModel.FormStateType;
+	FORM_OPTIONS: FormStateOptions<typeof PortfolioFormModel> = {
+		isReadOnly: (accessor) => {
+			if (!this.props.store.isInTrx) {
+				return true;
+			}
+			return false;
+		},
+	};
 
 	@observable
 	allAccounts: Enumerated[] = [];
@@ -76,30 +75,6 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	constructor(props: PortfolioStaticDataFormProps) {
 		super(props);
 		makeObservable(this);
-		const portfolio = props.store.item!;
-		this.formState = PortfolioStaticDataFormModel.state(
-			portfolio,
-			{
-				converterOptions: {
-					decimalSeparator: ".",
-					thousandSeparator: "'",
-					renderThousands: true,
-				},
-				isReadOnly: (accessor) => {
-					if (!props.store.isInTrx) {
-						return true;
-					}
-					return false;
-				},
-				isDisabled: (accessor) => {
-					return false;
-				},
-				isRequired: (accessor) => {
-					return false;
-				},
-			}
-		);
-		//this.formState.field("portfolioSubType").references.autoLoadReaction();
 	}
 
 	async componentDidMount() {
@@ -129,56 +104,48 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		});
 	}
 
-	componentWillUnmount() {
-		//this.formState.field("portfolioSubType").references.clearAutoLoadReaction();
-	}
-
 	render() {
 		const isInTrx = this.props.store.isInTrx;
 		const portfolio = this.props.store.item! as Portfolio;
 		return (
-			<div>
-				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-2">
+			<SldsForm formModel={PortfolioFormModel} options={this.FORM_OPTIONS} item={this.props.store.portfolio!}>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={1} totalCols={2}>
 						<Card heading="Identifikation" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} size={9} />
-											<Input label="Portfolio Nr." type="text" accessor={this.formState.field("portfolioNr")} size={3} />
-										</FieldRow>
-									</FieldGroup>
+								<FieldGroup>
 									<FieldRow>
-										<Select
-											label="Gemeinde"
-											value={portfolio.account?.id}
-											values={[{ id: portfolio.account!.id!, name: portfolio.account!.name!, itemType: portfolio.account!.meta?.itemType }]}
-											onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
-											readOnly={isInTrx}
-											disabled={true}
-										/>
+										<Input label="Name" type="text" fieldName="name" size={9} />
+										<Input label="Portfolio Nr." type="text" fieldName="portfolioNr" size={3} />
 									</FieldRow>
-								</div>
+								</FieldGroup>
+								<FieldRow>
+									<Select
+										label="Gemeinde"
+										value={portfolio.account?.id}
+										values={[{ id: portfolio.account!.id!, name: portfolio.account!.name!, itemType: portfolio.account!.meta?.itemType }]}
+										onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
+										readOnly={isInTrx}
+										disabled={true}
+									/>
+								</FieldRow>
 							</div>
 						</Card>
-					</div>
-					<div className="slds-col slds-size_1-of-2">
+					</Col>
+					<Col cols={1} totalCols={2}>
 						<Card heading="Beschreibung" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<TextArea label="Beschreibung / Kommentare" accessor={this.formState.field("description")} rows={4} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
+								<FieldGroup>
+									<FieldRow>
+										<TextArea label="Beschreibung / Kommentare" fieldName="description" rows={4} />
+									</FieldRow>
+								</FieldGroup>
 							</div>
 						</Card>
-					</div>
-				</div>
-				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-2">
+					</Col>
+				</Grid>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={1} totalCols={2}>
 						<Card heading={`Einzuschliessende Elemente (${portfolio.includes.length})`} bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "200px", overflowY: "auto" }}>
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
@@ -224,8 +191,8 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 								</table>
 							</div>
 						</Card>
-					</div>
-					<div className="slds-col slds-size_1-of-2">
+					</Col>
+					<Col cols={1} totalCols={2}>
 						<Card heading={`Auszuschliessende Elemente (${portfolio.excludes.length})`} bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "200px", overflowY: "auto" }}>
 								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
@@ -271,12 +238,12 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 								</table>
 							</div>
 						</Card>
-					</div>
-				</div>
+					</Col>
+				</Grid>
 				{
 					isInTrx &&
-					<div className="slds-grid slds-wrap slds-m-top_small">
-						<div className="slds-col slds-size_1-of-2">
+					<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+						<Col cols={1} totalCols={2}>
 							<Card heading="Neu einschliessen" bodyClassName="slds-m-around_medium">
 								<div className="slds-card__body xslds-card__body_inner">
 									<FieldGroup>
@@ -291,8 +258,8 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 									</FieldGroup>
 								</div>
 							</Card>
-						</div>
-						<div className="slds-col slds-size_1-of-2">
+						</Col>
+						<Col cols={1} totalCols={2}>
 							<Card heading="Neu ausschliessen" bodyClassName="slds-m-around_medium">
 								<div className="slds-card__body xslds-card__body_inner">
 									<FieldGroup>
@@ -307,12 +274,12 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 									</FieldGroup>
 								</div>
 							</Card>
-						</div>
-					</div>
+						</Col>
+					</Grid>
 				}
 				{
-					<div className="slds-grid slds-wrap slds-m-top_small">
-						<div className="slds-col slds-size_1-of-1">
+					<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+						<Col cols={1} totalCols={1}>
 							<Card heading={`Aktuelles Resultat (${portfolio.buildings.length})`} bodyClassName="slds-m-around_medium">
 								<div className="slds-card__body xslds-card__body_inner">
 									<table className="slds-table slds-table_cell-buffer slds-table_bordered">
@@ -345,10 +312,10 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 									</table>
 								</div>
 							</Card>
-						</div>
-					</div>
+						</Col>
+					</Grid>
 				}
-			</div>
+			</SldsForm>
 		);
 	}
 

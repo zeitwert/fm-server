@@ -3,7 +3,8 @@ import { Enumerated } from "@zeitwert/ui-model";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { Field, FieldProps, getComponentProps, getFieldId } from "./Field";
+import { FormStateContext } from "../Form";
+import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface Option extends Enumerated {
 
@@ -18,15 +19,18 @@ export interface SelectProps extends FieldProps {
 @observer
 export class Select extends React.Component<SelectProps> {
 
+	static contextType = FormStateContext;
+
 	@observable
 	showHelpText: boolean = false;
 
 	async componentDidMount() {
-		await this.props.accessor?.references?.load({});
+		const accessor = getAccessor(this.props, this.context);
+		await accessor?.references?.load({});
 	}
 
 	render() {
-		const accessor = this.props.accessor!;
+		const accessor = getAccessor(this.props, this.context);
 		const { readOnly, inputProps } = getComponentProps(accessor, this.props);
 		const items = accessor ? accessor.references.values({}) : this.props.values || [];
 		const currentItem = accessor ? accessor.references.getById(accessor.raw) : this.props.values?.find(item => item.id === this.props.value);

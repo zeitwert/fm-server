@@ -1,8 +1,9 @@
 
 import classNames from "classnames";
 import { observer } from "mobx-react";
-import { FC } from "react";
-import { Field, FieldProps, getComponentProps, getFieldId } from "./Field";
+import { FC, useContext } from "react";
+import { FormStateContext } from "../Form";
+import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface InputProps extends FieldProps {
 	id?: string;
@@ -14,7 +15,8 @@ export interface InputProps extends FieldProps {
 }
 
 export const Input: FC<InputProps> = observer((props) => {
-	const { id, accessor, type, align } = props;
+	const { id, type, align } = props;
+	const accessor = getAccessor(props, useContext(FormStateContext));
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
 	const fieldId = id || getFieldId(props);
 	return (

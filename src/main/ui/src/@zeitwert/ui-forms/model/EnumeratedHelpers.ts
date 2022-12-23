@@ -3,12 +3,7 @@ import { API, Config, Enumerated, EnumeratedModel } from "@zeitwert/ui-model";
 import { types } from "mobx-state-tree";
 import { AccessorDependentQuery, Query, Source } from "mstform";
 
-const API_BASE_URL = Config.getApiUrl("##", "##").replace("/##/##", "");
 const ENUM_BASE_URL = Config.getEnumUrl("##", "##").replace("/##/##", "");
-
-export function replaceUrlPlaceholders(url: string): string {
-	return url.replace("{{enumBaseUrl}}", ENUM_BASE_URL).replace("{{apiBaseUrl}}", API_BASE_URL);
-}
 
 export const EnumeratedContainer = types.model(
 	"EnumeratedContainer",
@@ -26,7 +21,7 @@ export function enumeratedSource(sourceOrUrl: EnumSource, dependentQuery?: Acces
 		source = new Source({
 			entryMap: container.entryMap,
 			load: async () => {
-				const response = await API.get(replaceUrlPlaceholders(sourceOrUrl));
+				const response = await API.get(ENUM_BASE_URL + "/" + sourceOrUrl);
 				return response.data;
 			},
 		});
@@ -43,18 +38,3 @@ export function enumeratedSource(sourceOrUrl: EnumSource, dependentQuery?: Acces
 		}
 	}
 }
-
-// redefined because mstform only has model | null (instead of undefined)
-// function maybeModel<M extends IAnyModelType>(_model: M) {
-// 	return new Converter<Instance<M> | undefined, Instance<M> | undefined>({
-// 		emptyRaw: undefined,
-// 		emptyValue: undefined,
-// 		defaultControlled: controlled.value,
-// 		convert(raw) {
-// 			return raw;
-// 		},
-// 		render(value) {
-// 			return value;
-// 		},
-// 	});
-// }

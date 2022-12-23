@@ -1,8 +1,9 @@
 
 import classNames from "classnames";
 import { observer } from "mobx-react";
-import { FieldAccessor } from "mstform";
-import { FC, useState } from "react";
+import { FieldAccessor, FormState } from "mstform";
+import { FC, useContext, useState } from "react";
+import { FormStateContext } from "../Form";
 
 export interface FieldGroupProps {
 	legend?: string;
@@ -36,7 +37,7 @@ export const FieldRow: FC<FieldRowProps> = (props) => {
 };
 
 export interface FieldProps {
-	accessor?: FieldAccessor<any, any>;
+	fieldName?: string;
 	readOnly?: boolean;
 	required?: boolean;
 	disabled?: boolean;
@@ -53,8 +54,8 @@ export interface FieldProps {
 let fieldId = 0;
 
 export function getFieldId(props: FieldProps): string {
-	if (props.accessor) {
-		return "field-" + props.accessor.name;
+	if (props.fieldName) {
+		return "field-" + props.fieldName;
 	} else if (props["__field_id"]) {
 		return props["__field_id"];
 	}
@@ -65,6 +66,13 @@ export function getFieldId(props: FieldProps): string {
 export interface ComponentProps {
 	readOnly: boolean | undefined;
 	inputProps: any;
+}
+
+export function getAccessor(props: any, formState: FormState<any, any, any>): FieldAccessor<any, any> | undefined {
+	if (props.fieldName) {
+		return formState.field(props.fieldName);
+	}
+	return undefined;
 }
 
 export function getComponentProps(accessor: FieldAccessor<any, any> | undefined, props: any): ComponentProps {
@@ -80,7 +88,8 @@ export function getComponentProps(accessor: FieldAccessor<any, any> | undefined,
 export const Field: FC<FieldProps> = observer((props) => {
 
 	const fieldId = getFieldId(props);
-	const { label, accessor, size, helpText, align, readOnlyLook, isMultiline } = props;
+	const { label, size, helpText, align, readOnlyLook, isMultiline } = props;
+	const accessor = getAccessor(props, useContext(FormStateContext));
 	let required: boolean | undefined;
 	let readOnly: boolean | undefined;
 	let error: string | undefined;

@@ -7,7 +7,7 @@ import React from "react";
 
 export const ElementRatingFormModel = new RepeatingForm({
 	id: new Field(converters.string),
-	buildingPart: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingPart" }),
+	buildingPart: new EnumeratedField({ source: "building/codeBuildingPart" }),
 	weight: new NumberField(),
 	condition: new NumberField(),
 	strain: new OptionField(converters.maybe(converters.integer), { options: StrainOptions }),
@@ -38,7 +38,7 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 	}
 
 	render() {
-		const { element, elementForm } = this.props;
+		const { element/*, elementForm*/ } = this.props;
 		return (
 			<div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "100%", backgroundColor: "white" }}>
 
@@ -126,12 +126,14 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 									<FieldRow>
 										<RadioButtonGroup
 											label="Widerstandsfähigkeit"
-											accessor={elementForm.field("strength")}
+											fieldName="strength"
+											//accessor={elementForm.field("strength")}
 											size={6}
 										/>
 										<RadioButtonGroup
 											label="Belastung"
-											accessor={elementForm.field("strain")}
+											fieldName="strain"
+											//accessor={elementForm.field("strain")}
 											size={6}
 										/>
 									</FieldRow>
@@ -144,7 +146,8 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 										<FieldRow>
 											<TextArea
 												label="Beschreibung / Bemerkungen"
-												accessor={elementForm.field("description")}
+												fieldName="description"
+												//accessor={elementForm.field("description")}
 												rows={4}
 											/>
 										</FieldRow>
@@ -153,7 +156,8 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 										<FieldRow>
 											<TextArea
 												label="Zustandsbeschreibung"
-												accessor={elementForm.field("conditionDescription")}
+												fieldName="conditionDescription"
+												//accessor={elementForm.field("conditionDescription")}
 												rows={4}
 											/>
 										</FieldRow>
@@ -162,7 +166,8 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 										<FieldRow>
 											<TextArea
 												label="Massnahmen"
-												accessor={elementForm.field("measureDescription")}
+												fieldName="measureDescription"
+												//accessor={elementForm.field("measureDescription")}
 												rows={4}
 											/>
 										</FieldRow>

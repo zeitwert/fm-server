@@ -1,7 +1,8 @@
 
 import { observer } from "mobx-react";
-import { FC } from "react";
-import { Field, FieldProps, getComponentProps, getFieldId } from "./Field";
+import { FC, useContext } from "react";
+import { FormStateContext } from "../Form";
+import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface TextAreaProps extends FieldProps {
 	value?: string;
@@ -9,7 +10,8 @@ export interface TextAreaProps extends FieldProps {
 }
 
 export const TextArea: FC<TextAreaProps> = observer((props) => {
-	const { accessor, rows } = props;
+	const accessor = getAccessor(props, useContext(FormStateContext));
+	const { rows } = props;
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
 	const fieldId = getFieldId(props);
 	return (

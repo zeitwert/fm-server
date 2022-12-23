@@ -1,23 +1,13 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { FieldGroup, FieldRow, Input, Select, TextField } from "@zeitwert/ui-forms";
-import { Enumerated, Portfolio, PortfolioModel, PortfolioStore, session } from "@zeitwert/ui-model";
+import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
+import { Enumerated, Portfolio, PortfolioStore, session } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import { converters, Field, Form } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-
-const PortfolioCreationFormModel = new Form(
-	PortfolioModel,
-	{
-		id: new Field(converters.string),
-		name: new TextField({ required: true }),
-		portfolioNr: new TextField(),
-		description: new TextField()
-		//
-		//portfolioNr: new TextField({ required: true }),
-	}
-);
+import PortfolioFormModel from "./PortfolioFormModel";
 
 export interface PortfolioCreationFormProps {
 	store: PortfolioStore;
@@ -26,7 +16,16 @@ export interface PortfolioCreationFormProps {
 @observer
 export default class PortfolioCreationForm extends React.Component<PortfolioCreationFormProps> {
 
-	formState: typeof PortfolioCreationFormModel.FormStateType;
+	FORM_OPTIONS: FormStateOptions<typeof PortfolioFormModel> = {
+		isReadOnly: (accessor) => {
+			if (!this.props.store.isInTrx) {
+				return true;
+			} else if (!this.props.store.portfolio?.account) {
+				return true;
+			}
+			return false;
+		},
+	};
 
 	@observable
 	accounts: Enumerated[] = [];
@@ -34,28 +33,6 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	constructor(props: PortfolioCreationFormProps) {
 		super(props);
 		makeObservable(this);
-		const portfolio = props.store.item!;
-		this.formState = PortfolioCreationFormModel.state(
-			portfolio,
-			{
-				converterOptions: {
-					decimalSeparator: ".",
-					thousandSeparator: "'",
-					renderThousands: true,
-				},
-				isReadOnly: (accessor) => {
-					if (!props.store.isInTrx) {
-						return true;
-					} else if (!portfolio.account) {
-						return true;
-					}
-					return false;
-				},
-				isDisabled: (accessor) => {
-					return false;
-				},
-			}
-		);
 	}
 
 	async componentDidMount() {
@@ -68,44 +45,40 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	render() {
 		const portfolio = this.props.store.item! as Portfolio;
 		return (
-			<div>
-				<div className="slds-grid slds-wrap slds-m-top_small">
-					<div className="slds-col slds-size_1-of-1">
+			<SldsForm formModel={PortfolioFormModel} options={this.FORM_OPTIONS} item={this.props.store.portfolio!}>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={1} totalCols={1}>
 						<Card heading="Inhaber" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Select
-												label="Kunde"
-												required={true}
-												value={portfolio.account?.id}
-												values={this.accounts}
-												onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
-												disabled={!!portfolio.account?.id}
-											/>
-										</FieldRow>
-									</FieldGroup>
-								</div>
+								<FieldGroup>
+									<FieldRow>
+										<Select
+											label="Kunde"
+											required={true}
+											value={portfolio.account?.id}
+											values={this.accounts}
+											onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
+											disabled={!!portfolio.account?.id}
+										/>
+									</FieldRow>
+								</FieldGroup>
 							</div>
 						</Card>
 						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
 							<div className="slds-card__body slds-card__body_inner">
-								<div className="slds-form" role="list">
-									<FieldGroup>
-										<FieldRow>
-											<Input label="Name" type="text" accessor={this.formState.field("name")} />
-										</FieldRow>
-										<FieldRow>
-											<Input label="Portfolionummer" type="text" accessor={this.formState.field("portfolioNr")} />
-										</FieldRow>
-									</FieldGroup>
-								</div>
+								<FieldGroup>
+									<FieldRow>
+										<Input label="Name" type="text" fieldName="name" />
+									</FieldRow>
+									<FieldRow>
+										<Input label="Portfolionummer" type="text" fieldName="portfolioNr" />
+									</FieldRow>
+								</FieldGroup>
 							</div>
 						</Card>
-					</div>
-				</div>
-			</div>
+					</Col>
+				</Grid>
+			</SldsForm>
 		);
 	}
 

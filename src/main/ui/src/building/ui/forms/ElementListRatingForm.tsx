@@ -77,7 +77,7 @@ export interface ElementRowRatingFormProps {
 class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 
 	render() {
-		const { index, row, element, elementForm, currentElementId } = this.props;
+		const { index, row, element, /*elementForm,*/ currentElementId } = this.props;
 		let description = element.description ? element.description : "";
 		description += element.conditionDescription ? "\n<b>Zustand</b>: " + element.conditionDescription : "";
 		description += element.measureDescription ? "\n<b>Massnahmen</b>: " + element.measureDescription : "";
@@ -91,8 +91,8 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 				<FieldGroup>
 					<FieldRow>
 						<Static value={element.buildingPart?.name} size={2} readOnlyLook="plain" />
-						<Input id={"cell-" + row + "-0"} accessor={elementForm.field("weight")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
-						<Input id={"cell-" + row + "-2"} accessor={elementForm.field("condition")} size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
+						<Input id={"cell-" + row + "-0"} fieldName="weight" /*accessor={elementForm.field("weight")}*/ size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
+						<Input id={"cell-" + row + "-2"} fieldName="condition" /*accessor={elementForm.field("condition")}*/ size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
 						<Static value={element.shortTermRestoration ? element.shortTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
 						<Static value={element.midTermRestoration ? element.midTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
 						<Static value={element.longTermRestoration ? element.longTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />

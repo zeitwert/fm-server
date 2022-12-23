@@ -2,7 +2,7 @@
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { DateField, EnumeratedField, FieldGroup, FieldRow, Input, Select } from "@zeitwert/ui-forms";
 import { BuildingModel, BuildingStore, requireThis, session } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds/common/Grid";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import { Form } from "mstform";
@@ -13,12 +13,12 @@ import { ElementRatingFormModel } from "./ElementRatingForm";
 const BuildingRatingFormModel = new Form(
 	BuildingModel,
 	{
-		partCatalog: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/building/codeBuildingPartCatalog" }),
-		maintenanceStrategy: new EnumeratedField({ required: true, source: "{{enumBaseUrl}}/building/codeBuildingMaintenanceStrategy" }),
+		partCatalog: new EnumeratedField({ required: true, source: "building/codeBuildingPartCatalog" }),
+		maintenanceStrategy: new EnumeratedField({ required: true, source: "building/codeBuildingMaintenanceStrategy" }),
 		//
-		ratingStatus: new EnumeratedField({ source: "{{enumBaseUrl}}/building/codeBuildingRatingStatus" }),
+		ratingStatus: new EnumeratedField({ source: "building/codeBuildingRatingStatus" }),
 		ratingDate: new DateField({ required: true }),
-		ratingUser: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/objUser" }),
+		ratingUser: new EnumeratedField({ source: "oe/objUser" }),
 		//
 		elements: ElementRatingFormModel
 	}
@@ -94,7 +94,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 								<div className="slds-form" role="list">
 									<FieldGroup>
 										<FieldRow>
-											<Select label="Gebäudekategorie" accessor={this.formState.field("partCatalog")} size={2} onChange={this.onSetPartCatalog} />
+											<Select label="Gebäudekategorie" fieldName="partCatalog" size={2} onChange={this.onSetPartCatalog} />
 											<div className="slds-size_1-of-12">
 												<FieldGroup label="&nbsp;">
 													{
@@ -115,11 +115,11 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 													<Checkbox labels={{ label: "Alle Bauteile" }} checked={this.showAllElements} onChange={() => this.showAllElements = !this.showAllElements}></Checkbox>
 												</FieldGroup>
 											</div>
-											<Select label="Unterhaltsplanung" accessor={this.formState.field("maintenanceStrategy")} size={2} />
-											<Input label="Bewertungsdatum" accessor={this.formState.field("ratingDate")} size={1} />
-											<Select label="Bewertung durch" accessor={this.formState.field("ratingUser")} size={2} />
+											<Select label="Unterhaltsplanung" fieldName="maintenanceStrategy" size={2} />
+											<Input label="Bewertungsdatum" fieldName="ratingDate" size={1} />
+											<Select label="Bewertung durch" fieldName="ratingUser" size={2} />
 											<div className="slds-size_1-of-12" />
-											<Select label="Bewertungsstatus" accessor={this.formState.field("ratingStatus")} size={2} />
+											<Select label="Bewertungsstatus" fieldName="ratingStatus" size={2} />
 										</FieldRow>
 									</FieldGroup>
 								</div>

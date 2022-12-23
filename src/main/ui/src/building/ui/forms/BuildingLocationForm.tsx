@@ -15,7 +15,7 @@ const BuildingLocationFormModel = new Form(
 		street: new TextField(),
 		zip: new TextField(),
 		city: new TextField(),
-		country: new EnumeratedField({ source: "{{enumBaseUrl}}/oe/codeCountry" }),
+		country: new EnumeratedField({ source: "oe/codeCountry" }),
 		//
 		geoAddress: new TextField(),
 		geoCoordinates: new TextField(),
@@ -93,17 +93,17 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 								<div className="slds-form" role="list">
 									<FieldGroup isAddress>
 										<FieldRow>
-											<Input label="Strasse" accessor={this.formState.field("street")} />
+											<Input label="Strasse" fieldName="street" />
 										</FieldRow>
 										<FieldRow>
-											<Input label="PLZ" accessor={this.formState.field("zip")} size={4} />
-											<Input label="Ort" accessor={this.formState.field("city")} size={8} />
+											<Input label="PLZ" fieldName="zip" size={4} />
+											<Input label="Ort" fieldName="city" size={8} />
 										</FieldRow>
 										<FieldRow>
-											<Select label="Land" accessor={this.formState.field("country")} />
+											<Select label="Land" fieldName="country" />
 										</FieldRow>
 										<FieldRow>
-											<Input label="Alternative Geo Addresse" accessor={this.formState.field("geoAddress")} helpText={ALT_GEO_ADDRESS_HELP_TEXT} />
+											<Input label="Alternative Geo Addresse" fieldName="geoAddress" helpText={ALT_GEO_ADDRESS_HELP_TEXT} />
 										</FieldRow>
 									</FieldGroup>
 								</div>
@@ -116,8 +116,8 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 									<div className="slds-form" role="list">
 										<FieldGroup>
 											<FieldRow>
-												<Input label="Koordinaten" accessor={this.formState.field("geoCoordinates")} size={8} />
-												<Input label="Zoom" accessor={this.formState.field("geoZoom")} size={4} />
+												<Input label="Koordinaten" fieldName="geoCoordinates" size={8} />
+												<Input label="Zoom" fieldName="geoZoom" size={4} />
 											</FieldRow>
 										</FieldGroup>
 									</div>

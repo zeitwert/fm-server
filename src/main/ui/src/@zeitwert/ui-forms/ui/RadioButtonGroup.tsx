@@ -3,7 +3,8 @@ import { Enumerated } from "@zeitwert/ui-model";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { Field, FieldProps, getComponentProps, getFieldId } from "./Field";
+import { FormStateContext } from "../Form";
+import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface RadioButtonGroupProps extends FieldProps {
 	options?: Enumerated[];
@@ -12,11 +13,14 @@ export interface RadioButtonGroupProps extends FieldProps {
 @observer
 export class RadioButtonGroup extends React.Component<RadioButtonGroupProps> {
 
+	static contextType = FormStateContext;
+
 	@observable
 	showHelpText: boolean = false;
 
 	render() {
-		const { accessor, options } = this.props;
+		const accessor = getAccessor(this.props, this.context);
+		const { options } = this.props;
 		const radioOptions = (accessor ? (accessor.field.options as any).options : options) as Enumerated[];
 		const { readOnly, inputProps } = getComponentProps(accessor, this.props);
 		const currentOption = radioOptions.find(o => o.id === inputProps.value);
