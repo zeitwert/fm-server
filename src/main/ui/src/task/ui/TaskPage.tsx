@@ -51,9 +51,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const task = this.taskStore.task!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!task) {
+		if (!task) {
 			return <NotFound entityType={this.entityType} id={this.props.params.taskId!} />;
 		}
 		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
@@ -118,6 +116,10 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							onCancel={() => (this.doStageSelection = false)}
 						/>
 					)
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
 				}
 			</>
 		);

@@ -72,9 +72,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const tenant = this.tenantStore.tenant!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!tenant) {
+		if (!tenant) {
 			return <NotFound entityType={this.entityType} id={this.props.params.tenantId!} />;
 		}
 		session.setHelpContext(`${EntityType.TENANT}-${this.activeLeftTabId}`);
@@ -167,6 +165,10 @@ class TenantPage extends React.Component<RouteComponentProps> {
 					>
 						{() => <UserCreationForm store={this.userStore} />}
 					</ItemModal>
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
 				}
 			</>
 		);

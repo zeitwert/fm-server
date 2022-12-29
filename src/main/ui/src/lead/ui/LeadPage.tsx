@@ -60,9 +60,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const lead = this.leadStore.lead!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!lead) {
+		if (!lead) {
 			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
 		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);
@@ -123,14 +121,20 @@ class LeadPage extends React.Component<RouteComponentProps> {
 					</ItemLeftPart>
 					<ItemRightPart store={this.leadStore} hasItemPath />
 				</ItemGrid>
-				{this.doStageSelection && (
-					<StageSelector
-						heading="Close this Lead"
-						abstractTargetStage={this.abstractStage!}
-						onStageSelection={(stage: CaseStage) => this.onTransitionToStage(stage)}
-						onCancel={() => (this.doStageSelection = false)}
-					/>
-				)}
+				{
+					this.doStageSelection && (
+						<StageSelector
+							heading="Close this Lead"
+							abstractTargetStage={this.abstractStage!}
+							onStageSelection={(stage: CaseStage) => this.onTransitionToStage(stage)}
+							onCancel={() => (this.doStageSelection = false)}
+						/>
+					)
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
 			</>
 		);
 	}

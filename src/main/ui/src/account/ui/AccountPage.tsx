@@ -63,9 +63,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const account = this.accountStore.account!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!account) {
+		if (!account) {
 			return <NotFound entityType={this.entityType} id={this.props.params.accountId!} />;
 		}
 		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
@@ -148,6 +146,10 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						onCancel={this.cancelContactEditor}
 					/>
 					*/
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
 				}
 			</>
 		);

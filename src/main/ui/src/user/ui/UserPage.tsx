@@ -64,9 +64,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const user = this.userStore.user!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!user) {
+		if (!user) {
 			return <NotFound entityType={this.entityType} id={this.props.params.userId!} />;
 		}
 		session.setHelpContext(`${EntityType.USER}-${this.activeLeftTabId}`);
@@ -144,6 +142,10 @@ class UserPage extends React.Component<RouteComponentProps> {
 							onClose={this.closePasswordEditor}
 						/>
 					)
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
 				}
 			</>
 		);

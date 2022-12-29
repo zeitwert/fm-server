@@ -74,9 +74,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const portfolio = this.portfolioStore.portfolio!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!portfolio) {
+		if (!portfolio) {
 			return <NotFound entityType={this.entityType} id={this.props.params.portfolioId!} />;
 		}
 		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
@@ -156,6 +154,10 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
 			</>
 		);
 	}

@@ -46,9 +46,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const document = this.documentStore.document!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!document) {
+		if (!document) {
 			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
 		}
 		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
@@ -100,6 +98,10 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 					</ItemLeftPart>
 					<ItemRightPart store={this.documentStore} hideDocuments />
 				</ItemGrid>
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
 			</>
 		);
 	}

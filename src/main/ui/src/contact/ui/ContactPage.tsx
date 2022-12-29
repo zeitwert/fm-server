@@ -65,9 +65,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const contact = this.contactStore.contact!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!contact) {
+		if (!contact) {
 			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
 		}
 		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
@@ -143,6 +141,10 @@ class ContactPage extends React.Component<RouteComponentProps> {
 					</ItemLeftPart>
 					<ItemRightPart store={this.contactStore} />
 				</ItemGrid>
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
 			</>
 		);
 	}

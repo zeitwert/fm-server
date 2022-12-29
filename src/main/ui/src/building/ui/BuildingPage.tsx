@@ -99,9 +99,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const building = this.buildingStore.building!;
-		if (session.isNetworkActive) {
-			return <Spinner variant="brand" size="large" />;
-		} else if (!building) {
+		if (!building) {
 			return <NotFound entityType={this.entityType} id={this.props.params.buildingId!} />;
 		}
 		session.setHelpContext(`${EntityType.BUILDING}-${this.activeLeftTabId}`);
@@ -235,6 +233,10 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							/>
 						</div>
 					</SidePanel>
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
 				}
 			</>
 		);
