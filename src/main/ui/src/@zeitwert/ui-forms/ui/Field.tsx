@@ -9,12 +9,13 @@ export interface FieldGroupProps {
 	legend?: string;
 	label?: string;
 	isAddress?: boolean;
+	className?: string;
 }
 
 export const FieldGroup: FC<FieldGroupProps> = (props) => {
-	const { legend, label, isAddress, children } = props;
+	const { legend, label, isAddress, className, children } = props;
 	return (
-		<fieldset className={classNames("slds-form-element slds-form-element_compound", isAddress && "slds-form-element_address")} >
+		<fieldset className={classNames("slds-form-element slds-form-element_compound", isAddress && "slds-form-element_address", className)} >
 			{legend && <legend className="slds-form-element__label slds-form-element__legend" style={{ whiteSpace: "nowrap" }}>{legend}</legend>}
 			{label && <legend className="slds-form-element__label" style={{ whiteSpace: "nowrap" }}>{label}</legend>}
 			<div className="slds-form-element__control">
@@ -25,12 +26,13 @@ export const FieldGroup: FC<FieldGroupProps> = (props) => {
 };
 
 export interface FieldRowProps {
+	className?: string;
 }
 
 export const FieldRow: FC<FieldRowProps> = (props) => {
 	const { children } = props;
 	return (
-		<div className="slds-form-element__row">
+		<div className={classNames("slds-form-element__row", props.className)}>
 			{children}
 		</div>
 	);

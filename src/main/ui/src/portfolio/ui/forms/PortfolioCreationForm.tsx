@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { Enumerated, Portfolio, PortfolioStore, session } from "@zeitwert/ui-model";
+import { Enumerated, Portfolio, PortfolioModelType, PortfolioStore, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -16,7 +16,7 @@ export interface PortfolioCreationFormProps {
 @observer
 export default class PortfolioCreationForm extends React.Component<PortfolioCreationFormProps> {
 
-	FORM_OPTIONS: FormStateOptions<typeof PortfolioFormModel> = {
+	formStateOptions: FormStateOptions<PortfolioModelType> = {
 		isReadOnly: (accessor) => {
 			if (!this.props.store.isInTrx) {
 				return true;
@@ -45,36 +45,32 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	render() {
 		const portfolio = this.props.store.item! as Portfolio;
 		return (
-			<SldsForm formModel={PortfolioFormModel} options={this.FORM_OPTIONS} item={this.props.store.portfolio!}>
+			<SldsForm formModel={PortfolioFormModel} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
-						<Card heading="Inhaber" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<Select
-											label="Kunde"
-											required={true}
-											value={portfolio.account?.id}
-											values={this.accounts}
-											onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
-											disabled={!!portfolio.account?.id}
-										/>
-									</FieldRow>
-								</FieldGroup>
-							</div>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="Inhaber">
+								<FieldRow>
+									<Select
+										label="Kunde"
+										required={true}
+										value={portfolio.account?.id}
+										values={this.accounts}
+										onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
+										disabled={!!portfolio.account?.id}
+									/>
+								</FieldRow>
+							</FieldGroup>
 						</Card>
-						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<Input label="Name" type="text" fieldName="name" />
-									</FieldRow>
-									<FieldRow>
-										<Input label="Portfolionummer" type="text" fieldName="portfolioNr" />
-									</FieldRow>
-								</FieldGroup>
-							</div>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="Grunddaten">
+								<FieldRow>
+									<Input label="Name" type="text" fieldName="name" />
+								</FieldRow>
+								<FieldRow>
+									<Input label="Portfolionummer" type="text" fieldName="portfolioNr" />
+								</FieldRow>
+							</FieldGroup>
 						</Card>
 					</Col>
 				</Grid>

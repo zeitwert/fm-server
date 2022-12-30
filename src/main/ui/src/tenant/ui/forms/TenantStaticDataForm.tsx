@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, Enumerated, TenantStore, USER_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, Enumerated, TenantModelType, TenantStore, USER_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -17,7 +17,7 @@ export interface TenantStaticDataFormProps {
 @observer
 export default class TenantStaticDataForm extends React.Component<TenantStaticDataFormProps> {
 
-	FORM_OPTIONS: FormStateOptions<typeof TenantFormModel> = {
+	formStateOptions: FormStateOptions<TenantModelType> = {
 		isReadOnly: (accessor) => {
 			if (!this.props.store.isInTrx) {
 				return true;
@@ -65,45 +65,39 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 	render() {
 		const isInTrx = this.props.store.isInTrx;
 		return (
-			<SldsForm formModel={TenantFormModel} options={this.FORM_OPTIONS} item={this.props.store.tenant!}>
+			<SldsForm formModel={TenantFormModel} formStateOptions={this.formStateOptions} item={this.props.store.tenant!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
-						<Card heading="Grunddaten" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<Input label="Name" type="text" fieldName="name" />
-									</FieldRow>
-									<FieldRow>
-										<Select label="Typ" fieldName="tenantType" size={8} />
-										<Input label="Key" fieldName="key" size={4} />
-									</FieldRow>
-								</FieldGroup>
-							</div>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="Grunddaten">
+								<FieldRow>
+									<Input label="Name" type="text" fieldName="name" />
+								</FieldRow>
+								<FieldRow>
+									<Select label="Typ" fieldName="tenantType" size={8} />
+									<Input label="Key" fieldName="key" size={4} />
+								</FieldRow>
+							</FieldGroup>
 						</Card>
 					</Col>
 					<Col cols={1} totalCols={2}>
-						<Card heading="&nbsp;" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<TextArea label="Beschreibung" fieldName="description" rows={4} />
-									</FieldRow>
-								</FieldGroup>
-							</div>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="&nbsp;">
+								<FieldRow>
+									<TextArea label="Beschreibung" fieldName="description" rows={4} />
+								</FieldRow>
+							</FieldGroup>
 						</Card>
 					</Col>
 				</Grid>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
-						<Card heading="Berechnungsparameter" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<Input label="Inflationsrate (in %)" fieldName="inflationRate" size={3} />
-									</FieldRow>
-								</FieldGroup>
-							</div>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="Berechnungsparameter">
+								<FieldRow>
+									<Input label="Inflationsrate (in %)" fieldName="inflationRate" size={3} />
+								</FieldRow>
+							</FieldGroup>
 						</Card>
 					</Col>
 				</Grid>

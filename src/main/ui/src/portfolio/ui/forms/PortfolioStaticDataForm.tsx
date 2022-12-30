@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -16,7 +16,7 @@ export interface PortfolioStaticDataFormProps {
 @observer
 export default class PortfolioStaticDataForm extends React.Component<PortfolioStaticDataFormProps> {
 
-	FORM_OPTIONS: FormStateOptions<typeof PortfolioFormModel> = {
+	formStateOptions: FormStateOptions<PortfolioModelType> = {
 		isReadOnly: (accessor) => {
 			if (!this.props.store.isInTrx) {
 				return true;
@@ -108,39 +108,35 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		const isInTrx = this.props.store.isInTrx;
 		const portfolio = this.props.store.item! as Portfolio;
 		return (
-			<SldsForm formModel={PortfolioFormModel} options={this.FORM_OPTIONS} item={this.props.store.portfolio!}>
+			<SldsForm formModel={PortfolioFormModel} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
-						<Card heading="Identifikation" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<Input label="Name" type="text" fieldName="name" size={9} />
-										<Input label="Portfolio Nr." type="text" fieldName="portfolioNr" size={3} />
-									</FieldRow>
-								</FieldGroup>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="Identifikation">
 								<FieldRow>
-									<Select
-										label="Gemeinde"
-										value={portfolio.account?.id}
-										values={[{ id: portfolio.account!.id!, name: portfolio.account!.name!, itemType: portfolio.account!.meta?.itemType }]}
-										onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
-										readOnly={isInTrx}
-										disabled={true}
-									/>
+									<Input label="Name" type="text" fieldName="name" size={9} />
+									<Input label="Portfolio Nr." type="text" fieldName="portfolioNr" size={3} />
 								</FieldRow>
-							</div>
+							</FieldGroup>
+							<FieldRow>
+								<Select
+									label="Gemeinde"
+									value={portfolio.account?.id}
+									values={[{ id: portfolio.account!.id!, name: portfolio.account!.name!, itemType: portfolio.account!.meta?.itemType }]}
+									onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
+									readOnly={isInTrx}
+									disabled={true}
+								/>
+							</FieldRow>
 						</Card>
 					</Col>
 					<Col cols={1} totalCols={2}>
-						<Card heading="Beschreibung" bodyClassName="slds-m-around_medium">
-							<div className="slds-card__body slds-card__body_inner">
-								<FieldGroup>
-									<FieldRow>
-										<TextArea label="Beschreibung / Kommentare" fieldName="description" rows={4} />
-									</FieldRow>
-								</FieldGroup>
-							</div>
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+							<FieldGroup legend="&nbsp;">
+								<FieldRow>
+									<TextArea label="Beschreibung / Kommentare" fieldName="description" rows={4} />
+								</FieldRow>
+							</FieldGroup>
 						</Card>
 					</Col>
 				</Grid>
@@ -244,35 +240,31 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 					isInTrx &&
 					<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 						<Col cols={1} totalCols={2}>
-							<Card heading="Neu einschliessen" bodyClassName="slds-m-around_medium">
-								<div className="slds-card__body xslds-card__body_inner">
-									<FieldGroup>
-										<FieldRow>
-											<Select
-												label="Kunde / Portfolio / Immobilie:"
-												value={undefined}
-												values={this.availableObjects}
-												onChange={(e) => { this.addIncludeObj(this.allObjects, e.target.value?.toString()) }}
-											/>
-										</FieldRow>
-									</FieldGroup>
-								</div>
+							<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+								<FieldGroup legend="Neu einschliessen">
+									<FieldRow>
+										<Select
+											label="Kunde / Portfolio / Immobilie:"
+											value={undefined}
+											values={this.availableObjects}
+											onChange={(e) => { this.addIncludeObj(this.allObjects, e.target.value?.toString()) }}
+										/>
+									</FieldRow>
+								</FieldGroup>
 							</Card>
 						</Col>
 						<Col cols={1} totalCols={2}>
-							<Card heading="Neu ausschliessen" bodyClassName="slds-m-around_medium">
-								<div className="slds-card__body xslds-card__body_inner">
-									<FieldGroup>
-										<FieldRow>
-											<Select
-												label="Kunde / Portfolio / Immobilie:"
-												value={undefined}
-												values={this.availableObjects}
-												onChange={(e) => { this.addExcludeObj(this.allObjects, e.target.value?.toString()) }}
-											/>
-										</FieldRow>
-									</FieldGroup>
-								</div>
+							<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+								<FieldGroup legend="Neu ausschliessen">
+									<FieldRow>
+										<Select
+											label="Kunde / Portfolio / Immobilie:"
+											value={undefined}
+											values={this.availableObjects}
+											onChange={(e) => { this.addExcludeObj(this.allObjects, e.target.value?.toString()) }}
+										/>
+									</FieldRow>
+								</FieldGroup>
 							</Card>
 						</Col>
 					</Grid>
