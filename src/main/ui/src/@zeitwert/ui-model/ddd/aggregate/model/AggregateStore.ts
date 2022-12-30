@@ -301,7 +301,9 @@ const MstAggregateStoreModel = types
 
 type MstAggregateStoreType = typeof MstAggregateStoreModel;
 export interface MstAggregateStore extends MstAggregateStoreType { }
+
 export const AggregateStoreModel: MstAggregateStore = MstAggregateStoreModel;
-export interface AggregateStore extends Instance<typeof AggregateStoreModel> { }
-export type MstAggregateStoreSnapshot = SnapshotIn<typeof MstAggregateStoreModel>;
-export interface AggregateStoreSnapshot extends MstAggregateStoreSnapshot { }
+export type AggregateStoreModelType = typeof AggregateStoreModel;
+export interface AggregateStore extends Instance<AggregateStoreModelType> { }
+export type AggregateStoreSnapshot = SnapshotIn<AggregateStoreModelType>;
+export type AggregateStorePayload = Omit<AggregateStoreSnapshot, "id">;

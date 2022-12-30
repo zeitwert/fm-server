@@ -79,8 +79,9 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 
 type MstBuildingElementType = typeof MstBuildingElementModel;
 export interface MstBuildingElement extends MstBuildingElementType { }
+
 export const BuildingElementModel: MstBuildingElement = MstBuildingElementModel;
-export interface BuildingElement extends Instance<typeof BuildingElementModel> { }
-export type MstBuildingElementSnapshot = SnapshotIn<typeof MstBuildingElementModel>;
-export interface BuildingElementSnapshot extends MstBuildingElementSnapshot { }
+export type BuildingElementModelType = typeof BuildingElementModel;
+export interface BuildingElement extends Instance<BuildingElementModelType> { }
+export type BuildingElementSnapshot = SnapshotIn<BuildingElementModelType>;
 export type BuildingElementPayload = Omit<BuildingElementSnapshot, "id">;

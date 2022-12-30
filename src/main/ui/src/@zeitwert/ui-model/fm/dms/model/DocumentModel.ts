@@ -117,8 +117,9 @@ const MstDocumentModel = ObjModel.named("Document")
 
 type MstDocumentType = typeof MstDocumentModel;
 export interface MstDocument extends MstDocumentType { }
+
 export const DocumentModel: MstDocument = MstDocumentModel;
-export interface Document extends Instance<typeof DocumentModel> { }
-export type MstDocumentSnapshot = SnapshotIn<typeof MstDocumentModel>;
-export interface DocumentSnapshot extends MstDocumentSnapshot { }
+export type DocumentModelType = typeof DocumentModel;
+export interface Document extends Instance<DocumentModelType> { }
+export type DocumentSnapshot = SnapshotIn<DocumentModelType>;
 export type DocumentPayload = Omit<DocumentSnapshot, "id">;

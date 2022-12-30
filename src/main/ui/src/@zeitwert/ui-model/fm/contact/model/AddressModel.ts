@@ -27,7 +27,9 @@ const MstAddressModel = ObjPartModel.named("Address")
 
 type MstAddressType = typeof MstAddressModel;
 export interface MstAddress extends MstAddressType { }
+
 export const AddressModel: MstAddress = MstAddressModel;
-export interface Address extends Instance<typeof AddressModel> { }
-export type AddressSnapshot = SnapshotIn<typeof MstAddressModel>;
+export type AddressModelType = typeof AddressModel;
+export interface Address extends Instance<AddressModelType> { }
+export type AddressSnapshot = SnapshotIn<AddressModelType>;
 export type AddressPayload = Omit<AddressSnapshot, "id">;

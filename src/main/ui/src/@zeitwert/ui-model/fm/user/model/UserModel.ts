@@ -51,7 +51,9 @@ const MstUserModel = ObjModel.named("User")
 
 type MstUserType = typeof MstUserModel;
 export interface MstUser extends MstUserType { }
+
 export const UserModel: MstUser = MstUserModel;
-export interface User extends Instance<typeof UserModel> { }
-export type UserSnapshot = SnapshotIn<typeof MstUserModel>;
+export type UserModelType = typeof UserModel;
+export interface User extends Instance<UserModelType> { }
+export type UserSnapshot = SnapshotIn<UserModelType>;
 export type UserPayload = Omit<UserSnapshot, "id">;

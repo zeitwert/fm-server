@@ -13,8 +13,9 @@ const MstObjPartTransitionModel = ObjPartModel.named("ObjTransition").props({
 
 type MstObjPartTransitionType = typeof MstObjPartTransitionModel;
 export interface MstObjPartTransition extends MstObjPartTransitionType { }
+
 export const ObjPartTransitionModel: MstObjPartTransition = MstObjPartTransitionModel;
-export interface ObjPartTransition extends Instance<typeof ObjPartTransitionModel> { }
-export type MstObjPartTransitionSnapshot = SnapshotIn<typeof MstObjPartTransitionModel>;
-export interface ObjPartTransitionSnapshot extends MstObjPartTransitionSnapshot { }
+export type ObjPartTransitionModelType = typeof ObjPartTransitionModel;
+export interface ObjPartTransition extends Instance<ObjPartTransitionModelType> { }
+export type ObjPartTransitionSnapshot = SnapshotIn<ObjPartTransitionModelType>;
 export type ObjPartTransitionPayload = Omit<ObjPartTransitionSnapshot, "id">;

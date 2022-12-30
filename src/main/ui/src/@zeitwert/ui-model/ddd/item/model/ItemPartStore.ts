@@ -179,7 +179,9 @@ const MstItemPartStoreModel = types
 
 type MstItemPartStoreType = typeof MstItemPartStoreModel;
 export interface MstItemPartStore extends MstItemPartStoreType { }
+
 export const ItemPartStoreModel: MstItemPartStore = MstItemPartStoreModel;
-export interface ItemPartStore extends Instance<typeof ItemPartStoreModel> { }
-export type MstItemPartStoreSnapshot = SnapshotIn<typeof MstItemPartStoreModel>;
-export interface ItemPartStoreSnapshot extends MstItemPartStoreSnapshot { }
+export type ItemPartStoreModelType = typeof ItemPartStoreModel;
+export interface ItemPartStore extends Instance<ItemPartStoreModelType> { }
+export type ItemPartStoreSnapshot = SnapshotIn<ItemPartStoreModelType>;
+export type ItemPartStorePayload = Omit<ItemPartStoreSnapshot, "id">;

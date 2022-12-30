@@ -64,8 +64,9 @@ const MstObjModel = AggregateModel
 
 type MstObjType = typeof MstObjModel;
 export interface MstObj extends MstObjType { }
+
 export const ObjModel: MstObj = MstObjModel;
-export interface Obj extends Instance<typeof ObjModel> { }
-export type MstObjSnapshot = SnapshotIn<typeof ObjModel>;
-export interface ObjSnapshot extends MstObjSnapshot { }
+export type ObjModelType = typeof ObjModel;
+export interface Obj extends Instance<ObjModelType> { }
+export type ObjSnapshot = SnapshotIn<ObjModelType>
 export type ObjPayload = Omit<ObjSnapshot, "id">;

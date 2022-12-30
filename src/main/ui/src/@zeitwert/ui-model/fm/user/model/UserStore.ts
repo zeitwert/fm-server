@@ -42,7 +42,9 @@ const MstUserStoreModel = ObjStoreModel
 
 type MstUserStoreType = typeof MstUserStoreModel;
 export interface MstUserStore extends MstUserStoreType { }
+
 export const UserStoreModel: MstUserStore = MstUserStoreModel;
-export interface UserStore extends Instance<typeof UserStoreModel> { }
-export type MstUserStoreSnapshot = SnapshotIn<typeof MstUserStoreModel>;
-export interface UserStoreSnapshot extends MstUserStoreSnapshot { }
+export type UserStoreModelType = typeof UserStoreModel;
+export interface UserStore extends Instance<UserStoreModelType> { }
+export type UserStoreSnapshot = SnapshotIn<UserStoreModelType>;
+export type UserStorePayload = Omit<UserStoreSnapshot, "id">;

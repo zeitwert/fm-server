@@ -62,7 +62,9 @@ const MstAccountModel = ObjModel.named("Account")
 
 type MstAccountType = typeof MstAccountModel;
 export interface MstAccount extends MstAccountType { }
+
 export const AccountModel: MstAccount = MstAccountModel;
-export interface Account extends Instance<typeof AccountModel> { }
-export type AccountSnapshot = SnapshotIn<typeof MstAccountModel>;
+export type AccountModelType = typeof AccountModel;
+export interface Account extends Instance<AccountModelType> { }
+export type AccountSnapshot = SnapshotIn<AccountModelType>;
 export type AccountPayload = Omit<AccountSnapshot, "id">;

@@ -65,7 +65,9 @@ const MstLifeEventModel = ObjPartModel.named("LifeEvent")
 
 type MstLifeEventType = typeof MstLifeEventModel;
 export interface MstLifeEvent extends MstLifeEventType { }
+
 export const LifeEventModel: MstLifeEvent = MstLifeEventModel;
-export interface LifeEvent extends Instance<typeof LifeEventModel> { }
-export type LifeEventSnapshot = SnapshotIn<typeof MstLifeEventModel>;
+export type LifeEventModelType = typeof LifeEventModel;
+export interface LifeEvent extends Instance<LifeEventModelType> { }
+export type LifeEventSnapshot = SnapshotIn<LifeEventModelType>;
 export type LifeEventPayload = Omit<LifeEventSnapshot, "id">;

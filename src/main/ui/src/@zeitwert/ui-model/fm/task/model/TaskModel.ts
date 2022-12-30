@@ -13,8 +13,9 @@ const MstTaskModel = DocModel.named("Task").props({
 
 type MstTaskType = typeof MstTaskModel;
 export interface MstTask extends MstTaskType { }
+
 export const TaskModel: MstTask = MstTaskModel;
-export interface Task extends Instance<typeof TaskModel> { }
-export type MstTaskSnapshot = SnapshotIn<typeof MstTaskModel>;
-export interface TaskSnapshot extends MstTaskSnapshot { }
+export type TaskModelType = typeof TaskModel;
+export interface Task extends Instance<TaskModelType> { }
+export type TaskSnapshot = SnapshotIn<TaskModelType>;
 export type TaskPayload = Omit<TaskSnapshot, "id">;

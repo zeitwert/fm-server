@@ -131,7 +131,9 @@ const MstItemListModel = types
 
 type MstItemListType = typeof MstItemListModel;
 export interface MstItemList extends MstItemListType { }
+
 export const ItemListModel: MstItemList = MstItemListModel;
-export interface ItemList extends Instance<typeof ItemListModel> { }
-export type MstItemListSnapshot = SnapshotIn<typeof MstItemListModel>;
+export type ItemListModelType = typeof ItemListModel;
+export interface ItemList extends Instance<ItemListModelType> { }
+export type MstItemListSnapshot = SnapshotIn<ItemListModelType>;
 export interface ItemListSnapshot extends MstItemListSnapshot { }

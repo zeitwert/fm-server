@@ -61,7 +61,9 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 
 type MstDocumentStoreType = typeof MstDocumentStoreModel;
 export interface MstDocumentStore extends MstDocumentStoreType { }
+
 export const DocumentStoreModel: MstDocumentStore = MstDocumentStoreModel;
-export interface DocumentStore extends Instance<typeof DocumentStoreModel> { }
-export type MstDocumentStoreSnapshot = SnapshotIn<typeof MstDocumentStoreModel>;
-export interface DocumentStoreSnapshot extends MstDocumentStoreSnapshot { }
+export type DocumentStoreModelType = typeof DocumentStoreModel;
+export interface DocumentStore extends Instance<DocumentStoreModelType> { }
+export type DocumentStoreSnapshot = SnapshotIn<DocumentStoreModelType>;
+export type DocumentStorePayload = Omit<DocumentStoreSnapshot, "id">;

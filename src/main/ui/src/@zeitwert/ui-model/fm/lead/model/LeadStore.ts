@@ -40,7 +40,9 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 
 type MstLeadStoreType = typeof MstLeadStoreModel;
 export interface MstLeadStore extends MstLeadStoreType { }
+
 export const LeadStoreModel: MstLeadStore = MstLeadStoreModel;
-export interface LeadStore extends Instance<typeof LeadStoreModel> { }
-export type MstLeadStoreSnapshot = SnapshotIn<typeof MstLeadStoreModel>;
-export interface LeadStoreSnapshot extends MstLeadStoreSnapshot { }
+export type LeadStoreModelType = typeof LeadStoreModel;
+export interface LeadStore extends Instance<LeadStoreModelType> { }
+export type LeadStoreSnapshot = SnapshotIn<LeadStoreModelType>;
+export type LeadStorePayload = Omit<LeadStoreSnapshot, "id">;

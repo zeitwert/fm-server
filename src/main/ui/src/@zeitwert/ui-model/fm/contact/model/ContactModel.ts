@@ -219,7 +219,9 @@ const MstContactModel = ObjModel.named("Contact")
 
 type MstContactType = typeof MstContactModel;
 export interface MstContact extends MstContactType { }
+
 export const ContactModel: MstContact = MstContactModel;
-export interface Contact extends Instance<typeof ContactModel> { }
-export type ContactSnapshot = SnapshotIn<typeof MstContactModel>;
+export type ContactModelType = typeof ContactModel;
+export interface Contact extends Instance<ContactModelType> { }
+export type ContactSnapshot = SnapshotIn<ContactModelType>;
 export type ContactPayload = Omit<ContactSnapshot, "id">;

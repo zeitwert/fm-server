@@ -271,7 +271,9 @@ const MstAppStoreModel = types
 
 type MstAppStoreType = typeof MstAppStoreModel;
 export interface MstAppStore extends MstAppStoreType { }
+
 export const AppStoreModel: MstAppStore = MstAppStoreModel;
-export interface AppStore extends Instance<typeof AppStoreModel> { }
-export type MstAppStoreSnapshot = SnapshotIn<typeof MstAppStoreModel>;
+export type AppStoreModelType = typeof AppStoreModel;
+export interface AppStore extends Instance<AppStoreModelType> { }
+export type MstAppStoreSnapshot = SnapshotIn<AppStoreModelType>;
 export interface AppStoreSnapshot extends MstAppStoreSnapshot { }

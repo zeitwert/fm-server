@@ -17,8 +17,9 @@ const MstEnumeratedModel = types.model(
 
 type MstEnumeratedType = typeof MstEnumeratedModel;
 export interface MstEnumerated extends MstEnumeratedType { }
+
 export const EnumeratedModel: MstEnumerated = MstEnumeratedModel;
-export interface Enumerated extends Optional<Instance<typeof EnumeratedModel>, "itemType"> { }
-export type MstEnumeratedSnapshot = SnapshotIn<typeof MstEnumeratedModel>;
-export interface EnumeratedSnapshot extends MstEnumeratedSnapshot { }
+export type EnumeratedModelType = typeof EnumeratedModel;
+export interface Enumerated extends Optional<Instance<EnumeratedModelType>, "itemType"> { }
+export type EnumeratedSnapshot = SnapshotIn<EnumeratedModelType>;
 export type EnumeratedPayload = Omit<EnumeratedSnapshot, "id">;

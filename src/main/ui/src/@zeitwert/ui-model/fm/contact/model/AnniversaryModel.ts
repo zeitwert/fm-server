@@ -22,7 +22,9 @@ const MstAnniversaryModel = ObjPartModel.named("Anniversary")
 
 type MstAnniversaryType = typeof MstAnniversaryModel;
 export interface MstAnniversary extends MstAnniversaryType { }
+
 export const AnniversaryModel: MstAnniversary = MstAnniversaryModel;
-export interface Anniversary extends Instance<typeof AnniversaryModel> { }
-export type AnniversarySnapshot = SnapshotIn<typeof MstAnniversaryModel>;
+export type AnniversaryModelType = typeof AnniversaryModel;
+export interface Anniversary extends Instance<AnniversaryModelType> { }
+export type AnniversarySnapshot = SnapshotIn<AnniversaryModelType>;
 export type AnniversaryPayload = Omit<AnniversarySnapshot, "id">;

@@ -90,8 +90,9 @@ const MstDocModel = AggregateModel.named("Doc")
 
 type MstDocType = typeof MstDocModel;
 export interface MstDoc extends MstDocType { }
+
 export const DocModel: MstDoc = MstDocModel;
-export interface Doc extends Instance<typeof DocModel> { }
-export type MstDocSnapshot = SnapshotIn<typeof DocModel>;
-export interface DocSnapshot extends MstDocSnapshot { }
+export type DocModelType = typeof DocModel;
+export interface Doc extends Instance<DocModelType> { }
+export type DocSnapshot = SnapshotIn<DocModelType>;
 export type DocPayload = Omit<DocSnapshot, "id">;

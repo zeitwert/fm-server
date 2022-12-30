@@ -9,8 +9,9 @@ const MstDocPartModel = PartModel.named("DocPart").props({
 
 type MstDocPartType = typeof MstDocPartModel;
 export interface MstDocPart extends MstDocPartType { }
+
 export const DocPartModel: MstDocPart = MstDocPartModel;
-export interface DocPart extends Instance<typeof DocPartModel> { }
-export type MstDocPartSnapshot = SnapshotIn<typeof DocPartModel>;
-export interface DocPartSnapshot extends MstDocPartSnapshot { }
+export type DocPartModelType = typeof DocPartModel;
+export interface DocPart extends Instance<DocPartModelType> { }
+export type DocPartSnapshot = SnapshotIn<DocPartModelType>;
 export type DocPartPayload = Omit<DocPartSnapshot, "id">;

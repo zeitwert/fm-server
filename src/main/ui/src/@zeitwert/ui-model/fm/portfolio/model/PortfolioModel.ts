@@ -67,7 +67,9 @@ const MstPortfolioModel = ObjModel.named("Portfolio")
 
 type MstPortfolioType = typeof MstPortfolioModel;
 export interface MstPortfolio extends MstPortfolioType { }
+
 export const PortfolioModel: MstPortfolio = MstPortfolioModel;
-export interface Portfolio extends Instance<typeof PortfolioModel> { }
-export type PortfolioSnapshot = SnapshotIn<typeof MstPortfolioModel>;
+export type PortfolioModelType = typeof PortfolioModel;
+export interface Portfolio extends Instance<PortfolioModelType> { }
+export type PortfolioSnapshot = SnapshotIn<PortfolioModelType>;
 export type PortfolioPayload = Omit<PortfolioSnapshot, "id">;

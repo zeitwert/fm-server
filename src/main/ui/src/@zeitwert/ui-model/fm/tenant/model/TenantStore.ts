@@ -39,7 +39,9 @@ const MstTenantStoreModel = ObjStoreModel
 
 type MstTenantStoreType = typeof MstTenantStoreModel;
 export interface MstTenantStore extends MstTenantStoreType { }
+
 export const TenantStoreModel: MstTenantStore = MstTenantStoreModel;
-export interface TenantStore extends Instance<typeof TenantStoreModel> { }
-export type MstTenantStoreSnapshot = SnapshotIn<typeof MstTenantStoreModel>;
-export interface TenantStoreSnapshot extends MstTenantStoreSnapshot { }
+export type TenantStoreModelType = typeof TenantStoreModel;
+export interface TenantStore extends Instance<TenantStoreModelType> { }
+export type TenantStoreSnapshot = SnapshotIn<TenantStoreModelType>;
+export type TenantStorePayload = Omit<TenantStoreSnapshot, "id">;

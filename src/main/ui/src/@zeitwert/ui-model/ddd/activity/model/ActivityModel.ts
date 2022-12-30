@@ -55,8 +55,9 @@ const MstActivityModel = DocModel.named("Activity")
 
 type MstActivityType = typeof MstActivityModel;
 export interface MstActivity extends MstActivityType { }
+
 export const ActivityModel: MstActivity = MstActivityModel;
-export interface Activity extends Instance<typeof ActivityModel> { }
-export type MstActivitySnapshot = SnapshotIn<typeof MstActivityModel>;
-export interface ActivitySnapshot extends MstActivitySnapshot { }
+export type ActivityModelType = typeof ActivityModel;
+export interface Activity extends Instance<ActivityModelType> { }
+export type ActivitySnapshot = SnapshotIn<ActivityModelType>;
 export type ActivityPayload = Omit<ActivitySnapshot, "id">;

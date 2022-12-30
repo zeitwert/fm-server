@@ -68,7 +68,7 @@ const MstDocStoreModel = types
 			requireThis(!self.isInTrx, "not in transaction");
 			return flow<Doc[], any[]>(function* () {
 				try {
-					const docs = yield DOC_API.findByRefObj(refObj, params);
+					const docs: any = yield DOC_API.findByRefObj(refObj, params);
 					return docs.map((doc: DocSnapshot) => DocModel.create(doc)) || [];
 				} catch (error: any) {
 					Logger.error("Failed to find docs by ref obj", error);
@@ -80,7 +80,7 @@ const MstDocStoreModel = types
 			requireThis(!self.isInTrx, "not in transaction");
 			return flow<Doc[], any[]>(function* () {
 				try {
-					const docs = yield DOC_API.findByRefDoc(refDoc, params);
+					const docs: any = yield DOC_API.findByRefDoc(refDoc, params);
 					return docs.map((doc: DocSnapshot) => DocModel.create(doc)) || [];
 				} catch (error: any) {
 					Logger.error("Failed to find docs by ref doc", error);
@@ -92,7 +92,7 @@ const MstDocStoreModel = types
 			requireThis(!self.isInTrx, "not in transaction");
 			return flow<Doc[], any[]>(function* () {
 				try {
-					const docs = yield DOC_API.findByAccount(account);
+					const docs: any = yield DOC_API.findByAccount(account);
 					return docs.map((doc: DocSnapshot) => DocModel.create(doc)) || [];
 				} catch (error: any) {
 					Logger.error("Failed to find docs by account", error);
@@ -104,7 +104,7 @@ const MstDocStoreModel = types
 			requireThis(!self.isInTrx, "not in transaction");
 			return flow<Doc[], any[]>(function* () {
 				try {
-					const docs = yield DOC_API.findUpcomingTasks(account);
+					const docs: any = yield DOC_API.findUpcomingTasks(account);
 					return docs.map((doc: DocSnapshot) => DocModel.create(doc)) || [];
 				} catch (error: any) {
 					Logger.error("Failed to find upcoming tasks", error);
@@ -116,7 +116,9 @@ const MstDocStoreModel = types
 
 type MstDocStoreType = typeof MstDocStoreModel;
 export interface MstDocStore extends MstDocStoreType { }
+
 export const DocStoreModel: MstDocStore = MstDocStoreModel;
-export interface DocStore extends Instance<typeof DocStoreModel> { }
-export type MstDocStoreSnapshot = SnapshotIn<typeof MstDocStoreModel>;
-export interface DocStoreSnapshot extends MstDocStoreSnapshot { }
+export type DocStoreModelType = typeof DocStoreModel;
+export interface DocStore extends Instance<DocStoreModelType> { }
+export type DocStoreSnapshot = SnapshotIn<DocStoreModelType>;
+export type DocStorePayload = Omit<DocStoreSnapshot, "id">;

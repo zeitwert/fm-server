@@ -244,8 +244,9 @@ const MstBuildingModel = ObjModel.named("Building")
 
 type MstBuildingType = typeof MstBuildingModel;
 export interface MstBuilding extends MstBuildingType { }
+
 export const BuildingModel: MstBuilding = MstBuildingModel;
-export interface Building extends Instance<typeof BuildingModel> { }
-export type MstBuildingSnapshot = SnapshotIn<typeof MstBuildingModel>;
-export interface BuildingSnapshot extends MstBuildingSnapshot { }
+export type BuildingModelType = typeof BuildingModel;
+export interface Building extends Instance<BuildingModelType> { }
+export type BuildingSnapshot = SnapshotIn<BuildingModelType>;
 export type BuildingPayload = Omit<BuildingSnapshot, "id">;

@@ -367,10 +367,10 @@ const MstSessionModel = types
 	}));
 
 type MstSessionType = typeof MstSessionModel;
-
 export interface MstSession extends MstSessionType { }
 
 export const SessionModel: MstSession = MstSessionModel;
-export interface Session extends Instance<typeof SessionModel> { }
-export type MstSessionSnapshot = SnapshotIn<typeof MstSessionModel>;
+export type SessionModelType = typeof SessionModel;
+export interface Session extends Instance<SessionModelType> { }
+export type MstSessionSnapshot = SnapshotIn<SessionModelType>;
 export interface SessionSnapshot extends MstSessionSnapshot { }

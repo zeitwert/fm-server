@@ -104,8 +104,9 @@ const MstLeadModel = DocModel.named("Lead")
 
 type MstLeadType = typeof MstLeadModel;
 export interface MstLead extends MstLeadType { }
+
 export const LeadModel: MstLead = MstLeadModel;
-export interface Lead extends Instance<typeof LeadModel> { }
-export type MstLeadSnapshot = SnapshotIn<typeof MstLeadModel>;
-export interface LeadSnapshot extends MstLeadSnapshot { }
+export type LeadModelType = typeof LeadModel;
+export interface Lead extends Instance<LeadModelType> { }
+export type LeadSnapshot = SnapshotIn<LeadModelType>;
 export type LeadPayload = Omit<LeadSnapshot, "id">;

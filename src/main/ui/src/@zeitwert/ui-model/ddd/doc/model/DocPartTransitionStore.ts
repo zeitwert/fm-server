@@ -51,7 +51,9 @@ const MstDocPartTransitionStoreModel = types
 
 type MstDocPartTransitionStoreType = typeof MstDocPartTransitionStoreModel;
 export interface MstDocPartTransitionStore extends MstDocPartTransitionStoreType { }
+
 export const DocPartTransitionStoreModel: MstDocPartTransitionStore = MstDocPartTransitionStoreModel;
-export interface DocPartTransitionStore extends Instance<typeof DocPartTransitionStoreModel> { }
-export type MstDocPartTransitionStoreSnapshot = SnapshotIn<typeof MstDocPartTransitionStoreModel>;
-export interface DocPartTransitionSnapshot extends MstDocPartTransitionStoreSnapshot { }
+export type DocPartTransitionStoreModelType = typeof DocPartTransitionStoreModel;
+export interface DocPartTransitionStore extends Instance<DocPartTransitionStoreModelType> { }
+export type DocPartTransitionStoreSnapshot = SnapshotIn<DocPartTransitionStoreModelType>;
+export type DocPartTransitionPayload = Omit<DocPartTransitionStoreSnapshot, "id">;

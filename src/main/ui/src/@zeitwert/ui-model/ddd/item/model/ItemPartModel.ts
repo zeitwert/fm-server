@@ -22,8 +22,9 @@ const MstItemPartModel = PartModel.named("ItemPart")
 
 type MstItemPartType = typeof MstItemPartModel;
 export interface MstItemPart extends MstItemPartType { }
+
 export const ItemPartModel: MstItemPart = MstItemPartModel;
-export interface ItemPart extends Instance<typeof ItemPartModel> { }
-export type MstItemPartSnapshot = SnapshotIn<typeof ItemPartModel>;
-export interface ItemPartSnapshot extends MstItemPartSnapshot { }
+export type ItemPartModelType = typeof ItemPartModel;
+export interface ItemPart extends Instance<ItemPartModelType> { }
+export type ItemPartSnapshot = SnapshotIn<ItemPartModelType>;
 export type ItemPartPayload = Omit<ItemPartSnapshot, "id">;

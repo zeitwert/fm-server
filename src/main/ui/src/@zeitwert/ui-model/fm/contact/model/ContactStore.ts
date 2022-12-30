@@ -69,7 +69,9 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 
 type MstContactStoreType = typeof MstContactStoreModel;
 export interface MstContactStore extends MstContactStoreType { }
+
 export const ContactStoreModel: MstContactStore = MstContactStoreModel;
-export interface ContactStore extends Instance<typeof ContactStoreModel> { }
-export type MstContactStoreSnapshot = SnapshotIn<typeof MstContactStoreModel>;
-export interface ContactStoreSnapshot extends MstContactStoreSnapshot { }
+export type ContactStoreModelType = typeof ContactStoreModel;
+export interface ContactStore extends Instance<ContactStoreModelType> { }
+export type ContactStoreSnapshot = SnapshotIn<ContactStoreModelType>;
+export type ContactStorePayload = Omit<ContactStoreSnapshot, "id">;

@@ -44,7 +44,9 @@ const MstAccountStoreModel = ObjStoreModel
 
 type MstAccountStoreType = typeof MstAccountStoreModel;
 export interface MstAccountStore extends MstAccountStoreType { }
+
 export const AccountStoreModel: MstAccountStore = MstAccountStoreModel;
-export interface AccountStore extends Instance<typeof AccountStoreModel> { }
-export type MstAccountStoreSnapshot = SnapshotIn<typeof MstAccountStoreModel>;
-export interface AccountStoreSnapshot extends MstAccountStoreSnapshot { }
+export type AccountStoreModelType = typeof AccountStoreModel;
+export interface AccountStore extends Instance<AccountStoreModelType> { }
+export type AccountStoreSnapshot = SnapshotIn<AccountStoreModelType>;
+export type AccountStorePayload = Omit<AccountStoreSnapshot, "id">;

@@ -40,7 +40,9 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 
 type MstBuildingStoreType = typeof MstBuildingStoreModel;
 export interface MstBuildingStore extends MstBuildingStoreType { }
+
 export const BuildingStoreModel: MstBuildingStore = MstBuildingStoreModel;
-export interface BuildingStore extends Instance<typeof BuildingStoreModel> { }
-export type MstBuildingStoreSnapshot = SnapshotIn<typeof MstBuildingStoreModel>;
-export interface BuildingStoreSnapshot extends MstBuildingStoreSnapshot { }
+export type BuildingStoreModelType = typeof BuildingStoreModel;
+export interface BuildingStore extends Instance<BuildingStoreModelType> { }
+export type BuildingStoreSnapshot = SnapshotIn<BuildingStoreModelType>;
+export type BuildingStorePayload = Omit<BuildingStoreSnapshot, "id">;

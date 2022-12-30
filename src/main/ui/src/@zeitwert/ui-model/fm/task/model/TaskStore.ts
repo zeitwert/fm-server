@@ -26,7 +26,9 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 
 type MstTaskStoreType = typeof MstTaskStoreModel;
 export interface MstTaskStore extends MstTaskStoreType { }
+
 export const TaskStoreModel: MstTaskStore = MstTaskStoreModel;
-export interface TaskStore extends Instance<typeof TaskStoreModel> { }
-export type MstTaskStoreSnapshot = SnapshotIn<typeof MstTaskStoreModel>;
-export interface TaskStoreSnapshot extends MstTaskStoreSnapshot { }
+export type TaskStoreModelType = typeof TaskStoreModel;
+export interface TaskStore extends Instance<TaskStoreModelType> { }
+export type TaskStoreSnapshot = SnapshotIn<TaskStoreModelType>;
+export type TaskStorePayload = Omit<TaskStoreSnapshot, "id">;

@@ -89,8 +89,9 @@ const MstAggregateModel = types
 
 type MstAggregateType = typeof MstAggregateModel;
 export interface MstAggregate extends MstAggregateType { }
+
 export const AggregateModel: MstAggregate = MstAggregateModel;
-export interface Aggregate extends Instance<typeof AggregateModel> { }
-export type MstAggregateSnapshot = SnapshotIn<typeof AggregateModel>;
-export interface AggregateSnapshot extends Optional<MstAggregateSnapshot, "caption"> { }
+export type AggregateModelType = typeof AggregateModel;
+export interface Aggregate extends Instance<AggregateModelType> { }
+export type AggregateSnapshot = Optional<SnapshotIn<AggregateModelType>, "caption">;
 export type AggregatePayload = Omit<AggregateSnapshot, "id">;

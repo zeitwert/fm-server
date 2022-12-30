@@ -50,8 +50,9 @@ const MstPartModel = types
 
 type MstPartType = typeof MstPartModel;
 export interface MstPart extends MstPartType { }
+
 export const PartModel: MstPart = MstPartModel;
-export interface Part extends Instance<typeof PartModel> { }
-export type MstPartSnapshot = SnapshotIn<typeof PartModel>;
-export interface PartSnapshot extends MstPartSnapshot { }
+export type PartModelType = typeof PartModel;
+export interface Part extends Instance<PartModelType> { }
+export type PartSnapshot = SnapshotIn<PartModelType>;
 export type PartPayload = Omit<PartSnapshot, "id">;

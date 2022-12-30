@@ -36,7 +36,9 @@ const MstNoteModel = ObjModel.named("Note")
 
 type MstNoteType = typeof MstNoteModel;
 export interface MstNote extends MstNoteType { }
+
 export const NoteModel: MstNote = MstNoteModel;
-export interface Note extends Instance<typeof NoteModel> { }
-export type NoteSnapshot = SnapshotIn<typeof MstNoteModel>;
+export type NoteModelType = typeof NoteModel;
+export interface Note extends Instance<NoteModelType> { }
+export type NoteSnapshot = SnapshotIn<NoteModelType>;
 export type NotePayload = Omit<NoteSnapshot, "id">;

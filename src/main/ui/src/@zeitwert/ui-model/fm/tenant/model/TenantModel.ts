@@ -37,7 +37,9 @@ const MstTenantModel = ObjModel.named("Tenant")
 
 type MstTenantType = typeof MstTenantModel;
 export interface MstTenant extends MstTenantType { }
+
 export const TenantModel: MstTenant = MstTenantModel;
-export interface Tenant extends Instance<typeof TenantModel> { }
-export type TenantSnapshot = SnapshotIn<typeof MstTenantModel>;
+export type TenantModelType = typeof TenantModel;
+export interface Tenant extends Instance<TenantModelType> { }
+export type TenantSnapshot = SnapshotIn<TenantModelType>;
 export type TenantPayload = Omit<TenantSnapshot, "id">;

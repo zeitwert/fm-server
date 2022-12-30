@@ -38,7 +38,9 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 
 type MstPortfolioStoreType = typeof MstPortfolioStoreModel;
 export interface MstPortfolioStore extends MstPortfolioStoreType { }
+
 export const PortfolioStoreModel: MstPortfolioStore = MstPortfolioStoreModel;
-export interface PortfolioStore extends Instance<typeof PortfolioStoreModel> { }
-export type MstPortfolioStoreSnapshot = SnapshotIn<typeof MstPortfolioStoreModel>;
-export interface PortfolioStoreSnapshot extends MstPortfolioStoreSnapshot { }
+export type PortfolioStoreModelType = typeof PortfolioStoreModel;
+export interface PortfolioStore extends Instance<PortfolioStoreModelType> { }
+export type PortfolioStoreSnapshot = SnapshotIn<PortfolioStoreModelType>;
+export type PortfolioStorePayload = Omit<PortfolioStoreSnapshot, "id">;
