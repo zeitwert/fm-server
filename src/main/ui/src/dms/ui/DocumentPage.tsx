@@ -46,7 +46,9 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const document = this.documentStore.document!;
-		if (!document) {
+		if (!document && session.isNetworkActive) {
+			return <></>;
+		} else if (!document) {
 			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
 		}
 		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);

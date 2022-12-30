@@ -99,7 +99,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const building = this.buildingStore.building!;
-		if (!building) {
+		if (!building && session.isNetworkActive) {
+			return <></>;
+		} else if (!building) {
 			return <NotFound entityType={this.entityType} id={this.props.params.buildingId!} />;
 		}
 		session.setHelpContext(`${EntityType.BUILDING}-${this.activeLeftTabId}`);

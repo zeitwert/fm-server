@@ -63,7 +63,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const account = this.accountStore.account!;
-		if (!account) {
+		if (!account && session.isNetworkActive) {
+			return <></>;
+		} else if (!account) {
 			return <NotFound entityType={this.entityType} id={this.props.params.accountId!} />;
 		}
 		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);

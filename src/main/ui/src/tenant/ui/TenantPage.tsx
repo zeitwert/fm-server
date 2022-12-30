@@ -72,7 +72,9 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const tenant = this.tenantStore.tenant!;
-		if (!tenant) {
+		if (!tenant && session.isNetworkActive) {
+			return <></>;
+		} else if (!tenant) {
 			return <NotFound entityType={this.entityType} id={this.props.params.tenantId!} />;
 		}
 		session.setHelpContext(`${EntityType.TENANT}-${this.activeLeftTabId}`);

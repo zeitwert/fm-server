@@ -60,7 +60,9 @@ class LeadPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const lead = this.leadStore.lead!;
-		if (!lead) {
+		if (!lead && session.isNetworkActive) {
+			return <></>;
+		} else if (!lead) {
 			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
 		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);

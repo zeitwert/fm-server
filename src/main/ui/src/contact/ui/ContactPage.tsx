@@ -65,7 +65,9 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	render() {
 		const contact = this.contactStore.contact!;
-		if (!contact) {
+		if (!contact && session.isNetworkActive) {
+			return <></>;
+		} else if (!contact) {
 			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
 		}
 		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);

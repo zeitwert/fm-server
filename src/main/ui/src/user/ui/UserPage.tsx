@@ -64,7 +64,9 @@ class UserPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const user = this.userStore.user!;
-		if (!user) {
+		if (!user && session.isNetworkActive) {
+			return <></>;
+		} else if (!user) {
 			return <NotFound entityType={this.entityType} id={this.props.params.userId!} />;
 		}
 		session.setHelpContext(`${EntityType.USER}-${this.activeLeftTabId}`);

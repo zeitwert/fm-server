@@ -74,7 +74,9 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	render() {
 
 		const portfolio = this.portfolioStore.portfolio!;
-		if (!portfolio) {
+		if (!portfolio && session.isNetworkActive) {
+			return <></>;
+		} else if (!portfolio) {
 			return <NotFound entityType={this.entityType} id={this.props.params.portfolioId!} />;
 		}
 		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
