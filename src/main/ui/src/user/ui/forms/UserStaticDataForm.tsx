@@ -1,17 +1,22 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { Enumerated, TENANT_API, User, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { Enumerated, TENANT_API, User, UserModel, UserModelType, UserStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { FormStateOptions } from "mstform";
+import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import UserFormModel from "./UserFormModel";
+import UserFormDef from "./def/UserFormDef";
 
 export interface UserStaticDataFormProps {
 	store: UserStore;
 }
+
+const UserForm = new Form(
+	UserModel,
+	UserFormDef
+);
 
 @observer
 export default class UserStaticDataForm extends React.Component<UserStaticDataFormProps> {
@@ -56,7 +61,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 		const isInTrx = this.props.store.isInTrx;
 		const user = this.props.store.item! as User;
 		return (
-			<SldsForm formModel={UserFormModel} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
+			<SldsForm formModel={UserForm} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

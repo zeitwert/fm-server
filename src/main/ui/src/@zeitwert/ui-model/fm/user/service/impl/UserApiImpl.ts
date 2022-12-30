@@ -14,7 +14,6 @@ export class UserApiImpl extends AggregateApiImpl<UserSnapshot> implements UserA
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["documents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
-			tenant: "tenant",
 			avatar: "document",
 		};
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);

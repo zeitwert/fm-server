@@ -1,18 +1,23 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, Enumerated, TenantModelType, TenantStore, USER_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, Enumerated, TenantModel, TenantModelType, TenantStore, USER_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import { FormStateOptions } from "mstform";
+import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import TenantFormModel from "./TenantFormModel";
+import TenantFormDef from "./def/TenantFormDef";
 
 
 export interface TenantStaticDataFormProps {
 	store: TenantStore;
 }
+
+const TenantForm = new Form(
+	TenantModel,
+	TenantFormDef
+);
 
 @observer
 export default class TenantStaticDataForm extends React.Component<TenantStaticDataFormProps> {
@@ -65,7 +70,7 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 	render() {
 		const isInTrx = this.props.store.isInTrx;
 		return (
-			<SldsForm formModel={TenantFormModel} formStateOptions={this.formStateOptions} item={this.props.store.tenant!}>
+			<SldsForm formModel={TenantForm} formStateOptions={this.formStateOptions} item={this.props.store.tenant!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

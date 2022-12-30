@@ -1,17 +1,22 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { FormStateOptions } from "mstform";
+import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import PortfolioFormModel from "./PortfolioFormModel";
+import PortfolioFormDef from "./def/PortfolioFormDef";
 
 export interface PortfolioStaticDataFormProps {
 	store: PortfolioStore;
 }
+
+const PortfolioForm = new Form(
+	PortfolioModel,
+	PortfolioFormDef
+);
 
 @observer
 export default class PortfolioStaticDataForm extends React.Component<PortfolioStaticDataFormProps> {
@@ -108,7 +113,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		const isInTrx = this.props.store.isInTrx;
 		const portfolio = this.props.store.item! as Portfolio;
 		return (
-			<SldsForm formModel={PortfolioFormModel} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
+			<SldsForm formModel={PortfolioForm} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

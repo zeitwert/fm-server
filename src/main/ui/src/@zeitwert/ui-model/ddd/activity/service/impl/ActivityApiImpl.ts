@@ -16,7 +16,7 @@ export class ActivityApiImpl extends AggregateApiImpl<ActivitySnapshot> implemen
 		const PROPS = Object.keys(ActivityModel.properties);
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["isInWork"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
-		const RELATIONS = { refObj: "obj", refDoc: "doc", assignee: "obj", account: "account", contact: "contact" };
+		const RELATIONS = { assignee: "obj", account: "account", contact: "contact" };
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}
 

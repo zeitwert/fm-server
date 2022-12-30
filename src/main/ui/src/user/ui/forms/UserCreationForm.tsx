@@ -1,16 +1,21 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { session, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { session, UserModel, UserModelType, UserStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { FormStateOptions } from "mstform";
+import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import UserFormModel from "./UserFormModel";
+import UserFormDef from "./def/UserFormDef";
 
 export interface UserCreationFormProps {
 	store: UserStore;
 }
+
+const UserForm = new Form(
+	UserModel,
+	UserFormDef
+);
 
 @observer
 export default class UserCreationForm extends React.Component<UserCreationFormProps> {
@@ -27,7 +32,7 @@ export default class UserCreationForm extends React.Component<UserCreationFormPr
 
 	render() {
 		return (
-			<SldsForm formModel={UserFormModel} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
+			<SldsForm formModel={UserForm} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

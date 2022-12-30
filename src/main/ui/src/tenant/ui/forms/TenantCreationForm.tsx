@@ -1,23 +1,29 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { TenantStore } from "@zeitwert/ui-model";
+import { TenantModel, TenantStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
+import { Form } from "mstform";
 import React from "react";
-import TenantFormModel from "./TenantFormModel";
+import TenantFormDef from "./def/TenantFormDef";
 
 
 export interface TenantCreationFormProps {
 	store: TenantStore;
 }
 
+const TenantForm = new Form(
+	TenantModel,
+	TenantFormDef
+);
+
 @observer
 export default class TenantCreationForm extends React.Component<TenantCreationFormProps> {
 
 	render() {
 		return (
-			<SldsForm formModel={TenantFormModel} item={this.props.store.tenant!}>
+			<SldsForm formModel={TenantForm} item={this.props.store.tenant!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

@@ -12,7 +12,7 @@ export class ObjApiImpl extends AggregateApiImpl<ObjSnapshot> implements ObjApi 
 		const PROPS = Object.keys(ObjModel.properties);
 		const IGNORED = IGNORED_ATTRIBUTES.concat([]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
-		const RELATIONS = { refObj: "obj" };
+		const RELATIONS = {};
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}
 }

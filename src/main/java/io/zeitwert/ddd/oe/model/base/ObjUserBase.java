@@ -43,14 +43,14 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	public ObjUserBase(ObjUserRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> userRecord) {
 		super(repository, objRecord);
 		this.dbRecord = userRecord;
-		this.email = this.addSimpleProperty(dbRecord, ObjUserFields.EMAIL);
-		this.name = this.addSimpleProperty(dbRecord, ObjUserFields.NAME);
-		this.description = this.addSimpleProperty(dbRecord, ObjUserFields.DESCRIPTION);
-		this.avatarImage = this.addReferenceProperty(dbRecord, ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
-		this.role = this.addSimpleProperty(dbRecord, ObjUserFields.ROLE_LIST);
+		this.email = this.addSimpleProperty(this.dbRecord, ObjUserFields.EMAIL);
+		this.name = this.addSimpleProperty(this.dbRecord, ObjUserFields.NAME);
+		this.description = this.addSimpleProperty(this.dbRecord, ObjUserFields.DESCRIPTION);
+		this.avatarImage = this.addReferenceProperty(this.dbRecord, ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
+		this.role = this.addSimpleProperty(this.dbRecord, ObjUserFields.ROLE_LIST);
 		this.tenantSet = this.addItemSetProperty(this.getRepository().getTenantSetType());
-		this.needPasswordChange = this.addSimpleProperty(dbRecord, ObjUserFields.NEED_PASSWORD_CHANGE);
-		this.password = this.addSimpleProperty(dbRecord, ObjUserFields.PASSWORD);
+		this.needPasswordChange = this.addSimpleProperty(this.dbRecord, ObjUserFields.NEED_PASSWORD_CHANGE);
+		this.password = this.addSimpleProperty(this.dbRecord, ObjUserFields.PASSWORD);
 	}
 
 	@Override
@@ -78,18 +78,22 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		this.tenantSet.loadItemSet(itemRepo.getPartList(this, this.getRepository().getTenantSetType()));
 	}
 
+	@Override
 	public CodeUserRole getRole() {
 		return CodeUserRoleEnum.getUserRole(this.dbRecord.getValue(ObjUserFields.ROLE_LIST));
 	}
 
+	@Override
 	public boolean hasRole(CodeUserRole role) {
 		return this.getRole() == role;
 	}
 
+	@Override
 	public void setRole(CodeUserRole role) {
 		this.dbRecord.setValue(ObjUserFields.ROLE_LIST, role == null ? null : role.getId());
 	}
 
+	@Override
 	public void setPassword(String password) {
 		this.dbRecord.setValue(ObjUserFields.PASSWORD, this.getRepository().getPasswordEncoder().encode(password));
 	}

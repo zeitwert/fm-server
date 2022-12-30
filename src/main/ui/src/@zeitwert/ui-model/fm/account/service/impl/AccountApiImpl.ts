@@ -14,7 +14,6 @@ export class AccountApiImpl extends AggregateApiImpl<AccountSnapshot> implements
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
 			logo: "document",
-			banner: "document",
 			mainContact: "contact",
 		};
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);

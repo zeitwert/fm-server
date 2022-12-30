@@ -18,7 +18,7 @@ export class DocumentApiImpl extends AggregateApiImpl<DocumentSnapshot> implemen
 			"questionnaireResult"
 		]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
-		const RELATIONS = { refObj: "obj", templateDocument: "templateDocument" };
+		const RELATIONS = { templateDocument: "templateDocument" };
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}
 

@@ -15,7 +15,7 @@ export class DocApiImpl extends AggregateApiImpl<DocSnapshot> implements DocApi 
 		const PROPS = Object.keys(DocModel.properties);
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["isInWork"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
-		const RELATIONS = { refObj: "obj", refDoc: "doc", account: "account" };
+		const RELATIONS = { account: "account" };
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}
 

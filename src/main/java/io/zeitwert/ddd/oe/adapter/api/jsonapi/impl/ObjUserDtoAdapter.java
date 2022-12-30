@@ -28,25 +28,23 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, ObjUserVReco
 	@Override
 	public void toAggregate(ObjUserDto dto, ObjUser obj) {
 		super.toAggregate(dto, obj);
-		// if (dto.getTenant() != null) {
-		// obj.setTenant(dto.getTenant());
-		// }
-
-		if (dto.getPassword() != null) {
+		if (dto.getId() != null && dto.getPassword() != null) {
 			obj.setPassword(dto.getPassword());
 			obj.setNeedPasswordChange(dto.getNeedPasswordChange());
 		} else {
 			obj.setEmail(dto.getEmail());
+			if (dto.getId() == null) {
+				obj.setPassword(dto.getPassword());
+				obj.setNeedPasswordChange(dto.getNeedPasswordChange());
+			}
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
-
 			obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole().getId()));
 			obj.clearTenantSet();
 			for (EnumeratedDto tenant : dto.getTenants()) {
 				obj.addTenant(this.getTenant(Integer.parseInt(tenant.getId())));
 			}
 		}
-
 	}
 
 	@Override
