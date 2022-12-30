@@ -3,8 +3,8 @@ import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
-import { PORTFOLIO_API } from "../service/PortfolioApi";
-import { Portfolio, PortfolioModel, PortfolioSnapshot } from "./PortfolioModel";
+import { PortfolioApi, PORTFOLIO_API } from "../service/PortfolioApi";
+import { Portfolio, PortfolioModel, PortfolioModelType, PortfolioSnapshot } from "./PortfolioModel";
 
 const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	.props({
@@ -12,10 +12,10 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 		portfolio: types.maybe(PortfolioModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): PortfolioModelType {
 			return PortfolioModel;
 		},
-		get api() {
+		get api(): PortfolioApi {
 			return PORTFOLIO_API;
 		},
 		get item(): Portfolio | undefined {
@@ -37,7 +37,7 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	}));
 
 type MstPortfolioStoreType = typeof MstPortfolioStoreModel;
-export interface MstPortfolioStore extends MstPortfolioStoreType { }
+interface MstPortfolioStore extends MstPortfolioStoreType { }
 
 export const PortfolioStoreModel: MstPortfolioStore = MstPortfolioStoreModel;
 export type PortfolioStoreModelType = typeof PortfolioStoreModel;

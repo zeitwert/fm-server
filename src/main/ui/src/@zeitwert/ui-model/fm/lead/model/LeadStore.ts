@@ -3,8 +3,8 @@ import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { StoreWithContactsModel } from "../../contact/model/StoreWithContacts";
-import { LEAD_API } from "../service/LeadApi";
-import { Lead, LeadModel, LeadSnapshot } from "./LeadModel";
+import { LeadApi, LEAD_API } from "../service/LeadApi";
+import { Lead, LeadModel, LeadModelType, LeadSnapshot } from "./LeadModel";
 
 const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 	.props({
@@ -13,10 +13,10 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 		lead: types.maybe(LeadModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): LeadModelType {
 			return LeadModel;
 		},
-		get api() {
+		get api(): LeadApi {
 			return LEAD_API;
 		},
 		get item(): Lead | undefined {
@@ -39,7 +39,7 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 	}));
 
 type MstLeadStoreType = typeof MstLeadStoreModel;
-export interface MstLeadStore extends MstLeadStoreType { }
+interface MstLeadStore extends MstLeadStoreType { }
 
 export const LeadStoreModel: MstLeadStore = MstLeadStoreModel;
 export type LeadStoreModelType = typeof LeadStoreModel;

@@ -64,7 +64,7 @@ const MstActivityStoreModel = DocStoreModel.named("ActivityStore")
 	}));
 
 type MstActivityStoreType = typeof MstActivityStoreModel;
-export interface MstActivityStore extends MstActivityStoreType { }
+interface MstActivityStore extends MstActivityStoreType { }
 
 export const ActivityStoreModel: MstActivityStore = MstActivityStoreModel;
 export type ActivityStoreModelType = typeof ActivityStoreModel;

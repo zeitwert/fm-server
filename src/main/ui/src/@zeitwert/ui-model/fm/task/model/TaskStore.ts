@@ -1,17 +1,17 @@
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
-import { TASK_API } from "../service/TaskApi";
-import { Task, TaskModel, TaskSnapshot } from "./TaskModel";
+import { TaskApi, TASK_API } from "../service/TaskApi";
+import { Task, TaskModel, TaskModelType, TaskSnapshot } from "./TaskModel";
 
 const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 	.props({
 		task: types.maybe(TaskModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): TaskModelType {
 			return TaskModel;
 		},
-		get api() {
+		get api(): TaskApi {
 			return TASK_API;
 		},
 		get item(): Task | undefined {
@@ -25,7 +25,7 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 	}));
 
 type MstTaskStoreType = typeof MstTaskStoreModel;
-export interface MstTaskStore extends MstTaskStoreType { }
+interface MstTaskStore extends MstTaskStoreType { }
 
 export const TaskStoreModel: MstTaskStore = MstTaskStoreModel;
 export type TaskStoreModelType = typeof TaskStoreModel;

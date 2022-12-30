@@ -4,8 +4,8 @@ import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
 import { StoreWithTenantsModel } from "../../tenant/model/StoreWithTenants";
-import { USER_API } from "../service/UserApi";
-import { User, UserModel, UserSnapshot } from "./UserModel";
+import { UserApi, USER_API } from "../service/UserApi";
+import { User, UserModel, UserModelType, UserSnapshot } from "./UserModel";
 
 const MstUserStoreModel = ObjStoreModel
 	.named("UserStore")
@@ -15,10 +15,10 @@ const MstUserStoreModel = ObjStoreModel
 		user: types.maybe(UserModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): UserModelType {
 			return UserModel;
 		},
-		get api() {
+		get api(): UserApi {
 			return USER_API;
 		},
 		get item(): User | undefined {
@@ -41,7 +41,7 @@ const MstUserStoreModel = ObjStoreModel
 	}));
 
 type MstUserStoreType = typeof MstUserStoreModel;
-export interface MstUserStore extends MstUserStoreType { }
+interface MstUserStore extends MstUserStoreType { }
 
 export const UserStoreModel: MstUserStore = MstUserStoreModel;
 export type UserStoreModelType = typeof UserStoreModel;

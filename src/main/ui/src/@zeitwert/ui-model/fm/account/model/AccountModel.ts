@@ -61,7 +61,7 @@ const MstAccountModel = ObjModel.named("Account")
 	}));
 
 type MstAccountType = typeof MstAccountModel;
-export interface MstAccount extends MstAccountType { }
+interface MstAccount extends MstAccountType { }
 
 export const AccountModel: MstAccount = MstAccountModel;
 export type AccountModelType = typeof AccountModel;

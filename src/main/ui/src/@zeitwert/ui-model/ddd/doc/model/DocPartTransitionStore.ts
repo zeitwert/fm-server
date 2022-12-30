@@ -50,7 +50,7 @@ const MstDocPartTransitionStoreModel = types
 	}));
 
 type MstDocPartTransitionStoreType = typeof MstDocPartTransitionStoreModel;
-export interface MstDocPartTransitionStore extends MstDocPartTransitionStoreType { }
+interface MstDocPartTransitionStore extends MstDocPartTransitionStoreType { }
 
 export const DocPartTransitionStoreModel: MstDocPartTransitionStore = MstDocPartTransitionStoreModel;
 export type DocPartTransitionStoreModelType = typeof DocPartTransitionStoreModel;

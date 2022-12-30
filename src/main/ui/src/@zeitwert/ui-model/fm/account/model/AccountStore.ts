@@ -4,8 +4,8 @@ import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithContactsModel } from "../../contact/model/StoreWithContacts";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
 import { StoreWithTenantsModel } from "../../tenant/model/StoreWithTenants";
-import { ACCOUNT_API } from "../service/AccountApi";
-import { Account, AccountModel, AccountSnapshot } from "./AccountModel";
+import { AccountApi, ACCOUNT_API } from "../service/AccountApi";
+import { Account, AccountModel, AccountModelType, AccountSnapshot } from "./AccountModel";
 
 const MstAccountStoreModel = ObjStoreModel
 	.named("AccountStore")
@@ -16,10 +16,10 @@ const MstAccountStoreModel = ObjStoreModel
 		account: types.maybe(AccountModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): AccountModelType {
 			return AccountModel;
 		},
-		get api() {
+		get api(): AccountApi {
 			return ACCOUNT_API;
 		},
 		get item(): Account | undefined {
@@ -43,7 +43,7 @@ const MstAccountStoreModel = ObjStoreModel
 	}));
 
 type MstAccountStoreType = typeof MstAccountStoreModel;
-export interface MstAccountStore extends MstAccountStoreType { }
+interface MstAccountStore extends MstAccountStoreType { }
 
 export const AccountStoreModel: MstAccountStore = MstAccountStoreModel;
 export type AccountStoreModelType = typeof AccountStoreModel;

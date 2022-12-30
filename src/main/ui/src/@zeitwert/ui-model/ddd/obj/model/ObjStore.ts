@@ -62,7 +62,7 @@ const MstObjStoreModel = AggregateStoreModel
 	}));
 
 type MstObjStoreType = typeof MstObjStoreModel;
-export interface MstObjStore extends MstObjStoreType { }
+interface MstObjStore extends MstObjStoreType { }
 
 export const ObjStoreModel: MstObjStore = MstObjStoreModel;
 export type ObjStoreModelType = typeof ObjStoreModel;

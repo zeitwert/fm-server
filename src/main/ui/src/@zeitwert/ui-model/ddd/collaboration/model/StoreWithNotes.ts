@@ -89,8 +89,10 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 	}));
 
 type MstStoreWithNotesType = typeof MstStoreWithNotesModel;
-export interface MstStoreWithNotes extends MstStoreWithNotesType { }
+interface MstStoreWithNotes extends MstStoreWithNotesType { }
+
 export const StoreWithNotesModel: MstStoreWithNotes = MstStoreWithNotesModel;
-export interface StoreWithNotes extends Instance<typeof StoreWithNotesModel> { }
-export type MstStoreWithNotesSnapshot = SnapshotIn<typeof MstStoreWithNotesModel>;
-export interface StoreWithNotesSnapshot extends MstStoreWithNotesSnapshot { }
+export type StoreWithNotesModelType = typeof StoreWithNotesModel;
+export interface StoreWithNotes extends Instance<StoreWithNotesModelType> { }
+export type StoreWithNotesSnapshot = SnapshotIn<StoreWithNotesModelType>;
+export type StoreWithNotesPayload = Omit<StoreWithNotesSnapshot, "id">;

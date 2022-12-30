@@ -88,7 +88,7 @@ const MstAggregateModel = types
 	}));
 
 type MstAggregateType = typeof MstAggregateModel;
-export interface MstAggregate extends MstAggregateType { }
+interface MstAggregate extends MstAggregateType { }
 
 export const AggregateModel: MstAggregate = MstAggregateModel;
 export type AggregateModelType = typeof AggregateModel;

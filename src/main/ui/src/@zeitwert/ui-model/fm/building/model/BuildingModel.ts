@@ -243,7 +243,7 @@ const MstBuildingModel = ObjModel.named("Building")
 	}));
 
 type MstBuildingType = typeof MstBuildingModel;
-export interface MstBuilding extends MstBuildingType { }
+interface MstBuilding extends MstBuildingType { }
 
 export const BuildingModel: MstBuilding = MstBuildingModel;
 export type BuildingModelType = typeof BuildingModel;

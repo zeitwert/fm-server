@@ -218,7 +218,7 @@ const MstContactModel = ObjModel.named("Contact")
 	}));
 
 type MstContactType = typeof MstContactModel;
-export interface MstContact extends MstContactType { }
+interface MstContact extends MstContactType { }
 
 export const ContactModel: MstContact = MstContactModel;
 export type ContactModelType = typeof ContactModel;

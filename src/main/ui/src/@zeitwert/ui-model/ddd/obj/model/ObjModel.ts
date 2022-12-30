@@ -63,7 +63,7 @@ const MstObjModel = AggregateModel
 	}));
 
 type MstObjType = typeof MstObjModel;
-export interface MstObj extends MstObjType { }
+interface MstObj extends MstObjType { }
 
 export const ObjModel: MstObj = MstObjModel;
 export type ObjModelType = typeof ObjModel;

@@ -8,7 +8,7 @@ const MstObjPartModel = PartModel.named("ObjPart").props({
 });
 
 type MstObjPartType = typeof MstObjPartModel;
-export interface MstObjPart extends MstObjPartType { }
+interface MstObjPart extends MstObjPartType { }
 
 export const ObjPartModel: MstObjPart = MstObjPartModel;
 export type ObjPartModelType = typeof ObjPartModel;

@@ -3,8 +3,8 @@ import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
-import { BUILDING_API } from "../service/BuildingApi";
-import { Building, BuildingModel, BuildingSnapshot } from "./BuildingModel";
+import { BuildingApi, BUILDING_API } from "../service/BuildingApi";
+import { Building, BuildingModel, BuildingModelType, BuildingSnapshot } from "./BuildingModel";
 
 const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 	.props({
@@ -13,10 +13,10 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 		building: types.maybe(BuildingModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): BuildingModelType {
 			return BuildingModel;
 		},
-		get api() {
+		get api(): BuildingApi {
 			return BUILDING_API;
 		},
 		get item(): Building | undefined {
@@ -39,7 +39,7 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 	}));
 
 type MstBuildingStoreType = typeof MstBuildingStoreModel;
-export interface MstBuildingStore extends MstBuildingStoreType { }
+interface MstBuildingStore extends MstBuildingStoreType { }
 
 export const BuildingStoreModel: MstBuildingStore = MstBuildingStoreModel;
 export type BuildingStoreModelType = typeof BuildingStoreModel;

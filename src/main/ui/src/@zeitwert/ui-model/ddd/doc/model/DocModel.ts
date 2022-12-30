@@ -89,7 +89,7 @@ const MstDocModel = AggregateModel.named("Doc")
 	}));
 
 type MstDocType = typeof MstDocModel;
-export interface MstDoc extends MstDocType { }
+interface MstDoc extends MstDocType { }
 
 export const DocModel: MstDoc = MstDocModel;
 export type DocModelType = typeof DocModel;

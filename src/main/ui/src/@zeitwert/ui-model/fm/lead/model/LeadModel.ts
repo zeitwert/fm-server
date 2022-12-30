@@ -103,7 +103,7 @@ const MstLeadModel = DocModel.named("Lead")
 	});
 
 type MstLeadType = typeof MstLeadModel;
-export interface MstLead extends MstLeadType { }
+interface MstLead extends MstLeadType { }
 
 export const LeadModel: MstLead = MstLeadModel;
 export type LeadModelType = typeof LeadModel;

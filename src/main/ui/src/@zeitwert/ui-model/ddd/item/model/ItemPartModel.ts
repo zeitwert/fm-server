@@ -21,7 +21,7 @@ const MstItemPartModel = PartModel.named("ItemPart")
 	}));
 
 type MstItemPartType = typeof MstItemPartModel;
-export interface MstItemPart extends MstItemPartType { }
+interface MstItemPart extends MstItemPartType { }
 
 export const ItemPartModel: MstItemPart = MstItemPartModel;
 export type ItemPartModelType = typeof ItemPartModel;

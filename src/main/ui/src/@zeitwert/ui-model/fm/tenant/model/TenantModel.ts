@@ -36,7 +36,7 @@ const MstTenantModel = ObjModel.named("Tenant")
 	}));
 
 type MstTenantType = typeof MstTenantModel;
-export interface MstTenant extends MstTenantType { }
+interface MstTenant extends MstTenantType { }
 
 export const TenantModel: MstTenant = MstTenantModel;
 export type TenantModelType = typeof TenantModel;

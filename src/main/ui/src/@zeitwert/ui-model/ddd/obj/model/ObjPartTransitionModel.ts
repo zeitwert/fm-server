@@ -12,7 +12,7 @@ const MstObjPartTransitionModel = ObjPartModel.named("ObjTransition").props({
 });
 
 type MstObjPartTransitionType = typeof MstObjPartTransitionModel;
-export interface MstObjPartTransition extends MstObjPartTransitionType { }
+interface MstObjPartTransition extends MstObjPartTransitionType { }
 
 export const ObjPartTransitionModel: MstObjPartTransition = MstObjPartTransitionModel;
 export type ObjPartTransitionModelType = typeof ObjPartTransitionModel;

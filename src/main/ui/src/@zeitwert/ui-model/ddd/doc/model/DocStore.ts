@@ -115,7 +115,7 @@ const MstDocStoreModel = types
 	}));
 
 type MstDocStoreType = typeof MstDocStoreModel;
-export interface MstDocStore extends MstDocStoreType { }
+interface MstDocStore extends MstDocStoreType { }
 
 export const DocStoreModel: MstDocStore = MstDocStoreModel;
 export type DocStoreModelType = typeof DocStoreModel;

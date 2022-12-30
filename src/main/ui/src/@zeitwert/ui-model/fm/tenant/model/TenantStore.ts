@@ -3,8 +3,8 @@ import { EntityTypeRepository } from "@zeitwert/ui-model/app";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
-import { TENANT_API } from "../service/TenantApi";
-import { Tenant, TenantModel, TenantSnapshot } from "./TenantModel";
+import { TenantApi, TENANT_API } from "../service/TenantApi";
+import { Tenant, TenantModel, TenantModelType, TenantSnapshot } from "./TenantModel";
 
 const MstTenantStoreModel = ObjStoreModel
 	.named("TenantStore")
@@ -13,10 +13,10 @@ const MstTenantStoreModel = ObjStoreModel
 		tenant: types.maybe(TenantModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): TenantModelType {
 			return TenantModel;
 		},
-		get api() {
+		get api(): TenantApi {
 			return TENANT_API;
 		},
 		get item(): Tenant | undefined {
@@ -38,7 +38,7 @@ const MstTenantStoreModel = ObjStoreModel
 	}));
 
 type MstTenantStoreType = typeof MstTenantStoreModel;
-export interface MstTenantStore extends MstTenantStoreType { }
+interface MstTenantStore extends MstTenantStoreType { }
 
 export const TenantStoreModel: MstTenantStore = MstTenantStoreModel;
 export type TenantStoreModelType = typeof TenantStoreModel;

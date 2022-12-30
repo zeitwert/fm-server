@@ -31,8 +31,10 @@ const MstStoreWithContactsModel = StoreWithEntitiesModel.named("StoreWithContact
 	}));
 
 type MstStoreWithContactsType = typeof MstStoreWithContactsModel;
-export interface MstStoreWithContacts extends MstStoreWithContactsType { }
+interface MstStoreWithContacts extends MstStoreWithContactsType { }
+
 export const StoreWithContactsModel: MstStoreWithContacts = MstStoreWithContactsModel;
-export interface StoreWithContacts extends Instance<typeof StoreWithContactsModel> { }
-export type MstStoreWithContactsSnapshot = SnapshotIn<typeof MstStoreWithContactsModel>;
-export interface StoreWithContactsSnapshot extends MstStoreWithContactsSnapshot { }
+export type StoreWithContactsModelType = typeof StoreWithContactsModel;
+export interface StoreWithContacts extends Instance<StoreWithContactsModelType> { }
+export type StoreWithContactsSnapshot = SnapshotIn<StoreWithContactsModelType>;
+export type StoreWithContactsPayload = Omit<StoreWithContactsSnapshot, "id">;

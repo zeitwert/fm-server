@@ -16,7 +16,7 @@ const MstEnumeratedModel = types.model(
 	});
 
 type MstEnumeratedType = typeof MstEnumeratedModel;
-export interface MstEnumerated extends MstEnumeratedType { }
+interface MstEnumerated extends MstEnumeratedType { }
 
 export const EnumeratedModel: MstEnumerated = MstEnumeratedModel;
 export type EnumeratedModelType = typeof EnumeratedModel;

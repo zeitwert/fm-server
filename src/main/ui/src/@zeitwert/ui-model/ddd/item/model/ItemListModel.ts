@@ -130,10 +130,10 @@ const MstItemListModel = types
 	}));
 
 type MstItemListType = typeof MstItemListModel;
-export interface MstItemList extends MstItemListType { }
+interface MstItemList extends MstItemListType { }
 
 export const ItemListModel: MstItemList = MstItemListModel;
 export type ItemListModelType = typeof ItemListModel;
 export interface ItemList extends Instance<ItemListModelType> { }
-export type MstItemListSnapshot = SnapshotIn<ItemListModelType>;
-export interface ItemListSnapshot extends MstItemListSnapshot { }
+export type ItemListSnapshot = SnapshotIn<ItemListModelType>;
+export type ItemListPayload = Omit<ItemListSnapshot, "id">;

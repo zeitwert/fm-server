@@ -78,7 +78,7 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	}));
 
 type MstBuildingElementType = typeof MstBuildingElementModel;
-export interface MstBuildingElement extends MstBuildingElementType { }
+interface MstBuildingElement extends MstBuildingElementType { }
 
 export const BuildingElementModel: MstBuildingElement = MstBuildingElementModel;
 export type BuildingElementModelType = typeof BuildingElementModel;

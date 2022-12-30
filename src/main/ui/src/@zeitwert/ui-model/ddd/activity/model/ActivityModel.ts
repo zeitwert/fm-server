@@ -54,7 +54,7 @@ const MstActivityModel = DocModel.named("Activity")
 	}));
 
 type MstActivityType = typeof MstActivityModel;
-export interface MstActivity extends MstActivityType { }
+interface MstActivity extends MstActivityType { }
 
 export const ActivityModel: MstActivity = MstActivityModel;
 export type ActivityModelType = typeof ActivityModel;

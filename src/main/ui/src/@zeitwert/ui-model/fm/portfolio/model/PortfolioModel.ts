@@ -66,7 +66,7 @@ const MstPortfolioModel = ObjModel.named("Portfolio")
 	});
 
 type MstPortfolioType = typeof MstPortfolioModel;
-export interface MstPortfolio extends MstPortfolioType { }
+interface MstPortfolio extends MstPortfolioType { }
 
 export const PortfolioModel: MstPortfolio = MstPortfolioModel;
 export type PortfolioModelType = typeof PortfolioModel;

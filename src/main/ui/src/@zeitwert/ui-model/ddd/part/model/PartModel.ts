@@ -49,7 +49,7 @@ const MstPartModel = types
 	}));
 
 type MstPartType = typeof MstPartModel;
-export interface MstPart extends MstPartType { }
+interface MstPart extends MstPartType { }
 
 export const PartModel: MstPart = MstPartModel;
 export type PartModelType = typeof PartModel;

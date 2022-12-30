@@ -35,7 +35,7 @@ const MstNoteModel = ObjModel.named("Note")
 	}));
 
 type MstNoteType = typeof MstNoteModel;
-export interface MstNote extends MstNoteType { }
+interface MstNote extends MstNoteType { }
 
 export const NoteModel: MstNote = MstNoteModel;
 export type NoteModelType = typeof NoteModel;

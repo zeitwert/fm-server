@@ -15,7 +15,7 @@ const MstDocPartTransitionModel = DocPartModel.named("DocTransition").props({
 });
 
 type MstDocPartTransitionType = typeof MstDocPartTransitionModel;
-export interface MstDocPartTransition extends MstDocPartTransitionType { }
+interface MstDocPartTransition extends MstDocPartTransitionType { }
 
 export const DocPartTransitionModel: MstDocPartTransition = MstDocPartTransitionModel;
 export type DocPartTransitionModelType = typeof DocPartTransitionModel;

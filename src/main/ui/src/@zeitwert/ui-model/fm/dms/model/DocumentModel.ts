@@ -116,7 +116,7 @@ const MstDocumentModel = ObjModel.named("Document")
 	}));
 
 type MstDocumentType = typeof MstDocumentModel;
-export interface MstDocument extends MstDocumentType { }
+interface MstDocument extends MstDocumentType { }
 
 export const DocumentModel: MstDocument = MstDocumentModel;
 export type DocumentModelType = typeof DocumentModel;

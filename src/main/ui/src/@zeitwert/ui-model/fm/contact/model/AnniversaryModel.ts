@@ -21,7 +21,7 @@ const MstAnniversaryModel = ObjPartModel.named("Anniversary")
 	}));
 
 type MstAnniversaryType = typeof MstAnniversaryModel;
-export interface MstAnniversary extends MstAnniversaryType { }
+interface MstAnniversary extends MstAnniversaryType { }
 
 export const AnniversaryModel: MstAnniversary = MstAnniversaryModel;
 export type AnniversaryModelType = typeof AnniversaryModel;

@@ -5,7 +5,7 @@ import { applySnapshot, flow, getSnapshot, Instance, SnapshotIn, types } from "m
 import { EntityTypeRepository, requireThis, UUID } from "../../../app/common";
 import { Aggregate } from "../../aggregate/model/AggregateModel";
 import { ItemPartApi } from "../service/ItemPartApi";
-import { ItemPart, ItemPartPayload, ItemPartSnapshot, MstItemPart } from "./ItemPartModel";
+import { ItemPart, ItemPartModelType, ItemPartPayload, ItemPartSnapshot } from "./ItemPartModel";
 
 const MstItemPartStoreModel = types
 	.model("ItemPartStore", {
@@ -16,7 +16,7 @@ const MstItemPartStoreModel = types
 	}))
 	// must overwrite
 	.views((self) => ({
-		get model(): MstItemPart {
+		get model(): ItemPartModelType {
 			requireThis(false, "model() is implemented");
 			return undefined!;
 		},
@@ -178,7 +178,7 @@ const MstItemPartStoreModel = types
 	}));
 
 type MstItemPartStoreType = typeof MstItemPartStoreModel;
-export interface MstItemPartStore extends MstItemPartStoreType { }
+interface MstItemPartStore extends MstItemPartStoreType { }
 
 export const ItemPartStoreModel: MstItemPartStore = MstItemPartStoreModel;
 export type ItemPartStoreModelType = typeof ItemPartStoreModel;

@@ -26,7 +26,7 @@ const MstAddressModel = ObjPartModel.named("Address")
 	}));
 
 type MstAddressType = typeof MstAddressModel;
-export interface MstAddress extends MstAddressType { }
+interface MstAddress extends MstAddressType { }
 
 export const AddressModel: MstAddress = MstAddressModel;
 export type AddressModelType = typeof AddressModel;

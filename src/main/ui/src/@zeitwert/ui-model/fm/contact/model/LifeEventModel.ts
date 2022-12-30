@@ -64,7 +64,7 @@ const MstLifeEventModel = ObjPartModel.named("LifeEvent")
 	}));
 
 type MstLifeEventType = typeof MstLifeEventModel;
-export interface MstLifeEvent extends MstLifeEventType { }
+interface MstLifeEvent extends MstLifeEventType { }
 
 export const LifeEventModel: MstLifeEvent = MstLifeEventModel;
 export type LifeEventModelType = typeof LifeEventModel;

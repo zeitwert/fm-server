@@ -13,7 +13,7 @@ import {
 } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateApi } from "../service/AggregateApi";
-import { Aggregate, AggregateSnapshot, MstAggregate } from "./AggregateModel";
+import { Aggregate, AggregateModelType, AggregateSnapshot } from "./AggregateModel";
 
 export interface AggregateCounters {
 	docCount: number;
@@ -35,7 +35,7 @@ const MstAggregateStoreModel = types
 	}))
 	// must overwrite
 	.views((self) => ({
-		get model(): MstAggregate {
+		get model(): AggregateModelType {
 			requireThis(false, "model() is implemented");
 			return undefined!;
 		},
@@ -300,7 +300,7 @@ const MstAggregateStoreModel = types
 	}));
 
 type MstAggregateStoreType = typeof MstAggregateStoreModel;
-export interface MstAggregateStore extends MstAggregateStoreType { }
+interface MstAggregateStore extends MstAggregateStoreType { }
 
 export const AggregateStoreModel: MstAggregateStore = MstAggregateStoreModel;
 export type AggregateStoreModelType = typeof AggregateStoreModel;

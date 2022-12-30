@@ -42,8 +42,10 @@ const MstStoreWithEntitiesModel = types
 	}));
 
 type MstStoreWithEntitiesType = typeof MstStoreWithEntitiesModel;
-export interface MstStoreWithEntities extends MstStoreWithEntitiesType { }
+interface MstStoreWithEntities extends MstStoreWithEntitiesType { }
+
 export const StoreWithEntitiesModel: MstStoreWithEntities = MstStoreWithEntitiesModel;
-export interface StoreWithEntities extends Instance<typeof StoreWithEntitiesModel> { }
-export type MstStoreWithEntitiesSnapshot = SnapshotIn<typeof MstStoreWithEntitiesModel>;
-export interface StoreWithEntitiesSnapshot extends MstStoreWithEntitiesSnapshot { }
+export type StoreWithEntitiesModelType = typeof StoreWithEntitiesModel;
+export interface StoreWithEntities extends Instance<StoreWithEntitiesModelType> { }
+export type StoreWithEntitiesSnapshot = SnapshotIn<StoreWithEntitiesModelType>;
+export type StoreWithEntitiesPayload = Omit<StoreWithEntitiesSnapshot, "id">;

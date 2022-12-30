@@ -3,8 +3,8 @@ import { transaction } from "mobx";
 import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { API, Config } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
-import { DOCUMENT_API } from "../service/DocumentApi";
-import { Document, DocumentContentType, DocumentModel, DocumentSnapshot } from "./DocumentModel";
+import { DocumentApi, DOCUMENT_API } from "../service/DocumentApi";
+import { Document, DocumentContentType, DocumentModel, DocumentModelType, DocumentSnapshot } from "./DocumentModel";
 
 const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 	.props({
@@ -12,10 +12,10 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 		availableDocuments: types.optional(types.array(types.reference(DocumentModel)), [])
 	})
 	.views((self) => ({
-		get model() {
+		get model(): DocumentModelType {
 			return DocumentModel;
 		},
-		get api() {
+		get api(): DocumentApi {
 			return DOCUMENT_API;
 		},
 		get item(): Document | undefined {
@@ -60,7 +60,7 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 	}));
 
 type MstDocumentStoreType = typeof MstDocumentStoreModel;
-export interface MstDocumentStore extends MstDocumentStoreType { }
+interface MstDocumentStore extends MstDocumentStoreType { }
 
 export const DocumentStoreModel: MstDocumentStore = MstDocumentStoreModel;
 export type DocumentStoreModelType = typeof DocumentStoreModel;

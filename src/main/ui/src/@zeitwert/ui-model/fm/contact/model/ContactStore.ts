@@ -3,8 +3,8 @@ import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
-import { CONTACT_API } from "../service/ContactApi";
-import { Contact, ContactModel, ContactSnapshot } from "./ContactModel";
+import { ContactApi, CONTACT_API } from "../service/ContactApi";
+import { Contact, ContactModel, ContactModelType, ContactSnapshot } from "./ContactModel";
 import { LifeEvent } from "./LifeEventModel";
 
 const MstContactStoreModel = ObjStoreModel.named("ContactStore")
@@ -13,10 +13,10 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 		contact: types.maybe(ContactModel)
 	})
 	.views((self) => ({
-		get model() {
+		get model(): ContactModelType {
 			return ContactModel;
 		},
-		get api() {
+		get api(): ContactApi {
 			return CONTACT_API;
 		},
 		get item(): Contact | undefined {
@@ -68,7 +68,7 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 	}));
 
 type MstContactStoreType = typeof MstContactStoreModel;
-export interface MstContactStore extends MstContactStoreType { }
+interface MstContactStore extends MstContactStoreType { }
 
 export const ContactStoreModel: MstContactStore = MstContactStoreModel;
 export type ContactStoreModelType = typeof ContactStoreModel;

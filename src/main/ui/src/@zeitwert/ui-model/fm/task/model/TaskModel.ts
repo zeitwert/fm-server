@@ -12,7 +12,7 @@ const MstTaskModel = DocModel.named("Task").props({
 });
 
 type MstTaskType = typeof MstTaskModel;
-export interface MstTask extends MstTaskType { }
+interface MstTask extends MstTaskType { }
 
 export const TaskModel: MstTask = MstTaskModel;
 export type TaskModelType = typeof TaskModel;

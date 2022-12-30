@@ -50,7 +50,7 @@ const MstUserModel = ObjModel.named("User")
 	}));
 
 type MstUserType = typeof MstUserModel;
-export interface MstUser extends MstUserType { }
+interface MstUser extends MstUserType { }
 
 export const UserModel: MstUser = MstUserModel;
 export type UserModelType = typeof UserModel;

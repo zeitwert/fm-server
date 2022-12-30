@@ -8,7 +8,7 @@ const MstDocPartModel = PartModel.named("DocPart").props({
 });
 
 type MstDocPartType = typeof MstDocPartModel;
-export interface MstDocPart extends MstDocPartType { }
+interface MstDocPart extends MstDocPartType { }
 
 export const DocPartModel: MstDocPart = MstDocPartModel;
 export type DocPartModelType = typeof DocPartModel;

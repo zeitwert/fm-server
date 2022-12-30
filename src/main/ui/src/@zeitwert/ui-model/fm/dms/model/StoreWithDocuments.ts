@@ -31,8 +31,10 @@ const MstStoreWithDocumentsModel = StoreWithEntitiesModel.named("StoreWithDocume
 	}));
 
 type MstStoreWithDocumentsType = typeof MstStoreWithDocumentsModel;
-export interface MstStoreWithDocuments extends MstStoreWithDocumentsType { }
+interface MstStoreWithDocuments extends MstStoreWithDocumentsType { }
+
 export const StoreWithDocumentsModel: MstStoreWithDocuments = MstStoreWithDocumentsModel;
-export interface StoreWithDocuments extends Instance<typeof StoreWithDocumentsModel> { }
-export type MstStoreWithDocumentsSnapshot = SnapshotIn<typeof MstStoreWithDocumentsModel>;
-export interface StoreWithDocumentsSnapshot extends MstStoreWithDocumentsSnapshot { }
+export type StoreWithDocumentsModelType = typeof StoreWithDocumentsModel;
+export interface StoreWithDocuments extends Instance<StoreWithDocumentsModelType> { }
+export type StoreWithDocumentsSnapshot = SnapshotIn<StoreWithDocumentsModelType>;
+export type StoreWithDocumentsPayload = Omit<StoreWithDocumentsSnapshot, "id">;
