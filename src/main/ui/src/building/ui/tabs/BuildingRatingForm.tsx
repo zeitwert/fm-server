@@ -1,7 +1,7 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, SldsSubFormProps } from "@zeitwert/ui-forms";
-import { BuildingModel, BuildingModelType, BuildingStore, requireThis, session } from "@zeitwert/ui-model";
+import { BuildingElement, BuildingModel, BuildingModelType, BuildingStore, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -9,10 +9,12 @@ import { Form, FormDefinition, FormStateOptions, IFormAccessor } from "mstform";
 import React from "react";
 import BuildingFormDef from "../forms/BuildingFormDef";
 import ElementListRatingForm from "./ElementListRatingForm";
+import { ElementAccessor } from "./ElementRatingForm";
 
 export interface BuildingRatingFormProps {
 	store: BuildingStore;
-	onOpenElementRating: (element: any, elementForm: any) => void;
+	currentElementId: string | undefined;
+	onOpenElementRating: (element: BuildingElement, elementAccessor: ElementAccessor) => void;
 	onCloseElementRating: () => void;
 }
 
@@ -21,7 +23,7 @@ const BuildingForm = new Form(
 	BuildingFormDef
 );
 
-type FormAccessor = IFormAccessor<FormDefinition<BuildingModelType>, any, BuildingModelType>;
+export type FormAccessor = IFormAccessor<FormDefinition<BuildingModelType>, any, BuildingModelType>;
 
 @observer
 export default class BuildingRatingForm extends React.Component<BuildingRatingFormProps> {
@@ -54,13 +56,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 	};
 
 	@observable
-	isLoading: boolean = false;
-
-	@observable
 	showAllElements: boolean = false;
-
-	@observable
-	currentElementId: string | undefined = undefined;
 
 	constructor(props: BuildingRatingFormProps) {
 		super(props);
@@ -69,13 +65,15 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	render() {
 		const building = this.props.store.item!;
+		const currentElementId = this.props.currentElementId;
+		const showAllElements = this.showAllElements;
 		return (
 			<div onClick={() => this.onCloseElementRating()} className="fm-rating-container">
 				<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>
 					{
 						({ formAccessor }: SldsSubFormProps<BuildingModelType>) =>
 							<>
-								<Grid className="slds-wrap slds-m-top_small" key={this.currentElementId}>
+								<Grid className="slds-wrap slds-m-top_small">
 									<Col cols={1} totalCols={1}>
 										<Card hasNoHeader bodyClassName="slds-card__body_inner" style={{ zIndex: 200 }}>
 											<FieldGroup>
@@ -98,7 +96,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 													</div>
 													<div className="slds-size_1-of-12">
 														<FieldGroup label="Optionen">
-															<Checkbox labels={{ label: "Alle Bauteile" }} checked={this.showAllElements} onChange={() => this.showAllElements = !this.showAllElements}></Checkbox>
+															<Checkbox labels={{ label: "Alle Bauteile" }} checked={showAllElements} onChange={() => this.showAllElements = !this.showAllElements}></Checkbox>
 														</FieldGroup>
 													</div>
 													<Select label="Unterhaltsplanung" fieldName="maintenanceStrategy" size={2} />
@@ -115,7 +113,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 								{
 									!!building.elements.length &&
 									<Card hasNoHeader heading="" bodyClassName="slds-card__body_inner">
-										<Grid className="slds-wrap slds-m-top_small" key={this.currentElementId}>
+										<Grid className="slds-wrap slds-m-top_small">
 											<Col cols={1} totalCols={1}>
 												<FieldGroup>
 													<Grid isVertical={false}>
@@ -150,9 +148,9 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 												<ElementListRatingForm
 													building={building}
 													elementForms={formAccessor.repeatingForm("elements")}
-													showAllElements={this.showAllElements}
-													currentElementId={this.currentElementId}
-													onSelectElement={(id) => (this.currentElementId === id ? this.onCloseElementRating() : this.onOpenElementRating(id, formAccessor))}
+													showAllElements={showAllElements}
+													currentElementId={currentElementId}
+													onSelectElement={(id) => (this.props.currentElementId === id ? this.onCloseElementRating() : this.onOpenElementRating(id, formAccessor))}
 												/>
 											</Col>
 										</Grid>
@@ -179,22 +177,16 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	private onOpenElementRating = (elementId: string, formAccessor: FormAccessor) => {
 		requireThis(!!elementId, "element id not null");
-		this.currentElementId = elementId;
-		let element: any;
-		let elementForm: any;
 		const building = this.props.store.item!;
-		building.elements.forEach((el, index) => {
-			if (el.id === this.currentElementId) {
-				element = el;
-				elementForm = formAccessor.repeatingForm("elements").index(index);
+		building.elements.forEach((element, index) => {
+			if (element.id === elementId) {
+				this.props.onOpenElementRating(element, formAccessor.repeatingForm("elements").index(index));
 			}
 		});
-		this.props.onOpenElementRating(element, elementForm);
 	}
 
 	private onCloseElementRating = () => {
 		this.props.onCloseElementRating();
-		this.currentElementId = undefined;
 	}
 
 }

@@ -1,14 +1,17 @@
 
 import { FieldGroup, FieldRow, Input, SldsSubForm, Static } from "@zeitwert/ui-forms";
-import { Building, BuildingElement, BuildingElementModelType, BuildingModelType } from "@zeitwert/ui-model";
+import { Building, BuildingElement, BuildingModelType } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
-import { FormDefinition, IFormAccessor } from "mstform";
+import { FormDefinition } from "mstform";
 import { RepeatingFormAccess } from "mstform/dist/src/accessor";
 import React from "react";
+import { ElementAccessor } from "./ElementRatingForm";
+
+export type ElementsAccessor = RepeatingFormAccess<FormDefinition<BuildingModelType>, "elements", BuildingModelType>;
 
 export interface ElementListRatingFormProps {
 	building: Building;
-	elementForms: RepeatingFormAccess<FormDefinition<BuildingModelType>, "elements", BuildingModelType>;
+	elementForms: ElementsAccessor;
 	showAllElements: boolean;
 	currentElementId: string | undefined;
 	onSelectElement: (id: string) => void;
@@ -27,8 +30,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 			if (showAllElements || !!element.weight) {
 				rows.push(
 					<ElementRowRatingForm
-						key={"part-" + index}
-						index={index}
+						key={"part-" + element.id}
 						row={row}
 						rowCount={rowCount}
 						element={element}
@@ -65,11 +67,10 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 }
 
 export interface ElementRowRatingFormProps {
-	index: number;
 	row: number;
 	rowCount: number;
 	element: BuildingElement;
-	elementAccessor: IFormAccessor<FormDefinition<BuildingElementModelType>, any, BuildingElementModelType>;
+	elementAccessor: ElementAccessor;
 	currentElementId: string | undefined;
 	onSelectElement: (id: string) => void;
 }
@@ -78,23 +79,22 @@ export interface ElementRowRatingFormProps {
 class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 
 	render() {
-		const { index, row, element, elementAccessor, currentElementId } = this.props;
+		const { row, element, elementAccessor, currentElementId } = this.props;
 		let description = element.description ? element.description : "";
 		description += element.conditionDescription ? "\n<b>Zustand</b>: " + element.conditionDescription : "";
 		description += element.measureDescription ? "\n<b>Massnahmen</b>: " + element.measureDescription : "";
 		description = description.trim();
 		return (
 			<div
-				key={"part-" + index}
-				onClick={(e) => this.onSelectElement(element.id, e)}
+				onClick={(e) => this.onClickRow(element.id, e)}
 				className={currentElementId === element.id ? "selected" : ""}
 			>
 				<SldsSubForm formAccessor={elementAccessor} item={element}>
 					<FieldGroup>
 						<FieldRow>
 							<Static value={element.buildingPart?.name} size={2} readOnlyLook="plain" />
-							<Input id={"cell-" + row + "-0"} fieldName="weight" size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
-							<Input id={"cell-" + row + "-2"} fieldName="condition" size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
+							<Input id={"cell-" + row + "-0"} fieldName="weight" size={1} align="right" readOnlyLook="plain" onClick={(e) => this.onClickInput(element.id, e)} onFocus={(e) => this.onFocusInput(element.id, e)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
+							<Input id={"cell-" + row + "-2"} fieldName="condition" size={1} align="right" readOnlyLook="plain" onClick={(e) => this.onClickInput(element.id, e)} onFocus={(e) => this.onFocusInput(element.id, e)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
 							<Static value={element.shortTermRestoration ? element.shortTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
 							<Static value={element.midTermRestoration ? element.midTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
 							<Static value={element.longTermRestoration ? element.longTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
@@ -108,9 +108,25 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 		);
 	}
 
-	private onSelectElement = (id: string, e?: React.MouseEvent<HTMLDivElement>): void => {
-		e?.stopPropagation();
+	private onClickRow = (id: string, e: React.SyntheticEvent<any>): void => {
+		e.stopPropagation();
 		this.props.onSelectElement(id);
+	}
+
+	private onClickInput = (id: string, e: React.SyntheticEvent<any>): void => {
+		e.stopPropagation();
+		// don't toggle details window when clicking in field on same row
+		if (!this.props.currentElementId || (id !== this.props.currentElementId)) {
+			this.props.onSelectElement(id);
+		}
+	}
+
+	private onFocusInput = (id: string, e: React.SyntheticEvent<any>): void => {
+		e.stopPropagation();
+		// don't toggle details window when focusing on field on same row
+		if (!this.props.currentElementId || (id !== this.props.currentElementId)) {
+			this.props.onSelectElement(id);
+		}
 	}
 
 	private onKeyDown = (row: number, col: number, key: string): void => {
@@ -118,8 +134,7 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 		if (rowDelta) {
 			const targetRow = (this.props.rowCount + row + rowDelta) % this.props.rowCount;
 			const target = document.getElementById("cell-" + targetRow + "-" + col);
-			target?.focus();
-			setTimeout(() => { (target as HTMLInputElement)?.select(); }, 10);
+			target?.focus(); // focus field and possibly trigger row change
 		}
 	}
 

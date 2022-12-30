@@ -12,6 +12,7 @@ export interface InputProps extends FieldProps {
 	onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
 	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
 
 export const Input: FC<InputProps> = observer((props) => {
@@ -33,6 +34,7 @@ export const Input: FC<InputProps> = observer((props) => {
 					autoComplete="off"
 					onFocus={props.onFocus}
 					onKeyDown={props.onKeyDown}
+					onClick={props.onClick}
 				/>
 			}
 		</Field>

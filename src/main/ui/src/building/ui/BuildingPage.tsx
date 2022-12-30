@@ -1,6 +1,6 @@
 
 import { Button, ButtonGroup, Modal, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
+import { API, Building, BuildingElement, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
 import NotFound from "frame/ui/NotFound";
@@ -18,7 +18,7 @@ import BuildingLocationForm from "./tabs/BuildingLocationForm";
 import BuildingRatingForm from "./tabs/BuildingRatingForm";
 import BuildingStaticDataForm from "./tabs/BuildingStaticDataForm";
 import BuildingSummaryTab from "./tabs/BuildingSummaryTab";
-import ElementRatingForm from "./tabs/ElementRatingForm";
+import ElementRatingForm, { ElementAccessor } from "./tabs/ElementRatingForm";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
@@ -45,8 +45,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
 	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
-	@observable currentElement: any;
-	@observable currentElementForm: any;
+	@observable currentElement: BuildingElement | undefined;
+	@observable currentElementAccessor: ElementAccessor | undefined;
 	@observable showConfirmation: boolean = false;
 	@observable confirmationTitle: string = "";
 	@observable confirmationDetails: string = "";
@@ -154,6 +154,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 										this.activeLeftTabId === LEFT_TABS.RATING &&
 										<BuildingRatingForm
 											store={this.buildingStore}
+											currentElementId={this.currentElement?.id}
 											onOpenElementRating={this.onOpenElementRating}
 											onCloseElementRating={this.onCloseElementRating}
 										/>
@@ -225,12 +226,12 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 					/>
 				}
 				{
-					this.activeLeftTabId === LEFT_TABS.RATING && !!this.currentElement &&
+					this.activeLeftTabId === LEFT_TABS.RATING && !!this.currentElement && !!this.currentElementAccessor &&
 					<SidePanel style={{ top: "110px", bottom: "30px", right: "30px", minWidth: "28rem" }}>
 						<div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
 							<ElementRatingForm
 								element={this.currentElement}
-								elementAccessor={this.currentElementForm}
+								elementAccessor={this.currentElementAccessor}
 								onClose={this.onCloseElementRating}
 							/>
 						</div>
@@ -421,14 +422,14 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		this.buildingStore.load(this.buildingStore.id!);
 	};
 
-	private onOpenElementRating = (element: any, elementForm: any) => {
+	private onOpenElementRating = (element: BuildingElement, elementAccessor: ElementAccessor) => {
 		this.currentElement = element;
-		this.currentElementForm = elementForm;
+		this.currentElementAccessor = elementAccessor;
 	}
 
 	private onCloseElementRating = () => {
 		this.currentElement = undefined;
-		this.currentElementForm = undefined;
+		this.currentElementAccessor = undefined;
 	}
 
 }

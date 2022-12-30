@@ -5,9 +5,10 @@ import { observer } from "mobx-react";
 import { FormDefinition, IFormAccessor } from "mstform";
 import React from "react";
 
+export type ElementAccessor = IFormAccessor<FormDefinition<BuildingElementModelType>, any, BuildingElementModelType>;
 
 export interface ElementRatingFormProps {
-	elementAccessor: IFormAccessor<FormDefinition<BuildingElementModelType>, any, BuildingElementModelType>;
+	elementAccessor: ElementAccessor;
 	element: BuildingElement;
 	onClose: () => void;
 }
