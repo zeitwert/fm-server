@@ -3,7 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { observer } from "mobx-react";
 import React from "react";
-import { ProjectionResult } from "../../building/ui/ProjectionResult";
+import { ProjectionResult } from "../../@zeitwert/ui-model/fm/building/model/ProjectionResultDto";
 
 Highcharts.setOptions({
 	lang: {

@@ -5,7 +5,7 @@ import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import PortfolioCreationForm from "./forms/PortfolioCreationForm";
+import PortfolioCreationForm from "./PortfolioCreationForm";
 import PortfolioPage from "./PortfolioPage";
 
 const portfolioStore = PortfolioStoreModel.create({});

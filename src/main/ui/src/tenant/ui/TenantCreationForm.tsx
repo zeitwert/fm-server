@@ -6,7 +6,7 @@ import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { Form } from "mstform";
 import React from "react";
-import TenantFormDef from "./def/TenantFormDef";
+import TenantFormDef from "./forms/TenantFormDef";
 
 
 export interface TenantCreationFormProps {

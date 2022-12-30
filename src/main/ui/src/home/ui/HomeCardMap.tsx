@@ -1,6 +1,6 @@
 import { Card, Icon } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
-import BuildingMap, { Building } from "building/ui/forms/BuildingMap";
+import BuildingMap, { Building } from "building/ui/components/BuildingMap";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";

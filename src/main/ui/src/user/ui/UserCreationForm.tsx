@@ -6,7 +6,7 @@ import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import UserFormDef from "./def/UserFormDef";
+import UserFormDef from "./forms/UserFormDef";
 
 export interface UserCreationFormProps {
 	store: UserStore;

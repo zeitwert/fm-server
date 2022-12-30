@@ -11,9 +11,9 @@ import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import UserPasswordForm from "./forms/UserPasswordForm";
-import UserStaticDataForm from "./forms/UserStaticDataForm";
-import UserSummaryForm from "./forms/UserSummaryForm";
+import UserPasswordForm from "./modals/UserPasswordForm";
+import UserStaticDataForm from "./tabs/UserStaticDataForm";
+import UserSummaryForm from "./tabs/UserSummaryForm";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",

@@ -20,8 +20,8 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
 import React from "react";
-import ContactTabAddresses from "./ContactTabAddresses";
-import ContactTabChannels from "./ContactTabChannels";
+import ContactTabAddresses from "./tabs/ContactTabAddresses";
+import ContactTabChannels from "./tabs/ContactTabChannels";
 
 enum LEFT_TABS {
 	DETAILS = "static-data",

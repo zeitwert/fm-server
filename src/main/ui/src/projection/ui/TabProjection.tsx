@@ -1,7 +1,7 @@
 
 import { Spinner } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
-import { EMPTY_RESULT, ProjectionResult } from "building/ui/ProjectionResult";
+import { EMPTY_RESULT, ProjectionResult } from "@zeitwert/ui-model/fm/building/model/ProjectionResultDto";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";

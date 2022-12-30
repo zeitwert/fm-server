@@ -8,7 +8,7 @@ import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
-export interface TenantSummaryFormProps {
+export interface TenantSummaryTabProps {
 	tenant: Tenant;
 	afterSave: () => void;
 }
@@ -16,12 +16,12 @@ export interface TenantSummaryFormProps {
 const preset = presets.offscreen();
 
 @observer
-export default class TenantSummaryForm extends React.Component<TenantSummaryFormProps> {
+export default class TenantSummaryTab extends React.Component<TenantSummaryTabProps> {
 
 	@observable hasBanner: boolean = false;
 	@observable bannerUrl: string | undefined;
 
-	constructor(props: TenantSummaryFormProps) {
+	constructor(props: TenantSummaryTabProps) {
 		super(props);
 		makeObservable(this);
 		this.afterLogoUpload();

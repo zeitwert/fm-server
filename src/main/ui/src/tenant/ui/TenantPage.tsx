@@ -1,7 +1,7 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, session, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
-import AccountCreationForm from "account/ui/forms/AccountCreationForm";
+import AccountCreationForm from "account/ui/AccountCreationForm";
 import { ActivityPortlet } from "activity/ActivityPortlet";
 import { AppCtx } from "frame/App";
 import { RouteComponentProps, withRouter } from "frame/app/withRouter";
@@ -13,9 +13,9 @@ import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import UserCreationForm from "user/ui/forms/UserCreationForm";
-import TenantStaticDataForm from "./forms/TenantStaticDataForm";
-import TenantSummaryForm from "./forms/TenantSummaryForm";
+import UserCreationForm from "user/ui/UserCreationForm";
+import TenantStaticDataForm from "./tabs/TenantStaticDataForm";
+import TenantSummaryTab from "./tabs/TenantSummaryTab";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
@@ -133,7 +133,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={<span>Steckbrief{(!this.hasLogo || !this.hasBanner) && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
-									<TenantSummaryForm tenant={tenant} afterSave={this.reload} />
+									<TenantSummaryTab tenant={tenant} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">

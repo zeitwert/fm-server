@@ -7,7 +7,7 @@ import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import PortfolioFormDef from "./def/PortfolioFormDef";
+import PortfolioFormDef from "./forms/PortfolioFormDef";
 
 export interface PortfolioCreationFormProps {
 	store: PortfolioStore;

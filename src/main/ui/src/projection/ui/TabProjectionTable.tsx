@@ -3,7 +3,7 @@ import { DataTable, DataTableCell, DataTableColumn } from "@salesforce/design-sy
 import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/constants";
 import { observer } from "mobx-react";
 import React from "react";
-import { ProjectionResult } from "../../building/ui/ProjectionResult";
+import { ProjectionResult } from "../../@zeitwert/ui-model/fm/building/model/ProjectionResultDto";
 
 const CCY_FMT = new Intl.NumberFormat('de-CH', { /*style: 'currency', currency: 'CHF',*/ maximumFractionDigits: 0 });
 const NR_FMT = new Intl.NumberFormat('de-CH', { minimumFractionDigits: 6 });

@@ -13,7 +13,7 @@ import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
 import React from "react";
-import PortfolioStaticDataForm from "./forms/PortfolioStaticDataForm";
+import PortfolioStaticDataForm from "./tabs/PortfolioStaticDataForm";
 
 enum LEFT_TABS {
 	DETAILS = "static-data",

@@ -4,8 +4,8 @@ import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import AccountCreationForm from "./AccountCreationForm";
 import AccountPage from "./AccountPage";
-import AccountCreationForm from "./forms/AccountCreationForm";
 
 const accountStore = AccountStoreModel.create({});
 

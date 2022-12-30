@@ -11,7 +11,7 @@ import { ItemGrid, ItemLeftPart, ItemRightPart } from "item/ui/ItemPage";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import AccountStaticDataForm from "./forms/AccountStaticDataForm";
+import AccountStaticDataForm from "./tabs/AccountStaticDataForm";
 import AccountSummaryTab from "./tabs/AccountSummaryTab";
 
 enum LEFT_TABS {

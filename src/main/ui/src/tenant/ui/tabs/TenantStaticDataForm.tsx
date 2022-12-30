@@ -7,7 +7,7 @@ import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import { Form, FormStateOptions } from "mstform";
 import React from "react";
-import TenantFormDef from "./def/TenantFormDef";
+import TenantFormDef from "../forms/TenantFormDef";
 
 
 export interface TenantStaticDataFormProps {

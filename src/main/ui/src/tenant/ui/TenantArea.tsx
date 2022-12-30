@@ -5,7 +5,7 @@ import ItemsPage from "item/ui/ItemsPage";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import TenantCreationForm from "./forms/TenantCreationForm";
+import TenantCreationForm from "./TenantCreationForm";
 import TenantPage from "./TenantPage";
 
 const tenantStore = TenantStoreModel.create({});
