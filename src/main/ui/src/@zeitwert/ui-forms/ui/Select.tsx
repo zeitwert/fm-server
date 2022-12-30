@@ -3,7 +3,7 @@ import { Enumerated } from "@zeitwert/ui-model";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { FormStateContext } from "../Form";
+import { FormContext } from "../Form";
 import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface SelectProps extends FieldProps {
@@ -15,7 +15,7 @@ export interface SelectProps extends FieldProps {
 @observer
 export class Select extends React.Component<SelectProps> {
 
-	static contextType = FormStateContext;
+	static contextType = FormContext;
 
 	@observable
 	showHelpText: boolean = false;

@@ -1,10 +1,10 @@
 
 import classNames from "classnames";
 import { IAnyModelType, Instance } from "mobx-state-tree";
-import { Form, FormDefinition, FormState, FormStateOptions, GroupDefinition } from "mstform";
+import { Form, FormDefinition, FormState, FormStateOptions, GroupDefinition, IFormAccessor } from "mstform";
 import React from "react";
 
-export const FormStateContext: React.Context<FormState<any, any, any>> = React.createContext(undefined as unknown as FormState<any, any, any>);
+export const FormContext: React.Context<IFormAccessor<any, any, any>> = React.createContext(undefined as unknown as IFormAccessor<any, any, any>);
 
 export interface SldsFormProps<M extends IAnyModelType> {
 	formModel: Form<M, FormDefinition<M>, GroupDefinition<FormDefinition<M>>>;
@@ -13,8 +13,8 @@ export interface SldsFormProps<M extends IAnyModelType> {
 	className?: string;
 }
 
-export interface SldsEmbeddedFormProps<M extends IAnyModelType> {
-	formState: FormState<FormDefinition<M>, GroupDefinition<FormDefinition<M>>, M>;
+export interface SldsSubFormProps<M extends IAnyModelType> {
+	formAccessor: IFormAccessor<FormDefinition<M>, GroupDefinition<FormDefinition<M>>, M>;
 	item: Instance<M>;
 }
 
@@ -43,17 +43,35 @@ export class SldsForm<M extends IAnyModelType> extends React.Component<SldsFormP
 	render() {
 		const { className, children } = this.props;
 		const classes = classNames("slds-form", className);
-		console.log("Form.render", !!children && typeof children === "function", this.formState?.node?.name, typeof children);
 		return (
-			<FormStateContext.Provider value={this.formState}>
+			<FormContext.Provider value={this.formState as unknown as IFormAccessor<any, any, any>}>
 				<div className={classes} role="list">
 					{
 						!!children && typeof children === "function"
-							? children({ formState: this.formState, item: this.props.item })
+							? children({ formAccessor: this.formState, item: this.props.item })
 							: children
 					}
 				</div>
-			</FormStateContext.Provider>
+			</FormContext.Provider>
+		);
+	}
+
+}
+
+export class SldsSubForm<M extends IAnyModelType> extends React.Component<SldsSubFormProps<M>> {
+
+	render() {
+		const { formAccessor, item, children } = this.props;
+		return (
+			<FormContext.Provider value={formAccessor}>
+				<div className="slds-form" role="list">
+					{
+						!!children && typeof children === "function"
+							? children({ formAccessor: formAccessor, item: item })
+							: children
+					}
+				</div>
+			</FormContext.Provider>
 		);
 	}
 

@@ -9,10 +9,10 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import BuildingCreationForm from "./BuildingCreationForm";
 import BuildingPage from "./BuildingPage";
 import BuildingPreview from "./BuildingPreview";
-import BuildingCreationForm from "./forms/BuildingCreationForm";
-import BuildingImportForm from "./forms/BuildingImportForm";
+import BuildingImportForm from "./modals/BuildingImportForm";
 
 const buildingStore = BuildingStoreModel.create({});
 

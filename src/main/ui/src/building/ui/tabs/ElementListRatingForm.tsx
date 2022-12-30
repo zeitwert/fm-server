@@ -1,13 +1,14 @@
 
-import { FieldGroup, FieldRow, Input, Static } from "@zeitwert/ui-forms";
-import { Building, BuildingElement } from "@zeitwert/ui-model";
+import { FieldGroup, FieldRow, Input, SldsSubForm, Static } from "@zeitwert/ui-forms";
+import { Building, BuildingElement, BuildingElementModelType, BuildingModelType } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
-import { IRepeatingFormIndexedAccessor } from "mstform";
+import { FormDefinition, IFormAccessor } from "mstform";
+import { RepeatingFormAccess } from "mstform/dist/src/accessor";
 import React from "react";
 
 export interface ElementListRatingFormProps {
 	building: Building;
-	elementForms: any; // RepeatingFormAccess<any, any, any>; ärger mit Typescript
+	elementForms: RepeatingFormAccess<FormDefinition<BuildingModelType>, "elements", BuildingModelType>;
 	showAllElements: boolean;
 	currentElementId: string | undefined;
 	onSelectElement: (id: string) => void;
@@ -19,7 +20,6 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 	render() {
 		const { building, elementForms, showAllElements, currentElementId, onSelectElement } = this.props;
 		const rowCount = showAllElements ? building.elements.length : building.elements.filter(e => e.weight).length;
-		const weight100 = building.weightSum === 100;
 		let rows: JSX.Element[] = [];
 		let row = 0, index = 0;
 		for (const element of building.elements) {
@@ -32,7 +32,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 						row={row}
 						rowCount={rowCount}
 						element={element}
-						elementForm={elementForm}
+						elementAccessor={elementForm}
 						currentElementId={currentElementId}
 						onSelectElement={onSelectElement}
 					/>
@@ -43,6 +43,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 			}
 			index++;
 		}
+		const isWeight100 = building.weightSum === 100;
 		return (
 			<div className="slds-form" role="list">
 				<div className="fm-rating-body">
@@ -52,7 +53,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 					<FieldGroup>
 						<FieldRow>
 							<Static value="" size={2} readOnlyLook="plain" />
-							<Static value={building.weightSum.toString()} size={1} align="right" readOnlyLook="plain" error={!weight100 ? "muss 100% sein" : ""} />
+							<Static value={building.weightSum.toString()} size={1} align="right" readOnlyLook="plain" error={!isWeight100 ? "muss 100% sein" : ""} />
 							<Static value="" size={9} readOnlyLook="plain" />
 						</FieldRow>
 					</FieldGroup>
@@ -68,7 +69,7 @@ export interface ElementRowRatingFormProps {
 	row: number;
 	rowCount: number;
 	element: BuildingElement;
-	elementForm: IRepeatingFormIndexedAccessor<any, any, any>;
+	elementAccessor: IFormAccessor<FormDefinition<BuildingElementModelType>, any, BuildingElementModelType>;
 	currentElementId: string | undefined;
 	onSelectElement: (id: string) => void;
 }
@@ -77,7 +78,7 @@ export interface ElementRowRatingFormProps {
 class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 
 	render() {
-		const { index, row, element, /*elementForm,*/ currentElementId } = this.props;
+		const { index, row, element, elementAccessor, currentElementId } = this.props;
 		let description = element.description ? element.description : "";
 		description += element.conditionDescription ? "\n<b>Zustand</b>: " + element.conditionDescription : "";
 		description += element.measureDescription ? "\n<b>Massnahmen</b>: " + element.measureDescription : "";
@@ -88,19 +89,21 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 				onClick={(e) => this.onSelectElement(element.id, e)}
 				className={currentElementId === element.id ? "selected" : ""}
 			>
-				<FieldGroup>
-					<FieldRow>
-						<Static value={element.buildingPart?.name} size={2} readOnlyLook="plain" />
-						<Input id={"cell-" + row + "-0"} fieldName="weight" /*accessor={elementForm.field("weight")}*/ size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
-						<Input id={"cell-" + row + "-2"} fieldName="condition" /*accessor={elementForm.field("condition")}*/ size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
-						<Static value={element.shortTermRestoration ? element.shortTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
-						<Static value={element.midTermRestoration ? element.midTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
-						<Static value={element.longTermRestoration ? element.longTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
-						<Static value={element.restorationCosts ? element.restorationCosts + " kCHF" : ""} size={1} align="right" readOnlyLook="plain" />
-						<Static value={description} size={4} readOnlyLook="plain" isMultiline />
-					</FieldRow>
-					<hr style={{ margin: "0.25rem 0" }}></hr>
-				</FieldGroup>
+				<SldsSubForm formAccessor={elementAccessor} item={element}>
+					<FieldGroup>
+						<FieldRow>
+							<Static value={element.buildingPart?.name} size={2} readOnlyLook="plain" />
+							<Input id={"cell-" + row + "-0"} fieldName="weight" size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 0, e.key)} />
+							<Input id={"cell-" + row + "-2"} fieldName="condition" size={1} align="right" readOnlyLook="plain" onFocus={() => this.onSelectElement(element.id)} onKeyDown={(e) => this.onKeyDown(row, 2, e.key)} />
+							<Static value={element.shortTermRestoration ? element.shortTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
+							<Static value={element.midTermRestoration ? element.midTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
+							<Static value={element.longTermRestoration ? element.longTermRestoration + " (" + element.restorationAge + ")" : ""} size={1} align="center" readOnlyLook="plain" />
+							<Static value={element.restorationCosts ? element.restorationCosts + " kCHF" : ""} size={1} align="right" readOnlyLook="plain" />
+							<Static value={description} size={4} readOnlyLook="plain" isMultiline />
+						</FieldRow>
+						<hr style={{ margin: "0.25rem 0" }}></hr>
+					</FieldGroup>
+				</SldsSubForm>
 			</div>
 		);
 	}

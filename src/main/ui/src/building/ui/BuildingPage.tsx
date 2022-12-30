@@ -14,11 +14,11 @@ import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import TabProjection from "projection/ui/TabProjection";
 import React from "react";
-import BuildingLocationForm from "./forms/BuildingLocationForm";
-import BuildingRatingForm from "./forms/BuildingRatingForm";
-import BuildingStaticDataForm from "./forms/BuildingStaticDataForm";
-import BuildingSummaryForm from "./forms/BuildingSummaryForm";
-import ElementRatingForm from "./forms/ElementRatingForm";
+import BuildingLocationForm from "./tabs/BuildingLocationForm";
+import BuildingRatingForm from "./tabs/BuildingRatingForm";
+import BuildingStaticDataForm from "./tabs/BuildingStaticDataForm";
+import BuildingSummaryTab from "./tabs/BuildingSummaryTab";
+import ElementRatingForm from "./tabs/ElementRatingForm";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
@@ -180,7 +180,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={<span>Steckbrief{!this.hasCoverFoto && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
-									<BuildingSummaryForm building={building} afterSave={this.reload} />
+									<BuildingSummaryTab building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
@@ -230,7 +230,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 						<div onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
 							<ElementRatingForm
 								element={this.currentElement}
-								elementForm={this.currentElementForm}
+								elementAccessor={this.currentElementForm}
 								onClose={this.onCloseElementRating}
 							/>
 						</div>

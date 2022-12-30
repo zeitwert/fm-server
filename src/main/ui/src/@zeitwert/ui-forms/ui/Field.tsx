@@ -1,9 +1,9 @@
 
 import classNames from "classnames";
 import { observer } from "mobx-react";
-import { FieldAccessor, FormState } from "mstform";
+import { FieldAccessor, IFormAccessor } from "mstform";
 import { FC, useContext, useState } from "react";
-import { FormStateContext } from "../Form";
+import { FormContext } from "../Form";
 
 export interface FieldGroupProps {
 	legend?: string;
@@ -70,9 +70,9 @@ export interface ComponentProps {
 	inputProps: any;
 }
 
-export function getAccessor(props: any, formState: FormState<any, any, any>): FieldAccessor<any, any> | undefined {
+export function getAccessor(props: any, formAccessor: IFormAccessor<any, any, any>): FieldAccessor<any, any> | undefined {
 	if (props.fieldName) {
-		return formState.field(props.fieldName);
+		return formAccessor.field(props.fieldName);
 	}
 	return undefined;
 }
@@ -91,7 +91,7 @@ export const Field: FC<FieldProps> = observer((props) => {
 
 	const fieldId = getFieldId(props);
 	const { label, size, helpText, align, readOnlyLook, isMultiline } = props;
-	const accessor = getAccessor(props, useContext(FormStateContext));
+	const accessor = getAccessor(props, useContext(FormContext));
 	let required: boolean | undefined;
 	let readOnly: boolean | undefined;
 	let error: string | undefined;

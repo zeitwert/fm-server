@@ -2,7 +2,7 @@
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import { FC, useContext } from "react";
-import { FormStateContext } from "../Form";
+import { FormContext } from "../Form";
 import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface CheckboxProps extends FieldProps {
@@ -10,7 +10,7 @@ export interface CheckboxProps extends FieldProps {
 }
 
 export const Checkbox: FC<CheckboxProps> = observer((props) => {
-	const accessor = getAccessor(props, useContext(FormStateContext));
+	const accessor = getAccessor(props, useContext(FormContext));
 	const { align } = props;
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
 	const fieldId = getFieldId(props);

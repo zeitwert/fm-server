@@ -1,27 +1,13 @@
 
-import { EnumeratedField, FieldGroup, FieldRow, NumberField, OptionField, RadioButtonGroup, TextArea, TextField } from "@zeitwert/ui-forms";
-import { BuildingElement, StrainOptions, StrengthOptions } from "@zeitwert/ui-model";
+import { FieldGroup, FieldRow, RadioButtonGroup, SldsSubForm, TextArea } from "@zeitwert/ui-forms";
+import { BuildingElement, BuildingElementModelType } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
-import { converters, Field, IRepeatingFormIndexedAccessor, RepeatingForm } from "mstform";
+import { FormDefinition, IFormAccessor } from "mstform";
 import React from "react";
 
-export const ElementRatingFormModel = new RepeatingForm({
-	id: new Field(converters.string),
-	buildingPart: new EnumeratedField({ source: "building/codeBuildingPart" }),
-	weight: new NumberField(),
-	condition: new NumberField(),
-	strain: new OptionField(converters.maybe(converters.integer), { options: StrainOptions }),
-	strength: new OptionField(converters.maybe(converters.integer), { options: StrengthOptions }),
-	description: new TextField(),
-	conditionDescription: new TextField(),
-	measureDescription: new TextField(),
-	// materialDescriptions: new EnumeratedListField(),
-	// conditionDescriptions: new EnumeratedListField(),
-	// measureDescriptions: new EnumeratedListField(),
-});
 
 export interface ElementRatingFormProps {
-	elementForm: IRepeatingFormIndexedAccessor<any, any, any>;
+	elementAccessor: IFormAccessor<FormDefinition<BuildingElementModelType>, any, BuildingElementModelType>;
 	element: BuildingElement;
 	onClose: () => void;
 }
@@ -38,7 +24,7 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 	}
 
 	render() {
-		const { element/*, elementForm*/ } = this.props;
+		const { element, elementAccessor } = this.props;
 		return (
 			<div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "100%", backgroundColor: "white" }}>
 
@@ -69,7 +55,8 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 					<div className="slds-grid slds-wrap slds-m-top_none" style={{ padding: "1rem" }}>
 						<div className="slds-col slds-size_1-of-1">
 
-							<div className="slds-form" role="list">
+							<SldsSubForm formAccessor={elementAccessor} item={element}>
+
 								<FieldGroup legend="Baulicher Zustand">
 									<FieldRow>
 										<div style={{ position: "relative", fontWeight: "bolder", fontSize: "12px", color: "#909090", minWidth: "94%", minHeight: "160px", marginTop: "10px" }}>
@@ -118,68 +105,35 @@ export default class ElementRatingForm extends React.Component<ElementRatingForm
 										</div>
 									</FieldRow>
 								</FieldGroup>
-							</div>
 
-							<hr></hr>
-							<div className="slds-form" role="list">
-								<FieldGroup>
+								<hr></hr>
+
+								<FieldGroup legend="Besondere Eigenschaften">
 									<FieldRow>
-										<RadioButtonGroup
-											label="Widerstandsfähigkeit"
-											fieldName="strength"
-											//accessor={elementForm.field("strength")}
-											size={6}
-										/>
-										<RadioButtonGroup
-											label="Belastung"
-											fieldName="strain"
-											//accessor={elementForm.field("strain")}
-											size={6}
-										/>
+										<RadioButtonGroup label="Widerstandsfähigkeit" fieldName="strength" size={6} />
+										<RadioButtonGroup label="Belastung" fieldName="strain" size={6} />
 									</FieldRow>
 								</FieldGroup>
-							</div>
 
-							<div className="slds-form" role="list">
-								<FieldGroup>
-									<div className="slds-m-top_small">
-										<FieldRow>
-											<TextArea
-												label="Beschreibung / Bemerkungen"
-												fieldName="description"
-												//accessor={elementForm.field("description")}
-												rows={4}
-											/>
-										</FieldRow>
-									</div>
-									<div className="slds-m-top_small">
-										<FieldRow>
-											<TextArea
-												label="Zustandsbeschreibung"
-												fieldName="conditionDescription"
-												//accessor={elementForm.field("conditionDescription")}
-												rows={4}
-											/>
-										</FieldRow>
-									</div>
-									<div className="slds-m-top_small">
-										<FieldRow>
-											<TextArea
-												label="Massnahmen"
-												fieldName="measureDescription"
-												//accessor={elementForm.field("measureDescription")}
-												rows={4}
-											/>
-										</FieldRow>
-									</div>
+								<FieldGroup legend="Beschreibungen" className="slds-m-top_small">
+									<FieldRow className="slds-m-top_small">
+										<TextArea label="Beschreibung / Bemerkungen" fieldName="description" rows={4} />
+									</FieldRow>
+									<FieldRow className="slds-m-top_small">
+										<TextArea label="Zustandsbeschreibung" fieldName="conditionDescription" rows={4} />
+									</FieldRow>
+									<FieldRow className="slds-m-top_small">
+										<TextArea label="Massnahmen" fieldName="measureDescription" rows={4} />
+									</FieldRow>
 								</FieldGroup>
-							</div>
+
+							</SldsSubForm>
 
 						</div>
 					</div>
 
-				</div>
-			</div>
+				</div >
+			</div >
 		);
 	}
 

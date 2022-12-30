@@ -3,7 +3,7 @@ import { Enumerated } from "@zeitwert/ui-model";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
-import { FormStateContext } from "../Form";
+import { FormContext } from "../Form";
 import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
 
 export interface RadioButtonGroupProps extends FieldProps {
@@ -13,7 +13,7 @@ export interface RadioButtonGroupProps extends FieldProps {
 @observer
 export class RadioButtonGroup extends React.Component<RadioButtonGroupProps> {
 
-	static contextType = FormStateContext;
+	static contextType = FormContext;
 
 	@observable
 	showHelpText: boolean = false;
