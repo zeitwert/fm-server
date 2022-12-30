@@ -12,7 +12,7 @@ import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import AccountStaticDataForm from "./forms/AccountStaticDataForm";
-import AccountSummaryForm from "./forms/AccountSummaryForm";
+import AccountSummaryTab from "./tabs/AccountSummaryTab";
 
 enum LEFT_TABS {
 	OVERVIEW = "static-data",
@@ -122,7 +122,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={<span>Steckbrief{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
-									<AccountSummaryForm account={account} afterSave={this.reload} />
+									<AccountSummaryTab account={account} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
@@ -238,11 +238,11 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			});
 			this.contactStore.contact!.setAccount(this.accountStore.id!);
 		};
-	
+
 		private cancelContactEditor = async () => {
 			await this.contactStore.cancel();
 		};
-	
+
 		private closeContactEditor = async () => {
 			try {
 				await this.contactStore.store();

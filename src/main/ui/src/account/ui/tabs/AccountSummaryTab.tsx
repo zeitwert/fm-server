@@ -8,7 +8,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import AppBanner from "../../../frame/ui/AppBannerSvg";
 
-export interface AccountSummaryFormProps {
+export interface AccountSummaryTabProps {
 	account: Account;
 	afterSave: () => void;
 }
@@ -16,14 +16,17 @@ export interface AccountSummaryFormProps {
 const preset = presets.offscreen();
 
 @observer
-export default class AccountSummaryForm extends React.Component<AccountSummaryFormProps> {
+export default class AccountSummaryTab extends React.Component<AccountSummaryTabProps> {
 
 	@observable hasBanner: boolean = false;
 	@observable bannerUrl: string | undefined;
 
-	constructor(props: AccountSummaryFormProps) {
+	constructor(props: AccountSummaryTabProps) {
 		super(props);
 		makeObservable(this);
+	}
+
+	componentDidMount(): void {
 		this.afterLogoUpload();
 	}
 
