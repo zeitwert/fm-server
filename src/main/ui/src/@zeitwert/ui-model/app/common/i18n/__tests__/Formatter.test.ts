@@ -1,7 +1,7 @@
-import { Language } from "../Language";
-import { Locale } from "../Locale";
 import { Currency } from "../Currency";
 import { FormatterImpl } from "../impl/FormatterImpl";
+import { Language } from "../Language";
+import { Locale } from "../Locale";
 
 it("gives back current locale/language", () => {
 	const f1 = new FormatterImpl(Locale.en_us);
@@ -69,14 +69,21 @@ it("formats percentages", () => {
 
 it("formats amounts", () => {
 	const f = new FormatterImpl(Locale.en_us);
+	const NBSP = String.fromCharCode(160);
 
-	expect(f.formatAmount(100, Currency.CHF, 2)).toBe("CHF 100.00");
-	expect(f.formatAmount(100, Currency.CHF, 0)).toBe("CHF 100");
-	expect(f.formatAmount(100.01, Currency.CHF, 0)).toBe("CHF 100");
-	expect(f.formatAmount(1000, Currency.CHF, 2)).toBe("CHF 1,000.00");
+	expect(f.formatAmount(100, Currency.CHF, 2)).toBe("CHF" + NBSP + "100.00");
+	expect(f.formatAmount(100, Currency.CHF, 0)).toBe("CHF" + NBSP + "100");
+	expect(f.formatAmount(100.01, Currency.CHF, 0)).toBe("CHF" + NBSP + "100");
+	expect(f.formatAmount(1000, Currency.CHF, 2)).toBe("CHF" + NBSP + "1,000.00");
 
-	expect(f.formatAmount(100, Currency.USD, 2, Locale.en_us)).toBe("USD 100.00");
-	expect(f.formatAmount(100, Currency.USD, 0, Locale.en_us)).toBe("USD 100");
-	expect(f.formatAmount(100.01, Currency.USD, 0, Locale.en_us)).toBe("USD 100");
-	expect(f.formatAmount(1000, Currency.USD, 2, Locale.en_us)).toBe("USD 1,000.00");
+	expect(f.formatAmount(-100, Currency.CHF, 2)).toBe("CHF" + NBSP + "-100.00");
+	expect(f.formatAmount(-100, Currency.CHF, 0)).toBe("CHF" + NBSP + "-100");
+	expect(f.formatAmount(-100.01, Currency.CHF, 0)).toBe("CHF" + NBSP + "-100");
+	expect(f.formatAmount(-1000, Currency.CHF, 2)).toBe("CHF" + NBSP + "-1,000.00");
+
+	expect(f.formatAmount(100, Currency.USD, 2, Locale.en_us)).toBe("USD" + NBSP + "100.00");
+	expect(f.formatAmount(100, Currency.USD, 0, Locale.en_us)).toBe("USD" + NBSP + "100");
+	expect(f.formatAmount(100.01, Currency.USD, 0, Locale.en_us)).toBe("USD" + NBSP + "100");
+	expect(f.formatAmount(1000, Currency.USD, 2, Locale.en_us)).toBe("USD" + NBSP + "1,000.00");
+
 });

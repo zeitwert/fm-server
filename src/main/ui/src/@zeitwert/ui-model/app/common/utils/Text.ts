@@ -1,4 +1,4 @@
-import { requireThis } from "./Assertions";
+import { requireThis } from "./Invariants";
 
 export function replaceValues(text: string, values: any) {
 	requireThis(!!text, "valid text");

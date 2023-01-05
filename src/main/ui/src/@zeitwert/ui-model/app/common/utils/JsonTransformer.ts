@@ -27,8 +27,8 @@
 */
 
 import ObjectPath from "object-path";
-import { requireThis } from "./Assertions";
 import { DateFormat } from "./DateFormat";
+import { requireThis } from "./Invariants";
 import { TraversalState, traverse } from "./Object";
 
 // function isNumeric(n: any) {

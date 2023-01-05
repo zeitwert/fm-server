@@ -1,5 +1,6 @@
 export * from "./Form";
 export * from "./legacy/FormWrapper";
+export * from "./legacy/JsonApiFetch";
 export * from "./model/DateField";
 export * from "./model/EnumeratedField";
 export * from "./model/IdField";

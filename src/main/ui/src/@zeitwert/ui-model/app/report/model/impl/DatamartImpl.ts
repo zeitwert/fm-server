@@ -1,4 +1,4 @@
-import { requireThis } from "../../../common/utils/Assertions";
+import { requireThis } from "../../../common/utils/Invariants";
 import { Datamart, Parameter } from "../Datamart";
 import { Provider } from "../Provider";
 

@@ -7,6 +7,5 @@ export * from "./i18n";
 export * from "./model/faTypes";
 export * from "./service/Api";
 export * from "./service/JsonApi";
-export * from "./service/JsonApiFetch";
 export * from "./utils";
 

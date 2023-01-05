@@ -81,6 +81,7 @@
 		"react-scripts": "^4.0.3",
 		"sass": "^1.43.4",
 		"source-map-explorer": "^2.5.2",
+		"ts-jest": "^29.0.3",
 		"typescript": "^4.6.2"
 	},
 	"engines": {
@@ -90,5 +91,11 @@
 		"defaults",
 		"not IE 11",
 		"maintained node versions"
-	]
+	],
+	"jest": {
+		"transform": {
+			"^.+\\.tsx$": "ts-jest",
+			"^.+\\.ts$": "ts-jest"
+		}
+	}
 }

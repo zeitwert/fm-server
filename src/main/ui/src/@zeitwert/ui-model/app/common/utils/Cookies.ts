@@ -1,4 +1,4 @@
-import { requireThis } from "./Assertions";
+import { requireThis } from "./Invariants";
 
 export function setCookie(name: string, value: string, days: number | null = null) {
 	requireThis(name.indexOf(";") < 0, "cookie name does not contain semicolon");
