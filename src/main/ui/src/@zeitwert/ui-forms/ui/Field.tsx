@@ -2,7 +2,7 @@
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import { FieldAccessor, IFormAccessor } from "mstform";
-import { FC, useContext, useState } from "react";
+import { FC, PropsWithChildren, useContext, useState } from "react";
 import { FormContext } from "../Form";
 
 export interface FieldGroupProps {
@@ -12,7 +12,7 @@ export interface FieldGroupProps {
 	className?: string;
 }
 
-export const FieldGroup: FC<FieldGroupProps> = (props) => {
+export const FieldGroup: FC<PropsWithChildren<FieldGroupProps>> = (props) => {
 	const { legend, label, isAddress, className, children } = props;
 	return (
 		<fieldset className={classNames("slds-form-element slds-form-element_compound", isAddress && "slds-form-element_address", className)} >
@@ -29,7 +29,7 @@ export interface FieldRowProps {
 	className?: string;
 }
 
-export const FieldRow: FC<FieldRowProps> = (props) => {
+export const FieldRow: FC<PropsWithChildren<FieldRowProps>> = (props) => {
 	const { children } = props;
 	return (
 		<div className={classNames("slds-form-element__row", props.className)}>
@@ -87,7 +87,7 @@ export function getComponentProps(accessor: FieldAccessor<any, any> | undefined,
 	return { readOnly: readOnly, inputProps: inputProps };
 }
 
-export const Field: FC<FieldProps> = observer((props) => {
+export const Field: FC<PropsWithChildren<FieldProps>> = observer((props) => {
 
 	const fieldId = getFieldId(props);
 	const { label, size, helpText, align, readOnlyLook, isMultiline } = props;

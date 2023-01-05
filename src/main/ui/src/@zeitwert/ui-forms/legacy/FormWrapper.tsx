@@ -1,14 +1,9 @@
 
-import { Form, FormEventsProps } from "@finadvise/forms";
-import { Config, FORM_API } from "@zeitwert/ui-model";
+import { FORM_API } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import { jsonApiFetch } from "./JsonApiFetch";
-
-const API_BASE_URL = Config.getApiUrl("##", "##").replace("/##/##", "");
-const ENUM_BASE_URL = Config.getEnumUrl("##", "##").replace("/##/##", "");
 
 interface FormWrapperProps {
 	formId?: string;
@@ -17,6 +12,25 @@ interface FormWrapperProps {
 	additionalData?: any;
 	displayMode?: "enabled" | "disabled" | "readonly";
 	debug?: boolean;
+}
+
+export interface FormEventsProps {
+	// onEvent?: (name: string, config: any, state: anyFormState, api: FormApi) => boolean;
+	// // Custom events. These are derived from onEvent. These should be the same as FormEvents.
+	onReady?: (api: any) => void;
+	onValidChange?: (isValid: boolean, api: any) => void;
+	// onBeforeChange?: (path: string, value: any, api: FormApi) => boolean | void;
+	onAfterChange?: (path: string, value: any, api: any) => void;
+	// onFocus?: (path: string, api: FormApi) => void;
+	// onBlur?: (path: string, api: FormApi) => void;
+	onUploadSelect?: (path: string, value: any, api: any) => void;
+	// onLinkClick?: (path: string, url: string, api: FormApi) => boolean | void;
+	onButtonClick?: (path: string, script: string, api: any) => boolean | void;
+	// onOutcomeClick?: (path: string, script: string, navigationUrl: string, api: FormApi) => boolean | void;
+	// onWizardPrev?: (path: string, api: FormApi) => boolean | void;
+	// onWizardNext?: (path: string, api: FormApi) => boolean | void;
+	onSubformAdd?: (path: string, value: any, api: any) => void;
+	onSubformRemove?: (path: string, value: any, api: any) => void;
 }
 
 @inject("session")
@@ -53,34 +67,7 @@ export class FormWrapper extends React.Component<FormWrapperProps & FormEventsPr
 			return <div className="slds-p-around_medium">Loading...</div>;
 		}
 		return (
-			<Form
-				config={this.config}
-				payload={this.props.payload}
-				additionalData={Object.assign({}, this.props.additionalData, {
-					apiBaseUrl: API_BASE_URL,
-					enumBaseUrl: ENUM_BASE_URL
-				})}
-				enabled={this.props.displayMode ? this.props.displayMode === "enabled" : true}
-				readOnly={this.props.displayMode ? this.props.displayMode === "readonly" : false}
-				debug={this.props.debug}
-				fetch={jsonApiFetch}
-				onEvent={this.props.onEvent}
-				onReady={this.props.onReady}
-				onValidChange={this.props.onValidChange}
-				onBeforeChange={this.props.onBeforeChange}
-				onAfterChange={this.props.onAfterChange}
-				onFocus={this.props.onFocus}
-				onBlur={this.props.onBlur}
-				onUploadSelect={this.props.onUploadSelect}
-				onLinkClick={this.props.onLinkClick}
-				onButtonClick={this.props.onButtonClick}
-				onOutcomeClick={this.props.onOutcomeClick}
-				onWizardPrev={this.props.onWizardPrev}
-				onWizardNext={this.props.onWizardNext}
-				onSubformAdd={this.props.onSubformAdd}
-				onSubformRemove={this.props.onSubformRemove}
-				lang={this.ctx.session.locale}
-			/>
+			<div>TODO</div>
 		);
 	}
 

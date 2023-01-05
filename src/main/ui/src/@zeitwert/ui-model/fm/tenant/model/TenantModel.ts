@@ -18,7 +18,6 @@ const MstTenantModel = ObjModel.named("Tenant")
 		//
 		tenantType: types.maybe(types.frozen<Enumerated>()),
 		//
-		banner: types.maybe(types.reference(DocumentModel)),
 		logo: types.maybe(types.reference(DocumentModel)),
 	})
 	.views((self) => ({

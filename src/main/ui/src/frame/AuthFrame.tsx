@@ -2,12 +2,12 @@
 import { AppCtx } from "frame/App";
 import LoginForm from "frame/LoginForm";
 import { inject, observer } from "mobx-react";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { RouteComponentProps, withRouter } from "./app/withRouter";
 
 @inject("logger", "session", "showAlert")
 @observer
-class AuthFrame extends React.Component<RouteComponentProps> {
+class AuthFrame extends React.Component<PropsWithChildren<RouteComponentProps>> {
 
 	get ctx() {
 		return this.props as any as AppCtx;

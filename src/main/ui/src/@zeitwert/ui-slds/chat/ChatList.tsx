@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 interface ChatListProps {
 	isSelected?: boolean;
@@ -6,7 +6,7 @@ interface ChatListProps {
 	onClick?: () => void;
 }
 
-export class ChatList extends React.Component<ChatListProps> {
+export class ChatList extends React.Component<PropsWithChildren<ChatListProps>> {
 	get isClickable() {
 		return this.props.isClickable && this.props.onClick;
 	}

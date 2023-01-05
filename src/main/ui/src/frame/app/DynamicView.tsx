@@ -8,7 +8,6 @@ import HomeArea from "home/ui/HomeArea";
 import LeadArea from "lead/ui/LeadArea";
 import { inject, observer } from "mobx-react";
 import PortfolioArea from "portfolio/ui/PortfolioArea";
-import BuildingReportArea from "projection/ui/BuildingReportArea";
 import React from "react";
 import TaskArea from "task/ui/TaskArea";
 import TenantArea from "tenant/ui/TenantArea";
@@ -21,7 +20,6 @@ const AreaMap: {
 } = {
 	AccountArea: AccountArea,
 	BuildingArea: BuildingArea,
-	BuildingReportArea: BuildingReportArea,
 	ContactArea: ContactArea,
 	DocumentArea: DocumentArea,
 	HomeArea: HomeArea,

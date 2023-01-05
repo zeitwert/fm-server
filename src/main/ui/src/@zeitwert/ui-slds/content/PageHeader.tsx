@@ -2,7 +2,7 @@ import { MediaObject } from "@salesforce/design-system-react";
 import { Col, ColumnAlignment, Grid } from "@zeitwert/ui-slds";
 import { Text, TextCategory, TextType } from "@zeitwert/ui-slds/common/Text";
 import classNames from "classnames";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { ScrollablePageHeader } from "./ScrollablePageHeader";
 
 interface PageHeaderProps {
@@ -27,7 +27,7 @@ interface PageHeaderProps {
  * - Retrocompatibility with some code that is still there.
  * - For variant record-home, currently there is no possibility without changing the whole component (details).
  */
-export class PageHeader extends React.Component<PageHeaderProps> {
+export class PageHeader extends React.Component<PropsWithChildren<PageHeaderProps>> {
 	render() {
 		const { isDocked, icon, info, details, topActions, bottomActions } = this.props;
 		const classes = classNames(
@@ -139,10 +139,9 @@ export class PageHeader extends React.Component<PageHeaderProps> {
 
 interface PageHeaderTitleProps {
 	className?: string;
-	children: any;
 }
 
-export class PageHeaderTitle extends React.Component<PageHeaderTitleProps> {
+export class PageHeaderTitle extends React.Component<PropsWithChildren<PageHeaderTitleProps>> {
 	render() {
 		const { className, children, ...props } = this.props;
 		const titleClassNames = classNames("slds-page-header__title slds-align-middle", className);
@@ -159,7 +158,7 @@ interface PageHeaderDetailItemProps {
 	className?: string;
 }
 
-export class PageHeaderDetailItem extends React.Component<PageHeaderDetailItemProps> {
+export class PageHeaderDetailItem extends React.Component<PropsWithChildren<PageHeaderDetailItemProps>> {
 	render() {
 		const { label, children, ...props } = this.props;
 		const manuallyAssembled = !label;
@@ -188,7 +187,7 @@ export class PageHeaderDetailItem extends React.Component<PageHeaderDetailItemPr
 	}
 }
 
-export class PageHeaderDetailLabel extends React.Component {
+export class PageHeaderDetailLabel extends React.Component<PropsWithChildren<any>> {
 	render() {
 		const { children /*, ...props*/ } = this.props; // TODO
 		if (typeof children === "string") {
@@ -208,7 +207,7 @@ export class PageHeaderDetailLabel extends React.Component {
 	}
 }
 
-export class PageHeaderDetailBody extends React.Component {
+export class PageHeaderDetailBody extends React.Component<PropsWithChildren<any>> {
 	render() {
 		const { children /*, ...props*/ } = this.props; // TODO
 		if (typeof children === "string") {

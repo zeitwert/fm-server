@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 export enum TextCategory {
 	body = "body",
@@ -45,7 +45,7 @@ interface TextProps {
 	className?: string;
 }
 
-export class Text extends React.Component<TextProps> {
+export class Text extends React.Component<PropsWithChildren<TextProps>> {
 	render() {
 		const {
 			tag: Tag,

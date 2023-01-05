@@ -1,3 +1,4 @@
+
 import { Location } from "history";
 import { NavigateFunction, Params, useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -12,9 +13,7 @@ export const withRouter = (Component: any) => {
 		const location = useLocation();
 		const navigate = useNavigate();
 		const params = useParams();
-
 		return <Component location={location} navigate={navigate} params={params} {...props} />;
 	};
-
 	return Wrapper;
 };

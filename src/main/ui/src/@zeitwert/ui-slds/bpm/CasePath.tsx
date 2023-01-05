@@ -4,7 +4,7 @@ import { CaseStage } from "@zeitwert/ui-model";
 import classNames from "classnames";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 interface CasePathProps {
 	className?: string;
@@ -16,7 +16,7 @@ interface CasePathProps {
 }
 
 @observer
-export class CasePath extends React.Component<CasePathProps> {
+export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> {
 	@observable isShowingDetails = false;
 	@observable isEditingDetailFields = false;
 	@observable isModifyButtonHovered = false;

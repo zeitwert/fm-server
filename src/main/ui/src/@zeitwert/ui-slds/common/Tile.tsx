@@ -1,5 +1,5 @@
 import { Icon, MediaObject } from "@salesforce/design-system-react";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 
 interface TileProps {
@@ -9,7 +9,7 @@ interface TileProps {
 	iconName?: string;
 }
 
-export class Tile extends React.Component<TileProps> {
+export class Tile extends React.Component<PropsWithChildren<TileProps>> {
 	render() {
 		const { iconCategory, iconName } = this.props;
 		return (

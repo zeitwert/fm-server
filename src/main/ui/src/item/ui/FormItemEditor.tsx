@@ -1,4 +1,3 @@
-import { FormApi } from "@finadvise/forms";
 import { Card } from "@salesforce/design-system-react";
 import { FormWrapper } from "@zeitwert/ui-forms";
 import { AggregateStore, EntityType, ItemPartStore } from "@zeitwert/ui-model";
@@ -27,6 +26,8 @@ interface FormItemEditorProps extends BaseItemEditorProps {
 	children: (editor: JSX.Element | undefined) => JSX.Element;
 	onOpen?: () => void;
 }
+
+type FormApi = any;
 
 @inject("appStore", "session")
 @observer
@@ -79,7 +80,7 @@ export default class FormItemEditor extends React.Component<FormItemEditorProps>
 						}}
 						displayMode={store.isInTrx ? undefined : "readonly"}
 						onReady={(api: FormApi) => (this.formApi = api)}
-						onAfterChange={(path, value) => {
+						onAfterChange={(path: any, value: any) => {
 							this.control = Object.assign({}, this.formApi!.payload.get("control"));
 							this.onChange(path, value);
 							return true;

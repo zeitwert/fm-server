@@ -5,7 +5,7 @@ import { AccountApi } from "../AccountApi";
 const MODULE = "account";
 const PATH = "accounts";
 const TYPE = "account";
-const INCLUDES = "include[account]=tenantInfo,contacts,mainContact,logo,banner";
+const INCLUDES = "include[account]=tenantInfo,contacts,mainContact,logo";
 
 export class AccountApiImpl extends AggregateApiImpl<AccountSnapshot> implements AccountApi {
 	constructor() {

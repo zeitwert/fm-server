@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import ReactDOM from "react-dom";
 import AppBreadCrumbs from "./AppBreadCrumbs";
 
@@ -18,7 +18,7 @@ export interface AppGlobalModalProps {
 
 @inject("appStore")
 @observer
-export default class AppGlobalModal extends React.Component<AppGlobalModalProps> {
+export default class AppGlobalModal extends React.Component<PropsWithChildren<AppGlobalModalProps>> {
 	@observable isActionProcessing = false;
 	@observable isActionProcessed = false;
 

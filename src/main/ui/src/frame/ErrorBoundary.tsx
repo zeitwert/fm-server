@@ -1,5 +1,5 @@
 import { inject } from "mobx-react";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { AppCtx } from "./App";
 
 interface ErrorBoundaryProps { }
@@ -9,7 +9,7 @@ interface ErrorBoundaryState {
 }
 
 @inject("showAlert")
-export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export default class ErrorBoundary extends React.Component<PropsWithChildren<ErrorBoundaryProps>, ErrorBoundaryState> {
 	get ctx() {
 		return this.props as any as AppCtx;
 	}

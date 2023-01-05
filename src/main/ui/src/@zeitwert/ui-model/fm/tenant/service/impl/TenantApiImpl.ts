@@ -6,7 +6,7 @@ import { TenantApi } from "../TenantApi";
 const MODULE = "oe";
 const PATH = "tenants";
 const TYPE = "tenant";
-const INCLUDES = "include[tenant]=banner,logo";
+const INCLUDES = "include[tenant]=logo";
 
 export class TenantApiImpl extends AggregateApiImpl<TenantSnapshot> implements TenantApi {
 	constructor() {

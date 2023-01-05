@@ -1,6 +1,5 @@
-import { registerMetadataConfig } from "@finadvise/forms";
 import { FormWrapper } from "@zeitwert/ui-forms";
-import { Document, FORM_API } from "@zeitwert/ui-model";
+import { Document } from "@zeitwert/ui-model";
 import { AppCtx } from "frame/App";
 import { inject } from "mobx-react";
 import React from "react";
@@ -18,22 +17,22 @@ export default class DocumentsWidget extends React.Component<DocumentsWidgetProp
 		return this.props as any as AppCtx;
 	}
 
-	constructor(props: DocumentsWidgetProps) {
-		super(props);
-		registerMetadataConfig(
-			async () => {
-				const response = await this.ctx.appStore.getMetadataFormDefinition();
-				return Promise.resolve(
-					response.map((datum: any) => ({
-						key: datum.id,
-						title: datum.name,
-						formDefinitionKey: datum.formKey
-					}))
-				);
-			},
-			(id) => FORM_API.getMetadataDefinition(id)
-		);
-	}
+	// constructor(props: DocumentsWidgetProps) {
+	// 	super(props);
+	// 	registerMetadataConfig(
+	// 		async () => {
+	// 			const response = await this.ctx.appStore.getMetadataFormDefinition();
+	// 			return Promise.resolve(
+	// 				response.map((datum: any) => ({
+	// 					key: datum.id,
+	// 					title: datum.name,
+	// 					formDefinitionKey: datum.formKey
+	// 				}))
+	// 			);
+	// 		},
+	// 		(id) => FORM_API.getMetadataDefinition(id)
+	// 	);
+	// }
 
 	render() {
 		const { documents, isReadOnly, onSelect, onChange } = this.props;
@@ -47,11 +46,11 @@ export default class DocumentsWidget extends React.Component<DocumentsWidgetProp
 						enabled: !isReadOnly
 					}
 				}}
-				onUploadSelect={(path, value) => {
+				onUploadSelect={(path: any, value: any) => {
 					onSelect && onSelect(value as any /*DocumentContentSnapshot*/);
 					return !isReadOnly;
 				}}
-				onAfterChange={(path, value) =>
+				onAfterChange={(path: any, value: any) =>
 					path.includes("documents") && onChange && onChange(value as any /*DocumentContentSnapshot[]*/)
 				}
 				displayMode={isReadOnly ? "readonly" : "enabled"}

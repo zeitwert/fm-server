@@ -1,6 +1,6 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
-import { FieldGroup, FieldRow, Input, Select, SldsForm, SldsSubFormProps } from "@zeitwert/ui-forms";
+import { AccessorContext, FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
 import { BuildingElement, BuildingModel, BuildingModelType, BuildingStore, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable, toJS } from "mobx";
@@ -71,7 +71,8 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 			<div onClick={() => this.onCloseElementRating()} className="fm-rating-container">
 				<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>
 					{
-						({ formAccessor }: SldsSubFormProps<BuildingModelType>) =>
+						({ formAccessor }: AccessorContext<BuildingModelType>) =>
+						(
 							<>
 								<Grid className="slds-wrap slds-m-top_small">
 									<Col cols={1} totalCols={1}>
@@ -157,6 +158,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 									</Card>
 								}
 							</>
+						)
 					}
 				</SldsForm>
 			</div>
