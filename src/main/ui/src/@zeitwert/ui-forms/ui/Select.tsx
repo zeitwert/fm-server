@@ -17,6 +17,8 @@ export class Select extends React.Component<SelectProps> {
 
 	static contextType = FormContext;
 
+	context!: React.ContextType<typeof FormContext>;
+
 	@observable
 	showHelpText: boolean = false;
 

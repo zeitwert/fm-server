@@ -16,8 +16,8 @@ export interface InputProps extends FieldProps {
 }
 
 export const Input: FC<InputProps> = observer((props) => {
-	const { id, type, align } = props;
 	const accessor = getAccessor(props, useContext(FormContext));
+	const { id, type, align } = props;
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
 	const fieldId = id || getFieldId(props);
 	return (

@@ -15,6 +15,8 @@ export class RadioButtonGroup extends React.Component<RadioButtonGroupProps> {
 
 	static contextType = FormContext;
 
+	context!: React.ContextType<typeof FormContext>;
+
 	@observable
 	showHelpText: boolean = false;
 
