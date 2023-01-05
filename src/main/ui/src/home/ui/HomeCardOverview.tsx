@@ -40,7 +40,7 @@ export default class HomeCardOverview extends React.Component {
 	}
 
 	render() {
-		const accountImageUrl = Config.getRestUrl("account", `accounts/${this.overview?.accountId}/banner`);
+		const accountImageUrl = Config.getRestUrl("account", `accounts/${this.overview?.accountId}/logo`);
 		return (
 			<Card
 				icon={<Icon category="standard" name="account" size="small" />}
