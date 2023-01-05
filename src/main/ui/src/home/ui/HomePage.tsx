@@ -41,7 +41,7 @@ class HomePage extends React.Component<RouteComponentProps> {
 		session.setHelpContext("dashboard");
 		return (
 			<>
-				<Grid className="fa-height-100">
+				<Grid className="fa-height-100" isVertical={false}>
 					<Row cols={2} nowrap className="fa-height-100">
 						<Col totalCols={12} cols={6}>
 							<Row cols={1} nowrap className="fa-height-100">

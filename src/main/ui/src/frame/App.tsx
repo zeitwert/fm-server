@@ -67,7 +67,6 @@ export default class App extends React.Component<AppProps> {
 				<section className="fa-page">
 					<BrandBand
 						id="brand-band-lightning-blue"
-						theme="lightning-blue"
 						className="slds-p-around_small slds-scrollable_y"
 					>
 						{content}

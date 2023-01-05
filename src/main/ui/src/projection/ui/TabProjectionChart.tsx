@@ -5,12 +5,6 @@ import { observer } from "mobx-react";
 import React from "react";
 import { ProjectionResult } from "../../@zeitwert/ui-model/fm/building/model/ProjectionResultDto";
 
-Highcharts.setOptions({
-	lang: {
-		thousandsSep: "'"
-	}
-})
-
 export interface TabProjectionChartProps {
 	projection: ProjectionResult;
 }

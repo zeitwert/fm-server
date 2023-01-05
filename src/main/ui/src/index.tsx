@@ -2,10 +2,12 @@
 import { IconSettings } from "@salesforce/design-system-react";
 import {
 	AppStoreModel,
+	assertThis,
 	Env, Locale, observeMutation, session, unregisterServiceWorker
 } from "@zeitwert/ui-model";
 import "assets/app.css";
 import { NavigatorImpl } from "frame/app/impl/NavigationImpl";
+import Highcharts from "highcharts";
 import Logger from "loglevel";
 import { configure } from "mobx";
 import { observer, Provider } from "mobx-react";
@@ -13,7 +15,7 @@ import moment from "moment";
 import "moment/locale/de-ch";
 import React from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App, { AppCtx } from "./frame/App";
 import AuthFrame from "./frame/AuthFrame";
@@ -36,6 +38,15 @@ configure({
 
 // This is important for various things (calendar included).
 moment.locale(Locale.de_ch);
+
+Highcharts.setOptions({
+	lang: {
+		thousandsSep: "'"
+	},
+	accessibility: {
+		enabled: false
+	}
+});
 
 const logLevel: Logger.LogLevelDesc = Env.getParam("LOG_LEVEL") as Logger.LogLevelDesc;
 Logger.setLevel(logLevel);
@@ -74,6 +85,9 @@ class Frame extends React.Component {
 	}
 }
 
-ReactDOM.render(<Frame />, document.getElementById("root"));
+const rootContainer = document.getElementById("root");
+assertThis(rootContainer != null);
+const root = createRoot(rootContainer); // createRoot(container!) if you use TypeScript
+root.render(<Frame />);
 
 unregisterServiceWorker();
