@@ -373,7 +373,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const response = await API.get(Config.getRestUrl("building", "buildings/" + this.props.params.buildingId!));
 		const objectUrl = window.URL.createObjectURL(new Blob([JSON.stringify(response.data, null, 2)]));
 		const contentDisposition = response.headers["content-disposition"];
-		const filename = contentDisposition.match(/filename="(.+)"/)?.[1];
+		const filename = contentDisposition?.match(/filename="(.+)"/)?.[1];
 		if (filename) {
 			const anchor = document.createElement("a");
 			document.body.appendChild(anchor);

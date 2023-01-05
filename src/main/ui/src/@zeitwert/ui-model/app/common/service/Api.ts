@@ -1,4 +1,4 @@
-import Axios, { AxiosError, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios";
+import Axios, { AxiosError, AxiosHeaders, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios";
 import Logger from "loglevel";
 import { AUTH_HEADER_ITEM, SESSION_INFO_ITEM, SESSION_STATE_ITEM } from "../config/Constants";
 
@@ -9,23 +9,22 @@ export const API_HEADERS = {
 	"Content-Type": API_CONTENT_TYPE
 };
 
-function getDefaultHeaders() {
-	const header = {
-		Accept: JSON_CONTENT_TYPE + "," + API_CONTENT_TYPE,
-	};
+function getHeaders(configHeaders: any): AxiosHeaders {
+	const header = new AxiosHeaders(configHeaders ?? {});
+	header.setAccept(JSON_CONTENT_TYPE + "," + API_CONTENT_TYPE);
 	if (sessionStorage.getItem(AUTH_HEADER_ITEM)) {
-		header["Authorization"] = sessionStorage.getItem(AUTH_HEADER_ITEM);
+		header.set("Authorization", sessionStorage.getItem(AUTH_HEADER_ITEM));
 	}
 	return header;
 }
 
 function getConfig(config?: AxiosRequestConfig): AxiosRequestConfig {
-	const headers = getDefaultHeaders();
-	const configHeaders = config ? config.headers || {} : {};
+	const headers = getHeaders(config?.headers);
+	delete config?.headers;
 	return {
 		withCredentials: true, // allow server to set cookies
 		...config,
-		headers: { ...headers, ...configHeaders }
+		headers: headers
 	};
 }
 
@@ -42,10 +41,10 @@ Axios.interceptors.request.use(
 );
 
 Axios.interceptors.response.use(
-	function (response: AxiosResponse): AxiosResponse {
+	(response: AxiosResponse): AxiosResponse => {
 		return response;
 	},
-	function (error: AxiosError) {
+	(error: AxiosError<any, any>) => {
 		if (error.response) {
 			if (401 === error.response.status) {
 				sessionStorage.removeItem(SESSION_STATE_ITEM);
@@ -60,14 +59,12 @@ Axios.interceptors.response.use(
 				// For simplicity, we only return the first error message.
 				return Promise.reject(error.response.data.errors[0]);
 			}
-
 			return Promise.reject({
 				detail: error.message,
 				status: error.response.status,
 				title: "Unknown error"
 			});
 		}
-
 		return Promise.reject({
 			detail: error.message,
 			status: "",
