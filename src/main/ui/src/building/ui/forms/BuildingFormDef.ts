@@ -1,13 +1,12 @@
 
 import { DateField, EnumeratedField, IdField, IntField, NumberField, TextField } from "@zeitwert/ui-forms";
-import { BuildingModelType, Config, Enumerated } from "@zeitwert/ui-model";
-import axios from "axios";
+import { API, BuildingModelType, Config, Enumerated } from "@zeitwert/ui-model";
 import { FormDefinition, Query, RepeatingForm } from "mstform";
 import BuildingElementFormDef from "./BuildingElementFormDef";
 
-const loadBuildingSubTypes = async (q: Query): Promise<Enumerated[]> => {
-	if (q.buildingType?.id) {
-		const subTypesResponse = await axios.get(Config.getEnumUrl("building", "codeBuildingSubType/" + q.buildingType.id));
+const loadBuildingSubTypes = async (q?: Query): Promise<Enumerated[]> => {
+	if (q?.buildingType?.id) {
+		const subTypesResponse = await API.get(Config.getEnumUrl("building", "codeBuildingSubType/" + q.buildingType.id));
 		if (subTypesResponse) {
 			return subTypesResponse.data;
 		}

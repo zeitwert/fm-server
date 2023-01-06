@@ -49,18 +49,6 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 		},
 	};
 
-	// constructor(props: BuildingStaticDataFormProps) {
-	// 	super(props);
-	// }
-
-	// componentDidMount() {
-	// 	this.formState.field("buildingSubType").references.autoLoadReaction();
-	// }
-
-	// componentWillUnmount() {
-	// 	this.formState.field("buildingSubType").references.clearAutoLoadReaction();
-	// }
-
 	render() {
 		return (
 			<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>

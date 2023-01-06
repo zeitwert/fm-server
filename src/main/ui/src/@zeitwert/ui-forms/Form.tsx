@@ -42,10 +42,29 @@ export class SldsForm<M extends IAnyModelType> extends React.Component<SldsFormP
 		);
 	}
 
+	// Start autoLoadReactions on mount for fields with dependentQuery
+	// Unfortunately mstform sets a default dummy function (i.e. () => {}) for all fields with references
+	// so all fields with source will have an autoLoadReaction, even if not necessary (it does not hurt though)
+	componentDidMount() {
+		this.formState.fieldAccessors.forEach(fieldAccessor => {
+			if ((fieldAccessor.references as any)?.dependentQuery) {
+				fieldAccessor.references.autoLoadReaction();
+			}
+		});
+	}
+
+	// Clear autoLoadReaction on unmount
+	componentWillUnmount() {
+		this.formState.fieldAccessors.forEach(fieldAccessor => {
+			if ((fieldAccessor.references as any)?.dependentQuery) {
+				fieldAccessor.references.clearAutoLoadReaction();
+			}
+		});
+	}
+
 	render() {
 		const { className, children } = this.props;
 		const classes = classNames("slds-form", className);
-		console.log("form.render", this.formState);
 		return (
 			<FormContext.Provider value={this.formState as unknown as GenericFormAccessor}>
 				<div className={classes} role="list">
