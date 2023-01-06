@@ -1,24 +1,23 @@
 
-import { API, Config, Enumerated, EnumeratedModel } from "@zeitwert/ui-model";
+import { API, Config, Enumerated } from "@zeitwert/ui-model";
 import { types } from "mobx-state-tree";
-import { AccessorDependentQuery, Query, Source } from "mstform";
+import { Query, Source } from "mstform";
 
 const ENUM_BASE_URL = Config.getEnumUrl("##", "##").replace("/##/##", "");
 
 export const EnumeratedContainer = types.model(
 	"EnumeratedContainer",
 	{
-		entryMap: types.map(EnumeratedModel),
+		entryMap: types.map(types.frozen<Enumerated>()),
 	}
 );
 
-export type EnumSource = string | ((q: Query) => Promise<Enumerated[]>);
+export type EnumSource = string | ((q?: Query) => Promise<Enumerated[]>);
 
-export function enumeratedSource(sourceOrUrl: EnumSource, dependentQuery?: AccessorDependentQuery<any>) {
+export function enumeratedSource(sourceOrUrl: EnumSource) {
 	const container = EnumeratedContainer.create({ entryMap: {} });
-	let source: Source<typeof EnumeratedModel, any>;
 	if (typeof sourceOrUrl === "string") {
-		source = new Source({
+		return new Source({
 			entryMap: container.entryMap,
 			load: async () => {
 				const response = await API.get(ENUM_BASE_URL + "/" + sourceOrUrl);
@@ -26,15 +25,9 @@ export function enumeratedSource(sourceOrUrl: EnumSource, dependentQuery?: Acces
 			},
 		});
 	} else {
-		source = new Source({
+		return new Source({
 			entryMap: container.entryMap,
 			load: sourceOrUrl,
 		});
-	}
-	return {
-		references: {
-			source: source,
-			dependentQuery: dependentQuery
-		}
 	}
 }

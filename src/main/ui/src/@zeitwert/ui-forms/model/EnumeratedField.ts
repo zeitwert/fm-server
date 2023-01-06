@@ -1,8 +1,7 @@
 
 import { Enumerated } from "@zeitwert/ui-model";
-import { getSnapshot } from "mobx-state-tree";
 import { AccessorDependentQuery, converters, Field, FieldOptions, StringConverter } from "mstform";
-import { enumeratedSource, EnumSource } from "./EnumeratedHelpers";
+import { enumeratedSource, EnumSource } from "./EnumeratedSource";
 
 export interface EnumeratedConverterOptions {
 }
@@ -15,7 +14,7 @@ export function enumeratedConverter(options?: EnumeratedConverterOptions) {
 			if (raw === this.emptyRaw) {
 				return this.emptyValue;
 			}
-			return getSnapshot(accessor.references.getById(raw));
+			return accessor.references.getById(raw);
 		},
 		render(value) { // toString() to support numeric ids (f.ex. User)
 			return value ? value.id.toString() : "";
@@ -25,14 +24,21 @@ export function enumeratedConverter(options?: EnumeratedConverterOptions) {
 
 export interface EnumeratedFieldOptions extends FieldOptions<string | undefined, Enumerated | undefined, any, any>, EnumeratedConverterOptions {
 	source: EnumSource;
-	dependentQuery?: AccessorDependentQuery<any>; // don't forget to do [field].references.autoLoadReaction() in form constructor
+	dependentQuery?: AccessorDependentQuery<any>; // Form will do [field].references.autoLoadReaction() in form constructor
 }
 
 export class EnumeratedField extends Field<string | undefined, Enumerated | undefined> {
 	constructor(options: EnumeratedFieldOptions) {
-		super(
-			converters.maybe(enumeratedConverter),
-			Object.assign({}, options || {}, enumeratedSource(options.source, options.dependentQuery))
+		const enumOptions = Object.assign(
+			{},
+			options ?? {},
+			{
+				references: {
+					source: enumeratedSource(options.source),
+					dependentQuery: options.dependentQuery
+				}
+			}
 		);
+		super(converters.maybe(enumeratedConverter), enumOptions);
 	}
 }

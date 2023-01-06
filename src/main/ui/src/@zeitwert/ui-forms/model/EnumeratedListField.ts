@@ -1,8 +1,7 @@
 
 import { Enumerated } from "@zeitwert/ui-model";
 import { AccessorDependentQuery, converters, Field, FieldOptions, StringConverter } from "mstform";
-import { enumeratedConverter } from "./EnumeratedField";
-import { enumeratedSource, EnumSource } from "./EnumeratedHelpers";
+import { enumeratedSource, EnumSource } from "./EnumeratedSource";
 
 export interface EnumeratedListConverterOptions {
 }
@@ -23,16 +22,23 @@ export function enumeratedListConverter(options?: EnumeratedListConverterOptions
 	});
 }
 
-export interface EnumeratedListFieldOptions extends FieldOptions<string | undefined, Enumerated | undefined, any, any>, EnumeratedListConverterOptions {
+export interface EnumeratedListFieldOptions extends FieldOptions<string | undefined, Enumerated[] | undefined, any, any>, EnumeratedListConverterOptions {
 	source: EnumSource;
-	dependentQuery?: AccessorDependentQuery<any>; // don't forget to do [field].references.autoLoadReaction() in form constructor
+	dependentQuery?: AccessorDependentQuery<any>; // Form will do [field].references.autoLoadReaction() in form constructor
 }
 
-export class EnumeratedListField extends Field<string | undefined, Enumerated | undefined> {
-	constructor(options?: EnumeratedListFieldOptions) {
-		super(
-			converters.maybe(enumeratedConverter),
-			Object.assign({}, options || {}, enumeratedSource(options?.source!, options?.dependentQuery))
+export class EnumeratedListField extends Field<string | undefined, Enumerated[] | undefined> {
+	constructor(options: EnumeratedListFieldOptions) {
+		const enumListOptions = Object.assign(
+			{},
+			options ?? {},
+			{
+				references: {
+					source: enumeratedSource(options.source),
+					dependentQuery: options.dependentQuery
+				}
+			}
 		);
+		super(converters.maybe(enumeratedListConverter), enumListOptions);
 	}
 }
