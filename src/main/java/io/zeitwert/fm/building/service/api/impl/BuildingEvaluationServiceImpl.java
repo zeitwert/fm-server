@@ -45,6 +45,8 @@ public class BuildingEvaluationServiceImpl implements BuildingEvaluationService 
 	@Override
 	public BuildingEvaluationResult getEvaluation(ObjBuilding building) {
 
+		requireThis(building.getCurrentRating() != null, "has current rating");
+
 		Formatter fmt = Formatter.INSTANCE;
 		String value = null;
 

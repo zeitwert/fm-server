@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,8 @@ import io.jsonwebtoken.Jwts;
 import io.zeitwert.server.session.service.api.JwtProvider;
 
 public class AuthenticationJWTFilter extends OncePerRequestFilter {
+
+	private Logger logger = org.slf4j.LoggerFactory.getLogger(AuthenticationJWTFilter.class);
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -70,9 +73,19 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 
 			}
 
-			chain.doFilter(request, response);
+			try {
 
-		} catch (Exception exception) {
+				chain.doFilter(request, response);
+
+			} catch (Exception ex) {
+				this.logger.error("request crashed: " + ex.getMessage(), ex);
+				ex.printStackTrace();
+				throw ex;
+			}
+
+		} catch (Exception ex) {
+			this.logger.error("authentication failed: " + ex.getMessage(), ex);
+			ex.printStackTrace();
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 

@@ -28,23 +28,16 @@ public class TenantDocumentController {
 	@Autowired
 	private DocumentContentController documentController;
 
-	@RequestMapping(value = "/{id}/{img}", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getImage(@PathVariable Integer id, @PathVariable String img) {
+	@RequestMapping(value = "/{id}/logo", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
 		ObjTenant tenant = this.tenantCache.get(id);
-		Integer documentId = null;
-		if ("logo".equals(img)) {
-			documentId = tenant.getLogoImageId();
-		} else if ("banner".equals(img)) {
-			documentId = tenant.getBannerImageId();
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		Integer documentId = tenant.getLogoImageId();
 		return this.documentController.getContent(documentId);
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Integer>> getStatistics() {
-		return ResponseEntity.ok().body(tenantCache.getStatistics());
+		return ResponseEntity.ok().body(this.tenantCache.getStatistics());
 	}
 
 }

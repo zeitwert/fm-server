@@ -28,23 +28,16 @@ public class AccountDocumentController {
 	@Autowired
 	private DocumentContentController documentController;
 
-	@RequestMapping(value = "/{id}/{img}", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getImage(@PathVariable Integer id, @PathVariable String img) {
+	@RequestMapping(value = "/{id}/logo", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
 		ObjAccount account = this.accountCache.get(id);
-		Integer documentId = null;
-		if ("logo".equals(img)) {
-			documentId = account.getLogoImageId();
-		} else if ("banner".equals(img)) {
-			documentId = account.getBannerImageId();
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		Integer documentId = account.getLogoImageId();
 		return this.documentController.getContent(documentId);
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Integer>> getStatistics() {
-		return ResponseEntity.ok().body(accountCache.getStatistics());
+		return ResponseEntity.ok().body(this.accountCache.getStatistics());
 	}
 
 }

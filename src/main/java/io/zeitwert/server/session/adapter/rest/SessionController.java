@@ -3,6 +3,7 @@ package io.zeitwert.server.session.adapter.rest;
 
 import static io.zeitwert.ddd.util.Check.requireThis;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,8 @@ import io.zeitwert.server.session.service.api.JwtProvider;
 @RequestMapping("/rest/session")
 public class SessionController {
 
+	private Logger logger = org.slf4j.LoggerFactory.getLogger(SessionController.class);
+
 	public final static String AUTH_HEADER_PREFIX = "Bearer ";
 
 	@Autowired
@@ -55,12 +58,12 @@ public class SessionController {
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
 		try {
 			Authentication authToken = this.getAuthToken(loginRequest.getEmail(), loginRequest.getPassword());
-			Authentication authentication = authenticationManager.authenticate(authToken);
+			Authentication authentication = this.authenticationManager.authenticate(authToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			Integer tenantId = loginRequest.getTenantId();
 			requireThis(tenantId != null, "tenantId not null");
 			Integer accountId = loginRequest.getAccountId();
-			String jwt = jwtProvider.createJwt(authentication, tenantId, accountId);
+			String jwt = this.jwtProvider.createJwt(authentication, tenantId, accountId);
 			ZeitwertUserDetails userDetails = (ZeitwertUserDetails) authentication.getPrincipal();
 			String role = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList().get(0);
 			LoginResponse loginResponse = LoginResponse.builder()
@@ -72,9 +75,9 @@ public class SessionController {
 					.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(role)))
 					.build();
 			return ResponseEntity.ok(loginResponse);
-		} catch (Exception e) {
-			System.err.println("Login failed: " + e);
-			throw new RuntimeException(e);
+		} catch (Exception ex) {
+			this.logger.error("Login failed: " + ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -87,9 +90,9 @@ public class SessionController {
 		if (this.requestCtx == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		ObjTenant tenant = tenantCache.get(this.requestCtx.getTenantId());
-		ObjAccount account = requestCtx.hasAccount() ? this.accountCache.get(requestCtx.getAccountId()) : null;
-		return ResponseEntity.ok(SessionInfoReponse.fromRequest(requestCtx, tenant, account));
+		ObjTenant tenant = this.tenantCache.get(this.requestCtx.getTenantId());
+		ObjAccount account = this.requestCtx.hasAccount() ? this.accountCache.get(this.requestCtx.getAccountId()) : null;
+		return ResponseEntity.ok(SessionInfoReponse.fromRequest(this.requestCtx, tenant, account));
 	}
 
 	@PostMapping("/logout")

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -50,6 +51,8 @@ import io.zeitwert.server.config.aspose.AsposeConfig;
 
 @Component("buildingDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
+
+	private Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
 
 	private static final double POINTS_PER_MM = 2.834647454889553;
 
@@ -130,10 +133,10 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 				doc.save(stream, format);
 			}
 
-		} catch (Exception x) {
-			System.err.println("Document generation crashed");
-			x.printStackTrace();
-			throw new RuntimeException("Document generation crashed", x);
+		} catch (Exception ex) {
+			this.logger.error("Document generation crashed", ex);
+			ex.printStackTrace();
+			throw new RuntimeException("Document generation crashed", ex);
 		}
 
 	}
