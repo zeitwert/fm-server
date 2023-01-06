@@ -1,4 +1,5 @@
 
+import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
@@ -32,7 +33,10 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	})
 	.actions((self) => ({
 		setItem(snapshot: PortfolioSnapshot) {
-			self.portfolio = cast(snapshot);
+			transaction(() => {
+				self.portfolio = cast({ id: snapshot.id } as PortfolioSnapshot);
+				self.portfolio = cast(snapshot);
+			});
 		}
 	}));
 

@@ -1,5 +1,6 @@
 
 import { EntityTypeRepository } from "@zeitwert/ui-model/app";
+import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
@@ -33,7 +34,10 @@ const MstTenantStoreModel = ObjStoreModel
 	})
 	.actions((self) => ({
 		setItem(snapshot: TenantSnapshot) {
-			self.tenant = cast(snapshot);
+			transaction(() => {
+				self.tenant = cast({ id: snapshot.id } as TenantSnapshot);
+				self.tenant = cast(snapshot);
+			});
 		}
 	}));
 

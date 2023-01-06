@@ -1,3 +1,4 @@
+import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
@@ -34,7 +35,10 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 	})
 	.actions((self) => ({
 		setItem(snapshot: LeadSnapshot) {
-			self.lead = cast(snapshot);
+			transaction(() => {
+				self.lead = cast({ id: snapshot.id } as LeadSnapshot);
+				self.lead = cast(snapshot);
+			});
 		}
 	}));
 

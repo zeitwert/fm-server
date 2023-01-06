@@ -1,3 +1,4 @@
+import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
@@ -38,7 +39,10 @@ const MstAccountStoreModel = ObjStoreModel
 	})
 	.actions((self) => ({
 		setItem(snapshot: AccountSnapshot) {
-			self.account = cast(snapshot);
+			transaction(() => {
+				self.account = cast({ id: snapshot.id } as AccountSnapshot);
+				self.account = cast(snapshot);
+			});
 		}
 	}));
 

@@ -1,3 +1,4 @@
+import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
 import { TaskApi, TASK_API } from "../service/TaskApi";
@@ -20,7 +21,10 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 	}))
 	.actions((self) => ({
 		setItem(snapshot: TaskSnapshot) {
-			self.task = cast(snapshot);
+			transaction(() => {
+				self.task = cast({ id: snapshot.id } as TaskSnapshot);
+				self.task = cast(snapshot);
+			});
 		}
 	}));
 

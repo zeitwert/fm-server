@@ -1,4 +1,5 @@
 import Logger from "loglevel";
+import { transaction } from "mobx";
 import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
@@ -25,7 +26,10 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 	}))
 	.actions((self) => ({
 		setItem(snapshot: ContactSnapshot) {
-			self.contact = cast(snapshot);
+			transaction(() => {
+				self.contact = cast({ id: snapshot.id } as ContactSnapshot);
+				self.contact = cast(snapshot);
+			});
 		}
 	}))
 	.actions((self) => {
