@@ -23,7 +23,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>16</maven.compiler.release>
+		<maven.compiler.release>19</maven.compiler.release>
 		<compiler.version>3.10.1</compiler.version>
 		<flyway.version>9.10.1</flyway.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
