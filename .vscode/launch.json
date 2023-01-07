@@ -7,7 +7,6 @@
 			"request": "launch",
 			"projectName": "zeitwert-server",
 			"mainClass": "io.zeitwert.server.Application",
-			"args": " --agentpath:C:\\ProgramData\\YourKit\\2022.3.103.0EAFCC35\\64\\yjpagent.dll=exceptions=disable,delay=10000,listen=all",
 			"vmArgs": " -Dspring.profiles.active=dev"
 		}
 	]
