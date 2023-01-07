@@ -17,7 +17,7 @@ class DynamicView extends React.Component<RouteComponentProps> {
 	render() {
 		const componentName = this.componentName(this.props.params.path!)!;
 		const AreaComponent = React.lazy(() =>
-			import("../../areas/" + componentName)
+			import(`../../areas/${componentName}` /* webpackChunkName: "[request]" */)
 		);
 		return (
 			<ErrorBoundary>
