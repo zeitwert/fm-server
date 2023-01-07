@@ -35,8 +35,8 @@
 		<aspose-words.version>22.12</aspose-words.version>
 		<google-maps.version>2.1.2</google-maps.version>
 		<frontend-src-dir>${project.basedir}/src/main/ui</frontend-src-dir>
-		<node.version>v16.14.0</node.version>
-		<yarn.version>v1.22.5</yarn.version>
+		<node.version>v18.12.1</node.version>
+		<yarn.version>v1.22.19</yarn.version>
 		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
 		<skip.jooq.generation>true</skip.jooq.generation>
 	</properties>
@@ -48,7 +48,7 @@
 			<url>https://repository.aspose.com/repo/</url>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 
 		<!-- Runtime -->
