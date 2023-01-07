@@ -5,8 +5,8 @@ import {
 	assertThis,
 	Env, Locale, observeMutation, session, unregisterServiceWorker
 } from "@zeitwert/ui-model";
+import { NavigatorImpl } from "app/frame/impl/NavigationImpl";
 import "assets/app.css";
-import { NavigatorImpl } from "frame/app/impl/NavigationImpl";
 import Highcharts from "highcharts";
 import Logger from "loglevel";
 import { configure } from "mobx";
@@ -17,9 +17,9 @@ import React from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App, { AppCtx } from "./frame/App";
-import AuthFrame from "./frame/AuthFrame";
-import NotificationFrame from "./frame/NotificationFrame";
+import App, { AppCtx } from "./app/App";
+import AuthFrame from "./app/AuthFrame";
+import NotificationFrame from "./app/NotificationFrame";
 
 // Lightning Modal sets body.style.overflow to inherit, revert this when it happens
 observeMutation("body", {

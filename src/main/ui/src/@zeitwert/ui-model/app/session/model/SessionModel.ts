@@ -1,7 +1,7 @@
 
 import { AxiosResponse } from "axios";
 import { Canvg, presets } from "canvg";
-import AppBanner from "frame/ui/AppBannerSvg";
+import AppBanner from "app/ui/AppBannerSvg";
 import Logger from "loglevel";
 import { observable, reaction, transaction } from "mobx";
 import { addDisposer, applySnapshot, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";

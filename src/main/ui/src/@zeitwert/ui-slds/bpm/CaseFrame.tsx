@@ -1,5 +1,5 @@
 import { Button } from "@salesforce/design-system-react";
-import { RouteComponentProps, withRouter } from "frame/app/withRouter";
+import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

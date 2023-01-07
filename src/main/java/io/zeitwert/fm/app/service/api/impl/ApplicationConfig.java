@@ -20,51 +20,48 @@ class ApplicationConfig {
 	//@formatter:off
 	private final NavigationTarget SelfTarget = NavigationTarget.builder().applicationId("self").applicationAreaId("self").build();
 	private final String RouteActionType = "route";
-	private final NavigationAction DefaultAction = NavigationAction.builder().actionType(RouteActionType).build();
-	private final Navigation DefaultNavigation = Navigation.builder().target(SelfTarget).action(DefaultAction).build();
+	private final NavigationAction DefaultAction = NavigationAction.builder().actionType(this.RouteActionType).build();
+	private final Navigation DefaultNavigation = Navigation.builder().target(this.SelfTarget).action(this.DefaultAction).build();
 	private final AppMenu EmptyMenu = AppMenu.builder().build();
 
-	private final AppMenuAction accountAction = AppMenuAction.builder().id("account").name("Kunden").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea accountArea = ApplicationArea.builder().id("account").name("Kunden").icon("standard:account").path("account").component("AccountArea").menu(EmptyMenu).menuAction(accountAction).build();
+	private final AppMenuAction accountAction = AppMenuAction.builder().id("account").name("Kunden").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea accountArea = ApplicationArea.builder().id("account").name("Kunden").icon("standard:account").path("account").component("account/ui/AccountArea").menu(this.EmptyMenu).menuAction(this.accountAction).build();
 
-	private final AppMenuAction buildingAction = AppMenuAction.builder().id("building").name("Immobilien").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea buildingArea = ApplicationArea.builder().id("building").name("Immobilien").icon("custom:custom24").path("building").component("BuildingArea").menu(EmptyMenu).menuAction(buildingAction).build();
+	private final AppMenuAction buildingAction = AppMenuAction.builder().id("building").name("Immobilien").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea buildingArea = ApplicationArea.builder().id("building").name("Immobilien").icon("custom:custom24").path("building").component("building/ui/BuildingArea").menu(this.EmptyMenu).menuAction(this.buildingAction).build();
 
-	private final AppMenuAction buildingReportAction = AppMenuAction.builder().id("bldgReport").name("Auswertungen (TEST)").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea buildingReportArea = ApplicationArea.builder().id("bldgReport").name("Auswertungen (TEST)").icon("standard:agent_home").path("bldgReport").component("BuildingReportArea").menu(EmptyMenu).menuAction(buildingReportAction).build();
+	private final AppMenuAction contactAction = AppMenuAction.builder().id("contact").name("Kontakte").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea contactArea = ApplicationArea.builder().id("contact").name("Kontakte").icon("standard:contact").path("contact").component("contact/ui/ContactArea").menu(this.EmptyMenu).menuAction(this.contactAction).build();
 
-	private final AppMenuAction contactAction = AppMenuAction.builder().id("contact").name("Kontakte").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea contactArea = ApplicationArea.builder().id("contact").name("Kontakte").icon("standard:contact").path("contact").component("ContactArea").menu(EmptyMenu).menuAction(contactAction).build();
+	private final AppMenuAction documentAction = AppMenuAction.builder().id("document").name("Dokumente").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea documentArea = ApplicationArea.builder().id("document").name("Dokumente").icon("standard:document").path("document").component("document/ui/DocumentArea").menu(this.EmptyMenu).menuAction(this.documentAction).build();
 
-	private final AppMenuAction documentAction = AppMenuAction.builder().id("document").name("Dokumente").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea documentArea = ApplicationArea.builder().id("document").name("Dokumente").icon("standard:document").path("document").component("DocumentArea").menu(EmptyMenu).menuAction(documentAction).build();
+	private final AppMenuAction homeAction = AppMenuAction.builder().id("home").name("Dashboard").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea homeArea = ApplicationArea.builder().id("home").name("Dashboard").icon("standard:home").path("home").component("home/ui/HomeArea").menu(this.EmptyMenu).menuAction(this.homeAction).build();
 
-	private final AppMenuAction homeAction = AppMenuAction.builder().id("home").name("Dashboard").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea homeArea = ApplicationArea.builder().id("home").name("Dashboard").icon("standard:home").path("home").component("HomeArea").menu(EmptyMenu).menuAction(homeAction).build();
+	private final AppMenuAction leadAction = AppMenuAction.builder().id("lead").name("Leads").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea leadArea = ApplicationArea.builder().id("lead").name("Leads").icon("standard:lead").path("lead").component("lead/ui/LeadArea").menu(this.EmptyMenu).menuAction(this.leadAction).build();
 
-	private final AppMenuAction leadAction = AppMenuAction.builder().id("lead").name("Leads").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea leadArea = ApplicationArea.builder().id("lead").name("Leads").icon("standard:lead").path("lead").component("LeadArea").menu(EmptyMenu).menuAction(leadAction).build();
+	private final AppMenuAction portfolioAction = AppMenuAction.builder().id("portfolio").name("Portfolios").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea portfolioArea = ApplicationArea.builder().id("portfolio").name("Portfolios").icon("standard:store_group").path("portfolio").component("portfolio/ui/PortfolioArea").menu(this.EmptyMenu).menuAction(this.portfolioAction).build();
 
-	private final AppMenuAction portfolioAction = AppMenuAction.builder().id("portfolio").name("Portfolios").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea portfolioArea = ApplicationArea.builder().id("portfolio").name("Portfolios").icon("standard:store_group").path("portfolio").component("PortfolioArea").menu(EmptyMenu).menuAction(portfolioAction).build();
+	private final AppMenuAction taskAction = AppMenuAction.builder().id("task").name("Aufgaben").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea taskArea = ApplicationArea.builder().id("task").name("Aufgaben").icon("standard:task").path("task").component("task/ui/TaskArea").menu(this.EmptyMenu).menuAction(this.taskAction).build();
 
-	private final AppMenuAction taskAction = AppMenuAction.builder().id("task").name("Aufgaben").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea taskArea = ApplicationArea.builder().id("task").name("Aufgaben").icon("standard:task").path("task").component("TaskArea").menu(EmptyMenu).menuAction(taskAction).build();
+	private final AppMenuAction tenantAction = AppMenuAction.builder().id("tenant").name("Mandanten").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea tenantArea = ApplicationArea.builder().id("tenant").name("Mandanten").icon("standard:document").path("tenant").component("tenant/ui/TenantArea").menu(this.EmptyMenu).menuAction(this.tenantAction).build();
 
-	private final AppMenuAction tenantAction = AppMenuAction.builder().id("tenant").name("Mandanten").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea tenantArea = ApplicationArea.builder().id("tenant").name("Mandanten").icon("standard:document").path("tenant").component("TenantArea").menu(EmptyMenu).menuAction(tenantAction).build();
-
-	private final AppMenuAction userAction = AppMenuAction.builder().id("user").name("Benutzer").navigation(DefaultNavigation).icon("").build();
-	private final ApplicationArea userArea = ApplicationArea.builder().id("user").name("Benutzer").icon("standard:user").path("user").component("UserArea").menu(EmptyMenu).menuAction(userAction).build();
+	private final AppMenuAction userAction = AppMenuAction.builder().id("user").name("Benutzer").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea userArea = ApplicationArea.builder().id("user").name("Benutzer").icon("standard:user").path("user").component("user/ui/UserArea").menu(this.EmptyMenu).menuAction(this.userAction).build();
 
 	private final Application fmApp = Application.builder().id("fm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(homeArea, portfolioArea, buildingArea, accountArea)).defaultArea(homeArea.getId()).build();
+	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(this.homeArea, this.portfolioArea, this.buildingArea, this.accountArea)).defaultArea(this.homeArea.getId()).build();
 
 	private final Application tenantAdminApp = Application.builder().id("tenantAdmin").name("ZEitWERT: admin").icon("config").description("Mandantenadministration").build();
-	private final ApplicationInfo tenantAdminAppMenu = ApplicationInfo.builder().id("adminMenu").name("ZEitWERT: admin").areas(List.of(tenantArea, accountArea, userArea)).defaultArea(userArea.getId()).build();
+	private final ApplicationInfo tenantAdminAppMenu = ApplicationInfo.builder().id("adminMenu").name("ZEitWERT: admin").areas(List.of(this.tenantArea, this.accountArea, this.userArea)).defaultArea(this.userArea.getId()).build();
 
 	private final Application appAdminApp = Application.builder().id("appAdmin").name("ZEitWERT: appAdmin").icon("config").description("Applikationsadministration").build();
-	private final ApplicationInfo appAdminAppMenu = ApplicationInfo.builder().id("appAdminMenu").name("ZEitWERT: appAdmin").areas(List.of(tenantArea, accountArea, userArea)).defaultArea(tenantArea.getId()).build();
+	private final ApplicationInfo appAdminAppMenu = ApplicationInfo.builder().id("appAdminMenu").name("ZEitWERT: appAdmin").areas(List.of(this.tenantArea, this.accountArea, this.userArea)).defaultArea(this.tenantArea.getId()).build();
 	//@formatter:on
 
 	final List<Application> AppAdminApplications = new ArrayList<>();
@@ -76,32 +73,31 @@ class ApplicationConfig {
 
 	public ApplicationConfig() {
 
-		Areas.put(accountArea.getId(), accountArea);
-		Areas.put(buildingArea.getId(), buildingArea);
-		Areas.put(buildingReportArea.getId(), buildingReportArea);
-		Areas.put(contactArea.getId(), contactArea);
-		Areas.put(documentArea.getId(), documentArea);
-		Areas.put(homeArea.getId(), homeArea);
-		Areas.put(leadArea.getId(), leadArea);
-		Areas.put(portfolioArea.getId(), portfolioArea);
-		Areas.put(taskArea.getId(), taskArea);
-		Areas.put(tenantArea.getId(), tenantArea);
-		Areas.put(userArea.getId(), userArea);
+		this.Areas.put(this.accountArea.getId(), this.accountArea);
+		this.Areas.put(this.buildingArea.getId(), this.buildingArea);
+		this.Areas.put(this.contactArea.getId(), this.contactArea);
+		this.Areas.put(this.documentArea.getId(), this.documentArea);
+		this.Areas.put(this.homeArea.getId(), this.homeArea);
+		this.Areas.put(this.leadArea.getId(), this.leadArea);
+		this.Areas.put(this.portfolioArea.getId(), this.portfolioArea);
+		this.Areas.put(this.taskArea.getId(), this.taskArea);
+		this.Areas.put(this.tenantArea.getId(), this.tenantArea);
+		this.Areas.put(this.userArea.getId(), this.userArea);
 
-		ApplicationMap.put(fmApp.getId(), fmApp);
-		ApplicationMenus.put(fmApp.getId(), fmAppMenu);
+		this.ApplicationMap.put(this.fmApp.getId(), this.fmApp);
+		this.ApplicationMenus.put(this.fmApp.getId(), this.fmAppMenu);
 
-		ApplicationMap.put(tenantAdminApp.getId(), tenantAdminApp);
-		ApplicationMenus.put(tenantAdminApp.getId(), tenantAdminAppMenu);
+		this.ApplicationMap.put(this.tenantAdminApp.getId(), this.tenantAdminApp);
+		this.ApplicationMenus.put(this.tenantAdminApp.getId(), this.tenantAdminAppMenu);
 
-		ApplicationMap.put(appAdminApp.getId(), appAdminApp);
-		ApplicationMenus.put(appAdminApp.getId(), appAdminAppMenu);
+		this.ApplicationMap.put(this.appAdminApp.getId(), this.appAdminApp);
+		this.ApplicationMenus.put(this.appAdminApp.getId(), this.appAdminAppMenu);
 
-		UserApplications.add(fmApp);
+		this.UserApplications.add(this.fmApp);
 
-		AdminApplications.add(tenantAdminApp);
+		this.AdminApplications.add(this.tenantAdminApp);
 
-		AppAdminApplications.add(appAdminApp);
+		this.AppAdminApplications.add(this.appAdminApp);
 
 	}
 

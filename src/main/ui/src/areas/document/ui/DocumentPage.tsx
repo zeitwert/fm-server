@@ -1,0 +1,138 @@
+import { Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { DocumentStore, DocumentStoreModel, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
+import { AppCtx } from "app/App";
+import { RouteComponentProps, withRouter } from "app/frame/withRouter";
+import NotFound from "app/ui/NotFound";
+import FormItemEditor from "lib/item/ui/FormItemEditor";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemGrid";
+import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
+import { makeObservable, observable } from "mobx";
+import { inject, observer } from "mobx-react";
+import React from "react";
+
+enum LEFT_TABS {
+	DETAILS = "static-data",
+	ORDERS = "orders",
+}
+const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+@inject("appStore", "session", "showAlert", "showToast")
+@observer
+class DocumentPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.DOCUMENT];
+
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
+	@observable documentStore: DocumentStore = DocumentStoreModel.create({});
+
+	get ctx() {
+		return this.props as any as AppCtx;
+	}
+
+	constructor(props: any) {
+		super(props);
+		makeObservable(this);
+	}
+
+	async componentDidMount() {
+		await this.documentStore.load(this.props.params.documentId!);
+	}
+
+	async componentDidUpdate(prevProps: RouteComponentProps) {
+		if (this.props.params.documentId !== prevProps.params.documentId) {
+			await this.documentStore.load(this.props.params.documentId!);
+		}
+	}
+
+	render() {
+		const document = this.documentStore.document!;
+		if (!document && session.isNetworkActive) {
+			return <></>;
+		} else if (!document) {
+			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
+		}
+		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
+
+		const isActive = !document.meta?.closedAt;
+		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+
+		const headerDetails: HeaderDetail[] = [
+			{ label: "Document", content: document.contentKind?.name },
+			{ label: "Content", content: document.contentType?.name },
+			// {
+			// 	label: "Areas",
+			// 	content: document.areas?.map((mt) => mt.name).join(", ")
+			// }
+		];
+		return (
+			<>
+				<ItemHeader store={this.documentStore} details={headerDetails} />
+				<ItemGrid>
+					<ItemLeftPart>
+						<FormItemEditor
+							store={this.documentStore}
+							entityType={EntityType.DOCUMENT}
+							formId="dms/editDocument"
+							itemAlias={EntityType.DOCUMENT}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
+							onOpen={this.openEditor}
+							onCancel={this.cancelEditor}
+							onClose={this.closeEditor}
+							key={"document-" + this.documentStore.document?.id}
+						>
+							{(editor) => (
+								<Tabs
+									className="full-height"
+									selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+									onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
+								>
+									<TabsPanel label="Details">
+										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
+									</TabsPanel>
+									<TabsPanel label="Orders">
+										{this.activeLeftTabId === LEFT_TABS.ORDERS && (
+											<p className="slds-p-around_medium">tbd</p>
+										)}
+									</TabsPanel>
+								</Tabs>
+							)}
+						</FormItemEditor>
+					</ItemLeftPart>
+					<ItemRightPart store={this.documentStore} hideDocuments />
+				</ItemGrid>
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
+			</>
+		);
+	}
+
+	private openEditor = () => {
+		this.documentStore.edit();
+	};
+
+	private cancelEditor = async () => {
+		this.documentStore.cancel();
+	};
+
+	private closeEditor = async () => {
+		try {
+			const item = await this.documentStore.store();
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
+			return item;
+		} catch (error: any) {
+			// eslint-disable-next-line
+			if (error.status == 409) { // version conflict
+				await this.documentStore.load(this.props.params.documentId!);
+			}
+			this.ctx.showAlert(
+				"error",
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
+			);
+		}
+	};
+
+}
+
+export default withRouter(DocumentPage);

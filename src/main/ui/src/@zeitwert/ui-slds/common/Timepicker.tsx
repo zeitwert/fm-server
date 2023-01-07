@@ -1,6 +1,7 @@
+
 import { Input, InputIcon, MenuDropdown } from "@salesforce/design-system-react";
 import { MENU_DROPDOWN_TRIGGER } from "@salesforce/design-system-react/utilities/constants";
-import { AppCtx } from "frame/App";
+import { session } from "@zeitwert/ui-model";
 import { inject } from "mobx-react";
 import moment from "moment";
 import React from "react";
@@ -30,9 +31,6 @@ TimepickerTrigger.displayName = MENU_DROPDOWN_TRIGGER;
  */
 @inject("session")
 export default class Timepicker extends React.Component<TimepickerProps> {
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	render() {
 		const { label, time, onChange } = this.props;
@@ -64,7 +62,7 @@ export default class Timepicker extends React.Component<TimepickerProps> {
 
 	formatter(date: Date) {
 		if (date) {
-			return date.toLocaleTimeString(this.ctx.session.locale, {
+			return date.toLocaleTimeString(session.locale, {
 				hour: "2-digit",
 				minute: "2-digit"
 			});
@@ -74,7 +72,7 @@ export default class Timepicker extends React.Component<TimepickerProps> {
 
 	parser(timeStr: string) {
 		const date = new Date();
-		const dateStr = date.toLocaleString(this.ctx.session.locale, {
+		const dateStr = date.toLocaleString(session.locale, {
 			year: "numeric",
 			month: "numeric",
 			day: "numeric"

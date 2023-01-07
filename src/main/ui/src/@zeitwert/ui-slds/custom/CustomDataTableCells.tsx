@@ -4,7 +4,7 @@ import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/const
 import { channels, DateFormat, EntityTypes, NumberFormat } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import CustomIcon from "@zeitwert/ui-slds/custom/CustomIcon";
-import { DocumentUtils } from "dms/utils/DocumentUtils";
+import { DocumentUtils } from "areas/document/utils/DocumentUtils";
 import React from "react";
 import { Link } from "react-router-dom";
 

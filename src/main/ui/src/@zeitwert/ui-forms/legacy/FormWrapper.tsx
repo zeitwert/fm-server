@@ -1,6 +1,5 @@
 
 import { FORM_API } from "@zeitwert/ui-model";
-import { AppCtx } from "frame/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -38,10 +37,6 @@ export interface FormEventsProps {
 export class FormWrapper extends React.Component<FormWrapperProps & FormEventsProps> {
 
 	@observable.shallow config?: any;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: FormWrapperProps & FormEventsProps) {
 		super(props);
