@@ -16,6 +16,10 @@ class DynamicView extends React.Component<RouteComponentProps> {
 
 	render() {
 		const componentPath = this.componentName(this.props.params.path!)!;
+		console.log("DynamicView.render", this.props.params.path, componentPath);
+		if (!componentPath) {
+			return <div><strong>{`DynamicView.render(${this.props.params.path}): ${componentPath}`}</strong></div>;
+		}
 		try {
 			const AreaComponent = React.lazy(() =>
 				import(`../../areas/${componentPath}` /* webpackChunkName: "[request]" */)
@@ -28,7 +32,7 @@ class DynamicView extends React.Component<RouteComponentProps> {
 				</ErrorBoundary>
 			);
 		} catch (e) {
-			return <div><strong>{`DynamicView.render(${this.props.params.path}: ${componentPath}`}</strong></div>;
+			return <div><strong>{`DynamicView.render(${this.props.params.path}): ${componentPath}`}</strong></div>;
 		}
 	}
 
