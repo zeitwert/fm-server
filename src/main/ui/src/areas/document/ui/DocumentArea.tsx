@@ -5,8 +5,12 @@ import { Route, Routes } from "react-router-dom";
 import DocumentPage from "./DocumentPage";
 
 export default class DocumentArea extends React.Component {
-	render() {
+
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.DOCUMENT);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route
@@ -26,4 +30,5 @@ export default class DocumentArea extends React.Component {
 			</Routes>
 		);
 	}
+
 }

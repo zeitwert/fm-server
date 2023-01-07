@@ -13,8 +13,11 @@ const accountStore = AccountStoreModel.create({});
 @observer
 class AccountArea extends React.Component {
 
-	render() {
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.ACCOUNT);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route

@@ -18,8 +18,11 @@ export default class PortfolioArea extends React.Component {
 		return this.props as any as AppCtx;
 	}
 
-	render() {
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.PORTFOLIO);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route

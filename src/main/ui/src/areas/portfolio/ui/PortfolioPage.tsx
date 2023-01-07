@@ -63,6 +63,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.portfolioStore.load(this.props.params.portfolioId!);
+		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -79,7 +80,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		} else if (!portfolio) {
 			return <NotFound entityType={this.entityType} id={this.props.params.portfolioId!} />;
 		}
-		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
 
 		const isFullWidth = [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const isActive = !portfolio.meta?.closedAt;

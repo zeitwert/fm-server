@@ -5,8 +5,12 @@ import { Route, Routes } from "react-router-dom";
 import TaskPage from "./TaskPage";
 
 export default class TaskArea extends React.Component {
-	render() {
+
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.TASK);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route
@@ -24,4 +28,5 @@ export default class TaskArea extends React.Component {
 			</Routes>
 		);
 	}
+
 }

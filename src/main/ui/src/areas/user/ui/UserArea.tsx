@@ -14,8 +14,11 @@ const userStore = UserStoreModel.create({});
 @observer
 class UserArea extends React.Component {
 
-	render() {
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.USER);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route

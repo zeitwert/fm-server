@@ -56,6 +56,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.tenantStore.load(this.props.params.tenantId!);
+		session.setHelpContext(`${EntityType.TENANT}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -72,7 +73,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 		} else if (!tenant) {
 			return <NotFound entityType={this.entityType} id={this.props.params.tenantId!} />;
 		}
-		session.setHelpContext(`${EntityType.TENANT}-${this.activeLeftTabId}`);
 
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !tenant.meta?.closedAt;

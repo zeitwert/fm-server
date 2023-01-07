@@ -14,8 +14,11 @@ const tenantStore = TenantStoreModel.create({});
 @observer
 class TenantArea extends React.Component {
 
-	render() {
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.TENANT);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route

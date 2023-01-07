@@ -49,6 +49,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		await this.leadStore.load(this.props.params.leadId!);
 		await this.leadStore.loadTransitions(this.leadStore.lead!);
+		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -65,7 +66,6 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		} else if (!lead) {
 			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
-		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);
 
 		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
 

@@ -5,8 +5,12 @@ import { Route, Routes } from "react-router-dom";
 import ContactPage from "./ContactPage";
 
 export default class ContactArea extends React.Component {
-	render() {
+
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.CONTACT);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route
@@ -26,4 +30,5 @@ export default class ContactArea extends React.Component {
 			</Routes>
 		);
 	}
+
 }

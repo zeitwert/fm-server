@@ -40,6 +40,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		await this.taskStore.load(this.props.params.taskId!);
 		await this.taskStore.loadTransitions(this.taskStore.task!);
+		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -56,7 +57,6 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		} else if (!task) {
 			return <NotFound entityType={this.entityType} id={this.props.params.taskId!} />;
 		}
-		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
 
 		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
 

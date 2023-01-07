@@ -36,6 +36,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.documentStore.load(this.props.params.documentId!);
+		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -51,7 +52,6 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 		} else if (!document) {
 			return <NotFound entityType={this.entityType} id={this.props.params.documentId!} />;
 		}
-		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
 
 		const isActive = !document.meta?.closedAt;
 		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);

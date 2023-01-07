@@ -29,6 +29,10 @@ class HomePage extends React.Component<RouteComponentProps> {
 		makeObservable(this);
 	}
 
+	componentDidMount(): void {
+		session.setHelpContext("dashboard");
+	}
+
 	componentDidUpdate(prevProps: RouteComponentProps) {
 		// close preview on route change
 		if (this.props.location !== prevProps.location) {
@@ -38,7 +42,6 @@ class HomePage extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
-		session.setHelpContext("dashboard");
 		return (
 			<>
 				<Grid className="fa-height-100" isVertical={false}>

@@ -55,6 +55,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.contactStore.load(this.props.params.contactId!);
+		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -70,7 +71,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 		} else if (!contact) {
 			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
 		}
-		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
 
 		const isActive = !contact.meta?.closedAt;
 		const allowEdit = ([LEFT_TABS.DETAILS, LEFT_TABS.CHANNELS, LEFT_TABS.ADDRESSES].indexOf(this.activeLeftTabId) >= 0);

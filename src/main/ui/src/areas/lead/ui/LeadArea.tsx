@@ -5,8 +5,12 @@ import { Route, Routes } from "react-router-dom";
 import LeadPage from "./LeadPage";
 
 export default class LeadArea extends React.Component {
-	render() {
+
+	componentDidMount(): void {
 		session.setHelpContext(EntityType.LEAD);
+	}
+
+	render() {
 		return (
 			<Routes>
 				<Route
@@ -26,4 +30,5 @@ export default class LeadArea extends React.Component {
 			</Routes>
 		);
 	}
+
 }

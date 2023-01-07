@@ -53,6 +53,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.userStore.load(this.props.params.userId!);
+		session.setHelpContext(`${EntityType.USER}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -69,7 +70,6 @@ class UserPage extends React.Component<RouteComponentProps> {
 		} else if (!user) {
 			return <NotFound entityType={this.entityType} id={this.props.params.userId!} />;
 		}
-		session.setHelpContext(`${EntityType.USER}-${this.activeLeftTabId}`);
 
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !user.meta?.closedAt;

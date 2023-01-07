@@ -52,6 +52,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.accountStore.load(this.props.params.accountId!);
+		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
@@ -68,7 +69,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		} else if (!account) {
 			return <NotFound entityType={this.entityType} id={this.props.params.accountId!} />;
 		}
-		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
 
 		const allowEditStaticData = session.isAdmin || session.hasSuperUserRole;
 		const isActive = !account.meta?.closedAt;
