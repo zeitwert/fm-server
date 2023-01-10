@@ -48,8 +48,8 @@ class AccountArea extends React.Component {
 
 export default withRouter(AccountArea);
 
-const initAccount = (user: Account) => {
+const initAccount = (account: Account) => {
 	if (!session.isKernelTenant) {
-		user.setField("tenant", session.sessionInfo?.tenant);
+		account.setField("tenant", session.sessionInfo?.tenant);
 	}
 }

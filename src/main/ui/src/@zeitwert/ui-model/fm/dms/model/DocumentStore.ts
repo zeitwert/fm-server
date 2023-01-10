@@ -25,7 +25,7 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 	.actions((self) => ({
 		setItem(snapshot: DocumentSnapshot) {
 			transaction(() => {
-				self.document = cast({ id: snapshot.id } as DocumentSnapshot);
+				self.document = undefined;
 				self.document = cast(snapshot);
 			});
 		}

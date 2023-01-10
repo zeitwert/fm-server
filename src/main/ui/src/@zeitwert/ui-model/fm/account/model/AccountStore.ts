@@ -40,7 +40,7 @@ const MstAccountStoreModel = ObjStoreModel
 	.actions((self) => ({
 		setItem(snapshot: AccountSnapshot) {
 			transaction(() => {
-				self.account = cast({ id: snapshot.id } as AccountSnapshot);
+				self.account = undefined;
 				self.account = cast(snapshot);
 			});
 		}

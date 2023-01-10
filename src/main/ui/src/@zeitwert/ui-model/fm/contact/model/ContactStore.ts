@@ -27,7 +27,7 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 	.actions((self) => ({
 		setItem(snapshot: ContactSnapshot) {
 			transaction(() => {
-				self.contact = cast({ id: snapshot.id } as ContactSnapshot);
+				self.contact = undefined;
 				self.contact = cast(snapshot);
 			});
 		}

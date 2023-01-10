@@ -36,7 +36,7 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 	.actions((self) => ({
 		setItem(snapshot: LeadSnapshot) {
 			transaction(() => {
-				self.lead = cast({ id: snapshot.id } as LeadSnapshot);
+				self.lead = undefined;
 				self.lead = cast(snapshot);
 			});
 		}

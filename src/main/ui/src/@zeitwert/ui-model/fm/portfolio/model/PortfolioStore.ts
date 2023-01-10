@@ -34,7 +34,7 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	.actions((self) => ({
 		setItem(snapshot: PortfolioSnapshot) {
 			transaction(() => {
-				self.portfolio = cast({ id: snapshot.id } as PortfolioSnapshot);
+				self.portfolio = undefined;
 				self.portfolio = cast(snapshot);
 			});
 		}

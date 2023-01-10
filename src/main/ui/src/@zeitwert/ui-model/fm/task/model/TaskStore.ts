@@ -22,7 +22,7 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 	.actions((self) => ({
 		setItem(snapshot: TaskSnapshot) {
 			transaction(() => {
-				self.task = cast({ id: snapshot.id } as TaskSnapshot);
+				self.task = undefined;
 				self.task = cast(snapshot);
 			});
 		}

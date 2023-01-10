@@ -38,7 +38,7 @@ const MstUserStoreModel = ObjStoreModel
 	.actions((self) => ({
 		setItem(snapshot: UserSnapshot) {
 			transaction(() => {
-				self.user = cast({ id: snapshot.id } as UserSnapshot);
+				self.user = undefined;
 				self.user = cast(snapshot);
 			});
 		}
