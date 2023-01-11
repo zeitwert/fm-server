@@ -5,7 +5,7 @@ import { Query, Source } from "mstform";
 
 const ENUM_BASE_URL = Config.getEnumUrl("##", "##").replace("/##/##", "");
 
-export const EnumeratedContainer = types.model(
+const EnumeratedContainer = types.model(
 	"EnumeratedContainer",
 	{
 		entryMap: types.map(types.frozen<Enumerated>()),

@@ -1,17 +1,16 @@
 
 import { DateField, EnumeratedField, IdField, IntField, NumberField, TextField } from "@zeitwert/ui-forms";
 import { API, BuildingModelType, Config, Enumerated } from "@zeitwert/ui-model";
+import { isAlive } from "mobx-state-tree";
 import { FormDefinition, Query, RepeatingForm } from "mstform";
 import BuildingElementFormDef from "./BuildingElementFormDef";
 
 const loadBuildingSubTypes = async (q?: Query): Promise<Enumerated[]> => {
-	if (q?.buildingType?.id) {
-		const subTypesResponse = await API.get(Config.getEnumUrl("building", "codeBuildingSubType/" + q.buildingType.id));
-		if (subTypesResponse) {
-			return subTypesResponse.data;
-		}
+	if (!q?.buildingTypeId) {
+		return [];
 	}
-	return [];
+	const subTypesResponse = await API.get(Config.getEnumUrl("building", "codeBuildingSubType/" + q.buildingTypeId));
+	return subTypesResponse.data ?? [];
 };
 
 const BuildingFormDef: FormDefinition<BuildingModelType> = {
@@ -54,7 +53,9 @@ const BuildingFormDef: FormDefinition<BuildingModelType> = {
 	buildingSubType: new EnumeratedField({
 		source: loadBuildingSubTypes,
 		dependentQuery: (accessor) => {
-			return { buildingType: accessor.node.buildingType };
+			return isAlive(accessor.node)
+				? { buildingTypeId: accessor.node.buildingType.id }
+				: [];
 		}
 	}),
 	//

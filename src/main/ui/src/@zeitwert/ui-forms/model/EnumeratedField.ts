@@ -17,17 +17,17 @@ export function enumeratedConverter(options?: EnumeratedConverterOptions) {
 			return accessor.references.getById(raw);
 		},
 		render(value) { // toString() to support numeric ids (f.ex. User)
-			return value ? value.id.toString() : "";
+			return value?.id.toString() ?? this.emptyRaw;
 		},
 	});
 }
 
-export interface EnumeratedFieldOptions extends FieldOptions<string | undefined, Enumerated | undefined, any, any>, EnumeratedConverterOptions {
+export interface EnumeratedFieldOptions extends FieldOptions<string, Enumerated | undefined, any, any>, EnumeratedConverterOptions {
 	source: EnumSource;
 	dependentQuery?: AccessorDependentQuery<any>; // Form will do [field].references.autoLoadReaction() in form constructor
 }
 
-export class EnumeratedField extends Field<string | undefined, Enumerated | undefined> {
+export class EnumeratedField extends Field<string, Enumerated | undefined> {
 	constructor(options: EnumeratedFieldOptions) {
 		const enumOptions = Object.assign(
 			{},
