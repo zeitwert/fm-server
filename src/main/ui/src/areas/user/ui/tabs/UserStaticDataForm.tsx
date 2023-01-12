@@ -151,7 +151,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 											label="Hinzufügen:"
 											value={undefined}
 											values={this.availableTenants}
-											onChange={(e) => { this.addTenant(e.target.value?.toString()) }}
+											onChange={(e) => { this.addTenant(e!.id) }}
 										/>
 									</FieldRow>
 								</FieldGroup>
