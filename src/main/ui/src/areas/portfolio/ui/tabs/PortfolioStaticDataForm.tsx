@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -112,6 +112,13 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	render() {
 		const isInTrx = this.props.store.isInTrx;
 		const portfolio = this.props.store.item! as Portfolio;
+		const account: Enumerated | undefined = portfolio.account
+			? {
+				id: portfolio.account.id!,
+				name: portfolio.account.name!,
+				itemType: portfolio.account.meta?.itemType
+			}
+			: undefined;
 		return (
 			<SldsForm formModel={PortfolioForm} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
@@ -126,9 +133,9 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 							<FieldRow>
 								<Select
 									label="Gemeinde"
-									value={portfolio.account?.id}
-									values={[{ id: portfolio.account!.id!, name: portfolio.account!.name!, itemType: portfolio.account!.meta?.itemType }]}
-									onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
+									value={asEnumerated(portfolio.account)}
+									values={account ? [account] : []}
+									onChange={(e) => { }}
 									readOnly={isInTrx}
 									disabled={true}
 								/>
@@ -252,7 +259,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 											label="Kunde / Portfolio / Immobilie:"
 											value={undefined}
 											values={this.availableObjects}
-											onChange={(e) => { this.addIncludeObj(this.allObjects, e.target.value?.toString()) }}
+											onChange={(e) => { e?.id && this.addIncludeObj(this.allObjects, e.id) }}
 										/>
 									</FieldRow>
 								</FieldGroup>
@@ -266,7 +273,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 											label="Kunde / Portfolio / Immobilie:"
 											value={undefined}
 											values={this.availableObjects}
-											onChange={(e) => { this.addExcludeObj(this.allObjects, e.target.value?.toString()) }}
+											onChange={(e) => { e?.id && this.addExcludeObj(this.allObjects, e.id) }}
 										/>
 									</FieldRow>
 								</FieldGroup>

@@ -82,7 +82,7 @@ const MstBuildingModel = ObjModel.named("Building")
 			superSetField("partCatalog", catalog);
 			self.elements.clear();
 			if (!!catalog) {
-				return self.calcOnServer();
+				await self.calcOnServer();
 			}
 		}
 		async function setField(field: string, value: any) {

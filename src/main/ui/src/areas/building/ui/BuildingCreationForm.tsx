@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { Building, BuildingModel, BuildingModelType, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
+import { asEnumerated, Building, BuildingModel, BuildingModelType, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -65,9 +65,9 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 									<Select
 										label="Kunde"
 										required={true}
-										value={building.account?.id}
+										value={asEnumerated(building.account)}
 										values={this.accounts}
-										onChange={(e) => this.props.store.item!.setAccount(e.target.value?.toString())}
+										onChange={(e) => this.props.store.item!.setAccount(e!.id)}
 										disabled={!!building.account?.id}
 									/>
 								</FieldRow>

@@ -1,10 +1,19 @@
 
-import { Optional } from "@zeitwert/ui-model";
+import { Optional, requireThis } from "@zeitwert/ui-model";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 
 export interface CodeItemType {
 	id: string;
 	name: string;
+}
+
+export function isEnumerated(object: any): object is Enumerated {
+	return object === undefined || ("id" in object && "name" in object);
+}
+
+export function asEnumerated(object: any): Enumerated | undefined {
+	requireThis(isEnumerated(object), "object is Enumerated");
+	return !!object ? { id: object.id.toString(), name: object.name } : undefined;
 }
 
 const MstEnumeratedModel = types.model(

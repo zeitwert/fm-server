@@ -184,7 +184,7 @@ const MstAggregateStoreModel = types
 			self.rollbackTrx();
 			return self.item!;
 		},
-		calcOnServer() {
+		async calcOnServer() {
 			requireThis(!self.isNew, "not new");
 			requireThis(self.isInTrx, "in transaction");
 			self.hasServerTrx = true;
@@ -214,7 +214,7 @@ const MstAggregateStoreModel = types
 				}
 			})();
 		},
-		store() {
+		async store() {
 			requireThis(self.isInTrx, "in transaction");
 			return flow<Aggregate, any[]>(function* (): any {
 				try {

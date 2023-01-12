@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, session } from "@zeitwert/ui-model";
+import { asEnumerated, Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -59,9 +59,9 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 									<Select
 										label="Kunde"
 										required={true}
-										value={portfolio.account?.id}
+										value={asEnumerated(portfolio.account)}
 										values={this.accounts}
-										onChange={(e) => { portfolio.setAccount(e.target.value?.toString()) }}
+										onChange={(e) => { portfolio.setAccount(e!.id) }}
 										disabled={!!portfolio.account?.id}
 									/>
 								</FieldRow>

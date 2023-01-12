@@ -1,33 +1,41 @@
 
 import { Enumerated } from "@zeitwert/ui-model";
-import { AccessorDependentQuery, converters, Field, FieldOptions, StringConverter } from "mstform";
+import { toJS } from "mobx";
+import { AccessorDependentQuery, Controlled, Converter, Field, FieldOptions } from "mstform";
 import { enumeratedSource, EnumSource } from "./EnumeratedSource";
 
+
+type MaybeEnumerated = Enumerated | undefined;
 export interface EnumeratedConverterOptions {
 }
 
-export function enumeratedConverter(options?: EnumeratedConverterOptions) {
-	return new StringConverter<Enumerated | undefined>({
-		emptyRaw: "",
+const enumerated: Controlled = (accessor) => {
+	return {
+		value: accessor.raw?.id,
+		onChange: (e: any) => accessor.setRaw(e.target.value ? accessor.references.getById(e.target.value) : undefined),
+	};
+};
+
+export function enumeratedConverter(options?: EnumeratedConverterOptions): Converter<MaybeEnumerated, MaybeEnumerated> {
+	return new Converter<MaybeEnumerated, MaybeEnumerated>({
+		emptyRaw: undefined,
 		emptyValue: undefined,
+		render(value) {
+			return toJS(value);
+		},
 		convert(raw, { accessor }) {
-			if (raw === this.emptyRaw) {
-				return this.emptyValue;
-			}
-			return accessor.references.getById(raw);
+			return raw;
 		},
-		render(value) { // toString() to support numeric ids (f.ex. User)
-			return value?.id.toString() ?? this.emptyRaw;
-		},
+		defaultControlled: enumerated
 	});
 }
 
-export interface EnumeratedFieldOptions extends FieldOptions<string, Enumerated | undefined, any, any>, EnumeratedConverterOptions {
+export interface EnumeratedFieldOptions extends FieldOptions<MaybeEnumerated, MaybeEnumerated, any, any>, EnumeratedConverterOptions {
 	source: EnumSource;
 	dependentQuery?: AccessorDependentQuery<any>; // Form will do [field].references.autoLoadReaction() in form constructor
 }
 
-export class EnumeratedField extends Field<string, Enumerated | undefined> {
+export class EnumeratedField extends Field<MaybeEnumerated, MaybeEnumerated> {
 	constructor(options: EnumeratedFieldOptions) {
 		const enumOptions = Object.assign(
 			{},
@@ -39,6 +47,6 @@ export class EnumeratedField extends Field<string, Enumerated | undefined> {
 				}
 			}
 		);
-		super(converters.maybe(enumeratedConverter), enumOptions);
+		super(enumeratedConverter, enumOptions);
 	}
 }

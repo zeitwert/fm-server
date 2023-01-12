@@ -70,10 +70,10 @@ const MstAggregateModel = types
 		}
 	}))
 	.actions((self) => ({
-		calcOnServer() {
+		async calcOnServer() {
 			self.rootStore.calcOnServer();
 		},
-		execOperation(operations: string[]) {
+		async execOperation(operations: string[]) {
 			self.rootStore.execOperation(operations);
 		}
 	}))

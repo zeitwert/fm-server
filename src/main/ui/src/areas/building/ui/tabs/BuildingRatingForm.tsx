@@ -1,9 +1,9 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { AccessorContext, FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { BuildingElement, BuildingModel, BuildingModelType, BuildingStore, requireThis, session } from "@zeitwert/ui-model";
+import { BuildingElement, BuildingModel, BuildingModelType, BuildingStore, Enumerated, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
-import { makeObservable, observable, toJS } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import { Form, FormDefinition, FormStateOptions, IFormAccessor } from "mstform";
 import React from "react";
@@ -171,10 +171,8 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 		building.setPartCatalog(undefined);
 	}
 
-	private onSetPartCatalog = async (e: React.ChangeEvent<HTMLSelectElement>, formAccessor: FormAccessor) => {
-		const building = this.props.store.item!;
-		const partCatalog = toJS(formAccessor.field("partCatalog").references.getById(e.target.value));
-		await building.setPartCatalog(partCatalog);
+	private onSetPartCatalog = async (partCatalog: Enumerated | undefined, formAccessor: FormAccessor) => {
+		await this.props.store.building!.setPartCatalog(partCatalog);
 	}
 
 	private onOpenElementRating = (elementId: string, formAccessor: FormAccessor) => {
