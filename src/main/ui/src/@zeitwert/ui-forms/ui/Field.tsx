@@ -78,8 +78,8 @@ export function getAccessor(props: any, formAccessor: IFormAccessor<any, any, an
 }
 
 export function getComponentProps(accessor: FieldAccessor<any, any> | undefined, props: any): ComponentProps {
-	let readOnly = props.readOnly === undefined ? accessor?.readOnly : props.readOnly;
-	let inputProps = accessor?.inputProps || {};
+	const readOnly = props.readOnly === undefined ? accessor?.readOnly : props.readOnly;
+	const inputProps = accessor?.inputProps ?? {};
 	inputProps.disabled = props.disabled === undefined ? inputProps.disabled : props.disabled;
 	inputProps.value = props.value === undefined ? inputProps.value : props.value;
 	inputProps.checked = props.checked === undefined ? inputProps.checked : props.checked;

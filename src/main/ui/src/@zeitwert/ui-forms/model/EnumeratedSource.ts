@@ -1,6 +1,6 @@
 
 import { API, Config, Enumerated } from "@zeitwert/ui-model";
-import { types } from "mobx-state-tree";
+import { SnapshotIn, types } from "mobx-state-tree";
 import { Query, Source } from "mstform";
 
 const ENUM_BASE_URL = Config.getEnumUrl("##", "##").replace("/##/##", "");
@@ -19,7 +19,7 @@ export function enumeratedSource(sourceOrUrl: EnumSource) {
 	if (typeof sourceOrUrl === "string") {
 		return new Source({
 			entryMap: container.entryMap,
-			load: async () => {
+			load: async (q: Query): Promise<SnapshotIn<Enumerated>[]> => {
 				const response = await API.get(ENUM_BASE_URL + "/" + sourceOrUrl);
 				return response.data;
 			},

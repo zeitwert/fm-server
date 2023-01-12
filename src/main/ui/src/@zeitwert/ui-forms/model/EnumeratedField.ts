@@ -9,10 +9,15 @@ type MaybeEnumerated = Enumerated | undefined;
 export interface EnumeratedConverterOptions {
 }
 
+// default Controlled, but only works with accessor, not with explicit values & onChange
+// so it is be overridden in Select, Combobox, etc.
 const enumerated: Controlled = (accessor) => {
 	return {
 		value: accessor.raw?.id,
-		onChange: (e: any) => accessor.setRaw(e.target.value ? accessor.references.getById(e.target.value) : undefined),
+		onChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
+			const enumerated = e.target.value ? accessor.references.getById(e.target.value) : undefined;
+			accessor.setRaw(enumerated);
+		},
 	};
 };
 

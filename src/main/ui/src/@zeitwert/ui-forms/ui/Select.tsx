@@ -28,7 +28,7 @@ export class Select extends React.Component<SelectProps> {
 		const accessor = getAccessor(this.props, this.context);
 		const { readOnly, inputProps } = getComponentProps(accessor, this.props);
 		const { value, values } = this.props;
-		const items = accessor ? accessor.references.values({}) : values || [];
+		const items: Enumerated[] = accessor ? accessor.references.values({})! : values || [];
 		const currentItem = accessor ? accessor.raw : value;
 		const fieldId = getFieldId(this.props);
 		requireThis(isEnumerated(value), "value must be an Enumerated (" + value + ")");

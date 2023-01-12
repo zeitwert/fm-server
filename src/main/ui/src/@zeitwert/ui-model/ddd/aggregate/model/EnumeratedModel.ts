@@ -11,9 +11,13 @@ export function isEnumerated(object: any): object is Enumerated {
 	return object === undefined || ("id" in object && "name" in object);
 }
 
+export function canBeEnumerated(object: any): boolean {
+	return object === undefined || ("id" in object && ("name" in object || "caption" in object));
+}
+
 export function asEnumerated(object: any): Enumerated | undefined {
-	requireThis(isEnumerated(object), "object is Enumerated");
-	return !!object ? { id: object.id.toString(), name: object.name } : undefined;
+	requireThis(canBeEnumerated(object), "object can be Enumerated");
+	return !!object ? { id: object.id.toString(), name: object.caption ?? object.name } : undefined;
 }
 
 const MstEnumeratedModel = types.model(

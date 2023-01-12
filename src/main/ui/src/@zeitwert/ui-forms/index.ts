@@ -8,6 +8,7 @@ export * from "./model/NumberField";
 export * from "./model/OptionField";
 export * from "./model/TextField";
 export * from "./ui/Checkbox";
+export * from "./ui/Combobox";
 export * from "./ui/Field";
 export * from "./ui/Input";
 export * from "./ui/RadioButtonGroup";

@@ -2,7 +2,7 @@
 import classNames from "classnames";
 import { makeObservable, observable, transaction } from "mobx";
 import { observer } from "mobx-react";
-import { IAnyModelType, Instance } from "mobx-state-tree";
+import { IAnyModelType, Instance, isAlive } from "mobx-state-tree";
 import { Form, FormDefinition, FormState, FormStateOptions, GroupDefinition, IFormAccessor } from "mstform";
 import React, { ReactNode } from "react";
 
@@ -48,6 +48,9 @@ export class SldsForm<M extends IAnyModelType> extends React.Component<SldsFormP
 	}
 
 	render() {
+		if (!isAlive(this.formState?.node)) {
+			return null;
+		}
 		const { className, children } = this.props;
 		const classes = classNames("slds-form", className);
 		return (
