@@ -62,7 +62,7 @@ public class SqlUtils {
 		return sortSpec.stream()
 			.map(s -> {
 				return table.field(StringUtils.toSnakeCase(s.getPath().toString()))
-				.sort(s.getDirection().equals(Direction.ASC) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
+				.sort(Direction.ASC.equals(s.getDirection()) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
 			}).collect(Collectors.toList());
 		//@formatter:on
 	}
@@ -82,7 +82,6 @@ public class SqlUtils {
 						.or("search_key @@ to_tsquery('english', ?)", searchToken)
 				)
 				.orderBy(DSL.field("(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc", BigDecimal.class, searchToken, searchToken, searchToken))
-				.limit(0, 20)
 			);
 		//@formatter:on
 	}
@@ -268,9 +267,9 @@ public class SqlUtils {
 	@SuppressWarnings("unchecked")
 	private static Condition filter(DSLContext dslContext, Table<?> table, Field<Integer> idField, FilterSpec filter) {
 		String fieldName = StringUtils.toSnakeCase(getPath(filter));
-		if (fieldName.equals("search_text")) {
+		if ("search_text".equals(fieldName)) {
 			return searchFilter(dslContext, idField, filter);
-		} else if (fieldName.equals("is_closed")) {
+		} else if ("is_closed".equals(fieldName)) {
 			return closedFilter(dslContext, table, filter);
 		}
 		Field<?> field = table.field(fieldName);

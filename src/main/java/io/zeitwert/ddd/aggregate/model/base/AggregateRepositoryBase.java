@@ -101,7 +101,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	protected final A newAggregate(UpdatableRecord<?> objRecord, UpdatableRecord<?> extnRecord) {
 		A aggregate = null;
 		try {
-			aggregate = (A) this.proxyFactory.create(proxyFactoryParamTypeList,
+			aggregate = (A) this.proxyFactory.create(this.proxyFactoryParamTypeList,
 					new Object[] { this, objRecord, extnRecord }, PropertyHandler.INSTANCE);
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {
@@ -286,7 +286,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		if (querySpec != null) {
 			for (FilterSpec filter : querySpec.getFilters()) {
 				if (filter.getOperator().equals(FilterOperator.OR) && filter.getExpression() != null) {
-					whereClause = SqlUtils.orFilter(dslContext, whereClause, table, idField, filter);
+					whereClause = SqlUtils.orFilter(this.dslContext, whereClause, table, idField, filter);
 				} else {
 					whereClause = SqlUtils.andFilter(this.dslContext, whereClause, table, idField, filter);
 				}
@@ -306,31 +306,14 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		Number offset = querySpec == null ? null : querySpec.getOffset();
 		Number limit = querySpec == null ? null : querySpec.getLimit();
 
-		//@formatter:off
-		return
-			(Result<V>)
-				this.dslContext
-						.select()
-						.from(table)
-						.where(whereClause)
-						.orderBy(sortFields)
-						.limit(offset, limit)
-						.fetch();
-		//@formatter:on
+		return (Result<V>) this.dslContext
+				.select()
+				.from(table)
+				.where(whereClause)
+				.orderBy(sortFields)
+				.limit(offset, limit)
+				.fetch();
 
 	}
-
-	// @EventListener
-	// public void handleAggregateStoredEvent(AggregateStoredEvent event) {
-	// Integer aggregateId = event.getAggregate().getId();
-	// List<A> itemList = this.aggregateCache.getItemList(aggregateId);
-	// for (A aggregate : itemList) {
-	// ((AggregateBase) aggregate).setStale();
-	// if (aggregate.getMeta().getRequestContext() ==
-	// event.getAggregate().getMeta().getRequestContext()) {
-	// this.discard(aggregate);
-	// }
-	// }
-	// }
 
 }
