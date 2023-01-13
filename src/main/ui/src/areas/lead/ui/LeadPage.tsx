@@ -1,20 +1,13 @@
 
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import {
-	CaseStage, EntityType, EntityTypeInfo, EntityTypes, Lead,
-	LeadStore,
-	LeadStoreModel,
-	session,
-	UserInfo
-} from "@zeitwert/ui-model";
+import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, Lead, LeadStore, LeadStoreModel, session, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import { StageSelector } from "lib/doc/ui/StageSelector";
-import FormItemEditor from "lib/item/ui/FormItemEditor";
-import ItemDetailView from "lib/item/ui/ItemDetailView";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemGrid";
+import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
+import { ItemGrid, ItemLeftPart } from "lib/item/ui/ItemPage";
 import ItemPath from "lib/item/ui/ItemPath";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -32,8 +25,8 @@ class LeadPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.LEAD];
 
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable leadStore: LeadStore = LeadStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
 
@@ -60,6 +53,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
+
 		const lead = this.leadStore.lead!;
 		if (!lead && session.isNetworkActive) {
 			return <></>;
@@ -84,44 +78,26 @@ class LeadPage extends React.Component<RouteComponentProps> {
 						handleStageTransition={this.handleStageTransition}
 						onTransitionToStage={this.onTransitionToStage}
 					/>
-					<ItemLeftPart hasItemPath>
-						<FormItemEditor
+					<ItemLeftPart>
+						<ItemEditor
 							store={this.leadStore}
 							entityType={EntityType.LEAD}
-							formId="lead/editLead"
-							itemAlias={EntityType.LEAD}
 							showEditButtons={allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
-							key={"lead-" + this.leadStore.lead?.id}
 						>
-							{(editor) => (
-								<Tabs
-									className="full-height"
-									selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
-									onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
-								>
-									<TabsPanel label="Details">
-										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
-									</TabsPanel>
-									{/* @ts-ignore */}
-									<TabsPanel label="Account" disabled={!lead.account}>
-										{lead.account && this.activeLeftTabId === LEFT_TABS.ACCOUNT && (
-											<div className="slds-m-horizontal_medium">
-												<ItemDetailView
-													formId="account/editAccount"
-													itemAlias="account"
-													itemSnapshot={lead.account}
-												/>
-											</div>
-										)}
-									</TabsPanel>
-								</Tabs>
-							)}
-						</FormItemEditor>
+							<Tabs
+								className="full-height"
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
+							>
+								<TabsPanel label="Details">
+									<div>Well, that is inconvenient</div>
+								</TabsPanel>
+							</Tabs>
+						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.leadStore} hasItemPath />
 				</ItemGrid>
 				{
 					this.doStageSelection && (
