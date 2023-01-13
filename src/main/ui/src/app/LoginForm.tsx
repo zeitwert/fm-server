@@ -31,11 +31,11 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	@observable password: string | undefined = undefined;
 
 	@observable userInfo: LoginUserInfo | undefined = undefined;
-	@observable.ref tenants: Enumerated[] = [];
+	@observable tenants: Enumerated[] = [];
 	@observable tenant: Enumerated | undefined = undefined;
 
 	@observable tenantInfo: LoginTenantInfo | undefined = undefined;
-	@observable.ref accounts: Enumerated[] = [];
+	@observable accounts: Enumerated[] = [];
 	@observable account: Enumerated | undefined = undefined;
 
 	@observable didAcceptDisclaimer: boolean = false;
@@ -199,6 +199,8 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 			this.tenants = this.userInfo?.tenants!;
 			if (this.tenants?.length === 1) {
 				this.setTenant(this.tenants[0].id);
+			} else {
+				this.tenants.sort((a, b) => a.name.localeCompare(b.name));
 			}
 		}
 	}
@@ -219,6 +221,8 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 			this.accounts = this.tenantInfo?.accounts!;
 			if (this.accounts?.length === 1) {
 				this.setAccount(this.accounts[0].id);
+			} else {
+				this.accounts.sort((a, b) => a.name.localeCompare(b.name));
 			}
 		}
 	}
