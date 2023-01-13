@@ -1,7 +1,5 @@
 import { Account, AccountStore, AccountStoreModel, EntityType, session } from "@zeitwert/ui-model";
-import { withRouter } from "app/frame/withRouter";
 import ItemsPage from "lib/item/ui/ItemsPage";
-import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import AccountCreationForm from "./AccountCreationForm";
@@ -9,9 +7,7 @@ import AccountPage from "./AccountPage";
 
 const accountStore = AccountStoreModel.create({});
 
-@inject("appStore", "session", "showAlert", "showToast")
-@observer
-class AccountArea extends React.Component {
+export default class AccountArea extends React.Component {
 
 	componentDidMount(): void {
 		session.setHelpContext(EntityType.ACCOUNT);
@@ -45,8 +41,6 @@ class AccountArea extends React.Component {
 	}
 
 }
-
-export default withRouter(AccountArea);
 
 const initAccount = (account: Account) => {
 	if (!session.isKernelTenant) {

@@ -20,6 +20,10 @@ const MstContactModel = ObjModel.named("Contact")
 		description: types.maybe(types.string),
 		birthDate: types.maybe(faTypes.date),
 		//
+		mobile: types.maybe(types.string),
+		email: types.maybe(types.string),
+		phone: types.maybe(types.string),
+		//
 		addresses: types.optional(types.array(AddressModel), []),
 	})
 	.views((self) => ({

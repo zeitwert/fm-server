@@ -63,6 +63,7 @@ public class ObjContactDto extends FMObjDtoBase<ObjContact> {
 	private String phone;
 	private String mobile;
 	private String email;
+
 	private List<ObjContactPartAddressDto> mailAddresses;
 	private List<ObjContactPartAddressDto> electronicAddresses;
 

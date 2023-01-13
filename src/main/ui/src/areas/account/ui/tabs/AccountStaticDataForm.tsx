@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, Static, TextArea } from "@zeitwert/ui-forms";
-import { Account, AccountModel, AccountModelType, AccountStore } from "@zeitwert/ui-model";
+import { AccountModel, AccountModelType, AccountStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { Form, FormStateOptions } from "mstform";
@@ -32,7 +32,7 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 	};
 
 	render() {
-		const account = this.props.store.item! as Account;
+		const account = this.props.store.account!;
 		return (
 			<SldsForm
 				formModel={AccountForm}
@@ -65,13 +65,61 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 					</Col>
 				</Grid>
 				<Grid className="slds-wrap slds-m-top_small">
-					<Col cols={1} totalCols={2}>
+					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Berechnungsparameter">
 								<FieldRow>
 									<Input label={`Inflationsrate in % (Mandant: ${account.tenantInfo?.inflationRate || 0}%)`} fieldName="inflationRate" size={3} />
 								</FieldRow>
 							</FieldGroup>
+						</Card>
+					</Col>
+				</Grid>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={1} totalCols={1}>
+						<Card heading="Kontakte" bodyClassName="slds-m-around_medium">
+							<div className="slds-card__body xslds-card__body_inner">
+								<table className="slds-table slds-table_cell-buffer slds-table_bordered">
+									<thead>
+										<tr className="slds-line-height_reset">
+											<th className="" scope="col" style={{ width: "50%" }}>
+												<div className="slds-truncate" title="Name">Name</div>
+											</th>
+											<th className="" scope="col" style={{ width: "20%" }}>
+												<div className="slds-truncate" title="Rolle">Rolle</div>
+											</th>
+											<th className="" scope="col" style={{ width: "15%" }}>
+												<div className="slds-truncate" title="Mobile">Mobile</div>
+											</th>
+											<th className="" scope="col" style={{ width: "15%" }}>
+												<div className="slds-truncate" title="Email">Email</div>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											account.contacts.map(contact => (
+												<tr className="slds-hint-parent" key={"include-" + contact.id}>
+													<th data-label="Name" scope="row">
+														<div className="slds-truncate">
+															<a href={`/contact/${contact.id}`} tabIndex={-1}>{contact.caption}</a>
+														</div>
+													</th>
+													<td data-label="Rolle">
+														<div className="slds-truncate">{contact.contactRole?.name}</div>
+													</td>
+													<td data-label="Mobile">
+														<div className="slds-truncate">{contact.mobile}</div>
+													</td>
+													<td data-label="Email">
+														<div className="slds-truncate">{contact.email}</div>
+													</td>
+												</tr>
+											))
+										}
+									</tbody>
+								</table>
+							</div>
 						</Card>
 					</Col>
 				</Grid>

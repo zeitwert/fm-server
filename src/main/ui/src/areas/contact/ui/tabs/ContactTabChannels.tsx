@@ -24,9 +24,6 @@ export default class ContactTabChannels extends React.Component<ContactTabChanne
 			<div className="slds-m-around_medium">
 				<FormWrapper
 					formId="contact/editChannels"
-					payload={{
-						contact: contact.formSnapshot
-					}}
 					displayMode={this.props.displayMode ? "enabled" : "readonly"}
 					onAfterChange={(path, value) => {
 						this.onChange(path, value);

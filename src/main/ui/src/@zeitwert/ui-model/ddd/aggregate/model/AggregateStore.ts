@@ -193,17 +193,16 @@ const MstAggregateStoreModel = types
 					session.startNetwork();
 					let repository: EntityTypeRepository;
 					const id = self.item!.id;
-					repository = yield self.api.storeAggregate(
-						Object.assign(
-							self.changes,
-							{
-								id: self.item!.id,
-								meta: {
-									operationList: ["calculationOnly"]
-								}
+					const changes = Object.assign(
+						self.changes,
+						{
+							id: self.item!.id,
+							meta: {
+								operationList: ["calculationOnly"]
 							}
-						)
+						}
 					);
+					repository = yield self.api.storeAggregate(changes);
 					self.updateStore(id, repository);
 					return self.item;
 				} catch (error: any) {
@@ -225,17 +224,16 @@ const MstAggregateStoreModel = types
 						repository = yield self.api.createAggregate(self.item!.apiSnapshot);
 						id = Object.keys(repository[self.typeName])[Object.keys(repository[self.typeName]).length - 1];
 					} else {
-						repository = yield self.api.storeAggregate(
-							Object.assign(
-								self.changes,
-								{
-									id: self.item!.id,
-									meta: {
-										clientVersion: self.item?.meta?.version
-									}
+						const changes = Object.assign(
+							self.changes,
+							{
+								id: self.item!.id,
+								meta: {
+									clientVersion: self.item?.meta?.version
 								}
-							)
+							}
 						);
+						repository = yield self.api.storeAggregate(changes);
 						id = self.item!.id;
 					}
 					transaction(() => {

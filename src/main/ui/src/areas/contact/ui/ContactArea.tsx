@@ -4,6 +4,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ContactPage from "./ContactPage";
 
+const contactStore = ContactStoreModel.create({});
+
 export default class ContactArea extends React.Component {
 
 	componentDidMount(): void {
@@ -18,11 +20,10 @@ export default class ContactArea extends React.Component {
 					element={
 						<ItemsPage
 							entityType={EntityType.CONTACT}
-							store={ContactStoreModel.create({})}
+							store={contactStore}
 							listDatamart="contact.contacts"
 							listTemplate="contact.contacts.all"
-							canCreate={session.isUser && !session.hasReadOnlyRole}
-							createFormId="contact/editContact"
+							canCreate={false}
 						/>
 					}
 				/>

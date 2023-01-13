@@ -11,16 +11,13 @@ values
 on conflict(id)
 do nothing;
 
+delete from code_contact_role;
 
 insert into code_contact_role(id, name)
 values
-('spouse', 'Ehegatte'),
-('child', 'Kind'),
-('parent', 'Eltern'),
-('sibling', 'Geschwister'),
-('extended_family', 'Erweiterte Familie'),
-('acquaintance', 'Bekannte'),
-('advisor', 'Berater')
+('councilor', 'Gemeinderat'),
+('caretaker', 'Hauswart'),
+('other', 'Anderes')
 on conflict(id)
 do nothing;
 

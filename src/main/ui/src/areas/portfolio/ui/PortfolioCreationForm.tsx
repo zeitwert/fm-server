@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { asEnumerated, Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, session } from "@zeitwert/ui-model";
+import { asEnumerated, Enumerated, PortfolioModel, PortfolioModelType, PortfolioStore, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -48,7 +48,7 @@ export default class PortfolioCreationForm extends React.Component<PortfolioCrea
 	}
 
 	render() {
-		const portfolio = this.props.store.item! as Portfolio;
+		const portfolio = this.props.store.portfolio!;
 		return (
 			<SldsForm formModel={PortfolioForm} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>

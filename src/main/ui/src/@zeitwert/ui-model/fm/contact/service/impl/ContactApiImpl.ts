@@ -7,7 +7,7 @@ import { ContactApi } from "../ContactApi";
 const MODULE = "contact";
 const PATH = "contacts";
 const TYPE = "contact";
-const INCLUDES = "include[contact]=account&include[account]=mainContact,contacts";
+const INCLUDES = "include[contact]=account";
 
 export class ContactApiImpl extends AggregateApiImpl<ContactSnapshot> implements ContactApi {
 	constructor() {

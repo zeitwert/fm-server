@@ -16,9 +16,6 @@ export default class ContactTabAddresses extends React.Component<ContactTabAddre
 			<div className="slds-m-around_medium">
 				<FormWrapper
 					formId="contact/editAddresses"
-					payload={{
-						contact: contact.formSnapshot
-					}}
 					displayMode={this.props.displayMode ? "enabled" : "readonly"}
 					onAfterChange={(path, value) => {
 						this.onChange(path, value);

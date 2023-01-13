@@ -64,7 +64,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 	}
 
 	render() {
-		const building = this.props.store.item!;
+		const building = this.props.store.building!;
 		const currentElementId = this.props.currentElementId;
 		const showAllElements = this.showAllElements;
 		return (
@@ -167,7 +167,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	private onEditPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		this.props.store.edit();
-		const building = this.props.store.item!;
+		const building = this.props.store.building!;
 		building.setPartCatalog(undefined);
 	}
 
@@ -177,7 +177,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	private onOpenElementRating = (elementId: string, formAccessor: FormAccessor) => {
 		requireThis(!!elementId, "element id not null");
-		const building = this.props.store.item!;
+		const building = this.props.store.building!;
 		building.elements.forEach((element, index) => {
 			if (element.id === elementId) {
 				this.props.onOpenElementRating(element, formAccessor.repeatingForm("elements").index(index));

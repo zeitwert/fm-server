@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, Portfolio, PortfolioModel, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, PortfolioModel, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -46,7 +46,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	@computed
 	get availableAccounts(): Enumerated[] {
-		const portfolio = this.props.store.item! as Portfolio;
+		const portfolio = this.props.store.portfolio!;
 		return this.allAccounts
 			.filter(acct => !portfolio.includes.find(incl => incl.id === acct.id))
 			.filter(acct => !portfolio.excludes.find(excl => excl.id === acct.id))
@@ -55,7 +55,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	@computed
 	get availablePortfolios(): Enumerated[] {
-		const portfolio = this.props.store.item! as Portfolio;
+		const portfolio = this.props.store.portfolio!;
 		return this.allPortfolios
 			.filter(pf => pf.id !== portfolio.id)
 			.filter(pf => !portfolio.includes.find(incl => incl.id === pf.id))
@@ -65,7 +65,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	@computed
 	get availableBuildings(): Enumerated[] {
-		const portfolio = this.props.store.item! as Portfolio;
+		const portfolio = this.props.store.portfolio!;
 		return this.allBuildings
 			.filter(bldg => !portfolio.includes.find(incl => incl.id === bldg.id))
 			.filter(bldg => !portfolio.excludes.find(excl => excl.id === bldg.id))
@@ -111,7 +111,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	render() {
 		const isInTrx = this.props.store.isInTrx;
-		const portfolio = this.props.store.item! as Portfolio;
+		const portfolio = this.props.store.portfolio!;
 		const account: Enumerated | undefined = portfolio.account
 			? {
 				id: portfolio.account.id!,

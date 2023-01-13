@@ -1,34 +1,27 @@
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import {
-	Contact,
-	ContactStore,
-	ContactStoreModel,
-	DATE_FORMAT,
-	EntityType,
-	EntityTypeInfo,
-	EntityTypes,
-	session,
-	UserInfo
-} from "@zeitwert/ui-model";
+import { Contact, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
-import FormItemEditor from "lib/item/ui/FormItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemGrid";
+import { ActivityPortlet } from "lib/activity/ActivityPortlet";
+import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
-import moment from "moment";
 import React from "react";
-import ContactTabAddresses from "./tabs/ContactTabAddresses";
-import ContactTabChannels from "./tabs/ContactTabChannels";
+import ContactStaticDataForm from "./tabs/ContactStaticDataForm";
 
 enum LEFT_TABS {
-	DETAILS = "static-data",
-	CHANNELS = "channels",
-	ADDRESSES = "addresses",
+	OVERVIEW = "static-data",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+enum RIGHT_TABS {
+	SUMMARY = "summary",
+	ACTIVITY = "activity",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
@@ -36,13 +29,9 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.CONTACT];
 
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
-	@observable contactStore: ContactStore = ContactStoreModel.create({});
-
-	@observable updateCount = 0;
-	@observable doEditContact = false;
-	@observable isChannelsModalOpen = false;
-	@observable isAddressesModalOpen = false;
+	@observable contactStore = ContactStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -65,6 +54,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
+
 		const contact = this.contactStore.contact!;
 		if (!contact && session.isNetworkActive) {
 			return <></>;
@@ -73,7 +63,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isActive = !contact.meta?.closedAt;
-		const allowEdit = ([LEFT_TABS.DETAILS, LEFT_TABS.CHANNELS, LEFT_TABS.ADDRESSES].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = ([LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -84,64 +74,46 @@ class ContactPage extends React.Component<RouteComponentProps> {
 				/>
 				<ItemGrid>
 					<ItemLeftPart>
-						<FormItemEditor
+						<ItemEditor
 							store={this.contactStore}
-							entityType={EntityType.DOCUMENT}
-							formId="contact/editContact"
-							itemAlias={EntityType.CONTACT}
-							control={{
-								birthDateWithAge: contact.age
-									? contact.age + " years old, " + moment(contact.birthDate).format(DATE_FORMAT)
-									: ""
-							}}
+							entityType={EntityType.CONTACT}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
-							key={"contact-" + this.contactStore.contact?.id}
 						>
-							{(editor) => (
-								<Tabs
-									className="full-height"
-									selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
-									onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
-								>
-									<TabsPanel label="Details">
-										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
-									</TabsPanel>
-									<TabsPanel
-										label={
-											"Channels (" +
-											this.contactStore.contact?.interactionChannels.length +
-											")"
-										}
-									>
-										{this.activeLeftTabId === LEFT_TABS.CHANNELS && (
-											<ContactTabChannels
-												key={this.updateCount}
-												store={this.contactStore}
-												displayMode={this.isChannelsModalOpen}
-											/>
-										)}
-									</TabsPanel>
-									<TabsPanel
-										label={
-											"Addresses (" + this.contactStore.contact?.postalAddresses.length + ")"
-										}
-									>
-										{this.activeLeftTabId === LEFT_TABS.ADDRESSES && (
-											<ContactTabAddresses
-												key={this.updateCount}
-												store={this.contactStore}
-												displayMode={this.isAddressesModalOpen}
-											/>
-										)}
-									</TabsPanel>
-								</Tabs>
-							)}
-						</FormItemEditor>
+							<Tabs
+								className="full-height"
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
+							>
+								<TabsPanel label="Details">
+									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <ContactStaticDataForm store={this.contactStore} />}
+								</TabsPanel>
+							</Tabs>
+						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.contactStore} />
+					<ItemRightPart isFullWidth={false}>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={<span>Steckbrief</span>}>
+								{
+									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									<div>Summary</div>
+								}
+								{/*<ContactSummaryTab contact={contact} afterSave={this.reload} />*/}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									<ActivityPortlet {...Object.assign({}, this.props, { item: contact, onSave: () => null as unknown as Promise<any> })} />
+								}
+							</TabsPanel>
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 				{
 					session.isNetworkActive &&
@@ -154,6 +126,22 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	private getHeaderDetails(contact: Contact): HeaderDetail[] {
 		const contactOwner: UserInfo = contact.owner as UserInfo;
 		return [
+			{
+				label: "Account",
+				content: contact.account?.caption,
+				icon: <Icon category="standard" name="account" size="small" />,
+				link: "/account/" + contact.account?.id
+			},
+			{
+				label: "Email",
+				content: contact.email,
+				link: "mailto:" + contact.email
+			},
+			{
+				label: "Mobile",
+				content: contact.mobile,
+				link: "tel:" + contact.mobile
+			},
 			{
 				label: "Owner",
 				content: contactOwner.name,
@@ -168,18 +156,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 				),
 				link: "/user/" + contact.owner!.id
 			},
-			{
-				label: "Account",
-				content: contact.account?.caption,
-				icon: <Icon category="standard" name="account" size="small" />,
-				link: "/account/" + contact.account?.id
-			},
-			{ label: "Main Phone", content: contact.phone },
-			{
-				label: "Email",
-				content: contact.email,
-				link: "mailto:" + contact.email
-			}
 		];
 	}
 
@@ -192,27 +168,15 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 	private openEditor = () => {
 		this.contactStore.edit();
-		if (this.activeLeftTabId === LEFT_TABS.DETAILS) {
-			this.doEditContact = true;
-		} else if (this.activeLeftTabId === LEFT_TABS.CHANNELS) {
-			this.isChannelsModalOpen = true;
-		} else if (this.activeLeftTabId === LEFT_TABS.ADDRESSES) {
-			this.isAddressesModalOpen = true;
-		}
 	};
 
 	private cancelEditor = async () => {
 		this.contactStore.cancel();
-		this.doEditContact = false;
-		this.isChannelsModalOpen = false;
-		this.isAddressesModalOpen = false;
 	};
 
 	private closeEditor = async () => {
 		try {
 			const item = await this.contactStore.store();
-			this.isChannelsModalOpen = false;
-			this.isAddressesModalOpen = false;
 			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return item;
 		} catch (error: any) {

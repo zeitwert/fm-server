@@ -27,11 +27,11 @@ class ApplicationConfig {
 	private final AppMenuAction accountAction = AppMenuAction.builder().id("account").name("Kunden").navigation(this.DefaultNavigation).icon("").build();
 	private final ApplicationArea accountArea = ApplicationArea.builder().id("account").name("Kunden").icon("standard:account").path("account").component("account/ui/AccountArea").menu(this.EmptyMenu).menuAction(this.accountAction).build();
 
-	private final AppMenuAction buildingAction = AppMenuAction.builder().id("building").name("Immobilien").navigation(this.DefaultNavigation).icon("").build();
-	private final ApplicationArea buildingArea = ApplicationArea.builder().id("building").name("Immobilien").icon("custom:custom24").path("building").component("building/ui/BuildingArea").menu(this.EmptyMenu).menuAction(this.buildingAction).build();
-
 	private final AppMenuAction contactAction = AppMenuAction.builder().id("contact").name("Kontakte").navigation(this.DefaultNavigation).icon("").build();
 	private final ApplicationArea contactArea = ApplicationArea.builder().id("contact").name("Kontakte").icon("standard:contact").path("contact").component("contact/ui/ContactArea").menu(this.EmptyMenu).menuAction(this.contactAction).build();
+
+	private final AppMenuAction buildingAction = AppMenuAction.builder().id("building").name("Immobilien").navigation(this.DefaultNavigation).icon("").build();
+	private final ApplicationArea buildingArea = ApplicationArea.builder().id("building").name("Immobilien").icon("custom:custom24").path("building").component("building/ui/BuildingArea").menu(this.EmptyMenu).menuAction(this.buildingAction).build();
 
 	private final AppMenuAction documentAction = AppMenuAction.builder().id("document").name("Dokumente").navigation(this.DefaultNavigation).icon("").build();
 	private final ApplicationArea documentArea = ApplicationArea.builder().id("document").name("Dokumente").icon("standard:document").path("document").component("document/ui/DocumentArea").menu(this.EmptyMenu).menuAction(this.documentAction).build();
@@ -55,7 +55,7 @@ class ApplicationConfig {
 	private final ApplicationArea userArea = ApplicationArea.builder().id("user").name("Benutzer").icon("standard:user").path("user").component("user/ui/UserArea").menu(this.EmptyMenu).menuAction(this.userAction).build();
 
 	private final Application fmApp = Application.builder().id("fm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(this.homeArea, this.portfolioArea, this.buildingArea, this.accountArea)).defaultArea(this.homeArea.getId()).build();
+	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(this.homeArea, this.portfolioArea, this.buildingArea, this.accountArea, this.contactArea)).defaultArea(this.homeArea.getId()).build();
 
 	private final Application tenantAdminApp = Application.builder().id("tenantAdmin").name("ZEitWERT: admin").icon("config").description("Mandantenadministration").build();
 	private final ApplicationInfo tenantAdminAppMenu = ApplicationInfo.builder().id("adminMenu").name("ZEitWERT: admin").areas(List.of(this.tenantArea, this.accountArea, this.userArea)).defaultArea(this.userArea.getId()).build();

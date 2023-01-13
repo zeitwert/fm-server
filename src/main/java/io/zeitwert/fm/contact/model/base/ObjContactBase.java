@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
@@ -22,14 +21,12 @@ import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
 public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	private final UpdatableRecord<?> dbRecord;
 
-	protected final ReferenceProperty<ObjAccount> account;
 	protected final EnumProperty<CodeContactRole> contactRole;
 	protected final EnumProperty<CodeSalutation> salutation;
 	protected final EnumProperty<CodeTitle> title;
@@ -47,17 +44,16 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 			UpdatableRecord<?> contactRecord) {
 		super(repository, objRecord);
 		this.dbRecord = contactRecord;
-		this.account = this.addReferenceProperty(dbRecord, ObjContactFields.ACCOUNT_ID, ObjAccount.class);
-		this.contactRole = this.addEnumProperty(dbRecord, ObjContactFields.CONTACT_ROLE_ID, CodeContactRoleEnum.class);
-		this.salutation = this.addEnumProperty(dbRecord, ObjContactFields.SALUTATION_ID, CodeSalutationEnum.class);
-		this.title = this.addEnumProperty(dbRecord, ObjContactFields.TITLE_ID, CodeTitleEnum.class);
-		this.firstName = this.addSimpleProperty(dbRecord, ObjContactFields.FIRST_NAME);
-		this.lastName = this.addSimpleProperty(dbRecord, ObjContactFields.LAST_NAME);
-		this.birthDate = this.addSimpleProperty(dbRecord, ObjContactFields.BIRTH_DATE);
-		this.phone = this.addSimpleProperty(dbRecord, ObjContactFields.PHONE);
-		this.mobile = this.addSimpleProperty(dbRecord, ObjContactFields.MOBILE);
-		this.email = this.addSimpleProperty(dbRecord, ObjContactFields.EMAIL);
-		this.description = this.addSimpleProperty(dbRecord, ObjContactFields.DESCRIPTION);
+		this.contactRole = this.addEnumProperty(this.dbRecord, ObjContactFields.CONTACT_ROLE_ID, CodeContactRoleEnum.class);
+		this.salutation = this.addEnumProperty(this.dbRecord, ObjContactFields.SALUTATION_ID, CodeSalutationEnum.class);
+		this.title = this.addEnumProperty(this.dbRecord, ObjContactFields.TITLE_ID, CodeTitleEnum.class);
+		this.firstName = this.addSimpleProperty(this.dbRecord, ObjContactFields.FIRST_NAME);
+		this.lastName = this.addSimpleProperty(this.dbRecord, ObjContactFields.LAST_NAME);
+		this.birthDate = this.addSimpleProperty(this.dbRecord, ObjContactFields.BIRTH_DATE);
+		this.phone = this.addSimpleProperty(this.dbRecord, ObjContactFields.PHONE);
+		this.mobile = this.addSimpleProperty(this.dbRecord, ObjContactFields.MOBILE);
+		this.email = this.addSimpleProperty(this.dbRecord, ObjContactFields.EMAIL);
+		this.description = this.addSimpleProperty(this.dbRecord, ObjContactFields.DESCRIPTION);
 		this.addressList = this.addPartListProperty(this.getRepository().getAddressListType());
 	}
 

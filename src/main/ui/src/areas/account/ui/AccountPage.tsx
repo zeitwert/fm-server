@@ -1,12 +1,14 @@
 
-import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
+import ContactCreationForm from "areas/contact/ui/ContactCreationForm";
 import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
+import ItemModal from "lib/item/ui/ItemModal";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -100,18 +102,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label="Details">
 									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <AccountStaticDataForm store={this.accountStore} />}
 								</TabsPanel>
-								{
-									/*
-								<TabsPanel label={"Cases (" + this.accountStore.counters?.docCount + ")"}>
-									{this.activeLeftTabId === LEFT_TABS.CASES && (
-										<AccountTabOrders
-											account={this.accountStore.account!}
-											template="doc.docs.by-account"
-										/>
-									)}
-								</TabsPanel>
-									*/
-								}
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
@@ -137,17 +127,16 @@ class AccountPage extends React.Component<RouteComponentProps> {
 					</ItemRightPart>
 				</ItemGrid>
 				{
-					/*
 					this.contactStore.isInTrx &&
 					<ItemModal
-						entityType={EntityType.CONTACT}
-						formId="contact/editContact"
-						itemAlias={EntityType.CONTACT}
 						store={this.contactStore}
+						entityType={EntityType.CONTACT}
 						onClose={this.closeContactEditor}
 						onCancel={this.cancelContactEditor}
-					/>
-					*/
+					>
+						{() => <ContactCreationForm store={this.contactStore} />}
+					</ItemModal>
+
 				}
 				{
 					session.isNetworkActive &&
@@ -197,14 +186,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	private getHeaderActions() {
 		return (
 			<>
-				{
-					/*
-					<ButtonGroup variant="list">
-						<Button onClick={this.openContactEditor}>Add Contact</Button>
-					</ButtonGroup>
-					<ChangeOwnerButton accountStore={this.accountStore} />
-					*/
-				}
+				<ButtonGroup variant="list">
+					<Button onClick={this.openContactEditor}>Neuer Kontakt</Button>
+				</ButtonGroup>
 			</>
 		);
 	}
@@ -233,31 +217,30 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			);
 		}
 	};
-	/*
-		private openContactEditor = () => {
-			this.contactStore.create({
-				owner: this.ctx.session.sessionInfo!.user
-			});
-			this.contactStore.contact!.setAccount(this.accountStore.id!);
-		};
 
-		private cancelContactEditor = async () => {
-			await this.contactStore.cancel();
-		};
+	private openContactEditor = () => {
+		this.contactStore.create({
+			owner: this.ctx.session.sessionInfo!.user
+		});
+		this.contactStore.contact!.setAccount(this.accountStore.id!);
+	};
 
-		private closeContactEditor = async () => {
-			try {
-				await this.contactStore.store();
-				this.ctx.showToast("success", `New Contact ${this.contactStore.id} created`);
-				this.props.navigate("/contact/" + this.contactStore.id);
-			} catch (error: any) {
-				this.ctx.showAlert(
-					"error",
-					"Could not create new Contact: " + (error.detail ? error.detail : error.title ? error.title : error)
-				);
-			}
-		};
-	*/
+	private cancelContactEditor = async () => {
+		await this.contactStore.cancel();
+	};
+
+	private closeContactEditor = async () => {
+		try {
+			await this.contactStore.store();
+			this.ctx.showToast("success", `Neuet Kontakt ${this.contactStore.id} eröffnet`);
+			this.props.navigate("/contact/" + this.contactStore.id);
+		} catch (error: any) {
+			this.ctx.showAlert(
+				"error",
+				"Konnte Kontakt nicht eröffnen: " + (error.detail ?? error.title ?? error)
+			);
+		}
+	};
 
 	private reload = async () => {
 		this.accountStore.load(this.accountStore.id!);

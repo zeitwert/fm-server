@@ -12,9 +12,9 @@ const MstPortfolioModel = ObjModel.named("Portfolio")
 		name: types.maybe(types.string),
 		portfolioNr: types.maybe(types.string),
 		description: types.maybe(types.string),
-		includes: types.optional(types.array(EnumeratedModel), []),
-		excludes: types.optional(types.array(EnumeratedModel), []),
-		buildings: types.optional(types.array(EnumeratedModel), [])
+		includes: types.optional(types.array(types.frozen(EnumeratedModel)), []),
+		excludes: types.optional(types.array(types.frozen(EnumeratedModel)), []),
+		buildings: types.optional(types.array(types.frozen(EnumeratedModel)), [])
 	})
 	.views((self) => ({
 		get allowStore(): boolean {

@@ -22,7 +22,7 @@ export default class UserCreationForm extends React.Component<UserCreationFormPr
 
 	formStateOptions: FormStateOptions<UserModelType> = {
 		isDisabled: (accessor) => {
-			const user = this.props.store.item!;
+			const user = this.props.store.user!;
 			if (["tenant"].indexOf(accessor.fieldref) >= 0) {
 				return !session.isKernelTenant || !!accessor.value;
 			}
