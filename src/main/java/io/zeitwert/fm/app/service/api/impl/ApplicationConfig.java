@@ -55,7 +55,7 @@ class ApplicationConfig {
 	private final ApplicationArea userArea = ApplicationArea.builder().id("user").name("Benutzer").icon("standard:user").path("user").component("user/ui/UserArea").menu(this.EmptyMenu).menuAction(this.userAction).build();
 
 	private final Application fmApp = Application.builder().id("fm").name("zeitwert: fm").icon("advise").description("Strategische Unterhaltsplanung").build();
-	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(this.homeArea, this.portfolioArea, this.buildingArea, this.accountArea, this.contactArea)).defaultArea(this.homeArea.getId()).build();
+	private final ApplicationInfo fmAppMenu = ApplicationInfo.builder().id("fmMenu").name("ZEitWERT: fm").areas(List.of(this.homeArea, this.portfolioArea, this.buildingArea, this.taskArea, this.accountArea, this.contactArea)).defaultArea(this.homeArea.getId()).build();
 
 	private final Application tenantAdminApp = Application.builder().id("tenantAdmin").name("ZEitWERT: admin").icon("config").description("Mandantenadministration").build();
 	private final ApplicationInfo tenantAdminAppMenu = ApplicationInfo.builder().id("adminMenu").name("ZEitWERT: admin").areas(List.of(this.tenantArea, this.accountArea, this.userArea)).defaultArea(this.userArea.getId()).build();

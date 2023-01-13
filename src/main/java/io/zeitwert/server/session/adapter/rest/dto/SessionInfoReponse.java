@@ -13,8 +13,8 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
+import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 
 @Data()
@@ -23,7 +23,7 @@ public class SessionInfoReponse {
 
 	private ObjUserDto user;
 	private ObjTenantDto tenant;
-	private ObjAccountDto account;
+	private ObjAccountLoginDto account;
 
 	private String locale;
 	private String applicationId;
@@ -34,6 +34,7 @@ public class SessionInfoReponse {
 			return null;
 		}
 		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
+		ObjAccountLoginDtoAdapter accountDtoAdapter = ObjAccountLoginDtoAdapter.getInstance();
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		ObjUser user = requestCtx.getUser();
 		String defaultApp = null;
@@ -47,7 +48,7 @@ public class SessionInfoReponse {
 		return SessionInfoReponse.builder()
 				.user(userDtoAdapter.fromAggregate(requestCtx.getUser()))
 				.tenant(tenantDtoAdapter.fromAggregate(tenant))
-				.account(ObjAccountDtoAdapter.getInstance().fromAggregate(account))
+				.account(accountDtoAdapter.fromAggregate(account))
 				.locale(requestCtx.getLocale().getId())
 				.applicationId(defaultApp)
 				.availableApplications(List.of())
