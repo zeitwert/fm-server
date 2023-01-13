@@ -80,7 +80,7 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 			} catch (Exception ex) {
 				this.logger.error("request crashed: " + ex.getMessage(), ex);
 				ex.printStackTrace();
-				throw ex;
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 
 		} catch (Exception ex) {

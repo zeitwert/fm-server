@@ -4,7 +4,7 @@ import { API, Config } from "@zeitwert/ui-model";
 import { EMPTY_RESULT, ProjectionResult } from "@zeitwert/ui-model/fm/building/model/ProjectionResultDto";
 import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import React from "react";
 import TabProjectionChart from "./TabProjectionChart";
 import TabProjectionPrint from "./TabProjectionPrint";
@@ -19,11 +19,18 @@ enum ReportType {
 	CHART, TABLE, PRINT
 }
 
+@inject("showAlert")
 @observer
 export default class TabProjection extends React.Component<TabProjectionProps> {
 
 	@observable
 	isLoading: boolean = false;
+
+	@observable
+	hasLoadingError: boolean = false;
+
+	@observable
+	loadingError: string | undefined = undefined;
 
 	@observable
 	loadNr: number = 0;
@@ -54,6 +61,8 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 	render() {
 		if (this.isLoading) {
 			return <Spinner variant="brand" size="large" />;
+		} else if (this.hasLoadingError) {
+			this.ctx.showAlert("error", "Could not load projection data: " + this.loadingError);
 		}
 		return (
 			<div className="slds-vertical-tabs" style={{ height: "100%" }}>
@@ -105,10 +114,18 @@ export default class TabProjection extends React.Component<TabProjectionProps> {
 	}
 
 	private loadProjection = async (url: string) => {
-		this.isLoading = true;
-		this.projection = await (await API.get(Config.getRestUrl(this.props.itemType, url))).data;
-		this.loadNr++;
-		this.isLoading = false;
+		try {
+			this.isLoading = true;
+			this.hasLoadingError = false;
+			this.loadingError = undefined;
+			this.projection = await (await API.get(Config.getRestUrl(this.props.itemType, url))).data;
+		} catch (e: any) {
+			this.hasLoadingError = true;
+			this.loadingError = e.message ?? e.detail;
+		} finally {
+			this.loadNr++;
+			this.isLoading = false;
+		}
 	};
 
 }
