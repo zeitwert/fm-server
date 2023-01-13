@@ -129,7 +129,7 @@ export default class DocumentEditor extends React.Component<DocumentEditorProps>
 			const documentId = draggableId.substr("TODO-".length, draggableId.length);
 			const template = this.availableDocuments.find((doc) => doc.id === documentId);
 			if (template && documents.findIndex((doc) => doc.id === documentId) === -1) {
-				onAdd(DocumentModel.create(template.formSnapshot) as Document);
+				onAdd(DocumentModel.create(template/*.formSnapshot*/) as Document);
 			}
 		}
 	};

@@ -73,7 +73,7 @@ export default class FormItemEditor extends React.Component<FormItemEditorProps>
 						formId={formId}
 						formDefinition={formDefinition}
 						payload={{
-							[itemAlias!]: store.item?.formSnapshot,
+							[itemAlias!]: store.item/*?.formSnapshot*/,
 							control: Object.assign({}, this.control, {
 								enabled: store.isInTrx
 							})

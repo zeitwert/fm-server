@@ -1,7 +1,6 @@
 
 import { Config } from "@zeitwert/ui-model/app";
-import { toJS } from "mobx";
-import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { ContactModel } from "../../contact/model/ContactModel";
@@ -38,26 +37,6 @@ const MstAccountModel = ObjModel.named("Account")
 		get logoUrl(): string | undefined {
 			return Config.getRestUrl("account", "accounts/" + self.id + "/logo");
 		},
-	}))
-	.views((self) => ({
-		get mainContactSnapshot(): any {
-			return self.mainContact ? toJS(getSnapshot(self.mainContact)) : undefined;
-		},
-		get contactsSnapshot(): any[] {
-			return self.contacts
-				.slice()
-				.sort((c1) => (c1.id === self.mainContact?.id ? -1 : 1))
-				.map((c) => c.formSnapshot);
-		}
-	}))
-	.views((self) => ({
-		get formSnapshot(): AccountSnapshot & {
-			contactsInfo?: any[];
-		} {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				contactsInfo: self.contactsSnapshot,
-			});
-		}
 	}));
 
 type MstAccountType = typeof MstAccountModel;

@@ -82,9 +82,6 @@ const MstAggregateModel = types
 		get apiSnapshot(): AggregateSnapshot {
 			return toJS(getSnapshot(self));
 		},
-		get formSnapshot(): AggregateSnapshot {
-			return toJS(getSnapshot(self));
-		}
 	}));
 
 type MstAggregateType = typeof MstAggregateModel;

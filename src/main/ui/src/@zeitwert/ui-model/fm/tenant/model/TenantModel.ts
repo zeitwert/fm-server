@@ -1,7 +1,6 @@
 
 import { Config } from "@zeitwert/ui-model/app";
-import { toJS } from "mobx";
-import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
@@ -27,11 +26,6 @@ const MstTenantModel = ObjModel.named("Tenant")
 		get logoUrl(): string | undefined {
 			return Config.getRestUrl("dms", "documents/" + self.logo?.id + "/content");
 		},
-	}))
-	.views((self) => ({
-		get formSnapshot(): TenantSnapshot {
-			return toJS(getSnapshot(self));
-		}
 	}));
 
 type MstTenantType = typeof MstTenantModel;

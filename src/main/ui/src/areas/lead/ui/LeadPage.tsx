@@ -112,7 +112,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 												<ItemDetailView
 													formId="account/editAccount"
 													itemAlias="account"
-													itemSnapshot={lead.account.formSnapshot}
+													itemSnapshot={lead.account}
 												/>
 											</div>
 										)}

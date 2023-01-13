@@ -43,9 +43,6 @@ const MstPartModel = types
 		get apiSnapshot() {
 			return toJS(getSnapshot(self));
 		},
-		get formSnapshot() {
-			return toJS(getSnapshot(self));
-		}
 	}));
 
 type MstPartType = typeof MstPartModel;

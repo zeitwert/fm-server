@@ -1,14 +1,12 @@
 import { toJS } from "mobx";
 import { getSnapshot, IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
-import moment from "moment";
 import { DateFormat, faTypes, requireThis, UUID } from "../../../app/common";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
-import { Address, AddressModel, AddressPayload, AddressSnapshot } from "./AddressModel";
-import { Gender } from "./ContactEnums";
+import { Address, AddressModel, AddressPayload } from "./AddressModel";
 import { ContactStore } from "./ContactStore";
-import { LifeEvent, LifeEventModel, LifeEventPayload } from "./LifeEventModel";
+import { LifeEvent } from "./LifeEventModel";
 
 const MstContactModel = ObjModel.named("Contact")
 	.props({
@@ -21,26 +19,8 @@ const MstContactModel = ObjModel.named("Contact")
 		lastName: types.maybe(types.string),
 		description: types.maybe(types.string),
 		birthDate: types.maybe(faTypes.date),
-		lifeExpectancy: types.maybe(types.number),
-		deathDate: types.maybe(faTypes.date),
-		gender: types.maybe(types.frozen<Enumerated>()),
-		civilStatus: types.maybe(types.frozen<Enumerated>()),
-		nationality: types.maybe(types.frozen<Enumerated>()),
-		domicileCountry: types.maybe(types.frozen<Enumerated>()),
-		residenceCountry: types.maybe(types.frozen<Enumerated>()),
-		passportNumber: types.maybe(types.string),
-		socialSecurityNumber: types.maybe(types.string),
-		disabilityDegree: types.maybe(types.number),
-		occupation: types.maybe(types.string),
-		occupationalStatus: types.maybe(types.frozen<Enumerated>()),
-		workplace: types.maybe(types.string),
-		isEmployer: types.maybe(types.boolean),
-		phone: types.maybe(types.string),
-		mobile: types.maybe(types.string),
-		email: types.maybe(types.string),
 		//
 		addresses: types.optional(types.array(AddressModel), []),
-		lifeEvents: types.optional(types.array(LifeEventModel), [])
 	})
 	.views((self) => ({
 		get accountSnapshot(): any {
@@ -51,37 +31,14 @@ const MstContactModel = ObjModel.named("Contact")
 		get fullName() {
 			return self.firstName + " " + self.lastName;
 		},
-		get isFemale() {
-			return self.gender?.id === Gender.FEMALE;
-		},
 		get age() {
 			if (!self.birthDate) {
 				return 0;
 			}
 			return DateFormat.yearsDiff(new Date(self.birthDate), new Date());
 		},
-		get hasSomePhone() {
-			return self.phone || self.mobile;
-		},
 		get isMainContact() {
 			return self.account?.mainContact?.id === self.id;
-		}
-	}))
-	.views((self) => ({
-		get retirementAge() {
-			if (self.isFemale) {
-				return 64;
-			}
-			return 65;
-		},
-		get prematureDeathDate() {
-			if (self.lifeExpectancy) {
-				return moment(self.birthDate)
-					.year(moment().year())
-					.add(self.lifeExpectancy - self.age, "year")
-					.toDate();
-			}
-			return undefined;
 		}
 	}))
 	.views((self) => ({
@@ -89,16 +46,11 @@ const MstContactModel = ObjModel.named("Contact")
 			return self.addresses.find((item) => item.id === itemId);
 		},
 		get postalAddresses() {
-			const filterAddresses = self.addresses.filter((item) => item.isPostalAddress === true);
-			return filterAddresses.slice().map((item) => item.formSnapshot);
+			return self.addresses.filter((item) => item.isPostalAddress === true);
 		},
 		get interactionChannels() {
-			const filterAddresses = self.addresses.filter((item) => item.isPostalAddress === false);
-			return filterAddresses.slice().map((item) => item.formSnapshot);
+			return self.addresses.filter((item) => item.isPostalAddress === false);
 		},
-		getLifeEvents(itemId: string | undefined): LifeEvent | undefined {
-			return self.lifeEvents.find((item) => item.id === itemId);
-		}
 	}))
 	.actions((self) => {
 		const superSetField = self.setField;
@@ -165,56 +117,12 @@ const MstContactModel = ObjModel.named("Contact")
 			requireThis(false, "setItem() is implemented");
 		}
 	}))
-	.actions((self) => ({
-		addLifeEvent(initValues?: LifeEventPayload) {
-			const newLifeEvent = LifeEventModel.create(
-				Object.assign({}, initValues, {
-					id: "New:" + UUID(),
-					lifeEventTypeId: "anniversary",
-					lifeEventNotificationId: "all",
-					isDeterministic: false,
-					isOwn: true,
-					isGoal: false
-				})
-			);
-			self.lifeEvents.push(newLifeEvent);
-			return newLifeEvent;
-		},
-		removeLifeEvent(id: string) {
-			self.lifeEvents.splice(
-				self.lifeEvents.findIndex((le) => le.id === id),
-				1
-			);
-		},
-		setLifeEventBirthDateName() {
-			self.lifeEvents
-				.filter((le) => le.isDeterministic)
-				.filter((le) => le.name === "Birth Date")
-				.forEach((le) => {
-					le.name = self.firstName + "'s" + le.name;
-				});
-		}
-	}))
 	.views((self) => ({
 		get apiSnapshot() {
 			return Object.assign({}, toJS(getSnapshot(self)), {
 				addresses: self.addresses.map((a) => a.apiSnapshot),
-				lifeEvents: self.lifeEvents.map((le) => le.apiSnapshot)
 			});
 		},
-		get formSnapshot(): ContactSnapshot & {
-			postalAddresses?: AddressSnapshot[];
-			interactionChannels?: AddressSnapshot[];
-			age?: number;
-		} {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				postalAddresses: self.postalAddresses,
-				interactionChannels: self.interactionChannels,
-				age: self.age,
-				prematureDeathDate: self.prematureDeathDate,
-				isMainContact: self.isMainContact
-			});
-		}
 	}));
 
 type MstContactType = typeof MstContactModel;
