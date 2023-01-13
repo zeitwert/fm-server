@@ -4,6 +4,7 @@ package io.zeitwert.server.session.adapter.rest;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ import io.zeitwert.server.session.service.api.JwtProvider;
 @RequestMapping("/rest/session")
 public class SessionController {
 
-	private Logger logger = org.slf4j.LoggerFactory.getLogger(SessionController.class);
+	private Logger logger = LoggerFactory.getLogger(SessionController.class);
 
 	public final static String AUTH_HEADER_PREFIX = "Bearer ";
 

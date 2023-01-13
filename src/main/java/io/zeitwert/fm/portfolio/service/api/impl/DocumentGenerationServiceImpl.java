@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -31,7 +32,7 @@ import io.zeitwert.server.config.aspose.AsposeConfig;
 @Component("portfolioDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
-	private Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
+	private Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
 
 	private static final int CoverFotoWidth = 400;
 	private static final int CoverFotoHeight = 230;
