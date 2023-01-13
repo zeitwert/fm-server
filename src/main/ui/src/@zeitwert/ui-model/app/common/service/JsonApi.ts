@@ -90,6 +90,7 @@ const jsonApiDeserializer = new Deserializer({
 });
 
 export class JsonApiSerializer {
+
 	jsonApiSerializer: Serializer;
 
 	constructor(itemType: string, attributes: string[], relations: any) {
@@ -140,9 +141,11 @@ export class JsonApiSerializer {
 	}
 
 	public convertObjToJsonApiObj(obj: any): SimpleJsonApiObj {
-		const result = this.jsonApiSerializer.serialize(obj);
-		return result;
+		// jsonApiSerializer ignores undefined values, need to be null
+		const prepObj = convertUndefinedToNull(obj);
+		return this.jsonApiSerializer.serialize(prepObj);
 	}
+
 }
 
 export function convertUndefinedToNull(obj: any) {
