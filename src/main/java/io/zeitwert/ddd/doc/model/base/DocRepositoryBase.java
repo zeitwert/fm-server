@@ -14,8 +14,6 @@ import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends AggregateRepositoryBase<D, V>
@@ -63,13 +61,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	protected D doCreate(UpdatableRecord<?> extnRecord) {
 		return newAggregate(this.getDSLContext().newRecord(Tables.DOC), extnRecord);
-	}
-
-	// TODO get rid of
-	protected void doInitWorkflow(D doc, Integer docId, String caseDefId, String defaultInitCaseStageId) {
-		CodeCaseStage defaultCaseStage = this.getAppContext().getEnumeration(CodeCaseStageEnum.class)
-				.getItem(defaultInitCaseStageId);
-		((DocBase) doc).doInitWorkflow(caseDefId, defaultCaseStage);
 	}
 
 	protected D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {

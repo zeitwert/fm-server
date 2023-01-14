@@ -42,7 +42,7 @@ export default class ActivityPortletTimelineItem extends React.Component<Activit
 					/>
 				}
 				date={DateFormat.short(activity.date!)}
-				body={"Assigned to " + activity.assignee.caption}
+				body={"Assigned to " + activity.meta?.assignee?.name}
 				detail={
 					<>
 						<p className="slds-m-bottom_x-small">{activity.timelineDescription}</p>
@@ -69,7 +69,7 @@ export default class ActivityPortletTimelineItem extends React.Component<Activit
 				const task = this.item as Task;
 				return (
 					<p className="slds-m-bottom_x-small">
-						<strong>Priority:</strong> {task.taskPriority?.name}
+						<strong>Priority:</strong> {task.priority?.name}
 					</p>
 				);
 			default:

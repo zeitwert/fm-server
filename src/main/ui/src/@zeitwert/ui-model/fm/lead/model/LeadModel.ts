@@ -3,6 +3,7 @@ import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { UserInfo } from "../../../app/session";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { DocModel } from "../../../ddd/doc/model/DocModel";
+import { AccountModel } from "../../account/model/AccountModel";
 import { ContactModel, ContactSnapshot } from "../../contact/model/ContactModel";
 import { LeadStore } from "./LeadStore";
 
@@ -43,6 +44,7 @@ const MstLeadModel = DocModel.named("Lead")
 		subject: types.maybe(types.string),
 		description: types.maybe(types.string),
 		//
+		account: types.maybe(types.reference(AccountModel)),
 		contact: types.maybe(types.reference(ContactModel)),
 		//
 		salutation: types.maybe(types.frozen<Enumerated>()),

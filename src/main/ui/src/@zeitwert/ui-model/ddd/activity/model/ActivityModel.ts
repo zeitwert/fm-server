@@ -16,7 +16,7 @@ const MstActivityModel = DocModel.named("Activity")
 			return moment(self.date).diff(moment()) > 0;
 		},
 		get isPast() {
-			return !this.isUpcoming && (!self.isInWork || self.isBusinessProcess);
+			return !this.isUpcoming && (!self.meta?.isInWork || self.isBusinessProcess);
 		},
 		get isOverdue() {
 			return !this.isUpcoming && !this.isPast;
@@ -31,7 +31,7 @@ const MstActivityModel = DocModel.named("Activity")
 					self.type.type +
 					" process " +
 					(self.contact ? "for " + self.contact.name + " " : " ") +
-					(self.isInWork ? "is running " : "has been closed ") +
+					(self.meta?.isInWork ? "is running " : "has been closed ") +
 					days +
 					"."
 				);

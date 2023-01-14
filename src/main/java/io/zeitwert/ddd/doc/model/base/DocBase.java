@@ -48,7 +48,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	protected final SimpleProperty<String> caseDefId;
 	protected final EnumProperty<CodeCaseStage> caseStage;
 	protected final SimpleProperty<Boolean> isInWork;
-	protected final ReferenceProperty<ObjUser> assigneeId;
+	protected final ReferenceProperty<ObjUser> assignee;
 
 	private final PartListProperty<DocPartTransition> transitionList;
 
@@ -68,7 +68,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		this.caseDefId = this.addSimpleProperty(docDbRecord, DocFields.CASE_DEF_ID);
 		this.caseStage = this.addEnumProperty(docDbRecord, DocFields.CASE_STAGE_ID, CodeCaseStageEnum.class);
 		this.isInWork = this.addSimpleProperty(docDbRecord, DocFields.IS_IN_WORK);
-		this.assigneeId = this.addReferenceProperty(docDbRecord, DocFields.ASSIGNEE_ID, ObjUser.class);
+		this.assignee = this.addReferenceProperty(docDbRecord, DocFields.ASSIGNEE_ID, ObjUser.class);
 		this.transitionList = this.addPartListProperty(repository.getTransitionListType());
 	}
 
@@ -113,12 +113,10 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		}
 	}
 
-	void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
+	protected void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
 		this.caseDefId.setValue(caseDefId);
-		if (this.getCaseStage() != null) {
-			this.caseStage.setValue(this.getCaseStage());
-		} else {
-			this.caseStage.setValue(defaultInitCaseStage);
+		if (this.getCaseStage() == null) {
+			this.setCaseStage(defaultInitCaseStage);
 		}
 	}
 
@@ -168,9 +166,15 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
+	public boolean isInWork() {
+		return this.isInWork.getValue();
+	}
+
+	@Override
 	public void setCaseStage(CodeCaseStage caseStage) {
 		requireThis(caseStage != null && !caseStage.getIsAbstract(), "valid caseStage");
 		this.caseStage.setValue(caseStage);
+		this.isInWork.setValue(caseStage != null && caseStage.isInWork());
 	}
 
 	@Override
@@ -180,6 +184,10 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 			return (P) this.getRepository().getTransitionRepository().create(this, partListType);
 		}
 		return null;
+	}
+
+	protected void setCaption(String caption) {
+		this.caption.setValue(caption);
 	}
 
 }

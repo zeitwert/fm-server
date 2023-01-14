@@ -7,10 +7,16 @@ import org.jooq.Record;
 
 public interface DocRepository<D extends Doc, V extends Record> extends AggregateRepository<D, V> {
 
+	static Integer MIN_DOC_ID = 100000000; // doc_id_seq minvalue
+
 	DocPartTransitionRepository getTransitionRepository();
 
 	CodePartListType getTransitionListType();
 
 	// DocPartItemRepository getItemRepository();
+
+	static Boolean isDocId(Integer id) {
+		return id == null ? null : id >= MIN_DOC_ID;
+	}
 
 }

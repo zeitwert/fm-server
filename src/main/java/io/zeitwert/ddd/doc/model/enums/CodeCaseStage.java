@@ -33,6 +33,10 @@ public final class CodeCaseStage extends EnumeratedBase {
 		return this.caseDefId;
 	}
 
+	public boolean isInWork() {
+		return !"terminal".equals(this.caseStageTypeId);
+	}
+
 	public Integer getSeqNr() {
 		return this.seqNr;
 	}

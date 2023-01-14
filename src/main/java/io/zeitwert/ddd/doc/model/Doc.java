@@ -10,6 +10,8 @@ public interface Doc extends Aggregate {
 	@Override
 	DocMeta getMeta();
 
+	boolean isInWork();
+
 	CodeCaseStage getCaseStage();
 
 	void setCaseStage(CodeCaseStage caseStage);

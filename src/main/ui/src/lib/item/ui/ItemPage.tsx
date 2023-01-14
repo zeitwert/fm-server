@@ -70,5 +70,4 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 			</Col>
 		);
 	}
-
 }

@@ -12,6 +12,7 @@ import io.zeitwert.ddd.doc.model.DocMeta;
 import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,9 @@ import lombok.experimental.SuperBuilder;
 public class DocMetaDto extends AggregateMetaDto {
 
 	private EnumeratedDto caseStage;
+	private boolean isInWork;
+	private EnumeratedDto assignee;
+
 	private List<EnumeratedDto> caseStages; // TODO implement
 	private List<String> availableActions; // TODO implement
 	private List<DocPartTransitionDto> transitionList;
@@ -36,6 +40,8 @@ public class DocMetaDto extends AggregateMetaDto {
 		// @formatter:off
 		return builder
 			.caseStage(EnumeratedDto.fromEnum(doc.getCaseStage()))
+			.isInWork(doc.getCaseStage().isInWork())
+			.assignee(ObjUserDtoAdapter.getInstance().asEnumerated(doc.getAssignee()))
 			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
 			.build();
 		// @formatter:on

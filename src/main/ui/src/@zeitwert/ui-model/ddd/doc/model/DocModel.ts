@@ -1,10 +1,8 @@
 
-import { IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityType } from "../../../app/common";
-import { AccountModel } from "../../../fm/account/model/AccountModel";
-import { Document, DocumentModel } from "../../../fm/dms/model/DocumentModel";
+import { Document } from "../../../fm/dms/model/DocumentModel";
 import { AggregateModel } from "../../aggregate/model/AggregateModel";
-import { ObjModel } from "../../obj/model/ObjModel";
 import { CaseStage } from "./BpmModel";
 import { DocMeta } from "./DocMeta";
 
@@ -13,16 +11,10 @@ const MstDocModel = AggregateModel.named("Doc")
 		caption: types.optional(types.string, ""),
 		//
 		meta: types.maybe(types.frozen<DocMeta>()),
-		isInWork: types.optional(types.boolean, false),
-		caseStage: types.maybe(types.frozen<CaseStage>()),
 		//
-		assignee: types.maybe(types.reference(types.late((): IAnyModelType => ObjModel))),
+		caseStage: types.maybe(types.frozen<CaseStage>()), // to set new case stage in transition
 		//
-		account: types.maybe(types.reference(AccountModel)),
-		// refObj: types.maybe(types.reference(ObjModel)),
-		// refDoc: types.maybe(types.reference(types.late((): IAnyModelType => DocModel))),
-		//
-		documents: types.optional(types.array(types.reference(types.late((): IAnyModelType => DocumentModel))), [])
+		//documents: types.optional(types.array(types.reference(types.late((): IAnyModelType => DocumentModel))), [])
 	})
 	.views((self) => ({
 		get isDoc(): boolean {

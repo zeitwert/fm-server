@@ -98,11 +98,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	 * Create a new aggregate, used from both create and load to create a new object
 	 */
 	@SuppressWarnings("unchecked")
-	protected final A newAggregate(UpdatableRecord<?> objRecord, UpdatableRecord<?> extnRecord) {
+	protected final A newAggregate(UpdatableRecord<?> baseRecord, UpdatableRecord<?> extnRecord) {
 		A aggregate = null;
 		try {
 			aggregate = (A) this.proxyFactory.create(this.proxyFactoryParamTypeList,
-					new Object[] { this, objRecord, extnRecord }, PropertyHandler.INSTANCE);
+					new Object[] { this, baseRecord, extnRecord }, PropertyHandler.INSTANCE);
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {
 			e.printStackTrace();

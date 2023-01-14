@@ -74,7 +74,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 					<ItemPath
 						store={this.leadStore}
 						stageList={lead.meta!.caseStages!}
-						currentStage={lead.caseStage!}
+						currentStage={lead.meta?.caseStage!}
 						handleStageTransition={this.handleStageTransition}
 						onTransitionToStage={this.onTransitionToStage}
 					/>
@@ -138,14 +138,14 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		if (lead.contact) {
 			details.push({
 				label: "Contact",
-				content: lead.contact!.caption,
+				content: lead.contact.caption,
 				icon: <Icon category="standard" name="contact" size="small" />,
 				link: "/contact/" + lead.contact!.id
 			});
 		} else if (lead.account) {
 			details.push({
 				label: "Account",
-				content: lead.account!.caption,
+				content: lead.account.caption,
 				icon: <Icon category="standard" name="account" size="small" />,
 				link: "/account/" + lead.account!.id
 			});
@@ -235,12 +235,12 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		try {
 			const doc = (await this.leadStore.transitionTo(toJS(stage))) as Lead;
 			this.doStageSelection = false;
-			this.ctx.showToast("success", `Lead stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return doc;
 		} catch (error: any) {
 			this.ctx.showAlert(
 				"error",
-				"Could not store Lead: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 			return Promise.reject(error);
 		}
