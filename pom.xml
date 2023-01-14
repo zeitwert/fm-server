@@ -217,7 +217,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-ddd-aggregate.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/ddd/aggregate/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -228,7 +228,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-ddd-obj.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/ddd/obj/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -239,7 +239,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-ddd-oe.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/ddd/oe/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -250,7 +250,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-ddd-doc.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/ddd/doc/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -261,7 +261,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-collaboration.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/collaboration/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -272,7 +272,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-account.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/account/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -283,7 +283,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-contact.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/contact/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -294,7 +294,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-dms.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/dms/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -305,7 +305,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-building.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/building/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -316,7 +316,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-portfolio.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/portfolio/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -327,7 +327,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-lead.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/lead/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -338,7 +338,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>jooq-config-fm-test.xml</configurationFile>
+							<configurationFile>src/test/java/io/zeitwert/fm/test/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 				</executions>
