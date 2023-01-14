@@ -22,7 +22,6 @@ interface ItemsPageProps extends RouteComponentProps {
 	listDatamart: string;
 	listTemplate: string;
 	canCreate: boolean;
-	createFormId?: string;
 	actionButtons?: React.ReactNode[];
 	createEditor?: () => JSX.Element;
 	onAfterCreate?: (store: AggregateStore) => void;
@@ -53,7 +52,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	render() {
-		const { entityType, createFormId, createEditor, listTemplate, actionButtons, canCreate } = this.props;
+		const { entityType, createEditor, listTemplate, actionButtons, canCreate } = this.props;
 		const type = EntityTypes[this.props.entityType];
 		const newText = getNewEntityText(type);
 		return (
@@ -88,8 +87,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 						<ItemModal
 							store={this.store}
 							entityType={entityType}
-							formId={createFormId}
-							itemAlias={entityType}
 							onClose={this.closeEditor}
 							onCancel={this.cancelEditor}
 						>

@@ -1,5 +1,4 @@
 import { Button } from "@salesforce/design-system-react";
-import { FormWrapper } from "@zeitwert/ui-forms";
 import { CaseStage } from "@zeitwert/ui-model";
 import classNames from "classnames";
 import { makeObservable, observable } from "mobx";
@@ -104,16 +103,6 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 		);
 	}
 
-	renderStageForm() {
-		return (
-			<FormWrapper
-				formId="opportunity/stages"
-				payload={{}}
-				displayMode={this.isEditingDetailFields ? undefined : "readonly"}
-			/>
-		);
-	}
-
 	renderDetails() {
 		const { targetStage, readOnly } = this.props;
 		return (
@@ -131,7 +120,6 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 								</button>
 							)}
 						</div>
-						{this.renderStageForm()}
 					</div>
 					<div className="slds-path__guidance">
 						<h2 className="slds-path__coach-title">Guidance for Success</h2>
@@ -148,4 +136,5 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 			</div>
 		);
 	}
+
 }

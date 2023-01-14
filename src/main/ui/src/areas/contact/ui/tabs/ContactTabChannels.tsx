@@ -1,4 +1,4 @@
-import { FormWrapper } from "@zeitwert/ui-forms";
+
 import { ContactStore } from "@zeitwert/ui-model";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -22,6 +22,9 @@ export default class ContactTabChannels extends React.Component<ContactTabChanne
 		const contact = this.props.store.contact!;
 		return (
 			<div className="slds-m-around_medium">
+				<div>Too bad {contact.caption}</div>
+				{
+					/*
 				<FormWrapper
 					formId="contact/editChannels"
 					displayMode={this.props.displayMode ? "enabled" : "readonly"}
@@ -45,14 +48,17 @@ export default class ContactTabChannels extends React.Component<ContactTabChanne
 						}
 					}}
 				/>
+					*/
+				}
 			</div>
 		);
 	}
 
-	private onChange = async (path: string, value: any) => {
-		const { store } = this.props;
-		if (path && path.startsWith("contact.")) {
-			await store.item!.setField(path.substr("contact".length + 1), value);
-		}
-	};
+	// private onChange = async (path: string, value: any) => {
+	// 	const { store } = this.props;
+	// 	if (path && path.startsWith("contact.")) {
+	// 		await store.item!.setField(path.substr("contact".length + 1), value);
+	// 	}
+	// };
+
 }

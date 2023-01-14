@@ -1,4 +1,4 @@
-import { FormWrapper } from "@zeitwert/ui-forms";
+
 import { ContactStore } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
 import React from "react";
@@ -10,10 +10,14 @@ interface ContactTabAddressesProps {
 
 @observer
 export default class ContactTabAddresses extends React.Component<ContactTabAddressesProps> {
+
 	render() {
 		const contact = this.props.store.contact!;
 		return (
 			<div className="slds-m-around_medium">
+				<div>Too bad {contact.caption}</div>
+				{
+					/*
 				<FormWrapper
 					formId="contact/editAddresses"
 					displayMode={this.props.displayMode ? "enabled" : "readonly"}
@@ -37,14 +41,17 @@ export default class ContactTabAddresses extends React.Component<ContactTabAddre
 						}
 					}}
 				/>
+					*/
+				}
 			</div>
 		);
 	}
 
-	private onChange = async (path: string, value: any) => {
-		const { store } = this.props;
-		if (path && path.startsWith("contact.")) {
-			await store.item!.setField(path.substr("contact".length + 1), value);
-		}
-	};
+	// private onChange = async (path: string, value: any) => {
+	// 	const { store } = this.props;
+	// 	if (path && path.startsWith("contact.")) {
+	// 		await store.item!.setField(path.substr("contact".length + 1), value);
+	// 	}
+	// };
+
 }

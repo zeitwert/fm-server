@@ -52,7 +52,7 @@ export default class ItemEditor extends React.Component<PropsWithChildren<ItemEd
 	}
 
 	private onOpen = () => {
-		this.props.onOpen && this.props.onOpen();
+		this.props.onOpen?.();
 	};
 
 	private onCancel = async () => {

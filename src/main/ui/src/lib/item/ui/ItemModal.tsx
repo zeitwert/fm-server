@@ -10,7 +10,7 @@ import { getEditEntityText, getNewEntityText } from "./ItemUtils";
 
 interface ItemModalProps extends BaseItemEditorProps {
 	size?: "small" | "medium" | "large";
-	children?: (form: JSX.Element | undefined) => JSX.Element;
+	children?: () => JSX.Element;
 }
 
 @inject("appStore")
@@ -38,13 +38,13 @@ export default class ItemModal extends React.Component<ItemModalProps> {
 				doEdit={store.isInTrx}
 				allowStore={true/*!this.isFormDisabled*/}
 				onCancelEditor={action(() => this.props.onCancel())}
-				onCloseEditor={action(() => this.props.onClose(undefined!))}
+				onCloseEditor={action(() => this.props.onClose())}
 			/>
 		);
 		return (
 			<FormItemEditor {...Object.assign({}, this.props, { showEditButtons: false })}>
 				{
-					(editor) => {
+					() => {
 						return (
 							<Modal
 								heading={heading}
@@ -54,8 +54,7 @@ export default class ItemModal extends React.Component<ItemModalProps> {
 								size={this.props.size || "small"}
 								isOpen
 							>
-								{children && children(editor)}
-								{!children && editor}
+								{children && children()}
 							</Modal>
 						);
 					}
