@@ -1,11 +1,12 @@
 
-import { Enumerated, Optional } from "@zeitwert/ui-model";
 import { toJS, transaction } from "mobx";
 import { applyPatch, getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Optional } from "../../../../ui-model/app/common/utils/Optional";
 import { EntityTypeInfo, EntityTypes } from "../../../app/common/config/EntityTypes";
 import { UserInfo } from "../../../app/session";
 import { AggregateMeta } from "./AggregateMeta";
 import { AggregateStore } from "./AggregateStore";
+import { Enumerated } from "./EnumeratedModel";
 
 const MstAggregateModel = types
 	.model("Aggregate", {

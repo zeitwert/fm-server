@@ -1,7 +1,7 @@
 
-import { session } from "@zeitwert/ui-model/app/session";
 import Logger from "loglevel";
 import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { session } from "../../../../ui-model/app/session";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { AggregateStoreModel } from "../../aggregate/model/AggregateStore";
 import { StoreWithNotesModel } from "../../collaboration/model/StoreWithNotes";

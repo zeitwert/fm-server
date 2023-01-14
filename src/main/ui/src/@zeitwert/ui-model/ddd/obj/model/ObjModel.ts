@@ -1,9 +1,9 @@
 
 import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { UserInfo } from "../../../app/session";
-import { Contact } from "../../../fm/contact/model/ContactModel";
 import { Document } from "../../../fm/dms/model/DocumentModel";
 import { AggregateModel } from "../../aggregate/model/AggregateModel";
+import { Enumerated } from "../../aggregate/model/EnumeratedModel";
 import { ObjMeta } from "./ObjMeta";
 
 export enum GenericUserType {
@@ -11,7 +11,7 @@ export enum GenericUserType {
 	Contact = "contact"
 }
 
-export type GenericUser = Contact | UserInfo;
+export type GenericUser = Enumerated | UserInfo;
 
 const MstObjModel = AggregateModel
 	.named("Obj")

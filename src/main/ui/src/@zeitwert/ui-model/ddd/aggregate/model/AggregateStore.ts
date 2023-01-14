@@ -1,17 +1,10 @@
-import { session } from "@zeitwert/ui-model/app";
+
 import Logger from "loglevel";
 import { transaction } from "mobx";
-import {
-	applySnapshot,
-	flow,
-	getSnapshot,
-	Instance,
-	IPatchRecorder,
-	recordPatches,
-	SnapshotIn,
-	types
-} from "mobx-state-tree";
-import { EntityTypeRepository, requireThis } from "../../../app/common";
+import { applySnapshot, flow, getSnapshot, Instance, IPatchRecorder, recordPatches, SnapshotIn, types } from "mobx-state-tree";
+import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
+import { requireThis } from "../../../app/common/utils/Invariants";
+import { session } from "../../../app/session";
 import { AggregateApi } from "../service/AggregateApi";
 import { Aggregate, AggregateModelType, AggregateSnapshot } from "./AggregateModel";
 

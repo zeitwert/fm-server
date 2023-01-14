@@ -3,9 +3,10 @@ import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { PartModel } from "../../part/model/PartModel";
 import { ObjModel } from "./ObjModel";
 
-const MstObjPartModel = PartModel.named("ObjPart").props({
-	obj: types.maybe(types.reference(ObjModel))
-});
+const MstObjPartModel = PartModel.named("ObjPart")
+	.props({
+		obj: types.maybe(types.reference(ObjModel))
+	});
 
 type MstObjPartType = typeof MstObjPartModel;
 interface MstObjPart extends MstObjPartType { }

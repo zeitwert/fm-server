@@ -1,7 +1,7 @@
 
-import { BuildingModel, Enumerated } from "@zeitwert/ui-model";
 import { toJS } from "mobx";
-import { getParentOfType, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { getParent, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 import { ObjPartModel } from "../../../ddd/obj/model/ObjPartModel";
 
 export const LowOption: Enumerated = { id: "-1", name: "Gering", itemType: undefined };
@@ -40,7 +40,7 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	})
 	.views((self) => ({
 		get isValidBuilding(): boolean {
-			const building = getParentOfType(self, BuildingModel);
+			const building = getParent(self, 2) as any; // getParentOfType results in recursive type error
 			return !!building.insuredValue && !!building.insuredValueYear && !!building.partCatalog && !!building.maintenanceStrategy;
 		},
 	}))

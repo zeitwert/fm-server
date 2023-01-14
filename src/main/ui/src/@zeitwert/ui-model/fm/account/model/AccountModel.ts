@@ -1,6 +1,6 @@
 
-import { Config } from "@zeitwert/ui-model/app";
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Config } from "../../../../ui-model/app";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { ContactModel } from "../../contact/model/ContactModel";
@@ -23,8 +23,8 @@ const MstAccountModel = ObjModel.named("Account")
 		tenantInfo: types.maybe(types.reference(TenantModel)),
 		inflationRate: types.maybe(types.number),
 		//
-		contacts: types.optional(types.array(types.reference(ContactModel)), []),
-		mainContact: types.maybe(types.reference(ContactModel)),
+		contacts: types.optional(types.array(types.reference(types.late((): IAnyModelType => ContactModel))), []),
+		mainContact: types.maybe(types.reference(types.late((): IAnyModelType => ContactModel))),
 		//
 		logo: types.maybe(types.reference(DocumentModel)),
 		//

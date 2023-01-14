@@ -1,6 +1,7 @@
-import { Enumerated } from "@zeitwert/ui-model";
+
 import { toJS } from "mobx";
 import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 import { ObjPartModel } from "../../../ddd/obj/model/ObjPartModel";
 
 const MstAddressModel = ObjPartModel.named("Address")

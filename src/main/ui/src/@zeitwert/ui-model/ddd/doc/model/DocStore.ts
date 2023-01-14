@@ -3,8 +3,6 @@ import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { Account } from "../../../fm/account/model/AccountModel";
 import { StoreWithAccountsModel } from "../../../fm/account/model/StoreWithAccounts";
-import { Document } from "../../../fm/dms/model/DocumentModel";
-import { DOCUMENT_API } from "../../../fm/dms/service/DocumentApi";
 import { AggregateStoreModel } from "../../aggregate/model/AggregateStore";
 import { Obj } from "../../obj/model/ObjModel";
 import { StoreWithObjsModel } from "../../obj/model/StoreWithObjs";
@@ -46,11 +44,11 @@ const MstDocStoreModel = types
 	}))
 	.actions((self) => ({
 		updateDocuments() {
-			return flow(function* () {
-				const promises: Promise<any>[] = [];
-				self.item!.documents.forEach((doc: Document) => promises.push(DOCUMENT_API.storeAggregate(doc.apiSnapshot)));
-				yield Promise.all(promises);
-			})();
+			// return flow(function* () {
+			// 	const promises: Promise<any>[] = [];
+			// 	self.item!.documents.forEach((doc: Document) => promises.push(DOCUMENT_API.storeAggregate(doc.apiSnapshot)));
+			// 	yield Promise.all(promises);
+			// })();
 		}
 	}))
 	.actions((self) => {

@@ -1,7 +1,7 @@
 
-import { EntityTypeRepository } from "@zeitwert/ui-model/app";
 import { transaction } from "mobx";
 import { applySnapshot, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { EntityTypeRepository } from "../../../../ui-model/app";
 import { StoreWithEntitiesModel } from "../../aggregate/model/StoreWithEntities";
 import { NOTE_API } from "../service/NoteApi";
 import { Note, NoteModel, NotePayload, NoteSnapshot } from "./NoteModel";

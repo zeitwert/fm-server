@@ -1,8 +1,7 @@
 
-import { Config } from "@zeitwert/ui-model/app";
-import { Enumerated, EnumeratedModel } from "@zeitwert/ui-model/ddd";
-import { toJS } from "mobx";
-import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Config } from "../../../../ui-model/app/common/config/Config";
+import { Enumerated, EnumeratedModel } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
 
@@ -41,11 +40,6 @@ const MstUserModel = ObjModel.named("User")
 		removeTenant(id: string) {
 			const index = self.tenants.findIndex((t) => t.id === id);
 			self.tenants.splice(index, 1);
-		}
-	}))
-	.views((self) => ({
-		get formSnapshot(): UserSnapshot {
-			return toJS(getSnapshot(self));
 		}
 	}));
 

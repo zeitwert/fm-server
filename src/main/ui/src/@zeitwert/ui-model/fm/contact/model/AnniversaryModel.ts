@@ -1,6 +1,6 @@
-import { Enumerated } from "@zeitwert/ui-model";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import moment from "moment";
+import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 import { faTypes } from "../../../app/common";
 import { ObjPartModel } from "../../../ddd/obj/model/ObjPartModel";
 

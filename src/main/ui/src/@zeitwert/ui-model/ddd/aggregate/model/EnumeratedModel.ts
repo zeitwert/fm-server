@@ -1,6 +1,7 @@
 
-import { Optional, requireThis } from "@zeitwert/ui-model";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { requireThis } from "../../../../ui-model/app/common/utils/Invariants";
+import { Optional } from "../../../../ui-model/app/common/utils/Optional";
 
 export interface CodeItemType {
 	id: string;

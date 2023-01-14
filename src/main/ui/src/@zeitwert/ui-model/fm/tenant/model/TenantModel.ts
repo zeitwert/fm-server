@@ -1,6 +1,6 @@
 
-import { Config } from "@zeitwert/ui-model/app";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Config } from "../../../../ui-model/app/common/config/Config";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";

@@ -1,5 +1,5 @@
 
-import { UserInfo } from "@zeitwert/ui-model/app";
+import { UserInfo } from "../../../../ui-model/app";
 import { Enumerated } from "./EnumeratedModel";
 
 export interface Validation {

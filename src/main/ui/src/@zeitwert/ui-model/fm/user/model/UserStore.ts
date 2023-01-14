@@ -1,7 +1,7 @@
 
-import { EntityTypeRepository } from "@zeitwert/ui-model/app";
 import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { EntityTypeRepository } from "../../../../ui-model/app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
 import { StoreWithTenantsModel } from "../../tenant/model/StoreWithTenants";

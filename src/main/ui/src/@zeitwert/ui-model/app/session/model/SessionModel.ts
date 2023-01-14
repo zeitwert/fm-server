@@ -1,24 +1,19 @@
 
+import AppBanner from "app/ui/AppBannerSvg";
 import { AxiosResponse } from "axios";
 import { Canvg, presets } from "canvg";
-import AppBanner from "app/ui/AppBannerSvg";
 import Logger from "loglevel";
 import { observable, reaction, transaction } from "mobx";
 import { addDisposer, applySnapshot, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
-import {
-	API,
-	AUTH_HEADER_ITEM,
-	Config,
-	Formatter,
-	Languages,
-	Locale,
-	Locales,
-	SESSION_INFO_ITEM,
-	SESSION_STATE_ITEM,
-	Translator
-} from "../../common";
+import { Config } from "../../common/config/Config";
+import { AUTH_HEADER_ITEM, SESSION_INFO_ITEM, SESSION_STATE_ITEM } from "../../common/config/Constants";
+import { Formatter } from "../../common/i18n/Formatter";
 import { FormatterImpl } from "../../common/i18n/impl/FormatterImpl";
 import { TranslatorImpl } from "../../common/i18n/impl/TranslatorImpl";
+import { Languages } from "../../common/i18n/Language";
+import { Locale, Locales } from "../../common/i18n/Locale";
+import { Translator } from "../../common/i18n/Translator";
+import { API } from "../../common/service/Api";
 import { Application, ApplicationArea, ApplicationAreaMap, ApplicationInfo } from "./Application";
 import { LoginInfo, LoginTenantInfo, LoginUserInfo } from "./LoginInfo";
 import { ADVISOR_TENANT, COMMUNITY_TENANT, KERNEL_TENANT, SessionInfo } from "./SessionInfo";

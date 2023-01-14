@@ -1,10 +1,9 @@
 import { Card, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { AggregateStore, DocStore, Enumerated, TaskStoreModel } from "@zeitwert/ui-model";
+import { AggregateStore, DocStore, Enumerated } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import classNames from "classnames";
-import { ActivityFormTypes, ActivityPortlet } from "lib/activity/ActivityPortlet";
-import { FormParser } from "lib/activity/forms/FormParser";
+import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -153,28 +152,28 @@ export class ItemRightPart extends React.Component<ItemRightPartProps> {
 	};
 
 	private onSavePortlet = async (type: string, data: any) => {
-		let store: DocStore, payload: any, title: string;
+		// let store: DocStore, payload: any, title: string;
 
-		switch (type) {
-			case ActivityFormTypes.TASK:
-				title = "Task";
-				store = TaskStoreModel.create({});
-				payload = FormParser.parseTask(data, this.ctx.session.sessionInfo!.user);
-				break;
-			default:
-				throw new Error("Undefined store set");
-		}
+		// switch (type) {
+		// 	case ActivityFormTypes.TASK:
+		// 		title = "Task";
+		// 		store = TaskStoreModel.create({});
+		// 		payload = FormParser.parseTask(data, this.ctx.session.sessionInfo!.user);
+		// 		break;
+		// 	default:
+		// 		throw new Error("Undefined store set");
+		// }
 
-		try {
-			store.create(payload);
-			await store.store();
-			this.ctx.showToast("success", title + " stored");
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				"Could not store" + title + ": " + (error.detail ? error.detail : error.title ? error.title : error)
-			);
-		}
+		// try {
+		// 	store.create(payload);
+		// 	await store.store();
+		// 	this.ctx.showToast("success", title + " stored");
+		// } catch (error: any) {
+		// 	this.ctx.showAlert(
+		// 		"error",
+		// 		"Could not store" + title + ": " + (error.detail ? error.detail : error.title ? error.title : error)
+		// 	);
+		// }
 	};
 
 }

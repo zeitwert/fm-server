@@ -27,6 +27,7 @@ interface GenericUserComboboxProps {
 @inject("appStore", "logger")
 @observer
 export default class GenericUserCombobox extends React.Component<GenericUserComboboxProps> {
+
 	@observable users: UserInfo[] = [];
 
 	get ctx() {
@@ -65,7 +66,7 @@ export default class GenericUserCombobox extends React.Component<GenericUserComb
 	private convertItem(genericUser: GenericUser, type: GenericUserType) {
 		return {
 			id: genericUser.id,
-			label: genericUser.caption,
+			label: genericUser.name,
 			icon: <Icon category="standard" name={type} size="small" />,
 			type: type
 		} as ComboboxItem;

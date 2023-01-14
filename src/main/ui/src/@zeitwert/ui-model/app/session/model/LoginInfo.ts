@@ -1,4 +1,4 @@
-import { Enumerated } from "@zeitwert/ui-model/ddd";
+import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 
 export interface LoginUserInfo {
 	id: string;

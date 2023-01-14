@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { Enumerated, TENANT_API, User, UserModel, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { Enumerated, TENANT_API, UserModel, UserModelType, UserStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -35,7 +35,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 
 	@computed
 	get availableTenants(): Enumerated[] {
-		const user = this.props.store.item! as User;
+		const user = this.props.store.user!;
 		return this.allTenants
 			.filter(t => !user.tenants.find(incl => incl.id === t.id))
 			.sort((a, b) => a.name < b.name ? -1 : 1);
@@ -59,7 +59,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 
 	render() {
 		const isInTrx = this.props.store.isInTrx;
-		const user = this.props.store.item! as User;
+		const user = this.props.store.user!;
 		return (
 			<SldsForm formModel={UserForm} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>

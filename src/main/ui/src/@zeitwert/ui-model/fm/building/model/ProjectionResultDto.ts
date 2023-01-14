@@ -1,4 +1,4 @@
-import { Enumerated } from "@zeitwert/ui-model";
+import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 
 export interface RestorationElement {
 	building: Enumerated;

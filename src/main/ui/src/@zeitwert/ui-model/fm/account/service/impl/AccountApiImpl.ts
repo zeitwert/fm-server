@@ -1,3 +1,4 @@
+
 import { AggregateApiImpl, IGNORED_ATTRIBUTES } from "../../../../ddd/aggregate/service/impl/AggregateApiImpl";
 import { AccountModel, AccountSnapshot } from "../../model/AccountModel";
 import { AccountApi } from "../AccountApi";

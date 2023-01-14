@@ -2,14 +2,14 @@
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import moment from "moment";
 import { DateFormat, EntityType, faTypes } from "../../../app/common";
-import { ContactModel } from "../../../fm/contact/model/ContactModel";
+import { Enumerated } from "../../aggregate/model/EnumeratedModel";
 import { DocModel } from "../../doc/model/DocModel";
 
 const MstActivityModel = DocModel.named("Activity")
 	.props({
 		date: faTypes.date,
 		//
-		contact: types.maybe(types.reference(ContactModel))
+		contact: types.maybe(types.frozen<Enumerated>())
 	})
 	.views((self) => ({
 		get isUpcoming() {
@@ -30,7 +30,7 @@ const MstActivityModel = DocModel.named("Activity")
 					"The " +
 					self.type.type +
 					" process " +
-					(self.contact ? "for " + self.contact.caption + " " : " ") +
+					(self.contact ? "for " + self.contact.name + " " : " ") +
 					(self.isInWork ? "is running " : "has been closed ") +
 					days +
 					"."
