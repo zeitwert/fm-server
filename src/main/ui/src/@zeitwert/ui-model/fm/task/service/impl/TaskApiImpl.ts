@@ -4,23 +4,18 @@ import { AggregateApiImpl, IGNORED_ATTRIBUTES } from "../../../../ddd/aggregate/
 import { TaskModel, TaskSnapshot } from "../../model/TaskModel";
 import { TaskApi } from "../TaskApi";
 
-const MODULE = "task";
+const MODULE = "collaboration";
 const PATH = "tasks";
 const TYPE = "task";
-const INCLUDES = "include[task]=refDoc,refObj,documents,assignee,account&include[account]=mainContact,contacts";
+const INCLUDES = "include[task]=account";
 
 export class TaskApiImpl extends AggregateApiImpl<TaskSnapshot> implements TaskApi {
+
 	constructor() {
 		const PROPS = Object.keys(TaskModel.properties);
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["isInWork"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
-		const RELATIONS = {
-			refObj: "obj",
-			refDoc: "doc",
-			documents: "document",
-			assignee: "obj",
-			account: "account"
-		};
+		const RELATIONS = { account: "account" };
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}
 
@@ -37,4 +32,5 @@ export class TaskApiImpl extends AggregateApiImpl<TaskSnapshot> implements TaskA
 		const response = await API.get(Config.getApiUrl(MODULE, PATH) + suffix);
 		return convertJsonApiToJson(response.data);
 	}
+
 }

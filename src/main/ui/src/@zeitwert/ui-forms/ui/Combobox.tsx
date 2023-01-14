@@ -99,7 +99,7 @@ export class Combobox extends React.Component<ComboboxProps> {
 					menuItemVisibleLength={5}
 					value={this.searchText}
 					hasMenuSpinner={this.isLoadingOptions}
-					//singleInputDisabled={!inputProps.isEnabled}
+					singleInputDisabled={inputProps.disabled}
 					required={inputProps.required}
 				/>
 			</Field>

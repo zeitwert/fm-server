@@ -115,7 +115,7 @@
 		}
 	},
 	{
-		"id": "task.tasks",
+		"id": "collaboration.tasks",
 		"module": "task",
 		"name": "Task Orderbook",
 		"provider": "api",
@@ -125,8 +125,8 @@
 			}
 		},
 		"config": {
-			"module": "task",
-			"url": "tasks?include[task]=refDoc,refObj,assignee"
+			"module": "collaboration",
+			"url": "tasks"
 		}
 	},
 	{

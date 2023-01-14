@@ -1,8 +1,11 @@
-import { EntityType, session, TaskStoreModel } from "@zeitwert/ui-model";
+import { EntityType, session, Task, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
 import ItemsPage from "lib/item/ui/ItemsPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import TaskCreationForm from "./TaskCreationForm";
 import TaskPage from "./TaskPage";
+
+const taskStore = TaskStoreModel.create({});
 
 export default class TaskArea extends React.Component {
 
@@ -18,9 +21,12 @@ export default class TaskArea extends React.Component {
 					element={
 						<ItemsPage
 							entityType={EntityType.TASK}
-							store={TaskStoreModel.create({})}
-							listDatamart="task.tasks"
-							listTemplate="task.tasks.my-open"
+							store={taskStore}
+							listDatamart="collaboration.tasks"
+							listTemplate="collaboration.tasks.my-open"
+							canCreate={true}
+							createEditor={() => <TaskCreationForm store={taskStore} />}
+							onAfterCreate={(store: TaskStore) => { initTask(store.task!) }}
 						/>
 					}
 				/>
@@ -29,4 +35,11 @@ export default class TaskArea extends React.Component {
 		);
 	}
 
+}
+
+const initTask = (task: Task) => {
+	task.setField("tenant", session.sessionInfo?.tenant);
+	if (!session.isKernelTenant) {
+		task.setAccount(session.sessionInfo?.account?.id);
+	}
 }

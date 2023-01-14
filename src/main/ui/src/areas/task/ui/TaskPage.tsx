@@ -4,13 +4,13 @@ import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import { StageSelector } from "lib/doc/ui/StageSelector";
-import FormItemEditor from "lib/item/ui/FormItemEditor";
-import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemGrid";
+import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
-import ItemPath from "lib/item/ui/ItemPath";
+import { ItemGrid, ItemLeftPart } from "lib/item/ui/ItemPage";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
+import TaskStaticDataForm from "./tabs/TaskStaticDataForm";
 
 enum LEFT_TABS {
 	DETAILS = "static-data",
@@ -23,18 +23,18 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	entityType: EntityTypeInfo = EntityTypes[EntityType.TASK];
 
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
+	@observable activeLeftTabId = LEFT_TABS.DETAILS;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
+
+	get ctx() {
+		return this.props as any as AppCtx;
+	}
 
 	constructor(props: any) {
 		super(props);
 		makeObservable(this);
-	}
-
-	get ctx() {
-		return this.props as any as AppCtx;
 	}
 
 	async componentDidMount() {
@@ -51,6 +51,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
+
 		const task = this.taskStore.task!;
 		if (!task && session.isNetworkActive) {
 			return <></>;
@@ -65,49 +66,40 @@ class TaskPage extends React.Component<RouteComponentProps> {
 				<ItemHeader
 					store={this.taskStore}
 					details={this.getHeaderDetails(task)}
+					customActions={this.getHeaderActions()}
 				/>
 				<ItemGrid>
-					<ItemPath
-						store={this.taskStore}
-						stageList={task.meta!.caseStages!}
-						currentStage={task.caseStage!}
-						handleStageTransition={this.handleStageTransition}
-						onTransitionToStage={this.onTransitionToStage}
-					/>
+					{
+						/*
+						<ItemPath
+							store={this.taskStore}
+							stageList={task.meta!.caseStages!}
+							currentStage={task.meta?.caseStage!}
+							handleStageTransition={this.handleStageTransition}
+							onTransitionToStage={this.onTransitionToStage}
+						/>
+						*/
+					}
 					<ItemLeftPart hasItemPath>
-						<FormItemEditor
+						<ItemEditor
 							store={this.taskStore}
 							entityType={EntityType.TASK}
-							formId="task/editTask"
-							itemAlias={EntityType.TASK}
-							control={{
-								reminderSet: !!this.taskStore.task!.reminderDate
-							}}
-							onChange={async (path) => {
-								if (path === "control.reminderSet") {
-									await this.taskStore.task!.setField("reminderDate", undefined);
-								}
-							}}
 							showEditButtons={allowEdit && !session.hasReadOnlyRole}
 							onOpen={this.openEditor}
 							onCancel={this.cancelEditor}
 							onClose={this.closeEditor}
-							key={"task-" + this.taskStore.task?.id}
 						>
-							{(editor) => (
-								<Tabs
-									className="full-height"
-									selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
-									onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
-								>
-									<TabsPanel label="Details">
-										{this.activeLeftTabId === LEFT_TABS.DETAILS && editor}
-									</TabsPanel>
-								</Tabs>
-							)}
-						</FormItemEditor>
+							<Tabs
+								className="full-height"
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
+							>
+								<TabsPanel label="Details">
+									{this.activeLeftTabId === LEFT_TABS.DETAILS && <TaskStaticDataForm store={this.taskStore} />}
+								</TabsPanel>
+							</Tabs>
+						</ItemEditor>
 					</ItemLeftPart>
-					<ItemRightPart store={this.taskStore} hideTask hasItemPath />
 				</ItemGrid>
 				{
 					this.doStageSelection && (
@@ -128,9 +120,25 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderDetails(task: Task): HeaderDetail[] {
-		//const refItem = task.refDoc ? task.refDoc : task.refObj;
 		const taskOwner: UserInfo = task.owner as UserInfo;
+		console.log("task.owner", taskOwner);
+		const taskAssignee: UserInfo = task.meta?.assignee as UserInfo;
+		console.log("task.assignee", taskAssignee, task.meta);
 		return [
+			{
+				label: "Assignee",
+				content: taskAssignee?.name,
+				icon: (
+					<Avatar
+						variant="user"
+						size="small"
+						imgSrc={session.avatarUrl(taskAssignee?.id)}
+						imgAlt={taskAssignee?.name}
+						label={taskAssignee?.name}
+					/>
+				),
+				link: "/user/" + taskAssignee?.id
+			},
 			{
 				label: "Owner",
 				content: taskOwner.name,
@@ -143,15 +151,13 @@ class TaskPage extends React.Component<RouteComponentProps> {
 						label={taskOwner.name}
 					/>
 				),
-				link: "/user/" + task.owner!.id
+				link: "/user/" + taskOwner!.id
 			},
-			// {
-			// 	label: "Reference",
-			// 	content: refItem.caption,
-			// 	icon: <Icon category={refItem.type.iconCategory} name={refItem.type.iconName} size="small" />,
-			// 	link: "/" + (refItem.isDoc ? "doc" : "obj") + "/" + refItem.id
-			// }
 		];
+	}
+
+	private getHeaderActions() {
+		return (<></>);
 	}
 
 	private openEditor = () => {
@@ -179,23 +185,23 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		}
 	};
 
-	private handleStageTransition = (stage: CaseStage) => {
-		if (stage.isAbstract) {
-			this.abstractStage = stage;
-			this.doStageSelection = true;
-		}
-	};
+	// private handleStageTransition = (stage: CaseStage) => {
+	// 	if (stage.isAbstract) {
+	// 		this.abstractStage = stage;
+	// 		this.doStageSelection = true;
+	// 	}
+	// };
 
 	private onTransitionToStage = async (stage: CaseStage) => {
 		try {
 			const doc = (await this.taskStore.transitionTo(toJS(stage))) as Task;
 			this.doStageSelection = false;
-			this.ctx.showToast("success", `Task stored`);
+			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
 			return doc;
 		} catch (error: any) {
 			this.ctx.showAlert(
 				"error",
-				"Could not store Task: " + (error.detail ? error.detail : error.title ? error.title : error)
+				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
 			);
 			return Promise.reject(error);
 		}

@@ -62,7 +62,7 @@ export default class HomeCardRecentActivity extends React.Component<HomeCardRece
 				const task = this.item as Task;
 				return (
 					<p className="slds-m-bottom_x-small">
-						<strong>Priority:</strong> {task.taskPriority?.name}
+						<strong>Priority:</strong> {task.priority?.name}
 					</p>
 				);
 			default:
