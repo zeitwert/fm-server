@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,6 +39,10 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 	@JsonApiRelationId
 	private Integer logoId;
 
+	public void setLogoId(Integer logoId) {
+		assertThis(false, "logoId is read-only");
+	}
+
 	@JsonIgnore
 	private ObjDocumentDto logoDto;
 
@@ -55,29 +61,7 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 	}
 
 	public void setLogo(ObjDocumentDto logo) {
-	}
-
-	@JsonApiRelationId
-	private Integer bannerId;
-
-	@JsonIgnore
-	private ObjDocumentDto bannerDto;
-
-	@JsonApiRelation(serialize = SerializeType.LAZY)
-	public ObjDocumentDto getBanner() {
-		if (this.bannerDto == null) {
-			ObjDocument banner = null;
-			if (this.getOriginal() != null) {
-				banner = this.getOriginal().getBannerImage();
-			} else if (this.bannerId != null) {
-				banner = getRepository(ObjDocument.class).get(this.bannerId);
-			}
-			this.bannerDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(banner);
-		}
-		return this.bannerDto;
-	}
-
-	public void setBanner(ObjDocumentDto banner) {
+		assertThis(false, "logo is read-only");
 	}
 
 }

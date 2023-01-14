@@ -1,5 +1,7 @@
 package io.zeitwert.ddd.oe.adapter.api.jsonapi.dto;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -52,6 +54,10 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 	@JsonApiRelationId
 	private Integer avatarId;
 
+	public void setAvatarId(Integer avatarId) {
+		assertThis(false, "avatarId is read-only");
+	}
+
 	@JsonIgnore
 	private ObjDocumentDto avatarDto;
 
@@ -70,6 +76,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUser> {
 	}
 
 	public void setAvatar(ObjDocumentDto avatar) {
+		assertThis(false, "avatar is read-only");
 	}
 
 }

@@ -33,6 +33,11 @@ public class ObjContactDto extends FMObjDtoBase<ObjContact> {
 	@JsonApiRelationId
 	private Integer accountId;
 
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
+		this.accountDto = null;
+	}
+
 	@JsonIgnore
 	private ObjAccountDto accountDto;
 
@@ -51,6 +56,8 @@ public class ObjContactDto extends FMObjDtoBase<ObjContact> {
 	}
 
 	public void setAccount(ObjAccountDto account) {
+		this.accountDto = account;
+		this.accountId = account != null ? account.getId() : null;
 	}
 
 	private EnumeratedDto contactRole;

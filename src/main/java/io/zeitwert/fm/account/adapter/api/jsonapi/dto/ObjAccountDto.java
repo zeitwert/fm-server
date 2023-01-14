@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +33,10 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 
 	@JsonApiRelationId
 	private Integer tenantInfoId;
+
+	public void setLogoId(Integer tenantId) {
+		assertThis(false, "tenantInfoId is read-only");
+	}
 
 	@JsonIgnore
 	private ObjTenantDto tenantInfoDto;
@@ -49,8 +55,17 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 		return this.tenantInfoDto;
 	}
 
+	public void setTenantInfo(ObjTenantDto tenant) {
+		assertThis(false, "tenantInfo is read-only");
+	}
+
 	@JsonApiRelationId
 	private Integer mainContactId;
+
+	public void setMainContactId(Integer contactId) {
+		this.mainContactId = contactId;
+		this.mainContactDto = null;
+	}
 
 	@JsonIgnore
 	private ObjContactDto mainContactDto;
@@ -69,8 +84,9 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 		return this.mainContactDto;
 	}
 
-	// Crnk needs to see this to set mainContractId
-	public void setMainContact(ObjContactDto mainContact) {
+	public void setMainContact(ObjContactDto contact) {
+		this.mainContactDto = contact;
+		this.mainContactId = contact != null ? contact.getId() : null;
 	}
 
 	@JsonIgnore

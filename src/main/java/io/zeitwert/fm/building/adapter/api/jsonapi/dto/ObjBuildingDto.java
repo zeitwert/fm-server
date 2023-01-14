@@ -1,6 +1,8 @@
 
 package io.zeitwert.fm.building.adapter.api.jsonapi.dto;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +42,10 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	@JsonApiRelationId
 	private Integer accountId;
 
+	public void setAccountId(Integer accountId) {
+		assertThis(false, "accountId is read-only");
+	}
+
 	@JsonIgnore
 	private ObjAccountDto accountDto;
 
@@ -57,8 +63,8 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 		return this.accountDto;
 	}
 
-	// Crnk needs to see this to set mainContractId
 	public void setAccount(ObjAccountDto account) {
+		assertThis(false, "account is read-only");
 	}
 
 	private EnumeratedDto buildingType;
@@ -106,6 +112,10 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	@JsonIgnore
 	private ObjDocumentDto coverFotoDto;
 
+	public void setCoverFotoId(Integer fotoId) {
+		assertThis(false, "coverFotoId is read-only");
+	}
+
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjDocumentDto getCoverFoto() {
 		if (this.coverFotoDto == null) {
@@ -121,6 +131,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	}
 
 	public void setCoverFoto(ObjDocumentDto coverFoto) {
+		assertThis(false, "coverFoto is read-only");
 	}
 
 }

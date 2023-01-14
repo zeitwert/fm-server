@@ -33,6 +33,11 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 	@JsonApiRelationId
 	private Integer accountId;
 
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
+		this.accountDto = null;
+	}
+
 	@JsonIgnore
 	private ObjAccountDto accountDto;
 
@@ -50,12 +55,18 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 		return this.accountDto;
 	}
 
-	// Crnk needs to see this to set accountId
 	public void setAccount(ObjAccountDto account) {
+		this.accountDto = account;
+		this.accountId = account != null ? account.getId() : null;
 	}
 
 	@JsonApiRelationId
 	private Integer contactId;
+
+	public void setContactId(Integer contactId) {
+		this.contactId = contactId;
+		this.contactDto = null;
+	}
 
 	@JsonIgnore
 	private ObjContactDto contactDto;
@@ -74,8 +85,9 @@ public class DocLeadDto extends FMDocDtoBase<DocLead> {
 		return this.contactDto;
 	}
 
-	// Crnk needs to see this to set contactId
 	public void setContact(ObjContactDto contact) {
+		this.contactDto = contact;
+		this.contactId = contact != null ? contact.getId() : null;
 	}
 
 	private String subject;

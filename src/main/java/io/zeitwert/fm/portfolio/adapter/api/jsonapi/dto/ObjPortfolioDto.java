@@ -29,18 +29,16 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
 public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 
+	@JsonApiRelationId
+	private Integer accountId;
+
 	@JsonIgnore
 	private ObjAccountDto accountDto;
 
-	private String name;
-	private String description;
-	private String portfolioNr;
-	private Set<EnumeratedDto> includes;
-	private Set<EnumeratedDto> excludes;
-	private Set<EnumeratedDto> buildings;
-
-	@JsonApiRelationId
-	private Integer accountId;
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
+		this.accountDto = null;
+	}
 
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
@@ -56,8 +54,16 @@ public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
 		return this.accountDto;
 	}
 
-	// Crnk needs to see this to set accountId
 	public void setAccount(ObjAccountDto account) {
+		this.accountDto = account;
+		this.accountId = account != null ? account.getId() : null;
 	}
+
+	private String name;
+	private String description;
+	private String portfolioNr;
+	private Set<EnumeratedDto> includes;
+	private Set<EnumeratedDto> excludes;
+	private Set<EnumeratedDto> buildings;
 
 }
