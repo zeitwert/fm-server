@@ -6,7 +6,7 @@ import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
-import TaskForm from "./forms/TaskFormDef";
+import TaskForm from "./forms/TaskForm";
 
 export interface TaskCreationFormProps {
 	store: TaskStore;
@@ -44,20 +44,20 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Grunddaten">
 								<FieldRow>
-									<Combobox label="Kunde" fieldName="account" />
+									<Combobox label="Referenz" fieldName="account" size={6} />
+									<Combobox label="Kunde" fieldName="account" size={6} />
 								</FieldRow>
 								<FieldRow>
-									<Input label="Titel" fieldName="subject" />
+									<Input label="Titel" fieldName="subject" size={10} />
+									<Checkbox label="Privat?" fieldName="isPrivate" size={2} />
 								</FieldRow>
 								<FieldRow>
 									<TextArea label="Details" fieldName="content" rows={8} />
 								</FieldRow>
 								<FieldRow>
-									<Select label="Priorität" fieldName="priority" size={10} />
-									<Checkbox label="Privat?" fieldName="isPrivate" size={2} />
-								</FieldRow>
-								<FieldRow>
-									<Input label="Fällig am" fieldName="dueAt" />
+									<Select label="Zugewiesen an" fieldName="assignee" size={4} />
+									<Input label="Fällig am" fieldName="dueAt" size={4} />
+									<Select label="Priorität" fieldName="priority" size={4} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

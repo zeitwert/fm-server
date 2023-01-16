@@ -62,6 +62,8 @@ public class DocMetaDto extends AggregateMetaDto {
 			.modifiedByUser(modifiedByUser)
 			.modifiedAt(doc.get(DocFields.MODIFIED_AT))
 			.caseStage(EnumeratedDto.fromEnum(CodeCaseStageEnum.getCaseStage(doc.get(DocFields.CASE_STAGE_ID))))
+			.isInWork(doc.get(DocFields.IS_IN_WORK))
+			.assignee(userCache.getAsEnumerated(doc.getValue(DocFields.ASSIGNEE_ID)))
 			.build();
 		// @formatter:on
 	}

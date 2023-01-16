@@ -3,6 +3,7 @@ import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityType } from "../../../app/common";
 import { Document } from "../../../fm/dms/model/DocumentModel";
 import { AggregateModel } from "../../aggregate/model/AggregateModel";
+import { Enumerated } from "../../aggregate/model/EnumeratedModel";
 import { CaseStage } from "./BpmModel";
 import { DocMeta } from "./DocMeta";
 
@@ -12,6 +13,7 @@ const MstDocModel = AggregateModel.named("Doc")
 		//
 		meta: types.maybe(types.frozen<DocMeta>()),
 		//
+		assignee: types.maybe(types.frozen<Enumerated>()), // to set new case stage in transition
 		caseStage: types.maybe(types.frozen<CaseStage>()), // to set new case stage in transition
 		//
 		//documents: types.optional(types.array(types.reference(types.late((): IAnyModelType => DocumentModel))), [])

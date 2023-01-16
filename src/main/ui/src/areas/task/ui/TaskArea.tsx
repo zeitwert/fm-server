@@ -38,7 +38,11 @@ export default class TaskArea extends React.Component {
 }
 
 const initTask = (task: Task) => {
+	task.setField("assignee", session.sessionInfo?.user);
 	task.setField("tenant", session.sessionInfo?.tenant);
+	task.setField("isPrivate", false);
+	task.setField("priority", { id: "normal", name: "Normal" });
+	task.setField("dueAt", new Date());
 	if (!session.isKernelTenant) {
 		task.setAccount(session.sessionInfo?.account?.id);
 	}

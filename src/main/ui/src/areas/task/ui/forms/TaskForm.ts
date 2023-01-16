@@ -11,6 +11,7 @@ export const TaskFormDef: FormDefinition<TaskModelType> = {
 	owner: new EnumeratedField({ required: true, source: "oe/objUser" }),
 	//
 	relatedTo: new EnumeratedField({ required: true, source: "oe/objUser" }),
+	assignee: new EnumeratedField({ required: true, source: "oe/objUser" }),
 	account: new AggregateField({ required: true, source: ACCOUNT_API }),
 	//
 	subject: new TextField({ required: true }),

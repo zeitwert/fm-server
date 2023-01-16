@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.doc.adapter.api.jsonapi.base;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocMetaDto;
 import io.zeitwert.ddd.doc.model.Doc;
@@ -8,6 +9,7 @@ import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 
 import org.jooq.TableRecord;
 
@@ -17,7 +19,10 @@ public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D e
 	@Override
 	public void toAggregate(D dto, A doc) {
 		if (dto.getOwner() != null) {
-			doc.setOwner(getUser(Integer.parseInt(dto.getOwner().getId())));
+			doc.setOwner(this.getUser(Integer.parseInt(dto.getOwner().getId())));
+		}
+		if (dto.getAssignee() != null) {
+			doc.setAssignee(this.getUser(Integer.parseInt(dto.getAssignee().getId())));
 		}
 	}
 
@@ -30,20 +35,23 @@ public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D e
 			.meta(DocMetaDto.fromDoc(doc))
 			.id(doc.getId())
 			.caption(doc.getCaption())
-			.owner(userDtoAdapter.asEnumerated(doc.getOwner()));
+			.owner(userDtoAdapter.asEnumerated(doc.getOwner()))
+			.assignee(ObjUserDtoAdapter.getInstance().asEnumerated(doc.getAssignee()));
 		// @formatter:on
 	}
 
 	protected void fromRecord(DocDtoBase.DocDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> doc) {
-		EnumeratedDto tenant = getTenantEnumerated(doc.get(DocFields.TENANT_ID));
-		EnumeratedDto owner = getUserEnumerated(doc.get(DocFields.OWNER_ID));
+		ObjUserCache userCache = (ObjUserCache) AppContext.getInstance().getBean(ObjUserCache.class);
+		EnumeratedDto tenant = this.getTenantEnumerated(doc.get(DocFields.TENANT_ID));
+		EnumeratedDto owner = this.getUserEnumerated(doc.get(DocFields.OWNER_ID));
 		// @formatter:off
 		dtoBuilder
 			.tenant(tenant)
 			.meta(DocMetaDto.fromRecord(doc))
 			.id(doc.get(DocFields.ID))
 			.caption(doc.get(DocFields.CAPTION))
-			.owner(owner);
+			.owner(owner)
+			.assignee(userCache.getAsEnumerated(doc.getValue(DocFields.ASSIGNEE_ID)));
 		// @formatter:on
 	}
 
