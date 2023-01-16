@@ -1,9 +1,9 @@
 
-import classNames from "classnames";
+import { SLDSCheckbox } from "@salesforce/design-system-react";
 import { observer } from "mobx-react";
 import { FC, useContext } from "react";
 import { FormContext } from "../Form";
-import { Field, FieldProps, getAccessor, getComponentProps, getFieldId } from "./Field";
+import { Field, FieldProps, getAccessor, getComponentProps } from "./Field";
 
 export interface CheckboxProps extends FieldProps {
 	checked?: boolean;
@@ -11,22 +11,26 @@ export interface CheckboxProps extends FieldProps {
 
 export const Checkbox: FC<CheckboxProps> = observer((props) => {
 	const accessor = getAccessor(props, useContext(FormContext));
-	const { align } = props;
 	const { readOnly, inputProps } = getComponentProps(accessor, props);
-	const fieldId = getFieldId(props);
 	return (
-		<Field {...props}>
+		<Field {...props} readOnly={false}>
 			{
 				readOnly &&
-				<span>{inputProps.value}</span>
+				<SLDSCheckbox
+					variant="toggle"
+					labels={{ toggleDisabled: "", toggleEnabled: "" }}
+					disabled={true}
+					checked={inputProps.checked}
+				/>
 			}
 			{
 				!readOnly &&
-				<input
-					id={fieldId}
-					type={"checkbox"}
-					className={classNames("slds-input", align ? "slds-text-align_" + align : "")}
-					{...inputProps}
+				<SLDSCheckbox
+					variant="toggle"
+					labels={{ toggleDisabled: "", toggleEnabled: "" }}
+					disabled={inputProps.disabled}
+					onChange={(event: any, checked: boolean) => { console.log("onChange", event, checked); inputProps.onChange(event, checked); }}
+					checked={inputProps.checked}
 				/>
 			}
 		</Field>
