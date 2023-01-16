@@ -1,9 +1,9 @@
 
 import { EnumeratedField, IdField, NumberField, TextField } from "@zeitwert/ui-forms";
-import { AccountModelType } from "@zeitwert/ui-model";
-import { FormDefinition } from "mstform";
+import { AccountModel, AccountModelType } from "@zeitwert/ui-model";
+import { Form, FormDefinition } from "mstform";
 
-const AccountFormDef: FormDefinition<AccountModelType> = {
+export const AccountFormDef: FormDefinition<AccountModelType> = {
 	id: new IdField(),
 	tenant: new EnumeratedField({ source: "oe/objTenant", required: true }),
 	owner: new EnumeratedField({ required: true, source: "oe/objUser" }),
@@ -17,4 +17,6 @@ const AccountFormDef: FormDefinition<AccountModelType> = {
 	inflationRate: new NumberField(),
 };
 
-export default AccountFormDef;
+const AccountForm = new Form(AccountModel, AccountFormDef);
+
+export default AccountForm;

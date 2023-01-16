@@ -1,22 +1,17 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, PortfolioModel, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import PortfolioFormDef from "../forms/PortfolioFormDef";
+import PortfolioForm from "../forms/PortfolioForm";
 
 export interface PortfolioStaticDataFormProps {
 	store: PortfolioStore;
 }
-
-const PortfolioForm = new Form(
-	PortfolioModel,
-	PortfolioFormDef
-);
 
 @observer
 export default class PortfolioStaticDataForm extends React.Component<PortfolioStaticDataFormProps> {

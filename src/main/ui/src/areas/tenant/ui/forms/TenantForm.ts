@@ -1,9 +1,9 @@
 
 import { EnumeratedField, IdField, NumberField, TextField } from "@zeitwert/ui-forms";
-import { TenantModelType } from "@zeitwert/ui-model";
-import { FormDefinition } from "mstform";
+import { TenantModel, TenantModelType } from "@zeitwert/ui-model";
+import { Form, FormDefinition } from "mstform";
 
-const TenantFormDef: FormDefinition<TenantModelType> = {
+export const TenantFormDef: FormDefinition<TenantModelType> = {
 	id: new IdField(),
 	key: new TextField(),
 	name: new TextField({ required: true }),
@@ -13,4 +13,6 @@ const TenantFormDef: FormDefinition<TenantModelType> = {
 	inflationRate: new NumberField(),
 };
 
-export default TenantFormDef;
+const TenantForm = new Form(TenantModel, TenantFormDef);
+
+export default TenantForm;

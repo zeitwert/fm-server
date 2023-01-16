@@ -1,21 +1,17 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ContactModel, ContactModelType, ContactStore } from "@zeitwert/ui-model";
+import { ContactModelType, ContactStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import ContactFormDef from "../forms/ContactFormDef";
+import ContactForm from "../forms/ContactForm";
 
 export interface ContactStaticDataFormProps {
 	store: ContactStore;
 }
 
-const ContactForm = new Form(
-	ContactModel,
-	ContactFormDef
-);
 
 @observer
 export default class ContactStaticDataForm extends React.Component<ContactStaticDataFormProps> {

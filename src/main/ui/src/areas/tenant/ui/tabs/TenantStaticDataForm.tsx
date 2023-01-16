@@ -1,23 +1,18 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, Enumerated, TenantModel, TenantModelType, TenantStore, USER_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, Enumerated, TenantModelType, TenantStore, USER_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import TenantFormDef from "../forms/TenantFormDef";
+import TenantForm from "../forms/TenantForm";
 
 
 export interface TenantStaticDataFormProps {
 	store: TenantStore;
 }
-
-const TenantForm = new Form(
-	TenantModel,
-	TenantFormDef
-);
 
 @observer
 export default class TenantStaticDataForm extends React.Component<TenantStaticDataFormProps> {

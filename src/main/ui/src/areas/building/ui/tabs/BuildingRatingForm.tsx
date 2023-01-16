@@ -1,13 +1,13 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { AccessorContext, FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { BuildingElement, BuildingModel, BuildingModelType, BuildingStore, Enumerated, requireThis, session } from "@zeitwert/ui-model";
+import { BuildingElement, BuildingModelType, BuildingStore, Enumerated, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import { Form, FormDefinition, FormStateOptions, IFormAccessor } from "mstform";
+import { FormDefinition, FormStateOptions, IFormAccessor } from "mstform";
 import React from "react";
-import BuildingFormDef from "../forms/BuildingFormDef";
+import BuildingForm from "../forms/BuildingForm";
 import ElementListRatingForm from "./ElementListRatingForm";
 import { ElementAccessor } from "./ElementRatingForm";
 
@@ -17,11 +17,6 @@ export interface BuildingRatingFormProps {
 	onOpenElementRating: (element: BuildingElement, elementAccessor: ElementAccessor) => void;
 	onCloseElementRating: () => void;
 }
-
-const BuildingForm = new Form(
-	BuildingModel,
-	BuildingFormDef
-);
 
 export type FormAccessor = IFormAccessor<FormDefinition<BuildingModelType>, any, BuildingModelType>;
 

@@ -1,22 +1,17 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { Enumerated, TENANT_API, UserModel, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { Enumerated, TENANT_API, UserModelType, UserStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import UserFormDef from "../forms/UserFormDef";
+import UserForm from "../forms/UserForm";
 
 export interface UserStaticDataFormProps {
 	store: UserStore;
 }
-
-const UserForm = new Form(
-	UserModel,
-	UserFormDef
-);
 
 @observer
 export default class UserStaticDataForm extends React.Component<UserStaticDataFormProps> {

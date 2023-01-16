@@ -1,21 +1,16 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { BuildingModel, BuildingModelType, BuildingStore } from "@zeitwert/ui-model";
+import { BuildingModelType, BuildingStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import BuildingFormDef from "../forms/BuildingFormDef";
+import BuildingForm from "../forms/BuildingForm";
 
 export interface BuildingStaticDataFormProps {
 	store: BuildingStore;
 }
-
-const BuildingForm = new Form(
-	BuildingModel,
-	BuildingFormDef
-);
 
 @observer
 export default class BuildingStaticDataForm extends React.Component<BuildingStaticDataFormProps> {

@@ -1,9 +1,9 @@
 
 import { EnumeratedField, IdField, TextField } from "@zeitwert/ui-forms";
-import { UserModelType } from "@zeitwert/ui-model";
-import { FormDefinition } from "mstform";
+import { UserModel, UserModelType } from "@zeitwert/ui-model";
+import { Form, FormDefinition } from "mstform";
 
-const UserFormDef: FormDefinition<UserModelType> = {
+export const UserFormDef: FormDefinition<UserModelType> = {
 	id: new IdField(),
 	tenant: new EnumeratedField({ source: "oe/objTenant", required: true }),
 	owner: new EnumeratedField({ required: true, source: "oe/objUser" }),
@@ -14,4 +14,6 @@ const UserFormDef: FormDefinition<UserModelType> = {
 	description: new TextField(),
 };
 
-export default UserFormDef;
+const UserForm = new Form(UserModel, UserFormDef);
+
+export default UserForm;

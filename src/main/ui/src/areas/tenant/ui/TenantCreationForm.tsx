@@ -1,22 +1,16 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { TenantModel, TenantStore } from "@zeitwert/ui-model";
+import { TenantStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { Form } from "mstform";
 import React from "react";
-import TenantFormDef from "./forms/TenantFormDef";
+import TenantForm from "./forms/TenantForm";
 
 
 export interface TenantCreationFormProps {
 	store: TenantStore;
 }
-
-const TenantForm = new Form(
-	TenantModel,
-	TenantFormDef
-);
 
 @observer
 export default class TenantCreationForm extends React.Component<TenantCreationFormProps> {

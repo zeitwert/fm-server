@@ -1,22 +1,17 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { asEnumerated, BuildingModel, BuildingModelType, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
+import { asEnumerated, BuildingModelType, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import BuildingFormDef from "./forms/BuildingFormDef";
+import BuildingForm from "./forms/BuildingForm";
 
 export interface BuildingCreationFormProps {
 	store: BuildingStore;
 }
-
-const BuildingForm = new Form(
-	BuildingModel,
-	BuildingFormDef
-);
 
 @observer
 export default class BuildingCreationForm extends React.Component<BuildingCreationFormProps> {

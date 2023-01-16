@@ -1,21 +1,16 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, Static, TextArea } from "@zeitwert/ui-forms";
-import { AccountModel, AccountModelType, AccountStore } from "@zeitwert/ui-model";
+import { AccountModelType, AccountStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import AccountFormDef from "../forms/AccountFormDef";
+import AccountForm from "../forms/AccountForm";
 
 export interface AccountStaticDataFormProps {
 	store: AccountStore;
 }
-
-const AccountForm = new Form(
-	AccountModel,
-	AccountFormDef
-);
 
 @observer
 export default class AccountStaticDataForm extends React.Component<AccountStaticDataFormProps> {

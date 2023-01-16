@@ -1,21 +1,16 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { session, UserModel, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { session, UserModelType, UserStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
-import UserFormDef from "./forms/UserFormDef";
+import UserForm from "./forms/UserForm";
 
 export interface UserCreationFormProps {
 	store: UserStore;
 }
-
-const UserForm = new Form(
-	UserModel,
-	UserFormDef
-);
 
 @observer
 export default class UserCreationForm extends React.Component<UserCreationFormProps> {

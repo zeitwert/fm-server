@@ -1,24 +1,19 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { BuildingModel, BuildingModelType, BuildingStore } from "@zeitwert/ui-model";
+import { BuildingModelType, BuildingStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
-import { Form, FormStateOptions } from "mstform";
+import { FormStateOptions } from "mstform";
 import React from "react";
 import BuildingMap, { Building } from "../components/BuildingMap";
-import BuildingFormDef from "../forms/BuildingFormDef";
+import BuildingForm from "../forms/BuildingForm";
 
 const ALT_GEO_ADDRESS_HELP_TEXT = "<b>Alternative Geo Addresse</b><ul class=\"slds-list_dotted\"><li>Adresse (Strasse Nr, PLZ Ort)</li><li>Plus Code (z.B. 9HG5+8P Zürich)</li><li>Koordinaten (z.B. 47.36489,8.676913)</li></ul>";
 
 export interface BuildingLocationFormProps {
 	store: BuildingStore;
 }
-
-const BuildingForm = new Form(
-	BuildingModel,
-	BuildingFormDef
-);
 
 @observer
 export default class BuildingLocationForm extends React.Component<BuildingLocationFormProps> {

@@ -1,8 +1,8 @@
 
 import { DateField, EnumeratedField, IdField, IntField, NumberField, TextField } from "@zeitwert/ui-forms";
-import { API, BuildingModelType, Config, Enumerated } from "@zeitwert/ui-model";
+import { API, BuildingModel, BuildingModelType, Config, Enumerated } from "@zeitwert/ui-model";
 import { isAlive } from "mobx-state-tree";
-import { FormDefinition, Query, RepeatingForm } from "mstform";
+import { Form, FormDefinition, Query, RepeatingForm } from "mstform";
 import BuildingElementFormDef from "./BuildingElementFormDef";
 
 const loadBuildingSubTypes = async (q?: Query): Promise<Enumerated[]> => {
@@ -13,7 +13,7 @@ const loadBuildingSubTypes = async (q?: Query): Promise<Enumerated[]> => {
 	return subTypesResponse.data ?? [];
 };
 
-const BuildingFormDef: FormDefinition<BuildingModelType> = {
+export const BuildingFormDef: FormDefinition<BuildingModelType> = {
 	id: new IdField(),
 	name: new TextField({ required: true }),
 	description: new TextField(),
@@ -69,4 +69,6 @@ const BuildingFormDef: FormDefinition<BuildingModelType> = {
 	elements: new RepeatingForm(BuildingElementFormDef)
 };
 
-export default BuildingFormDef;
+const BuildingForm = new Form(BuildingModel, BuildingFormDef);
+
+export default BuildingForm;
