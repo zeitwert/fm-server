@@ -4,6 +4,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import DocumentPage from "./DocumentPage";
 
+const documentStore = DocumentStoreModel.create({});
+
 export default class DocumentArea extends React.Component {
 
 	componentDidMount(): void {
@@ -18,7 +20,7 @@ export default class DocumentArea extends React.Component {
 					element={
 						<ItemsPage
 							entityType={EntityType.DOCUMENT}
-							store={DocumentStoreModel.create({})}
+							store={documentStore}
 							listDatamart="dms.documents"
 							listTemplate="dms.documents.all"
 							canCreate={false && !session.hasReadOnlyRole}

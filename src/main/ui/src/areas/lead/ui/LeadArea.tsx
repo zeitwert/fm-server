@@ -4,6 +4,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import LeadPage from "./LeadPage";
 
+const leadStore = LeadStoreModel.create({});
+
 export default class LeadArea extends React.Component {
 
 	componentDidMount(): void {
@@ -18,7 +20,7 @@ export default class LeadArea extends React.Component {
 					element={
 						<ItemsPage
 							entityType={EntityType.LEAD}
-							store={LeadStoreModel.create({})}
+							store={leadStore}
 							listDatamart="lead.leads"
 							listTemplate="lead.leads.my-open"
 							canCreate={false && session.isUser && !session.hasReadOnlyRole}
