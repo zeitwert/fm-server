@@ -1,5 +1,9 @@
-import moment from "moment";
 
+import moment from "moment";
+import "moment/locale/de-ch";
+import { Locale } from "../i18n";
+
+moment.locale(Locale.de_ch);
 const locale = moment.locale();
 
 const DATETIME_LONGER_OPTIONS = {
@@ -50,7 +54,7 @@ const DATE_LONG_OPTIONS = {
 const DATE_SHORT_OPTIONS = {
 	hour12: false,
 	year: "numeric",
-	month: "short",
+	month: "long",
 	day: "numeric"
 } as Intl.DateTimeFormatOptions;
 

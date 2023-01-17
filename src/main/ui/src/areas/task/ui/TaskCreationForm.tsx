@@ -1,6 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { Checkbox, Combobox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
 import { TaskModelType, TaskStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
@@ -25,7 +26,6 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 		isDisabled: (accessor) => {
 			const task = this.props.store.task!;
 			if (["account"].indexOf(accessor.fieldref) >= 0) {
-				console.log("account", accessor.value, !!accessor.value);
 				return !!accessor.value;
 			}
 			return !!accessor.fieldref && !task.account;
@@ -56,7 +56,7 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 								</FieldRow>
 								<FieldRow>
 									<Select label="Zugewiesen an" fieldName="assignee" size={4} />
-									<Input label="Fällig am" fieldName="dueAt" size={4} />
+									<DatePicker label="Fällig am" fieldName="dueAt" size={4} yearRangeMin={-1} />
 									<Select label="Priorität" fieldName="priority" size={4} />
 								</FieldRow>
 							</FieldGroup>

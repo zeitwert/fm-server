@@ -119,9 +119,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	private getHeaderDetails(task: Task): HeaderDetail[] {
 		const taskOwner: UserInfo = task.owner as UserInfo;
-		console.log("task.owner", taskOwner);
 		const taskAssignee: UserInfo = task.meta?.assignee as UserInfo;
-		console.log("task.assignee", taskAssignee, task.meta);
 		return [
 			{
 				label: "Assignee",

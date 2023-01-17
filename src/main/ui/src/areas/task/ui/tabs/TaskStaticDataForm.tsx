@@ -1,6 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { Checkbox, Combobox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
 import { session, TaskModelType, TaskStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
@@ -43,6 +44,10 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Grunddaten">
 								<FieldRow>
+									<Combobox label="Referenz" fieldName="account" size={6} />
+									<Combobox label="Kunde" fieldName="account" size={6} />
+								</FieldRow>
+								<FieldRow>
 									<Input label="Titel" fieldName="subject" size={10} />
 									<Checkbox label="Privat?" fieldName="isPrivate" size={2} />
 								</FieldRow>
@@ -50,13 +55,9 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 									<TextArea label="Details" fieldName="content" rows={8} />
 								</FieldRow>
 								<FieldRow>
-									<Input label="Fällig am" fieldName="dueAt" size={6} />
-									<Select label="Priorität" fieldName="priority" size={6} />
-								</FieldRow>
-								<FieldRow>
 									<Select label="Zugewiesen an" fieldName="assignee" size={4} />
-									<Combobox label="Referenz" fieldName="account" size={4} />
-									<Combobox label="Kunde" fieldName="account" size={4} />
+									<DatePicker label="Fällig am" fieldName="dueAt" size={4} yearRangeMin={-1} />
+									<Select label="Priorität" fieldName="priority" size={4} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

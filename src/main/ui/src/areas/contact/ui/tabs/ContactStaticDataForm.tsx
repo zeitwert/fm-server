@@ -1,6 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
 import { ContactModelType, ContactStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
@@ -68,7 +69,7 @@ export default class ContactStaticDataForm extends React.Component<ContactStatic
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Personell">
 								<FieldRow>
-									<Input label="Geburtsdatum" fieldName="birthDate" size={4} />
+									<DatePicker label="Geburtsdatum" fieldName="birthDate" size={4} yearRangeMin={-100} yearRangeMax={1} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

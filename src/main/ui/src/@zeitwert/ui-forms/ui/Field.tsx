@@ -77,6 +77,7 @@ export function getAccessor(props: any, formAccessor: IFormAccessor<any, any, an
 	return undefined;
 }
 
+// consider controlled mode for inputProps
 export function getComponentProps(accessor: FieldAccessor<any, any> | undefined, props: any): ComponentProps {
 	const readOnly = props.readOnly === undefined ? accessor?.readOnly : props.readOnly;
 	const inputProps = accessor?.inputProps ?? {};

@@ -29,7 +29,7 @@ export const Checkbox: FC<CheckboxProps> = observer((props) => {
 					variant="toggle"
 					labels={{ toggleDisabled: "", toggleEnabled: "" }}
 					disabled={inputProps.disabled}
-					onChange={(event: any, checked: boolean) => { console.log("onChange", event, checked); inputProps.onChange(event, checked); }}
+					onChange={inputProps.onChange}
 					checked={inputProps.checked}
 				/>
 			}

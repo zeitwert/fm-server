@@ -1,6 +1,7 @@
 
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
-import { AccessorContext, FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
+import { AccessorContext, FieldGroup, FieldRow, Select, SldsForm } from "@zeitwert/ui-forms";
+import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
 import { BuildingElement, BuildingModelType, BuildingStore, Enumerated, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
@@ -96,7 +97,7 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 														</FieldGroup>
 													</div>
 													<Select label="Unterhaltsplanung" fieldName="maintenanceStrategy" size={2} />
-													<Input label="Bewertungsdatum" fieldName="ratingDate" size={1} />
+													<DatePicker label="Bewertungsdatum" fieldName="ratingDate" size={1} yearRangeMax={1} />
 													<Select label="Bewertung durch" fieldName="ratingUser" size={2} />
 													<div className="slds-size_1-of-12" />
 													<Select label="Bewertungsstatus" fieldName="ratingStatus" size={2} />
