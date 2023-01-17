@@ -142,8 +142,15 @@ export class JsonApiSerializer {
 
 	public convertObjToJsonApiObj(obj: any): SimpleJsonApiObj {
 		// jsonApiSerializer ignores undefined values, need to be null
-		const prepObj = convertUndefinedToNull(obj);
-		return this.jsonApiSerializer.serialize(prepObj);
+		const cleanObj = JSON.parse(JSON.stringify(obj, this.replaceUndefined));
+		return this.jsonApiSerializer.serialize(cleanObj);
+	}
+
+	private replaceUndefined(key: string, value: any) {
+		if (value === undefined) {
+			return null;
+		}
+		return value;
 	}
 
 }
