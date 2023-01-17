@@ -74,6 +74,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 					<ItemPath
 						store={this.leadStore}
 						stageList={lead.meta!.caseStages!}
+						readOnly={this.leadStore.isInTrx}
 						currentStage={lead.meta?.caseStage!}
 						handleStageTransition={this.handleStageTransition}
 						onTransitionToStage={this.onTransitionToStage}

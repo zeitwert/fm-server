@@ -2,6 +2,7 @@
 package io.zeitwert.ddd.doc.model.base;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.UpdatableRecord;
@@ -11,6 +12,7 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocMeta;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
@@ -18,6 +20,7 @@ import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.ddd.doc.service.api.DocService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
@@ -96,6 +99,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		return this.docDbRecord;
 	}
 
+	@Override
 	public CodeAggregateType getAggregateType() {
 		return CodeAggregateTypeEnum.getAggregateType(this.docTypeId.getValue());
 	}
@@ -162,7 +166,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	@Override
 	public void doStore() {
 		super.doStore();
-		getDocDbRecord().store();
+		this.getDocDbRecord().store();
 	}
 
 	@Override
@@ -175,6 +179,11 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		requireThis(caseStage != null && !caseStage.getIsAbstract(), "valid caseStage");
 		this.caseStage.setValue(caseStage);
 		this.isInWork.setValue(caseStage != null && caseStage.isInWork());
+	}
+
+	@Override
+	public List<CodeCaseStage> getCaseStages() {
+		return AppContext.getInstance().getBean(DocService.class).getCaseStages(this.getId());
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocMetaDto;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.base.DocFields;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
@@ -23,6 +24,9 @@ public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D e
 		}
 		if (dto.getAssignee() != null) {
 			doc.setAssignee(this.getUser(Integer.parseInt(dto.getAssignee().getId())));
+		}
+		if (dto.getNextCaseStage() != null) {
+			doc.setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getNextCaseStage().getId()));
 		}
 	}
 

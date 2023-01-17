@@ -14,7 +14,7 @@ const MstDocModel = AggregateModel.named("Doc")
 		meta: types.maybe(types.frozen<DocMeta>()),
 		//
 		assignee: types.maybe(types.frozen<Enumerated>()), // to set new case stage in transition
-		caseStage: types.maybe(types.frozen<CaseStage>()), // to set new case stage in transition
+		nextCaseStage: types.maybe(types.frozen<CaseStage>()), // to set new case stage in transition
 		//
 		//documents: types.optional(types.array(types.reference(types.late((): IAnyModelType => DocumentModel))), [])
 	})

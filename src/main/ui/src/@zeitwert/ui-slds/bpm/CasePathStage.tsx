@@ -26,6 +26,7 @@ interface CasePathStageProps {
 
 @observer
 export class CasePathStage extends React.Component<CasePathStageProps> {
+
 	@observable isPopoverOpen = false;
 
 	@computed get name() {
@@ -82,18 +83,20 @@ export class CasePathStage extends React.Component<CasePathStageProps> {
 						tabIndex={stageType === StageType.current ? 0 : -1}
 						onClick={() => onSelect && onSelect(stage)}
 					>
-						{!isIncomplete && transition && (
-							<div style={{ position: "absolute", bottom: "-0.5rem", left: "50%" }}>
-								<Tooltip
-									align="bottom"
-									content={this.renderTooltipContent(transition)}
-									isOpen={this.isPopoverOpen}
-									position="overflowBoundaryElement"
-								>
-									<></>
-								</Tooltip>
-							</div>
-						)}
+						{
+							!isIncomplete && transition && (
+								<div style={{ position: "absolute", bottom: "-0.5rem", left: "50%" }}>
+									<Tooltip
+										align="bottom"
+										content={this.renderTooltipContent(transition)}
+										isOpen={this.isPopoverOpen}
+										position="overflowBoundaryElement"
+									>
+										<></>
+									</Tooltip>
+								</div>
+							)
+						}
 						<span className="slds-path__stage">
 							<Icon category="utility" name="check" size="x-small" inverse />
 						</span>
@@ -117,4 +120,5 @@ export class CasePathStage extends React.Component<CasePathStageProps> {
 		}
 		return "Completed " + DateFormat.relativeTime(new Date(), transition.modifiedAt!);
 	}
+
 }

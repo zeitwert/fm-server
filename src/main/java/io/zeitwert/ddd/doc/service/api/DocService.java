@@ -7,6 +7,6 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 
 public interface DocService {
 
-	List<CodeCaseStage> getCaseStages(String caseDefId);
+	List<CodeCaseStage> getCaseStages(Integer docId);
 
 }

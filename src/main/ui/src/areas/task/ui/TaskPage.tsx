@@ -7,6 +7,7 @@ import { StageSelector } from "lib/doc/ui/StageSelector";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart } from "lib/item/ui/ItemPage";
+import ItemPath from "lib/item/ui/ItemPath";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -69,17 +70,14 @@ class TaskPage extends React.Component<RouteComponentProps> {
 					customActions={this.getHeaderActions()}
 				/>
 				<ItemGrid>
-					{
-						/*
-						<ItemPath
-							store={this.taskStore}
-							stageList={task.meta!.caseStages!}
-							currentStage={task.meta?.caseStage!}
-							handleStageTransition={this.handleStageTransition}
-							onTransitionToStage={this.onTransitionToStage}
-						/>
-						*/
-					}
+					<ItemPath
+						store={this.taskStore}
+						stageList={task.meta!.caseStages!}
+						readOnly={this.taskStore.isInTrx}
+						currentStage={task.meta?.caseStage!}
+						handleStageTransition={this.handleStageTransition}
+						onTransitionToStage={this.onTransitionToStage}
+					/>
 					<ItemLeftPart hasItemPath>
 						<ItemEditor
 							store={this.taskStore}
@@ -185,12 +183,12 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		}
 	};
 
-	// private handleStageTransition = (stage: CaseStage) => {
-	// 	if (stage.isAbstract) {
-	// 		this.abstractStage = stage;
-	// 		this.doStageSelection = true;
-	// 	}
-	// };
+	private handleStageTransition = (stage: CaseStage) => {
+		if (stage.isAbstract) {
+			this.abstractStage = stage;
+			this.doStageSelection = true;
+		}
+	};
 
 	private onTransitionToStage = async (stage: CaseStage) => {
 		try {

@@ -38,7 +38,7 @@ const MstDocStoreModel = types
 			if (!self.isInTrx) {
 				self.startTrx();
 			}
-			self.item!.caseStage = stage;
+			self.item!.nextCaseStage = stage;
 			return self.store();
 		}
 	}))

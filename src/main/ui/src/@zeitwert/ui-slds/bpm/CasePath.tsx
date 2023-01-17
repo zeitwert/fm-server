@@ -16,6 +16,7 @@ interface CasePathProps {
 
 @observer
 export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> {
+
 	@observable isShowingDetails = false;
 	@observable isEditingDetailFields = false;
 	@observable isModifyButtonHovered = false;
@@ -39,17 +40,17 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 		const { className, targetStage, allowTransition, isOtherStageSelected, readOnly } = this.props;
 		const classes = classNames("slds-path", className);
 		const trackClasses = classNames("slds-grid slds-path__track");
-		const detailButton = (
-			<Button
-				className="slds-path__trigger"
-				title="Expand Stage Explanation"
-				onClick={() => (this.isShowingDetails = !this.isShowingDetails)}
-				iconCategory="utility"
-				iconName={"chevron" + (this.isShowingDetails ? "down" : "right")}
-				iconVariant="border-filled"
-				variant="icon"
-			/>
-		);
+		// const detailButton = (
+		// 	<Button
+		// 		className="slds-path__trigger"
+		// 		title="Expand Stage Explanation"
+		// 		onClick={() => (this.isShowingDetails = !this.isShowingDetails)}
+		// 		iconCategory="utility"
+		// 		iconName={"chevron" + (this.isShowingDetails ? "down" : "right")}
+		// 		iconVariant="border-filled"
+		// 		variant="icon"
+		// 	/>
+		// );
 		const modifyButtonClasses = classNames(
 			"slds-button slds-button_brand slds-path__mark-complete",
 			isOtherStageSelected ? "slds-path__mark-current" : null
@@ -86,7 +87,7 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 				<div className={classes}>
 					<div className={trackClasses}>
 						<div className="slds-grid slds-path__scroller-container">
-							{detailButton}
+							{/*detailButton*/}
 							<div className="slds-path__scroller" role="application">
 								<div className="slds-path__scroller_inner">
 									<ul className="slds-path__nav" role="listbox" aria-orientation="horizontal">
@@ -98,7 +99,7 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 						{!readOnly ? modifyButton : null}
 					</div>
 				</div>
-				{this.isShowingDetails && this.renderDetails()}
+				{/*this.isShowingDetails && this.renderDetails()*/}
 			</>
 		);
 	}
@@ -111,14 +112,16 @@ export class CasePath extends React.Component<PropsWithChildren<CasePathProps>> 
 					<div className="slds-path__keys">
 						<div className="slds-grid slds-grid_align-spread slds-path__coach-title">
 							<h2>Key Fields This Stage</h2>
-							{!readOnly && (
-								<button
-									className="slds-button slds-path__coach-edit slds-text-body_small"
-									onClick={() => (this.isEditingDetailFields = true)}
-								>
-									Edit
-								</button>
-							)}
+							{
+								!readOnly && (
+									<button
+										className="slds-button slds-path__coach-edit slds-text-body_small"
+										onClick={() => (this.isEditingDetailFields = true)}
+									>
+										Edit
+									</button>
+								)
+							}
 						</div>
 					</div>
 					<div className="slds-path__guidance">

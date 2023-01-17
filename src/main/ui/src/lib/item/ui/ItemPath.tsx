@@ -1,3 +1,4 @@
+
 import { Card } from "@salesforce/design-system-react";
 import { CaseStage, CaseStageType, DocStore } from "@zeitwert/ui-model";
 import { CasePath } from "@zeitwert/ui-slds/bpm/CasePath";
@@ -19,6 +20,7 @@ interface ItemPathProps {
 @inject("logger")
 @observer
 export default class ItemPath extends React.Component<ItemPathProps> {
+
 	@observable selectedStage?: CaseStage;
 
 	@computed get stageList() {
@@ -37,6 +39,12 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 
 	get ctx() {
 		return this.props as any as AppCtx;
+	}
+
+	componentDidUpdate(prevProps: Readonly<ItemPathProps>, prevState: Readonly<{}>, snapshot?: any): void {
+		if (this.props.readOnly) {
+			this.selectedStage = undefined;
+		}
 	}
 
 	constructor(props: ItemPathProps) {
@@ -66,35 +74,37 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 							readOnly={readOnly}
 							onModify={() => this.onTransitionToStage(targetStage!)}
 						>
-							{this.stageList.map((stage, index) => {
-								const id = stage.id;
-								const isCurrent = id === currentStage.id;
-								const isActive = id === this.getActiveStage()?.id;
-								const isLast = index === this.stageList.length - 1;
-								const transition = isCurrent
-									? store.findLatestTransitionTo(stage)
-									: store.findLatestTransitionFrom(stage);
-								if (isLast) {
-									stageType = isCurrent ? this.terminalStageType(stage) : StageType.incomplete;
-								} else {
-									stageType = isCurrent
-										? StageType.current
-										: stageType === StageType.complete
-											? StageType.complete
-											: StageType.incomplete;
-								}
-								return (
-									<CasePathStage
-										key={"caseStage:" + index + "-" + store.stageTransitions.length}
-										stage={stage}
-										stageType={stageType}
-										isActive={isActive}
-										isLast={isLast}
-										transition={transition}
-										onSelect={this.onStageClick}
-									/>
-								);
-							})}
+							{
+								this.stageList.map((stage, index) => {
+									const id = stage.id;
+									const isCurrent = id === currentStage.id;
+									const isActive = id === this.getActiveStage()?.id;
+									const isLast = index === this.stageList.length - 1;
+									const transition = isCurrent
+										? store.findLatestTransitionTo(stage)
+										: store.findLatestTransitionFrom(stage);
+									if (isLast) {
+										stageType = isCurrent ? this.terminalStageType(stage) : StageType.incomplete;
+									} else {
+										stageType = isCurrent
+											? StageType.current
+											: stageType === StageType.complete
+												? StageType.complete
+												: StageType.incomplete;
+									}
+									return (
+										<CasePathStage
+											key={"caseStage:" + index + "-" + store.stageTransitions.length}
+											stage={stage}
+											stageType={stageType}
+											isActive={isActive}
+											isLast={isLast}
+											transition={transition}
+											onSelect={this.onStageClick}
+										/>
+									);
+								})
+							}
 						</CasePath>
 					</Card>
 				</div>
@@ -138,4 +148,5 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 			this.ctx.logger.error("Failed to transition to stage");
 		}
 	};
+
 }
