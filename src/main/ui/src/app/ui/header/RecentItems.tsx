@@ -81,7 +81,7 @@ export default class RecentItems extends React.Component<RecentItemsProps> {
 									</Link>
 								</div>
 								<div className="slds-text-body_small">
-									{(item.owner as UserInfo).caption} ⋅ {DateFormat.relativeTime(new Date(), item.meta!.modifiedAt)}
+									{(item.owner as UserInfo).caption} ⋅ {DateFormat.relativeTime(item.meta!.modifiedAt)}
 								</div>
 							</>
 						}

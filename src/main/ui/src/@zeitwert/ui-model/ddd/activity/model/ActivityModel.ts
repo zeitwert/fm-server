@@ -24,7 +24,7 @@ const MstActivityModel = DocModel.named("Activity")
 	}))
 	.views((self) => ({
 		get timelineDescription() {
-			const days = DateFormat.relativeTime(new Date(), self.date!);
+			const days = DateFormat.relativeTime(self.date!);
 			if (self.isBusinessProcess) {
 				return (
 					"The " +

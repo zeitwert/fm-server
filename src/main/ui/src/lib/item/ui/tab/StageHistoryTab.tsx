@@ -54,7 +54,7 @@ export default class StageHistoryTab extends React.Component<StageHistoryTabProp
 							body={
 								transition.user?.caption +
 								" ⋅ " +
-								DateFormat.relativeTime(new Date(), transition.modifiedAt!)
+								DateFormat.relativeTime(transition.modifiedAt!)
 							}
 							detail={
 								<Grid isVertical={false}>

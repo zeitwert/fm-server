@@ -96,7 +96,7 @@ export default class Notifications extends React.Component<NotificationsProps> {
 											</Link>
 										</p>
 										<p className="slds-m-top_xx-small slds-text-color_weak">
-											{DateFormat.relativeTime(new Date(), notification.date)}
+											{DateFormat.relativeTime(notification.date)}
 										</p>
 									</Col>
 									<Col className="slds-size_2-of-12 slds-text-align_right">

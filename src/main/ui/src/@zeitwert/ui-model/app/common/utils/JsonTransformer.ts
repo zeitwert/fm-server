@@ -63,7 +63,7 @@ const StandardHelpers = {
 	},
 	relativeTime(input: any) {
 		if (!!input) {
-			return DateFormat.relativeTime(new Date(), new Date(input));
+			return DateFormat.relativeTime(new Date(input));
 		}
 		return "";
 	}
