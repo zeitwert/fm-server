@@ -341,6 +341,20 @@ public class DocTaskVRecord extends TableRecordImpl<DocTaskVRecord> {
         return (OffsetDateTime) get(22);
     }
 
+    /**
+     * Setter for <code>public.doc_task_v.version</code>.
+     */
+    public void setVersion(Integer value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_task_v.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(23);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -355,7 +369,7 @@ public class DocTaskVRecord extends TableRecordImpl<DocTaskVRecord> {
     /**
      * Create a detached, initialised DocTaskVRecord
      */
-    public DocTaskVRecord(String docTypeId, Integer id, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, Integer relatedObjId, Integer relatedDocId, String subject, String content, Boolean isPrivate, String priorityId, OffsetDateTime dueAt, OffsetDateTime remindAt) {
+    public DocTaskVRecord(String docTypeId, Integer id, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, Integer relatedObjId, Integer relatedDocId, String subject, String content, Boolean isPrivate, String priorityId, OffsetDateTime dueAt, OffsetDateTime remindAt, Integer version) {
         super(DocTaskV.DOC_TASK_V);
 
         setDocTypeId(docTypeId);
@@ -381,5 +395,6 @@ public class DocTaskVRecord extends TableRecordImpl<DocTaskVRecord> {
         setPriorityId(priorityId);
         setDueAt(dueAt);
         setRemindAt(remindAt);
+        setVersion(version);
     }
 }

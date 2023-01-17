@@ -208,12 +208,17 @@ public class DocLeadV extends TableImpl<DocLeadVRecord> {
      */
     public final TableField<DocLeadVRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40), this, "");
 
+    /**
+     * The column <code>public.doc_lead_v.version</code>.
+     */
+    public final TableField<DocLeadVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
     private DocLeadV(Name alias, Table<DocLeadVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private DocLeadV(Name alias, Table<DocLeadVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"doc_lead_v\" as  SELECT doc.doc_type_id,\n    dl.doc_id AS id,\n    doc.owner_id,\n    doc.assignee_id,\n    doc.caption,\n    doc.case_def_id,\n    doc.case_stage_id,\n    doc.is_in_work,\n    doc.created_by_user_id,\n    doc.created_at,\n    doc.modified_by_user_id,\n    doc.modified_at,\n    dl.doc_id,\n    dl.tenant_id,\n    dl.account_id,\n    dl.contact_id,\n    dl.intl_key,\n    dl.subject,\n    dl.description,\n    dl.lead_source_id,\n    dl.salutation_id,\n    dl.title_id,\n    dl.first_name,\n    dl.last_name,\n    dl.phone,\n    dl.mobile,\n    dl.email,\n    dl.lead_rating_id,\n    dl.street,\n    dl.zip,\n    dl.city,\n    dl.state,\n    dl.country_id\n   FROM (doc_lead dl\n     JOIN doc ON ((doc.id = dl.doc_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"doc_lead_v\" as  SELECT doc.doc_type_id,\n    dl.doc_id AS id,\n    doc.owner_id,\n    doc.assignee_id,\n    doc.caption,\n    doc.case_def_id,\n    doc.case_stage_id,\n    doc.is_in_work,\n    doc.created_by_user_id,\n    doc.created_at,\n    doc.modified_by_user_id,\n    doc.modified_at,\n    dl.doc_id,\n    dl.tenant_id,\n    dl.account_id,\n    dl.contact_id,\n    dl.intl_key,\n    dl.subject,\n    dl.description,\n    dl.lead_source_id,\n    dl.salutation_id,\n    dl.title_id,\n    dl.first_name,\n    dl.last_name,\n    dl.phone,\n    dl.mobile,\n    dl.email,\n    dl.lead_rating_id,\n    dl.street,\n    dl.zip,\n    dl.city,\n    dl.state,\n    dl.country_id,\n    doc.version\n   FROM (doc_lead dl\n     JOIN doc ON ((doc.id = dl.doc_id)));"));
     }
 
     /**

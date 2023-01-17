@@ -56,6 +56,7 @@ public class ObjMetaDto extends AggregateMetaDto {
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
 			.owner(userCache.getAsEnumerated(obj.getValue(ObjFields.OWNER_ID)))
+			.version(obj.get(ObjFields.VERSION))
 			.createdByUser(userCache.getAsEnumerated(obj.getValue(ObjFields.CREATED_BY_USER_ID)))
 			.createdAt(obj.get(ObjFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)

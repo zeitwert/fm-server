@@ -342,6 +342,20 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
         return (BigDecimal) get(22);
     }
 
+    /**
+     * Setter for <code>public.obj_account_v.version</code>.
+     */
+    public void setVersion(Integer value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_account_v.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(23);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -356,7 +370,7 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
     /**
      * Create a detached, initialised ObjAccountVRecord
      */
-    public ObjAccountVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer accountId, Integer objId, Integer tenantId, String intlKey, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, Integer bannerImgId, BigDecimal inflationRate) {
+    public ObjAccountVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer accountId, Integer objId, Integer tenantId, String intlKey, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, Integer bannerImgId, BigDecimal inflationRate, Integer version) {
         super(ObjAccountV.OBJ_ACCOUNT_V);
 
         setObjTypeId(objTypeId);
@@ -382,5 +396,6 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
         setLogoImgId(logoImgId);
         setBannerImgId(bannerImgId);
         setInflationRate(inflationRate);
+        setVersion(version);
     }
 }

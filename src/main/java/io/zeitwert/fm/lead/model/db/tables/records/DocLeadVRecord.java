@@ -481,6 +481,20 @@ public class DocLeadVRecord extends TableRecordImpl<DocLeadVRecord> {
         return (String) get(32);
     }
 
+    /**
+     * Setter for <code>public.doc_lead_v.version</code>.
+     */
+    public void setVersion(Integer value) {
+        set(33, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_lead_v.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(33);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -495,7 +509,7 @@ public class DocLeadVRecord extends TableRecordImpl<DocLeadVRecord> {
     /**
      * Create a detached, initialised DocLeadVRecord
      */
-    public DocLeadVRecord(String docTypeId, Integer id, Integer ownerId, Integer assigneeId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, Integer contactId, String intlKey, String subject, String description, String leadSourceId, String salutationId, String titleId, String firstName, String lastName, String phone, String mobile, String email, String leadRatingId, String street, String zip, String city, String state, String countryId) {
+    public DocLeadVRecord(String docTypeId, Integer id, Integer ownerId, Integer assigneeId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, Integer contactId, String intlKey, String subject, String description, String leadSourceId, String salutationId, String titleId, String firstName, String lastName, String phone, String mobile, String email, String leadRatingId, String street, String zip, String city, String state, String countryId, Integer version) {
         super(DocLeadV.DOC_LEAD_V);
 
         setDocTypeId(docTypeId);
@@ -531,5 +545,6 @@ public class DocLeadVRecord extends TableRecordImpl<DocLeadVRecord> {
         setCity(city);
         setState(state);
         setCountryId(countryId);
+        setVersion(version);
     }
 }

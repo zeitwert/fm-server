@@ -58,6 +58,7 @@ public class DocMetaDto extends AggregateMetaDto {
 		return builder
 			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(doc.get(DocFields.DOC_TYPE_ID))))
 			.owner(userCache.getAsEnumerated(doc.getValue(DocFields.OWNER_ID)))
+			.version(doc.get(DocFields.VERSION))
 			.createdByUser(userCache.getAsEnumerated(doc.getValue(DocFields.CREATED_BY_USER_ID)))
 			.createdAt(doc.get(DocFields.CREATED_AT))
 			.modifiedByUser(modifiedByUser)

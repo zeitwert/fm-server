@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row17;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -129,12 +129,17 @@ public class ObjNoteV extends TableImpl<ObjNoteVRecord> {
      */
     public final TableField<ObjNoteVRecord, Integer> RELATED_TO_ID = createField(DSL.name("related_to_id"), SQLDataType.INTEGER, this, "");
 
+    /**
+     * The column <code>public.obj_note_v.version</code>.
+     */
+    public final TableField<ObjNoteVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
     private ObjNoteV(Name alias, Table<ObjNoteVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjNoteV(Name alias, Table<ObjNoteVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_note_v\" as  SELECT obj.obj_type_id,\n    n.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    n.obj_id,\n    n.tenant_id,\n    n.note_type_id,\n    n.subject,\n    n.content,\n    n.is_private,\n    n.related_to_id\n   FROM (obj_note n\n     JOIN obj ON ((obj.id = n.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_note_v\" as  SELECT obj.obj_type_id,\n    n.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    n.obj_id,\n    n.tenant_id,\n    n.note_type_id,\n    n.subject,\n    n.content,\n    n.is_private,\n    n.related_to_id,\n    obj.version\n   FROM (obj_note n\n     JOIN obj ON ((obj.id = n.obj_id)));"));
     }
 
     /**
@@ -194,11 +199,11 @@ public class ObjNoteV extends TableImpl<ObjNoteVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row17 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, Boolean, Integer> fieldsRow() {
-        return (Row17) super.fieldsRow();
+    public Row18<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, Boolean, Integer, Integer> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }

@@ -43,7 +43,7 @@ public class AggregateMetaDto implements MetaInformation {
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		builder
-			.itemType(EnumeratedDto.fromEnum(aggregate.getMeta().getAggregateType()))
+			.itemType(EnumeratedDto.fromEnum(meta.getAggregateType()))
 			.owner(userDtoAdapter.asEnumerated(aggregate.getOwner()))
 			.version(meta.getVersion())
 			.createdByUser(userDtoAdapter.asEnumerated(meta.getCreatedByUser()))

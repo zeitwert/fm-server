@@ -356,6 +356,20 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
         return (String) get(23);
     }
 
+    /**
+     * Setter for <code>public.obj_contact_v.version</code>.
+     */
+    public void setVersion(Integer value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(24);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -370,7 +384,7 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
     /**
      * Create a detached, initialised ObjContactVRecord
      */
-    public ObjContactVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String intlKey, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email) {
+    public ObjContactVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String intlKey, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email, Integer version) {
         super(ObjContactV.OBJ_CONTACT_V);
 
         setObjTypeId(objTypeId);
@@ -397,5 +411,6 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
         setPhone(phone);
         setMobile(mobile);
         setEmail(email);
+        setVersion(version);
     }
 }

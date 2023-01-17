@@ -158,12 +158,17 @@ public class DocTaskV extends TableImpl<DocTaskVRecord> {
      */
     public final TableField<DocTaskVRecord, OffsetDateTime> REMIND_AT = createField(DSL.name("remind_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
+    /**
+     * The column <code>public.doc_task_v.version</code>.
+     */
+    public final TableField<DocTaskVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
     private DocTaskV(Name alias, Table<DocTaskVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private DocTaskV(Name alias, Table<DocTaskVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"doc_task_v\" as  SELECT doc.doc_type_id,\n    dt.doc_id AS id,\n    doc.owner_id,\n    doc.caption,\n    doc.case_def_id,\n    doc.case_stage_id,\n    doc.is_in_work,\n    doc.assignee_id,\n    doc.created_by_user_id,\n    doc.created_at,\n    doc.modified_by_user_id,\n    doc.modified_at,\n    dt.doc_id,\n    dt.tenant_id,\n    dt.account_id,\n    dt.related_obj_id,\n    dt.related_doc_id,\n    dt.subject,\n    dt.content,\n    dt.is_private,\n    dt.priority_id,\n    dt.due_at,\n    dt.remind_at\n   FROM (doc_task dt\n     JOIN doc ON ((doc.id = dt.doc_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"doc_task_v\" as  SELECT doc.doc_type_id,\n    dt.doc_id AS id,\n    doc.owner_id,\n    doc.caption,\n    doc.case_def_id,\n    doc.case_stage_id,\n    doc.is_in_work,\n    doc.assignee_id,\n    doc.created_by_user_id,\n    doc.created_at,\n    doc.modified_by_user_id,\n    doc.modified_at,\n    dt.doc_id,\n    dt.tenant_id,\n    dt.account_id,\n    dt.related_obj_id,\n    dt.related_doc_id,\n    dt.subject,\n    dt.content,\n    dt.is_private,\n    dt.priority_id,\n    dt.due_at,\n    dt.remind_at,\n    doc.version\n   FROM (doc_task dt\n     JOIN doc ON ((doc.id = dt.doc_id)));"));
     }
 
     /**

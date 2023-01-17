@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row17;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -129,12 +129,17 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
      */
     public final TableField<ObjPortfolioVRecord, String> PORTFOLIO_NR = createField(DSL.name("portfolio_nr"), SQLDataType.VARCHAR(200), this, "");
 
+    /**
+     * The column <code>public.obj_portfolio_v.version</code>.
+     */
+    public final TableField<ObjPortfolioVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
     private ObjPortfolioV(Name alias, Table<ObjPortfolioVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjPortfolioV(Name alias, Table<ObjPortfolioVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_portfolio_v\" as  SELECT obj.obj_type_id,\n    pf.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    pf.obj_id,\n    pf.tenant_id,\n    pf.account_id,\n    pf.intl_key,\n    pf.name,\n    pf.description,\n    pf.portfolio_nr\n   FROM (obj_portfolio pf\n     JOIN obj ON ((obj.id = pf.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_portfolio_v\" as  SELECT obj.obj_type_id,\n    pf.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    pf.obj_id,\n    pf.tenant_id,\n    pf.account_id,\n    pf.intl_key,\n    pf.name,\n    pf.description,\n    pf.portfolio_nr,\n    obj.version\n   FROM (obj_portfolio pf\n     JOIN obj ON ((obj.id = pf.obj_id)));"));
     }
 
     /**
@@ -194,11 +199,11 @@ public class ObjPortfolioV extends TableImpl<ObjPortfolioVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row17 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, Integer, String, String, String, String> fieldsRow() {
-        return (Row17) super.fieldsRow();
+    public Row18<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }
