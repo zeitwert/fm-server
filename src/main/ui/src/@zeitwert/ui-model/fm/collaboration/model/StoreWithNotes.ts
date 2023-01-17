@@ -1,8 +1,8 @@
 
 import { transaction } from "mobx";
 import { applySnapshot, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { EntityTypeRepository } from "../../../../ui-model/app";
-import { StoreWithEntitiesModel } from "../../aggregate/model/StoreWithEntities";
+import { EntityTypeRepository } from "../../../app";
+import { StoreWithEntitiesModel } from "../../../ddd/aggregate/model/StoreWithEntities";
 import { NOTE_API } from "../service/NoteApi";
 import { Note, NoteModel, NotePayload, NoteSnapshot } from "./NoteModel";
 
@@ -27,6 +27,7 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 							self.notes.clear();
 							Object.keys(notesRepo)
 								.map((id) => notesRepo[id])
+								.sort((a, b) => (a.meta.createdAt > b.meta.createdAt ? -1 : 1))
 								.forEach((snapshot) => self.notes.push(snapshot));
 						});
 					}
@@ -46,7 +47,7 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 						transaction(() => {
 							Object.keys(notesRepo)
 								.map((id) => notesRepo[id])
-								.forEach((snapshot) => self.notes.push(snapshot));
+								.forEach((snapshot) => self.notes.unshift(snapshot));
 						});
 					}
 				} catch (error: any) {
@@ -56,7 +57,15 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 			})();
 		},
 		async storeNote(id: string, notePayload: NotePayload): Promise<Note> {
-			const note = Object.assign({}, notePayload, { id: id });
+			const note = Object.assign(
+				{},
+				notePayload,
+				{
+					id: id, meta: {
+						clientVersion: self.getNote(id)?.meta?.version
+					}
+				}
+			);
 			return flow<Note, any[]>(function* (): any {
 				try {
 					const repository: EntityTypeRepository = yield NOTE_API.storeAggregate(note);

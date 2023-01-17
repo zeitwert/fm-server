@@ -1,7 +1,7 @@
 
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
-import { Enumerated } from "../../aggregate/model/EnumeratedModel";
-import { ObjModel } from "../../obj/model/ObjModel";
+import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
+import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 
 export const NOTE: Enumerated = { id: "note", name: "Notiz" };
 export const CALL: Enumerated = { id: "call", name: "Gesprächsnotiz" };

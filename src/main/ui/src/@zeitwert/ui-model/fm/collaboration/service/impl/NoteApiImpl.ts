@@ -1,5 +1,5 @@
 
-import { AggregateApiImpl, IGNORED_ATTRIBUTES } from "../../../aggregate/service/impl/AggregateApiImpl";
+import { AggregateApiImpl, IGNORED_ATTRIBUTES } from "../../../../ddd/aggregate/service/impl/AggregateApiImpl";
 import { NoteModel, NoteSnapshot } from "../../model/NoteModel";
 import { NoteApi } from "../NoteApi";
 

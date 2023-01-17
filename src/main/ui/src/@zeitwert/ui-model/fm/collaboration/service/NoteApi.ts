@@ -1,5 +1,5 @@
 
-import { AggregateApi } from "../../aggregate/service/AggregateApi";
+import { AggregateApi } from "../../../ddd/aggregate/service/AggregateApi";
 import { NoteSnapshot } from "../model/NoteModel";
 import { NoteApiImpl } from "./impl/NoteApiImpl";
 

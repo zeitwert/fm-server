@@ -1,7 +1,8 @@
 
+import { Avatar } from "@salesforce/design-system-react";
 import { DateFormat, session } from "@zeitwert/ui-model";
-import { NOTE, Note, NotePayload } from "@zeitwert/ui-model/ddd/collaboration/model/NoteModel";
-import { StoreWithNotes } from "@zeitwert/ui-model/ddd/collaboration/model/StoreWithNotes";
+import { NOTE, Note, NotePayload } from "@zeitwert/ui-model/fm/collaboration/model/NoteModel";
+import { StoreWithNotes } from "@zeitwert/ui-model/fm/collaboration/model/StoreWithNotes";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React, { FC } from "react";
@@ -31,6 +32,19 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 				<div className="slds-m-around_medium">
 					<div className="slds-feed">
 						<ul className="slds-feed__list">
+							<li className="slds-feed__item" key="note-add">
+								{
+									!this.editNoteId &&
+									<>
+										<NoteEditor
+											isNew={true}
+											onCancel={this.cancelNoteEditor}
+											onOk={(note) => this.addNote(note)}
+										/>
+										<hr style={{ marginBlockStart: "12px", marginBlockEnd: 0 }} />
+									</>
+								}
+							</li>
 							{
 								!notes.length &&
 								<li className="slds-feed__item" key="note-0">
@@ -62,16 +76,6 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 									</li>
 								))
 							}
-							<li className="slds-feed__item" key="note-add">
-								{
-									!this.editNoteId &&
-									<NoteEditor
-										isNew={true}
-										onCancel={this.cancelNoteEditor}
-										onOk={(note) => this.addNote(note)}
-									/>
-								}
-							</li>
 						</ul>
 					</div>
 				</div>
@@ -117,23 +121,27 @@ class NoteView extends React.Component<NoteViewProps> {
 
 		const note = this.props.note;
 		const isPrivate = note.isPrivate;
-		const userName = note.meta?.modifiedByUser?.caption || note.meta?.createdByUser?.caption;
-		const userPicture = session.avatarUrl(note.meta?.modifiedByUser?.id);
-		const time = DateFormat.relativeTime(new Date(), (note.meta?.modifiedAt || note.meta?.createdAt)!);
+		const user = note.meta?.createdByUser!;
+		const userName = user.name;
+		const userAvatar = session.avatarUrl(user.id);
+		const time = DateFormat.relativeTime(note.meta?.modifiedAt || note.meta?.createdAt!);
 
 		return (
 			<article className="slds-post">
 				<header className="slds-post__header slds-media">
 					<div className="slds-media__figure">
-						<a href="/#" className="slds-avatar slds-avatar_circle slds-avatar_medium">
-							<img alt={userName} src={userPicture} title={userName} />
-						</a>
+						<Avatar
+							variant="user"
+							size="medium"
+							imgSrc={userAvatar}
+							label={userName}
+						/>
 					</div>
 					<div className="slds-media__body">
 						<div className="slds-clearfix xslds-grid xslds-grid_align-spread xslds-has-flexi-truncate">
 							<div className="slds-float_left">
 								<p>
-									<a href="/#" title={userName}>{userName}</a>
+									<a href={`/user/${user.id}`} title={userName}>{userName}</a>
 								</p>
 							</div>
 							<div className="slds-float_right">
@@ -205,7 +213,7 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 	@observable subject: string = "";
 	@observable content: string = "";
 	@observable isPrivate: boolean = false;
-	@computed get allowAdd() { return !!this.content; }
+	@computed get allowAdd() { return !!this.subject || !!this.content; }
 
 	constructor(props: NoteEditorProps) {
 		super(props);
@@ -219,13 +227,19 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 	}
 
 	render() {
+		const sessionUser = session.sessionInfo?.user!;
+		const sessionUserName = sessionUser.name;
+		const sessionUserAvatar = session.avatarUrl(sessionUser.id);
 		return (
 			<article className="slds-post">
 				<div className="slds-media slds-comment slds-hint-parent">
 					<div className="slds-media__figure">
-						<a className="slds-avatar slds-avatar_circle slds-avatar_medium" href="/#">
-							<img alt={session.sessionInfo?.user.caption} src={session.avatarUrl(session.sessionInfo?.user.id)} title={session.sessionInfo?.user.caption} />
-						</a>
+						<Avatar
+							variant="user"
+							size="medium"
+							imgSrc={sessionUserAvatar}
+							label={sessionUserName}
+						/>
 					</div>
 					<div className="slds-media__body">
 						<div className={"slds-publisher slds-publisher_comment" + (this.isActive ? " slds-is-active slds-has-focus" : "")}>
@@ -236,6 +250,7 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 								value={this.subject}
 								onFocus={(e) => this.isActive = true}
 								onChange={(e) => this.subject = e.currentTarget.value || ""}
+								onKeyDown={(e) => { if (e.key === "Escape") { this.onCancel(); } }}
 							/>
 							{
 								this.isActive &&
@@ -245,6 +260,7 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 										className="slds-publisher__input slds-input_bare slds-text-longform"
 										placeholder="Notiz…"
 										onChange={(e) => this.content = e.currentTarget.value || ""}
+										onKeyDown={(e) => { if (e.key === "Escape") { this.onCancel(); } }}
 										value={this.content}
 										rows={6}
 									/>
@@ -282,8 +298,8 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 	};
 
 	private onCancel = (): void => {
-		this.props.onCancel();
 		this.init();
+		this.props.onCancel();
 	}
 
 	private onOk = (): void => {
