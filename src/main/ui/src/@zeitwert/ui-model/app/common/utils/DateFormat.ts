@@ -120,42 +120,46 @@ export const DateFormat = {
 		}
 		return "";
 	},
-	relativeTime: (current: Date, date: Date) => {
-		const mDate = moment(date);
-		const d = moment.duration(moment(current).diff(mDate));
-		if (mDate.isSame(moment(), "day")) {
-			if (d.asSeconds() > 0) {
-				// Past dates.
-				if (d.asHours() >= 1) {
-					const hours = Math.trunc(d.asHours());
-					return hours + " " + (hours === 1 ? "hour" : "hours") + " ago";
-				} else if (d.asMinutes() >= 1) {
-					const minutes = Math.trunc(d.asMinutes());
-					return minutes + " " + (minutes === 1 ? "minute" : "minutes") + " ago";
-				} else if (d.asSeconds() > 20) {
-					return Math.trunc(d.asSeconds()) + " seconds ago";
+	relativeTime: (date: Date) => {
+		return moment(date).fromNow();
+		/*
+				const current = new Date();
+				const mDate = moment(date);
+				const d = moment.duration(moment(current).diff(mDate));
+				if (mDate.isSame(moment(), "day")) {
+					if (d.asSeconds() > 0) {
+						// Past dates.
+						if (d.asHours() >= 1) {
+							const hours = Math.trunc(d.asHours());
+							return hours + " " + (hours === 1 ? "hour" : "hours") + " ago";
+						} else if (d.asMinutes() >= 1) {
+							const minutes = Math.trunc(d.asMinutes());
+							return minutes + " " + (minutes === 1 ? "minute" : "minutes") + " ago";
+						} else if (d.asSeconds() > 20) {
+							return Math.trunc(d.asSeconds()) + " seconds ago";
+						}
+					} else {
+						// Future dates.
+						if (Math.abs(d.asHours()) >= 1) {
+							const hours = Math.abs(Math.trunc(d.asHours()));
+							return hours + " " + (hours === 1 ? "hour" : "hours");
+						} else if (Math.abs(d.asMinutes()) >= 1) {
+							const minutes = Math.abs(Math.trunc(d.asMinutes()));
+							return minutes + " " + (minutes === 1 ? "minute" : "minutes");
+						} else if (Math.abs(d.asSeconds()) > 20) {
+							return Math.abs(Math.trunc(d.asSeconds())) + " seconds";
+						}
+					}
+					return "just now";
+				} else {
+					const days = Math.abs(Math.round(d.asDays()));
+					if (d.asSeconds() > 0) {
+						return days + " " + (days === 1 ? "day" : "days") + " ago";
+					} else {
+						return days + " " + (days === 1 ? "day" : "days");
+					}
 				}
-			} else {
-				// Future dates.
-				if (Math.abs(d.asHours()) >= 1) {
-					const hours = Math.abs(Math.trunc(d.asHours()));
-					return hours + " " + (hours === 1 ? "hour" : "hours");
-				} else if (Math.abs(d.asMinutes()) >= 1) {
-					const minutes = Math.abs(Math.trunc(d.asMinutes()));
-					return minutes + " " + (minutes === 1 ? "minute" : "minutes");
-				} else if (Math.abs(d.asSeconds()) > 20) {
-					return Math.abs(Math.trunc(d.asSeconds())) + " seconds";
-				}
-			}
-			return "just now";
-		} else {
-			const days = Math.abs(Math.round(d.asDays()));
-			if (d.asSeconds() > 0) {
-				return days + " " + (days === 1 ? "day" : "days") + " ago";
-			} else {
-				return days + " " + (days === 1 ? "day" : "days");
-			}
-		}
+		*/
 	},
 	yearsDiff(dt1: Date, dt2: Date) {
 		let diff = (dt2.getTime() - dt1.getTime()) / 1000;
