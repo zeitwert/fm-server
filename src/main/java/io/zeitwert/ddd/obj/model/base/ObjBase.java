@@ -88,6 +88,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.objDbRecord;
 	}
 
+	@Override
 	public CodeAggregateType getAggregateType() {
 		return CodeAggregateTypeEnum.getAggregateType(this.objTypeId.getValue());
 	}
@@ -114,8 +115,11 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 			this.owner.setId(sessionUserId);
 			this.version.setValue(0);
 			this.createdByUser.setId(sessionUserId);
-			this.createdAt.setValue(this.getAppContext().getRequestContext().getCurrentTime());
-			this.transitionList.addPart();
+			OffsetDateTime now = this.getMeta().getRequestContext().getCurrentTime();
+			this.createdAt.setValue(now);
+			ObjPartTransitionBase transition = (ObjPartTransitionBase) this.transitionList.addPart();
+			transition.setSeqNr(0);
+			transition.timestamp.setValue(now);
 		} finally {
 			this.enableCalc();
 		}
@@ -130,23 +134,30 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	@Override
 	public void doBeforeStore() {
-		this.transitionList.addPart();
+
+		RequestContext requestCtx = this.getMeta().getRequestContext();
+		OffsetDateTime now = requestCtx.getCurrentTime();
+		ObjPartTransitionBase transition = (ObjPartTransitionBase) this.transitionList.addPart();
+		transition.setSeqNr(this.transitionList.getPartCount() - 1);
+		transition.timestamp.setValue(now);
+
 		super.doBeforeStore();
+
 		try {
 			this.disableCalc();
 			this.version.setValue(this.version.getValue() + 1);
-			RequestContext requestCtx = this.getMeta().getRequestContext();
 			this.modifiedByUser.setValue(requestCtx.getUser());
 			this.modifiedAt.setValue(requestCtx.getCurrentTime());
 		} finally {
 			this.enableCalc();
 		}
+
 	}
 
 	@Override
 	public void doStore() {
 		super.doStore();
-		getObjDbRecord().store();
+		this.getObjDbRecord().store();
 	}
 
 	@Override

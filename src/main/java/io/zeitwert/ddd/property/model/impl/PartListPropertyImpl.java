@@ -34,6 +34,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return this.partListType;
 	}
 
+	@Override
 	public void clearPartList() {
 		for (P part : this.partList) {
 			((PartSPI<?>) part).delete();
@@ -42,6 +43,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		this.getEntity().afterClear(this);
 	}
 
+	@Override
 	public P addPart() {
 		P part = this.getEntity().addPart(this, this.partListType);
 		this.partList.add(part);
@@ -49,15 +51,18 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return part;
 	}
 
+	@Override
 	public Integer getPartCount() {
 		return this.partList.size();
 	}
 
+	@Override
 	public P getPart(Integer seqNr) {
 		assertThis(0 <= seqNr && seqNr < this.getPartCount(), "valid seqNr (" + seqNr + ")");
 		return this.partList.get(seqNr);
 	}
 
+	@Override
 	public P getPartById(Integer partId) {
 		assertThis(partId != null, "valid partId");
 		if (partId == null) {
@@ -68,10 +73,12 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		return part.get();
 	}
 
+	@Override
 	public List<P> getPartList() {
 		return List.copyOf(this.partList);
 	}
 
+	@Override
 	public void removePart(Integer partId) {
 		P part = this.getPartById(partId);
 		((PartSPI<?>) part).delete();
@@ -79,6 +86,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 		this.getEntity().afterRemove(this);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void loadPartList(List<? extends Part<?>> partList) {
 		this.partList.clear();

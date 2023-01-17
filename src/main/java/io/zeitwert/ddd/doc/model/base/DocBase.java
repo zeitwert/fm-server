@@ -55,6 +55,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	private final PartListProperty<DocPartTransition> transitionList;
 
+	private CodeCaseStage oldCaseStage;
+
 	protected DocBase(DocRepository<? extends Doc, ? extends Record> repository, UpdatableRecord<?> docDbRecord) {
 		this.repository = repository;
 		this.docDbRecord = docDbRecord;
@@ -133,11 +135,22 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 			this.owner.setId(sessionUserId);
 			this.version.setValue(0);
 			this.createdByUser.setId(sessionUserId);
-			this.createdAt.setValue(this.getMeta().getRequestContext().getCurrentTime());
-			this.transitionList.addPart();
+			OffsetDateTime now = this.getMeta().getRequestContext().getCurrentTime();
+			this.createdAt.setValue(now);
+			DocPartTransitionBase transition = (DocPartTransitionBase) this.transitionList.addPart();
+			transition.setSeqNr(0);
+			transition.timestamp.setValue(now);
+			transition.newCaseStage.setValue(this.getCaseStage());
+			this.oldCaseStage = this.getCaseStage();
 		} finally {
 			this.enableCalc();
 		}
+	}
+
+	@Override
+	public void doAfterLoad() {
+		super.doAfterLoad();
+		this.oldCaseStage = this.getCaseStage();
 	}
 
 	@Override
@@ -149,18 +162,26 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public void doBeforeStore() {
-		this.transitionList.addPart();
+
+		RequestContext requestCtx = this.getMeta().getRequestContext();
+		OffsetDateTime now = requestCtx.getCurrentTime();
+		DocPartTransitionBase transition = (DocPartTransitionBase) this.transitionList.addPart();
+		transition.setSeqNr(this.transitionList.getPartCount() - 1);
+		transition.timestamp.setValue(now);
+		transition.oldCaseStage.setValue(this.oldCaseStage);
+		transition.newCaseStage.setValue(this.getCaseStage());
+
 		super.doBeforeStore();
-		boolean isInWork = !"terminal".equals(this.getCaseStage().getCaseStageTypeId());
+
 		try {
 			this.disableCalc();
-			this.isInWork.setValue(isInWork);
 			this.version.setValue(this.version.getValue() + 1);
-			this.modifiedByUser.setValue(this.getMeta().getRequestContext().getUser());
-			this.modifiedAt.setValue(this.getMeta().getRequestContext().getCurrentTime());
+			this.modifiedByUser.setValue(requestCtx.getUser());
+			this.modifiedAt.setValue(now);
 		} finally {
 			this.enableCalc();
 		}
+
 	}
 
 	@Override

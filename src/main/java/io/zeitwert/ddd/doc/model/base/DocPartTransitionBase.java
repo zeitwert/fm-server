@@ -12,6 +12,7 @@ import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.ddd.session.model.RequestContext;
 
 import org.jooq.JSON;
 import org.jooq.UpdatableRecord;
@@ -40,13 +41,14 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 		super.doAfterCreate();
 		DocPartTransitionRecord dbRecord = (DocPartTransitionRecord) this.getDbRecord();
 		dbRecord.setTenantId(this.getAggregate().getTenantId());
-		dbRecord.setSeqNr(this.getAggregate().getMeta().getTransitionList().size() + 1); // TODO
-		dbRecord.setUserId(this.getMeta().getRequestContext().getUser().getId());
-		dbRecord.setTimestamp(this.getMeta().getRequestContext().getCurrentTime());
+		RequestContext requestCtx = this.getMeta().getRequestContext();
+		dbRecord.setUserId(requestCtx.getUser().getId());
+		dbRecord.setTimestamp(requestCtx.getCurrentTime());
 		dbRecord.setOldCaseStageId(null);
 		dbRecord.setNewCaseStageId(null);
 	}
 
+	@Override
 	public String getChanges() {
 		JSON changes = this.changes.getValue();
 		return changes != null ? changes.toString() : null;
