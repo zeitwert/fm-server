@@ -61,7 +61,8 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 				{},
 				notePayload,
 				{
-					id: id, meta: {
+					id: id,
+					meta: {
 						clientVersion: self.getNote(id)?.meta?.version
 					}
 				}

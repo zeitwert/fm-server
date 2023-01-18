@@ -1,7 +1,7 @@
 
 import { transaction } from "mobx";
 import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { EntityTypeRepository } from "../../../../ui-model/app/common/service/JsonApi";
+import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { TaskApi, TASK_API } from "../service/TaskApi";

@@ -1,8 +1,8 @@
 import Logger from "loglevel";
 import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Aggregate } from "../../../ddd/aggregate/model/AggregateModel";
-import { Task } from "../../../fm/task/model/TaskModel";
-import { TASK_API } from "../../../fm/task/service/TaskApi";
+import { Task } from "../../../fm/collaboration/model/TaskModel";
+import { TASK_API } from "../../../fm/collaboration/service/TaskApi";
 import { API, Config } from "../../common";
 import { UserInfo } from "./SessionInfo";
 
