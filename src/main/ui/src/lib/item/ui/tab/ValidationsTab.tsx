@@ -2,12 +2,12 @@ import { Validation } from "@zeitwert/ui-model/ddd/aggregate/model/AggregateMeta
 import { observer } from "mobx-react";
 import React from "react";
 
-interface ErrorTabProps {
+interface ValidationsTabProps {
 	validationList: Validation[];
 }
 
 @observer
-export default class ErrorTab extends React.Component<ErrorTabProps> {
+export default class ValidationsTab extends React.Component<ValidationsTabProps> {
 
 	render() {
 		return (

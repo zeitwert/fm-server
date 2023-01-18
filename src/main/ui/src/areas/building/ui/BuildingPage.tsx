@@ -8,8 +8,8 @@ import SidePanel from "app/ui/SidePanel";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
-import ErrorTab from "lib/item/ui/tab/ErrorTab";
 import NotesTab from "lib/item/ui/tab/NotesTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import TabProjection from "lib/projection/ui/TabProjection";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -209,7 +209,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
 									{
 										this.activeRightTabId === RIGHT_TABS.ERRORS &&
-										<ErrorTab validationList={building.meta?.validationList!} />
+										<ValidationsTab validationList={building.meta?.validationList!} />
 									}
 								</TabsPanel>
 							}
