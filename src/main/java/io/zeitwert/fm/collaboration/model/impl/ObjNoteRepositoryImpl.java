@@ -16,6 +16,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
@@ -29,12 +30,15 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 
 	private static final String AGGREGATE_TYPE = "obj_note";
 
+	private final RequestContext requestCtx;
+
 	//@formatter:off
 	protected ObjNoteRepositoryImpl(
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository
+		final ObjPartItemRepository itemRepository,
+		final RequestContext requestCtx
 	) {
 		super(
 			ObjNoteRepository.class,
@@ -46,6 +50,7 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 			transitionRepository,
 			itemRepository
 		);
+		this.requestCtx = requestCtx;
 	}
 	//@formatter:on
 
@@ -75,7 +80,7 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 	@Override
 	public List<ObjNoteVRecord> doFind(QuerySpec querySpec) {
 		List<ObjNoteVRecord> noteList = this.doFind(Tables.OBJ_NOTE_V, Tables.OBJ_NOTE_V.ID, querySpec);
-		Integer sessionUserId = this.getAppContext().getRequestContext().getUser().getId();
+		Integer sessionUserId = this.requestCtx.getUser().getId();
 		noteList.removeIf(note -> note.getIsPrivate() && note.getCreatedByUserId() != sessionUserId);
 		noteList.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
 		return noteList;

@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { Checkbox, Combobox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { Checkbox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
 import { TaskModelType, TaskStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
@@ -23,13 +23,13 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 			}
 			return false;
 		},
-		isDisabled: (accessor) => {
-			const task = this.props.store.task!;
-			if (["account"].indexOf(accessor.fieldref) >= 0) {
-				return !!accessor.value;
-			}
-			return !!accessor.fieldref && !task.account;
-		},
+		// isDisabled: (accessor) => {
+		// 	const task = this.props.store.task!;
+		// 	if (["account"].indexOf(accessor.fieldref) >= 0) {
+		// 		return !!accessor.value;
+		// 	}
+		// 	return !!accessor.fieldref && !task.account;
+		// },
 	};
 
 	render() {
@@ -43,10 +43,6 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Grunddaten">
-								<FieldRow>
-									<Combobox label="Referenz" fieldName="account" size={6} />
-									<Combobox label="Kunde" fieldName="account" size={6} />
-								</FieldRow>
 								<FieldRow>
 									<Input label="Titel" fieldName="subject" size={10} />
 									<Checkbox label="Privat?" fieldName="isPrivate" size={2} />

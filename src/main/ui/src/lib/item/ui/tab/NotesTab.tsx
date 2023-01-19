@@ -8,7 +8,7 @@ import { observer } from "mobx-react";
 import React, { FC } from "react";
 import ReactMarkdown from "react-markdown";
 
-interface NotesTabProps {
+export interface NotesTabProps {
 	relatedToId: string;
 	store: StoreWithNotes;
 	notes: Note[];
@@ -28,7 +28,7 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 		const notes = this.props.notes;
 		toJS(notes); // necessary to trigger re-render after update :-(
 		return (
-			<div className="slds-is-relative fa-height-100">
+			<div className="slds-is-relative">
 				<div className="slds-m-around_medium">
 					<div className="slds-feed">
 						<ul className="slds-feed__list">
@@ -258,6 +258,7 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 									<textarea
 										id="textarea-02"
 										className="slds-publisher__input slds-input_bare slds-text-longform"
+										style={{ marginTop: "2px" }}
 										placeholder="Notiz…"
 										onChange={(e) => this.content = e.currentTarget.value || ""}
 										onKeyDown={(e) => { if (e.key === "Escape") { this.onCancel(); } }}

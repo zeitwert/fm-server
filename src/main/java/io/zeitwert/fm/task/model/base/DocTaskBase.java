@@ -1,6 +1,9 @@
 
 package io.zeitwert.fm.task.model.base;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.time.OffsetDateTime;
 
 import org.jooq.UpdatableRecord;
@@ -36,14 +39,14 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	protected DocTaskBase(DocTaskRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> taskRecord) {
 		super(repository, objRecord);
 		this.dbRecord = taskRecord;
-		this.relatedObjId = this.addSimpleProperty(dbRecord, DocTaskFields.RELATED_OBJ_ID);
-		this.relatedDocId = this.addSimpleProperty(dbRecord, DocTaskFields.RELATED_DOC_ID);
-		this.subject = this.addSimpleProperty(dbRecord, DocTaskFields.SUBJECT);
-		this.content = this.addSimpleProperty(dbRecord, DocTaskFields.CONTENT);
-		this.isPrivate = this.addSimpleProperty(dbRecord, DocTaskFields.IS_PRIVATE);
-		this.priority = this.addEnumProperty(dbRecord, DocTaskFields.PRIORITY_ID, CodeTaskPriorityEnum.class);
-		this.dueAt = this.addSimpleProperty(dbRecord, DocTaskFields.DUE_AT);
-		this.remindAt = this.addSimpleProperty(dbRecord, DocTaskFields.REMIND_AT);
+		this.relatedObjId = this.addSimpleProperty(this.dbRecord, DocTaskFields.RELATED_OBJ_ID);
+		this.relatedDocId = this.addSimpleProperty(this.dbRecord, DocTaskFields.RELATED_DOC_ID);
+		this.subject = this.addSimpleProperty(this.dbRecord, DocTaskFields.SUBJECT);
+		this.content = this.addSimpleProperty(this.dbRecord, DocTaskFields.CONTENT);
+		this.isPrivate = this.addSimpleProperty(this.dbRecord, DocTaskFields.IS_PRIVATE);
+		this.priority = this.addEnumProperty(this.dbRecord, DocTaskFields.PRIORITY_ID, CodeTaskPriorityEnum.class);
+		this.dueAt = this.addSimpleProperty(this.dbRecord, DocTaskFields.DUE_AT);
+		this.remindAt = this.addSimpleProperty(this.dbRecord, DocTaskFields.REMIND_AT);
 	}
 
 	@Override
@@ -58,6 +61,17 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 		this.dbRecord.setValue(DocTaskFields.TENANT_ID, tenantId);
 		CodeCaseStage initStage = CodeCaseStageEnum.getCaseStage("task.new");
 		this.doInitWorkflow("task", initStage);
+	}
+
+	@Override
+	public void doBeforeStore() {
+		super.doBeforeStore();
+		requireThis(this.getRelatedToId() != null, "relatedTo not null");
+		if (this.getAccountId() == null) { // TODO: set accountId to relatedTo's accountId
+			assertThis(ObjRepository.isObjId(this.getRelatedToId()), "relatedTo is obj (doc nyi)");
+			this.setAccountId(this.getMeta().getRequestContext().getAccountId());
+		}
+		assertThis(this.getAccountId() != null, "account not null");
 	}
 
 	@Override

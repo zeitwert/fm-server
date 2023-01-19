@@ -36,10 +36,10 @@ const MstUserStoreModel = ObjStoreModel
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(snapshot: UserSnapshot) {
+		setItem(snapshot: UserSnapshot | undefined) {
 			transaction(() => {
 				self.user = undefined;
-				self.user = cast(snapshot);
+				!!snapshot && (self.user = cast(snapshot));
 			});
 		}
 	}));

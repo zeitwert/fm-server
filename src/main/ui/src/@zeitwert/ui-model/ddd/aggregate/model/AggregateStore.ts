@@ -43,7 +43,7 @@ const MstAggregateStoreModel = types
 	}))
 	// must overwrite
 	.actions((self) => ({
-		setItem(aggregate: AggregateSnapshot) {
+		setItem(aggregate: AggregateSnapshot | undefined) {
 			requireThis(false, "setItem() is implemented");
 		}
 	}))
@@ -176,6 +176,11 @@ const MstAggregateStoreModel = types
 		cancel() {
 			self.rollbackTrx();
 			return self.item!;
+		},
+		clear() {
+			requireThis(!self.isInTrx, "not in transaction");
+			self.id = undefined;
+			self.setItem(undefined);
 		},
 		async calcOnServer() {
 			requireThis(!self.isNew, "not new");

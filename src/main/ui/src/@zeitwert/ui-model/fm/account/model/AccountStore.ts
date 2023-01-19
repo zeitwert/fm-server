@@ -38,10 +38,10 @@ const MstAccountStoreModel = ObjStoreModel
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(snapshot: AccountSnapshot) {
+		setItem(snapshot: AccountSnapshot | undefined) {
 			transaction(() => {
 				self.account = undefined;
-				self.account = cast(snapshot);
+				!!snapshot && (self.account = cast(snapshot));
 			});
 		}
 	}));

@@ -34,10 +34,10 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(snapshot: BuildingSnapshot) {
+		setItem(snapshot: BuildingSnapshot | undefined) {
 			transaction(() => {
 				self.building = undefined;
-				self.building = cast(snapshot);
+				!!snapshot && (self.building = cast(snapshot));
 			});
 		}
 	}));

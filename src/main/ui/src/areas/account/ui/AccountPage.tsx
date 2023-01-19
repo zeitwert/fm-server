@@ -111,7 +111,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Steckbrief{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
+							<TabsPanel label={<span>Dokumente{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
 									<AccountSummaryTab account={account} afterSave={this.reload} />

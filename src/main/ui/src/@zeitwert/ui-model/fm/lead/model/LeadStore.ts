@@ -34,10 +34,10 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(snapshot: LeadSnapshot) {
+		setItem(snapshot: LeadSnapshot | undefined) {
 			transaction(() => {
 				self.lead = undefined;
-				self.lead = cast(snapshot);
+				!!snapshot && (self.lead = cast(snapshot));
 			});
 		}
 	}));

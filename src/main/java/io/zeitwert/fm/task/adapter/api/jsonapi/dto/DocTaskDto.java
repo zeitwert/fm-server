@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -30,6 +31,11 @@ import lombok.experimental.SuperBuilder;
 public class DocTaskDto extends FMDocDtoBase<DocTask> {
 
 	private EnumeratedDto relatedTo;
+
+	@JsonApiField(readable = false, filterable = true)
+	public Integer getRelatedToId() {
+		return null;
+	}
 
 	@JsonApiRelationId
 	private Integer accountId;

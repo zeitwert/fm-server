@@ -18,6 +18,7 @@ export const Checkbox: FC<CheckboxProps> = observer((props) => {
 				readOnly &&
 				<SLDSCheckbox
 					variant="toggle"
+					className="slds-m-top_x_small"
 					labels={{ toggleDisabled: "", toggleEnabled: "" }}
 					disabled={true}
 					checked={inputProps.checked}
@@ -27,6 +28,7 @@ export const Checkbox: FC<CheckboxProps> = observer((props) => {
 				!readOnly &&
 				<SLDSCheckbox
 					variant="toggle"
+					className="slds-m-top_x_small"
 					labels={{ toggleDisabled: "", toggleEnabled: "" }}
 					disabled={inputProps.disabled}
 					onChange={inputProps.onChange}

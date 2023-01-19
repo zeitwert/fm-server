@@ -15,8 +15,8 @@ public interface DocRepository<D extends Doc, V extends Record> extends Aggregat
 
 	// DocPartItemRepository getItemRepository();
 
-	static Boolean isDocId(Integer id) {
-		return id == null ? null : id >= MIN_DOC_ID;
+	static boolean isDocId(Integer id) {
+		return id != null && id >= MIN_DOC_ID;
 	}
 
 }

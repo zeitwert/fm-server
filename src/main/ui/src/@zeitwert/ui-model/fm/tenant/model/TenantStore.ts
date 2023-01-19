@@ -33,10 +33,10 @@ const MstTenantStoreModel = ObjStoreModel
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(snapshot: TenantSnapshot) {
+		setItem(snapshot: TenantSnapshot | undefined) {
 			transaction(() => {
 				self.tenant = undefined;
-				self.tenant = cast(snapshot);
+				!!snapshot && (self.tenant = cast(snapshot));
 			});
 		}
 	}));

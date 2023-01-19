@@ -32,10 +32,10 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 		return { afterLoad };
 	})
 	.actions((self) => ({
-		setItem(snapshot: TaskSnapshot) {
+		setItem(snapshot: TaskSnapshot | undefined) {
 			transaction(() => {
 				self.task = undefined;
-				self.task = cast(snapshot);
+				!!snapshot && (self.task = cast(snapshot));
 			});
 		}
 	}));

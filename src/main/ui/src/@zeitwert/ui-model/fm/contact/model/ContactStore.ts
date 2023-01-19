@@ -25,10 +25,10 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 		}
 	}))
 	.actions((self) => ({
-		setItem(snapshot: ContactSnapshot) {
+		setItem(snapshot: ContactSnapshot | undefined) {
 			transaction(() => {
 				self.contact = undefined;
-				self.contact = cast(snapshot);
+				!!snapshot && (self.contact = cast(snapshot));
 			});
 		}
 	}))

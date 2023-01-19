@@ -1,8 +1,7 @@
 
 import { DateField, EnumeratedField, IdField, TextField } from "@zeitwert/ui-forms";
-import { AggregateField } from "@zeitwert/ui-forms/model/AggregateField";
 import { BooleanField } from "@zeitwert/ui-forms/model/BooleanField";
-import { ACCOUNT_API, TaskModel, TaskModelType } from "@zeitwert/ui-model";
+import { TaskModel, TaskModelType } from "@zeitwert/ui-model";
 import { Form, FormDefinition } from "mstform";
 
 export const TaskFormDef: FormDefinition<TaskModelType> = {
@@ -12,7 +11,7 @@ export const TaskFormDef: FormDefinition<TaskModelType> = {
 	//
 	relatedTo: new EnumeratedField({ required: true, source: "oe/objUser" }),
 	assignee: new EnumeratedField({ required: true, source: "oe/objUser" }),
-	account: new AggregateField({ required: true, source: ACCOUNT_API }),
+	//account: new AggregateField({ required: true, source: ACCOUNT_API }),
 	//
 	subject: new TextField({ required: true }),
 	content: new TextField(),

@@ -99,10 +99,10 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Steckbrief</span>}>
+							<TabsPanel label={<span>Dokumente</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
-									<div>Summary</div>
+									<div>Dokumente</div>
 								}
 								{/*<ContactSummaryTab contact={contact} afterSave={this.reload} />*/}
 							</TabsPanel>

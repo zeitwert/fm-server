@@ -45,6 +45,10 @@ public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRe
 		return userCache;
 	}
 
+	protected EnumeratedDto asEnumerated(Aggregate a) {
+		return EnumeratedDto.builder().id(a.getId().toString()).name(a.getCaption()).build();
+	}
+
 	public abstract void toAggregate(D dto, A aggregate);
 
 	public abstract D fromAggregate(A aggregate);

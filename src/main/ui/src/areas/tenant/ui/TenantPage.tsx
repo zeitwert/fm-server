@@ -23,7 +23,7 @@ enum LEFT_TABS {
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	SUMMARY = "summary",
+	DOCUMENTS = "document",
 	ACTIVITY = "activity",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -38,7 +38,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	@observable accountStore = AccountStoreModel.create({});
 	@observable userStore = UserStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
-	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 
 	@computed
 	get hasLogo(): boolean {
@@ -125,9 +125,9 @@ class TenantPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Steckbrief{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
+							<TabsPanel label={<span>Dokumente{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
-									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
 									<TenantSummaryTab tenant={tenant} afterSave={this.reload} />
 								}
 							</TabsPanel>

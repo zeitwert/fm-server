@@ -1,20 +1,20 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { Checkbox, Combobox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
+import { Checkbox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
-import { session, TaskModelType, TaskStore } from "@zeitwert/ui-model";
+import { TaskModelType, TaskStore } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
 import TaskForm from "../forms/TaskForm";
 
-export interface TaskCreationFormProps {
+export interface TaskStaticDataFormProps {
 	store: TaskStore;
 }
 
 @observer
-export default class TaskCreationForm extends React.Component<TaskCreationFormProps> {
+export default class TaskStaticDataForm extends React.Component<TaskStaticDataFormProps> {
 
 	formStateOptions: FormStateOptions<TaskModelType> = {
 		isReadOnly: (accessor) => {
@@ -23,13 +23,13 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 			}
 			return false;
 		},
-		isDisabled: (accessor) => {
-			const task = this.props.store.task!;
-			if (["account"].indexOf(accessor.fieldref) >= 0) {
-				return !session.isKernelTenant || !!accessor.value;
-			}
-			return !!accessor.fieldref && !task.account;
-		},
+		// isDisabled: (accessor) => {
+		// 	const task = this.props.store.task!;
+		// 	if (["account"].indexOf(accessor.fieldref) >= 0) {
+		// 		return !session.isKernelTenant || !!accessor.value;
+		// 	}
+		// 	return !!accessor.fieldref && !task.account;
+		// },
 	};
 
 	render() {
@@ -44,10 +44,6 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Grunddaten">
 								<FieldRow>
-									<Combobox label="Referenz" fieldName="account" size={6} />
-									<Combobox label="Kunde" fieldName="account" size={6} />
-								</FieldRow>
-								<FieldRow>
 									<Input label="Titel" fieldName="subject" size={10} />
 									<Checkbox label="Privat?" fieldName="isPrivate" size={2} />
 								</FieldRow>
@@ -58,6 +54,16 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 									<Select label="Zugewiesen an" fieldName="assignee" size={4} />
 									<DatePicker label="Fällig am" fieldName="dueAt" size={4} yearRangeMin={-1} />
 									<Select label="Priorität" fieldName="priority" size={4} />
+								</FieldRow>
+								<FieldRow>
+									<Select
+										label="Referenz"
+										value={this.props.store.task!.relatedTo}
+										values={[this.props.store.task!.relatedTo!]}
+										required={true}
+										disabled={true}
+										size={12}
+									/>
 								</FieldRow>
 							</FieldGroup>
 						</Card>

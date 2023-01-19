@@ -20,11 +20,12 @@ values
 on conflict(id)
 do nothing;
 
+delete from code_task_priority where id = 'critical';
+
 insert into code_task_priority(id, name)
 values
 ('low', 'Low'),
 ('normal', 'Normal'),
-('high', 'High'),
-('critical', 'Critical')
+('high', 'High')
 on conflict(id)
 do nothing;

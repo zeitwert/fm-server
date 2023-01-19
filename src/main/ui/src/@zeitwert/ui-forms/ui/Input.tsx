@@ -9,6 +9,7 @@ export interface InputProps extends FieldProps {
 	id?: string;
 	type?: "text" | "password";
 	value?: string;
+	placeholder?: string;
 	onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
 	onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -35,6 +36,7 @@ export const Input: FC<InputProps> = observer((props) => {
 					onFocus={props.onFocus}
 					onKeyDown={props.onKeyDown}
 					onClick={props.onClick}
+					placeholder={props.placeholder}
 				/>
 			}
 		</Field>

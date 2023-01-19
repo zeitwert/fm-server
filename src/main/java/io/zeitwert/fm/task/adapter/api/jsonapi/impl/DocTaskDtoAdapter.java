@@ -6,7 +6,11 @@ import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
+
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 
 public final class DocTaskDtoAdapter extends FMDocDtoAdapter<DocTask, DocTaskVRecord, DocTaskDto> {
 
@@ -45,7 +49,7 @@ public final class DocTaskDtoAdapter extends FMDocDtoAdapter<DocTask, DocTaskVRe
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
 				.accountId(doc.getAccountId())
-				.relatedTo(null)
+				.relatedTo(this.asEnumerated(doc.getRelatedTo()))
 				.subject(doc.getSubject())
 				.content(doc.getContent())
 				.isPrivate(doc.getIsPrivate())
@@ -62,11 +66,12 @@ public final class DocTaskDtoAdapter extends FMDocDtoAdapter<DocTask, DocTaskVRe
 		}
 		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder().original(null);
 		this.fromRecord(dtoBuilder, doc);
-		// Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() :
-		// doc.getRelatedDocId();
+		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
+		assertThis(ObjRepository.isObjId(relatedToId), "relatedToId is obj (doc nyi)");
+		EnumeratedDto relatedTo = EnumeratedDto.builder().id(relatedToId.toString()).build();
 		return dtoBuilder
 				.accountId(doc.getAccountId())
-				.relatedTo(null)
+				.relatedTo(relatedTo)
 				.subject(doc.getSubject())
 				.content(doc.getContent())
 				.isPrivate(doc.getIsPrivate())

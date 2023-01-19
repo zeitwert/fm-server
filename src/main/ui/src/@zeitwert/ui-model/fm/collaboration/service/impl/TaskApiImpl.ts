@@ -7,7 +7,7 @@ import { TaskApi } from "../TaskApi";
 const MODULE = "collaboration";
 const PATH = "tasks";
 const TYPE = "task";
-const INCLUDES = "include[task]=account";
+const INCLUDES = "";
 
 export class TaskApiImpl extends AggregateApiImpl<TaskSnapshot> implements TaskApi {
 
@@ -15,7 +15,7 @@ export class TaskApiImpl extends AggregateApiImpl<TaskSnapshot> implements TaskA
 		const PROPS = Object.keys(TaskModel.properties);
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["isInWork"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
-		const RELATIONS = { account: "account" };
+		const RELATIONS = { /*account: "account"*/ };
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}
 

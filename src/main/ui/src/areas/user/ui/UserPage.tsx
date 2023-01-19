@@ -21,7 +21,7 @@ enum LEFT_TABS {
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	SUMMARY = "summary",
+	DOCUMENTS = "documents",
 	ACTIVITY = "activity",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -34,7 +34,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 
 	@observable userStore = UserStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
-	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 	@observable doChangePassword = false;
 
 	@computed
@@ -122,9 +122,9 @@ class UserPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Steckbrief{!this.hasAvatar && <abbr className="slds-required"> *</abbr>}</span>}>
+							<TabsPanel label={<span>Dokumente{!this.hasAvatar && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
-									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
 									<UserSummaryForm user={user} afterSave={this.reload} />
 								}
 							</TabsPanel>

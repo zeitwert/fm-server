@@ -14,8 +14,8 @@ public interface ObjRepository<O extends Obj, V extends Record> extends Aggregat
 
 	ObjPartItemRepository getItemRepository();
 
-	static Boolean isObjId(Integer id) {
-		return id == null ? null : id < DocRepository.MIN_DOC_ID;
+	static boolean isObjId(Integer id) {
+		return id != null && id < DocRepository.MIN_DOC_ID;
 	}
 
 	/**

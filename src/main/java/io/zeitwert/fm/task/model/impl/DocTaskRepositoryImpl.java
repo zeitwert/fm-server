@@ -11,15 +11,20 @@ import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
+import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
+import io.zeitwert.fm.task.model.base.DocTaskFields;
 import io.zeitwert.fm.task.model.db.Tables;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
@@ -31,6 +36,7 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 	private static final String AGGREGATE_TYPE = "doc_task";
 
 	private final ObjVRepository objVRepository;
+	private final RequestContext requestCtx;
 
 	//@formatter:off
 	protected DocTaskRepositoryImpl(
@@ -38,7 +44,8 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 		final DSLContext dslContext,
 		final DocPartTransitionRepository transitionRepository,
 		final ObjNoteRepository noteRepository,
-		final ObjVRepository objVRepository
+		final ObjVRepository objVRepository,
+		final RequestContext requestCtx
 	) {
 		super(
 			DocTaskRepository.class,
@@ -51,6 +58,7 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 			noteRepository
 		);
 		this.objVRepository = objVRepository;
+		this.requestCtx = requestCtx;
 	}
 	//@formatter:on
 
@@ -81,8 +89,32 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 	}
 
 	@Override
-	public List<DocTaskVRecord> doFind(QuerySpec querySpec) {
-		return this.doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, querySpec);
+	public List<DocTaskVRecord> doFind(QuerySpec uiQuerySpec) {
+		PathSpec relatedToIdField = PathSpec.of("relatedToId");
+		QuerySpec dbQuerySpec = null;
+		if (uiQuerySpec.findFilter(relatedToIdField).isPresent()) {
+			dbQuerySpec = new QuerySpec(DocTaskVRecord.class);
+			Integer relatedToId = uiQuerySpec.findFilter(relatedToIdField).get().getValue();
+			if (ObjRepository.isObjId(relatedToId)) {
+				PathSpec relatedToObjIdField = PathSpec.of(DocTaskFields.RELATED_OBJ_ID.getName());
+				dbQuerySpec.addFilter(relatedToObjIdField.filter(FilterOperator.EQ, relatedToId));
+			} else {
+				PathSpec relatedToDocIdField = PathSpec.of(DocTaskFields.RELATED_OBJ_ID.getName());
+				dbQuerySpec.addFilter(relatedToDocIdField.filter(FilterOperator.EQ, relatedToId));
+			}
+			uiQuerySpec.getFilters()
+					.stream()
+					.filter(f -> !f.getPath().equals(relatedToIdField))
+					.forEach(dbQuerySpec::addFilter);
+		} else {
+			dbQuerySpec = uiQuerySpec;
+		}
+		List<DocTaskVRecord> noteList = this.doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, dbQuerySpec);
+		Integer sessionUserId = this.requestCtx.getUser().getId();
+		noteList.removeIf(
+				note -> note.getIsPrivate() != null && note.getIsPrivate() && note.getCreatedByUserId() != sessionUserId);
+		noteList.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
+		return noteList;
 	}
 
 }

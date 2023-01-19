@@ -4,7 +4,7 @@ function throwError(name: string, message?: string, ...args: any[]) {
 	const m = message
 		? message.replace(/%s/g, function (): string { return args[argIndex++]; })
 		: "";
-	const error = new Error(name + (m ? ": " + m : ""));
+	const error = new Error(m ?? name);
 	error.name = name;
 	throw error;
 }

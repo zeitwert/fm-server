@@ -9,6 +9,7 @@ import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import NotesTab from "lib/item/ui/tab/NotesTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import TabProjection from "lib/projection/ui/TabProjection";
 import { computed, makeObservable, observable } from "mobx";
@@ -29,10 +30,10 @@ enum LEFT_TABS {
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	SUMMARY = "summary",
+	DOCUMENTS = "documents",
 	NOTES = "notes",
-	//ACTIVITY = 1,
-	ERRORS = "errors",
+	ACTIVITIES = "activities",
+	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -44,7 +45,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
-	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 	@observable currentElement: BuildingElement | undefined;
 	@observable currentElementAccessor: ElementAccessor | undefined;
 	@observable showConfirmation: boolean = false;
@@ -113,6 +114,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
 		const notesCount = this.buildingStore.notesStore.notes.length;
+		const tasksCount = this.buildingStore.tasksStore.tasks.length;
+		const missingDocument = !this.hasCoverFoto;
 
 		return (
 			<>
@@ -178,9 +181,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Steckbrief{!this.hasCoverFoto && <abbr className="slds-required"> *</abbr>}</span>}>
+							<TabsPanel label={<span>Dokumente{missingDocument && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
-									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
 									<BuildingSummaryTab building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
@@ -194,21 +197,22 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 									/>
 								}
 							</TabsPanel>
-							{
-								/*
-							<TabsPanel label="Aktivität">
+							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
-									<ActivityPortlet {...Object.assign({}, this.props, { item: building, onSave: this.onSavePortlet })} />
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<TasksTab
+										relatedToId={this.buildingStore.id!}
+										store={this.buildingStore.tasksStore}
+										tasks={this.buildingStore.tasksStore.tasks}
+										onTaskStored={this.reload}
+									/>
 								}
 							</TabsPanel>
-								*/
-							}
 							{
 								this.hasValidations &&
 								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
 									{
-										this.activeRightTabId === RIGHT_TABS.ERRORS &&
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
 										<ValidationsTab validationList={building.meta?.validationList!} />
 									}
 								</TabsPanel>
