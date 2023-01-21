@@ -1,3 +1,4 @@
+
 import { AggregateMeta } from "../../aggregate/model/AggregateMeta";
 import { Enumerated } from "../../aggregate/model/EnumeratedModel";
 import { CaseStage } from "./BpmModel";
@@ -8,4 +9,14 @@ export interface DocMeta extends AggregateMeta {
 	assignee: Enumerated;
 	caseStages: CaseStage[];
 	availableActions: string[];
+	transitions: DocPartTransition[];
+}
+
+export interface DocPartTransition {
+	seqNr: number;
+	user: Enumerated;
+	timestamp: Date;
+	oldCaseStage: CaseStage;
+	newCaseStage: CaseStage;
+	changes: string;
 }

@@ -3,16 +3,14 @@ import { StoreWithTasksModel } from "@zeitwert/ui-model/fm/collaboration/model/S
 import Logger from "loglevel";
 import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { session } from "../../../../ui-model/app/session";
-import { EntityTypeRepository, requireThis } from "../../../app/common";
+import { requireThis } from "../../../app/common";
 import { StoreWithNotesModel } from "../../../fm/collaboration/model/StoreWithNotes";
 import { AggregateStoreModel } from "../../aggregate/model/AggregateStore";
 import { Obj } from "./ObjModel";
-import { StoreWithObjsModel } from "./StoreWithObjs";
 
 const MstObjStoreModel = AggregateStoreModel
 	.named("ObjStore")
 	.props({
-		objsStore: types.optional(StoreWithObjsModel, {}),
 		notesStore: types.optional(StoreWithNotesModel, {}),
 		tasksStore: types.optional(StoreWithTasksModel, {}),
 	})
@@ -35,14 +33,6 @@ const MstObjStoreModel = AggregateStoreModel
 			}
 		}
 		return { load };
-	})
-	.actions((self) => {
-		const superAfterLoad = self.afterLoad;
-		const afterLoad = (repository: EntityTypeRepository) => {
-			superAfterLoad(repository);
-			self.objsStore.afterLoad(repository);
-		}
-		return { afterLoad };
 	})
 	.actions((self) => ({
 		delete() {

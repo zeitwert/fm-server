@@ -1,4 +1,5 @@
-import { AggregateStore, EntityType, ItemPartStore } from "@zeitwert/ui-model";
+
+import { AggregateStore, EntityType } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { action, computed, makeObservable } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -6,7 +7,7 @@ import React from "react";
 import { ItemEditorButtons } from "./ItemEditorButtons";
 
 export interface BaseItemEditorProps {
-	store: AggregateStore | ItemPartStore;
+	store: AggregateStore;
 	entityType: EntityType;
 	onCancel: () => Promise<void>;
 	onClose: () => Promise<any>;

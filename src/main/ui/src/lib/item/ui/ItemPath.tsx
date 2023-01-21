@@ -53,7 +53,7 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 	}
 
 	render() {
-		const { store, currentStage, readOnly } = this.props;
+		const { /*store,*/ currentStage, readOnly } = this.props;
 		const currentIndex = this.stageList.findIndex((stage) => stage.id === currentStage.id)!;
 		const nextIndex = currentIndex === this.stageList.length - 1 ? undefined : currentIndex + 1;
 		let targetStage: CaseStage | undefined = undefined;
@@ -80,9 +80,10 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 									const isCurrent = id === currentStage.id;
 									const isActive = id === this.getActiveStage()?.id;
 									const isLast = index === this.stageList.length - 1;
-									const transition = isCurrent
-										? store.findLatestTransitionTo(stage)
-										: store.findLatestTransitionFrom(stage);
+									const transition = undefined;
+									// const transition = isCurrent
+									// 	? store.findLatestTransitionTo(stage)
+									// 	: store.findLatestTransitionFrom(stage);
 									if (isLast) {
 										stageType = isCurrent ? this.terminalStageType(stage) : StageType.incomplete;
 									} else {
@@ -94,7 +95,7 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 									}
 									return (
 										<CasePathStage
-											key={"caseStage:" + index + "-" + store.stageTransitions.length}
+											key={"caseStage:" + index/* + "-" + store.stageTransitions.length*/}
 											stage={stage}
 											stageType={stageType}
 											isActive={isActive}

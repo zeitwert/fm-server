@@ -51,7 +51,7 @@ export class CasePathStage extends React.Component<CasePathStageProps> {
 		if (!transition) {
 			return false;
 		}
-		const dueDate = moment(transition.modifiedAt!).add(stage.due, "days");
+		const dueDate = moment(transition.timestamp!).add(stage.due, "days");
 		return stageType === StageType.current && !dueDate.isAfter(moment());
 	}
 
@@ -111,14 +111,14 @@ export class CasePathStage extends React.Component<CasePathStageProps> {
 		const { stage, stageType } = this.props;
 		if (stageType === StageType.current) {
 			// Calculate expire date.
-			const dueDate = moment(transition.modifiedAt!).add(stage.due, "days");
+			const dueDate = moment(transition.timestamp!).add(stage.due, "days");
 			// Check if expired.
 			if (dueDate.isAfter(moment())) {
 				return "Expires in " + DateFormat.relativeTime(dueDate.toDate());
 			}
 			return "Expired " + DateFormat.relativeTime(dueDate.toDate());
 		}
-		return "Completed " + DateFormat.relativeTime(transition.modifiedAt!);
+		return "Completed " + DateFormat.relativeTime(transition.timestamp!);
 	}
 
 }

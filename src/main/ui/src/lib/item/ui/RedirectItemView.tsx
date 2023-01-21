@@ -1,8 +1,7 @@
-import { ITEM_API } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
+
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { Navigate } from "react-router-dom";
 
@@ -10,14 +9,10 @@ interface RedirectItemViewProps extends RouteComponentProps {
 	itemType: string;
 }
 
-@inject("session", "showAlert")
 @observer
 class RedirectItemView extends React.Component<RedirectItemViewProps> {
-	@observable itemType?: string;
 
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
+	@observable itemType?: string;
 
 	constructor(props: RedirectItemViewProps) {
 		super(props);
@@ -26,16 +21,17 @@ class RedirectItemView extends React.Component<RedirectItemViewProps> {
 
 	async componentDidMount() {
 		const itemId = this.props.params.itemId!;
-		const repository = await ITEM_API.loadAggregate(itemId);
+		const repository = {} as any;//await ITEM_API.loadAggregate(itemId);
 		this.itemType = repository?.item?.[itemId]?.meta?.itemType?.id?.substr(4);
 	}
 
 	render() {
 		if (!this.itemType) {
-			return <></>;
+			return <>This should redirect to corresponding item (NYI)</>;
 		}
 		return <Navigate to={`/${this.itemType}/${this.props.params.itemId}`} />;
 	}
+
 }
 
 export default withRouter(RedirectItemView);

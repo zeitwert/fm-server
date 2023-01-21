@@ -1,3 +1,4 @@
+
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, session, Task, TaskStore, TaskStoreModel, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
@@ -40,14 +41,14 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	async componentDidMount() {
 		await this.taskStore.load(this.props.params.taskId!);
-		await this.taskStore.loadTransitions(this.taskStore.task!);
+		//await this.taskStore.loadTransitions(this.taskStore.task!);
 		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.taskId !== prevProps.params.taskId) {
 			await this.taskStore.load(this.props.params.taskId!);
-			await this.taskStore.loadTransitions(this.taskStore.task!);
+			//await this.taskStore.loadTransitions(this.taskStore.task!);
 		}
 	}
 
