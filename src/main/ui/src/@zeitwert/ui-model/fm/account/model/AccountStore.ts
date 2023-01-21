@@ -1,5 +1,5 @@
-import { transaction } from "mobx";
-import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
+
+import { applySnapshot, cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithContactsModel } from "../../contact/model/StoreWithContacts";
@@ -39,10 +39,11 @@ const MstAccountStoreModel = ObjStoreModel
 	})
 	.actions((self) => ({
 		setItem(snapshot: AccountSnapshot | undefined) {
-			transaction(() => {
-				self.account = undefined;
-				!!snapshot && (self.account = cast(snapshot));
-			});
+			if (self.account) {
+				applySnapshot(self.account, snapshot);
+			} else {
+				self.account = cast(snapshot);
+			}
 		}
 	}));
 

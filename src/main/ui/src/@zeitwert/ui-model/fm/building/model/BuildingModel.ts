@@ -1,8 +1,9 @@
 
+import { AggregateStore } from "@zeitwert/ui-model/ddd";
 import { AxiosResponse } from "axios";
 import Logger from "loglevel";
 import { reaction, toJS, transaction } from "mobx";
-import { addDisposer, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { addDisposer, flow, getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { faTypes } from "../../../app/common";
 import { Config } from "../../../app/common/config/Config";
 import { API } from "../../../app/common/service/Api";
@@ -75,7 +76,7 @@ const MstBuildingModel = ObjModel.named("Building")
 	.actions((self) => {
 		const superSetField = self.setField;
 		async function setAccount(id: string) {
-			id && (await (self.rootStore as BuildingStore).accountsStore.loadAccount(id));
+			id && (await (getRoot(self) as BuildingStore).accountsStore.loadAccount(id));
 			return superSetField("account", id);
 		}
 		async function setPartCatalog(catalog: Enumerated | undefined) {
@@ -189,12 +190,12 @@ const MstBuildingModel = ObjModel.named("Building")
 	.actions((self) => ({
 		async addRating() {
 			await self.execOperation(["addRating", "calculationOnly"]);
-			self.rootStore.startTrx();
+			(getRoot(self) as AggregateStore).startTrx();
 		},
 		moveRatingStatus(ratingStatusId: string) {
-			self.rootStore.startTrx();
+			(getRoot(self) as AggregateStore).startTrx();
 			self.setField("ratingStatus", { id: ratingStatusId, name: "" });
-			return self.rootStore.store();
+			return (getRoot(self) as AggregateStore).store();
 		}
 	}))
 	.actions(self => {
@@ -203,14 +204,14 @@ const MstBuildingModel = ObjModel.named("Building")
 			afterCreate() {
 				addDisposer(self, reaction(
 					() => {
-						return { input: self.geoInput, inTrx: self.rootStore.isInTrx };
+						return { input: self.geoInput, inTrx: (getRoot(self) as AggregateStore).isInTrx };
 					},
 					() => {
 						if (geoTimeout) {
 							clearTimeout(geoTimeout);
 							geoTimeout = null;
 						}
-						if (self.rootStore.isInTrx && self.isReadyForGeocode) {
+						if ((getRoot(self) as AggregateStore).isInTrx && self.isReadyForGeocode) {
 							geoTimeout = setTimeout(() => {
 								self.resolveGeocode();
 							}, 500);
@@ -219,10 +220,10 @@ const MstBuildingModel = ObjModel.named("Building")
 				));
 				addDisposer(self, reaction(
 					() => {
-						return { input: self.ratingDate, inTrx: self.rootStore.isInTrx };
+						return { input: self.ratingDate, inTrx: (getRoot(self) as AggregateStore).isInTrx };
 					},
 					() => {
-						if (self.rootStore.isInTrx) {
+						if ((getRoot(self) as AggregateStore).isInTrx) {
 							const year = self.ratingDate?.getFullYear();
 							self.elements.forEach(e => {
 								e.setField("conditionYear", year);
@@ -230,6 +231,12 @@ const MstBuildingModel = ObjModel.named("Building")
 						}
 					}
 				));
+			},
+			beforeDestroy() {
+				if (geoTimeout) {
+					clearTimeout(geoTimeout);
+					geoTimeout = null;
+				}
 			}
 		}
 	})

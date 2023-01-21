@@ -1,6 +1,5 @@
 
-import { transaction } from "mobx";
-import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { applySnapshot, cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
@@ -33,10 +32,11 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	})
 	.actions((self) => ({
 		setItem(snapshot: PortfolioSnapshot | undefined) {
-			transaction(() => {
-				self.portfolio = undefined;
-				!!snapshot && (self.portfolio = cast(snapshot));
-			});
+			if (self.portfolio) {
+				applySnapshot(self.portfolio, snapshot);
+			} else {
+				self.portfolio = cast(snapshot);
+			}
 		}
 	}));
 

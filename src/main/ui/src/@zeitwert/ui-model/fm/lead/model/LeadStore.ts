@@ -1,5 +1,5 @@
-import { transaction } from "mobx";
-import { cast, Instance, SnapshotIn, types } from "mobx-state-tree";
+
+import { applySnapshot, cast, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
@@ -35,10 +35,11 @@ const MstLeadStoreModel = DocStoreModel.named("LeadStore")
 	})
 	.actions((self) => ({
 		setItem(snapshot: LeadSnapshot | undefined) {
-			transaction(() => {
-				self.lead = undefined;
-				!!snapshot && (self.lead = cast(snapshot));
-			});
+			if (self.lead) {
+				applySnapshot(self.lead, snapshot);
+			} else {
+				self.lead = cast(snapshot);
+			}
 		}
 	}));
 

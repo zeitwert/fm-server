@@ -1,6 +1,6 @@
+
 import Logger from "loglevel";
-import { transaction } from "mobx";
-import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { applySnapshot, cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
@@ -26,10 +26,11 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 	}))
 	.actions((self) => ({
 		setItem(snapshot: ContactSnapshot | undefined) {
-			transaction(() => {
-				self.contact = undefined;
-				!!snapshot && (self.contact = cast(snapshot));
-			});
+			if (self.contact) {
+				applySnapshot(self.contact, snapshot);
+			} else {
+				self.contact = cast(snapshot);
+			}
 		}
 	}))
 	.actions((self) => {

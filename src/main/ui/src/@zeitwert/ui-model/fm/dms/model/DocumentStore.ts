@@ -1,6 +1,7 @@
+
 import Logger from "loglevel";
 import { transaction } from "mobx";
-import { cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { applySnapshot, cast, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { API, Config } from "../../../app/common";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { DocumentApi, DOCUMENT_API } from "../service/DocumentApi";
@@ -24,10 +25,11 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 	}))
 	.actions((self) => ({
 		setItem(snapshot: DocumentSnapshot | undefined) {
-			transaction(() => {
-				self.document = undefined;
-				!!snapshot && (self.document = cast(snapshot));
-			});
+			if (self.document) {
+				applySnapshot(self.document, snapshot);
+			} else {
+				self.document = cast(snapshot);
+			}
 		}
 	}))
 	.actions(() => ({

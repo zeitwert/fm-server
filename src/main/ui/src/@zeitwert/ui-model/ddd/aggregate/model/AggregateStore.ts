@@ -19,7 +19,6 @@ const MstAggregateStoreModel = types
 	.model("AggregateStore", {
 		id: types.maybe(types.string),
 		inTrx: types.optional(types.boolean, false),
-		hasServerTrx: types.optional(types.boolean, false),
 		counters: types.maybe(types.frozen<AggregateCounters>())
 	})
 	.volatile(() => ({
@@ -74,32 +73,6 @@ const MstAggregateStoreModel = types
 			});
 		}
 	}))
-	// lifecycle, do not overwrite
-	.actions((self) => ({
-		async execOperation(operations: string[]) {
-			requireThis(!self.isNew, "not new");
-			return flow<Aggregate, any[]>(function* (): any {
-				try {
-					let repository: EntityTypeRepository;
-					const id = self.item!.id;
-					session.startNetwork();
-					repository = yield self.api.storeAggregate({
-						id: self.item!.id,
-						meta: {
-							operationList: operations
-						}
-					} as unknown as Aggregate);
-					self.updateStore(id, repository);
-					return self.item;
-				} catch (error: any) {
-					Logger.error("Failed to calc item", error);
-					return Promise.reject(error);
-				} finally {
-					session.stopNetwork();
-				}
-			})();
-		},
-	}))
 	// (memory) transaction management, do not overwrite
 	.actions((self) => ({
 		startTrx() {
@@ -111,7 +84,6 @@ const MstAggregateStoreModel = types
 		commitTrx() {
 			requireThis(self.isInTrx, "in transaction");
 			self.recorder!.stop();
-			self.hasServerTrx = false;
 			self.inTrx = false;
 		},
 		async rollbackTrx() {
@@ -119,17 +91,6 @@ const MstAggregateStoreModel = types
 			applySnapshot(self.item as any, self.initialState);
 			self.recorder!.stop();
 			self.inTrx = false;
-			if (self.hasServerTrx) {
-				flow<Aggregate, any[]>(function* (): any {
-					try {
-						yield self.execOperation(["discard"]);
-						self.hasServerTrx = false;
-					} catch (error: any) {
-						Logger.error("Failed to discard item", error);
-						return Promise.reject(error);
-					}
-				})();
-			}
 		}
 	}))
 	.views((self) => ({
@@ -182,15 +143,37 @@ const MstAggregateStoreModel = types
 			self.id = undefined;
 			self.setItem(undefined);
 		},
+		async execOperation(operations: string[]) {
+			requireThis(!self.isNew, "not new");
+			return flow<Aggregate, any[]>(function* (): any {
+				try {
+					let repository: EntityTypeRepository;
+					const id = self.item!.id;
+					session.startNetwork();
+					repository = yield self.api.storeAggregate({
+						id: self.item!.id,
+						meta: {
+							operationList: operations
+						}
+					} as unknown as Aggregate);
+					self.updateStore(id, repository);
+					return self.item;
+				} catch (error: any) {
+					Logger.error("Failed to calc item", error);
+					return Promise.reject(error);
+				} finally {
+					session.stopNetwork();
+				}
+			})();
+		},
 		async calcOnServer() {
 			requireThis(!self.isNew, "not new");
 			requireThis(self.isInTrx, "in transaction");
-			self.hasServerTrx = true;
 			return flow<Aggregate, any[]>(function* (): any {
 				try {
-					session.startNetwork();
 					let repository: EntityTypeRepository;
 					const id = self.item!.id;
+					session.startNetwork();
 					const changes = Object.assign(
 						self.changes,
 						{
