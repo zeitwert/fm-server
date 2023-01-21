@@ -1,5 +1,5 @@
 
-import { Instance, SnapshotIn, types } from "mobx-state-tree";
+import { getRoot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated, EnumeratedModel } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
@@ -24,7 +24,7 @@ const MstPortfolioModel = ObjModel.named("Portfolio")
 	.actions((self) => {
 		const superSetField = self.setField;
 		async function setAccount(id: string) {
-			id && (await (self.rootStore as PortfolioStore).accountsStore.loadAccount(id));
+			id && (await (getRoot(self) as PortfolioStore).accountsStore.loadAccount(id));
 			return superSetField("account", id);
 		}
 		function addIncludeObj(obj: Enumerated) {

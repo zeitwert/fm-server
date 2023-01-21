@@ -1,5 +1,5 @@
 import { toJS } from "mobx";
-import { getSnapshot, IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { getRoot, getSnapshot, IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { DateFormat, faTypes, requireThis, UUID } from "../../../app/common";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
@@ -59,7 +59,7 @@ const MstContactModel = ObjModel.named("Contact")
 	.actions((self) => {
 		const superSetField = self.setField;
 		async function setAccount(id: string) {
-			id && (await (self.rootStore as ContactStore).accountsStore.loadAccount(id));
+			id && (await (getRoot(self) as ContactStore).accountsStore.loadAccount(id));
 			return superSetField("account", id);
 		}
 		async function setField(field: string, value: any) {

@@ -27,11 +27,6 @@ const MstAggregateModel = types
 		}
 	}))
 	.views((self) => ({
-		get rootStore(): AggregateStore {
-			return getRoot(self);
-		}
-	}))
-	.views((self) => ({
 		// abstract properties, overwrite if necessary
 		get type(): EntityTypeInfo {
 			const itemType = self.meta?.itemType;
@@ -72,10 +67,10 @@ const MstAggregateModel = types
 	}))
 	.actions((self) => ({
 		async calcOnServer() {
-			self.rootStore.calcOnServer();
+			(getRoot(self) as AggregateStore).calcOnServer();
 		},
 		async execOperation(operations: string[]) {
-			self.rootStore.execOperation(operations);
+			(getRoot(self) as AggregateStore).execOperation(operations);
 		}
 	}))
 	.views((self) => ({

@@ -1,5 +1,5 @@
 import { toJS } from "mobx";
-import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { UserInfo } from "../../../app/session";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { DocModel } from "../../../ddd/doc/model/DocModel";
@@ -85,7 +85,7 @@ const MstLeadModel = DocModel.named("Lead")
 	.actions((self) => {
 		const superSetField = self.setField;
 		async function setContact(id: string) {
-			id && (await (self.rootStore as LeadStore).contactsStore.loadContact(id));
+			id && (await (getRoot(self) as LeadStore).contactsStore.loadContact(id));
 			superSetField("contact", id);
 		}
 		async function setField(field: string, value: any) {
