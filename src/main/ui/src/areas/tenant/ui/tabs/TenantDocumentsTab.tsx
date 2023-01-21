@@ -1,14 +1,14 @@
 
 import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Tenant } from "@zeitwert/ui-model";
+import AppBanner from "app/ui/AppBannerSvg";
 import FotoUploadForm from "areas/document/ui/forms/FotoUploadForm";
 import { Canvg, presets } from "canvg";
-import AppBanner from "app/ui/AppBannerSvg";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
-export interface TenantSummaryTabProps {
+export interface TenantDocumentsTabProps {
 	tenant: Tenant;
 	afterSave: () => void;
 }
@@ -16,12 +16,12 @@ export interface TenantSummaryTabProps {
 const preset = presets.offscreen();
 
 @observer
-export default class TenantSummaryTab extends React.Component<TenantSummaryTabProps> {
+export default class TenantDocumentsTab extends React.Component<TenantDocumentsTabProps> {
 
 	@observable hasBanner: boolean = false;
 	@observable bannerUrl: string | undefined;
 
-	constructor(props: TenantSummaryTabProps) {
+	constructor(props: TenantDocumentsTabProps) {
 		super(props);
 		makeObservable(this);
 		this.afterLogoUpload();

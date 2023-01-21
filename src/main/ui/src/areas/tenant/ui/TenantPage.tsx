@@ -14,17 +14,17 @@ import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import TenantStaticDataForm from "./tabs/TenantStaticDataForm";
-import TenantSummaryTab from "./tabs/TenantSummaryTab";
+import TenantDocumentsTab from "./tabs/TenantDocumentsTab";
+import TenantMainForm from "./tabs/TenantMainForm";
 
 enum LEFT_TABS {
-	OVERVIEW = "static-data",
+	MAIN = "main",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	DOCUMENTS = "document",
-	ACTIVITY = "activity",
+	DOCUMENTS = "documents",
+	ACTIVITIES = "activities",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -37,7 +37,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	@observable tenantStore = TenantStoreModel.create({});
 	@observable accountStore = AccountStoreModel.create({});
 	@observable userStore = UserStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 
 	@computed
@@ -76,7 +76,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !tenant.meta?.closedAt;
-		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -102,7 +102,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <TenantStaticDataForm store={this.tenantStore} />}
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <TenantMainForm tenant={this.tenantStore.tenant!} doEdit={this.tenantStore.isInTrx} />}
 								</TabsPanel>
 								{
 									/*
@@ -128,12 +128,12 @@ class TenantPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={<span>Dokumente{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
-									<TenantSummaryTab tenant={tenant} afterSave={this.reload} />
+									<TenantDocumentsTab tenant={tenant} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
 									<ActivityPortlet {...Object.assign({}, this.props, { item: tenant, onSave: () => null as unknown as Promise<any> })} />
 								}
 							</TabsPanel>
@@ -148,7 +148,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 						onClose={this.closeAccountEditor}
 						onCancel={this.cancelAccountEditor}
 					>
-						{() => <AccountCreationForm store={this.accountStore} />}
+						{() => <AccountCreationForm account={this.accountStore.account!} />}
 					</ItemModal>
 
 				}
@@ -160,7 +160,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 						onClose={this.closeUserEditor}
 						onCancel={this.cancelUserEditor}
 					>
-						{() => <UserCreationForm store={this.userStore} />}
+						{() => <UserCreationForm user={this.userStore.user!} />}
 					</ItemModal>
 				}
 				{

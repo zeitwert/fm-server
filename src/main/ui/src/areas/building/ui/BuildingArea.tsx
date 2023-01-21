@@ -60,8 +60,8 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 								listTemplate="building.buildings.all"
 								actionButtons={this.getHeaderActions()}
 								canCreate={session.isUser && !session.hasReadOnlyRole}
-								createEditor={() => <BuildingCreationForm store={buildingStore} />}
-								onAfterCreate={(store: BuildingStore) => { initBuilding(store.item!, this.ctx.session.sessionInfo?.account) }}
+								createEditor={() => <BuildingCreationForm building={buildingStore.building!} />}
+								onAfterCreate={(store: BuildingStore) => { initBuilding(store.building!, this.ctx.session.sessionInfo?.account) }}
 								onOpenPreview={this.openPreview}
 								onSelectionChange={this.onSelectionChange}
 							/>
@@ -88,7 +88,10 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
-		const actions = this.selection.length ? [<Button key="print" label={"Bewertungen drucken"} onClick={this.printEvaluations} />] : [];
+		const actions = [];
+		if (this.selection.length) {
+			actions.push(<Button key="print" label={"Bewertungen drucken"} onClick={this.printEvaluations} />);
+		}
 		if (session.hasSuperUserRole) {
 			actions.push(<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />);
 		}

@@ -1,44 +1,47 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { BuildingModelType, BuildingStore } from "@zeitwert/ui-model";
+import { Building, BuildingModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
 import BuildingForm from "../forms/BuildingForm";
 
-export interface BuildingStaticDataFormProps {
-	store: BuildingStore;
+export interface BuildingMainFormProps {
+	building: Building;
+	doEdit: boolean;
 }
 
 @observer
-export default class BuildingStaticDataForm extends React.Component<BuildingStaticDataFormProps> {
+export default class BuildingMainForm extends React.Component<BuildingMainFormProps> {
 
 	formStateOptions: FormStateOptions<BuildingModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
 		},
 		isDisabled: (accessor) => {
+			const building = this.props.building;
 			if (["currency", "country"].indexOf(accessor.fieldref) >= 0) {
 				return true;
-			} else if (accessor.fieldref === "buildingSubType" && !this.props.store.building?.buildingType) {
+			} else if (accessor.fieldref === "buildingSubType" && !building.buildingType) {
 				return true;
 			} else if (accessor.fieldref === "notInsuredValueYear") {
-				return !this.props.store.building?.notInsuredValue;
+				return !building.notInsuredValue;
 			} else if (accessor.fieldref === "thirdPartyValueYear") {
-				return !this.props.store.building?.thirdPartyValue;
+				return !building.thirdPartyValue;
 			}
 			return false;
 		},
 		isRequired: (accessor) => {
+			const building = this.props.building;
 			if (accessor.fieldref === "notInsuredValueYear") {
-				return !!this.props.store.building?.notInsuredValue;
+				return !!building.notInsuredValue;
 			} else if (accessor.fieldref === "thirdPartyValueYear") {
-				return !!this.props.store.building?.thirdPartyValue;
+				return !!building.thirdPartyValue;
 			}
 			return false;
 		},
@@ -46,7 +49,11 @@ export default class BuildingStaticDataForm extends React.Component<BuildingStat
 
 	render() {
 		return (
-			<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>
+			<SldsForm
+				formModel={BuildingForm}
+				formStateOptions={this.formStateOptions}
+				item={this.props.building}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1} totalColsLarge={2} className="slds-x-large-size_1-of-3">
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

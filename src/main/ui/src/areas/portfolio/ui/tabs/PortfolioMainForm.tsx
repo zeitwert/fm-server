@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, PortfolioModelType, PortfolioStore, PORTFOLIO_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, asEnumerated, BUILDING_API, Enumerated, Portfolio, PortfolioModelType, PORTFOLIO_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -9,16 +9,17 @@ import { FormStateOptions } from "mstform";
 import React from "react";
 import PortfolioForm from "../forms/PortfolioForm";
 
-export interface PortfolioStaticDataFormProps {
-	store: PortfolioStore;
+export interface PortfolioMainFormProps {
+	portfolio: Portfolio;
+	doEdit: boolean;
 }
 
 @observer
-export default class PortfolioStaticDataForm extends React.Component<PortfolioStaticDataFormProps> {
+export default class PortfolioMainForm extends React.Component<PortfolioMainFormProps> {
 
 	formStateOptions: FormStateOptions<PortfolioModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
@@ -41,7 +42,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	@computed
 	get availableAccounts(): Enumerated[] {
-		const portfolio = this.props.store.portfolio!;
+		const portfolio = this.props.portfolio;
 		return this.allAccounts
 			.filter(acct => !portfolio.includes.find(incl => incl.id === acct.id))
 			.filter(acct => !portfolio.excludes.find(excl => excl.id === acct.id))
@@ -50,7 +51,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	@computed
 	get availablePortfolios(): Enumerated[] {
-		const portfolio = this.props.store.portfolio!;
+		const portfolio = this.props.portfolio;
 		return this.allPortfolios
 			.filter(pf => pf.id !== portfolio.id)
 			.filter(pf => !portfolio.includes.find(incl => incl.id === pf.id))
@@ -60,7 +61,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 
 	@computed
 	get availableBuildings(): Enumerated[] {
-		const portfolio = this.props.store.portfolio!;
+		const portfolio = this.props.portfolio;
 		return this.allBuildings
 			.filter(bldg => !portfolio.includes.find(incl => incl.id === bldg.id))
 			.filter(bldg => !portfolio.excludes.find(excl => excl.id === bldg.id))
@@ -72,7 +73,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 		return this.availableAccounts.concat(this.availablePortfolios).concat(this.availableBuildings);
 	}
 
-	constructor(props: PortfolioStaticDataFormProps) {
+	constructor(props: PortfolioMainFormProps) {
 		super(props);
 		makeObservable(this);
 	}
@@ -105,8 +106,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	}
 
 	render() {
-		const isInTrx = this.props.store.isInTrx;
-		const portfolio = this.props.store.portfolio!;
+		const { doEdit, portfolio } = this.props;
 		const account: Enumerated | undefined = portfolio.account
 			? {
 				id: portfolio.account.id!,
@@ -115,7 +115,11 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 			}
 			: undefined;
 		return (
-			<SldsForm formModel={PortfolioForm} formStateOptions={this.formStateOptions} item={this.props.store.portfolio!}>
+			<SldsForm
+				formModel={PortfolioForm}
+				formStateOptions={this.formStateOptions}
+				item={portfolio!}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
@@ -131,7 +135,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 									value={asEnumerated(portfolio.account)}
 									values={account ? [account] : []}
 									onChange={(e) => { }}
-									readOnly={isInTrx}
+									readOnly={doEdit}
 									disabled={true}
 								/>
 							</FieldRow>
@@ -179,7 +183,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 													</td>
 													<td data-label="Aktion">
 														{
-															isInTrx &&
+															doEdit &&
 															<button className="slds-button slds-button_icon slds-button_icon-error" title="Entfernen" onClick={() => { portfolio.removeIncludeObj(item.id) }}>
 																<svg className="slds-button__icon" aria-hidden="true">
 																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
@@ -226,7 +230,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 													</td>
 													<td data-label="Aktion">
 														{
-															isInTrx &&
+															doEdit &&
 															<button className="slds-button slds-button_icon slds-button_icon-error" title="Remove" onClick={() => { portfolio.removeExcludeObj(item.id) }}>
 																<svg className="slds-button__icon" aria-hidden="true">
 																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
@@ -244,7 +248,7 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 					</Col>
 				</Grid>
 				{
-					isInTrx &&
+					doEdit &&
 					<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 						<Col cols={1} totalCols={2}>
 							<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
@@ -321,14 +325,14 @@ export default class PortfolioStaticDataForm extends React.Component<PortfolioSt
 	private addIncludeObj = (collection: Enumerated[], id: string): void => {
 		const obj = id ? collection.find(c => c.id === id) : undefined;
 		if (obj) {
-			this.props.store.portfolio!.addIncludeObj(toJS(obj));
+			this.props.portfolio.addIncludeObj(toJS(obj));
 		}
 	}
 
 	private addExcludeObj = (collection: Enumerated[], id: string): void => {
 		const obj = id ? collection.find(c => c.id === id) : undefined;
 		if (obj) {
-			this.props.store.portfolio!.addExcludeObj(toJS(obj));
+			this.props.portfolio.addExcludeObj(toJS(obj));
 		}
 	}
 

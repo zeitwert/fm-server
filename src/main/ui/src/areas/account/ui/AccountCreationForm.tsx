@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { AccountModelType, AccountStore, session } from "@zeitwert/ui-model";
+import { Account, AccountModelType, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
@@ -9,7 +9,7 @@ import React from "react";
 import AccountForm from "./forms/AccountForm";
 
 export interface AccountCreationFormProps {
-	store: AccountStore;
+	account: Account;
 }
 
 
@@ -18,7 +18,7 @@ export default class AccountCreationForm extends React.Component<AccountCreation
 
 	formStateOptions: FormStateOptions<AccountModelType> = {
 		isDisabled: (accessor) => {
-			const account = this.props.store.account!;
+			const account = this.props.account;
 			if (["tenant"].indexOf(accessor.fieldref) >= 0) {
 				return !session.isKernelTenant || !!accessor.value;
 			}
@@ -28,7 +28,11 @@ export default class AccountCreationForm extends React.Component<AccountCreation
 
 	render() {
 		return (
-			<SldsForm formModel={AccountForm} formStateOptions={this.formStateOptions} item={this.props.store.account!}>
+			<SldsForm
+				formModel={AccountForm}
+				formStateOptions={this.formStateOptions}
+				item={this.props.account}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

@@ -1,18 +1,19 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { BuildingModelType, BuildingStore } from "@zeitwert/ui-model";
+import { Building, BuildingModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
-import BuildingMap, { Building } from "../components/BuildingMap";
+import BuildingMap, { BuildingInfo } from "../components/BuildingMap";
 import BuildingForm from "../forms/BuildingForm";
 
 const ALT_GEO_ADDRESS_HELP_TEXT = "<b>Alternative Geo Addresse</b><ul class=\"slds-list_dotted\"><li>Adresse (Strasse Nr, PLZ Ort)</li><li>Plus Code (z.B. 9HG5+8P Zürich)</li><li>Koordinaten (z.B. 47.36489,8.676913)</li></ul>";
 
 export interface BuildingLocationFormProps {
-	store: BuildingStore;
+	building: Building;
+	doEdit: boolean;
 }
 
 @observer
@@ -22,7 +23,7 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 		isReadOnly: (accessor) => {
 			if (["geoCoordinates", "geoZoom"].indexOf(accessor.fieldref) >= 0) {
 				return true;
-			} else if (!this.props.store.isInTrx) {
+			} else if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
@@ -36,10 +37,10 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 	};
 
 	render() {
-		const building = this.props.store.building!;
+		const building = this.props.building;
 		let lat: number | undefined;
 		let lng: number | undefined;
-		let buildingInfo: Building | undefined;
+		let buildingInfo: BuildingInfo | undefined;
 		if (building.geoCoordinates?.startsWith("WGS:")) {
 			const coords = building.geoCoordinates.substring(4).split(",");
 			lat = parseFloat(coords?.[0]!);
@@ -53,7 +54,11 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 			};
 		}
 		return (
-			<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>
+			<SldsForm
+				formModel={BuildingForm}
+				formStateOptions={this.formStateOptions}
+				item={building}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={3}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
@@ -94,8 +99,8 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 	}
 
 	private onZoomChange = (zoom: number): void => {
-		if (this.props.store.isInTrx) {
-			this.props.store.building!.setField("geoZoom", zoom);
+		if (this.props.doEdit) {
+			this.props.building.setField("geoZoom", zoom);
 		}
 	}
 

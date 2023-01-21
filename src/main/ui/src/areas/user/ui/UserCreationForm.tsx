@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { session, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { session, User, UserModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
@@ -9,7 +9,7 @@ import React from "react";
 import UserForm from "./forms/UserForm";
 
 export interface UserCreationFormProps {
-	store: UserStore;
+	user: User;
 }
 
 @observer
@@ -17,7 +17,7 @@ export default class UserCreationForm extends React.Component<UserCreationFormPr
 
 	formStateOptions: FormStateOptions<UserModelType> = {
 		isDisabled: (accessor) => {
-			const user = this.props.store.user!;
+			const user = this.props.user;
 			if (["tenant"].indexOf(accessor.fieldref) >= 0) {
 				return !session.isKernelTenant || !!accessor.value;
 			}
@@ -27,7 +27,11 @@ export default class UserCreationForm extends React.Component<UserCreationFormPr
 
 	render() {
 		return (
-			<SldsForm formModel={UserForm} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
+			<SldsForm
+				formModel={UserForm}
+				formStateOptions={this.formStateOptions}
+				item={this.props.user}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

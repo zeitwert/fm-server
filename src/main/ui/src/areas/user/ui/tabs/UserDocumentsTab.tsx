@@ -5,13 +5,13 @@ import FotoUploadForm from "areas/document/ui/forms/FotoUploadForm";
 import { observer } from "mobx-react";
 import React from "react";
 
-export interface UserSummaryFormProps {
+export interface UserDocumentsTabProps {
 	user: User;
 	afterSave: () => void;
 }
 
 @observer
-export default class UserSummaryForm extends React.Component<UserSummaryFormProps> {
+export default class UserDocumentsTab extends React.Component<UserDocumentsTabProps> {
 
 	render() {
 		const { user } = this.props;

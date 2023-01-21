@@ -1,23 +1,24 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, Static, TextArea } from "@zeitwert/ui-forms";
-import { AccountModelType, AccountStore } from "@zeitwert/ui-model";
+import { Account, AccountModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
 import AccountForm from "../forms/AccountForm";
 
-export interface AccountStaticDataFormProps {
-	store: AccountStore;
+export interface AccountMainFormProps {
+	account: Account;
+	doEdit: boolean;
 }
 
 @observer
-export default class AccountStaticDataForm extends React.Component<AccountStaticDataFormProps> {
+export default class AccountMainForm extends React.Component<AccountMainFormProps> {
 
 	formStateOptions: FormStateOptions<AccountModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			} else if (["key"].indexOf(accessor.fieldref) >= 0) {
 				return true;
@@ -27,12 +28,12 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 	};
 
 	render() {
-		const account = this.props.store.account!;
+		const account = this.props.account;
 		return (
 			<SldsForm
 				formModel={AccountForm}
 				formStateOptions={this.formStateOptions}
-				item={this.props.store.account!}
+				item={account}
 			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
@@ -40,7 +41,7 @@ export default class AccountStaticDataForm extends React.Component<AccountStatic
 							<FieldGroup legend="Grunddaten">
 								<FieldRow>
 									<Input label="Name" type="text" fieldName="name" size={8} />
-									<Static label="Schlüssel" value={this.props.store.account?.key} size={4} />
+									<Static label="Schlüssel" value={account.key} size={4} />
 								</FieldRow>
 								<FieldRow>
 									<Select label="Typ" fieldName="accountType" size={6} />

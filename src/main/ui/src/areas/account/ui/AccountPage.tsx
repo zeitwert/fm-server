@@ -13,17 +13,17 @@ import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import AccountStaticDataForm from "./tabs/AccountStaticDataForm";
-import AccountSummaryTab from "./tabs/AccountSummaryTab";
+import AccountDocumentsTab from "./tabs/AccountDocumentsTab";
+import AccountMainForm from "./tabs/AccountMainForm";
 
 enum LEFT_TABS {
-	OVERVIEW = "static-data",
+	MAIN = "main",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	SUMMARY = "summary",
-	ACTIVITY = "activity",
+	DOCUMENTS = "documents",
+	ACTIVITIES = "activities",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -35,8 +35,8 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	@observable accountStore = AccountStoreModel.create({});
 	@observable contactStore = ContactStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
-	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 
 	@computed
 	get hasLogo(): boolean {
@@ -74,7 +74,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 		const allowEditStaticData = session.isAdmin || session.hasSuperUserRole;
 		const isActive = !account.meta?.closedAt;
-		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -100,7 +100,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <AccountStaticDataForm store={this.accountStore} />}
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <AccountMainForm account={this.accountStore.account!} doEdit={this.accountStore.isInTrx} />}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>
@@ -113,13 +113,13 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						>
 							<TabsPanel label={<span>Dokumente{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
-									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
-									<AccountSummaryTab account={account} afterSave={this.reload} />
+									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
+									<AccountDocumentsTab account={account} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
 									<ActivityPortlet {...Object.assign({}, this.props, { item: account, onSave: () => null as unknown as Promise<any> })} />
 								}
 							</TabsPanel>
@@ -134,7 +134,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						onClose={this.closeContactEditor}
 						onCancel={this.cancelContactEditor}
 					>
-						{() => <ContactCreationForm store={this.contactStore} />}
+						{() => <ContactCreationForm contact={this.contactStore.contact!} />}
 					</ItemModal>
 
 				}

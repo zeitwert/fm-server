@@ -53,7 +53,7 @@ export const BuildingFormDef: FormDefinition<BuildingModelType> = {
 	buildingSubType: new EnumeratedField({
 		source: loadBuildingSubTypes,
 		dependentQuery: (accessor) => {
-			return isAlive(accessor.node)
+			return isAlive(accessor.node) && !!accessor.node.buildingType?.id
 				? { buildingTypeId: accessor.node.buildingType.id }
 				: [];
 		}

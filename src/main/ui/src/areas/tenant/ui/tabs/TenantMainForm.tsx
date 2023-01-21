@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { ACCOUNT_API, Enumerated, TenantModelType, TenantStore, USER_API } from "@zeitwert/ui-model";
+import { ACCOUNT_API, Enumerated, Tenant, TenantModelType, USER_API } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -10,16 +10,17 @@ import React from "react";
 import TenantForm from "../forms/TenantForm";
 
 
-export interface TenantStaticDataFormProps {
-	store: TenantStore;
+export interface TenantMainFormProps {
+	tenant: Tenant;
+	doEdit: boolean;
 }
 
 @observer
-export default class TenantStaticDataForm extends React.Component<TenantStaticDataFormProps> {
+export default class TenantMainForm extends React.Component<TenantMainFormProps> {
 
 	formStateOptions: FormStateOptions<TenantModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
@@ -38,13 +39,13 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 	@observable
 	accounts: Enumerated[] = [];
 
-	constructor(props: TenantStaticDataFormProps) {
+	constructor(props: TenantMainFormProps) {
 		super(props);
 		makeObservable(this);
 	}
 
 	async componentDidMount() {
-		const users = await USER_API.getAggregates("filter[tenantId]=" + this.props.store.id);
+		const users = await USER_API.getAggregates("filter[tenantId]=" + this.props.tenant.id);
 		this.users = Object.values(users.user || {})?.map(user => {
 			return {
 				id: user.id,
@@ -52,7 +53,7 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 				itemType: user.meta.itemType
 			}
 		});
-		const accounts = await ACCOUNT_API.getAggregates("filter[tenantId]=" + this.props.store.id);
+		const accounts = await ACCOUNT_API.getAggregates("filter[tenantId]=" + this.props.tenant.id);
 		this.accounts = Object.values(accounts.account || {}).map(acct => {
 			return {
 				id: acct.id,
@@ -63,9 +64,13 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 	}
 
 	render() {
-		const isInTrx = this.props.store.isInTrx;
+		const doEdit = this.props.doEdit;
 		return (
-			<SldsForm formModel={TenantForm} formStateOptions={this.formStateOptions} item={this.props.store.tenant!}>
+			<SldsForm
+				formModel={TenantForm}
+				formStateOptions={this.formStateOptions}
+				item={this.props.tenant}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
@@ -102,7 +107,7 @@ export default class TenantStaticDataForm extends React.Component<TenantStaticDa
 					</Col>
 				</Grid>
 				{
-					!isInTrx &&
+					!doEdit &&
 					<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 						<Col cols={1} totalCols={2}>
 							<Card heading="Benutzer" bodyClassName="slds-m-around_medium">

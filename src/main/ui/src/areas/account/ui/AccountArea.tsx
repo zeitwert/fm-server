@@ -26,7 +26,7 @@ export default class AccountArea extends React.Component {
 							listTemplate="account.accounts.all"
 							actionButtons={this.getHeaderActions()}
 							canCreate={session.isAdmin && (session.isKernelTenant || session.isAdvisorTenant)}
-							createEditor={() => <AccountCreationForm store={accountStore} />}
+							createEditor={() => <AccountCreationForm account={accountStore.account!} />}
 							onAfterCreate={(store: AccountStore) => { initAccount(store.account!) }}
 						/>
 					}

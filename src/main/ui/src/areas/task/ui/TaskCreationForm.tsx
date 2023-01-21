@@ -2,7 +2,7 @@
 import { Card } from "@salesforce/design-system-react";
 import { Checkbox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
-import { TaskModelType, TaskStore } from "@zeitwert/ui-model";
+import { Task, TaskModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
@@ -10,19 +10,19 @@ import React from "react";
 import TaskForm from "./forms/TaskForm";
 
 export interface TaskCreationFormProps {
-	store: TaskStore;
+	task: Task;
 }
 
 @observer
 export default class TaskCreationForm extends React.Component<TaskCreationFormProps> {
 
 	formStateOptions: FormStateOptions<TaskModelType> = {
-		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
-				return true;
-			}
-			return false;
-		},
+		// isReadOnly: (accessor) => {
+		// 	if (!this.props.doEdit) {
+		// 		return true;
+		// 	}
+		// 	return false;
+		// },
 		// isDisabled: (accessor) => {
 		// 	const task = this.props.store.task!;
 		// 	if (["account"].indexOf(accessor.fieldref) >= 0) {
@@ -37,7 +37,7 @@ export default class TaskCreationForm extends React.Component<TaskCreationFormPr
 			<SldsForm
 				formModel={TaskForm}
 				formStateOptions={this.formStateOptions}
-				item={this.props.store.task!}
+				item={this.props.task}
 			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>

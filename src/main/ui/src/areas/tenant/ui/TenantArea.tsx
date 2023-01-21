@@ -31,8 +31,8 @@ class TenantArea extends React.Component {
 							listTemplate="oe.tenants.all"
 							actionButtons={this.getHeaderActions()}
 							canCreate={session.isAdmin && session.isKernelTenant}
-							createEditor={() => <TenantCreationForm store={tenantStore} />}
-							onAfterCreate={(store: TenantStore) => { initTenant(store.item!) }}
+							createEditor={() => <TenantCreationForm tenant={tenantStore.tenant!} />}
+							onAfterCreate={(store: TenantStore) => { initTenant(store.tenant!) }}
 						/>
 					}
 				/>

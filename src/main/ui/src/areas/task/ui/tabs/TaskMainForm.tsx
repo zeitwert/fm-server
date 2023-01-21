@@ -2,23 +2,24 @@
 import { Card } from "@salesforce/design-system-react";
 import { Checkbox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
-import { TaskModelType, TaskStore } from "@zeitwert/ui-model";
+import { Task, TaskModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
 import TaskForm from "../forms/TaskForm";
 
-export interface TaskStaticDataFormProps {
-	store: TaskStore;
+export interface TaskMainFormProps {
+	task: Task;
+	doEdit?: boolean;
 }
 
 @observer
-export default class TaskStaticDataForm extends React.Component<TaskStaticDataFormProps> {
+export default class TaskMainForm extends React.Component<TaskMainFormProps> {
 
 	formStateOptions: FormStateOptions<TaskModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
@@ -37,7 +38,7 @@ export default class TaskStaticDataForm extends React.Component<TaskStaticDataFo
 			<SldsForm
 				formModel={TaskForm}
 				formStateOptions={this.formStateOptions}
-				item={this.props.store.task!}
+				item={this.props.task}
 			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
@@ -58,8 +59,8 @@ export default class TaskStaticDataForm extends React.Component<TaskStaticDataFo
 								<FieldRow>
 									<Select
 										label="Referenz"
-										value={this.props.store.task!.relatedTo}
-										values={[this.props.store.task!.relatedTo!]}
+										value={this.props.task.relatedTo}
+										values={[this.props.task.relatedTo!]}
 										required={true}
 										disabled={true}
 										size={12}

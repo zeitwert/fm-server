@@ -5,7 +5,7 @@ import React from "react";
 
 const GOOGLE_API_KEY = "AIzaSyBQF6Fi_Z0tZxVh5Eqzfx2m7hK3n718jsI";
 
-export interface Building {
+export interface BuildingInfo {
 	id: string;
 	name: string;
 	address: string;
@@ -19,10 +19,10 @@ interface Position {
 }
 
 export interface BuildingMapProps {
-	buildings: Building[];
+	buildings: BuildingInfo[];
 	zoom?: number;
 	onZoomChange?: (zoom: number) => void;
-	onClick?: (building: Building) => void;
+	onClick?: (building: BuildingInfo) => void;
 }
 
 @observer

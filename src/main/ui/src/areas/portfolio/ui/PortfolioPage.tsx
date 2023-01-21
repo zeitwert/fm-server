@@ -13,17 +13,17 @@ import TabProjection from "lib/projection/ui/TabProjection";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import PortfolioStaticDataForm from "./tabs/PortfolioStaticDataForm";
+import PortfolioMainForm from "./tabs/PortfolioMainForm";
 
 enum LEFT_TABS {
-	DETAILS = "static-data",
+	MAIN = "main",
 	EVALUATION = "evaluation",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	ACTIVITY = "activity",
-	ERRORS = "errors",
+	ACTIVITIES = "activities",
+	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -34,8 +34,8 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.PORTFOLIO];
 
 	@observable portfolioStore = PortfolioStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
-	@observable activeRightTabId = RIGHT_TABS.ACTIVITY;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.ACTIVITIES;
 
 	@computed
 	get hasValidations(): boolean {
@@ -83,7 +83,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 		const isFullWidth = [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const isActive = !portfolio.meta?.closedAt;
-		const allowEdit = [LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0;
+		const allowEdit = [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0;
 
 		const customEditorButtons = (
 			<>
@@ -116,8 +116,8 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							>
 								<TabsPanel label="Stammdaten">
 									{
-										this.activeLeftTabId === LEFT_TABS.DETAILS &&
-										<PortfolioStaticDataForm store={this.portfolioStore} />
+										this.activeLeftTabId === LEFT_TABS.MAIN &&
+										<PortfolioMainForm portfolio={this.portfolioStore.portfolio!} doEdit={this.portfolioStore.isInTrx} />
 									}
 								</TabsPanel>
 								<TabsPanel label="Auswertung">
@@ -140,7 +140,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 						>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
 									<ActivityPortlet {...Object.assign({}, this.props, { item: portfolio, onSave: async () => { } })} />
 								}
 							</TabsPanel>
@@ -148,7 +148,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 								this.hasValidations &&
 								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
 									{
-										this.activeRightTabId === RIGHT_TABS.ERRORS &&
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
 										<ValidationsTab validationList={portfolio.meta?.validationList!} />
 									}
 								</TabsPanel>

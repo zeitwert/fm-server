@@ -2,7 +2,7 @@
 import { Button, Card, Checkbox } from "@salesforce/design-system-react";
 import { AccessorContext, FieldGroup, FieldRow, Select, SldsForm } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
-import { BuildingElement, BuildingModelType, BuildingStore, Enumerated, requireThis, session } from "@zeitwert/ui-model";
+import { Building, BuildingElement, BuildingModelType, Enumerated, requireThis, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -13,8 +13,10 @@ import ElementListRatingForm from "./ElementListRatingForm";
 import { ElementAccessor } from "./ElementRatingForm";
 
 export interface BuildingRatingFormProps {
-	store: BuildingStore;
+	building: Building;
+	doEdit: boolean;
 	currentElementId: string | undefined;
+	onEditPartCatalog: () => void;
 	onOpenElementRating: (element: BuildingElement, elementAccessor: ElementAccessor) => void;
 	onCloseElementRating: () => void;
 }
@@ -26,18 +28,18 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 
 	formStateOptions: FormStateOptions<BuildingModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			} else {
-				const building = this.props.store.building;
-				if (!building?.ratingStatus || building.ratingStatus.id !== "open") {
+				const building = this.props.building;
+				if (!building.ratingStatus || building.ratingStatus.id !== "open") {
 					return true;
 				}
 			}
 			return false;
 		},
 		isDisabled: (accessor) => {
-			const building = this.props.store.building!;
+			const building = this.props.building;
 			if (["partCatalog"].indexOf(accessor.fieldref) >= 0) {
 				return !!building.partCatalog;
 			} else if (!building.ratingDate || building.ratingDate.getFullYear() < 1000) {
@@ -60,12 +62,16 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 	}
 
 	render() {
-		const building = this.props.store.building!;
+		const building = this.props.building;
 		const currentElementId = this.props.currentElementId;
 		const showAllElements = this.showAllElements;
 		return (
 			<div onClick={() => this.onCloseElementRating()} className="fm-rating-container">
-				<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>
+				<SldsForm
+					formModel={BuildingForm}
+					formStateOptions={this.formStateOptions}
+					item={building}
+				>
 					{
 						({ formAccessor }: AccessorContext<BuildingModelType>) =>
 						(
@@ -75,11 +81,17 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 										<Card hasNoHeader bodyClassName="slds-card__body_inner" style={{ zIndex: 200 }}>
 											<FieldGroup>
 												<FieldRow>
-													<Select label="Gebäudekategorie" fieldName="partCatalog" size={2} onChange={(e) => this.onSetPartCatalog(e, formAccessor)} />
+													<Select
+														label="Gebäudekategorie"
+														fieldName="partCatalog"
+														size={2}
+														onChange={(e) => this.onSetPartCatalog(e, formAccessor)}
+													/>
 													<div className="slds-size_1-of-12">
+
 														<FieldGroup label="&nbsp;">
 															{
-																!this.props.store.inTrx && building.partCatalog && building?.ratingStatus?.id === "open" &&
+																!this.props.doEdit && building.partCatalog && building.ratingStatus?.id === "open" &&
 																<Button
 																	variant="icon"
 																	iconCategory="utility"
@@ -161,19 +173,18 @@ export default class BuildingRatingForm extends React.Component<BuildingRatingFo
 		);
 	}
 
-	private onEditPartCatalog = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.props.store.edit();
-		const building = this.props.store.building!;
-		building.setPartCatalog(undefined);
+	private onEditPartCatalog = () => {
+		this.props.onEditPartCatalog();
+		this.props.building.setPartCatalog(undefined);
 	}
 
 	private onSetPartCatalog = async (partCatalog: Enumerated | undefined, formAccessor: FormAccessor) => {
-		await this.props.store.building!.setPartCatalog(partCatalog);
+		await this.props.building.setPartCatalog(partCatalog);
 	}
 
 	private onOpenElementRating = (elementId: string, formAccessor: FormAccessor) => {
 		requireThis(!!elementId, "element id not null");
-		const building = this.props.store.building!;
+		const building = this.props.building;
 		building.elements.forEach((element, index) => {
 			if (element.id === elementId) {
 				this.props.onOpenElementRating(element, formAccessor.repeatingForm("elements").index(index));

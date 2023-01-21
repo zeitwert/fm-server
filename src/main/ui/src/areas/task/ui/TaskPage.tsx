@@ -11,10 +11,10 @@ import ItemPath from "lib/item/ui/ItemPath";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import TaskStaticDataForm from "./tabs/TaskStaticDataForm";
+import TaskMainForm from "./tabs/TaskMainForm";
 
 enum LEFT_TABS {
-	DETAILS = "static-data",
+	MAIN = "main",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
@@ -25,7 +25,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.TASK];
 
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
 
@@ -60,7 +60,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 			return <NotFound entityType={this.entityType} id={this.props.params.taskId!} />;
 		}
 
-		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -93,7 +93,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === LEFT_TABS.DETAILS && <TaskStaticDataForm store={this.taskStore} />}
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <TaskMainForm task={this.taskStore.task!} doEdit={this.taskStore.isInTrx} />}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>

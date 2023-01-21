@@ -10,16 +10,16 @@ import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import ContactStaticDataForm from "./tabs/ContactStaticDataForm";
+import ContactMainForm from "./tabs/ContactMainForm";
 
 enum LEFT_TABS {
-	OVERVIEW = "static-data",
+	MAIN = "main",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	SUMMARY = "summary",
-	ACTIVITY = "activity",
+	DOCUMENTS = "documents",
+	ACTIVITIES = "activities",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -30,8 +30,8 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.CONTACT];
 
 	@observable contactStore = ContactStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
-	@observable activeRightTabId = RIGHT_TABS.SUMMARY;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -63,7 +63,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isActive = !contact.meta?.closedAt;
-		const allowEdit = ([LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -88,7 +88,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <ContactStaticDataForm store={this.contactStore} />}
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <ContactMainForm contact={this.contactStore.contact!} doEdit={this.contactStore.isInTrx} />}
 								</TabsPanel>
 							</Tabs>
 						</ItemEditor>
@@ -101,14 +101,14 @@ class ContactPage extends React.Component<RouteComponentProps> {
 						>
 							<TabsPanel label={<span>Dokumente</span>}>
 								{
-									this.activeRightTabId === RIGHT_TABS.SUMMARY &&
+									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
 									<div>Dokumente</div>
 								}
 								{/*<ContactSummaryTab contact={contact} afterSave={this.reload} />*/}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
 									<ActivityPortlet {...Object.assign({}, this.props, { item: contact, onSave: () => null as unknown as Promise<any> })} />
 								}
 							</TabsPanel>

@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { Enumerated, TENANT_API, UserModelType, UserStore } from "@zeitwert/ui-model";
+import { Enumerated, TENANT_API, User, UserModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -9,16 +9,17 @@ import { FormStateOptions } from "mstform";
 import React from "react";
 import UserForm from "../forms/UserForm";
 
-export interface UserStaticDataFormProps {
-	store: UserStore;
+export interface UserMainFormProps {
+	user: User;
+	doEdit: boolean;
 }
 
 @observer
-export default class UserStaticDataForm extends React.Component<UserStaticDataFormProps> {
+export default class UserMainForm extends React.Component<UserMainFormProps> {
 
 	formStateOptions: FormStateOptions<UserModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
@@ -30,13 +31,13 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 
 	@computed
 	get availableTenants(): Enumerated[] {
-		const user = this.props.store.user!;
+		const user = this.props.user;
 		return this.allTenants
 			.filter(t => !user.tenants.find(incl => incl.id === t.id))
 			.sort((a, b) => a.name < b.name ? -1 : 1);
 	}
 
-	constructor(props: UserStaticDataFormProps) {
+	constructor(props: UserMainFormProps) {
 		super(props);
 		makeObservable(this);
 	}
@@ -53,10 +54,13 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 	}
 
 	render() {
-		const isInTrx = this.props.store.isInTrx;
-		const user = this.props.store.user!;
+		const { doEdit, user } = this.props;
 		return (
-			<SldsForm formModel={UserForm} formStateOptions={this.formStateOptions} item={this.props.store.user!}>
+			<SldsForm
+				formModel={UserForm}
+				formStateOptions={this.formStateOptions}
+				item={this.props.user}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
@@ -122,7 +126,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 													</th>
 													<td data-label="Aktion">
 														{
-															isInTrx &&
+															doEdit &&
 															<button className="slds-button slds-button_icon slds-button_icon-error" title="Entfernen" onClick={() => { user.removeTenant(item.id) }}>
 																<svg className="slds-button__icon" aria-hidden="true">
 																	<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
@@ -138,7 +142,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 							</div>
 						</Card>
 						{
-							isInTrx &&
+							doEdit &&
 							<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 								<FieldGroup>
 									<FieldRow>
@@ -161,7 +165,7 @@ export default class UserStaticDataForm extends React.Component<UserStaticDataFo
 	private addTenant = (id: string): void => {
 		const obj = id ? this.allTenants.find(t => t.id === id) : undefined;
 		if (obj) {
-			this.props.store.user!.addTenant(toJS(obj));
+			this.props.user.addTenant(toJS(obj));
 		}
 	}
 

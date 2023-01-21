@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { asEnumerated, BuildingModelType, BuildingStore, Enumerated, session } from "@zeitwert/ui-model";
+import { asEnumerated, Building, BuildingModelType, Enumerated, session } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -10,7 +10,7 @@ import React from "react";
 import BuildingForm from "./forms/BuildingForm";
 
 export interface BuildingCreationFormProps {
-	store: BuildingStore;
+	building: Building;
 }
 
 @observer
@@ -18,9 +18,7 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 
 	formStateOptions: FormStateOptions<BuildingModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
-				return true;
-			} else if (!this.props.store.building?.account) {
+			if (!this.props.building.account) {
 				return true;
 			}
 			return false;
@@ -49,9 +47,13 @@ export default class BuildingCreationForm extends React.Component<BuildingCreati
 	}
 
 	render() {
-		const building = this.props.store.building!;
+		const building = this.props.building;
 		return (
-			<SldsForm formModel={BuildingForm} formStateOptions={this.formStateOptions} item={this.props.store.building!}>
+			<SldsForm
+				formModel={BuildingForm}
+				formStateOptions={this.formStateOptions}
+				item={this.props.building}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

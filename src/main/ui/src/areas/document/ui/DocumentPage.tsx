@@ -12,7 +12,7 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 
 enum LEFT_TABS {
-	DETAILS = "static-data",
+	MAIN = "main",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
@@ -23,7 +23,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.DOCUMENT];
 
 	@observable documentStore = DocumentStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -55,7 +55,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isActive = !document.meta?.closedAt;
-		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>

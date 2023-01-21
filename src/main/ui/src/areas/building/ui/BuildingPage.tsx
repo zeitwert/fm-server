@@ -15,14 +15,14 @@ import TabProjection from "lib/projection/ui/TabProjection";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
+import BuildingDocumentsTab from "./tabs/BuildingDocumentsTab";
 import BuildingLocationForm from "./tabs/BuildingLocationForm";
+import BuildingMainForm from "./tabs/BuildingMainForm";
 import BuildingRatingForm from "./tabs/BuildingRatingForm";
-import BuildingStaticDataForm from "./tabs/BuildingStaticDataForm";
-import BuildingSummaryTab from "./tabs/BuildingSummaryTab";
 import ElementRatingForm, { ElementAccessor } from "./tabs/ElementRatingForm";
 
 enum LEFT_TABS {
-	OVERVIEW = "static-data",
+	MAIN = "main",
 	LOCATION = "location",
 	RATING = "rating",
 	EVALUATION = "evaluation",
@@ -44,7 +44,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.BUILDING];
 
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 	@observable currentElement: BuildingElement | undefined;
 	@observable currentElementAccessor: ElementAccessor | undefined;
@@ -111,7 +111,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
 		const allowEditRating = !!building.ratingStatus && building.ratingStatus.id === "open";
 		const isActive = !building.meta?.closedAt;
-		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
 		const notesCount = this.buildingStore.notesStore.notes.length;
 		const tasksCount = this.buildingStore.tasksStore.tasks.length;
@@ -142,24 +142,26 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							>
 								<TabsPanel label="Stammdaten">
 									{
-										this.activeLeftTabId === LEFT_TABS.OVERVIEW &&
-										<BuildingStaticDataForm store={this.buildingStore} />
+										this.activeLeftTabId === LEFT_TABS.MAIN &&
+										<BuildingMainForm building={building} doEdit={this.buildingStore.isInTrx} />
 									}
 								</TabsPanel>
 								<TabsPanel label={<span>Lage{!building.geoCoordinates && <abbr className="slds-required"> *</abbr>}</span>}>
 									{
 										this.activeLeftTabId === LEFT_TABS.LOCATION &&
-										<BuildingLocationForm store={this.buildingStore} />
+										<BuildingLocationForm building={this.buildingStore.building!} doEdit={this.buildingStore.isInTrx} />
 									}
 								</TabsPanel>
 								<TabsPanel label={<span>Bewertung{this.hasActiveRating && <abbr style={{ color: "#014486" }}> *</abbr>}</span>}>
 									{
 										this.activeLeftTabId === LEFT_TABS.RATING &&
 										<BuildingRatingForm
-											store={this.buildingStore}
+											building={this.buildingStore.building!}
+											doEdit={this.buildingStore.isInTrx}
 											currentElementId={this.currentElement?.id}
 											onOpenElementRating={this.onOpenElementRating}
 											onCloseElementRating={this.onCloseElementRating}
+											onEditPartCatalog={this.openEditor}
 										/>
 									}
 								</TabsPanel>
@@ -184,7 +186,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={<span>Dokumente{missingDocument && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
-									<BuildingSummaryTab building={building} afterSave={this.reload} />
+									<BuildingDocumentsTab building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
@@ -288,64 +290,76 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isNew = this.buildingStore.isNew;
 		const isInTrx = this.buildingStore.isInTrx;
 		const ratingStatus = building?.ratingStatus;
-		return (
-			<>
-				{
-					!isInTrx && [LEFT_TABS.OVERVIEW, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0 &&
-					<ButtonGroup variant="list">
-						<Button onClick={this.doExport}>Export</Button>
-					</ButtonGroup>
-				}
-				{
-					!isNew && !isInTrx &&
-					<ButtonGroup variant="list">
-						<Button variant="text-destructive" onClick={this.showDeleteConfirmation}>Immobilie löschen</Button>
-					</ButtonGroup>
-				}
-				{
-					!session.hasReadOnlyRole && !isInTrx && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 &&
-					<>
-						{
-							!ratingStatus &&
-							<ButtonGroup variant="list">
-								<Button variant="brand" onClick={this.addRating}>Neue Bewertung</Button>
-							</ButtonGroup>
-						}
-						{
-							ratingStatus?.id === "open" &&
-							<ButtonGroup variant="list">
-								<Button variant="text-destructive" onClick={this.showDiscardConfirmation}>Bewertung verwerfen</Button>
-								<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={this.hasValidations}>Bewertung überprüfen</Button>
-							</ButtonGroup>
-						}
-						{
-							ratingStatus?.id === "review" &&
-							<ButtonGroup variant="list">
-								<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
-								<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
-							</ButtonGroup>
-						}
-						{
-							ratingStatus?.id === "done" &&
-							<>
+		if ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0 && !isInTrx) {
+			return (
+				<>
+					{
+						session.hasSuperUserRole &&
+						<ButtonGroup variant="list">
+							<Button onClick={this.doExport}>Export</Button>
+						</ButtonGroup>
+					}
+					{
+						!isNew && !isInTrx &&
+						<ButtonGroup variant="list">
+							<Button variant="text-destructive" onClick={this.showDeleteConfirmation}>Immobilie löschen</Button>
+						</ButtonGroup>
+					}
+				</>
+			);
+		} else if ([LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0 && !isInTrx) {
+			return (
+				<>
+					{
+						!session.hasReadOnlyRole &&
+						<>
+							{
+								!ratingStatus &&
 								<ButtonGroup variant="list">
-									<Button onClick={this.addRating}>Neue Bewertung</Button>
+									<Button variant="brand" onClick={this.addRating}>Neue Bewertung</Button>
 								</ButtonGroup>
+							}
+							{
+								ratingStatus?.id === "open" &&
 								<ButtonGroup variant="list">
-									<Button onClick={() => this.moveRatingStatus("open")}>Bewertung reaktivieren</Button>
+									<Button variant="text-destructive" onClick={this.showDiscardConfirmation}>Bewertung verwerfen</Button>
+									<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={this.hasValidations}>Bewertung überprüfen</Button>
 								</ButtonGroup>
-							</>
-						}
-					</>
-				}
-				{
-					session.isAdvisorTenant && !this.hasErrors && !isInTrx && [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0 &&
-					<ButtonGroup variant="list">
-						<Button onClick={() => this.doGenDocx(building?.id!)}>Generate Word</Button>
-					</ButtonGroup>
-				}
-			</>
-		);
+							}
+							{
+								ratingStatus?.id === "review" &&
+								<ButtonGroup variant="list">
+									<Button onClick={() => this.moveRatingStatus("open")}>Bewertung zurückweisen</Button>
+									<Button variant="brand" onClick={() => this.moveRatingStatus("done")}>Bewertung akzeptieren</Button>
+								</ButtonGroup>
+							}
+							{
+								ratingStatus?.id === "done" &&
+								<>
+									<ButtonGroup variant="list">
+										<Button onClick={this.addRating}>Neue Bewertung</Button>
+									</ButtonGroup>
+									<ButtonGroup variant="list">
+										<Button onClick={() => this.moveRatingStatus("open")}>Bewertung reaktivieren</Button>
+									</ButtonGroup>
+								</>
+							}
+						</>
+					}
+				</>
+			);
+		} else if ([LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0 && !isInTrx) {
+			return (
+				<>
+					{
+						session.isAdvisorTenant && !this.hasErrors &&
+						<ButtonGroup variant="list">
+							<Button onClick={() => this.doGenDocx(building?.id!)}>Generate Word</Button>
+						</ButtonGroup>
+					}
+				</>
+			);
+		}
 	}
 
 	private openEditor = () => {

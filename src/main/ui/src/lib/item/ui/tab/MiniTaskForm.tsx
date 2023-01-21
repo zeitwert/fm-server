@@ -1,7 +1,7 @@
 
 import { Checkbox, FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
-import { TaskModelType, TaskStore } from "@zeitwert/ui-model";
+import { Task, TaskModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -11,7 +11,7 @@ import TaskForm from "../../../../areas/task/ui/forms/TaskForm";
 import { ItemEditorButtons } from "../ItemEditorButtons";
 
 export interface MiniTaskFormProps {
-	store: TaskStore;
+	task: Task;
 	isNew: boolean;
 	onStart: () => void;
 	onCancel: () => Promise<void>;
@@ -23,16 +23,16 @@ export default class MiniTaskForm extends React.Component<MiniTaskFormProps> {
 
 	@observable isActive: boolean = false;
 	@computed get allowAdd() {
-		return !!this.props.store.task?.subject;
+		return !!this.props.task.subject;
 	}
 
 	formStateOptions: FormStateOptions<TaskModelType> = {
-		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
-				return true;
-			}
-			return false;
-		},
+		// isReadOnly: (accessor) => {
+		// 	if (!this.props.isEdit) {
+		// 		return true;
+		// 	}
+		// 	return false;
+		// },
 		// isDisabled: (accessor) => {
 		// 	const task = this.props.store.task!;
 		// 	if (["account"].indexOf(accessor.fieldref) >= 0) {
@@ -64,7 +64,7 @@ export default class MiniTaskForm extends React.Component<MiniTaskFormProps> {
 			<SldsForm
 				formModel={TaskForm}
 				formStateOptions={this.formStateOptions}
-				item={this.props.store.task!}
+				item={this.props.task}
 			>
 				<Grid className="slds-wrap" isVertical={false}>
 					<Col cols={1} totalCols={1}>

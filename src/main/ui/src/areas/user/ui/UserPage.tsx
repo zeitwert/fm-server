@@ -12,17 +12,17 @@ import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import UserPasswordForm from "./modals/UserPasswordForm";
-import UserStaticDataForm from "./tabs/UserStaticDataForm";
-import UserSummaryForm from "./tabs/UserSummaryForm";
+import UserDocumentsTab from "./tabs/UserDocumentsTab";
+import UserMainForm from "./tabs/UserMainForm";
 
 enum LEFT_TABS {
-	OVERVIEW = "static-data",
+	MAIN = "main",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	DOCUMENTS = "documents",
-	ACTIVITY = "activity",
+	ACTIVITIES = "activities",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -33,7 +33,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.USER];
 
 	@observable userStore = UserStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.OVERVIEW;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 	@observable doChangePassword = false;
 
@@ -73,7 +73,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !user.meta?.closedAt;
-		const allowEdit = (allowEditStaticData && [LEFT_TABS.OVERVIEW].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>
@@ -99,7 +99,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
 							>
 								<TabsPanel label="Details">
-									{this.activeLeftTabId === LEFT_TABS.OVERVIEW && <UserStaticDataForm store={this.userStore} />}
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <UserMainForm user={this.userStore.user!} doEdit={this.userStore.isInTrx} />}
 								</TabsPanel>
 								{
 									/*
@@ -125,12 +125,12 @@ class UserPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={<span>Dokumente{!this.hasAvatar && <abbr className="slds-required"> *</abbr>}</span>}>
 								{
 									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
-									<UserSummaryForm user={user} afterSave={this.reload} />
+									<UserDocumentsTab user={user} afterSave={this.reload} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITY &&
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
 									<ActivityPortlet {...Object.assign({}, this.props, { item: user, onSave: () => null as unknown as Promise<any> })} />
 								}
 							</TabsPanel>

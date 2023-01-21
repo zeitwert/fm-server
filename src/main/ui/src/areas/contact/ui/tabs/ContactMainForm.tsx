@@ -2,24 +2,25 @@
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { DatePicker } from "@zeitwert/ui-forms/ui/DatePicker";
-import { ContactModelType, ContactStore } from "@zeitwert/ui-model";
+import { Contact, ContactModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
 import ContactForm from "../forms/ContactForm";
 
-export interface ContactStaticDataFormProps {
-	store: ContactStore;
+export interface ContactMainFormProps {
+	contact: Contact;
+	doEdit: boolean;
 }
 
 
 @observer
-export default class ContactStaticDataForm extends React.Component<ContactStaticDataFormProps> {
+export default class ContactMainForm extends React.Component<ContactMainFormProps> {
 
 	formStateOptions: FormStateOptions<ContactModelType> = {
 		isReadOnly: (accessor) => {
-			if (!this.props.store.isInTrx) {
+			if (!this.props.doEdit) {
 				return true;
 			}
 			return false;
@@ -31,7 +32,7 @@ export default class ContactStaticDataForm extends React.Component<ContactStatic
 			<SldsForm
 				formModel={ContactForm}
 				formStateOptions={this.formStateOptions}
-				item={this.props.store.contact!}
+				item={this.props.contact}
 			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={2}>

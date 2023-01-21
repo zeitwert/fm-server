@@ -1,7 +1,7 @@
 import { Card, Icon } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
-import BuildingMap, { Building } from "areas/building/ui/components/BuildingMap";
+import BuildingMap, { BuildingInfo } from "areas/building/ui/components/BuildingMap";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -15,7 +15,7 @@ export interface HomeCardMapProps {
 export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 
 	@observable buildingCount: number = 0;
-	@observable buildingList: Building[] = [];
+	@observable buildingList: BuildingInfo[] = [];
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -57,10 +57,10 @@ export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 	private loadBuildingList = async () => {
 		const rsp = await API.get(Config.getApiUrl("building", "buildings"))
 		this.buildingCount = rsp.data.data.length;
-		this.buildingList = rsp.data.data.map((b: any) => this.toBuilding(b)).filter((b: Building) => !!b);
+		this.buildingList = rsp.data.data.map((b: any) => this.toBuilding(b)).filter((b: BuildingInfo) => !!b);
 	}
 
-	private toBuilding(json: any): Building | undefined {
+	private toBuilding(json: any): BuildingInfo | undefined {
 		if (json.attributes.geoCoordinates?.startsWith("WGS:")) {
 			const coords = json.attributes.geoCoordinates.substring(4).split(",");
 			const lat = parseFloat(coords?.[0]!);

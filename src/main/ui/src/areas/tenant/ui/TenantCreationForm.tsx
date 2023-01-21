@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { TenantStore } from "@zeitwert/ui-model";
+import { Tenant } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import React from "react";
@@ -9,7 +9,7 @@ import TenantForm from "./forms/TenantForm";
 
 
 export interface TenantCreationFormProps {
-	store: TenantStore;
+	tenant: Tenant;
 }
 
 @observer
@@ -17,7 +17,10 @@ export default class TenantCreationForm extends React.Component<TenantCreationFo
 
 	render() {
 		return (
-			<SldsForm formModel={TenantForm} item={this.props.store.tenant!}>
+			<SldsForm
+				formModel={TenantForm}
+				item={this.props.tenant}
+			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">

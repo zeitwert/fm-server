@@ -8,7 +8,7 @@ import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
-export interface AccountSummaryTabProps {
+export interface AccountDocumentsTabProps {
 	account: Account;
 	afterSave: () => void;
 }
@@ -16,12 +16,12 @@ export interface AccountSummaryTabProps {
 const preset = presets.offscreen();
 
 @observer
-export default class AccountSummaryTab extends React.Component<AccountSummaryTabProps> {
+export default class AccountDocumentsTab extends React.Component<AccountDocumentsTabProps> {
 
 	@observable hasBanner: boolean = false;
 	@observable bannerUrl: string | undefined;
 
-	constructor(props: AccountSummaryTabProps) {
+	constructor(props: AccountDocumentsTabProps) {
 		super(props);
 		makeObservable(this);
 	}

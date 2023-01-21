@@ -6,18 +6,18 @@ import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
-export interface BuildingSummaryTabProps {
+export interface BuildingDocumentsTabProps {
 	building: Building;
 	afterSave: () => void;
 }
 
 @observer
-export default class BuildingSummaryTab extends React.Component<BuildingSummaryTabProps> {
+export default class BuildingDocumentsTab extends React.Component<BuildingDocumentsTabProps> {
 
 	@observable
 	objectURL: string | undefined;
 
-	constructor(props: BuildingSummaryTabProps) {
+	constructor(props: BuildingDocumentsTabProps) {
 		super(props);
 		makeObservable(this);
 	}

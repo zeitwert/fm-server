@@ -14,7 +14,7 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 
 enum LEFT_TABS {
-	DETAILS = "static-data",
+	MAIN = "main",
 	ACCOUNT = "account",
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
@@ -26,7 +26,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.LEAD];
 
 	@observable leadStore: LeadStore = LeadStoreModel.create({});
-	@observable activeLeftTabId = LEFT_TABS.DETAILS;
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
 
@@ -61,7 +61,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 			return <NotFound entityType={this.entityType} id={this.props.params.leadId!} />;
 		}
 
-		const allowEdit = ([LEFT_TABS.DETAILS].indexOf(this.activeLeftTabId) >= 0);
+		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
 		return (
 			<>

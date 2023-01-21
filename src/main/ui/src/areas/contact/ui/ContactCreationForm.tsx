@@ -1,7 +1,7 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm } from "@zeitwert/ui-forms";
-import { ContactModelType, ContactStore } from "@zeitwert/ui-model";
+import { Contact, ContactModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
@@ -9,7 +9,7 @@ import React from "react";
 import ContactForm from "./forms/ContactForm";
 
 export interface ContactCreationFormProps {
-	store: ContactStore;
+	contact: Contact;
 }
 
 
@@ -24,7 +24,7 @@ export default class ContactCreationForm extends React.Component<ContactCreation
 			<SldsForm
 				formModel={ContactForm}
 				formStateOptions={this.formStateOptions}
-				item={this.props.store.contact!}
+				item={this.props.contact}
 			>
 				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
 					<Col cols={1} totalCols={1}>

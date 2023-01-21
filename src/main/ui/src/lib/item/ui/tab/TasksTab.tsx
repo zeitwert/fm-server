@@ -375,7 +375,7 @@ class TaskEditor extends React.Component<TaskEditorProps> {
 			return null;
 		}
 		return <MiniTaskForm
-			store={store}
+			task={store.task}
 			isNew={this.props.isNew}
 			onStart={this.props.onStart}
 			onCancel={this.props.onCancel}

@@ -31,7 +31,7 @@ class UserArea extends React.Component {
 							listTemplate="oe.users.all"
 							actionButtons={this.getHeaderActions()}
 							canCreate={session.isAdmin}
-							createEditor={() => <UserCreationForm store={userStore} />}
+							createEditor={() => <UserCreationForm user={userStore.user!} />}
 							onAfterCreate={(store: UserStore) => { initUser(store.user!) }}
 						/>
 					}
