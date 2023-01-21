@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,8 +32,9 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	@JsonApiRelationId
 	private Integer tenantInfoId;
 
+	@Override
 	public void setLogoId(Integer tenantId) {
-		assertThis(false, "tenantInfoId is read-only");
+		// assertThis(false, "tenantInfoId is read-only");
 	}
 
 	@JsonIgnore
@@ -56,7 +55,7 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	}
 
 	public void setTenantInfo(ObjTenantDto tenant) {
-		assertThis(false, "tenantInfo is read-only");
+		// assertThis(false, "tenantInfo is read-only");
 	}
 
 	@JsonApiRelationId

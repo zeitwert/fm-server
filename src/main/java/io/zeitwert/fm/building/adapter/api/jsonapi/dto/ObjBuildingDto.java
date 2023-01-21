@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.building.adapter.api.jsonapi.dto;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,7 +41,8 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private Integer accountId;
 
 	public void setAccountId(Integer accountId) {
-		assertThis(false, "accountId is read-only");
+		this.accountId = accountId;
+		this.accountDto = null;
 	}
 
 	@JsonIgnore
@@ -64,7 +63,8 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	}
 
 	public void setAccount(ObjAccountDto account) {
-		assertThis(false, "account is read-only");
+		this.accountDto = account;
+		this.accountId = account != null ? account.getId() : null;
 	}
 
 	private EnumeratedDto buildingType;
@@ -113,7 +113,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	private ObjDocumentDto coverFotoDto;
 
 	public void setCoverFotoId(Integer fotoId) {
-		assertThis(false, "coverFotoId is read-only");
+		// assertThis(false, "coverFotoId is read-only");
 	}
 
 	@JsonApiRelation(serialize = SerializeType.LAZY)
@@ -131,7 +131,7 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	}
 
 	public void setCoverFoto(ObjDocumentDto coverFoto) {
-		assertThis(false, "coverFoto is read-only");
+		// assertThis(false, "coverFoto is read-only");
 	}
 
 }

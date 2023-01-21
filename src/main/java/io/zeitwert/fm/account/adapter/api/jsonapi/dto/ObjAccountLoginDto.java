@@ -16,8 +16,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -43,7 +41,7 @@ public class ObjAccountLoginDto extends FMObjDtoBase<ObjAccount> {
 	private Integer logoId;
 
 	public void setLogoId(Integer logoId) {
-		assertThis(false, "logoId is read-only");
+		// assertThis(false, "logoId is read-only");
 	}
 
 	@JsonIgnore
@@ -64,7 +62,7 @@ public class ObjAccountLoginDto extends FMObjDtoBase<ObjAccount> {
 	}
 
 	public void setLogo(ObjDocumentDto logo) {
-		assertThis(false, "logo is read-only");
+		// assertThis(false, "logo is read-only");
 	}
 
 }
