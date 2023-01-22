@@ -1,9 +1,8 @@
 
-import { Avatar } from "@salesforce/design-system-react";
-import { assertThis, DateFormat, session, TaskStore, TaskStoreModel } from "@zeitwert/ui-model";
-import { StoreWithTasks } from "@zeitwert/ui-model/fm/collaboration/model/StoreWithTasks";
-import { Task, TaskPayload } from "@zeitwert/ui-model/fm/collaboration/model/TaskModel";
-import { computed, makeObservable, observable, toJS } from "mobx";
+import { Avatar, ExpandableSection } from "@salesforce/design-system-react";
+import { assertThis, DateFormat, EntityType, EntityTypes, Enumerated, session, Task, TaskPayload, TasksStoreModel, TaskStoreModel } from "@zeitwert/ui-model";
+import NotFound from "app/ui/NotFound";
+import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React, { FC } from "react";
 import ReactMarkdown from "react-markdown";
@@ -11,56 +10,48 @@ import MiniTaskForm from "./MiniTaskForm";
 
 export interface TasksTabProps {
 	relatedToId: string;
-	store: StoreWithTasks;
-	tasks: Task[];
-	onTaskStored: () => void;
 }
-
-type TaskData = Omit<TaskPayload, "account">;
 
 @observer
 export default class TasksTab extends React.Component<TasksTabProps> {
 
-	@observable taskStore = TaskStoreModel.create({});
-	@observable isEditActive: boolean = false;
+	@observable tasksStore = TasksStoreModel.create({});
 	@observable editTaskId: string | undefined;
+	@observable isEditActive: boolean = false;
+	@observable showCompleted: boolean = false;
+
 	@computed get isNew() { return !this.editTaskId; }
+	@computed get isEdit() { return !!this.editTaskId; }
 	@computed get isNoEdit() { return !this.editTaskId && !this.isEditActive; }
 	@computed get isEditNew() { return !this.editTaskId && this.isEditActive; }
-	@computed get isEdit() { return !!this.editTaskId; }
-	//   prepNewTask() => NoEdit: !editTaskId, !isEditActive
-	//   startEditNew() => EditNew: !editTaskId, isEditActive
-	//   cancelEditNew() => prepNewTask() [=> NoEdit]
-	//   storeEditNew() => prepNewTask() [=> NoEdit]
-	//   startModify() => Edit: !!editTaskId, isEditActive (after store.load())
 
 	constructor(props: TasksTabProps) {
 		super(props);
 		makeObservable(this);
 	}
 
-	componentDidMount(): void {
-		this.prepNewTask();
+	async componentDidMount() {
+		this.loadTasks();
 	}
 
-	componentWillUnmount(): void {
-		this.clearTask();
+	async componentDidUpdate(prevProps: TasksTabProps) {
+		if (this.props.relatedToId !== prevProps.relatedToId) {
+			this.loadTasks();
+		}
 	}
 
 	render() {
-		const tasks = this.props.tasks;
-		toJS(tasks); // necessary to trigger re-render after update :-(
+		const tasks = this.tasksStore.tasks;
 		return (
 			<div className="slds-is-relative">
 				<div className="slds-m-left_small slds-m-right_small">
 					<div className="slds-feed">
 						<ul className="slds-feed__list">
 							{
-								(this.isNoEdit || this.isEditNew) &&
+								this.isNew &&
 								<li className="slds-feed__item" key="task-add">
 									<TaskEditor
-										isNew={true}
-										store={this.taskStore}
+										relatedToId={this.props.relatedToId}
 										onStart={this.startEditNew}
 										onCancel={this.cancelEditNew}
 										onOk={this.storeEditNew}
@@ -72,8 +63,8 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 								this.isEdit &&
 								<li className="slds-feed__item" key="task-edit">
 									<TaskEditor
-										isNew={false}
-										store={this.taskStore}
+										relatedToId={this.props.relatedToId}
+										taskId={this.editTaskId}
 										onStart={() => { }}
 										onCancel={this.cancelModify}
 										onOk={this.storeModify}
@@ -82,25 +73,65 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 								</li>
 							}
 							{
-								this.isNoEdit && !tasks.length &&
-								<li className="slds-feed__item" key="task-0">
-									<div>Keine Aufgaben</div>
-									<hr style={{ marginBlockStart: "12px", marginBlockEnd: 0 }} />
-								</li>
-							}
-							{
-								this.isNoEdit && !!tasks.length &&
-								tasks.map((task, index) => (
-									<li className="slds-feed__item" key={"task-" + index}>
-										<TaskView
-											task={task}
-											onEdit={(task) => { this.startModify(task.id) }}
-											onChangePrivacy={this.changePrivacy}
-											onRemove={(task) => this.removeTask(task.id)}
-										/>
-										<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
-									</li>
-								))
+								this.isNoEdit &&
+								<>
+									{
+										!tasks.length &&
+										<li className="slds-feed__item" key="task-0">
+											<div>Keine Aufgaben</div>
+											<hr style={{ marginBlockStart: "12px", marginBlockEnd: 0 }} />
+										</li>
+									}
+									{
+										!!this.tasksStore.futureTasks.length &&
+										this.tasksStore.futureTasks.map((task, index) => (
+											<li className="slds-feed__item" key={"task-" + index}>
+												<TaskView
+													task={task}
+													onEdit={(task) => { this.startModify(task.id) }}
+													onChangePrivacy={this.changePrivacy}
+													onComplete={this.completeTask}
+												/>
+												<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
+											</li>
+										))
+									}
+									{
+										!!this.tasksStore.overdueTasks.length &&
+										<ExpandableSection title="Überfällig">
+											{
+												this.tasksStore.overdueTasks.map((task, index) => (
+													<li className="slds-feed__item" key={"task-" + index}>
+														<TaskView
+															task={task}
+															onEdit={(task) => { this.startModify(task.id) }}
+															onChangePrivacy={this.changePrivacy}
+															onComplete={this.completeTask}
+														/>
+														<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
+													</li>
+												))
+											}
+										</ExpandableSection>
+									}
+									{
+										!!this.tasksStore.completedTasks.length &&
+										<ExpandableSection
+											title="Abgeschlossen"
+											isOpen={this.showCompleted}
+											onToggleOpen={() => { this.showCompleted = !this.showCompleted; }}
+										>
+											{
+												this.tasksStore.completedTasks.map((task, index) => (
+													<li className="slds-feed__item" key={"task-" + index}>
+														<TaskView task={task} />
+														<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
+													</li>
+												))
+											}
+										</ExpandableSection>
+									}
+								</>
 							}
 						</ul>
 					</div>
@@ -125,152 +156,70 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 	//   storeModify() => prepNewTask() [=> NoEdit]
 	//   clearTask() => ...
 
-	private prepNewTask = () => {
-		try {
-			this.taskStore.create({
-				owner: session.sessionInfo!.user,
-				assignee: session.sessionInfo?.user,
-				tenant: session.sessionInfo?.tenant,
-				relatedTo: { id: this.props.relatedToId },
-				isPrivate: false,
-				priority: { id: "normal", name: "Normal" },
-				dueAt: new Date(),
-			});
-			// if (!session.isKernelTenant) {
-			// 	this.taskStore.task!.setAccount(session.sessionInfo?.account?.id);
-			// }
-			this.editTaskId = undefined;
-			this.isEditActive = false;
-		} catch (e: any) {
-			console.error("prepNewTask crashed", e);
-			throw e;
-		}
-	}
-
 	private startEditNew = () => {
 		assertThis(!this.editTaskId, "editTaskId is undefined");
 		assertThis(!this.isEditActive, "!isEditActive");
-		try {
-			this.isEditActive = true;
-		} catch (e: any) {
-			console.error("startEditNew crashed", e);
-			throw e;
-		}
+		this.isEditActive = true;
 	}
 
 	private cancelEditNew = async () => {
 		assertThis(!this.editTaskId, "editTaskId is undefined");
 		assertThis(this.isEditActive, "isEditActive");
-		assertThis(this.taskStore.isInTrx, "store in trx");
-		try {
-			this.taskStore.cancel();
-			this.taskStore.clear();
-			this.prepNewTask();
-		} catch (e: any) {
-			console.error("cancelEditNew crashed", e);
-			throw e;
-		}
+		this.isEditActive = false;
 	}
 
 	private storeEditNew = async () => {
 		assertThis(!this.editTaskId, "editTaskId is undefined");
 		assertThis(this.isEditActive, "isEditActive");
-		assertThis(this.taskStore.isInTrx, "store in trx");
-		const task = this.taskStore.task!;
-		try {
-			await this.props.store.addTask(this.props.relatedToId, task);
-			this.taskStore.commitTrx();
-			this.taskStore.clear();
-			this.prepNewTask();
-			this.props.onTaskStored();
-		} catch (e: any) {
-			console.error("storeEditNew crashed", task, e);
-			throw e;
-		}
+		this.loadTasks();
 	}
 
 	private startModify = async (taskId: string) => {
 		assertThis(!this.editTaskId, "editTaskId is undefined");
 		assertThis(!this.isEditActive, "!isEditActive");
-		assertThis(this.taskStore.isInTrx, "store in trx");
-		try {
-			this.taskStore.cancel();
-			this.taskStore.clear();
-			await this.taskStore.load(taskId);
-			this.taskStore.edit();
-			this.editTaskId = taskId;
-			this.isEditActive = true;
-		} catch (e: any) {
-			console.error("startModify crashed", taskId, e);
-			throw e;
-		}
+		this.editTaskId = taskId;
+		this.isEditActive = true;
 	}
 
 	private cancelModify = async () => {
 		assertThis(!!this.editTaskId, "editTaskId is defined");
 		assertThis(this.isEditActive, "isEditActive");
-		assertThis(this.taskStore.isInTrx, "store in trx");
-		try {
-			this.taskStore.cancel();
-			this.taskStore.clear();
-			this.prepNewTask();
-		} catch (e: any) {
-			console.error("cancelModify crashed", e);
-			throw e;
-		}
+		this.editTaskId = undefined;
+		this.isEditActive = false;
 	}
 
 	private storeModify = async () => {
 		assertThis(!!this.editTaskId, "editTaskId is defined");
 		assertThis(this.isEditActive, "isEditActive");
-		assertThis(this.taskStore.isInTrx, "store in trx");
-		const task = this.taskStore.task!;
-		try {
-			await this.props.store.storeTask(task.id, task);
-			this.taskStore.commitTrx();
-			this.taskStore.clear();
-			this.prepNewTask();
-			this.props.onTaskStored();
-		} catch (e: any) {
-			console.error("cancelModify crashed", task, e);
-			throw e;
-		}
-	}
-
-	private clearTask = () => {
-		try {
-			if (this.taskStore.inTrx) {
-				this.taskStore.cancel();
-			}
-			this.taskStore.clear();
-		} catch (e: any) {
-			console.error("clearTask crashed", e);
-			throw e;
-		}
+		this.loadTasks();
 	}
 
 	private changePrivacy = (task: Task): void => {
 		this.modifyTask(task.id, Object.assign({}, task, { isPrivate: !task.isPrivate }));
 	}
 
-	private modifyTask = async (id: string, task: TaskData) => {
-		await this.props.store.storeTask(id, task);
-		this.isEditActive = false;
-		this.editTaskId = undefined;
+	private completeTask = async (task: Task) => {
+		this.modifyTask(task.id, Object.assign({}, task, { nextCaseStage: { id: "task.done" } }));
 	}
 
-	private removeTask = async (id: string) => {
-		await this.props.store.removeTask(id);
-		this.isEditActive = true;
+	private modifyTask = async (id: string, task: TaskPayload) => {
+		await this.tasksStore.storeTask(id, task);
+		await this.loadTasks();
+	}
+
+	private loadTasks = async () => {
+		this.editTaskId = undefined;
+		this.isEditActive = false;
+		await this.tasksStore.load(this.props.relatedToId);
 	}
 
 }
 
 interface TaskViewProps {
 	task: Task;
-	onEdit: (task: Task) => void;
-	onChangePrivacy: (task: Task) => void;
-	onRemove: (task: Task) => void;
+	onEdit?: (task: Task) => void;
+	onChangePrivacy?: (task: Task) => void;
+	onComplete?: (task: Task) => void;
 }
 
 @observer
@@ -280,10 +229,11 @@ class TaskView extends React.Component<TaskViewProps> {
 
 		const task = this.props.task;
 		const isPrivate = task.isPrivate;
-		const user = task.meta?.createdByUser!;
+		const user = task.meta?.assignee!;
 		const userName = user.name;
 		const userAvatar = session.avatarUrl(user.id);
-		const time = DateFormat.relativeTime(task.meta?.modifiedAt || task.meta?.createdAt!);
+		const dueAt = DateFormat.compact(task.dueAt);
+		const dueAtRelative = DateFormat.relativeTime(task.dueAt!);
 
 		return (
 			<article className="slds-post">
@@ -300,29 +250,38 @@ class TaskView extends React.Component<TaskViewProps> {
 						<div className="slds-clearfix xslds-grid xslds-grid_align-spread xslds-has-flexi-truncate">
 							<div className="slds-float_left">
 								<p>
-									<a href={`/user/${user.id}`} title={userName}>{userName}</a>
+									<strong><a href={`/task/${task.id}`}>{task.meta?.caseStage.name}</a> ⋅ </strong><a href={`/user/${user.id}`} title={userName}>{this.getUserName(user)}</a>
 								</p>
 							</div>
 							<div className="slds-float_right">
-								<TaskHeaderAction
-									icon={isPrivate ? "lock" : "unlock"}
-									label={isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
-									onClick={() => this.props.onChangePrivacy(task)}
-								/>
-								<TaskHeaderAction
-									icon={"delete"}
-									label={"Löschen"}
-									onClick={() => this.props.onRemove(task)}
-								/>
-								<TaskHeaderAction
-									icon={"edit"}
-									label={"Bearbeiten"}
-									onClick={() => this.props.onEdit(task)}
-								/>
+								{
+									!!this.props.onChangePrivacy &&
+									<TaskHeaderAction
+										icon={isPrivate ? "lock" : "unlock"}
+										label={isPrivate ? "Private Aufgabe" : "Öffentliche Aufgabe"}
+										onClick={() => this.props.onChangePrivacy?.(task)}
+									/>
+								}
+								{
+									!!this.props.onComplete &&
+									<TaskHeaderAction
+										icon={"success"}
+										label={"Als erledigt markieren"}
+										onClick={() => this.props.onComplete?.(task)}
+									/>
+								}
+								{
+									!!this.props.onEdit &&
+									<TaskHeaderAction
+										icon={"edit"}
+										label={"Bearbeiten"}
+										onClick={() => this.props.onEdit?.(task)}
+									/>
+								}
 							</div>
 						</div>
 						<p className="slds-text-body_small">
-							<a href="/#" title="..." className="slds-text-link_reset">{time}</a>
+							{dueAt} ⋅ {dueAtRelative}
 						</p>
 					</div>
 				</header>
@@ -334,6 +293,10 @@ class TaskView extends React.Component<TaskViewProps> {
 				</div>
 			</article>
 		);
+	}
+
+	private getUserName(user: Enumerated) {
+		return user.id == session.sessionInfo?.user.id ? "Du" : user.name;
 	}
 
 }
@@ -359,8 +322,8 @@ const TaskHeaderAction: FC<TaskHeaderActionProps> = (props) => {
 };
 
 interface TaskEditorProps {
-	isNew: boolean;
-	store: TaskStore;
+	relatedToId: string;
+	taskId?: string;
 	onStart: () => void;
 	onCancel: () => Promise<void>;
 	onOk: () => Promise<void>;
@@ -369,18 +332,70 @@ interface TaskEditorProps {
 @observer
 class TaskEditor extends React.Component<TaskEditorProps> {
 
+	@observable taskStore = TaskStoreModel.create({});
+
+	constructor(props: any) {
+		super(props);
+		makeObservable(this);
+	}
+
+	async componentDidMount() {
+		this.onStart();
+	}
+
+	async componentDidUpdate(prevProps: TaskEditorProps) {
+		if ((this.props.taskId ?? "none") !== (prevProps.taskId ?? "none")) {
+			this.onStart();
+		}
+	}
+
 	render() {
-		const { store } = this.props;
-		if (!store.task?.id) {
-			return null;
+		const task = this.taskStore.task!;
+		if (!task && session.isNetworkActive) {
+			return <></>;
+		} else if (!task) {
+			return <NotFound entityType={EntityTypes[EntityType.TASK]} id={this.props.taskId!} />;
 		}
 		return <MiniTaskForm
-			task={store.task}
-			isNew={this.props.isNew}
+			task={task}
+			isNew={!this.props.taskId}
 			onStart={this.props.onStart}
-			onCancel={this.props.onCancel}
-			onOk={this.props.onOk}
+			onCancel={this.onCancel}
+			onOk={this.onOk}
 		/>;
+	}
+
+	private onStart = async () => {
+		const tomorrow = new Date();
+		tomorrow.setDate(tomorrow.getDate() + 1);
+		tomorrow.setHours(0, 0, 0, 0);
+		if (this.props.taskId) {
+			await this.taskStore.load(this.props.taskId);
+			this.taskStore.edit();
+		} else {
+			this.taskStore.clear();
+			this.taskStore.create({
+				owner: session.sessionInfo!.user,
+				assignee: session.sessionInfo?.user,
+				tenant: session.sessionInfo?.tenant,
+				relatedTo: { id: this.props.relatedToId },
+				isPrivate: false,
+				priority: { id: "normal", name: "Normal" },
+				dueAt: tomorrow,
+			});
+		}
+	}
+
+	private onCancel = async () => {
+		this.taskStore.cancel();
+		await this.onStart();
+		await this.props.onCancel();
+	}
+
+	private onOk = async () => {
+		await this.taskStore.store();
+		await this.onStart();
+		await this.props.onOk();
 	}
 
 }

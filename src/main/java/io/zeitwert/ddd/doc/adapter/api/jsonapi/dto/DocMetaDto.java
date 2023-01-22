@@ -31,7 +31,7 @@ public class DocMetaDto extends AggregateMetaDto {
 
 	private List<EnumeratedDto> caseStages;
 	private List<String> availableActions; // TODO implement
-	private List<DocPartTransitionDto> transitionList;
+	private List<DocPartTransitionDto> transitions;
 
 	public static DocMetaDto fromDoc(Doc doc) {
 		DocMeta meta = doc.getMeta();
@@ -43,7 +43,7 @@ public class DocMetaDto extends AggregateMetaDto {
 			.isInWork(doc.getCaseStage().isInWork())
 			.assignee(ObjUserDtoAdapter.getInstance().asEnumerated(doc.getAssignee()))
 			.caseStages(doc.getMeta().getCaseStages().stream().map(cs -> EnumeratedDto.fromEnum(cs)).toList())
-			.transitionList(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
+			.transitions(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
 			.build();
 		// @formatter:on
 	}

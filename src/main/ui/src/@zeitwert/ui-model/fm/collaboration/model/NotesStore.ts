@@ -6,8 +6,8 @@ import { StoreWithEntitiesModel } from "../../../ddd/aggregate/model/StoreWithEn
 import { NOTE_API } from "../service/NoteApi";
 import { Note, NoteModel, NotePayload, NoteSnapshot } from "./NoteModel";
 
-const MstStoreWithNotesModel = StoreWithEntitiesModel
-	.named("StoreWithNotes")
+const MstNotesStoreModel = StoreWithEntitiesModel
+	.named("NotesStore")
 	.props({
 		notes: types.optional(types.array(NoteModel), []),
 	})
@@ -17,7 +17,7 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 		},
 	}))
 	.actions((self) => ({
-		async loadNotes(relatedToId: string): Promise<void> {
+		async load(relatedToId: string): Promise<void> {
 			return flow<void, any[]>(function* (): any {
 				try {
 					const repository: EntityTypeRepository = yield NOTE_API.getAggregates("filter[relatedToId]=" + relatedToId);
@@ -98,11 +98,11 @@ const MstStoreWithNotesModel = StoreWithEntitiesModel
 		},
 	}));
 
-type MstStoreWithNotesType = typeof MstStoreWithNotesModel;
-interface MstStoreWithNotes extends MstStoreWithNotesType { }
+type MstNotesStoreType = typeof MstNotesStoreModel;
+interface MstNotesStore extends MstNotesStoreType { }
 
-export const StoreWithNotesModel: MstStoreWithNotes = MstStoreWithNotesModel;
-export type StoreWithNotesModelType = typeof StoreWithNotesModel;
-export interface StoreWithNotes extends Instance<StoreWithNotesModelType> { }
-export type StoreWithNotesSnapshot = SnapshotIn<StoreWithNotesModelType>;
-export type StoreWithNotesPayload = Omit<StoreWithNotesSnapshot, "id">;
+export const NotesStoreModel: MstNotesStore = MstNotesStoreModel;
+export type NotesStoreModelType = typeof NotesStoreModel;
+export interface NotesStore extends Instance<NotesStoreModelType> { }
+export type NotesStoreSnapshot = SnapshotIn<NotesStoreModelType>;
+export type NotesStorePayload = Omit<NotesStoreSnapshot, "id">;

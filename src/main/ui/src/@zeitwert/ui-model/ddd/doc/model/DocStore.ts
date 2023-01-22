@@ -1,6 +1,4 @@
 
-import { StoreWithNotesModel } from "@zeitwert/ui-model/fm/collaboration/model/StoreWithNotes";
-import { StoreWithTasksModel } from "@zeitwert/ui-model/fm/collaboration/model/StoreWithTasks";
 import { StoreWithContactsModel } from "@zeitwert/ui-model/fm/contact/model/StoreWithContacts";
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository, requireThis } from "../../../app/common";
@@ -14,8 +12,6 @@ const MstDocStoreModel = AggregateStoreModel
 	.props({
 		accountsStore: types.optional(StoreWithAccountsModel, {}),
 		contactsStore: types.optional(StoreWithContactsModel, {}),
-		notesStore: types.optional(StoreWithNotesModel, {}),
-		tasksStore: types.optional(StoreWithTasksModel, {}),
 	})
 	.views((self) => ({
 		get item(): Doc | undefined {
@@ -42,20 +38,6 @@ const MstDocStoreModel = AggregateStoreModel
 			// })();
 		}
 	}))
-	.actions((self) => {
-		const superLoad = self.load;
-		const load = async (id: string) => {
-			try {
-				const item = await superLoad(id);
-				await self.notesStore.loadNotes(id);
-				await self.tasksStore.loadTasks(id);
-				return item;
-			} catch (error: any) {
-				return Promise.reject(error);
-			}
-		}
-		return { load };
-	})
 	.actions((self) => {
 		const superAfterLoad = self.afterLoad;
 		const afterLoad = (repository: EntityTypeRepository) => {

@@ -43,8 +43,8 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.contactStore.load(this.props.params.contactId!);
 		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
+		await this.contactStore.load(this.props.params.contactId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {

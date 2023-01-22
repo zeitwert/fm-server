@@ -28,7 +28,7 @@ public class ObjMetaDto extends AggregateMetaDto {
 
 	private EnumeratedDto closedByUser;
 	private OffsetDateTime closedAt;
-	private List<ObjPartTransitionDto> transitionList;
+	private List<ObjPartTransitionDto> transitions;
 
 	public static ObjMetaDto fromObj(Obj obj) {
 		ObjMeta meta = obj.getMeta();
@@ -39,7 +39,7 @@ public class ObjMetaDto extends AggregateMetaDto {
 		return builder
 			.closedByUser(userDtoAdapter.asEnumerated(meta.getClosedByUser()))
 			.closedAt(meta.getClosedAt())
-			.transitionList(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
+			.transitions(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
 			.build();
 		// @formatter:on
 	}

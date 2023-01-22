@@ -1,3 +1,4 @@
+
 import { Button } from "@salesforce/design-system-react";
 import classNames from "classnames";
 import { action, makeObservable, observable } from "mobx";
@@ -21,6 +22,7 @@ interface TimelineItemProps {
 	date: string;
 	body: JSX.Element | string;
 	detail: React.ReactNode;
+	isExpandable?: boolean;
 	isExpanded?: boolean;
 	onClick?: (e: any) => void;
 	onToggle?: (expanded: boolean) => void;
@@ -28,6 +30,7 @@ interface TimelineItemProps {
 
 @observer
 export class TimelineItem extends React.Component<TimelineItemProps> {
+
 	@observable isExpanded = false;
 
 	constructor(props: TimelineItemProps) {
@@ -40,11 +43,13 @@ export class TimelineItem extends React.Component<TimelineItemProps> {
 	}
 
 	render() {
-		const { name, type, icon, date, body, onClick, onToggle } = this.props;
+		const { name, type, icon, date, body, isExpandable, onClick, onToggle } = this.props;
 		const classes = classNames(
-			"slds-timeline__item_expandable",
+			{
+				"slds-timeline__item_expandable": isExpandable,
+				"slds-is-open": this.isExpanded,
+			},
 			"slds-timeline__item_" + type,
-			this.isExpanded ? " slds-is-open" : ""
 		);
 		return (
 			<li>
@@ -58,13 +63,13 @@ export class TimelineItem extends React.Component<TimelineItemProps> {
 								iconSize="x-small"
 								iconVariant="bare"
 								onClick={action(() => {
-									this.isExpanded = !this.isExpanded;
+									isExpandable && (this.isExpanded = !this.isExpanded);
 									onToggle && onToggle(this.isExpanded);
 								})}
 								variant="icon"
 								style={
 									!this.isExpanded
-										? { transform: "rotate(-90deg)", marginRight: "0.125rem" }
+										? { transform: "rotate(-90deg)", marginRight: "0.125rem", color: isExpandable ? "" : "transparent" }
 										: { marginRight: "0.125rem" }
 								}
 							/>
@@ -74,12 +79,16 @@ export class TimelineItem extends React.Component<TimelineItemProps> {
 							<div className="slds-grid slds-grid_align-spread">
 								<div className="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
 									<h3 className="slds-truncate" title={name}>
-										{onClick && (
-											<a href="/#" onClick={(e: any) => onClick(e)}>
-												<strong>{name}</strong>
-											</a>
-										)}
-										{!onClick && <strong>{name}</strong>}
+										{
+											onClick && (
+												<a href="/#" onClick={(e: any) => onClick(e)}>
+													<strong>{name}</strong>
+												</a>
+											)
+										}
+										{
+											!onClick && <strong>{name}</strong>
+										}
 									</h3>
 								</div>
 								<div className="slds-timeline__actions slds-timeline__actions_inline">

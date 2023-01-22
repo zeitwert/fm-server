@@ -1,14 +1,11 @@
 
 import { applySnapshot, cast, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { DocStoreModel } from "../../../ddd/doc/model/DocStore";
-import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { TaskApi, TASK_API } from "../service/TaskApi";
 import { Task, TaskModel, TaskModelType, TaskSnapshot } from "./TaskModel";
 
 const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 	.props({
-		accountsStore: types.optional(StoreWithAccountsModel, {}),
 		task: types.maybe(TaskModel)
 	})
 	.views((self) => ({
@@ -22,20 +19,14 @@ const MstTaskStoreModel = DocStoreModel.named("TaskStore")
 			return self.task;
 		}
 	}))
-	.actions((self) => {
-		const superAfterLoad = self.afterLoad;
-		const afterLoad = (repository: EntityTypeRepository) => {
-			superAfterLoad(repository);
-			self.accountsStore.afterLoad(repository);
-		}
-		return { afterLoad };
-	})
 	.actions((self) => ({
 		setItem(snapshot: TaskSnapshot | undefined) {
-			if (self.task) {
+			if (self.task && snapshot) {
 				applySnapshot(self.task, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.task = cast(snapshot);
+			} else {
+				self.task = undefined;
 			}
 		}
 	}));

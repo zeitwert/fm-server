@@ -52,8 +52,8 @@ class UserPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.userStore.load(this.props.params.userId!);
 		session.setHelpContext(`${EntityType.USER}-${this.activeLeftTabId}`);
+		await this.userStore.load(this.props.params.userId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {

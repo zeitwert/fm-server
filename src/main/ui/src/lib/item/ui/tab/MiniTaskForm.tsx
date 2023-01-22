@@ -61,60 +61,64 @@ export default class MiniTaskForm extends React.Component<MiniTaskFormProps> {
 
 	render() {
 		return (
-			<SldsForm
-				formModel={TaskForm}
-				formStateOptions={this.formStateOptions}
-				item={this.props.task}
+			<div
+				onKeyDown={(e) => {
+					if (e.key === "Escape") {
+						this.onCancel();
+						(document.activeElement as any)?.blur();
+					}
+				}}
 			>
-				<Grid className="slds-wrap" isVertical={false}>
-					<Col cols={1} totalCols={1}>
-						<FieldGroup legend={this.isActive ? "Neue Aufgabe" : undefined}>
-							<FieldRow>
-								<Input
-									label={this.isActive ? "Titel" : ""}
-									placeholder={this.isActive ? "" : "Neue Aufgabe ..."}
-									required={this.isActive}
-									fieldName="subject"
-									size={this.isActive ? 10 : 12}
-									onFocus={this.onStart}
-									onKeyDown={(e) => {
-										if (e.key === "Escape") {
-											this.onCancel();
-										}
-									}}
-								/>
+				<SldsForm
+					formModel={TaskForm}
+					formStateOptions={this.formStateOptions}
+					item={this.props.task}
+				>
+					<Grid className="slds-wrap" isVertical={false}				>
+						<Col cols={1} totalCols={1}>
+							<FieldGroup legend={this.isActive ? "Neue Aufgabe" : undefined}>
+								<FieldRow>
+									<Input
+										label={this.isActive ? "Titel" : ""}
+										placeholder={this.isActive ? "" : "Neue Aufgabe ..."}
+										required={this.isActive}
+										fieldName="subject"
+										size={this.isActive ? 10 : 12}
+										onFocus={this.onStart}
+									/>
+									{
+										this.isActive &&
+										<Checkbox label="Privat?" fieldName="isPrivate" size={2} />
+									}
+								</FieldRow>
 								{
 									this.isActive &&
-									<Checkbox label="Privat?" fieldName="isPrivate" size={2} />
+									<>
+										<FieldRow>
+											<TextArea label="Details" fieldName="content" rows={6} />
+										</FieldRow>
+										<FieldRow>
+											<Select label="Zugewiesen an" fieldName="assignee" size={5} />
+											<DatePicker label="Fällig am" fieldName="dueAt" size={4} yearRangeMin={-1} />
+											<Select label="Priorität" fieldName="priority" size={3} />
+										</FieldRow>
+										<hr style={{ marginBlockStart: "12px", marginBlockEnd: "12px" }} />
+										<div style={{ textAlign: "right" }}>
+											<ItemEditorButtons
+												showEditButtons={true}
+												doEdit={true}
+												allowStore={this.allowAdd}
+												onCancelEditor={this.onCancel}
+												onCloseEditor={this.onOk}
+											/>
+										</div>
+									</>
 								}
-							</FieldRow>
-							{
-								this.isActive &&
-								<>
-									<FieldRow>
-										<TextArea label="Details" fieldName="content" rows={6} />
-									</FieldRow>
-									<FieldRow>
-										<Select label="Zugewiesen an" fieldName="assignee" size={5} />
-										<DatePicker label="Fällig am" fieldName="dueAt" size={4} yearRangeMin={-1} />
-										<Select label="Priorität" fieldName="priority" size={3} />
-									</FieldRow>
-									<hr style={{ marginBlockStart: "12px", marginBlockEnd: "12px" }} />
-									<div style={{ textAlign: "right" }}>
-										<ItemEditorButtons
-											showEditButtons={true}
-											doEdit={true}
-											allowStore={this.allowAdd}
-											onCancelEditor={this.onCancel}
-											onCloseEditor={this.onOk}
-										/>
-									</div>
-								</>
-							}
-						</FieldGroup>
-					</Col>
-				</Grid>
-			</SldsForm>
+							</FieldGroup>
+						</Col>
+					</Grid>
+				</SldsForm>
+			</div>
 		);
 	}
 

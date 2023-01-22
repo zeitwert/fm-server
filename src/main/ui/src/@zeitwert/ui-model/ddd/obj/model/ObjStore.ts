@@ -1,18 +1,14 @@
 
-import { StoreWithTasksModel } from "@zeitwert/ui-model/fm/collaboration/model/StoreWithTasks";
 import Logger from "loglevel";
-import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { flow, Instance, SnapshotIn } from "mobx-state-tree";
 import { session } from "../../../../ui-model/app/session";
 import { requireThis } from "../../../app/common";
-import { StoreWithNotesModel } from "../../../fm/collaboration/model/StoreWithNotes";
 import { AggregateStoreModel } from "../../aggregate/model/AggregateStore";
 import { Obj } from "./ObjModel";
 
 const MstObjStoreModel = AggregateStoreModel
 	.named("ObjStore")
 	.props({
-		notesStore: types.optional(StoreWithNotesModel, {}),
-		tasksStore: types.optional(StoreWithTasksModel, {}),
 	})
 	.views((self) => ({
 		get item(): Obj | undefined {
@@ -20,20 +16,6 @@ const MstObjStoreModel = AggregateStoreModel
 			return undefined as unknown as Obj;
 		}
 	}))
-	.actions((self) => {
-		const superLoad = self.load;
-		const load = async (id: string) => {
-			try {
-				const item = await superLoad(id);
-				await self.notesStore.loadNotes(id);
-				await self.tasksStore.loadTasks(id);
-				return item;
-			} catch (error: any) {
-				return Promise.reject(error);
-			}
-		}
-		return { load };
-	})
 	.actions((self) => ({
 		delete() {
 			requireThis(!self.isInTrx, "not in transaction");

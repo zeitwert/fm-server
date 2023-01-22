@@ -35,8 +35,8 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.documentStore.load(this.props.params.documentId!);
 		session.setHelpContext(`${EntityType.DOCUMENT}-${this.activeLeftTabId}`);
+		await this.documentStore.load(this.props.params.documentId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {

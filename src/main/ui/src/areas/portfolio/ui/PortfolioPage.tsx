@@ -62,8 +62,8 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.portfolioStore.load(this.props.params.portfolioId!);
 		session.setHelpContext(`${EntityType.PORTFOLIO}-${this.activeLeftTabId}`);
+		await this.portfolioStore.load(this.props.params.portfolioId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {

@@ -40,15 +40,13 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.leadStore.load(this.props.params.leadId!);
-		//await this.leadStore.loadTransitions(this.leadStore.lead!);
 		session.setHelpContext(`${EntityType.LEAD}-${this.activeLeftTabId}`);
+		await this.leadStore.load(this.props.params.leadId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.leadId !== prevProps.params.leadId) {
 			await this.leadStore.load(this.props.params.leadId!);
-			//await this.leadStore.loadTransitions(this.leadStore.lead!);
 		}
 	}
 

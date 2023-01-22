@@ -53,8 +53,8 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.accountStore.load(this.props.params.accountId!);
 		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
+		await this.accountStore.load(this.props.params.accountId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {

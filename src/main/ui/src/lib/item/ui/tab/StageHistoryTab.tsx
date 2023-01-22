@@ -1,8 +1,9 @@
 
 import { Icon } from "@salesforce/design-system-react";
-import { DateFormat, Doc } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds";
+import { DateFormat, Doc, DocPartTransition, session } from "@zeitwert/ui-model";
+import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import { Timeline, TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
+import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -13,44 +14,109 @@ interface StageHistoryTabProps {
 @observer
 export default class StageHistoryTab extends React.Component<StageHistoryTabProps> {
 
-	getStartDate(index: number) {
-		return this.props.doc.meta!.transitions?.[index ? index - 1 : index]?.timestamp;
+	@observable transitions: DocPartTransition[] = [];
+
+	constructor(props: StageHistoryTabProps) {
+		super(props);
+		makeObservable(this);
+		this.transitions = Array.from(toJS(this.props.doc.meta!.transitions));
+		this.transitions.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
 	}
 
 	render() {
-		const transitions = this.props.doc.meta!.transitions;
 		return (
 			<div className="slds-m-around_medium">
-				{!transitions.length && <div>No case stage history.</div>}
 				<Timeline>
 					{
-						transitions.map((transition, index) => (
+						this.transitions.map((transition, index) => (
 							<TimelineItem
 								key={index}
-								name={transition.newCaseStage!.name}
-								type="stage"
-								icon={<Icon category="standard" name="stage" size="medium" className="slds-timeline__icon" />}
-								date={DateFormat.long(transition.timestamp!)}
-								body={transition.user?.name + " ⋅ " + DateFormat.relativeTime(transition.timestamp!)}
+								type={this.getItemType(transition)}
+								name={this.getActivity(transition)}
+								icon={this.getIcon(transition)}
+								date={DateFormat.relativeTime(transition.timestamp!)}
+								body={this.getUserName(transition)}
 								detail={
-									<Grid isVertical={false}>
-										<Col className="slds-size_5-of-12">
-											<div className="slds-text-color_weak">
-												<strong>Start Date:</strong>
-											</div>
-										</Col>
-										<Col className="slds-size_7-of-12">
-											<div>{DateFormat.long(this.getStartDate(index))}</div>
-										</Col>
+									<Grid isVertical={true}>
+										<Row>
+											<Col className="slds-size_4-of-12">
+												<div className="slds-text-color_weak">
+													<strong>Zeitpunkt:</strong>
+												</div>
+											</Col>
+											<Col className="slds-size_8-of-12">
+												<div>{DateFormat.long(transition.timestamp)}</div>
+											</Col>
+										</Row>
+										<Row>
+											<Col className="slds-size_4-of-12">
+												<div className="slds-text-color_weak">
+													<strong>Dauer:</strong>
+												</div>
+											</Col>
+											<Col className="slds-size_8-of-12">
+												<div>{this.getDuration(index)}</div>
+											</Col>
+										</Row>
 									</Grid>
 								}
+								isExpandable={true}
 								isExpanded={index === 0}
 							/>
 						))
 					}
+					<TimelineItem
+						type="stage"
+						name=""
+						icon={<Icon category="utility" name="routing_offline" size="medium" className="slds-timeline__icon" />}
+						date=""
+						body=""
+						detail=""
+						isExpandable={false}
+						isExpanded={false}
+					/>
 				</Timeline>
 			</div>
 		);
+	}
+
+	private getUserName(transition: DocPartTransition) {
+		const userName = transition.user.id == session.sessionInfo?.user.id ? "Du" : transition.user.name;
+		return transition.newCaseStage.name + " ⋅ " + userName;
+	}
+
+	private getItemType(transition: DocPartTransition) {
+		if (transition.seqNr === 0) {
+			return "stage";
+		} else if (transition.newCaseStage?.id === transition.oldCaseStage?.id) {
+			return "event";
+		} else {
+			return "stage";
+		}
+	}
+
+	private getIcon(transition: DocPartTransition) {
+		if (transition.seqNr === 0) {
+			return <Icon category="standard" name="stage" size="medium" className="slds-timeline__icon" />;
+		} else if (transition.newCaseStage?.id === transition.oldCaseStage?.id) {
+			return <Icon category="standard" name="record_update" size="medium" className="slds-timeline__icon" />;
+		} else {
+			return <Icon category="standard" name="stage" size="medium" className="slds-timeline__icon" />;
+		}
+	}
+
+	private getActivity(transition: DocPartTransition) {
+		if (transition.seqNr === 0) {
+			return "Eröffnung";
+		} else if (transition.newCaseStage?.id === transition.oldCaseStage?.id) {
+			return "Modifikation";
+		} else {
+			return "Transition";
+		}
+	}
+
+	private getDuration(index: number) {
+		return "tbd";
 	}
 
 }

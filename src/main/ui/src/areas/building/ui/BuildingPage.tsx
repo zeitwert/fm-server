@@ -73,8 +73,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.buildingStore.load(this.props.params.buildingId!);
 		session.setHelpContext(`${EntityType.BUILDING}-${this.activeLeftTabId}`);
+		await this.buildingStore.load(this.props.params.buildingId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {

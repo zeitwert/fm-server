@@ -7,8 +7,11 @@ import NotFound from "app/ui/NotFound";
 import { StageSelector } from "lib/doc/ui/StageSelector";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
-import { ItemGrid, ItemLeftPart } from "lib/item/ui/ItemPage";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import ItemPath from "lib/item/ui/ItemPath";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import StageHistoryTab from "lib/item/ui/tab/StageHistoryTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -19,7 +22,14 @@ enum LEFT_TABS {
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
-@inject("appStore", "session", "showAlert", "showToast")
+enum RIGHT_TABS {
+	NOTES = "notes",
+	ACTIVITIES = "activities",
+	VALIDATIONS = "validations",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
+
+@inject("showAlert", "showToast")
 @observer
 class TaskPage extends React.Component<RouteComponentProps> {
 
@@ -27,6 +37,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.NOTES;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
 
@@ -40,15 +51,13 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	}
 
 	async componentDidMount() {
-		await this.taskStore.load(this.props.params.taskId!);
-		//await this.taskStore.loadTransitions(this.taskStore.task!);
 		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
+		await this.taskStore.load(this.props.params.taskId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.taskId !== prevProps.params.taskId) {
 			await this.taskStore.load(this.props.params.taskId!);
-			//await this.taskStore.loadTransitions(this.taskStore.task!);
 		}
 	}
 
@@ -62,6 +71,8 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		}
 
 		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		const notesCount = 0;//this.taskStore.notesStore.notes.length;
 
 		return (
 			<>
@@ -99,6 +110,35 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
+					<ItemRightPart>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.taskStore.id!} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<StageHistoryTab doc={task} />
+								}
+							</TabsPanel>
+							{
+								task.hasValidations &&
+								<TabsPanel label={`Validierungen (${task.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validationList={task.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 				{
 					this.doStageSelection && (

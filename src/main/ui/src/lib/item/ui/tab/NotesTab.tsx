@@ -1,8 +1,7 @@
 
 import { Avatar } from "@salesforce/design-system-react";
-import { DateFormat, session } from "@zeitwert/ui-model";
+import { DateFormat, NotesStore, NotesStoreModel, session } from "@zeitwert/ui-model";
 import { NOTE, Note, NotePayload } from "@zeitwert/ui-model/fm/collaboration/model/NoteModel";
-import { StoreWithNotes } from "@zeitwert/ui-model/fm/collaboration/model/StoreWithNotes";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React, { FC } from "react";
@@ -10,13 +9,12 @@ import ReactMarkdown from "react-markdown";
 
 export interface NotesTabProps {
 	relatedToId: string;
-	store: StoreWithNotes;
-	notes: Note[];
 }
 
 @observer
 export default class NotesTab extends React.Component<NotesTabProps> {
 
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
 	@observable editNoteId: string | undefined;
 
 	constructor(props: NotesTabProps) {
@@ -24,9 +22,18 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 		makeObservable(this);
 	}
 
+	async componentDidMount() {
+		await this.notesStore.load(this.props.relatedToId);
+	}
+
+	async componentDidUpdate(prevProps: NotesTabProps) {
+		if (this.props.relatedToId !== prevProps.relatedToId) {
+			await this.notesStore.load(this.props.relatedToId);
+		}
+	}
+
 	render() {
-		const notes = this.props.notes;
-		toJS(notes); // necessary to trigger re-render after update :-(
+		const notes = this.notesStore.notes;
 		return (
 			<div className="slds-is-relative">
 				<div className="slds-m-around_medium">
@@ -88,12 +95,12 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 	}
 
 	private addNote = (note: NotePayload): void => {
-		this.props.store.addNote(this.props.relatedToId, note);
+		this.notesStore.addNote(this.props.relatedToId, note);
 		this.editNoteId = undefined;
 	}
 
 	private modifyNote = (id: string, note: NotePayload): void => {
-		this.props.store.storeNote(id, note);
+		this.notesStore.storeNote(id, note);
 		this.editNoteId = undefined;
 	}
 
@@ -102,7 +109,7 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 	}
 
 	private removeNote = (id: string): void => {
-		this.props.store.removeNote(id);
+		this.notesStore.removeNote(id);
 	}
 
 }
@@ -125,6 +132,7 @@ class NoteView extends React.Component<NoteViewProps> {
 		const userName = user.name;
 		const userAvatar = session.avatarUrl(user.id);
 		const time = DateFormat.relativeTime(note.meta?.modifiedAt || note.meta?.createdAt!);
+		const isOwner = session.sessionInfo?.user?.id! == note.meta?.createdByUser?.id!;
 
 		return (
 			<article className="slds-post">
@@ -145,16 +153,22 @@ class NoteView extends React.Component<NoteViewProps> {
 								</p>
 							</div>
 							<div className="slds-float_right">
-								<NoteHeaderAction
-									icon={isPrivate ? "lock" : "unlock"}
-									label={isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
-									onClick={() => this.props.onChangePrivacy(note)}
-								/>
-								<NoteHeaderAction
-									icon={"delete"}
-									label={"Löschen"}
-									onClick={() => this.props.onRemove(note)}
-								/>
+								{
+									isOwner &&
+									<NoteHeaderAction
+										icon={isPrivate ? "lock" : "unlock"}
+										label={isPrivate ? "Private Notiz" : "Öffentliche Notiz"}
+										onClick={() => this.props.onChangePrivacy(note)}
+									/>
+								}
+								{
+									isOwner &&
+									<NoteHeaderAction
+										icon={"delete"}
+										label={"Löschen"}
+										onClick={() => this.props.onRemove(note)}
+									/>
+								}
 								<NoteHeaderAction
 									icon={"edit"}
 									label={"Bearbeiten"}
@@ -168,10 +182,13 @@ class NoteView extends React.Component<NoteViewProps> {
 					</div>
 				</header>
 				<div className="slds-post__content xslds-text-longform">
-					<div><strong>{note.subject || "(kein Titel)"}</strong></div>
-					<ReactMarkdown className="fa-note-content">
-						{note.content || "(kein Inhalt)"}
-					</ReactMarkdown>
+					{note.subject && <div><strong>{note.subject}</strong></div>}
+					{
+						note.content &&
+						<ReactMarkdown className="fa-note-content">
+							{note.content}
+						</ReactMarkdown>
+					}
 				</div>
 			</article>
 		);
@@ -231,7 +248,15 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 		const sessionUserName = sessionUser.name;
 		const sessionUserAvatar = session.avatarUrl(sessionUser.id);
 		return (
-			<article className="slds-post">
+			<article
+				className="slds-post"
+				onKeyDown={(e) => {
+					if (e.key === "Escape") {
+						this.onCancel();
+						(document.activeElement as any)?.blur();
+					}
+				}}
+			>
 				<div className="slds-media slds-comment slds-hint-parent">
 					<div className="slds-media__figure">
 						<Avatar
@@ -244,19 +269,16 @@ class NoteEditor extends React.Component<NoteEditorProps> {
 					<div className="slds-media__body">
 						<div className={"slds-publisher slds-publisher_comment" + (this.isActive ? " slds-is-active slds-has-focus" : "")}>
 							<input
-								id="in-01"
 								className="slds-publisher__input slds-input_bare"
 								placeholder="Titel…"
 								value={this.subject}
 								onFocus={(e) => this.isActive = true}
 								onChange={(e) => this.subject = e.currentTarget.value || ""}
-								onKeyDown={(e) => { if (e.key === "Escape") { this.onCancel(); } }}
 							/>
 							{
 								this.isActive &&
 								<>
 									<textarea
-										id="textarea-02"
 										className="slds-publisher__input slds-input_bare slds-text-longform"
 										style={{ marginTop: "2px" }}
 										placeholder="Notiz…"

@@ -6,8 +6,8 @@ import { StoreWithEntitiesModel } from "../../../ddd/aggregate/model/StoreWithEn
 import { TASK_API } from "../service/TaskApi";
 import { Task, TaskModel, TaskPayload, TaskSnapshot } from "./TaskModel";
 
-const MstStoreWithTasksModel = StoreWithEntitiesModel
-	.named("StoreWithTasks")
+const MstTasksStoreModel = StoreWithEntitiesModel
+	.named("TasksStore")
 	.props({
 		tasks: types.optional(types.array(TaskModel), []),
 	})
@@ -15,9 +15,20 @@ const MstStoreWithTasksModel = StoreWithEntitiesModel
 		getTask(id: string): Task | undefined {
 			return self.tasks.find(n => n.id === id);
 		},
+		get futureTasks(): Task[] {
+			const now = new Date();
+			return self.tasks.filter(t => t.dueAt! > now);
+		},
+		get overdueTasks(): Task[] {
+			const now = new Date();
+			return self.tasks.filter(t => t.dueAt! <= now && t.meta?.caseStage.id !== "task.done");
+		},
+		get completedTasks(): Task[] {
+			return self.tasks.filter(t => t.meta?.caseStage.id === "task.done");
+		},
 	}))
 	.actions((self) => ({
-		async loadTasks(relatedToId: string): Promise<void> {
+		async load(relatedToId: string): Promise<void> {
 			return flow<void, any[]>(function* (): any {
 				try {
 					const repository: EntityTypeRepository = yield TASK_API.getAggregates("filter[relatedToId]=" + relatedToId);
@@ -81,7 +92,7 @@ const MstStoreWithTasksModel = StoreWithEntitiesModel
 				}
 			})();
 		},
-		async removeTask(id: string): Promise<Task> {
+		async completeTask(id: string): Promise<Task> {
 			return flow<Task, any[]>(function* (): any {
 				try {
 					const task = self.getTask(id);
@@ -98,11 +109,11 @@ const MstStoreWithTasksModel = StoreWithEntitiesModel
 		},
 	}));
 
-type MstStoreWithTasksType = typeof MstStoreWithTasksModel;
-interface MstStoreWithTasks extends MstStoreWithTasksType { }
+type MstTasksStoreType = typeof MstTasksStoreModel;
+interface MstTasksStore extends MstTasksStoreType { }
 
-export const StoreWithTasksModel: MstStoreWithTasks = MstStoreWithTasksModel;
-export type StoreWithTasksModelType = typeof StoreWithTasksModel;
-export interface StoreWithTasks extends Instance<StoreWithTasksModelType> { }
-export type StoreWithTasksSnapshot = SnapshotIn<StoreWithTasksModelType>;
-export type StoreWithTasksPayload = Omit<StoreWithTasksSnapshot, "id">;
+export const TasksStoreModel: MstTasksStore = MstTasksStoreModel;
+export type TasksStoreModelType = typeof TasksStoreModel;
+export interface TasksStore extends Instance<TasksStoreModelType> { }
+export type TasksStoreSnapshot = SnapshotIn<TasksStoreModelType>;
+export type TasksStorePayload = Omit<TasksStoreSnapshot, "id">;
