@@ -35,6 +35,15 @@ const DATETIME_SHORT_OPTIONS = {
 	minute: "2-digit"
 } as Intl.DateTimeFormatOptions;
 
+const DATETIME_COMPACT_OPTIONS = {
+	hour12: false,
+	year: "numeric",
+	month: "numeric",
+	day: "numeric",
+	hour: "2-digit",
+	minute: "2-digit"
+} as Intl.DateTimeFormatOptions;
+
 const DATE_LONGER_OPTIONS = {
 	hour12: false,
 	weekday: "long",
@@ -55,6 +64,13 @@ const DATE_SHORT_OPTIONS = {
 	hour12: false,
 	year: "numeric",
 	month: "long",
+	day: "numeric"
+} as Intl.DateTimeFormatOptions;
+
+const DATE_COMPACT_OPTIONS = {
+	hour12: false,
+	year: "numeric",
+	month: "numeric",
 	day: "numeric"
 } as Intl.DateTimeFormatOptions;
 
@@ -83,6 +99,12 @@ export const DateFormat = {
 	short: (date: Date | null | undefined, withTime = true) => {
 		if (date) {
 			return new Date(date).toLocaleDateString(locale, withTime ? DATETIME_SHORT_OPTIONS : DATE_SHORT_OPTIONS);
+		}
+		return "";
+	},
+	compact: (date: Date | null | undefined, withTime = true) => {
+		if (date) {
+			return new Date(date).toLocaleDateString(locale, withTime ? DATETIME_COMPACT_OPTIONS : DATE_COMPACT_OPTIONS);
 		}
 		return "";
 	},

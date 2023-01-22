@@ -1,4 +1,5 @@
 
+import { assertThis } from "@zeitwert/ui-model";
 import classNames from "classnames";
 import { observer } from "mobx-react";
 import { FieldAccessor, IFormAccessor } from "mstform";
@@ -72,7 +73,9 @@ export interface ComponentProps {
 
 export function getAccessor(props: any, formAccessor: IFormAccessor<any, any, any>): FieldAccessor<any, any> | undefined {
 	if (props.fieldName) {
-		return formAccessor.field(props.fieldName);
+		const accessor = formAccessor.field(props.fieldName);
+		assertThis(!!accessor, "accessor present for " + props.fieldName);
+		return accessor;
 	}
 	return undefined;
 }

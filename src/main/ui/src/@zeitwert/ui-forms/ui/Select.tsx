@@ -20,7 +20,7 @@ export class Select extends React.Component<SelectProps> {
 
 	async componentDidMount() {
 		const accessor = getAccessor(this.props, this.context);
-		requireThis(!!accessor || (!!this.props.values && !!this.props.onChange), "either accessor or values and onChange must be provided");
+		requireThis(!!accessor || (!!this.props.values && !!this.props.onChange), () => `either accessor or values and onChange must be provided (values: ${!!this.props.values}, onChange: ${!!this.props.onChange})`);
 		await accessor?.references?.load({});
 	}
 
