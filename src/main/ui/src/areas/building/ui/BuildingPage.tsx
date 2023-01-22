@@ -54,21 +54,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable confirmationAction: () => void = () => { };
 
 	@computed
-	get hasValidations(): boolean {
-		return this.buildingStore.building?.meta?.validationList?.length! > 0;
-	}
-
-	@computed
-	get validationCount(): number {
-		return this.buildingStore.building?.meta?.validationList?.length || 0;
-	}
-
-	@computed
-	get hasErrors(): boolean {
-		return this.buildingStore.building?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
-	}
-
-	@computed
 	get hasCoverFoto(): boolean {
 		return !!this.buildingStore.building?.coverFoto?.contentTypeId;
 	}
@@ -113,8 +98,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isActive = !building.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
-		const notesCount = this.buildingStore.notesStore.notes.length;
-		const tasksCount = this.buildingStore.tasksStore.tasks.length;
+		const notesCount = 0;// TODO this.buildingStore.notesStore.notes.length;
+		const tasksCount = 0; // TODO this.buildingStore.tasksStore.tasks.length;
 		const missingDocument = !this.hasCoverFoto;
 
 		return (
@@ -165,7 +150,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 										/>
 									}
 								</TabsPanel>
-								<TabsPanel label="Auswertung" disabled={this.buildingStore.isInTrx || this.hasErrors} hasError={this.hasErrors}>
+								<TabsPanel label="Auswertung" disabled={this.buildingStore.isInTrx || building.hasErrors} hasError={building.hasErrors}>
 									{
 										this.activeLeftTabId === LEFT_TABS.EVALUATION &&
 										<TabProjection
@@ -192,27 +177,18 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
-									<NotesTab
-										relatedToId={this.buildingStore.id!}
-										store={this.buildingStore.notesStore}
-										notes={this.buildingStore.notesStore.notes}
-									/>
+									<NotesTab relatedToId={this.buildingStore.id!} />
 								}
 							</TabsPanel>
 							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<TasksTab
-										relatedToId={this.buildingStore.id!}
-										store={this.buildingStore.tasksStore}
-										tasks={this.buildingStore.tasksStore.tasks}
-										onTaskStored={this.reload}
-									/>
+									<TasksTab relatedToId={this.buildingStore.id!} />
 								}
 							</TabsPanel>
 							{
-								this.hasValidations &&
-								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
+								building.hasValidations &&
+								<TabsPanel label={"Validierungen" + (building.validationsCount ? ` (${building.validationsCount})` : "")}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
 										<ValidationsTab validationList={building.meta?.validationList!} />
@@ -323,7 +299,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 								ratingStatus?.id === "open" &&
 								<ButtonGroup variant="list">
 									<Button variant="text-destructive" onClick={this.showDiscardConfirmation}>Bewertung verwerfen</Button>
-									<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={this.hasValidations}>Bewertung überprüfen</Button>
+									<Button variant="brand" onClick={() => this.moveRatingStatus("review")} disabled={building?.hasValidations}>Bewertung überprüfen</Button>
 								</ButtonGroup>
 							}
 							{
@@ -352,7 +328,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 			return (
 				<>
 					{
-						session.isAdvisorTenant && !this.hasErrors &&
+						session.isAdvisorTenant && !building?.hasErrors &&
 						<ButtonGroup variant="list">
 							<Button onClick={() => this.doGenDocx(building?.id!)}>Generate Word</Button>
 						</ButtonGroup>

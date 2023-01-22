@@ -25,10 +25,12 @@ const MstDocumentStoreModel = ObjStoreModel.named("DocumentStore")
 	}))
 	.actions((self) => ({
 		setItem(snapshot: DocumentSnapshot | undefined) {
-			if (self.document) {
+			if (self.document && snapshot) {
 				applySnapshot(self.document, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.document = cast(snapshot);
+			} else {
+				self.document = undefined;
 			}
 		}
 	}))

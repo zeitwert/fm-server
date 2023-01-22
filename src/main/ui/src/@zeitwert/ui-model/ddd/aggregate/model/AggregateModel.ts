@@ -24,7 +24,16 @@ const MstAggregateModel = types
 		},
 		get allowStore(): boolean {
 			return true;
-		}
+		},
+		get hasValidations(): boolean {
+			return (self.meta?.validationList?.length ?? 0) > 0;
+		},
+		get hasErrors(): boolean {
+			return self?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
+		},
+		get validationsCount(): number {
+			return self.meta?.validationList?.length ?? 0;
+		},
 	}))
 	.views((self) => ({
 		// abstract properties, overwrite if necessary

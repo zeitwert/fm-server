@@ -39,10 +39,12 @@ const MstAccountStoreModel = ObjStoreModel
 	})
 	.actions((self) => ({
 		setItem(snapshot: AccountSnapshot | undefined) {
-			if (self.account) {
+			if (self.account && snapshot) {
 				applySnapshot(self.account, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.account = cast(snapshot);
+			} else {
+				self.account = undefined;
 			}
 		}
 	}));

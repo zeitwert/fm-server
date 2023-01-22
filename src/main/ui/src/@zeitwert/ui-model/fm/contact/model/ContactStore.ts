@@ -26,10 +26,12 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 	}))
 	.actions((self) => ({
 		setItem(snapshot: ContactSnapshot | undefined) {
-			if (self.contact) {
+			if (self.contact && snapshot) {
 				applySnapshot(self.contact, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.contact = cast(snapshot);
+			} else {
+				self.contact = undefined;
 			}
 		}
 	}))

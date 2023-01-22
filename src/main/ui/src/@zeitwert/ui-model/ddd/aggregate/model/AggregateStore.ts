@@ -204,6 +204,11 @@ const MstAggregateStoreModel = types
 					if (self.isNew) {
 						repository = yield self.api.createAggregate(self.item!.apiSnapshot);
 						id = Object.keys(repository[self.typeName])[Object.keys(repository[self.typeName]).length - 1];
+						transaction(() => {
+							self.commitTrx();
+							(self as any).clear(); // need to clear, since id will have changed
+							self.updateStore(id, repository);
+						});
 					} else {
 						const changes = Object.assign(
 							self.changes,
@@ -216,11 +221,11 @@ const MstAggregateStoreModel = types
 						);
 						repository = yield self.api.storeAggregate(changes);
 						id = self.item!.id;
+						transaction(() => {
+							self.commitTrx();
+							self.updateStore(id, repository);
+						});
 					}
-					transaction(() => {
-						self.updateStore(id, repository);
-						self.commitTrx();
-					});
 					return self.item;
 				} catch (error: any) {
 					Logger.error("Failed to store item", error);

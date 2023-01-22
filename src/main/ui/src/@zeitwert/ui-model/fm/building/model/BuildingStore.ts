@@ -35,10 +35,12 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 	})
 	.actions((self) => ({
 		setItem(snapshot: BuildingSnapshot | undefined) {
-			if (self.building) {
+			if (self.building && snapshot) {
 				applySnapshot(self.building, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.building = cast(snapshot);
+			} else {
+				self.building = undefined;
 			}
 		}
 	}));

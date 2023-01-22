@@ -32,10 +32,12 @@ const MstPortfolioStoreModel = ObjStoreModel.named("PortfolioStore")
 	})
 	.actions((self) => ({
 		setItem(snapshot: PortfolioSnapshot | undefined) {
-			if (self.portfolio) {
+			if (self.portfolio && snapshot) {
 				applySnapshot(self.portfolio, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.portfolio = cast(snapshot);
+			} else {
+				self.portfolio = undefined;
 			}
 		}
 	}));

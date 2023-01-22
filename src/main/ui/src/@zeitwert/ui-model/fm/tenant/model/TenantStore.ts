@@ -33,10 +33,12 @@ const MstTenantStoreModel = ObjStoreModel
 	})
 	.actions((self) => ({
 		setItem(snapshot: TenantSnapshot | undefined) {
-			if (self.tenant) {
+			if (self.tenant && snapshot) {
 				applySnapshot(self.tenant, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.tenant = cast(snapshot);
+			} else {
+				self.tenant = undefined;
 			}
 		}
 	}));

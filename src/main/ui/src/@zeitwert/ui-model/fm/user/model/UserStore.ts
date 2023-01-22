@@ -36,10 +36,12 @@ const MstUserStoreModel = ObjStoreModel
 	})
 	.actions((self) => ({
 		setItem(snapshot: UserSnapshot | undefined) {
-			if (self.user) {
+			if (self.user && snapshot) {
 				applySnapshot(self.user, snapshot);
-			} else {
+			} else if (snapshot) {
 				self.user = cast(snapshot);
+			} else {
+				self.user = undefined;
 			}
 		}
 	}));
