@@ -1,16 +1,21 @@
 
 import { Icon, MediaObject, Modal } from "@salesforce/design-system-react";
-import { EntityTypes } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, EntityTypes } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { action } from "mobx";
 import { inject } from "mobx-react";
 import React from "react";
-import FormItemEditor, { BaseItemEditorProps } from "./FormItemEditor";
 import { ItemEditorButtons } from "./ItemEditorButtons";
 import { getEditEntityText, getNewEntityText } from "./ItemUtils";
 
-interface ItemModalProps extends BaseItemEditorProps {
+interface ItemModalProps {
+	store: AggregateStore;
+	entityType: EntityType;
+	customButtons?: JSX.Element;
 	size?: "small" | "medium" | "large";
+	onOpen?: () => void;
+	onCancel: () => Promise<void>;
+	onClose: () => Promise<any>;
 	children?: () => JSX.Element;
 }
 
@@ -43,24 +48,16 @@ export default class ItemModal extends React.Component<ItemModalProps> {
 			/>
 		);
 		return (
-			<FormItemEditor {...Object.assign({}, this.props, { showEditButtons: false })}>
-				{
-					() => {
-						return (
-							<Modal
-								heading={heading}
-								onRequestClose={this.props.onCancel}
-								dismissOnClickOutside={false}
-								footer={buttons}
-								size={this.props.size || "small"}
-								isOpen
-							>
-								{children && children()}
-							</Modal>
-						);
-					}
-				}
-			</FormItemEditor>
+			<Modal
+				heading={heading}
+				onRequestClose={this.props.onCancel}
+				dismissOnClickOutside={false}
+				footer={buttons}
+				size={this.props.size || "small"}
+				isOpen
+			>
+				{children && children()}
+			</Modal>
 		);
 	}
 
