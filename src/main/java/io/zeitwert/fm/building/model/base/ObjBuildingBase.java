@@ -9,6 +9,7 @@ import org.jooq.UpdatableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.part.model.Part;
@@ -16,6 +17,7 @@ import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
@@ -27,6 +29,7 @@ import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.*;
+import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -86,6 +89,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 
 	protected final PartListProperty<ObjBuildingPartRating> ratingList;
 
+	protected final ReferenceSetProperty<ObjContact> contactSet;
+
 	protected ObjBuildingBase(ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
 
@@ -134,6 +139,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		this.thirdPartyValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
 
 		this.ratingList = this.addPartListProperty(this.getRepository().getRatingListType());
+
+		this.contactSet = this.addReferenceSetProperty(this.getRepository().getContactSetType(), ObjContact.class);
 	}
 
 	@Override
@@ -159,6 +166,8 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		super.doAssignParts();
 		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
 		this.ratingList.loadPartList(ratingRepo.getPartList(this, this.getRepository().getRatingListType()));
+		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		this.contactSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getContactSetType()));
 	}
 
 	@Override

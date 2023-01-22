@@ -5,7 +5,7 @@ import { BuildingApi } from "../BuildingApi";
 const MODULE = "building";
 const PATH = "buildings";
 const TYPE = "building";
-const INCLUDES = "include[building]=account,coverFoto";
+const INCLUDES = "include[building]=account,contacts,coverFoto";
 
 export class BuildingApiImpl extends AggregateApiImpl<BuildingSnapshot> implements BuildingApi {
 	constructor() {
@@ -13,12 +13,9 @@ export class BuildingApiImpl extends AggregateApiImpl<BuildingSnapshot> implemen
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["refObj", "documents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
-			//refObj: "obj",
-			//documents: "document",
 			account: "account",
+			contacts: "contact",
 			coverFoto: "document",
-			building_manager: "contact",
-			portfolio_manager: "contact"
 		};
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
 	}

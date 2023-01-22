@@ -19,7 +19,7 @@ import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 public class ObjPortfolioDtoAdapter
 		extends FMObjDtoAdapter<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
 
-	protected static final ObjVRepository objRepository = (ObjVRepository) AppContext.getInstance()
+	private static final ObjVRepository objRepository = (ObjVRepository) AppContext.getInstance()
 			.getRepository(Obj.class);
 
 	private static final List<CodeAggregateType> OBJ_TYPES = List.of(

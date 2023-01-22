@@ -11,6 +11,7 @@ import { UUID } from "../../../app/common/utils/Id";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
+import { Contact, ContactModel } from "../../contact/model/ContactModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
 import { BuildingElement, BuildingElementModel } from "./BuildingElementModel";
 import { BuildingStore } from "./BuildingStore";
@@ -67,6 +68,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		ratingUser: types.maybe(types.frozen<Enumerated>()),
 		//
 		elements: types.optional(types.array(BuildingElementModel), []),
+		//
+		contacts: types.optional(types.array(types.reference(ContactModel)), []),
 	})
 	.actions((self) => ({
 		addElement(element: BuildingElement) {
@@ -86,6 +89,22 @@ const MstBuildingModel = ObjModel.named("Building")
 				await self.calcOnServer();
 			}
 		}
+		async function addContact(id: string) {
+			if (!id) return;
+			return flow<Contact, any[]>(function* (): any {
+				try {
+					yield (getRoot(self) as BuildingStore).contactsStore.loadContact(id);
+					self.contacts.push(id);
+				} catch (error: any) {
+					console.error("Failed to add contact: " + id, error);
+					return Promise.reject(error);
+				}
+			})();
+		}
+		function removeContact(id: string) {
+			const index = self.contacts.findIndex((o) => o.id === id);
+			self.contacts.splice(index, 1);
+		}
 		async function setField(field: string, value: any) {
 			switch (field) {
 				case "account": {
@@ -102,6 +121,8 @@ const MstBuildingModel = ObjModel.named("Building")
 		return {
 			setAccount,
 			setPartCatalog,
+			addContact,
+			removeContact,
 			setField
 		};
 	})

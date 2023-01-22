@@ -1,6 +1,6 @@
 
 import { getRoot, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { Enumerated, EnumeratedModel } from "../../../ddd/aggregate/model/EnumeratedModel";
+import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
 import { PortfolioStore } from "./PortfolioStore";
@@ -12,9 +12,9 @@ const MstPortfolioModel = ObjModel.named("Portfolio")
 		name: types.maybe(types.string),
 		portfolioNr: types.maybe(types.string),
 		description: types.maybe(types.string),
-		includes: types.optional(types.array(types.frozen(EnumeratedModel)), []),
-		excludes: types.optional(types.array(types.frozen(EnumeratedModel)), []),
-		buildings: types.optional(types.array(types.frozen(EnumeratedModel)), [])
+		includes: types.optional(types.array(types.frozen<Enumerated>()), []),
+		excludes: types.optional(types.array(types.frozen<Enumerated>()), []),
+		buildings: types.optional(types.array(types.frozen<Enumerated>()), [])
 	})
 	.views((self) => ({
 		get allowStore(): boolean {

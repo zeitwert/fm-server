@@ -80,6 +80,13 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 			obj.setThirdPartyValue(dto.getThirdPartyValue());
 			obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
 
+			if (dto.getContactIds() != null) {
+				obj.clearContactSet();
+				dto.getContactIds().forEach(id -> {
+					obj.addContact(id);
+				});
+			}
+
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
 				obj.addRating();
 			} else if (dto.getRatingSeqNr() != null && dto.getRatingSeqNr() >= 0) {
@@ -159,7 +166,8 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, Ob
 				.notInsuredValue(obj.getNotInsuredValue())
 				.notInsuredValueYear(obj.getNotInsuredValueYear())
 				.thirdPartyValue(obj.getThirdPartyValue())
-				.thirdPartyValueYear(obj.getThirdPartyValueYear());
+				.thirdPartyValueYear(obj.getThirdPartyValueYear())
+				.contactIds(obj.getContactSet());
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
 			boolean isNew = ((PartSPI<?>) rating).getStatus() == PartStatus.CREATED;

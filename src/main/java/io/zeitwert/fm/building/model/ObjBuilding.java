@@ -2,6 +2,7 @@ package io.zeitwert.fm.building.model;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -159,5 +160,13 @@ public interface ObjBuilding extends FMObj {
 	Integer getCondition(int year);
 
 	double getBuildingValue(int year);
+
+	Set<Integer> getContactSet();
+
+	void clearContactSet();
+
+	void addContact(Integer contactId);
+
+	void removeContact(Integer contactId);
 
 }

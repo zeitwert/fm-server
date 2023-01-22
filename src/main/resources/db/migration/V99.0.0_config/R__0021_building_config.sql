@@ -8,6 +8,7 @@ do nothing;
 insert into code_part_list_type(id, name)
 values
 ('building.ratingList', 'Ratings'),
+('building.contactSet', 'Contacts'),
 ('building.elementRatingList', 'Element Ratings'),
 ('building.materialDescriptionSet', 'Material Descriptions'),
 ('building.conditionDescriptionSet', 'Condition Descriptions'),

@@ -3,6 +3,7 @@ import { applySnapshot, cast, Instance, SnapshotIn, types } from "mobx-state-tre
 import { EntityTypeRepository } from "../../../app/common/service/JsonApi";
 import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
+import { StoreWithContactsModel } from "../../contact/model/StoreWithContacts";
 import { StoreWithDocumentsModel } from "../../dms/model/StoreWithDocuments";
 import { BuildingApi, BUILDING_API } from "../service/BuildingApi";
 import { Building, BuildingModel, BuildingModelType, BuildingSnapshot } from "./BuildingModel";
@@ -10,6 +11,7 @@ import { Building, BuildingModel, BuildingModelType, BuildingSnapshot } from "./
 const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 	.props({
 		accountsStore: types.optional(StoreWithAccountsModel, {}),
+		contactsStore: types.optional(StoreWithContactsModel, {}),
 		documentsStore: types.optional(StoreWithDocumentsModel, {}),
 		building: types.maybe(BuildingModel)
 	})
@@ -29,6 +31,7 @@ const MstBuildingStoreModel = ObjStoreModel.named("BuildingStore")
 		const afterLoad = (repository: EntityTypeRepository) => {
 			superAfterLoad(repository);
 			self.accountsStore.afterLoad(repository);
+			self.contactsStore.afterLoad(repository);
 			self.documentsStore.afterLoad(repository);
 		}
 		return { afterLoad };

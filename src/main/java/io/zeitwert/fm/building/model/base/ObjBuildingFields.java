@@ -43,6 +43,7 @@ public interface ObjBuildingFields extends ObjExtnFields {
 	static final Field<Integer> THIRD_PARTY_VALUE_YEAR = DSL.field("third_party_value_year", Integer.class);
 
 	// collections
+	static final String CONTACT_SET = "building.contactSet";
 	static final String RATING_LIST = "building.ratingList";
 	static final String MATERIAL_DESCRIPTION_SET = "building.materialDescriptionSet";
 	static final String CONDITION_DESCRIPTION_SET = "building.conditionDescriptionSet";

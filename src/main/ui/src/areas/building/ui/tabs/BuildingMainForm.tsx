@@ -1,8 +1,9 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
-import { Building, BuildingModelType } from "@zeitwert/ui-model";
+import { Building, BuildingModelType, CONTACT_API, Enumerated } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
+import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import { FormStateOptions } from "mstform";
 import React from "react";
@@ -47,7 +48,35 @@ export default class BuildingMainForm extends React.Component<BuildingMainFormPr
 		},
 	};
 
+	@observable
+	allContacts: Enumerated[] = [];
+
+	@computed
+	get availableContacts(): Enumerated[] {
+		const building = this.props.building;
+		return this.allContacts
+			.filter(act => !building.contacts.find(bct => bct.id === act.id))
+			.sort((a, b) => a.name < b.name ? -1 : 1);
+	}
+
+	constructor(props: BuildingMainFormProps) {
+		super(props);
+		makeObservable(this);
+	}
+
+	async componentDidMount() {
+		const allContacts = await CONTACT_API.getAggregates();
+		this.allContacts = Object.values(allContacts.contact).map(ct => {
+			return {
+				id: ct.id,
+				name: ct.caption,
+				itemType: ct.meta.itemType
+			}
+		});
+	}
+
 	render() {
+		const building = this.props.building;
 		return (
 			<SldsForm
 				formModel={BuildingForm}
@@ -78,6 +107,10 @@ export default class BuildingMainForm extends React.Component<BuildingMainFormPr
 									<Select label="Land" fieldName="country" />
 								</FieldRow>
 							</FieldGroup>
+						</Card>
+					</Col>
+					<Col cols={1} totalCols={1} totalColsLarge={2} className="slds-x-large-size_1-of-3">
+						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Identifikation" className="slds-m-top_medium">
 								<FieldRow>
 									<Input label="Police Gebäudeversicherung" fieldName="insuranceNr" />
@@ -89,7 +122,18 @@ export default class BuildingMainForm extends React.Component<BuildingMainFormPr
 									<Input label="Parzellen-Nr" fieldName="plotNr" />
 								</FieldRow>
 							</FieldGroup>
-						</Card >
+							<FieldGroup legend="Klassifizierung">
+								<FieldRow>
+									<Select label="Bauwerksart SIA I" fieldName="buildingType" />
+								</FieldRow>
+								<FieldRow>
+									<Select label="Bauwerksart SIA II" fieldName="buildingSubType" />
+								</FieldRow>
+								<FieldRow>
+									<Select label="Denkmalschutz" fieldName="historicPreservation" />
+								</FieldRow>
+							</FieldGroup>
+						</Card>
 					</Col>
 					<Col cols={1} totalCols={1} totalColsLarge={2} className="slds-x-large-size_1-of-3">
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
@@ -121,25 +165,95 @@ export default class BuildingMainForm extends React.Component<BuildingMainFormPr
 									<Input label="Geschosse unterirdisch" fieldName="nrOfFloorsBelowGround" size={6} />
 								</FieldRow>
 							</FieldGroup>
-						</Card >
+						</Card>
 					</Col>
-					<Col cols={1} totalCols={1} totalColsLarge={2} className="slds-x-large-size_1-of-3">
+				</Grid>
+				<Grid className="slds-wrap slds-m-top_small" isVertical={false}>
+					<Col cols={2} totalCols={3}>
+						<Col cols={2} totalCols={2}>
+							<Card heading={`Kontakte (${building.contacts.length})`} bodyClassName="slds-m-around_medium">
+								<div className="slds-card__body xslds-card__body_inner" style={{ maxHeight: "300px", overflowY: "auto" }}>
+									<table className="slds-table slds-table_cell-buffer slds-table_bordered">
+										<thead>
+											<tr className="slds-line-height_reset">
+												<th className="" scope="col" style={{ width: "35%" }}>
+													<div className="slds-truncate" title="Element">Name</div>
+												</th>
+												<th className="" scope="col" style={{ width: "20%" }}>
+													<div className="slds-truncate" title="Typ">Rolle</div>
+												</th>
+												<th className="" scope="col" style={{ width: "20%" }}>
+													<div className="slds-truncate" title="Typ">Mobile</div>
+												</th>
+												<th className="" scope="col" style={{ width: "25%" }}>
+													<div className="slds-truncate" title="Typ">Email</div>
+												</th>
+												<th className="" scope="col" style={{ width: "5%" }}>
+													<div className="slds-truncate" title="Aktion">Aktion</div>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{
+												building.contacts.map(ct => (
+													<tr className="slds-hint-parent" key={"include-" + ct.id}>
+														<th data-label="Kontakt" scope="row">
+															<div className="slds-truncate">
+																<a href={`/contact/${ct.id}`} tabIndex={-1}>{ct.caption}</a>
+															</div>
+														</th>
+														<td data-label="Rolle">
+															<div className="slds-truncate">{ct.contactRole?.name}</div>
+														</td>
+														<td data-label="Mobile">
+															<div className="slds-truncate">{ct.mobile}</div>
+														</td>
+														<td data-label="Email">
+															<div className="slds-truncate">{ct.email}</div>
+														</td>
+														<td data-label="Aktion">
+															{
+																this.props.doEdit &&
+																<button className="slds-button slds-button_icon slds-button_icon-error" title="Entfernen" onClick={() => { building.removeContact(ct.id) }}>
+																	<svg className="slds-button__icon" aria-hidden="true">
+																		<use xlinkHref="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+																	</svg>
+																</button>
+															}
+														</td>
+													</tr>
+												))
+											}
+										</tbody>
+									</table>
+								</div>
+							</Card>
+						</Col>
+						<Col cols={1} totalCols={2}>
+							{
+								this.props.doEdit &&
+								<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
+									<FieldGroup legend="Kontakt hinzufügen">
+										<FieldRow>
+											<Select
+												value={undefined}
+												values={this.availableContacts}
+												onChange={(e) => { e?.id && building.addContact(e.id) }}
+											/>
+										</FieldRow>
+									</FieldGroup>
+								</Card>
+							}
+						</Col>
+					</Col>
+					<Col cols={1} totalCols={3}>
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Beschreibung">
 								<FieldRow>
-									<Select label="Bauwerksart SIA I" fieldName="buildingType" />
-								</FieldRow>
-								<FieldRow>
-									<Select label="Bauwerksart SIA II" fieldName="buildingSubType" />
-								</FieldRow>
-								<FieldRow>
-									<Select label="Denkmalschutz" fieldName="historicPreservation" />
-								</FieldRow>
-								<FieldRow>
-									<TextArea label="Beschreibung" fieldName="description" rows={12} />
+									<TextArea fieldName="description" rows={12} />
 								</FieldRow>
 							</FieldGroup>
-						</Card >
+						</Card>
 					</Col>
 				</Grid>
 			</SldsForm>

@@ -26,6 +26,7 @@ import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
@@ -35,8 +36,10 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private static final String AGGREGATE_TYPE = "obj_building";
 
+	private final ObjContactRepository contactRepository;
 	private final ObjDocumentRepository documentRepository;
 	private final ObjBuildingPartRatingRepository ratingRepository;
+	private final CodePartListType contactSetType;
 	private final CodePartListType ratingListType;
 	private final ObjBuildingPartElementRatingRepository elementRepository;
 	private final CodePartListType materialDescriptionSetType;
@@ -50,6 +53,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		final ObjPartTransitionRepository transitionRepository,
 		final ObjPartItemRepository itemRepository,
 		final ObjNoteRepository noteRepository,
+		final ObjContactRepository contactRepository,
 		final ObjDocumentRepository documentRepository,
 		final ObjBuildingPartRatingRepository ratingRepository,
 		final ObjBuildingPartElementRatingRepository elementRepository
@@ -65,8 +69,10 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 			itemRepository,
 			noteRepository
 		);
+		this.contactRepository = contactRepository;
 		this.documentRepository = documentRepository;
 		this.ratingRepository = ratingRepository;
+		this.contactSetType = this.getAppContext().getPartListType(ObjBuildingFields.CONTACT_SET);
 		this.ratingListType = this.getAppContext().getPartListType(ObjBuildingFields.RATING_LIST);
 		this.elementRepository = elementRepository;
 		this.materialDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MATERIAL_DESCRIPTION_SET);
@@ -85,6 +91,11 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
+	public ObjContactRepository getContactRepository() {
+		return this.contactRepository;
+	}
+
+	@Override
 	public ObjDocumentRepository getDocumentRepository() {
 		return this.documentRepository;
 	}
@@ -92,6 +103,11 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public ObjBuildingPartRatingRepository getRatingRepository() {
 		return this.ratingRepository;
+	}
+
+	@Override
+	public CodePartListType getContactSetType() {
+		return this.contactSetType;
 	}
 
 	@Override

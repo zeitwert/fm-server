@@ -4,6 +4,8 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -17,6 +19,9 @@ import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
+import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
+import io.zeitwert.fm.contact.service.api.ObjContactCache;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -65,6 +70,46 @@ public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
 	public void setAccount(ObjAccountDto account) {
 		this.accountDto = account;
 		this.accountId = account != null ? account.getId() : null;
+	}
+
+	@JsonApiRelationId
+	private Set<Integer> contactIds;
+
+	public void setContactIds(Set<Integer> contactIds) {
+		this.contactIds = contactIds;
+		this.contactsDtos = null;
+	}
+
+	@JsonIgnore
+	private Set<ObjContactDto> contactsDtos;
+
+	@JsonApiRelation(serialize = SerializeType.LAZY)
+	public Set<ObjContactDto> getContacts() {
+		if (this.contactsDtos == null) {
+			ObjContactCache contactCache = getService(ObjContactCache.class);
+			if (this.getOriginal() != null) {
+				this.contactsDtos = this.getOriginal()
+						.getContactSet()
+						.stream()
+						.map(id -> contactCache.get(id))
+						.map(contact -> ObjContactDtoAdapter.getInstance().fromAggregate(contact))
+						.collect(Collectors.toSet());
+			} else if (this.contactIds != null) {
+				this.contactsDtos = this.contactIds
+						.stream()
+						.map(id -> contactCache.get(id))
+						.map(contact -> ObjContactDtoAdapter.getInstance().fromAggregate(contact))
+						.collect(Collectors.toSet());
+			}
+		}
+		return this.contactsDtos;
+	}
+
+	public void setContacts(Set<ObjContactDto> contacts) {
+		this.contactsDtos = contacts;
+		this.contactIds = contacts != null
+				? contacts.stream().map(ct -> ct.getId()).collect(Collectors.toSet())
+				: null;
 	}
 
 	private EnumeratedDto buildingType;
