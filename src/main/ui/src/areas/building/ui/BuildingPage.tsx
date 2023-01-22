@@ -1,6 +1,6 @@
 
 import { Button, ButtonGroup, Modal, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { API, Building, BuildingElement, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypeInfo, EntityTypes, session } from "@zeitwert/ui-model";
+import { API, Building, BuildingElement, BuildingStore, BuildingStoreModel, Config, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
@@ -32,7 +32,7 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 enum RIGHT_TABS {
 	DOCUMENTS = "documents",
 	NOTES = "notes",
-	ACTIVITIES = "activities",
+	TASKS = "tasks",
 	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -44,6 +44,9 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.BUILDING];
 
 	@observable buildingStore: BuildingStore = BuildingStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 	@observable currentElement: BuildingElement | undefined;
@@ -75,11 +78,15 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		session.setHelpContext(`${EntityType.BUILDING}-${this.activeLeftTabId}`);
 		await this.buildingStore.load(this.props.params.buildingId!);
+		await this.notesStore.load(this.props.params.buildingId!);
+		await this.tasksStore.load(this.props.params.buildingId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.buildingId !== prevProps.params.buildingId) {
 			await this.buildingStore.load(this.props.params.buildingId!);
+			await this.notesStore.load(this.props.params.buildingId!);
+			await this.tasksStore.load(this.props.params.buildingId!);
 		}
 	}
 
@@ -98,8 +105,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isActive = !building.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
-		const notesCount = 0;// TODO this.buildingStore.notesStore.notes.length;
-		const tasksCount = 0; // TODO this.buildingStore.tasksStore.tasks.length;
+		const notesCount = this.notesStore.notes.length;
+		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 		const missingDocument = !this.hasCoverFoto;
 
 		return (
@@ -177,18 +184,18 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
-									<NotesTab relatedToId={this.buildingStore.id!} />
+									<NotesTab relatedToId={this.buildingStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
 							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<TasksTab relatedToId={this.buildingStore.id!} />
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.buildingStore.id!} tasksStore={this.tasksStore} />
 								}
 							</TabsPanel>
 							{
 								building.hasValidations &&
-								<TabsPanel label={"Validierungen" + (building.validationsCount ? ` (${building.validationsCount})` : "")}>
+								<TabsPanel label={`Validierungen (${building.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
 										<ValidationsTab validationList={building.meta?.validationList!} />

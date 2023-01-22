@@ -1,16 +1,17 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, session, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
+import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, NotesStore, NotesStoreModel, session, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import AccountCreationForm from "areas/account/ui/AccountCreationForm";
 import UserCreationForm from "areas/user/ui/UserCreationForm";
-import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import ItemModal from "lib/item/ui/ItemModal";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -24,7 +25,9 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	DOCUMENTS = "documents",
-	ACTIVITIES = "activities",
+	NOTES = "notes",
+	TASKS = "tasks",
+	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -37,6 +40,8 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	@observable tenantStore = TenantStoreModel.create({});
 	@observable accountStore = AccountStoreModel.create({});
 	@observable userStore = UserStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 
@@ -77,6 +82,8 @@ class TenantPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !tenant.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		const notesCount = this.notesStore.notes.length;
 
 		return (
 			<>
@@ -131,12 +138,21 @@ class TenantPage extends React.Component<RouteComponentProps> {
 									<TenantDocumentsTab tenant={tenant} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label="Aktivität">
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ActivityPortlet {...Object.assign({}, this.props, { item: tenant, onSave: () => null as unknown as Promise<any> })} />
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.tenantStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
+							{
+								tenant.hasValidations &&
+								<TabsPanel label={`Validierungen (${tenant.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validationList={tenant.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>

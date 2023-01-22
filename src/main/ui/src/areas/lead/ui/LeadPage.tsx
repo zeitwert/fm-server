@@ -1,14 +1,17 @@
 
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, Lead, LeadStore, LeadStoreModel, session, UserInfo } from "@zeitwert/ui-model";
+import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, Lead, LeadStore, LeadStoreModel, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import { StageSelector } from "lib/doc/ui/StageSelector";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
-import { ItemGrid, ItemLeftPart } from "lib/item/ui/ItemPage";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import ItemPath from "lib/item/ui/ItemPath";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -19,6 +22,13 @@ enum LEFT_TABS {
 }
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
+enum RIGHT_TABS {
+	NOTES = "notes",
+	TASKS = "tasks",
+	VALIDATIONS = "validations",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
+
 @inject("appStore", "session", "showAlert", "showToast")
 @observer
 class LeadPage extends React.Component<RouteComponentProps> {
@@ -26,7 +36,11 @@ class LeadPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.LEAD];
 
 	@observable leadStore: LeadStore = LeadStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.NOTES;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
 
@@ -60,6 +74,9 @@ class LeadPage extends React.Component<RouteComponentProps> {
 		}
 
 		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		const notesCount = this.notesStore.notes.length;
+		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 
 		return (
 			<>
@@ -97,6 +114,35 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							</Tabs>
 						</ItemEditor>
 					</ItemLeftPart>
+					<ItemRightPart>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.leadStore.id!} notesStore={this.notesStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.leadStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							{
+								lead.hasValidations &&
+								<TabsPanel label={`Validierungen (${lead.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validationList={lead.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
+						</Tabs>
+					</ItemRightPart>
 				</ItemGrid>
 				{
 					this.doStageSelection && (

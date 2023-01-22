@@ -1,6 +1,6 @@
 
 import { Avatar, ExpandableSection } from "@salesforce/design-system-react";
-import { assertThis, DateFormat, EntityType, EntityTypes, Enumerated, session, Task, TaskPayload, TasksStoreModel, TaskStoreModel } from "@zeitwert/ui-model";
+import { assertThis, DateFormat, EntityType, EntityTypes, Enumerated, session, Task, TaskPayload, TasksStore, TaskStoreModel } from "@zeitwert/ui-model";
 import NotFound from "app/ui/NotFound";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -10,12 +10,12 @@ import MiniTaskForm from "./MiniTaskForm";
 
 export interface TasksTabProps {
 	relatedToId: string;
+	tasksStore: TasksStore;
 }
 
 @observer
 export default class TasksTab extends React.Component<TasksTabProps> {
 
-	@observable tasksStore = TasksStoreModel.create({});
 	@observable editTaskId: string | undefined;
 	@observable isEditActive: boolean = false;
 	@observable showCompleted: boolean = false;
@@ -41,7 +41,7 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 	}
 
 	render() {
-		const tasks = this.tasksStore.tasks;
+		const tasks = this.props.tasksStore.tasks;
 		return (
 			<div className="slds-is-relative">
 				<div className="slds-m-left_small slds-m-right_small">
@@ -83,8 +83,8 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 										</li>
 									}
 									{
-										!!this.tasksStore.futureTasks.length &&
-										this.tasksStore.futureTasks.map((task, index) => (
+										!!this.props.tasksStore.futureTasks.length &&
+										this.props.tasksStore.futureTasks.map((task, index) => (
 											<li className="slds-feed__item" key={"task-" + index}>
 												<TaskView
 													task={task}
@@ -97,10 +97,10 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 										))
 									}
 									{
-										!!this.tasksStore.overdueTasks.length &&
+										!!this.props.tasksStore.overdueTasks.length &&
 										<ExpandableSection title="Überfällig">
 											{
-												this.tasksStore.overdueTasks.map((task, index) => (
+												this.props.tasksStore.overdueTasks.map((task, index) => (
 													<li className="slds-feed__item" key={"task-" + index}>
 														<TaskView
 															task={task}
@@ -115,14 +115,14 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 										</ExpandableSection>
 									}
 									{
-										!!this.tasksStore.completedTasks.length &&
+										!!this.props.tasksStore.completedTasks.length &&
 										<ExpandableSection
-											title="Abgeschlossen"
+											title={`Abgeschlossen (${this.props.tasksStore.completedTasks.length})`}
 											isOpen={this.showCompleted}
 											onToggleOpen={() => { this.showCompleted = !this.showCompleted; }}
 										>
 											{
-												this.tasksStore.completedTasks.map((task, index) => (
+												this.props.tasksStore.completedTasks.map((task, index) => (
 													<li className="slds-feed__item" key={"task-" + index}>
 														<TaskView task={task} />
 														<hr style={{ marginBlockStart: "0px", marginBlockEnd: 0 }} />
@@ -203,14 +203,14 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 	}
 
 	private modifyTask = async (id: string, task: TaskPayload) => {
-		await this.tasksStore.storeTask(id, task);
+		await this.props.tasksStore.storeTask(id, task);
 		await this.loadTasks();
 	}
 
 	private loadTasks = async () => {
 		this.editTaskId = undefined;
 		this.isEditActive = false;
-		await this.tasksStore.load(this.props.relatedToId);
+		await this.props.tasksStore.load(this.props.relatedToId);
 	}
 
 }

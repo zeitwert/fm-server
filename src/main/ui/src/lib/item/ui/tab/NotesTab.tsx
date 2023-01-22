@@ -1,6 +1,6 @@
 
 import { Avatar } from "@salesforce/design-system-react";
-import { DateFormat, NotesStore, NotesStoreModel, session } from "@zeitwert/ui-model";
+import { DateFormat, NotesStore, session } from "@zeitwert/ui-model";
 import { NOTE, Note, NotePayload } from "@zeitwert/ui-model/fm/collaboration/model/NoteModel";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
@@ -9,12 +9,12 @@ import ReactMarkdown from "react-markdown";
 
 export interface NotesTabProps {
 	relatedToId: string;
+	notesStore: NotesStore;
 }
 
 @observer
 export default class NotesTab extends React.Component<NotesTabProps> {
 
-	@observable notesStore: NotesStore = NotesStoreModel.create({});
 	@observable editNoteId: string | undefined;
 
 	constructor(props: NotesTabProps) {
@@ -23,17 +23,17 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 	}
 
 	async componentDidMount() {
-		await this.notesStore.load(this.props.relatedToId);
+		await this.props.notesStore.load(this.props.relatedToId);
 	}
 
 	async componentDidUpdate(prevProps: NotesTabProps) {
 		if (this.props.relatedToId !== prevProps.relatedToId) {
-			await this.notesStore.load(this.props.relatedToId);
+			await this.props.notesStore.load(this.props.relatedToId);
 		}
 	}
 
 	render() {
-		const notes = this.notesStore.notes;
+		const notes = this.props.notesStore.notes;
 		return (
 			<div className="slds-is-relative">
 				<div className="slds-m-around_medium">
@@ -95,12 +95,12 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 	}
 
 	private addNote = (note: NotePayload): void => {
-		this.notesStore.addNote(this.props.relatedToId, note);
+		this.props.notesStore.addNote(this.props.relatedToId, note);
 		this.editNoteId = undefined;
 	}
 
 	private modifyNote = (id: string, note: NotePayload): void => {
-		this.notesStore.storeNote(id, note);
+		this.props.notesStore.storeNote(id, note);
 		this.editNoteId = undefined;
 	}
 
@@ -109,7 +109,7 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 	}
 
 	private removeNote = (id: string): void => {
-		this.notesStore.removeNote(id);
+		this.props.notesStore.removeNote(id);
 	}
 
 }

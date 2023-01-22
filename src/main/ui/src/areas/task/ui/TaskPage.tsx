@@ -1,6 +1,6 @@
 
 import { Avatar, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, session, Task, TaskStore, TaskStoreModel, UserInfo } from "@zeitwert/ui-model";
+import { CaseStage, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, Task, TaskStore, TaskStoreModel, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
@@ -24,7 +24,7 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	NOTES = "notes",
-	ACTIVITIES = "activities",
+	TASKS = "tasks",
 	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -36,6 +36,8 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.TASK];
 
 	@observable taskStore: TaskStore = TaskStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.NOTES;
 	@observable doStageSelection = false;
@@ -53,11 +55,13 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		session.setHelpContext(`${EntityType.TASK}-${this.activeLeftTabId}`);
 		await this.taskStore.load(this.props.params.taskId!);
+		await this.notesStore.load(this.props.params.taskId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.taskId !== prevProps.params.taskId) {
 			await this.taskStore.load(this.props.params.taskId!);
+			await this.notesStore.load(this.props.params.taskId!);
 		}
 	}
 
@@ -72,7 +76,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 
 		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
 
-		const notesCount = 0;//this.taskStore.notesStore.notes.length;
+		const notesCount = this.notesStore.notes.length;
 
 		return (
 			<>
@@ -119,12 +123,12 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
-									<NotesTab relatedToId={this.taskStore.id!} />
+									<NotesTab relatedToId={this.taskStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
 									<StageHistoryTab doc={task} />
 								}
 							</TabsPanel>

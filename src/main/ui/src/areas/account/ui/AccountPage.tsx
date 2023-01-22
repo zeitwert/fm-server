@@ -1,15 +1,17 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
+import { Account, AccountStoreModel, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import ContactCreationForm from "areas/contact/ui/ContactCreationForm";
-import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import ItemModal from "lib/item/ui/ItemModal";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -23,7 +25,9 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	DOCUMENTS = "documents",
-	ACTIVITIES = "activities",
+	NOTES = "notes",
+	TASKS = "tasks",
+	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -35,6 +39,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	@observable accountStore = AccountStoreModel.create({});
 	@observable contactStore = ContactStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 
@@ -75,6 +82,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = session.isAdmin || session.hasSuperUserRole;
 		const isActive = !account.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		const notesCount = this.notesStore.notes.length;
+		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 
 		return (
 			<>
@@ -117,12 +127,27 @@ class AccountPage extends React.Component<RouteComponentProps> {
 									<AccountDocumentsTab account={account} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label="Aktivität">
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ActivityPortlet {...Object.assign({}, this.props, { item: account, onSave: () => null as unknown as Promise<any> })} />
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.accountStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
+							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							{
+								account.hasValidations &&
+								<TabsPanel label={`Validierungen (${account.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validationList={account.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>

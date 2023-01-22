@@ -1,13 +1,14 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { EntityType, EntityTypeInfo, EntityTypes, session, User, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
+import { EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, User, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
-import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -22,7 +23,9 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	DOCUMENTS = "documents",
-	ACTIVITIES = "activities",
+	NOTES = "notes",
+	TASKS = "tasks",
+	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -33,6 +36,8 @@ class UserPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.USER];
 
 	@observable userStore = UserStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
 	@observable doChangePassword = false;
@@ -74,6 +79,8 @@ class UserPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !user.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		const notesCount = this.notesStore.notes.length;
 
 		return (
 			<>
@@ -128,12 +135,21 @@ class UserPage extends React.Component<RouteComponentProps> {
 									<UserDocumentsTab user={user} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label="Aktivität">
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ActivityPortlet {...Object.assign({}, this.props, { item: user, onSave: () => null as unknown as Promise<any> })} />
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.userStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
+							{
+								user.hasValidations &&
+								<TabsPanel label={`Validierungen (${user.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validationList={user.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>

@@ -1,13 +1,14 @@
 
 import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Config, EntityType, EntityTypeInfo, EntityTypes, Portfolio, PortfolioStoreModel, session } from "@zeitwert/ui-model";
+import { Config, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, Portfolio, PortfolioStoreModel, session, TasksStore, TasksStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
-import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import TabProjection from "lib/projection/ui/TabProjection";
 import { computed, makeObservable, observable } from "mobx";
@@ -22,7 +23,8 @@ enum LEFT_TABS {
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	ACTIVITIES = "activities",
+	NOTES = "notes",
+	TASKS = "tasks",
 	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -34,8 +36,11 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.PORTFOLIO];
 
 	@observable portfolioStore = PortfolioStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
-	@observable activeRightTabId = RIGHT_TABS.ACTIVITIES;
+	@observable activeRightTabId = RIGHT_TABS.TASKS;
 
 	@computed
 	get hasValidations(): boolean {
@@ -84,6 +89,9 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 		const isFullWidth = [LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
 		const isActive = !portfolio.meta?.closedAt;
 		const allowEdit = [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0;
+
+		const notesCount = this.notesStore.notes.length;
+		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 
 		const customEditorButtons = (
 			<>
@@ -138,15 +146,21 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label="Aktivität">
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ActivityPortlet {...Object.assign({}, this.props, { item: portfolio, onSave: async () => { } })} />
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.portfolioStore.id!} notesStore={this.notesStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.portfolioStore.id!} tasksStore={this.tasksStore} />
 								}
 							</TabsPanel>
 							{
-								this.hasValidations &&
-								<TabsPanel label={"Validierungen" + (this.validationCount ? ` (${this.validationCount})` : "")}>
+								portfolio.hasValidations &&
+								<TabsPanel label={`Validierungen (${portfolio.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
 										<ValidationsTab validationList={portfolio.meta?.validationList!} />

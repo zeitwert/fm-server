@@ -17,7 +17,7 @@ const MstTasksStoreModel = StoreWithEntitiesModel
 		},
 		get futureTasks(): Task[] {
 			const now = new Date();
-			return self.tasks.filter(t => t.dueAt! > now);
+			return self.tasks.filter(t => t.dueAt! > now && t.meta?.caseStage.id !== "task.done");
 		},
 		get overdueTasks(): Task[] {
 			const now = new Date();

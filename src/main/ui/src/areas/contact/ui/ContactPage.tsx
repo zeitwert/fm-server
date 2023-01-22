@@ -1,12 +1,14 @@
 import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { Contact, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, session, UserInfo } from "@zeitwert/ui-model";
+import { Contact, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, UserInfo } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
-import { ActivityPortlet } from "lib/activity/ActivityPortlet";
 import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
@@ -18,8 +20,9 @@ enum LEFT_TABS {
 const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
-	DOCUMENTS = "documents",
-	ACTIVITIES = "activities",
+	NOTES = "notes",
+	TASKS = "tasks",
+	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
@@ -30,8 +33,11 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	entityType: EntityTypeInfo = EntityTypes[EntityType.CONTACT];
 
 	@observable contactStore = ContactStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
-	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
+	@observable activeRightTabId = RIGHT_TABS.NOTES;
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -64,6 +70,9 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 		const isActive = !contact.meta?.closedAt;
 		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		const notesCount = this.notesStore.notes.length;
+		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 
 		return (
 			<>
@@ -99,19 +108,27 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={<span>Dokumente</span>}>
+							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
 								{
-									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
-									<div>Dokumente</div>
-								}
-								{/*<ContactSummaryTab contact={contact} afterSave={this.reload} />*/}
-							</TabsPanel>
-							<TabsPanel label="Aktivität">
-								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ActivityPortlet {...Object.assign({}, this.props, { item: contact, onSave: () => null as unknown as Promise<any> })} />
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.contactStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
+							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.contactStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							{
+								contact.hasValidations &&
+								<TabsPanel label={`Validierungen (${contact.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validationList={contact.meta?.validationList!} />
+									}
+								</TabsPanel>
+							}
 						</Tabs>
 					</ItemRightPart>
 				</ItemGrid>
