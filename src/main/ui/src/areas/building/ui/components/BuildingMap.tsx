@@ -51,8 +51,8 @@ export default class BuildingMap extends React.Component<BuildingMapProps> {
 			const maxLat = buildings.reduce((max, b) => Math.max(max, b.lat), 0);
 			const maxLng = buildings.reduce((max, b) => Math.max(max, b.lng), 0);
 			const zoom = this.getBoundsZoomLevel({ lat: minLat, lng: minLng }, { lat: maxLat, lng: maxLng }, { width: 800, height: 800 });
-			const centerLat = buildings.reduce((sum, b) => sum + b.lat, 0) / buildings.length;
-			const centerLng = buildings.reduce((sum, b) => sum + b.lng, 0) / buildings.length;
+			const centerLat = minLat + (maxLat - minLat) / 2;
+			const centerLng = minLng + (maxLng - minLng) / 2;
 			return (
 				<GoogleMapReact
 					bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
