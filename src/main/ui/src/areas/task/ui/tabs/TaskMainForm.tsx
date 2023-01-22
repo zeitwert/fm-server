@@ -60,7 +60,6 @@ export default class TaskMainForm extends React.Component<TaskMainFormProps> {
 									<Select
 										label="Referenz"
 										value={this.props.task.relatedTo}
-										values={[this.props.task.relatedTo!]}
 										required={true}
 										disabled={true}
 										size={12}
