@@ -11,6 +11,7 @@ import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import ItemModal from "lib/item/ui/ItemModal";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import NotesTab from "lib/item/ui/tab/NotesTab";
+import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -27,6 +28,7 @@ enum RIGHT_TABS {
 	DOCUMENTS = "documents",
 	NOTES = "notes",
 	TASKS = "tasks",
+	ACTIVITIES = "activities",
 	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -142,6 +144,12 @@ class TenantPage extends React.Component<RouteComponentProps> {
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.tenantStore.id!} notesStore={this.notesStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<ObjActivityHistoryTab obj={tenant} />
 								}
 							</TabsPanel>
 							{

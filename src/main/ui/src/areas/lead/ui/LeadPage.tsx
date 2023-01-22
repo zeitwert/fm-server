@@ -9,6 +9,7 @@ import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import ItemPath from "lib/item/ui/ItemPath";
+import DocStageHistoryTab from "lib/item/ui/tab/DocStageHistoryTab";
 import NotesTab from "lib/item/ui/tab/NotesTab";
 import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
@@ -25,6 +26,7 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 enum RIGHT_TABS {
 	NOTES = "notes",
 	TASKS = "tasks",
+	ACTIVITIES = "activities",
 	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -130,6 +132,12 @@ class LeadPage extends React.Component<RouteComponentProps> {
 								{
 									this.activeRightTabId === RIGHT_TABS.TASKS &&
 									<TasksTab relatedToId={this.leadStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<DocStageHistoryTab doc={lead} />
 								}
 							</TabsPanel>
 							{

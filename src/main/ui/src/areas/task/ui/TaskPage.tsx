@@ -9,8 +9,8 @@ import ItemEditor from "lib/item/ui/ItemEditor";
 import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import ItemPath from "lib/item/ui/ItemPath";
+import DocStageHistoryTab from "lib/item/ui/tab/DocStageHistoryTab";
 import NotesTab from "lib/item/ui/tab/NotesTab";
-import StageHistoryTab from "lib/item/ui/tab/StageHistoryTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -24,7 +24,7 @@ const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
 
 enum RIGHT_TABS {
 	NOTES = "notes",
-	TASKS = "tasks",
+	ACTIVITIES = "activities",
 	VALIDATIONS = "validations",
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
@@ -128,8 +128,8 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
-									this.activeRightTabId === RIGHT_TABS.TASKS &&
-									<StageHistoryTab doc={task} />
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<DocStageHistoryTab doc={task} />
 								}
 							</TabsPanel>
 							{

@@ -1,25 +1,25 @@
 
 import { Icon } from "@salesforce/design-system-react";
-import { DateFormat, Doc, DocPartTransition, session } from "@zeitwert/ui-model";
+import { DateFormat, Obj, ObjPartTransition, session } from "@zeitwert/ui-model";
 import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import { Timeline, TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
-interface StageHistoryTabProps {
-	doc: Doc;
+interface ObjActivityHistoryTabProps {
+	obj: Obj;
 }
 
 @observer
-export default class StageHistoryTab extends React.Component<StageHistoryTabProps> {
+export default class ObjActivityHistoryTab extends React.Component<ObjActivityHistoryTabProps> {
 
-	@observable transitions: DocPartTransition[] = [];
+	@observable transitions: ObjPartTransition[] = [];
 
-	constructor(props: StageHistoryTabProps) {
+	constructor(props: ObjActivityHistoryTabProps) {
 		super(props);
 		makeObservable(this);
-		this.transitions = Array.from(toJS(this.props.doc.meta!.transitions));
+		this.transitions = Array.from(toJS(this.props.obj.meta!.transitions));
 		this.transitions.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
 	}
 
@@ -80,38 +80,31 @@ export default class StageHistoryTab extends React.Component<StageHistoryTabProp
 		);
 	}
 
-	private getUserName(transition: DocPartTransition) {
-		const userName = transition.user.id == session.sessionInfo?.user.id ? "Du" : transition.user.name;
-		return transition.newCaseStage.name + " ⋅ " + userName;
+	private getUserName(transition: ObjPartTransition) {
+		return transition.user.id == session.sessionInfo?.user.id ? "Du" : transition.user.name;
 	}
 
-	private getItemType(transition: DocPartTransition) {
+	private getItemType(transition: ObjPartTransition) {
 		if (transition.seqNr === 0) {
 			return "stage";
-		} else if (transition.newCaseStage?.id === transition.oldCaseStage?.id) {
+		} else {
 			return "event";
-		} else {
-			return "stage";
 		}
 	}
 
-	private getIcon(transition: DocPartTransition) {
+	private getIcon(transition: ObjPartTransition) {
 		if (transition.seqNr === 0) {
 			return <Icon category="standard" name="stage" size="medium" className="slds-timeline__icon" />;
-		} else if (transition.newCaseStage?.id === transition.oldCaseStage?.id) {
-			return <Icon category="standard" name="record_update" size="medium" className="slds-timeline__icon" />;
 		} else {
-			return <Icon category="standard" name="stage" size="medium" className="slds-timeline__icon" />;
+			return <Icon category="standard" name="record_update" size="medium" className="slds-timeline__icon" />;
 		}
 	}
 
-	private getActivity(transition: DocPartTransition) {
+	private getActivity(transition: ObjPartTransition) {
 		if (transition.seqNr === 0) {
 			return "Eröffnung";
-		} else if (transition.newCaseStage?.id === transition.oldCaseStage?.id) {
-			return "Modifikation";
 		} else {
-			return "Transition";
+			return "Modifikation";
 		}
 	}
 
