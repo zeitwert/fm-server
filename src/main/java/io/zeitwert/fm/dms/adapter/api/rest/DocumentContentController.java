@@ -38,7 +38,7 @@ public class DocumentContentController {
 		ObjDocument document = this.documentCache.get(documentId);
 		CodeContentType contentType = document.getContentType();
 		if (contentType == null) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.noContent().build();
 		}
 		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename(document.getName()).build();
 		HttpHeaders headers = new HttpHeaders();

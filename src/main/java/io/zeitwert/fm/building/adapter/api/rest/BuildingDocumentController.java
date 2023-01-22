@@ -52,6 +52,9 @@ public class BuildingDocumentController {
 	@GetMapping(value = "/{id}/coverFoto")
 	public ResponseEntity<byte[]> getCoverFoto(@PathVariable Integer id) {
 		Integer documentId = this.cache.get(id).getCoverFotoId();
+		if (documentId == null) {
+			return ResponseEntity.noContent().build();
+		}
 		return this.documentController.getContent(documentId);
 	}
 

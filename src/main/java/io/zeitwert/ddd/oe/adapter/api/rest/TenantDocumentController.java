@@ -32,6 +32,9 @@ public class TenantDocumentController {
 	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
 		ObjTenant tenant = this.tenantCache.get(id);
 		Integer documentId = tenant.getLogoImageId();
+		if (documentId == null) {
+			return ResponseEntity.noContent().build();
+		}
 		return this.documentController.getContent(documentId);
 	}
 

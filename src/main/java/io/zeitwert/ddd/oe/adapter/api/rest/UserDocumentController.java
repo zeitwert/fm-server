@@ -30,12 +30,15 @@ public class UserDocumentController {
 	@RequestMapping(value = "/{id}/avatar", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getAvatar(@PathVariable Integer id) {
 		Integer documentId = this.userCache.get(id).getAvatarImageId();
+		if (documentId == null) {
+			return ResponseEntity.noContent().build();
+		}
 		return this.documentController.getContent(documentId);
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Integer>> getStatistics() {
-		return ResponseEntity.ok().body(userCache.getStatistics());
+		return ResponseEntity.ok().body(this.userCache.getStatistics());
 	}
 
 }

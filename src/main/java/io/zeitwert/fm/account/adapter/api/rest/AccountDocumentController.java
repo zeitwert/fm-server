@@ -32,6 +32,9 @@ public class AccountDocumentController {
 	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
 		ObjAccount account = this.accountCache.get(id);
 		Integer documentId = account.getLogoImageId();
+		if (documentId == null) {
+			return ResponseEntity.noContent().build();
+		}
 		return this.documentController.getContent(documentId);
 	}
 
