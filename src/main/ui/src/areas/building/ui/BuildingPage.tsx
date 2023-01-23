@@ -125,9 +125,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 							store={this.buildingStore}
 							entityType={EntityType.BUILDING}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -355,27 +352,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 
 	private openEditor = () => {
 		this.buildingStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.buildingStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.buildingStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.buildingStore.load(this.props.params.buildingId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
 	};
 
 	private doExport = async () => {

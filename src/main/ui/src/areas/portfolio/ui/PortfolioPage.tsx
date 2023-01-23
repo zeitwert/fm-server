@@ -115,9 +115,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 							entityType={EntityType.PORTFOLIO}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
 							customButtons={customEditorButtons}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -233,31 +230,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 			</>
 		);
 	}
-
-	private openEditor = () => {
-		this.portfolioStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.portfolioStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.portfolioStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.portfolioStore.load(this.props.params.portfolioId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 	private doGenDocx = (id: string) => {
 		window.location.href = Config.getRestUrl("portfolio", "portfolios/" + id + "/evaluation?format=docx");

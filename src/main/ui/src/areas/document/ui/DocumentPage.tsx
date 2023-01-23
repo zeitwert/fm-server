@@ -89,9 +89,6 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 							store={this.documentStore}
 							entityType={EntityType.DOCUMENT}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -182,31 +179,6 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 			</>
 		);
 	}
-
-	private openEditor = () => {
-		this.documentStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.documentStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.documentStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.documentStore.load(this.props.params.documentId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 }
 

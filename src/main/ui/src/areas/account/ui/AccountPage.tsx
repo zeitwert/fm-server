@@ -102,9 +102,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 							store={this.accountStore}
 							entityType={EntityType.ACCOUNT}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -225,31 +222,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			</>
 		);
 	}
-
-	private openEditor = () => {
-		this.accountStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.accountStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.accountStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.accountStore.load(this.props.params.accountId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 	private openContactEditor = () => {
 		this.contactStore.create({

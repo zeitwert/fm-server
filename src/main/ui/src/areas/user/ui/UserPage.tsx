@@ -98,9 +98,6 @@ class UserPage extends React.Component<RouteComponentProps> {
 							store={this.userStore}
 							entityType={EntityType.USER}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -208,31 +205,6 @@ class UserPage extends React.Component<RouteComponentProps> {
 			</ButtonGroup>
 		);
 	}
-
-	private openEditor = () => {
-		this.userStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.userStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.userStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.userStore.load(this.props.params.userId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 	private openPasswordEditor = () => {
 		this.doChangePassword = true;

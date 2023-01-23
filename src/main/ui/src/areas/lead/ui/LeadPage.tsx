@@ -101,9 +101,6 @@ class LeadPage extends React.Component<RouteComponentProps> {
 							store={this.leadStore}
 							entityType={EntityType.LEAD}
 							showEditButtons={allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -221,31 +218,6 @@ class LeadPage extends React.Component<RouteComponentProps> {
 			</ButtonGroup>
 		);
 	}
-
-	private openEditor = () => {
-		this.leadStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.leadStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.leadStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.leadStore.load(this.props.params.leadId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 	private handleStageTransition = (stage: CaseStage) => {
 		if (stage.isAbstract) {

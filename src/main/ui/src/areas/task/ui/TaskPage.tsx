@@ -99,9 +99,6 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							store={this.taskStore}
 							entityType={EntityType.TASK}
 							showEditButtons={allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -200,31 +197,6 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	private getHeaderActions() {
 		return (<></>);
 	}
-
-	private openEditor = () => {
-		this.taskStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.taskStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.taskStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.taskStore.load(this.props.params.taskId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 	private handleStageTransition = (stage: CaseStage) => {
 		if (stage.isAbstract) {

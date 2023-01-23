@@ -89,9 +89,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							store={this.contactStore}
 							entityType={EntityType.CONTACT}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -190,31 +187,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 			</ButtonGroup>
 		);
 	}
-
-	private openEditor = () => {
-		this.contactStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.contactStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.contactStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.contactStore.load(this.props.params.contactId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 }
 

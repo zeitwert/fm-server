@@ -28,7 +28,6 @@ export interface EntityTypeInfo {
 	gender: EntityGender;
 	iconCategory: IconCategory;
 	iconName: string;
-	isFavoritable: boolean;
 	hasPreview: boolean;
 }
 
@@ -40,7 +39,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.ACCOUNT,
 		iconCategory: "standard",
 		iconName: "account",
-		isFavoritable: true,
 		hasPreview: false
 	},
 	[EntityType.BUILDING]: {
@@ -50,7 +48,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.BUILDING,
 		iconCategory: "custom",
 		iconName: "custom24",
-		isFavoritable: true,
 		hasPreview: true
 	},
 	[EntityType.CONTACT]: {
@@ -60,7 +57,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.CONTACT,
 		iconCategory: "standard",
 		iconName: "contact",
-		isFavoritable: true,
 		hasPreview: false
 	},
 	[EntityType.DOCUMENT]: {
@@ -70,7 +66,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.DOCUMENT,
 		iconCategory: "standard",
 		iconName: "document",
-		isFavoritable: false,
 		hasPreview: false
 	},
 	[EntityType.LEAD]: {
@@ -80,7 +75,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.LEAD,
 		iconCategory: "standard",
 		iconName: "lead",
-		isFavoritable: true,
 		hasPreview: false
 	},
 	[EntityType.NOTE]: {
@@ -90,7 +84,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.NOTE,
 		iconCategory: "standard",
 		iconName: "note",
-		isFavoritable: false,
 		hasPreview: false
 	},
 	[EntityType.PORTFOLIO]: {
@@ -100,7 +93,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.PORTFOLIO,
 		iconCategory: "standard",
 		iconName: "store_group",
-		isFavoritable: true,
 		hasPreview: false
 	},
 	[EntityType.TASK]: {
@@ -110,7 +102,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.TASK,
 		iconCategory: "standard",
 		iconName: "task",
-		isFavoritable: false,
 		hasPreview: false
 	},
 	[EntityType.TEST]: {
@@ -120,7 +111,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.TEST,
 		iconCategory: "standard",
 		iconName: "task2",
-		isFavoritable: false,
 		hasPreview: false
 	},
 	[EntityType.TENANT]: {
@@ -130,7 +120,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.TENANT,
 		iconCategory: "standard",
 		iconName: "employee_organization",
-		isFavoritable: false,
 		hasPreview: false
 	},
 	[EntityType.USER]: {
@@ -140,7 +129,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.USER,
 		iconCategory: "standard",
 		iconName: "user",
-		isFavoritable: false,
 		hasPreview: false
 	},
 };

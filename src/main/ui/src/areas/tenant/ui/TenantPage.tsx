@@ -101,9 +101,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 							store={this.tenantStore}
 							entityType={EntityType.TENANT}
 							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
-							onOpen={this.openEditor}
-							onCancel={this.cancelEditor}
-							onClose={this.closeEditor}
 						>
 							<Tabs
 								className="full-height"
@@ -228,31 +225,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 			</>
 		);
 	}
-
-	private openEditor = () => {
-		this.tenantStore.edit();
-	};
-
-	private cancelEditor = async () => {
-		this.tenantStore.cancel();
-	};
-
-	private closeEditor = async () => {
-		try {
-			const item = await this.tenantStore.store();
-			this.ctx.showToast("success", `${this.entityType.labelSingular} gespeichert`);
-			return item;
-		} catch (error: any) {
-			// eslint-disable-next-line
-			if (error.status == 409) { // version conflict
-				await this.tenantStore.load(this.props.params.tenantId!);
-			}
-			this.ctx.showAlert(
-				"error",
-				(error.title ? error.title : `Konnte ${this.entityType.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
-			);
-		}
-	};
 
 	private openAccountEditor = () => {
 		const tenant = this.tenantStore.tenant!;

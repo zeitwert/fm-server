@@ -1,4 +1,4 @@
-import { AggregateStore, EntityType } from "@zeitwert/ui-model";
+import { AggregateStore, EntityType, EntityTypes } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { action } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -10,9 +10,6 @@ interface ItemEditorProps {
 	entityType: EntityType;
 	showEditButtons: boolean;
 	customButtons?: JSX.Element;
-	onOpen?: () => void;
-	onCancel: () => Promise<void>;
-	onClose: () => Promise<any>;
 }
 
 @inject("appStore", "session")
@@ -52,15 +49,30 @@ export default class ItemEditor extends React.Component<PropsWithChildren<ItemEd
 	}
 
 	private onOpen = () => {
-		this.props.onOpen?.();
+		this.props.store.edit();
 	};
 
 	private onCancel = async () => {
-		await this.props.onCancel();
+		this.props.store.cancel();
 	};
 
 	private onClose = async () => {
-		await this.props.onClose();
+		const { entityType, store } = this.props;
+		const entityTypeInfo = EntityTypes[entityType];
+		const id = store.id!;
+		try {
+			await store.store();
+			this.ctx.showToast("success", `${entityTypeInfo.labelSingular} gespeichert`);
+		} catch (error: any) {
+			// eslint-disable-next-line
+			if (error.status == 409) { // version conflict
+				await store.load(id);
+			}
+			this.ctx.showAlert(
+				"error",
+				(error.title ? error.title : `Konnte ${entityTypeInfo.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
+			);
+		}
 	};
 
 }
