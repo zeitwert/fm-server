@@ -10,7 +10,7 @@ interface Activity {
 	item: Enumerated; // rating: building, task: task
 	relatedTo: Enumerated; // rating: building, task: obj
 	owner: Enumerated;
-	user: Enumerated;
+	user: Enumerated | undefined;
 	dueAt: Date;
 	subject: string;
 	content: string;
@@ -84,45 +84,6 @@ export default class HomeCardOpenActivities extends React.Component {
 						</div>
 					</div>
 				}
-				{
-					/*
-					!!this.activities.length &&
-					<div>
-						{
-							this.activities.map((a: Activity, index: number) => (
-								<article className="slds-tile slds-media" key={"todo-" + index}>
-									{
-										a.item.itemType?.id === "doc_task" &&
-										<div className="slds-media__body">
-											<h3 className="slds-tile__title slds-truncate">
-												<a href={"/task/" + a.item.id}><strong>{a.subject}</strong></a>
-												<br />
-												{a.content}
-											</h3>
-											<div className="slds-tile__detail">
-												<p className="slds-truncate">Termin: {DateFormat.compact(a.dueAt)} für {a.user.name}</p>
-											</div>
-										</div>
-									}
-									{
-										a.item.itemType?.id === "obj_building" &&
-										<div className="slds-media__body">
-											<h3 className="slds-tile__title slds-truncate">
-												<strong>Bewertung</strong> <a href={"/building/" + a.item.id}><strong>{a.subject}</strong></a>
-												<br />
-												{a.content}
-											</h3>
-											<div className="slds-tile__detail">
-												<p className="slds-truncate">Begehung am {DateFormat.compact(a.dueAt)}{a.user ? ` (${a.user.name})` : ""}</p>
-											</div>
-										</div>
-									}
-								</article>
-							))
-						}
-					</div>
-					*/
-				}
 			</Card>
 		);
 	}
@@ -145,9 +106,9 @@ class ActivityView extends React.Component<ActivityViewProps> {
 	render() {
 
 		const task = this.props.task;
-		const user = task.user!;
-		const userName = user.name;
-		const userAvatar = session.avatarUrl(user.id);
+		const user = task.user;
+		const userName = user?.name ?? "??";
+		const userAvatar = session.avatarUrl(user?.id);
 		const dueAt = DateFormat.compact(task.dueAt, false);
 		const dueAtRelative = DateFormat.relativeTime(task.dueAt!);
 
@@ -174,7 +135,7 @@ class ActivityView extends React.Component<ActivityViewProps> {
 							</div>
 						</div>
 						<p className="slds-text-body_small">
-							{dueAt} ⋅ <a href={`/user/${user.id}`} title={userName}>{this.getUserName(user)}</a>
+							{dueAt} ⋅ <a href={`/user/${user?.id}`} title={userName}>{this.getUserName(user)}</a>
 						</p>
 					</div>
 				</header>
@@ -191,8 +152,8 @@ class ActivityView extends React.Component<ActivityViewProps> {
 		);
 	}
 
-	private getUserName(user: Enumerated) {
-		return user.id == session.sessionInfo?.user.id ? "Du" : user.name;
+	private getUserName(user: Enumerated | undefined) {
+		return user?.id == session.sessionInfo?.user.id ? "Du" : user?.name ?? "??";
 	}
 
 }

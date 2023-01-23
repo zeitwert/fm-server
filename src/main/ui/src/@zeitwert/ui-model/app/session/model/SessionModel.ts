@@ -292,7 +292,7 @@ const MstSessionModel = types
 								try {
 									const canvas = new OffscreenCanvas(300, 50);
 									const ctx = canvas.getContext("2d")!;
-									const v = yield Canvg.from(ctx, svg, preset);
+									const v: Canvg = yield Canvg.from(ctx, svg, preset);
 									yield v.render(); // render only first frame, ignoring animations and mouse.
 									const blob = yield canvas.convertToBlob();
 									self.bannerUrl = URL.createObjectURL(blob);
@@ -356,8 +356,8 @@ const MstSessionModel = types
 		}
 	}))
 	.views((self) => ({
-		avatarUrl(userId: string | undefined): string {
-			return userId ? Config.getRestUrl("oe", `users/${userId}/avatar`) : "/assets/images/avatar1.jpg";
+		avatarUrl(userId: string | undefined): string | undefined {
+			return userId ? Config.getRestUrl("oe", `users/${userId}/avatar`) : undefined;
 		},
 	}));
 
