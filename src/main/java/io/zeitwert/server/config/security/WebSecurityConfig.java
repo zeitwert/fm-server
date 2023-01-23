@@ -78,13 +78,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
-				// ui paths (necessary for hyperlinks, since JWT is not propagated) // revoke
-				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/user/*").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/account/*").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/contact/*").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/building/*").permitAll() // revoke
+				// ui paths (necessary for hyperlinks, since JWT is not propagated)
+				.antMatchers(HttpMethod.GET, "/home/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/user/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/account/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/contact/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/building/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/task/*").permitAll()
 				// user, tenant and account pictures
 				.antMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/oe/tenants/**/{logo|banner}").permitAll()
