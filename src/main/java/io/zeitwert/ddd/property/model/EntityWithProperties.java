@@ -11,6 +11,6 @@ public interface EntityWithProperties {
 
 	Map<String, Property<?>> getPropertyMap();
 
-	List<Property<?>> getPropertyList();
+	List<Property<?>> getProperties();
 
 }

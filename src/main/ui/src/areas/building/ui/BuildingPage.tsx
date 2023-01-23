@@ -203,7 +203,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${building.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={building.meta?.validationList!} />
+										<ValidationsTab validationList={building.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

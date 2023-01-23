@@ -20,12 +20,12 @@ public final class CodeContentKind extends EnumeratedBase {
 		return super.hashCode();
 	}
 
-	public List<CodeContentType> getContentTypeList() {
-		return CodeContentTypeEnum.getContentTypeList(this);
+	public List<CodeContentType> getContentTypes() {
+		return CodeContentTypeEnum.getContentTypes(this);
 	}
 
-	public List<String> getExtensionList() {
-		return this.getContentTypeList().stream().map(ct -> "." + ct.getExtension()).toList();
+	public List<String> getExtensions() {
+		return this.getContentTypes().stream().map(ct -> "." + ct.getExtension()).toList();
 	}
 
 }

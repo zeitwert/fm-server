@@ -129,7 +129,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
-		this.transitionList.loadPartList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+		this.transitionList.loadParts(transitionRepo.getParts(this, this.getRepository().getTransitionListType()));
 	}
 
 	@Override

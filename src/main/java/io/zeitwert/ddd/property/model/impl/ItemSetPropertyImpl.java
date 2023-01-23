@@ -20,7 +20,7 @@ public class ItemSetPropertyImpl<Item extends AggregatePartItem<?>> extends Part
 
 	@Override
 	public Set<String> getItems() {
-		return this.getPartList()
+		return this.getParts()
 				.stream()
 				.map(pi -> pi.getItemId())
 				.collect(Collectors.toSet());
@@ -39,7 +39,7 @@ public class ItemSetPropertyImpl<Item extends AggregatePartItem<?>> extends Part
 
 	@Override
 	public void clearItems() {
-		this.clearPartList();
+		this.clearParts();
 	}
 
 	@Override
@@ -75,8 +75,8 @@ public class ItemSetPropertyImpl<Item extends AggregatePartItem<?>> extends Part
 	}
 
 	@Override
-	public void loadItemSet(List<? extends Item> partList) {
-		this.loadPartList(partList);
+	public void loadItems(List<? extends Item> partList) {
+		this.loadParts(partList);
 	}
 
 }

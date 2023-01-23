@@ -12,14 +12,14 @@ public interface PartListProperty<P extends Part<?>> extends CollectionProperty<
 
 	P getPartById(Integer partId);
 
-	List<P> getPartList();
+	List<P> getParts();
 
-	void clearPartList();
+	void clearParts();
 
 	P addPart();
 
 	void removePart(Integer partId);
 
-	void loadPartList(List<? extends Part<?>> partList);
+	void loadParts(List<? extends Part<?>> partList);
 
 }

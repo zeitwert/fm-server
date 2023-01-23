@@ -43,7 +43,7 @@ public final class CodeBuildingSubTypeEnum extends EnumerationBase<CodeBuildingS
 		return INSTANCE.getItem(itemId);
 	}
 
-	public static List<CodeBuildingSubType> getBuildingSubTypeList(CodeBuildingType buildingType) {
+	public static List<CodeBuildingSubType> getBuildingSubTypes(CodeBuildingType buildingType) {
 		return INSTANCE.getItems().stream().filter(i -> i.getBuildingType() == buildingType).toList();
 	}
 

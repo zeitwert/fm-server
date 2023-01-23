@@ -73,9 +73,9 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+		this.areaSet.loadEnums(itemRepo.getParts(this, this.getRepository().getAreaSetType()));
 		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
-		this.nodeList.loadPartList(nodeRepo.getPartList(this, this.getRepository().getNodeListType()));
+		this.nodeList.loadParts(nodeRepo.getParts(this, this.getRepository().getNodeListType()));
 
 	}
 

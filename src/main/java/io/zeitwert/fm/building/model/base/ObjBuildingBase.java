@@ -165,9 +165,9 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
-		this.ratingList.loadPartList(ratingRepo.getPartList(this, this.getRepository().getRatingListType()));
+		this.ratingList.loadParts(ratingRepo.getParts(this, this.getRepository().getRatingListType()));
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.contactSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getContactSetType()));
+		this.contactSet.loadReferences(itemRepo.getParts(this, this.getRepository().getContactSetType()));
 	}
 
 	@Override

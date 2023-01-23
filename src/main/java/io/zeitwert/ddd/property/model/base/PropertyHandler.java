@@ -31,9 +31,9 @@ public class PropertyHandler implements MethodHandler {
 						if (methodName.startsWith("get") && methodName.endsWith("Count")) {
 							return ((PartListProperty<?>) property).getPartCount();
 						} else if (methodName.startsWith("get") && methodName.endsWith("List")) {
-							return ((PartListProperty<?>) property).getPartList();
+							return ((PartListProperty<?>) property).getParts();
 						} else if (methodName.startsWith("clear") && methodName.endsWith("List")) {
-							((PartListProperty<?>) property).clearPartList();
+							((PartListProperty<?>) property).clearParts();
 							return null;
 						} else if (methodName.startsWith("add")) {
 							return ((PartListProperty<?>) property).addPart();

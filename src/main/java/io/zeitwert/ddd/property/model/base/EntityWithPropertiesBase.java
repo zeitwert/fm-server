@@ -38,7 +38,7 @@ import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
 public abstract class EntityWithPropertiesBase implements EntityWithProperties, EntityWithPropertiesSPI {
 
 	private Map<String, Property<?>> propertyMap = new HashMap<>();
-	private List<Property<?>> propertyList = new ArrayList<>();
+	private List<Property<?>> properties = new ArrayList<>();
 
 	@Override
 	public boolean hasProperty(String name) {
@@ -56,8 +56,8 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	@Override
-	public List<Property<?>> getPropertyList() {
-		return List.copyOf(this.propertyList);
+	public List<Property<?>> getProperties() {
+		return List.copyOf(this.properties);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	protected void addProperty(Property<?> property) {
 		requireThis(!this.hasProperty(property.getName()), "property [" + property.getName() + "] is unique");
 		this.propertyMap.put(property.getName(), property);
-		this.propertyList.add(property);
+		this.properties.add(property);
 	}
 
 	protected <T> SimpleProperty<T> addSimpleProperty(UpdatableRecord<?> dbRecord, Field<T> field) {
@@ -140,7 +140,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	protected void doBeforeStoreProperties() {
-		for (Property<?> p : this.propertyList) {
+		for (Property<?> p : this.properties) {
 			if (p instanceof EnumSetPropertyImpl<?>) {
 				((EnumSetPropertyImpl<?>) p).doBeforeStore();
 			} else if (p instanceof ReferenceSetPropertyImpl<?>) {

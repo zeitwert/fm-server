@@ -157,7 +157,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	public void doAssignParts() {
 		super.doAssignParts();
 		DocPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
-		this.transitionList.loadPartList(transitionRepo.getPartList(this, this.getRepository().getTransitionListType()));
+		this.transitionList.loadParts(transitionRepo.getParts(this, this.getRepository().getTransitionListType()));
 	}
 
 	@Override

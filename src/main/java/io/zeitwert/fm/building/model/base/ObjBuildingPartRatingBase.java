@@ -78,9 +78,9 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		super.doAssignParts();
 		ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
 		ObjBuildingPartElementRatingRepository elementRepo = repo.getElementRepository();
-		List<ObjBuildingPartElementRating> elementList = elementRepo.getPartList(this,
+		List<ObjBuildingPartElementRating> elementList = elementRepo.getParts(this,
 				this.getRepository().getElementListType());
-		this.elementList.loadPartList(elementList);
+		this.elementList.loadParts(elementList);
 	}
 
 	@Override
@@ -106,9 +106,9 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@Override
 	public void afterSet(Property<?> property) {
 		if (property == this.partCatalog) {
-			this.elementList.clearPartList();
+			this.elementList.clearParts();
 			if (this.getPartCatalog() != null) {
-				for (Pair<CodeBuildingPart, Integer> part : this.getPartCatalog().getPartList()) {
+				for (Pair<CodeBuildingPart, Integer> part : this.getPartCatalog().getParts()) {
 					this.addElement(part.getLeft()).setWeight(part.getRight());
 				}
 			}
@@ -134,7 +134,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 
 	@Override
 	public ObjBuildingPartElementRating getElement(CodeBuildingPart buildingPart) {
-		return this.elementList.getPartList().stream().filter(p -> p.getBuildingPart() == buildingPart).findFirst()
+		return this.elementList.getParts().stream().filter(p -> p.getBuildingPart() == buildingPart).findFirst()
 				.orElse(null);
 	}
 

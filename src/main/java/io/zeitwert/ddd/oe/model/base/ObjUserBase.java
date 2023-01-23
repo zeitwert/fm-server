@@ -75,7 +75,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.tenantSet.loadItemSet(itemRepo.getPartList(this, this.getRepository().getTenantSetType()));
+		this.tenantSet.loadItems(itemRepo.getParts(this, this.getRepository().getTenantSetType()));
 	}
 
 	@Override

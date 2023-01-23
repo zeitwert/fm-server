@@ -28,14 +28,14 @@ public class AggregateMetaDto implements MetaInformation {
 	private OffsetDateTime createdAt;
 	private EnumeratedDto modifiedByUser;
 	private OffsetDateTime modifiedAt;
-	private List<AggregatePartValidationDto> validationList;
+	private List<AggregatePartValidationDto> validations;
 
 	// Meta from Client
 	private Integer clientVersion;
-	private List<String> operationList;
+	private List<String> operations;
 
 	public boolean hasOperation(String operation) {
-		return this.operationList != null && this.operationList.contains(operation);
+		return this.operations != null && this.operations.contains(operation);
 	}
 
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate) {
@@ -50,7 +50,7 @@ public class AggregateMetaDto implements MetaInformation {
 			.createdAt(meta.getCreatedAt())
 			.modifiedByUser(userDtoAdapter.asEnumerated(meta.getModifiedByUser()))
 			.modifiedAt(meta.getModifiedAt())
-			.validationList(meta.getValidationList().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
+			.validations(meta.getValidations().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
 	}

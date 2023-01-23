@@ -35,9 +35,9 @@ public interface AggregateMeta {
 
 	ObjUser getModifiedByUser();
 
-	List<AggregatePartValidation> getValidationList();
+	List<AggregatePartValidation> getValidations();
 
-	List<String> getOperationList();
+	List<String> getOperations();
 
 	boolean isCalcEnabled();
 

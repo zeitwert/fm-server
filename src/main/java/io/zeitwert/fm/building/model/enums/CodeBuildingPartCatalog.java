@@ -25,7 +25,7 @@ public class CodeBuildingPartCatalog extends EnumeratedBase {
 		return super.hashCode();
 	}
 
-	public List<Pair<CodeBuildingPart, Integer>> getPartList() {
+	public List<Pair<CodeBuildingPart, Integer>> getParts() {
 		List<String> parts = List.of(this.parts.split(","));
 		return parts.stream().map(p -> {
 			String[] partWeight = (p.indexOf(":") >= 0 ? p : p + ":" + 0).split(":");

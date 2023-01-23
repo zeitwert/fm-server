@@ -82,7 +82,7 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 				.findAny();
 	}
 
-	public static List<CodeContentType> getContentTypeList(CodeContentKind contentKind) {
+	public static List<CodeContentType> getContentTypes(CodeContentKind contentKind) {
 		return INSTANCE.getItems()
 				.stream()
 				.filter((CodeContentType cct) -> cct.getContentKind() == contentKind)

@@ -64,9 +64,9 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.includeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getIncludeSetType()));
-		this.excludeSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getExcludeSetType()));
-		this.buildingSet.loadReferenceSet(itemRepo.getPartList(this, this.getRepository().getBuildingSetType()));
+		this.includeSet.loadReferences(itemRepo.getParts(this, this.getRepository().getIncludeSetType()));
+		this.excludeSet.loadReferences(itemRepo.getParts(this, this.getRepository().getExcludeSetType()));
+		this.buildingSet.loadReferences(itemRepo.getParts(this, this.getRepository().getBuildingSetType()));
 	}
 
 	@Override

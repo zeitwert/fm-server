@@ -130,7 +130,7 @@ class ContactPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${contact.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={contact.meta?.validationList!} />
+										<ValidationsTab validationList={contact.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

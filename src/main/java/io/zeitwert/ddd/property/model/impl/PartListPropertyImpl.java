@@ -35,7 +35,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	@Override
-	public void clearPartList() {
+	public void clearParts() {
 		for (P part : this.partList) {
 			((PartSPI<?>) part).delete();
 		}
@@ -74,7 +74,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	@Override
-	public List<P> getPartList() {
+	public List<P> getParts() {
 		return List.copyOf(this.partList);
 	}
 
@@ -88,7 +88,7 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void loadPartList(List<? extends Part<?>> partList) {
+	public void loadParts(List<? extends Part<?>> partList) {
 		this.partList.clear();
 		partList.forEach(p -> this.partList.add((P) p));
 	}

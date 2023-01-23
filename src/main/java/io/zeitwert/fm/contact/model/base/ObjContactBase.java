@@ -73,7 +73,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjContactPartAddressRepository addressRepo = this.getRepository().getAddressRepository();
-		this.addressList.loadPartList(addressRepo.getPartList(this, this.getRepository().getAddressListType()));
+		this.addressList.loadParts(addressRepo.getParts(this, this.getRepository().getAddressListType()));
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	@Override
 	public List<ObjContactPartAddress> getMailAddressList() {
-		return this.addressList.getPartList().stream().filter(a -> a.getIsMailAddress()).toList();
+		return this.addressList.getParts().stream().filter(a -> a.getIsMailAddress()).toList();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	@Override
 	public List<ObjContactPartAddress> getElectronicAddressList() {
-		return this.addressList.getPartList().stream().filter(a -> !a.getIsMailAddress()).toList();
+		return this.addressList.getParts().stream().filter(a -> !a.getIsMailAddress()).toList();
 	}
 
 	@Override

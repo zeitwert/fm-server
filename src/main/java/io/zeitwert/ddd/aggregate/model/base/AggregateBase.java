@@ -33,7 +33,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 
 	private int isCalcDisabled = 0;
 	private boolean isInCalc = false;
-	private List<AggregatePartValidation> validationList = new ArrayList<>();
+	private List<AggregatePartValidation> validations = new ArrayList<>();
 
 	private boolean didCalcAll = false;
 	private boolean didCalcVolatile = false;
@@ -137,16 +137,16 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	private void clearValidationList() {
-		this.validationList.clear();
+		this.validations.clear();
 	}
 
 	@Override
-	public List<AggregatePartValidation> getValidationList() {
-		return List.copyOf(this.validationList);
+	public List<AggregatePartValidation> getValidations() {
+		return List.copyOf(this.validations);
 	}
 
 	protected void addValidation(CodeValidationLevel validationLevel, String validation) {
-		this.validationList.add(AggregatePartValidationImpl.builder().seqNr(this.validationList.size())
+		this.validations.add(AggregatePartValidationImpl.builder().seqNr(this.validations.size())
 				.validationLevel(validationLevel).validation(validation).build());
 	}
 

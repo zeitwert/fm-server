@@ -23,12 +23,12 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 public class BuildingEnumController {
 
 	@GetMapping("/building/codeBuildingSubType/{buildingTypeId}")
-	public ResponseEntity<List<CodeBuildingSubType>> getBuildingSubTypeList(@PathVariable String buildingTypeId) {
+	public ResponseEntity<List<CodeBuildingSubType>> getBuildingSubTypes(@PathVariable String buildingTypeId) {
 		CodeBuildingType buildingType = CodeBuildingTypeEnum.getBuildingType(buildingTypeId);
 		if (buildingType == null) {
 			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.ok().body(CodeBuildingSubTypeEnum.getBuildingSubTypeList(buildingType));
+		return ResponseEntity.ok().body(CodeBuildingSubTypeEnum.getBuildingSubTypes(buildingType));
 	}
 
 	@GetMapping("/building/codeBuildingPartCatalog/{partCatalogId}")
@@ -39,7 +39,7 @@ public class BuildingEnumController {
 		}
 		return ResponseEntity.ok()
 				.body(
-						partCatalog.getPartList().stream().map(p -> {
+						partCatalog.getParts().stream().map(p -> {
 							return BuildingPartWeightDto.builder()
 									.part(EnumeratedDto.fromEnum(p.getLeft()))
 									.weight(p.getRight())

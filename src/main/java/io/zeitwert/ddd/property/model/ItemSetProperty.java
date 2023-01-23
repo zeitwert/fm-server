@@ -15,6 +15,6 @@ public interface ItemSetProperty<Item extends AggregatePartItem<?>> extends Part
 
 	void removeItem(String itemId);
 
-	void loadItemSet(List<? extends Item> partList);
+	void loadItems(List<? extends Item> partList);
 
 }

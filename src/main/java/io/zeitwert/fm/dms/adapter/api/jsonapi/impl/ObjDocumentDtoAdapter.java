@@ -56,7 +56,7 @@ public final class ObjDocumentDtoAdapter extends FMObjDtoAdapter<ObjDocument, Ob
 		return dtoBuilder
 			.name(obj.getName())
 			.contentKind(EnumeratedDto.fromEnum(obj.getContentKind()))
-			.supportedContentTypes(obj.getContentKind().getExtensionList().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
+			.supportedContentTypes(obj.getContentKind().getExtensions().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
 			.documentKind(EnumeratedDto.fromEnum(obj.getDocumentKind()))
 			.documentCategory(EnumeratedDto.fromEnum(obj.getDocumentCategory()))
 			.contentType(EnumeratedDto.fromEnum(obj.getContentType()))

@@ -92,7 +92,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.areaSet.loadEnumSet(itemRepo.getPartList(this, this.getRepository().getAreaSetType()));
+		this.areaSet.loadEnums(itemRepo.getParts(this, this.getRepository().getAreaSetType()));
 	}
 
 	@Override

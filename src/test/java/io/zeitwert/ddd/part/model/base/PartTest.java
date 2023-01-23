@@ -68,7 +68,7 @@ public class PartTest {
 		Integer test1Id = test1a.getId();
 
 		assertEquals(0, test1a.getNodeList().size());
-		assertEquals(0, testNodeRepository.getPartList(test1a, nodeListType).size());
+		assertEquals(0, testNodeRepository.getParts(test1a, nodeListType).size());
 		// assertEquals(0, ((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).getParts(test1a).size());
 
@@ -80,7 +80,7 @@ public class PartTest {
 		assertTrue(dbRecord.changed(PartFields.ID));
 		assertNull(dbRecord.original(PartFields.ID));
 		assertEquals(1, test1a.getNodeList().size());
-		assertEquals(1, testNodeRepository.getPartList(test1a, nodeListType).size());
+		assertEquals(1, testNodeRepository.getParts(test1a, nodeListType).size());
 		// assertEquals(1, ((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).getParts(test1a).size());
 
@@ -92,7 +92,7 @@ public class PartTest {
 		assertEquals(PartStatus.CREATED, node1a2.getMeta().getStatus());
 
 		assertEquals(3, test1a.getNodeList().size());
-		assertEquals(3, testNodeRepository.getPartList(test1a, nodeListType).size());
+		assertEquals(3, testNodeRepository.getParts(test1a, nodeListType).size());
 		// assertEquals(3, ((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).getParts(test1a).size());
 
@@ -104,7 +104,7 @@ public class PartTest {
 		assertEquals("Short Test Node First,Short Test Node Second,Short Test Node Third",
 				String.join(",", test1a.getNodeList().stream().map(n -> n.getShortText()).toList()));
 		assertEquals("Short Test Node Second", test1a.getNodeList().get(1).getShortText());
-		assertEquals(3, testNodeRepository.getPartList(test1a, nodeListType).size());
+		assertEquals(3, testNodeRepository.getParts(test1a, nodeListType).size());
 
 		test1a.removeNode(node1a1.getId());
 		assertEquals(2, test1a.getNodeCount());
@@ -112,7 +112,7 @@ public class PartTest {
 		assertEquals(node1a2, test1a.getNodeById(node1a2.getId()));
 		assertEquals(PartStatus.DELETED, node1a1.getMeta().getStatus());
 		assertEquals(2, test1a.getNodeList().size());
-		assertEquals(3, testNodeRepository.getPartList(test1a, nodeListType).size());
+		assertEquals(3, testNodeRepository.getParts(test1a, nodeListType).size());
 		// assertEquals(3, ((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).getParts(test1a).size());
 		assertEquals(node1a0.getShortText(), test1a.getNode(0).getShortText());
@@ -123,7 +123,7 @@ public class PartTest {
 		assertEquals(node1a2.getShortText(), test1aNodeList.get(1).getShortText());
 		assertEquals(test1aNodeList, List.of(node1a0, node1a2));
 		assertEquals(List.of(PartStatus.CREATED, PartStatus.DELETED, PartStatus.CREATED),
-				testNodeRepository.getPartList(test1a, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
+				testNodeRepository.getParts(test1a, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
 		testRepository.store(test1a);
 		// assertFalse(((PartRepositoryBase<ObjTest, ?>)
@@ -133,11 +133,11 @@ public class PartTest {
 		ObjTest test1b = testRepository.get(test1Id);
 
 		assertEquals(2, test1b.getNodeList().size());
-		assertEquals(2, testNodeRepository.getPartList(test1b, nodeListType).size());
+		assertEquals(2, testNodeRepository.getParts(test1b, nodeListType).size());
 		// assertEquals(2, ((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).getParts(test1b).size());
 		assertEquals(List.of(PartStatus.READ, PartStatus.READ),
-				testNodeRepository.getPartList(test1b, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
+				testNodeRepository.getParts(test1b, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 		assertEquals("Short Test Node First,Short Test Node Third",
 				String.join(",", test1b.getNodeList().stream().map(n -> n.getShortText()).toList()));
 		assertEquals("Short Test Node Third", test1b.getNodeList().get(1).getShortText());
@@ -147,7 +147,7 @@ public class PartTest {
 		assertEquals(PartStatus.CREATED, node1b2.getMeta().getStatus());
 		test1b.getNode(1).setInt(43);
 		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.CREATED),
-				testNodeRepository.getPartList(test1b, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
+				testNodeRepository.getParts(test1b, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
 		testRepository.store(test1b);
 		// assertFalse(((PartRepositoryBase<ObjTest, ?>)
@@ -157,11 +157,11 @@ public class PartTest {
 		ObjTest test1c = testRepository.get(test1Id);
 
 		assertEquals(3, test1c.getNodeList().size());
-		assertEquals(3, testNodeRepository.getPartList(test1c, nodeListType).size());
+		assertEquals(3, testNodeRepository.getParts(test1c, nodeListType).size());
 		// assertEquals(3, ((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).getParts(test1c).size());
 		assertEquals(List.of(PartStatus.READ, PartStatus.READ, PartStatus.READ),
-				testNodeRepository.getPartList(test1c, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
+				testNodeRepository.getParts(test1c, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 		assertEquals("Short Test Node First,Short Test Node Third,Short Test Node Fourth",
 				String.join(",", test1c.getNodeList().stream().map(n -> n.getShortText()).toList()));
 

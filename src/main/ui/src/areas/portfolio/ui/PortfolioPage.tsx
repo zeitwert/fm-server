@@ -44,17 +44,17 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 
 	@computed
 	get hasValidations(): boolean {
-		return this.portfolioStore.portfolio?.meta?.validationList?.length! > 0;
+		return this.portfolioStore.portfolio?.meta?.validations?.length! > 0;
 	}
 
 	@computed
 	get validationCount(): number {
-		return this.portfolioStore.portfolio?.meta?.validationList?.length || 0;
+		return this.portfolioStore.portfolio?.meta?.validations?.length || 0;
 	}
 
 	@computed
 	get hasErrors(): boolean {
-		return this.portfolioStore.portfolio?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
+		return this.portfolioStore.portfolio?.meta?.validations?.filter(v => v.validationLevel?.id === "error").length! > 0;
 	}
 
 	constructor(props: any) {
@@ -162,7 +162,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${portfolio.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={portfolio.meta?.validationList!} />
+										<ValidationsTab validationList={portfolio.meta?.validations!} />
 									}
 								</TabsPanel>
 							}
