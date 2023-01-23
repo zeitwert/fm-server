@@ -1,10 +1,10 @@
 
 import { transaction } from "mobx";
-import { applySnapshot, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app";
 import { StoreWithEntitiesModel } from "../../../ddd/aggregate/model/StoreWithEntities";
 import { NOTE_API } from "../service/NoteApi";
-import { Note, NoteModel, NotePayload, NoteSnapshot } from "./NoteModel";
+import { Note, NoteModel } from "./NoteModel";
 
 const MstNotesStoreModel = StoreWithEntitiesModel
 	.named("NotesStore")
@@ -33,65 +33,6 @@ const MstNotesStoreModel = StoreWithEntitiesModel
 					}
 				} catch (error: any) {
 					console.error("Failed to load notes", error);
-					return Promise.reject(error);
-				}
-			})();
-		},
-		async addNote(relatedToId: string, notePayload: NotePayload): Promise<Note> {
-			const note: NoteSnapshot = Object.assign({}, notePayload, { id: "New:" + new Date().getTime(), relatedToId: relatedToId });
-			return flow<Note, any[]>(function* (): any {
-				try {
-					const repository: EntityTypeRepository = yield NOTE_API.createAggregate(note);
-					const notesRepo = repository["note"];
-					if (notesRepo) {
-						transaction(() => {
-							Object.keys(notesRepo)
-								.map((id) => notesRepo[id])
-								.forEach((snapshot) => self.notes.unshift(snapshot));
-						});
-					}
-				} catch (error: any) {
-					console.error("Failed to add note", note, error);
-					return Promise.reject(error);
-				}
-			})();
-		},
-		async storeNote(id: string, notePayload: NotePayload): Promise<Note> {
-			const note = Object.assign(
-				{},
-				notePayload,
-				{
-					id: id,
-					meta: {
-						clientVersion: self.getNote(id)?.meta?.version
-					}
-				}
-			);
-			return flow<Note, any[]>(function* (): any {
-				try {
-					const repository: EntityTypeRepository = yield NOTE_API.storeAggregate(note);
-					const notesRepo = repository["note"];
-					if (notesRepo) {
-						let note: Note = self.getNote(id)!;
-						applySnapshot(note, notesRepo[id]);
-					}
-				} catch (error: any) {
-					console.error("Failed to store note", note, error);
-					return Promise.reject(error);
-				}
-			})();
-		},
-		async removeNote(id: string): Promise<Note> {
-			return flow<Note, any[]>(function* (): any {
-				try {
-					const note = self.getNote(id);
-					if (!!note) {
-						const index = self.notes.indexOf(note);
-						yield NOTE_API.deleteAggregate(id);
-						self.notes.splice(index, 1);
-					}
-				} catch (error: any) {
-					console.error("Failed to remove note", id, error);
 					return Promise.reject(error);
 				}
 			})();

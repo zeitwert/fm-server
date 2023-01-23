@@ -1,12 +1,14 @@
 
-import { toJS, transaction } from "mobx";
-import { applyPatch, getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { transaction } from "mobx";
+import { applyPatch, getRoot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Optional } from "../../../../ui-model/app/common/utils/Optional";
 import { EntityTypeInfo, EntityTypes } from "../../../app/common/config/EntityTypes";
 import { UserInfo } from "../../../app/session";
 import { AggregateMeta } from "./AggregateMeta";
 import { AggregateStore } from "./AggregateStore";
 import { Enumerated } from "./EnumeratedModel";
+
+const NewId = "##NEW##";
 
 const MstAggregateModel = types
 	.model("Aggregate", {
@@ -20,7 +22,7 @@ const MstAggregateModel = types
 	})
 	.views((self) => ({
 		get isNew(): boolean {
-			return self.id === "##NEW##";
+			return self.id === NewId;
 		},
 		get allowStore(): boolean {
 			return true;
@@ -82,12 +84,20 @@ const MstAggregateModel = types
 			(getRoot(self) as AggregateStore).execOperation(operations);
 		}
 	}))
-	.views((self) => ({
-		// must be last view, so type info is complete
-		get apiSnapshot(): AggregateSnapshot {
-			return toJS(getSnapshot(self));
-		},
-	}));
+	// preProcessSnapshot before snapshot is applied to the model
+	.preProcessSnapshot((snapshot) => {
+		if (!snapshot) {
+			return snapshot;
+		}
+		return Object.assign({}, snapshot, { id: snapshot.id ?? NewId });
+	})
+	// postProcessSnapshot after snapshot is retrieved from model
+	.postProcessSnapshot((snapshot) => {
+		if (!snapshot) {
+			return snapshot;
+		}
+		return Object.assign({}, snapshot, { id: snapshot.id === NewId ? undefined : snapshot.id });
+	});
 
 type MstAggregateType = typeof MstAggregateModel;
 interface MstAggregate extends MstAggregateType { }

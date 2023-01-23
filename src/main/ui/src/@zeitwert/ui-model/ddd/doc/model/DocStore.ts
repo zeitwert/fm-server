@@ -33,7 +33,7 @@ const MstDocStoreModel = AggregateStoreModel
 		updateDocuments() {
 			// return flow(function* () {
 			// 	const promises: Promise<any>[] = [];
-			// 	self.item!.documents.forEach((doc: Document) => promises.push(DOCUMENT_API.storeAggregate(doc.apiSnapshot)));
+			// 	self.item!.documents.forEach((doc: Document) => promises.push(DOCUMENT_API.storeAggregate(getSnapshot(doc))));
 			// 	yield Promise.all(promises);
 			// })();
 		}

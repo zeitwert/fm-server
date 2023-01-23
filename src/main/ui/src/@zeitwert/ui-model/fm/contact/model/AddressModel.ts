@@ -1,6 +1,5 @@
 
-import { toJS } from "mobx";
-import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 import { ObjPartModel } from "../../../ddd/obj/model/ObjPartModel";
 
@@ -17,14 +16,7 @@ const MstAddressModel = ObjPartModel.named("Address")
 		channelId: types.maybe(types.frozen<Enumerated>()),
 		isFavorite: types.maybe(types.boolean),
 		isPostalAddress: types.maybe(types.boolean)
-	})
-	.views((self) => ({
-		get apiSnapshot() {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				id: !self.id?.startsWith("New:") ? self.id : undefined
-			});
-		}
-	}));
+	});
 
 type MstAddressType = typeof MstAddressModel;
 interface MstAddress extends MstAddressType { }

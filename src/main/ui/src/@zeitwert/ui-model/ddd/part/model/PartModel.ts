@@ -1,7 +1,10 @@
 
-import { toJS, transaction } from "mobx";
-import { applyPatch, getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { UUID } from "@zeitwert/ui-model/app";
+import { transaction } from "mobx";
+import { applyPatch, getRoot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { AggregateStore } from "../../aggregate/model/AggregateStore";
+
+const NewIdPrefix = "New:";
 
 const MstPartModel = types
 	.model("Part", {
@@ -9,7 +12,7 @@ const MstPartModel = types
 	})
 	.views((self) => ({
 		get isNew() {
-			return self.id.startsWith("New:");
+			return self.id.startsWith(NewIdPrefix);
 		}
 	}))
 	.views((self) => ({
@@ -38,12 +41,18 @@ const MstPartModel = types
 			}
 		}
 	}))
-	.views((self) => ({
-		// must be last view, so type info is complete
-		get apiSnapshot() {
-			return toJS(getSnapshot(self));
-		},
-	}));
+	.preProcessSnapshot((snapshot) => {
+		if (!snapshot) {
+			return snapshot;
+		}
+		return Object.assign({}, snapshot, { id: snapshot.id ?? NewIdPrefix + UUID() });
+	})
+	.postProcessSnapshot((snapshot) => {
+		if (!snapshot) {
+			return snapshot;
+		}
+		return Object.assign({}, snapshot, { id: snapshot.id.startsWith(NewIdPrefix) ? undefined : snapshot.id });
+	});
 
 type MstPartType = typeof MstPartModel;
 interface MstPart extends MstPartType { }

@@ -1,10 +1,10 @@
 import { toJS } from "mobx";
 import { getRoot, getSnapshot, IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { DateFormat, faTypes, requireThis, UUID } from "../../../app/common";
+import { DateFormat, faTypes, requireThis } from "../../../app/common";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
-import { Address, AddressModel, AddressPayload } from "./AddressModel";
+import { Address, AddressModel, AddressPayload, AddressSnapshot } from "./AddressModel";
 import { ContactStore } from "./ContactStore";
 import { LifeEvent } from "./LifeEventModel";
 
@@ -100,13 +100,10 @@ const MstContactModel = ObjModel.named("Contact")
 	})
 	.actions((self) => ({
 		addAddress(address: AddressPayload, index?: number): Address {
-			const snapshot = Object.assign({}, address, {
-				id: "New:" + UUID()
-			});
 			if (typeof index !== "undefined" && index >= 0) {
-				self.addresses.splice(index, 0, snapshot);
+				self.addresses.splice(index, 0, address as AddressSnapshot);
 			} else {
-				self.addresses.push(AddressModel.create(snapshot));
+				self.addresses.push(AddressModel.create(address as AddressSnapshot));
 				index = self.addresses.length - 1;
 			}
 			return self.addresses[index];
@@ -120,13 +117,6 @@ const MstContactModel = ObjModel.named("Contact")
 		setItem(part: LifeEvent | undefined) {
 			requireThis(false, "setItem() is implemented");
 		}
-	}))
-	.views((self) => ({
-		get apiSnapshot() {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				addresses: self.addresses.map((a) => a.apiSnapshot),
-			});
-		},
 	}));
 
 type MstContactType = typeof MstContactModel;

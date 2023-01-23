@@ -153,8 +153,6 @@ class ActivityView extends React.Component<ActivityViewProps> {
 	}
 
 	private getUserName(user: Enumerated | undefined) {
-		console.log("getUserName", session.sessionInfo);
-		console.log("getUserName", `[${user?.id}]`, typeof user?.id, `[${session.sessionInfo?.user.id}]`, typeof session.sessionInfo?.user.id);
 		return user?.id === session.sessionInfo?.user.id ? "Du" : user?.name ?? "??";
 	}
 

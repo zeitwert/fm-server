@@ -1,6 +1,5 @@
 
-import { toJS } from "mobx";
-import { getSnapshot, IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 
@@ -61,59 +60,54 @@ const MstDocumentModel = ObjModel.named("Document")
 		get completeName() {
 			return self.name;
 		}
-	}))
-	/*
-		.actions((self) => ({
-			syncMetadata(content: DocumentContentSnapshot) {
-				if (self.content) {
-					self.content.name = content.name;
-					self.content.versionNr = content.versionNr || null;
-				}
-				if (content.metadataProperties) {
-					self.documentStatus = content.metadataProperties.documentStatus;
-					self.documentClientVisibility = content.metadataProperties.documentClientVisibility;
-					self.description = content.metadataProperties.description;
-				}
+	}));
+/*
+	.actions((self) => ({
+		syncMetadata(content: DocumentContentSnapshot) {
+			if (self.content) {
+				self.content.name = content.name;
+				self.content.versionNr = content.versionNr || null;
 			}
-		}))
-	*/
-	/*
-		.actions((self) => {
-			const superSetField = self.setField;
-			return {
-				async setField(field: string, value: any) {
-					const store: DocumentStore = getRoot(self);
-					switch (field) {
-						case "content": {
-							const content = (value[0] || undefined) as DocumentContent;
-							if (content && content.mimeType) {
-								superSetField("contentType", await store.getContentTypeByMimeType(content.mimeType));
-							}
-							return superSetField("content", content);
+			if (content.metadataProperties) {
+				self.documentStatus = content.metadataProperties.documentStatus;
+				self.documentClientVisibility = content.metadataProperties.documentClientVisibility;
+				self.description = content.metadataProperties.description;
+			}
+		}
+	}))
+*/
+/*
+	.actions((self) => {
+		const superSetField = self.setField;
+		return {
+			async setField(field: string, value: any) {
+				const store: DocumentStore = getRoot(self);
+				switch (field) {
+					case "content": {
+						const content = (value[0] || undefined) as DocumentContent;
+						if (content && content.mimeType) {
+							superSetField("contentType", await store.getContentTypeByMimeType(content.mimeType));
 						}
-						case "url": {
-							const parts = value?.split(".");
-							if (parts && parts.length > 1) {
-								superSetField(
-									"contentType",
-									await store.getContentTypeByExtension(parts[parts.length - 1])
-								);
-							}
-							return superSetField(field, value);
+						return superSetField("content", content);
+					}
+					case "url": {
+						const parts = value?.split(".");
+						if (parts && parts.length > 1) {
+							superSetField(
+								"contentType",
+								await store.getContentTypeByExtension(parts[parts.length - 1])
+							);
 						}
-						default: {
-							return superSetField(field, value);
-						}
+						return superSetField(field, value);
+					}
+					default: {
+						return superSetField(field, value);
 					}
 				}
-			};
-		})
-	*/
-	.views((self) => ({
-		get apiSnapshot() {
-			return Object.assign({}, toJS(getSnapshot(self)), {});
-		}
-	}));
+			}
+		};
+	})
+*/
 
 type MstDocumentType = typeof MstDocumentModel;
 interface MstDocument extends MstDocumentType { }

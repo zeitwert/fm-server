@@ -1,6 +1,5 @@
 
-import { toJS } from "mobx";
-import { getParent, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { getParent, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Enumerated } from "../../../../ui-model/ddd/aggregate/model/EnumeratedModel";
 import { ObjPartModel } from "../../../ddd/obj/model/ObjPartModel";
 
@@ -68,14 +67,7 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 				return relativeAge && relativeAge > MidTermYears ? self.restorationYear : undefined;
 			}
 		}
-	})
-	.views((self) => ({
-		get apiSnapshot() {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				id: !self.id.startsWith("New:") ? self.id : undefined
-			});
-		},
-	}));
+	});
 
 type MstBuildingElementType = typeof MstBuildingElementModel;
 interface MstBuildingElement extends MstBuildingElementType { }

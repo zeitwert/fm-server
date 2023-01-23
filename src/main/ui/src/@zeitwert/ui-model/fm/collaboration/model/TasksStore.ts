@@ -1,10 +1,10 @@
 
 import { transaction } from "mobx";
-import { applySnapshot, flow, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { flow, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { EntityTypeRepository } from "../../../app";
 import { StoreWithEntitiesModel } from "../../../ddd/aggregate/model/StoreWithEntities";
 import { TASK_API } from "../service/TaskApi";
-import { Task, TaskModel, TaskPayload, TaskSnapshot } from "./TaskModel";
+import { Task, TaskModel } from "./TaskModel";
 
 const MstTasksStoreModel = StoreWithEntitiesModel
 	.named("TasksStore")
@@ -44,65 +44,6 @@ const MstTasksStoreModel = StoreWithEntitiesModel
 					}
 				} catch (error: any) {
 					console.error("Failed to load tasks", error);
-					return Promise.reject(error);
-				}
-			})();
-		},
-		async addTask(relatedToId: string, taskPayload: TaskPayload): Promise<Task> {
-			const task: TaskSnapshot = Object.assign({}, taskPayload, { id: "New:" + new Date().getTime(), relatedToId: relatedToId });
-			return flow<Task, any[]>(function* (): any {
-				try {
-					const repository: EntityTypeRepository = yield TASK_API.createAggregate(task);
-					const tasksRepo = repository["task"];
-					if (tasksRepo) {
-						transaction(() => {
-							Object.keys(tasksRepo)
-								.map((id) => tasksRepo[id])
-								.forEach((snapshot) => self.tasks.unshift(snapshot));
-						});
-					}
-				} catch (error: any) {
-					console.error("Failed to add task", task, error);
-					return Promise.reject(error);
-				}
-			})();
-		},
-		async storeTask(id: string, taskPayload: TaskPayload): Promise<Task> {
-			const task = Object.assign(
-				{},
-				taskPayload,
-				{
-					id: id,
-					meta: {
-						clientVersion: self.getTask(id)?.meta?.version
-					}
-				}
-			);
-			return flow<Task, any[]>(function* (): any {
-				try {
-					const repository: EntityTypeRepository = yield TASK_API.storeAggregate(task);
-					const tasksRepo = repository["task"];
-					if (tasksRepo) {
-						let task: Task = self.getTask(id)!;
-						applySnapshot(task, tasksRepo[id]);
-					}
-				} catch (error: any) {
-					console.error("Failed to store task", task, error);
-					return Promise.reject(error);
-				}
-			})();
-		},
-		async completeTask(id: string): Promise<Task> {
-			return flow<Task, any[]>(function* (): any {
-				try {
-					const task = self.getTask(id);
-					if (!!task) {
-						const index = self.tasks.indexOf(task);
-						yield TASK_API.deleteAggregate(id);
-						self.tasks.splice(index, 1);
-					}
-				} catch (error: any) {
-					console.error("Failed to remove task", id, error);
 					return Promise.reject(error);
 				}
 			})();

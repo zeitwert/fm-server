@@ -129,7 +129,7 @@ const MstAppStoreModel = types
 	.actions((self) => ({
 		setItem(item: Aggregate) {
 			// add item to recent or frequent items, put to item list to make sure it is available
-			// const data = ItemModel.create(item.apiSnapshot);
+			// const data = ItemModel.create(getSnaphot(item));
 			// self.updateStaticData({
 			// 	item: {
 			// 		[item.id]: data

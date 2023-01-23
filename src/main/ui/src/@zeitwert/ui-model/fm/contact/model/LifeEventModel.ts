@@ -1,5 +1,4 @@
-import { toJS } from "mobx";
-import { getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { Instance, SnapshotIn, types } from "mobx-state-tree";
 import moment from "moment";
 import { faTypes } from "../../../app/common";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
@@ -53,13 +52,6 @@ const MstLifeEventModel = ObjPartModel.named("LifeEvent")
 			if (!self.name?.startsWith(firstName)) {
 				self.name = firstName + "'s " + self.name;
 			}
-		}
-	}))
-	.views((self) => ({
-		get apiSnapshot() {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				id: !self.id?.startsWith("New:") ? self.id : undefined
-			});
 		}
 	}));
 

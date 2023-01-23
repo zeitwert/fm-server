@@ -29,7 +29,6 @@ interface ItemsPageProps extends RouteComponentProps {
 class ItemsPage extends React.Component<ItemsPageProps> {
 
 	@observable listStore: ItemList;
-	@observable store: AggregateStore;
 	@observable sortProperty?: string;
 	@observable sortDirection?: "asc" | "desc" | undefined;
 
@@ -41,7 +40,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 		super(props);
 		makeObservable(this);
 		this.listStore = ItemListModel.create({ datamart: props.listDatamart });
-		this.store = this.props.store;
 		this.sortProperty = session.userPrefs.getUserPref(this.props.entityType, "sortProperty");
 		this.sortDirection = session.userPrefs.getUserPref(this.props.entityType, "sortDirection");
 	}
@@ -82,9 +80,9 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					onSelectionChange={this.props.onSelectionChange}
 				/>
 				{
-					this.store?.isInTrx && (
+					this.props.store?.isInTrx && (
 						<ItemModal
-							store={this.store}
+							store={this.props.store}
 							entityType={entityType}
 							onClose={this.closeEditor}
 							onCancel={this.cancelEditor}
@@ -110,22 +108,22 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	private openEditor = () => {
-		this.store!.create({
+		this.props.store!.create({
 			owner: this.ctx.session.sessionInfo!.user
 		});
-		this.props.onAfterCreate && this.props.onAfterCreate(this.store);
+		this.props.onAfterCreate && this.props.onAfterCreate(this.props.store);
 	};
 
 	private cancelEditor = async () => {
-		this.store!.cancel();
+		this.props.store!.cancel();
 	};
 
 	private closeEditor = async () => {
 		const type = EntityTypes[this.props.entityType];
 		try {
-			await this.store!.store();
+			await this.props.store.store();
 			this.ctx.showToast("success", `${type.labelSingular} gespeichert`);
-			this.props.navigate("/" + this.store.typeName + "/" + this.store!.id);
+			this.props.navigate("/" + this.props.store.typeName + "/" + this.props.store!.id);
 		} catch (error: any) {
 			this.ctx.showAlert(
 				"error",

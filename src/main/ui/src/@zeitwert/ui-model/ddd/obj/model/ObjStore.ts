@@ -32,7 +32,7 @@ const MstObjStoreModel = AggregateStoreModel
 			})();
 		},
 		async updateDocuments() {
-			//await Promise.all(self.item!.documents.map((doc: Document) => DOCUMENT_API.storeItem(doc.apiSnapshot)));
+			//await Promise.all(self.item!.documents.map((doc: Document) => DOCUMENT_API.storeItem(getSnapshot(doc))));
 		}
 	}));
 

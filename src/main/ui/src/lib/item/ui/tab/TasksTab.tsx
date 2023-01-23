@@ -1,6 +1,6 @@
 
 import { Avatar, ExpandableSection } from "@salesforce/design-system-react";
-import { assertThis, DateFormat, EntityType, EntityTypes, Enumerated, session, Task, TaskPayload, TasksStore, TaskStoreModel } from "@zeitwert/ui-model";
+import { assertThis, DateFormat, EntityType, EntityTypes, Enumerated, session, Task, TaskPayload, TaskSnapshot, TasksStore, TaskStoreModel, TASK_API } from "@zeitwert/ui-model";
 import NotFound from "app/ui/NotFound";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -203,7 +203,17 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 	}
 
 	private modifyTask = async (id: string, task: TaskPayload) => {
-		await this.props.tasksStore.storeTask(id, task);
+		const ts = Object.assign(
+			{},
+			task,
+			{
+				id: id,
+				meta: {
+					clientVersion: this.props.tasksStore.getTask(id)?.meta?.version
+				}
+			}
+		);
+		await TASK_API.storeAggregate(ts as TaskSnapshot);
 		await this.loadTasks();
 	}
 
@@ -232,7 +242,7 @@ class TaskView extends React.Component<TaskViewProps> {
 		const user = task.meta?.assignee!;
 		const userName = user.name;
 		const userAvatar = session.avatarUrl(user.id);
-		const dueAt = DateFormat.compact(task.dueAt);
+		const dueAt = DateFormat.compact(task.dueAt, false);
 		const dueAtRelative = DateFormat.relativeTime(task.dueAt!);
 
 		return (

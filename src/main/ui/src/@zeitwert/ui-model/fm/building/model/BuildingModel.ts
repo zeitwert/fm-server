@@ -2,12 +2,11 @@
 import { AggregateStore } from "@zeitwert/ui-model/ddd";
 import { AxiosResponse } from "axios";
 import Logger from "loglevel";
-import { reaction, toJS, transaction } from "mobx";
-import { addDisposer, flow, getRoot, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
+import { reaction, transaction } from "mobx";
+import { addDisposer, flow, getRoot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { faTypes } from "../../../app/common";
 import { Config } from "../../../app/common/config/Config";
 import { API } from "../../../app/common/service/Api";
-import { UUID } from "../../../app/common/utils/Id";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
@@ -73,7 +72,7 @@ const MstBuildingModel = ObjModel.named("Building")
 	})
 	.actions((self) => ({
 		addElement(element: BuildingElement) {
-			self.elements.push(Object.assign({}, element, { id: "New:" + UUID() }));
+			self.elements.push(element);
 		},
 	}))
 	.actions((self) => {
@@ -260,15 +259,7 @@ const MstBuildingModel = ObjModel.named("Building")
 				}
 			}
 		}
-	})
-	.views((self) => ({
-		get apiSnapshot() {
-			return Object.assign({}, toJS(getSnapshot(self)), {
-				id: !self.id.startsWith("New:") ? self.id : undefined,
-				elements: self.elements.map((e) => e.apiSnapshot)
-			});
-		},
-	}));
+	});
 
 type MstBuildingType = typeof MstBuildingModel;
 interface MstBuilding extends MstBuildingType { }

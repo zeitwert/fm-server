@@ -1,7 +1,7 @@
 
 import { Avatar } from "@salesforce/design-system-react";
-import { DateFormat, NotesStore, session } from "@zeitwert/ui-model";
-import { NOTE, Note, NotePayload } from "@zeitwert/ui-model/fm/collaboration/model/NoteModel";
+import { DateFormat, NotesStore, NOTE_API, session } from "@zeitwert/ui-model";
+import { NOTE, Note, NotePayload, NoteSnapshot } from "@zeitwert/ui-model/fm/collaboration/model/NoteModel";
 import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React, { FC } from "react";
@@ -94,22 +94,42 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 		this.editNoteId = undefined;
 	}
 
-	private addNote = (note: NotePayload): void => {
-		this.props.notesStore.addNote(this.props.relatedToId, note);
+	private addNote = async (note: NotePayload) => {
+		//this.props.notesStore.addNote(this.props.relatedToId, note);
+		const np: NotePayload = Object.assign({}, note, { relatedToId: this.props.relatedToId });
+		await NOTE_API.createAggregate(np as NoteSnapshot);
+		await this.loadNotes();
+	}
+
+	private changePrivacy = async (note: Note) => {
+		await this.modifyNote(note.id, Object.assign({}, note, { isPrivate: !note.isPrivate }));
+	}
+
+	private modifyNote = async (id: string, note: NotePayload) => {
+		//this.props.notesStore.storeNote(id, note);
+		const ns = Object.assign(
+			{},
+			note,
+			{
+				id: id,
+				meta: {
+					clientVersion: this.props.notesStore.getNote(id)?.meta?.version
+				}
+			}
+		);
+		await NOTE_API.storeAggregate(ns as NoteSnapshot);
+		await this.loadNotes();
+	}
+
+	private removeNote = async (id: string) => {
+		//this.props.notesStore.removeNote(id);
+		await NOTE_API.deleteAggregate(id);
+		await this.loadNotes();
+	}
+
+	private loadNotes = async () => {
 		this.editNoteId = undefined;
-	}
-
-	private modifyNote = (id: string, note: NotePayload): void => {
-		this.props.notesStore.storeNote(id, note);
-		this.editNoteId = undefined;
-	}
-
-	private changePrivacy = (note: Note): void => {
-		this.modifyNote(note.id, Object.assign({}, note, { isPrivate: !note.isPrivate }));
-	}
-
-	private removeNote = (id: string): void => {
-		this.props.notesStore.removeNote(id);
+		await this.props.notesStore.load(this.props.relatedToId);
 	}
 
 }
@@ -218,7 +238,7 @@ const NoteHeaderAction: FC<NoteHeaderActionProps> = (props) => {
 
 interface NoteEditorProps {
 	isNew?: boolean;
-	note?: NotePayload;
+	note?: any; //NotePayload;
 	onCancel: () => void;
 	onOk: (note: NotePayload) => void;
 }

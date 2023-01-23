@@ -95,7 +95,7 @@ const MstAggregateStoreModel = types
 	}))
 	.views((self) => ({
 		get changes() {
-			const snapshot = self.item!.apiSnapshot;
+			const snapshot = getSnapshot(self.item!);
 			const result = {};
 			self.recorder!.patches?.forEach((patch) => {
 				const prop = patch.path.split("/")[1];
@@ -108,10 +108,18 @@ const MstAggregateStoreModel = types
 	}))
 	// lifecycle, do not overwrite
 	.actions((self) => ({
+		clear() {
+			requireThis(!self.isInTrx, "not in transaction");
+			self.id = undefined;
+			self.setItem(undefined);
+		},
+	}))
+	// lifecycle, do not overwrite
+	.actions((self) => ({
 		create(initValues?: any /*AggregatePayload*/) {
 			transaction(() => {
-				self.id = undefined;
-				self.setItem(Object.assign({}, initValues, { id: "##NEW##" }));
+				self.clear();
+				self.setItem(initValues);
 				self.startTrx();
 			});
 		},
@@ -137,11 +145,6 @@ const MstAggregateStoreModel = types
 		cancel() {
 			self.rollbackTrx();
 			return self.item!;
-		},
-		clear() {
-			requireThis(!self.isInTrx, "not in transaction");
-			self.id = undefined;
-			self.setItem(undefined);
 		},
 		async execOperation(operations: string[]) {
 			requireThis(!self.isNew, "not new");
@@ -202,11 +205,11 @@ const MstAggregateStoreModel = types
 					let id: string;
 					session.startNetwork();
 					if (self.isNew) {
-						repository = yield self.api.createAggregate(self.item!.apiSnapshot);
+						repository = yield self.api.createAggregate(getSnapshot(self.item!));
 						id = Object.keys(repository[self.typeName])[Object.keys(repository[self.typeName]).length - 1];
 						transaction(() => {
 							self.commitTrx();
-							(self as any).clear(); // need to clear, since id will have changed
+							self.clear(); // need to clear, since id will have changed
 							self.updateStore(id, repository);
 						});
 					} else {
