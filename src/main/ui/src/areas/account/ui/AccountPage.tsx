@@ -161,8 +161,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 					<ItemModal
 						store={this.contactStore}
 						entityType={EntityType.CONTACT}
-						onClose={this.closeContactEditor}
-						onCancel={this.cancelContactEditor}
 					>
 						{() => <ContactCreationForm contact={this.contactStore.contact!} />}
 					</ItemModal>
@@ -226,23 +224,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			owner: session.sessionInfo!.user
 		});
 		this.contactStore.contact!.setAccount(this.accountStore.id!);
-	};
-
-	private cancelContactEditor = async () => {
-		await this.contactStore.cancel();
-	};
-
-	private closeContactEditor = async () => {
-		try {
-			await this.contactStore.store();
-			this.ctx.showToast("success", `Neuet Kontakt ${this.contactStore.id} eröffnet`);
-			this.props.navigate("/contact/" + this.contactStore.id);
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				"Konnte Kontakt nicht eröffnen: " + (error.detail ?? error.title ?? error)
-			);
-		}
 	};
 
 	private reload = async () => {

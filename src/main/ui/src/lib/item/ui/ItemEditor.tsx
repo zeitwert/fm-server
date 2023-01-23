@@ -70,7 +70,8 @@ export default class ItemEditor extends React.Component<PropsWithChildren<ItemEd
 			}
 			this.ctx.showAlert(
 				"error",
-				(error.title ? error.title : `Konnte ${entityTypeInfo.labelSingular} nicht speichern`) + ": " + (error.detail ? error.detail : error)
+				`Konnte ${entityTypeInfo.labelSingular} nicht speichern: ` +
+				(error.detail ? error.detail : error.title ? error.title : error)
 			);
 		}
 	};

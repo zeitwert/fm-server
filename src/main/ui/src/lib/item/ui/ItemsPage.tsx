@@ -84,8 +84,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 						<ItemModal
 							store={this.props.store}
 							entityType={entityType}
-							onClose={this.closeEditor}
-							onCancel={this.cancelEditor}
 						>
 							{createEditor}
 						</ItemModal>
@@ -112,25 +110,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 			owner: session.sessionInfo!.user
 		});
 		this.props.onAfterCreate && this.props.onAfterCreate(this.props.store);
-	};
-
-	private cancelEditor = async () => {
-		this.props.store!.cancel();
-	};
-
-	private closeEditor = async () => {
-		const type = EntityTypes[this.props.entityType];
-		try {
-			await this.props.store.store();
-			this.ctx.showToast("success", `${type.labelSingular} gespeichert`);
-			this.props.navigate("/" + this.props.store.typeName + "/" + this.props.store!.id);
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				`Could not create new ${type.labelSingular}: ` +
-				(error.detail ? error.detail : error.title ? error.title : error)
-			);
-		}
 	};
 
 }

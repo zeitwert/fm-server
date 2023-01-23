@@ -166,8 +166,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 					<ItemModal
 						store={this.accountStore}
 						entityType={EntityType.ACCOUNT}
-						onClose={this.closeAccountEditor}
-						onCancel={this.cancelAccountEditor}
 					>
 						{() => <AccountCreationForm account={this.accountStore.account!} />}
 					</ItemModal>
@@ -178,8 +176,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 					<ItemModal
 						store={this.userStore}
 						entityType={EntityType.USER}
-						onClose={this.closeUserEditor}
-						onCancel={this.cancelUserEditor}
 					>
 						{() => <UserCreationForm user={this.userStore.user!} />}
 					</ItemModal>
@@ -238,23 +234,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 		});
 	};
 
-	private cancelAccountEditor = async () => {
-		this.accountStore.cancel();
-	};
-
-	private closeAccountEditor = async () => {
-		try {
-			await this.accountStore.store();
-			this.ctx.showToast("success", `New User ${this.userStore.id} created`);
-			this.props.navigate("/account/" + this.accountStore.id);
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				"Could not create new Account: " + (error.detail ? error.detail : error.title ? error.title : error)
-			);
-		}
-	};
-
 	private openUserEditor = () => {
 		const tenant = this.tenantStore.tenant!;
 		const tenantEnum: Enumerated = {
@@ -270,23 +249,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 			owner: session.sessionInfo!.user,
 			role: roleEnum
 		});
-	};
-
-	private cancelUserEditor = async () => {
-		this.userStore.cancel();
-	};
-
-	private closeUserEditor = async () => {
-		try {
-			await this.userStore.store();
-			this.ctx.showToast("success", `New User ${this.userStore.id} created`);
-			this.props.navigate("/user/" + this.userStore.id);
-		} catch (error: any) {
-			this.ctx.showAlert(
-				"error",
-				"Could not create new User: " + (error.detail ? error.detail : error.title ? error.title : error)
-			);
-		}
 	};
 
 	private reload = async () => {
