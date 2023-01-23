@@ -11,10 +11,9 @@ const INCLUDES = "";
 export class NoteApiImpl extends AggregateApiImpl<NoteSnapshot> implements NoteApi {
 	constructor() {
 		const PROPS = Object.keys(NoteModel.properties);
-		const IGNORED = IGNORED_ATTRIBUTES.concat(["contacts", "refObj", "documents"]);
+		const IGNORED = IGNORED_ATTRIBUTES.concat(["contacts", "documents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
-			//refObj: "obj",
 			//documents: "document",
 			//mainContact: "contact",
 			//holdings: "holding"

@@ -37,24 +37,10 @@ const MstDocModel = AggregateModel.named("Doc")
 	// 		id && (await (self.rootStore as DocStore).accountsStore.loadAccount(id));
 	// 		superSetField("account", id);
 	// 	}
-	// 	async function setRefDoc(id: string) {
-	// 		id && (await (self.rootStore as DocStore).docsStore.loadDoc(id));
-	// 		superSetField("refDoc", id);
-	// 	}
-	// 	async function setRefObj(id: string) {
-	// 		id && (await (self.rootStore as DocStore).objsStore.loadObj(id));
-	// 		superSetField("refObj", id);
-	// 	}
 	// 	async function setField(field: string, value: any) {
 	// 		switch (field) {
 	// 			case "account": {
 	// 				return setAccount(value);
-	// 			}
-	// 			case "refDoc": {
-	// 				return setRefDoc(value);
-	// 			}
-	// 			case "refObj": {
-	// 				return setRefObj(value);
 	// 			}
 	// 			default: {
 	// 				return superSetField(field, value);
@@ -63,8 +49,6 @@ const MstDocModel = AggregateModel.named("Doc")
 	// 	}
 	// 	return {
 	// 		setAccount,
-	// 		setRefDoc,
-	// 		setRefObj,
 	// 		setField
 	// 	};
 	// })

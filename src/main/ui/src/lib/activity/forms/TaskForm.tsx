@@ -73,8 +73,6 @@ export interface TaskFormState {
 	dueDate?: Date;
 	reminderSet: boolean;
 	reminderOption?: ComboboxItem;
-	refDoc?: string;
-	refObj?: string;
 	account?: Account;
 	assignee?: ComboboxItem;
 }
@@ -97,12 +95,10 @@ export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
 	}
 
 	get cleanState() {
-		const { item, account } = this.props;
+		const { account } = this.props;
 		return {
 			name: "",
 			description: "",
-			refObj: item.isObj ? item.id : undefined,
-			refDoc: item.isDoc ? item.id : undefined,
 			account: account,
 			priority: { id: "normal", name: "Normal" } as Enumerated,
 			dueDate: moment().add(1, "day").toDate(),

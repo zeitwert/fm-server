@@ -84,7 +84,6 @@ interface ModalTaskState {
 	subject: string;
 	description: string;
 	dueDate?: Date;
-	refDoc: any;
 	reminderSet: boolean;
 	reminderDate?: Date;
 	reminderTime?: string;
@@ -98,7 +97,6 @@ export class ModalTask extends React.Component<ModalTaskProps, ModalTaskState> {
 			subject: "",
 			description: "",
 			dueDate: undefined,
-			refDoc: undefined,
 			reminderSet: false,
 			reminderDate: undefined,
 			reminderTime: ""

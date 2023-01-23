@@ -48,30 +48,6 @@ const MstDocStoreModel = AggregateStoreModel
 		return { afterLoad };
 	});
 // .actions((self) => ({
-// 	findByRefObj(refObj: Obj, params?: any): Promise<Doc[]> {
-// 		requireThis(!self.isInTrx, "not in transaction");
-// 		return flow<Doc[], any[]>(function* () {
-// 			try {
-// 				const docs: any = yield DOC_API.findByRefObj(refObj, params);
-// 				return docs.map((doc: DocSnapshot) => DocModel.create(doc)) || [];
-// 			} catch (error: any) {
-// 				Logger.error("Failed to find docs by ref obj", error);
-// 				return Promise.reject(error);
-// 			}
-// 		})();
-// 	},
-// 	findByRefDoc(refDoc: Doc, params?: any): Promise<Doc[]> {
-// 		requireThis(!self.isInTrx, "not in transaction");
-// 		return flow<Doc[], any[]>(function* () {
-// 			try {
-// 				const docs: any = yield DOC_API.findByRefDoc(refDoc, params);
-// 				return docs.map((doc: DocSnapshot) => DocModel.create(doc)) || [];
-// 			} catch (error: any) {
-// 				Logger.error("Failed to find docs by ref doc", error);
-// 				return Promise.reject(error);
-// 			}
-// 		})();
-// 	},
 // 	findByAccount(account: Account): Promise<Doc[]> {
 // 		requireThis(!self.isInTrx, "not in transaction");
 // 		return flow<Doc[], any[]>(function* () {

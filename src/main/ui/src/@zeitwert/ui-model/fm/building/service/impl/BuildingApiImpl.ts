@@ -10,7 +10,7 @@ const INCLUDES = "include[building]=account,contacts,coverFoto";
 export class BuildingApiImpl extends AggregateApiImpl<BuildingSnapshot> implements BuildingApi {
 	constructor() {
 		const PROPS = Object.keys(BuildingModel.properties);
-		const IGNORED = IGNORED_ATTRIBUTES.concat(["refObj", "documents"]);
+		const IGNORED = IGNORED_ATTRIBUTES.concat(["documents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
 			account: "account",

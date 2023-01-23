@@ -18,8 +18,6 @@ const MstObjModel = AggregateModel
 	.props({
 		meta: types.maybe(types.frozen<ObjMeta>()),
 		//
-		//refObj: types.maybe(types.reference(types.late((): IAnyModelType => ObjModel))),
-		//
 		//documents: types.optional(types.array(types.reference(types.late((): IAnyModelType => DocumentModel))), [])
 	})
 	.views((self) => ({
@@ -27,27 +25,6 @@ const MstObjModel = AggregateModel
 			return true;
 		}
 	}))
-	// .actions((self) => {
-	// 	const superSetField = self.setField;
-	// async function setRefObj(id: string) {
-	// 	id && (await (self.rootStore as ObjStore).objsStore.loadObj(id));
-	// 	superSetField("refObj", id);
-	// }
-	// async function setField(field: string, value: any) {
-	// 	switch (field) {
-	// 		case "refObj": {
-	// 			return setRefObj(value);
-	// 		}
-	// 		default: {
-	// 			return superSetField(field, value);
-	// 		}
-	// 	}
-	// }
-	// return {
-	// setRefObj,
-	// 		setField
-	// 	};
-	// })
 	.actions((self) => ({
 		setDocuments(documents: Document[]) {
 			flow(function* () {

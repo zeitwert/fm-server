@@ -8,7 +8,7 @@ import { ActivityApi } from "../ActivityApi";
 const MODULE = "activity";
 const PATH = "activities";
 const TYPE = "activity";
-const INCLUDES = "include[activity]=refDoc,refObj,assignee,account,contact";
+const INCLUDES = "include[activity]=assignee,account,contact";
 
 export class ActivityApiImpl extends AggregateApiImpl<ActivitySnapshot> implements ActivityApi {
 

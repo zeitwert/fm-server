@@ -12,10 +12,9 @@ const INCLUDES = "include[contact]=account";
 export class ContactApiImpl extends AggregateApiImpl<ContactSnapshot> implements ContactApi {
 	constructor() {
 		const PROPS = Object.keys(ContactModel.properties);
-		const IGNORED = IGNORED_ATTRIBUTES.concat(["refObj", "documents", "addresses", "lifeEvents"]);
+		const IGNORED = IGNORED_ATTRIBUTES.concat(["documents", "addresses", "lifeEvents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
-			// refObj: "obj",
 			// documents: "document",
 			account: "account"
 		};

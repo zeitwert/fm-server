@@ -14,9 +14,8 @@ export class PortfolioApiImpl extends AggregateApiImpl<PortfolioSnapshot> implem
 		const IGNORED = IGNORED_ATTRIBUTES.concat(["documents"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
-			//refObj: "obj",
-			//documents: "document",
 			account: "account",
+			//documents: "document",
 			//holdings: "holding"
 		};
 		super(MODULE, PATH, TYPE, INCLUDES, ATTRIBUTES, RELATIONS);
