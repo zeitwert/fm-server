@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Icon, MediaObject, PageHeaderControl } from "@salesforce/design-system-react";
+import { Icon, MediaObject, PageHeaderControl } from "@salesforce/design-system-react";
 import { AggregateStore } from "@zeitwert/ui-model";
 import { ButtonStateful, PageHeader } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
@@ -20,7 +20,6 @@ interface ItemHeaderProps {
 	store: AggregateStore;
 	details: HeaderDetail[];
 	customActions?: JSX.Element;
-	editItem?: () => void;
 }
 
 @inject("session", "showAlert", "showToast")
@@ -84,17 +83,10 @@ export default class ItemHeader extends React.Component<ItemHeaderProps> {
 						/>
 					}
 				</PageHeaderControl>
-				{
-					this.props.editItem &&
-					// @ts-ignore
-					<PageHeaderControl>
-						<ButtonGroup variant="list">
-							<Button onClick={() => this.props.editItem && this.props.editItem()}>Edit</Button>
-						</ButtonGroup>
-					</PageHeaderControl>
-				}
 				{/* @ts-ignore */}
-				<PageHeaderControl>{this.props.customActions}</PageHeaderControl>
+				<PageHeaderControl>
+					{this.props.customActions}
+				</PageHeaderControl>
 			</>
 		);
 		const renderHeaderContent = (header: HeaderDetail) => {

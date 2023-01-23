@@ -1,5 +1,5 @@
 
-import { Button } from "@salesforce/design-system-react";
+import { Button, ButtonGroup } from "@salesforce/design-system-react";
 import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel, session } from "@zeitwert/ui-model";
 import { DataTableCellWithDocumentIcon, DataTableCellWithEntityIcon, DataTableCellWithLink, DateDataTableCell } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
@@ -17,7 +17,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	listDatamart: string;
 	listTemplate: string;
 	canCreate: boolean;
-	actionButtons?: React.ReactNode[];
+	customActions?: JSX.Element;
 	createEditor?: () => JSX.Element;
 	onAfterCreate?: (store: AggregateStore) => void;
 	onOpenPreview?: (itemId: string) => void;
@@ -47,7 +47,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 	}
 
 	render() {
-		const { entityType, createEditor, listTemplate, actionButtons, canCreate } = this.props;
+		const { entityType, createEditor, listTemplate, customActions, canCreate } = this.props;
 		const type = EntityTypes[this.props.entityType];
 		const newText = getNewEntityText(type);
 		return (
@@ -65,11 +65,15 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 						entityIcon: DataTableCellWithEntityIcon
 					}}
 					actionButtons={
-						(actionButtons || []).concat(
-							canCreate
-								? [<Button key="new" label={newText} onClick={this.openEditor} />]
-								: []
-						)
+						<>
+							{customActions}
+							{
+								canCreate &&
+								<ButtonGroup variant="list">
+									<Button key="new" label={newText} onClick={this.openEditor} />
+								</ButtonGroup>
+							}
+						</>
 					}
 					sortProperty={this.sortProperty}
 					sortDirection={this.sortDirection}

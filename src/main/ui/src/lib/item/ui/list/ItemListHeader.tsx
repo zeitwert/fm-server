@@ -1,5 +1,5 @@
 
-import { Button, ButtonGroup, Dropdown, DropdownTrigger, Icon, PageHeader, PageHeaderControl } from "@salesforce/design-system-react";
+import { Button, Dropdown, DropdownTrigger, Icon, PageHeader, PageHeaderControl } from "@salesforce/design-system-react";
 import { Enumerated } from "@zeitwert/ui-model";
 import { ScrollablePageHeader } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
@@ -13,7 +13,7 @@ export interface ItemListHeaderProps {
 	iconName: string;
 	templateList: Enumerated[];
 	defaultTemplateId: string;
-	actionButtons: React.ReactNode[];
+	actionButtons: JSX.Element;
 	modifiedAt?: Date;
 	reportData: any;
 	onRefresh: () => void;
@@ -48,14 +48,12 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 	render() {
 		const { label, iconCategory, iconName, templateList, actionButtons, reportData, onRefresh, onSelectTemplate } = this.props;
 		const actions = () => (
-			// @ts-ignore
 			<PageHeaderControl>
-				<ButtonGroup variant="list">{actionButtons}</ButtonGroup>
+				{actionButtons}
 			</PageHeaderControl>
 		);
 		const controls = () => (
 			<>
-				{/* @ts-ignore */}
 				<PageHeaderControl>
 					<Dropdown
 						align="right"
@@ -78,7 +76,6 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 						</DropdownTrigger>
 					</Dropdown>
 				</PageHeaderControl>
-				{/* @ts-ignore */}
 				<PageHeaderControl>
 					<Dropdown
 						align="right"
@@ -106,7 +103,6 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 						</DropdownTrigger>
 					</Dropdown>
 				</PageHeaderControl>
-				{/* @ts-ignore */}
 				{/*
 				<PageHeaderControl>
 					<Button
@@ -118,7 +114,6 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 					/>
 				</PageHeaderControl>
 				*/}
-				{/* @ts-ignore */}
 				<PageHeaderControl>
 					<Button
 						assistiveText={{ icon: "Refresh" }}

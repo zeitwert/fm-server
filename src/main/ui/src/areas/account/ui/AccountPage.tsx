@@ -215,11 +215,9 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	private getHeaderActions() {
 		return (
-			<>
-				<ButtonGroup variant="list">
-					<Button onClick={this.openContactEditor}>Neuer Kontakt</Button>
-				</ButtonGroup>
-			</>
+			<ButtonGroup variant="list">
+				<Button onClick={this.openContactEditor}>Neuer Kontakt</Button>
+			</ButtonGroup>
 		);
 	}
 

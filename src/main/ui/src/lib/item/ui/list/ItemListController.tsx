@@ -11,7 +11,7 @@ interface ItemListControllerProps {
 	defaultTemplate: string;
 	store: ItemList;
 	dataTableCellTemplates?: any;
-	actionButtons: React.ReactNode[];
+	actionButtons: JSX.Element;
 	sortProperty?: string;
 	sortDirection?: "asc" | "desc" | undefined;
 	onClick?: (item: any) => void;

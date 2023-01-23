@@ -1,5 +1,5 @@
 
-import { Button } from "@salesforce/design-system-react";
+import { Button, ButtonGroup } from "@salesforce/design-system-react";
 import { API, Building, BuildingStore, BuildingStoreModel, Config, EntityType, Enumerated, session } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
@@ -58,7 +58,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 								store={buildingStore}
 								listDatamart="building.buildings"
 								listTemplate="building.buildings.all"
-								actionButtons={this.getHeaderActions()}
+								customActions={this.getHeaderActions()}
 								canCreate={session.isUser && !session.hasReadOnlyRole}
 								createEditor={() => <BuildingCreationForm building={buildingStore.building!} />}
 								onAfterCreate={(store: BuildingStore) => { initBuilding(store.building!, this.ctx.session.sessionInfo?.account) }}
@@ -88,14 +88,22 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 	}
 
 	private getHeaderActions() {
-		const actions = [];
-		if (this.selection.length) {
-			actions.push(<Button key="print" label={"Bewertungen drucken"} onClick={this.printEvaluations} />);
-		}
-		if (session.hasSuperUserRole) {
-			actions.push(<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />);
-		}
-		return actions;
+		return (
+			<>
+				{
+					!!this.selection.length &&
+					<ButtonGroup variant="list">
+						<Button key="print" label={"Bewertungen drucken"} onClick={this.printEvaluations} />
+					</ButtonGroup>
+				}
+				{
+					session.hasSuperUserRole &&
+					<ButtonGroup variant="list">
+						<Button key="import" label={"Import Immobilie"} onClick={this.openImport} />
+					</ButtonGroup>
+				}
+			</>
+		);
 	}
 
 	private openPreview = (itemId: string) => {

@@ -16,26 +16,23 @@ export class ItemEditorButtons extends React.Component<ItemEditorButtonsProps> {
 		const { showEditButtons, doEdit, allowStore, customButtons } = this.props;
 		return (
 			<>
-				{showEditButtons && (
+				{
+					showEditButtons &&
 					<>
-						{!doEdit && (
-							<Button
-								variant="icon"
-								iconCategory="utility"
-								iconName="edit"
-								iconSize="medium"
-								className="slds-m-top_x-small"
-								onClick={this.props.onOpenEditor}
-							/>
-						)}
+						{
+							!doEdit &&
+							<Button variant="icon" iconCategory="utility" iconName="edit" iconSize="medium" className="slds-m-top_x-small" onClick={this.props.onOpenEditor} />
+						}
 						{doEdit && <Button onClick={this.props.onCancelEditor}>Cancel</Button>}
-						{doEdit && (
-							<Button variant="brand" onClick={this.props.onCloseEditor} disabled={!allowStore}>
-								Store
-							</Button>
-						)}
+						{
+							doEdit && (
+								<Button variant="brand" onClick={this.props.onCloseEditor} disabled={!allowStore}>
+									Store
+								</Button>
+							)
+						}
 					</>
-				)}
+				}
 				{customButtons}
 			</>
 		);
