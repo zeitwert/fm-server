@@ -14,7 +14,7 @@ import org.jooq.ForeignKey;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -49,6 +49,11 @@ public class ObjActivityV extends TableImpl<ObjActivityVRecord> {
      * The column <code>public.obj_activity_v.id</code>.
      */
     public final TableField<ObjActivityVRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_activity_v.aggregate_type_id</code>.
+     */
+    public final TableField<ObjActivityVRecord, String> AGGREGATE_TYPE_ID = createField(DSL.name("aggregate_type_id"), SQLDataType.VARCHAR(40), this, "");
 
     /**
      * The column <code>public.obj_activity_v.seq_nr</code>.
@@ -95,12 +100,22 @@ public class ObjActivityV extends TableImpl<ObjActivityVRecord> {
      */
     public final TableField<ObjActivityVRecord, String> CAPTION = createField(DSL.name("caption"), SQLDataType.VARCHAR(200), this, "");
 
+    /**
+     * The column <code>public.obj_activity_v.old_case_stage_id</code>.
+     */
+    public final TableField<ObjActivityVRecord, String> OLD_CASE_STAGE_ID = createField(DSL.name("old_case_stage_id"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.obj_activity_v.new_case_stage_id</code>.
+     */
+    public final TableField<ObjActivityVRecord, String> NEW_CASE_STAGE_ID = createField(DSL.name("new_case_stage_id"), SQLDataType.CLOB, this, "");
+
     private ObjActivityV(Name alias, Table<ObjActivityVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjActivityV(Name alias, Table<ObjActivityVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_activity_v\" as  SELECT o.id,\n    opt.seq_nr,\n    opt.\"timestamp\",\n    opt.user_id,\n    opt.tenant_id,\n    opt.changes,\n    o.owner_id,\n    o.account_id,\n    o.obj_type_id,\n    o.caption\n   FROM (obj_part_transition opt\n     LEFT JOIN obj o ON ((opt.obj_id = o.id)))\n  ORDER BY opt.\"timestamp\" DESC;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_activity_v\" as  SELECT o.id,\n    o.obj_type_id AS aggregate_type_id,\n    opt.seq_nr,\n    opt.\"timestamp\",\n    opt.user_id,\n    opt.tenant_id,\n    opt.changes,\n    o.owner_id,\n    o.account_id,\n    o.obj_type_id,\n    o.caption,\n    NULL::text AS old_case_stage_id,\n    NULL::text AS new_case_stage_id\n   FROM (obj_part_transition opt\n     LEFT JOIN obj o ON ((opt.obj_id = o.id)))\n  ORDER BY opt.\"timestamp\" DESC;"));
     }
 
     /**
@@ -160,11 +175,11 @@ public class ObjActivityV extends TableImpl<ObjActivityVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, Integer, OffsetDateTime, Integer, Integer, JSON, Integer, Integer, String, String> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row13<Integer, String, Integer, OffsetDateTime, Integer, Integer, JSON, Integer, Integer, String, String, String, String> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

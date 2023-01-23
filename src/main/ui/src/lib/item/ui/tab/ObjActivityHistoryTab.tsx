@@ -35,6 +35,8 @@ export default class ObjActivityHistoryTab extends React.Component<ObjActivityHi
 								icon={this.getIcon(transition)}
 								date={DateFormat.relativeTime(transition.timestamp!)}
 								body={this.getUserName(transition)}
+								isExpandable={true}
+								isExpanded={index === 0}
 								detail={
 									<Grid isVertical={true}>
 										<Row>
@@ -59,8 +61,6 @@ export default class ObjActivityHistoryTab extends React.Component<ObjActivityHi
 										</Row>
 									</Grid>
 								}
-								isExpandable={true}
-								isExpanded={index === 0}
 							/>
 						))
 					}

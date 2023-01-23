@@ -4,6 +4,7 @@
 package io.zeitwert.fm.collaboration.model.db;
 
 
+import io.zeitwert.fm.collaboration.model.db.tables.ActivityV;
 import io.zeitwert.fm.collaboration.model.db.tables.CodeNoteType;
 import io.zeitwert.fm.collaboration.model.db.tables.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.ObjNoteV;
@@ -28,6 +29,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.activity_v</code>.
+     */
+    public final ActivityV ACTIVITY_V = ActivityV.ACTIVITY_V;
 
     /**
      * The table <code>public.code_note_type</code>.
@@ -60,6 +66,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            ActivityV.ACTIVITY_V,
             CodeNoteType.CODE_NOTE_TYPE,
             ObjNote.OBJ_NOTE,
             ObjNoteV.OBJ_NOTE_V);

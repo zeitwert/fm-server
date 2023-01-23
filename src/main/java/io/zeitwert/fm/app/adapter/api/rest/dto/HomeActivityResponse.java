@@ -1,21 +1,23 @@
 
 package io.zeitwert.fm.app.adapter.api.rest.dto;
 
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.OffsetDateTime;
 
 @Data
 @Builder
 public class HomeActivityResponse {
 
-	private String objTypeId;
-	private Integer objId;
-	private String objCaption;
-	private Integer seqNr;
-	private OffsetDateTime timestamp;
-	private String user;
-	private String changes;
+	private EnumeratedDto item; // rating, task
+	private EnumeratedDto relatedTo; // rating: building, task: obj
+	private EnumeratedDto owner;
+
+	private EnumeratedDto user;
+	private String dueAt;
+
+	private String subject;
+	private String content;
+	private EnumeratedDto priority;
 
 }

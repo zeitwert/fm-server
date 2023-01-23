@@ -7,7 +7,6 @@ import org.springframework.context.event.EventListener;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
-
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
@@ -33,6 +32,7 @@ public abstract class AggregateCacheBase<A extends Aggregate> implements Aggrega
 		return this.repository;
 	}
 
+	@Override
 	public A get(Integer id) {
 		if (id == null) {
 			return null;
@@ -41,6 +41,7 @@ public abstract class AggregateCacheBase<A extends Aggregate> implements Aggrega
 		return aggregate;
 	}
 
+	@Override
 	public EnumeratedDto getAsEnumerated(Integer id) {
 		if (id == null) {
 			return null;

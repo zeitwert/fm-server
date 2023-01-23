@@ -8,6 +8,7 @@ import io.zeitwert.ddd.doc.model.db.tables.CodeCaseDef;
 import io.zeitwert.ddd.doc.model.db.tables.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.db.tables.CodeCaseStageType;
 import io.zeitwert.ddd.doc.model.db.tables.Doc;
+import io.zeitwert.ddd.doc.model.db.tables.DocActivityV;
 import io.zeitwert.ddd.doc.model.db.tables.DocPartItem;
 import io.zeitwert.ddd.doc.model.db.tables.DocPartTransition;
 
@@ -37,6 +38,11 @@ public class Tables {
      * The table <code>public.doc</code>.
      */
     public static final Doc DOC = Doc.DOC;
+
+    /**
+     * The table <code>public.doc_activity_v</code>.
+     */
+    public static final DocActivityV DOC_ACTIVITY_V = DocActivityV.DOC_ACTIVITY_V;
 
     /**
      * The table <code>public.doc_part_item</code>.

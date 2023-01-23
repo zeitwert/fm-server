@@ -4,6 +4,7 @@
 package io.zeitwert.fm.collaboration.model.db;
 
 
+import io.zeitwert.fm.collaboration.model.db.tables.ActivityV;
 import io.zeitwert.fm.collaboration.model.db.tables.CodeNoteType;
 import io.zeitwert.fm.collaboration.model.db.tables.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.ObjNoteV;
@@ -14,6 +15,11 @@ import io.zeitwert.fm.collaboration.model.db.tables.ObjNoteV;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.activity_v</code>.
+     */
+    public static final ActivityV ACTIVITY_V = ActivityV.ACTIVITY_V;
 
     /**
      * The table <code>public.code_note_type</code>.

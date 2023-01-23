@@ -8,6 +8,7 @@
 				  code_case.*
 				| doc
 				| doc_id_seq
+				| doc_activity_v
 				| doc_part.*
 			</includes>
 			<inputSchema>public</inputSchema>

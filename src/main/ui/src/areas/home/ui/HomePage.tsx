@@ -8,10 +8,10 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import HomeCardMap from "./HomeCardMap";
+import HomeCardOpenActivities from "./HomeCardOpenActivities";
 import HomeCardOverview from "./HomeCardOverview";
-import HomeCardRecentActivityList from "./HomeCardRecentActivityList";
+import HomeCardRecentActions from "./HomeCardRecentActions";
 import HomeCardStatistics from "./HomeCardStatistics";
-import HomeCardTodoList from "./HomeCardTodoList";
 
 @inject("appStore", "showToast")
 @observer
@@ -56,7 +56,7 @@ class HomePage extends React.Component<RouteComponentProps> {
 						<Col totalCols={12} cols={6}>
 							<Row cols={2} nowrap className="fa-height-50">
 								<Col totalCols={2} cols={1} className="slds-p-around_xx-small">
-									<HomeCardTodoList />
+									<HomeCardOpenActivities />
 								</Col>
 								<Col totalCols={2} cols={1} className="slds-p-around_xx-small">
 									<HomeCardOverview />
@@ -64,7 +64,7 @@ class HomePage extends React.Component<RouteComponentProps> {
 							</Row>
 							<Row cols={2} nowrap className="fa-height-50">
 								<Col totalCols={2} cols={1} className="slds-p-around_xx-small">
-									<HomeCardRecentActivityList />
+									<HomeCardRecentActions />
 								</Col>
 								<Col totalCols={2} cols={1} className="slds-p-around_xx-small">
 									<HomeCardStatistics />

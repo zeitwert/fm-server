@@ -1,6 +1,9 @@
 
 package io.zeitwert.fm.app.adapter.api.rest;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,21 +17,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.obj.model.db.Tables;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjActivityVRecord;
+import io.zeitwert.fm.collaboration.model.db.Tables;
+import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
+import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeRatingResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.building.service.api.ObjBuildingCache;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ActivityVRecord;
+import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.DocTaskRepository;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
+import io.zeitwert.fm.task.service.api.DocTaskCache;
 
 @RestController("homeController")
 @RequestMapping("/rest/home")
@@ -44,10 +62,25 @@ public class HomeController {
 	ObjAccountCache accountCache;
 
 	@Autowired
+	ObjBuildingCache buildingCache;
+
+	@Autowired
 	ObjBuildingRepository buildingRepository;
 
 	@Autowired
+	ObjPortfolioCache portfolioCache;
+
+	@Autowired
 	ObjPortfolioRepository portfolioRepository;
+
+	@Autowired
+	DocTaskCache taskCache;
+
+	@Autowired
+	DocTaskRepository taskRepository;
+
+	@Autowired
+	ObjVCache objCache;
 
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
@@ -60,68 +93,109 @@ public class HomeController {
 				.count();
 		Integer insuranceValue = buildingList.stream()
 				.map(b -> b.getInsuredValue() != null ? b.getInsuredValue().intValue() : 0).reduce(0, (a, b) -> a + b);
-		//@formatter:off
 		return ResponseEntity.ok(
-			HomeOverviewResponse.builder()
-				.accountId(accountId)
-				.accountName(account.getName())
-				.buildingCount(buildingList.size())
-				.portfolioCount(portfolioList.size())
-				.ratingCount(ratingCount)
-				.insuranceValue(insuranceValue)
-				.timeValue(null)
-				.shortTermRenovationCosts(null)
-				.midTermRenovationCosts(null)
-				.build()
-		);
-		//@formatter:on
+				HomeOverviewResponse.builder()
+						.accountId(accountId)
+						.accountName(account.getName())
+						.buildingCount(buildingList.size())
+						.portfolioCount(portfolioList.size())
+						.ratingCount(ratingCount)
+						.insuranceValue(insuranceValue)
+						.timeValue(null)
+						.shortTermRenovationCosts(null)
+						.midTermRenovationCosts(null)
+						.build());
 	}
 
-	@GetMapping("/activeRatings/{accountId}")
-	public ResponseEntity<List<HomeRatingResponse>> getActiveRatings(@PathVariable("accountId") Integer accountId) {
+	@GetMapping("/openActivities/{accountId}")
+	public ResponseEntity<List<HomeActivityResponse>> getOpenActivities(@PathVariable("accountId") Integer accountId) {
 		List<ObjBuildingVRecord> buildingList = this.buildingRepository.find(new QuerySpec(ObjBuilding.class));
-		//@formatter:off
-		List<HomeRatingResponse> rrList = buildingList
-			.stream()
-			.filter(b -> Objects.equals(b.getRatingStatusId(), "open") || Objects.equals(b.getRatingStatusId(), "review"))
-			.map(b -> this.getRatingResponse(b))
-			.toList();
-		return ResponseEntity.ok(rrList);
-		//@formatter:on
+		List<HomeActivityResponse> rrList = buildingList
+				.stream()
+				.filter(b -> Objects.equals(b.getRatingStatusId(), "open") || Objects.equals(b.getRatingStatusId(), "review"))
+				.map(b -> this.getRatingResponse(b))
+				.toList();
+		List<DocTaskVRecord> taskList = this.taskRepository.find(new QuerySpec(DocTask.class));
+		List<HomeActivityResponse> ttList = taskList
+				.stream()
+				.filter(b -> !"task.done".equals(b.getCaseStageId()))
+				.map(b -> this.getTaskResponse(b))
+				.toList();
+		List<HomeActivityResponse> result = new ArrayList<>();
+		result.addAll(rrList);
+		result.addAll(ttList);
+		return ResponseEntity.ok(result);
 	}
 
-	private HomeRatingResponse getRatingResponse(ObjBuildingVRecord record) {
-		//@formatter:off
-		return HomeRatingResponse.builder()
-			.buildingId(record.getId())
-			.buildingName(record.getName())
-			.buildingOwner(userCache.get(record.getOwnerId()).getCaption())
-			.buildingAddress(record.getStreet() + " " + record.getZip() + " " + record.getCity())
-			.ratingDate(Formatter.INSTANCE.formatDate(record.getRatingDate()))
-			.ratingUser(record.getRatingUserId() != null ? userCache.get(record.getRatingUserId()).getCaption() : null)
-		.build();
-		//@formatter:on
+	private HomeActivityResponse getRatingResponse(ObjBuildingVRecord record) {
+		ObjBuilding building = this.buildingCache.get(record.getId());
+		String address = record.getStreet() + "\n" + record.getZip() + " " + record.getCity();
+		return HomeActivityResponse.builder()
+				.item(EnumeratedDto.fromObj(building))
+				.relatedTo(EnumeratedDto.fromObj(building))
+				.owner(EnumeratedDto
+						.fromObj(record.getRatingUserId() != null ? this.userCache.get(record.getRatingUserId()) : null))
+				.user(EnumeratedDto
+						.fromObj(record.getRatingUserId() != null ? this.userCache.get(record.getRatingUserId()) : null))
+				.dueAt(Formatter.INSTANCE.formatIsoDate(record.getRatingDate()))
+				.subject(building.getName())
+				.content(address)
+				.priority(EnumeratedDto.fromEnum(CodeTaskPriorityEnum.getPriority("normal")))
+				.build();
 	}
 
-	@GetMapping("/recentActivity/{accountId}")
-	public ResponseEntity<List<HomeActivityResponse>> getRecentActivity(@PathVariable("accountId") Integer accountId) {
+	private HomeActivityResponse getTaskResponse(DocTaskVRecord record) {
+		DocTask task = this.taskCache.get(record.getId());
+		Integer relatedToId = record.getRelatedObjId() != null ? record.getRelatedObjId() : record.getRelatedDocId();
+		assertThis(ObjRepository.isObjId(relatedToId), "only obj supported yet");
+		Obj relatedTo = this.objCache.get(relatedToId);
+		return HomeActivityResponse.builder()
+				.item(EnumeratedDto.fromDoc(task))
+				.relatedTo(EnumeratedDto.fromObj(relatedTo))
+				.owner(EnumeratedDto.fromObj(record.getOwnerId() != null ? this.userCache.get(record.getOwnerId()) : null))
+				.user(EnumeratedDto.fromObj(record.getAssigneeId() != null ? this.userCache.get(record.getAssigneeId()) : null))
+				.dueAt(Formatter.INSTANCE.formatIsoDate(record.getDueAt().toLocalDate()))
+				.subject(record.getSubject())
+				.content(record.getContent())
+				.priority(EnumeratedDto.fromEnum(CodeTaskPriorityEnum.getPriority(record.getPriorityId())))
+				.build();
+	}
+
+	@GetMapping("/recentActions/{accountId}")
+	public ResponseEntity<List<HomeActionResponse>> getRecentActions(@PathVariable("accountId") Integer accountId) {
 		ObjAccount account = this.accountCache.get(accountId);
-		Result<ObjActivityVRecord> result = this.dslContext.selectFrom(Tables.OBJ_ACTIVITY_V)
-				.where(Tables.OBJ_ACTIVITY_V.TENANT_ID.eq(account.getTenantId())
-						.and(Tables.OBJ_ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
-				.limit(20).fetch();
+		Result<ActivityVRecord> result = this.dslContext
+				.selectFrom(Tables.ACTIVITY_V)
+				.where(
+						Tables.ACTIVITY_V.TENANT_ID.eq(account.getTenantId())
+								.and(Tables.ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
+				.orderBy(Tables.ACTIVITY_V.TIMESTAMP.desc())
+				.limit(20)
+				.fetch();
 		return ResponseEntity.ok(result.stream().map(record -> this.getActivityResponse(record)).toList());
 	}
 
-	private HomeActivityResponse getActivityResponse(ObjActivityVRecord record) {
-		return HomeActivityResponse.builder()
-				.objTypeId(record.getObjTypeId())
-				.objId(record.getId())
-				.objCaption(record.getCaption())
-				.seqNr(record.getSeqNr())
-				.timestamp(record.getTimestamp())
-				.user(this.userCache.get(record.getUserId()).getCaption())
+	private HomeActionResponse getActivityResponse(ActivityVRecord a) {
+		CodeAggregateType type = CodeAggregateTypeEnum.getAggregateType(a.getAggregateTypeId());
+		EnumeratedDto item = EnumeratedDto.builder()
+				.id(a.getId().toString())
+				.name(a.getCaption())
+				.itemType(EnumeratedDto.fromEnum(type))
+				.build();
+		CodeCaseStage oldCaseStage = a.getOldCaseStageId() != null
+				? CodeCaseStageEnum.getCaseStage(a.getOldCaseStageId())
+				: null;
+		CodeCaseStage newCaseStage = a.getNewCaseStageId() != null
+				? CodeCaseStageEnum.getCaseStage(a.getNewCaseStageId())
+				: null;
+		return HomeActionResponse.builder()
+				.item(item)
+				.seqNr(a.getSeqNr())
+				.timestamp(a.getTimestamp())
+				.user(EnumeratedDto.fromObj(this.userCache.get(a.getUserId())))
 				.changes(null)
+				.oldCaseStage(EnumeratedDto.fromEnum(oldCaseStage))
+				.newCaseStage(EnumeratedDto.fromEnum(newCaseStage))
 				.build();
 	}
 
