@@ -1,8 +1,7 @@
 
 import { Icon } from "@salesforce/design-system-react";
 import { DateFormat, Doc, DocPartTransition, session } from "@zeitwert/ui-model";
-import { Col, Grid, Row } from "@zeitwert/ui-slds";
-import { Timeline, TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
+import { Col, Grid, Row, Timeline, TimelineItem } from "@zeitwert/ui-slds";
 import { makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

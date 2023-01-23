@@ -1,6 +1,7 @@
+
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, Icon, PageHeader, PageHeaderControl } from "@salesforce/design-system-react";
 import { Enumerated } from "@zeitwert/ui-model";
-import { ScrollablePageHeader } from "@zeitwert/ui-slds/content/ScrollablePageHeader";
+import { ScrollablePageHeader } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import moment from "moment";

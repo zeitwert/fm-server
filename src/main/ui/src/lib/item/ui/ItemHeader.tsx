@@ -1,7 +1,6 @@
 import { Button, ButtonGroup, Icon, MediaObject, PageHeaderControl } from "@salesforce/design-system-react";
 import { AggregateStore } from "@zeitwert/ui-model";
-import ButtonStateful from "@zeitwert/ui-slds/common/ButtonStateful";
-import { PageHeader } from "@zeitwert/ui-slds/content/PageHeader";
+import { ButtonStateful, PageHeader } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

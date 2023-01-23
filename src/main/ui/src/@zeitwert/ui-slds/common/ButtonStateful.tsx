@@ -22,7 +22,7 @@ interface ButtonStatefulProps {
  * - Used for favorites, follow.
  */
 @observer
-export default class ButtonStateful extends React.Component<ButtonStatefulProps> {
+export class ButtonStateful extends React.Component<ButtonStatefulProps> {
 	@observable isHovering = false;
 
 	constructor(props: ButtonStatefulProps) {

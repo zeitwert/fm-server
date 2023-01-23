@@ -1,12 +1,7 @@
 
 import { Button } from "@salesforce/design-system-react";
 import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel, session } from "@zeitwert/ui-model";
-import {
-	DataTableCellWithDocumentIcon,
-	DataTableCellWithEntityIcon,
-	DataTableCellWithLink,
-	DateDataTableCell
-} from "@zeitwert/ui-slds/custom/CustomDataTableCells";
+import { DataTableCellWithDocumentIcon, DataTableCellWithEntityIcon, DataTableCellWithLink, DateDataTableCell } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";

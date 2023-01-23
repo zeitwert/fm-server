@@ -1,12 +1,6 @@
 import { Button, ButtonGroup, Card, MediaObject, Spinner } from "@salesforce/design-system-react";
 import { ItemListModel } from "@zeitwert/ui-model";
-import {
-	DataTableCellForTemperature,
-	DataTableCellWithChannelIcon,
-	DataTableCellWithEntityIcon,
-	DataTableCellWithLink
-} from "@zeitwert/ui-slds/custom/CustomDataTableCells";
-import { ReportViewer } from "@zeitwert/ui-slds/report/ReportViewer";
+import { DataTableCellWithEntityIcon, DataTableCellWithLink, ReportViewer } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import classNames from "classnames";
 import { makeObservable, observable } from "mobx";
@@ -143,8 +137,8 @@ export default class HomeActiveBusinessProcesses extends React.Component<HomeAct
 						layout={this.docListStore.template.layout}
 						data={final}
 						dataTableCellTemplates={{
-							channelIcon: DataTableCellWithChannelIcon,
-							temperature: DataTableCellForTemperature,
+							//channelIcon: DataTableCellWithChannelIcon,
+							//temperature: DataTableCellForTemperature,
 							link: DataTableCellWithLink,
 							entityIcon: DataTableCellWithEntityIcon
 						}}

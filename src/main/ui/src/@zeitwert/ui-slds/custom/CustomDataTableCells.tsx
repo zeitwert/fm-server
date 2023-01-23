@@ -2,8 +2,7 @@
 import { DataTableCell, Icon } from "@salesforce/design-system-react";
 import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/constants";
 import { channels, DateFormat, EntityTypes, NumberFormat } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds";
-import CustomIcon from "@zeitwert/ui-slds/custom/CustomIcon";
+import { Col, CustomIcon, Grid } from "@zeitwert/ui-slds";
 import { DocumentUtils } from "areas/document/utils/DocumentUtils";
 import React from "react";
 import { Link } from "react-router-dom";

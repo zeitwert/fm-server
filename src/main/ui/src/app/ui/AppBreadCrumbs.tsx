@@ -1,6 +1,6 @@
 import { Button, GlobalNavigationBar, GlobalNavigationBarRegion, Icon } from "@salesforce/design-system-react";
 import { BreadCrumb as BreadCrumbItem } from "@zeitwert/ui-model";
-import { BreadCrumb, BreadCrumbs } from "@zeitwert/ui-slds/common/BreadCrumbs";
+import { BreadCrumb, BreadCrumbs } from "@zeitwert/ui-slds";
 import React from "react";
 
 interface AppBreadCrumbsProps {

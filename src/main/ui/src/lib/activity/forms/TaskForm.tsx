@@ -1,8 +1,7 @@
 
 import { Button, Checkbox, Combobox, Icon, Input, Textarea, Tooltip } from "@salesforce/design-system-react";
 import { Account, Aggregate, API, Config, Enumerated, GenericUserType, UserInfo } from "@zeitwert/ui-model";
-import { Col, Grid } from "@zeitwert/ui-slds";
-import Datepicker from "@zeitwert/ui-slds/common/Datepicker";
+import { Col, Datepicker, Grid } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

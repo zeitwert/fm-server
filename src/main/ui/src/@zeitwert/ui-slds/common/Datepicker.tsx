@@ -13,7 +13,7 @@ interface DatepickerProps {
 	onChange: (date: Date) => void;
 }
 
-export default class Datepicker extends React.Component<DatepickerProps> {
+export class Datepicker extends React.Component<DatepickerProps> {
 	render() {
 		const { label, value, isRequired, isOnlyPast, isOnlyFuture, onChange } = this.props;
 		return (

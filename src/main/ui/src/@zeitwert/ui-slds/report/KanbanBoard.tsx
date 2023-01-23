@@ -1,6 +1,6 @@
 
 import { Card, Dropdown } from "@salesforce/design-system-react";
-import { Tile } from "@zeitwert/ui-slds/common/Tile";
+import { Tile } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
 import React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";

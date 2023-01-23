@@ -1,7 +1,7 @@
 
 import { Icon } from "@salesforce/design-system-react";
 import { Aggregate, ContactStore, DateFormat, EntityType, EntityTypes } from "@zeitwert/ui-model";
-import { TimelineItem } from "@zeitwert/ui-slds/timeline/Timeline";
+import { TimelineItem } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

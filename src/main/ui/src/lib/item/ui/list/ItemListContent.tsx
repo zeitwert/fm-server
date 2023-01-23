@@ -1,5 +1,6 @@
+
 import { KANBAN_API, LayoutType, Template } from "@zeitwert/ui-model";
-import { ReportViewer } from "@zeitwert/ui-slds/report/ReportViewer";
+import { ReportViewer } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";

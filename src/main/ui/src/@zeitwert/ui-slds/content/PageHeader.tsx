@@ -1,6 +1,5 @@
 import { MediaObject } from "@salesforce/design-system-react";
-import { Col, ColumnAlignment, Grid } from "@zeitwert/ui-slds";
-import { Text, TextCategory, TextType } from "@zeitwert/ui-slds/common/Text";
+import { Col, ColumnAlignment, Grid, Text, TextCategory, TextType } from "@zeitwert/ui-slds";
 import classNames from "classnames";
 import React, { PropsWithChildren } from "react";
 import { ScrollablePageHeader } from "./ScrollablePageHeader";
