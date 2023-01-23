@@ -26,7 +26,12 @@ public class CodeLeadRatingEnum extends EnumerationBase<CodeLeadRating> {
 	@PostConstruct
 	private void init() {
 		for (final CodeLeadRatingRecord item : this.getDslContext().selectFrom(Tables.CODE_LEAD_RATING).fetch()) {
-			this.addItem(new CodeLeadRating(this, item.getId(), item.getName()));
+			CodeLeadRating leadRating = CodeLeadRating.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(leadRating);
 		}
 	}
 

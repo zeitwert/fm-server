@@ -27,7 +27,13 @@ public final class CodeBuildingPartCatalogEnum extends EnumerationBase<CodeBuild
 	private void init() {
 		for (final CodeBuildingPartCatalogRecord item : this.getDslContext().selectFrom(Tables.CODE_BUILDING_PART_CATALOG)
 				.fetch()) {
-			this.addItem(new CodeBuildingPartCatalog(this, item.getId(), item.getName(), item.getParts()));
+			CodeBuildingPartCatalog part = CodeBuildingPartCatalog.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.parts(item.getParts())
+					.build();
+			this.addItem(part);
 		}
 	}
 

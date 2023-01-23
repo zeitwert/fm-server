@@ -27,7 +27,12 @@ public class CodeAddressChannelEnum extends EnumerationBase<CodeAddressChannel> 
 	private void init() {
 		for (final CodeAddressChannelRecord item : this.getDslContext().selectFrom(Tables.CODE_ADDRESS_CHANNEL)
 				.fetch()) {
-			this.addItem(new CodeAddressChannel(this, item.getId(), item.getName()));
+			CodeAddressChannel channel = CodeAddressChannel.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(channel);
 		}
 	}
 

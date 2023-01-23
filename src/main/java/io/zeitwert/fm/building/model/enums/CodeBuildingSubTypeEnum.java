@@ -29,8 +29,13 @@ public final class CodeBuildingSubTypeEnum extends EnumerationBase<CodeBuildingS
 	private void init() {
 		for (final CodeBuildingSubTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_BUILDING_SUB_TYPE)
 				.fetch()) {
-			this.addItem(new CodeBuildingSubType(this, item.getId(), item.getName(),
-					CodeBuildingTypeEnum.getBuildingType(item.getBuildingTypeId())));
+			CodeBuildingSubType subType = CodeBuildingSubType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.buildingType(CodeBuildingTypeEnum.getBuildingType(item.getBuildingTypeId()))
+					.build();
+			this.addItem(subType);
 		}
 	}
 

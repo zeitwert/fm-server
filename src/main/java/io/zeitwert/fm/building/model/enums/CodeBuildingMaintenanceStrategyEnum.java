@@ -27,7 +27,12 @@ public final class CodeBuildingMaintenanceStrategyEnum extends EnumerationBase<C
 	private void init() {
 		for (final CodeBuildingMaintenanceStrategyRecord item : this.getDslContext()
 				.selectFrom(Tables.CODE_BUILDING_MAINTENANCE_STRATEGY).fetch()) {
-			this.addItem(new CodeBuildingMaintenanceStrategy(this, item.getId(), item.getName()));
+			CodeBuildingMaintenanceStrategy maintenanceStrategy = CodeBuildingMaintenanceStrategy.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(maintenanceStrategy);
 		}
 	}
 

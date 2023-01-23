@@ -26,7 +26,12 @@ public class CodeTitleEnum extends EnumerationBase<CodeTitle> {
 	@PostConstruct
 	private void init() {
 		for (final CodeTitleRecord item : this.getDslContext().selectFrom(Tables.CODE_TITLE).fetch()) {
-			this.addItem(new CodeTitle(this, item.getId(), item.getName()));
+			CodeTitle title = CodeTitle.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(title);
 		}
 	}
 

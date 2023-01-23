@@ -27,7 +27,12 @@ public class CodeDocumentKindEnum extends EnumerationBase<CodeDocumentKind> {
 	private void init() {
 		for (final CodeDocumentKindRecord item : this.getDslContext().selectFrom(Tables.CODE_DOCUMENT_KIND)
 				.fetch()) {
-			this.addItem(new CodeDocumentKind(this, item.getId(), item.getName()));
+			CodeDocumentKind documentKind = CodeDocumentKind.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(documentKind);
 		}
 	}
 

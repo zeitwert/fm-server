@@ -27,7 +27,12 @@ public final class CodeHistoricPreservationEnum extends EnumerationBase<CodeHist
 	private void init() {
 		for (final CodeHistoricPreservationRecord item : this.getDslContext().selectFrom(Tables.CODE_HISTORIC_PRESERVATION)
 				.fetch()) {
-			this.addItem(new CodeHistoricPreservation(this, item.getId(), item.getName()));
+			CodeHistoricPreservation historicPreservation = CodeHistoricPreservation.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(historicPreservation);
 		}
 	}
 

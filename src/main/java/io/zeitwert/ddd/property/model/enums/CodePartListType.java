@@ -1,11 +1,21 @@
 package io.zeitwert.ddd.property.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
 public class CodePartListType extends EnumeratedBase {
 
-	public CodePartListType(CodePartListTypeEnum enumeration, String id, String name) {
-		super(enumeration, id, name);
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

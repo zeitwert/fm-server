@@ -1,22 +1,27 @@
 package io.zeitwert.fm.dms.model.enums;
 
-import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import org.springframework.http.MediaType;
 
+@Data
+@SuperBuilder
 public final class CodeContentType extends EnumeratedBase {
 
 	private final CodeContentKind contentKind;
 	private final String extension;
 	private final String mimeType;
 
-	public CodeContentType(Enumeration<CodeContentType> enumeration, String id, String name,
-			CodeContentKind contentKind, String extension, String mimeType) {
-		super(enumeration, id, name);
-		this.contentKind = contentKind;
-		this.extension = extension;
-		this.mimeType = mimeType;
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public CodeContentKind getContentKind() {

@@ -40,7 +40,12 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 	@PostConstruct
 	private void init() {
 		for (final CodeUserRoleRecord item : this.getDslContext().selectFrom(Tables.CODE_USER_ROLE).fetch()) {
-			this.addItem(new CodeUserRole(this, item.getId(), item.getName()));
+			CodeUserRole userRole = CodeUserRole.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(userRole);
 		}
 		USER = getUserRole("user");
 		SUPER_USER = getUserRole("super_user");

@@ -26,7 +26,12 @@ public class CodeCountryEnum extends EnumerationBase<CodeCountry> {
 	@PostConstruct
 	private void init() {
 		for (final CodeCountryRecord item : this.getDslContext().selectFrom(Tables.CODE_COUNTRY).fetch()) {
-			this.addItem(new CodeCountry(this, item.getId(), item.getName()));
+			CodeCountry country = CodeCountry.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(country);
 		}
 	}
 

@@ -26,7 +26,12 @@ public class CodeLeadSourceEnum extends EnumerationBase<CodeLeadSource> {
 	@PostConstruct
 	private void init() {
 		for (final CodeLeadSourceRecord item : this.getDslContext().selectFrom(Tables.CODE_LEAD_SOURCE).fetch()) {
-			this.addItem(new CodeLeadSource(this, item.getId(), item.getName()));
+			CodeLeadSource leadSource = CodeLeadSource.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(leadSource);
 		}
 	}
 

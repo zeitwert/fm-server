@@ -26,7 +26,12 @@ public final class CodeBuildingTypeEnum extends EnumerationBase<CodeBuildingType
 	@PostConstruct
 	private void init() {
 		for (final CodeBuildingTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_BUILDING_TYPE).fetch()) {
-			this.addItem(new CodeBuildingType(this, item.getId(), item.getName()));
+			CodeBuildingType buildingType = CodeBuildingType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(buildingType);
 		}
 	}
 

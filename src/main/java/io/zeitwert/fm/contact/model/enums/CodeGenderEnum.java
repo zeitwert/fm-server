@@ -26,7 +26,12 @@ public class CodeGenderEnum extends EnumerationBase<CodeGender> {
 	@PostConstruct
 	private void init() {
 		for (final CodeGenderRecord item : this.getDslContext().selectFrom(Tables.CODE_GENDER).fetch()) {
-			this.addItem(new CodeGender(this, item.getId(), item.getName()));
+			CodeGender gender = CodeGender.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(gender);
 		}
 	}
 

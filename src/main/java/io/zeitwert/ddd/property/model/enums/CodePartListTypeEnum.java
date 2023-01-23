@@ -26,7 +26,12 @@ public class CodePartListTypeEnum extends EnumerationBase<CodePartListType> {
 	@PostConstruct
 	private void init() {
 		for (final CodePartListTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_PART_LIST_TYPE).fetch()) {
-			this.addItem(new CodePartListType(this, item.getId(), item.getName()));
+			CodePartListType partListType = CodePartListType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(partListType);
 		}
 	}
 

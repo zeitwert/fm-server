@@ -26,7 +26,12 @@ public class CodeNoteTypeEnum extends EnumerationBase<CodeNoteType> {
 	@PostConstruct
 	private void init() {
 		for (final CodeNoteTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_NOTE_TYPE).fetch()) {
-			this.addItem(new CodeNoteType(this, item.getId(), item.getName()));
+			CodeNoteType noteType = CodeNoteType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(noteType);
 		}
 	}
 

@@ -2,15 +2,23 @@
 package io.zeitwert.fm.building.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
 public class CodeBuildingSubType extends EnumeratedBase {
 
 	private final CodeBuildingType buildingType;
 
-	public CodeBuildingSubType(CodeBuildingSubTypeEnum enumeration, String id, String name,
-			CodeBuildingType buildingType) {
-		super(enumeration, id, name);
-		this.buildingType = buildingType;
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public CodeBuildingType getBuildingType() {

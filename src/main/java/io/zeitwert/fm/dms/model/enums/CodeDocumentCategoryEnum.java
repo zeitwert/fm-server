@@ -27,7 +27,12 @@ public class CodeDocumentCategoryEnum extends EnumerationBase<CodeDocumentCatego
 	private void init() {
 		for (final CodeDocumentCategoryRecord item : this.getDslContext().selectFrom(Tables.CODE_DOCUMENT_CATEGORY)
 				.fetch()) {
-			this.addItem(new CodeDocumentCategory(this, item.getId(), item.getName()));
+			CodeDocumentCategory documentCategory = CodeDocumentCategory.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(documentCategory);
 		}
 	}
 

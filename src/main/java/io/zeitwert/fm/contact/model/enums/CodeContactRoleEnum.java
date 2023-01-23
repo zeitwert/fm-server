@@ -26,7 +26,12 @@ public class CodeContactRoleEnum extends EnumerationBase<CodeContactRole> {
 	@PostConstruct
 	private void init() {
 		for (final CodeContactRoleRecord item : this.getDslContext().selectFrom(Tables.CODE_CONTACT_ROLE).fetch()) {
-			this.addItem(new CodeContactRole(this, item.getId(), item.getName()));
+			CodeContactRole contactRole = CodeContactRole.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(contactRole);
 		}
 	}
 

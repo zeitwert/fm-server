@@ -26,7 +26,12 @@ public class CodeAddressTypeEnum extends EnumerationBase<CodeAddressType> {
 	@PostConstruct
 	private void init() {
 		for (final CodeAddressTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_ADDRESS_TYPE).fetch()) {
-			this.addItem(new CodeAddressType(this, item.getId(), item.getName()));
+			CodeAddressType addressType = CodeAddressType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(addressType);
 		}
 	}
 

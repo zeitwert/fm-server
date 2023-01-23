@@ -26,7 +26,12 @@ public class CodeSalutationEnum extends EnumerationBase<CodeSalutation> {
 	@PostConstruct
 	private void init() {
 		for (final CodeSalutationRecord item : this.getDslContext().selectFrom(Tables.CODE_SALUTATION).fetch()) {
-			this.addItem(new CodeSalutation(this, item.getId(), item.getName()));
+			CodeSalutation salutation = CodeSalutation.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(salutation);
 		}
 	}
 

@@ -2,18 +2,27 @@
 package io.zeitwert.fm.building.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 import org.flywaydb.core.internal.util.Pair;
 
+@Data
+@SuperBuilder
 public class CodeBuildingPartCatalog extends EnumeratedBase {
 
 	private final String parts;
 
-	public CodeBuildingPartCatalog(CodeBuildingPartCatalogEnum enumeration, String id, String name, String parts) {
-		super(enumeration, id, name);
-		this.parts = parts;
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public List<Pair<CodeBuildingPart, Integer>> getPartList() {

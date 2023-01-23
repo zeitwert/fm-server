@@ -26,7 +26,12 @@ public class CodeAccountTypeEnum extends EnumerationBase<CodeAccountType> {
 	@PostConstruct
 	private void init() {
 		for (final CodeAccountTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_ACCOUNT_TYPE).fetch()) {
-			this.addItem(new CodeAccountType(this, item.getId(), item.getName()));
+			CodeAccountType accountType = CodeAccountType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(accountType);
 		}
 	}
 

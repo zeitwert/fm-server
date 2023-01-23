@@ -26,7 +26,12 @@ public class CodeClientSegmentEnum extends EnumerationBase<CodeClientSegment> {
 	@PostConstruct
 	private void init() {
 		for (final CodeClientSegmentRecord item : this.getDslContext().selectFrom(Tables.CODE_CLIENT_SEGMENT).fetch()) {
-			this.addItem(new CodeClientSegment(this, item.getId(), item.getName()));
+			CodeClientSegment segment = CodeClientSegment.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(segment);
 		}
 	}
 

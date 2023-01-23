@@ -25,7 +25,12 @@ public class CodeCurrencyEnum extends EnumerationBase<CodeCurrency> {
 	@PostConstruct
 	private void init() {
 		for (final CodeCurrencyRecord item : this.getDslContext().selectFrom(Tables.CODE_CURRENCY).fetch()) {
-			this.addItem(new CodeCurrency(this, item.getId(), item.getName()));
+			CodeCurrency currency = CodeCurrency.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(currency);
 		}
 	}
 

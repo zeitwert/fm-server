@@ -27,7 +27,12 @@ public final class CodeBuildingRatingStatusEnum extends EnumerationBase<CodeBuil
 	private void init() {
 		for (final CodeBuildingRatingStatusRecord item : this.getDslContext().selectFrom(Tables.CODE_BUILDING_RATING_STATUS)
 				.fetch()) {
-			this.addItem(new CodeBuildingRatingStatus(this, item.getId(), item.getName()));
+			CodeBuildingRatingStatus ratingStatus = CodeBuildingRatingStatus.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(ratingStatus);
 		}
 	}
 

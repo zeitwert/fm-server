@@ -2,11 +2,21 @@
 package io.zeitwert.ddd.oe.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+@Data
+@SuperBuilder
 public final class CodeTenantType extends EnumeratedBase {
 
-	public CodeTenantType(CodeTenantTypeEnum enumeration, String id, String name) {
-		super(enumeration, id, name);
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

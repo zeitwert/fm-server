@@ -45,8 +45,15 @@ public final class CodeBuildingPriceIndexEnum extends EnumerationBase<CodeBuildi
 				}
 				indexPerYear.put(value.getYear(), value.getValue().doubleValue());
 			}
-			this.addItem(
-					new CodeBuildingPriceIndex(this, item.getId(), item.getName(), minIndexYear, maxIndexYear, indexPerYear));
+			CodeBuildingPriceIndex index = CodeBuildingPriceIndex.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.minIndexYear(minIndexYear)
+					.maxIndexYear(maxIndexYear)
+					.indexPerYear(indexPerYear)
+					.build();
+			this.addItem(index);
 		}
 	}
 

@@ -34,8 +34,14 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 	private void init() {
 		for (final CodeContentTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_CONTENT_TYPE).fetch()) {
 			CodeContentKind contentKind = this.codeContentKindEnum.getItem(item.getContentKindId());
-			CodeContentType contentType = new CodeContentType(this, item.getId(), item.getName(), contentKind,
-					item.getExtension(), item.getMimeType());
+			CodeContentType contentType = CodeContentType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.contentKind(contentKind)
+					.extension(item.getExtension())
+					.mimeType(item.getMimeType())
+					.build();
 			this.addItem(contentType);
 		}
 	}

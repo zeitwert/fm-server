@@ -20,13 +20,13 @@ public class CodeValidationLevelEnum extends EnumerationBase<CodeValidationLevel
 
 	protected CodeValidationLevelEnum(final Enumerations enums, final DSLContext dslContext) {
 		super(enums, dslContext);
-		INFO = new CodeValidationLevel(this, "info", "Info");
-		this.addItem(INFO);
-		WARNING = new CodeValidationLevel(this, "warning", "Warning");
-		this.addItem(WARNING);
-		ERROR = new CodeValidationLevel(this, "error", "Error");
-		this.addItem(ERROR);
 		INSTANCE = this;
+		INFO = CodeValidationLevel.builder().enumeration(this).id("info").name("Info").build();
+		WARNING = CodeValidationLevel.builder().enumeration(this).id("warning").name("Warning").build();
+		ERROR = CodeValidationLevel.builder().enumeration(this).id("error").name("Error").build();
+		this.addItem(INFO);
+		this.addItem(WARNING);
+		this.addItem(ERROR);
 	}
 
 	public static CodeValidationLevel getValidationLevel(String validationLevelId) {

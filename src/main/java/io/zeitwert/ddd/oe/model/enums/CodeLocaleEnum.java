@@ -26,7 +26,12 @@ public class CodeLocaleEnum extends EnumerationBase<CodeLocale> {
 	@PostConstruct
 	private void init() {
 		for (final CodeLocaleRecord item : this.getDslContext().selectFrom(Tables.CODE_LOCALE).fetch()) {
-			this.addItem(new CodeLocale(this, item.getId(), item.getName()));
+			CodeLocale locale = CodeLocale.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(locale);
 		}
 	}
 

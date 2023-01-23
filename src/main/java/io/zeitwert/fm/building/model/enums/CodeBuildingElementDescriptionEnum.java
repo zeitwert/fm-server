@@ -27,7 +27,13 @@ public final class CodeBuildingElementDescriptionEnum extends EnumerationBase<Co
 	private void init() {
 		for (final CodeBuildingElementDescriptionRecord item : this.getDslContext()
 				.selectFrom(Tables.CODE_BUILDING_ELEMENT_DESCRIPTION).fetch()) {
-			this.addItem(new CodeBuildingElementDescription(this, item.getId(), item.getName(), item.getCategory()));
+			CodeBuildingElementDescription description = CodeBuildingElementDescription.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.category(item.getCategory())
+					.build();
+			this.addItem(description);
 		}
 	}
 

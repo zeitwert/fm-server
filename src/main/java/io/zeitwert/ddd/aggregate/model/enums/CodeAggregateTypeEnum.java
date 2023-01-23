@@ -26,7 +26,12 @@ public class CodeAggregateTypeEnum extends EnumerationBase<CodeAggregateType> {
 	@PostConstruct
 	private void init() {
 		for (final CodeAggregateTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_AGGREGATE_TYPE).fetch()) {
-			this.addItem(new CodeAggregateType(this, item.getId(), item.getName()));
+			CodeAggregateType aggregateType = CodeAggregateType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(aggregateType);
 		}
 	}
 

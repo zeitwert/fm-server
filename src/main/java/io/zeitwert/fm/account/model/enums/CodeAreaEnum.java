@@ -26,7 +26,12 @@ public class CodeAreaEnum extends EnumerationBase<CodeArea> {
 	@PostConstruct
 	private void init() {
 		for (final CodeAreaRecord item : this.getDslContext().selectFrom(Tables.CODE_AREA).fetch()) {
-			this.addItem(new CodeArea(this, item.getId(), item.getName()));
+			CodeArea area = CodeArea.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(area);
 		}
 	}
 

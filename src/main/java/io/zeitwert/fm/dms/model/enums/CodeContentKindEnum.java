@@ -26,7 +26,12 @@ public class CodeContentKindEnum extends EnumerationBase<CodeContentKind> {
 	@PostConstruct
 	private void init() {
 		for (final CodeContentKindRecord item : this.getDslContext().selectFrom(Tables.CODE_CONTENT_KIND).fetch()) {
-			this.addItem(new CodeContentKind(this, item.getId(), item.getName()));
+			CodeContentKind contentKind = CodeContentKind.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(contentKind);
 		}
 	}
 

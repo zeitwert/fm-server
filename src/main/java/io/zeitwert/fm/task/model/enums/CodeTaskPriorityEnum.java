@@ -26,7 +26,12 @@ public class CodeTaskPriorityEnum extends EnumerationBase<CodeTaskPriority> {
 	@PostConstruct
 	private void init() {
 		for (final CodeTaskPriorityRecord item : this.getDslContext().selectFrom(Tables.CODE_TASK_PRIORITY).fetch()) {
-			this.addItem(new CodeTaskPriority(this, item.getId(), item.getName()));
+			CodeTaskPriority taskPriority = CodeTaskPriority.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(taskPriority);
 		}
 	}
 

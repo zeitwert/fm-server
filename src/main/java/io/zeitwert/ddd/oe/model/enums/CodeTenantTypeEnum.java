@@ -34,7 +34,12 @@ public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 	@PostConstruct
 	private void init() {
 		for (final CodeTenantTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_TENANT_TYPE).fetch()) {
-			this.addItem(new CodeTenantType(this, item.getId(), item.getName()));
+			CodeTenantType tenantType = CodeTenantType.builder()
+					.enumeration(this)
+					.id(item.getId())
+					.name(item.getName())
+					.build();
+			this.addItem(tenantType);
 		}
 		KERNEL = getTenantType("kernel");
 		ADVISOR = getTenantType("advisor");
