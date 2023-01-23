@@ -1,7 +1,7 @@
 
 import { Avatar, Card, ExpandableSection, Icon } from "@salesforce/design-system-react";
 import { API, Config, DateFormat, Enumerated, session } from "@zeitwert/ui-model";
-import { computed, makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable, toJS } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import ReactMarkdown from "react-markdown";
@@ -106,7 +106,7 @@ class ActivityView extends React.Component<ActivityViewProps> {
 	render() {
 
 		const task = this.props.task;
-		const user = task.user;
+		const user = toJS(task.user);
 		const userName = user?.name ?? "??";
 		const userAvatar = session.avatarUrl(user?.id);
 		const dueAt = DateFormat.compact(task.dueAt, false);
@@ -153,7 +153,9 @@ class ActivityView extends React.Component<ActivityViewProps> {
 	}
 
 	private getUserName(user: Enumerated | undefined) {
-		return user?.id == session.sessionInfo?.user.id ? "Du" : user?.name ?? "??";
+		console.log("getUserName", session.sessionInfo);
+		console.log("getUserName", `[${user?.id}]`, typeof user?.id, `[${session.sessionInfo?.user.id}]`, typeof session.sessionInfo?.user.id);
+		return user?.id === session.sessionInfo?.user.id ? "Du" : user?.name ?? "??";
 	}
 
 }

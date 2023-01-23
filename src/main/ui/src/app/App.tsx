@@ -1,3 +1,4 @@
+
 import { BrandBand, Settings } from "@salesforce/design-system-react";
 import { AppStore, Session } from "@zeitwert/ui-model";
 import DynamicView from "app/frame/DynamicView";
@@ -32,8 +33,7 @@ export default class App extends React.Component<AppProps> {
 	}
 
 	render() {
-		// @ts-ignore
-		(Settings as Settings).setAppElement("#root");
+		Settings.setAppElement("#root");
 		let content = <div />;
 		if (this.props.isInit) {
 			content =

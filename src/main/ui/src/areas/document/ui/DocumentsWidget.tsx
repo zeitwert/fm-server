@@ -64,7 +64,6 @@ export default class DocumentsWidget extends React.Component<DocumentsWidgetProp
 	// 	return document.content.formSnapshot;
 	// }
 	// return DocumentContentModel.create({
-	// 	// @ts-ignore
 	// 	id: Number(document.id),
 	// 	name: document.name!,
 	// 	objId: Number(document.id),

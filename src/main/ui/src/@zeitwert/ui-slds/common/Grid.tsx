@@ -193,8 +193,6 @@ export class Row extends React.Component<PropsWithChildren<RowProps>> {
 			return <Col {...colProps}>{child}</Col>;
 		}
 		const propAggregator = (cprops: ColProps, key: string): any => {
-			// @ts-ignore
-			// No index signature with a parameter of type 'string' was found on type 'ColProps'.  TS7053
 			cprops[key] = child.props[key] || colProps[key];
 			return cprops;
 		};

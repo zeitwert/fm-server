@@ -7,7 +7,6 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
 import React from "react";
-import { ActivityFormTypes, ActivityProps } from "../ActivityPortlet";
 import GenericUserCombobox, { ComboboxItem } from "../ui/components/GenericUserCombobox";
 
 /**
@@ -56,6 +55,17 @@ const reminderOptions = [
 	}
 ];
 
+export enum ActivityFormTypes {
+	TASK = "task"
+}
+
+export interface TaskFormProps {
+	item: Aggregate;
+	account?: Account;
+	hideTask?: boolean;
+	onSave: (type: string, data: any) => Promise<any>;
+}
+
 export interface TaskFormState {
 	name: string;
 	description: string;
@@ -71,7 +81,7 @@ export interface TaskFormState {
 
 @inject("logger", "session")
 @observer
-export class TaskForm extends React.Component<ActivityProps, TaskFormState> {
+export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
 
 	@observable priorities: Enumerated[] = [];
 	@observable users: UserInfo[] = [];
@@ -107,7 +117,7 @@ export class TaskForm extends React.Component<ActivityProps, TaskFormState> {
 		};
 	}
 
-	constructor(props: ActivityProps) {
+	constructor(props: TaskFormProps) {
 		super(props);
 		makeObservable(this);
 		this.state = this.cleanState;

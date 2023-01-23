@@ -135,6 +135,9 @@ const MstSessionModel = types
 					if (!oldSessionInfo) {
 						const sessionResponse: AxiosResponse<SessionInfo> = yield API.get(Config.getRestUrl("session", SESSION_URL));
 						sessionInfo = sessionResponse.data;
+						sessionInfo.tenant.id = sessionInfo.tenant.id.toString();
+						sessionInfo.user.id = sessionInfo.user.id.toString();
+						!!sessionInfo.account?.id && (sessionInfo.account.id = sessionInfo.account.id.toString());
 						sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(sessionInfo));
 					} else {
 						sessionInfo = oldSessionInfo;

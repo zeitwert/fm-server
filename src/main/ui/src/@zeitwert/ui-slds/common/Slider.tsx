@@ -1,3 +1,4 @@
+
 import { Slider as BaseSlider } from "@salesforce/design-system-react";
 import _ from "lodash";
 import { observer } from "mobx-react";
@@ -42,19 +43,19 @@ export default class Slider extends React.Component<SliderProps> {
 					step={step}
 					value={this.props.value}
 					defaultValue={this.props.defaultValue}
-					// @ts-ignore
-					onInput={(e, v) => {
-						onInput && onInput(e, v);
-						this.setBubble(
-							{
-								value: v.value,
-								min: min,
-								max: max
-							},
-							e.target
-						);
-					}}
-					// @ts-ignore
+					onInput={
+						(e: any, v: any) => {
+							onInput && onInput(e, v);
+							this.setBubble(
+								{
+									value: v.value,
+									min: min,
+									max: max
+								},
+								e.target
+							);
+						}
+					}
 					onChange={onChange}
 				/>
 			</div>
