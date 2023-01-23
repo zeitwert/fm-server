@@ -12,7 +12,7 @@ interface ItemEditorProps {
 	customButtons?: JSX.Element;
 }
 
-@inject("appStore", "session")
+@inject("showAlert", "showToast")
 @observer
 export default class ItemEditor extends React.Component<PropsWithChildren<ItemEditorProps>> {
 

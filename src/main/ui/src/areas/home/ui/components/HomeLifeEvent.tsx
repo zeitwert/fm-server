@@ -10,9 +10,10 @@ import HomeLifeEventItem from "./HomeLifeEventItem";
 
 interface HomeLifeEventProps { }
 
-@inject("appStore", "session")
+@inject("appStore")
 @observer
 export default class HomeLifeEvent extends React.Component<HomeLifeEventProps> {
+
 	@observable lifeEvents?: LifeEvent[];
 
 	get ctx() {
@@ -67,4 +68,5 @@ export default class HomeLifeEvent extends React.Component<HomeLifeEventProps> {
 			</Card>
 		);
 	}
+
 }

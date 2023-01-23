@@ -1,12 +1,12 @@
 import { AppLauncher, AppLauncherExpandableSection, AppLauncherTile, Avatar, GlobalNavigationBar, GlobalNavigationBarDropdown, GlobalNavigationBarLink, GlobalNavigationBarRegion } from "@salesforce/design-system-react";
-import { ApplicationArea, MenuItem } from "@zeitwert/ui-model";
+import { ApplicationArea, MenuItem, session } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-@inject("logger", "navigator", "session")
+@inject("logger", "navigator")
 @observer
 class AppNavigation extends React.Component<RouteComponentProps> {
 	@observable isLauncherOpen = false;
@@ -21,7 +21,7 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 	}
 
 	render() {
-		if (!this.ctx.session.appInfo) {
+		if (!session.appInfo) {
 			return null;
 		}
 		return (
@@ -29,13 +29,13 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 				<GlobalNavigationBarRegion region="primary">
 					<AppLauncher
 						id="app-launcher-trigger"
-						triggerName={this.ctx.session.appInfo!.name}
+						triggerName={session.appInfo!.name}
 						triggerOnClick={() => (this.isLauncherOpen = true)}
 						isOpen={this.isLauncherOpen}
 						onClose={() => (this.isLauncherOpen = false)}
 					>
 						<AppLauncherExpandableSection title="Applications" nonCollapsible>
-							{this.ctx.session.appList!.map((app: any) => (
+							{session.appList!.map((app: any) => (
 								<AppLauncherTile
 									key={app.id}
 									title={app.name}
@@ -56,11 +56,11 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 				</GlobalNavigationBarRegion>
 				<GlobalNavigationBarRegion region="secondary" navigation>
 					{
-						this.ctx.session.appInfo!.areas.map((area: ApplicationArea) => {
+						session.appInfo!.areas.map((area: ApplicationArea) => {
 							if (area.menuAction) {
 								return (
 									<GlobalNavigationBarLink
-										active={this.isActive(area.path, this.ctx.session.appInfo?.defaultArea === area.path)}
+										active={this.isActive(area.path, session.appInfo?.defaultArea === area.path)}
 										label={area.name}
 										id={area.id}
 										key={area.id}
@@ -114,8 +114,8 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 	}
 
 	private onAppClick = async (appId: string) => {
-		await this.ctx.session.setApp(appId);
-		const area = this.ctx.session.appInfo!.areas.find((app) => app.id === this.ctx.session.appInfo!.defaultArea)!;
+		await session.setApp(appId);
+		const area = session.appInfo!.areas.find((app) => app.id === session.appInfo!.defaultArea)!;
 		this.props.navigate(this.ctx.navigator.navigate(area.id, area.menuAction!.navigation));
 		this.isLauncherOpen = false;
 	};

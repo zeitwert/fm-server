@@ -1,22 +1,16 @@
 
 import { Card } from "@salesforce/design-system-react";
 import { DateFormat } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface HomeMyDayProps extends RouteComponentProps {
 	className?: string;
 }
 
-@inject("session", "showToast")
 @observer
 class HomeMyDay extends React.Component<HomeMyDayProps> {
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	render() {
 		return (
@@ -38,6 +32,7 @@ class HomeMyDay extends React.Component<HomeMyDayProps> {
 			</Card>
 		);
 	}
+
 }
 
 export default withRouter(HomeMyDay);

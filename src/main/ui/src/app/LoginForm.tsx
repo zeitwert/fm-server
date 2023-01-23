@@ -2,7 +2,7 @@
 import { Button, Card, Checkbox, MediaObject } from "@salesforce/design-system-react";
 import { COMMUNITY_TENANT, Config, Enumerated, LoginTenantInfo, LoginUserInfo, LOGIN_INFO_ITEM, session, Session } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React, { ChangeEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import disclaimer from "./pilot/disclaimer";
@@ -23,7 +23,6 @@ interface LoginInfo {
 	hasAcceptedDisclaimer?: boolean;
 }
 
-@inject("appStore", "session")
 @observer
 export default class LoginForm extends React.Component<LoginFormProps> {
 

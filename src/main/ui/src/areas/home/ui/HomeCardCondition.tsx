@@ -1,8 +1,7 @@
 import { Card } from "@salesforce/design-system-react";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
-@inject("appStore", "session")
 @observer
 export default class HomeCardCondition extends React.Component {
 

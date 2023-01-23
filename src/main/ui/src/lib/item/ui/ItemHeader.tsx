@@ -1,9 +1,8 @@
 import { Icon, MediaObject, PageHeaderControl } from "@salesforce/design-system-react";
 import { AggregateStore } from "@zeitwert/ui-model";
 import { ButtonStateful, PageHeader } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -22,16 +21,11 @@ interface ItemHeaderProps {
 	customActions?: JSX.Element;
 }
 
-@inject("session", "showAlert", "showToast")
 @observer
 export default class ItemHeader extends React.Component<ItemHeaderProps> {
 
 	@observable note: any/*ItemPartNote*/ | undefined = undefined;
 	@observable isFollowing = false;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: ItemHeaderProps) {
 		super(props);
@@ -39,7 +33,7 @@ export default class ItemHeader extends React.Component<ItemHeaderProps> {
 	}
 
 	// async componentDidMount() {
-	// 	await this.ctx.followStore.load(this.ctx.session.sessionInfo!.user);
+	// 	await this.ctx.followStore.load(session.sessionInfo!.user);
 	// }
 
 	render() {
@@ -75,7 +69,7 @@ export default class ItemHeader extends React.Component<ItemHeaderProps> {
 							active={!!follow}
 							onClick={async () => {
 								// if (!follow) {
-								// 	await this.ctx.followStore.add(this.ctx.session.sessionInfo!.user, item);
+								// 	await this.ctx.followStore.add(session.sessionInfo!.user, item);
 								// } else {
 								// 	await this.ctx.followStore.remove(follow);
 								// }

@@ -1,6 +1,6 @@
 
 import { BrandBand, Settings } from "@salesforce/design-system-react";
-import { AppStore, Session } from "@zeitwert/ui-model";
+import { AppStore, session } from "@zeitwert/ui-model";
 import DynamicView from "app/frame/DynamicView";
 import { Navigator } from "app/frame/Navigation";
 import AppHeader from "app/ui/AppHeader";
@@ -19,12 +19,11 @@ export interface AppCtx {
 	appStore: AppStore;
 	logger: Logger;
 	navigator: Navigator;
-	session: Session;
 	showToast: (variant: string, message: string) => void;
 	showAlert: (variant: string, message: string) => void;
 }
 
-@inject("appStore", "logger", "session")
+@inject("appStore", "logger")
 @observer
 export default class App extends React.Component<AppProps> {
 
@@ -45,10 +44,10 @@ export default class App extends React.Component<AppProps> {
 				</Routes>;
 		}
 		let title = "Login";
-		if (this.ctx.session?.sessionInfo?.account) {
-			title = this.ctx.session?.sessionInfo?.account.name + " | " + this.ctx.session.appInfo?.name;
-		} else if (this.ctx.session?.sessionInfo?.tenant) {
-			title = this.ctx.session?.sessionInfo?.tenant.name + " | " + this.ctx.session.appInfo?.name;
+		if (session?.sessionInfo?.account) {
+			title = session?.sessionInfo?.account.name + " | " + session.appInfo?.name;
+		} else if (session?.sessionInfo?.tenant) {
+			title = session?.sessionInfo?.tenant.name + " | " + session.appInfo?.name;
 		}
 		return (
 			<>
@@ -57,8 +56,8 @@ export default class App extends React.Component<AppProps> {
 					<link
 						rel="shortcut icon"
 						href={
-							this.ctx.session.appInfo?.id
-								? `/favicon-${this.ctx.session.appInfo?.id}.png`
+							session.appInfo?.id
+								? `/favicon-${session.appInfo?.id}.png`
 								: "/favicon.png"
 						}
 					/>

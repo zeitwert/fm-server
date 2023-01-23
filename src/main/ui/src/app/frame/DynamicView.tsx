@@ -1,12 +1,13 @@
 
 import { Spinner } from "@salesforce/design-system-react";
+import { session } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { inject, observer } from "mobx-react";
 import React, { Suspense } from "react";
 import ErrorBoundary from "../ErrorBoundary";
 import { RouteComponentProps, withRouter } from "./withRouter";
 
-@inject("logger", "session")
+@inject("logger")
 @observer
 class DynamicView extends React.Component<RouteComponentProps> {
 
@@ -36,9 +37,9 @@ class DynamicView extends React.Component<RouteComponentProps> {
 	}
 
 	private componentName(path: string) {
-		if (this.ctx.session.appInfo) {
-			const areaPath = path ?? this.ctx.session.appInfo?.defaultArea ?? "/";
-			return this.ctx.session.appInfo!.areas.find((a) => a.path === areaPath)?.component;
+		if (session.appInfo) {
+			const areaPath = path ?? session.appInfo?.defaultArea ?? "/";
+			return session.appInfo!.areas.find((a) => a.path === areaPath)?.component;
 		}
 	}
 

@@ -16,7 +16,7 @@ import BuildingImportForm from "./modals/BuildingImportForm";
 
 const buildingStore = BuildingStoreModel.create({});
 
-@inject("appStore", "session", "showAlert", "showToast")
+@inject("appStore", "showAlert", "showToast")
 @observer
 class BuildingArea extends React.Component<RouteComponentProps> {
 
@@ -61,7 +61,7 @@ class BuildingArea extends React.Component<RouteComponentProps> {
 								customActions={this.getHeaderActions()}
 								canCreate={session.isUser && !session.hasReadOnlyRole}
 								createEditor={() => <BuildingCreationForm building={buildingStore.building!} />}
-								onAfterCreate={(store: BuildingStore) => { initBuilding(store.building!, this.ctx.session.sessionInfo?.account) }}
+								onAfterCreate={(store: BuildingStore) => { initBuilding(store.building!, session.sessionInfo?.account) }}
 								onOpenPreview={this.openPreview}
 								onSelectionChange={this.onSelectionChange}
 							/>

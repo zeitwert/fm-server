@@ -2,7 +2,7 @@
 import { EntityType, Enumerated, session, User, UserStore, UserStoreModel } from "@zeitwert/ui-model";
 import { withRouter } from "app/frame/withRouter";
 import ItemsPage from "lib/item/ui/ItemsPage";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import UserCreationForm from "./UserCreationForm";
@@ -10,7 +10,6 @@ import UserPage from "./UserPage";
 
 const userStore = UserStoreModel.create({});
 
-@inject("appStore", "session", "showAlert", "showToast")
 @observer
 class UserArea extends React.Component {
 

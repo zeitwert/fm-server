@@ -1,7 +1,6 @@
 
 import { Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Config, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, Portfolio, PortfolioStoreModel, session, TasksStore, TasksStoreModel } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import ItemEditor from "lib/item/ui/ItemEditor";
@@ -13,7 +12,7 @@ import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import TabProjection from "lib/projection/ui/TabProjection";
 import { computed, makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import PortfolioMainForm from "./tabs/PortfolioMainForm";
 
@@ -31,7 +30,6 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("appStore", "session", "showAlert", "showToast")
 @observer
 class PortfolioPage extends React.Component<RouteComponentProps> {
 
@@ -57,10 +55,6 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 	@computed
 	get hasErrors(): boolean {
 		return this.portfolioStore.portfolio?.meta?.validationList?.filter(v => v.validationLevel?.id === "error").length! > 0;
-	}
-
-	get ctx() {
-		return this.props as any as AppCtx;
 	}
 
 	constructor(props: any) {

@@ -5,7 +5,7 @@ import HighchartsReact from "highcharts-react-official";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-@inject("appStore", "session")
+@inject("appStore")
 @observer
 export default class HomeCardStatistics extends React.Component {
 

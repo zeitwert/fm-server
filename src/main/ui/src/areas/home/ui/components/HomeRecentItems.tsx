@@ -1,13 +1,11 @@
 import { Card, Icon } from "@salesforce/design-system-react";
 import { Aggregate, DateFormat } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { computed, makeObservable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-@inject("appStore", "session")
 @observer
 export default class HomeRecentItems extends React.Component {
 
@@ -18,10 +16,6 @@ export default class HomeRecentItems extends React.Component {
 		// 	.sort((ri1, ri2) =>
 		// 		new Date(ri1.meta!.modifiedAt).getTime() < new Date(ri2.meta!.modifiedAt).getTime() ? 1 : -1
 		// 	);
-	}
-
-	get ctx() {
-		return this.props as any as AppCtx;
 	}
 
 	constructor(props: any) {

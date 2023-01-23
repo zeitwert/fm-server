@@ -10,7 +10,7 @@ export interface HomeCardMapProps {
 	onClick?: (itemId: string) => void;
 }
 
-@inject("appStore", "session")
+@inject("appStore")
 @observer
 export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 

@@ -33,7 +33,7 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("appStore", "session", "showAlert", "showToast")
+@inject("showAlert", "showToast")
 @observer
 class TenantPage extends React.Component<RouteComponentProps> {
 
@@ -234,7 +234,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 		};
 		this.accountStore.create({
 			tenant: tenantEnum,
-			owner: this.ctx.session.sessionInfo!.user
+			owner: session.sessionInfo!.user
 		});
 	};
 
@@ -267,7 +267,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 		};
 		this.userStore.create({
 			tenant: tenantEnum,
-			owner: this.ctx.session.sessionInfo!.user,
+			owner: session.sessionInfo!.user,
 			role: roleEnum
 		});
 	};

@@ -24,7 +24,7 @@ interface ItemsPageProps extends RouteComponentProps {
 	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
-@inject("session", "showAlert", "showToast")
+@inject("showAlert", "showToast")
 @observer
 class ItemsPage extends React.Component<ItemsPageProps> {
 
@@ -109,7 +109,7 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 
 	private openEditor = () => {
 		this.props.store!.create({
-			owner: this.ctx.session.sessionInfo!.user
+			owner: session.sessionInfo!.user
 		});
 		this.props.onAfterCreate && this.props.onAfterCreate(this.props.store);
 	};

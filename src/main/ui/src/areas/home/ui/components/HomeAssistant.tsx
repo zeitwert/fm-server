@@ -1,5 +1,6 @@
+
 import { Button, ButtonGroup, Card, Icon, Tooltip } from "@salesforce/design-system-react";
-import { deepFind } from "@zeitwert/ui-model";
+import { deepFind, session } from "@zeitwert/ui-model";
 import { Grid } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import { inject, observer } from "mobx-react";
@@ -7,15 +8,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ModalCall, ModalTask } from "./HomeAssistantActionModals";
 
-@inject("appStore", "session")
+@inject("appStore")
 @observer
 export default class HomeAssistant extends React.Component {
+
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
 
 	async componentDidMount() {
-		await this.ctx.appStore.getLeads(this.ctx.session.sessionInfo!.user?.email);
+		await this.ctx.appStore.getLeads(session.sessionInfo!.user?.email);
 	}
 
 	render() {

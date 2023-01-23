@@ -19,7 +19,7 @@ interface Overview {
 	ratingCount: number;
 }
 
-@inject("appStore", "session")
+@inject("appStore")
 @observer
 export default class HomeCardOverview extends React.Component {
 

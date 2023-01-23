@@ -2,7 +2,7 @@
 import { EntityType, session, Tenant, TenantStore, TenantStoreModel } from "@zeitwert/ui-model";
 import { withRouter } from "app/frame/withRouter";
 import ItemsPage from "lib/item/ui/ItemsPage";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import TenantCreationForm from "./TenantCreationForm";
@@ -10,7 +10,6 @@ import TenantPage from "./TenantPage";
 
 const tenantStore = TenantStoreModel.create({});
 
-@inject("appStore", "session", "showAlert", "showToast")
 @observer
 class TenantArea extends React.Component {
 

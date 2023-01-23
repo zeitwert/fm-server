@@ -14,7 +14,7 @@ interface Renovation {
 	dueDate: string;
 }
 
-@inject("appStore", "session")
+@inject("appStore")
 @observer
 export default class HomeCardRenovationList extends React.Component {
 

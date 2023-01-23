@@ -10,7 +10,7 @@ import Profile from "./header/Profile";
 import SearchBar from "./header/SearchBar";
 import Setup from "./header/Setup";
 
-@inject("appStore", "logger", "session")
+@inject("appStore", "logger")
 @observer
 export default class AppHeader extends React.Component {
 
@@ -19,7 +19,7 @@ export default class AppHeader extends React.Component {
 	}
 
 	render() {
-		if (!this.ctx.session.sessionInfo) {
+		if (!session.sessionInfo) {
 			return <></>;
 		}
 		return (
@@ -30,8 +30,8 @@ export default class AppHeader extends React.Component {
 				onSkipToNav={() => this.ctx.logger.debug(">>> Skip to Nav Clicked")}
 			>
 				<GlobalHeaderSearch combobox={<SearchBar />} />
-				{/*<RecentItems store={this.ctx.appStore} user={this.ctx.session.sessionInfo!.user} />*/}
-				{/*<FrequentItems store={this.ctx.appStore} user={this.ctx.session.sessionInfo!.user} />*/}
+				{/*<RecentItems store={this.ctx.appStore} user={session.sessionInfo!.user} />*/}
+				{/*<FrequentItems store={this.ctx.appStore} user={session.sessionInfo!.user} />*/}
 				<Help />
 				<Setup />
 				<Profile />

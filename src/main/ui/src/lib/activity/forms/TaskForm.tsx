@@ -1,6 +1,6 @@
 
 import { Button, Checkbox, Combobox, Icon, Input, Textarea, Tooltip } from "@salesforce/design-system-react";
-import { Account, Aggregate, API, Config, Enumerated, GenericUserType, UserInfo } from "@zeitwert/ui-model";
+import { Account, Aggregate, API, Config, Enumerated, GenericUserType, session, UserInfo } from "@zeitwert/ui-model";
 import { Col, Datepicker, Grid } from "@zeitwert/ui-slds";
 import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
@@ -79,7 +79,7 @@ export interface TaskFormState {
 	assignee?: ComboboxItem;
 }
 
-@inject("logger", "session")
+@inject("logger")
 @observer
 export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
 
@@ -109,8 +109,8 @@ export class TaskForm extends React.Component<TaskFormProps, TaskFormState> {
 			reminderSet: false,
 			reminderOption: undefined,
 			assignee: {
-				id: this.ctx.session.sessionInfo!.user.id,
-				label: this.ctx.session.sessionInfo!.user.caption,
+				id: session.sessionInfo!.user.id,
+				label: session.sessionInfo!.user.caption,
 				icon: <Icon category="standard" name="user" size="small" />,
 				type: GenericUserType.User
 			}

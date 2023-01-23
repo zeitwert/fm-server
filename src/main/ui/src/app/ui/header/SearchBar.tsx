@@ -15,7 +15,7 @@ interface Option {
 	tooltipContent?: string;
 }
 
-@inject("logger", "session")
+@inject("logger")
 @observer
 class SearchBar extends React.Component<RouteComponentProps> {
 

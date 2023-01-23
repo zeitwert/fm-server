@@ -2,7 +2,6 @@
 import { Input, InputIcon, MenuDropdown } from "@salesforce/design-system-react";
 import { MENU_DROPDOWN_TRIGGER } from "@salesforce/design-system-react/utilities/constants";
 import { session } from "@zeitwert/ui-model";
-import { inject } from "mobx-react";
 import moment from "moment";
 import React from "react";
 
@@ -29,7 +28,6 @@ TimepickerTrigger.displayName = MENU_DROPDOWN_TRIGGER;
 /**
  * Wrapper for Timepicker component.
  */
-@inject("session")
 export default class Timepicker extends React.Component<TimepickerProps> {
 
 	render() {
@@ -101,4 +99,5 @@ export default class Timepicker extends React.Component<TimepickerProps> {
 
 		return options;
 	}
+
 }

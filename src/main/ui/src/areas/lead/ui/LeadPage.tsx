@@ -31,7 +31,7 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("appStore", "session", "showAlert", "showToast")
+@inject("showAlert", "showToast")
 @observer
 class LeadPage extends React.Component<RouteComponentProps> {
 

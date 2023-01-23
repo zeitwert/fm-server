@@ -33,7 +33,7 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("appStore", "session", "showAlert", "showToast")
+@inject("appStore", "showAlert", "showToast")
 @observer
 class AccountPage extends React.Component<RouteComponentProps> {
 
@@ -223,7 +223,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	private openContactEditor = () => {
 		this.contactStore.create({
-			owner: this.ctx.session.sessionInfo!.user
+			owner: session.sessionInfo!.user
 		});
 		this.contactStore.contact!.setAccount(this.accountStore.id!);
 	};

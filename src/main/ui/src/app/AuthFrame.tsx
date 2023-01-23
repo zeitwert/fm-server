@@ -1,11 +1,12 @@
 
+import { session } from "@zeitwert/ui-model";
 import { inject, observer } from "mobx-react";
 import React, { PropsWithChildren } from "react";
 import { AppCtx } from "./App";
 import { RouteComponentProps, withRouter } from "./frame/withRouter";
 import LoginForm from "./LoginForm";
 
-@inject("logger", "session", "showAlert")
+@inject("logger", "showAlert")
 @observer
 class AuthFrame extends React.Component<PropsWithChildren<RouteComponentProps>> {
 
@@ -14,10 +15,9 @@ class AuthFrame extends React.Component<PropsWithChildren<RouteComponentProps>> 
 	}
 
 	async componentDidMount() {
-		const session = this.ctx.session;
 		if (session.isAuthenticated && !session.isInit) {
 			try {
-				await this.ctx.session.initSession();
+				await session.initSession();
 			} catch (error: any) {
 				this.ctx.showAlert("error", error.toString());
 			}
@@ -25,7 +25,6 @@ class AuthFrame extends React.Component<PropsWithChildren<RouteComponentProps>> 
 	}
 
 	render() {
-		const session = this.ctx.session;
 		if (!session.isAuthenticated && this.props.location.pathname !== "/") {
 			window.location.href = "/";
 		}
