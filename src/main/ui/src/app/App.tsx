@@ -1,6 +1,6 @@
 
 import { BrandBand, Settings } from "@salesforce/design-system-react";
-import { AppStore, session } from "@zeitwert/ui-model";
+import { session } from "@zeitwert/ui-model";
 import DynamicView from "app/frame/DynamicView";
 import { Navigator } from "app/frame/Navigation";
 import AppHeader from "app/ui/AppHeader";
@@ -16,14 +16,13 @@ export interface AppProps {
 }
 
 export interface AppCtx {
-	appStore: AppStore;
 	logger: Logger;
 	navigator: Navigator;
 	showToast: (variant: string, message: string) => void;
 	showAlert: (variant: string, message: string) => void;
 }
 
-@inject("appStore", "logger")
+@inject("logger")
 @observer
 export default class App extends React.Component<AppProps> {
 

@@ -1,10 +1,16 @@
+
 import { Button, GlobalNavigationBar, GlobalNavigationBarRegion, Icon } from "@salesforce/design-system-react";
-import { BreadCrumb as BreadCrumbItem } from "@zeitwert/ui-model";
-import { BreadCrumb, BreadCrumbs } from "@zeitwert/ui-slds";
+import { BreadCrumb as SldsBreadCrumb, BreadCrumbs as SldsBreadCrumbs } from "@zeitwert/ui-slds";
 import React from "react";
 
-interface AppBreadCrumbsProps {
-	items: BreadCrumbItem[];
+export interface BreadCrumb {
+	title: string;
+	iconCategory?: string;
+	iconName?: string;
+}
+
+export interface AppBreadCrumbsProps {
+	items: BreadCrumb[];
 	isActionProcessing: boolean;
 	onPrimaryAction: () => void;
 	onSecondaryAction: () => void;
@@ -17,10 +23,10 @@ export default class AppBreadCrumbs extends React.Component<AppBreadCrumbsProps>
 		return (
 			<GlobalNavigationBar className="slds-grid_vertical-align-center">
 				<GlobalNavigationBarRegion region="primary">
-					<BreadCrumbs>
+					<SldsBreadCrumbs>
 						<>
 							{items.map((item, index) => (
-								<BreadCrumb
+								<SldsBreadCrumb
 									key={index}
 									onClick={() => onItemClick && onItemClick(items.length - index - 1)}
 								>
@@ -33,10 +39,10 @@ export default class AppBreadCrumbs extends React.Component<AppBreadCrumbsProps>
 										/>
 									)}
 									{item.title}
-								</BreadCrumb>
+								</SldsBreadCrumb>
 							))}
 						</>
-					</BreadCrumbs>
+					</SldsBreadCrumbs>
 				</GlobalNavigationBarRegion>
 				<GlobalNavigationBarRegion region="tertiary">
 					<div className="slds-text-align_right slds-m-right_large">

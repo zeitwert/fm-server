@@ -2,9 +2,8 @@
 import { Card, Icon, Spinner } from "@salesforce/design-system-react";
 import { API, Config, session } from "@zeitwert/ui-model";
 import { Col, Grid, Row } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface Overview {
@@ -19,16 +18,11 @@ interface Overview {
 	ratingCount: number;
 }
 
-@inject("appStore")
 @observer
 export default class HomeCardOverview extends React.Component {
 
 	@observable overview: Overview | undefined;
 	@observable isLoading: boolean = true;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: any) {
 		super(props);

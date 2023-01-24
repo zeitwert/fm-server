@@ -16,7 +16,7 @@ import BuildingImportForm from "./modals/BuildingImportForm";
 
 const buildingStore = BuildingStoreModel.create({});
 
-@inject("appStore", "showAlert", "showToast")
+@inject("showAlert", "showToast")
 @observer
 class BuildingArea extends React.Component<RouteComponentProps> {
 

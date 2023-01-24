@@ -33,7 +33,7 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("appStore", "showAlert", "showToast")
+@inject("showAlert", "showToast")
 @observer
 class AccountPage extends React.Component<RouteComponentProps> {
 

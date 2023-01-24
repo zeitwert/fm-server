@@ -1,6 +1,7 @@
+
 import { Button, Icon, MediaObject, Popover } from "@salesforce/design-system-react";
 import { GLOBAL_HEADER_FAVORITES } from "@salesforce/design-system-react/utilities/constants";
-import { Aggregate, AppStore, DateFormat, UserInfo } from "@zeitwert/ui-model";
+import { Aggregate, DateFormat, UserInfo } from "@zeitwert/ui-model";
 import classNames from "classnames";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -8,7 +9,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface RecentItemsProps {
-	store: AppStore;
+	//store: AppStore;
 	user: UserInfo;
 }
 

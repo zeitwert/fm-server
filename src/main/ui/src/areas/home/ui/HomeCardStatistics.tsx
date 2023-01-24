@@ -1,11 +1,11 @@
+
 import { Card, Icon } from "@salesforce/design-system-react";
 import { Col, Grid, Row } from "@zeitwert/ui-slds";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
-@inject("appStore")
 @observer
 export default class HomeCardStatistics extends React.Component {
 

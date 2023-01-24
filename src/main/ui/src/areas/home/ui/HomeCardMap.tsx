@@ -1,25 +1,19 @@
 import { Card, Icon } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import BuildingMap, { BuildingInfo } from "areas/building/ui/components/BuildingMap";
 import { makeObservable, observable, toJS } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 export interface HomeCardMapProps {
 	onClick?: (itemId: string) => void;
 }
 
-@inject("appStore")
 @observer
 export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 
 	@observable buildingCount: number = 0;
 	@observable buildingList: BuildingInfo[] = [];
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: any) {
 		super(props);

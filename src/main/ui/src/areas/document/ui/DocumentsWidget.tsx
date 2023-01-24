@@ -1,6 +1,6 @@
+
 import { Document } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
-import { inject } from "mobx-react";
 import React from "react";
 
 interface DocumentsWidgetProps {
@@ -10,7 +10,6 @@ interface DocumentsWidgetProps {
 	onChange?: (content: any /*DocumentContentSnapshot[]*/) => Promise<void>;
 }
 
-@inject("appStore")
 export default class DocumentsWidget extends React.Component<DocumentsWidgetProps> {
 
 	get ctx() {

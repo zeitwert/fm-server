@@ -1,7 +1,6 @@
+
 import { Icon, MediaObject, Modal } from "@salesforce/design-system-react";
 import { EntityType, EntityTypes } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
-import { inject } from "mobx-react";
 import React from "react";
 
 interface PartModalProps {
@@ -13,12 +12,7 @@ interface PartModalProps {
 	children?: JSX.Element;
 }
 
-@inject("appStore")
 export default class PartModal extends React.Component<PartModalProps> {
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	render() {
 		const entityType = EntityTypes[this.props.entityType];

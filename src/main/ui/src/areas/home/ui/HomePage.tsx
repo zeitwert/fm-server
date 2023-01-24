@@ -1,11 +1,11 @@
+
 import { session } from "@zeitwert/ui-model";
 import { Col, Grid, Row } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import SidePanel from "app/ui/SidePanel";
 import BuildingPreview from "areas/building/ui/BuildingPreview";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import HomeCardMap from "./HomeCardMap";
 import HomeCardOpenActivities from "./HomeCardOpenActivities";
@@ -13,16 +13,11 @@ import HomeCardOverview from "./HomeCardOverview";
 import HomeCardRecentActions from "./HomeCardRecentActions";
 import HomeCardStatistics from "./HomeCardStatistics";
 
-@inject("appStore", "showToast")
 @observer
 class HomePage extends React.Component<RouteComponentProps> {
 
 	@observable showPreview = false;
 	@observable previewItemId: string | undefined;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: RouteComponentProps) {
 		super(props);

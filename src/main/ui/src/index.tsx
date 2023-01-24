@@ -1,6 +1,6 @@
 
 import { IconSettings } from "@salesforce/design-system-react";
-import { AppStoreModel, assertThis, Env, Locale, observeMutation, session, unregisterServiceWorker } from "@zeitwert/ui-model";
+import { assertThis, Env, Locale, observeMutation, session, unregisterServiceWorker } from "@zeitwert/ui-model";
 import { NavigatorImpl } from "app/frame/impl/NavigationImpl";
 import "assets/app.css";
 import Highcharts from "highcharts";
@@ -51,10 +51,7 @@ Logger.setLevel(logLevel);
 const navigator = new NavigatorImpl(session);
 
 // Base stores.
-const appStore = AppStoreModel.create({});
-
 const appCtx: AppCtx = {
-	appStore,
 	logger: Logger,
 	navigator,
 	showToast: () => { },

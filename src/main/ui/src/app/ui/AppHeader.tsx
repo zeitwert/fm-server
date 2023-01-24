@@ -10,7 +10,7 @@ import Profile from "./header/Profile";
 import SearchBar from "./header/SearchBar";
 import Setup from "./header/Setup";
 
-@inject("appStore", "logger")
+@inject("logger")
 @observer
 export default class AppHeader extends React.Component {
 

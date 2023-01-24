@@ -1,12 +1,11 @@
+
 import { Card, Spinner } from "@salesforce/design-system-react";
-import { BreadCrumb } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import classNames from "classnames";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React, { PropsWithChildren } from "react";
 import ReactDOM from "react-dom";
-import AppBreadCrumbs from "./AppBreadCrumbs";
+import AppBreadCrumbs, { BreadCrumb } from "./AppBreadCrumbs";
 
 export interface AppGlobalModalProps {
 	path: BreadCrumb[];
@@ -16,20 +15,17 @@ export interface AppGlobalModalProps {
 	onClose?: () => void;
 }
 
-@inject("appStore")
 @observer
 export default class AppGlobalModal extends React.Component<PropsWithChildren<AppGlobalModalProps>> {
+
+	@observable breadCrumbs: BreadCrumb[] = [];
 	@observable isActionProcessing = false;
 	@observable isActionProcessed = false;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: AppGlobalModalProps) {
 		super(props);
 		makeObservable(this);
-		this.ctx.appStore.addBreadCrumbs(this.props.path);
+		this.addBreadCrumbs(this.props.path);
 	}
 
 	componentWillMount() {
@@ -47,7 +43,7 @@ export default class AppGlobalModal extends React.Component<PropsWithChildren<Ap
 			<div className={classes}>
 				{this.isActionProcessing && <Spinner variant="brand" size="large" />}
 				<AppBreadCrumbs
-					items={this.ctx.appStore.breadCrumbs}
+					items={this.breadCrumbs}
 					isActionProcessing={this.isActionProcessing}
 					onPrimaryAction={this.onPrimaryAction}
 					onSecondaryAction={this.onSecondaryAction}
@@ -78,6 +74,14 @@ export default class AppGlobalModal extends React.Component<PropsWithChildren<Ap
 		}
 	};
 
+	private addBreadCrumbs = (crumbs: BreadCrumb[]) => {
+		this.breadCrumbs.push(...crumbs);
+	}
+
+	private removeBreadCrumbs = (number: number) => {
+		this.breadCrumbs.splice(-number, number);
+	}
+
 	private onPrimaryAction = async () => {
 		const { path, onPrimaryAction, onClose } = this.props;
 		this.isActionProcessing = true;
@@ -85,7 +89,7 @@ export default class AppGlobalModal extends React.Component<PropsWithChildren<Ap
 		this.isActionProcessed = true;
 		setTimeout(() => {
 			onClose && onClose();
-			this.ctx.appStore.removeBreadCrumbs(path.length);
+			this.removeBreadCrumbs(path.length);
 		}, 300);
 	};
 
@@ -96,7 +100,8 @@ export default class AppGlobalModal extends React.Component<PropsWithChildren<Ap
 		this.isActionProcessed = true;
 		setTimeout(() => {
 			onClose && onClose();
-			this.ctx.appStore.removeBreadCrumbs(path.length);
+			this.removeBreadCrumbs(path.length);
 		}, 300);
 	};
+
 }
