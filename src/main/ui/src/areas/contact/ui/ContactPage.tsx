@@ -157,12 +157,12 @@ class ContactPage extends React.Component<RouteComponentProps> {
 			{
 				label: "Email",
 				content: contact.email,
-				link: "mailto:" + contact.email
+				url: "mailto://" + contact.email
 			},
 			{
 				label: "Mobile",
 				content: contact.mobile,
-				link: "tel:" + contact.mobile
+				url: "tel://" + contact.mobile
 			},
 			{
 				label: "Owner",
