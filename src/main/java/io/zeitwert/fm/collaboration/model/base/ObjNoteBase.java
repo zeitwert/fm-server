@@ -27,11 +27,11 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	protected ObjNoteBase(ObjNoteRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> noteRecord) {
 		super(repository, objRecord);
 		this.dbRecord = noteRecord;
-		this.relatedToId = this.addSimpleProperty(dbRecord, ObjNoteFields.RELATED_TO_ID);
-		this.noteType = this.addEnumProperty(dbRecord, ObjNoteFields.NOTE_TYPE_ID, CodeNoteTypeEnum.class);
-		this.subject = this.addSimpleProperty(dbRecord, ObjNoteFields.SUBJECT);
-		this.content = this.addSimpleProperty(dbRecord, ObjNoteFields.CONTENT);
-		this.isPrivate = this.addSimpleProperty(dbRecord, ObjNoteFields.IS_PRIVATE);
+		this.relatedToId = this.addSimpleProperty(this.dbRecord, ObjNoteFields.RELATED_TO_ID);
+		this.noteType = this.addEnumProperty(this.dbRecord, ObjNoteFields.NOTE_TYPE_ID, CodeNoteTypeEnum.class);
+		this.subject = this.addSimpleProperty(this.dbRecord, ObjNoteFields.SUBJECT);
+		this.content = this.addSimpleProperty(this.dbRecord, ObjNoteFields.CONTENT);
+		this.isPrivate = this.addSimpleProperty(this.dbRecord, ObjNoteFields.IS_PRIVATE);
 	}
 
 	@Override
@@ -50,6 +50,12 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public void doCalcSearch() {
+		this.addSearchText(this.getSubject());
+		this.addSearchText(this.getContent());
 	}
 
 	@Override

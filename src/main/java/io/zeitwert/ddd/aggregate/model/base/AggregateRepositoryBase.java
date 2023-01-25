@@ -26,6 +26,8 @@ import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.aggregate.model.db.Tables;
+import io.zeitwert.ddd.aggregate.model.db.tables.ItemSearch;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -218,6 +220,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 		this.doStoreParts(aggregate);
 
+		this.storeSearch(aggregate);
+
 		this.didAfterStore = false;
 		this.doAfterStore(aggregate);
 		assertThis(this.didAfterStore, this.getClass().getSimpleName() + ": doAfterStore was propagated");
@@ -234,10 +238,46 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@Override
-	public final void doStoreParts(A aggregate) {
+	public final void doStoreParts(A aggregate) { // TODO: take away from interface
 		for (PartRepository<? super A, ?> partRepo : this.partRepositories) {
 			partRepo.store(aggregate);
 		}
+	}
+
+	private final void storeSearch(A aggregate) {
+		((AggregateBase) aggregate).storeSearch();
+	}
+
+	protected final void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
+		String allTexts = String.join(" ", texts.stream().filter(t -> t != null).toList()).toLowerCase();
+		String allTokens = String.join(" ", tokens.stream().filter(t -> t != null).toList()).toLowerCase();
+		String allTextsAndTokens = (allTexts + " " + allTokens).trim();
+		ItemSearch itemSearch = Tables.ITEM_SEARCH;
+		String id = aggregate.getMeta().getAggregateType().getId() + ":" + aggregate.getId();
+		System.out.println("search.token: " + allTokens);
+		System.out.println("search.text: " + allTexts);
+		System.out.println("search.all: " + allTextsAndTokens);
+		this.dslContext
+				.delete(itemSearch)
+				.where(itemSearch.ID.eq(id))
+				.execute();
+		this.dslContext
+				.insertInto(
+						itemSearch,
+						itemSearch.ID,
+						itemSearch.ITEM_TYPE_ID,
+						itemSearch.ITEM_ID,
+						itemSearch.A_SIMPLE,
+						itemSearch.B_GERMAN,
+						itemSearch.B_ENGLISH)
+				.values(
+						id,
+						aggregate.getMeta().getAggregateType().getId(),
+						aggregate.getId(),
+						allTokens,
+						allTextsAndTokens,
+						allTextsAndTokens)
+				.execute();
 	}
 
 	@Override

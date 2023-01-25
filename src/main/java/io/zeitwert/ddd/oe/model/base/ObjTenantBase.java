@@ -42,13 +42,13 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	public ObjTenantBase(ObjTenantRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> tenantRecord) {
 		super(repository, objRecord);
 		this.dbRecord = tenantRecord;
-		this.tenantType = this.addEnumProperty(dbRecord, ObjTenantFields.TENANT_TYPE_ID, CodeTenantTypeEnum.class);
-		this.name = this.addSimpleProperty(dbRecord, ObjTenantFields.NAME);
-		this.extlKey = this.addSimpleProperty(dbRecord, ObjTenantFields.EXTL_KEY);
-		this.description = this.addSimpleProperty(dbRecord, ObjTenantFields.DESCRIPTION);
-		this.inflationRate = this.addSimpleProperty(dbRecord, ObjTenantFields.INFLATION_RATE);
-		this.logoImage = this.addReferenceProperty(dbRecord, ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
-		this.bannerImage = this.addReferenceProperty(dbRecord, ObjTenantFields.BANNER_IMAGE, ObjDocument.class);
+		this.tenantType = this.addEnumProperty(this.dbRecord, ObjTenantFields.TENANT_TYPE_ID, CodeTenantTypeEnum.class);
+		this.name = this.addSimpleProperty(this.dbRecord, ObjTenantFields.NAME);
+		this.extlKey = this.addSimpleProperty(this.dbRecord, ObjTenantFields.EXTL_KEY);
+		this.description = this.addSimpleProperty(this.dbRecord, ObjTenantFields.DESCRIPTION);
+		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjTenantFields.INFLATION_RATE);
+		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
+		this.bannerImage = this.addReferenceProperty(this.dbRecord, ObjTenantFields.BANNER_IMAGE, ObjDocument.class);
 	}
 
 	@Override
@@ -89,6 +89,13 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getExtlKey());
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getDescription());
 	}
 
 	@Override

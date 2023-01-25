@@ -185,6 +185,28 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getZip());
+		this.addSearchToken(this.getBuildingNr());
+		this.addSearchToken(this.getInsuranceNr());
+		this.addSearchToken(this.getPlotNr());
+		this.addSearchToken(this.getNationalBuildingId());
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getStreet());
+		this.addSearchText(this.getCity());
+		if (this.getBuildingType() != null) {
+			this.addSearchText(this.getBuildingType().getName());
+		}
+		if (this.getBuildingSubType() != null) {
+			this.addSearchText(this.getBuildingSubType().getName());
+		}
+		if (this.getCurrentRating() != null) {
+			this.addSearchText(this.getCurrentRating().getPartCatalog().getName());
+		}
+		this.addSearchText(this.getDescription());
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		if (property == this.ratingList) {

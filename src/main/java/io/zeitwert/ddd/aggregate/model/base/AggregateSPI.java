@@ -9,7 +9,7 @@ public interface AggregateSPI {
 	/**
 	 * Initialise the database records of an Aggregate with some basic fields (id,
 	 * tenantId) after creation (internal, technical callback).
-	 * 
+	 *
 	 * @param aggregateId aggregate id
 	 * @param tenantId    tenant id
 	 */
@@ -40,6 +40,12 @@ public interface AggregateSPI {
 	 * stored from the repository.
 	 */
 	void doStore();
+
+	/**
+	 * Calculate the search text and token strings (add via addSearchToken,
+	 * addSearchText).
+	 */
+	void doCalcSearch();
 
 	/**
 	 * Do some work after store.

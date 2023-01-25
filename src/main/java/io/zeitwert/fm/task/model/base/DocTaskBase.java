@@ -81,6 +81,12 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	}
 
 	@Override
+	public void doCalcSearch() {
+		this.addSearchText(this.getSubject());
+		this.addSearchText(this.getContent());
+	}
+
+	@Override
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		return super.addPart(property, partListType);
 	}

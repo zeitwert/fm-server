@@ -46,6 +46,9 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	protected Integer doStoreSeqNr = 0;
 	protected Integer doAfterStoreSeqNr = 0;
 
+	private List<String> searchTexts = new ArrayList<>();
+	private List<String> searchTokens = new ArrayList<>();
+
 	@Override
 	public AppContext getAppContext() {
 		return AppContext.getInstance();
@@ -54,6 +57,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	@Override
 	public abstract AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
 
+	@Override
 	public AggregateMeta getMeta() {
 		return this;
 	}
@@ -71,12 +75,12 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	public void initPartCache(Class<? extends Part<?>> clazz) {
-		requireThis(!hasPartCache(clazz), "not yet initialised");
+		requireThis(!this.hasPartCache(clazz), "not yet initialised");
 		this.partCaches.put(clazz, new PartCache<>());
 	}
 
 	public PartCache<?> getPartCache(Class<? extends Part<?>> clazz) {
-		requireThis(hasPartCache(clazz), "initialised");
+		requireThis(this.hasPartCache(clazz), "initialised");
 		return this.partCaches.get(clazz);
 	}
 
@@ -110,6 +114,24 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	public void doStore() {
 		this.doStoreSeqNr += 1;
 	}
+
+	protected void storeSearch() {
+		this.searchTexts.clear();
+		this.searchTokens.clear();
+		this.doCalcSearch();
+		((AggregateRepositoryBase<?, ?>) this.getRepository()).storeSearch(this, this.searchTexts, this.searchTokens);
+	}
+
+	protected void addSearchText(String text) {
+		this.searchTexts.add(text);
+	}
+
+	protected void addSearchToken(String token) {
+		this.searchTokens.add(token);
+	}
+
+	@Override
+	public abstract void doCalcSearch();
 
 	@Override
 	public void doAfterStore() {

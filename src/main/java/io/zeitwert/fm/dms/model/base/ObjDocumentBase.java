@@ -38,13 +38,13 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 			UpdatableRecord<?> documentRecord) {
 		super(repository, objRecord);
 		this.dbRecord = documentRecord;
-		this.name = this.addSimpleProperty(dbRecord, ObjDocumentFields.NAME);
-		this.documentKind = this.addEnumProperty(dbRecord, ObjDocumentFields.DOCUMENT_KIND_ID, CodeDocumentKindEnum.class);
-		this.documentCategory = this.addEnumProperty(dbRecord, ObjDocumentFields.DOCUMENT_CATEGORY_ID,
+		this.name = this.addSimpleProperty(this.dbRecord, ObjDocumentFields.NAME);
+		this.documentKind = this.addEnumProperty(this.dbRecord, ObjDocumentFields.DOCUMENT_KIND_ID, CodeDocumentKindEnum.class);
+		this.documentCategory = this.addEnumProperty(this.dbRecord, ObjDocumentFields.DOCUMENT_CATEGORY_ID,
 				CodeDocumentCategoryEnum.class);
-		this.templateDocument = this.addReferenceProperty(dbRecord, ObjDocumentFields.TEMPLATE_DOCUMENT_ID,
+		this.templateDocument = this.addReferenceProperty(this.dbRecord, ObjDocumentFields.TEMPLATE_DOCUMENT_ID,
 				ObjDocument.class);
-		this.contentKind = this.addEnumProperty(dbRecord, ObjDocumentFields.CONTENT_KIND_ID, CodeContentKindEnum.class);
+		this.contentKind = this.addEnumProperty(this.dbRecord, ObjDocumentFields.CONTENT_KIND_ID, CodeContentKindEnum.class);
 	}
 
 	@Override
@@ -87,6 +87,11 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public void doCalcSearch() {
+		this.addSearchText(this.getName());
 	}
 
 	@Override

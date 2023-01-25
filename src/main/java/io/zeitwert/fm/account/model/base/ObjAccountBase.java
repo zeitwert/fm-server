@@ -53,19 +53,19 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 			UpdatableRecord<?> accountRecord) {
 		super(repository, objRecord);
 		this.dbRecord = accountRecord;
-		this.key = this.addSimpleProperty(dbRecord, ObjAccountFields.KEY);
-		this.name = this.addSimpleProperty(dbRecord, ObjAccountFields.NAME);
-		this.description = this.addSimpleProperty(dbRecord, ObjAccountFields.DESCRIPTION);
-		this.accountType = this.addEnumProperty(dbRecord, ObjAccountFields.ACCOUNT_TYPE_ID,
+		this.key = this.addSimpleProperty(this.dbRecord, ObjAccountFields.KEY);
+		this.name = this.addSimpleProperty(this.dbRecord, ObjAccountFields.NAME);
+		this.description = this.addSimpleProperty(this.dbRecord, ObjAccountFields.DESCRIPTION);
+		this.accountType = this.addEnumProperty(this.dbRecord, ObjAccountFields.ACCOUNT_TYPE_ID,
 				CodeAccountTypeEnum.class);
-		this.clientSegment = this.addEnumProperty(dbRecord, ObjAccountFields.CLIENT_SEGMENT_ID,
+		this.clientSegment = this.addEnumProperty(this.dbRecord, ObjAccountFields.CLIENT_SEGMENT_ID,
 				CodeClientSegmentEnum.class);
-		this.referenceCurrency = this.addEnumProperty(dbRecord, ObjAccountFields.REFERENCE_CURRENCY_ID,
+		this.referenceCurrency = this.addEnumProperty(this.dbRecord, ObjAccountFields.REFERENCE_CURRENCY_ID,
 				CodeCurrencyEnum.class);
-		this.inflationRate = this.addSimpleProperty(dbRecord, ObjAccountFields.INFLATION_RATE);
-		this.logoImage = this.addReferenceProperty(dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
-		this.bannerImage = this.addReferenceProperty(dbRecord, ObjAccountFields.BANNER_IMAGE, ObjDocument.class);
-		this.mainContact = this.addReferenceProperty(dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);
+		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjAccountFields.INFLATION_RATE);
+		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
+		this.bannerImage = this.addReferenceProperty(this.dbRecord, ObjAccountFields.BANNER_IMAGE, ObjDocument.class);
+		this.mainContact = this.addReferenceProperty(this.dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);
 		this.areaSet = this.addEnumSetProperty(this.getRepository().getAreaSetType(), CodeAreaEnum.class);
 	}
 
@@ -114,6 +114,13 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 			super.account.setId(this.getId());
 			super.doStore();
 		}
+	}
+
+	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getKey());
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getDescription());
 	}
 
 	@Override

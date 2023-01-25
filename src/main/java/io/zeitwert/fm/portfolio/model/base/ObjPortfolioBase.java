@@ -76,6 +76,13 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getPortfolioNr());
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getDescription());
+	}
+
+	@Override
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		return super.addPart(property, partListType);
 	}

@@ -113,6 +113,14 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	}
 
 	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getEmail());
+		this.addSearchText(this.getEmail().replace("@", " ").replace(".", " ").replace("_", " ").replace("-", " "));
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getDescription());
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
 		if (property == this.tenantSet) {

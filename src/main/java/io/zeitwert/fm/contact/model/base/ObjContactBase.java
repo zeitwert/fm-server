@@ -83,6 +83,15 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	}
 
 	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getFirstName());
+		this.addSearchToken(this.getLastName());
+		this.addSearchToken(this.getEmail());
+		this.addSearchText(this.getEmail().replace("@", " ").replace(".", " ").replace("_", " ").replace("-", " "));
+		this.addSearchText(this.getDescription());
+	}
+
+	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
 		this.dbRecord.setValue(ObjContactFields.ACCOUNT_ID, id);

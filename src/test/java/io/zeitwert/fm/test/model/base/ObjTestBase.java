@@ -44,15 +44,15 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	protected ObjTestBase(ObjTestRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> testRecord) {
 		super(repository, objRecord);
 		this.dbRecord = testRecord;
-		this.shortText = this.addSimpleProperty(dbRecord, ObjTestFields.SHORT_TEXT);
-		this.longText = this.addSimpleProperty(dbRecord, ObjTestFields.LONG_TEXT);
-		this.date = this.addSimpleProperty(dbRecord, ObjTestFields.DATE);
-		this.int_ = this.addSimpleProperty(dbRecord, ObjTestFields.INT);
-		this.isDone = this.addSimpleProperty(dbRecord, ObjTestFields.IS_DONE);
-		this.json = this.addSimpleProperty(dbRecord, ObjTestFields.JSON);
-		this.nr = this.addSimpleProperty(dbRecord, ObjTestFields.NR);
-		this.country = this.addEnumProperty(dbRecord, ObjTestFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.refTest = this.addReferenceProperty(dbRecord, ObjTestFields.REF_TEST_ID, ObjTest.class);
+		this.shortText = this.addSimpleProperty(this.dbRecord, ObjTestFields.SHORT_TEXT);
+		this.longText = this.addSimpleProperty(this.dbRecord, ObjTestFields.LONG_TEXT);
+		this.date = this.addSimpleProperty(this.dbRecord, ObjTestFields.DATE);
+		this.int_ = this.addSimpleProperty(this.dbRecord, ObjTestFields.INT);
+		this.isDone = this.addSimpleProperty(this.dbRecord, ObjTestFields.IS_DONE);
+		this.json = this.addSimpleProperty(this.dbRecord, ObjTestFields.JSON);
+		this.nr = this.addSimpleProperty(this.dbRecord, ObjTestFields.NR);
+		this.country = this.addEnumProperty(this.dbRecord, ObjTestFields.COUNTRY_ID, CodeCountryEnum.class);
+		this.refTest = this.addReferenceProperty(this.dbRecord, ObjTestFields.REF_TEST_ID, ObjTest.class);
 		this.areaSet = this.addEnumSetProperty(this.getRepository().getAreaSetType(), CodeAreaEnum.class);
 		this.nodeList = this.addPartListProperty(this.getRepository().getNodeListType());
 	}
@@ -83,6 +83,10 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	public void doStore() {
 		super.doStore();
 		this.dbRecord.store();
+	}
+
+	@Override
+	public void doCalcSearch() {
 	}
 
 	@Override
