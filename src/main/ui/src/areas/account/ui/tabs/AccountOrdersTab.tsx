@@ -13,7 +13,7 @@ interface AccountTabOrdersProps {
 	template: string;
 }
 
-@inject("logger", "showToast")
+@inject("showToast")
 @observer
 export default class AccountTabOrders extends React.Component<AccountTabOrdersProps> {
 	@observable docListStore = ItemListModel.create({ datamart: DOC_DATAMART });
@@ -34,8 +34,8 @@ export default class AccountTabOrders extends React.Component<AccountTabOrdersPr
 				accountId: this.props.account.id
 			});
 		} catch (error: any) {
-			this.ctx.logger.error("Could not load doc list", error);
-			this.ctx.showToast("warning", "Could not load doc list");
+			console.error("Could not load doc list", error);
+			this.ctx.showToast("error", "Could not load doc list");
 		}
 	}
 

@@ -1,7 +1,6 @@
 
 import { Avatar, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Document, DocumentStoreModel, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, UserInfo } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import ItemEditor from "lib/item/ui/ItemEditor";
@@ -12,7 +11,7 @@ import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
 import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 enum LEFT_TABS {
@@ -28,7 +27,6 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("showAlert", "showToast")
 @observer
 class DocumentPage extends React.Component<RouteComponentProps> {
 
@@ -40,10 +38,6 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.NOTES;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: any) {
 		super(props);

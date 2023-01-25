@@ -9,11 +9,10 @@ import {
 	DOCUMENT_API, Enumerated
 } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { DocumentCatalog } from "areas/document/ui/DocumentCatalog";
 import DocumentsWidget from "areas/document/ui/DocumentsWidget";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { ItemFilter } from "../ItemFilter";
@@ -26,16 +25,11 @@ interface DocumentEditorProps {
 	onSet: (documents: Document[]) => void;
 }
 
-@inject("logger")
 @observer
 export default class DocumentEditor extends React.Component<DocumentEditorProps> {
 	@observable availableDocuments: Document[] = [];
 	@observable selectedDocument?: Document;
 	@observable areasOptions: any[] = [];
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: DocumentEditorProps) {
 		super(props);
@@ -142,7 +136,7 @@ export default class DocumentEditor extends React.Component<DocumentEditorProps>
 				label: item.name
 			}));
 		} catch (error: any) {
-			this.ctx.logger.error("Couldn't load areas", error);
+			console.error("Couldn't load areas", error);
 		}
 	}
 }

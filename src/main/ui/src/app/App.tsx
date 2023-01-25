@@ -5,8 +5,7 @@ import DynamicView from "app/frame/DynamicView";
 import { Navigator } from "app/frame/Navigation";
 import AppHeader from "app/ui/AppHeader";
 import RedirectItemView from "lib/item/ui/RedirectItemView";
-import { Logger } from "loglevel";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Route, Routes } from "react-router-dom";
@@ -16,19 +15,13 @@ export interface AppProps {
 }
 
 export interface AppCtx {
-	logger: Logger;
 	navigator: Navigator;
 	showToast: (variant: string, message: string) => void;
 	showAlert: (variant: string, message: string) => void;
 }
 
-@inject("logger")
 @observer
 export default class App extends React.Component<AppProps> {
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	render() {
 		Settings.setAppElement("#root");

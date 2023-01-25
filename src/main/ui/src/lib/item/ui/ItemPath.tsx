@@ -2,9 +2,8 @@
 import { Card } from "@salesforce/design-system-react";
 import { CaseStage, CaseStageType, DocStore } from "@zeitwert/ui-model";
 import { CasePath, CasePathStage, StageType } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { computed, makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface ItemPathProps {
@@ -16,7 +15,6 @@ interface ItemPathProps {
 	onTransitionToStage: (stage: CaseStage) => Promise<any>;
 }
 
-@inject("logger")
 @observer
 export default class ItemPath extends React.Component<ItemPathProps> {
 
@@ -34,10 +32,6 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 				return true;
 			}
 		});
-	}
-
-	get ctx() {
-		return this.props as any as AppCtx;
 	}
 
 	componentDidUpdate(prevProps: Readonly<ItemPathProps>, prevState: Readonly<{}>, snapshot?: any): void {
@@ -145,7 +139,7 @@ export default class ItemPath extends React.Component<ItemPathProps> {
 				await this.props.onTransitionToStage(stage);
 			}
 		} catch (error: any) {
-			this.ctx.logger.error("Failed to transition to stage");
+			console.error("Failed to transition to stage");
 		}
 	};
 

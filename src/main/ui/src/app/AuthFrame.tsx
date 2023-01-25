@@ -6,7 +6,7 @@ import { AppCtx } from "./App";
 import { RouteComponentProps, withRouter } from "./frame/withRouter";
 import LoginForm from "./LoginForm";
 
-@inject("logger", "showAlert")
+@inject("showAlert")
 @observer
 class AuthFrame extends React.Component<PropsWithChildren<RouteComponentProps>> {
 

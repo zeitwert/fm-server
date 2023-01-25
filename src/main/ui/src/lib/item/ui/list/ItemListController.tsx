@@ -19,7 +19,7 @@ interface ItemListControllerProps {
 	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
-@inject("logger", "showToast")
+@inject("showToast")
 @observer
 export default class ItemListController extends React.Component<ItemListControllerProps> {
 
@@ -31,8 +31,8 @@ export default class ItemListController extends React.Component<ItemListControll
 		const { store, defaultTemplate } = this.props;
 		store.initTemplates();
 		store.executeTemplate(defaultTemplate).catch((error) => {
-			this.ctx.logger.error("Could not load item list", error);
-			this.ctx.showToast("warning", "Could not load item list");
+			console.error("Could not load item list", error);
+			this.ctx.showToast("error", "Could not load item list");
 		});
 	}
 

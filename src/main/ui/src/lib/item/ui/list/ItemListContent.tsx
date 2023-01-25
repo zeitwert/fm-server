@@ -17,7 +17,7 @@ interface ItemListContentProps {
 	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
-@inject("showToast")
+@inject("showToast", "showAlert")
 @observer
 export default class ItemListContent extends React.Component<ItemListContentProps> {
 
@@ -84,7 +84,7 @@ export default class ItemListContent extends React.Component<ItemListContentProp
 			await KANBAN_API.updateItem(modifyUrl, docType, itemId, field, id);
 			this.ctx.showToast("success", docType.charAt(0).toUpperCase() + docType.slice(1) + " stored.");
 		} catch (err) {
-			this.ctx.showToast("warning", "Error while modifying " + docType + "!");
+			this.ctx.showAlert("error", "Error while modifying " + docType + "!");
 		}
 	};
 

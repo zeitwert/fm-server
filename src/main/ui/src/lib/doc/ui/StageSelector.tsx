@@ -1,8 +1,7 @@
 import { Button, Combobox, Modal } from "@salesforce/design-system-react";
 import { API, CaseStage, Config } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import { makeObservable, observable, transaction } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface StageSelectorProps {
@@ -12,16 +11,11 @@ interface StageSelectorProps {
 	onCancel: () => void;
 }
 
-@inject("logger")
 @observer
 export class StageSelector extends React.Component<StageSelectorProps> {
 	@observable caseStages: CaseStage[] = [];
 	@observable caseStageOptions: any[] = [];
 	@observable selectedCaseStage: any;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: StageSelectorProps) {
 		super(props);
@@ -89,7 +83,7 @@ export class StageSelector extends React.Component<StageSelectorProps> {
 				}));
 			});
 		} catch (error: any) {
-			this.ctx.logger.error("Failed to load case stages");
+			console.error("Failed to load case stages");
 			return Promise.reject(error);
 		}
 	}

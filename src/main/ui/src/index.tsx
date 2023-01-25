@@ -52,7 +52,6 @@ const navigator = new NavigatorImpl(session);
 
 // Base stores.
 const appCtx: AppCtx = {
-	logger: Logger,
 	navigator,
 	showToast: () => { },
 	showAlert: () => { }

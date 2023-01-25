@@ -3,7 +3,7 @@ import { Combobox, Icon } from "@salesforce/design-system-react";
 import { API, Config, EntityTypes } from "@zeitwert/ui-model";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
 interface Option {
@@ -15,17 +15,12 @@ interface Option {
 	tooltipContent?: string;
 }
 
-@inject("logger")
 @observer
 class SearchBar extends React.Component<RouteComponentProps> {
 
 	@observable value = "";
 	@observable options: Option[] = [];
 	@observable searchNr = 0;
-
-	get ctx() {
-		return this.props as any;
-	}
 
 	constructor(props: any) {
 		super(props);

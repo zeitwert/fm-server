@@ -6,7 +6,7 @@ import { makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-@inject("logger", "navigator")
+@inject("navigator")
 @observer
 class AppNavigation extends React.Component<RouteComponentProps> {
 	@observable isLauncherOpen = false;

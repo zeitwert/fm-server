@@ -2,10 +2,9 @@
 import { Button, ButtonGroup } from "@salesforce/design-system-react";
 import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel, session } from "@zeitwert/ui-model";
 import { DataTableCellWithDocumentIcon, DataTableCellWithEntityIcon, DataTableCellWithLink, DateDataTableCell } from "@zeitwert/ui-slds";
-import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import ItemModal from "./ItemModal";
 import { getNewEntityText } from "./ItemUtils";
@@ -24,17 +23,12 @@ interface ItemsPageProps extends RouteComponentProps {
 	onSelectionChange?: (selectedItems: any[]) => void;
 }
 
-@inject("showAlert", "showToast")
 @observer
 class ItemsPage extends React.Component<ItemsPageProps> {
 
 	@observable listStore: ItemList;
 	@observable sortProperty?: string;
 	@observable sortDirection?: "asc" | "desc" | undefined;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: ItemsPageProps) {
 		super(props);

@@ -1,7 +1,6 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, NotesStore, NotesStoreModel, session, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import AccountCreationForm from "areas/account/ui/AccountCreationForm";
@@ -14,7 +13,7 @@ import NotesTab from "lib/item/ui/tab/NotesTab";
 import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 import TenantDocumentsTab from "./tabs/TenantDocumentsTab";
 import TenantMainForm from "./tabs/TenantMainForm";
@@ -33,7 +32,6 @@ enum RIGHT_TABS {
 }
 const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
 
-@inject("showAlert", "showToast")
 @observer
 class TenantPage extends React.Component<RouteComponentProps> {
 
@@ -50,10 +48,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	@computed
 	get hasLogo(): boolean {
 		return !!this.tenantStore.tenant?.logo?.contentTypeId;
-	}
-
-	get ctx() {
-		return this.props as any as AppCtx;
 	}
 
 	constructor(props: any) {

@@ -1,6 +1,5 @@
 
 import { Document } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
 import React from "react";
 
 interface DocumentsWidgetProps {
@@ -11,10 +10,6 @@ interface DocumentsWidgetProps {
 }
 
 export default class DocumentsWidget extends React.Component<DocumentsWidgetProps> {
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	// constructor(props: DocumentsWidgetProps) {
 	// 	super(props);
