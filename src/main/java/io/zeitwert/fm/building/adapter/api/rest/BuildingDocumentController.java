@@ -34,8 +34,8 @@ import com.aspose.words.SaveFormat;
 @RequestMapping("/rest/building/buildings")
 public class BuildingDocumentController {
 
-	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	static final MediaType ZIP_CONTENT = new MediaType(MimeType.valueOf("application/zip"));
+	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	@Autowired
 	private ObjBuildingCache cache;
@@ -117,7 +117,9 @@ public class BuildingDocumentController {
 			}
 		}
 		String dateTimeNow = monthFormatter.format(OffsetDateTime.now());
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
+		try (
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ZipOutputStream zos = new ZipOutputStream(baos)) {
 			for (String id : ids) {
 				ObjBuilding building = this.cache.get(Integer.parseInt(id));
 				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {

@@ -94,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// special paths via <img src="" />
 				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // revoke
 				.antMatchers(HttpMethod.GET, "/rest/building/buildings/*/evaluation/**").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/rest/portfolio/portfolios/{id:\\w+}/evaluation/**").permitAll() // revoke
+				.antMatchers(HttpMethod.GET, "/rest/portfolio/portfolios/*/evaluation/**").permitAll() // revoke
 				// statistics
 				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// test paths

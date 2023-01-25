@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import SidePanel from "app/ui/SidePanel";
 import ItemsPage from "lib/item/ui/ItemsPage";
 import { makeObservable, observable } from "mobx";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import BuildingCreationForm from "./BuildingCreationForm";
@@ -16,6 +16,7 @@ import BuildingImportForm from "./modals/BuildingImportForm";
 
 const buildingStore = BuildingStoreModel.create({});
 
+@inject("showToast", "showAlert")
 @observer
 class BuildingArea extends React.Component<RouteComponentProps> {
 

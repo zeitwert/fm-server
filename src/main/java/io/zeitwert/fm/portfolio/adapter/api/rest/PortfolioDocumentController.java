@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,8 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.aspose.words.SaveFormat;
 
@@ -33,6 +36,7 @@ import com.aspose.words.SaveFormat;
 @RequestMapping("/rest/portfolio/portfolios")
 public class PortfolioDocumentController {
 
+	static final MediaType ZIP_CONTENT = new MediaType(MimeType.valueOf("application/zip"));
 	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	@Autowired
@@ -67,17 +71,24 @@ public class PortfolioDocumentController {
 		return this.getPortfolioEvaluation(id, format, isInline);
 	}
 
-	@GetMapping("/{id}/evaluation")
-	protected ResponseEntity<byte[]> getPortfolioEvaluation(
-			@PathVariable("id") Integer id,
+	@GetMapping("/{ids}/evaluation")
+	public ResponseEntity<byte[]> getPortfolioEvaluation(
+			@PathVariable("ids") String ids,
 			@RequestParam(required = false, name = "format") String format,
 			@RequestParam(required = false, name = "inline") Boolean isInline) {
+		String[] idList = ids.split(",");
+		if (idList.length == 1) {
+			return this.getPortfolioEvaluation(Integer.parseInt(idList[0]), format, isInline);
+		} else {
+			return this.getPortfolioEvaluation(idList, format);
+		}
+	}
 
+	protected ResponseEntity<byte[]> getPortfolioEvaluation(Integer id, String format, Boolean isInline) {
 		ObjPortfolio portfolio = this.portfolioCache.get(id);
 		if (portfolio == null) {
 			return ResponseEntity.notFound().build();
 		}
-
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 			this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
 			String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
@@ -93,10 +104,49 @@ public class PortfolioDocumentController {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers)
 					.body(stream.toByteArray());
 		} catch (Exception e) {
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage().getBytes());
 		}
 
+	}
+
+	private ResponseEntity<byte[]> getPortfolioEvaluation(String[] ids, String format) {
+		for (String id : ids) {
+			ObjPortfolio portfolio = this.portfolioCache.get(Integer.parseInt(id));
+			if (portfolio == null) {
+				return ResponseEntity.notFound().build();
+			}
+		}
+		String dateTimeNow = monthFormatter.format(OffsetDateTime.now());
+		try (
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ZipOutputStream zos = new ZipOutputStream(baos)) {
+			for (String id : ids) {
+				ObjPortfolio portfolio = this.portfolioCache.get(Integer.parseInt(id));
+				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+					this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
+					String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
+					fileName += " - " + dateTimeNow;
+					fileName = this.getFileName(fileName, this.getSaveFormat(format));
+					fileName = fileName.replace("/", " ");
+					ZipEntry entry = new ZipEntry(fileName);
+					entry.setSize(stream.size());
+					zos.putNextEntry(entry);
+					zos.write(stream.toByteArray());
+					zos.closeEntry();
+				} catch (Exception e) {
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage().getBytes());
+				}
+			}
+			zos.close();
+			// mark file for download
+			String zipFileName = "Gebäudeauswertungen - " + dateTimeNow + ".zip";
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentDisposition(ContentDisposition.builder("attachment").filename(zipFileName).build());
+			return ResponseEntity.ok().contentType(ZIP_CONTENT).headers(headers)
+					.body(baos.toByteArray());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage().getBytes());
+		}
 	}
 
 	private String getFileName(String fileName, int format) {
