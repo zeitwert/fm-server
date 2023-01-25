@@ -151,7 +151,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${user.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={user.meta?.validations!} />
+										<ValidationsTab validations={user.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

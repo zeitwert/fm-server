@@ -12,7 +12,7 @@ export interface AggregateApi<S extends AggregateSnapshot> {
 
 	getAggregates(parameters?: string): Promise<EntityTypeRepository>;
 
-	loadAggregate(id: string): Promise<EntityTypeRepository>;
+	loadAggregate(id: string, noIncludes?: boolean): Promise<EntityTypeRepository>;
 
 	createAggregate(item: S): Promise<EntityTypeRepository>;
 

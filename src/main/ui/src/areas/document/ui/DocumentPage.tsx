@@ -130,7 +130,7 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${document.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={document.meta?.validations!} />
+										<ValidationsTab validations={document.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

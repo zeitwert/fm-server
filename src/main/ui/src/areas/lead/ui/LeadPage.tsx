@@ -142,7 +142,7 @@ class LeadPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${lead.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={lead.meta?.validations!} />
+										<ValidationsTab validations={lead.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

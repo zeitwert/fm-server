@@ -31,7 +31,7 @@ const MstStoreWithEntitiesModel = types
 		) {
 			return flow<T, any[]>(function* (): any {
 				try {
-					const repository = yield API.loadAggregate(id);
+					const repository = yield API.loadAggregate(id, /*noIncludes:*/true);
 					self.afterLoad(repository);
 				} catch (error: any) {
 					console.error("Failed to load " + API.getItemType + ": " + id, error);

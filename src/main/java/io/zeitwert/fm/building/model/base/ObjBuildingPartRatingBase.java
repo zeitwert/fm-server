@@ -154,7 +154,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		}
 		Integer condition = 0;
 		for (ObjBuildingPartElementRating element : this.getElementList()) {
-			if (element.getWeight() != null) {
+			if (element.getWeight() != null && element.getWeight() > 0) {
 				condition += element.getWeight() * element.getCondition();
 			}
 		}
@@ -168,7 +168,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		}
 		Integer condition = 0;
 		for (ObjBuildingPartElementRating element : this.getElementList()) {
-			if (element.getWeight() != null) {
+			if (element.getWeight() != null && element.getWeight() > 0) {
 				condition += element.getWeight() * element.getCondition(year);
 			}
 		}
@@ -190,7 +190,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	private void calcElementWeights() {
 		this.elementWeights = 0;
 		for (ObjBuildingPartElementRating element : this.getElementList()) {
-			if (element.getWeight() != null) {
+			if (element.getWeight() != null && element.getWeight() > 0) {
 				this.elementWeights += element.getWeight();
 			}
 		}

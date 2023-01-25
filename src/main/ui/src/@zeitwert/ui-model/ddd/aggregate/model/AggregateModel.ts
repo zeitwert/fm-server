@@ -78,10 +78,10 @@ const MstAggregateModel = types
 	}))
 	.actions((self) => ({
 		async calcOnServer() {
-			(getRoot(self) as AggregateStore).calcOnServer();
+			await (getRoot(self) as AggregateStore).calcOnServer();
 		},
 		async execOperation(operations: string[]) {
-			(getRoot(self) as AggregateStore).execOperation(operations);
+			await (getRoot(self) as AggregateStore).execOperation(operations);
 		}
 	}))
 	// preProcessSnapshot before snapshot is applied to the model

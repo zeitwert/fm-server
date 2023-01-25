@@ -72,8 +72,8 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 					.relativeValue((int) (building.getInsuredValue().intValue() / maxInsuredValue.doubleValue() * 100.0))
 					.insuredValueYear(building.getInsuredValueYear())
 					.ratingYear(ratingYear)
-					.condition(building.getCondition(2022))
-					.conditionColor(this.getConditionColor(building.getCondition(2022)))
+					.condition(building.getCondition(2023))
+					.conditionColor(this.getConditionColor(building.getCondition(2023)))
 					.build();
 			buildingList.add(evaluationBuilding);
 		}

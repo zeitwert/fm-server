@@ -62,10 +62,16 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 
 	@Override
 	public Integer getCondition(Integer year) {
-		CodeBuildingPart buildingPart = this.buildingPart.getValue();
-		double relativeAgeAtRating = buildingPart.getRelativeAge(this.getCondition() / 100.0);
-		double relativeAgeAtYear = relativeAgeAtRating + (year - this.getRatingYear());
-		return (int) Math.round(buildingPart.getTimeValue(relativeAgeAtYear) * 100.0);
+		try {
+			CodeBuildingPart buildingPart = this.buildingPart.getValue();
+			double relativeAgeAtRating = buildingPart.getRelativeAge(this.getCondition() / 100.0);
+			double relativeAgeAtYear = relativeAgeAtRating + (year - this.getRatingYear());
+			return (int) Math.round(buildingPart.getTimeValue(relativeAgeAtYear) * 100.0);
+		} catch (Exception e) {
+			throw new RuntimeException(
+					this.getAggregate().getName() + "." + this.buildingPart.getValue().getName() + ".getCondition(" + year + ")",
+					e);
+		}
 	}
 
 }

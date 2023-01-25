@@ -82,10 +82,10 @@ export abstract class AggregateApiImpl<S extends AggregateSnapshot> implements A
 		return this.deserializeData(response.data);
 	}
 
-	async loadAggregate(id: string): Promise<EntityTypeRepository> {
+	async loadAggregate(id: string, noIncludes?: boolean): Promise<EntityTypeRepository> {
 		const url = Config.getApiUrl(
 			this.module,
-			this.itemPath + "/" + id + (!!this.includes ? "?" + this.includes : "")
+			this.itemPath + "/" + id + (!!this.includes && !noIncludes ? "?" + this.includes : "")
 		);
 		const response = await API.get(url);
 		return this.deserializeData(response.data);

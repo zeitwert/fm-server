@@ -154,7 +154,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${tenant.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={tenant.meta?.validations!} />
+										<ValidationsTab validations={tenant.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

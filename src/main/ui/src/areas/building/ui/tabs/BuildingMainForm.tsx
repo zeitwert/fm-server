@@ -66,7 +66,7 @@ export default class BuildingMainForm extends React.Component<BuildingMainFormPr
 
 	async componentDidMount() {
 		const allContacts = await CONTACT_API.getAggregates();
-		this.allContacts = Object.values(allContacts.contact).map(ct => {
+		this.allContacts = Object.values(allContacts.contact ?? []).map(ct => {
 			return {
 				id: ct.id,
 				name: ct.caption,

@@ -16,6 +16,8 @@ import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
+import { StratusBuildings } from "./modals/StratusImport";
+import StratusImportForm from "./modals/StratusImportForm";
 import AccountDocumentsTab from "./tabs/AccountDocumentsTab";
 import AccountMainForm from "./tabs/AccountMainForm";
 
@@ -46,6 +48,8 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
+
+	@observable doStratusImport = false;
 
 	@computed
 	get hasLogo(): boolean {
@@ -149,7 +153,7 @@ class AccountPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${account.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={account.meta?.validations!} />
+										<ValidationsTab validations={account.meta?.validations!} />
 									}
 								</TabsPanel>
 							}
@@ -165,6 +169,14 @@ class AccountPage extends React.Component<RouteComponentProps> {
 						{() => <ContactCreationForm contact={this.contactStore.contact!} />}
 					</ItemModal>
 
+				}
+				{
+					this.doStratusImport && (
+						<StratusImportForm
+							onCancel={this.cancelImport}
+							onImport={this.onImport}
+						/>
+					)
 				}
 				{
 					session.isNetworkActive &&
@@ -213,9 +225,17 @@ class AccountPage extends React.Component<RouteComponentProps> {
 
 	private getHeaderActions() {
 		return (
-			<ButtonGroup variant="list">
-				<Button onClick={this.openContactEditor}>Neuer Kontakt</Button>
-			</ButtonGroup>
+			<>
+				<ButtonGroup variant="list">
+					<Button onClick={this.openContactEditor}>Neuer Kontakt</Button>
+				</ButtonGroup>
+				{
+					session.hasSuperUserRole &&
+					<ButtonGroup variant="list">
+						<Button key="import" label={"Import Stratus"} onClick={this.openImport} />
+					</ButtonGroup>
+				}
+			</>
 		);
 	}
 
@@ -224,6 +244,28 @@ class AccountPage extends React.Component<RouteComponentProps> {
 			owner: session.sessionInfo!.user
 		});
 		this.contactStore.contact!.setAccount(this.accountStore.id!);
+	};
+
+	private openImport = () => {
+		this.doStratusImport = true;
+	};
+
+	private cancelImport = async () => {
+		this.doStratusImport = false;
+	};
+
+	private onImport = async (buildings: StratusBuildings) => {
+		try {
+			//const rsp = await API.post(Config.getRestUrl("building", "buildings"), content, { headers: { "Content-Type": "application/json" } });
+			this.doStratusImport = false;
+			this.ctx.showToast("success", `Stratusdaten importiert`);
+			this.reload();
+		} catch (error: any) {
+			this.ctx.showAlert(
+				"error",
+				"Could not import Building: " + (error.detail ? error.detail : error.title ? error.title : error)
+			);
+		}
 	};
 
 	private reload = async () => {

@@ -162,7 +162,7 @@ class PortfolioPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${portfolio.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={portfolio.meta?.validations!} />
+										<ValidationsTab validations={portfolio.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

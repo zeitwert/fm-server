@@ -134,7 +134,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 								<TabsPanel label={`Validierungen (${task.validationsCount})`}>
 									{
 										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
-										<ValidationsTab validationList={task.meta?.validations!} />
+										<ValidationsTab validations={task.meta?.validations!} />
 									}
 								</TabsPanel>
 							}

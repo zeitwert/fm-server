@@ -95,15 +95,16 @@ const MstAggregateStoreModel = types
 	}))
 	.views((self) => ({
 		get changes() {
-			const snapshot = getSnapshot(self.item!);
-			const result = {};
-			self.recorder!.patches?.forEach((patch) => {
-				const prop = patch.path.split("/")[1];
-				if (!result[prop]) {
-					result[prop] = snapshot[prop];
-				}
-			});
-			return result as AggregateSnapshot;
+			return Object.assign({}, getSnapshot(self.item!));
+			// const snapshot = getSnapshot(self.item!);
+			// const result = {};
+			// self.recorder!.patches?.forEach((patch) => {
+			// 	const prop = patch.path.split("/")[1];
+			// 	if (!result[prop]) {
+			// 		result[prop] = snapshot[prop];
+			// 	}
+			// });
+			// return result as AggregateSnapshot;
 		}
 	}))
 	// lifecycle, do not overwrite
@@ -156,7 +157,7 @@ const MstAggregateStoreModel = types
 					repository = yield self.api.storeAggregate({
 						id: self.item!.id,
 						meta: {
-							operationList: operations
+							operations: operations
 						}
 					} as unknown as Aggregate);
 					self.updateStore(id, repository);
@@ -180,9 +181,9 @@ const MstAggregateStoreModel = types
 					const changes = Object.assign(
 						self.changes,
 						{
-							id: self.item!.id,
+							//id: self.item!.id,
 							meta: {
-								operationList: ["calculationOnly"]
+								operations: ["calculationOnly"]
 							}
 						}
 					);
@@ -216,7 +217,7 @@ const MstAggregateStoreModel = types
 						const changes = Object.assign(
 							self.changes,
 							{
-								id: self.item!.id,
+								//id: self.item!.id,
 								meta: {
 									clientVersion: self.item?.meta?.version
 								}
