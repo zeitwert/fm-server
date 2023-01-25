@@ -1,6 +1,5 @@
 
 import { Instance, SnapshotIn, types } from "mobx-state-tree";
-import { EntityType } from "../../../app/common";
 import { Document } from "../../../fm/dms/model/DocumentModel";
 import { AggregateModel } from "../../aggregate/model/AggregateModel";
 import { Enumerated } from "../../aggregate/model/EnumeratedModel";
@@ -21,11 +20,6 @@ const MstDocModel = AggregateModel.named("Doc")
 	.views((self) => ({
 		get isDoc(): boolean {
 			return true;
-		},
-		get isBusinessProcess() {
-			return (
-				self.type.type === EntityType.LEAD
-			);
 		},
 		isActionAvailable(action: string) {
 			return self.meta?.availableActions?.indexOf(action)! >= 0 || false;

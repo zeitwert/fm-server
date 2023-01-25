@@ -128,21 +128,5 @@
 			"module": "collaboration",
 			"url": "tasks"
 		}
-	},
-	{
-		"id": "lead.leads",
-		"module": "lead",
-		"name": "Lead Orderbook",
-		"provider": "api",
-		"params": {
-			"isInWork": {
-				"type": "boolean"
-			}
-		},
-		"config": {
-			"module": "lead",
-			"url": "leads?include[lead]=account,contact",
-			"accept": "application/vnd.api+json"
-		}
 	}
 ]

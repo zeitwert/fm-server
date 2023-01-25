@@ -39,9 +39,6 @@ class ApplicationConfig {
 	private final AppMenuAction homeAction = AppMenuAction.builder().id("home").name("Dashboard").navigation(this.DefaultNavigation).icon("").build();
 	private final ApplicationArea homeArea = ApplicationArea.builder().id("home").name("Dashboard").icon("standard:home").path("home").component("home/ui/HomeArea").menu(this.EmptyMenu).menuAction(this.homeAction).build();
 
-	private final AppMenuAction leadAction = AppMenuAction.builder().id("lead").name("Leads").navigation(this.DefaultNavigation).icon("").build();
-	private final ApplicationArea leadArea = ApplicationArea.builder().id("lead").name("Leads").icon("standard:lead").path("lead").component("lead/ui/LeadArea").menu(this.EmptyMenu).menuAction(this.leadAction).build();
-
 	private final AppMenuAction portfolioAction = AppMenuAction.builder().id("portfolio").name("Portfolios").navigation(this.DefaultNavigation).icon("").build();
 	private final ApplicationArea portfolioArea = ApplicationArea.builder().id("portfolio").name("Portfolios").icon("standard:store_group").path("portfolio").component("portfolio/ui/PortfolioArea").menu(this.EmptyMenu).menuAction(this.portfolioAction).build();
 
@@ -78,7 +75,6 @@ class ApplicationConfig {
 		this.Areas.put(this.contactArea.getId(), this.contactArea);
 		this.Areas.put(this.documentArea.getId(), this.documentArea);
 		this.Areas.put(this.homeArea.getId(), this.homeArea);
-		this.Areas.put(this.leadArea.getId(), this.leadArea);
 		this.Areas.put(this.portfolioArea.getId(), this.portfolioArea);
 		this.Areas.put(this.taskArea.getId(), this.taskArea);
 		this.Areas.put(this.tenantArea.getId(), this.tenantArea);

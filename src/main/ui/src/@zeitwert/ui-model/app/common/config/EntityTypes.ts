@@ -4,7 +4,6 @@ export enum EntityType {
 	BUILDING = "building",
 	CONTACT = "contact",
 	DOCUMENT = "document",
-	LEAD = "lead",
 	NOTE = "note",
 	PORTFOLIO = "portfolio",
 	TASK = "task",
@@ -66,15 +65,6 @@ export const EntityTypes: { [type: string]: EntityTypeInfo } = {
 		type: EntityType.DOCUMENT,
 		iconCategory: "standard",
 		iconName: "document",
-		hasPreview: false
-	},
-	[EntityType.LEAD]: {
-		label: "Leads",
-		labelSingular: "Lead",
-		gender: EntityGender.MALE,
-		type: EntityType.LEAD,
-		iconCategory: "standard",
-		iconName: "lead",
 		hasPreview: false
 	},
 	[EntityType.NOTE]: {

@@ -16,7 +16,7 @@ const MstActivityModel = DocModel.named("Activity")
 			return moment(self.date).diff(moment()) > 0;
 		},
 		get isPast() {
-			return !this.isUpcoming && (!self.meta?.isInWork || self.isBusinessProcess);
+			return !this.isUpcoming && (!self.meta?.isInWork || self.isDoc);
 		},
 		get isOverdue() {
 			return !this.isUpcoming && !this.isPast;
@@ -25,7 +25,7 @@ const MstActivityModel = DocModel.named("Activity")
 	.views((self) => ({
 		get timelineDescription() {
 			const days = DateFormat.relativeTime(self.date!);
-			if (self.isBusinessProcess) {
+			if (self.isDoc) {
 				return (
 					"The " +
 					self.type.type +

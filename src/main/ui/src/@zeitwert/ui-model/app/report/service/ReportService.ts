@@ -9,7 +9,7 @@ import { Template } from "../model/Template";
  *
  * Provider (f.ex. zeitwert Api)
  * - Datamart definitions
- *   name pattern: [module].[datamart] (f.ex. meeting.meetings, lead.leads)
+ *   name pattern: [module].[datamart] (f.ex. meeting.meetings, doc.docs)
  *   - Parameter definitions (typically selection criteria, like f.ex. doc_stage)
  *   - Layout definitions (bound to Datamart, specify rendering on screen)
  *     name pattern: [datamartName].[layout] (f.ex. meeting.meetings.default)
