@@ -6,6 +6,18 @@ import React, { Suspense } from "react";
 import ErrorBoundary from "../ErrorBoundary";
 import { RouteComponentProps, withRouter } from "./withRouter";
 
+// home, tenant, user, account, contact, portfolio, building, task
+const ComponentPathInfo = {
+	"home": "home/ui/HomeArea",
+	"tenant": "tenant/ui/TenantArea",
+	"user": "user/ui/UserArea",
+	"account": "account/ui/AccountArea",
+	"contact": "contact/ui/ContactArea",
+	"portfolio": "portfolio/ui/PortfolioArea",
+	"building": "building/ui/BuildingArea",
+	"task": "task/ui/TaskArea",
+}
+
 @observer
 class DynamicView extends React.Component<RouteComponentProps> {
 
@@ -33,7 +45,8 @@ class DynamicView extends React.Component<RouteComponentProps> {
 	private componentName(path: string) {
 		if (session.appInfo) {
 			const areaPath = path ?? session.appInfo?.defaultArea ?? "/";
-			return session.appInfo!.areas.find((a) => a.path === areaPath)?.component;
+			return ComponentPathInfo[areaPath];
+			//return session.appInfo!.areas.find((a) => a.path === areaPath)?.component;
 		}
 	}
 
