@@ -11,7 +11,7 @@ const INCLUDES = "include[account]=tenantInfo,contacts,mainContact,logo";
 export class AccountApiImpl extends AggregateApiImpl<AccountSnapshot> implements AccountApi {
 	constructor() {
 		const PROPS = Object.keys(AccountModel.properties);
-		const IGNORED = IGNORED_ATTRIBUTES.concat(["contacts", "documents"]);
+		const IGNORED = IGNORED_ATTRIBUTES.concat(["contacts", "documents", "tenantInfo"]);
 		const ATTRIBUTES = PROPS.filter((el) => !IGNORED.includes(el));
 		const RELATIONS = {
 			logo: "document",

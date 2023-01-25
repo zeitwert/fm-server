@@ -7,9 +7,6 @@ import { ContactModel } from "../../contact/model/ContactModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
 import { TenantModel } from "../../tenant/model/TenantModel";
 
-export interface AccountStatistics {
-}
-
 const MstAccountModel = ObjModel.named("Account")
 	.props({
 		key: types.maybe(types.string),
@@ -27,8 +24,6 @@ const MstAccountModel = ObjModel.named("Account")
 		mainContact: types.maybe(types.reference(types.late((): IAnyModelType => ContactModel))),
 		//
 		logo: types.maybe(types.reference(DocumentModel)),
-		//
-		statistics: types.frozen<AccountStatistics>()
 	})
 	.views((self) => ({
 		get hasLogo(): boolean {

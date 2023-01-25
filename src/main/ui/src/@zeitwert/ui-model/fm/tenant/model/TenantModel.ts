@@ -5,9 +5,6 @@ import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
 
-export interface TenantStatistics {
-}
-
 const MstTenantModel = ObjModel.named("Tenant")
 	.props({
 		key: types.maybe(types.string),

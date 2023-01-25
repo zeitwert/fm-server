@@ -5,9 +5,6 @@ import { Enumerated, EnumeratedModel } from "../../../../ui-model/ddd/aggregate/
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
 
-export interface UserStatistics {
-}
-
 const MstUserModel = ObjModel.named("User")
 	.props({
 		email: types.maybe(types.string),
