@@ -48,14 +48,14 @@ export default class ItemListContent extends React.Component<ItemListContentProp
 				options = {
 					onCardMoved: this.onCardMoved,
 					cardActions: [
-						{
-							name: "Edit",
-							action: (itemId: string) => Promise.resolve(console.log("Edit card " + itemId))
-						},
-						{
-							name: "Delete",
-							action: (itemId: string) => Promise.resolve(console.log("Delete card " + itemId))
-						}
+						// {
+						// 	name: "Edit",
+						// 	action: (itemId: string) => Promise.resolve(console.log("Edit card " + itemId))
+						// },
+						// {
+						// 	name: "Delete",
+						// 	action: (itemId: string) => Promise.resolve(console.log("Delete card " + itemId))
+						// }
 					]
 				};
 

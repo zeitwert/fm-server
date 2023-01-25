@@ -319,6 +319,7 @@ class KanbanBoardCard extends React.Component<KanbanBoardCardProps, KanbanBoardC
 					>
 						<Card
 							className="slds-m-vertical_small"
+							bodyClassName="slds-m-top_none"
 							heading={
 								<div className="slds-media slds-media_center slds-has-flexi-truncate">
 									<div className="slds-media__body">
@@ -337,7 +338,7 @@ class KanbanBoardCard extends React.Component<KanbanBoardCardProps, KanbanBoardC
 							}
 							headerActions={
 								!readOnly &&
-								cardActions &&
+								!!cardActions?.length &&
 								hovered && (
 									<Dropdown
 										align="right"
@@ -358,7 +359,7 @@ class KanbanBoardCard extends React.Component<KanbanBoardCardProps, KanbanBoardC
 							}
 						>
 							<div className="slds-card__body_inner slds-grid slds-wrap slds-grid_pull-padded">
-								<div className="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-1 slds-p-bottom_small">
+								<div className="slds-p-horizontal_small slds-p-top_none slds-p-bottom_none slds-m-left_small slds-m-right_small">
 									<Tile title="">
 										{cardLayout.body &&
 											cardLayout.body.map((field, index) => {

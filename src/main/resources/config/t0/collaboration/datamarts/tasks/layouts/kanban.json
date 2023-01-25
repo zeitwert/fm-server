@@ -16,15 +16,18 @@
 			{
 				"id": "{{id}}",
 				"link": "/task/{{id}}",
-				"stageId": "{{caseStage.id}}",
-				"stageName": "{{caseStage.name}}",
-				"name": "{{name}}",
-				"createdAt": "=> formatDate(meta.createdAt)"
+				"stageId": "{{meta.caseStage.id}}",
+				"stageName": "{{meta.caseStage.name}}",
+				"name": "{{caption}}",
+				"assignee": "{{assignee.name}}",
+				"priority": "{{priority.name}}",
+				"relatedTo": "{{relatedTo.name}}",
+				"dueAt": "=> formatDate(dueAt)"
 			}
 		],
 		"groupBy": {
 			"value": "stageId",
-			"serverFieldName": "caseStage"
+			"serverFieldName": "nextCaseStage"
 		},
 		"cardLayout": {
 			"title": {
@@ -33,12 +36,26 @@
 			},
 			"body": [
 				{
-					"value": "createdAt",
-					"displayName": "createdAt"
+					"title": "Assignee",
+					"name": "Assignees",
+					"value": "assignee",
+					"displayName": "assignee"
+				},
+				{
+					"value": "dueAt",
+					"displayName": "dueAt"
+				},
+				{
+					"value": "relatedTo",
+					"displayName": "relatedTo"
+				},
+				{
+					"value": "priority",
+					"displayName": "priority"
 				}
 			]
 		},
 		"docType": "task",
-		"modifyUrl": "{{apiBaseUrl}}/task/tasks"
+		"modifyUrl": "{{apiBaseUrl}}/collaboration/tasks"
 	}
 }
