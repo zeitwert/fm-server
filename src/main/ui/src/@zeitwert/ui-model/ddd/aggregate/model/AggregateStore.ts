@@ -65,8 +65,19 @@ const MstAggregateStoreModel = types
 	}))
 	// lifecycle, do not overwrite
 	.actions((self) => ({
+		clear() {
+			requireThis(!self.isInTrx, "not in transaction");
+			self.id = undefined;
+			self.setItem(undefined);
+		},
+	}))
+	// lifecycle, do not overwrite
+	.actions((self) => ({
 		updateStore(id: string, repository: EntityTypeRepository) {
 			transaction(() => {
+				if (id !== self.id) {
+					self.clear();
+				}
 				self.id = id;
 				self.afterLoad(repository);
 				self.setItem(repository[self.typeName][id]);
@@ -106,14 +117,6 @@ const MstAggregateStoreModel = types
 			// });
 			// return result as AggregateSnapshot;
 		}
-	}))
-	// lifecycle, do not overwrite
-	.actions((self) => ({
-		clear() {
-			requireThis(!self.isInTrx, "not in transaction");
-			self.id = undefined;
-			self.setItem(undefined);
-		},
 	}))
 	// lifecycle, do not overwrite
 	.actions((self) => ({
@@ -210,7 +213,6 @@ const MstAggregateStoreModel = types
 						id = Object.keys(repository[self.typeName])[Object.keys(repository[self.typeName]).length - 1];
 						transaction(() => {
 							self.commitTrx();
-							self.clear(); // need to clear, since id will have changed
 							self.updateStore(id, repository);
 						});
 					} else {
