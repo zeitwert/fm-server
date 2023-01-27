@@ -31,6 +31,9 @@ public class TaskTest {
 
 	static final OffsetDateTime DueDate = OffsetDateTime.of(2023, 9, 8, 0, 0, 0, 0, ZoneOffset.ofHours(2));
 
+	static final String USER_EMAIL = "cc@zeitwert.io";
+	static final String TEST_ACCOUNT = "TA";
+
 	static ObjUser RelatedTo;
 	static ObjAccount Account;
 	static CodeCaseStage StageNew;
@@ -56,10 +59,10 @@ public class TaskTest {
 
 		this.getTestData();
 
-		assertTrue(taskRepository != null, "taskRepository not null");
-		assertEquals("doc_task", taskRepository.getAggregateType().getId());
+		assertTrue(this.taskRepository != null, "taskRepository not null");
+		assertEquals("doc_task", this.taskRepository.getAggregateType().getId());
 
-		DocTask task1a = taskRepository.create(requestCtx.getTenantId());
+		DocTask task1a = this.taskRepository.create(this.requestCtx.getTenantId());
 
 		assertNotNull(task1a, "task not null");
 		assertNotNull(task1a.getId(), "id not null");
@@ -79,7 +82,7 @@ public class TaskTest {
 		this.taskRepository.store(task1a);
 		task1a = null;
 
-		DocTask task1b = taskRepository.get(task1Id);
+		DocTask task1b = this.taskRepository.get(task1Id);
 		Integer task1bIdHash = System.identityHashCode(task1b);
 
 		assertNotEquals(task1aIdHash, task1bIdHash);
@@ -90,27 +93,27 @@ public class TaskTest {
 
 		this.checkTask1(task1b);
 
-		initTask2(task1b);
+		this.initTask2(task1b);
 		assertEquals(task1b.isInWork(), true);
 
 		this.taskRepository.store(task1b);
 		task1b = null;
 
-		DocTask task1c = taskRepository.get(task1Id);
+		DocTask task1c = this.taskRepository.get(task1Id);
 
 		assertEquals(task1c.getCaseStage(), StageProgress);
 		assertEquals(task1c.isInWork(), true);
 
 		this.checkTask2(task1c);
 
-		initTask1(task1c);
+		this.initTask1(task1c);
 		task1c.setCaseStage(StageDone);
 		assertEquals(task1c.isInWork(), false);
 
 		this.taskRepository.store(task1c);
 		task1c = null;
 
-		DocTask task1d = taskRepository.get(task1Id);
+		DocTask task1d = this.taskRepository.get(task1Id);
 
 		assertEquals(task1d.getCaseStage(), StageDone);
 		assertEquals(task1d.isInWork(), false);
@@ -120,9 +123,9 @@ public class TaskTest {
 	}
 
 	private void getTestData() {
-		RelatedTo = userRepository.getByEmail("k@zeitwert.io").get();
+		RelatedTo = this.userRepository.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
-		Account = accountRepository.getByKey("3033").get();
+		Account = this.accountRepository.getByKey(TEST_ACCOUNT).get();
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");

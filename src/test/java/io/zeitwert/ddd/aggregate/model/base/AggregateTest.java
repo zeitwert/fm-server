@@ -26,7 +26,7 @@ import java.time.LocalDate;
 @ActiveProfiles("test")
 public class AggregateTest {
 
-	private static final String USER_EMAIL = "k@zeitwert.io";
+	private static final String USER_EMAIL = "tt@zeitwert.io";
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
@@ -47,10 +47,10 @@ public class AggregateTest {
 	@Test
 	public void testAggregate() throws Exception {
 
-		assertTrue(testRepository != null, "objTestRepository not null");
-		assertEquals("obj_test", testRepository.getAggregateType().getId());
+		assertTrue(this.testRepository != null, "objTestRepository not null");
+		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
+		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 		assertNotNull(test1a, "test not null");
 		assertNotNull(test1a.getId(), "id not null");
@@ -63,10 +63,10 @@ public class AggregateTest {
 		assertNotNull(test1a.getMeta().getCreatedAt(), "createdAt not null");
 		assertEquals(1, test1a.getMeta().getTransitionList().size());
 
-		testRepository.store(test1a);
+		this.testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(test1Id);
+		ObjTest test1b = this.testRepository.get(test1Id);
 		Integer test1bIdHash = System.identityHashCode(test1b);
 		assertNotEquals(test1aIdHash, test1bIdHash);
 
@@ -79,11 +79,11 @@ public class AggregateTest {
 	@Test
 	public void testAggregateProperties() throws Exception {
 
-		ObjUser user = userRepository.getByEmail(USER_EMAIL).get();
-		CodeCountry ch = countryEnum.getItem("ch");
-		CodeCountry de = countryEnum.getItem("de");
+		ObjUser user = this.userRepository.getByEmail(USER_EMAIL).get();
+		CodeCountry ch = this.countryEnum.getItem("ch");
+		CodeCountry de = this.countryEnum.getItem("de");
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
+		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
 		Integer test1Id = test1a.getId();
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 
@@ -100,18 +100,18 @@ public class AggregateTest {
 		assertEquals(user.getId(), test1a.getOwner().getId());
 		assertEquals(ch, test1a.getCountry());
 
-		ObjTest test2a = testRepository.create(requestCtx.getTenantId());
+		ObjTest test2a = this.testRepository.create(this.requestCtx.getTenantId());
 		this.initObjTest(test2a, "Two", USER_EMAIL, "de");
 		Integer test2Id = test2a.getId();
-		testRepository.store(test2a);
+		this.testRepository.store(test2a);
 
 		test1a.setRefTestId(test2Id);
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", test1a.getCaption());
 
-		testRepository.store(test1a);
+		this.testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(test1Id);
+		ObjTest test1b = this.testRepository.get(test1Id);
 
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", test1b.getCaption());
 		assertEquals("Short Test One", test1b.getShortText());
@@ -192,9 +192,9 @@ public class AggregateTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userRepository.getByEmail(userEmail).get();
 		test.setOwner(user);
-		CodeCountry country = countryEnum.getItem(countryId);
+		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);
 	}
 

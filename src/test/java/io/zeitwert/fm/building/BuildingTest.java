@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
@@ -35,7 +33,7 @@ import io.zeitwert.server.Application;
 @ActiveProfiles("test")
 public class BuildingTest {
 
-	private static final String ACCT_KEY = "##test##building";
+	private static final String ACCT_KEY = "TA";
 
 	@Autowired
 	private RequestContext requestCtx;
@@ -52,7 +50,7 @@ public class BuildingTest {
 		assertTrue(this.buildingRepository != null, "buildingRepository not null");
 		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = this.getOrCreateTestAccount(this.requestCtx);
+		ObjAccount account = this.getTestAccount(this.requestCtx);
 		ObjBuilding building1a = this.buildingRepository.create(this.requestCtx.getTenantId());
 
 		assertNotNull(building1a, "test not null");
@@ -148,17 +146,8 @@ public class BuildingTest {
 
 	}
 
-	private ObjAccount getOrCreateTestAccount(RequestContext requestCtx) {
-		Optional<ObjAccount> maybeAccount = this.accountCache.getByKey(ACCT_KEY);
-		if (maybeAccount.isPresent()) {
-			return maybeAccount.get();
-		}
-		ObjAccount account = this.accountCache.create(requestCtx.getTenantId());
-		account.setName("Building Test Account");
-		account.setAccountType(CodeAccountTypeEnum.getAccountType("client"));
-		account.setReferenceCurrency(CodeCurrencyEnum.getCurrency("chf"));
-		this.accountCache.store(account);
-		return this.accountCache.get(account.getId());
+	private ObjAccount getTestAccount(RequestContext requestCtx) {
+		return this.accountCache.getByKey(ACCT_KEY).get();
 	}
 
 	private void initBuilding(ObjBuilding building) {

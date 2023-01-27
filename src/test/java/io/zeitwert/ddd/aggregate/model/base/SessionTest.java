@@ -26,7 +26,7 @@ import java.time.LocalDate;
 @ActiveProfiles("test")
 public class SessionTest {
 
-	private static final String USER_EMAIL = "martin@zeitwert.io";
+	private static final String USER_EMAIL = "tt@zeitwert.io";
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
@@ -44,17 +44,17 @@ public class SessionTest {
 	@Test
 	public void testSessionHandling() throws Exception {
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
+		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
 		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 		Integer test1Id = test1a.getId();
 		Integer test1aIdHash = System.identityHashCode(test1a);
-		testRepository.store(test1a);
+		this.testRepository.store(test1a);
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(test1Id);
+		ObjTest test1b = this.testRepository.get(test1Id);
 		Integer test1bIdHash = System.identityHashCode(test1b);
 		assertNotEquals(test1aIdHash, test1bIdHash);
-		assertEquals(requestCtx, test1b.getMeta().getRequestContext());
+		assertEquals(this.requestCtx, test1b.getMeta().getRequestContext());
 
 		// ObjUser user = userRepository.getByEmail(requestCtx, USER_EMAIL).get();
 
@@ -100,9 +100,9 @@ public class SessionTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userRepository.getByEmail(userEmail).get();
 		test.setOwner(user);
-		CodeCountry country = countryEnum.getItem(countryId);
+		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);
 	}
 

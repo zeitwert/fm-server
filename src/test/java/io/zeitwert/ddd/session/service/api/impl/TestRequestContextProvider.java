@@ -21,7 +21,7 @@ public class TestRequestContextProvider {
 	@Autowired
 	@SessionScope
 	public RequestContext getRequestContext(ObjUserRepository userRepository) {
-		String userEmail = "k@zeitwert.io";
+		String userEmail = "tt@zeitwert.io";
 		Optional<ObjUser> maybeUser = userRepository.getByEmail(userEmail);
 		if (maybeUser.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");

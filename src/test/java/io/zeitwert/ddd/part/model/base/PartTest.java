@@ -36,6 +36,7 @@ import java.util.List;
 @ActiveProfiles("test")
 public class PartTest {
 
+	private static final String USER_EMAIL = "tt@zeitwert.io";
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
@@ -53,18 +54,18 @@ public class PartTest {
 	@Test
 	public void testNodeList() throws Exception {
 
-		assertTrue(testRepository != null, "testRepository not null");
-		assertEquals("obj_test", testRepository.getAggregateType().getId());
+		assertTrue(this.testRepository != null, "testRepository not null");
+		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		ObjTestPartNodeRepository testNodeRepository = testRepository.getNodeRepository();
+		ObjTestPartNodeRepository testNodeRepository = this.testRepository.getNodeRepository();
 		assertTrue(testNodeRepository != null, "testNodeRepository not null");
-		CodePartListType nodeListType = testRepository.getNodeListType();
+		CodePartListType nodeListType = this.testRepository.getNodeListType();
 		assertTrue(CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST).equals(nodeListType), "nodeListType");
 
-		ObjTest test1a = testRepository.create(requestCtx.getTenantId());
+		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
 		// assertTrue(((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).isInitialised(test1a));
-		this.initObjTest(test1a, "One", "martin@zeitwert.io", "ch");
+		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
 		Integer test1Id = test1a.getId();
 
 		assertEquals(0, test1a.getNodeList().size());
@@ -73,7 +74,7 @@ public class PartTest {
 		// testNodeRepository).getParts(test1a).size());
 
 		ObjTestPartNode node1a0 = test1a.addNode();
-		initObjTestPartNode(node1a0, "First", "ch");
+		this.initObjTestPartNode(node1a0, "First", "ch");
 		assertEquals(PartStatus.CREATED, node1a0.getMeta().getStatus());
 		UpdatableRecord<?> dbRecord = ((PartBase<?>) node1a0).getDbRecord();
 		assertNotNull(dbRecord.getValue(PartFields.ID));
@@ -85,10 +86,10 @@ public class PartTest {
 		// testNodeRepository).getParts(test1a).size());
 
 		ObjTestPartNode node1a1 = test1a.addNode();
-		initObjTestPartNode(node1a1, "Second", "de");
+		this.initObjTestPartNode(node1a1, "Second", "de");
 		assertEquals(PartStatus.CREATED, node1a1.getMeta().getStatus());
 		ObjTestPartNode node1a2 = test1a.addNode();
-		initObjTestPartNode(node1a2, "Third", "es");
+		this.initObjTestPartNode(node1a2, "Third", "es");
 		assertEquals(PartStatus.CREATED, node1a2.getMeta().getStatus());
 
 		assertEquals(3, test1a.getNodeList().size());
@@ -125,12 +126,12 @@ public class PartTest {
 		assertEquals(List.of(PartStatus.CREATED, PartStatus.DELETED, PartStatus.CREATED),
 				testNodeRepository.getParts(test1a, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
-		testRepository.store(test1a);
+		this.testRepository.store(test1a);
 		// assertFalse(((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).isInitialised(test1a));
 		test1a = null;
 
-		ObjTest test1b = testRepository.get(test1Id);
+		ObjTest test1b = this.testRepository.get(test1Id);
 
 		assertEquals(2, test1b.getNodeList().size());
 		assertEquals(2, testNodeRepository.getParts(test1b, nodeListType).size());
@@ -143,18 +144,18 @@ public class PartTest {
 		assertEquals("Short Test Node Third", test1b.getNodeList().get(1).getShortText());
 
 		ObjTestPartNode node1b2 = test1b.addNode();
-		initObjTestPartNode(node1b2, "Fourth", "de");
+		this.initObjTestPartNode(node1b2, "Fourth", "de");
 		assertEquals(PartStatus.CREATED, node1b2.getMeta().getStatus());
 		test1b.getNode(1).setInt(43);
 		assertEquals(List.of(PartStatus.READ, PartStatus.UPDATED, PartStatus.CREATED),
 				testNodeRepository.getParts(test1b, nodeListType).stream().map(p -> p.getMeta().getStatus()).toList());
 
-		testRepository.store(test1b);
+		this.testRepository.store(test1b);
 		// assertFalse(((PartRepositoryBase<ObjTest, ?>)
 		// testNodeRepository).isInitialised(test1b));
 		test1b = null;
 
-		ObjTest test1c = testRepository.get(test1Id);
+		ObjTest test1c = this.testRepository.get(test1Id);
 
 		assertEquals(3, test1c.getNodeList().size());
 		assertEquals(3, testNodeRepository.getParts(test1c, nodeListType).size());
@@ -182,9 +183,9 @@ public class PartTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userRepository.getByEmail(userEmail).get();
 		test.setOwner(user);
-		CodeCountry country = countryEnum.getItem(countryId);
+		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);
 	}
 
@@ -196,7 +197,7 @@ public class PartTest {
 		node.setIsDone(false);
 		node.setDate(LocalDate.of(1966, 9, 8));
 		node.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeCountry country = countryEnum.getItem(countryId);
+		CodeCountry country = this.countryEnum.getItem(countryId);
 		node.setCountry(country);
 	}
 
