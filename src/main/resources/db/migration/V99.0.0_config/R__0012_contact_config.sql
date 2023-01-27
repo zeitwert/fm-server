@@ -11,7 +11,7 @@ values
 on conflict(id)
 do nothing;
 
-delete from code_contact_role;
+delete from code_contact_role where (id <> 'councilor' and id <> 'caretaker' and id <> 'other');
 
 insert into code_contact_role(id, name)
 values
