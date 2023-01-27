@@ -35,7 +35,6 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	protected final SimpleProperty<String> description;
 	protected final SimpleProperty<BigDecimal> inflationRate;
 	protected final ReferenceProperty<ObjDocument> logoImage;
-	protected final ReferenceProperty<ObjDocument> bannerImage;
 
 	private final UpdatableRecord<?> dbRecord;
 
@@ -48,7 +47,6 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		this.description = this.addSimpleProperty(this.dbRecord, ObjTenantFields.DESCRIPTION);
 		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjTenantFields.INFLATION_RATE);
 		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
-		this.bannerImage = this.addReferenceProperty(this.dbRecord, ObjTenantFields.BANNER_IMAGE, ObjDocument.class);
 	}
 
 	@Override
@@ -66,7 +64,6 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		this.addLogoImage();
-		this.addBannerImage();
 	}
 
 	@Override
@@ -79,9 +76,6 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		super.doBeforeStore();
 		if (this.getLogoImageId() == null) {
 			this.addLogoImage();
-		}
-		if (this.getBannerImageId() == null) {
-			this.addBannerImage();
 		}
 	}
 
@@ -134,17 +128,6 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("logo"));
 		documentRepo.store(image);
 		this.logoImage.setId(image.getId());
-	}
-
-	private void addBannerImage() {
-		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
-		ObjDocument image = documentRepo.create(this.getTenantId());
-		image.setName("Banner");
-		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));
-		image.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
-		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("banner"));
-		documentRepo.store(image);
-		this.bannerImage.setId(image.getId());
 	}
 
 }

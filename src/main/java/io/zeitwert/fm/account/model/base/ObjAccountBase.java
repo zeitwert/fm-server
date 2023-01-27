@@ -45,7 +45,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final EnumProperty<CodeCurrency> referenceCurrency;
 	protected final SimpleProperty<BigDecimal> inflationRate;
 	protected final ReferenceProperty<ObjDocument> logoImage;
-	protected final ReferenceProperty<ObjDocument> bannerImage;
 	protected final ReferenceProperty<ObjContact> mainContact;
 	protected final EnumSetProperty<CodeArea> areaSet;
 
@@ -64,7 +63,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 				CodeCurrencyEnum.class);
 		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjAccountFields.INFLATION_RATE);
 		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
-		this.bannerImage = this.addReferenceProperty(this.dbRecord, ObjAccountFields.BANNER_IMAGE, ObjDocument.class);
 		this.mainContact = this.addReferenceProperty(this.dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);
 		this.areaSet = this.addEnumSetProperty(this.getRepository().getAreaSetType(), CodeAreaEnum.class);
 	}
@@ -85,7 +83,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		this.addLogoImage();
-		this.addBannerImage();
 	}
 
 	@Override
@@ -100,9 +97,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		super.doBeforeStore();
 		if (this.getLogoImageId() == null) {
 			this.addLogoImage();
-		}
-		if (this.getBannerImageId() == null) {
-			this.addBannerImage();
 		}
 	}
 
@@ -154,17 +148,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("logo"));
 		documentRepo.store(image);
 		this.logoImage.setId(image.getId());
-	}
-
-	private void addBannerImage() {
-		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
-		ObjDocument image = documentRepo.create(this.getTenantId());
-		image.setName("Banner");
-		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));
-		image.setDocumentKind(CodeDocumentKindEnum.getDocumentKind("standalone"));
-		image.setDocumentCategory(CodeDocumentCategoryEnum.getDocumentCategory("banner"));
-		documentRepo.store(image);
-		this.bannerImage.setId(image.getId());
 	}
 
 }

@@ -15,6 +15,5 @@ public interface ObjTenantFields extends ObjExtnFields {
 	static final Field<String> DESCRIPTION = DSL.field("description", String.class);
 	static final Field<BigDecimal> INFLATION_RATE = DSL.field("inflation_rate", BigDecimal.class);
 	static final Field<Integer> LOGO_IMAGE = DSL.field("logo_img_id", Integer.class);
-	static final Field<Integer> BANNER_IMAGE = DSL.field("banner_img_id", Integer.class);
 
 }

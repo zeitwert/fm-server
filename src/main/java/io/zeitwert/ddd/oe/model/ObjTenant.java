@@ -39,8 +39,4 @@ public interface ObjTenant extends Obj {
 
 	ObjDocument getLogoImage();
 
-	Integer getBannerImageId();
-
-	ObjDocument getBannerImage();
-
 }

@@ -45,10 +45,6 @@ public interface ObjAccount extends FMObj {
 
 	ObjDocument getLogoImage();
 
-	Integer getBannerImageId();
-
-	ObjDocument getBannerImage();
-
 	Set<CodeArea> getAreaSet();
 
 	void clearAreaSet();
