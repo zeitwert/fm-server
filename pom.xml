@@ -19,12 +19,13 @@
 	<name>Zeitwert Application Server</name>
 	<description></description>
 	<packaging>jar</packaging>
-	<version>0.8.2-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>19</maven.compiler.release>
 		<compiler.version>3.10.1</compiler.version>
+		<release.version>2.5.3</release.version>
 		<flyway.version>9.10.1</flyway.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<jjwt.version>0.11.5</jjwt.version>
@@ -49,6 +50,10 @@
 			<url>https://repository.aspose.com/repo/</url>
 		</repository>
 	</repositories>
+
+	<scm>
+		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeitwert.git</developerConnection>
+	</scm>
 
 	<dependencies>
 
@@ -174,6 +179,11 @@
 						<exclude>/ui/**</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${release.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
