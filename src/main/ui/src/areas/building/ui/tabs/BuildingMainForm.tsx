@@ -144,15 +144,15 @@ export default class BuildingMainForm extends React.Component<BuildingMainFormPr
 								</FieldRow>
 								<FieldRow>
 									<Input label="Versicherungswert (kCHF)" fieldName="insuredValue" size={8} />
-									<Input label="Jahr" fieldName="insuredValueYear" size={4} />
+									<Input label="Schätzjahr" fieldName="insuredValueYear" size={4} />
 								</FieldRow>
 								<FieldRow>
 									<Input label="Nicht versicherter Wert (kCHF)" fieldName="notInsuredValue" size={8} />
-									<Input label="Jahr" fieldName="notInsuredValueYear" size={4} />
+									<Input label="Schätzjahr" fieldName="notInsuredValueYear" size={4} />
 								</FieldRow>
 								<FieldRow>
 									<Input label="Wert Fremdeigentum (kCHF)" fieldName="thirdPartyValue" size={8} />
-									<Input label="Jahr" fieldName="thirdPartyValueYear" size={4} />
+									<Input label="Schätzjahr" fieldName="thirdPartyValueYear" size={4} />
 								</FieldRow>
 							</FieldGroup>
 							<FieldGroup legend="Dimensionen" className="slds-m-top_medium">
