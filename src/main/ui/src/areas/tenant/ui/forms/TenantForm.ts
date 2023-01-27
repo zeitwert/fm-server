@@ -5,7 +5,7 @@ import { Form, FormDefinition } from "mstform";
 
 export const TenantFormDef: FormDefinition<TenantModelType> = {
 	id: new IdField(),
-	key: new TextField(),
+	extlKey: new TextField(),
 	name: new TextField({ required: true }),
 	description: new TextField(),
 	tenantType: new EnumeratedField({ source: "oe/codeTenantType", required: true }),

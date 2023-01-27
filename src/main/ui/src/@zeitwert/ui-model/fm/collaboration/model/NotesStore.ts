@@ -21,10 +21,10 @@ const MstNotesStoreModel = StoreWithEntitiesModel
 			return flow<void, any[]>(function* (): any {
 				try {
 					const repository: EntityTypeRepository = yield NOTE_API.getAggregates("filter[relatedToId]=" + relatedToId);
+					self.notes.clear();
 					const notesRepo = repository["note"];
 					if (notesRepo) {
 						transaction(() => {
-							self.notes.clear();
 							Object.keys(notesRepo)
 								.map((id) => notesRepo[id])
 								.sort((a, b) => (a.meta.createdAt > b.meta.createdAt ? -1 : 1))

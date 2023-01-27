@@ -140,12 +140,15 @@ class UserPage extends React.Component<RouteComponentProps> {
 									<NotesTab relatedToId={this.userStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							<TabsPanel label="Aktivität">
-								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ObjActivityHistoryTab obj={user} />
-								}
-							</TabsPanel>
+							{
+								!session.isKernelTenant &&
+								<TabsPanel label="Aktivität">
+									{
+										this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+										<ObjActivityHistoryTab obj={user} />
+									}
+								</TabsPanel>
+							}
 							{
 								user.hasValidations &&
 								<TabsPanel label={`Validierungen (${user.validationsCount})`}>

@@ -32,10 +32,10 @@ const MstTasksStoreModel = StoreWithEntitiesModel
 			return flow<void, any[]>(function* (): any {
 				try {
 					const repository: EntityTypeRepository = yield TASK_API.getAggregates("filter[relatedToId]=" + relatedToId);
+					self.tasks.clear();
 					const tasksRepo = repository["task"];
 					if (tasksRepo) {
 						transaction(() => {
-							self.tasks.clear();
 							Object.keys(tasksRepo)
 								.map((id) => tasksRepo[id])
 								.sort((a: Task, b: Task) => (a.dueAt! > b.dueAt! ? -1 : 1))

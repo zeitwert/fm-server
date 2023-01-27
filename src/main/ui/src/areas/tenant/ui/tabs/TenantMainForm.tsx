@@ -80,7 +80,7 @@ export default class TenantMainForm extends React.Component<TenantMainFormProps>
 								</FieldRow>
 								<FieldRow>
 									<Select label="Typ" fieldName="tenantType" size={8} />
-									<Input label="Key" fieldName="key" size={4} />
+									<Input label="Key" fieldName="extlKey" size={4} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

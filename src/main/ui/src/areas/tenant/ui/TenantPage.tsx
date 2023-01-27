@@ -137,12 +137,15 @@ class TenantPage extends React.Component<RouteComponentProps> {
 									<NotesTab relatedToId={this.tenantStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							<TabsPanel label="Aktivität">
-								{
-									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-									<ObjActivityHistoryTab obj={tenant} />
-								}
-							</TabsPanel>
+							{
+								!session.isKernelTenant &&
+								<TabsPanel label="Aktivität">
+									{
+										this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+										<ObjActivityHistoryTab obj={tenant} />
+									}
+								</TabsPanel>
+							}
 							{
 								tenant.hasValidations &&
 								<TabsPanel label={`Validierungen (${tenant.validationsCount})`}>

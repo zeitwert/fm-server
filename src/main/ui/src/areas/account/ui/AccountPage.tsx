@@ -136,12 +136,15 @@ class AccountPage extends React.Component<RouteComponentProps> {
 									<NotesTab relatedToId={this.accountStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
-								{
-									this.activeRightTabId === RIGHT_TABS.TASKS &&
-									<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
-								}
-							</TabsPanel>
+							{
+								!session.isKernelTenant &&
+								<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+									{
+										this.activeRightTabId === RIGHT_TABS.TASKS &&
+										<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
+									}
+								</TabsPanel>
+							}
 							<TabsPanel label="Aktivität">
 								{
 									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
