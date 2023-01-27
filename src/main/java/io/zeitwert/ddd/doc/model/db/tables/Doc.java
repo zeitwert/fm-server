@@ -69,6 +69,11 @@ public class Doc extends TableImpl<DocRecord> {
     public final TableField<DocRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.doc.version</code>.
+     */
+    public final TableField<DocRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
      * The column <code>public.doc.owner_id</code>.
      */
     public final TableField<DocRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -117,11 +122,6 @@ public class Doc extends TableImpl<DocRecord> {
      * The column <code>public.doc.modified_at</code>.
      */
     public final TableField<DocRecord, OffsetDateTime> MODIFIED_AT = createField(DSL.name("modified_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
-
-    /**
-     * The column <code>public.doc.version</code>.
-     */
-    public final TableField<DocRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Doc(Name alias, Table<DocRecord> aliased) {
         this(alias, aliased, null);
@@ -224,7 +224,7 @@ public class Doc extends TableImpl<DocRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Integer, String, Integer, Integer, Integer, String, String, String, Boolean, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer> fieldsRow() {
+    public Row15<Integer, String, Integer, Integer, Integer, Integer, String, String, String, Boolean, Integer, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
         return (Row15) super.fieldsRow();
     }
 }

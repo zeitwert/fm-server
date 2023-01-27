@@ -254,9 +254,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		String allTextsAndTokens = (allTexts + " " + allTokens).trim();
 		ItemSearch itemSearch = Tables.ITEM_SEARCH;
 		String id = aggregate.getMeta().getAggregateType().getId() + ":" + aggregate.getId();
-		System.out.println("search.token: " + allTokens);
-		System.out.println("search.text: " + allTexts);
-		System.out.println("search.all: " + allTextsAndTokens);
 		this.dslContext
 				.delete(itemSearch)
 				.where(itemSearch.ID.eq(id))

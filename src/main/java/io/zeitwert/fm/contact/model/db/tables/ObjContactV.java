@@ -55,6 +55,11 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
     public final TableField<ObjContactVRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_contact_v.version</code>.
+     */
+    public final TableField<ObjContactVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_contact_v.owner_id</code>.
      */
     public final TableField<ObjContactVRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER, this, "");
@@ -164,17 +169,12 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
      */
     public final TableField<ObjContactVRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(60), this, "");
 
-    /**
-     * The column <code>public.obj_contact_v.version</code>.
-     */
-    public final TableField<ObjContactVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
-
     private ObjContactV(Name alias, Table<ObjContactVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjContactV(Name alias, Table<ObjContactVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_contact_v\" as  SELECT obj.obj_type_id,\n    ct.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ct.obj_id,\n    ct.tenant_id,\n    ct.account_id,\n    ct.intl_key,\n    ct.description,\n    ct.contact_role_id,\n    ct.salutation_id,\n    ct.title_id,\n    ct.first_name,\n    ct.last_name,\n    ct.birth_date,\n    ct.phone,\n    ct.mobile,\n    ct.email,\n    obj.version\n   FROM (obj_contact ct\n     JOIN obj ON ((obj.id = ct.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_contact_v\" as  SELECT obj.obj_type_id,\n    ct.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ct.obj_id,\n    ct.tenant_id,\n    ct.account_id,\n    ct.intl_key,\n    ct.description,\n    ct.contact_role_id,\n    ct.salutation_id,\n    ct.title_id,\n    ct.first_name,\n    ct.last_name,\n    ct.birth_date,\n    ct.phone,\n    ct.mobile,\n    ct.email\n   FROM (obj_contact ct\n     JOIN obj ON ((obj.id = ct.obj_id)));"));
     }
 
     /**

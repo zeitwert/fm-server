@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row21;
+import org.jooq.Row20;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,6 +53,11 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
      * The column <code>public.obj_user_v.id</code>.
      */
     public final TableField<ObjUserVRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.obj_user_v.version</code>.
+     */
+    public final TableField<ObjUserVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_user_v.owner_id</code>.
@@ -135,26 +140,16 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     public final TableField<ObjUserVRecord, Boolean> NEED_PASSWORD_CHANGE = createField(DSL.name("need_password_change"), SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.obj_user_v.picture</code>.
-     */
-    public final TableField<ObjUserVRecord, String> PICTURE = createField(DSL.name("picture"), SQLDataType.VARCHAR(400), this, "");
-
-    /**
      * The column <code>public.obj_user_v.avatar_img_id</code>.
      */
     public final TableField<ObjUserVRecord, Integer> AVATAR_IMG_ID = createField(DSL.name("avatar_img_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.obj_user_v.version</code>.
-     */
-    public final TableField<ObjUserVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
 
     private ObjUserV(Name alias, Table<ObjUserVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjUserV(Name alias, Table<ObjUserVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.obj_type_id,\n    u.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.tenant_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.picture,\n    u.avatar_img_id,\n    obj.version\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_user_v\" as  SELECT obj.obj_type_id,\n    u.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    u.obj_id,\n    u.tenant_id,\n    u.email,\n    u.name,\n    u.role_list,\n    u.description,\n    u.password,\n    u.need_password_change,\n    u.avatar_img_id\n   FROM (obj_user u\n     JOIN obj ON ((obj.id = u.obj_id)));"));
     }
 
     /**
@@ -214,11 +209,11 @@ public class ObjUserV extends TableImpl<ObjUserVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row21 type methods
+    // Row20 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row21<String, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, String, String, Boolean, String, Integer, Integer> fieldsRow() {
-        return (Row21) super.fieldsRow();
+    public Row20<String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, String, String, Boolean, Integer> fieldsRow() {
+        return (Row20) super.fieldsRow();
     }
 }

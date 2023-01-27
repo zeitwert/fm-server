@@ -49,325 +49,325 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
     }
 
     /**
-     * Setter for <code>public.obj_contact_v.owner_id</code>.
-     */
-    public void setOwnerId(Integer value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.owner_id</code>.
-     */
-    public Integer getOwnerId() {
-        return (Integer) get(2);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.caption</code>.
-     */
-    public void setCaption(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.caption</code>.
-     */
-    public String getCaption() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.created_by_user_id</code>.
-     */
-    public void setCreatedByUserId(Integer value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.created_by_user_id</code>.
-     */
-    public Integer getCreatedByUserId() {
-        return (Integer) get(4);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.created_at</code>.
-     */
-    public void setCreatedAt(OffsetDateTime value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.created_at</code>.
-     */
-    public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(5);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.modified_by_user_id</code>.
-     */
-    public void setModifiedByUserId(Integer value) {
-        set(6, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.modified_by_user_id</code>.
-     */
-    public Integer getModifiedByUserId() {
-        return (Integer) get(6);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.modified_at</code>.
-     */
-    public void setModifiedAt(OffsetDateTime value) {
-        set(7, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.modified_at</code>.
-     */
-    public OffsetDateTime getModifiedAt() {
-        return (OffsetDateTime) get(7);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.closed_by_user_id</code>.
-     */
-    public void setClosedByUserId(Integer value) {
-        set(8, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.closed_by_user_id</code>.
-     */
-    public Integer getClosedByUserId() {
-        return (Integer) get(8);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.closed_at</code>.
-     */
-    public void setClosedAt(OffsetDateTime value) {
-        set(9, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.closed_at</code>.
-     */
-    public OffsetDateTime getClosedAt() {
-        return (OffsetDateTime) get(9);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.obj_id</code>.
-     */
-    public void setObjId(Integer value) {
-        set(10, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.obj_id</code>.
-     */
-    public Integer getObjId() {
-        return (Integer) get(10);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.tenant_id</code>.
-     */
-    public void setTenantId(Integer value) {
-        set(11, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.tenant_id</code>.
-     */
-    public Integer getTenantId() {
-        return (Integer) get(11);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.account_id</code>.
-     */
-    public void setAccountId(Integer value) {
-        set(12, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.account_id</code>.
-     */
-    public Integer getAccountId() {
-        return (Integer) get(12);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.intl_key</code>.
-     */
-    public void setIntlKey(String value) {
-        set(13, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.intl_key</code>.
-     */
-    public String getIntlKey() {
-        return (String) get(13);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.description</code>.
-     */
-    public void setDescription(String value) {
-        set(14, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.description</code>.
-     */
-    public String getDescription() {
-        return (String) get(14);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.contact_role_id</code>.
-     */
-    public void setContactRoleId(String value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.contact_role_id</code>.
-     */
-    public String getContactRoleId() {
-        return (String) get(15);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.salutation_id</code>.
-     */
-    public void setSalutationId(String value) {
-        set(16, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.salutation_id</code>.
-     */
-    public String getSalutationId() {
-        return (String) get(16);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.title_id</code>.
-     */
-    public void setTitleId(String value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.title_id</code>.
-     */
-    public String getTitleId() {
-        return (String) get(17);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.first_name</code>.
-     */
-    public void setFirstName(String value) {
-        set(18, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.first_name</code>.
-     */
-    public String getFirstName() {
-        return (String) get(18);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.last_name</code>.
-     */
-    public void setLastName(String value) {
-        set(19, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.last_name</code>.
-     */
-    public String getLastName() {
-        return (String) get(19);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.birth_date</code>.
-     */
-    public void setBirthDate(LocalDate value) {
-        set(20, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.birth_date</code>.
-     */
-    public LocalDate getBirthDate() {
-        return (LocalDate) get(20);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.phone</code>.
-     */
-    public void setPhone(String value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.phone</code>.
-     */
-    public String getPhone() {
-        return (String) get(21);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.mobile</code>.
-     */
-    public void setMobile(String value) {
-        set(22, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.mobile</code>.
-     */
-    public String getMobile() {
-        return (String) get(22);
-    }
-
-    /**
-     * Setter for <code>public.obj_contact_v.email</code>.
-     */
-    public void setEmail(String value) {
-        set(23, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.email</code>.
-     */
-    public String getEmail() {
-        return (String) get(23);
-    }
-
-    /**
      * Setter for <code>public.obj_contact_v.version</code>.
      */
     public void setVersion(Integer value) {
-        set(24, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.version</code>.
      */
     public Integer getVersion() {
-        return (Integer) get(24);
+        return (Integer) get(2);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.owner_id</code>.
+     */
+    public void setOwnerId(Integer value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.owner_id</code>.
+     */
+    public Integer getOwnerId() {
+        return (Integer) get(3);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.caption</code>.
+     */
+    public void setCaption(String value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.caption</code>.
+     */
+    public String getCaption() {
+        return (String) get(4);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.created_by_user_id</code>.
+     */
+    public void setCreatedByUserId(Integer value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.created_by_user_id</code>.
+     */
+    public Integer getCreatedByUserId() {
+        return (Integer) get(5);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.created_at</code>.
+     */
+    public void setCreatedAt(OffsetDateTime value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.created_at</code>.
+     */
+    public OffsetDateTime getCreatedAt() {
+        return (OffsetDateTime) get(6);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.modified_by_user_id</code>.
+     */
+    public void setModifiedByUserId(Integer value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.modified_by_user_id</code>.
+     */
+    public Integer getModifiedByUserId() {
+        return (Integer) get(7);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.modified_at</code>.
+     */
+    public void setModifiedAt(OffsetDateTime value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.modified_at</code>.
+     */
+    public OffsetDateTime getModifiedAt() {
+        return (OffsetDateTime) get(8);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.closed_by_user_id</code>.
+     */
+    public void setClosedByUserId(Integer value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.closed_by_user_id</code>.
+     */
+    public Integer getClosedByUserId() {
+        return (Integer) get(9);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.closed_at</code>.
+     */
+    public void setClosedAt(OffsetDateTime value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.closed_at</code>.
+     */
+    public OffsetDateTime getClosedAt() {
+        return (OffsetDateTime) get(10);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.obj_id</code>.
+     */
+    public void setObjId(Integer value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.obj_id</code>.
+     */
+    public Integer getObjId() {
+        return (Integer) get(11);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.tenant_id</code>.
+     */
+    public void setTenantId(Integer value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.tenant_id</code>.
+     */
+    public Integer getTenantId() {
+        return (Integer) get(12);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.account_id</code>.
+     */
+    public void setAccountId(Integer value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.account_id</code>.
+     */
+    public Integer getAccountId() {
+        return (Integer) get(13);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.intl_key</code>.
+     */
+    public void setIntlKey(String value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.intl_key</code>.
+     */
+    public String getIntlKey() {
+        return (String) get(14);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.description</code>.
+     */
+    public void setDescription(String value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.description</code>.
+     */
+    public String getDescription() {
+        return (String) get(15);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.contact_role_id</code>.
+     */
+    public void setContactRoleId(String value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.contact_role_id</code>.
+     */
+    public String getContactRoleId() {
+        return (String) get(16);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.salutation_id</code>.
+     */
+    public void setSalutationId(String value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.salutation_id</code>.
+     */
+    public String getSalutationId() {
+        return (String) get(17);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.title_id</code>.
+     */
+    public void setTitleId(String value) {
+        set(18, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.title_id</code>.
+     */
+    public String getTitleId() {
+        return (String) get(18);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.first_name</code>.
+     */
+    public void setFirstName(String value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.first_name</code>.
+     */
+    public String getFirstName() {
+        return (String) get(19);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.last_name</code>.
+     */
+    public void setLastName(String value) {
+        set(20, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.last_name</code>.
+     */
+    public String getLastName() {
+        return (String) get(20);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.birth_date</code>.
+     */
+    public void setBirthDate(LocalDate value) {
+        set(21, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.birth_date</code>.
+     */
+    public LocalDate getBirthDate() {
+        return (LocalDate) get(21);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.phone</code>.
+     */
+    public void setPhone(String value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.phone</code>.
+     */
+    public String getPhone() {
+        return (String) get(22);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.mobile</code>.
+     */
+    public void setMobile(String value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.mobile</code>.
+     */
+    public String getMobile() {
+        return (String) get(23);
+    }
+
+    /**
+     * Setter for <code>public.obj_contact_v.email</code>.
+     */
+    public void setEmail(String value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.email</code>.
+     */
+    public String getEmail() {
+        return (String) get(24);
     }
 
     // -------------------------------------------------------------------------
@@ -384,11 +384,12 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
     /**
      * Create a detached, initialised ObjContactVRecord
      */
-    public ObjContactVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String intlKey, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email, Integer version) {
+    public ObjContactVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String intlKey, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email) {
         super(ObjContactV.OBJ_CONTACT_V);
 
         setObjTypeId(objTypeId);
         setId(id);
+        setVersion(version);
         setOwnerId(ownerId);
         setCaption(caption);
         setCreatedByUserId(createdByUserId);
@@ -411,6 +412,5 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
         setPhone(phone);
         setMobile(mobile);
         setEmail(email);
-        setVersion(version);
     }
 }

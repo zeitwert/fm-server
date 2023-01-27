@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -77,11 +77,6 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      * The column <code>public.obj_tenant.logo_img_id</code>.
      */
     public final TableField<ObjTenantRecord, Integer> LOGO_IMG_ID = createField(DSL.name("logo_img_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.obj_tenant.banner_img_id</code>.
-     */
-    public final TableField<ObjTenantRecord, Integer> BANNER_IMG_ID = createField(DSL.name("banner_img_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_tenant.inflation_rate</code>.
@@ -177,11 +172,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, String, Integer, Integer, BigDecimal> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Integer, String, String, String, String, Integer, BigDecimal> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

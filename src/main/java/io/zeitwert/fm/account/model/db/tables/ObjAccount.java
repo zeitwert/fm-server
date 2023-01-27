@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -97,11 +97,6 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
      * The column <code>public.obj_account.logo_img_id</code>.
      */
     public final TableField<ObjAccountRecord, Integer> LOGO_IMG_ID = createField(DSL.name("logo_img_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.obj_account.banner_img_id</code>.
-     */
-    public final TableField<ObjAccountRecord, Integer> BANNER_IMG_ID = createField(DSL.name("banner_img_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_account.inflation_rate</code>.
@@ -213,11 +208,11 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, Integer, String, String, String, String, String, Integer, String, Integer, Integer, BigDecimal> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<Integer, Integer, String, String, String, String, String, Integer, String, Integer, BigDecimal> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

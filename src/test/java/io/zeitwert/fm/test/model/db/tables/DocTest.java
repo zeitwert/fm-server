@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -53,6 +53,16 @@ public class DocTest extends TableImpl<DocTestRecord> {
      * The column <code>public.doc_test.doc_id</code>.
      */
     public final TableField<DocTestRecord, Integer> DOC_ID = createField(DSL.name("doc_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.doc_test.tenant_id</code>.
+     */
+    public final TableField<DocTestRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.doc_test.account_id</code>.
+     */
+    public final TableField<DocTestRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.doc_test.short_text</code>.
@@ -169,11 +179,11 @@ public class DocTest extends TableImpl<DocTestRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row11<Integer, Integer, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

@@ -23,44 +23,44 @@ public class DocTestVRecord extends TableRecordImpl<DocTestVRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.doc_test_v.tenant_id</code>.
-     */
-    public void setTenantId(Integer value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_test_v.tenant_id</code>.
-     */
-    public Integer getTenantId() {
-        return (Integer) get(0);
-    }
-
-    /**
      * Setter for <code>public.doc_test_v.doc_type_id</code>.
      */
     public void setDocTypeId(String value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.doc_type_id</code>.
      */
     public String getDocTypeId() {
-        return (String) get(1);
+        return (String) get(0);
     }
 
     /**
      * Setter for <code>public.doc_test_v.id</code>.
      */
     public void setId(Integer value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.id</code>.
      */
     public Integer getId() {
+        return (Integer) get(1);
+    }
+
+    /**
+     * Setter for <code>public.doc_test_v.version</code>.
+     */
+    public void setVersion(Integer value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_test_v.version</code>.
+     */
+    public Integer getVersion() {
         return (Integer) get(2);
     }
 
@@ -79,269 +79,283 @@ public class DocTestVRecord extends TableRecordImpl<DocTestVRecord> {
     }
 
     /**
-     * Setter for <code>public.doc_test_v.assignee_id</code>.
-     */
-    public void setAssigneeId(Integer value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_test_v.assignee_id</code>.
-     */
-    public Integer getAssigneeId() {
-        return (Integer) get(4);
-    }
-
-    /**
      * Setter for <code>public.doc_test_v.caption</code>.
      */
     public void setCaption(String value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.caption</code>.
      */
     public String getCaption() {
-        return (String) get(5);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.doc_test_v.case_def_id</code>.
      */
     public void setCaseDefId(String value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.case_def_id</code>.
      */
     public String getCaseDefId() {
-        return (String) get(6);
+        return (String) get(5);
     }
 
     /**
      * Setter for <code>public.doc_test_v.case_stage_id</code>.
      */
     public void setCaseStageId(String value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.case_stage_id</code>.
      */
     public String getCaseStageId() {
-        return (String) get(7);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>public.doc_test_v.is_in_work</code>.
      */
     public void setIsInWork(Boolean value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.is_in_work</code>.
      */
     public Boolean getIsInWork() {
-        return (Boolean) get(8);
+        return (Boolean) get(7);
     }
 
     /**
-     * Setter for <code>public.doc_test_v.account_id</code>.
+     * Setter for <code>public.doc_test_v.assignee_id</code>.
      */
-    public void setAccountId(Integer value) {
-        set(9, value);
+    public void setAssigneeId(Integer value) {
+        set(8, value);
     }
 
     /**
-     * Getter for <code>public.doc_test_v.account_id</code>.
+     * Getter for <code>public.doc_test_v.assignee_id</code>.
      */
-    public Integer getAccountId() {
-        return (Integer) get(9);
+    public Integer getAssigneeId() {
+        return (Integer) get(8);
     }
 
     /**
      * Setter for <code>public.doc_test_v.created_by_user_id</code>.
      */
     public void setCreatedByUserId(Integer value) {
-        set(10, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.created_by_user_id</code>.
      */
     public Integer getCreatedByUserId() {
-        return (Integer) get(10);
+        return (Integer) get(9);
     }
 
     /**
      * Setter for <code>public.doc_test_v.created_at</code>.
      */
     public void setCreatedAt(OffsetDateTime value) {
-        set(11, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(11);
+        return (OffsetDateTime) get(10);
     }
 
     /**
      * Setter for <code>public.doc_test_v.modified_by_user_id</code>.
      */
     public void setModifiedByUserId(Integer value) {
-        set(12, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.modified_by_user_id</code>.
      */
     public Integer getModifiedByUserId() {
-        return (Integer) get(12);
+        return (Integer) get(11);
     }
 
     /**
      * Setter for <code>public.doc_test_v.modified_at</code>.
      */
     public void setModifiedAt(OffsetDateTime value) {
-        set(13, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.modified_at</code>.
      */
     public OffsetDateTime getModifiedAt() {
-        return (OffsetDateTime) get(13);
+        return (OffsetDateTime) get(12);
     }
 
     /**
      * Setter for <code>public.doc_test_v.doc_id</code>.
      */
     public void setDocId(Integer value) {
-        set(14, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.doc_id</code>.
      */
     public Integer getDocId() {
+        return (Integer) get(13);
+    }
+
+    /**
+     * Setter for <code>public.doc_test_v.tenant_id</code>.
+     */
+    public void setTenantId(Integer value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_test_v.tenant_id</code>.
+     */
+    public Integer getTenantId() {
         return (Integer) get(14);
+    }
+
+    /**
+     * Setter for <code>public.doc_test_v.account_id</code>.
+     */
+    public void setAccountId(Integer value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_test_v.account_id</code>.
+     */
+    public Integer getAccountId() {
+        return (Integer) get(15);
     }
 
     /**
      * Setter for <code>public.doc_test_v.short_text</code>.
      */
     public void setShortText(String value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.short_text</code>.
      */
     public String getShortText() {
-        return (String) get(15);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>public.doc_test_v.long_text</code>.
      */
     public void setLongText(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.long_text</code>.
      */
     public String getLongText() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.doc_test_v.date</code>.
      */
     public void setDate(LocalDate value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.date</code>.
      */
     public LocalDate getDate() {
-        return (LocalDate) get(17);
+        return (LocalDate) get(18);
     }
 
     /**
      * Setter for <code>public.doc_test_v.int</code>.
      */
     public void setInt(Integer value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.int</code>.
      */
     public Integer getInt() {
-        return (Integer) get(18);
+        return (Integer) get(19);
     }
 
     /**
      * Setter for <code>public.doc_test_v.is_done</code>.
      */
     public void setIsDone(Boolean value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.is_done</code>.
      */
     public Boolean getIsDone() {
-        return (Boolean) get(19);
+        return (Boolean) get(20);
     }
 
     /**
      * Setter for <code>public.doc_test_v.json</code>.
      */
     public void setJson(JSON value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.json</code>.
      */
     public JSON getJson() {
-        return (JSON) get(20);
+        return (JSON) get(21);
     }
 
     /**
      * Setter for <code>public.doc_test_v.nr</code>.
      */
     public void setNr(BigDecimal value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.nr</code>.
      */
     public BigDecimal getNr() {
-        return (BigDecimal) get(21);
+        return (BigDecimal) get(22);
     }
 
     /**
      * Setter for <code>public.doc_test_v.country_id</code>.
      */
     public void setCountryId(String value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.doc_test_v.country_id</code>.
      */
     public String getCountryId() {
-        return (String) get(22);
+        return (String) get(23);
     }
 
     // -------------------------------------------------------------------------
@@ -358,24 +372,25 @@ public class DocTestVRecord extends TableRecordImpl<DocTestVRecord> {
     /**
      * Create a detached, initialised DocTestVRecord
      */
-    public DocTestVRecord(Integer tenantId, String docTypeId, Integer id, Integer ownerId, Integer assigneeId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer accountId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, String shortText, String longText, LocalDate date, Integer int_, Boolean isDone, JSON json, BigDecimal nr, String countryId) {
+    public DocTestVRecord(String docTypeId, Integer id, Integer version, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, String shortText, String longText, LocalDate date, Integer int_, Boolean isDone, JSON json, BigDecimal nr, String countryId) {
         super(DocTestV.DOC_TEST_V);
 
-        setTenantId(tenantId);
         setDocTypeId(docTypeId);
         setId(id);
+        setVersion(version);
         setOwnerId(ownerId);
-        setAssigneeId(assigneeId);
         setCaption(caption);
         setCaseDefId(caseDefId);
         setCaseStageId(caseStageId);
         setIsInWork(isInWork);
-        setAccountId(accountId);
+        setAssigneeId(assigneeId);
         setCreatedByUserId(createdByUserId);
         setCreatedAt(createdAt);
         setModifiedByUserId(modifiedByUserId);
         setModifiedAt(modifiedAt);
         setDocId(docId);
+        setTenantId(tenantId);
+        setAccountId(accountId);
         setShortText(shortText);
         setLongText(longText);
         setDate(date);

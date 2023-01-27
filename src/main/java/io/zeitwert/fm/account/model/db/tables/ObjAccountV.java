@@ -55,6 +55,11 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     public final TableField<ObjAccountVRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_account_v.version</code>.
+     */
+    public final TableField<ObjAccountVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_account_v.owner_id</code>.
      */
     public final TableField<ObjAccountVRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER, this, "");
@@ -150,26 +155,16 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     public final TableField<ObjAccountVRecord, Integer> LOGO_IMG_ID = createField(DSL.name("logo_img_id"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.obj_account_v.banner_img_id</code>.
-     */
-    public final TableField<ObjAccountVRecord, Integer> BANNER_IMG_ID = createField(DSL.name("banner_img_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_account_v.inflation_rate</code>.
      */
     public final TableField<ObjAccountVRecord, BigDecimal> INFLATION_RATE = createField(DSL.name("inflation_rate"), SQLDataType.NUMERIC, this, "");
-
-    /**
-     * The column <code>public.obj_account_v.version</code>.
-     */
-    public final TableField<ObjAccountVRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER, this, "");
 
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    a.obj_id AS id,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    a.obj_id AS account_id,\n    a.obj_id,\n    a.tenant_id,\n    a.intl_key,\n    a.name,\n    a.description,\n    a.account_type_id,\n    a.client_segment_id,\n    a.main_contact_id,\n    a.reference_currency_id,\n    a.logo_img_id,\n    a.banner_img_id,\n    a.inflation_rate,\n    obj.version\n   FROM (obj_account a\n     JOIN obj ON ((obj.id = a.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    a.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    a.obj_id AS account_id,\n    a.obj_id,\n    a.tenant_id,\n    a.intl_key,\n    a.name,\n    a.description,\n    a.account_type_id,\n    a.client_segment_id,\n    a.main_contact_id,\n    a.reference_currency_id,\n    a.logo_img_id,\n    a.inflation_rate\n   FROM (obj_account a\n     JOIN obj ON ((obj.id = a.obj_id)));"));
     }
 
     /**

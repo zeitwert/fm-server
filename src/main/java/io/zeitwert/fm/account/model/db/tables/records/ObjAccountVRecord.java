@@ -49,282 +49,282 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
     }
 
     /**
+     * Setter for <code>public.obj_account_v.version</code>.
+     */
+    public void setVersion(Integer value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_account_v.version</code>.
+     */
+    public Integer getVersion() {
+        return (Integer) get(2);
+    }
+
+    /**
      * Setter for <code>public.obj_account_v.owner_id</code>.
      */
     public void setOwnerId(Integer value) {
-        set(2, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.owner_id</code>.
      */
     public Integer getOwnerId() {
-        return (Integer) get(2);
+        return (Integer) get(3);
     }
 
     /**
      * Setter for <code>public.obj_account_v.caption</code>.
      */
     public void setCaption(String value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.caption</code>.
      */
     public String getCaption() {
-        return (String) get(3);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.obj_account_v.created_by_user_id</code>.
      */
     public void setCreatedByUserId(Integer value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.created_by_user_id</code>.
      */
     public Integer getCreatedByUserId() {
-        return (Integer) get(4);
+        return (Integer) get(5);
     }
 
     /**
      * Setter for <code>public.obj_account_v.created_at</code>.
      */
     public void setCreatedAt(OffsetDateTime value) {
-        set(5, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.created_at</code>.
      */
     public OffsetDateTime getCreatedAt() {
-        return (OffsetDateTime) get(5);
+        return (OffsetDateTime) get(6);
     }
 
     /**
      * Setter for <code>public.obj_account_v.modified_by_user_id</code>.
      */
     public void setModifiedByUserId(Integer value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.modified_by_user_id</code>.
      */
     public Integer getModifiedByUserId() {
-        return (Integer) get(6);
+        return (Integer) get(7);
     }
 
     /**
      * Setter for <code>public.obj_account_v.modified_at</code>.
      */
     public void setModifiedAt(OffsetDateTime value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.modified_at</code>.
      */
     public OffsetDateTime getModifiedAt() {
-        return (OffsetDateTime) get(7);
+        return (OffsetDateTime) get(8);
     }
 
     /**
      * Setter for <code>public.obj_account_v.closed_by_user_id</code>.
      */
     public void setClosedByUserId(Integer value) {
-        set(8, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.closed_by_user_id</code>.
      */
     public Integer getClosedByUserId() {
-        return (Integer) get(8);
+        return (Integer) get(9);
     }
 
     /**
      * Setter for <code>public.obj_account_v.closed_at</code>.
      */
     public void setClosedAt(OffsetDateTime value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.closed_at</code>.
      */
     public OffsetDateTime getClosedAt() {
-        return (OffsetDateTime) get(9);
+        return (OffsetDateTime) get(10);
     }
 
     /**
      * Setter for <code>public.obj_account_v.account_id</code>.
      */
     public void setAccountId(Integer value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.account_id</code>.
      */
     public Integer getAccountId() {
-        return (Integer) get(10);
+        return (Integer) get(11);
     }
 
     /**
      * Setter for <code>public.obj_account_v.obj_id</code>.
      */
     public void setObjId(Integer value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.obj_id</code>.
      */
     public Integer getObjId() {
-        return (Integer) get(11);
+        return (Integer) get(12);
     }
 
     /**
      * Setter for <code>public.obj_account_v.tenant_id</code>.
      */
     public void setTenantId(Integer value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.tenant_id</code>.
      */
     public Integer getTenantId() {
-        return (Integer) get(12);
+        return (Integer) get(13);
     }
 
     /**
      * Setter for <code>public.obj_account_v.intl_key</code>.
      */
     public void setIntlKey(String value) {
-        set(13, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.intl_key</code>.
      */
     public String getIntlKey() {
-        return (String) get(13);
+        return (String) get(14);
     }
 
     /**
      * Setter for <code>public.obj_account_v.name</code>.
      */
     public void setName(String value) {
-        set(14, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.name</code>.
      */
     public String getName() {
-        return (String) get(14);
+        return (String) get(15);
     }
 
     /**
      * Setter for <code>public.obj_account_v.description</code>.
      */
     public void setDescription(String value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.description</code>.
      */
     public String getDescription() {
-        return (String) get(15);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>public.obj_account_v.account_type_id</code>.
      */
     public void setAccountTypeId(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.account_type_id</code>.
      */
     public String getAccountTypeId() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.obj_account_v.client_segment_id</code>.
      */
     public void setClientSegmentId(String value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.client_segment_id</code>.
      */
     public String getClientSegmentId() {
-        return (String) get(17);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>public.obj_account_v.main_contact_id</code>.
      */
     public void setMainContactId(Integer value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.main_contact_id</code>.
      */
     public Integer getMainContactId() {
-        return (Integer) get(18);
+        return (Integer) get(19);
     }
 
     /**
      * Setter for <code>public.obj_account_v.reference_currency_id</code>.
      */
     public void setReferenceCurrencyId(String value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.reference_currency_id</code>.
      */
     public String getReferenceCurrencyId() {
-        return (String) get(19);
+        return (String) get(20);
     }
 
     /**
      * Setter for <code>public.obj_account_v.logo_img_id</code>.
      */
     public void setLogoImgId(Integer value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.obj_account_v.logo_img_id</code>.
      */
     public Integer getLogoImgId() {
-        return (Integer) get(20);
-    }
-
-    /**
-     * Setter for <code>public.obj_account_v.banner_img_id</code>.
-     */
-    public void setBannerImgId(Integer value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_account_v.banner_img_id</code>.
-     */
-    public Integer getBannerImgId() {
         return (Integer) get(21);
     }
 
@@ -342,20 +342,6 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
         return (BigDecimal) get(22);
     }
 
-    /**
-     * Setter for <code>public.obj_account_v.version</code>.
-     */
-    public void setVersion(Integer value) {
-        set(23, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_account_v.version</code>.
-     */
-    public Integer getVersion() {
-        return (Integer) get(23);
-    }
-
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -370,11 +356,12 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
     /**
      * Create a detached, initialised ObjAccountVRecord
      */
-    public ObjAccountVRecord(String objTypeId, Integer id, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer accountId, Integer objId, Integer tenantId, String intlKey, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, Integer bannerImgId, BigDecimal inflationRate, Integer version) {
+    public ObjAccountVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer accountId, Integer objId, Integer tenantId, String intlKey, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, BigDecimal inflationRate) {
         super(ObjAccountV.OBJ_ACCOUNT_V);
 
         setObjTypeId(objTypeId);
         setId(id);
+        setVersion(version);
         setOwnerId(ownerId);
         setCaption(caption);
         setCreatedByUserId(createdByUserId);
@@ -394,8 +381,6 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
         setMainContactId(mainContactId);
         setReferenceCurrencyId(referenceCurrencyId);
         setLogoImgId(logoImgId);
-        setBannerImgId(bannerImgId);
         setInflationRate(inflationRate);
-        setVersion(version);
     }
 }

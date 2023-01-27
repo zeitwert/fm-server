@@ -71,6 +71,11 @@ public class Obj extends TableImpl<ObjRecord> {
     public final TableField<ObjRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj.version</code>.
+     */
+    public final TableField<ObjRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
      * The column <code>public.obj.owner_id</code>.
      */
     public final TableField<ObjRecord, Integer> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -109,11 +114,6 @@ public class Obj extends TableImpl<ObjRecord> {
      * The column <code>public.obj.closed_at</code>.
      */
     public final TableField<ObjRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
-
-    /**
-     * The column <code>public.obj.version</code>.
-     */
-    public final TableField<ObjRecord, Integer> VERSION = createField(DSL.name("version"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Obj(Name alias, Table<ObjRecord> aliased) {
         this(alias, aliased, null);
@@ -201,7 +201,7 @@ public class Obj extends TableImpl<ObjRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer> fieldsRow() {
+    public Row13<Integer, String, Integer, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime> fieldsRow() {
         return (Row13) super.fieldsRow();
     }
 }
