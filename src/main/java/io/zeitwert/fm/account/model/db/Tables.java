@@ -9,7 +9,6 @@ import io.zeitwert.fm.account.model.db.tables.CodeArea;
 import io.zeitwert.fm.account.model.db.tables.CodeClientSegment;
 import io.zeitwert.fm.account.model.db.tables.CodeCurrency;
 import io.zeitwert.fm.account.model.db.tables.ObjAccount;
-import io.zeitwert.fm.account.model.db.tables.ObjAccountSearch;
 import io.zeitwert.fm.account.model.db.tables.ObjAccountV;
 
 
@@ -43,11 +42,6 @@ public class Tables {
      * The table <code>public.obj_account</code>.
      */
     public static final ObjAccount OBJ_ACCOUNT = ObjAccount.OBJ_ACCOUNT;
-
-    /**
-     * The table <code>public.obj_account_search</code>.
-     */
-    public static final ObjAccountSearch OBJ_ACCOUNT_SEARCH = ObjAccountSearch.OBJ_ACCOUNT_SEARCH;
 
     /**
      * The table <code>public.obj_account_v</code>.

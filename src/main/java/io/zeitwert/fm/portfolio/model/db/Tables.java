@@ -5,7 +5,6 @@ package io.zeitwert.fm.portfolio.model.db;
 
 
 import io.zeitwert.fm.portfolio.model.db.tables.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.db.tables.ObjPortfolioSearch;
 import io.zeitwert.fm.portfolio.model.db.tables.ObjPortfolioV;
 
 
@@ -19,11 +18,6 @@ public class Tables {
      * The table <code>public.obj_portfolio</code>.
      */
     public static final ObjPortfolio OBJ_PORTFOLIO = ObjPortfolio.OBJ_PORTFOLIO;
-
-    /**
-     * The table <code>public.obj_portfolio_search</code>.
-     */
-    public static final ObjPortfolioSearch OBJ_PORTFOLIO_SEARCH = ObjPortfolioSearch.OBJ_PORTFOLIO_SEARCH;
 
     /**
      * The table <code>public.obj_portfolio_v</code>.

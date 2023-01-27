@@ -17,7 +17,6 @@ import io.zeitwert.fm.building.model.db.tables.CodeHistoricPreservation;
 import io.zeitwert.fm.building.model.db.tables.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.db.tables.ObjBuildingSearch;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingV;
 
 
@@ -91,11 +90,6 @@ public class Tables {
      * The table <code>public.obj_building_part_rating</code>.
      */
     public static final ObjBuildingPartRating OBJ_BUILDING_PART_RATING = ObjBuildingPartRating.OBJ_BUILDING_PART_RATING;
-
-    /**
-     * The table <code>public.obj_building_search</code>.
-     */
-    public static final ObjBuildingSearch OBJ_BUILDING_SEARCH = ObjBuildingSearch.OBJ_BUILDING_SEARCH;
 
     /**
      * The table <code>public.obj_building_v</code>.

@@ -12,7 +12,6 @@ import io.zeitwert.fm.contact.model.db.tables.CodeSalutation;
 import io.zeitwert.fm.contact.model.db.tables.CodeTitle;
 import io.zeitwert.fm.contact.model.db.tables.ObjContact;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.db.tables.ObjContactSearch;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactV;
 
 
@@ -61,11 +60,6 @@ public class Tables {
      * The table <code>public.obj_contact_part_address</code>.
      */
     public static final ObjContactPartAddress OBJ_CONTACT_PART_ADDRESS = ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS;
-
-    /**
-     * The table <code>public.obj_contact_search</code>.
-     */
-    public static final ObjContactSearch OBJ_CONTACT_SEARCH = ObjContactSearch.OBJ_CONTACT_SEARCH;
 
     /**
      * The table <code>public.obj_contact_v</code>.

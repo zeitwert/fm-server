@@ -12,7 +12,6 @@ import io.zeitwert.fm.contact.model.db.tables.CodeSalutation;
 import io.zeitwert.fm.contact.model.db.tables.CodeTitle;
 import io.zeitwert.fm.contact.model.db.tables.ObjContact;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.db.tables.ObjContactSearch;
 import io.zeitwert.fm.contact.model.db.tables.ObjContactV;
 
 import java.util.Arrays;
@@ -77,11 +76,6 @@ public class Public extends SchemaImpl {
     public final ObjContactPartAddress OBJ_CONTACT_PART_ADDRESS = ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS;
 
     /**
-     * The table <code>public.obj_contact_search</code>.
-     */
-    public final ObjContactSearch OBJ_CONTACT_SEARCH = ObjContactSearch.OBJ_CONTACT_SEARCH;
-
-    /**
      * The table <code>public.obj_contact_v</code>.
      */
     public final ObjContactV OBJ_CONTACT_V = ObjContactV.OBJ_CONTACT_V;
@@ -110,7 +104,6 @@ public class Public extends SchemaImpl {
             CodeTitle.CODE_TITLE,
             ObjContact.OBJ_CONTACT,
             ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS,
-            ObjContactSearch.OBJ_CONTACT_SEARCH,
             ObjContactV.OBJ_CONTACT_V);
     }
 }

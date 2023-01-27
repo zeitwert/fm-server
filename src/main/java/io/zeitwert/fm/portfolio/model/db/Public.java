@@ -5,7 +5,6 @@ package io.zeitwert.fm.portfolio.model.db;
 
 
 import io.zeitwert.fm.portfolio.model.db.tables.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.db.tables.ObjPortfolioSearch;
 import io.zeitwert.fm.portfolio.model.db.tables.ObjPortfolioV;
 
 import java.util.Arrays;
@@ -35,11 +34,6 @@ public class Public extends SchemaImpl {
     public final ObjPortfolio OBJ_PORTFOLIO = ObjPortfolio.OBJ_PORTFOLIO;
 
     /**
-     * The table <code>public.obj_portfolio_search</code>.
-     */
-    public final ObjPortfolioSearch OBJ_PORTFOLIO_SEARCH = ObjPortfolioSearch.OBJ_PORTFOLIO_SEARCH;
-
-    /**
      * The table <code>public.obj_portfolio_v</code>.
      */
     public final ObjPortfolioV OBJ_PORTFOLIO_V = ObjPortfolioV.OBJ_PORTFOLIO_V;
@@ -61,7 +55,6 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             ObjPortfolio.OBJ_PORTFOLIO,
-            ObjPortfolioSearch.OBJ_PORTFOLIO_SEARCH,
             ObjPortfolioV.OBJ_PORTFOLIO_V);
     }
 }

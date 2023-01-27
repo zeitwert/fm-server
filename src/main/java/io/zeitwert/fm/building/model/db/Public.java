@@ -17,7 +17,6 @@ import io.zeitwert.fm.building.model.db.tables.CodeHistoricPreservation;
 import io.zeitwert.fm.building.model.db.tables.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.db.tables.ObjBuildingSearch;
 import io.zeitwert.fm.building.model.db.tables.ObjBuildingV;
 
 import java.util.Arrays;
@@ -107,11 +106,6 @@ public class Public extends SchemaImpl {
     public final ObjBuildingPartRating OBJ_BUILDING_PART_RATING = ObjBuildingPartRating.OBJ_BUILDING_PART_RATING;
 
     /**
-     * The table <code>public.obj_building_search</code>.
-     */
-    public final ObjBuildingSearch OBJ_BUILDING_SEARCH = ObjBuildingSearch.OBJ_BUILDING_SEARCH;
-
-    /**
      * The table <code>public.obj_building_v</code>.
      */
     public final ObjBuildingV OBJ_BUILDING_V = ObjBuildingV.OBJ_BUILDING_V;
@@ -145,7 +139,6 @@ public class Public extends SchemaImpl {
             ObjBuilding.OBJ_BUILDING,
             ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING,
             ObjBuildingPartRating.OBJ_BUILDING_PART_RATING,
-            ObjBuildingSearch.OBJ_BUILDING_SEARCH,
             ObjBuildingV.OBJ_BUILDING_V);
     }
 }

@@ -9,7 +9,6 @@ import io.zeitwert.fm.account.model.db.tables.CodeArea;
 import io.zeitwert.fm.account.model.db.tables.CodeClientSegment;
 import io.zeitwert.fm.account.model.db.tables.CodeCurrency;
 import io.zeitwert.fm.account.model.db.tables.ObjAccount;
-import io.zeitwert.fm.account.model.db.tables.ObjAccountSearch;
 import io.zeitwert.fm.account.model.db.tables.ObjAccountV;
 
 import java.util.Arrays;
@@ -59,11 +58,6 @@ public class Public extends SchemaImpl {
     public final ObjAccount OBJ_ACCOUNT = ObjAccount.OBJ_ACCOUNT;
 
     /**
-     * The table <code>public.obj_account_search</code>.
-     */
-    public final ObjAccountSearch OBJ_ACCOUNT_SEARCH = ObjAccountSearch.OBJ_ACCOUNT_SEARCH;
-
-    /**
      * The table <code>public.obj_account_v</code>.
      */
     public final ObjAccountV OBJ_ACCOUNT_V = ObjAccountV.OBJ_ACCOUNT_V;
@@ -89,7 +83,6 @@ public class Public extends SchemaImpl {
             CodeClientSegment.CODE_CLIENT_SEGMENT,
             CodeCurrency.CODE_CURRENCY,
             ObjAccount.OBJ_ACCOUNT,
-            ObjAccountSearch.OBJ_ACCOUNT_SEARCH,
             ObjAccountV.OBJ_ACCOUNT_V);
     }
 }
