@@ -34,7 +34,8 @@ values
 ('T14','14 Militär- und Schutzanlagen'),
 ('T15','15 Schutzbauten')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_building_sub_type(id, name, building_type_id)
 values
@@ -169,7 +170,8 @@ values
 ('ST07-37','07 Feuerwehrgebäude','T14'),
 ('ST-15-01','01 Unterstand','T15')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_building_maintenance_strategy(id, name)
 values
@@ -177,7 +179,8 @@ values
 ('N','Normal'),
 ('NW','Normal Wohlen')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_building_part(
 	id,
@@ -271,7 +274,8 @@ values
 ('C38', 'Zivilschutzanlage', 'P48:48,P49,P2,P3:20,P4,P5:2,P50:5,P51:1,P6,P7,P52:2,P53:2,P55:3,P54:3,P56,P10,P57:2,P58:10,P59:2,P60,P61,P62'),
 ('C99', 'Stratus Migration', 'P1,P48,P49,P2,P3,P4,P5,P6,P7,P52,P53,P8,P54,P55,P56,P9,P50,P51,P10,P11,P57,P58,P59,P12,P60,P61,P62')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name, parts = excluded.parts;
 
 insert into code_building_rating_status(id, name)
 values
@@ -280,13 +284,15 @@ values
 ('done','Done'),
 ('discard','Discarded')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_building_price_index(id, name)
 values
-('ch-ZRH', 'Baukostenindex Zürich')
+('ch-ZRH', 'Baukostenindex Zürich (Basis 1939)')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_building_price_index_value(building_price_index_id, year, value)
 values
@@ -372,6 +378,8 @@ values
 ('ch-ZRH', 2018, 1036.8),
 ('ch-ZRH', 2019, 1046.3),
 ('ch-ZRH', 2020, 1045.6),
-('ch-ZRH', 2021, 1057.68)
+('ch-ZRH', 2021, 1057.68),
+('ch-ZRH', 2022, 1128.6)
 on conflict(building_price_index_id, year)
-do nothing;
+do
+update set value = excluded.value;

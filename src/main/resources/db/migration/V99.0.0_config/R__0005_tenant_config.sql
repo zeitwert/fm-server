@@ -8,7 +8,8 @@ do nothing;
 insert into code_tenant_type(id, name)
 values
 ('kernel', 'Kernel'),
-('community', 'Community'),
-('advisor', 'Advisor')
+('community', 'Gemeinde'),
+('advisor', 'Berater')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;

@@ -11,4 +11,5 @@ values
 ('call', 'Call'),
 ('visit', 'Visit')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;

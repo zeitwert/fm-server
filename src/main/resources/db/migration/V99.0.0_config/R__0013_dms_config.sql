@@ -12,7 +12,8 @@ values
 ('foto', 'Foto'),
 ('logo', 'Logo')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_document_kind(id, name)
 values
@@ -20,7 +21,8 @@ values
 ('template',   'Template'),    -- f.ex. "Service Contract (Template)"
 ('instance',   'Instance')     -- f.ex. "Service Contract Thomas Meier"
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_content_kind(id, name)
 values
@@ -28,7 +30,8 @@ values
 ('foto', 'Foto'),
 ('video', 'Video')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_content_type(content_kind_id, id, name, extension, mime_type)
 values
@@ -49,4 +52,8 @@ values
 ('video',    'avi',  'AVI Video',       'avi',  'video/avi'),
 ('video',    'mp3',  'MP3 Audio',       'mp3',  'audio/mpeg')
 on conflict(id)
-do nothing;
+do
+update
+	set name = excluded.name,
+	extension = excluded.extension,
+	mime_type = excluded.mime_type;

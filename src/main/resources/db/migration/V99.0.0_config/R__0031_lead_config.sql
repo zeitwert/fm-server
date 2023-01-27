@@ -9,7 +9,8 @@ insert into code_case_def(id, doc_type_id, name)
 values
 ('lead', 'doc_lead', 'Lead Process')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_case_stage(case_def_id, seq_nr, id, case_stage_type_id, name, description, due, action, abstract_case_stage_id)
 values
@@ -22,7 +23,8 @@ values
 ('lead', 43, 'lead.done_opportunity', 'terminal',     'Converted Opportunity', '', 3, null,          'lead.done'),
 ('lead', 44, 'lead.done_advice',      'terminal',     'Converted Advice',      '', 3, null,          'lead.done')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name, description = excluded.description, action = excluded.action, abstract_case_stage_id = excluded.abstract_case_stage_id;
 
 insert into code_lead_source(id, name)
 values
@@ -36,7 +38,8 @@ values
 ('referral', 'Referral'),
 ('meeting', 'Meeting')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_lead_rating(id, name)
 values
@@ -44,4 +47,5 @@ values
 ('warm', 'Warm'),
 ('hot', 'Hot')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;

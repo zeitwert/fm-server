@@ -19,30 +19,35 @@ values
 ('caretaker', 'Hauswart'),
 ('other', 'Anderes')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_gender(id, name)
 values
-('male', 'Male'),
-('female', 'Female'),
-('other', 'Other')
+('male', 'Mann'),
+('female', 'Frau'),
+('other', 'Andere')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
+
+delete from code_salutation where id = 'ms';
 
 insert into code_salutation(id, name, gender_id)
 values
-('mr', 'Mr.', 'male'),
-('mrs', 'Mrs.', 'female'),
-('ms', 'Ms.', 'female')
+('mr', 'Herr', 'male'),
+('mrs', 'Frau', 'female')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_title(id, name)
 values
 ('dr', 'Dr.'),
 ('prof', 'Prof.')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_address_type(id, name)
 values
@@ -50,7 +55,8 @@ values
 ('email', 'Email'),
 ('chat', 'Chat')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_address_channel(id, name, address_type_id)
 values
@@ -61,4 +67,5 @@ values
 ('viber', 'Viber', 'chat'),
 ('messenger', 'Messenger', 'chat')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;

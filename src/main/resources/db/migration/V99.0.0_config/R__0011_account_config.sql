@@ -5,28 +5,32 @@ values
 on conflict(id)
 do nothing;
 
+delete from code_account_type where id = 'dormant';
+
 insert into code_account_type(id, name)
 values
-('dormant', 'Dormant / Nurturing'),
-('prospect', 'Prospect'),
-('client', 'Client')
+('prospect', 'Prospekt / Pilot'),
+('client', 'Kunde')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_client_segment(id, name)
 values
-('community', 'Community'),
+('community', 'Gemeinde'),
 ('family', 'Family Office')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
+
+delete from code_country where id <> 'ch';
 
 insert into code_country(id, name)
 values
-('ch', 'Switzerland'),
-('de', 'Germany'),
-('es', 'Spain')
+('ch', 'Schweiz')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
 
 insert into code_locale(id, name)
 values
@@ -38,12 +42,13 @@ values
 ('fr-FR', 'French FR'),
 ('es-ES', 'Spanish ES')
 on conflict(id)
-do nothing;
+do
+update set name = excluded.name;
+
+delete from code_currency where id <> 'chf';
 
 insert into code_currency(id, name)
 values
-('chf', 'CHF'),
-('eur', 'EUR'),
-('usd', 'USD')
+('chf', 'CHF')
 on conflict(id)
 do nothing;
