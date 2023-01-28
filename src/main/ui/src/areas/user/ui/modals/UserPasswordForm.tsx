@@ -6,7 +6,7 @@ import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
-const MIN_PASSWORD_LENGTH = 8;
+const MIN_PASSWORD_LENGTH = 4;
 
 export interface UserPasswordFormProps {
 	onCancel: () => void;

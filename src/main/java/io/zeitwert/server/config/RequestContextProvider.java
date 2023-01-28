@@ -27,11 +27,15 @@ public class RequestContextProvider {
 	public RequestContext getRequestContext(ObjUserCache userCache) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
+		if ("anonymousUser".equals(auth.getPrincipal())) {
+			throw new IllegalStateException("Anonymous user is not allowed to access this resource");
+		}
 
+		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
 		ObjUser user = userCache.get(userDetails.getUserId());
 		Integer tenantId = userDetails.getTenantId();
 		Integer accountId = userDetails.getAccountId();
+
 		return new RequestContext(user, tenantId, accountId, CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
 
 	}

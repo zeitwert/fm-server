@@ -48,7 +48,7 @@ public class ApplicationController {
 				.email(user.getEmail())
 				.name(user.getName())
 				.role(EnumeratedDto.fromEnum(user.getRole()))
-				.tenants(user.getTenantSet().stream().map(t -> tenantCache.getAsEnumerated(t.getId())).toList())
+				.tenants(user.getTenantSet().stream().map(t -> this.tenantCache.getAsEnumerated(t.getId())).toList())
 				.build()
 		);
 		//@formatter:on
@@ -57,7 +57,7 @@ public class ApplicationController {
 	@GetMapping("/tenantInfo/{id}")
 	public ResponseEntity<TenantInfoResponse> tenantInfo(@PathVariable("id") Integer id) {
 		ObjTenant tenant = this.tenantCache.get(id);
-		List<ObjAccountVRecord> accounts = this.accountService.getAccountList(tenant);
+		List<ObjAccountVRecord> accounts = this.accountService.getAccounts(tenant);
 		List<EnumeratedDto> accountDtos = accounts.stream()
 				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
 				.toList();

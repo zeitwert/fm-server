@@ -7,6 +7,12 @@ import java.util.List;
 
 public interface AccountService {
 
-	List<ObjAccountVRecord> getAccountList(ObjTenant tenant);
+	/**
+	 * Get all accounts of a tenant, without any security check.
+	 * 
+	 * @param tenant tenant
+	 * @return accounts of the tenant
+	 */
+	List<ObjAccountVRecord> getAccounts(ObjTenant tenant);
 
 }
