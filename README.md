@@ -62,23 +62,14 @@ if successful:
 3) git commits pom.xml with new snapshot version
 `mvnw clean release:prepare -Dresume=false`
 
-- stash untracked filed (release.properties, pom.xml.releaseBackup)
-`git stash`
+- push tag to heroku main
+`git push heroku %LATEST_TAG%:main`
 
-- checkout tagged version
-`for /f %%a in ('git describe --tags --abbrev^=0 origin/master') do git checkout %%a`
-
-- push to remote heroku git
-`git push heroku main`
-
-- unstash untracked files
-`git stash pop`
-
-- commit untracked files
+- commit tracked files (f.ex. release.properties)
 `git add -u`
 `git commit -m "released to heroku"`
 
-- delete backup file
+- delete untracked files
 `del pom.xml.releaseBackup`
 
 ### Flyway
