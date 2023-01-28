@@ -75,9 +75,11 @@ if successful:
 `git stash pop`
 
 - commit untracked files
-`git add .`
+`git add -u`
 `git commit -m "released to heroku"`
 
+- delete backup file
+`del pom.xml.releaseBackup`
 
 ### Flyway
 
