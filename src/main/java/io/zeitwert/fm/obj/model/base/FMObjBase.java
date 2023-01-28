@@ -36,10 +36,7 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 	@Override
 	public List<ObjNoteVRecord> getNoteList() {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		return noteRepository.getByForeignKey("related_to_id", this.getId()).stream()
-				.filter(
-						onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getRequestContext().getUser().getId()))
-				.toList();
+		return noteRepository.getByForeignKey("related_to_id", this.getId());
 	}
 
 	@Override

@@ -312,7 +312,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	public final List<V> getByForeignKey(String fkName, Integer targetId) {
 		QuerySpec querySpec = new QuerySpec(Aggregate.class);
 		querySpec.addFilter(PathSpec.of(fkName).filter(FilterOperator.EQ, targetId));
-		return this.doFind(querySpec);
+		return this.find(querySpec);
 	}
 
 	@SuppressWarnings("unchecked")

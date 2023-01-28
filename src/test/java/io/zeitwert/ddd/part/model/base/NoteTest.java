@@ -56,74 +56,90 @@ public class NoteTest {
 		assertTrue(this.testRepository != null, "testRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
-		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
-		Integer test1Id = test1a.getId();
+		ObjTest testA1 = this.testRepository.create(this.requestCtx.getTenantId());
+		this.initObjTest(testA1, "One", USER_EMAIL, "ch");
+		Integer testA_id = testA1.getId();
 
-		assertEquals(0, test1a.getNoteList().size());
+		assertEquals(0, testA1.getNoteList().size());
 
-		ObjNote note1a0 = test1a.addNote(CodeNoteTypeEnum.getNoteType("note"));
-		this.initNote(note1a0, "Subject 1", "Content 1", false);
-		this.noteRepository.store(note1a0);
-		assertEquals(1, test1a.getNoteList().size());
+		// add 3 notes [1, 2, 3]
+		// remove 1 note in the middle [1, 2]
+		// store
+		{
+			ObjNote noteA1a = testA1.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			this.initNote(noteA1a, "Subject 1", "Content 1", false);
+			this.noteRepository.store(noteA1a);
+			assertEquals(1, testA1.getNoteList().size());
 
-		ObjNote note1a1 = test1a.addNote(CodeNoteTypeEnum.getNoteType("note"));
-		this.initNote(note1a1, "Subject 2", "Content 2", false);
-		this.noteRepository.store(note1a1);
+			ObjNote noteA1b = testA1.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			this.initNote(noteA1b, "Subject 2", "Content 2", false);
+			this.noteRepository.store(noteA1b);
+			assertEquals(2, testA1.getNoteList().size());
 
-		ObjNote note1a2 = test1a.addNote(CodeNoteTypeEnum.getNoteType("note"));
-		this.initNote(note1a2, "Subject 3", "Content 3", false);
-		this.noteRepository.store(note1a2);
+			ObjNote noteA1c = testA1.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			this.initNote(noteA1c, "Subject 3", "Content 3", false);
+			this.noteRepository.store(noteA1c);
+			assertEquals(3, testA1.getNoteList().size());
 
-		assertEquals(3, test1a.getNoteList().size());
+			List<ObjNoteVRecord> testA1_noteList = testA1.getNoteList();
+			Set<Integer> idSet = testA1_noteList.stream().map(n -> n.getId()).collect(Collectors.toSet());
+			assertEquals(Set.of(noteA1a.getId(), noteA1b.getId(), noteA1c.getId()), idSet);
+			assertEquals(noteA1a.getId(), testA1_noteList.get(0).getId());
+			assertEquals(noteA1b.getId(), testA1_noteList.get(1).getId());
+			assertEquals(noteA1c.getId(), testA1_noteList.get(2).getId());
+			assertEquals("Subject 1,Subject 2,Subject 3",
+					String.join(",", testA1.getNoteList().stream().map(n -> n.getSubject()).toList()));
+			assertEquals("Subject 2", testA1.getNoteList().get(1).getSubject());
 
-		List<ObjNoteVRecord> test1aNoteList = test1a.getNoteList();
-		Set<Integer> idSet = test1aNoteList.stream().map(n -> n.getId()).collect(Collectors.toSet());
-		assertEquals(Set.of(note1a0.getId(), note1a1.getId(), note1a2.getId()), idSet);
-		assertEquals(note1a0.getId(), test1aNoteList.get(0).getId());
-		assertEquals(note1a1.getId(), test1aNoteList.get(1).getId());
-		assertEquals(note1a2.getId(), test1aNoteList.get(2).getId());
-		assertEquals("Subject 1,Subject 2,Subject 3",
-				String.join(",", test1a.getNoteList().stream().map(n -> n.getSubject()).toList()));
-		assertEquals("Subject 2", test1a.getNoteList().get(1).getSubject());
+			testA1.removeNote(noteA1b.getId());
+			testA1_noteList = testA1.getNoteList();
+			assertEquals(2, testA1_noteList.size());
+			assertEquals(noteA1a.getId(), testA1_noteList.get(0).getId());
+			assertEquals(noteA1a.getSubject(), testA1_noteList.get(0).getSubject());
+			assertEquals(noteA1c.getId(), testA1_noteList.get(1).getId());
+			assertEquals(noteA1c.getSubject(), testA1_noteList.get(1).getSubject());
 
-		test1a.removeNote(note1a1.getId());
-		test1aNoteList = test1a.getNoteList();
-		assertEquals(2, test1aNoteList.size());
-		assertEquals(note1a0.getId(), test1aNoteList.get(0).getId());
-		assertEquals(note1a0.getSubject(), test1aNoteList.get(0).getSubject());
-		assertEquals(note1a2.getId(), test1aNoteList.get(1).getId());
-		assertEquals(note1a2.getSubject(), test1aNoteList.get(1).getSubject());
+			this.testRepository.store(testA1);
+			testA1 = null;
+		}
 
-		this.testRepository.store(test1a);
-		test1a = null;
+		ObjTest testA2 = this.testRepository.get(testA_id);
 
-		ObjTest test1b = this.testRepository.get(test1Id);
-		List<ObjNoteVRecord> test1bNoteList = test1b.getNoteList();
+		// load test again [1, 3]
+		// add 1 note [1, 3, 4]
+		// change middle note to private [1, 3private, 4]
+		{
+			List<ObjNoteVRecord> testA2_noteList = testA2.getNoteList();
 
-		assertEquals(2, test1bNoteList.size());
-		assertEquals("Subject 1,Subject 3", String.join(",", test1bNoteList.stream().map(n -> n.getSubject()).toList()));
-		assertEquals("Subject 3", test1bNoteList.get(1).getSubject());
+			assertEquals(2, testA2_noteList.size());
+			assertEquals("Subject 1,Subject 3", String.join(",", testA2_noteList.stream().map(n -> n.getSubject()).toList()));
+			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
 
-		ObjNote note1b2 = test1b.addNote(CodeNoteTypeEnum.getNoteType("note"));
-		this.initNote(note1b2, "Subject 4", "Content 4", false);
-		this.noteRepository.store(note1b2);
+			ObjNote noteA2d1 = testA2.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			this.initNote(noteA2d1, "Subject 4", "Content 4", false);
+			this.noteRepository.store(noteA2d1);
+			assertEquals(3, testA2.getNoteList().size());
 
-		ObjNoteVRecord note1b1v = test1b.getNoteList().get(1);
-		ObjNote note1b1 = this.noteRepository.get(note1b1v.getId());
-		note1b1.setIsPrivate(true);
-		this.noteRepository.store(note1b1);
+			ObjNoteVRecord noteA2d2v = testA2.getNoteList().get(1);
+			ObjNote noteA2d2 = this.noteRepository.get(noteA2d2v.getId());
+			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
+			noteA2d2.setIsPrivate(true);
+			this.noteRepository.store(noteA2d2);
 
-		this.testRepository.store(test1b);
-		test1b = null;
+			this.testRepository.store(testA2);
+			testA2 = null;
+		}
 
-		ObjTest test1c = this.testRepository.get(test1Id);
-		List<ObjNoteVRecord> test1cNoteList = test1c.getNoteList();
+		// load test again [1, 3private, 4]
+		{
+			ObjTest testA3 = this.testRepository.get(testA_id);
+			List<ObjNoteVRecord> testA3_noteList = testA3.getNoteList();
 
-		assertEquals(3, test1cNoteList.size());
-		assertEquals("Subject 1,Subject 3,Subject 4",
-				String.join(",", test1cNoteList.stream().map(n -> n.getSubject()).toList()));
-		assertTrue(test1c.getNoteList().get(1).getIsPrivate());
+			assertEquals("Subject 1,Subject 3,Subject 4",
+					String.join(",", testA3_noteList.stream().map(n -> n.getSubject()).toList()));
+			assertEquals(3, testA3_noteList.size());
+			assertTrue(testA3.getNoteList().get(1).getIsPrivate());
+		}
 
 		// Test privacy
 		// RequestContext otherSession =

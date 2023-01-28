@@ -79,11 +79,15 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 
 	@Override
 	public List<ObjNoteVRecord> doFind(QuerySpec querySpec) {
-		List<ObjNoteVRecord> noteList = this.doFind(Tables.OBJ_NOTE_V, Tables.OBJ_NOTE_V.ID, querySpec);
-		Integer sessionUserId = this.requestCtx.getUser().getId();
-		noteList.removeIf(note -> note.getIsPrivate() && note.getCreatedByUserId() != sessionUserId);
-		noteList.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
-		return noteList;
+		List<ObjNoteVRecord> notes = this.doFind(Tables.OBJ_NOTE_V, Tables.OBJ_NOTE_V.ID, querySpec);
+		Integer userId = this.requestCtx.getUser().getId();
+		notes.removeIf(n -> !this.isVisible(n, userId));
+		notes.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
+		return notes;
+	}
+
+	private boolean isVisible(ObjNoteVRecord note, Integer userId) {
+		return !note.getIsPrivate() || userId.equals(note.getCreatedByUserId()) || userId.equals(note.getOwnerId());
 	}
 
 }

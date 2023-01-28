@@ -99,7 +99,7 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 				PathSpec relatedToObjIdField = PathSpec.of(DocTaskFields.RELATED_OBJ_ID.getName());
 				dbQuerySpec.addFilter(relatedToObjIdField.filter(FilterOperator.EQ, relatedToId));
 			} else {
-				PathSpec relatedToDocIdField = PathSpec.of(DocTaskFields.RELATED_OBJ_ID.getName());
+				PathSpec relatedToDocIdField = PathSpec.of(DocTaskFields.RELATED_DOC_ID.getName());
 				dbQuerySpec.addFilter(relatedToDocIdField.filter(FilterOperator.EQ, relatedToId));
 			}
 			uiQuerySpec.getFilters()
@@ -109,12 +109,15 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 		} else {
 			dbQuerySpec = uiQuerySpec;
 		}
-		List<DocTaskVRecord> noteList = this.doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, dbQuerySpec);
-		Integer sessionUserId = this.requestCtx.getUser().getId();
-		noteList.removeIf(
-				note -> note.getIsPrivate() != null && note.getIsPrivate() && note.getCreatedByUserId() != sessionUserId);
-		noteList.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
-		return noteList;
+		List<DocTaskVRecord> tasks = this.doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, dbQuerySpec);
+		Integer userId = this.requestCtx.getUser().getId();
+		tasks.removeIf(t -> !this.isVisible(t, userId));
+		tasks.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
+		return tasks;
+	}
+
+	private boolean isVisible(DocTaskVRecord task, Integer userId) {
+		return !task.getIsPrivate() || userId.equals(task.getCreatedByUserId()) || userId.equals(task.getOwnerId());
 	}
 
 }
