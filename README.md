@@ -55,21 +55,28 @@ example:
 
 Heroku-like build: `mvnw -DskipTests clean dependency:list install`
 
-Prepare release (bounce version in pom.xml, and push label to git)
-mvnw clean release:prepare -Dresume=false
+- Prepare release:
+1) builds, runs tests;
+if successful:
+2) git commits pom.xml with non-snapshot version & release tag;
+3) git commits pom.xml with new snapshot version
+`mvnw clean release:prepare -Dresume=false`
 
-Stash new pom.xml (Snapshot Version)
-git stash
+- stash untracked filed (release.properties, pom.xml.releaseBackup)
+`git stash`
 
-Push to heroku git repo
-git push heroku main
+- checkout tagged version
+`for /f %%a in ('git describe --tags --abbrev^=0 origin/master') do git checkout %%a`
 
-Unstash new pom.xml
-git stash apply
+- push to remote heroku git
+`git push heroku main`
 
-Commit new pom.xml (Snapshot Version)
-git add .
-git commit -m "new snapshot version"
+- unstash untracked files
+`git stash pop`
+
+- commit untracked files
+`git add .`
+`git commit -m "released to heroku"`
 
 
 ### Flyway
