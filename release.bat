@@ -1,7 +1,7 @@
 
 @echo off
 
-mvnw -B clean release:prepare -Dresume=false
+mvn -B clean release:prepare -Dresume=false
 
 git stash
 
