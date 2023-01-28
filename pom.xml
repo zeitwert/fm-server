@@ -20,6 +20,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>19</maven.compiler.release>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<compiler.version>3.10.1</compiler.version>
 		<release.version>2.5.3</release.version>
 		<heroku.version>3.0.6</heroku.version>
