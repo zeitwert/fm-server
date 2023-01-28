@@ -15,8 +15,9 @@ const HeaderProfileCustomContent = (props: any) => (
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Mandant:</dt>
 						<dd className="slds-item_detail slds-truncate">{props.tenant}</dd>
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Kunde:</dt>
-						<dd className="slds-item_detail slds-truncate">{props.account?.name || "Kein Kunde"}</dd>
+						<dd className="slds-item_detail slds-truncate">{props.account?.name ?? "Kein Kunde"}</dd>
 					</dl>
+					<hr style={{ marginBlockStart: "6px", marginBlockEnd: "6px" }} />
 					<p className="slds-truncate">
 						<Button variant="base" className="slds-m-right_medium" onClick={props.onSettings}>
 							Settings
@@ -25,6 +26,13 @@ const HeaderProfileCustomContent = (props: any) => (
 							Log Out
 						</Button>
 					</p>
+					<hr style={{ marginBlockStart: "6px", marginBlockEnd: "6px" }} />
+					<dl className="slds-list_horizontal slds-wrap">
+						<dt className="slds-item_label slds-text-color_weak slds-truncate">Application:</dt>
+						<dd className="slds-item_detail slds-truncate">{session.sessionInfo?.applicationName ?? "???"}</dd>
+						<dt className="slds-item_label slds-text-color_weak slds-truncate">Version:</dt>
+						<dd className="slds-item_detail slds-truncate">{session.sessionInfo?.applicationVersion ?? "???"}</dd>
+					</dl>
 				</div>
 				{/*
 				<p className="tile__title slds-text-heading_small">

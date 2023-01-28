@@ -55,6 +55,22 @@ example:
 
 Heroku-like build: `mvnw -DskipTests clean dependency:list install`
 
+Prepare release (bounce version in pom.xml, and push label to git)
+mvnw clean release:prepare -Dresume=false
+
+Stash new pom.xml (Snapshot Version)
+git stash
+
+Push to heroku git repo
+git push heroku main
+
+Unstash new pom.xml
+git stash apply
+
+Commit new pom.xml (Snapshot Version)
+git add .
+git commit -m "new snapshot version"
+
 
 ### Flyway
 

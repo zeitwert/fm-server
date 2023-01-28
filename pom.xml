@@ -20,10 +20,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>19</maven.compiler.release>
-		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<maven-model.version>3.8.7</maven-model.version>
 		<compiler.version>3.10.1</compiler.version>
 		<release.version>2.5.3</release.version>
-		<heroku.version>3.0.6</heroku.version>
 		<flyway.version>9.10.1</flyway.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<jjwt.version>0.11.5</jjwt.version>
@@ -133,6 +132,11 @@
 		</dependency>
 
 		<!-- Monitoring -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model</artifactId>
+			<version>${maven-model.version}</version>
+		</dependency>
 		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -185,16 +189,6 @@
 				<version>${release.version}</version>
 				<configuration>
 					<arguments> -DskipTests -Dmaven.javadoc.skip=true </arguments>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.heroku.sdk</groupId>
-				<artifactId>heroku-maven-plugin</artifactId>
-				<version>${heroku.version}</version>
-				<configuration>
-					<processTypes>
-						<web>java $JAVA_OPTS -cp target/classes:target/dependency/* io.zeitwert.server.Application</web>
-					</processTypes>
 				</configuration>
 			</plugin>
 			<plugin>

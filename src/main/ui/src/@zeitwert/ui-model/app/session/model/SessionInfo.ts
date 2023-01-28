@@ -47,5 +47,7 @@ export interface SessionInfo {
 	account?: AccountInfo;
 	locale: Locale;
 	applicationId: string;
+	applicationName: string;
+	applicationVersion: string;
 	applications: Application[];
 }

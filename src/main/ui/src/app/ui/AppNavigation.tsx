@@ -35,22 +35,24 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 						onClose={() => (this.isLauncherOpen = false)}
 					>
 						<AppLauncherExpandableSection title="Applications" nonCollapsible>
-							{session.appList!.map((app: any) => (
-								<AppLauncherTile
-									key={app.id}
-									title={app.name}
-									description={app.description}
-									iconNode={
-										<Avatar
-											variant="entity"
-											imgSrc={`/assets/images/app/${app.icon}.png`}
-											imgAlt={app.name}
-											size="large"
-										/>
-									}
-									onClick={() => this.onAppClick(app.id)}
-								/>
-							))}
+							{
+								session.appList!.map((app: any) => (
+									<AppLauncherTile
+										key={app.id}
+										title={app.name}
+										description={app.description}
+										iconNode={
+											<Avatar
+												variant="entity"
+												imgSrc={`/assets/images/app/${app.icon}.png`}
+												imgAlt={app.name}
+												size="large"
+											/>
+										}
+										onClick={() => this.onAppClick(app.id)}
+									/>
+								))
+							}
 						</AppLauncherExpandableSection>
 					</AppLauncher>
 				</GlobalNavigationBarRegion>

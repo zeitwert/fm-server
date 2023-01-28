@@ -16,6 +16,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.server.config.version.ApplicationInfo;
 
 @Data()
 @Builder
@@ -27,6 +28,8 @@ public class SessionInfoReponse {
 
 	private String locale;
 	private String applicationId;
+	private String applicationName;
+	private String applicationVersion;
 	private List<String> availableApplications;
 
 	public static SessionInfoReponse fromRequest(RequestContext requestCtx, ObjTenant tenant, ObjAccount account) {
@@ -46,6 +49,8 @@ public class SessionInfoReponse {
 			defaultApp = "fm";
 		}
 		return SessionInfoReponse.builder()
+				.applicationName(ApplicationInfo.getName())
+				.applicationVersion(ApplicationInfo.getVersion())
 				.user(userDtoAdapter.fromAggregate(requestCtx.getUser()))
 				.tenant(tenantDtoAdapter.fromAggregate(tenant))
 				.account(accountDtoAdapter.fromAggregate(account))
