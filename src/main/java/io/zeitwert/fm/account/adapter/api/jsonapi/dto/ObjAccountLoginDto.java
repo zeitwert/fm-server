@@ -17,7 +17,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,7 +34,6 @@ public class ObjAccountLoginDto extends FMObjDtoBase<ObjAccount> {
 	private EnumeratedDto clientSegment;
 	private EnumeratedDto referenceCurrency;
 	private BigDecimal inflationRate;
-	private Set<EnumeratedDto> areas;
 
 	@JsonApiRelationId
 	private Integer logoId;

@@ -41,9 +41,6 @@ public class AggregateTest {
 	@Autowired
 	private CodeCountryEnum countryEnum;
 
-	// @Autowired
-	// private CodeAreaEnum areaEnum;
-
 	@Test
 	public void testAggregate() throws Exception {
 
@@ -149,37 +146,6 @@ public class AggregateTest {
 		assertNull(test1b.getRefTest());
 
 	}
-
-	// @Test
-	// public void testAreas() throws Exception {
-
-	// ObjTest test1a = testRepository.create(requestCtx);
-	// Integer test1Id = test1a.getId();
-
-	// test1a.addArea(areaEnum.getItem("safety_net"));
-	// assertEquals(1, test1a.getAreaSet().size());
-
-	// test1a.addArea(areaEnum.getItem("real_estate"));
-	// assertEquals(2, test1a.getAreaSet().size());
-
-	// test1a.addArea(areaEnum.getItem("investment"));
-	// assertEquals(3, test1a.getAreaSet().size());
-
-	// test1a.removeArea(areaEnum.getItem("real_estate"));
-	// assertEquals(2, test1a.getAreaSet().size());
-	// assertTrue(test1a.getAreaSet().contains(areaEnum.getItem("safety_net")));
-	// assertTrue(test1a.getAreaSet().contains(areaEnum.getItem("investment")));
-
-	// testRepository.store(test1a);
-	// test1a = null;
-
-	// ObjTest test1b = testRepository.get(requestCtx, test1Id);
-
-	// assertEquals(2, test1b.getAreaSet().size());
-	// assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("safety_net")));
-	// assertTrue(test1b.getAreaSet().contains(areaEnum.getItem("investment")));
-
-	// }
 
 	private void initObjTest(ObjTest test, String name, String userEmail, String countryId) {
 		assertEquals("[, ]", test.getCaption());

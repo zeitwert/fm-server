@@ -6,10 +6,8 @@ import java.util.List;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -18,8 +16,6 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
-import io.zeitwert.fm.account.model.enums.CodeArea;
-import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
@@ -46,7 +42,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final SimpleProperty<BigDecimal> inflationRate;
 	protected final ReferenceProperty<ObjDocument> logoImage;
 	protected final ReferenceProperty<ObjContact> mainContact;
-	protected final EnumSetProperty<CodeArea> areaSet;
 
 	protected ObjAccountBase(ObjAccountRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> accountRecord) {
@@ -64,7 +59,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjAccountFields.INFLATION_RATE);
 		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
 		this.mainContact = this.addReferenceProperty(this.dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);
-		this.areaSet = this.addEnumSetProperty(this.getRepository().getAreaSetType(), CodeAreaEnum.class);
 	}
 
 	@Override
@@ -88,8 +82,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.areaSet.loadEnums(itemRepo.getParts(this, this.getRepository().getAreaSetType()));
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
-import java.util.stream.Collectors;
-
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -39,7 +37,6 @@ public final class ObjAccountLoginDtoAdapter
 				.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
 				.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
 				.inflationRate(obj.getInflationRate())
-				.areas(obj.getAreaSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
 				.build();
 	}
 

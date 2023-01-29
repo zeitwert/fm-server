@@ -1,14 +1,11 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
-import java.util.stream.Collectors;
-
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
-import io.zeitwert.fm.account.model.enums.CodeAreaEnum;
 import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
@@ -43,10 +40,6 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 			obj.setReferenceCurrency(
 					dto.getReferenceCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getReferenceCurrency().getId()));
 			obj.setInflationRate(dto.getInflationRate());
-			if (dto.getAreas() != null) {
-				obj.clearAreaSet();
-				dto.getAreas().forEach(area -> obj.addArea(CodeAreaEnum.getArea(area.getId())));
-			}
 			obj.setMainContactId(dto.getMainContactId());
 
 		} finally {
@@ -71,7 +64,6 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 				.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
 				.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
 				.inflationRate(obj.getInflationRate())
-				.areas(obj.getAreaSet().stream().map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
 				.mainContactId(obj.getMainContactId())
 				.build();
 	}
@@ -92,8 +84,6 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjA
 				.clientSegment(EnumeratedDto.fromEnum(CodeClientSegmentEnum.getClientSegment(obj.getClientSegmentId())))
 				.referenceCurrency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getReferenceCurrencyId())))
 				.inflationRate(obj.getInflationRate())
-				// .areas(obj.getAreaSet().stream().map(a ->
-				// EnumeratedDto.fromEnum(a)).collect(Collectors.toSet()))
 				.mainContactId(obj.getMainContactId())
 				.build();
 	}

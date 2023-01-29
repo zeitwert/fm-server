@@ -10,7 +10,6 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
@@ -18,9 +17,6 @@ import io.zeitwert.fm.obj.model.FMObjRepository;
 public abstract class FMObjRepositoryBase<O extends FMObj, V extends Record> extends ObjRepositoryBase<O, V>
 		implements FMObjRepository<O, V> {
 
-	private static final String AREA_SET = "obj.areaSet";
-
-	private final CodePartListType areaSetType;
 	private final ObjNoteRepository noteRepository;
 
 	//@formatter:off
@@ -45,15 +41,9 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends Record> ext
 			transitionRepository,
 			itemRepository
 		);
-		this.areaSetType = this.getAppContext().getPartListType(AREA_SET);
 		this.noteRepository = noteRepository;
 	}
 	//@formatter:on
-
-	@Override
-	public CodePartListType getAreaSetType() {
-		return this.areaSetType;
-	}
 
 	@Override
 	public ObjNoteRepository getNoteRepository() {

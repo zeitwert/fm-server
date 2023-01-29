@@ -3,11 +3,9 @@ package io.zeitwert.fm.account.model;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
-import io.zeitwert.fm.account.model.enums.CodeArea;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.model.FMObj;
@@ -44,14 +42,6 @@ public interface ObjAccount extends FMObj {
 	Integer getLogoImageId();
 
 	ObjDocument getLogoImage();
-
-	Set<CodeArea> getAreaSet();
-
-	void clearAreaSet();
-
-	void addArea(CodeArea area);
-
-	void removeArea(CodeArea area);
 
 	Integer getMainContactId();
 

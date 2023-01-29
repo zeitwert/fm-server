@@ -144,10 +144,6 @@ class DocumentPage extends React.Component<RouteComponentProps> {
 		return [
 			{ label: "Document", content: document.contentKind?.name },
 			{ label: "Content", content: document.contentType?.name },
-			// {
-			// 	label: "Areas",
-			// 	content: document.areas?.map((mt) => mt.name).join(", ")
-			// }
 			{
 				label: "Owner",
 				content: documentOwner.name,

@@ -5,7 +5,6 @@ package io.zeitwert.fm.account.model.db;
 
 
 import io.zeitwert.fm.account.model.db.tables.CodeAccountType;
-import io.zeitwert.fm.account.model.db.tables.CodeArea;
 import io.zeitwert.fm.account.model.db.tables.CodeClientSegment;
 import io.zeitwert.fm.account.model.db.tables.CodeCurrency;
 import io.zeitwert.fm.account.model.db.tables.ObjAccount;
@@ -22,11 +21,6 @@ public class Tables {
      * The table <code>public.code_account_type</code>.
      */
     public static final CodeAccountType CODE_ACCOUNT_TYPE = CodeAccountType.CODE_ACCOUNT_TYPE;
-
-    /**
-     * The table <code>public.code_area</code>.
-     */
-    public static final CodeArea CODE_AREA = CodeArea.CODE_AREA;
 
     /**
      * The table <code>public.code_client_segment</code>.

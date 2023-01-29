@@ -5,7 +5,6 @@ package io.zeitwert.fm.account.model.db;
 
 
 import io.zeitwert.fm.account.model.db.tables.CodeAccountType;
-import io.zeitwert.fm.account.model.db.tables.CodeArea;
 import io.zeitwert.fm.account.model.db.tables.CodeClientSegment;
 import io.zeitwert.fm.account.model.db.tables.CodeCurrency;
 import io.zeitwert.fm.account.model.db.tables.ObjAccount;
@@ -36,11 +35,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.code_account_type</code>.
      */
     public final CodeAccountType CODE_ACCOUNT_TYPE = CodeAccountType.CODE_ACCOUNT_TYPE;
-
-    /**
-     * The table <code>public.code_area</code>.
-     */
-    public final CodeArea CODE_AREA = CodeArea.CODE_AREA;
 
     /**
      * The table <code>public.code_client_segment</code>.
@@ -79,7 +73,6 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             CodeAccountType.CODE_ACCOUNT_TYPE,
-            CodeArea.CODE_AREA,
             CodeClientSegment.CODE_CLIENT_SEGMENT,
             CodeCurrency.CODE_CURRENCY,
             ObjAccount.OBJ_ACCOUNT,
