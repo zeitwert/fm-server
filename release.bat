@@ -1,7 +1,7 @@
 
 @echo off
 
-call mvn -B -Darguments=-DskipTests clean release:prepare -Dresume=false
+call mvn -B -Darguments=-DskipTests clean release:prepare -Dresume=false -DpushChanges=false
 
 git reset HEAD~1
 git stash
