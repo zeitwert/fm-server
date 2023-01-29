@@ -15,7 +15,11 @@
 	<name>Zeitwert Application Server</name>
 	<description />
 	<packaging>jar</packaging>
+<<<<<<< Updated upstream
 	<version>1.0.9-SNAPSHOT</version>
+=======
+	<version>1.0.1-SNAPSHOT</version>
+>>>>>>> Stashed changes
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,8 +54,12 @@
 
 	<scm>
 		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeitwert.git</developerConnection>
+<<<<<<< Updated upstream
 	  <tag>HEAD</tag>
   </scm>
+=======
+	</scm>
+>>>>>>> Stashed changes
 
 	<dependencies>
 
@@ -187,9 +195,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>${release.version}</version>
+<<<<<<< Updated upstream
 				<configuration>
 					<arguments> -DskipTests -Dmaven.javadoc.skip=true </arguments>
 				</configuration>
+=======
+>>>>>>> Stashed changes
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
