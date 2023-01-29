@@ -1,6 +1,8 @@
 
 @echo off
 
+git push
+
 call mvn -B -Darguments=-DskipTests clean release:prepare -Dresume=false -DpushChanges=false
 
 git reset HEAD~1
