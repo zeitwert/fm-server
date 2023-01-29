@@ -448,6 +448,12 @@
 							<excludeDefaultDirectories>true</excludeDefaultDirectories>
 							<filesets>
 								<fileset>
+									<directory>${frontend-src-dir}/node_modules</directory>
+								</fileset>
+								<fileset>
+									<directory>${frontend-src-dir}/build</directory>
+								</fileset>
+								<fileset>
 									<directory>target/node</directory>
 								</fileset>
 								<fileset>
