@@ -32,6 +32,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
+	private final CodePartListType countrySetType;
 	private final ObjTestPartNodeRepository nodeRepository;
 	private final CodePartListType nodeListType;
 
@@ -55,6 +56,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 			itemRepository,
 			noteRepository
 		);
+		this.countrySetType = this.getAppContext().getPartListType(ObjTestFields.COUNTRY_SET);
 		this.nodeRepository = nodeRepository;
 		this.nodeListType = this.getAppContext().getPartListType(ObjTestFields.NODE_LIST);
 	}
@@ -66,6 +68,11 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
 		this.addPartRepository(this.getNodeRepository());
+	}
+
+	@Override
+	public CodePartListType getCountrySetType() {
+		return this.countrySetType;
 	}
 
 	@Override

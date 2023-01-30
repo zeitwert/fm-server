@@ -34,14 +34,13 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 		return (FMDocRepository<? extends FMDoc, ? extends Record>) super.getRepository();
 	}
 
+	@Override
 	public List<ObjNoteVRecord> getNoteList() {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
-		return noteRepository.getByForeignKey("related_to_id", this.getId()).stream()
-				.filter(
-						onv -> !onv.getIsPrivate() || onv.getCreatedByUserId().equals(this.getRequestContext().getUser().getId()))
-				.toList();
+		return noteRepository.getByForeignKey("related_to_id", this.getId());
 	}
 
+	@Override
 	public ObjNote addNote(CodeNoteType noteType) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
 		ObjNote note = noteRepository.create(this.getTenantId());
@@ -50,6 +49,7 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 		return note;
 	}
 
+	@Override
 	public void removeNote(Integer noteId) {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
 		ObjNote note = noteRepository.get(noteId);

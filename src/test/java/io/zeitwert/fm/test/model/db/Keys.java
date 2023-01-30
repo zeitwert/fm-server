@@ -40,6 +40,7 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<DocTestRecord, ObjTestRecord> DOC_TEST__DOC_TEST_REF_OBJ_ID_FKEY = Internal.createForeignKey(DocTest.DOC_TEST, DSL.name("doc_test_ref_obj_id_fkey"), new TableField[] { DocTest.DOC_TEST.REF_OBJ_ID }, Keys.OBJ_TEST_PKEY, new TableField[] { ObjTest.OBJ_TEST.OBJ_ID }, true);
     public static final ForeignKey<DocTestPartNodeRecord, DocTestRecord> DOC_TEST_PART_NODE__DOC_TEST_PART_NODE_REF_DOC_ID_FKEY = Internal.createForeignKey(DocTestPartNode.DOC_TEST_PART_NODE, DSL.name("doc_test_part_node_ref_doc_id_fkey"), new TableField[] { DocTestPartNode.DOC_TEST_PART_NODE.REF_DOC_ID }, Keys.DOC_TEST_PKEY, new TableField[] { DocTest.DOC_TEST.DOC_ID }, true);
     public static final ForeignKey<DocTestPartNodeRecord, ObjTestRecord> DOC_TEST_PART_NODE__DOC_TEST_PART_NODE_REF_OBJ_ID_FKEY = Internal.createForeignKey(DocTestPartNode.DOC_TEST_PART_NODE, DSL.name("doc_test_part_node_ref_obj_id_fkey"), new TableField[] { DocTestPartNode.DOC_TEST_PART_NODE.REF_OBJ_ID }, Keys.OBJ_TEST_PKEY, new TableField[] { ObjTest.OBJ_TEST.OBJ_ID }, true);
     public static final ForeignKey<ObjTestRecord, ObjTestRecord> OBJ_TEST__OBJ_TEST_REF_TEST_ID_FKEY = Internal.createForeignKey(ObjTest.OBJ_TEST, DSL.name("obj_test_ref_test_id_fkey"), new TableField[] { ObjTest.OBJ_TEST.REF_TEST_ID }, Keys.OBJ_TEST_PKEY, new TableField[] { ObjTest.OBJ_TEST.OBJ_ID }, true);

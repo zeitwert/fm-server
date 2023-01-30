@@ -3,6 +3,7 @@ package io.zeitwert.fm.test.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.obj.model.FMObj;
@@ -46,6 +47,16 @@ public interface ObjTest extends FMObj {
 	void setRefTestId(Integer id);
 
 	ObjTest getRefTest();
+
+	boolean hasCountry(CodeCountry country);
+
+	Set<CodeCountry> getCountrySet();
+
+	void clearCountrySet();
+
+	void addCountry(CodeCountry country);
+
+	void removeCountry(CodeCountry country);
 
 	Integer getNodeCount();
 

@@ -15,6 +15,7 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -43,6 +44,7 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 		final AppContext appContext,
 		final DSLContext dslContext,
 		final DocPartTransitionRepository transitionRepository,
+		final DocPartItemRepository itemRepository,
 		final ObjNoteRepository noteRepository,
 		final ObjVRepository objVRepository,
 		final RequestContext requestCtx
@@ -55,6 +57,7 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 			appContext,
 			dslContext,
 			transitionRepository,
+			itemRepository,
 			noteRepository
 		);
 		this.objVRepository = objVRepository;

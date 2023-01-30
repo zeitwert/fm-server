@@ -53,7 +53,7 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 
 	@Override
 	public Obj doCreate() {
-		throw new RuntimeException("cannot create an Obj");
+		throw new RuntimeException("ObjV is readonly");
 	}
 
 	@Override

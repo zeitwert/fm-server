@@ -165,12 +165,22 @@ public class DocTestV extends TableImpl<DocTestVRecord> {
      */
     public final TableField<DocTestVRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40), this, "");
 
+    /**
+     * The column <code>public.doc_test_v.ref_obj_id</code>.
+     */
+    public final TableField<DocTestVRecord, Integer> REF_OBJ_ID = createField(DSL.name("ref_obj_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.doc_test_v.ref_doc_id</code>.
+     */
+    public final TableField<DocTestVRecord, Integer> REF_DOC_ID = createField(DSL.name("ref_doc_id"), SQLDataType.INTEGER, this, "");
+
     private DocTestV(Name alias, Table<DocTestVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private DocTestV(Name alias, Table<DocTestVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"doc_test_v\" as  SELECT doc.doc_type_id,\n    dt.doc_id AS id,\n    doc.version,\n    doc.owner_id,\n    doc.caption,\n    doc.case_def_id,\n    doc.case_stage_id,\n    doc.is_in_work,\n    doc.assignee_id,\n    doc.created_by_user_id,\n    doc.created_at,\n    doc.modified_by_user_id,\n    doc.modified_at,\n    dt.doc_id,\n    dt.tenant_id,\n    dt.account_id,\n    dt.short_text,\n    dt.long_text,\n    dt.date,\n    dt.\"int\",\n    dt.is_done,\n    dt.json,\n    dt.nr,\n    dt.country_id\n   FROM (doc_test dt\n     JOIN doc ON ((doc.id = dt.doc_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"doc_test_v\" as  SELECT doc.doc_type_id,\n    dt.doc_id AS id,\n    doc.version,\n    doc.owner_id,\n    doc.caption,\n    doc.case_def_id,\n    doc.case_stage_id,\n    doc.is_in_work,\n    doc.assignee_id,\n    doc.created_by_user_id,\n    doc.created_at,\n    doc.modified_by_user_id,\n    doc.modified_at,\n    dt.doc_id,\n    dt.tenant_id,\n    dt.account_id,\n    dt.short_text,\n    dt.long_text,\n    dt.date,\n    dt.\"int\",\n    dt.is_done,\n    dt.json,\n    dt.nr,\n    dt.country_id,\n    dt.ref_obj_id,\n    dt.ref_doc_id\n   FROM (doc_test dt\n     JOIN doc ON ((doc.id = dt.doc_id)));"));
     }
 
     /**

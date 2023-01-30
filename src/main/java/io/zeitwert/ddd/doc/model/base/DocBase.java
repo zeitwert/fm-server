@@ -15,6 +15,7 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocMeta;
+import io.zeitwert.ddd.doc.model.DocPartItem;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
@@ -214,6 +215,11 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 			return (P) this.getRepository().getTransitionRepository().create(this, partListType);
 		}
 		return null;
+	}
+
+	@Override
+	public DocPartItem addItem(Property<?> property, CodePartListType partListType) {
+		return this.getRepository().getItemRepository().create(this, partListType);
 	}
 
 	protected void setCaption(String caption) {

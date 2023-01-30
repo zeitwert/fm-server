@@ -18,8 +18,11 @@ public abstract class ObjPartItemBase extends ObjPartBase<Obj> implements ObjPar
 
 	@Override
 	public String toString() {
-		return "ObjPartItem[" + this.getAggregate().getId() + "|" + this.getParentPartId() + "|" + this.getPartListTypeId()
-				+ "]: " + this.getItemId();
+		return "ObjPartItem["
+				+ this.getAggregate().getId() + "|"
+				+ this.getParentPartId() + "|"
+				+ this.getPartListTypeId() + "]: "
+				+ this.getItemId();
 	}
 
 }

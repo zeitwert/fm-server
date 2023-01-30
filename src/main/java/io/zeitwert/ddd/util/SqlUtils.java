@@ -30,16 +30,9 @@ import io.crnk.core.queryspec.SortSpec;
 
 public class SqlUtils {
 
-	public static final String OBJ_PREFIX = "obj";
-	public static final String DOC_PREFIX = "doc";
-
 	private static final String SEARCH_TABLE_NAME = "item_search";
 	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getSchema().getTable(SEARCH_TABLE_NAME);
 	private static final Field<Integer> ITEM_ID = DSL.field("item_id", Integer.class);
-
-	private static String getPath(FilterSpec filter) {
-		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
-	}
 
 	public static boolean hasFilterFor(QuerySpec querySpec, String fieldName) {
 		return querySpec.getFilters().stream().anyMatch(f -> getPath(f).equals(fieldName));
@@ -65,6 +58,10 @@ public class SqlUtils {
 				.sort(Direction.ASC.equals(s.getDirection()) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
 			}).collect(Collectors.toList());
 		//@formatter:on
+	}
+
+	private static String getPath(FilterSpec filter) {
+		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
 	}
 
 	private static Condition searchFilter(DSLContext dslContext, Field<Integer> idField, FilterSpec filter) {

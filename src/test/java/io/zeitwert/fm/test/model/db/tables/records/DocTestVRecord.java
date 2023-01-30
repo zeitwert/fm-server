@@ -358,6 +358,34 @@ public class DocTestVRecord extends TableRecordImpl<DocTestVRecord> {
         return (String) get(23);
     }
 
+    /**
+     * Setter for <code>public.doc_test_v.ref_obj_id</code>.
+     */
+    public void setRefObjId(Integer value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_test_v.ref_obj_id</code>.
+     */
+    public Integer getRefObjId() {
+        return (Integer) get(24);
+    }
+
+    /**
+     * Setter for <code>public.doc_test_v.ref_doc_id</code>.
+     */
+    public void setRefDocId(Integer value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_test_v.ref_doc_id</code>.
+     */
+    public Integer getRefDocId() {
+        return (Integer) get(25);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -372,7 +400,7 @@ public class DocTestVRecord extends TableRecordImpl<DocTestVRecord> {
     /**
      * Create a detached, initialised DocTestVRecord
      */
-    public DocTestVRecord(String docTypeId, Integer id, Integer version, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, String shortText, String longText, LocalDate date, Integer int_, Boolean isDone, JSON json, BigDecimal nr, String countryId) {
+    public DocTestVRecord(String docTypeId, Integer id, Integer version, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, String shortText, String longText, LocalDate date, Integer int_, Boolean isDone, JSON json, BigDecimal nr, String countryId, Integer refObjId, Integer refDocId) {
         super(DocTestV.DOC_TEST_V);
 
         setDocTypeId(docTypeId);
@@ -399,5 +427,7 @@ public class DocTestVRecord extends TableRecordImpl<DocTestVRecord> {
         setJson(json);
         setNr(nr);
         setCountryId(countryId);
+        setRefObjId(refObjId);
+        setRefDocId(refDocId);
     }
 }

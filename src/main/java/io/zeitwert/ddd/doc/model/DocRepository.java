@@ -13,7 +13,7 @@ public interface DocRepository<D extends Doc, V extends Record> extends Aggregat
 
 	CodePartListType getTransitionListType();
 
-	// DocPartItemRepository getItemRepository();
+	DocPartItemRepository getItemRepository();
 
 	static boolean isDocId(Integer id) {
 		return id != null && id >= MIN_DOC_ID;

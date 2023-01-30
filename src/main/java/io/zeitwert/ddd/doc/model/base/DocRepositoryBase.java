@@ -10,6 +10,7 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
+import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.db.Tables;
@@ -23,6 +24,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	private final DocPartTransitionRepository transitionRepository;
 	private final CodePartListType transitionListType;
+	private final DocPartItemRepository itemRepository;
 
 	//@formatter:off
 	protected DocRepositoryBase(
@@ -32,11 +34,13 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		final String aggregateTypeId,
 		final AppContext appContext,
 		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository
+		final DocPartTransitionRepository transitionRepository,
+		final DocPartItemRepository itemRepository
 	) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
 		this.transitionRepository = transitionRepository;
 		this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
+		this.itemRepository = itemRepository;
 	}
 	//@formatter:on
 
@@ -45,6 +49,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		this.addPartRepository(this.getTransitionRepository());
 	}
 
+	@Override
 	public DocPartTransitionRepository getTransitionRepository() {
 		return this.transitionRepository;
 	}
@@ -55,12 +60,17 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	}
 
 	@Override
+	public DocPartItemRepository getItemRepository() {
+		return this.itemRepository;
+	}
+
+	@Override
 	public Integer nextAggregateId() {
 		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
 	}
 
 	protected D doCreate(UpdatableRecord<?> extnRecord) {
-		return newAggregate(this.getDSLContext().newRecord(Tables.DOC), extnRecord);
+		return this.newAggregate(this.getDSLContext().newRecord(Tables.DOC), extnRecord);
 	}
 
 	protected D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {
@@ -68,7 +78,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 		if (docRecord == null || extnRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		return newAggregate(docRecord, extnRecord);
+		return this.newAggregate(docRecord, extnRecord);
 	}
 
 	@Override

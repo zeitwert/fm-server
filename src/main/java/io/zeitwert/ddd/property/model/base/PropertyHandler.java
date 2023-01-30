@@ -23,9 +23,9 @@ public class PropertyHandler implements MethodHandler {
 	public Object invoke(Object self, Method m, Method proceed, Object[] args) throws Throwable {
 		String methodName = m.getName();
 		try {
-			if (isCollectionApi(methodName, args)) {
-				String fieldName = getCollectionFieldName(methodName, args);
-				Property<?> property = getProperty(self, fieldName);
+			if (this.isCollectionApi(methodName, args)) {
+				String fieldName = this.getCollectionFieldName(methodName, args);
+				Property<?> property = this.getProperty(self, fieldName);
 				if (property instanceof PartListProperty) {
 					if (args.length == 0) {
 						if (methodName.startsWith("get") && methodName.endsWith("Count")) {
@@ -92,8 +92,8 @@ public class PropertyHandler implements MethodHandler {
 					}
 				}
 			}
-			Property<?> property = getProperty(self, getFieldName(methodName));
-			if (isGetter(methodName, args)) {
+			Property<?> property = this.getProperty(self, this.getFieldName(methodName));
+			if (this.isGetter(methodName, args)) {
 				if (property instanceof EnumProperty) {
 					return ((EnumProperty<Enumerated>) property).getValue();
 				} else if (property instanceof ReferenceProperty) {
@@ -105,7 +105,7 @@ public class PropertyHandler implements MethodHandler {
 				} else if (property instanceof SimpleProperty) { // must be last
 					return ((SimpleProperty<?>) property).getValue();
 				}
-			} else if (isSetter(m.getName(), args)) {
+			} else if (this.isSetter(m.getName(), args)) {
 				if (property instanceof EnumProperty) {
 					((EnumProperty<Enumerated>) property).setValue((Enumerated) args[0]);
 				} else if (property instanceof ReferenceProperty) {
@@ -152,44 +152,11 @@ public class PropertyHandler implements MethodHandler {
 
 	private String getFieldName(String methodName) throws NoSuchFieldException {
 		if (methodName.startsWith("get")) {
-			return getName(methodName.substring(3));
+			return this.getName(methodName.substring(3));
 		} else if (methodName.startsWith("set")) {
-			return getName(methodName.substring(3));
+			return this.getName(methodName.substring(3));
 		}
 		throw new NoSuchFieldException(methodName);
-	}
-
-	private String getCollectionFieldName(String methodName, Object[] args) throws NoSuchFieldException {
-		if (args.length == 0) {
-			if (methodName.startsWith("get") && methodName.endsWith("Count")) {
-				return getName(methodName.substring(3, methodName.length() - 5)) + "List";
-			} else if (methodName.startsWith("get") && methodName.endsWith("List")) {
-				return getName(methodName.substring(3, methodName.length() - 4)) + "List";
-			} else if (methodName.startsWith("get") && methodName.endsWith("Set")) {
-				return getName(methodName.substring(3, methodName.length() - 3)) + "Set";
-			} else if (methodName.startsWith("clear") && methodName.endsWith("List")) {
-				return getName(methodName.substring(5, methodName.length() - 4)) + "List";
-			} else if (methodName.startsWith("clear") && methodName.endsWith("Set")) {
-				return getName(methodName.substring(5, methodName.length() - 3)) + "Set";
-			} else if (methodName.startsWith("add")) {
-				return getName(methodName.substring(3)) + "List";
-			}
-		} else if (args.length == 1) {
-			if (methodName.startsWith("get") && methodName.endsWith("ById")) {
-				return getName(methodName.substring(3, methodName.length() - 4)) + "List";
-			} else if (methodName.startsWith("get")) {
-				return getName(methodName.substring(3)) + "List";
-			} else if (methodName.startsWith("add")) {
-				return getName(methodName.substring(3)) + "Set";
-			} else if (methodName.startsWith("remove")) {
-				return getName(methodName.substring(6)) + "List";
-			}
-		}
-		throw new NoSuchFieldException(methodName);
-	}
-
-	private String getName(String methodName) throws NoSuchFieldException {
-		return methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
 	}
 
 	private boolean isCollectionApi(String methodName, Object[] args) {
@@ -206,6 +173,8 @@ public class PropertyHandler implements MethodHandler {
 		} else if (args.length == 1) {
 			if (methodName.startsWith("get") && methodName.endsWith("ById")) {
 				return true;
+			} else if (methodName.startsWith("has")) {
+				return true;
 			} else if (methodName.startsWith("get")) {
 				return true;
 			} else if (methodName.startsWith("add")) {
@@ -215,6 +184,41 @@ public class PropertyHandler implements MethodHandler {
 			}
 		}
 		return false;
+	}
+
+	private String getCollectionFieldName(String methodName, Object[] args) throws NoSuchFieldException {
+		if (args.length == 0) {
+			if (methodName.startsWith("get") && methodName.endsWith("Count")) {
+				return this.getName(methodName.substring(3, methodName.length() - 5)) + "List";
+			} else if (methodName.startsWith("get") && methodName.endsWith("List")) {
+				return this.getName(methodName.substring(3, methodName.length() - 4)) + "List";
+			} else if (methodName.startsWith("get") && methodName.endsWith("Set")) {
+				return this.getName(methodName.substring(3, methodName.length() - 3)) + "Set";
+			} else if (methodName.startsWith("clear") && methodName.endsWith("List")) {
+				return this.getName(methodName.substring(5, methodName.length() - 4)) + "List";
+			} else if (methodName.startsWith("clear") && methodName.endsWith("Set")) {
+				return this.getName(methodName.substring(5, methodName.length() - 3)) + "Set";
+			} else if (methodName.startsWith("add")) {
+				return this.getName(methodName.substring(3)) + "List";
+			}
+		} else if (args.length == 1) {
+			if (methodName.startsWith("get") && methodName.endsWith("ById")) {
+				return this.getName(methodName.substring(3, methodName.length() - 4)) + "List";
+			} else if (methodName.startsWith("has")) {
+				return this.getName(methodName.substring(3)) + "Set";
+			} else if (methodName.startsWith("get")) {
+				return this.getName(methodName.substring(3)) + "List";
+			} else if (methodName.startsWith("add")) {
+				return this.getName(methodName.substring(3)) + "Set";
+			} else if (methodName.startsWith("remove")) {
+				return this.getName(methodName.substring(6)) + "List";
+			}
+		}
+		throw new NoSuchFieldException(methodName);
+	}
+
+	private String getName(String methodName) throws NoSuchFieldException {
+		return methodName.substring(0, 1).toLowerCase() + methodName.substring(1);
 	}
 
 	private boolean isGetter(String methodName, Object[] args) {

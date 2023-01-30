@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -104,6 +104,16 @@ public class DocTest extends TableImpl<DocTestRecord> {
      */
     public final TableField<DocTestRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40), this, "");
 
+    /**
+     * The column <code>public.doc_test.ref_obj_id</code>.
+     */
+    public final TableField<DocTestRecord, Integer> REF_OBJ_ID = createField(DSL.name("ref_obj_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.doc_test.ref_doc_id</code>.
+     */
+    public final TableField<DocTestRecord, Integer> REF_DOC_ID = createField(DSL.name("ref_doc_id"), SQLDataType.INTEGER, this, "");
+
     private DocTest(Name alias, Table<DocTestRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -153,6 +163,20 @@ public class DocTest extends TableImpl<DocTestRecord> {
     }
 
     @Override
+    public List<ForeignKey<DocTestRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<DocTestRecord, ?>>asList(Keys.DOC_TEST__DOC_TEST_REF_OBJ_ID_FKEY);
+    }
+
+    private transient ObjTest _objTest;
+
+    public ObjTest objTest() {
+        if (_objTest == null)
+            _objTest = new ObjTest(this, Keys.DOC_TEST__DOC_TEST_REF_OBJ_ID_FKEY);
+
+        return _objTest;
+    }
+
+    @Override
     public DocTest as(String alias) {
         return new DocTest(DSL.name(alias), this);
     }
@@ -179,11 +203,11 @@ public class DocTest extends TableImpl<DocTestRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, Integer, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row13<Integer, Integer, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String, Integer, Integer> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }
