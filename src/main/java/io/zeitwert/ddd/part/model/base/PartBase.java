@@ -9,10 +9,10 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartMeta;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class PartBase<A extends Aggregate> extends EntityWithPropertiesBase

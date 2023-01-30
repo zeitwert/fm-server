@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.property.model.enums;
+package io.zeitwert.ddd.part.model.enums;
 
 import javax.annotation.PostConstruct;
 

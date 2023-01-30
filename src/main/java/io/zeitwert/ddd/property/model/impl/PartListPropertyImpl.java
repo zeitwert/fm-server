@@ -3,10 +3,10 @@ package io.zeitwert.ddd.property.model.impl;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.base.PartBase;
 import io.zeitwert.ddd.part.model.base.PartSPI;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.util.ArrayList;
 import java.util.List;

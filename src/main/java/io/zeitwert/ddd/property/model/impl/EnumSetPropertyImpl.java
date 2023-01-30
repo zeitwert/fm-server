@@ -3,11 +3,11 @@ package io.zeitwert.ddd.property.model.impl;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.base.PartSPI;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.util.Collection;
 import java.util.HashSet;

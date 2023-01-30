@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.oe.adapter.api.rest;
+package io.zeitwert.fm.oe.adapter.api.rest;
 
 import java.util.Map;
 

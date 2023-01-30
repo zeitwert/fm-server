@@ -1,9 +1,9 @@
 package io.zeitwert.ddd.property.model.impl;
 
 import io.zeitwert.ddd.property.model.ItemSetProperty;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.util.List;
 import java.util.Set;

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;

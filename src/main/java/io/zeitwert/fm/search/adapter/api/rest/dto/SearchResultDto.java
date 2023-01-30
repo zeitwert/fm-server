@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.search.adapter.api.rest.dto;
+package io.zeitwert.fm.search.adapter.api.rest.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.search.model.SearchResult;

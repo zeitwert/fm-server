@@ -16,7 +16,7 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.server.config.version.ApplicationInfo;
+import io.zeitwert.server.session.version.ApplicationInfo;
 
 @Data()
 @Builder

@@ -11,12 +11,12 @@ import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

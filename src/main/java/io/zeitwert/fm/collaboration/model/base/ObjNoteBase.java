@@ -5,10 +5,10 @@ import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;

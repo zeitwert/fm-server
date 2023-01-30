@@ -1,4 +1,4 @@
-package io.zeitwert.server.config.version;
+package io.zeitwert.server.session.version;
 
 import javax.annotation.PostConstruct;
 import java.io.File;

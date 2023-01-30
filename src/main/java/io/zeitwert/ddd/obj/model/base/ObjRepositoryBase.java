@@ -17,8 +17,8 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;

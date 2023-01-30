@@ -11,8 +11,8 @@ import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
 public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		extends AggregateRepositoryBase<D, V>

@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.enums;
+package io.zeitwert.ddd.part.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
 import lombok.Data;

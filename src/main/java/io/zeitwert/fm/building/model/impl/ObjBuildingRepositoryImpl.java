@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;

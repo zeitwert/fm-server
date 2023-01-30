@@ -2,7 +2,7 @@ package io.zeitwert.ddd.obj.model;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 import org.jooq.TableRecord;
 

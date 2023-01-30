@@ -6,7 +6,7 @@ import io.zeitwert.ddd.item.model.ItemPart;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 import org.jooq.UpdatableRecord;
 

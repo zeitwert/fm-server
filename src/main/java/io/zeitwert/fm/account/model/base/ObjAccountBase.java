@@ -7,11 +7,11 @@ import java.util.List;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;

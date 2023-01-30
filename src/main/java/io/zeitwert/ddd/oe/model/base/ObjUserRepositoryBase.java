@@ -12,8 +12,8 @@ import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
 public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, TableRecord<?>>
 		implements ObjUserRepository {

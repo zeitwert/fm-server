@@ -2,7 +2,7 @@ package io.zeitwert.ddd.part.model.base;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 /**
  * This interface defines the internal callbacks for a Part implementation.

@@ -2,7 +2,7 @@
 package io.zeitwert.ddd.part.model;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 import java.util.List;
 

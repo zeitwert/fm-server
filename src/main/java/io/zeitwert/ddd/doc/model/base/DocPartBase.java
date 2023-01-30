@@ -8,7 +8,7 @@ import io.zeitwert.ddd.doc.model.DocPart;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartBase;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 public abstract class DocPartBase<D extends Doc> extends PartBase<D> implements DocPart<D> {
 
