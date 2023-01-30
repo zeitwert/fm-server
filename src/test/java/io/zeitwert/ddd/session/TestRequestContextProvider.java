@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.session.service.api.impl;
+package io.zeitwert.ddd.session;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;

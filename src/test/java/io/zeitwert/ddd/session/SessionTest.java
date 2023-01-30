@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.aggregate.model.base;
+package io.zeitwert.ddd.session;
 
 import static org.junit.jupiter.api.Assertions.*;
 

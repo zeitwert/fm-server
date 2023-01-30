@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.part.model.base;
+package io.zeitwert.fm.collaboration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
