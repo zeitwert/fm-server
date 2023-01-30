@@ -18,6 +18,11 @@ export const Config = {
 			.replace("{type}", "rest")
 			.replace("{api}", module + "/" + url);
 	},
+	getProjectionUrl(module: string, url: string) {
+		return Env.getParam("SERVER_BASE_URL")
+			.replace("{type}", "rest")
+			.replace("{api}", module + "/" + url);
+	},
 	getDocUrl(ctx: string) {
 		return Env.getParam("DOC_BASE_URL")
 			.replace("{ctx}", ctx ? "#" + ctx : "");

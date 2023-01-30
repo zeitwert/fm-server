@@ -1,56 +1,36 @@
 package io.zeitwert.server.config.security;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(
-		// securedEnabled = true,
-		// jsr250Enabled = true,
-		prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-	UserDetailsService userDetailsService;
+public class WebSecurityConfiguration {
 
 	@Autowired
 	private ZeitwertAuthenticationEntryPoint unauthorizedHandler;
 
 	@Bean
-	public AuthenticationJWTFilter authenticationJwtTokenFilter() {
-		return new AuthenticationJWTFilter();
-	}
-
-	@Override
-	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder
-				.userDetailsService(this.userDetailsService)
-				.passwordEncoder(this.passwordEncoder());
-	}
-
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+	public AuthenticationManager authenticationManager(
+			HttpSecurity http,
+			PasswordEncoder bCryptPasswordEncoder,
+			UserDetailsService userDetailsService)
+			throws Exception {
+		return http.getSharedObject(AuthenticationManagerBuilder.class)
+				.userDetailsService(userDetailsService)
+				.passwordEncoder(bCryptPasswordEncoder)
+				.and()
+				.build();
 	}
 
 	@Bean
@@ -58,17 +38,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Override
+	@Bean
+	public AuthenticationJWTFilter authenticationJwtTokenFilter() {
+		return new AuthenticationJWTFilter();
+	}
+
+	@Bean
 	// TODO Revoke unnecessary permissions
-	protected void configure(HttpSecurity http) throws Exception {
-		//@formatter:off
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors().and()
-			.csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests()
+				.csrf().disable()
+				.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeRequests()
 				// monitoring
-				//.antMatchers("/actuator/**").permitAll()
+				// .antMatchers("/actuator/**").permitAll()
 				// login
 				.antMatchers(HttpMethod.GET, "/rest/app/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/rest/session/login/**").permitAll()
@@ -78,6 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/images/**").permitAll()
 				// ui paths (necessary for hyperlinks, since JWT is not propagated)
 				.antMatchers(HttpMethod.GET, "/home/*").permitAll()
 				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll()
@@ -100,29 +85,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// test paths
 				.antMatchers(HttpMethod.GET, "/rest/test/all").permitAll()
 				.antMatchers(HttpMethod.GET, "/rest/test/**").authenticated()
-			.anyRequest().authenticated();
+				.anyRequest().authenticated();
 		http.addFilterBefore(this.authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.headers().frameOptions().disable();
-		//@formatter:on
-	}
-
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		final CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOriginPatterns(List.of("*"));
-		// configuration.setAllowedOrigins(List.of("*"));
-		config.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-		// setAllowCredentials(true) is important, otherwise:
-		// The value of the 'Access-Control-Allow-Origin' header in the response must
-		// not be the wildcard '*' when the request's credentials mode is 'include'.
-		config.setAllowCredentials(true);
-		// setAllowedHeaders is important! Without it, OPTIONS preflight request
-		// will fail with 403 Invalid CORS request
-		config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-		config.addExposedHeader("Content-Disposition"); // allow access to content-disposition for file downloads
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return source;
+		return http.build();
 	}
 
 }
