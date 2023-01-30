@@ -29,6 +29,7 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.db.Tables;
 import io.zeitwert.ddd.aggregate.model.db.tables.ItemSearch;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
+import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
@@ -82,7 +83,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 
 	@Override
 	public final CodeAggregateType getAggregateType() {
-		return this.getAppContext().getAggregateType(this.aggregateTypeId);
+		return CodeAggregateTypeEnum.getAggregateType(this.aggregateTypeId);
 	}
 
 	protected void addPartRepository(PartRepository<? super A, ?> partRepository) {

@@ -15,6 +15,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
@@ -57,7 +58,7 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	@Override
 	public CodePartListType getAddressListType() {
 		if (this.addressListType == null) {
-			this.addressListType = this.getAppContext().getPartListType(ObjContactFields.ADDRESS_LIST);
+			this.addressListType = CodePartListTypeEnum.getPartListType(ObjContactFields.ADDRESS_LIST);
 		}
 		return this.addressListType;
 	}

@@ -31,7 +31,7 @@ import io.crnk.core.queryspec.SortSpec;
 public class SqlUtils {
 
 	private static final String SEARCH_TABLE_NAME = "item_search";
-	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getSchema().getTable(SEARCH_TABLE_NAME);
+	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getTable(SEARCH_TABLE_NAME);
 	private static final Field<Integer> ITEM_ID = DSL.field("item_id", Integer.class);
 
 	public static boolean hasFilterFor(QuerySpec querySpec, String fieldName) {

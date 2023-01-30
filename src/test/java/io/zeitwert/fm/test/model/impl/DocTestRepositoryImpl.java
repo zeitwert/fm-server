@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -55,7 +56,7 @@ public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestV
 	@Override
 	public CodePartListType getCountrySetType() {
 		if (this.countrySetType == null) {
-			this.countrySetType = this.getAppContext().getPartListType(DocTestFields.COUNTRY_SET);
+			this.countrySetType = CodePartListTypeEnum.getPartListType(DocTestFields.COUNTRY_SET);
 		}
 		return this.countrySetType;
 	}

@@ -27,12 +27,12 @@ import io.zeitwert.ddd.session.model.RequestContext;
 public class SearchServiceImpl implements SearchService {
 
 	private static final String SEARCH_TABLE_NAME = "item_search";
-	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getSchema().getTable(SEARCH_TABLE_NAME);
+	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getTable(SEARCH_TABLE_NAME);
 	private static final Field<String> ITEM_TYPE_ID = SEARCH_TABLE.field("item_type_id", String.class);
 	private static final Field<Integer> ITEM_ID = SEARCH_TABLE.field("item_id", Integer.class);
 
 	private static final String OBJ_TABLE_NAME = "obj";
-	private static final Table<?> OBJ_TABLE = AppContext.getInstance().getSchema().getTable(OBJ_TABLE_NAME);
+	private static final Table<?> OBJ_TABLE = AppContext.getInstance().getTable(OBJ_TABLE_NAME);
 	private static final Field<Integer> TENANT_ID = OBJ_TABLE.field("tenant_id", Integer.class);
 	private static final Field<Integer> ACCOUNT_ID = OBJ_TABLE.field("account_id", Integer.class);
 

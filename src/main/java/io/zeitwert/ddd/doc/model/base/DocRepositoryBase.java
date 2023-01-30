@@ -16,6 +16,7 @@ import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 
 public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends AggregateRepositoryBase<D, V>
 		implements DocRepository<D, V> {
@@ -47,7 +48,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	@Override
 	public CodePartListType getTransitionListType() {
 		if (this.transitionListType == null) {
-			this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
+			this.transitionListType = CodePartListTypeEnum.getPartListType(DocFields.TRANSITION_LIST);
 		}
 		return this.transitionListType;
 	}

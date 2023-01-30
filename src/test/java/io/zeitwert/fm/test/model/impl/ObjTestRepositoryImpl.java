@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -48,7 +49,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	@Override
 	public CodePartListType getCountrySetType() {
 		if (this.countrySetType == null) {
-			this.countrySetType = this.getAppContext().getPartListType(ObjTestFields.COUNTRY_SET);
+			this.countrySetType = CodePartListTypeEnum.getPartListType(ObjTestFields.COUNTRY_SET);
 		}
 		return this.countrySetType;
 	}
@@ -64,7 +65,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 	@Override
 	public CodePartListType getNodeListType() {
 		if (this.nodeListType == null) {
-			this.nodeListType = this.getAppContext().getPartListType(ObjTestFields.NODE_LIST);
+			this.nodeListType = CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST);
 		}
 		return this.nodeListType;
 	}

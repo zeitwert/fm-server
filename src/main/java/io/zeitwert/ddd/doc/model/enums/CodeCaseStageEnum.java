@@ -38,7 +38,7 @@ public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 
 	@PostConstruct
 	private void init() {
-		Table<?> codeCaseStage = AppContext.getInstance().getSchema().getTable(TABLE);
+		Table<?> codeCaseStage = AppContext.getInstance().getTable(TABLE);
 		for (final Record9<String, String, String, String, String, Integer, String, String, String> item : this
 				.getDslContext().select(ID, NAME, CASE_DEF_ID, CASE_STAGE_TYPE_ID, DESCRIPTION, SEQ_NR, ABSTRACT_CASE_STAGE_ID,
 						ACTION, AVAILABLE_ACTIONS)

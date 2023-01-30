@@ -1,8 +1,6 @@
 
 package io.zeitwert.ddd.app.service.api;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +8,6 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Schema;
 import org.jooq.Table;
-import org.jooq.UpdatableRecord;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.app.service.api.impl.Repositories;
@@ -28,8 +23,6 @@ import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
@@ -64,15 +57,7 @@ public final class AppContext {
 		return INSTANCE;
 	}
 
-	// TODO get rid of (at least reduce usage)
-	public Schema getSchema() {
-		if (SCHEMA == null) {
-			SCHEMA = this.dslContext.meta().getSchemas(AppContext.SCHEMA_NAME).get(0);
-		}
-		return SCHEMA;
-	}
-
-	public RequestContext getRequestContext() {
+	public RequestContext getRequestContext() { // TODO: remove this method
 		return this.requestContext;
 	}
 
@@ -111,28 +96,23 @@ public final class AppContext {
 		return this.enums.getEnumeration(enumClass).getItem(itemId);
 	}
 
-	public CodeAggregateType getAggregateType(String aggregateTypeId) {
-		CodeAggregateType aggregateType = this.enums.getEnumeration(CodeAggregateTypeEnum.class).getItem(aggregateTypeId);
-		assertThis(aggregateType != null, "found aggregateType " + aggregateTypeId);
-		return aggregateType;
-	}
-
-	public CodePartListType getPartListType(String partListTypeId) {
-		CodePartListType partListType = this.enums.getEnumeration(CodePartListTypeEnum.class).getItem(partListTypeId);
-		assertThis(partListType != null, "found partListType " + partListTypeId);
-		return partListType;
-	}
-
 	public <T> T getBean(Class<T> requiredType) {
 		return this.applicationContext.getBean(requiredType);
 	}
 
-	public <R extends UpdatableRecord<?>> R newRecord(Table<R> recordType) {
-		return this.dslContext.newRecord(recordType);
+	public void publishApplicationEvent(ApplicationEvent applicationEvent) {
+		this.applicationEventPublisher.publishEvent(applicationEvent);
 	}
 
-	public void publishApplicationEvent(ApplicationEvent applicationEvent) {
-		applicationEventPublisher.publishEvent(applicationEvent);
+	public Table<?> getTable(String tableName) {
+		return this.getSchema().getTable(tableName);
+	}
+
+	private Schema getSchema() {
+		if (SCHEMA == null) {
+			SCHEMA = this.dslContext.meta().getSchemas(AppContext.SCHEMA_NAME).get(0);
+		}
+		return SCHEMA;
 	}
 
 }

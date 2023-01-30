@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.obj.model.ObjVRepository;
@@ -84,7 +85,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public CodePartListType getIncludeSetType() {
 		if (this.includeSetType == null) {
-			this.includeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.INCLUDE_LIST);
+			this.includeSetType = CodePartListTypeEnum.getPartListType(ObjPortfolioFields.INCLUDE_LIST);
 		}
 		return this.includeSetType;
 	}
@@ -92,7 +93,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public CodePartListType getExcludeSetType() {
 		if (this.excludeSetType == null) {
-			this.excludeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.EXCLUDE_LIST);
+			this.excludeSetType = CodePartListTypeEnum.getPartListType(ObjPortfolioFields.EXCLUDE_LIST);
 		}
 		return this.excludeSetType;
 	}
@@ -100,7 +101,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public CodePartListType getBuildingSetType() {
 		if (this.buildingSetType == null) {
-			this.buildingSetType = this.getAppContext().getPartListType(ObjPortfolioFields.BUILDING_LIST);
+			this.buildingSetType = CodePartListTypeEnum.getPartListType(ObjPortfolioFields.BUILDING_LIST);
 		}
 		return this.buildingSetType;
 	}

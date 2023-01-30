@@ -26,6 +26,7 @@ import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.ddd.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 
 @Component("objUserRepository")
 public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRecord> implements ObjUserRepository {
@@ -58,7 +59,7 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	@Override
 	public CodePartListType getTenantSetType() {
 		if (this.tenantListType == null) {
-			this.tenantListType = this.getAppContext().getPartListType(ObjUserFields.TENANT_LIST);
+			this.tenantListType = CodePartListTypeEnum.getPartListType(ObjUserFields.TENANT_LIST);
 		}
 		return this.tenantListType;
 	}

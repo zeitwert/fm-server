@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
@@ -82,7 +83,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public CodePartListType getContactSetType() {
 		if (this.contactSetType == null) {
-			this.contactSetType = this.getAppContext().getPartListType(ObjBuildingFields.CONTACT_SET);
+			this.contactSetType = CodePartListTypeEnum.getPartListType(ObjBuildingFields.CONTACT_SET);
 		}
 		return this.contactSetType;
 	}
@@ -90,7 +91,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public CodePartListType getRatingListType() {
 		if (this.ratingListType == null) {
-			this.ratingListType = this.getAppContext().getPartListType(ObjBuildingFields.RATING_LIST);
+			this.ratingListType = CodePartListTypeEnum.getPartListType(ObjBuildingFields.RATING_LIST);
 		}
 		return this.ratingListType;
 	}
@@ -106,7 +107,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public CodePartListType getMaterialDescriptionSetType() {
 		if (this.materialDescriptionSetType == null) {
-			this.materialDescriptionSetType = this.getAppContext()
+			this.materialDescriptionSetType = CodePartListTypeEnum
 					.getPartListType(ObjBuildingFields.MATERIAL_DESCRIPTION_SET);
 		}
 		return this.materialDescriptionSetType;
@@ -115,7 +116,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public CodePartListType getConditionDescriptionSetType() {
 		if (this.conditionDescriptionSetType == null) {
-			this.conditionDescriptionSetType = this.getAppContext()
+			this.conditionDescriptionSetType = CodePartListTypeEnum
 					.getPartListType(ObjBuildingFields.CONDITION_DESCRIPTION_SET);
 		}
 		return this.conditionDescriptionSetType;
@@ -124,7 +125,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public CodePartListType getMeasureDescriptionSetType() {
 		if (this.measureDescriptionSetType == null) {
-			this.measureDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
+			this.measureDescriptionSetType = CodePartListTypeEnum.getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
 		}
 		return this.measureDescriptionSetType;
 	}

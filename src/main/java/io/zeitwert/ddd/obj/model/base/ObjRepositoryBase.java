@@ -21,6 +21,7 @@ import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.db.Tables;
 import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	@Override
 	public CodePartListType getTransitionListType() {
 		if (this.transitionListType == null) {
-			this.transitionListType = this.getAppContext().getPartListType(ObjFields.TRANSITION_LIST);
+			this.transitionListType = CodePartListTypeEnum.getPartListType(ObjFields.TRANSITION_LIST);
 		}
 		return this.transitionListType;
 	}
