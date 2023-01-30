@@ -13,8 +13,8 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
-import io.zeitwert.ddd.obj.model.db.Tables;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
+import io.zeitwert.fm.obj.model.db.Tables;
+import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.ObjVBase;
 

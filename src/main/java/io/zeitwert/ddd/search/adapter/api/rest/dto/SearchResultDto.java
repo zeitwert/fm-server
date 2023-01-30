@@ -1,8 +1,8 @@
 package io.zeitwert.ddd.search.adapter.api.rest.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.ddd.search.model.SearchResult;
+import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import lombok.Builder;
 import lombok.Data;
 

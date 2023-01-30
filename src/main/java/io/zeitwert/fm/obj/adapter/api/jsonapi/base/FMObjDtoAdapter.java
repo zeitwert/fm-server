@@ -7,7 +7,7 @@ import io.zeitwert.fm.obj.model.FMObj;
 
 import org.jooq.TableRecord;
 
-public abstract class FMObjDtoAdapter<O extends FMObj, V extends TableRecord<?>, D extends FMObjDtoBase<O>>
+public abstract class FMObjDtoAdapter<O extends FMObj, V extends TableRecord<V>, D extends FMObjDtoBase<O>>
 		extends ObjDtoAdapter<O, V, D> {
 
 	@Override

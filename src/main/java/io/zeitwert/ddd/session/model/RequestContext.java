@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.enums.CodeLocale;
+import io.zeitwert.fm.account.model.enums.CodeLocale;
 
 public class RequestContext {
 
@@ -68,9 +68,9 @@ public class RequestContext {
 	@Override
 	public String toString() {
 		return "RequestContext("
-				+ "user: " + (user != null ? user.getId() : "null")
-				+ ", accountId: " + accountId
-				+ ", locale: " + (locale != null ? locale.getId() : "null")
+				+ "user: " + (this.user != null ? this.user.getId() : "null")
+				+ ", accountId: " + this.accountId
+				+ ", locale: " + (this.locale != null ? this.locale.getId() : "null")
 				+ ")";
 	}
 

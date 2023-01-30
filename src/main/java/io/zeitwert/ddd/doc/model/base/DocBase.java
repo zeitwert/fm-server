@@ -4,7 +4,7 @@ package io.zeitwert.ddd.doc.model.base;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.jooq.Record;
+import org.jooq.TableRecord;
 import org.jooq.UpdatableRecord;
 
 import static io.zeitwert.ddd.util.Check.requireThis;
@@ -35,7 +35,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
-	private final DocRepository<? extends Doc, ? extends Record> repository;
+	private final DocRepository<? extends Doc, ? extends TableRecord<?>> repository;
 	private final UpdatableRecord<?> docDbRecord;
 
 	protected final SimpleProperty<Integer> id;
@@ -58,7 +58,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	private CodeCaseStage oldCaseStage;
 
-	protected DocBase(DocRepository<? extends Doc, ? extends Record> repository, UpdatableRecord<?> docDbRecord) {
+	protected DocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, UpdatableRecord<?> docDbRecord) {
 		this.repository = repository;
 		this.docDbRecord = docDbRecord;
 		this.id = this.addSimpleProperty(docDbRecord, DocFields.ID);
@@ -94,7 +94,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public DocRepository<? extends Doc, ? extends Record> getRepository() {
+	public DocRepository<? extends Doc, ? extends TableRecord<?>> getRepository() {
 		return this.repository;
 	}
 
@@ -205,7 +205,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	@Override
 	public List<CodeCaseStage> getCaseStages() {
-		return AppContext.getInstance().getBean(DocService.class).getCaseStages(this.getId());
+		return AppContext.getInstance().getBean(DocService.class).getCaseStages(this.getCaseStage().getCaseDefId());
 	}
 
 	@Override

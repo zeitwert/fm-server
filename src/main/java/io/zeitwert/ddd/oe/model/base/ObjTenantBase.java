@@ -38,7 +38,8 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
 	private final UpdatableRecord<?> dbRecord;
 
-	public ObjTenantBase(ObjTenantRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> tenantRecord) {
+	public ObjTenantBase(ObjTenantRepository repository, UpdatableRecord<?> objRecord,
+			UpdatableRecord<?> tenantRecord) {
 		super(repository, objRecord);
 		this.dbRecord = tenantRecord;
 		this.tenantType = this.addEnumProperty(this.dbRecord, ObjTenantFields.TENANT_TYPE_ID, CodeTenantTypeEnum.class);
@@ -100,7 +101,10 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	@Override
 	public List<ObjUser> getUsers() {
 		ObjUserRepository userRepo = (ObjUserRepository) this.getAppContext().getRepository(ObjUser.class);
-		return userRepo.getByForeignKey("tenantId", this.getId()).stream().map(c -> userRepo.get(c.getId())).toList();
+		return userRepo.getByForeignKey("tenantId", this.getId())
+				.stream()
+				.map(c -> userRepo.get((Integer) c.get("id")))
+				.toList();
 	}
 
 	@Override

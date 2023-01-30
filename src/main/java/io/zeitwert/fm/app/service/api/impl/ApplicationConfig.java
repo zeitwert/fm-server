@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.zeitwert.ddd.app.model.AppMenu;
-import io.zeitwert.ddd.app.model.AppMenuAction;
-import io.zeitwert.ddd.app.model.Application;
-import io.zeitwert.ddd.app.model.ApplicationArea;
-import io.zeitwert.ddd.app.model.ApplicationInfo;
-import io.zeitwert.ddd.app.model.Navigation;
-import io.zeitwert.ddd.app.model.NavigationAction;
-import io.zeitwert.ddd.app.model.NavigationTarget;
+import io.zeitwert.fm.app.model.AppMenu;
+import io.zeitwert.fm.app.model.AppMenuAction;
+import io.zeitwert.fm.app.model.Application;
+import io.zeitwert.fm.app.model.ApplicationArea;
+import io.zeitwert.fm.app.model.ApplicationInfo;
+import io.zeitwert.fm.app.model.Navigation;
+import io.zeitwert.fm.app.model.NavigationAction;
+import io.zeitwert.fm.app.model.NavigationTarget;
 
 class ApplicationConfig {
 

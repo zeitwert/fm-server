@@ -3,7 +3,7 @@ package io.zeitwert.ddd.obj.model.base;
 
 import java.time.OffsetDateTime;
 
-import org.jooq.Record;
+import org.jooq.TableRecord;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
@@ -27,7 +27,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
-	private final ObjRepository<? extends Obj, ? extends Record> repository;
+	private final ObjRepository<? extends Obj, ? extends TableRecord<?>> repository;
 	private final UpdatableRecord<?> objDbRecord;
 
 	private final SimpleProperty<Integer> id;
@@ -46,7 +46,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final PartListProperty<ObjPartTransition> transitionList;
 
-	protected ObjBase(ObjRepository<? extends Obj, ? extends Record> repository, UpdatableRecord<?> objDbRecord) {
+	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, UpdatableRecord<?> objDbRecord) {
 		this.repository = repository;
 		this.objDbRecord = objDbRecord;
 		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
@@ -80,7 +80,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public ObjRepository<? extends Obj, ? extends Record> getRepository() {
+	public ObjRepository<? extends Obj, ? extends TableRecord<?>> getRepository() {
 		return this.repository;
 	}
 

@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.oe.model.db.Tables;
+import io.zeitwert.fm.oe.model.db.Tables;
 
 @Component
 public class PasswordMigration {

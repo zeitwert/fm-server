@@ -18,21 +18,41 @@ import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
+import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
+import io.zeitwert.fm.app.model.Application;
+import io.zeitwert.fm.app.model.ApplicationInfo;
 
 @RestController("fmApplicationController")
 @RequestMapping("/rest/app")
 public class ApplicationController {
 
 	@Autowired
-	ObjTenantCache tenantCache;
+	private ObjTenantCache tenantCache;
 
 	@Autowired
-	ObjUserCache userCache;
+	private ObjUserCache userCache;
 
 	@Autowired
-	AccountService accountService;
+	private AccountService accountService;
+
+	@Autowired
+	private ApplicationService applicationService;
+
+	@GetMapping("/applications")
+	ResponseEntity<List<Application>> getApplications() {
+		return ResponseEntity.ok(this.applicationService.getAllApplications());
+	}
+
+	@GetMapping("/applications/{id}")
+	ResponseEntity<ApplicationInfo> getApplication(@PathVariable String id) {
+		ApplicationInfo appInfo = this.applicationService.getApplicationMenu(id);
+		if (appInfo == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(appInfo);
+	}
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {

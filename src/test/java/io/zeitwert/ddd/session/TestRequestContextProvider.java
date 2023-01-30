@@ -2,8 +2,8 @@ package io.zeitwert.ddd.session;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.account.model.enums.CodeLocaleEnum;
 
 import java.util.Optional;
 

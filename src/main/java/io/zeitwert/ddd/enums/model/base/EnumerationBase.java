@@ -30,7 +30,12 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 
 	public EnumerationBase(final Enumerations enums, final DSLContext dslContext) {
 		String[] parts = this.getClass().getCanonicalName().split("\\.");
-		assertThis(parts.length == 7, "valid enumeration class name (io.zeitwert.[area].[module].model.enums.[enumClass])");
+		assertThis(parts.length == 7, "valid enumeration class name (io.zeitwert.[area].[module].model.enums.[xyEnum])");
+		assertThis("model".equals(parts[4]),
+				"valid enumeration class name (io.zeitwert.[area].[module].model.enums.[xyEnum])");
+		assertThis("enums".equals(parts[5]),
+				"valid enumeration class name (io.zeitwert.[area].[module].model.enums.[xyEnum])");
+		assertThis(parts[6].endsWith("Enum"), "valid enumeration class name");
 		this.dslContext = dslContext;
 		this.module = parts[3];
 		this.id = Character.toLowerCase(parts[6].charAt(0)) + parts[6].substring(1);
@@ -41,10 +46,12 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 		return this.dslContext;
 	}
 
+	@Override
 	public String getModule() {
 		return this.module;
 	}
 
+	@Override
 	public String getId() {
 		return this.id;
 	}
@@ -54,19 +61,22 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 		this.itemsById.put(item.getId(), item);
 	}
 
+	@Override
 	public List<E> getItems() {
 		return this.items;
 	}
 
+	@Override
 	public E getItem(String id) {
 		if (id == null) {
 			return null;
 		}
-		E item = itemsById.get(id);
+		E item = this.itemsById.get(id);
 		assertThis(item != null, "valid item [" + id + "]");
 		return item;
 	}
 
+	@Override
 	public String getResourcePath() {
 		return this.module + "/" + this.id.replace("Enum", "");
 	}

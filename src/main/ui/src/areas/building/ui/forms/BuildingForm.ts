@@ -28,7 +28,7 @@ export const BuildingFormDef: FormDefinition<BuildingModelType> = {
 	street: new TextField(),
 	zip: new TextField(),
 	city: new TextField(),
-	country: new EnumeratedField({ source: "oe/codeCountry" }),
+	country: new EnumeratedField({ source: "account/codeCountry" }),
 	//
 	geoAddress: new TextField(),
 	geoCoordinates: new TextField(),

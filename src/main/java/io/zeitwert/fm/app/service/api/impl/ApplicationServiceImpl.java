@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.app.model.Application;
-import io.zeitwert.ddd.app.model.ApplicationArea;
-import io.zeitwert.ddd.app.model.ApplicationInfo;
-import io.zeitwert.ddd.app.service.api.ApplicationService;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.app.ApplicationService;
+import io.zeitwert.fm.app.model.Application;
+import io.zeitwert.fm.app.model.ApplicationArea;
+import io.zeitwert.fm.app.model.ApplicationInfo;
 
 @Service("applicationService")
 @DependsOn("codeUserRoleEnum")

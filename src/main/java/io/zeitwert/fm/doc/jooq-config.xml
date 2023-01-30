@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.14.0.xsd">
+
+	<generator>
+		<database>
+			<name>org.jooq.meta.postgres.PostgresDatabase</name>
+			<includes>
+				  code_case.*
+				| doc
+				| doc_id_seq
+				| doc_activity_v
+				| doc_part.*
+			</includes>
+			<inputSchema>public</inputSchema>
+		</database>
+		<generate>
+			<javaTimeTypes>true</javaTimeTypes>
+		</generate>
+		<target>
+			<packageName>io.zeitwert.fm.doc.model.db</packageName>
+			<directory>/src/main/java</directory>
+		</target>
+	</generator>
+
+</configuration>

@@ -2,9 +2,7 @@
 package io.zeitwert.ddd.doc.model.base;
 
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.UpdatableRecord;
-import org.jooq.exception.NoDataFoundException;
+import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
@@ -13,12 +11,11 @@ import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
-import io.zeitwert.ddd.doc.model.db.Tables;
-import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 
-public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends AggregateRepositoryBase<D, V>
+public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
+		extends AggregateRepositoryBase<D, V>
 		implements DocRepository<D, V> {
 
 	private static final String DOC_ID_SEQ = "doc_id_seq";
@@ -69,18 +66,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 	@Override
 	public Integer nextAggregateId() {
 		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
-	}
-
-	protected D doCreate(UpdatableRecord<?> extnRecord) {
-		return this.newAggregate(this.getDSLContext().newRecord(Tables.DOC), extnRecord);
-	}
-
-	protected D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {
-		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
-		if (docRecord == null || extnRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
-		}
-		return this.newAggregate(docRecord, extnRecord);
 	}
 
 	@Override

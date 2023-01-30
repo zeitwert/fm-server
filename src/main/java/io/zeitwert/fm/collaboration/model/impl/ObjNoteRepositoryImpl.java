@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
+import org.jooq.UpdatableRecord;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 
 @Component("objNoteRepository")
 public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRecord>
@@ -53,18 +55,25 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 
 	@Override
 	public ObjNote doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_NOTE));
+		UpdatableRecord<?> objRecord = this.getDSLContext().newRecord(io.zeitwert.fm.obj.model.db.Tables.OBJ);
+		UpdatableRecord<?> extnRecord = this.getDSLContext().newRecord(Tables.OBJ_NOTE);
+		return this.newAggregate(objRecord, extnRecord);
 	}
 
 	@Override
 	public ObjNote doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjNoteRecord noteRecord = this.getDSLContext().fetchOne(Tables.OBJ_NOTE,
-				Tables.OBJ_NOTE.OBJ_ID.eq(objId));
-		if (noteRecord == null) {
+		ObjRecord objRecord = this.getDSLContext().fetchOne(
+				io.zeitwert.fm.obj.model.db.Tables.OBJ, io.zeitwert.fm.obj.model.db.Tables.OBJ.ID.eq(objId));
+		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return this.doLoad(objId, noteRecord);
+		ObjNoteRecord extnRecord = this.getDSLContext().fetchOne(Tables.OBJ_NOTE,
+				Tables.OBJ_NOTE.OBJ_ID.eq(objId));
+		if (extnRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return this.newAggregate(objRecord, extnRecord);
 	}
 
 	@Override

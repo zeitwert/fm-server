@@ -19,26 +19,29 @@ import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 @DependsOn({ "flyway", "flywayInitializer" })
 public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 
+	static private final String TABLE_NAME = "code_case_stage";
+
+	static private final Field<String> CASE_DEF_ID = DSL.field("case_def_id", String.class);
+	static private final Field<String> CASE_STAGE_TYPE_ID = DSL.field("case_stage_type_id", String.class);
+	static private final Field<String> DESCRIPTION = DSL.field("description", String.class);
+	static private final Field<Integer> SEQ_NR = DSL.field("seq_nr", Integer.class);
+	static private final Field<String> ABSTRACT_CASE_STAGE_ID = DSL.field("abstract_case_stage_id", String.class);
+	static private final Field<String> ACTION = DSL.field("action", String.class);
+	static private final Field<String> AVAILABLE_ACTIONS = DSL.field("available_actions", String.class);
+
 	static private CodeCaseStageEnum INSTANCE;
 
-	static private final String TABLE = "code_case_stage";
+	private final AppContext appContext;
 
-	static protected final Field<String> CASE_DEF_ID = DSL.field("case_def_id", String.class);
-	static protected final Field<String> CASE_STAGE_TYPE_ID = DSL.field("case_stage_type_id", String.class);
-	static protected final Field<String> DESCRIPTION = DSL.field("description", String.class);
-	static protected final Field<Integer> SEQ_NR = DSL.field("seq_nr", Integer.class);
-	static protected final Field<String> ABSTRACT_CASE_STAGE_ID = DSL.field("abstract_case_stage_id", String.class);
-	static protected final Field<String> ACTION = DSL.field("action", String.class);
-	static protected final Field<String> AVAILABLE_ACTIONS = DSL.field("available_actions", String.class);
-
-	protected CodeCaseStageEnum(final Enumerations enums, final DSLContext dslContext) {
+	protected CodeCaseStageEnum(final Enumerations enums, final DSLContext dslContext, final AppContext appContext) {
 		super(enums, dslContext);
+		this.appContext = appContext;
 		INSTANCE = this;
 	}
 
 	@PostConstruct
 	private void init() {
-		Table<?> codeCaseStage = AppContext.getInstance().getTable(TABLE);
+		Table<?> codeCaseStage = this.appContext.getTable(TABLE_NAME);
 		for (final Record9<String, String, String, String, String, Integer, String, String, String> item : this
 				.getDslContext().select(ID, NAME, CASE_DEF_ID, CASE_STAGE_TYPE_ID, DESCRIPTION, SEQ_NR, ABSTRACT_CASE_STAGE_ID,
 						ACTION, AVAILABLE_ACTIONS)

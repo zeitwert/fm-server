@@ -2,7 +2,9 @@
 package io.zeitwert.fm.obj.model.base;
 
 import org.jooq.DSLContext;
-import org.jooq.Record;
+import org.jooq.TableRecord;
+import org.jooq.UpdatableRecord;
+import org.jooq.exception.NoDataFoundException;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -11,9 +13,11 @@ import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
+import io.zeitwert.fm.obj.model.db.Tables;
+import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 
-public abstract class FMObjRepositoryBase<O extends FMObj, V extends Record> extends ObjRepositoryBase<O, V>
+public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord<?>> extends ObjRepositoryBase<O, V>
 		implements FMObjRepository<O, V> {
 
 	private ObjNoteRepository noteRepository;
@@ -49,6 +53,18 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends Record> ext
 			this.taskRepository = this.getAppContext().getBean(DocTaskRepository.class);
 		}
 		return this.taskRepository;
+	}
+
+	protected O doCreate(UpdatableRecord<?> extnRecord) {
+		return this.newAggregate(this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
+	}
+
+	protected O doLoad(Integer objId, UpdatableRecord<?> extnRecord) {
+		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
+		if (objRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return this.newAggregate(objRecord, extnRecord);
 	}
 
 }

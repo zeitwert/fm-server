@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
-import io.zeitwert.ddd.doc.model.db.tables.records.DocPartTransitionRecord;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -39,13 +38,13 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		DocPartTransitionRecord dbRecord = (DocPartTransitionRecord) this.getDbRecord();
-		dbRecord.setTenantId(this.getAggregate().getTenantId());
+		UpdatableRecord<?> dbRecord = this.getDbRecord();
+		dbRecord.set(DocPartTransitionFields.TENANT_ID, this.getAggregate().getTenantId());
 		RequestContext requestCtx = this.getMeta().getRequestContext();
-		dbRecord.setUserId(requestCtx.getUser().getId());
-		dbRecord.setTimestamp(requestCtx.getCurrentTime());
-		dbRecord.setOldCaseStageId(null);
-		dbRecord.setNewCaseStageId(null);
+		dbRecord.set(DocPartTransitionFields.USER_ID, requestCtx.getUser().getId());
+		dbRecord.set(DocPartTransitionFields.TIMESTAMP, requestCtx.getCurrentTime());
+		dbRecord.set(DocPartTransitionFields.OLD_CASE_STAGE_ID, null);
+		dbRecord.set(DocPartTransitionFields.NEW_CASE_STAGE_ID, null);
 	}
 
 	@Override
@@ -55,8 +54,8 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	}
 
 	public void setChanges(String changes) {
-		DocPartTransitionRecord dbRecord = (DocPartTransitionRecord) this.getDbRecord();
-		dbRecord.setChanges(JSON.valueOf(changes));
+		UpdatableRecord<?> dbRecord = this.getDbRecord();
+		dbRecord.set(DocPartTransitionFields.CHANGES, JSON.valueOf(changes));
 	}
 
 }

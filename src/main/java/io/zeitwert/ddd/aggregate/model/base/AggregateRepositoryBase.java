@@ -13,6 +13,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.Table;
+import org.jooq.TableRecord;
 import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationEvent;
@@ -26,8 +27,6 @@ import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
-import io.zeitwert.ddd.aggregate.model.db.Tables;
-import io.zeitwert.ddd.aggregate.model.db.tables.ItemSearch;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
@@ -40,8 +39,18 @@ import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.SqlUtils;
 import javassist.util.proxy.ProxyFactory;
 
-public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Record>
+public abstract class AggregateRepositoryBase<A extends Aggregate, V extends TableRecord<?>>
 		implements AggregateRepository<A, V>, AggregateRepositorySPI<A, V> {
+
+	static private final String SEARCH_TABLE_NAME = "item_search";
+	static private final Table<?> SEARCH_TABLE = AppContext.getInstance().getTable(SEARCH_TABLE_NAME);
+
+	static private final Field<String> ID = SEARCH_TABLE.field("id", String.class);
+	static private final Field<String> ITEM_TYPE_ID = SEARCH_TABLE.field("item_type_id", String.class);
+	static private final Field<Integer> ITEM_ID = SEARCH_TABLE.field("item_id", Integer.class);
+	static private final Field<String> A_SIMPLE = SEARCH_TABLE.field("a_simple", String.class);
+	static private final Field<String> B_GERMAN = SEARCH_TABLE.field("b_german", String.class);
+	static private final Field<String> B_ENGLISH = SEARCH_TABLE.field("b_english", String.class);
 
 	private final String aggregateTypeId;
 	private final AppContext appContext;
@@ -251,21 +260,21 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		String allTexts = String.join(" ", texts.stream().filter(t -> t != null).toList()).toLowerCase();
 		String allTokens = String.join(" ", tokens.stream().filter(t -> t != null).toList()).toLowerCase();
 		String allTextsAndTokens = (allTexts + " " + allTokens).trim();
-		ItemSearch itemSearch = Tables.ITEM_SEARCH;
-		String id = aggregate.getMeta().getAggregateType().getId() + ":" + aggregate.getId();
+		String id = aggregate.getMeta().getAggregateType().getId() + ":" +
+				aggregate.getId();
 		this.dslContext
-				.delete(itemSearch)
-				.where(itemSearch.ID.eq(id))
+				.delete(SEARCH_TABLE)
+				.where(ID.eq(id))
 				.execute();
 		this.dslContext
 				.insertInto(
-						itemSearch,
-						itemSearch.ID,
-						itemSearch.ITEM_TYPE_ID,
-						itemSearch.ITEM_ID,
-						itemSearch.A_SIMPLE,
-						itemSearch.B_GERMAN,
-						itemSearch.B_ENGLISH)
+						SEARCH_TABLE,
+						ID,
+						ITEM_TYPE_ID,
+						ITEM_ID,
+						A_SIMPLE,
+						B_GERMAN,
+						B_ENGLISH)
 				.values(
 						id,
 						aggregate.getMeta().getAggregateType().getId(),
@@ -315,7 +324,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected List<V> doFind(Table<? extends Record> table, Field<Integer> idField, QuerySpec querySpec) {
 
 		Condition whereClause = DSL.noCondition();
 

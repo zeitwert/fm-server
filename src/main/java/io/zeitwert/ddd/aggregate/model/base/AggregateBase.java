@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jooq.Record;
+import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
@@ -55,7 +55,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	@Override
-	public abstract AggregateRepository<? extends Aggregate, ? extends Record> getRepository();
+	public abstract AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> getRepository();
 
 	@Override
 	public AggregateMeta getMeta() {

@@ -6,7 +6,7 @@ import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.impl.DSL;
 
-public interface DocPartTransitionFields {
+public interface DocPartTransitionFields extends DocPartFields {
 
 	static final Field<Integer> USER_ID = DSL.field("user_id", Integer.class);
 	static final Field<OffsetDateTime> TIMESTAMP = DSL.field("timestamp", OffsetDateTime.class);

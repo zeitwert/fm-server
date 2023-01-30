@@ -4,13 +4,14 @@ package io.zeitwert.ddd.oe.model.enums;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
+import org.jooq.Record2;
+import org.jooq.Table;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
-import io.zeitwert.ddd.oe.model.db.Tables;
-import io.zeitwert.ddd.oe.model.db.tables.records.CodeUserRoleRecord;
 
 @Component("codeUserRoleEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
@@ -30,20 +31,26 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 	// login to kernel tenant only, without account
 	public static CodeUserRole APP_ADMIN;
 
+	static private final String TABLE_NAME = "code_user_role";
+
 	private static CodeUserRoleEnum INSTANCE;
 
-	protected CodeUserRoleEnum(final Enumerations enums, final DSLContext dslContext) {
+	private final AppContext appContext;
+
+	protected CodeUserRoleEnum(final Enumerations enums, final DSLContext dslContext, final AppContext appContext) {
 		super(enums, dslContext);
+		this.appContext = appContext;
 		INSTANCE = this;
 	}
 
 	@PostConstruct
 	private void init() {
-		for (final CodeUserRoleRecord item : this.getDslContext().selectFrom(Tables.CODE_USER_ROLE).fetch()) {
+		Table<?> codeUserRole = this.appContext.getTable(TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID, NAME).from(codeUserRole).fetch()) {
 			CodeUserRole userRole = CodeUserRole.builder()
 					.enumeration(this)
-					.id(item.getId())
-					.name(item.getName())
+					.id(item.value1())
+					.name(item.value2())
 					.build();
 			this.addItem(userRole);
 		}

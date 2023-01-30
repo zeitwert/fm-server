@@ -29,7 +29,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 @DependsOn({ "codeAggregateTypeEnum", "codePartListTypeEnum" })
 public final class AppContext {
 
-	private static final String SCHEMA_NAME = "public";
+	public static final String SCHEMA_NAME = "public";
 	private static Schema SCHEMA;
 
 	private static AppContext INSTANCE;

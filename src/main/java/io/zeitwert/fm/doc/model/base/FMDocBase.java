@@ -20,20 +20,21 @@ import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 import java.util.List;
 
 import org.jooq.Record;
+import org.jooq.TableRecord;
 import org.jooq.UpdatableRecord;
 
 public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	protected final ReferenceProperty<ObjAccount> account;
 
-	protected FMDocBase(DocRepository<? extends Doc, ? extends Record> repository, UpdatableRecord<?> docRecord) {
+	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, UpdatableRecord<?> docRecord) {
 		super(repository, docRecord);
 		this.account = this.addReferenceProperty(docRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public FMDocRepository<? extends FMDoc, ? extends Record> getRepository() {
+	public FMDocRepository<? extends FMDoc, ? extends TableRecord<?>> getRepository() {
 		return (FMDocRepository<? extends FMDoc, ? extends Record>) super.getRepository();
 	}
 

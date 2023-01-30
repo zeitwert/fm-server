@@ -4,9 +4,9 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 
-import org.jooq.Record;
+import org.jooq.TableRecord;
 
-public interface ObjRepository<O extends Obj, V extends Record> extends AggregateRepository<O, V> {
+public interface ObjRepository<O extends Obj, V extends TableRecord<?>> extends AggregateRepository<O, V> {
 
 	ObjPartTransitionRepository getTransitionRepository();
 

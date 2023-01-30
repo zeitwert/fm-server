@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjPartTransitionRecord;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -30,11 +29,11 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
-		dbRecord.setTenantId(this.getAggregate().getTenantId());
+		UpdatableRecord<?> dbRecord = this.getDbRecord();
+		dbRecord.set(ObjPartTransitionFields.TENANT_ID, this.getAggregate().getTenantId());
 		RequestContext requestCtx = this.getMeta().getRequestContext();
-		dbRecord.setUserId(requestCtx.getUser().getId());
-		dbRecord.setTimestamp(requestCtx.getCurrentTime());
+		dbRecord.set(ObjPartTransitionFields.USER_ID, requestCtx.getUser().getId());
+		dbRecord.set(ObjPartTransitionFields.TIMESTAMP, requestCtx.getCurrentTime());
 	}
 
 	public String getChanges() {
@@ -43,8 +42,8 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	}
 
 	public void setChanges(String changes) {
-		ObjPartTransitionRecord dbRecord = (ObjPartTransitionRecord) this.getDbRecord();
-		dbRecord.setChanges(JSON.valueOf(changes));
+		UpdatableRecord<?> dbRecord = this.getDbRecord();
+		dbRecord.set(ObjPartTransitionFields.CHANGES, JSON.valueOf(changes));
 	}
 
 }

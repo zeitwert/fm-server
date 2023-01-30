@@ -7,6 +7,8 @@
 			<includes>
 				  code_account.*
 				| code_client_segment
+				| code_country
+				| code_locale
 				| code_currency
 				| obj_account.*
 			</includes>

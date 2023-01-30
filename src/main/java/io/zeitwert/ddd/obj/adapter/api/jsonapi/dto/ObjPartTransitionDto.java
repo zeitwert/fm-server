@@ -3,7 +3,7 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
-import io.zeitwert.ddd.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import lombok.Builder;
 import lombok.Data;
 

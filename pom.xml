@@ -223,47 +223,36 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>jooq-codegen-ddd-aggregate</id>
+						<id>jooq-codegen-fm-obj</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/ddd/aggregate/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/obj/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
-						<id>jooq-codegen-ddd-obj</id>
+						<id>jooq-codegen-fm-doc</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/ddd/obj/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/doc/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
-						<id>jooq-codegen-ddd-oe</id>
+						<id>jooq-codegen-fm-oe</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/ddd/oe/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-ddd-doc</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/ddd/doc/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/fm/oe/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>

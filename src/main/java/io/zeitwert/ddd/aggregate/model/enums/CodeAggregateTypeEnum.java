@@ -4,17 +4,20 @@ package io.zeitwert.ddd.aggregate.model.enums;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
+import org.jooq.Record2;
+import org.jooq.Table;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.aggregate.model.db.Tables;
-import io.zeitwert.ddd.aggregate.model.db.tables.records.CodeAggregateTypeRecord;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 
 @Component("codeAggregateTypeEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
 public class CodeAggregateTypeEnum extends EnumerationBase<CodeAggregateType> {
+
+	static private final String TABLE_NAME = "code_aggregate_type";
 
 	private static CodeAggregateTypeEnum INSTANCE;
 
@@ -25,11 +28,13 @@ public class CodeAggregateTypeEnum extends EnumerationBase<CodeAggregateType> {
 
 	@PostConstruct
 	private void init() {
-		for (final CodeAggregateTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_AGGREGATE_TYPE).fetch()) {
+		Table<?> codeAggregateType = this.getDslContext().meta().getSchemas(AppContext.SCHEMA_NAME).get(0)
+				.getTable(TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID, NAME).from(codeAggregateType).fetch()) {
 			CodeAggregateType aggregateType = CodeAggregateType.builder()
 					.enumeration(this)
-					.id(item.getId())
-					.name(item.getName())
+					.id(item.value1())
+					.name(item.value2())
 					.build();
 			this.addItem(aggregateType);
 		}

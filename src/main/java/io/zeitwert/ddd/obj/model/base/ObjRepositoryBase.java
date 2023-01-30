@@ -3,10 +3,9 @@ package io.zeitwert.ddd.obj.model.base;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.Table;
-import org.jooq.UpdatableRecord;
-import org.jooq.exception.NoDataFoundException;
+import org.jooq.TableRecord;
+import org.jooq.Record;
 
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
@@ -18,15 +17,14 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.model.db.Tables;
-import io.zeitwert.ddd.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;
 
-public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends AggregateRepositoryBase<O, V>
+public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
+		extends AggregateRepositoryBase<O, V>
 		implements ObjRepository<O, V> {
 
 	private static final String OBJ_ID_SEQ = "obj_id_seq";
@@ -79,18 +77,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		return this.getDSLContext().nextval(OBJ_ID_SEQ).intValue();
 	}
 
-	protected O doCreate(UpdatableRecord<?> extnRecord) {
-		return this.newAggregate(this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
-	}
-
-	protected O doLoad(Integer objId, UpdatableRecord<?> extnRecord) {
-		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
-		if (objRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.newAggregate(objRecord, extnRecord);
-	}
-
 	@Override
 	public void doAfterStore(O obj) {
 		super.doAfterStore(obj);
@@ -103,7 +89,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	@Override
-	protected List<V> doFind(Table<V> table, Field<Integer> idField, QuerySpec querySpec) {
+	protected List<V> doFind(Table<? extends Record> table, Field<Integer> idField, QuerySpec querySpec) {
 		if (!SqlUtils.hasFilterFor(querySpec, "isClosed")) {
 			querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
 		}
