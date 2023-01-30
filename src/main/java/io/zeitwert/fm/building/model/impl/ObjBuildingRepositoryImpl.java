@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
@@ -25,7 +23,6 @@ import io.zeitwert.fm.building.model.base.ObjBuildingFields;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
@@ -36,50 +33,101 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private static final String AGGREGATE_TYPE = "obj_building";
 
-	private final ObjContactRepository contactRepository;
-	private final ObjDocumentRepository documentRepository;
-	private final ObjBuildingPartRatingRepository ratingRepository;
-	private final CodePartListType contactSetType;
-	private final CodePartListType ratingListType;
-	private final ObjBuildingPartElementRatingRepository elementRepository;
-	private final CodePartListType materialDescriptionSetType;
-	private final CodePartListType conditionDescriptionSetType;
-	private final CodePartListType measureDescriptionSetType;
+	private ObjContactRepository contactRepository;
+	private ObjDocumentRepository documentRepository;
+	private ObjBuildingPartRatingRepository ratingRepository;
+	private CodePartListType contactSetType;
+	private CodePartListType ratingListType;
+	private ObjBuildingPartElementRatingRepository elementRepository;
+	private CodePartListType materialDescriptionSetType;
+	private CodePartListType conditionDescriptionSetType;
+	private CodePartListType measureDescriptionSetType;
 
-	//@formatter:off
 	protected ObjBuildingRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final ObjNoteRepository noteRepository,
-		final ObjContactRepository contactRepository,
-		final ObjDocumentRepository documentRepository,
-		final ObjBuildingPartRatingRepository ratingRepository,
-		final ObjBuildingPartElementRatingRepository elementRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			ObjBuildingRepository.class,
-			ObjBuilding.class,
-			ObjBuildingBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
-		);
-		this.contactRepository = contactRepository;
-		this.documentRepository = documentRepository;
-		this.ratingRepository = ratingRepository;
-		this.contactSetType = this.getAppContext().getPartListType(ObjBuildingFields.CONTACT_SET);
-		this.ratingListType = this.getAppContext().getPartListType(ObjBuildingFields.RATING_LIST);
-		this.elementRepository = elementRepository;
-		this.materialDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MATERIAL_DESCRIPTION_SET);
-		this.conditionDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.CONDITION_DESCRIPTION_SET);
-		this.measureDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
+				ObjBuildingRepository.class,
+				ObjBuilding.class,
+				ObjBuildingBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
+
+	@Override
+	public ObjContactRepository getContactRepository() {
+		if (this.contactRepository == null) {
+			this.contactRepository = this.getAppContext().getBean(ObjContactRepository.class);
+		}
+		return this.contactRepository;
+	}
+
+	@Override
+	public ObjDocumentRepository getDocumentRepository() {
+		if (this.documentRepository == null) {
+			this.documentRepository = this.getAppContext().getBean(ObjDocumentRepository.class);
+		}
+		return this.documentRepository;
+	}
+
+	@Override
+	public ObjBuildingPartRatingRepository getRatingRepository() {
+		if (this.ratingRepository == null) {
+			this.ratingRepository = this.getAppContext().getBean(ObjBuildingPartRatingRepository.class);
+		}
+		return this.ratingRepository;
+	}
+
+	@Override
+	public CodePartListType getContactSetType() {
+		if (this.contactSetType == null) {
+			this.contactSetType = this.getAppContext().getPartListType(ObjBuildingFields.CONTACT_SET);
+		}
+		return this.contactSetType;
+	}
+
+	@Override
+	public CodePartListType getRatingListType() {
+		if (this.ratingListType == null) {
+			this.ratingListType = this.getAppContext().getPartListType(ObjBuildingFields.RATING_LIST);
+		}
+		return this.ratingListType;
+	}
+
+	@Override
+	public ObjBuildingPartElementRatingRepository getElementRepository() {
+		if (this.elementRepository == null) {
+			this.elementRepository = this.getAppContext().getBean(ObjBuildingPartElementRatingRepository.class);
+		}
+		return this.elementRepository;
+	}
+
+	@Override
+	public CodePartListType getMaterialDescriptionSetType() {
+		if (this.materialDescriptionSetType == null) {
+			this.materialDescriptionSetType = this.getAppContext()
+					.getPartListType(ObjBuildingFields.MATERIAL_DESCRIPTION_SET);
+		}
+		return this.materialDescriptionSetType;
+	}
+
+	@Override
+	public CodePartListType getConditionDescriptionSetType() {
+		if (this.conditionDescriptionSetType == null) {
+			this.conditionDescriptionSetType = this.getAppContext()
+					.getPartListType(ObjBuildingFields.CONDITION_DESCRIPTION_SET);
+		}
+		return this.conditionDescriptionSetType;
+	}
+
+	@Override
+	public CodePartListType getMeasureDescriptionSetType() {
+		if (this.measureDescriptionSetType == null) {
+			this.measureDescriptionSetType = this.getAppContext().getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
+		}
+		return this.measureDescriptionSetType;
+	}
 
 	@Override
 	@PostConstruct
@@ -88,51 +136,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 		this.addPartRepository(this.getItemRepository());
 		this.addPartRepository(this.getRatingRepository());
 		this.addPartRepository(this.getElementRepository());
-	}
-
-	@Override
-	public ObjContactRepository getContactRepository() {
-		return this.contactRepository;
-	}
-
-	@Override
-	public ObjDocumentRepository getDocumentRepository() {
-		return this.documentRepository;
-	}
-
-	@Override
-	public ObjBuildingPartRatingRepository getRatingRepository() {
-		return this.ratingRepository;
-	}
-
-	@Override
-	public CodePartListType getContactSetType() {
-		return this.contactSetType;
-	}
-
-	@Override
-	public CodePartListType getRatingListType() {
-		return this.ratingListType;
-	}
-
-	@Override
-	public ObjBuildingPartElementRatingRepository getElementRepository() {
-		return this.elementRepository;
-	}
-
-	@Override
-	public CodePartListType getMaterialDescriptionSetType() {
-		return this.materialDescriptionSetType;
-	}
-
-	@Override
-	public CodePartListType getConditionDescriptionSetType() {
-		return this.conditionDescriptionSetType;
-	}
-
-	@Override
-	public CodePartListType getMeasureDescriptionSetType() {
-		return this.measureDescriptionSetType;
 	}
 
 	@Override

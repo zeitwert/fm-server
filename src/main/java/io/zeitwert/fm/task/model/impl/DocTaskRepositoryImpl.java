@@ -15,11 +15,8 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.doc.model.DocPartItemRepository;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.task.model.DocTask;
@@ -36,44 +33,35 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 
 	private static final String AGGREGATE_TYPE = "doc_task";
 
-	private final ObjVRepository objVRepository;
 	private final RequestContext requestCtx;
+	private ObjVRepository objVRepository;
 
-	//@formatter:off
 	protected DocTaskRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository,
-		final DocPartItemRepository itemRepository,
-		final ObjNoteRepository noteRepository,
-		final ObjVRepository objVRepository,
-		final RequestContext requestCtx
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext,
+			final RequestContext requestCtx) {
 		super(
-			DocTaskRepository.class,
-			DocTask.class,
-			DocTaskBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
-		);
-		this.objVRepository = objVRepository;
+				DocTaskRepository.class,
+				DocTask.class,
+				DocTaskBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 		this.requestCtx = requestCtx;
 	}
-	//@formatter:on
+
+	@Override
+	public ObjVRepository getObjRepository() {
+		if (this.objVRepository == null) {
+			this.objVRepository = this.getAppContext().getBean(ObjVRepository.class);
+		}
+		return this.objVRepository;
+	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-	}
-
-	@Override
-	public ObjVRepository getObjRepository() {
-		return this.objVRepository;
 	}
 
 	@Override

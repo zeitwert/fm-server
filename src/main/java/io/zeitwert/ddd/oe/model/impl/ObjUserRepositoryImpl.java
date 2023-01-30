@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
@@ -35,37 +33,21 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 	private static final String AGGREGATE_TYPE = "obj_user";
 
 	private final PasswordEncoder passwordEncoder;
-	private final CodePartListType tenantListType;
+	private CodePartListType tenantListType;
 
-	//@formatter:off
 	protected ObjUserRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		@Lazy // break cycle from WebSecurityConfig
-		final PasswordEncoder passwordEncoder
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext,
+			@Lazy // break cycle from WebSecurityConfig
+			final PasswordEncoder passwordEncoder) {
 		super(
-			ObjUserRepository.class,
-			ObjUser.class,
-			ObjUserBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository
-		);
+				ObjUserRepository.class,
+				ObjUser.class,
+				ObjUserBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 		this.passwordEncoder = passwordEncoder;
-		this.tenantListType = this.getAppContext().getPartListType(ObjUserFields.TENANT_LIST);
-	}
-	//@formatter:on
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
 	}
 
 	@Override
@@ -75,12 +57,22 @@ public class ObjUserRepositoryImpl extends ObjRepositoryBase<ObjUser, ObjUserVRe
 
 	@Override
 	public CodePartListType getTenantSetType() {
+		if (this.tenantListType == null) {
+			this.tenantListType = this.getAppContext().getPartListType(ObjUserFields.TENANT_LIST);
+		}
 		return this.tenantListType;
 	}
 
 	@Override
 	public ObjTenantCache getTenantCache() {
 		return this.getAppContext().getBean(ObjTenantCache.class);
+	}
+
+	@Override
+	@PostConstruct
+	public void registerPartRepositories() {
+		super.registerPartRepositories();
+		this.addPartRepository(this.getItemRepository());
 	}
 
 	@Override

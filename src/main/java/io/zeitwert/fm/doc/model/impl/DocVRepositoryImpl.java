@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.doc.model.DocPartItemRepository;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
 import io.zeitwert.ddd.doc.model.db.Tables;
 import io.zeitwert.ddd.doc.model.db.tables.records.DocRecord;
@@ -25,25 +23,17 @@ public class DocVRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> implem
 
 	private static final String AGGREGATE_TYPE = "doc";
 
-	//@formatter:off
 	protected DocVRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository,
-		final DocPartItemRepository itemRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			DocVRepository.class,
-			Doc.class,
-			DocVBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository
-		);
+				DocVRepository.class,
+				Doc.class,
+				DocVBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
 
 	@Override
 	@PostConstruct

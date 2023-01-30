@@ -55,15 +55,13 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	private boolean didBeforeStore = false;
 	private boolean didAfterStore = false;
 
-	//@formatter:off
 	protected AggregateRepositoryBase(
-		final Class<? extends AggregateRepository<A, V>> repoIntfClass,
-		final Class<? extends Aggregate> intfClass,
-		final Class<? extends Aggregate> baseClass,
-		final String aggregateTypeId,
-		final AppContext appContext,
-		final DSLContext dslContext
-	) {
+			final Class<? extends AggregateRepository<A, V>> repoIntfClass,
+			final Class<? extends Aggregate> intfClass,
+			final Class<? extends Aggregate> baseClass,
+			final String aggregateTypeId,
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		this.aggregateTypeId = aggregateTypeId;
 		this.appContext = appContext;
 		this.dslContext = dslContext;
@@ -73,7 +71,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
 		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, UpdatableRecord.class, UpdatableRecord.class };
 	}
-	//@formatter:on
 
 	protected AppContext getAppContext() {
 		return this.appContext;
@@ -89,6 +86,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Rec
 	}
 
 	protected void addPartRepository(PartRepository<? super A, ?> partRepository) {
+		requireThis(partRepository != null, "partRepository is not null");
 		this.partRepositories.add(partRepository);
 	}
 

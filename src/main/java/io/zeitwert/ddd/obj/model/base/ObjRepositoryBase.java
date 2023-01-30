@@ -30,46 +30,47 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 
 	private static final String OBJ_ID_SEQ = "obj_id_seq";
 
-	private final ObjPartTransitionRepository transitionRepository;
-	private final CodePartListType transitionListType;
-	private final ObjPartItemRepository itemRepository;
+	private ObjPartTransitionRepository transitionRepository;
+	private CodePartListType transitionListType;
+	private ObjPartItemRepository itemRepository;
 
-	//@formatter:off
 	protected ObjRepositoryBase(
-		final Class<? extends AggregateRepository<O, V>> repoIntfClass,
-		final Class<? extends Obj> intfClass,
-		final Class<? extends Obj> baseClass,
-		final String aggregateTypeId,
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository
-	) {
+			final Class<? extends AggregateRepository<O, V>> repoIntfClass,
+			final Class<? extends Obj> intfClass,
+			final Class<? extends Obj> baseClass,
+			final String aggregateTypeId,
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
-		this.transitionRepository = transitionRepository;
-		this.transitionListType = this.getAppContext().getPartListType(ObjFields.TRANSITION_LIST);
-		this.itemRepository = itemRepository;
-	}
-	//@formatter:on
-
-	@Override
-	public void registerPartRepositories() {
-		this.addPartRepository(this.getTransitionRepository());
 	}
 
 	@Override
 	public ObjPartTransitionRepository getTransitionRepository() {
+		if (this.transitionRepository == null) {
+			this.transitionRepository = this.getAppContext().getBean(ObjPartTransitionRepository.class);
+		}
 		return this.transitionRepository;
 	}
 
 	@Override
 	public CodePartListType getTransitionListType() {
+		if (this.transitionListType == null) {
+			this.transitionListType = this.getAppContext().getPartListType(ObjFields.TRANSITION_LIST);
+		}
 		return this.transitionListType;
 	}
 
 	@Override
 	public ObjPartItemRepository getItemRepository() {
+		if (this.itemRepository == null) {
+			this.itemRepository = this.getAppContext().getBean(ObjPartItemRepository.class);
+		}
 		return this.itemRepository;
+	}
+
+	@Override
+	public void registerPartRepositories() {
+		this.addPartRepository(this.getTransitionRepository());
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 	}
 
 	protected O doCreate(UpdatableRecord<?> extnRecord) {
-		return newAggregate(this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
+		return this.newAggregate(this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
 	}
 
 	protected O doLoad(Integer objId, UpdatableRecord<?> extnRecord) {
@@ -86,7 +87,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Record> extends
 		if (objRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}
-		return newAggregate(objRecord, extnRecord);
+		return this.newAggregate(objRecord, extnRecord);
 	}
 
 	@Override

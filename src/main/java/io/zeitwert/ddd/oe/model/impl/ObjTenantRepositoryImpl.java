@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
@@ -30,25 +28,17 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 
 	private static final String AGGREGATE_TYPE = "obj_tenant";
 
-	//@formatter:off
 	protected ObjTenantRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			ObjTenantRepository.class,
-			ObjTenant.class,
-			ObjTenantBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository
-		);
+				ObjTenantRepository.class,
+				ObjTenant.class,
+				ObjTenantBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
 
 	@Override
 	@PostConstruct
@@ -76,6 +66,7 @@ public class ObjTenantRepositoryImpl extends ObjRepositoryBase<ObjTenant, ObjTen
 		return this.doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}
 
+	@Override
 	public Optional<ObjTenant> getByExtlKey(String extlKey) {
 		ObjTenantVRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT_V,
 				Tables.OBJ_TENANT_V.EXTL_KEY.eq(extlKey));

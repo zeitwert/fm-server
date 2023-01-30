@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ItemWithNotes {
 
-	List<ObjNoteVRecord> getNoteList();
+	List<ObjNoteVRecord> getNotes();
 
 	ObjNote addNote(CodeNoteType noteType);
 

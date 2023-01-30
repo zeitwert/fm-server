@@ -22,46 +22,47 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Record> extends
 
 	private static final String DOC_ID_SEQ = "doc_id_seq";
 
-	private final DocPartTransitionRepository transitionRepository;
-	private final CodePartListType transitionListType;
-	private final DocPartItemRepository itemRepository;
+	private DocPartTransitionRepository transitionRepository;
+	private CodePartListType transitionListType;
+	private DocPartItemRepository itemRepository;
 
-	//@formatter:off
 	protected DocRepositoryBase(
-		final Class<? extends AggregateRepository<D, V>> repoIntfClass,
-		final Class<? extends Doc> intfClass,
-		final Class<? extends Doc> baseClass,
-		final String aggregateTypeId,
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository,
-		final DocPartItemRepository itemRepository
-	) {
+			final Class<? extends AggregateRepository<D, V>> repoIntfClass,
+			final Class<? extends Doc> intfClass,
+			final Class<? extends Doc> baseClass,
+			final String aggregateTypeId,
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
-		this.transitionRepository = transitionRepository;
-		this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
-		this.itemRepository = itemRepository;
-	}
-	//@formatter:on
-
-	@Override
-	public void registerPartRepositories() {
-		this.addPartRepository(this.getTransitionRepository());
 	}
 
 	@Override
 	public DocPartTransitionRepository getTransitionRepository() {
+		if (this.transitionRepository == null) {
+			this.transitionRepository = this.getAppContext().getBean(DocPartTransitionRepository.class);
+		}
 		return this.transitionRepository;
 	}
 
 	@Override
 	public CodePartListType getTransitionListType() {
+		if (this.transitionListType == null) {
+			this.transitionListType = this.getAppContext().getPartListType(DocFields.TRANSITION_LIST);
+		}
 		return this.transitionListType;
 	}
 
 	@Override
 	public DocPartItemRepository getItemRepository() {
+		if (this.itemRepository == null) {
+			this.itemRepository = this.getAppContext().getBean(DocPartItemRepository.class);
+		}
 		return this.itemRepository;
+	}
+
+	@Override
+	public void registerPartRepositories() {
+		this.addPartRepository(this.getTransitionRepository());
 	}
 
 	@Override

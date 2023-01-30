@@ -18,10 +18,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
@@ -47,27 +44,17 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	private static final TableField<ObjDocumentPartContentRecord, byte[]> CONTENT = DOCUMENT_CONTENT.CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> CREATED_BY_USER_ID = DOCUMENT_CONTENT.CREATED_BY_USER_ID;
 
-	//@formatter:off
 	protected ObjDocumentRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final ObjNoteRepository noteRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			ObjDocumentRepository.class,
-			ObjDocument.class,
-			ObjDocumentBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
-		);
+				ObjDocumentRepository.class,
+				ObjDocument.class,
+				ObjDocumentBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
 
 	@Override
 	@PostConstruct

@@ -13,6 +13,9 @@ import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.fm.doc.model.FMDoc;
 import io.zeitwert.fm.doc.model.FMDocRepository;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.DocTaskRepository;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 import java.util.List;
 
@@ -35,7 +38,7 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 	}
 
 	@Override
-	public List<ObjNoteVRecord> getNoteList() {
+	public List<ObjNoteVRecord> getNotes() {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
 		return noteRepository.getByForeignKey("related_to_id", this.getId());
 	}
@@ -54,6 +57,20 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
 		ObjNote note = noteRepository.get(noteId);
 		noteRepository.delete(note);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		DocTaskRepository taskRepository = this.getRepository().getTaskRepository();
+		return taskRepository.getByForeignKey("related_to_obj_id", this.getId());
+	}
+
+	@Override
+	public DocTask addTask() {
+		DocTaskRepository taskRepository = this.getRepository().getTaskRepository();
+		DocTask task = taskRepository.create(this.getTenantId());
+		task.setRelatedToId(this.getId());
+		return task;
 	}
 
 }

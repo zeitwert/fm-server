@@ -123,7 +123,7 @@ public class BuildingImportExportController {
 					.measureDescription(e.getMeasureDescription())
 				.build();
 		}).toList();
-		List<NoteTransferDto> notes = building.getNoteList().stream().map(note -> {
+		List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
 			return NoteTransferDto
 				.builder()
 					.subject(note.getSubject())

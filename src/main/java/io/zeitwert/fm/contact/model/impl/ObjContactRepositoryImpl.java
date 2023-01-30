@@ -13,11 +13,8 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
@@ -34,49 +31,42 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 
 	private static final String AGGREGATE_TYPE = "obj_contact";
 
-	private final ObjContactPartAddressRepository addressRepository;
-	private final CodePartListType addressListType;
+	private ObjContactPartAddressRepository addressRepository;
+	private CodePartListType addressListType;
 
-	//@formatter:off
 	protected ObjContactRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final ObjContactPartAddressRepository addressRepository,
-		final ObjNoteRepository noteRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			ObjContactRepository.class,
-			ObjContact.class,
-			ObjContactBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
-		);
-		this.addressRepository = addressRepository;
-		this.addressListType = this.getAppContext().getPartListType(ObjContactFields.ADDRESS_LIST);
+				ObjContactRepository.class,
+				ObjContact.class,
+				ObjContactBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
+
+	@Override
+	public ObjContactPartAddressRepository getAddressRepository() {
+		if (this.addressRepository == null) {
+			this.addressRepository = this.getAppContext().getBean(ObjContactPartAddressRepository.class);
+		}
+		return this.addressRepository;
+	}
+
+	@Override
+	public CodePartListType getAddressListType() {
+		if (this.addressListType == null) {
+			this.addressListType = this.getAppContext().getPartListType(ObjContactFields.ADDRESS_LIST);
+		}
+		return this.addressListType;
+	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(this.getAddressRepository());
-	}
-
-	@Override
-	public ObjContactPartAddressRepository getAddressRepository() {
-		return this.addressRepository;
-	}
-
-	@Override
-	public CodePartListType getAddressListType() {
-		return this.addressListType;
 	}
 
 	@Override

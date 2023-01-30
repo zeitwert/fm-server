@@ -13,13 +13,9 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.doc.model.DocPartItemRepository;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.test.model.DocTest;
-//import io.zeitwert.fm.test.model.DocTestPartNodeRepository;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.base.DocTestBase;
 import io.zeitwert.fm.test.model.base.DocTestFields;
@@ -32,35 +28,21 @@ public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestV
 
 	private static final String AGGREGATE_TYPE = "doc_test";
 
-	private final CodePartListType countrySetType;
-	// private final DocTestPartNodeRepository nodeRepository;
-	// private final CodePartListType nodeListType;
+	private CodePartListType countrySetType;
+	// private DocTestPartNodeRepository nodeRepository;
+	// private CodePartListType nodeListType;
 
-	//@formatter:off
 	protected DocTestRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final DocPartTransitionRepository transitionRepository,
-		final DocPartItemRepository itemRepository,
-		//final DocTestPartNodeRepository nodeRepository,
-		final ObjNoteRepository noteRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			DocTestRepository.class,
-			DocTest.class,
-			DocTestBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
-		);
-		this.countrySetType = this.getAppContext().getPartListType(DocTestFields.COUNTRY_SET);
-		// this.nodeRepository = nodeRepository;
-		// this.nodeListType = this.getAppContext().getPartListType(DocTestFields.NODE_LIST);
+				DocTestRepository.class,
+				DocTest.class,
+				DocTestBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
 
 	@Override
 	@PostConstruct
@@ -72,6 +54,9 @@ public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestV
 
 	@Override
 	public CodePartListType getCountrySetType() {
+		if (this.countrySetType == null) {
+			this.countrySetType = this.getAppContext().getPartListType(DocTestFields.COUNTRY_SET);
+		}
 		return this.countrySetType;
 	}
 

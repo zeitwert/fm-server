@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -32,27 +30,19 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 
 	private final RequestContext requestCtx;
 
-	//@formatter:off
 	protected ObjNoteRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final RequestContext requestCtx
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext,
+			final RequestContext requestCtx) {
 		super(
-			ObjNoteRepository.class,
-			ObjNote.class,
-			ObjNoteBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository
-		);
+				ObjNoteRepository.class,
+				ObjNote.class,
+				ObjNoteBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 		this.requestCtx = requestCtx;
 	}
-	//@formatter:on
 
 	@Override
 	@PostConstruct

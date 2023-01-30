@@ -14,12 +14,9 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
@@ -37,23 +34,17 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 
 	private static final String AGGREGATE_TYPE = "obj_portfolio";
 
-	private final ObjVRepository objVRepository;
-	private final ObjAccountRepository accountRepository;
-	private final ObjBuildingRepository buildingRepository;
-	private final CodePartListType includeSetType;
-	private final CodePartListType excludeSetType;
-	private final CodePartListType buildingSetType;
+	private ObjVRepository objVRepository;
+	private ObjAccountRepository accountRepository;
+	private ObjBuildingRepository buildingRepository;
+	private CodePartListType includeSetType;
+	private CodePartListType excludeSetType;
+	private CodePartListType buildingSetType;
 
 	//@formatter:off
 	protected ObjPortfolioRepositoryImpl(
 		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final ObjNoteRepository noteRepository,
-		final ObjVRepository objVRepository,
-		final ObjAccountRepository accountRepository,
-		final ObjBuildingRepository buildingRepository
+		final DSLContext dslContext
 	) {
 		super(
 			ObjPortfolioRepository.class,
@@ -61,49 +52,64 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 			ObjPortfolioBase.class,
 			AGGREGATE_TYPE,
 			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
+			dslContext
 		);
-		this.objVRepository = objVRepository;
-		this.accountRepository = accountRepository;
-		this.buildingRepository = buildingRepository;
-		this.includeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.INCLUDE_LIST);
-		this.excludeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.EXCLUDE_LIST);
-		this.buildingSetType = this.getAppContext().getPartListType(ObjPortfolioFields.BUILDING_LIST);
 	}
 	//@formatter:on
+
+	@Override
+	public ObjVRepository getObjVRepository() {
+		if (this.objVRepository == null) {
+			this.objVRepository = this.getAppContext().getBean(ObjVRepository.class);
+		}
+		return this.objVRepository;
+	}
+
+	@Override
+	public ObjAccountRepository getAccountRepository() {
+		if (this.accountRepository == null) {
+			this.accountRepository = this.getAppContext().getBean(ObjAccountRepository.class);
+		}
+		return this.accountRepository;
+	}
+
+	@Override
+	public ObjBuildingRepository getBuildingRepository() {
+		if (this.buildingRepository == null) {
+			this.buildingRepository = this.getAppContext().getBean(ObjBuildingRepository.class);
+		}
+		return this.buildingRepository;
+	}
+
+	@Override
+	public CodePartListType getIncludeSetType() {
+		if (this.includeSetType == null) {
+			this.includeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.INCLUDE_LIST);
+		}
+		return this.includeSetType;
+	}
+
+	@Override
+	public CodePartListType getExcludeSetType() {
+		if (this.excludeSetType == null) {
+			this.excludeSetType = this.getAppContext().getPartListType(ObjPortfolioFields.EXCLUDE_LIST);
+		}
+		return this.excludeSetType;
+	}
+
+	@Override
+	public CodePartListType getBuildingSetType() {
+		if (this.buildingSetType == null) {
+			this.buildingSetType = this.getAppContext().getPartListType(ObjPortfolioFields.BUILDING_LIST);
+		}
+		return this.buildingSetType;
+	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
-	}
-
-	public ObjVRepository getObjVRepository() {
-		return this.objVRepository;
-	}
-
-	public ObjAccountRepository getAccountRepository() {
-		return this.accountRepository;
-	}
-
-	public ObjBuildingRepository getBuildingRepository() {
-		return this.buildingRepository;
-	}
-
-	public CodePartListType getIncludeSetType() {
-		return this.includeSetType;
-	}
-
-	public CodePartListType getExcludeSetType() {
-		return this.excludeSetType;
-	}
-
-	public CodePartListType getBuildingSetType() {
-		return this.buildingSetType;
 	}
 
 	@Override

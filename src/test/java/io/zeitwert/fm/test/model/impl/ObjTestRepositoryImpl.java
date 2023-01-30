@@ -13,10 +13,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.property.model.enums.CodePartListType;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -32,35 +29,45 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
-	private final CodePartListType countrySetType;
-	private final ObjTestPartNodeRepository nodeRepository;
-	private final CodePartListType nodeListType;
+	private CodePartListType countrySetType;
+	private ObjTestPartNodeRepository nodeRepository;
+	private CodePartListType nodeListType;
 
-	//@formatter:off
 	protected ObjTestRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext,
-		final ObjPartTransitionRepository transitionRepository,
-		final ObjPartItemRepository itemRepository,
-		final ObjTestPartNodeRepository nodeRepository,
-		final ObjNoteRepository noteRepository
-	) {
+			final AppContext appContext,
+			final DSLContext dslContext) {
 		super(
-			ObjTestRepository.class,
-			ObjTest.class,
-			ObjTestBase.class,
-			AGGREGATE_TYPE,
-			appContext,
-			dslContext,
-			transitionRepository,
-			itemRepository,
-			noteRepository
-		);
-		this.countrySetType = this.getAppContext().getPartListType(ObjTestFields.COUNTRY_SET);
-		this.nodeRepository = nodeRepository;
-		this.nodeListType = this.getAppContext().getPartListType(ObjTestFields.NODE_LIST);
+				ObjTestRepository.class,
+				ObjTest.class,
+				ObjTestBase.class,
+				AGGREGATE_TYPE,
+				appContext,
+				dslContext);
 	}
-	//@formatter:on
+
+	@Override
+	public CodePartListType getCountrySetType() {
+		if (this.countrySetType == null) {
+			this.countrySetType = this.getAppContext().getPartListType(ObjTestFields.COUNTRY_SET);
+		}
+		return this.countrySetType;
+	}
+
+	@Override
+	public ObjTestPartNodeRepository getNodeRepository() {
+		if (this.nodeRepository == null) {
+			this.nodeRepository = this.getAppContext().getBean(ObjTestPartNodeRepository.class);
+		}
+		return this.nodeRepository;
+	}
+
+	@Override
+	public CodePartListType getNodeListType() {
+		if (this.nodeListType == null) {
+			this.nodeListType = this.getAppContext().getPartListType(ObjTestFields.NODE_LIST);
+		}
+		return this.nodeListType;
+	}
 
 	@Override
 	@PostConstruct
@@ -68,21 +75,6 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
 		this.addPartRepository(this.getNodeRepository());
-	}
-
-	@Override
-	public CodePartListType getCountrySetType() {
-		return this.countrySetType;
-	}
-
-	@Override
-	public ObjTestPartNodeRepository getNodeRepository() {
-		return this.nodeRepository;
-	}
-
-	@Override
-	public CodePartListType getNodeListType() {
-		return this.nodeListType;
 	}
 
 	@Override
