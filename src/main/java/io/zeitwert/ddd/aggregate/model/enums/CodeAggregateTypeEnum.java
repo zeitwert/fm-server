@@ -22,7 +22,7 @@ public class CodeAggregateTypeEnum extends EnumerationBase<CodeAggregateType> {
 	private static CodeAggregateTypeEnum INSTANCE;
 
 	protected CodeAggregateTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeAggregateType.class);
 		INSTANCE = this;
 	}
 

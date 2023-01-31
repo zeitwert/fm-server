@@ -19,7 +19,7 @@ public class CodeLocaleEnum extends EnumerationBase<CodeLocale> {
 	private static CodeLocaleEnum INSTANCE;
 
 	protected CodeLocaleEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeLocale.class);
 		INSTANCE = this;
 	}
 

@@ -22,7 +22,7 @@ public class CodePartListTypeEnum extends EnumerationBase<CodePartListType> {
 	private static CodePartListTypeEnum INSTANCE;
 
 	protected CodePartListTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodePartListType.class);
 		INSTANCE = this;
 	}
 

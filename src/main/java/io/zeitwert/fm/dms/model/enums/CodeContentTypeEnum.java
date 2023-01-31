@@ -25,7 +25,7 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 
 	protected CodeContentTypeEnum(final Enumerations enums, final DSLContext dslContext,
 			final CodeContentKindEnum codeContentKindEnum) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeContentType.class);
 		this.codeContentKindEnum = codeContentKindEnum;
 		INSTANCE = this;
 	}

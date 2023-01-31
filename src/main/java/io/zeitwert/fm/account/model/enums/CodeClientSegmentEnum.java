@@ -19,7 +19,7 @@ public class CodeClientSegmentEnum extends EnumerationBase<CodeClientSegment> {
 	private static CodeClientSegmentEnum INSTANCE;
 
 	protected CodeClientSegmentEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeClientSegment.class);
 		INSTANCE = this;
 	}
 

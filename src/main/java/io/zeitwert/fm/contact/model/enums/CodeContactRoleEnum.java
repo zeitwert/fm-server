@@ -19,7 +19,7 @@ public class CodeContactRoleEnum extends EnumerationBase<CodeContactRole> {
 	private static CodeContactRoleEnum INSTANCE;
 
 	protected CodeContactRoleEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeContactRole.class);
 		INSTANCE = this;
 	}
 

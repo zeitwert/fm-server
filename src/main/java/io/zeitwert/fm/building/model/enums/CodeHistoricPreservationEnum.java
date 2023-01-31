@@ -19,7 +19,7 @@ public final class CodeHistoricPreservationEnum extends EnumerationBase<CodeHist
 	private static CodeHistoricPreservationEnum INSTANCE;
 
 	private CodeHistoricPreservationEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeHistoricPreservation.class);
 		INSTANCE = this;
 	}
 

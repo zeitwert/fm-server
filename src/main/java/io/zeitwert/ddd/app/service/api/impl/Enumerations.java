@@ -12,21 +12,29 @@ import org.springframework.stereotype.Service;
 @Service("enumerations")
 public final class Enumerations {
 
-	private Map<String, Enumeration<? extends Enumerated>> enumsById = new HashMap<String, Enumeration<? extends Enumerated>>();
-	private Map<Class<?>, Enumeration<? extends Enumerated>> enumsByClass = new HashMap<Class<?>, Enumeration<? extends Enumerated>>();
+	private Map<String, Enumeration<? extends Enumerated>> enumsById = new HashMap<>();
+	private Map<Class<? extends Enumerated>, Enumeration<? extends Enumerated>> enumsByEnumeratedClass = new HashMap<>();
+	private Map<Class<? extends Enumeration<?>>, Enumeration<? extends Enumerated>> enumsByEnumerationClass = new HashMap<>();
 
-	public void addEnumeration(final Enumeration<? extends Enumerated> e) {
+	@SuppressWarnings("unchecked")
+	public <E extends Enumerated> void addEnumeration(Class<E> enumeratedClass, Enumeration<E> e) {
 		this.enumsById.put(e.getModule() + "." + e.getId(), e);
-		this.enumsByClass.put(e.getClass(), e);
+		this.enumsByEnumerationClass.put((Class<Enumeration<E>>) e.getClass(), e);
+		this.enumsByEnumeratedClass.put(enumeratedClass, e);
 	}
 
-	public Enumeration<? extends Enumerated> getEnumeration(final String module, final String name) {
+	public Enumeration<? extends Enumerated> getEnumeration(String module, String name) {
 		return this.enumsById.get(module + "." + name + "Enum");
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E extends Enumeration<? extends Enumerated>> E getEnumeration(final Class<E> enumClass) {
-		return (E) this.enumsByClass.get(enumClass);
+	public <E extends Enumeration<? extends Enumerated>> E getEnumeration(Class<E> enumClass) {
+		return (E) this.enumsByEnumerationClass.get(enumClass);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <E extends Enumerated> Enumeration<E> getEnumerationByItems(Class<E> enumClass) {
+		return (Enumeration<E>) this.enumsByEnumeratedClass.get(enumClass);
 	}
 
 }

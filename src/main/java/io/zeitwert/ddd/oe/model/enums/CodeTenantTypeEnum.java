@@ -32,7 +32,7 @@ public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 	private final AppContext appContext;
 
 	protected CodeTenantTypeEnum(final Enumerations enums, final DSLContext dslContext, final AppContext appContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeTenantType.class);
 		this.appContext = appContext;
 		INSTANCE = this;
 	}

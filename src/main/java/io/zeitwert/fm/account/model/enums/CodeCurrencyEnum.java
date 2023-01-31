@@ -18,7 +18,7 @@ public class CodeCurrencyEnum extends EnumerationBase<CodeCurrency> {
 	private static CodeCurrencyEnum INSTANCE;
 
 	protected CodeCurrencyEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeCurrency.class);
 		INSTANCE = this;
 	}
 

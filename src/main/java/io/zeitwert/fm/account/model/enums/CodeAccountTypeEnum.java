@@ -19,7 +19,7 @@ public class CodeAccountTypeEnum extends EnumerationBase<CodeAccountType> {
 	private static CodeAccountTypeEnum INSTANCE;
 
 	protected CodeAccountTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeAccountType.class);
 		INSTANCE = this;
 	}
 

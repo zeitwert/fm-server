@@ -23,7 +23,7 @@ public final class CodeBuildingPriceIndexEnum extends EnumerationBase<CodeBuildi
 	private static CodeBuildingPriceIndexEnum INSTANCE;
 
 	private CodeBuildingPriceIndexEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeBuildingPriceIndex.class);
 		INSTANCE = this;
 	}
 

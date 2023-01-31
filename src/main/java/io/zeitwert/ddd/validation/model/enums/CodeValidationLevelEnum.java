@@ -19,7 +19,7 @@ public class CodeValidationLevelEnum extends EnumerationBase<CodeValidationLevel
 	private static CodeValidationLevelEnum INSTANCE;
 
 	protected CodeValidationLevelEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeValidationLevel.class);
 		INSTANCE = this;
 		INFO = CodeValidationLevel.builder().enumeration(this).id("info").name("Info").build();
 		WARNING = CodeValidationLevel.builder().enumeration(this).id("warning").name("Warning").build();

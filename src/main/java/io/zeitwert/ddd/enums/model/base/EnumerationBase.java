@@ -28,7 +28,7 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 	private List<E> items = new ArrayList<E>();
 	private Map<String, E> itemsById = new HashMap<String, E>();
 
-	public EnumerationBase(final Enumerations enums, final DSLContext dslContext) {
+	public EnumerationBase(Enumerations enums, DSLContext dslContext, Class<E> enumeratedClass) {
 		String[] parts = this.getClass().getCanonicalName().split("\\.");
 		assertThis(parts.length == 7, "valid enumeration class name (io.zeitwert.[area].[module].model.enums.[xyEnum])");
 		assertThis("model".equals(parts[4]),
@@ -39,7 +39,7 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 		this.dslContext = dslContext;
 		this.module = parts[3];
 		this.id = Character.toLowerCase(parts[6].charAt(0)) + parts[6].substring(1);
-		enums.addEnumeration(this);
+		enums.addEnumeration(enumeratedClass, this);
 	}
 
 	protected DSLContext getDslContext() {

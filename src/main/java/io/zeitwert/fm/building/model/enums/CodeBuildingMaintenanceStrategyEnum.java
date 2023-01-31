@@ -19,7 +19,7 @@ public final class CodeBuildingMaintenanceStrategyEnum extends EnumerationBase<C
 	private static CodeBuildingMaintenanceStrategyEnum INSTANCE;
 
 	private CodeBuildingMaintenanceStrategyEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeBuildingMaintenanceStrategy.class);
 		INSTANCE = this;
 	}
 

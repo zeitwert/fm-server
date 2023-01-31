@@ -19,7 +19,7 @@ public final class CodeBuildingRatingStatusEnum extends EnumerationBase<CodeBuil
 	private static CodeBuildingRatingStatusEnum INSTANCE;
 
 	private CodeBuildingRatingStatusEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeBuildingRatingStatus.class);
 		INSTANCE = this;
 	}
 

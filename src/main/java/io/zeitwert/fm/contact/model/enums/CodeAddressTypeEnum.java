@@ -19,7 +19,7 @@ public class CodeAddressTypeEnum extends EnumerationBase<CodeAddressType> {
 	private static CodeAddressTypeEnum INSTANCE;
 
 	protected CodeAddressTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeAddressType.class);
 		INSTANCE = this;
 	}
 

@@ -19,7 +19,7 @@ public class CodeTaskPriorityEnum extends EnumerationBase<CodeTaskPriority> {
 	private static CodeTaskPriorityEnum INSTANCE;
 
 	protected CodeTaskPriorityEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeTaskPriority.class);
 		INSTANCE = this;
 	}
 

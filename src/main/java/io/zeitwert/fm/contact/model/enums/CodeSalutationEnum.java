@@ -19,7 +19,7 @@ public class CodeSalutationEnum extends EnumerationBase<CodeSalutation> {
 	private static CodeSalutationEnum INSTANCE;
 
 	protected CodeSalutationEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeSalutation.class);
 		INSTANCE = this;
 	}
 

@@ -19,7 +19,7 @@ public class CodeContentKindEnum extends EnumerationBase<CodeContentKind> {
 	private static CodeContentKindEnum INSTANCE;
 
 	protected CodeContentKindEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeContentKind.class);
 		INSTANCE = this;
 	}
 

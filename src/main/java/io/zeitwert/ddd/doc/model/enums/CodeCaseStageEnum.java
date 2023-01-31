@@ -34,7 +34,7 @@ public class CodeCaseStageEnum extends EnumerationBase<CodeCaseStage> {
 	private final AppContext appContext;
 
 	protected CodeCaseStageEnum(final Enumerations enums, final DSLContext dslContext, final AppContext appContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeCaseStage.class);
 		this.appContext = appContext;
 		INSTANCE = this;
 	}

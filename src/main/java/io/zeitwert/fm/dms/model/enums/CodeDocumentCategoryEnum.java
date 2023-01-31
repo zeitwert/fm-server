@@ -19,7 +19,7 @@ public class CodeDocumentCategoryEnum extends EnumerationBase<CodeDocumentCatego
 	private static CodeDocumentCategoryEnum INSTANCE;
 
 	protected CodeDocumentCategoryEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeDocumentCategory.class);
 		INSTANCE = this;
 	}
 

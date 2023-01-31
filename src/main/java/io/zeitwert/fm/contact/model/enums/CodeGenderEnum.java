@@ -19,7 +19,7 @@ public class CodeGenderEnum extends EnumerationBase<CodeGender> {
 	private static CodeGenderEnum INSTANCE;
 
 	protected CodeGenderEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeGender.class);
 		INSTANCE = this;
 	}
 

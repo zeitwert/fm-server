@@ -19,7 +19,7 @@ public final class CodeBuildingElementDescriptionEnum extends EnumerationBase<Co
 	private static CodeBuildingElementDescriptionEnum INSTANCE;
 
 	private CodeBuildingElementDescriptionEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeBuildingElementDescription.class);
 		INSTANCE = this;
 	}
 

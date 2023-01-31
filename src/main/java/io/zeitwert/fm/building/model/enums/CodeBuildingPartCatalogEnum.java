@@ -19,7 +19,7 @@ public final class CodeBuildingPartCatalogEnum extends EnumerationBase<CodeBuild
 	private static CodeBuildingPartCatalogEnum INSTANCE;
 
 	private CodeBuildingPartCatalogEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeBuildingPartCatalog.class);
 		INSTANCE = this;
 	}
 

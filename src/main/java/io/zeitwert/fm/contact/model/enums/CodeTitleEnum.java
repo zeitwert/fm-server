@@ -19,7 +19,7 @@ public class CodeTitleEnum extends EnumerationBase<CodeTitle> {
 	private static CodeTitleEnum INSTANCE;
 
 	protected CodeTitleEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeTitle.class);
 		INSTANCE = this;
 	}
 

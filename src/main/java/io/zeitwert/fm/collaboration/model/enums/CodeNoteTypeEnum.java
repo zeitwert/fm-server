@@ -19,7 +19,7 @@ public class CodeNoteTypeEnum extends EnumerationBase<CodeNoteType> {
 	private static CodeNoteTypeEnum INSTANCE;
 
 	protected CodeNoteTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeNoteType.class);
 		INSTANCE = this;
 	}
 

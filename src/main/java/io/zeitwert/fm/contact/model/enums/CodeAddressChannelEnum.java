@@ -19,7 +19,7 @@ public class CodeAddressChannelEnum extends EnumerationBase<CodeAddressChannel> 
 	private static CodeAddressChannelEnum INSTANCE;
 
 	protected CodeAddressChannelEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeAddressChannel.class);
 		INSTANCE = this;
 	}
 

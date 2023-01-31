@@ -38,7 +38,7 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 	private final AppContext appContext;
 
 	protected CodeUserRoleEnum(final Enumerations enums, final DSLContext dslContext, final AppContext appContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeUserRole.class);
 		this.appContext = appContext;
 		INSTANCE = this;
 	}

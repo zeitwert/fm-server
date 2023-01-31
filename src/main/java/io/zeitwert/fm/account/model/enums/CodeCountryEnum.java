@@ -19,7 +19,7 @@ public class CodeCountryEnum extends EnumerationBase<CodeCountry> {
 	private static CodeCountryEnum INSTANCE;
 
 	protected CodeCountryEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext);
+		super(enums, dslContext, CodeCountry.class);
 		INSTANCE = this;
 	}
 
