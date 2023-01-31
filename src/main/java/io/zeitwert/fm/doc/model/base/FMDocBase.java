@@ -27,8 +27,9 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	protected final ReferenceProperty<ObjAccount> account;
 
-	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, UpdatableRecord<?> docRecord) {
-		super(repository, docRecord);
+	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository,
+			UpdatableRecord<?> docRecord, UpdatableRecord<?> extnRecord) {
+		super(repository, docRecord, extnRecord);
 		this.account = this.addReferenceProperty(docRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
 	}
 

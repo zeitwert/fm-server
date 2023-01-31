@@ -47,8 +47,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	static final CodeBuildingPriceIndex DefaultPriceIndex = CodeBuildingPriceIndexEnum.getBuildingPriceIndex("ch-ZRH");
 	static final Integer DefaultGeoZoom = 17;
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 	protected final SimpleProperty<String> buildingNr;
@@ -92,51 +90,51 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final ReferenceSetProperty<ObjContact> contactSet;
 
 	protected ObjBuildingBase(ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> contactRecord) {
+			UpdatableRecord<?> buildingRecord) {
 
-		super(repository, objRecord);
+		super(repository, objRecord, buildingRecord);
 
-		this.dbRecord = contactRecord;
-
-		this.name = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NAME);
-		this.description = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.DESCRIPTION);
-		this.buildingNr = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.BUILDING_NR);
-		this.insuranceNr = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.INSURANCE_NR);
-		this.plotNr = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.PLOT_NR);
-		this.nationalBuildingId = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NATIONAL_BUILDING_ID);
-		this.historicPreservation = this.addEnumProperty(this.dbRecord, ObjBuildingFields.HISTORIC_PRESERVERATION_ID,
+		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NAME);
+		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.DESCRIPTION);
+		this.buildingNr = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_NR);
+		this.insuranceNr = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.INSURANCE_NR);
+		this.plotNr = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.PLOT_NR);
+		this.nationalBuildingId = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NATIONAL_BUILDING_ID);
+		this.historicPreservation = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.HISTORIC_PRESERVERATION_ID,
 				CodeHistoricPreservationEnum.class);
 
-		this.street = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.STREET);
-		this.zip = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.ZIP);
-		this.city = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.CITY);
-		this.country = this.addEnumProperty(this.dbRecord, ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.currency = this.addEnumProperty(this.dbRecord, ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
+		this.street = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.STREET);
+		this.zip = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.ZIP);
+		this.city = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.CITY);
+		this.country = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
+		this.currency = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
 
-		this.geoAddress = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.GEO_ADDRESS);
-		this.geoCoordinates = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.GEO_COORDINATES);
-		this.geoZoom = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.GEO_ZOOM);
+		this.geoAddress = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.GEO_ADDRESS);
+		this.geoCoordinates = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.GEO_COORDINATES);
+		this.geoZoom = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.GEO_ZOOM);
 
-		this.coverFoto = this.addReferenceProperty(this.dbRecord, ObjBuildingFields.COVER_FOTO_ID, ObjDocument.class);
+		this.coverFoto = this.addReferenceProperty(this.extnDbRecord(), ObjBuildingFields.COVER_FOTO_ID, ObjDocument.class);
 
-		this.volume = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.VOLUME);
-		this.areaGross = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.AREA_GROSS);
-		this.areaNet = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.AREA_NET);
-		this.nrOfFloorsAboveGround = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NR_OF_FLOORS_ABOVE_GROUND);
-		this.nrOfFloorsBelowGround = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NR_OF_FLOORS_BELOW_GROUND);
+		this.volume = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.VOLUME);
+		this.areaGross = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.AREA_GROSS);
+		this.areaNet = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.AREA_NET);
+		this.nrOfFloorsAboveGround = this.addSimpleProperty(this.extnDbRecord(),
+				ObjBuildingFields.NR_OF_FLOORS_ABOVE_GROUND);
+		this.nrOfFloorsBelowGround = this.addSimpleProperty(this.extnDbRecord(),
+				ObjBuildingFields.NR_OF_FLOORS_BELOW_GROUND);
 
-		this.buildingType = this.addEnumProperty(this.dbRecord, ObjBuildingFields.BUILDING_TYPE_ID,
+		this.buildingType = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_TYPE_ID,
 				CodeBuildingTypeEnum.class);
-		this.buildingSubType = this.addEnumProperty(this.dbRecord, ObjBuildingFields.BUILDING_SUB_TYPE_ID,
+		this.buildingSubType = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_SUB_TYPE_ID,
 				CodeBuildingSubTypeEnum.class);
-		this.buildingYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.BUILDING_YEAR);
+		this.buildingYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_YEAR);
 
-		this.insuredValue = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.INSURED_VALUE);
-		this.insuredValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.INSURED_VALUE_YEAR);
-		this.notInsuredValue = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NOT_INSURED_VALUE);
-		this.notInsuredValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.NOT_INSURED_VALUE_YEAR);
-		this.thirdPartyValue = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE);
-		this.thirdPartyValueYear = this.addSimpleProperty(this.dbRecord, ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
+		this.insuredValue = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.INSURED_VALUE);
+		this.insuredValueYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.INSURED_VALUE_YEAR);
+		this.notInsuredValue = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NOT_INSURED_VALUE);
+		this.notInsuredValueYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NOT_INSURED_VALUE_YEAR);
+		this.thirdPartyValue = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.THIRD_PARTY_VALUE);
+		this.thirdPartyValueYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
 
 		this.ratingList = this.addPartListProperty(this.getRepository().getRatingListType());
 
@@ -146,13 +144,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public ObjBuildingRepository getRepository() {
 		return (ObjBuildingRepository) super.getRepository();
-	}
-
-	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjBuildingFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjBuildingFields.TENANT_ID, tenantId);
 	}
 
 	@Override
@@ -176,12 +167,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		if (this.getCoverFotoId() == null) {
 			this.addCoverFoto();
 		}
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -218,7 +203,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
-		this.dbRecord.setValue(ObjBuildingFields.ACCOUNT_ID, id);
+		this.extnDbRecord().setValue(ObjBuildingFields.ACCOUNT_ID, id);
 	}
 
 	@Override

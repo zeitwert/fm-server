@@ -8,9 +8,9 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapterBase;
 
-public final class ObjAccountDtoAdapter extends FMObjDtoAdapter<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
+public final class ObjAccountDtoAdapter extends FMObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
 
 	private static ObjAccountDtoAdapter instance;
 

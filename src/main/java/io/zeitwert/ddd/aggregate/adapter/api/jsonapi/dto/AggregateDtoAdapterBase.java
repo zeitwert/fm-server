@@ -10,7 +10,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 
-public abstract class AggregateDtoAdapter<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>> {
+public abstract class AggregateDtoAdapterBase<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>> {
 
 	private static ObjTenantCache tenantCache = null;
 	private static ObjUserCache userCache = null;

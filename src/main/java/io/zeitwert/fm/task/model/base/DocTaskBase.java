@@ -25,8 +25,6 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
 
 public abstract class DocTaskBase extends FMDocBase implements DocTask {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<Integer> relatedObjId;
 	protected final SimpleProperty<Integer> relatedDocId;
 	protected final SimpleProperty<String> subject;
@@ -37,16 +35,15 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	protected final SimpleProperty<OffsetDateTime> remindAt;
 
 	protected DocTaskBase(DocTaskRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> taskRecord) {
-		super(repository, objRecord);
-		this.dbRecord = taskRecord;
-		this.relatedObjId = this.addSimpleProperty(this.dbRecord, DocTaskFields.RELATED_OBJ_ID);
-		this.relatedDocId = this.addSimpleProperty(this.dbRecord, DocTaskFields.RELATED_DOC_ID);
-		this.subject = this.addSimpleProperty(this.dbRecord, DocTaskFields.SUBJECT);
-		this.content = this.addSimpleProperty(this.dbRecord, DocTaskFields.CONTENT);
-		this.isPrivate = this.addSimpleProperty(this.dbRecord, DocTaskFields.IS_PRIVATE);
-		this.priority = this.addEnumProperty(this.dbRecord, DocTaskFields.PRIORITY_ID, CodeTaskPriorityEnum.class);
-		this.dueAt = this.addSimpleProperty(this.dbRecord, DocTaskFields.DUE_AT);
-		this.remindAt = this.addSimpleProperty(this.dbRecord, DocTaskFields.REMIND_AT);
+		super(repository, objRecord, taskRecord);
+		this.relatedObjId = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.RELATED_OBJ_ID);
+		this.relatedDocId = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.RELATED_DOC_ID);
+		this.subject = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.SUBJECT);
+		this.content = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.CONTENT);
+		this.isPrivate = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.IS_PRIVATE);
+		this.priority = this.addEnumProperty(this.extnDbRecord(), DocTaskFields.PRIORITY_ID, CodeTaskPriorityEnum.class);
+		this.dueAt = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.DUE_AT);
+		this.remindAt = this.addSimpleProperty(this.extnDbRecord(), DocTaskFields.REMIND_AT);
 	}
 
 	@Override
@@ -55,10 +52,7 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	}
 
 	@Override
-	public void doInit(Integer docId, Integer tenantId) {
-		super.doInit(docId, tenantId);
-		this.dbRecord.setValue(DocTaskFields.DOC_ID, docId);
-		this.dbRecord.setValue(DocTaskFields.TENANT_ID, tenantId);
+	public void doInitWorkflow() {
 		CodeCaseStage initStage = CodeCaseStageEnum.getCaseStage("task.new");
 		this.doInitWorkflow("task", initStage);
 	}
@@ -75,12 +69,6 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	}
 
 	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
-	}
-
-	@Override
 	public void doCalcSearch() {
 		this.addSearchText(this.getSubject());
 		this.addSearchText(this.getContent());
@@ -93,31 +81,31 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 
 	@Override
 	public Integer getRelatedToId() {
-		Integer relatedToId = this.dbRecord.getValue(DocTaskFields.RELATED_OBJ_ID);
-		return relatedToId != null ? relatedToId : this.dbRecord.getValue(DocTaskFields.RELATED_DOC_ID);
+		Integer relatedToId = this.extnDbRecord().getValue(DocTaskFields.RELATED_OBJ_ID);
+		return relatedToId != null ? relatedToId : this.extnDbRecord().getValue(DocTaskFields.RELATED_DOC_ID);
 	}
 
 	@Override
 	public void setRelatedToId(Integer id) {
 		if (id == null) {
-			this.dbRecord.setValue(DocTaskFields.RELATED_OBJ_ID, id);
-			this.dbRecord.setValue(DocTaskFields.RELATED_DOC_ID, id);
+			this.extnDbRecord().setValue(DocTaskFields.RELATED_OBJ_ID, id);
+			this.extnDbRecord().setValue(DocTaskFields.RELATED_DOC_ID, id);
 		} else if (ObjRepository.isObjId(id)) {
-			this.dbRecord.setValue(DocTaskFields.RELATED_OBJ_ID, id);
-			this.dbRecord.setValue(DocTaskFields.RELATED_DOC_ID, null);
+			this.extnDbRecord().setValue(DocTaskFields.RELATED_OBJ_ID, id);
+			this.extnDbRecord().setValue(DocTaskFields.RELATED_DOC_ID, null);
 		} else {
-			this.dbRecord.setValue(DocTaskFields.RELATED_OBJ_ID, null);
-			this.dbRecord.setValue(DocTaskFields.RELATED_DOC_ID, id);
+			this.extnDbRecord().setValue(DocTaskFields.RELATED_OBJ_ID, null);
+			this.extnDbRecord().setValue(DocTaskFields.RELATED_DOC_ID, id);
 		}
 	}
 
 	@Override
 	public Aggregate getRelatedTo() {
-		Integer relatedToId = this.dbRecord.getValue(DocTaskFields.RELATED_OBJ_ID);
+		Integer relatedToId = this.extnDbRecord().getValue(DocTaskFields.RELATED_OBJ_ID);
 		if (relatedToId != null) {
 			return this.getRepository().getObjRepository().get(relatedToId);
 		}
-		relatedToId = this.dbRecord.getValue(DocTaskFields.RELATED_DOC_ID);
+		relatedToId = this.extnDbRecord().getValue(DocTaskFields.RELATED_DOC_ID);
 		// if (relatedId != null) {
 		// return this.getRepository().getObjRepository().get(relatedId);
 		// }
@@ -127,7 +115,7 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
-		this.dbRecord.setValue(DocTaskFields.ACCOUNT_ID, id);
+		this.extnDbRecord().setValue(DocTaskFields.ACCOUNT_ID, id);
 	}
 
 	@Override

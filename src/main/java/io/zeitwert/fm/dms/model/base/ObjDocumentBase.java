@@ -23,8 +23,6 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjDocumentBase.class);
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<String> name;
 	protected final EnumProperty<CodeDocumentKind> documentKind;
 	protected final EnumProperty<CodeDocumentCategory> documentCategory;
@@ -36,15 +34,16 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
 	protected ObjDocumentBase(ObjDocumentRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> documentRecord) {
-		super(repository, objRecord);
-		this.dbRecord = documentRecord;
-		this.name = this.addSimpleProperty(this.dbRecord, ObjDocumentFields.NAME);
-		this.documentKind = this.addEnumProperty(this.dbRecord, ObjDocumentFields.DOCUMENT_KIND_ID, CodeDocumentKindEnum.class);
-		this.documentCategory = this.addEnumProperty(this.dbRecord, ObjDocumentFields.DOCUMENT_CATEGORY_ID,
+		super(repository, objRecord, documentRecord);
+		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjDocumentFields.NAME);
+		this.documentKind = this.addEnumProperty(this.extnDbRecord(), ObjDocumentFields.DOCUMENT_KIND_ID,
+				CodeDocumentKindEnum.class);
+		this.documentCategory = this.addEnumProperty(this.extnDbRecord(), ObjDocumentFields.DOCUMENT_CATEGORY_ID,
 				CodeDocumentCategoryEnum.class);
-		this.templateDocument = this.addReferenceProperty(this.dbRecord, ObjDocumentFields.TEMPLATE_DOCUMENT_ID,
+		this.templateDocument = this.addReferenceProperty(this.extnDbRecord(), ObjDocumentFields.TEMPLATE_DOCUMENT_ID,
 				ObjDocument.class);
-		this.contentKind = this.addEnumProperty(this.dbRecord, ObjDocumentFields.CONTENT_KIND_ID, CodeContentKindEnum.class);
+		this.contentKind = this.addEnumProperty(this.extnDbRecord(), ObjDocumentFields.CONTENT_KIND_ID,
+				CodeContentKindEnum.class);
 	}
 
 	@Override
@@ -74,19 +73,6 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 		this.contentType = contentType;
 		this.content = content;
 		this.calcAll();
-	}
-
-	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjDocumentFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjDocumentFields.TENANT_ID, tenantId);
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override

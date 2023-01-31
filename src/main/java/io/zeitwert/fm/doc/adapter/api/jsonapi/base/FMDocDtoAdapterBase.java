@@ -1,14 +1,14 @@
 
 package io.zeitwert.fm.doc.adapter.api.jsonapi.base;
 
-import io.zeitwert.ddd.doc.adapter.api.jsonapi.base.DocDtoAdapter;
+import io.zeitwert.ddd.doc.adapter.api.jsonapi.base.DocDtoAdapterBase;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.FMDocDtoBase;
 import io.zeitwert.fm.doc.model.FMDoc;
 
 import org.jooq.TableRecord;
 
-public abstract class FMDocDtoAdapter<A extends FMDoc, V extends TableRecord<?>, D extends FMDocDtoBase<A>>
-		extends DocDtoAdapter<A, V, D> {
+public abstract class FMDocDtoAdapterBase<A extends FMDoc, V extends TableRecord<?>, D extends FMDocDtoBase<A>>
+		extends DocDtoAdapterBase<A, V, D> {
 
 	@Override
 	public void toAggregate(D dto, A obj) {

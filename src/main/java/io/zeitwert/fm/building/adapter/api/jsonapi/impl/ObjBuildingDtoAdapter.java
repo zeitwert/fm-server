@@ -24,10 +24,10 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapter;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 
-public final class ObjBuildingDtoAdapter extends FMObjDtoAdapter<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
+public final class ObjBuildingDtoAdapter extends FMObjDtoAdapterBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
 
 	private static ObjBuildingDtoAdapter instance;
 

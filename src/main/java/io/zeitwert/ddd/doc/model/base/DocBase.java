@@ -33,10 +33,12 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.RequestContext;
 
-public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
+public abstract class DocBase extends AggregateBase implements Doc, DocMeta, DocSPI {
 
 	private final DocRepository<? extends Doc, ? extends TableRecord<?>> repository;
-	private final UpdatableRecord<?> docDbRecord;
+
+	private final UpdatableRecord<?> baseDbRecord;
+	private final UpdatableRecord<?> extnDbRecord;
 
 	protected final SimpleProperty<Integer> id;
 	protected final ReferenceProperty<ObjTenant> tenant;
@@ -58,23 +60,25 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	private CodeCaseStage oldCaseStage;
 
-	protected DocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, UpdatableRecord<?> docDbRecord) {
+	protected DocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, UpdatableRecord<?> baseDbRecord,
+			UpdatableRecord<?> extnDbRecord) {
 		this.repository = repository;
-		this.docDbRecord = docDbRecord;
-		this.id = this.addSimpleProperty(docDbRecord, DocFields.ID);
-		this.tenant = this.addReferenceProperty(docDbRecord, DocFields.TENANT_ID, ObjTenant.class);
-		this.owner = this.addReferenceProperty(docDbRecord, DocFields.OWNER_ID, ObjUser.class);
-		this.caption = this.addSimpleProperty(docDbRecord, DocFields.CAPTION);
-		this.version = this.addSimpleProperty(docDbRecord, DocFields.VERSION);
-		this.createdByUser = this.addReferenceProperty(docDbRecord, DocFields.CREATED_BY_USER_ID, ObjUser.class);
-		this.createdAt = this.addSimpleProperty(docDbRecord, DocFields.CREATED_AT);
-		this.modifiedByUser = this.addReferenceProperty(docDbRecord, DocFields.MODIFIED_BY_USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(docDbRecord, DocFields.MODIFIED_AT);
-		this.docTypeId = this.addSimpleProperty(docDbRecord, DocFields.DOC_TYPE_ID);
-		this.caseDefId = this.addSimpleProperty(docDbRecord, DocFields.CASE_DEF_ID);
-		this.caseStage = this.addEnumProperty(docDbRecord, DocFields.CASE_STAGE_ID, CodeCaseStageEnum.class);
-		this.isInWork = this.addSimpleProperty(docDbRecord, DocFields.IS_IN_WORK);
-		this.assignee = this.addReferenceProperty(docDbRecord, DocFields.ASSIGNEE_ID, ObjUser.class);
+		this.baseDbRecord = baseDbRecord;
+		this.extnDbRecord = extnDbRecord;
+		this.id = this.addSimpleProperty(baseDbRecord, DocFields.ID);
+		this.tenant = this.addReferenceProperty(baseDbRecord, DocFields.TENANT_ID, ObjTenant.class);
+		this.owner = this.addReferenceProperty(baseDbRecord, DocFields.OWNER_ID, ObjUser.class);
+		this.caption = this.addSimpleProperty(baseDbRecord, DocFields.CAPTION);
+		this.version = this.addSimpleProperty(baseDbRecord, DocFields.VERSION);
+		this.createdByUser = this.addReferenceProperty(baseDbRecord, DocFields.CREATED_BY_USER_ID, ObjUser.class);
+		this.createdAt = this.addSimpleProperty(baseDbRecord, DocFields.CREATED_AT);
+		this.modifiedByUser = this.addReferenceProperty(baseDbRecord, DocFields.MODIFIED_BY_USER_ID, ObjUser.class);
+		this.modifiedAt = this.addSimpleProperty(baseDbRecord, DocFields.MODIFIED_AT);
+		this.docTypeId = this.addSimpleProperty(baseDbRecord, DocFields.DOC_TYPE_ID);
+		this.caseDefId = this.addSimpleProperty(baseDbRecord, DocFields.CASE_DEF_ID);
+		this.caseStage = this.addEnumProperty(baseDbRecord, DocFields.CASE_STAGE_ID, CodeCaseStageEnum.class);
+		this.isInWork = this.addSimpleProperty(baseDbRecord, DocFields.IS_IN_WORK);
+		this.assignee = this.addReferenceProperty(baseDbRecord, DocFields.ASSIGNEE_ID, ObjUser.class);
 		this.transitionList = this.addPartListProperty(repository.getTransitionListType());
 	}
 
@@ -98,8 +102,12 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		return this.repository;
 	}
 
-	protected final UpdatableRecord<?> getDocDbRecord() {
-		return this.docDbRecord;
+	protected final UpdatableRecord<?> baseDbRecord() {
+		return this.baseDbRecord;
+	}
+
+	protected final UpdatableRecord<?> extnDbRecord() {
+		return this.extnDbRecord;
 	}
 
 	@Override
@@ -108,19 +116,27 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public void doInit(Integer docId, Integer tenantId) {
+	public final void doInit(Integer docId, Integer tenantId) {
 		super.doInit(docId, tenantId);
 		try {
 			this.disableCalc();
 			this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
 			this.id.setValue(docId);
 			this.tenant.setId(tenantId);
+			if (this.extnDbRecord() != null) {
+				this.extnDbRecord().setValue(DocExtnFields.DOC_ID, docId);
+				this.extnDbRecord().setValue(DocExtnFields.TENANT_ID, tenantId);
+			}
 		} finally {
 			this.enableCalc();
 		}
+		this.doInitWorkflow();
 	}
 
-	protected void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
+	@Override
+	public abstract void doInitWorkflow();
+
+	protected final void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
 		this.caseDefId.setValue(caseDefId);
 		if (this.getCaseStage() == null) {
 			this.setCaseStage(defaultInitCaseStage);
@@ -186,9 +202,10 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public void doStore() {
+	public final void doStore() {
 		super.doStore();
-		this.getDocDbRecord().store();
+		this.baseDbRecord().store();
+		this.extnDbRecord().store();
 	}
 
 	@Override

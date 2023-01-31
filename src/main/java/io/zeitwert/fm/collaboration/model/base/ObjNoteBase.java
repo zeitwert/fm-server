@@ -16,8 +16,6 @@ import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 
 public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<Integer> relatedToId;
 	protected final EnumProperty<CodeNoteType> noteType;
 	protected final SimpleProperty<String> subject;
@@ -25,31 +23,17 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	protected final SimpleProperty<Boolean> isPrivate;
 
 	protected ObjNoteBase(ObjNoteRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> noteRecord) {
-		super(repository, objRecord);
-		this.dbRecord = noteRecord;
-		this.relatedToId = this.addSimpleProperty(this.dbRecord, ObjNoteFields.RELATED_TO_ID);
-		this.noteType = this.addEnumProperty(this.dbRecord, ObjNoteFields.NOTE_TYPE_ID, CodeNoteTypeEnum.class);
-		this.subject = this.addSimpleProperty(this.dbRecord, ObjNoteFields.SUBJECT);
-		this.content = this.addSimpleProperty(this.dbRecord, ObjNoteFields.CONTENT);
-		this.isPrivate = this.addSimpleProperty(this.dbRecord, ObjNoteFields.IS_PRIVATE);
+		super(repository, objRecord, noteRecord);
+		this.relatedToId = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.RELATED_TO_ID);
+		this.noteType = this.addEnumProperty(this.extnDbRecord(), ObjNoteFields.NOTE_TYPE_ID, CodeNoteTypeEnum.class);
+		this.subject = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.SUBJECT);
+		this.content = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.CONTENT);
+		this.isPrivate = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.IS_PRIVATE);
 	}
 
 	@Override
 	public ObjNoteRepository getRepository() {
 		return (ObjNoteRepository) super.getRepository();
-	}
-
-	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjNoteFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjNoteFields.TENANT_ID, tenantId);
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override

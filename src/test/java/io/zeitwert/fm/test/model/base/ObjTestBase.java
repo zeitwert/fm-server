@@ -26,8 +26,6 @@ import org.jooq.UpdatableRecord;
 
 public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<String> shortText;
 	protected final SimpleProperty<String> longText;
 	protected final SimpleProperty<LocalDate> date;
@@ -41,17 +39,16 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	protected final PartListProperty<ObjTestPartNode> nodeList;
 
 	protected ObjTestBase(ObjTestRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> testRecord) {
-		super(repository, objRecord);
-		this.dbRecord = testRecord;
-		this.shortText = this.addSimpleProperty(this.dbRecord, ObjTestFields.SHORT_TEXT);
-		this.longText = this.addSimpleProperty(this.dbRecord, ObjTestFields.LONG_TEXT);
-		this.date = this.addSimpleProperty(this.dbRecord, ObjTestFields.DATE);
-		this.int_ = this.addSimpleProperty(this.dbRecord, ObjTestFields.INT);
-		this.isDone = this.addSimpleProperty(this.dbRecord, ObjTestFields.IS_DONE);
-		this.json = this.addSimpleProperty(this.dbRecord, ObjTestFields.JSON);
-		this.nr = this.addSimpleProperty(this.dbRecord, ObjTestFields.NR);
-		this.country = this.addEnumProperty(this.dbRecord, ObjTestFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.refTest = this.addReferenceProperty(this.dbRecord, ObjTestFields.REF_TEST_ID, ObjTest.class);
+		super(repository, objRecord, testRecord);
+		this.shortText = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.SHORT_TEXT);
+		this.longText = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.LONG_TEXT);
+		this.date = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.DATE);
+		this.int_ = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.INT);
+		this.isDone = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.IS_DONE);
+		this.json = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.JSON);
+		this.nr = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.NR);
+		this.country = this.addEnumProperty(this.extnDbRecord(), ObjTestFields.COUNTRY_ID, CodeCountryEnum.class);
+		this.refTest = this.addReferenceProperty(this.extnDbRecord(), ObjTestFields.REF_TEST_ID, ObjTest.class);
 		this.countrySet = this.addEnumSetProperty(this.getRepository().getCountrySetType(), CodeCountryEnum.class);
 		this.nodeList = this.addPartListProperty(this.getRepository().getNodeListType());
 	}
@@ -62,25 +59,12 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjTestFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjTestFields.TENANT_ID, tenantId);
-	}
-
-	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
 		this.countrySet.loadEnums(itemRepo.getParts(this, this.getRepository().getCountrySetType()));
 		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
 		this.nodeList.loadParts(nodeRepo.getParts(this, this.getRepository().getNodeListType()));
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override

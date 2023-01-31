@@ -38,31 +38,21 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	protected final SimpleProperty<Boolean> needPasswordChange;
 	protected final SimpleProperty<String> password;
 
-	private final UpdatableRecord<?> dbRecord;
-
 	public ObjUserBase(ObjUserRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> userRecord) {
-		super(repository, objRecord);
-		this.dbRecord = userRecord;
-		this.email = this.addSimpleProperty(this.dbRecord, ObjUserFields.EMAIL);
-		this.name = this.addSimpleProperty(this.dbRecord, ObjUserFields.NAME);
-		this.description = this.addSimpleProperty(this.dbRecord, ObjUserFields.DESCRIPTION);
-		this.avatarImage = this.addReferenceProperty(this.dbRecord, ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
-		this.role = this.addSimpleProperty(this.dbRecord, ObjUserFields.ROLE_LIST);
+		super(repository, objRecord, userRecord);
+		this.email = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.EMAIL);
+		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.NAME);
+		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.DESCRIPTION);
+		this.avatarImage = this.addReferenceProperty(this.extnDbRecord(), ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
+		this.role = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.ROLE_LIST);
 		this.tenantSet = this.addItemSetProperty(this.getRepository().getTenantSetType());
-		this.needPasswordChange = this.addSimpleProperty(this.dbRecord, ObjUserFields.NEED_PASSWORD_CHANGE);
-		this.password = this.addSimpleProperty(this.dbRecord, ObjUserFields.PASSWORD);
+		this.needPasswordChange = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.NEED_PASSWORD_CHANGE);
+		this.password = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.PASSWORD);
 	}
 
 	@Override
 	public ObjUserRepository getRepository() {
 		return (ObjUserRepository) super.getRepository();
-	}
-
-	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjTenantFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjTenantFields.TENANT_ID, tenantId);
 	}
 
 	@Override
@@ -80,7 +70,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	@Override
 	public CodeUserRole getRole() {
-		return CodeUserRoleEnum.getUserRole(this.dbRecord.getValue(ObjUserFields.ROLE_LIST));
+		return CodeUserRoleEnum.getUserRole(this.extnDbRecord().getValue(ObjUserFields.ROLE_LIST));
 	}
 
 	@Override
@@ -90,12 +80,12 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	@Override
 	public void setRole(CodeUserRole role) {
-		this.dbRecord.setValue(ObjUserFields.ROLE_LIST, role == null ? null : role.getId());
+		this.extnDbRecord().setValue(ObjUserFields.ROLE_LIST, role == null ? null : role.getId());
 	}
 
 	@Override
 	public void setPassword(String password) {
-		this.dbRecord.setValue(ObjUserFields.PASSWORD, this.getRepository().getPasswordEncoder().encode(password));
+		this.extnDbRecord().setValue(ObjUserFields.PASSWORD, this.getRepository().getPasswordEncoder().encode(password));
 	}
 
 	@Override
@@ -104,12 +94,6 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		if (this.getAvatarImageId() == null) {
 			this.addAvatarImage();
 		}
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override

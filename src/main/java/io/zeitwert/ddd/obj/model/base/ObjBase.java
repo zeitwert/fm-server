@@ -28,7 +28,9 @@ import io.zeitwert.ddd.session.model.RequestContext;
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final ObjRepository<? extends Obj, ? extends TableRecord<?>> repository;
-	private final UpdatableRecord<?> objDbRecord;
+
+	private final UpdatableRecord<?> baseDbRecord;
+	private final UpdatableRecord<?> extnDbRecord;
 
 	private final SimpleProperty<Integer> id;
 	private final ReferenceProperty<ObjTenant> tenant;
@@ -46,21 +48,24 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final PartListProperty<ObjPartTransition> transitionList;
 
-	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, UpdatableRecord<?> objDbRecord) {
+	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository,
+			UpdatableRecord<?> baseDbRecord,
+			UpdatableRecord<?> extnDbRecord) {
 		this.repository = repository;
-		this.objDbRecord = objDbRecord;
-		this.id = this.addSimpleProperty(objDbRecord, ObjFields.ID);
-		this.tenant = this.addReferenceProperty(objDbRecord, ObjFields.TENANT_ID, ObjTenant.class);
-		this.owner = this.addReferenceProperty(objDbRecord, ObjFields.OWNER_ID, ObjUser.class);
-		this.caption = this.addSimpleProperty(objDbRecord, ObjFields.CAPTION);
-		this.version = this.addSimpleProperty(objDbRecord, ObjFields.VERSION);
-		this.createdByUser = this.addReferenceProperty(objDbRecord, ObjFields.CREATED_BY_USER_ID, ObjUser.class);
-		this.createdAt = this.addSimpleProperty(objDbRecord, ObjFields.CREATED_AT);
-		this.modifiedByUser = this.addReferenceProperty(objDbRecord, ObjFields.MODIFIED_BY_USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(objDbRecord, ObjFields.MODIFIED_AT);
-		this.objTypeId = this.addSimpleProperty(objDbRecord, ObjFields.OBJ_TYPE_ID);
-		this.closedByUser = this.addReferenceProperty(objDbRecord, ObjFields.CLOSED_BY_USER_ID, ObjUser.class);
-		this.closedAt = this.addSimpleProperty(objDbRecord, ObjFields.CLOSED_AT);
+		this.baseDbRecord = baseDbRecord;
+		this.extnDbRecord = extnDbRecord;
+		this.id = this.addSimpleProperty(baseDbRecord, ObjFields.ID);
+		this.tenant = this.addReferenceProperty(baseDbRecord, ObjFields.TENANT_ID, ObjTenant.class);
+		this.owner = this.addReferenceProperty(baseDbRecord, ObjFields.OWNER_ID, ObjUser.class);
+		this.caption = this.addSimpleProperty(baseDbRecord, ObjFields.CAPTION);
+		this.version = this.addSimpleProperty(baseDbRecord, ObjFields.VERSION);
+		this.createdByUser = this.addReferenceProperty(baseDbRecord, ObjFields.CREATED_BY_USER_ID, ObjUser.class);
+		this.createdAt = this.addSimpleProperty(baseDbRecord, ObjFields.CREATED_AT);
+		this.modifiedByUser = this.addReferenceProperty(baseDbRecord, ObjFields.MODIFIED_BY_USER_ID, ObjUser.class);
+		this.modifiedAt = this.addSimpleProperty(baseDbRecord, ObjFields.MODIFIED_AT);
+		this.objTypeId = this.addSimpleProperty(baseDbRecord, ObjFields.OBJ_TYPE_ID);
+		this.closedByUser = this.addReferenceProperty(baseDbRecord, ObjFields.CLOSED_BY_USER_ID, ObjUser.class);
+		this.closedAt = this.addSimpleProperty(baseDbRecord, ObjFields.CLOSED_AT);
 		this.transitionList = this.addPartListProperty(repository.getTransitionListType());
 	}
 
@@ -84,8 +89,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.repository;
 	}
 
-	protected final UpdatableRecord<?> getObjDbRecord() {
-		return this.objDbRecord;
+	protected final UpdatableRecord<?> baseDbRecord() {
+		return this.baseDbRecord;
+	}
+
+	protected final UpdatableRecord<?> extnDbRecord() {
+		return this.extnDbRecord;
 	}
 
 	@Override
@@ -94,13 +103,20 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId) {
+	public final void doInit(Integer objId, Integer tenantId) {
 		super.doInit(objId, tenantId);
 		try {
 			this.disableCalc();
 			this.objTypeId.setValue(this.getRepository().getAggregateType().getId());
 			this.id.setValue(objId);
 			this.tenant.setId(tenantId);
+			if (this.extnDbRecord() != null) {
+				this.extnDbRecord().setValue(ObjExtnFields.OBJ_ID, objId);
+				// obj_tenant does not have a tenant_id field
+				if (this.extnDbRecord().field(ObjExtnFields.TENANT_ID) != null) {
+					this.extnDbRecord().setValue(ObjExtnFields.TENANT_ID, tenantId);
+				}
+			}
 		} finally {
 			this.enableCalc();
 		}
@@ -155,9 +171,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public void doStore() {
+	public final void doStore() {
 		super.doStore();
-		this.getObjDbRecord().store();
+		this.baseDbRecord().store();
+		if (this.extnDbRecord() != null) {
+			this.extnDbRecord().store();
+		}
 	}
 
 	@Override

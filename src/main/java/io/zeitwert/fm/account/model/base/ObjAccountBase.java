@@ -31,8 +31,6 @@ import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<String> key;
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
@@ -45,32 +43,25 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	protected ObjAccountBase(ObjAccountRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> accountRecord) {
-		super(repository, objRecord);
-		this.dbRecord = accountRecord;
-		this.key = this.addSimpleProperty(this.dbRecord, ObjAccountFields.KEY);
-		this.name = this.addSimpleProperty(this.dbRecord, ObjAccountFields.NAME);
-		this.description = this.addSimpleProperty(this.dbRecord, ObjAccountFields.DESCRIPTION);
-		this.accountType = this.addEnumProperty(this.dbRecord, ObjAccountFields.ACCOUNT_TYPE_ID,
+		super(repository, objRecord, accountRecord);
+		this.key = this.addSimpleProperty(this.extnDbRecord(), ObjAccountFields.KEY);
+		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjAccountFields.NAME);
+		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjAccountFields.DESCRIPTION);
+		this.accountType = this.addEnumProperty(this.extnDbRecord(), ObjAccountFields.ACCOUNT_TYPE_ID,
 				CodeAccountTypeEnum.class);
-		this.clientSegment = this.addEnumProperty(this.dbRecord, ObjAccountFields.CLIENT_SEGMENT_ID,
+		this.clientSegment = this.addEnumProperty(this.extnDbRecord(), ObjAccountFields.CLIENT_SEGMENT_ID,
 				CodeClientSegmentEnum.class);
-		this.referenceCurrency = this.addEnumProperty(this.dbRecord, ObjAccountFields.REFERENCE_CURRENCY_ID,
+		this.referenceCurrency = this.addEnumProperty(this.extnDbRecord(), ObjAccountFields.REFERENCE_CURRENCY_ID,
 				CodeCurrencyEnum.class);
-		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjAccountFields.INFLATION_RATE);
-		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
-		this.mainContact = this.addReferenceProperty(this.dbRecord, ObjAccountFields.MAIN_CONTACT_ID, ObjContact.class);
+		this.inflationRate = this.addSimpleProperty(this.extnDbRecord(), ObjAccountFields.INFLATION_RATE);
+		this.logoImage = this.addReferenceProperty(this.extnDbRecord(), ObjAccountFields.LOGO_IMAGE, ObjDocument.class);
+		this.mainContact = this.addReferenceProperty(this.extnDbRecord(), ObjAccountFields.MAIN_CONTACT_ID,
+				ObjContact.class);
 	}
 
 	@Override
 	public ObjAccountRepository getRepository() {
 		return (ObjAccountRepository) super.getRepository();
-	}
-
-	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjAccountFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjAccountFields.TENANT_ID, tenantId);
 	}
 
 	@Override
@@ -93,12 +84,10 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
+	public void doAfterStore() {
 		if (super.account.getId() == null) {
 			super.account.setId(this.getId());
-			super.doStore();
+			this.baseDbRecord().store();
 		}
 	}
 

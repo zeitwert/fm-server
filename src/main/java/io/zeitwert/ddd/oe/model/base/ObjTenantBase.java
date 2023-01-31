@@ -36,29 +36,21 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	protected final SimpleProperty<BigDecimal> inflationRate;
 	protected final ReferenceProperty<ObjDocument> logoImage;
 
-	private final UpdatableRecord<?> dbRecord;
-
 	public ObjTenantBase(ObjTenantRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> tenantRecord) {
-		super(repository, objRecord);
-		this.dbRecord = tenantRecord;
-		this.tenantType = this.addEnumProperty(this.dbRecord, ObjTenantFields.TENANT_TYPE_ID, CodeTenantTypeEnum.class);
-		this.name = this.addSimpleProperty(this.dbRecord, ObjTenantFields.NAME);
-		this.extlKey = this.addSimpleProperty(this.dbRecord, ObjTenantFields.EXTL_KEY);
-		this.description = this.addSimpleProperty(this.dbRecord, ObjTenantFields.DESCRIPTION);
-		this.inflationRate = this.addSimpleProperty(this.dbRecord, ObjTenantFields.INFLATION_RATE);
-		this.logoImage = this.addReferenceProperty(this.dbRecord, ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
+		super(repository, objRecord, tenantRecord);
+		this.tenantType = this.addEnumProperty(this.extnDbRecord(), ObjTenantFields.TENANT_TYPE_ID,
+				CodeTenantTypeEnum.class);
+		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.NAME);
+		this.extlKey = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.EXTL_KEY);
+		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.DESCRIPTION);
+		this.inflationRate = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.INFLATION_RATE);
+		this.logoImage = this.addReferenceProperty(this.extnDbRecord(), ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
 	}
 
 	@Override
 	public ObjTenantRepository getRepository() {
 		return (ObjTenantRepository) super.getRepository();
-	}
-
-	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, objId); // tenant.tenantId = tenant.id
-		this.dbRecord.setValue(ObjTenantFields.OBJ_ID, objId);
 	}
 
 	@Override
@@ -78,12 +70,6 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 		if (this.getLogoImageId() == null) {
 			this.addLogoImage();
 		}
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override

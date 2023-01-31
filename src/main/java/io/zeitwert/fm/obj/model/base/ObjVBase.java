@@ -8,7 +8,7 @@ import org.jooq.UpdatableRecord;
 public abstract class ObjVBase extends ObjBase {
 
 	public ObjVBase(ObjVRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> extnRecord) {
-		super(repository, objRecord);
+		super(repository, objRecord, extnRecord);
 	}
 
 }

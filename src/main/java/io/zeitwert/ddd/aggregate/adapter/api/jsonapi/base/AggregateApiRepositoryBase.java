@@ -16,7 +16,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
@@ -30,11 +30,11 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 	private final RequestContext requestCtx;
 	private final ObjUserCache userCache;
 	private final AggregateRepository<A, V> repository;
-	private final AggregateDtoAdapter<A, V, D> dtoAdapter;
+	private final AggregateDtoAdapterBase<A, V, D> dtoAdapter;
 
 	public AggregateApiRepositoryBase(Class<D> dtoClass, RequestContext requestCtx, ObjUserCache userCache,
 			AggregateRepository<A, V> repository,
-			AggregateDtoAdapter<A, V, D> dtoAdapter) {
+			AggregateDtoAdapterBase<A, V, D> dtoAdapter) {
 		super(dtoClass);
 		this.requestCtx = requestCtx;
 		this.userCache = userCache;

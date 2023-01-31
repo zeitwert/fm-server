@@ -5,13 +5,13 @@ import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapter;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
-public final class ObjUserDtoAdapter extends ObjDtoAdapter<ObjUser, TableRecord<?>, ObjUserDto> {
+public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, TableRecord<?>, ObjUserDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 	private static ObjUserDtoAdapter INSTANCE;

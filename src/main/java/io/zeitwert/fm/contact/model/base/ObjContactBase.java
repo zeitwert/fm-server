@@ -25,8 +25,6 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 
 public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final EnumProperty<CodeContactRole> contactRole;
 	protected final EnumProperty<CodeSalutation> salutation;
 	protected final EnumProperty<CodeTitle> title;
@@ -42,18 +40,19 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	protected ObjContactBase(ObjContactRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> contactRecord) {
-		super(repository, objRecord);
-		this.dbRecord = contactRecord;
-		this.contactRole = this.addEnumProperty(this.dbRecord, ObjContactFields.CONTACT_ROLE_ID, CodeContactRoleEnum.class);
-		this.salutation = this.addEnumProperty(this.dbRecord, ObjContactFields.SALUTATION_ID, CodeSalutationEnum.class);
-		this.title = this.addEnumProperty(this.dbRecord, ObjContactFields.TITLE_ID, CodeTitleEnum.class);
-		this.firstName = this.addSimpleProperty(this.dbRecord, ObjContactFields.FIRST_NAME);
-		this.lastName = this.addSimpleProperty(this.dbRecord, ObjContactFields.LAST_NAME);
-		this.birthDate = this.addSimpleProperty(this.dbRecord, ObjContactFields.BIRTH_DATE);
-		this.phone = this.addSimpleProperty(this.dbRecord, ObjContactFields.PHONE);
-		this.mobile = this.addSimpleProperty(this.dbRecord, ObjContactFields.MOBILE);
-		this.email = this.addSimpleProperty(this.dbRecord, ObjContactFields.EMAIL);
-		this.description = this.addSimpleProperty(this.dbRecord, ObjContactFields.DESCRIPTION);
+		super(repository, objRecord, contactRecord);
+		this.contactRole = this.addEnumProperty(this.extnDbRecord(), ObjContactFields.CONTACT_ROLE_ID,
+				CodeContactRoleEnum.class);
+		this.salutation = this.addEnumProperty(this.extnDbRecord(), ObjContactFields.SALUTATION_ID,
+				CodeSalutationEnum.class);
+		this.title = this.addEnumProperty(this.extnDbRecord(), ObjContactFields.TITLE_ID, CodeTitleEnum.class);
+		this.firstName = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.FIRST_NAME);
+		this.lastName = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.LAST_NAME);
+		this.birthDate = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.BIRTH_DATE);
+		this.phone = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.PHONE);
+		this.mobile = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.MOBILE);
+		this.email = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.EMAIL);
+		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjContactFields.DESCRIPTION);
 		this.addressList = this.addPartListProperty(this.getRepository().getAddressListType());
 	}
 
@@ -63,23 +62,10 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjContactFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjContactFields.TENANT_ID, tenantId);
-	}
-
-	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjContactPartAddressRepository addressRepo = this.getRepository().getAddressRepository();
 		this.addressList.loadParts(addressRepo.getParts(this, this.getRepository().getAddressListType()));
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -94,7 +80,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
-		this.dbRecord.setValue(ObjContactFields.ACCOUNT_ID, id);
+		this.extnDbRecord().setValue(ObjContactFields.ACCOUNT_ID, id);
 	}
 
 	private ObjContactPartAddress addAddress(CodeAddressChannel addressChannel) {

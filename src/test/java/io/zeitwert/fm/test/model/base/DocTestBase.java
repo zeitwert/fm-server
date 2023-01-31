@@ -26,8 +26,6 @@ import org.jooq.UpdatableRecord;
 
 public abstract class DocTestBase extends FMDocBase implements DocTest {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<String> shortText;
 	protected final SimpleProperty<String> longText;
 	protected final SimpleProperty<LocalDate> date;
@@ -42,18 +40,17 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	// protected final PartListProperty<DocTestPartNode> nodeList;
 
 	protected DocTestBase(DocTestRepository repository, UpdatableRecord<?> docRecord, UpdatableRecord<?> testRecord) {
-		super(repository, docRecord);
-		this.dbRecord = testRecord;
-		this.shortText = this.addSimpleProperty(this.dbRecord, DocTestFields.SHORT_TEXT);
-		this.longText = this.addSimpleProperty(this.dbRecord, DocTestFields.LONG_TEXT);
-		this.date = this.addSimpleProperty(this.dbRecord, DocTestFields.DATE);
-		this.int_ = this.addSimpleProperty(this.dbRecord, DocTestFields.INT);
-		this.isDone = this.addSimpleProperty(this.dbRecord, DocTestFields.IS_DONE);
-		this.json = this.addSimpleProperty(this.dbRecord, DocTestFields.JSON);
-		this.nr = this.addSimpleProperty(this.dbRecord, DocTestFields.NR);
-		this.country = this.addEnumProperty(this.dbRecord, DocTestFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.refObj = this.addReferenceProperty(this.dbRecord, DocTestFields.REF_OBJ_ID, ObjTest.class);
-		this.refDoc = this.addReferenceProperty(this.dbRecord, DocTestFields.REF_DOC_ID, DocTest.class);
+		super(repository, docRecord, testRecord);
+		this.shortText = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.SHORT_TEXT);
+		this.longText = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.LONG_TEXT);
+		this.date = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.DATE);
+		this.int_ = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.INT);
+		this.isDone = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.IS_DONE);
+		this.json = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.JSON);
+		this.nr = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.NR);
+		this.country = this.addEnumProperty(this.extnDbRecord(), DocTestFields.COUNTRY_ID, CodeCountryEnum.class);
+		this.refObj = this.addReferenceProperty(this.extnDbRecord(), DocTestFields.REF_OBJ_ID, ObjTest.class);
+		this.refDoc = this.addReferenceProperty(this.extnDbRecord(), DocTestFields.REF_DOC_ID, DocTest.class);
 		this.countrySet = this.addEnumSetProperty(this.getRepository().getCountrySetType(), CodeCountryEnum.class);
 		// this.nodeList =
 		// this.addPartListProperty(this.getRepository().getNodeListType());
@@ -65,10 +62,7 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	}
 
 	@Override
-	public void doInit(Integer docId, Integer tenantId) {
-		super.doInit(docId, tenantId);
-		this.dbRecord.setValue(DocTestFields.DOC_ID, docId);
-		this.dbRecord.setValue(DocTestFields.TENANT_ID, tenantId);
+	public void doInitWorkflow() {
 		CodeCaseStage initStage = CodeCaseStageEnum.getCaseStage("test.new");
 		this.doInitWorkflow("test", initStage);
 	}
@@ -82,12 +76,6 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 		// this.getRepository().getNodeRepository();
 		// this.nodeList.loadParts(nodeRepo.getParts(this,
 		// this.getRepository().getNodeListType()));
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override

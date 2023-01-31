@@ -8,7 +8,7 @@ import org.jooq.UpdatableRecord;
 public abstract class DocVBase extends DocBase {
 
 	public DocVBase(DocVRepository repository, UpdatableRecord<?> docRecord, UpdatableRecord<?> extnRecord) {
-		super(repository, docRecord);
+		super(repository, docRecord, extnRecord);
 	}
 
 }

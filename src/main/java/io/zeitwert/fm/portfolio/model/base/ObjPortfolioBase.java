@@ -27,8 +27,6 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 
 public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio {
 
-	private final UpdatableRecord<?> dbRecord;
-
 	protected final SimpleProperty<String> name;
 	protected final SimpleProperty<String> description;
 	protected final SimpleProperty<String> portfolioNr;
@@ -38,11 +36,10 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 
 	protected ObjPortfolioBase(ObjPortfolioRepository repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> portfolioRecord) {
-		super(repository, objRecord);
-		this.dbRecord = portfolioRecord;
-		this.name = this.addSimpleProperty(this.dbRecord, ObjPortfolioFields.NAME);
-		this.description = this.addSimpleProperty(this.dbRecord, ObjPortfolioFields.DESCRIPTION);
-		this.portfolioNr = this.addSimpleProperty(this.dbRecord, ObjPortfolioFields.PORTFOLIO_NR);
+		super(repository, objRecord, portfolioRecord);
+		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjPortfolioFields.NAME);
+		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjPortfolioFields.DESCRIPTION);
+		this.portfolioNr = this.addSimpleProperty(this.extnDbRecord(), ObjPortfolioFields.PORTFOLIO_NR);
 		this.includeSet = this.addReferenceSetProperty(this.getRepository().getIncludeSetType(), ObjBuilding.class);
 		this.excludeSet = this.addReferenceSetProperty(this.getRepository().getExcludeSetType(), ObjBuilding.class);
 		this.buildingSet = this.addReferenceSetProperty(this.getRepository().getBuildingSetType(), ObjBuilding.class);
@@ -54,25 +51,12 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
-	public void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		this.dbRecord.setValue(ObjPortfolioFields.OBJ_ID, objId);
-		this.dbRecord.setValue(ObjPortfolioFields.TENANT_ID, tenantId);
-	}
-
-	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
 		this.includeSet.loadReferences(itemRepo.getParts(this, this.getRepository().getIncludeSetType()));
 		this.excludeSet.loadReferences(itemRepo.getParts(this, this.getRepository().getExcludeSetType()));
 		this.buildingSet.loadReferences(itemRepo.getParts(this, this.getRepository().getBuildingSetType()));
-	}
-
-	@Override
-	public void doStore() {
-		super.doStore();
-		this.dbRecord.store();
 	}
 
 	@Override
@@ -90,7 +74,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
-		this.dbRecord.setValue(ObjPortfolioFields.ACCOUNT_ID, id);
+		this.extnDbRecord().setValue(ObjPortfolioFields.ACCOUNT_ID, id);
 	}
 
 	@Override

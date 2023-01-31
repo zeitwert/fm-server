@@ -1,7 +1,7 @@
 
 package io.zeitwert.ddd.obj.adapter.api.jsonapi.base;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjMetaDto;
@@ -12,8 +12,8 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 
 import org.jooq.TableRecord;
 
-public abstract class ObjDtoAdapter<O extends Obj, V extends TableRecord<?>, D extends ObjDtoBase<O>>
-		extends AggregateDtoAdapter<O, V, D> {
+public abstract class ObjDtoAdapterBase<O extends Obj, V extends TableRecord<?>, D extends ObjDtoBase<O>>
+		extends AggregateDtoAdapterBase<O, V, D> {
 
 	@Override
 	public void toAggregate(D dto, O obj) {

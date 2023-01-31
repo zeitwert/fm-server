@@ -1,6 +1,6 @@
 package io.zeitwert.ddd.doc.adapter.api.jsonapi.base;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapter;
+import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocMetaDto;
@@ -14,8 +14,8 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 
 import org.jooq.TableRecord;
 
-public abstract class DocDtoAdapter<A extends Doc, V extends TableRecord<?>, D extends DocDtoBase<A>>
-		extends AggregateDtoAdapter<A, V, D> {
+public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>, D extends DocDtoBase<A>>
+		extends AggregateDtoAdapterBase<A, V, D> {
 
 	@Override
 	public void toAggregate(D dto, A doc) {
