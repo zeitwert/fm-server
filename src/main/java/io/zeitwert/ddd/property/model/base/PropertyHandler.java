@@ -2,6 +2,7 @@ package io.zeitwert.ddd.property.model.base;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.enums.model.Enumerated;
+import io.zeitwert.ddd.property.model.EntityWithProperties;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
@@ -119,22 +120,24 @@ public class PropertyHandler implements MethodHandler {
 				}
 			}
 		} catch (NoSuchFieldException x) {
-			throw new NoSuchMethodException(this.getClass().getSimpleName() + "." + methodName);
+			throw new NoSuchMethodException(self.getClass().getSimpleName() + "." + methodName);
 		}
 		return null;
 	}
 
 	private Property<?> getProperty(Object obj, String fieldName)
 			throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		Field field = null;
-		for (Class<?> c = obj.getClass(); c != null; c = c.getSuperclass()) {
+		EntityWithProperties entity = (EntityWithProperties) obj;
+		Property<?> property = entity.getProperty(fieldName);
+		if (property != null) {
+			return property;
+		}
+		for (Class<?> c = obj.getClass().getSuperclass(); c != null; c = c.getSuperclass()) {
 			try {
-				field = c.getDeclaredField(fieldName);
-			} catch (NoSuchFieldException | SecurityException e) {
-			}
-			if (field != null) {
+				Field field = c.getDeclaredField(fieldName);
 				field.setAccessible(true);
 				return (Property<?>) field.get(obj);
+			} catch (NoSuchFieldException | SecurityException e) {
 			}
 		}
 		if (fieldName.endsWith("Id")) {

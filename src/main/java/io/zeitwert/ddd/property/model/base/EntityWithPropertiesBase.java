@@ -51,11 +51,6 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	@Override
-	public Map<String, Property<?>> getPropertyMap() {
-		return Map.copyOf(this.propertyMap);
-	}
-
-	@Override
 	public List<Property<?>> getProperties() {
 		return List.copyOf(this.properties);
 	}
