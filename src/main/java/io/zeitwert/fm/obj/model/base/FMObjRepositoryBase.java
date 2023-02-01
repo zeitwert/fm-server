@@ -3,26 +3,22 @@ package io.zeitwert.fm.obj.model.base;
 
 import org.jooq.DSLContext;
 import org.jooq.TableRecord;
-import org.jooq.UpdatableRecord;
-import org.jooq.exception.NoDataFoundException;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.base.ObjPropertyProviderBase;
+import io.zeitwert.ddd.obj.model.base.ObjPersistenceProviderBase;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
-import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
-import io.zeitwert.fm.obj.model.db.Tables;
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 
 public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord<?>> extends ObjRepositoryBase<O, V>
 		implements FMObjRepository<O, V> {
 
-	private PropertyProvider propertyProvider = new FMObjPropertyProviderBase();
+	private PersistenceProvider<O> persistenceProvider = new FMObjPersistenceProviderBase<O>(null, null, null);
 	private ObjNoteRepository noteRepository;
 	private DocTaskRepository taskRepository;
 
@@ -43,12 +39,12 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord
 	}
 
 	@Override
-	public PropertyProvider getPropertyProvider() { // TODO: remove
-		PropertyProvider pp = super.getPropertyProvider();
-		if (pp != null && !ObjPropertyProviderBase.class.equals(pp.getClass())) {
+	public PersistenceProvider<O> getPersistenceProvider() { // TODO: remove
+		PersistenceProvider<O> pp = super.getPersistenceProvider();
+		if (pp != null && !ObjPersistenceProviderBase.class.equals(pp.getClass())) {
 			return pp;
 		}
-		return this.propertyProvider;
+		return this.persistenceProvider;
 	}
 
 	@Override
@@ -65,18 +61,6 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord
 			this.taskRepository = this.getAppContext().getBean(DocTaskRepository.class);
 		}
 		return this.taskRepository;
-	}
-
-	protected O doCreate(UpdatableRecord<?> extnRecord) {
-		return this.newAggregate(this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
-	}
-
-	protected O doLoad(Integer objId, UpdatableRecord<?> extnRecord) {
-		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
-		if (objRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.newAggregate(objRecord, extnRecord);
 	}
 
 }

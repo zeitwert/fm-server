@@ -6,8 +6,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.jooq.UpdatableRecord;
-
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -21,6 +20,7 @@ import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -42,9 +42,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final ReferenceProperty<ObjContact> mainContact= this.addReferenceProperty("mainContact", ObjContact.class);
 	//@formatter:on
 
-	protected ObjAccountBase(ObjAccountRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> accountRecord) {
-		super(repository, objRecord, accountRecord);
+	protected ObjAccountBase(ObjAccountRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
@@ -56,6 +55,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		assertThis(this.getId() != null, "id must not be null after create");
+		super.account.setId(this.getId());
 		this.addLogoImage();
 	}
 
@@ -67,9 +67,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	@Override
 	public void doBeforeStore() {
 		super.doBeforeStore();
-		if (super.account.getId() == null) {
-			super.account.setId(this.getId());
-		}
 		if (this.getLogoImageId() == null) {
 			this.addLogoImage();
 		}
@@ -94,8 +91,8 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	@Override
 	public List<ObjContact> getContacts() {
 		ObjContactRepository contactRepo = (ObjContactRepository) this.getAppContext().getRepository(ObjContact.class);
-		return contactRepo.getByForeignKey("accountId", this.getId()).stream().map(c -> contactRepo.get(c.getId()))
-				.toList();
+		List<ObjContactVRecord> contactIds = contactRepo.getByForeignKey("accountId", this.getId());
+		return contactIds.stream().map(c -> contactRepo.get(c.getId())).toList();
 	}
 
 	@Override
@@ -105,7 +102,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	private void calcCaption() {
-		this.setCaption(this.getName());
+		this.caption.setValue(this.getName());
 	}
 
 	private void addLogoImage() {

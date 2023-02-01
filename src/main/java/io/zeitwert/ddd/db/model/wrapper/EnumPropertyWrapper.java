@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.wrapper;
+package io.zeitwert.ddd.db.model.wrapper;
 
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -15,7 +15,7 @@ public class EnumPropertyWrapper<E extends Enumerated> extends PropertyWrapperBa
 	@Override
 	public EnumProperty<E> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPropertyProvider().getEnumProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPersistenceProvider().getEnumProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

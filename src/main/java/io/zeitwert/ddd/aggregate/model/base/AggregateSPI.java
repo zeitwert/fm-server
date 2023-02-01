@@ -1,10 +1,19 @@
 package io.zeitwert.ddd.aggregate.model.base;
 
+import io.zeitwert.ddd.db.model.AggregateState;
+
 /**
  * This interface defines the internal callbacks for an Aggregate
  * implementation.
  */
 public interface AggregateSPI {
+
+	/**
+	 * Get the persistence provider speicific aggregate state.
+	 * 
+	 * @return aggregate state
+	 */
+	AggregateState getAggregateState();
 
 	/**
 	 * Initialise the database records of an Aggregate with some basic fields (id,

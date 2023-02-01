@@ -1,14 +1,13 @@
 
 package io.zeitwert.fm.test.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -22,7 +21,6 @@ import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.base.ObjTestBase;
 import io.zeitwert.fm.test.model.base.ObjTestFields;
 import io.zeitwert.fm.test.model.db.Tables;
-import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
 @Component("objTestRepository")
@@ -80,17 +78,14 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	@Override
 	public ObjTest doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_TEST));
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
-	public ObjTest doLoad(Integer objId) {
-		requireThis(objId != null, "objId not null");
-		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
-		if (testRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.doLoad(objId, testRecord);
+	public ObjTest doLoad(Integer id) {
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override

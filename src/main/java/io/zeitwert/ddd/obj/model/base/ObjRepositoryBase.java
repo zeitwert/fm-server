@@ -5,6 +5,8 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableRecord;
+import org.jooq.UpdatableRecord;
+import org.jooq.exception.NoDataFoundException;
 import org.jooq.Record;
 
 import io.crnk.core.queryspec.FilterOperator;
@@ -13,14 +15,16 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.util.SqlUtils;
+import io.zeitwert.fm.obj.model.db.Tables;
+import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 
 import java.util.List;
 
@@ -30,7 +34,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 
 	private static final String OBJ_ID_SEQ = "obj_id_seq";
 
-	private PropertyProvider propertyProvider = new ObjPropertyProviderBase();
+	private PersistenceProvider<O> persistenceProvider = new ObjPersistenceProviderBase<O>(null, null, null);
 	private ObjPartTransitionRepository transitionRepository;
 	private CodePartListType transitionListType;
 	private ObjPartItemRepository itemRepository;
@@ -46,12 +50,12 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 	}
 
 	@Override
-	public PropertyProvider getPropertyProvider() { // TODO: remove
-		PropertyProvider pp = super.getPropertyProvider();
+	public PersistenceProvider<O> getPersistenceProvider() { // TODO: remove
+		PersistenceProvider<O> pp = super.getPersistenceProvider();
 		if (pp != null) {
 			return pp;
 		}
-		return this.propertyProvider;
+		return this.persistenceProvider;
 	}
 
 	@Override
@@ -86,6 +90,18 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 	@Override
 	public Integer nextAggregateId() {
 		return this.getDSLContext().nextval(OBJ_ID_SEQ).intValue();
+	}
+
+	protected O doCreate(UpdatableRecord<?> extnRecord) {
+		return this.newAggregate(this.getDSLContext().newRecord(Tables.OBJ), extnRecord);
+	}
+
+	protected O doLoad(Integer objId, UpdatableRecord<?> extnRecord) {
+		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
+		if (objRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return this.newAggregate(objRecord, extnRecord);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.wrapper;
+package io.zeitwert.ddd.db.model.wrapper;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
@@ -16,7 +16,7 @@ public class ReferencePropertyWrapper<A extends Aggregate> extends PropertyWrapp
 	@Override
 	public ReferenceProperty<A> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPropertyProvider().getReferenceProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPersistenceProvider().getReferenceProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

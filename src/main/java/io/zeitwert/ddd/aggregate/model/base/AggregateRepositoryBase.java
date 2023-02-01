@@ -31,9 +31,9 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -93,8 +93,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		return this.dslContext;
 	}
 
-	public /* final */ PropertyProvider getPropertyProvider() {
-		return AppContext.getInstance().getPropertyProvider(this.intfClass);
+	@SuppressWarnings("unchecked")
+	public /* final */ PersistenceProvider<A> getPersistenceProvider() {
+		return (PersistenceProvider<A>) AppContext.getInstance().getPersistenceProvider(this.intfClass);
 	}
 
 	@Override
@@ -141,7 +142,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	public final A create(Integer tenantId) {
 
 		Integer aggregateId = this.nextAggregateId();
-		A aggregate = this.doCreate();
+		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
+		A aggregate = persistenceProvider != null && persistenceProvider.isReal() ? persistenceProvider.doCreate()
+				: this.doCreate();
 
 		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
 		((AggregateSPI) aggregate).doInit(aggregateId, tenantId);
@@ -182,7 +185,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	public final A get(Integer id) {
 
 		requireThis(id != null, "id not null");
-		A aggregate = this.doLoad(id);
+		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
+		A aggregate = persistenceProvider != null && persistenceProvider.isReal() ? persistenceProvider.doLoad(id)
+				: this.doLoad(id);
 
 		this.doInitParts(aggregate);
 		this.doLoadParts(aggregate);

@@ -12,6 +12,12 @@ import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
+import io.zeitwert.ddd.db.model.wrapper.EnumPropertyWrapper;
+import io.zeitwert.ddd.db.model.wrapper.EnumSetPropertyWrapper;
+import io.zeitwert.ddd.db.model.wrapper.PartListPropertyWrapper;
+import io.zeitwert.ddd.db.model.wrapper.ReferencePropertyWrapper;
+import io.zeitwert.ddd.db.model.wrapper.ReferenceSetPropertyWrapper;
+import io.zeitwert.ddd.db.model.wrapper.SimplePropertyWrapper;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
@@ -30,12 +36,6 @@ import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
-import io.zeitwert.ddd.property.model.wrapper.EnumPropertyWrapper;
-import io.zeitwert.ddd.property.model.wrapper.EnumSetPropertyWrapper;
-import io.zeitwert.ddd.property.model.wrapper.PartListPropertyWrapper;
-import io.zeitwert.ddd.property.model.wrapper.ReferencePropertyWrapper;
-import io.zeitwert.ddd.property.model.wrapper.ReferenceSetPropertyWrapper;
-import io.zeitwert.ddd.property.model.wrapper.SimplePropertyWrapper;
 
 public abstract class EntityWithPropertiesBase implements EntityWithProperties, EntityWithPropertiesSPI {
 
@@ -79,10 +79,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <T> SimpleProperty<T> addSimpleProperty(String name, Class<T> type) {
 		SimpleProperty<T> property;
-		if (this.getPropertyProvider() == null) {
+		if (this.getPersistenceProvider() == null) {
 			property = new SimplePropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPropertyProvider().getSimpleProperty(this, name, type);
+			property = this.getPersistenceProvider().getSimpleProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -98,10 +98,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumProperty<E> addEnumProperty(String name, Class<E> type) {
 		EnumProperty<E> property;
-		if (this.getPropertyProvider() == null) {
+		if (this.getPersistenceProvider() == null) {
 			property = new EnumPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPropertyProvider().getEnumProperty(this, name, type);
+			property = this.getPersistenceProvider().getEnumProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -118,10 +118,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(String name, Class<E> type) {
 		EnumSetProperty<E> property;
-		if (this.getPropertyProvider() == null) {
+		if (this.getPersistenceProvider() == null) {
 			property = new EnumSetPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPropertyProvider().getEnumSetProperty(this, name, type);
+			property = this.getPersistenceProvider().getEnumSetProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -138,10 +138,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <A extends Aggregate> ReferenceProperty<A> addReferenceProperty(String name, Class<A> type) {
 		ReferenceProperty<A> property = null;
-		if (this.getPropertyProvider() == null) {
+		if (this.getPersistenceProvider() == null) {
 			property = new ReferencePropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPropertyProvider().getReferenceProperty(this, name, type);
+			property = this.getPersistenceProvider().getReferenceProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -158,10 +158,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <A extends Aggregate> ReferenceSetProperty<A> addReferenceSetProperty(String name, Class<A> type) {
 		ReferenceSetProperty<A> property;
-		if (this.getPropertyProvider() == null) {
+		if (this.getPersistenceProvider() == null) {
 			property = new ReferenceSetPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPropertyProvider().getReferenceSetProperty(this, name, type);
+			property = this.getPersistenceProvider().getReferenceSetProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -176,10 +176,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <P extends Part<?>> PartListProperty<P> addPartListProperty(String name, Class<P> type) {
 		PartListProperty<P> property;
-		if (this.getPropertyProvider() == null) {
+		if (this.getPersistenceProvider() == null) {
 			property = new PartListPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPropertyProvider().getPartListProperty(this, name, type);
+			property = this.getPersistenceProvider().getPartListProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;

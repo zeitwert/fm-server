@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.wrapper;
+package io.zeitwert.ddd.db.model.wrapper;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class PartListPropertyWrapper<P extends Part<?>> extends PropertyWrapperB
 	@Override
 	public PartListProperty<P> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPropertyProvider().getPartListProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPersistenceProvider().getPartListProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

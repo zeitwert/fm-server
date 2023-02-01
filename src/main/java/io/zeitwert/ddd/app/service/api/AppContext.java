@@ -21,11 +21,11 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.app.service.api.impl.Repositories;
+import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
@@ -41,7 +41,7 @@ public final class AppContext {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final DSLContext dslContext;
 	private final Repositories repos;
-	private final Map<Class<?>, PropertyProvider> propertyProviders = new HashMap<>();
+	private final Map<Class<?>, PersistenceProvider<?>> persistenceProviders = new HashMap<>();
 	private Map<Class<? extends Aggregate>, AggregateCache<?>> cacheByIntf = new HashMap<>();
 	private final Enumerations enums;
 	private final RequestContext requestContext;
@@ -58,13 +58,11 @@ public final class AppContext {
 	}
 
 	@PostConstruct
-	public void initPropertyProviders() {
+	public void initPersistenceProviders() {
 		this.applicationContext
-				.getBeansOfType(PropertyProvider.class, false, true)
+				.getBeansOfType(PersistenceProvider.class, false, true)
 				.values()
-				.forEach(pp -> this.propertyProviders.put(pp.getEntityClass(), pp));
-		this.propertyProviders.values()
-				.forEach(pp -> System.out.println("PP: " + pp.getClass().getName() + " for " + pp.getEntityClass().getName()));
+				.forEach(pp -> this.persistenceProviders.put(pp.getEntityClass(), pp));
 	}
 
 	public static AppContext getInstance() {
@@ -84,8 +82,9 @@ public final class AppContext {
 		return this.repos.getRepository(intfClass);
 	}
 
-	public <A extends Aggregate> PropertyProvider getPropertyProvider(Class<A> intfClass) {
-		return this.propertyProviders.get(intfClass);
+	@SuppressWarnings("unchecked")
+	public <A extends Aggregate> PersistenceProvider<A> getPersistenceProvider(Class<A> intfClass) {
+		return (PersistenceProvider<A>) this.persistenceProviders.get(intfClass);
 	}
 
 	public void addCache(Class<? extends Aggregate> intfClass, AggregateCache<? extends Aggregate> cache) {

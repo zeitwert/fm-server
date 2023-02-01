@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -48,11 +47,7 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 
 	@Override
 	public Obj doLoad(Integer objId) {
-		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
-		if (objRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.newAggregate(objRecord, null);
+		return this.doLoad(objId, null);
 	}
 
 	@Override

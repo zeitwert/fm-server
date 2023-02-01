@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.account.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -18,7 +17,6 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
-import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
@@ -28,16 +26,8 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	private static final String AGGREGATE_TYPE = "obj_account";
 
-	protected ObjAccountRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				ObjAccountRepository.class,
-				ObjAccount.class,
-				ObjAccountBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
+	protected ObjAccountRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE, appContext, dslContext);
 	}
 
 	@Override
@@ -54,18 +44,14 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public ObjAccount doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_ACCOUNT));
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
-	public ObjAccount doLoad(Integer objId) {
-		requireThis(objId != null, "objId not null");
-		ObjAccountRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT,
-				Tables.OBJ_ACCOUNT.OBJ_ID.eq(objId));
-		if (accountRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.doLoad(objId, accountRecord);
+	public ObjAccount doLoad(Integer id) {
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override

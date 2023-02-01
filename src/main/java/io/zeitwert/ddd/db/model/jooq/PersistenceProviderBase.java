@@ -1,10 +1,12 @@
-package io.zeitwert.ddd.aggregate.model.base;
+package io.zeitwert.ddd.db.model.jooq;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
@@ -13,6 +15,8 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.db.model.AggregateState;
+import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
@@ -22,19 +26,21 @@ import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
-import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.ddd.property.model.base.PropertyFilter;
+import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.property.model.impl.EnumPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.EnumSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
+import javassist.util.proxy.ProxyFactory;
 
-public abstract class JooqPropertyProviderBase implements PropertyProvider {
+public abstract class PersistenceProviderBase<A extends Aggregate> implements PersistenceProvider<A> {
 
 	public static enum DbTableType {
 		BASE, EXTN
@@ -66,7 +72,51 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 		}
 	}
 
+	private final DSLContext dslContext;
+	private final Class<? extends AggregateRepository<A, ?>> repoIntfClass;
+	private final ProxyFactory proxyFactory;
+	private final Class<?>[] proxyFactoryParamTypeList;
+
 	private final Map<String, DbConfig> dbConfigMap = new HashMap<>();
+
+	public PersistenceProviderBase(
+			Class<? extends AggregateRepository<A, ?>> repoIntfClass,
+			Class<? extends Aggregate> baseClass,
+			DSLContext dslContext) {
+		this.repoIntfClass = repoIntfClass;
+		this.dslContext = dslContext;
+		this.proxyFactory = new ProxyFactory();
+		this.proxyFactory.setSuperclass(baseClass);
+		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
+		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, AggregateState.class };
+	}
+
+	protected final DSLContext getDSLContext() {
+		return this.dslContext;
+	}
+
+	@Override
+	public boolean isReal() {
+		return false;
+	}
+
+	/**
+	 * Create a new aggregate, used from both create and load to create a new object
+	 */
+	@SuppressWarnings("unchecked")
+	protected final A newAggregate(AggregateState state) {
+		AggregateRepository<A, ?> repo = AppContext.getInstance().getBean(this.repoIntfClass);
+		A aggregate = null;
+		try {
+			aggregate = (A) this.proxyFactory.create(this.proxyFactoryParamTypeList, new Object[] { repo, state },
+					PropertyHandler.INSTANCE);
+		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
+				| InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException(this.getClass().getSimpleName() + ": could not create aggregate");
+		}
+		return aggregate;
+	}
 
 	protected void mapField(String name, DbTableType dbTableType, String fieldName, Class<?> fieldType) {
 		this.dbConfigMap.put(name, new FieldConfig(dbTableType, fieldName, fieldType));
@@ -92,16 +142,10 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 			return null;
 		}
 		assertThis(fieldConfig.fieldType() == type, "field [" + name + "] has matching type");
-		UpdatableRecord<?> baseRecord = ((ObjBase) entity).baseDbRecord();
-		UpdatableRecord<?> extnRecord = ((ObjBase) entity).extnDbRecord();
 		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
-		if (fieldConfig.dbTableType() == DbTableType.EXTN) {
-			assertThis(extnRecord.field(field.getName()) != null, "field [" + name + "] contained in extnRecord");
-		} else if (fieldConfig.dbTableType() == DbTableType.BASE) {
-			assertThis(baseRecord.field(field.getName()) != null, "field [" + name + "] contained in baseRecord");
-		} else {
-			assertThis(false, "field [" + name + "] has valid dbTableType");
-		}
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		assertThis(dbRecord.field(field.getName()) != null, "field [" + name + "] contained in "
+				+ (fieldConfig.dbTableType() == DbTableType.EXTN ? "extnRecord" : "baseRecord"));
 		return field;
 	}
 
@@ -114,12 +158,8 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 	public <T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<T> field = this.checkFieldConfig(fieldConfig, entity, name, type);
-		if (fieldConfig.dbTableType() == DbTableType.EXTN) {
-			return new SimplePropertyImpl<>(entity, ((ObjBase) entity).extnDbRecord(), name, field);
-		} else if (fieldConfig.dbTableType() == DbTableType.BASE) {
-			return new SimplePropertyImpl<>(entity, ((ObjBase) entity).baseDbRecord(), name, field);
-		}
-		return null;
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		return new SimplePropertyImpl<>(entity, dbRecord, name, field);
 	}
 
 	@Override
@@ -128,12 +168,8 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<String> field = this.checkFieldConfig(fieldConfig, entity, name, String.class);
 		Enumeration<E> enumeration = AppContext.getInstance().getEnumeration(enumType);
-		if (fieldConfig.dbTableType() == DbTableType.EXTN) {
-			return new EnumPropertyImpl<>(entity, ((ObjBase) entity).extnDbRecord(), field, enumeration);
-		} else if (fieldConfig.dbTableType() == DbTableType.BASE) {
-			return new EnumPropertyImpl<>(entity, ((ObjBase) entity).baseDbRecord(), field, enumeration);
-		}
-		return null;
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		return new EnumPropertyImpl<>(entity, dbRecord, field, enumeration);
 	}
 
 	@Override
@@ -146,25 +182,22 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 	}
 
 	@Override
-	public <A extends Aggregate> ReferenceProperty<A> getReferenceProperty(EntityWithPropertiesSPI entity, String name,
-			Class<A> aggregateType) {
+	public <Aggr extends Aggregate> ReferenceProperty<Aggr> getReferenceProperty(EntityWithPropertiesSPI entity,
+			String name,
+			Class<Aggr> aggregateType) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<Integer> field = this.checkFieldConfig(fieldConfig, entity, name, Integer.class);
-		AggregateCache<A> cache = AppContext.getInstance().getCache(aggregateType);
-		if (fieldConfig.dbTableType() == DbTableType.EXTN) {
-			return new ReferencePropertyImpl<>(entity, ((ObjBase) entity).extnDbRecord(), field, (id) -> cache.get(id));
-		} else if (fieldConfig.dbTableType() == DbTableType.BASE) {
-			return new ReferencePropertyImpl<>(entity, ((ObjBase) entity).baseDbRecord(), field, (id) -> cache.get(id));
-		}
-		return null;
+		AggregateCache<Aggr> cache = AppContext.getInstance().getCache(aggregateType);
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		return new ReferencePropertyImpl<>(entity, dbRecord, field, (id) -> cache.get(id));
 	}
 
 	@Override
-	public <A extends Aggregate> ReferenceSetProperty<A> getReferenceSetProperty(EntityWithPropertiesSPI entity,
-			String name, Class<A> aggregateType) {
+	public <Aggr extends Aggregate> ReferenceSetProperty<Aggr> getReferenceSetProperty(EntityWithPropertiesSPI entity,
+			String name, Class<Aggr> aggregateType) {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, aggregateType);
-		AggregateRepository<A, ?> cache = AppContext.getInstance().getRepository(aggregateType);
+		AggregateRepository<Aggr, ?> cache = AppContext.getInstance().getRepository(aggregateType);
 		return new ReferenceSetPropertyImpl<>(entity, name, collectionConfig.partListType(), (id) -> cache.get(id));
 	}
 
@@ -174,6 +207,24 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, partType);
 		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
+	}
+
+	private UpdatableRecord<?> getRecord(EntityWithPropertiesSPI entity, DbTableType dbTableType) {
+		AggregateState state = ((ObjBase) entity).getAggregateState();
+		if (state == null) {
+			if (dbTableType == DbTableType.EXTN) {
+				return ((ObjBase) entity).extnDbRecord();
+			} else if (dbTableType == DbTableType.BASE) {
+				return ((ObjBase) entity).baseDbRecord();
+			}
+		} else {
+			if (dbTableType == DbTableType.EXTN) {
+				return ((AggregateStateImpl) state).getExtnRecord();
+			} else if (dbTableType == DbTableType.BASE) {
+				return ((AggregateStateImpl) state).getBaseRecord();
+			}
+		}
+		return null;
 	}
 
 }

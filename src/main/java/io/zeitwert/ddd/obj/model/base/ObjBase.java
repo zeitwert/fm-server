@@ -11,6 +11,8 @@ import org.jooq.UpdatableRecord;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.db.model.AggregateState;
+import io.zeitwert.ddd.db.model.jooq.AggregateStateImpl;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
@@ -30,9 +32,11 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final ObjRepository<? extends Obj, ? extends TableRecord<?>> repository;
 
+	private final AggregateState state;
 	private final UpdatableRecord<?> baseDbRecord;
 	private final UpdatableRecord<?> extnDbRecord;
 
+	//@formatter:off
 	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
 	protected final SimpleProperty<String> objTypeId = this.addSimpleProperty("objTypeId", String.class);
 	protected final ReferenceProperty<ObjTenant> tenant = this.addReferenceProperty("tenant", ObjTenant.class);
@@ -41,21 +45,27 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final SimpleProperty<Integer> version = this.addSimpleProperty("version", Integer.class);
 	protected final ReferenceProperty<ObjUser> createdByUser = this.addReferenceProperty("createdByUser", ObjUser.class);
 	protected final SimpleProperty<OffsetDateTime> createdAt = this.addSimpleProperty("createdAt", OffsetDateTime.class);
-	protected final ReferenceProperty<ObjUser> modifiedByUser = this.addReferenceProperty("modifiedByUser",
-			ObjUser.class);
-	protected final SimpleProperty<OffsetDateTime> modifiedAt = this.addSimpleProperty("modifiedAt",
-			OffsetDateTime.class);
+	protected final ReferenceProperty<ObjUser> modifiedByUser = this.addReferenceProperty("modifiedByUser", ObjUser.class);
+	protected final SimpleProperty<OffsetDateTime> modifiedAt = this.addSimpleProperty("modifiedAt", OffsetDateTime.class);
 	protected final ReferenceProperty<ObjUser> closedByUser = this.addReferenceProperty("closedByUser", ObjUser.class);
 	protected final SimpleProperty<OffsetDateTime> closedAt = this.addSimpleProperty("closedAt", OffsetDateTime.class);
-	protected final PartListProperty<ObjPartTransition> transitionList = this.addPartListProperty("transitionList",
-			ObjPartTransition.class);
+	protected final PartListProperty<ObjPartTransition> transitionList = this.addPartListProperty("transitionList", ObjPartTransition.class);
+	//@formatter:on
 
 	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository,
 			UpdatableRecord<?> baseDbRecord,
 			UpdatableRecord<?> extnDbRecord) {
 		this.repository = repository;
+		this.state = null;
 		this.baseDbRecord = baseDbRecord;
 		this.extnDbRecord = extnDbRecord;
+	}
+
+	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, AggregateState state) {
+		this.repository = repository;
+		this.state = state;
+		this.baseDbRecord = null;
+		this.extnDbRecord = null;
 	}
 
 	@Override
@@ -78,12 +88,25 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.repository;
 	}
 
+	@Override
+	public AggregateState getAggregateState() {
+		return this.state;
+	}
+
 	public final UpdatableRecord<?> baseDbRecord() {
-		return this.baseDbRecord;
+		if (this.state != null) {
+			return ((AggregateStateImpl) this.state).getBaseRecord();
+		} else {
+			return this.baseDbRecord;
+		}
 	}
 
 	public final UpdatableRecord<?> extnDbRecord() {
-		return this.extnDbRecord;
+		if (this.state != null) {
+			return ((AggregateStateImpl) this.state).getExtnRecord();
+		} else {
+			return this.extnDbRecord;
+		}
 	}
 
 	@Override
