@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.dms.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.List;
 
@@ -12,7 +12,6 @@ import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.exception.NoDataFoundException;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,6 @@ import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.ObjDocumentPartContent;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentPartContentRecord;
-import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
@@ -44,15 +42,8 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	private static final TableField<ObjDocumentPartContentRecord, byte[]> CONTENT = DOCUMENT_CONTENT.CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> CREATED_BY_USER_ID = DOCUMENT_CONTENT.CREATED_BY_USER_ID;
 
-	protected ObjDocumentRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				ObjDocumentRepository.class,
-				ObjDocument.class,
-				ObjDocumentBase.class,
-				AGGREGATE_TYPE,
-				appContext,
+	protected ObjDocumentRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(ObjDocumentRepository.class, ObjDocument.class, ObjDocumentBase.class, AGGREGATE_TYPE, appContext,
 				dslContext);
 	}
 
@@ -64,18 +55,14 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public ObjDocument doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
-	public ObjDocument doLoad(Integer objId) {
-		requireThis(objId != null, "objId not null");
-		ObjDocumentRecord documentRecord = this.getDSLContext().fetchOne(Tables.OBJ_DOCUMENT,
-				Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId));
-		if (documentRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.doLoad(objId, documentRecord);
+	public ObjDocument doLoad(Integer id) {
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override

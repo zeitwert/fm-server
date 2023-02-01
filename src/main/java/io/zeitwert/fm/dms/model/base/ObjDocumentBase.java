@@ -1,49 +1,38 @@
 
 package io.zeitwert.fm.dms.model.base;
 
-import org.jooq.UpdatableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKind;
-import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory;
-import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
-import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 
 public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjDocumentBase.class);
 
-	protected final SimpleProperty<String> name;
-	protected final EnumProperty<CodeDocumentKind> documentKind;
-	protected final EnumProperty<CodeDocumentCategory> documentCategory;
-	protected final ReferenceProperty<ObjDocument> templateDocument;
-	protected final EnumProperty<CodeContentKind> contentKind;
+	//@formatter:off
+	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
+	protected final EnumProperty<CodeDocumentKind> documentKind = this.addEnumProperty("documentKind", CodeDocumentKind.class);
+	protected final EnumProperty<CodeDocumentCategory> documentCategory = this.addEnumProperty("documentCategory", CodeDocumentCategory.class);
+	protected final ReferenceProperty<ObjDocument> templateDocument = this.addReferenceProperty("templateDocument", ObjDocument.class);
+	protected final EnumProperty<CodeContentKind> contentKind = this.addEnumProperty("contentKind", CodeContentKind.class);
+	//@formatter:on
 
 	protected CodeContentType contentType;
 	protected byte[] content;
 
-	protected ObjDocumentBase(ObjDocumentRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> documentRecord) {
-		super(repository, objRecord, documentRecord);
-		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjDocumentFields.NAME);
-		this.documentKind = this.addEnumProperty(this.extnDbRecord(), ObjDocumentFields.DOCUMENT_KIND_ID,
-				CodeDocumentKindEnum.class);
-		this.documentCategory = this.addEnumProperty(this.extnDbRecord(), ObjDocumentFields.DOCUMENT_CATEGORY_ID,
-				CodeDocumentCategoryEnum.class);
-		this.templateDocument = this.addReferenceProperty(this.extnDbRecord(), ObjDocumentFields.TEMPLATE_DOCUMENT_ID,
-				ObjDocument.class);
-		this.contentKind = this.addEnumProperty(this.extnDbRecord(), ObjDocumentFields.CONTENT_KIND_ID,
-				CodeContentKindEnum.class);
+	protected ObjDocumentBase(ObjDocumentRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
