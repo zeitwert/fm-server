@@ -1,8 +1,7 @@
 
 package io.zeitwert.fm.collaboration.model.base;
 
-import org.jooq.UpdatableRecord;
-
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
@@ -12,23 +11,19 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 
 public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 
-	protected final SimpleProperty<Integer> relatedToId;
-	protected final EnumProperty<CodeNoteType> noteType;
-	protected final SimpleProperty<String> subject;
-	protected final SimpleProperty<String> content;
-	protected final SimpleProperty<Boolean> isPrivate;
+	//@formatter:off
+	protected final SimpleProperty<Integer> relatedToId = this.addSimpleProperty("relatedToId", Integer.class);
+	protected final EnumProperty<CodeNoteType> noteType = this.addEnumProperty("noteType", CodeNoteType.class);
+	protected final SimpleProperty<String> subject = this.addSimpleProperty("subject", String.class);
+	protected final SimpleProperty<String> content = this.addSimpleProperty("content", String.class);
+	protected final SimpleProperty<Boolean> isPrivate = this.addSimpleProperty("isPrivate", Boolean.class);
+	//@formatter:on
 
-	protected ObjNoteBase(ObjNoteRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> noteRecord) {
-		super(repository, objRecord, noteRecord);
-		this.relatedToId = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.RELATED_TO_ID);
-		this.noteType = this.addEnumProperty(this.extnDbRecord(), ObjNoteFields.NOTE_TYPE_ID, CodeNoteTypeEnum.class);
-		this.subject = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.SUBJECT);
-		this.content = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.CONTENT);
-		this.isPrivate = this.addSimpleProperty(this.extnDbRecord(), ObjNoteFields.IS_PRIVATE);
+	protected ObjNoteBase(ObjNoteRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
