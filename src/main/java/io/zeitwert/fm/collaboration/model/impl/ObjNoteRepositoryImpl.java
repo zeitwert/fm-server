@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.collaboration.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -39,18 +37,6 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
-	}
-
-	@Override
-	public ObjNote doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjNote doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

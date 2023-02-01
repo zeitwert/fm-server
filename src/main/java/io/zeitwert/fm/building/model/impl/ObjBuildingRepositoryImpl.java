@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.building.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -88,18 +86,6 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
-	}
-
-	@Override
-	public ObjBuilding doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjBuilding doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 }

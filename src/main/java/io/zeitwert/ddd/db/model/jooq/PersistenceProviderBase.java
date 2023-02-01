@@ -14,13 +14,13 @@ import org.jooq.impl.DSL;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
-import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
@@ -41,44 +41,22 @@ import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
 import javassist.util.proxy.ProxyFactory;
 
+record FieldConfig(String tableType, String fieldName, Class<?> fieldType) {
+}
+
+record CollectionConfig(CodePartListType partListType, Class<?> fieldType) {
+}
+
 public abstract class PersistenceProviderBase<A extends Aggregate> implements PersistenceProvider<A> {
 
-	public static enum DbTableType {
-		BASE, EXTN
-	}
-
-	public static interface DbConfig {
-
-		DbTableType dbTableType();
-
-		String fieldName();
-
-		Class<?> fieldType();
-
-	}
-
-	public static record FieldConfig(DbTableType dbTableType, String fieldName, Class<?> fieldType) implements DbConfig {
-	}
-
-	public static record CollectionConfig(CodePartListType partListType, Class<?> fieldType)
-			implements DbConfig {
-		@Override
-		public DbTableType dbTableType() {
-			return null;
-		}
-
-		@Override
-		public String fieldName() {
-			return null;
-		}
-	}
+	static public final String BASE = "base";
+	static public final String EXTN = "extn";
 
 	private final DSLContext dslContext;
 	private final Class<? extends AggregateRepository<A, ?>> repoIntfClass;
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] proxyFactoryParamTypeList;
-
-	private final Map<String, DbConfig> dbConfigMap = new HashMap<>();
+	private final Map<String, Object> dbConfigMap = new HashMap<>();
 
 	public PersistenceProviderBase(
 			Class<? extends AggregateRepository<A, ?>> repoIntfClass,
@@ -94,11 +72,6 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 
 	protected final DSLContext getDSLContext() {
 		return this.dslContext;
-	}
-
-	@Override
-	public boolean isReal() {
-		return false;
 	}
 
 	/**
@@ -119,9 +92,9 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		return aggregate;
 	}
 
-	protected void mapField(String name, DbTableType dbTableType, String fieldName, Class<?> fieldType) {
+	protected void mapField(String name, String tableType, String fieldName, Class<?> fieldType) {
 		requireThis(this.getFieldConfig(name) == null, "unique field " + name);
-		this.dbConfigMap.put(name, new FieldConfig(dbTableType, fieldName, fieldType));
+		this.dbConfigMap.put(name, new FieldConfig(tableType, fieldName, fieldType));
 	}
 
 	protected void mapCollection(String name, String partListTypeName, Class<?> fieldType) {
@@ -146,9 +119,9 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		}
 		assertThis(fieldConfig.fieldType() == type, "field [" + name + "] has matching type");
 		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
 		assertThis(dbRecord.field(field.getName()) != null, "field [" + name + "] contained in "
-				+ (fieldConfig.dbTableType() == DbTableType.EXTN ? "extnRecord" : "baseRecord"));
+				+ (EXTN.equals(fieldConfig.tableType()) ? "extnRecord" : "baseRecord"));
 		return field;
 	}
 
@@ -161,7 +134,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 	public <T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<T> field = this.checkFieldConfig(fieldConfig, entity, name, type);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
 		return new SimplePropertyImpl<>(entity, dbRecord, name, field);
 	}
 
@@ -171,7 +144,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<String> field = this.checkFieldConfig(fieldConfig, entity, name, String.class);
 		Enumeration<E> enumeration = AppContext.getInstance().getEnumeration(enumType);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
 		return new EnumPropertyImpl<>(entity, dbRecord, field, enumeration);
 	}
 
@@ -191,7 +164,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<Integer> field = this.checkFieldConfig(fieldConfig, entity, name, Integer.class);
 		AggregateCache<Aggr> cache = AppContext.getInstance().getCache(aggregateType);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.dbTableType());
+		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
 		return new ReferencePropertyImpl<>(entity, dbRecord, field, (id) -> cache.get(id));
 	}
 
@@ -212,20 +185,12 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
 	}
 
-	private UpdatableRecord<?> getRecord(EntityWithPropertiesSPI entity, DbTableType dbTableType) {
-		AggregateState state = ((ObjBase) entity).getAggregateState();
-		if (state == null) {
-			if (dbTableType == DbTableType.EXTN) {
-				return ((ObjBase) entity).extnDbRecord();
-			} else if (dbTableType == DbTableType.BASE) {
-				return ((ObjBase) entity).baseDbRecord();
-			}
-		} else {
-			if (dbTableType == DbTableType.EXTN) {
-				return ((AggregateStateImpl) state).getExtnRecord();
-			} else if (dbTableType == DbTableType.BASE) {
-				return ((AggregateStateImpl) state).getBaseRecord();
-			}
+	private UpdatableRecord<?> getRecord(EntityWithPropertiesSPI entity, String tableType) {
+		AggregateState state = ((AggregateSPI) entity).getAggregateState();
+		if (EXTN.equals(tableType)) {
+			return ((AggregateStateImpl) state).getExtnRecord();
+		} else if (BASE.equals(tableType)) {
+			return ((AggregateStateImpl) state).getBaseRecord();
 		}
 		return null;
 	}

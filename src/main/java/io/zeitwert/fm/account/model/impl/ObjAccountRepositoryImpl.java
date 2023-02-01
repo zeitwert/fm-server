@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.account.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +24,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	private static final String AGGREGATE_TYPE = "obj_account";
 
-	protected ObjAccountRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+	protected ObjAccountRepositoryImpl(AppContext appContext, DSLContext dslContext) {
 		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE, appContext, dslContext);
 	}
 
@@ -40,18 +38,6 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	@Override
 	protected boolean hasAccountId() {
 		return true;
-	}
-
-	@Override
-	public ObjAccount doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjAccount doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

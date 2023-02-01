@@ -15,7 +15,6 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.base.PartCache;
@@ -69,11 +68,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		if (this.getRepository() != null) { // possible in instatiation phase
 			return ((AggregateRepositoryBase<?, ?>) this.getRepository()).getPersistenceProvider();
 		}
-		return null;
-	}
-
-	@Override
-	public AggregateState getAggregateState() {
 		return null;
 	}
 

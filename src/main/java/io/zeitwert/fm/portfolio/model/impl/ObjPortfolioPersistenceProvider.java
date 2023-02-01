@@ -5,6 +5,7 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -16,14 +17,15 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
 
 @Configuration("portfolioPersistenceProvider")
+@DependsOn("codePartListTypeEnum")
 public class ObjPortfolioPersistenceProvider extends FMObjPersistenceProviderBase<ObjPortfolio> {
 
 	public ObjPortfolioPersistenceProvider(DSLContext dslContext) {
 		super(ObjPortfolioRepository.class, ObjPortfolioBase.class, dslContext);
-		this.mapField("extnAccountId", DbTableType.EXTN, "account_id", Integer.class);
-		this.mapField("name", DbTableType.EXTN, "name", String.class);
-		this.mapField("description", DbTableType.EXTN, "description", String.class);
-		this.mapField("portfolioNr", DbTableType.EXTN, "portfolio_nr", String.class);
+		this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
+		this.mapField("name", EXTN, "name", String.class);
+		this.mapField("description", EXTN, "description", String.class);
+		this.mapField("portfolioNr", EXTN, "portfolio_nr", String.class);
 		this.mapCollection("includeSet", "portfolio.includeList", Obj.class);
 		this.mapCollection("excludeSet", "portfolio.excludeList", Obj.class);
 		this.mapCollection("buildingSet", "portfolio.buildingList", ObjBuilding.class);
@@ -33,11 +35,6 @@ public class ObjPortfolioPersistenceProvider extends FMObjPersistenceProviderBas
 	@Override
 	public Class<?> getEntityClass() {
 		return ObjPortfolio.class;
-	}
-
-	@Override
-	public boolean isReal() {
-		return true;
 	}
 
 	@Override

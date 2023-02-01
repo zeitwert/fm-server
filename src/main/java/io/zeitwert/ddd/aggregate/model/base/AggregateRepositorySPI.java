@@ -26,13 +26,6 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	Integer nextAggregateId();
 
 	/**
-	 * Create a new Aggregate instance (purely technical)
-	 * 
-	 * @return new Aggregate
-	 */
-	A doCreate();
-
-	/**
 	 * Initialize Parts of new Aggregate instance
 	 * 
 	 * @param aggregate aggregate
@@ -45,15 +38,6 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	 * @param aggregate aggregate
 	 */
 	void doAfterCreate(A aggregate);
-
-	/**
-	 * Load core aggregate data from database and instantiate a new Aggregate. This
-	 * must not load Parts, they will be loaded by @see doGet below
-	 * 
-	 * @param id aggregate id
-	 * @return instantiated Aggregate
-	 */
-	A doLoad(Integer id);
 
 	/**
 	 * Load Parts from database and attach to Aggregate

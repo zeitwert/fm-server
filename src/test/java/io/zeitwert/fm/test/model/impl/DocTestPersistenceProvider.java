@@ -6,53 +6,53 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.jooq.DSLContext;
-import org.jooq.JSON;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import io.zeitwert.fm.account.model.db.tables.CodeCountry;
-import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
-import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.fm.test.model.ObjTestPartNode;
-import io.zeitwert.fm.test.model.base.ObjTestBase;
-import io.zeitwert.fm.test.model.ObjTestRepository;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.fm.doc.model.base.FMDocPersistenceProviderBase;
+import io.zeitwert.fm.test.model.DocTest;
+import io.zeitwert.fm.test.model.DocTestPartNode;
+import io.zeitwert.fm.test.model.DocTestRepository;
+import io.zeitwert.fm.test.model.base.DocTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
-import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
+import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
 
-@Configuration("objTestPersistenceProvider")
+@Configuration("docTestPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjTestPersistenceProvider extends FMObjPersistenceProviderBase<ObjTest> {
+public class DocTestPersistenceProvider extends FMDocPersistenceProviderBase<DocTest> {
 
-	public ObjTestPersistenceProvider(DSLContext dslContext) {
-		super(ObjTestRepository.class, ObjTestBase.class, dslContext);
+	public DocTestPersistenceProvider(DSLContext dslContext) {
+		super(DocTestRepository.class, DocTestBase.class, dslContext);
 		this.mapField("shortText", EXTN, "short_text", String.class);
 		this.mapField("longText", EXTN, "long_text", String.class);
 		this.mapField("date", EXTN, "date", LocalDate.class);
 		this.mapField("int", EXTN, "int", Integer.class);
 		this.mapField("isDone", EXTN, "is_done", Boolean.class);
-		this.mapField("json", EXTN, "json", JSON.class);
+		this.mapField("json", EXTN, "json", org.jooq.JSON.class);
 		this.mapField("nr", EXTN, "nr", BigDecimal.class);
 		this.mapField("country", EXTN, "country_id", String.class);
-		this.mapField("refTest", EXTN, "ref_test_id", Integer.class);
+		this.mapField("refObj", EXTN, "ref_obj_id", Integer.class);
+		this.mapField("refDoc", EXTN, "ref_doc_id", Integer.class);
 		this.mapCollection("countrySet", "test.countrySet", CodeCountry.class);
-		this.mapCollection("nodeList", "test.nodeList", ObjTestPartNode.class);
+		this.mapCollection("nodeList", "test.nodeList", DocTestPartNode.class);
 	}
 
 	@Override
 	public Class<?> getEntityClass() {
-		return ObjTest.class;
+		return DocTest.class;
 	}
 
 	@Override
-	public ObjTest doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_TEST));
+	public DocTest doCreate() {
+		return this.doCreate(this.getDSLContext().newRecord(Tables.DOC_TEST));
 	}
 
 	@Override
-	public ObjTest doLoad(Integer objId) {
+	public DocTest doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjTestRecord testRecord = this.getDSLContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
+		DocTestRecord testRecord = this.getDSLContext().fetchOne(Tables.DOC_TEST, Tables.DOC_TEST.DOC_ID.eq(objId));
 		if (testRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
 		}

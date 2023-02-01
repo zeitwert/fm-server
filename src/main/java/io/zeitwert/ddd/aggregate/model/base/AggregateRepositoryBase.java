@@ -1,7 +1,6 @@
 
 package io.zeitwert.ddd.aggregate.model.base;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.Table;
 import org.jooq.TableRecord;
-import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationEvent;
 
@@ -34,11 +32,8 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.base.PropertyFilter;
-import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.SqlUtils;
-import javassist.util.proxy.ProxyFactory;
 
 public abstract class AggregateRepositoryBase<A extends Aggregate, V extends TableRecord<?>>
 		implements AggregateRepository<A, V>, AggregateRepositorySPI<A, V> {
@@ -56,8 +51,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	private final Class<? extends Aggregate> intfClass;
 	private final String aggregateTypeId;
 	private final AppContext appContext;
-	private final ProxyFactory proxyFactory;
-	private final Class<?>[] proxyFactoryParamTypeList;
 
 	private final DSLContext dslContext;
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
@@ -79,10 +72,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		this.appContext = appContext;
 		this.dslContext = dslContext;
 		this.appContext.addRepository(aggregateTypeId, intfClass, this);
-		this.proxyFactory = new ProxyFactory();
-		this.proxyFactory.setSuperclass(baseClass);
-		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, UpdatableRecord.class, UpdatableRecord.class };
 	}
 
 	protected AppContext getAppContext() {
@@ -94,7 +83,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	@SuppressWarnings("unchecked")
-	public /* final */ PersistenceProvider<A> getPersistenceProvider() {
+	public final PersistenceProvider<A> getPersistenceProvider() {
 		return (PersistenceProvider<A>) AppContext.getInstance().getPersistenceProvider(this.intfClass);
 	}
 
@@ -118,23 +107,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		return false;
 	}
 
-	/**
-	 * Create a new aggregate, used from both create and load to create a new object
-	 */
-	@SuppressWarnings("unchecked")
-	protected final A newAggregate(UpdatableRecord<?> baseRecord, UpdatableRecord<?> extnRecord) {
-		A aggregate = null;
-		try {
-			aggregate = (A) this.proxyFactory.create(this.proxyFactoryParamTypeList,
-					new Object[] { this, baseRecord, extnRecord }, PropertyHandler.INSTANCE);
-		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-			throw new RuntimeException(this.getClass().getSimpleName() + ": could not create aggregate");
-		}
-		return aggregate;
-	}
-
 	@Override
 	public abstract Integer nextAggregateId();
 
@@ -143,8 +115,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		Integer aggregateId = this.nextAggregateId();
 		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
-		A aggregate = persistenceProvider != null && persistenceProvider.isReal() ? persistenceProvider.doCreate()
-				: this.doCreate();
+		A aggregate = persistenceProvider.doCreate();
 
 		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
 		((AggregateSPI) aggregate).doInit(aggregateId, tenantId);
@@ -161,9 +132,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		return aggregate;
 	}
-
-	@Override
-	public abstract A doCreate();
 
 	@Override
 	public final void doInitParts(A aggregate) {
@@ -186,8 +154,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		requireThis(id != null, "id not null");
 		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
-		A aggregate = persistenceProvider != null && persistenceProvider.isReal() ? persistenceProvider.doLoad(id)
-				: this.doLoad(id);
+		A aggregate = persistenceProvider.doLoad(id);
 
 		this.doInitParts(aggregate);
 		this.doLoadParts(aggregate);
@@ -205,9 +172,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		return aggregate;
 	}
-
-	@Override
-	public abstract A doLoad(Integer id);
 
 	@Override
 	public final void doLoadParts(A aggregate) {

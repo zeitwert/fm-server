@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.test.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -74,18 +72,6 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 		super.registerPartRepositories();
 		this.addPartRepository(this.getItemRepository());
 		this.addPartRepository(this.getNodeRepository());
-	}
-
-	@Override
-	public ObjTest doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjTest doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

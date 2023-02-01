@@ -4,6 +4,7 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.base.ObjPersistenceProviderBase;
@@ -11,6 +12,7 @@ import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.ObjVBase;
 
 @Configuration("objPersistenceProvider")
+@DependsOn("codePartListTypeEnum")
 public class ObjVPersistenceProvider extends ObjPersistenceProviderBase<Obj> {
 
 	public ObjVPersistenceProvider(DSLContext dslContext) {
@@ -20,11 +22,6 @@ public class ObjVPersistenceProvider extends ObjPersistenceProviderBase<Obj> {
 	@Override
 	public Class<?> getEntityClass() {
 		return Obj.class;
-	}
-
-	@Override
-	public boolean isReal() {
-		return true;
 	}
 
 	@Override

@@ -1,15 +1,15 @@
-package io.zeitwert.fm.obj.model.base;
+package io.zeitwert.fm.doc.model.base;
 
 import org.jooq.DSLContext;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPersistenceProviderBase;
-import io.zeitwert.fm.obj.model.FMObj;
+import io.zeitwert.ddd.doc.model.base.DocPersistenceProviderBase;
+import io.zeitwert.fm.doc.model.FMDoc;
 
-public abstract class FMObjPersistenceProviderBase<O extends FMObj> extends ObjPersistenceProviderBase<O> {
+public abstract class FMDocPersistenceProviderBase<O extends FMDoc> extends DocPersistenceProviderBase<O> {
 
-	public FMObjPersistenceProviderBase(
+	public FMDocPersistenceProviderBase(
 			Class<? extends AggregateRepository<O, ?>> repoIntfClass,
 			Class<? extends Aggregate> baseClass,
 			DSLContext dslContext) {

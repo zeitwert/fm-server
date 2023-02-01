@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.oe.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -22,18 +20,6 @@ public class ObjTenantRepositoryImpl extends ObjTenantRepositoryBase {
 
 	protected ObjTenantRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
 		super(appContext, dslContext);
-	}
-
-	@Override
-	public ObjTenant doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjTenant doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

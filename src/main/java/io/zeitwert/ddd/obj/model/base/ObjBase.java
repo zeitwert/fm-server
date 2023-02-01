@@ -31,10 +31,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 	private final ObjRepository<? extends Obj, ? extends TableRecord<?>> repository;
-
 	private final AggregateState state;
-	private final UpdatableRecord<?> baseDbRecord;
-	private final UpdatableRecord<?> extnDbRecord;
 
 	//@formatter:off
 	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
@@ -52,20 +49,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final PartListProperty<ObjPartTransition> transitionList = this.addPartListProperty("transitionList", ObjPartTransition.class);
 	//@formatter:on
 
-	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository,
-			UpdatableRecord<?> baseDbRecord,
-			UpdatableRecord<?> extnDbRecord) {
-		this.repository = repository;
-		this.state = null;
-		this.baseDbRecord = baseDbRecord;
-		this.extnDbRecord = extnDbRecord;
-	}
-
 	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, AggregateState state) {
 		this.repository = repository;
 		this.state = state;
-		this.baseDbRecord = null;
-		this.extnDbRecord = null;
 	}
 
 	@Override
@@ -93,20 +79,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.state;
 	}
 
-	public final UpdatableRecord<?> baseDbRecord() {
-		if (this.state != null) {
-			return ((AggregateStateImpl) this.state).getBaseRecord();
-		} else {
-			return this.baseDbRecord;
-		}
+	private final UpdatableRecord<?> baseDbRecord() {
+		return ((AggregateStateImpl) this.state).getBaseRecord();
 	}
 
-	public final UpdatableRecord<?> extnDbRecord() {
-		if (this.state != null) {
-			return ((AggregateStateImpl) this.state).getExtnRecord();
-		} else {
-			return this.extnDbRecord;
-		}
+	private final UpdatableRecord<?> extnDbRecord() {
+		return ((AggregateStateImpl) this.state).getExtnRecord();
 	}
 
 	@Override
@@ -122,7 +100,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 			this.objTypeId.setValue(this.getRepository().getAggregateType().getId());
 			this.id.setValue(objId);
 			this.tenant.setId(tenantId);
-			if (this.extnDbRecord() != null) {
+			if (this.extnDbRecord() != null) { // TODO cleanup
 				this.extnDbRecord().setValue(ObjExtnFields.OBJ_ID, objId);
 				// obj_tenant does not have a tenant_id field
 				if (this.extnDbRecord().field(ObjExtnFields.TENANT_ID) != null) {

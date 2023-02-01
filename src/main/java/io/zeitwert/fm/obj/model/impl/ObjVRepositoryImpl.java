@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.obj.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -32,18 +30,6 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-	}
-
-	@Override
-	public Obj doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public Obj doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override
