@@ -1,14 +1,11 @@
 
 package io.zeitwert.fm.task.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.FilterOperator;
@@ -22,9 +19,7 @@ import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
-import io.zeitwert.fm.task.model.base.DocTaskFields;
 import io.zeitwert.fm.task.model.db.Tables;
-import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 @Component("docTaskRepository")
@@ -36,17 +31,8 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 	private final RequestContext requestCtx;
 	private ObjVRepository objVRepository;
 
-	protected DocTaskRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext,
-			final RequestContext requestCtx) {
-		super(
-				DocTaskRepository.class,
-				DocTask.class,
-				DocTaskBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
+	protected DocTaskRepositoryImpl(AppContext appContext, DSLContext dslContext, RequestContext requestCtx) {
+		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE, appContext, dslContext);
 		this.requestCtx = requestCtx;
 	}
 
@@ -65,21 +51,6 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 	}
 
 	@Override
-	public DocTask doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.DOC_TASK));
-	}
-
-	@Override
-	public DocTask doLoad(Integer docId) {
-		requireThis(docId != null, "docId not null");
-		DocTaskRecord taskRecord = this.getDSLContext().fetchOne(Tables.DOC_TASK, Tables.DOC_TASK.DOC_ID.eq(docId));
-		if (taskRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
-		}
-		return this.doLoad(docId, taskRecord);
-	}
-
-	@Override
 	public List<DocTaskVRecord> doFind(QuerySpec uiQuerySpec) {
 		PathSpec relatedToIdField = PathSpec.of("relatedToId");
 		QuerySpec dbQuerySpec = null;
@@ -87,10 +58,10 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 			dbQuerySpec = new QuerySpec(DocTaskVRecord.class);
 			Integer relatedToId = uiQuerySpec.findFilter(relatedToIdField).get().getValue();
 			if (ObjRepository.isObjId(relatedToId)) {
-				PathSpec relatedToObjIdField = PathSpec.of(DocTaskFields.RELATED_OBJ_ID.getName());
+				PathSpec relatedToObjIdField = PathSpec.of("related_obj_id");
 				dbQuerySpec.addFilter(relatedToObjIdField.filter(FilterOperator.EQ, relatedToId));
 			} else {
-				PathSpec relatedToDocIdField = PathSpec.of(DocTaskFields.RELATED_DOC_ID.getName());
+				PathSpec relatedToDocIdField = PathSpec.of("related_doc_id");
 				dbQuerySpec.addFilter(relatedToDocIdField.filter(FilterOperator.EQ, relatedToId));
 			}
 			uiQuerySpec.getFilters()

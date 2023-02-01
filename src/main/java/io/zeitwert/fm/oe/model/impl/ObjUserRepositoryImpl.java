@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.oe.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -26,18 +24,6 @@ public class ObjUserRepositoryImpl extends ObjUserRepositoryBase {
 	// (own class)
 	protected ObjUserRepositoryImpl(AppContext appContext, DSLContext dslContext, @Lazy PasswordEncoder passwordEncoder) {
 		super(appContext, dslContext, passwordEncoder);
-	}
-
-	@Override
-	public ObjUser doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjUser doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

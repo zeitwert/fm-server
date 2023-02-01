@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.dms.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -51,18 +49,6 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-	}
-
-	@Override
-	public ObjDocument doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjDocument doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

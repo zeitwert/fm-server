@@ -1,10 +1,10 @@
 
 package io.zeitwert.fm.doc.model.base;
 
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.base.DocBase;
-import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -21,16 +21,13 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.TableRecord;
-import org.jooq.UpdatableRecord;
 
 public abstract class FMDocBase extends DocBase implements FMDoc {
 
-	protected final ReferenceProperty<ObjAccount> account;
+	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
 
-	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository,
-			UpdatableRecord<?> docRecord, UpdatableRecord<?> extnRecord) {
-		super(repository, docRecord, extnRecord);
-		this.account = this.addReferenceProperty(docRecord, DocFields.ACCOUNT_ID, ObjAccount.class);
+	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override

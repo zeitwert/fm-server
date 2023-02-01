@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -23,36 +22,14 @@ public class DocVRepositoryImpl extends DocRepositoryBase<Doc, DocRecord> implem
 
 	private static final String AGGREGATE_TYPE = "doc";
 
-	protected DocVRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				DocVRepository.class,
-				Doc.class,
-				DocVBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
+	protected DocVRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(DocVRepository.class, Doc.class, DocVBase.class, AGGREGATE_TYPE, appContext, dslContext);
 	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-	}
-
-	@Override
-	public Doc doCreate() {
-		throw new RuntimeException("DocV is readonly");
-	}
-
-	@Override
-	public Doc doLoad(Integer docId) {
-		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
-		if (docRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
-		}
-		return this.newAggregate(docRecord, null);
 	}
 
 	@Override

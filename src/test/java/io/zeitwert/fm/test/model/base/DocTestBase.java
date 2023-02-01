@@ -2,16 +2,17 @@
 package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -22,38 +23,26 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.jooq.JSON;
-import org.jooq.UpdatableRecord;
 
 public abstract class DocTestBase extends FMDocBase implements DocTest {
 
-	protected final SimpleProperty<String> shortText;
-	protected final SimpleProperty<String> longText;
-	protected final SimpleProperty<LocalDate> date;
-	protected final SimpleProperty<Integer> int_;
-	protected final SimpleProperty<Boolean> isDone;
-	protected final SimpleProperty<JSON> json;
-	protected final SimpleProperty<BigDecimal> nr;
-	protected final EnumProperty<CodeCountry> country;
-	protected final ReferenceProperty<ObjTest> refObj;
-	protected final ReferenceProperty<DocTest> refDoc;
-	protected final EnumSetProperty<CodeCountry> countrySet;
+	//@formatter:off
+	protected final SimpleProperty<String> shortText = this.addSimpleProperty("shortText", String.class);
+	protected final SimpleProperty<String> longText = this.addSimpleProperty("longText", String.class);
+	protected final SimpleProperty<LocalDate> date = this.addSimpleProperty("date", LocalDate.class);
+	protected final SimpleProperty<Integer> int_ = this.addSimpleProperty("int", Integer.class);
+	protected final SimpleProperty<Boolean> isDone = this.addSimpleProperty("isDone", Boolean.class);
+	protected final SimpleProperty<JSON> json = this.addSimpleProperty("json", JSON.class);
+	protected final SimpleProperty<BigDecimal> nr = this.addSimpleProperty("nr", BigDecimal.class);
+	protected final EnumProperty<CodeCountry> country = this.addEnumProperty("country", CodeCountry.class);
+	protected final ReferenceProperty<ObjTest> refObj = this.addReferenceProperty("refObj", ObjTest.class);
+	protected final ReferenceProperty<DocTest> refDoc = this.addReferenceProperty("refDoc", DocTest.class);
+	protected final EnumSetProperty<CodeCountry> countrySet = this.addEnumSetProperty("countrySet", CodeCountry.class);
 	// protected final PartListProperty<DocTestPartNode> nodeList;
+	//@formatter:on
 
-	protected DocTestBase(DocTestRepository repository, UpdatableRecord<?> docRecord, UpdatableRecord<?> testRecord) {
-		super(repository, docRecord, testRecord);
-		this.shortText = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.SHORT_TEXT);
-		this.longText = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.LONG_TEXT);
-		this.date = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.DATE);
-		this.int_ = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.INT);
-		this.isDone = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.IS_DONE);
-		this.json = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.JSON);
-		this.nr = this.addSimpleProperty(this.extnDbRecord(), DocTestFields.NR);
-		this.country = this.addEnumProperty(this.extnDbRecord(), DocTestFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.refObj = this.addReferenceProperty(this.extnDbRecord(), DocTestFields.REF_OBJ_ID, ObjTest.class);
-		this.refDoc = this.addReferenceProperty(this.extnDbRecord(), DocTestFields.REF_DOC_ID, DocTest.class);
-		this.countrySet = this.addEnumSetProperty(this.getRepository().getCountrySetType(), CodeCountryEnum.class);
-		// this.nodeList =
-		// this.addPartListProperty(this.getRepository().getNodeListType());
+	protected DocTestBase(DocTestRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
@@ -71,7 +60,8 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	public void doAssignParts() {
 		super.doAssignParts();
 		DocPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.countrySet.loadEnums(itemRepo.getParts(this, this.getRepository().getCountrySetType()));
+		CodePartListType countrySetType = CodePartListTypeEnum.getPartListType("test.countrySet");
+		this.countrySet.loadEnums(itemRepo.getParts(this, countrySetType));
 		// ObjTestPartNodeRepository nodeRepo =
 		// this.getRepository().getNodeRepository();
 		// this.nodeList.loadParts(nodeRepo.getParts(this,

@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.portfolio.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -73,18 +71,6 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	protected boolean hasAccountId() {
 		return true;
-	}
-
-	@Override
-	public ObjPortfolio doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjPortfolio doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

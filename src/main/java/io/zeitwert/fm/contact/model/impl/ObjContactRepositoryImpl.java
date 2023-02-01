@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.contact.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -50,18 +48,6 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 	@Override
 	protected boolean hasAccountId() {
 		return true;
-	}
-
-	@Override
-	public ObjContact doCreate() {
-		assertThis(false, "nope");
-		return null;
-	}
-
-	@Override
-	public ObjContact doLoad(Integer id) {
-		assertThis(false, "nope");
-		return null;
 	}
 
 	@Override

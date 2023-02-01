@@ -20,16 +20,10 @@ import java.util.List;
 
 import org.jooq.Record;
 import org.jooq.TableRecord;
-import org.jooq.UpdatableRecord;
 
 public abstract class FMObjBase extends ObjBase implements FMObj {
 
 	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
-
-	protected FMObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> extnRecord) {
-		super(repository, objRecord, extnRecord);
-	}
 
 	protected FMObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, AggregateState state) {
 		super(repository, state);

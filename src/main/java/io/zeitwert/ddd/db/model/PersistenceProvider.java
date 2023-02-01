@@ -13,14 +13,22 @@ import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 
 public interface PersistenceProvider<A extends Aggregate> {
 
-	boolean isReal(); // TODO: remove after everything is implemented
-
 	Class<?> getEntityClass();
 
-	AggregateState getAggregateState(Aggregate aggregate);
-
+	/**
+	 * Create a new Aggregate instance (purely technical)
+	 * 
+	 * @return new Aggregate
+	 */
 	A doCreate();
 
+	/**
+	 * Load core aggregate data from database and instantiate a new Aggregate. This
+	 * must not load Parts, they will be loaded by @see doGet below
+	 * 
+	 * @param id aggregate id
+	 * @return instantiated Aggregate
+	 */
 	A doLoad(Integer id);
 
 	<T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type);

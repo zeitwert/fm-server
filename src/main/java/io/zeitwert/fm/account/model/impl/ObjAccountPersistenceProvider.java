@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -16,29 +17,25 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
 
 @Configuration("accountPersistenceProvider")
+@DependsOn("codePartListTypeEnum")
 public class ObjAccountPersistenceProvider extends FMObjPersistenceProviderBase<ObjAccount> {
 
 	public ObjAccountPersistenceProvider(DSLContext dslContext) {
 		super(ObjAccountRepository.class, ObjAccountBase.class, dslContext);
-		this.mapField("key", DbTableType.EXTN, "intl_key", String.class);
-		this.mapField("name", DbTableType.EXTN, "name", String.class);
-		this.mapField("description", DbTableType.EXTN, "description", String.class);
-		this.mapField("accountType", DbTableType.EXTN, "account_type_id", String.class);
-		this.mapField("clientSegment", DbTableType.EXTN, "client_segment_id", String.class);
-		this.mapField("referenceCurrency", DbTableType.EXTN, "reference_currency_id", String.class);
-		this.mapField("inflationRate", DbTableType.EXTN, "inflation_rate", BigDecimal.class);
-		this.mapField("logoImage", DbTableType.EXTN, "logo_img_id", Integer.class);
-		this.mapField("mainContact", DbTableType.EXTN, "main_contact_id", Integer.class);
+		this.mapField("key", EXTN, "intl_key", String.class);
+		this.mapField("name", EXTN, "name", String.class);
+		this.mapField("description", EXTN, "description", String.class);
+		this.mapField("accountType", EXTN, "account_type_id", String.class);
+		this.mapField("clientSegment", EXTN, "client_segment_id", String.class);
+		this.mapField("referenceCurrency", EXTN, "reference_currency_id", String.class);
+		this.mapField("inflationRate", EXTN, "inflation_rate", BigDecimal.class);
+		this.mapField("logoImage", EXTN, "logo_img_id", Integer.class);
+		this.mapField("mainContact", EXTN, "main_contact_id", Integer.class);
 	}
 
 	@Override
 	public Class<?> getEntityClass() {
 		return ObjAccount.class;
-	}
-
-	@Override
-	public boolean isReal() {
-		return true;
 	}
 
 	@Override

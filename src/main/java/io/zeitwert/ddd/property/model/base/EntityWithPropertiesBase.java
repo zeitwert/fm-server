@@ -107,15 +107,6 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		return property;
 	}
 
-	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(CodePartListType partListType,
-			Class<? extends Enumeration<E>> enumClass) {
-		requireThis(partListType != null, "partListType not null");
-		Enumeration<E> enumeration = this.getAppContext().getEnumerationByEnumeration(enumClass);
-		EnumSetProperty<E> property = new EnumSetPropertyImpl<>(this, partListType, enumeration);
-		this.addProperty(property);
-		return property;
-	}
-
 	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(String name, Class<E> type) {
 		EnumSetProperty<E> property;
 		if (this.getPersistenceProvider() == null) {
@@ -143,15 +134,6 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		} else {
 			property = this.getPersistenceProvider().getReferenceProperty(this, name, type);
 		}
-		this.addProperty(property);
-		return property;
-	}
-
-	protected <A extends Aggregate> ReferenceSetProperty<A> addReferenceSetProperty(CodePartListType partListType,
-			Class<A> aggregateClass) {
-		requireThis(partListType != null, "partListType not null");
-		AggregateCache<A> cache = this.getAppContext().getCache(aggregateClass);
-		ReferenceSetProperty<A> property = new ReferenceSetPropertyImpl<>(this, partListType, (id) -> cache.get(id));
 		this.addProperty(property);
 		return property;
 	}
