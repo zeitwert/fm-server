@@ -47,6 +47,10 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 
 	@Override
 	public PropertyProvider getPropertyProvider() { // TODO: remove
+		PropertyProvider pp = super.getPropertyProvider();
+		if (pp != null) {
+			return pp;
+		}
 		return this.propertyProvider;
 	}
 

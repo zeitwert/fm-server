@@ -4,12 +4,20 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.jooq.JSON;
+import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.ddd.obj.model.base.ObjPropertyProviderBase;
 import io.zeitwert.fm.account.model.db.tables.CodeCountry;
+import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 
+@Configuration("testPropertyProvider")
 public class ObjTestPropertyProvider extends ObjPropertyProviderBase {
+
+	@Override
+	public Class<?> getEntityClass() {
+		return ObjTest.class;
+	}
 
 	public ObjTestPropertyProvider() {
 		super();

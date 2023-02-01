@@ -4,6 +4,8 @@ package io.zeitwert.ddd.app.service.api;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -23,6 +25,7 @@ import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
@@ -38,6 +41,7 @@ public final class AppContext {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final DSLContext dslContext;
 	private final Repositories repos;
+	private final Map<Class<?>, PropertyProvider> propertyProviders = new HashMap<>();
 	private Map<Class<? extends Aggregate>, AggregateCache<?>> cacheByIntf = new HashMap<>();
 	private final Enumerations enums;
 	private final RequestContext requestContext;
@@ -53,6 +57,16 @@ public final class AppContext {
 		AppContext.INSTANCE = this;
 	}
 
+	@PostConstruct
+	public void initPropertyProviders() {
+		this.applicationContext
+				.getBeansOfType(PropertyProvider.class, false, true)
+				.values()
+				.forEach(pp -> this.propertyProviders.put(pp.getEntityClass(), pp));
+		this.propertyProviders.values()
+				.forEach(pp -> System.out.println("PP: " + pp.getClass().getName() + " for " + pp.getEntityClass().getName()));
+	}
+
 	public static AppContext getInstance() {
 		return INSTANCE;
 	}
@@ -66,8 +80,12 @@ public final class AppContext {
 		this.repos.addRepository(aggregateTypeId, intfClass, repo);
 	}
 
-	public <Aggr extends Aggregate> AggregateRepository<Aggr, ?> getRepository(Class<Aggr> intfClass) {
+	public <A extends Aggregate> AggregateRepository<A, ?> getRepository(Class<A> intfClass) {
 		return this.repos.getRepository(intfClass);
+	}
+
+	public <A extends Aggregate> PropertyProvider getPropertyProvider(Class<A> intfClass) {
+		return this.propertyProviders.get(intfClass);
 	}
 
 	public void addCache(Class<? extends Aggregate> intfClass, AggregateCache<? extends Aggregate> cache) {

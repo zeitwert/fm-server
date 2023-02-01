@@ -5,7 +5,12 @@ import java.time.OffsetDateTime;
 import io.zeitwert.ddd.aggregate.model.base.JooqPropertyProviderBase;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 
-public class ObjPropertyProviderBase extends JooqPropertyProviderBase {
+public /* TODO abstract */ class ObjPropertyProviderBase extends JooqPropertyProviderBase {
+
+	@Override
+	public Class<?> getEntityClass() {
+		return null;
+	}
 
 	public ObjPropertyProviderBase() {
 		super();

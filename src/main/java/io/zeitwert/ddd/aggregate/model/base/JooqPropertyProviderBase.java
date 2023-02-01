@@ -68,14 +68,6 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 
 	private final Map<String, DbConfig> dbConfigMap = new HashMap<>();
 
-	private FieldConfig getFieldConfig(String name) {
-		return (FieldConfig) this.dbConfigMap.get(name);
-	}
-
-	private CollectionConfig getCollectionConfig(String name) {
-		return (CollectionConfig) this.dbConfigMap.get(name);
-	}
-
 	protected void mapField(String name, DbTableType dbTableType, String fieldName, Class<?> fieldType) {
 		this.dbConfigMap.put(name, new FieldConfig(dbTableType, fieldName, fieldType));
 	}
@@ -83,6 +75,14 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 	protected void mapCollection(String name, String partListTypeName, Class<?> fieldType) {
 		CodePartListType partListType = CodePartListTypeEnum.getPartListType(partListTypeName);
 		this.dbConfigMap.put(name, new CollectionConfig(partListType, fieldType));
+	}
+
+	private FieldConfig getFieldConfig(String name) {
+		return (FieldConfig) this.dbConfigMap.get(name);
+	}
+
+	private CollectionConfig getCollectionConfig(String name) {
+		return (CollectionConfig) this.dbConfigMap.get(name);
 	}
 
 	private <T> Field<T> checkFieldConfig(FieldConfig fieldConfig, EntityWithPropertiesSPI entity, String name,

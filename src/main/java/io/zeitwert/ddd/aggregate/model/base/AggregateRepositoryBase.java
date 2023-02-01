@@ -53,6 +53,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	static private final Field<String> B_GERMAN = SEARCH_TABLE.field("b_german", String.class);
 	static private final Field<String> B_ENGLISH = SEARCH_TABLE.field("b_english", String.class);
 
+	private final Class<? extends Aggregate> intfClass;
 	private final String aggregateTypeId;
 	private final AppContext appContext;
 	private final ProxyFactory proxyFactory;
@@ -73,6 +74,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 			final String aggregateTypeId,
 			final AppContext appContext,
 			final DSLContext dslContext) {
+		this.intfClass = intfClass;
 		this.aggregateTypeId = aggregateTypeId;
 		this.appContext = appContext;
 		this.dslContext = dslContext;
@@ -91,9 +93,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		return this.dslContext;
 	}
 
-	// TODO: remove, replace with classpath scanning
-	public PropertyProvider getPropertyProvider() {
-		return null;
+	public /* final */ PropertyProvider getPropertyProvider() {
+		return AppContext.getInstance().getPropertyProvider(this.intfClass);
 	}
 
 	@Override
