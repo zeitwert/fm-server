@@ -9,7 +9,9 @@ import org.jooq.exception.NoDataFoundException;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.obj.model.base.ObjPropertyProviderBase;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.obj.model.FMObj;
 import io.zeitwert.fm.obj.model.FMObjRepository;
@@ -20,6 +22,7 @@ import io.zeitwert.fm.task.model.DocTaskRepository;
 public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord<?>> extends ObjRepositoryBase<O, V>
 		implements FMObjRepository<O, V> {
 
+	private PropertyProvider propertyProvider = new FMObjPropertyProviderBase();
 	private ObjNoteRepository noteRepository;
 	private DocTaskRepository taskRepository;
 
@@ -37,6 +40,15 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord
 				aggregateTypeId,
 				appContext,
 				dslContext);
+	}
+
+	@Override
+	public PropertyProvider getPropertyProvider() { // TODO: remove
+		PropertyProvider pp = super.getPropertyProvider();
+		if (pp != null && !ObjPropertyProviderBase.class.equals(pp.getClass())) {
+			return pp;
+		}
+		return this.propertyProvider;
 	}
 
 	@Override

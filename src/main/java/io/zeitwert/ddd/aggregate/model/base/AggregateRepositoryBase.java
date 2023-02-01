@@ -98,6 +98,12 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public final Class<A> getAggregateClass() {
+		return (Class<A>) this.intfClass;
+	}
+
+	@Override
 	public final CodeAggregateType getAggregateType() {
 		return CodeAggregateTypeEnum.getAggregateType(this.aggregateTypeId);
 	}

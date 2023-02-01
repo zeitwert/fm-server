@@ -19,6 +19,11 @@ public interface AggregateRepository<A extends Aggregate, V extends TableRecord<
 	CodeAggregateType getAggregateType();
 
 	/**
+	 * Get aggregate class
+	 */
+	Class<A> getAggregateClass();
+
+	/**
 	 * Create a new Aggregate instance
 	 * 
 	 * @param tenantId the tenant in which to create the instance (could be

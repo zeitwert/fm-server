@@ -3,7 +3,6 @@ package io.zeitwert.fm.obj.model.base;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
-import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -24,12 +23,11 @@ import org.jooq.UpdatableRecord;
 
 public abstract class FMObjBase extends ObjBase implements FMObj {
 
-	protected final ReferenceProperty<ObjAccount> account;
+	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
 
 	protected FMObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, UpdatableRecord<?> objRecord,
 			UpdatableRecord<?> extnRecord) {
 		super(repository, objRecord, extnRecord);
-		this.account = this.addReferenceProperty(objRecord, ObjFields.ACCOUNT_ID, ObjAccount.class);
 	}
 
 	@Override
