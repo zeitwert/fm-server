@@ -30,9 +30,6 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
-	private final ObjRepository<? extends Obj, ? extends TableRecord<?>> repository;
-	private final AggregateState state;
-
 	//@formatter:off
 	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
 	protected final SimpleProperty<String> objTypeId = this.addSimpleProperty("objTypeId", String.class);
@@ -50,8 +47,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	//@formatter:on
 
 	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, AggregateState state) {
-		this.repository = repository;
-		this.state = state;
+		super(repository, state);
+	}
+
+	@Override
+	public ObjRepository<?, ?> getRepository() {
+		return (ObjRepository<?, ?>) super.getRepository();
 	}
 
 	@Override
@@ -69,22 +70,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.tenant.getId();
 	}
 
-	@Override
-	public ObjRepository<? extends Obj, ? extends TableRecord<?>> getRepository() {
-		return this.repository;
-	}
-
-	@Override
-	public AggregateState getAggregateState() {
-		return this.state;
-	}
-
 	private final UpdatableRecord<?> baseDbRecord() {
-		return ((AggregateStateImpl) this.state).getBaseRecord();
+		return ((AggregateStateImpl) this.getAggregateState()).getBaseRecord();
 	}
 
 	private final UpdatableRecord<?> extnDbRecord() {
-		return ((AggregateStateImpl) this.state).getExtnRecord();
+		return ((AggregateStateImpl) this.getAggregateState()).getExtnRecord();
 	}
 
 	@Override

@@ -36,9 +36,6 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta, DocSPI {
 
-	private final DocRepository<? extends Doc, ? extends TableRecord<?>> repository;
-	private final AggregateState state;
-
 	//@formatter:off
 	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
 	protected final SimpleProperty<String> docTypeId = this.addSimpleProperty("docTypeId", String.class);
@@ -60,8 +57,12 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	private CodeCaseStage oldCaseStage;
 
 	protected DocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, AggregateState state) {
-		this.repository = repository;
-		this.state = state;
+		super(repository, state);
+	}
+
+	@Override
+	public DocRepository<?, ?> getRepository() {
+		return (DocRepository<?, ?>) super.getRepository();
 	}
 
 	@Override
@@ -79,22 +80,12 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 		return this.tenant.getId();
 	}
 
-	@Override
-	public DocRepository<? extends Doc, ? extends TableRecord<?>> getRepository() {
-		return this.repository;
+	private final UpdatableRecord<?> baseDbRecord() {
+		return ((AggregateStateImpl) this.getAggregateState()).getBaseRecord();
 	}
 
-	@Override
-	public AggregateState getAggregateState() {
-		return this.state;
-	}
-
-	protected final UpdatableRecord<?> baseDbRecord() {
-		return ((AggregateStateImpl) this.state).getBaseRecord();
-	}
-
-	protected final UpdatableRecord<?> extnDbRecord() {
-		return ((AggregateStateImpl) this.state).getExtnRecord();
+	private final UpdatableRecord<?> extnDbRecord() {
+		return ((AggregateStateImpl) this.getAggregateState()).getExtnRecord();
 	}
 
 	@Override
