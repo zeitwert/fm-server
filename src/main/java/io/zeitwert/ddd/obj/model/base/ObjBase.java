@@ -32,21 +32,22 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	private final UpdatableRecord<?> baseDbRecord;
 	private final UpdatableRecord<?> extnDbRecord;
 
-	private final SimpleProperty<Integer> id;
-	private final ReferenceProperty<ObjTenant> tenant;
-	private final ReferenceProperty<ObjUser> owner;
-	private final SimpleProperty<String> caption;
-	private final SimpleProperty<Integer> version;
-	private final ReferenceProperty<ObjUser> createdByUser;
-	private final SimpleProperty<OffsetDateTime> createdAt;
-	private final ReferenceProperty<ObjUser> modifiedByUser;
-	private final SimpleProperty<OffsetDateTime> modifiedAt;
-	private final ReferenceProperty<ObjUser> closedByUser;
-	private final SimpleProperty<OffsetDateTime> closedAt;
-
-	private final SimpleProperty<String> objTypeId;
-
-	private final PartListProperty<ObjPartTransition> transitionList;
+	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
+	protected final SimpleProperty<String> objTypeId = this.addSimpleProperty("objTypeId", String.class);
+	protected final ReferenceProperty<ObjTenant> tenant = this.addReferenceProperty("tenant", ObjTenant.class);
+	protected final ReferenceProperty<ObjUser> owner = this.addReferenceProperty("owner", ObjUser.class);
+	protected final SimpleProperty<String> caption = this.addSimpleProperty("caption", String.class);
+	protected final SimpleProperty<Integer> version = this.addSimpleProperty("version", Integer.class);
+	protected final ReferenceProperty<ObjUser> createdByUser = this.addReferenceProperty("createdByUser", ObjUser.class);
+	protected final SimpleProperty<OffsetDateTime> createdAt = this.addSimpleProperty("createdAt", OffsetDateTime.class);
+	protected final ReferenceProperty<ObjUser> modifiedByUser = this.addReferenceProperty("modifiedByUser",
+			ObjUser.class);
+	protected final SimpleProperty<OffsetDateTime> modifiedAt = this.addSimpleProperty("modifiedAt",
+			OffsetDateTime.class);
+	protected final ReferenceProperty<ObjUser> closedByUser = this.addReferenceProperty("closedByUser", ObjUser.class);
+	protected final SimpleProperty<OffsetDateTime> closedAt = this.addSimpleProperty("closedAt", OffsetDateTime.class);
+	protected final PartListProperty<ObjPartTransition> transitionList = this.addPartListProperty("transitionList",
+			ObjPartTransition.class);
 
 	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository,
 			UpdatableRecord<?> baseDbRecord,
@@ -54,19 +55,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		this.repository = repository;
 		this.baseDbRecord = baseDbRecord;
 		this.extnDbRecord = extnDbRecord;
-		this.id = this.addSimpleProperty(baseDbRecord, ObjFields.ID);
-		this.tenant = this.addReferenceProperty(baseDbRecord, ObjFields.TENANT_ID, ObjTenant.class);
-		this.owner = this.addReferenceProperty(baseDbRecord, ObjFields.OWNER_ID, ObjUser.class);
-		this.caption = this.addSimpleProperty(baseDbRecord, ObjFields.CAPTION);
-		this.version = this.addSimpleProperty(baseDbRecord, ObjFields.VERSION);
-		this.createdByUser = this.addReferenceProperty(baseDbRecord, ObjFields.CREATED_BY_USER_ID, ObjUser.class);
-		this.createdAt = this.addSimpleProperty(baseDbRecord, ObjFields.CREATED_AT);
-		this.modifiedByUser = this.addReferenceProperty(baseDbRecord, ObjFields.MODIFIED_BY_USER_ID, ObjUser.class);
-		this.modifiedAt = this.addSimpleProperty(baseDbRecord, ObjFields.MODIFIED_AT);
-		this.objTypeId = this.addSimpleProperty(baseDbRecord, ObjFields.OBJ_TYPE_ID);
-		this.closedByUser = this.addReferenceProperty(baseDbRecord, ObjFields.CLOSED_BY_USER_ID, ObjUser.class);
-		this.closedAt = this.addSimpleProperty(baseDbRecord, ObjFields.CLOSED_AT);
-		this.transitionList = this.addPartListProperty(repository.getTransitionListType());
 	}
 
 	@Override
@@ -89,11 +77,11 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		return this.repository;
 	}
 
-	protected final UpdatableRecord<?> baseDbRecord() {
+	public final UpdatableRecord<?> baseDbRecord() {
 		return this.baseDbRecord;
 	}
 
-	protected final UpdatableRecord<?> extnDbRecord() {
+	public final UpdatableRecord<?> extnDbRecord() {
 		return this.extnDbRecord;
 	}
 
@@ -189,7 +177,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		if (property == this.transitionList) {
+		if (property.equals(this.transitionList)) {
 			return (P) this.getRepository().getTransitionRepository().create(this, partListType);
 		}
 		return null;

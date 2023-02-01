@@ -17,6 +17,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> implements EnumSetProperty<E> {
 
+	private final String name;
 	private final CodePartListType partListType;
 	private final Enumeration<E> enumeration;
 
@@ -25,13 +26,22 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 	public EnumSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
 			Enumeration<E> enumeration) {
 		super(entity);
+		this.name = partListType.getId();
+		this.partListType = partListType;
+		this.enumeration = enumeration;
+	}
+
+	public EnumSetPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType,
+			Enumeration<E> enumeration) {
+		super(entity);
+		this.name = name;
 		this.partListType = partListType;
 		this.enumeration = enumeration;
 	}
 
 	@Override
 	public String getName() {
-		return this.partListType.getId();
+		return this.name;
 	}
 
 	@Override
@@ -54,6 +64,12 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 		}
 		if (!this.hasItem(item)) {
 			AggregatePartItem<?> part = this.getEntity().addItem(this, this.partListType);
+			assertThis(part != null,
+					"entity " + this.getEntity().getClass().getSimpleName() + "created a part for " + this.partListType.getId()
+							+ " (make sure to compare property with .equals() in addPart)");
+			if (part == null) {
+				return; // make compiler happy (potential null pointer)
+			}
 			part.setItemId(item.getId());
 			this.itemSet.add(part);
 			this.getEntity().afterAdd(this);

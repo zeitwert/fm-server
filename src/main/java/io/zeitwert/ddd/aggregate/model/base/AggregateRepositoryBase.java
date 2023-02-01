@@ -33,6 +33,7 @@ import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.base.PropertyFilter;
 import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -88,6 +89,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 	protected final DSLContext getDSLContext() {
 		return this.dslContext;
+	}
+
+	@Override
+	public PropertyProvider getPropertyProvider() { // TODO: remove
+		return null;
 	}
 
 	@Override

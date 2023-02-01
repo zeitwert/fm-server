@@ -2,6 +2,7 @@ package io.zeitwert.ddd.aggregate.model.base;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 
 import java.util.List;
 
@@ -12,6 +13,11 @@ import org.jooq.Record;
  * implementation.
  */
 public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
+
+	/**
+	 * Property provider
+	 */
+	PropertyProvider getPropertyProvider();
 
 	/**
 	 * Register the required PartRepositories

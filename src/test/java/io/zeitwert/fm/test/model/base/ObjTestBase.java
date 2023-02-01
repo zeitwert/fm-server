@@ -2,7 +2,6 @@
 package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
@@ -26,31 +25,21 @@ import org.jooq.UpdatableRecord;
 
 public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 
-	protected final SimpleProperty<String> shortText;
-	protected final SimpleProperty<String> longText;
-	protected final SimpleProperty<LocalDate> date;
-	protected final SimpleProperty<Integer> int_;
-	protected final SimpleProperty<Boolean> isDone;
-	protected final SimpleProperty<JSON> json;
-	protected final SimpleProperty<BigDecimal> nr;
-	protected final EnumProperty<CodeCountry> country;
-	protected final ReferenceProperty<ObjTest> refTest;
-	protected final EnumSetProperty<CodeCountry> countrySet;
-	protected final PartListProperty<ObjTestPartNode> nodeList;
+	protected final SimpleProperty<String> shortText = this.addSimpleProperty("shortText", String.class);
+	protected final SimpleProperty<String> longText = this.addSimpleProperty("longText", String.class);
+	protected final SimpleProperty<LocalDate> date = this.addSimpleProperty("date", LocalDate.class);
+	protected final SimpleProperty<Integer> int_ = this.addSimpleProperty("int", Integer.class);
+	protected final SimpleProperty<Boolean> isDone = this.addSimpleProperty("isDone", Boolean.class);
+	protected final SimpleProperty<JSON> json = this.addSimpleProperty("json", JSON.class);
+	protected final SimpleProperty<BigDecimal> nr = this.addSimpleProperty("nr", BigDecimal.class);
+	protected final EnumProperty<CodeCountry> country = this.addEnumProperty("country", CodeCountry.class);
+	protected final ReferenceProperty<ObjTest> refTest = this.addReferenceProperty("refTest", ObjTest.class);
+	protected final EnumSetProperty<CodeCountry> countries = this.addEnumSetProperty("countrySet", CodeCountry.class);
+	protected final PartListProperty<ObjTestPartNode> nodeList = this.addPartListProperty("nodeList",
+			ObjTestPartNode.class);
 
 	protected ObjTestBase(ObjTestRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> testRecord) {
 		super(repository, objRecord, testRecord);
-		this.shortText = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.SHORT_TEXT);
-		this.longText = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.LONG_TEXT);
-		this.date = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.DATE);
-		this.int_ = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.INT);
-		this.isDone = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.IS_DONE);
-		this.json = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.JSON);
-		this.nr = this.addSimpleProperty(this.extnDbRecord(), ObjTestFields.NR);
-		this.country = this.addEnumProperty(this.extnDbRecord(), ObjTestFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.refTest = this.addReferenceProperty(this.extnDbRecord(), ObjTestFields.REF_TEST_ID, ObjTest.class);
-		this.countrySet = this.addEnumSetProperty(this.getRepository().getCountrySetType(), CodeCountryEnum.class);
-		this.nodeList = this.addPartListProperty(this.getRepository().getNodeListType());
 	}
 
 	@Override
@@ -62,7 +51,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.countrySet.loadEnums(itemRepo.getParts(this, this.getRepository().getCountrySetType()));
+		this.countries.loadEnums(itemRepo.getParts(this, this.getRepository().getCountrySetType()));
 		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
 		this.nodeList.loadParts(nodeRepo.getParts(this, this.getRepository().getNodeListType()));
 	}
@@ -74,7 +63,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		if (property == this.nodeList) {
+		if (property.equals(this.nodeList)) {
 			return (P) this.getRepository().getNodeRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);

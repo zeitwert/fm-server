@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.property.model.base;
 
 import io.zeitwert.ddd.property.model.Property;
+import io.zeitwert.ddd.property.model.PropertyWrapper;
 
 public abstract class PropertyBase<T> implements Property<T> {
 
@@ -26,6 +27,21 @@ public abstract class PropertyBase<T> implements Property<T> {
 	@Override
 	public void setWritable(boolean isWritable) {
 		this.isWritable = isWritable;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		} else if (other == null) {
+			return false;
+		} else if (this.getClass() == other.getClass()) {
+			return false;
+		} else if (PropertyWrapper.class.isAssignableFrom(other.getClass())) {
+			PropertyWrapper<?> that = (PropertyWrapper<?>) other;
+			return this == that.getProperty();
+		}
+		return false;
 	}
 
 }

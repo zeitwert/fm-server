@@ -15,6 +15,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -30,6 +31,7 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
+	private PropertyProvider propertyProvider = new ObjTestPropertyProvider();
 	private CodePartListType countrySetType;
 	private ObjTestPartNodeRepository nodeRepository;
 	private CodePartListType nodeListType;
@@ -44,6 +46,11 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 				AGGREGATE_TYPE,
 				appContext,
 				dslContext);
+	}
+
+	@Override
+	public PropertyProvider getPropertyProvider() {
+		return this.propertyProvider;
 	}
 
 	@Override

@@ -14,17 +14,27 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 public class SimplePropertyImpl<T> extends PropertyBase<T> implements SimpleProperty<T> {
 
 	private final UpdatableRecord<?> dbRecord;
+	private final String fieldName;
 	private final Field<T> field;
 
 	public SimplePropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, Field<T> field) {
 		super(entity);
 		this.dbRecord = dbRecord;
+		this.fieldName = null;
+		this.field = field;
+	}
+
+	public SimplePropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, String fieldName,
+			Field<T> field) {
+		super(entity);
+		this.dbRecord = dbRecord;
+		this.fieldName = fieldName;
 		this.field = field;
 	}
 
 	@Override
 	public String getName() {
-		return this.field.getName();
+		return this.fieldName != null ? this.fieldName : this.field.getName();
 	}
 
 	@Override

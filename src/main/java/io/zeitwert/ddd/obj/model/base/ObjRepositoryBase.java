@@ -19,6 +19,7 @@ import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 
 	private static final String OBJ_ID_SEQ = "obj_id_seq";
 
+	private PropertyProvider propertyProvider = new ObjPropertyProviderBase();
 	private ObjPartTransitionRepository transitionRepository;
 	private CodePartListType transitionListType;
 	private ObjPartItemRepository itemRepository;
@@ -41,6 +43,11 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 			final AppContext appContext,
 			final DSLContext dslContext) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
+	}
+
+	@Override
+	public PropertyProvider getPropertyProvider() { // TODO: remove
+		return this.propertyProvider;
 	}
 
 	@Override

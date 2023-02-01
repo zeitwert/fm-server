@@ -5,8 +5,11 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.Property;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 
 public interface EntityWithPropertiesSPI {
+
+	PropertyProvider getPropertyProvider();
 
 	AppContext getAppContext();
 

@@ -46,6 +46,9 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	@Override
 	public P addPart() {
 		P part = this.getEntity().addPart(this, this.partListType);
+		assertThis(part != null,
+				"entity " + this.getEntity().getClass().getSimpleName() + "created a part for " + this.partListType.getId()
+						+ " (make sure to compare property with .equals() in addPart)");
 		this.partList.add(part);
 		this.getEntity().afterAdd(this);
 		return part;

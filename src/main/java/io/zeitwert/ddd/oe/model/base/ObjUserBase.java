@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
@@ -17,9 +16,9 @@ import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.ItemSetProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -34,7 +33,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	protected final SimpleProperty<String> description;
 	protected final ReferenceProperty<ObjDocument> avatarImage;
 	protected final SimpleProperty<String> role;
-	protected final ItemSetProperty<ObjPartItem> tenantSet;
+	protected final ReferenceSetProperty<ObjTenant> tenantSet;
 	protected final SimpleProperty<Boolean> needPasswordChange;
 	protected final SimpleProperty<String> password;
 
@@ -45,7 +44,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.DESCRIPTION);
 		this.avatarImage = this.addReferenceProperty(this.extnDbRecord(), ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
 		this.role = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.ROLE_LIST);
-		this.tenantSet = this.addItemSetProperty(this.getRepository().getTenantSetType());
+		this.tenantSet = this.addReferenceSetProperty(this.getRepository().getTenantSetType(), ObjTenant.class);
 		this.needPasswordChange = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.NEED_PASSWORD_CHANGE);
 		this.password = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.PASSWORD);
 	}
@@ -65,7 +64,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.tenantSet.loadItems(itemRepo.getParts(this, this.getRepository().getTenantSetType()));
+		this.tenantSet.loadReferences(itemRepo.getParts(this, this.getRepository().getTenantSetType()));
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		if (property == this.tenantSet) {
+		if (property.equals(this.tenantSet)) {
 			return (P) this.getRepository().getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
@@ -134,23 +133,13 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 		ObjTenantCache tenantCache = this.getRepository().getTenantCache();
 		return this.tenantSet.getItems()
 				.stream()
-				.map(itemId -> tenantCache.get(Integer.parseInt(itemId)))
+				.map(itemId -> tenantCache.get(itemId))
 				.collect(Collectors.toSet());
 	}
 
 	@Override
 	public void clearTenantSet() {
 		this.tenantSet.clearItems();
-	}
-
-	@Override
-	public void addTenant(ObjTenant tenant) {
-		this.tenantSet.addItem(tenant.getId().toString());
-	}
-
-	@Override
-	public void removeTenant(ObjTenant tenant) {
-		this.tenantSet.removeItem(tenant.getId().toString());
 	}
 
 }

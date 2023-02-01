@@ -8,15 +8,12 @@ import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.property.model.AggregateResolver;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
 
 public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceProperty<A> {
-
-	public interface AggregateResolver<A extends Aggregate> {
-		A get(Integer id);
-	}
 
 	private final UpdatableRecord<?> dbRecord;
 	private final Field<Integer> field;

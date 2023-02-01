@@ -51,10 +51,10 @@ public class ObjTestTest {
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
 		ObjTest testA1 = this.testRepository.create(this.requestCtx.getTenantId());
-		this.initObjTest(testA1, "One", USER_EMAIL, CH);
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
 		assertNotNull(testA1.getTenant(), "tenant not null");
+		this.initObjTest(testA1, "One", USER_EMAIL, CH);
 
 		Integer testA_id = testA1.getId();
 		Integer testA1_idHash = System.identityHashCode(testA1);

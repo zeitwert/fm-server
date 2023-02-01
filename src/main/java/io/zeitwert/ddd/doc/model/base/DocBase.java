@@ -228,7 +228,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	@Override
 	@SuppressWarnings("unchecked")
 	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		if (property == this.transitionList) {
+		if (property.equals(this.transitionList)) {
 			return (P) this.getRepository().getTransitionRepository().create(this, partListType);
 		}
 		return null;

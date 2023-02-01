@@ -8,10 +8,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.AggregatePartItem;
+import io.zeitwert.ddd.property.model.AggregateResolver;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.base.PropertyBase;
@@ -19,12 +19,11 @@ import io.zeitwert.ddd.property.model.base.PropertyBase;
 public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceSetProperty<A> {
 
 	private final CodePartListType partListType;
-
 	private Set<AggregatePartItem<?>> itemSet = new HashSet<>();
 
-	// repository is not used, since checking it is too expensive (for now)
+	// cache is not used, since checking it is too expensive (for now)
 	public ReferenceSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
-			AggregateRepository<A, ?> repository) {
+			AggregateResolver<A> repository) {
 		super(entity);
 		this.partListType = partListType;
 	}
@@ -47,14 +46,21 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	}
 
 	@Override
-	public void addItem(Integer aggregateId) {
-		assertThis(aggregateId != null, "aggregateId not null");
-		if (aggregateId == null) {
+	public void addItem(Integer id) {
+		assertThis(id != null, "aggregateId not null");
+		if (id == null) {
 			return; // make compiler happy (potential null pointer)
 		}
-		if (!this.hasItem(aggregateId)) {
+		if (!this.hasItem(id)) {
+			assertThis(this.isValidAggregateId(id), "valid aggregate id [" + id + "]");
 			AggregatePartItem<?> part = (AggregatePartItem<?>) this.getEntity().addItem(this, this.partListType);
-			part.setItemId(aggregateId.toString());
+			assertThis(part != null,
+					"entity " + this.getEntity().getClass().getSimpleName() + "created a part for " + this.partListType.getId()
+							+ " (make sure to compare property with .equals() in addPart)");
+			if (part == null) {
+				return; // make compiler happy (potential null pointer)
+			}
+			part.setItemId(id.toString());
 			this.itemSet.add(part);
 			this.getEntity().afterAdd(this);
 		}
@@ -102,6 +108,11 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	public void loadReferences(Collection<? extends AggregatePartItem<?>> partList) {
 		this.itemSet.clear();
 		partList.forEach(p -> this.itemSet.add(p));
+	}
+
+	// TODO too expensive?
+	private boolean isValidAggregateId(Integer id) {
+		return true;
 	}
 
 }

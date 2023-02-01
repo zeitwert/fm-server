@@ -18,6 +18,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.base.PartCache;
 import io.zeitwert.ddd.property.model.Property;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.validation.model.AggregatePartValidation;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevel;
@@ -60,6 +61,13 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	@Override
 	public AggregateMeta getMeta() {
 		return this;
+	}
+
+	public final PropertyProvider getPropertyProvider() {
+		if (this.getRepository() != null) {
+			return ((AggregateRepositorySPI<?, ?>) this.getRepository()).getPropertyProvider();
+		}
+		return null;
 	}
 
 	Boolean isStale() {
