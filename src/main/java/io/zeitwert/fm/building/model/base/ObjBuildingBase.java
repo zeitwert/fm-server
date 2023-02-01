@@ -5,13 +5,14 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.math.BigDecimal;
 
-import org.jooq.UpdatableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -20,9 +21,7 @@ import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -47,98 +46,54 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	static final CodeBuildingPriceIndex DefaultPriceIndex = CodeBuildingPriceIndexEnum.getBuildingPriceIndex("ch-ZRH");
 	static final Integer DefaultGeoZoom = 17;
 
-	protected final SimpleProperty<String> name;
-	protected final SimpleProperty<String> description;
-	protected final SimpleProperty<String> buildingNr;
-	protected final SimpleProperty<String> insuranceNr;
-	protected final SimpleProperty<String> plotNr;
-	protected final SimpleProperty<String> nationalBuildingId;
-	protected final EnumProperty<CodeHistoricPreservation> historicPreservation;
+	//@formatter:off
+	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccount", Integer.class);
 
-	protected final SimpleProperty<String> street;
-	protected final SimpleProperty<String> zip;
-	protected final SimpleProperty<String> city;
-	protected final EnumProperty<CodeCountry> country;
+	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
+	protected final SimpleProperty<String> description= this.addSimpleProperty("description", String.class);
+	protected final SimpleProperty<String> buildingNr= this.addSimpleProperty("buildingNr", String.class);
+	protected final SimpleProperty<String> insuranceNr= this.addSimpleProperty("insuranceNr", String.class);
+	protected final SimpleProperty<String> plotNr= this.addSimpleProperty("plotNr", String.class);
+	protected final SimpleProperty<String> nationalBuildingId= this.addSimpleProperty("nationalBuilding", String.class);
+	protected final EnumProperty<CodeHistoricPreservation> historicPreservation= this.addEnumProperty("historicPreservation", CodeHistoricPreservation.class);
 
-	protected final SimpleProperty<String> geoAddress;
-	protected final SimpleProperty<String> geoCoordinates;
-	protected final SimpleProperty<Integer> geoZoom;
+	protected final SimpleProperty<String> street= this.addSimpleProperty("street", String.class);
+	protected final SimpleProperty<String> zip= this.addSimpleProperty("zip", String.class);
+	protected final SimpleProperty<String> city= this.addSimpleProperty("city", String.class);
+	protected final EnumProperty<CodeCountry> country= this.addEnumProperty("country", CodeCountry.class);
 
-	protected final ReferenceProperty<ObjDocument> coverFoto;
+	protected final SimpleProperty<String> geoAddress= this.addSimpleProperty("geoAddress", String.class);
+	protected final SimpleProperty<String> geoCoordinates= this.addSimpleProperty("geoCoordinates", String.class);
+	protected final SimpleProperty<Integer> geoZoom= this.addSimpleProperty("geoZoom", Integer.class);
 
-	protected final EnumProperty<CodeCurrency> currency;
+	protected final ReferenceProperty<ObjDocument> coverFoto= this.addReferenceProperty("coverFoto", ObjDocument.class);
 
-	protected final SimpleProperty<BigDecimal> volume;
-	protected final SimpleProperty<BigDecimal> areaGross;
-	protected final SimpleProperty<BigDecimal> areaNet;
-	protected final SimpleProperty<Integer> nrOfFloorsAboveGround;
-	protected final SimpleProperty<Integer> nrOfFloorsBelowGround;
+	protected final EnumProperty<CodeCurrency> currency= this.addEnumProperty("currency", CodeCurrency.class);
 
-	protected final EnumProperty<CodeBuildingType> buildingType;
-	protected final EnumProperty<CodeBuildingSubType> buildingSubType;
-	protected final SimpleProperty<Integer> buildingYear;
+	protected final SimpleProperty<BigDecimal> volume= this.addSimpleProperty("volume", BigDecimal.class);
+	protected final SimpleProperty<BigDecimal> areaGross= this.addSimpleProperty("areaGross", BigDecimal.class);
+	protected final SimpleProperty<BigDecimal> areaNet= this.addSimpleProperty("areaNet", BigDecimal.class);
+	protected final SimpleProperty<Integer> nrOfFloorsAboveGround= this.addSimpleProperty("nrOfFloorsAboveGround", Integer.class);
+	protected final SimpleProperty<Integer> nrOfFloorsBelowGround= this.addSimpleProperty("nrOfFloorsBelowGround", Integer.class);
 
-	protected final SimpleProperty<BigDecimal> insuredValue;
-	protected final SimpleProperty<Integer> insuredValueYear;
-	protected final SimpleProperty<BigDecimal> notInsuredValue;
-	protected final SimpleProperty<Integer> notInsuredValueYear;
-	protected final SimpleProperty<BigDecimal> thirdPartyValue;
-	protected final SimpleProperty<Integer> thirdPartyValueYear;
+	protected final EnumProperty<CodeBuildingType> buildingType= this.addEnumProperty("buildingType", CodeBuildingType.class);
+	protected final EnumProperty<CodeBuildingSubType> buildingSubType= this.addEnumProperty("buildingSubType", CodeBuildingSubType.class);
+	protected final SimpleProperty<Integer> buildingYear= this.addSimpleProperty("buildingYear", Integer.class);
 
-	protected final PartListProperty<ObjBuildingPartRating> ratingList;
+	protected final SimpleProperty<BigDecimal> insuredValue= this.addSimpleProperty("insuredValue", BigDecimal.class);
+	protected final SimpleProperty<Integer> insuredValueYear= this.addSimpleProperty("insuredValueYear", Integer.class);
+	protected final SimpleProperty<BigDecimal> notInsuredValue= this.addSimpleProperty("notInsuredValue", BigDecimal.class);
+	protected final SimpleProperty<Integer> notInsuredValueYear= this.addSimpleProperty("notInsuredValueYear", Integer.class);
+	protected final SimpleProperty<BigDecimal> thirdPartyValue= this.addSimpleProperty("thirdPartyValue", BigDecimal.class);
+	protected final SimpleProperty<Integer> thirdPartyValueYear= this.addSimpleProperty("thirdPartyValueYear", Integer.class);
 
-	protected final ReferenceSetProperty<ObjContact> contactSet;
+	protected final PartListProperty<ObjBuildingPartRating> ratingList= this.addPartListProperty("ratingList", ObjBuildingPartRating.class);
 
-	protected ObjBuildingBase(ObjBuildingRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> buildingRecord) {
+	protected final ReferenceSetProperty<ObjContact> contactSet= this.addReferenceSetProperty("contactSet", ObjContact.class);
+	//@formatter:on
 
-		super(repository, objRecord, buildingRecord);
-
-		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NAME);
-		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.DESCRIPTION);
-		this.buildingNr = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_NR);
-		this.insuranceNr = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.INSURANCE_NR);
-		this.plotNr = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.PLOT_NR);
-		this.nationalBuildingId = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NATIONAL_BUILDING_ID);
-		this.historicPreservation = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.HISTORIC_PRESERVERATION_ID,
-				CodeHistoricPreservationEnum.class);
-
-		this.street = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.STREET);
-		this.zip = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.ZIP);
-		this.city = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.CITY);
-		this.country = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.currency = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.CURRENCY_ID, CodeCurrencyEnum.class);
-
-		this.geoAddress = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.GEO_ADDRESS);
-		this.geoCoordinates = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.GEO_COORDINATES);
-		this.geoZoom = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.GEO_ZOOM);
-
-		this.coverFoto = this.addReferenceProperty(this.extnDbRecord(), ObjBuildingFields.COVER_FOTO_ID, ObjDocument.class);
-
-		this.volume = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.VOLUME);
-		this.areaGross = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.AREA_GROSS);
-		this.areaNet = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.AREA_NET);
-		this.nrOfFloorsAboveGround = this.addSimpleProperty(this.extnDbRecord(),
-				ObjBuildingFields.NR_OF_FLOORS_ABOVE_GROUND);
-		this.nrOfFloorsBelowGround = this.addSimpleProperty(this.extnDbRecord(),
-				ObjBuildingFields.NR_OF_FLOORS_BELOW_GROUND);
-
-		this.buildingType = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_TYPE_ID,
-				CodeBuildingTypeEnum.class);
-		this.buildingSubType = this.addEnumProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_SUB_TYPE_ID,
-				CodeBuildingSubTypeEnum.class);
-		this.buildingYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.BUILDING_YEAR);
-
-		this.insuredValue = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.INSURED_VALUE);
-		this.insuredValueYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.INSURED_VALUE_YEAR);
-		this.notInsuredValue = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NOT_INSURED_VALUE);
-		this.notInsuredValueYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.NOT_INSURED_VALUE_YEAR);
-		this.thirdPartyValue = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.THIRD_PARTY_VALUE);
-		this.thirdPartyValueYear = this.addSimpleProperty(this.extnDbRecord(), ObjBuildingFields.THIRD_PARTY_VALUE_YEAR);
-
-		this.ratingList = this.addPartListProperty(this.getRepository().getRatingListType());
-
-		this.contactSet = this.addReferenceSetProperty(this.getRepository().getContactSetType(), ObjContact.class);
+	protected ObjBuildingBase(ObjBuildingRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
@@ -155,10 +110,12 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
+		CodePartListType ratingListType = CodePartListTypeEnum.getPartListType("building.ratingList");
 		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
-		this.ratingList.loadParts(ratingRepo.getParts(this, this.getRepository().getRatingListType()));
+		this.ratingList.loadParts(ratingRepo.getParts(this, ratingListType));
+		CodePartListType contactSetType = CodePartListTypeEnum.getPartListType("building.contactSet");
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.contactSet.loadReferences(itemRepo.getParts(this, this.getRepository().getContactSetType()));
+		this.contactSet.loadReferences(itemRepo.getParts(this, contactSetType));
 	}
 
 	@Override
@@ -204,7 +161,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
-		this.extnDbRecord().setValue(ObjBuildingFields.ACCOUNT_ID, id);
+		this.extnAccountId.setValue(id);
 	}
 
 	@Override

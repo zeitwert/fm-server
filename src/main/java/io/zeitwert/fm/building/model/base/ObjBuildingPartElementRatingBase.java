@@ -32,14 +32,16 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 	protected final SimpleProperty<String> description;
 	protected final SimpleProperty<String> conditionDescription;
 	protected final SimpleProperty<String> measureDescription;
-	protected final EnumSetProperty<CodeBuildingElementDescription> materialDescriptionSet;
-	protected final EnumSetProperty<CodeBuildingElementDescription> conditionDescriptionSet;
-	protected final EnumSetProperty<CodeBuildingElementDescription> measureDescriptionSet;
+	// protected final EnumSetProperty<CodeBuildingElementDescription>
+	// materialDescriptionSet;
+	// protected final EnumSetProperty<CodeBuildingElementDescription>
+	// conditionDescriptionSet;
+	// protected final EnumSetProperty<CodeBuildingElementDescription>
+	// measureDescriptionSet;
 
 	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj,
 			UpdatableRecord<?> dbRecord) {
 		super(repository, obj, dbRecord);
-		ObjBuildingRepository repo = (ObjBuildingRepository) obj.getMeta().getRepository();
 		this.buildingPart = this.addEnumProperty(dbRecord, ObjBuildingPartElementRatingFields.BUILDING_PART_ID,
 				CodeBuildingPartEnum.class);
 		this.weight = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.WEIGHT);
@@ -51,24 +53,30 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 		this.conditionDescription = this.addSimpleProperty(dbRecord,
 				ObjBuildingPartElementRatingFields.CONDITION_DESCRIPTION);
 		this.measureDescription = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.MEASURE_DESCRIPTION);
-		this.materialDescriptionSet = this.addEnumSetProperty(repo.getMaterialDescriptionSetType(),
-				CodeBuildingElementDescriptionEnum.class);
-		this.conditionDescriptionSet = this.addEnumSetProperty(repo.getConditionDescriptionSetType(),
-				CodeBuildingElementDescriptionEnum.class);
-		this.measureDescriptionSet = this.addEnumSetProperty(repo.getMeasureDescriptionSetType(),
-				CodeBuildingElementDescriptionEnum.class);
+		// ObjBuildingRepository repo = (ObjBuildingRepository)
+		// obj.getMeta().getRepository();
+		// this.materialDescriptionSet =
+		// this.addEnumSetProperty(repo.getMaterialDescriptionSetType(),
+		// CodeBuildingElementDescriptionEnum.class);
+		// this.conditionDescriptionSet =
+		// this.addEnumSetProperty(repo.getConditionDescriptionSetType(),
+		// CodeBuildingElementDescriptionEnum.class);
+		// this.measureDescriptionSet =
+		// this.addEnumSetProperty(repo.getMeasureDescriptionSetType(),
+		// CodeBuildingElementDescriptionEnum.class);
 	}
 
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		PartRepository<?, ObjPartItem> itemRepo = AppContext.getInstance().getPartRepository(ObjPartItem.class);
-		if (property.equals(this.materialDescriptionSet)) {
-			return itemRepo.create(this, partListType);
-		} else if (property.equals(this.conditionDescriptionSet)) {
-			return itemRepo.create(this, partListType);
-		} else if (property.equals(this.measureDescriptionSet)) {
-			return itemRepo.create(this, partListType);
-		}
+		// PartRepository<?, ObjPartItem> itemRepo =
+		// AppContext.getInstance().getPartRepository(ObjPartItem.class);
+		// if (property.equals(this.materialDescriptionSet)) {
+		// return itemRepo.create(this, partListType);
+		// } else if (property.equals(this.conditionDescriptionSet)) {
+		// return itemRepo.create(this, partListType);
+		// } else if (property.equals(this.measureDescriptionSet)) {
+		// return itemRepo.create(this, partListType);
+		// }
 		return super.addPart(property, partListType);
 	}
 

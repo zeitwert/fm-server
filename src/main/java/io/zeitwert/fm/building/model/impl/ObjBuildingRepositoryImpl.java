@@ -1,28 +1,23 @@
 
 package io.zeitwert.fm.building.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingBase;
-import io.zeitwert.fm.building.model.base.ObjBuildingFields;
 import io.zeitwert.fm.building.model.db.Tables;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -37,22 +32,10 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	private ObjContactRepository contactRepository;
 	private ObjDocumentRepository documentRepository;
 	private ObjBuildingPartRatingRepository ratingRepository;
-	private CodePartListType contactSetType;
-	private CodePartListType ratingListType;
 	private ObjBuildingPartElementRatingRepository elementRepository;
-	private CodePartListType materialDescriptionSetType;
-	private CodePartListType conditionDescriptionSetType;
-	private CodePartListType measureDescriptionSetType;
 
-	protected ObjBuildingRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				ObjBuildingRepository.class,
-				ObjBuilding.class,
-				ObjBuildingBase.class,
-				AGGREGATE_TYPE,
-				appContext,
+	protected ObjBuildingRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE, appContext,
 				dslContext);
 	}
 
@@ -81,53 +64,11 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public CodePartListType getContactSetType() {
-		if (this.contactSetType == null) {
-			this.contactSetType = CodePartListTypeEnum.getPartListType(ObjBuildingFields.CONTACT_SET);
-		}
-		return this.contactSetType;
-	}
-
-	@Override
-	public CodePartListType getRatingListType() {
-		if (this.ratingListType == null) {
-			this.ratingListType = CodePartListTypeEnum.getPartListType(ObjBuildingFields.RATING_LIST);
-		}
-		return this.ratingListType;
-	}
-
-	@Override
 	public ObjBuildingPartElementRatingRepository getElementRepository() {
 		if (this.elementRepository == null) {
 			this.elementRepository = this.getAppContext().getBean(ObjBuildingPartElementRatingRepository.class);
 		}
 		return this.elementRepository;
-	}
-
-	@Override
-	public CodePartListType getMaterialDescriptionSetType() {
-		if (this.materialDescriptionSetType == null) {
-			this.materialDescriptionSetType = CodePartListTypeEnum
-					.getPartListType(ObjBuildingFields.MATERIAL_DESCRIPTION_SET);
-		}
-		return this.materialDescriptionSetType;
-	}
-
-	@Override
-	public CodePartListType getConditionDescriptionSetType() {
-		if (this.conditionDescriptionSetType == null) {
-			this.conditionDescriptionSetType = CodePartListTypeEnum
-					.getPartListType(ObjBuildingFields.CONDITION_DESCRIPTION_SET);
-		}
-		return this.conditionDescriptionSetType;
-	}
-
-	@Override
-	public CodePartListType getMeasureDescriptionSetType() {
-		if (this.measureDescriptionSetType == null) {
-			this.measureDescriptionSetType = CodePartListTypeEnum.getPartListType(ObjBuildingFields.MEASURE_DESCRIPTION_SET);
-		}
-		return this.measureDescriptionSetType;
 	}
 
 	@Override
@@ -145,24 +86,20 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	}
 
 	@Override
-	public ObjBuilding doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_BUILDING));
-	}
-
-	@Override
-	public ObjBuilding doLoad(Integer buildingId) {
-		requireThis(buildingId != null, "objId not null");
-		ObjBuildingRecord buildingRecord = this.getDSLContext().fetchOne(Tables.OBJ_BUILDING,
-				Tables.OBJ_BUILDING.OBJ_ID.eq(buildingId));
-		if (buildingRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + buildingId + "]");
-		}
-		return this.doLoad(buildingId, buildingRecord);
-	}
-
-	@Override
 	public List<ObjBuildingVRecord> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, querySpec);
+	}
+
+	@Override
+	public ObjBuilding doCreate() {
+		assertThis(false, "nope");
+		return null;
+	}
+
+	@Override
+	public ObjBuilding doLoad(Integer id) {
+		assertThis(false, "nope");
+		return null;
 	}
 
 }

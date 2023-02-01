@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.db.model.jooq;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -119,10 +120,12 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 	}
 
 	protected void mapField(String name, DbTableType dbTableType, String fieldName, Class<?> fieldType) {
+		requireThis(this.getFieldConfig(name) == null, "unique field " + name);
 		this.dbConfigMap.put(name, new FieldConfig(dbTableType, fieldName, fieldType));
 	}
 
 	protected void mapCollection(String name, String partListTypeName, Class<?> fieldType) {
+		requireThis(this.getCollectionConfig(name) == null, "unique collection " + name);
 		CodePartListType partListType = CodePartListTypeEnum.getPartListType(partListTypeName);
 		this.dbConfigMap.put(name, new CollectionConfig(partListType, fieldType));
 	}

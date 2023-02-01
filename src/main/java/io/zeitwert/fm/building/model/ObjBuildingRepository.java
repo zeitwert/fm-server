@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -15,16 +14,6 @@ public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjB
 
 	ObjBuildingPartRatingRepository getRatingRepository();
 
-	CodePartListType getContactSetType();
-
-	CodePartListType getRatingListType();
-
 	ObjBuildingPartElementRatingRepository getElementRepository();
-
-	CodePartListType getMaterialDescriptionSetType();
-
-	CodePartListType getConditionDescriptionSetType();
-
-	CodePartListType getMeasureDescriptionSetType();
 
 }
