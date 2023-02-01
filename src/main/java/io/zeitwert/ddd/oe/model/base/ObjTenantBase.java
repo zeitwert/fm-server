@@ -4,15 +4,13 @@ package io.zeitwert.ddd.oe.model.base;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.jooq.UpdatableRecord;
-
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
-import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -21,6 +19,7 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -29,23 +28,17 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 
 public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
-	protected final EnumProperty<CodeTenantType> tenantType;
-	protected final SimpleProperty<String> name;
-	protected final SimpleProperty<String> extlKey;
-	protected final SimpleProperty<String> description;
-	protected final SimpleProperty<BigDecimal> inflationRate;
-	protected final ReferenceProperty<ObjDocument> logoImage;
+	//@formatter:off
+	protected final EnumProperty<CodeTenantType> tenantType = this.addEnumProperty("tenantType", CodeTenantType.class);
+	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
+	protected final SimpleProperty<String> extlKey = this.addSimpleProperty("extlKey", String.class);
+	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
+	protected final SimpleProperty<BigDecimal> inflationRate = this.addSimpleProperty("inflationRate", BigDecimal.class);
+	protected final ReferenceProperty<ObjDocument> logoImage = this.addReferenceProperty("logoImage", ObjDocument.class);
+	//@formatter:on
 
-	public ObjTenantBase(ObjTenantRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> tenantRecord) {
-		super(repository, objRecord, tenantRecord);
-		this.tenantType = this.addEnumProperty(this.extnDbRecord(), ObjTenantFields.TENANT_TYPE_ID,
-				CodeTenantTypeEnum.class);
-		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.NAME);
-		this.extlKey = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.EXTL_KEY);
-		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.DESCRIPTION);
-		this.inflationRate = this.addSimpleProperty(this.extnDbRecord(), ObjTenantFields.INFLATION_RATE);
-		this.logoImage = this.addReferenceProperty(this.extnDbRecord(), ObjTenantFields.LOGO_IMAGE, ObjDocument.class);
+	public ObjTenantBase(ObjTenantRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
@@ -96,7 +89,8 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	@Override
 	public List<ObjAccount> getAccounts() {
 		ObjAccountRepository accountRepo = (ObjAccountRepository) this.getAppContext().getRepository(ObjAccount.class);
-		return accountRepo.getByForeignKey("tenantId", this.getId()).stream().map(c -> accountRepo.get(c.getId())).toList();
+		List<ObjAccountVRecord> accountIds = accountRepo.getByForeignKey("tenantId", this.getId());
+		return accountIds.stream().map(c -> accountRepo.get(c.getId())).toList();
 	}
 
 	@Override

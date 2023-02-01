@@ -4,8 +4,7 @@ package io.zeitwert.ddd.oe.model.base;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jooq.UpdatableRecord;
-
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
@@ -16,6 +15,7 @@ import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
@@ -28,25 +28,19 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 
 public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
-	protected final SimpleProperty<String> email;
-	protected final SimpleProperty<String> name;
-	protected final SimpleProperty<String> description;
-	protected final ReferenceProperty<ObjDocument> avatarImage;
-	protected final SimpleProperty<String> role;
-	protected final ReferenceSetProperty<ObjTenant> tenantSet;
-	protected final SimpleProperty<Boolean> needPasswordChange;
-	protected final SimpleProperty<String> password;
+	//@formatter:off
+	protected final SimpleProperty<String> email = this.addSimpleProperty("email", String.class);
+	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
+	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
+	protected final ReferenceProperty<ObjDocument> avatarImage = this.addReferenceProperty("avatarImage", ObjDocument.class);
+	protected final SimpleProperty<String> role = this.addSimpleProperty("role", String.class);
+	protected final ReferenceSetProperty<ObjTenant> tenantSet = this.addReferenceSetProperty("tenantSet", ObjTenant.class);
+	protected final SimpleProperty<Boolean> needPasswordChange = this.addSimpleProperty("needPasswordChange", Boolean.class);
+	protected final SimpleProperty<String> password = this.addSimpleProperty("password", String.class);
+	//@formatter:on
 
-	public ObjUserBase(ObjUserRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> userRecord) {
-		super(repository, objRecord, userRecord);
-		this.email = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.EMAIL);
-		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.NAME);
-		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.DESCRIPTION);
-		this.avatarImage = this.addReferenceProperty(this.extnDbRecord(), ObjUserFields.AVATAR_IMAGE, ObjDocument.class);
-		this.role = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.ROLE_LIST);
-		this.tenantSet = this.addReferenceSetProperty(this.getRepository().getTenantSetType(), ObjTenant.class);
-		this.needPasswordChange = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.NEED_PASSWORD_CHANGE);
-		this.password = this.addSimpleProperty(this.extnDbRecord(), ObjUserFields.PASSWORD);
+	public ObjUserBase(ObjUserRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
@@ -64,12 +58,13 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.tenantSet.loadReferences(itemRepo.getParts(this, this.getRepository().getTenantSetType()));
+		CodePartListType tenantSetType = CodePartListTypeEnum.getPartListType("user.tenantList");
+		this.tenantSet.loadReferences(itemRepo.getParts(this, tenantSetType));
 	}
 
 	@Override
 	public CodeUserRole getRole() {
-		return CodeUserRoleEnum.getUserRole(this.extnDbRecord().getValue(ObjUserFields.ROLE_LIST));
+		return CodeUserRoleEnum.getUserRole(this.role.getValue());
 	}
 
 	@Override
@@ -79,12 +74,12 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 
 	@Override
 	public void setRole(CodeUserRole role) {
-		this.extnDbRecord().setValue(ObjUserFields.ROLE_LIST, role == null ? null : role.getId());
+		this.role.setValue(role == null ? null : role.getId());
 	}
 
 	@Override
 	public void setPassword(String password) {
-		this.extnDbRecord().setValue(ObjUserFields.PASSWORD, this.getRepository().getPasswordEncoder().encode(password));
+		this.password.setValue(this.getRepository().getPasswordEncoder().encode(password));
 	}
 
 	@Override

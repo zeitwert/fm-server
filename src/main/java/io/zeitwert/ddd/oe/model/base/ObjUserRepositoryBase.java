@@ -12,8 +12,6 @@ import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
 public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, TableRecord<?>>
 		implements ObjUserRepository {
@@ -21,33 +19,15 @@ public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, T
 	private static final String AGGREGATE_TYPE = "obj_user";
 
 	private final PasswordEncoder passwordEncoder;
-	private CodePartListType tenantListType;
 
-	protected ObjUserRepositoryBase(
-			final AppContext appContext,
-			final DSLContext dslContext,
-			final PasswordEncoder passwordEncoder) {
-		super(
-				ObjUserRepository.class,
-				ObjUser.class,
-				ObjUserBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
+	protected ObjUserRepositoryBase(AppContext appContext, DSLContext dslContext, PasswordEncoder passwordEncoder) {
+		super(ObjUserRepository.class, ObjUser.class, ObjUserBase.class, AGGREGATE_TYPE, appContext, dslContext);
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
 	public PasswordEncoder getPasswordEncoder() {
 		return this.passwordEncoder;
-	}
-
-	@Override
-	public CodePartListType getTenantSetType() {
-		if (this.tenantListType == null) {
-			this.tenantListType = CodePartListTypeEnum.getPartListType(ObjUserFields.TENANT_LIST);
-		}
-		return this.tenantListType;
 	}
 
 	@Override

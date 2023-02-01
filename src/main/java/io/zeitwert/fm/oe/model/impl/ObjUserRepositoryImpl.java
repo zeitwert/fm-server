@@ -1,14 +1,13 @@
 
 package io.zeitwert.fm.oe.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.TableRecord;
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -18,33 +17,27 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.base.ObjUserRepositoryBase;
 import io.zeitwert.fm.oe.model.db.Tables;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserRepository")
 public class ObjUserRepositoryImpl extends ObjUserRepositoryBase {
 
-	protected ObjUserRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext,
-			@Lazy // break cycle from WebSecurityConfig
-			final PasswordEncoder passwordEncoder) {
+	// passwordEncoder: break cycle from WebSecurityConfig TODO find better solution
+	// (own class)
+	protected ObjUserRepositoryImpl(AppContext appContext, DSLContext dslContext, @Lazy PasswordEncoder passwordEncoder) {
 		super(appContext, dslContext, passwordEncoder);
 	}
 
 	@Override
 	public ObjUser doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_USER));
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
-	public ObjUser doLoad(Integer objId) {
-		requireThis(objId != null, "objId not null");
-		ObjUserRecord extnRecord = this.getDSLContext().fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(objId));
-		if (extnRecord == null) {
-			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
-		}
-		return this.doLoad(objId, extnRecord);
+	public ObjUser doLoad(Integer id) {
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
