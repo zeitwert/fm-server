@@ -67,7 +67,14 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	@Override
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+		if (property.equals(this.includeSet)) {
+			return this.getRepository().getItemRepository().create(this, partListType);
+		} else if (property.equals(this.excludeSet)) {
+			return this.getRepository().getItemRepository().create(this, partListType);
+		} else if (property.equals(this.buildingSet)) {
+			return this.getRepository().getItemRepository().create(this, partListType);
+		}
 		return super.addPart(property, partListType);
 	}
 

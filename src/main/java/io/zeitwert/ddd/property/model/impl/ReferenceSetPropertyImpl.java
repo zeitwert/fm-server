@@ -18,6 +18,7 @@ import io.zeitwert.ddd.property.model.base.PropertyBase;
 
 public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceSetProperty<A> {
 
+	private final String name;
 	private final CodePartListType partListType;
 	private Set<AggregatePartItem<?>> itemSet = new HashSet<>();
 
@@ -25,12 +26,20 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	public ReferenceSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
 			AggregateResolver<A> repository) {
 		super(entity);
+		this.name = partListType.getId();
+		this.partListType = partListType;
+	}
+
+	public ReferenceSetPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType,
+			AggregateResolver<A> repository) {
+		super(entity);
+		this.name = name;
 		this.partListType = partListType;
 	}
 
 	@Override
 	public String getName() {
-		return this.partListType.getId();
+		return this.name;
 	}
 
 	@Override
@@ -53,7 +62,7 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 		}
 		if (!this.hasItem(id)) {
 			assertThis(this.isValidAggregateId(id), "valid aggregate id [" + id + "]");
-			AggregatePartItem<?> part = (AggregatePartItem<?>) this.getEntity().addItem(this, this.partListType);
+			AggregatePartItem<?> part = (AggregatePartItem<?>) this.getEntity().addPart(this, this.partListType);
 			assertThis(part != null,
 					"entity " + this.getEntity().getClass().getSimpleName() + "created a part for " + this.partListType.getId()
 							+ " (make sure to compare property with .equals() in addPart)");

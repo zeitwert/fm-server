@@ -1,6 +1,8 @@
 
 package io.zeitwert.ddd.obj.model.base;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.time.OffsetDateTime;
 
 import org.jooq.TableRecord;
@@ -11,7 +13,6 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
-import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
@@ -175,17 +176,12 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.transitionList)) {
-			return (P) this.getRepository().getTransitionRepository().create(this, partListType);
+			return this.getRepository().getTransitionRepository().create(this, partListType);
 		}
+		assertThis(false, "could instantiate part for partListType " + partListType);
 		return null;
-	}
-
-	@Override
-	public ObjPartItem addItem(Property<?> property, CodePartListType partListType) {
-		return this.getRepository().getItemRepository().create(this, partListType);
 	}
 
 	protected void setCaption(String caption) {

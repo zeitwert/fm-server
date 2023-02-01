@@ -84,11 +84,10 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.elementList)) {
 			ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
-			return (P) repo.getElementRepository().create(this, partListType);
+			return repo.getElementRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

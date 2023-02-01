@@ -91,8 +91,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		return this.dslContext;
 	}
 
-	@Override
-	public PropertyProvider getPropertyProvider() { // TODO: remove
+	// TODO: remove, replace with classpath scanning
+	public PropertyProvider getPropertyProvider() {
 		return null;
 	}
 

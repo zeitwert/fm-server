@@ -35,8 +35,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	protected final EnumProperty<CodeCountry> country = this.addEnumProperty("country", CodeCountry.class);
 	protected final ReferenceProperty<ObjTest> refTest = this.addReferenceProperty("refTest", ObjTest.class);
 	protected final EnumSetProperty<CodeCountry> countries = this.addEnumSetProperty("countrySet", CodeCountry.class);
-	protected final PartListProperty<ObjTestPartNode> nodeList = this.addPartListProperty("nodeList",
-			ObjTestPartNode.class);
+	protected final PartListProperty<ObjTestPartNode> nodes = this.addPartListProperty("nodeList", ObjTestPartNode.class);
 
 	protected ObjTestBase(ObjTestRepository repository, UpdatableRecord<?> objRecord, UpdatableRecord<?> testRecord) {
 		super(repository, objRecord, testRecord);
@@ -53,7 +52,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
 		this.countries.loadEnums(itemRepo.getParts(this, this.getRepository().getCountrySetType()));
 		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
-		this.nodeList.loadParts(nodeRepo.getParts(this, this.getRepository().getNodeListType()));
+		this.nodes.loadParts(nodeRepo.getParts(this, this.getRepository().getNodeListType()));
 	}
 
 	@Override
@@ -61,10 +60,11 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		if (property.equals(this.nodeList)) {
-			return (P) this.getRepository().getNodeRepository().create(this, partListType);
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+		if (property.equals(this.countries)) {
+			return this.getRepository().getItemRepository().create(this, partListType);
+		} else if (property.equals(this.nodes)) {
+			return this.getRepository().getNodeRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

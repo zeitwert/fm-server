@@ -89,15 +89,15 @@ public final class AppContext {
 	}
 
 	public <EN extends Enumeration<? extends Enumerated>> EN getEnumerationByEnumeration(Class<EN> enumClass) {
-		return this.enums.getEnumeration(enumClass);
+		return this.enums.getEnumerationByEnumeration(enumClass);
 	}
 
 	public <E extends Enumerated> Enumeration<E> getEnumeration(Class<E> enumClass) {
-		return this.enums.getEnumerationByItems(enumClass);
+		return this.enums.getEnumeration(enumClass);
 	}
 
 	public <E extends Enumerated, EN extends Enumeration<E>> E getEnumerated(Class<EN> enumClass, String itemId) {
-		return this.enums.getEnumeration(enumClass).getItem(itemId);
+		return this.enums.getEnumerationByEnumeration(enumClass).getItem(itemId);
 	}
 
 	public <T> T getBean(Class<T> requiredType) {

@@ -99,7 +99,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	}
 
 	@Override
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		return super.addPart(property, partListType);
 	}
 

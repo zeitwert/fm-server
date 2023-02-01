@@ -16,17 +16,25 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 
 public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> implements PartListProperty<P> {
 
+	private final String name;
 	private final CodePartListType partListType;
 	private final List<P> partList = new ArrayList<>();
 
 	public PartListPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType) {
 		super(entity);
+		this.name = partListType.getId();
+		this.partListType = partListType;
+	}
+
+	public PartListPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType) {
+		super(entity);
+		this.name = name;
 		this.partListType = partListType;
 	}
 
 	@Override
 	public String getName() {
-		return this.partListType.getId();
+		return this.name;
 	}
 
 	@Override
@@ -44,8 +52,9 @@ public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> imp
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public P addPart() {
-		P part = this.getEntity().addPart(this, this.partListType);
+		P part = (P) this.getEntity().addPart(this, this.partListType);
 		assertThis(part != null,
 				"entity " + this.getEntity().getClass().getSimpleName() + "created a part for " + this.partListType.getId()
 						+ " (make sure to compare property with .equals() in addPart)");

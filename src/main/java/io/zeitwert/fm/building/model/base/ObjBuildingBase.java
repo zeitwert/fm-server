@@ -192,10 +192,11 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.ratingList)) {
-			return (P) this.getRepository().getRatingRepository().create(this, partListType);
+			return this.getRepository().getRatingRepository().create(this, partListType);
+		} else if (property.equals(this.contactSet)) {
+			return this.getRepository().getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

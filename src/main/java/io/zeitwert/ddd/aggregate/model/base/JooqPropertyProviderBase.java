@@ -165,7 +165,7 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, aggregateType);
 		AggregateRepository<A, ?> cache = AppContext.getInstance().getRepository(aggregateType);
-		return new ReferenceSetPropertyImpl<>(entity, collectionConfig.partListType(), (id) -> cache.get(id));
+		return new ReferenceSetPropertyImpl<>(entity, name, collectionConfig.partListType(), (id) -> cache.get(id));
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public abstract class JooqPropertyProviderBase implements PropertyProvider {
 			Class<P> partType) {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, partType);
-		return new PartListPropertyImpl<>(entity, collectionConfig.partListType());
+		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
 	}
 
 }

@@ -63,7 +63,7 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 			return; // make compiler happy (potential null pointer)
 		}
 		if (!this.hasItem(item)) {
-			AggregatePartItem<?> part = this.getEntity().addItem(this, this.partListType);
+			AggregatePartItem<?> part = (AggregatePartItem<?>) this.getEntity().addPart(this, this.partListType);
 			assertThis(part != null,
 					"entity " + this.getEntity().getClass().getSimpleName() + "created a part for " + this.partListType.getId()
 							+ " (make sure to compare property with .equals() in addPart)");

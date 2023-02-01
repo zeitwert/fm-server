@@ -28,12 +28,12 @@ public final class Enumerations {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E extends Enumeration<? extends Enumerated>> E getEnumeration(Class<E> enumClass) {
+	public <E extends Enumeration<? extends Enumerated>> E getEnumerationByEnumeration(Class<E> enumClass) {
 		return (E) this.enumsByEnumerationClass.get(enumClass);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E extends Enumerated> Enumeration<E> getEnumerationByItems(Class<E> enumClass) {
+	public <E extends Enumerated> Enumeration<E> getEnumeration(Class<E> enumClass) {
 		return (Enumeration<E>) this.enumsByEnumeratedClass.get(enumClass);
 	}
 

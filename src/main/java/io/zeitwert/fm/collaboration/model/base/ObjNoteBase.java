@@ -43,7 +43,7 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	}
 
 	@Override
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		return super.addPart(property, partListType);
 	}
 

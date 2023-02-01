@@ -53,10 +53,12 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		this.seqNr = this.addSimpleProperty(dbRecord, PartFields.SEQ_NR);
 	}
 
+	@Override
 	public PartRepository<A, ?> getRepository() {
 		return this.repository;
 	}
 
+	@Override
 	public PartMeta<A> getMeta() {
 		return this;
 	}
@@ -180,6 +182,12 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	@Override
 	public void doAfterStore() {
 		this.doAfterStoreSeqNr += 1;
+	}
+
+	@Override
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+		assertThis(false, "could instantiate part for partListType " + partListType);
+		return null;
 	}
 
 	@Override

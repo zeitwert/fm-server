@@ -63,9 +63,10 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		return this;
 	}
 
+	@Override
 	public final PropertyProvider getPropertyProvider() {
-		if (this.getRepository() != null) {
-			return ((AggregateRepositorySPI<?, ?>) this.getRepository()).getPropertyProvider();
+		if (this.getRepository() != null) { // possible in instatiation phase
+			return ((AggregateRepositoryBase<?, ?>) this.getRepository()).getPropertyProvider();
 		}
 		return null;
 	}

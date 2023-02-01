@@ -16,7 +16,6 @@ import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.AggregatePartItem;
 import io.zeitwert.ddd.property.model.EntityWithProperties;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -58,17 +57,12 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		return List.copyOf(this.properties);
 	}
 
-	@Override
-	public AggregatePartItem<?> addItem(Property<?> property, CodePartListType partListType) {
-		throw new NoSuchMethodError(
-				this.getClass().getSimpleName() + ".addItem() [" + property.getName() + ", " + partListType + "]");
-	}
-
-	@Override
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
-		throw new NoSuchMethodError(
-				this.getClass().getSimpleName() + ".addPart() [" + property.getName() + ", " + partListType + "]");
-	}
+	// @Override
+	// public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+	// throw new NoSuchMethodError(
+	// this.getClass().getSimpleName() + ".addPart() [" + property.getName() + ", "
+	// + partListType + "]");
+	// }
 
 	protected void addProperty(Property<?> property) {
 		requireThis(property.getName() != null, "property has name");
@@ -78,7 +72,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	}
 
 	protected <T> SimpleProperty<T> addSimpleProperty(UpdatableRecord<?> dbRecord, Field<T> field) {
-		final SimpleProperty<T> property = new SimplePropertyImpl<>(this, dbRecord, field);
+		SimpleProperty<T> property = new SimplePropertyImpl<>(this, dbRecord, field);
 		this.addProperty(property);
 		return property;
 	}
@@ -96,8 +90,8 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumProperty<E> addEnumProperty(UpdatableRecord<?> dbRecord, Field<String> field,
 			Class<? extends Enumeration<E>> enumClass) {
-		final Enumeration<E> enumeration = this.getAppContext().getEnumerationByEnumeration(enumClass);
-		final EnumProperty<E> property = new EnumPropertyImpl<>(this, dbRecord, field, enumeration);
+		Enumeration<E> enumeration = this.getAppContext().getEnumerationByEnumeration(enumClass);
+		EnumProperty<E> property = new EnumPropertyImpl<>(this, dbRecord, field, enumeration);
 		this.addProperty(property);
 		return property;
 	}
@@ -116,8 +110,8 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(CodePartListType partListType,
 			Class<? extends Enumeration<E>> enumClass) {
 		requireThis(partListType != null, "partListType not null");
-		final Enumeration<E> enumeration = this.getAppContext().getEnumerationByEnumeration(enumClass);
-		final EnumSetProperty<E> property = new EnumSetPropertyImpl<>(this, partListType, enumeration);
+		Enumeration<E> enumeration = this.getAppContext().getEnumerationByEnumeration(enumClass);
+		EnumSetProperty<E> property = new EnumSetPropertyImpl<>(this, partListType, enumeration);
 		this.addProperty(property);
 		return property;
 	}
@@ -157,7 +151,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 			Class<A> aggregateClass) {
 		requireThis(partListType != null, "partListType not null");
 		AggregateCache<A> cache = this.getAppContext().getCache(aggregateClass);
-		final ReferenceSetProperty<A> property = new ReferenceSetPropertyImpl<>(this, partListType, (id) -> cache.get(id));
+		ReferenceSetProperty<A> property = new ReferenceSetPropertyImpl<>(this, partListType, (id) -> cache.get(id));
 		this.addProperty(property);
 		return property;
 	}
@@ -175,7 +169,7 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <P extends Part<?>> PartListProperty<P> addPartListProperty(CodePartListType partListType) {
 		requireThis(partListType != null, "partListType not null");
-		final PartListProperty<P> property = new PartListPropertyImpl<>(this, partListType);
+		PartListProperty<P> property = new PartListPropertyImpl<>(this, partListType);
 		this.addProperty(property);
 		return property;
 	}

@@ -104,10 +104,9 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.tenantSet)) {
-			return (P) this.getRepository().getItemRepository().create(this, partListType);
+			return this.getRepository().getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

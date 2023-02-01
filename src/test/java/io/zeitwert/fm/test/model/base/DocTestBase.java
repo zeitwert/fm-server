@@ -83,8 +83,10 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	}
 
 	@Override
-	// @SuppressWarnings("unchecked")
-	public <P extends Part<?>> P addPart(Property<P> property, CodePartListType partListType) {
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+		if (property.equals(this.countrySet)) {
+			return this.getRepository().getItemRepository().create(this, partListType);
+		}
 		// if (property.equals(this.nodeList)) {
 		// return (P) this.getRepository().getNodeRepository().create(this,
 		// partListType);
