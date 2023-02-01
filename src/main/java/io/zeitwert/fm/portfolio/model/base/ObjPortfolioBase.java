@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jooq.UpdatableRecord;
-
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -27,22 +27,18 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 
 public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio {
 
-	protected final SimpleProperty<String> name;
-	protected final SimpleProperty<String> description;
-	protected final SimpleProperty<String> portfolioNr;
-	protected final ReferenceSetProperty<ObjBuilding> includeSet;
-	protected final ReferenceSetProperty<ObjBuilding> excludeSet;
-	protected final ReferenceSetProperty<ObjBuilding> buildingSet;
+	//@formatter:off
+	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
+	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
+	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
+	protected final SimpleProperty<String> portfolioNr = this.addSimpleProperty("portfolioNr", String.class);
+	protected final ReferenceSetProperty<Obj> includeSet = this.addReferenceSetProperty("includeSet", Obj.class);
+	protected final ReferenceSetProperty<Obj> excludeSet = this.addReferenceSetProperty("excludeSet", Obj.class);
+	protected final ReferenceSetProperty<ObjBuilding> buildingSet = this.addReferenceSetProperty("buildingSet", ObjBuilding.class);
+	//@formatter:on
 
-	protected ObjPortfolioBase(ObjPortfolioRepository repository, UpdatableRecord<?> objRecord,
-			UpdatableRecord<?> portfolioRecord) {
-		super(repository, objRecord, portfolioRecord);
-		this.name = this.addSimpleProperty(this.extnDbRecord(), ObjPortfolioFields.NAME);
-		this.description = this.addSimpleProperty(this.extnDbRecord(), ObjPortfolioFields.DESCRIPTION);
-		this.portfolioNr = this.addSimpleProperty(this.extnDbRecord(), ObjPortfolioFields.PORTFOLIO_NR);
-		this.includeSet = this.addReferenceSetProperty(this.getRepository().getIncludeSetType(), ObjBuilding.class);
-		this.excludeSet = this.addReferenceSetProperty(this.getRepository().getExcludeSetType(), ObjBuilding.class);
-		this.buildingSet = this.addReferenceSetProperty(this.getRepository().getBuildingSetType(), ObjBuilding.class);
+	protected ObjPortfolioBase(ObjPortfolioRepository repository, AggregateState state) {
+		super(repository, state);
 	}
 
 	@Override
@@ -54,9 +50,12 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.includeSet.loadReferences(itemRepo.getParts(this, this.getRepository().getIncludeSetType()));
-		this.excludeSet.loadReferences(itemRepo.getParts(this, this.getRepository().getExcludeSetType()));
-		this.buildingSet.loadReferences(itemRepo.getParts(this, this.getRepository().getBuildingSetType()));
+		CodePartListType includeSetType = CodePartListTypeEnum.getPartListType("portfolio.includeSet");
+		this.includeSet.loadReferences(itemRepo.getParts(this, includeSetType));
+		CodePartListType excludeSetType = CodePartListTypeEnum.getPartListType("portfolio.excludeSet");
+		this.excludeSet.loadReferences(itemRepo.getParts(this, excludeSetType));
+		CodePartListType buildingSetType = CodePartListTypeEnum.getPartListType("portfolio.buildingSet");
+		this.buildingSet.loadReferences(itemRepo.getParts(this, buildingSetType));
 	}
 
 	@Override
@@ -81,7 +80,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	@Override
 	public void setAccountId(Integer id) {
 		super.account.setId(id);
-		this.extnDbRecord().setValue(ObjPortfolioFields.ACCOUNT_ID, id);
+		this.extnAccountId.setValue(id);
 	}
 
 	@Override

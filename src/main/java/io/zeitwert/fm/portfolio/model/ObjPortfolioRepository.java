@@ -1,6 +1,5 @@
 package io.zeitwert.fm.portfolio.model;
 
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.obj.model.FMObjRepository;
@@ -14,11 +13,5 @@ public interface ObjPortfolioRepository extends FMObjRepository<ObjPortfolio, Ob
 	ObjAccountRepository getAccountRepository();
 
 	ObjBuildingRepository getBuildingRepository();
-
-	CodePartListType getIncludeSetType();
-
-	CodePartListType getExcludeSetType();
-
-	CodePartListType getBuildingSetType();
 
 }
