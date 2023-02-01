@@ -1,6 +1,8 @@
 
 package io.zeitwert.fm.obj.model.impl;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -22,16 +24,8 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 
 	private static final String AGGREGATE_TYPE = "obj";
 
-	protected ObjVRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				ObjVRepository.class,
-				Obj.class,
-				ObjVBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
+	protected ObjVRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(ObjVRepository.class, Obj.class, ObjVBase.class, AGGREGATE_TYPE, appContext, dslContext);
 	}
 
 	@Override
@@ -42,12 +36,14 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 
 	@Override
 	public Obj doCreate() {
-		throw new RuntimeException("ObjV is readonly");
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
-	public Obj doLoad(Integer objId) {
-		return this.doLoad(objId, null);
+	public Obj doLoad(Integer id) {
+		assertThis(false, "nope");
+		return null;
 	}
 
 	@Override
