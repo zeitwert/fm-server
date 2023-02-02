@@ -16,20 +16,22 @@ import io.zeitwert.ddd.property.model.base.PropertyBase;
 public class ReferencePropertyImpl<A extends Aggregate> extends PropertyBase<A> implements ReferenceProperty<A> {
 
 	private final UpdatableRecord<?> dbRecord;
+	private final String name;
 	private final Field<Integer> field;
 	private final AggregateResolver<A> resolver;
 
-	public ReferencePropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, Field<Integer> field,
-			AggregateResolver<A> resolver) {
+	public ReferencePropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, String name,
+			Field<Integer> field, AggregateResolver<A> resolver) {
 		super(entity);
 		this.dbRecord = dbRecord;
+		this.name = name;
 		this.field = field;
 		this.resolver = resolver;
 	}
 
 	@Override
 	public String getName() {
-		return this.field.getName();
+		return this.name;
 	}
 
 	@Override

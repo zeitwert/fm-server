@@ -12,7 +12,6 @@ import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import javassist.util.proxy.MethodHandler;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class PropertyHandler implements MethodHandler {
@@ -132,23 +131,10 @@ public class PropertyHandler implements MethodHandler {
 		if (property != null) {
 			return property;
 		}
-		for (Class<?> c = obj.getClass().getSuperclass(); c != null; c = c.getSuperclass()) {
-			try {
-				Field field = c.getDeclaredField(fieldName);
-				field.setAccessible(true);
-				return (Property<?>) field.get(obj);
-			} catch (NoSuchFieldException | SecurityException e) {
-			}
-		}
-		if (fieldName.endsWith("Id")) {
-			// try enumeration / object via field
+		if (fieldName.endsWith("Id")) { // try enumeration / object via field
 			return this.getProperty(obj, fieldName.substring(0, fieldName.length() - 2));
-		} else if (fieldName.endsWith("List")) {
-			// try Set instead of List
+		} else if (fieldName.endsWith("List")) { // try Set instead of List
 			return this.getProperty(obj, fieldName.replace("List", "Set"));
-		} else if (!fieldName.endsWith("_")) {
-			// try with _ suffix
-			return this.getProperty(obj, fieldName + "_");
 		}
 		throw new NoSuchFieldException(fieldName);
 	}

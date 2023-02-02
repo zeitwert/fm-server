@@ -16,20 +16,22 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 public class EnumPropertyImpl<E extends Enumerated> extends PropertyBase<E> implements EnumProperty<E> {
 
 	private final UpdatableRecord<?> dbRecord;
+	String name;
 	private final Field<String> field;
 	private final Enumeration<E> enumeration;
 
-	public EnumPropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, Field<String> field,
+	public EnumPropertyImpl(EntityWithPropertiesSPI entity, UpdatableRecord<?> dbRecord, String name, Field<String> field,
 			Enumeration<E> enumeration) {
 		super(entity);
 		this.dbRecord = dbRecord;
+		this.name = name;
 		this.field = field;
 		this.enumeration = enumeration;
 	}
 
 	@Override
 	public String getName() {
-		return this.field.getName();
+		return this.name;
 	}
 
 	@Override

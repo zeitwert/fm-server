@@ -97,7 +97,7 @@ public abstract class PropertyProviderBase implements PropertyProvider {
 		Field<String> field = this.checkFieldConfig(fieldConfig, entity, name, String.class);
 		Enumeration<E> enumeration = AppContext.getInstance().getEnumeration(enumType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
-		return new EnumPropertyImpl<>(entity, dbRecord, field, enumeration);
+		return new EnumPropertyImpl<>(entity, dbRecord, name, field, enumeration);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public abstract class PropertyProviderBase implements PropertyProvider {
 		Field<Integer> field = this.checkFieldConfig(fieldConfig, entity, name, Integer.class);
 		AggregateCache<Aggr> cache = AppContext.getInstance().getCache(aggregateType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
-		return new ReferencePropertyImpl<>(entity, dbRecord, field, (id) -> cache.get(id));
+		return new ReferencePropertyImpl<>(entity, dbRecord, name, field, (id) -> cache.get(id));
 	}
 
 	@Override
