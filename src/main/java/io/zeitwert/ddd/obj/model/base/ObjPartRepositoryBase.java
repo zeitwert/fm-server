@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.obj.model.base;
 
-import org.jooq.DSLContext;
-
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
@@ -12,13 +10,12 @@ public abstract class ObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>>
 		implements ObjPartRepository<O, P> {
 
 	protected ObjPartRepositoryBase(
-			final Class<? extends O> aggregateIntfClass,
-			final Class<? extends ObjPart<O>> intfClass,
-			final Class<? extends ObjPart<O>> baseClass,
-			final String partTypeId,
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext, dslContext);
+			Class<? extends O> aggregateIntfClass,
+			Class<? extends ObjPart<O>> intfClass,
+			Class<? extends ObjPart<O>> baseClass,
+			String partTypeId,
+			AppContext appContext) {
+		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext);
 	}
 
 }

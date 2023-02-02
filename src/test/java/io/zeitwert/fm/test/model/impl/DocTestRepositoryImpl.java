@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -22,8 +21,8 @@ public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestV
 
 	private static final String AGGREGATE_TYPE = "doc_test";
 
-	protected DocTestRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(DocTestRepository.class, DocTest.class, DocTestBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected DocTestRepositoryImpl(AppContext appContext) {
+		super(DocTestRepository.class, DocTest.class, DocTestBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override

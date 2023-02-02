@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -24,8 +23,8 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	private static final String AGGREGATE_TYPE = "obj_account";
 
-	protected ObjAccountRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjAccountRepositoryImpl(AppContext appContext) {
+		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 
 	@Override
 	public Optional<ObjAccount> getByKey(String key) {
-		ObjAccountVRecord accountRecord = this.getDSLContext().fetchOne(Tables.OBJ_ACCOUNT_V,
+		ObjAccountVRecord accountRecord = AppContext.getInstance().getDslContext().fetchOne(Tables.OBJ_ACCOUNT_V,
 				Tables.OBJ_ACCOUNT_V.INTL_KEY.eq(key));
 		if (accountRecord == null) {
 			return Optional.empty();

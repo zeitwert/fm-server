@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.Table;
@@ -40,9 +39,8 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	private static final TableField<ObjDocumentPartContentRecord, byte[]> CONTENT = DOCUMENT_CONTENT.CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> CREATED_BY_USER_ID = DOCUMENT_CONTENT.CREATED_BY_USER_ID;
 
-	protected ObjDocumentRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjDocumentRepository.class, ObjDocument.class, ObjDocumentBase.class, AGGREGATE_TYPE, appContext,
-				dslContext);
+	protected ObjDocumentRepositoryImpl(AppContext appContext) {
+		super(ObjDocumentRepository.class, ObjDocument.class, ObjDocumentBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override
@@ -58,28 +56,29 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 
 	@Override
 	public CodeContentType getContentType(ObjDocument document) {
-		Integer maxVersionNr = this.getDSLContext().fetchValue(this.getContentMaxVersionQuery(document));
+		Integer maxVersionNr = AppContext.getInstance().getDslContext()
+				.fetchValue(this.getContentMaxVersionQuery(document));
 		if (maxVersionNr == null) {
 			return null;
 		}
 		Table<ObjDocumentPartContentRecord> query = this.getContentWithMaxVersionQuery(document);
-		String contentTypeId = this.getDSLContext().fetchOne(query).getContentTypeId();
+		String contentTypeId = AppContext.getInstance().getDslContext().fetchOne(query).getContentTypeId();
 		return CodeContentTypeEnum.getContentType(contentTypeId);
 	}
 
 	@Override
 	public byte[] getContent(ObjDocument document) {
 		Table<ObjDocumentPartContentRecord> query = this.getContentWithMaxVersionQuery(document);
-		return this.getDSLContext().fetchOne(query).getContent();
+		return AppContext.getInstance().getDslContext().fetchOne(query).getContent();
 	}
 
 	@Override
 	public void storeContent(RequestContext requestCtx, ObjDocument document, CodeContentType contentType,
 			byte[] content) {
-		Integer versionNr = this.getDSLContext().fetchValue(this.getContentMaxVersionQuery(document));
+		Integer versionNr = AppContext.getInstance().getDslContext().fetchValue(this.getContentMaxVersionQuery(document));
 		versionNr = versionNr == null ? 1 : versionNr + 1;
 		//@formatter:off
-		this.getDSLContext()
+		AppContext.getInstance().getDslContext()
 			.insertInto(DOCUMENT_CONTENT)
 			.columns(OBJ_ID, VERSION_NR, CONTENT_TYPE_ID, CONTENT, CREATED_BY_USER_ID)
 			.values(document.getId(), versionNr, contentType.getId(), content, requestCtx.getUser().getId())
@@ -94,7 +93,8 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	}
 
 	private SelectConditionStep<Record1<Integer>> getContentMaxVersionQuery(ObjDocument document) {
-		return this.getDSLContext().select(DSL.max(VERSION_NR)).from(DOCUMENT_CONTENT).where(OBJ_ID.eq(document.getId()));
+		return AppContext.getInstance().getDslContext().select(DSL.max(VERSION_NR)).from(DOCUMENT_CONTENT)
+				.where(OBJ_ID.eq(document.getId()));
 	}
 
 }

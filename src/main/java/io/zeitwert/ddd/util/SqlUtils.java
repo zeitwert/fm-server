@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
@@ -38,15 +37,15 @@ public class SqlUtils {
 		return querySpec.getFilters().stream().anyMatch(f -> getPath(f).equals(fieldName));
 	}
 
-	public static Condition andFilter(DSLContext dslContext, Condition whereClause, Table<?> table,
+	public static Condition andFilter(Condition whereClause, Table<?> table,
 			Field<Integer> idField, FilterSpec filter) {
-		return whereClause.and(filter(dslContext, table, idField, filter));
+		return whereClause.and(filter(table, idField, filter));
 	}
 
-	public static Condition orFilter(DSLContext dslContext, Condition whereClause, Table<?> table, Field<Integer> idField,
+	public static Condition orFilter(Condition whereClause, Table<?> table, Field<Integer> idField,
 			FilterSpec filter) {
 		List<Condition> conditions = filter.getExpression().stream()
-				.map(f -> filter(dslContext, table, idField, f)).toList();
+				.map(f -> filter(table, idField, f)).toList();
 		return whereClause.and(DSL.or(conditions));
 	}
 
@@ -64,12 +63,12 @@ public class SqlUtils {
 		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
 	}
 
-	private static Condition searchFilter(DSLContext dslContext, Field<Integer> idField, FilterSpec filter) {
+	private static Condition searchFilter(Field<Integer> idField, FilterSpec filter) {
 		String searchText = filter.getValue();
 		String searchToken = "'" + searchText + "':*";
 		//@formatter:off
 		return idField.in(
-			dslContext
+			DSL
 				.select(ITEM_ID)
 				.from(SEARCH_TABLE)
 				.where(
@@ -83,7 +82,7 @@ public class SqlUtils {
 		//@formatter:on
 	}
 
-	private static Condition closedFilter(DSLContext dslContext, Table<?> table, FilterSpec filter) {
+	private static Condition closedFilter(Table<?> table, FilterSpec filter) {
 		Field<?> field = table.field("closed_at");
 		assertThis(field != null, "known field closed_at");
 		if (field == null) {
@@ -262,12 +261,12 @@ public class SqlUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Condition filter(DSLContext dslContext, Table<?> table, Field<Integer> idField, FilterSpec filter) {
+	private static Condition filter(Table<?> table, Field<Integer> idField, FilterSpec filter) {
 		String fieldName = StringUtils.toSnakeCase(getPath(filter));
 		if ("search_text".equals(fieldName)) {
-			return searchFilter(dslContext, idField, filter);
+			return searchFilter(idField, filter);
 		} else if ("is_closed".equals(fieldName)) {
-			return closedFilter(dslContext, table, filter);
+			return closedFilter(table, filter);
 		}
 		Field<?> field = table.field(fieldName);
 		assertThis(field != null, "known field " + fieldName);

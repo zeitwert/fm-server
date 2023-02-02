@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -26,14 +25,14 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 
 	private ObjContactPartAddressRepository addressRepository;
 
-	protected ObjContactRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjContactRepository.class, ObjContact.class, ObjContactBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjContactRepositoryImpl(AppContext appContext) {
+		super(ObjContactRepository.class, ObjContact.class, ObjContactBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override
 	public ObjContactPartAddressRepository getAddressRepository() {
 		if (this.addressRepository == null) {
-			this.addressRepository = this.getAppContext().getBean(ObjContactPartAddressRepository.class);
+			this.addressRepository = AppContext.getInstance().getBean(ObjContactPartAddressRepository.class);
 		}
 		return this.addressRepository;
 	}

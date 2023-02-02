@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -32,15 +31,14 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	private ObjAccountRepository accountRepository;
 	private ObjBuildingRepository buildingRepository;
 
-	protected ObjPortfolioRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE, appContext,
-				dslContext);
+	protected ObjPortfolioRepositoryImpl(AppContext appContext) {
+		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override
 	public ObjVRepository getObjVRepository() {
 		if (this.objVRepository == null) {
-			this.objVRepository = this.getAppContext().getBean(ObjVRepository.class);
+			this.objVRepository = AppContext.getInstance().getBean(ObjVRepository.class);
 		}
 		return this.objVRepository;
 	}
@@ -48,7 +46,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public ObjAccountRepository getAccountRepository() {
 		if (this.accountRepository == null) {
-			this.accountRepository = this.getAppContext().getBean(ObjAccountRepository.class);
+			this.accountRepository = AppContext.getInstance().getBean(ObjAccountRepository.class);
 		}
 		return this.accountRepository;
 	}
@@ -56,7 +54,7 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 	@Override
 	public ObjBuildingRepository getBuildingRepository() {
 		if (this.buildingRepository == null) {
-			this.buildingRepository = this.getAppContext().getBean(ObjBuildingRepository.class);
+			this.buildingRepository = AppContext.getInstance().getBean(ObjBuildingRepository.class);
 		}
 		return this.buildingRepository;
 	}

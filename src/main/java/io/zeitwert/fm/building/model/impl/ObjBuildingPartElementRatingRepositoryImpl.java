@@ -1,6 +1,5 @@
 package io.zeitwert.fm.building.model.impl;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -17,9 +16,9 @@ public class ObjBuildingPartElementRatingRepositoryImpl
 
 	private static final String PART_TYPE = "obj_building_part_element_rating";
 
-	protected ObjBuildingPartElementRatingRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+	protected ObjBuildingPartElementRatingRepositoryImpl(AppContext appContext) {
 		super(ObjBuilding.class, ObjBuildingPartElementRating.class, ObjBuildingPartElementRatingBase.class, PART_TYPE,
-				appContext, dslContext);
+				appContext);
 	}
 
 }

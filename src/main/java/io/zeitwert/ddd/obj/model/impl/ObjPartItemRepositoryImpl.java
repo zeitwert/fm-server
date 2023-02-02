@@ -1,6 +1,5 @@
 package io.zeitwert.ddd.obj.model.impl;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -16,8 +15,8 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 
 	private static final String PART_TYPE = "obj_part_item";
 
-	protected ObjPartItemRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(Obj.class, ObjPartItem.class, ObjPartItemBase.class, PART_TYPE, appContext, dslContext);
+	protected ObjPartItemRepositoryImpl(AppContext appContext) {
+		super(Obj.class, ObjPartItem.class, ObjPartItemBase.class, PART_TYPE, appContext);
 	}
 
 	@Override

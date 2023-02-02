@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -26,9 +25,8 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 
 	private final RequestContext requestCtx;
 
-	protected ObjNoteRepositoryImpl(final AppContext appContext, final DSLContext dslContext,
-			final RequestContext requestCtx) {
-		super(ObjNoteRepository.class, ObjNote.class, ObjNoteBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjNoteRepositoryImpl(AppContext appContext, RequestContext requestCtx) {
+		super(ObjNoteRepository.class, ObjNote.class, ObjNoteBase.class, AGGREGATE_TYPE, appContext);
 		this.requestCtx = requestCtx;
 	}
 

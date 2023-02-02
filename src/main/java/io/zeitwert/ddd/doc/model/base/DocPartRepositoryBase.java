@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.doc.model.base;
 
-import org.jooq.DSLContext;
-
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPart;
@@ -12,13 +10,12 @@ public abstract class DocPartRepositoryBase<D extends Doc, P extends DocPart<D>>
 		implements DocPartRepository<D, P> {
 
 	protected DocPartRepositoryBase(
-			final Class<? extends D> aggregateIntfClass,
-			final Class<? extends DocPart<D>> intfClass,
-			final Class<? extends DocPart<D>> baseClass,
-			final String partTypeId,
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext, dslContext);
+			Class<? extends D> aggregateIntfClass,
+			Class<? extends DocPart<D>> intfClass,
+			Class<? extends DocPart<D>> baseClass,
+			String partTypeId,
+			AppContext appContext) {
+		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext);
 	}
 
 }

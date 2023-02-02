@@ -3,7 +3,6 @@ package io.zeitwert.ddd.oe.model.base;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -16,14 +15,8 @@ public abstract class ObjTenantRepositoryBase extends ObjRepositoryBase<ObjTenan
 
 	private static final String AGGREGATE_TYPE = "obj_tenant";
 
-	protected ObjTenantRepositoryBase(final AppContext appContext, final DSLContext dslContext) {
-		super(
-				ObjTenantRepository.class,
-				ObjTenant.class,
-				ObjTenantBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
+	protected ObjTenantRepositoryBase(AppContext appContext) {
+		super(ObjTenantRepository.class, ObjTenant.class, ObjTenantBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override

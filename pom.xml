@@ -245,6 +245,17 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>jooq-codegen-fm-search</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/search/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
 						<id>jooq-codegen-fm-oe</id>
 						<phase>generate-sources</phase>
 						<goals>

@@ -27,13 +27,6 @@ public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
 	void registerPartRepositories();
 
 	/**
-	 * Provide a new Aggregate id
-	 * 
-	 * @return new aggregate id
-	 */
-	Integer nextAggregateId();
-
-	/**
 	 * Initialize Parts of new Aggregate instance
 	 * 
 	 * @param aggregate aggregate

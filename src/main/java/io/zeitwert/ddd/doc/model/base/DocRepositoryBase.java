@@ -1,7 +1,6 @@
 
 package io.zeitwert.ddd.doc.model.base;
 
-import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
@@ -16,25 +15,22 @@ public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		extends AggregateRepositoryBase<D, V>
 		implements DocRepository<D, V> {
 
-	private static final String DOC_ID_SEQ = "doc_id_seq";
-
 	private DocPartTransitionRepository transitionRepository;
 	private DocPartItemRepository itemRepository;
 
 	protected DocRepositoryBase(
-			final Class<? extends AggregateRepository<D, V>> repoIntfClass,
-			final Class<? extends Doc> intfClass,
-			final Class<? extends Doc> baseClass,
-			final String aggregateTypeId,
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
+			Class<? extends AggregateRepository<D, V>> repoIntfClass,
+			Class<? extends Doc> intfClass,
+			Class<? extends Doc> baseClass,
+			String aggregateTypeId,
+			AppContext appContext) {
+		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext);
 	}
 
 	@Override
 	public DocPartTransitionRepository getTransitionRepository() {
 		if (this.transitionRepository == null) {
-			this.transitionRepository = this.getAppContext().getBean(DocPartTransitionRepository.class);
+			this.transitionRepository = AppContext.getInstance().getBean(DocPartTransitionRepository.class);
 		}
 		return this.transitionRepository;
 	}
@@ -42,7 +38,7 @@ public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 	@Override
 	public DocPartItemRepository getItemRepository() {
 		if (this.itemRepository == null) {
-			this.itemRepository = this.getAppContext().getBean(DocPartItemRepository.class);
+			this.itemRepository = AppContext.getInstance().getBean(DocPartItemRepository.class);
 		}
 		return this.itemRepository;
 	}
@@ -50,11 +46,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 	@Override
 	public void registerPartRepositories() {
 		this.addPartRepository(this.getTransitionRepository());
-	}
-
-	@Override
-	public Integer nextAggregateId() {
-		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
 	}
 
 	@Override

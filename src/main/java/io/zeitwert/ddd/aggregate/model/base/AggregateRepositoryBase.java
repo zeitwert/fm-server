@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -42,20 +41,8 @@ import javassist.util.proxy.ProxyFactory;
 public abstract class AggregateRepositoryBase<A extends Aggregate, V extends TableRecord<?>>
 		implements AggregateRepository<A, V>, AggregateRepositorySPI<A, V> {
 
-	static private final String SEARCH_TABLE_NAME = "item_search";
-	static private final Table<?> SEARCH_TABLE = AppContext.getInstance().getTable(SEARCH_TABLE_NAME);
-
-	static private final Field<String> ID = SEARCH_TABLE.field("id", String.class);
-	static private final Field<String> ITEM_TYPE_ID = SEARCH_TABLE.field("item_type_id", String.class);
-	static private final Field<Integer> ITEM_ID = SEARCH_TABLE.field("item_id", Integer.class);
-	static private final Field<String> A_SIMPLE = SEARCH_TABLE.field("a_simple", String.class);
-	static private final Field<String> B_GERMAN = SEARCH_TABLE.field("b_german", String.class);
-	static private final Field<String> B_ENGLISH = SEARCH_TABLE.field("b_english", String.class);
-
 	private final Class<? extends Aggregate> intfClass;
 	private final String aggregateTypeId;
-	private final AppContext appContext;
-	private final DSLContext dslContext;
 
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
@@ -68,29 +55,18 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	private boolean didAfterStore = false;
 
 	protected AggregateRepositoryBase(
-			final Class<? extends AggregateRepository<A, V>> repoIntfClass,
-			final Class<? extends Aggregate> intfClass,
-			final Class<? extends Aggregate> baseClass,
-			final String aggregateTypeId,
-			final AppContext appContext,
-			final DSLContext dslContext) {
+			Class<? extends AggregateRepository<A, V>> repoIntfClass,
+			Class<? extends Aggregate> intfClass,
+			Class<? extends Aggregate> baseClass,
+			String aggregateTypeId,
+			AppContext appContext) {
 		this.intfClass = intfClass;
 		this.aggregateTypeId = aggregateTypeId;
-		this.appContext = appContext;
-		this.dslContext = dslContext;
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
 		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Object.class };
-		this.appContext.addRepository(aggregateTypeId, intfClass, this);
-	}
-
-	protected AppContext getAppContext() {
-		return this.appContext;
-	}
-
-	protected final DSLContext getDSLContext() {
-		return this.dslContext;
+		appContext.addRepository(aggregateTypeId, intfClass, this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,13 +110,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	@Override
-	public abstract Integer nextAggregateId();
-
-	@Override
 	public final A create(Integer tenantId) {
 
-		Integer aggregateId = this.nextAggregateId();
 		AggregatePersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
+		Integer aggregateId = persistenceProvider.nextAggregateId();
 		A aggregate = persistenceProvider.doCreate();
 
 		persistenceProvider.doInit(aggregate, aggregateId, tenantId);
@@ -259,32 +232,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	protected final void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
-		String allTexts = String.join(" ", texts.stream().filter(t -> t != null).toList()).toLowerCase();
-		String allTokens = String.join(" ", tokens.stream().filter(t -> t != null).toList()).toLowerCase();
-		String allTextsAndTokens = (allTexts + " " + allTokens).trim();
-		String id = aggregate.getMeta().getAggregateType().getId() + ":" +
-				aggregate.getId();
-		this.dslContext
-				.delete(SEARCH_TABLE)
-				.where(ID.eq(id))
-				.execute();
-		this.dslContext
-				.insertInto(
-						SEARCH_TABLE,
-						ID,
-						ITEM_TYPE_ID,
-						ITEM_ID,
-						A_SIMPLE,
-						B_GERMAN,
-						B_ENGLISH)
-				.values(
-						id,
-						aggregate.getMeta().getAggregateType().getId(),
-						aggregate.getId(),
-						allTokens,
-						allTextsAndTokens,
-						allTextsAndTokens)
-				.execute();
+		this.getPersistenceProvider().storeSearch(aggregate, texts, tokens);
 	}
 
 	@Override
@@ -296,13 +244,13 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 				aggregate.getClass().getSimpleName() + ": doAfterStore was propagated");
 		this.discard(aggregate);
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
-		this.getAppContext().publishApplicationEvent(aggregateStoredEvent);
+		AppContext.getInstance().publishApplicationEvent(aggregateStoredEvent);
 	}
 
 	@Override
 	public final List<V> find(QuerySpec querySpec) {
 		String tenantField = AggregateFields.TENANT_ID.getName();
-		RequestContext requestCtx = this.appContext.getRequestContext();
+		RequestContext requestCtx = AppContext.getInstance().getRequestContext();
 		Integer tenantId = requestCtx.getTenantId();
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
@@ -333,9 +281,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		if (querySpec != null) {
 			for (FilterSpec filter : querySpec.getFilters()) {
 				if (filter.getOperator().equals(FilterOperator.OR) && filter.getExpression() != null) {
-					whereClause = SqlUtils.orFilter(this.dslContext, whereClause, table, idField, filter);
+					whereClause = SqlUtils.orFilter(whereClause, table, idField, filter);
 				} else {
-					whereClause = SqlUtils.andFilter(this.dslContext, whereClause, table, idField, filter);
+					whereClause = SqlUtils.andFilter(whereClause, table, idField, filter);
 				}
 			}
 		}
@@ -350,16 +298,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 			sortFields = List.of(table.field("id").desc());
 		}
 
-		Number offset = querySpec == null ? null : querySpec.getOffset();
-		Number limit = querySpec == null ? null : querySpec.getLimit();
+		Long offset = querySpec == null ? null : querySpec.getOffset();
+		Long limit = querySpec == null ? null : querySpec.getLimit();
 
-		return (Result<V>) this.dslContext
-				.select()
-				.from(table)
-				.where(whereClause)
-				.orderBy(sortFields)
-				.limit(offset, limit)
-				.fetch();
+		return (Result<V>) this.getPersistenceProvider().doQuery(table, whereClause, sortFields, offset, limit);
 
 	}
 

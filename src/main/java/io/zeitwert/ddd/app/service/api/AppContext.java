@@ -80,6 +80,10 @@ public final class AppContext {
 		return this.requestContext;
 	}
 
+	public DSLContext getDslContext() { // TODO: remove this method
+		return this.dslContext;
+	}
+
 	public void addRepository(String aggregateTypeId, final Class<? extends Aggregate> intfClass,
 			final AggregateRepository<? extends Aggregate, ? extends Record> repo) {
 		this.repos.addRepository(aggregateTypeId, intfClass, repo);

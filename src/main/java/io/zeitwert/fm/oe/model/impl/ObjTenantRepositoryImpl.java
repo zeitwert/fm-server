@@ -4,7 +4,6 @@ package io.zeitwert.fm.oe.model.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +17,8 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 @Component("objTenantRepository")
 public class ObjTenantRepositoryImpl extends ObjTenantRepositoryBase {
 
-	protected ObjTenantRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(appContext, dslContext);
+	protected ObjTenantRepositoryImpl(AppContext appContext) {
+		super(appContext);
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public class ObjTenantRepositoryImpl extends ObjTenantRepositoryBase {
 
 	@Override
 	public Optional<ObjTenant> getByExtlKey(String extlKey) {
-		ObjTenantVRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT_V,
+		ObjTenantVRecord tenantRecord = AppContext.getInstance().getDslContext().fetchOne(Tables.OBJ_TENANT_V,
 				Tables.OBJ_TENANT_V.EXTL_KEY.eq(extlKey));
 		if (tenantRecord == null) {
 			return Optional.empty();

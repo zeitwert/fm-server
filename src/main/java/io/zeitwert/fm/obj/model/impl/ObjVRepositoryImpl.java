@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -22,8 +21,8 @@ public class ObjVRepositoryImpl extends ObjRepositoryBase<Obj, ObjRecord> implem
 
 	private static final String AGGREGATE_TYPE = "obj";
 
-	protected ObjVRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjVRepository.class, Obj.class, ObjVBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjVRepositoryImpl(AppContext appContext) {
+		super(ObjVRepository.class, Obj.class, ObjVBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override

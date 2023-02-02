@@ -7,7 +7,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 import org.springframework.context.event.EventListener;
 
@@ -27,35 +26,22 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		implements PartRepository<A, P>, PartRepositorySPI<A, P> {
 
 	private final Class<? extends Part<A>> intfClass;
-	private final AppContext appContext;
-	private final DSLContext dslContext;
 
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] paramTypeList;
 
 	protected PartRepositoryBase(
-			final Class<? extends A> aggregateIntfClass,
-			final Class<? extends Part<A>> intfClass,
-			final Class<? extends Part<A>> baseClass,
-			final String partTypeId,
-			final AppContext appContext,
-			final DSLContext dslContext) {
+			Class<? extends A> aggregateIntfClass,
+			Class<? extends Part<A>> intfClass,
+			Class<? extends Part<A>> baseClass,
+			String partTypeId,
+			AppContext appContext) {
 		this.intfClass = intfClass;
-		this.appContext = appContext;
 		appContext.addPartRepository(partTypeId, intfClass, this);
-		this.dslContext = dslContext;
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
 		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, UpdatableRecord.class };
-	}
-
-	protected final AppContext getAppContext() {
-		return this.appContext;
-	}
-
-	protected final DSLContext getDSLContext() {
-		return this.dslContext;
 	}
 
 	@SuppressWarnings("unchecked")

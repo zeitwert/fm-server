@@ -19,6 +19,8 @@ import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 
 public abstract class DocPersistenceProviderBase<D extends Doc> extends AggregatePersistenceProviderBase<D> {
 
+	private static final String DOC_ID_SEQ = "doc_id_seq";
+
 	public DocPersistenceProviderBase(
 			Class<? extends AggregateRepository<D, ?>> repoIntfClass,
 			Class<? extends Aggregate> baseClass,
@@ -44,6 +46,11 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Aggregat
 	@Override
 	public Class<?> getEntityClass() {
 		return null;
+	}
+
+	@Override
+	public Integer nextAggregateId() {
+		return this.getDSLContext().nextval(DOC_ID_SEQ).intValue();
 	}
 
 	@SuppressWarnings("unchecked")

@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.obj.model.base;
 
-import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
@@ -20,25 +19,18 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord
 	private DocTaskRepository taskRepository;
 
 	protected FMObjRepositoryBase(
-			final Class<? extends AggregateRepository<O, V>> repoIntfClass,
-			final Class<? extends Obj> intfClass,
-			final Class<? extends Obj> baseClass,
-			final String aggregateTypeId,
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				repoIntfClass,
-				intfClass,
-				baseClass,
-				aggregateTypeId,
-				appContext,
-				dslContext);
+			Class<? extends AggregateRepository<O, V>> repoIntfClass,
+			Class<? extends Obj> intfClass,
+			Class<? extends Obj> baseClass,
+			String aggregateTypeId,
+			AppContext appContext) {
+		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext);
 	}
 
 	@Override
 	public ObjNoteRepository getNoteRepository() {
 		if (this.noteRepository == null) {
-			this.noteRepository = this.getAppContext().getBean(ObjNoteRepository.class);
+			this.noteRepository = AppContext.getInstance().getBean(ObjNoteRepository.class);
 		}
 		return this.noteRepository;
 	}
@@ -46,7 +38,7 @@ public abstract class FMObjRepositoryBase<O extends FMObj, V extends TableRecord
 	@Override
 	public DocTaskRepository getTaskRepository() {
 		if (this.taskRepository == null) {
-			this.taskRepository = this.getAppContext().getBean(DocTaskRepository.class);
+			this.taskRepository = AppContext.getInstance().getBean(DocTaskRepository.class);
 		}
 		return this.taskRepository;
 	}

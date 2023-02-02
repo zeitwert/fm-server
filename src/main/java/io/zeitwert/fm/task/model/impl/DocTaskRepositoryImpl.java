@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.FilterOperator;
@@ -31,15 +30,15 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 	private final RequestContext requestCtx;
 	private ObjVRepository objVRepository;
 
-	protected DocTaskRepositoryImpl(AppContext appContext, DSLContext dslContext, RequestContext requestCtx) {
-		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected DocTaskRepositoryImpl(AppContext appContext, RequestContext requestCtx) {
+		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE, appContext);
 		this.requestCtx = requestCtx;
 	}
 
 	@Override
 	public ObjVRepository getObjRepository() {
 		if (this.objVRepository == null) {
-			this.objVRepository = this.getAppContext().getBean(ObjVRepository.class);
+			this.objVRepository = AppContext.getInstance().getBean(ObjVRepository.class);
 		}
 		return this.objVRepository;
 	}

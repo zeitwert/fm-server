@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -32,15 +31,14 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	private ObjBuildingPartRatingRepository ratingRepository;
 	private ObjBuildingPartElementRatingRepository elementRepository;
 
-	protected ObjBuildingRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE, appContext,
-				dslContext);
+	protected ObjBuildingRepositoryImpl(AppContext appContext) {
+		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override
 	public ObjContactRepository getContactRepository() {
 		if (this.contactRepository == null) {
-			this.contactRepository = this.getAppContext().getBean(ObjContactRepository.class);
+			this.contactRepository = AppContext.getInstance().getBean(ObjContactRepository.class);
 		}
 		return this.contactRepository;
 	}
@@ -48,7 +46,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public ObjDocumentRepository getDocumentRepository() {
 		if (this.documentRepository == null) {
-			this.documentRepository = this.getAppContext().getBean(ObjDocumentRepository.class);
+			this.documentRepository = AppContext.getInstance().getBean(ObjDocumentRepository.class);
 		}
 		return this.documentRepository;
 	}
@@ -56,7 +54,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public ObjBuildingPartRatingRepository getRatingRepository() {
 		if (this.ratingRepository == null) {
-			this.ratingRepository = this.getAppContext().getBean(ObjBuildingPartRatingRepository.class);
+			this.ratingRepository = AppContext.getInstance().getBean(ObjBuildingPartRatingRepository.class);
 		}
 		return this.ratingRepository;
 	}
@@ -64,7 +62,7 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 	@Override
 	public ObjBuildingPartElementRatingRepository getElementRepository() {
 		if (this.elementRepository == null) {
-			this.elementRepository = this.getAppContext().getBean(ObjBuildingPartElementRatingRepository.class);
+			this.elementRepository = AppContext.getInstance().getBean(ObjBuildingPartElementRatingRepository.class);
 		}
 		return this.elementRepository;
 	}

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -25,14 +24,14 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private ObjTestPartNodeRepository nodeRepository;
 
-	protected ObjTestRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjTestRepositoryImpl(AppContext appContext) {
+		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext);
 	}
 
 	@Override
 	public ObjTestPartNodeRepository getNodeRepository() {
 		if (this.nodeRepository == null) {
-			this.nodeRepository = this.getAppContext().getBean(ObjTestPartNodeRepository.class);
+			this.nodeRepository = AppContext.getInstance().getBean(ObjTestPartNodeRepository.class);
 		}
 		return this.nodeRepository;
 	}

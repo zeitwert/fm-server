@@ -19,6 +19,8 @@ import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 
 public abstract class ObjPersistenceProviderBase<O extends Obj> extends AggregatePersistenceProviderBase<O> {
 
+	private static final String OBJ_ID_SEQ = "obj_id_seq";
+
 	public ObjPersistenceProviderBase(
 			Class<? extends AggregateRepository<O, ?>> repoIntfClass,
 			Class<? extends Aggregate> baseClass,
@@ -42,6 +44,11 @@ public abstract class ObjPersistenceProviderBase<O extends Obj> extends Aggregat
 	@Override
 	public Class<?> getEntityClass() {
 		return null;
+	}
+
+	@Override
+	public Integer nextAggregateId() {
+		return this.getDSLContext().nextval(OBJ_ID_SEQ).intValue();
 	}
 
 	@SuppressWarnings("unchecked")

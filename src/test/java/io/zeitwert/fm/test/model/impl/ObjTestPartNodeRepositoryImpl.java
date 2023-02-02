@@ -1,6 +1,5 @@
 package io.zeitwert.fm.test.model.impl;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -16,8 +15,8 @@ public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest
 
 	private static final String PART_TYPE = "obj_test_part_node";
 
-	protected ObjTestPartNodeRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
-		super(ObjTest.class, ObjTestPartNode.class, ObjTestPartNodeBase.class, PART_TYPE, appContext, dslContext);
+	protected ObjTestPartNodeRepositoryImpl(AppContext appContext) {
+		super(ObjTest.class, ObjTestPartNode.class, ObjTestPartNodeBase.class, PART_TYPE, appContext);
 	}
 
 }
