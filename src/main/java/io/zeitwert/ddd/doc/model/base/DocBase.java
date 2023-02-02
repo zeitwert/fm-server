@@ -94,24 +94,6 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	}
 
 	@Override
-	public final void doInit(Integer docId, Integer tenantId) {
-		super.doInit(docId, tenantId);
-		try {
-			this.disableCalc();
-			this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
-			this.id.setValue(docId);
-			this.tenant.setId(tenantId);
-			if (this.extnDbRecord() != null) { // TODO cleanup
-				this.extnDbRecord().setValue(DocExtnFields.DOC_ID, docId);
-				this.extnDbRecord().setValue(DocExtnFields.TENANT_ID, tenantId);
-			}
-		} finally {
-			this.enableCalc();
-		}
-		this.doInitWorkflow();
-	}
-
-	@Override
 	public abstract void doInitWorkflow();
 
 	protected final void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {

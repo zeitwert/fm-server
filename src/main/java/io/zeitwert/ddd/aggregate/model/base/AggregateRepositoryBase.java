@@ -117,10 +117,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
 		A aggregate = persistenceProvider.doCreate();
 
-		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
-		((AggregateSPI) aggregate).doInit(aggregateId, tenantId);
-		assertThis(((AggregateBase) aggregate).doInitSeqNr > doInitSeqNr,
-				aggregate.getClass().getSimpleName() + ": doInit was propagated");
+		persistenceProvider.doInit(aggregate, aggregateId, tenantId);
 
 		this.doInitParts(aggregate);
 

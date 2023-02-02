@@ -16,15 +16,6 @@ public interface AggregateSPI {
 	AggregateState getAggregateState();
 
 	/**
-	 * Initialise the database records of an Aggregate with some basic fields (id,
-	 * tenantId) after creation (internal, technical callback).
-	 *
-	 * @param aggregateId aggregate id
-	 * @param tenantId    tenant id
-	 */
-	void doInit(Integer aggregateId, Integer tenantId);
-
-	/**
 	 * Do some work after create, f.ex. fire events, add transition etc.
 	 */
 	void doAfterCreate();

@@ -84,26 +84,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public final void doInit(Integer objId, Integer tenantId) {
-		super.doInit(objId, tenantId);
-		try {
-			this.disableCalc();
-			this.objTypeId.setValue(this.getRepository().getAggregateType().getId());
-			this.id.setValue(objId);
-			this.tenant.setId(tenantId);
-			if (this.extnDbRecord() != null) { // TODO cleanup
-				this.extnDbRecord().setValue(ObjExtnFields.OBJ_ID, objId);
-				// obj_tenant does not have a tenant_id field
-				if (this.extnDbRecord().field(ObjExtnFields.TENANT_ID) != null) {
-					this.extnDbRecord().setValue(ObjExtnFields.TENANT_ID, tenantId);
-				}
-			}
-		} finally {
-			this.enableCalc();
-		}
-	}
-
-	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		Integer sessionUserId = this.getMeta().getRequestContext().getUser().getId();

@@ -51,6 +51,26 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 		return this.newAggregate(state);
 	}
 
+	@Override
+	public final void doInit(D aggregate, Integer docId, Integer tenantId) {
+		DocBase doc = (DocBase) aggregate;
+		try {
+			doc.disableCalc();
+			doc.docTypeId.setValue(doc.getRepository().getAggregateType().getId());
+			doc.id.setValue(docId);
+			doc.tenant.setId(tenantId);
+			AggregateStateImpl state = (AggregateStateImpl) doc.getAggregateState();
+			UpdatableRecord<?> extnRecord = state.getExtnRecord();
+			if (extnRecord != null) {
+				extnRecord.setValue(DocExtnFields.DOC_ID, docId);
+				extnRecord.setValue(DocExtnFields.TENANT_ID, tenantId);
+			}
+			doc.doInitWorkflow();
+		} finally {
+			doc.enableCalc();
+		}
+	}
+
 	protected D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null) {

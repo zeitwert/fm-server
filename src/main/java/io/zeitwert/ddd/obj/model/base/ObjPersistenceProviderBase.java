@@ -49,6 +49,28 @@ public abstract class ObjPersistenceProviderBase<O extends Obj> extends Persiste
 		return this.newAggregate(state);
 	}
 
+	@Override
+	public final void doInit(O aggregate, Integer id, Integer tenantId) {
+		ObjBase obj = (ObjBase) aggregate;
+		try {
+			obj.disableCalc();
+			obj.objTypeId.setValue(obj.getRepository().getAggregateType().getId());
+			obj.id.setValue(id);
+			obj.tenant.setId(tenantId);
+			AggregateStateImpl state = (AggregateStateImpl) obj.getAggregateState();
+			UpdatableRecord<?> extnRecord = state.getExtnRecord();
+			if (extnRecord != null) {
+				extnRecord.setValue(ObjExtnFields.OBJ_ID, id);
+				// obj_tenant does not have a tenant_id field
+				if (extnRecord.field(ObjExtnFields.TENANT_ID) != null) {
+					extnRecord.setValue(ObjExtnFields.TENANT_ID, tenantId);
+				}
+			}
+		} finally {
+			obj.enableCalc();
+		}
+	}
+
 	protected O doLoad(Integer objId, UpdatableRecord<?> extnRecord) {
 		ObjRecord objRecord = this.getDSLContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(objId));
 		if (objRecord == null) {

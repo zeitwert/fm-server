@@ -43,7 +43,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	private boolean didCalcAll = false;
 	private boolean didCalcVolatile = false;
 
-	protected Integer doInitSeqNr = 0;
 	protected Integer doAfterCreateSeqNr = 0;
 	protected Integer doAssignPartsSeqNr = 0;
 	protected Integer doAfterLoadSeqNr = 0;
@@ -108,11 +107,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	public PartCache<?> getPartCache(Class<? extends Part<?>> clazz) {
 		requireThis(this.hasPartCache(clazz), "initialised");
 		return this.partCaches.get(clazz);
-	}
-
-	@Override
-	public void doInit(Integer aggregateId, Integer tenantId) {
-		this.doInitSeqNr += 1;
 	}
 
 	@Override
