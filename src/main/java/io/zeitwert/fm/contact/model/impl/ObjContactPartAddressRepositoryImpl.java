@@ -21,21 +21,10 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 
 	private static final String PART_TYPE = "obj_contact_part_address";
 
-	//@formatter:off
-	protected ObjContactPartAddressRepositoryImpl(
-		final AppContext appContext,
-		final DSLContext dslContext
-	) {
-		super(
-			ObjContact.class,
-			ObjContactPartAddress.class,
-			ObjContactPartAddressBase.class,
-			PART_TYPE,
-			appContext,
-			dslContext
-		);
+	protected ObjContactPartAddressRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(ObjContact.class, ObjContactPartAddress.class, ObjContactPartAddressBase.class, PART_TYPE, appContext,
+				dslContext);
 	}
-	//@formatter:on
 
 	@Override
 	public ObjContactPartAddress doCreate(ObjContact obj) {
