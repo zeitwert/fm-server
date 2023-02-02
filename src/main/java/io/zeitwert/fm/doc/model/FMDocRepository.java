@@ -1,5 +1,6 @@
 package io.zeitwert.fm.doc.model;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -9,8 +10,12 @@ import org.jooq.TableRecord;
 
 public interface FMDocRepository<D extends Doc, V extends TableRecord<?>> extends DocRepository<D, V> {
 
-	ObjNoteRepository getNoteRepository();
+	static ObjNoteRepository getNoteRepository() {
+		return AppContext.getInstance().getBean(ObjNoteRepository.class);
+	}
 
-	DocTaskRepository getTaskRepository();
+	static DocTaskRepository getTaskRepository() {
+		return AppContext.getInstance().getBean(DocTaskRepository.class);
+	}
 
 }

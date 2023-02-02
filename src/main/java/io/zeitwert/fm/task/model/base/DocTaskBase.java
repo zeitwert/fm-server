@@ -95,7 +95,7 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	public Aggregate getRelatedTo() {
 		Integer relatedToId = this.relatedObjId.getValue();
 		if (relatedToId != null) {
-			return this.getRepository().getObjRepository().get(relatedToId);
+			return DocTaskRepository.getObjRepository().get(relatedToId);
 		}
 		relatedToId = this.relatedDocId.getValue();
 		// if (relatedId != null) {

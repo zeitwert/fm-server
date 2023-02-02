@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.building.model;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
@@ -18,12 +19,20 @@ public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjB
 		return CodePartListTypeEnum.getPartListType("building.contactSet");
 	}
 
-	ObjContactRepository getContactRepository();
+	static ObjContactRepository getContactRepository() {
+		return AppContext.getInstance().getBean(ObjContactRepository.class);
+	}
 
-	ObjDocumentRepository getDocumentRepository();
+	static ObjDocumentRepository getDocumentRepository() {
+		return AppContext.getInstance().getBean(ObjDocumentRepository.class);
+	}
 
-	ObjBuildingPartRatingRepository getRatingRepository();
+	static ObjBuildingPartRatingRepository getRatingRepository() {
+		return AppContext.getInstance().getBean(ObjBuildingPartRatingRepository.class);
+	}
 
-	ObjBuildingPartElementRatingRepository getElementRepository();
+	static ObjBuildingPartElementRatingRepository getElementRepository() {
+		return AppContext.getInstance().getBean(ObjBuildingPartElementRatingRepository.class);
+	}
 
 }

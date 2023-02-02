@@ -47,7 +47,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjContactPartAddressRepository addressRepo = this.getRepository().getAddressRepository();
+		ObjContactPartAddressRepository addressRepo = ObjContactRepository.getAddressRepository();
 		this.addressList.loadParts(addressRepo.getParts(this, ObjContactRepository.addressListType()));
 	}
 

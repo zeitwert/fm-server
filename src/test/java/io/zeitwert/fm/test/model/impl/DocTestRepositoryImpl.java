@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -29,7 +30,7 @@ public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestV
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(DocRepository.getItemRepository());
 		// this.addPartRepository(this.getNodeRepository());
 	}
 

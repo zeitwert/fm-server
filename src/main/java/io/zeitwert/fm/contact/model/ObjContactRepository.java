@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.contact.model;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
@@ -12,6 +13,8 @@ public interface ObjContactRepository extends FMObjRepository<ObjContact, ObjCon
 		return CodePartListTypeEnum.getPartListType("contact.addressList");
 	}
 
-	ObjContactPartAddressRepository getAddressRepository();
+	static ObjContactPartAddressRepository getAddressRepository() {
+		return AppContext.getInstance().getBean(ObjContactPartAddressRepository.class);
+	}
 
 }

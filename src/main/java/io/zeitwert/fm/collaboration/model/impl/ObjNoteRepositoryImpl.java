@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -34,7 +35,7 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 	@Override

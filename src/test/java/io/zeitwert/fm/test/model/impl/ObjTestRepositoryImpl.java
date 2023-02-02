@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.base.ObjTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
@@ -22,26 +22,16 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
-	private ObjTestPartNodeRepository nodeRepository;
-
 	protected ObjTestRepositoryImpl(AppContext appContext) {
 		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext);
-	}
-
-	@Override
-	public ObjTestPartNodeRepository getNodeRepository() {
-		if (this.nodeRepository == null) {
-			this.nodeRepository = AppContext.getInstance().getBean(ObjTestPartNodeRepository.class);
-		}
-		return this.nodeRepository;
 	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
-		this.addPartRepository(this.getNodeRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
+		this.addPartRepository(ObjTestRepository.getNodeRepository());
 	}
 
 	@Override

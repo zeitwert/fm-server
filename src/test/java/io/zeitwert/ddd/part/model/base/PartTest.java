@@ -57,7 +57,7 @@ public class PartTest {
 		assertTrue(this.testRepository != null, "testRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		ObjTestPartNodeRepository testNodeRepository = this.testRepository.getNodeRepository();
+		ObjTestPartNodeRepository testNodeRepository = ObjTestRepository.getNodeRepository();
 		assertTrue(testNodeRepository != null, "testNodeRepository not null");
 		CodePartListType nodeListType = ObjTestRepository.nodeListType();
 		assertTrue(CodePartListTypeEnum.getPartListType("test.nodeList").equals(nodeListType), "nodeListType");

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
@@ -31,7 +32,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.Property;
@@ -47,7 +48,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
 		this.includeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.includeSetType()));
 		this.excludeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.excludeSetType()));
 		this.buildingSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.buildingSetType()));
@@ -63,11 +64,11 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.includeSet)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return ObjRepository.getItemRepository().create(this, partListType);
 		} else if (property.equals(this.excludeSet)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return ObjRepository.getItemRepository().create(this, partListType);
 		} else if (property.equals(this.buildingSet)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return ObjRepository.getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}
@@ -126,7 +127,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	}
 
 	private Set<Integer> getBuildingIds(Integer id) {
-		ObjVRepository objRepo = this.getRepository().getObjVRepository();
+		ObjVRepository objRepo = ObjPortfolioRepository.getObjRepository();
 		Obj obj = objRepo.get(id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		if (objType == CodeAggregateTypeEnum.getAggregateType("obj_building")) {
@@ -135,7 +136,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 			ObjPortfolio pf = this.getRepository().get(id);
 			return pf.getBuildingSet();
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_account")) {
-			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepository().getByForeignKey("account_id",
+			List<ObjBuildingVRecord> buildings = ObjPortfolioRepository.getBuildingRepository().getByForeignKey("account_id",
 					id);
 			return buildings.stream().map(bldg -> bldg.getId()).collect(Collectors.toSet());
 		}

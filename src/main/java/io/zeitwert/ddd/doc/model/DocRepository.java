@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.doc.model;
 
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
@@ -18,8 +19,12 @@ public interface DocRepository<D extends Doc, V extends TableRecord<?>> extends 
 		return CodePartListTypeEnum.getPartListType("doc.transitionList");
 	}
 
-	DocPartTransitionRepository getTransitionRepository();
+	static DocPartTransitionRepository getTransitionRepository() {
+		return AppContext.getInstance().getBean(DocPartTransitionRepository.class);
+	}
 
-	DocPartItemRepository getItemRepository();
+	static DocPartItemRepository getItemRepository() {
+		return AppContext.getInstance().getBean(DocPartItemRepository.class);
+	}
 
 }

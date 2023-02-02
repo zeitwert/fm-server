@@ -7,6 +7,7 @@ import org.jooq.TableRecord;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
@@ -38,7 +39,7 @@ public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, T
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 }

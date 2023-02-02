@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -108,9 +109,9 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
+		ObjBuildingPartRatingRepository ratingRepo = ObjBuildingRepository.getRatingRepository();
 		this.ratingList.loadParts(ratingRepo.getParts(this, ObjBuildingRepository.ratingListType()));
-		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
 		this.contactSet.loadReferences(itemRepo.getParts(this, ObjBuildingRepository.contactSetType()));
 	}
 
@@ -147,9 +148,9 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.ratingList)) {
-			return this.getRepository().getRatingRepository().create(this, partListType);
+			return ObjBuildingRepository.getRatingRepository().create(this, partListType);
 		} else if (property.equals(this.contactSet)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return ObjRepository.getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}
@@ -284,7 +285,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	}
 
 	private void addCoverFoto() {
-		ObjDocumentRepository documentRepo = this.getRepository().getDocumentRepository();
+		ObjDocumentRepository documentRepo = ObjBuildingRepository.getDocumentRepository();
 		ObjDocument coverFoto = documentRepo.create(this.getTenantId());
 		coverFoto.setName("CoverFoto");
 		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));

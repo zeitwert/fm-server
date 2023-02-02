@@ -9,15 +9,12 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
-import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.contact.model.ObjContactRepository;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objBuildingRepository")
@@ -26,54 +23,17 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private static final String AGGREGATE_TYPE = "obj_building";
 
-	private ObjContactRepository contactRepository;
-	private ObjDocumentRepository documentRepository;
-	private ObjBuildingPartRatingRepository ratingRepository;
-	private ObjBuildingPartElementRatingRepository elementRepository;
-
 	protected ObjBuildingRepositoryImpl(AppContext appContext) {
 		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE, appContext);
-	}
-
-	@Override
-	public ObjContactRepository getContactRepository() {
-		if (this.contactRepository == null) {
-			this.contactRepository = AppContext.getInstance().getBean(ObjContactRepository.class);
-		}
-		return this.contactRepository;
-	}
-
-	@Override
-	public ObjDocumentRepository getDocumentRepository() {
-		if (this.documentRepository == null) {
-			this.documentRepository = AppContext.getInstance().getBean(ObjDocumentRepository.class);
-		}
-		return this.documentRepository;
-	}
-
-	@Override
-	public ObjBuildingPartRatingRepository getRatingRepository() {
-		if (this.ratingRepository == null) {
-			this.ratingRepository = AppContext.getInstance().getBean(ObjBuildingPartRatingRepository.class);
-		}
-		return this.ratingRepository;
-	}
-
-	@Override
-	public ObjBuildingPartElementRatingRepository getElementRepository() {
-		if (this.elementRepository == null) {
-			this.elementRepository = AppContext.getInstance().getBean(ObjBuildingPartElementRatingRepository.class);
-		}
-		return this.elementRepository;
 	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
-		this.addPartRepository(this.getRatingRepository());
-		this.addPartRepository(this.getElementRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
+		this.addPartRepository(ObjBuildingRepository.getRatingRepository());
+		this.addPartRepository(ObjBuildingRepository.getElementRepository());
 	}
 
 	@Override

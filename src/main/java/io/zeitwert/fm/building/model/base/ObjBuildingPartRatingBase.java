@@ -62,8 +62,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
-		ObjBuildingPartElementRatingRepository elementRepo = repo.getElementRepository();
+		ObjBuildingPartElementRatingRepository elementRepo = ObjBuildingRepository.getElementRepository();
 		List<ObjBuildingPartElementRating> elementList = elementRepo.getParts(this,
 				ObjBuildingPartRatingRepository.getElementListType());
 		this.elementList.loadParts(elementList);
@@ -72,8 +71,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.elementList)) {
-			ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
-			return repo.getElementRepository().create(this, partListType);
+			return ObjBuildingRepository.getElementRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

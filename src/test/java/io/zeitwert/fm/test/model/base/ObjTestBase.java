@@ -8,6 +8,7 @@ import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -48,9 +49,9 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
 		this.countries.loadEnums(itemRepo.getParts(this, ObjTestRepository.countrySetType()));
-		ObjTestPartNodeRepository nodeRepo = this.getRepository().getNodeRepository();
+		ObjTestPartNodeRepository nodeRepo = ObjTestRepository.getNodeRepository();
 		this.nodes.loadParts(nodeRepo.getParts(this, ObjTestRepository.nodeListType()));
 	}
 
@@ -61,9 +62,9 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.countries)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return ObjRepository.getItemRepository().create(this, partListType);
 		} else if (property.equals(this.nodes)) {
-			return this.getRepository().getNodeRepository().create(this, partListType);
+			return ObjTestRepository.getNodeRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

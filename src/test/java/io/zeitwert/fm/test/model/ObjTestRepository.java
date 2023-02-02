@@ -1,5 +1,6 @@
 package io.zeitwert.fm.test.model;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.obj.model.FMObjRepository;
@@ -15,6 +16,8 @@ public interface ObjTestRepository extends FMObjRepository<ObjTest, ObjTestVReco
 		return CodePartListTypeEnum.getPartListType("test.nodeList");
 	}
 
-	ObjTestPartNodeRepository getNodeRepository();
+	static ObjTestPartNodeRepository getNodeRepository() {
+		return AppContext.getInstance().getBean(ObjTestPartNodeRepository.class);
+	}
 
 }

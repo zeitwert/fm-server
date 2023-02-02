@@ -94,7 +94,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
+		ObjPartTransitionRepository transitionRepo = ObjRepository.getTransitionRepository();
 		this.transitionList.loadParts(transitionRepo.getParts(this, ObjRepository.transitionListType()));
 	}
 
@@ -130,7 +130,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.transitionList)) {
-			return this.getRepository().getTransitionRepository().create(this, partListType);
+			return ObjRepository.getTransitionRepository().create(this, partListType);
 		}
 		assertThis(false, "could instantiate part for partListType " + partListType);
 		return null;

@@ -36,13 +36,13 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 
 	@Override
 	public List<ObjNoteVRecord> getNotes() {
-		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNoteRepository noteRepository = FMObjRepository.getNoteRepository();
 		return noteRepository.getByForeignKey("related_to_id", this.getId());
 	}
 
 	@Override
 	public ObjNote addNote(CodeNoteType noteType) {
-		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNoteRepository noteRepository = FMObjRepository.getNoteRepository();
 		ObjNote note = noteRepository.create(this.getTenantId());
 		note.setNoteType(noteType);
 		note.setRelatedToId(this.getId());
@@ -51,20 +51,20 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 
 	@Override
 	public void removeNote(Integer noteId) {
-		ObjNoteRepository noteRepository = this.getRepository().getNoteRepository();
+		ObjNoteRepository noteRepository = FMObjRepository.getNoteRepository();
 		ObjNote note = noteRepository.get(noteId);
 		noteRepository.delete(note);
 	}
 
 	@Override
 	public List<DocTaskVRecord> getTasks() {
-		DocTaskRepository taskRepository = this.getRepository().getTaskRepository();
+		DocTaskRepository taskRepository = FMObjRepository.getTaskRepository();
 		return taskRepository.getByForeignKey("related_to_obj_id", this.getId());
 	}
 
 	@Override
 	public DocTask addTask() {
-		DocTaskRepository taskRepository = this.getRepository().getTaskRepository();
+		DocTaskRepository taskRepository = FMObjRepository.getTaskRepository();
 		DocTask task = taskRepository.create(this.getTenantId());
 		task.setRelatedToId(this.getId());
 		return task;

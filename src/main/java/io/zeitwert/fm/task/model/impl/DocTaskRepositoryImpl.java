@@ -14,7 +14,6 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
-import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
@@ -28,19 +27,10 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 	private static final String AGGREGATE_TYPE = "doc_task";
 
 	private final RequestContext requestCtx;
-	private ObjVRepository objVRepository;
 
 	protected DocTaskRepositoryImpl(AppContext appContext, RequestContext requestCtx) {
 		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE, appContext);
 		this.requestCtx = requestCtx;
-	}
-
-	@Override
-	public ObjVRepository getObjRepository() {
-		if (this.objVRepository == null) {
-			this.objVRepository = AppContext.getInstance().getBean(ObjVRepository.class);
-		}
-		return this.objVRepository;
 	}
 
 	@Override

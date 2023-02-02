@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -27,43 +25,15 @@ public class ObjPortfolioRepositoryImpl extends FMObjRepositoryBase<ObjPortfolio
 
 	private static final String AGGREGATE_TYPE = "obj_portfolio";
 
-	private ObjVRepository objVRepository;
-	private ObjAccountRepository accountRepository;
-	private ObjBuildingRepository buildingRepository;
-
 	protected ObjPortfolioRepositoryImpl(AppContext appContext) {
 		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE, appContext);
-	}
-
-	@Override
-	public ObjVRepository getObjVRepository() {
-		if (this.objVRepository == null) {
-			this.objVRepository = AppContext.getInstance().getBean(ObjVRepository.class);
-		}
-		return this.objVRepository;
-	}
-
-	@Override
-	public ObjAccountRepository getAccountRepository() {
-		if (this.accountRepository == null) {
-			this.accountRepository = AppContext.getInstance().getBean(ObjAccountRepository.class);
-		}
-		return this.accountRepository;
-	}
-
-	@Override
-	public ObjBuildingRepository getBuildingRepository() {
-		if (this.buildingRepository == null) {
-			this.buildingRepository = AppContext.getInstance().getBean(ObjBuildingRepository.class);
-		}
-		return this.buildingRepository;
 	}
 
 	@Override
 	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(this.getItemRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 	@Override

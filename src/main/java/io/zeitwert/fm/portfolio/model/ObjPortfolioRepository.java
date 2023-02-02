@@ -1,5 +1,6 @@
 package io.zeitwert.fm.portfolio.model;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -22,10 +23,16 @@ public interface ObjPortfolioRepository extends FMObjRepository<ObjPortfolio, Ob
 		return CodePartListTypeEnum.getPartListType("portfolio.buildingSet");
 	}
 
-	ObjVRepository getObjVRepository();
+	static ObjVRepository getObjRepository() {
+		return AppContext.getInstance().getBean(ObjVRepository.class);
+	}
 
-	ObjAccountRepository getAccountRepository();
+	static ObjAccountRepository getAccountRepository() {
+		return AppContext.getInstance().getBean(ObjAccountRepository.class);
+	}
 
-	ObjBuildingRepository getBuildingRepository();
+	static ObjBuildingRepository getBuildingRepository() {
+		return AppContext.getInstance().getBean(ObjBuildingRepository.class);
+	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -55,7 +56,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
 		this.tenantSet.loadReferences(itemRepo.getParts(this, ObjUserRepository.tenantListType()));
 	}
 
@@ -98,7 +99,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.tenantSet)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return ObjRepository.getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
 	}

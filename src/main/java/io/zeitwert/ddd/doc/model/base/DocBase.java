@@ -122,7 +122,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		DocPartTransitionRepository transitionRepo = this.getRepository().getTransitionRepository();
+		DocPartTransitionRepository transitionRepo = DocRepository.getTransitionRepository();
 		this.transitionList.loadParts(transitionRepo.getParts(this, DocRepository.transitionListType()));
 	}
 
@@ -170,7 +170,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.transitionList)) {
-			return this.getRepository().getTransitionRepository().create(this, partListType);
+			return DocRepository.getTransitionRepository().create(this, partListType);
 		}
 		assertThis(false, "could instantiate part for partListType " + partListType);
 		return null;

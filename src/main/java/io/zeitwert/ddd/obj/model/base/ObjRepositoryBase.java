@@ -13,8 +13,6 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.util.SqlUtils;
 
@@ -23,9 +21,6 @@ import java.util.List;
 public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 		extends AggregateRepositoryBase<O, V>
 		implements ObjRepository<O, V> {
-
-	private ObjPartTransitionRepository transitionRepository;
-	private ObjPartItemRepository itemRepository;
 
 	protected ObjRepositoryBase(
 			Class<? extends AggregateRepository<O, V>> repoIntfClass,
@@ -37,24 +32,8 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 	}
 
 	@Override
-	public ObjPartTransitionRepository getTransitionRepository() {
-		if (this.transitionRepository == null) {
-			this.transitionRepository = AppContext.getInstance().getBean(ObjPartTransitionRepository.class);
-		}
-		return this.transitionRepository;
-	}
-
-	@Override
-	public ObjPartItemRepository getItemRepository() {
-		if (this.itemRepository == null) {
-			this.itemRepository = AppContext.getInstance().getBean(ObjPartItemRepository.class);
-		}
-		return this.itemRepository;
-	}
-
-	@Override
 	public void registerPartRepositories() {
-		this.addPartRepository(this.getTransitionRepository());
+		this.addPartRepository(ObjRepository.getTransitionRepository());
 	}
 
 	@Override

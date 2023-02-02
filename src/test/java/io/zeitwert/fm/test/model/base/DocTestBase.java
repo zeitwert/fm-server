@@ -7,6 +7,7 @@ import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
+import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.part.model.Part;
@@ -57,7 +58,7 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		DocPartItemRepository itemRepo = this.getRepository().getItemRepository();
+		DocPartItemRepository itemRepo = DocRepository.getItemRepository();
 		this.countrySet.loadEnums(itemRepo.getParts(this, DocTestRepository.countrySetType()));
 		// ObjTestPartNodeRepository nodeRepo =
 		// this.getRepository().getNodeRepository();
@@ -72,7 +73,7 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.countrySet)) {
-			return this.getRepository().getItemRepository().create(this, partListType);
+			return DocRepository.getItemRepository().create(this, partListType);
 		}
 		// if (property.equals(this.nodeList)) {
 		// return (P) this.getRepository().getNodeRepository().create(this,
