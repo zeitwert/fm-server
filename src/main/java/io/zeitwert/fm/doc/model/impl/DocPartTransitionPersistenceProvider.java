@@ -31,11 +31,6 @@ public class DocPartTransitionPersistenceProvider extends DocPartPersistenceProv
 	}
 
 	@Override
-	public boolean isReal() {
-		return true;
-	}
-
-	@Override
 	public Class<?> getEntityClass() {
 		return DocPartTransition.class;
 	}

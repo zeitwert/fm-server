@@ -31,11 +31,6 @@ public class ObjContactPartAddressPersistenceProvider
 	}
 
 	@Override
-	public boolean isReal() {
-		return true;
-	}
-
-	@Override
 	public Class<?> getEntityClass() {
 		return ObjContactPartAddress.class;
 	}

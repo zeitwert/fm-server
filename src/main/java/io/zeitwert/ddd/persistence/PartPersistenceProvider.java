@@ -9,8 +9,6 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 public interface PartPersistenceProvider<A extends Aggregate, P extends Part<A>> extends PropertyProvider {
 
-	boolean isReal(); // TODO: remove
-
 	/**
 	 * Provide a new Part id
 	 * 
@@ -23,7 +21,7 @@ public interface PartPersistenceProvider<A extends Aggregate, P extends Part<A>>
 	 * 
 	 * @return persistence status
 	 */
-	PartStatus getStatus(P part);
+	PartStatus getStatus(Part<?> part);
 
 	/**
 	 * Create a new Part instance for the given Aggregate

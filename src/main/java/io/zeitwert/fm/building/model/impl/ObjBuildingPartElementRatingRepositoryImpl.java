@@ -1,7 +1,5 @@
 package io.zeitwert.fm.building.model.impl;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
@@ -22,16 +20,6 @@ public class ObjBuildingPartElementRatingRepositoryImpl
 	protected ObjBuildingPartElementRatingRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
 		super(ObjBuilding.class, ObjBuildingPartElementRating.class, ObjBuildingPartElementRatingBase.class, PART_TYPE,
 				appContext, dslContext);
-	}
-
-	@Override
-	public ObjBuildingPartElementRating doCreate(ObjBuilding obj) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<ObjBuildingPartElementRating> doLoad(ObjBuilding obj) {
-		throw new UnsupportedOperationException();
 	}
 
 }

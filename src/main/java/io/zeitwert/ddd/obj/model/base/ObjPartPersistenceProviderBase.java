@@ -30,11 +30,6 @@ public abstract class ObjPartPersistenceProviderBase<O extends Obj, P extends Pa
 	}
 
 	@Override
-	public boolean isReal() {
-		return false;
-	}
-
-	@Override
 	public Integer nextPartId() {
 		return this.getDSLContext().nextval(OBJ_PART_ID_SEQ).intValue();
 	}

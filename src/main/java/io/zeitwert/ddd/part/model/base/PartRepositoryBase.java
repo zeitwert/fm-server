@@ -97,9 +97,6 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	}
 
 	@Override
-	public abstract Integer nextPartId();
-
-	@Override
 	public final P create(A aggregate, CodePartListType partListType) {
 		return this.create(aggregate, null, partListType);
 	}
@@ -116,26 +113,15 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 
 		requireThis(this.hasPartCache(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
 
-		Integer partId = this.hasPartId() ? this.nextPartId() : null;
 		PartPersistenceProvider<A, P> persistenceProvider = this.getPersistenceProvider();
-		P p;
-		if (persistenceProvider != null && persistenceProvider.isReal()) {
-			p = persistenceProvider.doCreate(aggregate);
-		} else {
-			p = this.doCreate(aggregate);
-		}
+		Integer partId = this.hasPartId() ? persistenceProvider.nextPartId() : null;
+		P p = persistenceProvider.doCreate(aggregate);
 		assertThis(p != null, "part created");
 		if (p == null) {
 			return null; // make compiler happy (potential null pointer)
 		}
 
-		if (persistenceProvider != null && persistenceProvider.isReal()) {
-			persistenceProvider.doInit(p, partId, aggregate, parent, partListType);
-		} else {
-			Integer doInitSeqNr = ((PartBase<?>) p).doInitSeqNr;
-			((PartSPI<A>) p).doInit(partId, aggregate, parent, partListType);
-			assertThis(((PartBase<?>) p).doInitSeqNr > doInitSeqNr, p.getClass().getSimpleName() + ": doInit was propagated");
-		}
+		persistenceProvider.doInit(p, partId, aggregate, parent, partListType);
 
 		assertThis(!this.hasPartId() || PartStatus.CREATED == p.getMeta().getStatus(), "status CREATED");
 
@@ -151,18 +137,10 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	}
 
 	@Override
-	public abstract P doCreate(A aggregate);
-
-	@Override
 	public final void load(A aggregate) {
 
 		PartPersistenceProvider<A, P> persistenceProvider = this.getPersistenceProvider();
-		List<P> parts;
-		if (persistenceProvider != null && persistenceProvider.isReal()) {
-			parts = persistenceProvider.doLoad(aggregate);
-		} else {
-			parts = this.doLoad(aggregate);
-		}
+		List<P> parts = persistenceProvider.doLoad(aggregate);
 
 		parts.forEach(p -> this.getPartCache(aggregate).addPart(p));
 		for (P part : parts) {
@@ -181,9 +159,6 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 					part.getClass().getSimpleName() + ": doAfterLoad was propagated");
 		}
 	}
-
-	@Override
-	public abstract List<P> doLoad(A aggregate);
 
 	@Override
 	public List<P> getParts(A aggregate, CodePartListType partListType) {
@@ -219,14 +194,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 					part.getClass().getSimpleName() + ": doBeforeStore was propagated");
 		}
 		for (P part : allParts) {
-			if (persistenceProvider != null && persistenceProvider.isReal()) {
-				persistenceProvider.doStore(part);
-			} else {
-				Integer doStoreSeqNr = ((PartBase<?>) part).doStoreSeqNr;
-				((PartSPI<A>) part).doStore();
-				assertThis(((PartBase<?>) part).doStoreSeqNr > doStoreSeqNr,
-						part.getClass().getSimpleName() + ": doStore was propagated");
-			}
+			persistenceProvider.doStore(part);
 		}
 		for (P part : activeParts) {
 			Integer doAfterStoreSeqNr = ((PartBase<?>) part).doAfterStoreSeqNr;

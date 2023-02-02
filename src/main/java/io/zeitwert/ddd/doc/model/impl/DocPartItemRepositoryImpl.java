@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.doc.model.impl;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +23,6 @@ public class DocPartItemRepositoryImpl extends DocPartRepositoryBase<Doc, DocPar
 	@Override
 	public boolean hasPartId() {
 		return false;
-	}
-
-	@Override
-	public DocPartItem doCreate(Doc doc) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<DocPartItem> doLoad(Doc doc) {
-		throw new UnsupportedOperationException();
 	}
 
 }

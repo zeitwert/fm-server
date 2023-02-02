@@ -7,12 +7,9 @@ import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPart;
 import io.zeitwert.ddd.doc.model.DocPartRepository;
 import io.zeitwert.ddd.part.model.base.PartRepositoryBase;
-import io.zeitwert.ddd.persistence.PartPersistenceProvider;
 
 public abstract class DocPartRepositoryBase<D extends Doc, P extends DocPart<D>> extends PartRepositoryBase<D, P>
 		implements DocPartRepository<D, P> {
-
-	private static final String DOC_PART_ID_SEQ = "doc_part_id_seq";
 
 	protected DocPartRepositoryBase(
 			final Class<? extends D> aggregateIntfClass,
@@ -22,16 +19,6 @@ public abstract class DocPartRepositoryBase<D extends Doc, P extends DocPart<D>>
 			final AppContext appContext,
 			final DSLContext dslContext) {
 		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext, dslContext);
-	}
-
-	@Override
-	public Integer nextPartId() {
-		PartPersistenceProvider<D, P> persistenceProvider = this.getPersistenceProvider();
-		if (persistenceProvider != null && persistenceProvider.isReal()) {
-			return persistenceProvider.nextPartId();
-		} else {
-			return this.getDSLContext().nextval(DOC_PART_ID_SEQ).intValue();
-		}
 	}
 
 }

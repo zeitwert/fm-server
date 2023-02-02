@@ -30,11 +30,6 @@ public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Pa
 	}
 
 	@Override
-	public boolean isReal() {
-		return false;
-	}
-
-	@Override
 	public Integer nextPartId() {
 		return this.getDSLContext().nextval(DOC_PART_ID_SEQ).intValue();
 	}

@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.obj.model.impl;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +23,6 @@ public class ObjPartItemRepositoryImpl extends ObjPartRepositoryBase<Obj, ObjPar
 	@Override
 	public boolean hasPartId() {
 		return false;
-	}
-
-	@Override
-	public ObjPartItem doCreate(Obj obj) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<ObjPartItem> doLoad(Obj obj) {
-		throw new UnsupportedOperationException();
 	}
 
 }

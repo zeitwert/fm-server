@@ -1,7 +1,5 @@
 package io.zeitwert.fm.test.model.impl;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +18,6 @@ public class ObjTestPartNodeRepositoryImpl extends ObjPartRepositoryBase<ObjTest
 
 	protected ObjTestPartNodeRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
 		super(ObjTest.class, ObjTestPartNode.class, ObjTestPartNodeBase.class, PART_TYPE, appContext, dslContext);
-	}
-
-	@Override
-	public ObjTestPartNode doCreate(ObjTest obj) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<ObjTestPartNode> doLoad(ObjTest obj) {
-		throw new UnsupportedOperationException();
 	}
 
 }

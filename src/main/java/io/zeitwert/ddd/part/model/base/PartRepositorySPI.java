@@ -3,8 +3,6 @@ package io.zeitwert.ddd.part.model.base;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
 
-import java.util.List;
-
 /**
  * This class defines the internal callbacks for a PartRepository
  * implementation.
@@ -18,26 +16,5 @@ public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
 	 * @return whether the part has a partId
 	 */
 	boolean hasPartId();
-
-	/**
-	 * Provide a new Part id
-	 * 
-	 * @return new part id
-	 */
-	Integer nextPartId();
-
-	/**
-	 * Create a new Part instance for the given Aggregate
-	 * 
-	 * @return new part
-	 */
-	P doCreate(A aggregate);
-
-	/**
-	 * Load all Parts from database for given aggregate
-	 * 
-	 * @param aggregate the aggregate
-	 */
-	List<P> doLoad(A aggregate);
 
 }

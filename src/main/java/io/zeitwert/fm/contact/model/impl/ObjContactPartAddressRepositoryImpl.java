@@ -1,7 +1,5 @@
 package io.zeitwert.fm.contact.model.impl;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
@@ -21,16 +19,6 @@ public class ObjContactPartAddressRepositoryImpl extends ObjPartRepositoryBase<O
 	protected ObjContactPartAddressRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
 		super(ObjContact.class, ObjContactPartAddress.class, ObjContactPartAddressBase.class, PART_TYPE, appContext,
 				dslContext);
-	}
-
-	@Override
-	public ObjContactPartAddress doCreate(ObjContact obj) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<ObjContactPartAddress> doLoad(ObjContact obj) {
-		throw new UnsupportedOperationException();
 	}
 
 }

@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.obj.model.impl;
 
-import java.util.List;
-
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +18,6 @@ public class ObjPartTransitionRepositoryImpl extends ObjPartRepositoryBase<Obj, 
 
 	protected ObjPartTransitionRepositoryImpl(AppContext appContext, DSLContext dslContext) {
 		super(Obj.class, ObjPartTransition.class, ObjPartTransitionBase.class, PART_TYPE, appContext, dslContext);
-	}
-
-	@Override
-	public ObjPartTransition doCreate(Obj obj) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<ObjPartTransition> doLoad(Obj obj) {
-		throw new UnsupportedOperationException();
 	}
 
 }

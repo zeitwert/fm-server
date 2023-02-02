@@ -35,11 +35,6 @@ public class ObjBuildingPartElementRatingPersistenceProvider
 	}
 
 	@Override
-	public boolean isReal() {
-		return true;
-	}
-
-	@Override
 	public Class<?> getEntityClass() {
 		return ObjBuildingPartElementRating.class;
 	}

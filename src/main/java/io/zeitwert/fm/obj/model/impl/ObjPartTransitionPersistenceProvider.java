@@ -29,11 +29,6 @@ public class ObjPartTransitionPersistenceProvider extends ObjPartPersistenceProv
 	}
 
 	@Override
-	public boolean isReal() {
-		return true;
-	}
-
-	@Override
 	public Class<?> getEntityClass() {
 		return ObjPartTransition.class;
 	}

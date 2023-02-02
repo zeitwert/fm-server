@@ -23,6 +23,8 @@ public interface PartMeta<A extends Aggregate> {
 
 	PartStatus getStatus();
 
+	boolean isDeleted();
+
 	boolean isCalcEnabled();
 
 	void disableCalc();

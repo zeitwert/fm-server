@@ -36,11 +36,6 @@ public class ObjTestPartNodePersistenceProvider extends ObjPartPersistenceProvid
 	}
 
 	@Override
-	public boolean isReal() {
-		return true;
-	}
-
-	@Override
 	public Class<?> getEntityClass() {
 		return ObjTestPartNode.class;
 	}

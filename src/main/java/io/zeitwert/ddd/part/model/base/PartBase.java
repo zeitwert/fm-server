@@ -2,14 +2,13 @@ package io.zeitwert.ddd.part.model.base;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
-import org.jooq.UpdatableRecord;
-
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartMeta;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.PartPersistenceProvider;
 import io.zeitwert.ddd.persistence.PropertyProvider;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.Property;
@@ -24,12 +23,11 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	private A aggregate;
 	private Object state;
-	private UpdatableRecord<?> dbRecord;
 
 	protected final SimpleProperty<Integer> id;
-	protected final SimpleProperty<Integer> parentPartId;
-	protected final SimpleProperty<String> partListTypeId;
-	protected final SimpleProperty<Integer> seqNr;
+	protected final SimpleProperty<Integer> parentPartId = this.addSimpleProperty("parentPartId", Integer.class);
+	protected final SimpleProperty<String> partListTypeId = this.addSimpleProperty("partListTypeId", String.class);
+	protected final SimpleProperty<Integer> seqNr = this.addSimpleProperty("seqNr", Integer.class);
 
 	private boolean isDeleted = false;
 	private int isCalcDisabled = 0;
@@ -38,39 +36,22 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	private boolean didCalcAll = false;
 	private boolean didCalcVolatile = false;
 
-	protected Integer doInitSeqNr = 0;
 	protected Integer doAfterCreateSeqNr = 0;
 	protected Integer doAssignPartsSeqNr = 0;
 	protected Integer doAfterLoadSeqNr = 0;
 	protected Integer doBeforeStoreSeqNr = 0;
-	protected Integer doStoreSeqNr = 0;
 	protected Integer doAfterStoreSeqNr = 0;
-
-	protected PartBase(PartRepository<A, ?> repository, A aggregate, UpdatableRecord<?> dbRecord) {
-		this.repository = repository;
-		this.aggregate = aggregate;
-		this.state = null;
-		this.dbRecord = dbRecord;
-		this.id = this.addSimpleProperty(dbRecord, PartFields.ID);
-		this.parentPartId = this.addSimpleProperty(dbRecord, PartFields.PARENT_PART_ID);
-		this.partListTypeId = this.addSimpleProperty(dbRecord, PartFields.PART_LIST_TYPE_ID);
-		this.seqNr = this.addSimpleProperty(dbRecord, PartFields.SEQ_NR);
-	}
 
 	protected PartBase(PartRepository<A, ?> repository, A aggregate, PartState state) {
 		this.repository = repository;
 		this.aggregate = aggregate;
 		this.state = state;
-		this.dbRecord = null;
 		// xyPartItem don't have an id
 		if (((PartRepositorySPI<?, ?>) repository).hasPartId()) {
 			this.id = this.addSimpleProperty("id", Integer.class);
 		} else {
 			this.id = null;
 		}
-		this.parentPartId = this.addSimpleProperty("parentPartId", Integer.class);
-		this.partListTypeId = this.addSimpleProperty("partListTypeId", String.class);
-		this.seqNr = this.addSimpleProperty("seqNr", Integer.class);
 	}
 
 	@Override
@@ -101,14 +82,6 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		return null;
 	}
 
-	protected UpdatableRecord<?> getDbRecord() {
-		if (this.dbRecord != null) {
-			return this.dbRecord;
-		} else {
-			return ((PartState) this.state).dbRecord();
-		}
-	}
-
 	@Override
 	public Object getPartState() {
 		return this.state;
@@ -126,44 +99,26 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	@Override
 	public Integer getParentPartId() {
-		try {
-			return this.parentPartId.getValue();
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+		return this.parentPartId.getValue();
 	}
 
 	@Override
 	public String getPartListTypeId() {
-		try {
-			return this.partListTypeId.getValue();
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+		return this.partListTypeId.getValue();
 	}
 
 	@Override
 	public Integer getSeqNr() {
-		try {
-			return this.seqNr.getValue();
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+		return this.seqNr.getValue();
 	}
 
 	public void setSeqNr(Integer seqNr) {
 		try {
 			this.disableCalc(); // suppress calc
 			this.seqNr.setValue(seqNr);
-		} catch (IllegalArgumentException e) {
 		} finally {
 			this.enableCalc();
 		}
-	}
-
-	@Override
-	public void doInit(Integer partId, A aggregate, Part<?> parent, CodePartListType partListType) {
-		this.doInitSeqNr += 1;
 	}
 
 	@Override
@@ -182,17 +137,9 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public PartStatus getStatus() {
-		PartRepositorySPI<?, ?> repoSpi = (PartRepositorySPI<?, ?>) this.getRepository();
-		if (this.isDeleted()) {
-			return PartStatus.DELETED;
-		} else if (repoSpi.hasPartId() && this.getDbRecord().changed(PartFields.ID)) {
-			return PartStatus.CREATED;
-		} else if (this.getDbRecord().changed()) {
-			return PartStatus.UPDATED;
-		} else {
-			return PartStatus.READ;
-		}
+		return ((PartPersistenceProvider<A, ?>) this.getPropertyProvider()).getStatus(this);
 	}
 
 	@Override
@@ -209,16 +156,6 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	public void doBeforeStore() {
 		this.doBeforeStoreSeqNr += 1;
 		this.doBeforeStoreProperties();
-	}
-
-	@Override
-	public final void doStore() {
-		this.doStoreSeqNr += 1;
-		if (this.getStatus() == PartStatus.DELETED) {
-			this.getDbRecord().delete();
-		} else if (this.getStatus() != PartStatus.READ) {
-			this.getDbRecord().store();
-		}
 	}
 
 	@Override

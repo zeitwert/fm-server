@@ -84,10 +84,10 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 	}
 
 	@Override
-	public PartStatus getStatus(P part) {
+	public PartStatus getStatus(Part<?> part) {
 		PartRepositorySPI<?, ?> repoSpi = (PartRepositorySPI<?, ?>) this.getRepository();
 		UpdatableRecord<?> dbRecord = this.getDbRecord((EntityWithPropertiesSPI) part);
-		if (((PartSPI<?>) part).isDeleted()) {
+		if (part.getMeta().isDeleted()) {
 			return PartStatus.DELETED;
 		} else if (repoSpi.hasPartId() && dbRecord.changed(PartFields.ID)) {
 			return PartStatus.CREATED;

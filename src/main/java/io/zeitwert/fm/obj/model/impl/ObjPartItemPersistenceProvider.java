@@ -24,11 +24,6 @@ public class ObjPartItemPersistenceProvider extends ObjPartPersistenceProviderBa
 	}
 
 	@Override
-	public boolean isReal() {
-		return true;
-	}
-
-	@Override
 	public Class<?> getEntityClass() {
 		return ObjPartItem.class;
 	}

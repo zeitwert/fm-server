@@ -18,6 +18,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
@@ -75,7 +76,7 @@ public class PartTest {
 		ObjTestPartNode node1a0 = test1a.addNode();
 		this.initObjTestPartNode(node1a0, "First", "ch");
 		assertEquals(PartStatus.CREATED, node1a0.getMeta().getStatus());
-		UpdatableRecord<?> dbRecord = ((PartBase<?>) node1a0).getDbRecord();
+		UpdatableRecord<?> dbRecord = ((PartState) ((PartSPI<?>) node1a0).getPartState()).dbRecord();
 		assertNotNull(dbRecord.getValue(PartFields.ID));
 		assertTrue(dbRecord.changed(PartFields.ID));
 		assertNull(dbRecord.original(PartFields.ID));
