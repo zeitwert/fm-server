@@ -16,11 +16,11 @@ public abstract class ObjPartPersistenceProviderBase<O extends Obj, P extends Pa
 	private static final String OBJ_PART_ID_SEQ = "obj_part_id_seq";
 
 	public ObjPartPersistenceProviderBase(
-			final Class<? extends O> aggregateIntfClass,
+			final Class<? extends O> objIntfClass,
 			Class<? extends PartRepository<O, P>> repoIntfClass,
 			Class<? extends Part<O>> baseClass,
 			DSLContext dslContext) {
-		super(aggregateIntfClass, repoIntfClass, baseClass, dslContext);
+		super(objIntfClass, repoIntfClass, baseClass, dslContext);
 		this.mapField("objId", BASE, "obj_id", Integer.class);
 	}
 

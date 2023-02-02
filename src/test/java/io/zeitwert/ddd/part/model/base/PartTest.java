@@ -25,7 +25,6 @@ import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.fm.test.model.base.ObjTestFields;
 import io.zeitwert.server.Application;
 
 import java.math.BigDecimal;
@@ -59,8 +58,8 @@ public class PartTest {
 
 		ObjTestPartNodeRepository testNodeRepository = this.testRepository.getNodeRepository();
 		assertTrue(testNodeRepository != null, "testNodeRepository not null");
-		CodePartListType nodeListType = CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST);
-		assertTrue(CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST).equals(nodeListType), "nodeListType");
+		CodePartListType nodeListType = ObjTestRepository.nodeListType();
+		assertTrue(CodePartListTypeEnum.getPartListType("test.nodeList").equals(nodeListType), "nodeListType");
 
 		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
 		// assertTrue(((PartRepositoryBase<ObjTest, ?>)
