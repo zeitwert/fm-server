@@ -2,11 +2,11 @@ package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 
@@ -14,36 +14,27 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.jooq.JSON;
-import org.jooq.UpdatableRecord;
 
 public abstract class ObjTestPartNodeBase extends ObjPartBase<ObjTest> implements ObjTestPartNode {
 
-	protected final SimpleProperty<String> shortText;
-	protected final SimpleProperty<String> longText;
-	protected final SimpleProperty<LocalDate> date;
-	protected final SimpleProperty<Integer> int_;
-	protected final SimpleProperty<Boolean> isDone;
-	protected final SimpleProperty<JSON> json;
-	protected final SimpleProperty<BigDecimal> nr;
-	protected final EnumProperty<CodeCountry> country;
-	protected final ReferenceProperty<ObjTest> refTest;
+	protected final SimpleProperty<String> shortText = this.addSimpleProperty("shortText", String.class);
+	protected final SimpleProperty<String> longText = this.addSimpleProperty("longText", String.class);
+	protected final SimpleProperty<LocalDate> date = this.addSimpleProperty("date", LocalDate.class);
+	protected final SimpleProperty<Integer> int_ = this.addSimpleProperty("int", Integer.class);
+	protected final SimpleProperty<Boolean> isDone = this.addSimpleProperty("isDone", Boolean.class);
+	protected final SimpleProperty<JSON> json = this.addSimpleProperty("json", JSON.class);
+	protected final SimpleProperty<BigDecimal> nr = this.addSimpleProperty("nr", BigDecimal.class);
+	protected final EnumProperty<CodeCountry> country = this.addEnumProperty("country", CodeCountry.class);
+	protected final ReferenceProperty<ObjTest> refTest = this.addReferenceProperty("refTest", ObjTest.class);
 
-	public ObjTestPartNodeBase(PartRepository<ObjTest, ?> repository, ObjTest obj, UpdatableRecord<?> dbRecord) {
-		super(repository, obj, dbRecord);
-		this.shortText = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.SHORT_TEXT);
-		this.longText = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.LONG_TEXT);
-		this.date = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.DATE);
-		this.int_ = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.INT);
-		this.isDone = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.IS_DONE);
-		this.json = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.JSON);
-		this.nr = this.addSimpleProperty(dbRecord, ObjTestPartNodeFields.NR);
-		this.country = this.addEnumProperty(dbRecord, ObjTestPartNodeFields.COUNTRY_ID, CodeCountryEnum.class);
-		this.refTest = this.addReferenceProperty(dbRecord, ObjTestPartNodeFields.REF_TEST_ID, ObjTest.class);
+	public ObjTestPartNodeBase(PartRepository<ObjTest, ?> repository, ObjTest obj, PartState state) {
+		super(repository, obj, state);
 	}
 
 	@Override
 	public String getJson() {
-		return this.json.getValue() == null ? null : this.json.getValue().toString();
+		JSON json = this.json.getValue();
+		return json == null ? null : json.toString();
 	}
 
 	@Override

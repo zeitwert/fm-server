@@ -73,7 +73,7 @@ public abstract class PropertyProviderBase implements PropertyProvider {
 		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		assertThis(dbRecord.field(field.getName()) != null,
-				"field [" + name + "] / [" + field.getName() + "] contained in database record");
+				"field [" + name + "/" + field.getName() + "] contained in database record");
 		return field;
 	}
 
