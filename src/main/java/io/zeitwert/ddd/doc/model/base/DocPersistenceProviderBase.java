@@ -62,7 +62,7 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 			doc.id.setValue(docId);
 			doc.tenant.setId(tenantId);
 			AggregateState state = (AggregateState) doc.getAggregateState();
-			UpdatableRecord<?> extnRecord = state.getExtnRecord();
+			UpdatableRecord<?> extnRecord = state.extnRecord();
 			if (extnRecord != null) {
 				extnRecord.setValue(DocExtnFields.DOC_ID, docId);
 				extnRecord.setValue(DocExtnFields.TENANT_ID, tenantId);
@@ -86,9 +86,9 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 	@Override
 	public final void doStore(D doc) {
 		AggregateState state = (AggregateState) ((AggregateSPI) doc).getAggregateState();
-		state.getBaseRecord().store();
-		if (state.getExtnRecord() != null) {
-			state.getExtnRecord().store();
+		state.baseRecord().store();
+		if (state.extnRecord() != null) {
+			state.extnRecord().store();
 		}
 	}
 

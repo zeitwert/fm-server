@@ -60,7 +60,7 @@ public abstract class ObjPersistenceProviderBase<O extends Obj> extends Persiste
 			obj.id.setValue(id);
 			obj.tenant.setId(tenantId);
 			AggregateState state = (AggregateState) obj.getAggregateState();
-			UpdatableRecord<?> extnRecord = state.getExtnRecord();
+			UpdatableRecord<?> extnRecord = state.extnRecord();
 			if (extnRecord != null) {
 				extnRecord.setValue(ObjExtnFields.OBJ_ID, id);
 				// obj_tenant does not have a tenant_id field
@@ -86,9 +86,9 @@ public abstract class ObjPersistenceProviderBase<O extends Obj> extends Persiste
 	@Override
 	public final void doStore(O obj) {
 		AggregateState state = (AggregateState) ((AggregateSPI) obj).getAggregateState();
-		state.getBaseRecord().store();
-		if (state.getExtnRecord() != null) {
-			state.getExtnRecord().store();
+		state.baseRecord().store();
+		if (state.extnRecord() != null) {
+			state.extnRecord().store();
 		}
 	}
 

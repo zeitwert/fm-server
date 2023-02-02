@@ -94,7 +94,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		}
 		assertThis(fieldConfig.fieldType() == type, "field [" + name + "] has matching type");
 		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
+		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		assertThis(dbRecord.field(field.getName()) != null, "field [" + name + "] contained in "
 				+ (EXTN.equals(fieldConfig.tableType()) ? "extnRecord" : "baseRecord"));
 		return field;
@@ -109,7 +109,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 	public <T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<T> field = this.checkFieldConfig(fieldConfig, entity, name, type);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
+		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		return new SimplePropertyImpl<>(entity, dbRecord, name, field);
 	}
 
@@ -119,7 +119,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<String> field = this.checkFieldConfig(fieldConfig, entity, name, String.class);
 		Enumeration<E> enumeration = AppContext.getInstance().getEnumeration(enumType);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
+		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		return new EnumPropertyImpl<>(entity, dbRecord, field, enumeration);
 	}
 
@@ -139,7 +139,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		FieldConfig fieldConfig = this.getFieldConfig(name);
 		Field<Integer> field = this.checkFieldConfig(fieldConfig, entity, name, Integer.class);
 		AggregateCache<Aggr> cache = AppContext.getInstance().getCache(aggregateType);
-		UpdatableRecord<?> dbRecord = this.getRecord(entity, fieldConfig.tableType());
+		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		return new ReferencePropertyImpl<>(entity, dbRecord, field, (id) -> cache.get(id));
 	}
 
@@ -160,12 +160,12 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
 	}
 
-	private UpdatableRecord<?> getRecord(EntityWithPropertiesSPI entity, String tableType) {
+	private UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType) {
 		Object state = ((AggregateSPI) entity).getAggregateState();
 		if (EXTN.equals(tableType)) {
-			return ((AggregateState) state).getExtnRecord();
+			return ((AggregateState) state).extnRecord();
 		} else if (BASE.equals(tableType)) {
-			return ((AggregateState) state).getBaseRecord();
+			return ((AggregateState) state).baseRecord();
 		}
 		return null;
 	}
