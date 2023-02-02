@@ -21,11 +21,11 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.app.service.api.impl.Repositories;
-import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.persistence.PersistenceProvider;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")

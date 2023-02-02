@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.base;
+package io.zeitwert.ddd.property.model.impl;
 
 import javassist.util.proxy.MethodFilter;
 

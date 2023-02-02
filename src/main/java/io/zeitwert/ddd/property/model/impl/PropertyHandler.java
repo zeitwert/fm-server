@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.base;
+package io.zeitwert.ddd.property.model.impl;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.enums.model.Enumerated;

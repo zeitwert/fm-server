@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.db.model.jooq;
+package io.zeitwert.ddd.persistence.jooq.base;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
@@ -16,12 +16,16 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.zeitwert.ddd.persistence.PersistenceProvider;
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
+import io.zeitwert.ddd.persistence.jooq.impl.EnumPropertyImpl;
+import io.zeitwert.ddd.persistence.jooq.impl.ReferencePropertyImpl;
+import io.zeitwert.ddd.persistence.jooq.impl.SimplePropertyImpl;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
@@ -29,12 +33,9 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
-import io.zeitwert.ddd.property.model.impl.EnumPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.EnumSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
-import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
-import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
 
 record FieldConfig(String tableType, String fieldName, Class<?> fieldType) {
 }

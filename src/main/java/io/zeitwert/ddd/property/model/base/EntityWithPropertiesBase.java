@@ -12,16 +12,13 @@ import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
-import io.zeitwert.ddd.db.model.wrapper.EnumPropertyWrapper;
-import io.zeitwert.ddd.db.model.wrapper.EnumSetPropertyWrapper;
-import io.zeitwert.ddd.db.model.wrapper.PartListPropertyWrapper;
-import io.zeitwert.ddd.db.model.wrapper.ReferencePropertyWrapper;
-import io.zeitwert.ddd.db.model.wrapper.ReferenceSetPropertyWrapper;
-import io.zeitwert.ddd.db.model.wrapper.SimplePropertyWrapper;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.jooq.impl.EnumPropertyImpl;
+import io.zeitwert.ddd.persistence.jooq.impl.ReferencePropertyImpl;
+import io.zeitwert.ddd.persistence.jooq.impl.SimplePropertyImpl;
 import io.zeitwert.ddd.property.model.EntityWithProperties;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -30,12 +27,15 @@ import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.property.model.impl.EnumPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.EnumSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
-import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
-import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
+import io.zeitwert.ddd.property.model.wrapper.EnumPropertyWrapper;
+import io.zeitwert.ddd.property.model.wrapper.EnumSetPropertyWrapper;
+import io.zeitwert.ddd.property.model.wrapper.PartListPropertyWrapper;
+import io.zeitwert.ddd.property.model.wrapper.ReferencePropertyWrapper;
+import io.zeitwert.ddd.property.model.wrapper.ReferenceSetPropertyWrapper;
+import io.zeitwert.ddd.property.model.wrapper.SimplePropertyWrapper;
 
 public abstract class EntityWithPropertiesBase implements EntityWithProperties, EntityWithPropertiesSPI {
 

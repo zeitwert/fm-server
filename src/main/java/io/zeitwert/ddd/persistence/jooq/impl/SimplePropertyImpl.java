@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.property.model.impl;
+package io.zeitwert.ddd.persistence.jooq.impl;
 
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;

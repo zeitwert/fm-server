@@ -18,8 +18,8 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.base.PropertyFilter;
-import io.zeitwert.ddd.property.model.base.PropertyHandler;
+import io.zeitwert.ddd.property.model.impl.PropertyFilter;
+import io.zeitwert.ddd.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
 
 public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>

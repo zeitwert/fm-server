@@ -10,10 +10,10 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositorySPI;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
-import io.zeitwert.ddd.db.model.jooq.AggregateState;
-import io.zeitwert.ddd.db.model.jooq.PersistenceProviderBase;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
+import io.zeitwert.ddd.persistence.jooq.base.PersistenceProviderBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 

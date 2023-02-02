@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.db.model.wrapper;
+package io.zeitwert.ddd.property.model.wrapper;
 
 import java.util.List;
 

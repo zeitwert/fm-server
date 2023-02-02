@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.db.model;
+package io.zeitwert.ddd.persistence;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.enums.model.Enumerated;
