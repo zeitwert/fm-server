@@ -79,10 +79,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <T> SimpleProperty<T> addSimpleProperty(String name, Class<T> type) {
 		SimpleProperty<T> property;
-		if (this.getPersistenceProvider() == null) {
+		if (this.getPropertyProvider() == null) {
 			property = new SimplePropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPersistenceProvider().getSimpleProperty(this, name, type);
+			property = this.getPropertyProvider().getSimpleProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -98,10 +98,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumProperty<E> addEnumProperty(String name, Class<E> type) {
 		EnumProperty<E> property;
-		if (this.getPersistenceProvider() == null) {
+		if (this.getPropertyProvider() == null) {
 			property = new EnumPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPersistenceProvider().getEnumProperty(this, name, type);
+			property = this.getPropertyProvider().getEnumProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -109,10 +109,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <E extends Enumerated> EnumSetProperty<E> addEnumSetProperty(String name, Class<E> type) {
 		EnumSetProperty<E> property;
-		if (this.getPersistenceProvider() == null) {
+		if (this.getPropertyProvider() == null) {
 			property = new EnumSetPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPersistenceProvider().getEnumSetProperty(this, name, type);
+			property = this.getPropertyProvider().getEnumSetProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -129,10 +129,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <A extends Aggregate> ReferenceProperty<A> addReferenceProperty(String name, Class<A> type) {
 		ReferenceProperty<A> property = null;
-		if (this.getPersistenceProvider() == null) {
+		if (this.getPropertyProvider() == null) {
 			property = new ReferencePropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPersistenceProvider().getReferenceProperty(this, name, type);
+			property = this.getPropertyProvider().getReferenceProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -140,10 +140,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <A extends Aggregate> ReferenceSetProperty<A> addReferenceSetProperty(String name, Class<A> type) {
 		ReferenceSetProperty<A> property;
-		if (this.getPersistenceProvider() == null) {
+		if (this.getPropertyProvider() == null) {
 			property = new ReferenceSetPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPersistenceProvider().getReferenceSetProperty(this, name, type);
+			property = this.getPropertyProvider().getReferenceSetProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;
@@ -158,10 +158,10 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 
 	protected <P extends Part<?>> PartListProperty<P> addPartListProperty(String name, Class<P> type) {
 		PartListProperty<P> property;
-		if (this.getPersistenceProvider() == null) {
+		if (this.getPropertyProvider() == null) {
 			property = new PartListPropertyWrapper<>(this, name, type);
 		} else {
-			property = this.getPersistenceProvider().getPartListProperty(this, name, type);
+			property = this.getPropertyProvider().getPartListProperty(this, name, type);
 		}
 		this.addProperty(property);
 		return property;

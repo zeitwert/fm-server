@@ -20,7 +20,7 @@ public class EnumSetPropertyWrapper<E extends Enumerated> extends PropertyWrappe
 	@Override
 	public EnumSetProperty<E> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPersistenceProvider().getEnumSetProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPropertyProvider().getEnumSetProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

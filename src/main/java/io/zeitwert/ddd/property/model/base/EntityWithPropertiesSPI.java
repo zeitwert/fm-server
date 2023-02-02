@@ -3,14 +3,14 @@ package io.zeitwert.ddd.property.model.base;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.PersistenceProvider;
+import io.zeitwert.ddd.persistence.PropertyProvider;
 import io.zeitwert.ddd.property.model.Property;
 
 public interface EntityWithPropertiesSPI {
 
-	PersistenceProvider<?> getPersistenceProvider();
-
 	AppContext getAppContext();
+
+	PropertyProvider getPropertyProvider();
 
 	Part<?> addPart(Property<?> property, CodePartListType partListType);
 

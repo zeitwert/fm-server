@@ -16,7 +16,7 @@ public class ReferencePropertyWrapper<A extends Aggregate> extends PropertyWrapp
 	@Override
 	public ReferenceProperty<A> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPersistenceProvider().getReferenceProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPropertyProvider().getReferenceProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

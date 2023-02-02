@@ -15,7 +15,7 @@ public class EnumPropertyWrapper<E extends Enumerated> extends PropertyWrapperBa
 	@Override
 	public EnumProperty<E> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPersistenceProvider().getEnumProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPropertyProvider().getEnumProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

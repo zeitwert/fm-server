@@ -13,11 +13,11 @@ import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.PersistenceProviderBase;
+import io.zeitwert.ddd.persistence.jooq.base.AggregatePersistenceProviderBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 
-public abstract class ObjPersistenceProviderBase<O extends Obj> extends PersistenceProviderBase<O> {
+public abstract class ObjPersistenceProviderBase<O extends Obj> extends AggregatePersistenceProviderBase<O> {
 
 	public ObjPersistenceProviderBase(
 			Class<? extends AggregateRepository<O, ?>> repoIntfClass,

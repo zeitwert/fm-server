@@ -21,7 +21,7 @@ public class ReferenceSetPropertyWrapper<A extends Aggregate> extends PropertyWr
 	@Override
 	public ReferenceSetProperty<A> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPersistenceProvider().getReferenceSetProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPropertyProvider().getReferenceSetProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

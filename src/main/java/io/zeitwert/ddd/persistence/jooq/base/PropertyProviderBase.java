@@ -6,14 +6,12 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 import org.jooq.impl.DSL;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
-import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.model.Enumerated;
@@ -21,8 +19,7 @@ import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.persistence.PersistenceProvider;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
+import io.zeitwert.ddd.persistence.PropertyProvider;
 import io.zeitwert.ddd.persistence.jooq.impl.EnumPropertyImpl;
 import io.zeitwert.ddd.persistence.jooq.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.persistence.jooq.impl.SimplePropertyImpl;
@@ -43,30 +40,9 @@ record FieldConfig(String tableType, String fieldName, Class<?> fieldType) {
 record CollectionConfig(CodePartListType partListType, Class<?> fieldType) {
 }
 
-public abstract class PersistenceProviderBase<A extends Aggregate> implements PersistenceProvider<A> {
+public abstract class PropertyProviderBase implements PropertyProvider {
 
-	static public final String BASE = "base";
-	static public final String EXTN = "extn";
-
-	private final DSLContext dslContext;
-	private final Class<? extends AggregateRepository<A, ?>> repoIntfClass;
 	private final Map<String, Object> dbConfigMap = new HashMap<>();
-
-	public PersistenceProviderBase(
-			Class<? extends AggregateRepository<A, ?>> repoIntfClass,
-			Class<? extends Aggregate> baseClass,
-			DSLContext dslContext) {
-		this.repoIntfClass = repoIntfClass;
-		this.dslContext = dslContext;
-	}
-
-	protected final DSLContext getDSLContext() {
-		return this.dslContext;
-	}
-
-	protected final AggregateRepository<A, ?> getRepository() {
-		return AppContext.getInstance().getBean(this.repoIntfClass);
-	}
 
 	protected void mapField(String name, String tableType, String fieldName, Class<?> fieldType) {
 		requireThis(this.getFieldConfig(name) == null, "unique field " + name);
@@ -96,8 +72,8 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		assertThis(fieldConfig.fieldType() == type, "field [" + name + "] has matching type");
 		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
-		assertThis(dbRecord.field(field.getName()) != null, "field [" + name + "] contained in "
-				+ (EXTN.equals(fieldConfig.tableType()) ? "extnRecord" : "baseRecord"));
+		assertThis(dbRecord.field(field.getName()) != null,
+				"field [" + name + "] / [" + field.getName() + "] contained in database record");
 		return field;
 	}
 
@@ -161,14 +137,6 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
 	}
 
-	private UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType) {
-		Object state = ((AggregateSPI) entity).getAggregateState();
-		if (EXTN.equals(tableType)) {
-			return ((AggregateState) state).extnRecord();
-		} else if (BASE.equals(tableType)) {
-			return ((AggregateState) state).baseRecord();
-		}
-		return null;
-	}
+	protected abstract UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType);
 
 }

@@ -14,7 +14,7 @@ public class SimplePropertyWrapper<T> extends PropertyWrapperBase<T> implements 
 	@Override
 	public SimpleProperty<T> getProperty() {
 		if (this.property == null) {
-			this.property = this.entity.getPersistenceProvider().getSimpleProperty(this.entity, this.name, this.type);
+			this.property = this.entity.getPropertyProvider().getSimpleProperty(this.entity, this.name, this.type);
 		}
 		return this.property;
 	}

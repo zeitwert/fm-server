@@ -32,7 +32,7 @@ import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.persistence.PersistenceProvider;
+import io.zeitwert.ddd.persistence.AggregatePersistenceProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -94,8 +94,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	@SuppressWarnings("unchecked")
-	public final PersistenceProvider<A> getPersistenceProvider() {
-		return (PersistenceProvider<A>) AppContext.getInstance().getPersistenceProvider(this.intfClass);
+	public final AggregatePersistenceProvider<A> getPersistenceProvider() {
+		return (AggregatePersistenceProvider<A>) AppContext.getInstance().getAggregatePersistenceProvider(this.intfClass);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	public final A create(Integer tenantId) {
 
 		Integer aggregateId = this.nextAggregateId();
-		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
+		AggregatePersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
 		A aggregate = persistenceProvider.doCreate();
 
 		persistenceProvider.doInit(aggregate, aggregateId, tenantId);
@@ -176,7 +176,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	public final A get(Integer id) {
 
 		requireThis(id != null, "id not null");
-		PersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
+		AggregatePersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
 		A aggregate = persistenceProvider.doLoad(id);
 
 		this.doInitParts(aggregate);

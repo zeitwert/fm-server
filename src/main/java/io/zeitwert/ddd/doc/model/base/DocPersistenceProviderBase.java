@@ -13,11 +13,11 @@ import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.PersistenceProviderBase;
+import io.zeitwert.ddd.persistence.jooq.base.AggregatePersistenceProviderBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 
-public abstract class DocPersistenceProviderBase<D extends Doc> extends PersistenceProviderBase<D> {
+public abstract class DocPersistenceProviderBase<D extends Doc> extends AggregatePersistenceProviderBase<D> {
 
 	public DocPersistenceProviderBase(
 			Class<? extends AggregateRepository<D, ?>> repoIntfClass,
