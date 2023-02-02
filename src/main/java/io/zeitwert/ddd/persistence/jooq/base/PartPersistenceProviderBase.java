@@ -1,5 +1,7 @@
 package io.zeitwert.ddd.persistence.jooq.base;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.jooq.DSLContext;
@@ -98,7 +100,9 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 
 	protected final void doInit(Part<?> part, Integer partId, Part<?> parent, CodePartListType partListType) {
 		UpdatableRecord<?> dbRecord = this.getDbRecord((EntityWithPropertiesSPI) part);
-		if (partId != null) {
+		PartRepositorySPI<?, ?> repoSpi = (PartRepositorySPI<?, ?>) part.getMeta().getRepository();
+		requireThis(!repoSpi.hasPartId() || partId != null, "valid id");
+		if (repoSpi.hasPartId()) {
 			dbRecord.setValue(PartFields.ID, partId);
 		}
 		dbRecord.setValue(PartFields.PARENT_PART_ID, parent != null ? parent.getId() : 0);

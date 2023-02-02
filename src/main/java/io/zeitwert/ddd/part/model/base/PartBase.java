@@ -64,7 +64,12 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		this.aggregate = aggregate;
 		this.state = state;
 		this.dbRecord = null;
-		this.id = this.addSimpleProperty("id", Integer.class);
+		// xyPartItem don't have an id
+		if (((PartRepositorySPI<?, ?>) repository).hasPartId()) {
+			this.id = this.addSimpleProperty("id", Integer.class);
+		} else {
+			this.id = null;
+		}
 		this.parentPartId = this.addSimpleProperty("parentPartId", Integer.class);
 		this.partListTypeId = this.addSimpleProperty("partListTypeId", String.class);
 		this.seqNr = this.addSimpleProperty("seqNr", Integer.class);
