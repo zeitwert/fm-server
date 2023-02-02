@@ -96,7 +96,7 @@ public final class AppContext {
 
 	@SuppressWarnings("unchecked")
 	public <A extends Aggregate, P extends Part<A>> PartPersistenceProvider<A, P> getPartPersistenceProvider(
-			Class<Part<A>> intfClass) {
+			Class<? extends Part<A>> intfClass) {
 		return (PartPersistenceProvider<A, P>) this.partPersistenceProviders.get(intfClass);
 	}
 

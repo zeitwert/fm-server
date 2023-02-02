@@ -10,6 +10,8 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartMeta;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.PropertyProvider;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
@@ -21,7 +23,8 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	private final PartRepository<A, ?> repository;
 
 	private A aggregate;
-	private final UpdatableRecord<?> dbRecord;
+	private Object state;
+	private UpdatableRecord<?> dbRecord;
 
 	protected final SimpleProperty<Integer> id;
 	protected final SimpleProperty<Integer> parentPartId;
@@ -44,13 +47,27 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	protected Integer doAfterStoreSeqNr = 0;
 
 	protected PartBase(PartRepository<A, ?> repository, A aggregate, UpdatableRecord<?> dbRecord) {
+		System.out.println("new PartBase.dbRecord " + this.getClass().getSimpleName());
 		this.repository = repository;
 		this.aggregate = aggregate;
+		this.state = null;
 		this.dbRecord = dbRecord;
 		this.id = this.addSimpleProperty(dbRecord, PartFields.ID);
 		this.parentPartId = this.addSimpleProperty(dbRecord, PartFields.PARENT_PART_ID);
 		this.partListTypeId = this.addSimpleProperty(dbRecord, PartFields.PART_LIST_TYPE_ID);
 		this.seqNr = this.addSimpleProperty(dbRecord, PartFields.SEQ_NR);
+	}
+
+	protected PartBase(PartRepository<A, ?> repository, A aggregate, PartState state) {
+		System.out.println("new PartBase.state " + this.getClass().getSimpleName());
+		this.repository = repository;
+		this.aggregate = aggregate;
+		this.state = state;
+		this.dbRecord = null;
+		this.id = this.addSimpleProperty("id", Integer.class);
+		this.parentPartId = this.addSimpleProperty("parentPartId", Integer.class);
+		this.partListTypeId = this.addSimpleProperty("partListTypeId", String.class);
+		this.seqNr = this.addSimpleProperty("seqNr", Integer.class);
 	}
 
 	@Override
@@ -73,8 +90,25 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		return this.getAggregate().getMeta().getRequestContext();
 	}
 
+	@Override
+	public final PropertyProvider getPropertyProvider() {
+		if (this.getRepository() != null) { // possibly null in instatiation phase
+			return ((PartRepositoryBase<?, ?>) this.getRepository()).getPersistenceProvider();
+		}
+		return null;
+	}
+
 	protected UpdatableRecord<?> getDbRecord() {
-		return this.dbRecord;
+		if (this.dbRecord != null) {
+			return this.dbRecord;
+		} else {
+			return ((PartState) this.state).dbRecord();
+		}
+	}
+
+	@Override
+	public Object getPartState() {
+		return this.state;
 	}
 
 	@Override
@@ -147,7 +181,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	@Override
 	public PartStatus getStatus() {
 		PartRepositorySPI<?, ?> repoSpi = (PartRepositorySPI<?, ?>) this.getRepository();
-		if (this.isDeleted) {
+		if (this.isDeleted()) {
 			return PartStatus.DELETED;
 		} else if (repoSpi.hasPartId() && this.getDbRecord().changed(PartFields.ID)) {
 			return PartStatus.CREATED;
@@ -156,6 +190,11 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 		} else {
 			return PartStatus.READ;
 		}
+	}
+
+	@Override
+	public boolean isDeleted() {
+		return this.isDeleted;
 	}
 
 	@Override

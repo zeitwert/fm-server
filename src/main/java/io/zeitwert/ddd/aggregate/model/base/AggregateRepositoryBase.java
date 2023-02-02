@@ -55,8 +55,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	private final Class<? extends Aggregate> intfClass;
 	private final String aggregateTypeId;
 	private final AppContext appContext;
-
 	private final DSLContext dslContext;
+
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
 	private final ProxyFactory proxyFactory;

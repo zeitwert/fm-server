@@ -10,6 +10,13 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 public interface PartSPI<A extends Aggregate> {
 
 	/**
+	 * Get the persistence provider specific part state.
+	 * 
+	 * @return part state
+	 */
+	Object getPartState();
+
+	/**
 	 * Get the parts persistence status.
 	 * 
 	 * @return persistence status
@@ -41,6 +48,11 @@ public interface PartSPI<A extends Aggregate> {
 	 * Do some work after load.
 	 */
 	public void doAfterLoad();
+
+	/**
+	 * Is the part marked for deletion?
+	 */
+	boolean isDeleted();
 
 	/**
 	 * Mark the part for deletion.

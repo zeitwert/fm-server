@@ -7,6 +7,7 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
 import io.zeitwert.ddd.obj.model.ObjPartRepository;
 import io.zeitwert.ddd.part.model.base.PartRepositoryBase;
+import io.zeitwert.ddd.persistence.PartPersistenceProvider;
 
 public abstract class ObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>> extends PartRepositoryBase<O, P>
 		implements ObjPartRepository<O, P> {
@@ -28,7 +29,12 @@ public abstract class ObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>>
 
 	@Override
 	public Integer nextPartId() {
-		return this.getDSLContext().nextval(OBJ_PART_ID_SEQ).intValue();
+		PartPersistenceProvider<O, P> persistenceProvider = this.getPersistenceProvider();
+		if (persistenceProvider != null && persistenceProvider.isReal()) {
+			return persistenceProvider.nextPartId();
+		} else {
+			return this.getDSLContext().nextval(OBJ_PART_ID_SEQ).intValue();
+		}
 	}
 
 }

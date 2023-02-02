@@ -17,7 +17,7 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.base.PartCache;
-import io.zeitwert.ddd.persistence.AggregatePersistenceProvider;
+import io.zeitwert.ddd.persistence.PropertyProvider;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.validation.model.AggregatePartValidation;
@@ -77,7 +77,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	@Override
-	public final AggregatePersistenceProvider<? extends Aggregate> getPropertyProvider() {
+	public final PropertyProvider getPropertyProvider() {
 		if (this.getRepository() != null) { // possibly null in instatiation phase
 			return ((AggregateRepositoryBase<?, ?>) this.getRepository()).getPersistenceProvider();
 		}

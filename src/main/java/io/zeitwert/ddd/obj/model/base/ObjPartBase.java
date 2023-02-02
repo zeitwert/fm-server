@@ -9,11 +9,16 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartBase;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 
 public abstract class ObjPartBase<O extends Obj> extends PartBase<O> implements ObjPart<O> {
 
 	protected ObjPartBase(PartRepository<O, ?> repository, O obj, UpdatableRecord<?> dbRecord) {
 		super(repository, obj, dbRecord);
+	}
+
+	protected ObjPartBase(PartRepository<O, ?> repository, O obj, PartState state) {
+		super(repository, obj, state);
 	}
 
 	@Override
