@@ -200,10 +200,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		this.doBeforeStore(aggregate);
 		assertThis(this.didBeforeStore, this.getClass().getSimpleName() + ": doBeforeStore was propagated");
 
-		Integer doStoreSeqNr = ((AggregateBase) aggregate).doStoreSeqNr;
-		((AggregateSPI) aggregate).doStore();
-		assertThis(((AggregateBase) aggregate).doStoreSeqNr > doStoreSeqNr,
-				aggregate.getClass().getSimpleName() + ": doStore was propagated");
+		this.getPersistenceProvider().doStore(aggregate);
 
 		this.doStoreParts(aggregate);
 

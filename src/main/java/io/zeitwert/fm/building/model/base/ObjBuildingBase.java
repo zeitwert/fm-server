@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
@@ -91,7 +90,7 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final ReferenceSetProperty<ObjContact> contactSet= this.addReferenceSetProperty("contactSet", ObjContact.class);
 	//@formatter:on
 
-	protected ObjBuildingBase(ObjBuildingRepository repository, AggregateState state) {
+	protected ObjBuildingBase(ObjBuildingRepository repository, Object state) {
 		super(repository, state);
 	}
 

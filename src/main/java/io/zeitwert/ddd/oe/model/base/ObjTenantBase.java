@@ -4,7 +4,6 @@ package io.zeitwert.ddd.oe.model.base;
 import java.math.BigDecimal;
 import java.util.List;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
@@ -37,7 +36,7 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	protected final ReferenceProperty<ObjDocument> logoImage = this.addReferenceProperty("logoImage", ObjDocument.class);
 	//@formatter:on
 
-	public ObjTenantBase(ObjTenantRepository repository, AggregateState state) {
+	public ObjTenantBase(ObjTenantRepository repository, Object state) {
 		super(repository, state);
 	}
 

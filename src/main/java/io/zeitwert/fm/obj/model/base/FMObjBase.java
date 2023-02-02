@@ -1,6 +1,5 @@
 package io.zeitwert.fm.obj.model.base;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
@@ -25,7 +24,7 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 
 	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
 
-	protected FMObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, AggregateState state) {
+	protected FMObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, Object state) {
 		super(repository, state);
 	}
 

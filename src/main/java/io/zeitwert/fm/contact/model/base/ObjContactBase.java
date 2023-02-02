@@ -14,7 +14,6 @@ import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -36,7 +35,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	private final PartListProperty<ObjContactPartAddress> addressList = this.addPartListProperty("addressList", ObjContactPartAddress.class);
 	//@formatter:on
 
-	protected ObjContactBase(ObjContactRepository repository, AggregateState state) {
+	protected ObjContactBase(ObjContactRepository repository, Object state) {
 		super(repository, state);
 	}
 

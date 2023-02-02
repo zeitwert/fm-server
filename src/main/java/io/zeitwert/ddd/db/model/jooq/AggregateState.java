@@ -2,14 +2,12 @@ package io.zeitwert.ddd.db.model.jooq;
 
 import org.jooq.UpdatableRecord;
 
-import io.zeitwert.ddd.db.model.AggregateState;
-
-public class AggregateStateImpl implements AggregateState {
+public class AggregateState {
 
 	private final UpdatableRecord<?> baseRecord;
 	private final UpdatableRecord<?> extnRecord;
 
-	public AggregateStateImpl(UpdatableRecord<?> baseRecord, UpdatableRecord<?> extnRecord) {
+	public AggregateState(UpdatableRecord<?> baseRecord, UpdatableRecord<?> extnRecord) {
 		this.baseRecord = baseRecord;
 		this.extnRecord = extnRecord;
 	}

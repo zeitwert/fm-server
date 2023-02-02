@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
@@ -36,7 +35,7 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	protected final ReferenceSetProperty<ObjBuilding> buildingSet = this.addReferenceSetProperty("buildingSet", ObjBuilding.class);
 	//@formatter:on
 
-	protected ObjPortfolioBase(ObjPortfolioRepository repository, AggregateState state) {
+	protected ObjPortfolioBase(ObjPortfolioRepository repository, Object state) {
 		super(repository, state);
 	}
 

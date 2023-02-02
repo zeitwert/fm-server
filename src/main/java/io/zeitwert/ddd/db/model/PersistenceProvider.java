@@ -40,6 +40,14 @@ public interface PersistenceProvider<A extends Aggregate> {
 	 */
 	A doLoad(Integer id);
 
+	/**
+	 * Store the database record(s) (of the Aggregate only). The Parts will be
+	 * stored from the repository.
+	 * 
+	 * @param aggregate aggregate to store
+	 */
+	void doStore(A aggregate);
+
 	<T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type);
 
 	<E extends Enumerated> EnumProperty<E> getEnumProperty(EntityWithPropertiesSPI entity, String name,

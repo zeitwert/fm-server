@@ -7,7 +7,6 @@ import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
@@ -37,7 +36,7 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	protected final EnumSetProperty<CodeCountry> countries = this.addEnumSetProperty("countrySet", CodeCountry.class);
 	protected final PartListProperty<ObjTestPartNode> nodes = this.addPartListProperty("nodeList", ObjTestPartNode.class);
 
-	protected ObjTestBase(ObjTestRepository repository, AggregateState state) {
+	protected ObjTestBase(ObjTestRepository repository, Object state) {
 		super(repository, state);
 	}
 

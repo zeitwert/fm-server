@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.doc.model.base;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.base.DocBase;
@@ -26,7 +25,7 @@ public abstract class FMDocBase extends DocBase implements FMDoc {
 
 	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
 
-	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, AggregateState state) {
+	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, Object state) {
 		super(repository, state);
 	}
 

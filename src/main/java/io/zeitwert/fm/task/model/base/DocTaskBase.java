@@ -7,7 +7,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.time.OffsetDateTime;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.obj.model.ObjRepository;
@@ -35,7 +34,7 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	protected final SimpleProperty<OffsetDateTime> remindAt = this.addSimpleProperty("remindAt", OffsetDateTime.class);
 	//@formatter:on
 
-	protected DocTaskBase(DocTaskRepository repository, AggregateState state) {
+	protected DocTaskBase(DocTaskRepository repository, Object state) {
 		super(repository, state);
 	}
 

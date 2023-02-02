@@ -8,8 +8,8 @@ import org.jooq.exception.NoDataFoundException;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
-import io.zeitwert.ddd.db.model.AggregateState;
-import io.zeitwert.ddd.db.model.jooq.AggregateStateImpl;
+import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
+import io.zeitwert.ddd.db.model.jooq.AggregateState;
 import io.zeitwert.ddd.db.model.jooq.PersistenceProviderBase;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
@@ -47,7 +47,7 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 
 	protected D doCreate(UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().newRecord(Tables.DOC);
-		AggregateState state = new AggregateStateImpl(docRecord, extnRecord);
+		AggregateState state = new AggregateState(docRecord, extnRecord);
 		return this.newAggregate(state);
 	}
 
@@ -59,7 +59,7 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 			doc.docTypeId.setValue(doc.getRepository().getAggregateType().getId());
 			doc.id.setValue(docId);
 			doc.tenant.setId(tenantId);
-			AggregateStateImpl state = (AggregateStateImpl) doc.getAggregateState();
+			AggregateState state = (AggregateState) doc.getAggregateState();
 			UpdatableRecord<?> extnRecord = state.getExtnRecord();
 			if (extnRecord != null) {
 				extnRecord.setValue(DocExtnFields.DOC_ID, docId);
@@ -76,8 +76,17 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 		if (docRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
-		AggregateState state = new AggregateStateImpl(docRecord, extnRecord);
+		AggregateState state = new AggregateState(docRecord, extnRecord);
 		return this.newAggregate(state);
+	}
+
+	@Override
+	public final void doStore(D doc) {
+		AggregateState state = (AggregateState) ((AggregateSPI) doc).getAggregateState();
+		state.getBaseRecord().store();
+		if (state.getExtnRecord() != null) {
+			state.getExtnRecord().store();
+		}
 	}
 
 }

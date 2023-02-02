@@ -6,7 +6,6 @@ import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
@@ -40,7 +39,7 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	// protected final PartListProperty<DocTestPartNode> nodeList;
 	//@formatter:on
 
-	protected DocTestBase(DocTestRepository repository, AggregateState state) {
+	protected DocTestBase(DocTestRepository repository, Object state) {
 		super(repository, state);
 	}
 

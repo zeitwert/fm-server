@@ -15,7 +15,6 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.base.PartCache;
@@ -31,7 +30,7 @@ import io.zeitwert.ddd.validation.model.impl.AggregatePartValidationImpl;
 public abstract class AggregateBase extends EntityWithPropertiesBase implements Aggregate, AggregateMeta, AggregateSPI {
 
 	private final AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> repository;
-	private final AggregateState state;
+	private final Object state;
 
 	private boolean isStale = false;
 	private Map<Class<? extends Part<?>>, PartCache<?>> partCaches = new ConcurrentHashMap<>();
@@ -47,14 +46,12 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	protected Integer doAssignPartsSeqNr = 0;
 	protected Integer doAfterLoadSeqNr = 0;
 	protected Integer doBeforeStoreSeqNr = 0;
-	protected Integer doStoreSeqNr = 0;
 	protected Integer doAfterStoreSeqNr = 0;
 
 	private List<String> searchTexts = new ArrayList<>();
 	private List<String> searchTokens = new ArrayList<>();
 
-	protected AggregateBase(AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> repository,
-			AggregateState state) {
+	protected AggregateBase(AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> repository, Object state) {
 		this.repository = repository;
 		this.state = state;
 	}
@@ -70,7 +67,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	@Override
-	public AggregateState getAggregateState() {
+	public Object getAggregateState() {
 		return this.state;
 	}
 
@@ -128,11 +125,6 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	public void doBeforeStore() {
 		this.doBeforeStoreSeqNr += 1;
 		this.doBeforeStoreProperties();
-	}
-
-	@Override
-	public void doStore() {
-		this.doStoreSeqNr += 1;
 	}
 
 	protected void storeSearch() {

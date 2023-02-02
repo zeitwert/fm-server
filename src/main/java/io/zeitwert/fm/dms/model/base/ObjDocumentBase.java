@@ -4,7 +4,6 @@ package io.zeitwert.fm.dms.model.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -31,7 +30,7 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	protected CodeContentType contentType;
 	protected byte[] content;
 
-	protected ObjDocumentBase(ObjDocumentRepository repository, AggregateState state) {
+	protected ObjDocumentBase(ObjDocumentRepository repository, Object state) {
 		super(repository, state);
 	}
 

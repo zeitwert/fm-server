@@ -17,7 +17,6 @@ import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
@@ -67,7 +66,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, AggregateState.class };
+		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Object.class };
 	}
 
 	protected final DSLContext getDSLContext() {
@@ -78,7 +77,7 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 	 * Create a new aggregate, used from both create and load to create a new object
 	 */
 	@SuppressWarnings("unchecked")
-	protected final A newAggregate(AggregateState state) {
+	protected final A newAggregate(Object state) {
 		AggregateRepository<A, ?> repo = AppContext.getInstance().getBean(this.repoIntfClass);
 		A aggregate = null;
 		try {
@@ -186,11 +185,11 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 	}
 
 	private UpdatableRecord<?> getRecord(EntityWithPropertiesSPI entity, String tableType) {
-		AggregateState state = ((AggregateSPI) entity).getAggregateState();
+		Object state = ((AggregateSPI) entity).getAggregateState();
 		if (EXTN.equals(tableType)) {
-			return ((AggregateStateImpl) state).getExtnRecord();
+			return ((AggregateState) state).getExtnRecord();
 		} else if (BASE.equals(tableType)) {
-			return ((AggregateStateImpl) state).getBaseRecord();
+			return ((AggregateState) state).getBaseRecord();
 		}
 		return null;
 	}

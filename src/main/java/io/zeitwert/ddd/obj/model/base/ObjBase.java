@@ -6,13 +6,10 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import java.time.OffsetDateTime;
 
 import org.jooq.TableRecord;
-import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.db.model.AggregateState;
-import io.zeitwert.ddd.db.model.jooq.AggregateStateImpl;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
@@ -46,7 +43,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final PartListProperty<ObjPartTransition> transitionList = this.addPartListProperty("transitionList", ObjPartTransition.class);
 	//@formatter:on
 
-	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, AggregateState state) {
+	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, Object state) {
 		super(repository, state);
 	}
 
@@ -68,14 +65,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public Integer getTenantId() {
 		return this.tenant.getId();
-	}
-
-	private final UpdatableRecord<?> baseDbRecord() {
-		return ((AggregateStateImpl) this.getAggregateState()).getBaseRecord();
-	}
-
-	private final UpdatableRecord<?> extnDbRecord() {
-		return ((AggregateStateImpl) this.getAggregateState()).getExtnRecord();
 	}
 
 	@Override
@@ -129,15 +118,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 			this.enableCalc();
 		}
 
-	}
-
-	@Override
-	public final void doStore() {
-		super.doStore();
-		this.baseDbRecord().store();
-		if (this.extnDbRecord() != null) {
-			this.extnDbRecord().store();
-		}
 	}
 
 	@Override

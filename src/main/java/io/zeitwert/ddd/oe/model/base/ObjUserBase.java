@@ -4,7 +4,6 @@ package io.zeitwert.ddd.oe.model.base;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
@@ -38,7 +37,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	protected final SimpleProperty<String> password = this.addSimpleProperty("password", String.class);
 	//@formatter:on
 
-	public ObjUserBase(ObjUserRepository repository, AggregateState state) {
+	public ObjUserBase(ObjUserRepository repository, Object state) {
 		super(repository, state);
 	}
 

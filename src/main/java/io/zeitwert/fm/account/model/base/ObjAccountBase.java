@@ -6,7 +6,6 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -42,7 +41,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final ReferenceProperty<ObjContact> mainContact= this.addReferenceProperty("mainContact", ObjContact.class);
 	//@formatter:on
 
-	protected ObjAccountBase(ObjAccountRepository repository, AggregateState state) {
+	protected ObjAccountBase(ObjAccountRepository repository, Object state) {
 		super(repository, state);
 	}
 

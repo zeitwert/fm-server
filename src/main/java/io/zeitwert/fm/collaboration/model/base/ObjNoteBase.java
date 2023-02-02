@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.collaboration.model.base;
 
-import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.base.ObjBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
@@ -22,7 +21,7 @@ public abstract class ObjNoteBase extends ObjBase implements ObjNote {
 	protected final SimpleProperty<Boolean> isPrivate = this.addSimpleProperty("isPrivate", Boolean.class);
 	//@formatter:on
 
-	protected ObjNoteBase(ObjNoteRepository repository, AggregateState state) {
+	protected ObjNoteBase(ObjNoteRepository repository, Object state) {
 		super(repository, state);
 	}
 
