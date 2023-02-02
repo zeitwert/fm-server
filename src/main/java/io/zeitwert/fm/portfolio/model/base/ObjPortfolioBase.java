@@ -14,7 +14,6 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -50,12 +49,9 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		CodePartListType includeSetType = CodePartListTypeEnum.getPartListType("portfolio.includeSet");
-		this.includeSet.loadReferences(itemRepo.getParts(this, includeSetType));
-		CodePartListType excludeSetType = CodePartListTypeEnum.getPartListType("portfolio.excludeSet");
-		this.excludeSet.loadReferences(itemRepo.getParts(this, excludeSetType));
-		CodePartListType buildingSetType = CodePartListTypeEnum.getPartListType("portfolio.buildingSet");
-		this.buildingSet.loadReferences(itemRepo.getParts(this, buildingSetType));
+		this.includeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.includeSetType()));
+		this.excludeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.excludeSetType()));
+		this.buildingSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.buildingSetType()));
 	}
 
 	@Override

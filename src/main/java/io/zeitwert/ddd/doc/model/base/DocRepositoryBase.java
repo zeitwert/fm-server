@@ -11,8 +11,6 @@ import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
 public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		extends AggregateRepositoryBase<D, V>
@@ -21,7 +19,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 	private static final String DOC_ID_SEQ = "doc_id_seq";
 
 	private DocPartTransitionRepository transitionRepository;
-	private CodePartListType transitionListType;
 	private DocPartItemRepository itemRepository;
 
 	protected DocRepositoryBase(
@@ -40,14 +37,6 @@ public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 			this.transitionRepository = this.getAppContext().getBean(DocPartTransitionRepository.class);
 		}
 		return this.transitionRepository;
-	}
-
-	@Override
-	public CodePartListType getTransitionListType() {
-		if (this.transitionListType == null) {
-			this.transitionListType = CodePartListTypeEnum.getPartListType(DocFields.TRANSITION_LIST);
-		}
-		return this.transitionListType;
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
@@ -58,8 +57,7 @@ public abstract class ObjUserBase extends ObjBase implements ObjUser {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		CodePartListType tenantSetType = CodePartListTypeEnum.getPartListType("user.tenantList");
-		this.tenantSet.loadReferences(itemRepo.getParts(this, tenantSetType));
+		this.tenantSet.loadReferences(itemRepo.getParts(this, ObjUserRepository.tenantListType()));
 	}
 
 	@Override

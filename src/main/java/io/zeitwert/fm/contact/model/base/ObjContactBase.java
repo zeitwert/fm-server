@@ -15,8 +15,6 @@ import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.ddd.db.model.AggregateState;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -51,8 +49,7 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	public void doAssignParts() {
 		super.doAssignParts();
 		ObjContactPartAddressRepository addressRepo = this.getRepository().getAddressRepository();
-		CodePartListType addressListType = CodePartListTypeEnum.getPartListType("contact.addressList");
-		this.addressList.loadParts(addressRepo.getParts(this, addressListType));
+		this.addressList.loadParts(addressRepo.getParts(this, ObjContactRepository.addressListType()));
 	}
 
 	@Override

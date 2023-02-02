@@ -10,14 +10,11 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.base.ObjTestBase;
-import io.zeitwert.fm.test.model.base.ObjTestFields;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
@@ -26,28 +23,10 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
-	private CodePartListType countrySetType;
 	private ObjTestPartNodeRepository nodeRepository;
-	private CodePartListType nodeListType;
 
-	protected ObjTestRepositoryImpl(
-			final AppContext appContext,
-			final DSLContext dslContext) {
-		super(
-				ObjTestRepository.class,
-				ObjTest.class,
-				ObjTestBase.class,
-				AGGREGATE_TYPE,
-				appContext,
-				dslContext);
-	}
-
-	@Override
-	public CodePartListType getCountrySetType() {
-		if (this.countrySetType == null) {
-			this.countrySetType = CodePartListTypeEnum.getPartListType(ObjTestFields.COUNTRY_SET);
-		}
-		return this.countrySetType;
+	protected ObjTestRepositoryImpl(final AppContext appContext, final DSLContext dslContext) {
+		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext, dslContext);
 	}
 
 	@Override
@@ -56,14 +35,6 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 			this.nodeRepository = this.getAppContext().getBean(ObjTestPartNodeRepository.class);
 		}
 		return this.nodeRepository;
-	}
-
-	@Override
-	public CodePartListType getNodeListType() {
-		if (this.nodeListType == null) {
-			this.nodeListType = CodePartListTypeEnum.getPartListType(ObjTestFields.NODE_LIST);
-		}
-		return this.nodeListType;
 	}
 
 	@Override

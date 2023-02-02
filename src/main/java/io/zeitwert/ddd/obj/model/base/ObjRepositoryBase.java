@@ -17,8 +17,6 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.util.SqlUtils;
 
 import java.util.List;
@@ -30,7 +28,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 	private static final String OBJ_ID_SEQ = "obj_id_seq";
 
 	private ObjPartTransitionRepository transitionRepository;
-	private CodePartListType transitionListType;
 	private ObjPartItemRepository itemRepository;
 
 	protected ObjRepositoryBase(
@@ -49,14 +46,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 			this.transitionRepository = this.getAppContext().getBean(ObjPartTransitionRepository.class);
 		}
 		return this.transitionRepository;
-	}
-
-	@Override
-	public CodePartListType getTransitionListType() {
-		if (this.transitionListType == null) {
-			this.transitionListType = CodePartListTypeEnum.getPartListType(ObjFields.TRANSITION_LIST);
-		}
-		return this.transitionListType;
 	}
 
 	@Override

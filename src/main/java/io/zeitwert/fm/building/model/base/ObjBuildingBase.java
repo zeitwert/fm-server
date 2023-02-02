@@ -12,7 +12,6 @@ import io.zeitwert.ddd.db.model.AggregateState;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -110,12 +109,10 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		CodePartListType ratingListType = CodePartListTypeEnum.getPartListType("building.ratingList");
 		ObjBuildingPartRatingRepository ratingRepo = this.getRepository().getRatingRepository();
-		this.ratingList.loadParts(ratingRepo.getParts(this, ratingListType));
-		CodePartListType contactSetType = CodePartListTypeEnum.getPartListType("building.contactSet");
+		this.ratingList.loadParts(ratingRepo.getParts(this, ObjBuildingRepository.ratingListType()));
 		ObjPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		this.contactSet.loadReferences(itemRepo.getParts(this, contactSetType));
+		this.contactSet.loadReferences(itemRepo.getParts(this, ObjBuildingRepository.contactSetType()));
 	}
 
 	@Override

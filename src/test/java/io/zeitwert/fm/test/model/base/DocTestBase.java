@@ -12,7 +12,6 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -60,8 +59,7 @@ public abstract class DocTestBase extends FMDocBase implements DocTest {
 	public void doAssignParts() {
 		super.doAssignParts();
 		DocPartItemRepository itemRepo = this.getRepository().getItemRepository();
-		CodePartListType countrySetType = CodePartListTypeEnum.getPartListType("test.countrySet");
-		this.countrySet.loadEnums(itemRepo.getParts(this, countrySetType));
+		this.countrySet.loadEnums(itemRepo.getParts(this, DocTestRepository.countrySetType()));
 		// ObjTestPartNodeRepository nodeRepo =
 		// this.getRepository().getNodeRepository();
 		// this.nodeList.loadParts(nodeRepo.getParts(this,
