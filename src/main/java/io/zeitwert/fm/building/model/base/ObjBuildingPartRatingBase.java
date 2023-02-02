@@ -6,13 +6,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.flywaydb.core.internal.util.Pair;
-import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -25,41 +25,27 @@ import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
 
-	protected final EnumProperty<CodeBuildingPartCatalog> partCatalog;
-	protected final EnumProperty<CodeBuildingMaintenanceStrategy> maintenanceStrategy;
-
-	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus;
-	protected final SimpleProperty<LocalDate> ratingDate;
-	protected final ReferenceProperty<ObjUser> ratingUser;
-
-	protected final PartListProperty<ObjBuildingPartElementRating> elementList;
+	//@formatter:off
+	protected final EnumProperty<CodeBuildingPartCatalog> partCatalog= this.addEnumProperty("partCatalog", CodeBuildingPartCatalog.class);
+	protected final EnumProperty<CodeBuildingMaintenanceStrategy> maintenanceStrategy=this.addEnumProperty("maintenanceStrategy", CodeBuildingMaintenanceStrategy.class);
+	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus= this.addEnumProperty("ratingStatus", CodeBuildingRatingStatus.class);
+	protected final SimpleProperty<LocalDate> ratingDate= this.addSimpleProperty("ratingDate", LocalDate.class);
+	protected final ReferenceProperty<ObjUser> ratingUser= this.addReferenceProperty("ratingUser", ObjUser.class);
+	protected final PartListProperty<ObjBuildingPartElementRating> elementList= this.addPartListProperty("elementList", ObjBuildingPartElementRating.class);
+	//@formatter:on
 
 	protected Integer elementWeights = null;
 
-	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj,
-			UpdatableRecord<?> dbRecord) {
-		super(repository, obj, dbRecord);
-
-		this.partCatalog = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.PART_CATALOG_ID,
-				CodeBuildingPartCatalogEnum.class);
-		this.maintenanceStrategy = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.MAINTENANCE_STRATEGY_ID,
-				CodeBuildingMaintenanceStrategyEnum.class);
-
-		this.ratingStatus = this.addEnumProperty(dbRecord, ObjBuildingPartRatingFields.RATING_STATUS_ID,
-				CodeBuildingRatingStatusEnum.class);
-		this.ratingDate = this.addSimpleProperty(dbRecord, ObjBuildingPartRatingFields.RATING_DATE);
-		this.ratingUser = this.addReferenceProperty(dbRecord, ObjBuildingPartRatingFields.RATING_USER_ID, ObjUser.class);
-		this.elementList = this.addPartListProperty(this.getRepository().getElementListType());
+	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, PartState state) {
+		super(repository, obj, state);
 	}
 
 	@Override
@@ -79,7 +65,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		ObjBuildingRepository repo = (ObjBuildingRepository) this.getAggregate().getMeta().getRepository();
 		ObjBuildingPartElementRatingRepository elementRepo = repo.getElementRepository();
 		List<ObjBuildingPartElementRating> elementList = elementRepo.getParts(this,
-				this.getRepository().getElementListType());
+				ObjBuildingPartRatingRepository.getElementListType());
 		this.elementList.loadParts(elementList);
 	}
 

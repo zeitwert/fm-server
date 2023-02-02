@@ -1,63 +1,37 @@
 package io.zeitwert.fm.building.model.base;
 
-import org.jooq.UpdatableRecord;
-
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 
 public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartElementRating {
 
-	protected final EnumProperty<CodeBuildingPart> buildingPart;
-	protected final SimpleProperty<Integer> weight;
-	protected final SimpleProperty<Integer> condition;
-	protected final SimpleProperty<Integer> ratingYear;
-	protected final SimpleProperty<Integer> strain;
-	protected final SimpleProperty<Integer> strength;
-	protected final SimpleProperty<String> description;
-	protected final SimpleProperty<String> conditionDescription;
-	protected final SimpleProperty<String> measureDescription;
-	// protected final EnumSetProperty<CodeBuildingElementDescription>
-	// materialDescriptionSet;
-	// protected final EnumSetProperty<CodeBuildingElementDescription>
-	// conditionDescriptionSet;
-	// protected final EnumSetProperty<CodeBuildingElementDescription>
-	// measureDescriptionSet;
+	//@formatter:off
+	protected final EnumProperty<CodeBuildingPart> buildingPart = this.addEnumProperty("buildingPart", CodeBuildingPart.class);
+	protected final SimpleProperty<Integer> weight = this.addSimpleProperty("weight", Integer.class);
+	protected final SimpleProperty<Integer> condition = this.addSimpleProperty("condition", Integer.class);
+	protected final SimpleProperty<Integer> ratingYear = this.addSimpleProperty("ratingYear", Integer.class);
+	protected final SimpleProperty<Integer> strain = this.addSimpleProperty("strain", Integer.class);
+	protected final SimpleProperty<Integer> strength = this.addSimpleProperty("strength", Integer.class);
+	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
+	protected final SimpleProperty<String> conditionDescription = this.addSimpleProperty("conditionDescription", String.class);
+	protected final SimpleProperty<String> measureDescription = this.addSimpleProperty("measureDescription", String.class);
+	// protected final EnumSetProperty<CodeBuildingElementDescription> materialDescriptionSet;
+	// protected final EnumSetProperty<CodeBuildingElementDescription> conditionDescriptionSet;
+	// protected final EnumSetProperty<CodeBuildingElementDescription> measureDescriptionSet;
+	//@formatter:on
 
-	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj,
-			UpdatableRecord<?> dbRecord) {
-		super(repository, obj, dbRecord);
-		this.buildingPart = this.addEnumProperty(dbRecord, ObjBuildingPartElementRatingFields.BUILDING_PART_ID,
-				CodeBuildingPartEnum.class);
-		this.weight = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.WEIGHT);
-		this.condition = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION);
-		this.ratingYear = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.CONDITION_YEAR);
-		this.strain = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.STRAIN);
-		this.strength = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.STRENGTH);
-		this.description = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.DESCRIPTION);
-		this.conditionDescription = this.addSimpleProperty(dbRecord,
-				ObjBuildingPartElementRatingFields.CONDITION_DESCRIPTION);
-		this.measureDescription = this.addSimpleProperty(dbRecord, ObjBuildingPartElementRatingFields.MEASURE_DESCRIPTION);
-		// ObjBuildingRepository repo = (ObjBuildingRepository)
-		// obj.getMeta().getRepository();
-		// this.materialDescriptionSet =
-		// this.addEnumSetProperty(repo.getMaterialDescriptionSetType(),
-		// CodeBuildingElementDescriptionEnum.class);
-		// this.conditionDescriptionSet =
-		// this.addEnumSetProperty(repo.getConditionDescriptionSetType(),
-		// CodeBuildingElementDescriptionEnum.class);
-		// this.measureDescriptionSet =
-		// this.addEnumSetProperty(repo.getMeasureDescriptionSetType(),
-		// CodeBuildingElementDescriptionEnum.class);
+	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, PartState state) {
+		super(repository, obj, state);
 	}
 
 	@Override

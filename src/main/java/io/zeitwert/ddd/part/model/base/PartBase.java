@@ -47,7 +47,6 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	protected Integer doAfterStoreSeqNr = 0;
 
 	protected PartBase(PartRepository<A, ?> repository, A aggregate, UpdatableRecord<?> dbRecord) {
-		System.out.println("new PartBase.dbRecord " + this.getClass().getSimpleName());
 		this.repository = repository;
 		this.aggregate = aggregate;
 		this.state = null;
@@ -59,7 +58,6 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	}
 
 	protected PartBase(PartRepository<A, ?> repository, A aggregate, PartState state) {
-		System.out.println("new PartBase.state " + this.getClass().getSimpleName());
 		this.repository = repository;
 		this.aggregate = aggregate;
 		this.state = state;
