@@ -3,7 +3,6 @@ package io.zeitwert.ddd.db.model.jooq;
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,15 +29,12 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
-import io.zeitwert.ddd.property.model.base.PropertyFilter;
-import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.property.model.impl.EnumPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.EnumSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferencePropertyImpl;
 import io.zeitwert.ddd.property.model.impl.ReferenceSetPropertyImpl;
 import io.zeitwert.ddd.property.model.impl.SimplePropertyImpl;
-import javassist.util.proxy.ProxyFactory;
 
 record FieldConfig(String tableType, String fieldName, Class<?> fieldType) {
 }
@@ -53,8 +49,6 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 
 	private final DSLContext dslContext;
 	private final Class<? extends AggregateRepository<A, ?>> repoIntfClass;
-	private final ProxyFactory proxyFactory;
-	private final Class<?>[] proxyFactoryParamTypeList;
 	private final Map<String, Object> dbConfigMap = new HashMap<>();
 
 	public PersistenceProviderBase(
@@ -63,32 +57,14 @@ public abstract class PersistenceProviderBase<A extends Aggregate> implements Pe
 			DSLContext dslContext) {
 		this.repoIntfClass = repoIntfClass;
 		this.dslContext = dslContext;
-		this.proxyFactory = new ProxyFactory();
-		this.proxyFactory.setSuperclass(baseClass);
-		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Object.class };
 	}
 
 	protected final DSLContext getDSLContext() {
 		return this.dslContext;
 	}
 
-	/**
-	 * Create a new aggregate, used from both create and load to create a new object
-	 */
-	@SuppressWarnings("unchecked")
-	protected final A newAggregate(Object state) {
-		AggregateRepository<A, ?> repo = AppContext.getInstance().getBean(this.repoIntfClass);
-		A aggregate = null;
-		try {
-			aggregate = (A) this.proxyFactory.create(this.proxyFactoryParamTypeList, new Object[] { repo, state },
-					PropertyHandler.INSTANCE);
-		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-			throw new RuntimeException(this.getClass().getSimpleName() + ": could not create aggregate");
-		}
-		return aggregate;
+	protected final AggregateRepository<A, ?> getRepository() {
+		return AppContext.getInstance().getBean(this.repoIntfClass);
 	}
 
 	protected void mapField(String name, String tableType, String fieldName, Class<?> fieldType) {

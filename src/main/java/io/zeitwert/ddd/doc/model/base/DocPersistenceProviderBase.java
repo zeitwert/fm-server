@@ -8,6 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.aggregate.model.base.AggregateRepositorySPI;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.db.model.jooq.AggregateState;
 import io.zeitwert.ddd.db.model.jooq.PersistenceProviderBase;
@@ -45,10 +46,11 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected D doCreate(UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().newRecord(Tables.DOC);
 		AggregateState state = new AggregateState(docRecord, extnRecord);
-		return this.newAggregate(state);
+		return ((AggregateRepositorySPI<D, ?>) this.getRepository()).newAggregate(state);
 	}
 
 	@Override
@@ -71,13 +73,14 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Persiste
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.getDSLContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
 		AggregateState state = new AggregateState(docRecord, extnRecord);
-		return this.newAggregate(state);
+		return ((AggregateRepositorySPI<D, ?>) this.getRepository()).newAggregate(state);
 	}
 
 	@Override

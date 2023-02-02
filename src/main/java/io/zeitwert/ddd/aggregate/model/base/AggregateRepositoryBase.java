@@ -1,6 +1,7 @@
 
 package io.zeitwert.ddd.aggregate.model.base;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,8 +33,11 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.db.model.PersistenceProvider;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.property.model.base.PropertyFilter;
+import io.zeitwert.ddd.property.model.base.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.ddd.util.SqlUtils;
+import javassist.util.proxy.ProxyFactory;
 
 public abstract class AggregateRepositoryBase<A extends Aggregate, V extends TableRecord<?>>
 		implements AggregateRepository<A, V>, AggregateRepositorySPI<A, V> {
@@ -55,6 +59,9 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	private final DSLContext dslContext;
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
+	private final ProxyFactory proxyFactory;
+	private final Class<?>[] proxyFactoryParamTypeList;
+
 	private boolean didAfterCreate = false;
 	private boolean didAfterLoad = false;
 	private boolean didBeforeStore = false;
@@ -71,6 +78,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		this.aggregateTypeId = aggregateTypeId;
 		this.appContext = appContext;
 		this.dslContext = dslContext;
+		this.proxyFactory = new ProxyFactory();
+		this.proxyFactory.setSuperclass(baseClass);
+		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
+		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Object.class };
 		this.appContext.addRepository(aggregateTypeId, intfClass, this);
 	}
 
@@ -105,6 +116,21 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 	protected boolean hasAccountId() {
 		return false;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public final A newAggregate(Object state) {
+		A aggregate = null;
+		try {
+			Object[] params = new Object[] { this, state };
+			aggregate = (A) this.proxyFactory.create(this.proxyFactoryParamTypeList, params, PropertyHandler.INSTANCE);
+		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
+				| InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException(this.getClass().getSimpleName() + ": could not create aggregate");
+		}
+		return aggregate;
 	}
 
 	@Override

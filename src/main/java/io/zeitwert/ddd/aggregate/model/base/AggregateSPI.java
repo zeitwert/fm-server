@@ -7,7 +7,7 @@ package io.zeitwert.ddd.aggregate.model.base;
 public interface AggregateSPI {
 
 	/**
-	 * Get the persistence provider speicific aggregate state.
+	 * Get the persistence provider specific aggregate state.
 	 * 
 	 * @return aggregate state
 	 */
