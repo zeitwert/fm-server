@@ -7,18 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.Field;
-import org.jooq.UpdatableRecord;
-
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.enums.model.Enumerated;
-import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.jooq.impl.EnumPropertyImpl;
-import io.zeitwert.ddd.persistence.jooq.impl.ReferencePropertyImpl;
-import io.zeitwert.ddd.persistence.jooq.impl.SimplePropertyImpl;
 import io.zeitwert.ddd.property.model.EntityWithProperties;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -57,24 +49,11 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		return List.copyOf(this.properties);
 	}
 
-	// @Override
-	// public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-	// throw new NoSuchMethodError(
-	// this.getClass().getSimpleName() + ".addPart() [" + property.getName() + ", "
-	// + partListType + "]");
-	// }
-
 	protected void addProperty(Property<?> property) {
 		requireThis(property.getName() != null, "property has name");
 		requireThis(!this.hasProperty(property.getName()), "property [" + property.getName() + "] is unique");
 		this.propertyMap.put(property.getName(), property);
 		this.properties.add(property);
-	}
-
-	protected <T> SimpleProperty<T> addSimpleProperty(UpdatableRecord<?> dbRecord, Field<T> field) {
-		SimpleProperty<T> property = new SimplePropertyImpl<>(this, dbRecord, field);
-		this.addProperty(property);
-		return property;
 	}
 
 	protected <T> SimpleProperty<T> addSimpleProperty(String name, Class<T> type) {
@@ -84,14 +63,6 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		} else {
 			property = this.getPropertyProvider().getSimpleProperty(this, name, type);
 		}
-		this.addProperty(property);
-		return property;
-	}
-
-	protected <E extends Enumerated> EnumProperty<E> addEnumProperty(UpdatableRecord<?> dbRecord, Field<String> field,
-			Class<? extends Enumeration<E>> enumClass) {
-		Enumeration<E> enumeration = this.getAppContext().getEnumerationByEnumeration(enumClass);
-		EnumProperty<E> property = new EnumPropertyImpl<>(this, dbRecord, field, enumeration);
 		this.addProperty(property);
 		return property;
 	}
@@ -114,15 +85,6 @@ public abstract class EntityWithPropertiesBase implements EntityWithProperties, 
 		} else {
 			property = this.getPropertyProvider().getEnumSetProperty(this, name, type);
 		}
-		this.addProperty(property);
-		return property;
-	}
-
-	protected <A extends Aggregate> ReferenceProperty<A> addReferenceProperty(UpdatableRecord<?> dbRecord,
-			Field<Integer> field, Class<A> aggregateClass) {
-		ReferenceProperty<A> property = null;
-		AggregateCache<A> cache = this.getAppContext().getCache(aggregateClass);
-		property = new ReferencePropertyImpl<>(this, dbRecord, field, (id) -> cache.get(id));
 		this.addProperty(property);
 		return property;
 	}

@@ -33,7 +33,6 @@ import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
@@ -228,7 +227,7 @@ public class BuildingImportExportController {
 			rating.setRatingUser(dto.getRatingUser() != null ? this.userCache.getByEmail(dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
-					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPartEnum.class, dtoElement.getBuildingPart());
+					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPart.class, dtoElement.getBuildingPart());
 					ObjBuildingPartElementRating element = rating.getElement(buildingPart);
 					if (element == null) {
 						element = rating.addElement(buildingPart);

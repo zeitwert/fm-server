@@ -95,7 +95,7 @@ public class EnumController {
 
 	@GetMapping("/doc/codeCaseStage/{caseDef}")
 	public ResponseEntity<List<CodeCaseStage>> getCaseStageDomain(@PathVariable String caseDef) {
-		CodeCaseStageEnum enumeration = this.enumerations.getEnumerationByEnumeration(CodeCaseStageEnum.class);
+		CodeCaseStageEnum enumeration = (CodeCaseStageEnum) this.enumerations.getEnumeration(CodeCaseStage.class);
 		if (enumeration == null) {
 			return ResponseEntity.notFound().build();
 		}
