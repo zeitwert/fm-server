@@ -24,7 +24,6 @@ public class ObjBuildingPersistenceProvider extends FMObjPersistenceProviderBase
 
 	public ObjBuildingPersistenceProvider(DSLContext dslContext) {
 		super(ObjBuildingRepository.class, ObjBuildingBase.class, dslContext);
-		this.mapField("extnAccount", EXTN, "account_id", Integer.class);
 		this.mapField("name", EXTN, "name", String.class);
 		this.mapField("description", EXTN, "description", String.class);
 		this.mapField("buildingNr", EXTN, "building_nr", String.class);

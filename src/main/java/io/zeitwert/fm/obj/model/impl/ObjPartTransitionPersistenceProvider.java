@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.ddd.obj.model.base.ObjPartTransitionBase;
 import io.zeitwert.ddd.persistence.jooq.PartState;
+import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord;
 

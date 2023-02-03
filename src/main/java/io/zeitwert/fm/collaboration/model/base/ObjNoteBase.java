@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.collaboration.model.base;
 
-import io.zeitwert.ddd.obj.model.base.ObjBase;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -11,7 +11,7 @@ import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 
-public abstract class ObjNoteBase extends ObjBase implements ObjNote {
+public abstract class ObjNoteBase extends ObjExtnBase implements ObjNote {
 
 	//@formatter:off
 	protected final SimpleProperty<Integer> relatedToId = this.addSimpleProperty("relatedToId", Integer.class);

@@ -21,7 +21,6 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 
 	//@formatter:off
-	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
 	protected final EnumProperty<CodeContactRole> contactRole = this.addEnumProperty("contactRole", CodeContactRole.class);
 	protected final EnumProperty<CodeSalutation> salutation = this.addEnumProperty("salutation", CodeSalutation.class);
 	protected final EnumProperty<CodeTitle> title = this.addEnumProperty("title", CodeTitle.class);
@@ -58,12 +57,6 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		this.addSearchToken(this.getEmail());
 		this.addSearchText(this.getEmail().replace("@", " ").replace(".", " ").replace("_", " ").replace("-", " "));
 		this.addSearchText(this.getDescription());
-	}
-
-	@Override
-	public void setAccountId(Integer id) {
-		super.account.setId(id);
-		this.extnAccountId.setValue(id);
 	}
 
 	private ObjContactPartAddress addAddress(CodeAddressChannel addressChannel) {

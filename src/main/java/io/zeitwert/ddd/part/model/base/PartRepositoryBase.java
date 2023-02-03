@@ -77,7 +77,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {
 			e.printStackTrace();
-			throw new RuntimeException("could not create part " + this.getClass().getSimpleName());
+			throw new RuntimeException("could not create part " + this.getClassName());
 		}
 		return part;
 	}
@@ -97,7 +97,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@SuppressWarnings("unchecked")
 	private P create(A aggregate, Part<?> parent, CodePartListType partListType) {
 
-		requireThis(this.hasPartCache(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
+		requireThis(this.hasPartCache(aggregate), this.getClassName() + ": aggregate initialised");
 
 		PartPersistenceProvider<A, P> persistenceProvider = this.getPersistenceProvider();
 		Integer partId = this.hasPartId() ? persistenceProvider.nextPartId() : null;
@@ -133,7 +133,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 			Integer doAssignPartsSeqNr = ((PartBase<?>) part).doAssignPartsSeqNr;
 			((PartSPI<?>) part).doAssignParts();
 			assertThis(((PartBase<?>) part).doAssignPartsSeqNr > doAssignPartsSeqNr,
-					part.getClass().getSimpleName() + ": doAssignParts was propagated");
+					this.getClassName(part) + ": doAssignParts was propagated");
 		}
 		for (P part : parts) {
 			part.calcVolatile();
@@ -142,7 +142,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 			Integer doAfterLoadSeqNr = ((PartBase<?>) part).doAfterLoadSeqNr;
 			((PartSPI<?>) part).doAfterLoad();
 			assertThis(((PartBase<?>) part).doAfterLoadSeqNr > doAfterLoadSeqNr,
-					part.getClass().getSimpleName() + ": doAfterLoad was propagated");
+					this.getClassName(part) + ": doAfterLoad was propagated");
 		}
 	}
 
@@ -169,7 +169,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 	@Override
 	@SuppressWarnings("unchecked")
 	public final void store(A aggregate) {
-		requireThis(this.hasPartCache(aggregate), this.getClass().getSimpleName() + ": aggregate initialised");
+		requireThis(this.hasPartCache(aggregate), this.getClassName() + ": aggregate initialised");
 		PartPersistenceProvider<A, P> persistenceProvider = this.getPersistenceProvider();
 		List<P> allParts = this.getPartCache(aggregate).getParts();
 		List<P> activeParts = allParts.stream().filter(p -> p.getMeta().getStatus() != PartStatus.DELETED).toList();
@@ -177,7 +177,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 			Integer doBeforeStoreSeqNr = ((PartBase<?>) part).doBeforeStoreSeqNr;
 			((PartSPI<A>) part).doBeforeStore();
 			assertThis(((PartBase<?>) part).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
-					part.getClass().getSimpleName() + ": doBeforeStore was propagated");
+					this.getClassName(part) + ": doBeforeStore was propagated");
 		}
 		for (P part : allParts) {
 			persistenceProvider.doStore(part);
@@ -186,7 +186,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 			Integer doAfterStoreSeqNr = ((PartBase<?>) part).doAfterStoreSeqNr;
 			((PartSPI<A>) part).doAfterStore();
 			assertThis(((PartBase<?>) part).doAfterStoreSeqNr > doAfterStoreSeqNr,
-					part.getClass().getSimpleName() + ": doAfterStore was propagated");
+					this.getClassName(part) + ": doAfterStore was propagated");
 		}
 	}
 
@@ -197,6 +197,14 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		if (this.hasPartCache(aggregate)) {
 			this.getPartCache(aggregate).clearParts();
 		}
+	}
+
+	protected String getClassName() {
+		return this.getClass().getSimpleName();
+	}
+
+	protected String getClassName(P part) {
+		return part.getClass().getSimpleName();
 	}
 
 }

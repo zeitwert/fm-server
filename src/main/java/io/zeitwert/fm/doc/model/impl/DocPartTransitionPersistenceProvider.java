@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
-import io.zeitwert.ddd.doc.model.base.DocPartPersistenceProviderBase;
 import io.zeitwert.ddd.doc.model.base.DocPartTransitionBase;
 import io.zeitwert.ddd.persistence.jooq.PartState;
+import io.zeitwert.ddd.persistence.jooq.base.DocPartPersistenceProviderBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocPartTransitionRecord;
 

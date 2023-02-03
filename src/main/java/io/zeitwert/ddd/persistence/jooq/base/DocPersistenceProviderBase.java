@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.doc.model.base;
+package io.zeitwert.ddd.persistence.jooq.base;
 
 import java.time.OffsetDateTime;
 
@@ -13,7 +13,6 @@ import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.AggregatePersistenceProviderBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 
@@ -58,26 +57,6 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Aggregat
 		DocRecord docRecord = this.getDSLContext().newRecord(Tables.DOC);
 		AggregateState state = new AggregateState(docRecord, extnRecord);
 		return ((AggregateRepositorySPI<D, ?>) this.getRepository()).newAggregate(state);
-	}
-
-	@Override
-	public final void doInit(D aggregate, Integer docId, Integer tenantId) {
-		DocBase doc = (DocBase) aggregate;
-		try {
-			doc.disableCalc();
-			doc.docTypeId.setValue(doc.getRepository().getAggregateType().getId());
-			doc.id.setValue(docId);
-			doc.tenant.setId(tenantId);
-			AggregateState state = (AggregateState) doc.getAggregateState();
-			UpdatableRecord<?> extnRecord = state.extnRecord();
-			if (extnRecord != null) {
-				extnRecord.setValue(DocExtnFields.DOC_ID, docId);
-				extnRecord.setValue(DocExtnFields.TENANT_ID, tenantId);
-			}
-			doc.doInitWorkflow();
-		} finally {
-			doc.enableCalc();
-		}
 	}
 
 	@SuppressWarnings("unchecked")

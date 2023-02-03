@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.model.base.ObjBase;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
@@ -25,7 +25,7 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 
-public abstract class ObjUserBase extends ObjBase implements ObjUser {
+public abstract class ObjUserBase extends ObjExtnBase implements ObjUser {
 
 	//@formatter:off
 	protected final SimpleProperty<String> email = this.addSimpleProperty("email", String.class);

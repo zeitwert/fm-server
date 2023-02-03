@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestPartNodeRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
+import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 
 @Configuration
 public class ObjTestPartNodePersistenceProvider extends ObjPartPersistenceProviderBase<ObjTest, ObjTestPartNode> {

@@ -1,3 +1,4 @@
+
 package io.zeitwert.ddd.doc.model.base;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateFields;

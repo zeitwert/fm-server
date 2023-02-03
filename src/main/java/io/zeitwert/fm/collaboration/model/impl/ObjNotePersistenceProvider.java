@@ -8,7 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import io.zeitwert.ddd.obj.model.base.ObjPersistenceProviderBase;
+import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
@@ -17,7 +17,7 @@ import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord;
 
 @Configuration("notePersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjNotePersistenceProvider extends ObjPersistenceProviderBase<ObjNote> {
+public class ObjNotePersistenceProvider extends ObjExtnPersistenceProviderBase<ObjNote> {
 
 	public ObjNotePersistenceProvider(DSLContext dslContext) {
 		super(ObjNoteRepository.class, ObjNoteBase.class, dslContext);
