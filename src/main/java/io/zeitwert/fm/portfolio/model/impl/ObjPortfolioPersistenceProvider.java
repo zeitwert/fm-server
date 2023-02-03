@@ -22,7 +22,6 @@ public class ObjPortfolioPersistenceProvider extends FMObjPersistenceProviderBas
 
 	public ObjPortfolioPersistenceProvider(DSLContext dslContext) {
 		super(ObjPortfolioRepository.class, ObjPortfolioBase.class, dslContext);
-		this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
 		this.mapField("name", EXTN, "name", String.class);
 		this.mapField("description", EXTN, "description", String.class);
 		this.mapField("portfolioNr", EXTN, "portfolio_nr", String.class);

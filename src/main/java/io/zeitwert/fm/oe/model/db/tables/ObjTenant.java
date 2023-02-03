@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -83,6 +83,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      */
     public final TableField<ObjTenantRecord, BigDecimal> INFLATION_RATE = createField(DSL.name("inflation_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_tenant.tenant_id</code>.
+     */
+    public final TableField<ObjTenantRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
     private ObjTenant(Name alias, Table<ObjTenantRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -133,16 +138,24 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
 
     @Override
     public List<ForeignKey<ObjTenantRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ObjTenantRecord, ?>>asList(Keys.OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY);
+        return Arrays.<ForeignKey<ObjTenantRecord, ?>>asList(Keys.OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY, Keys.OBJ_TENANT__OBJ_TENANT_TENANT_ID_FKEY);
     }
 
     private transient CodeTenantType _codeTenantType;
+    private transient ObjTenant _objTenant;
 
     public CodeTenantType codeTenantType() {
         if (_codeTenantType == null)
             _codeTenantType = new CodeTenantType(this, Keys.OBJ_TENANT__OBJ_TENANT_TENANT_TYPE_ID_FKEY);
 
         return _codeTenantType;
+    }
+
+    public ObjTenant objTenant() {
+        if (_objTenant == null)
+            _objTenant = new ObjTenant(this, Keys.OBJ_TENANT__OBJ_TENANT_TENANT_ID_FKEY);
+
+        return _objTenant;
     }
 
     @Override
@@ -172,11 +185,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, String, Integer, BigDecimal> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, String, Integer, BigDecimal, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

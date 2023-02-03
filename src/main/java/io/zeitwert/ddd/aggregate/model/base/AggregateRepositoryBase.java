@@ -104,7 +104,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {
 			e.printStackTrace();
-			throw new RuntimeException(this.getClass().getSimpleName() + ": could not create aggregate");
+			throw new RuntimeException(this.getClassName() + ": could not create aggregate");
 		}
 		return aggregate;
 	}
@@ -116,7 +116,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		Integer aggregateId = persistenceProvider.nextAggregateId();
 		A aggregate = persistenceProvider.doCreate();
 
-		persistenceProvider.doInit(aggregate, aggregateId, tenantId);
+		Integer doInitSeqNr = ((AggregateBase) aggregate).doInitSeqNr;
+		((AggregateSPI) aggregate).doInit(aggregateId, tenantId);
+		assertThis(((AggregateBase) aggregate).doInitSeqNr > doInitSeqNr,
+				this.getClassName(aggregate) + ": doInit was propagated");
 
 		this.doInitParts(aggregate);
 
@@ -124,7 +127,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		this.didAfterCreate = false;
 		this.doAfterCreate(aggregate);
-		assertThis(this.didAfterCreate, this.getClass().getSimpleName() + ": doAfterCreate was propagated");
+		assertThis(this.didAfterCreate, this.getClassName() + ": doAfterCreate was propagated");
 
 		return aggregate;
 	}
@@ -142,7 +145,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		Integer doAfterCreateSeqNr = ((AggregateBase) aggregate).doAfterCreateSeqNr;
 		((AggregateSPI) aggregate).doAfterCreate();
 		assertThis(((AggregateBase) aggregate).doAfterCreateSeqNr > doAfterCreateSeqNr,
-				aggregate.getClass().getSimpleName() + ": doAfterCreate was propagated");
+				this.getClassName(aggregate) + ": doAfterCreate was propagated");
 	}
 
 	@Override
@@ -158,13 +161,13 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		Integer doAssignPartsSeqNr = ((AggregateBase) aggregate).doAssignPartsSeqNr;
 		((AggregateSPI) aggregate).doAssignParts();
 		assertThis(((AggregateBase) aggregate).doAssignPartsSeqNr > doAssignPartsSeqNr,
-				aggregate.getClass().getSimpleName() + ": doAssignParts was propagated");
+				this.getClassName(aggregate) + ": doAssignParts was propagated");
 
 		aggregate.calcVolatile();
 
 		this.didAfterLoad = false;
 		this.doAfterLoad(aggregate);
-		assertThis(this.didAfterLoad, this.getClass().getSimpleName() + ": doAfterLoad was propagated");
+		assertThis(this.didAfterLoad, this.getClassName() + ": doAfterLoad was propagated");
 
 		return aggregate;
 	}
@@ -184,7 +187,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		Integer doAfterLoadSeqNr = ((AggregateBase) aggregate).doAfterLoadSeqNr;
 		((AggregateSPI) aggregate).doAfterLoad();
 		assertThis(((AggregateBase) aggregate).doAfterLoadSeqNr > doAfterLoadSeqNr,
-				aggregate.getClass().getSimpleName() + ": doAfterLoad was propagated");
+				this.getClassName(aggregate) + ": doAfterLoad was propagated");
 	}
 
 	@Override
@@ -197,7 +200,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		this.didBeforeStore = false;
 		this.doBeforeStore(aggregate);
-		assertThis(this.didBeforeStore, this.getClass().getSimpleName() + ": doBeforeStore was propagated");
+		assertThis(this.didBeforeStore, this.getClassName() + ": doBeforeStore was propagated");
 
 		this.getPersistenceProvider().doStore(aggregate);
 
@@ -207,7 +210,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		this.didAfterStore = false;
 		this.doAfterStore(aggregate);
-		assertThis(this.didAfterStore, this.getClass().getSimpleName() + ": doAfterStore was propagated");
+		assertThis(this.didAfterStore, this.getClassName() + ": doAfterStore was propagated");
 
 	}
 
@@ -217,7 +220,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		Integer doBeforeStoreSeqNr = ((AggregateBase) aggregate).doBeforeStoreSeqNr;
 		((AggregateSPI) aggregate).doBeforeStore();
 		assertThis(((AggregateBase) aggregate).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
-				aggregate.getClass().getSimpleName() + ": doBeforeStore was propagated");
+				this.getClassName(aggregate) + ": doBeforeStore was propagated");
 	}
 
 	@Override
@@ -241,7 +244,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		Integer doAfterStoreSeqNr = ((AggregateBase) aggregate).doAfterStoreSeqNr;
 		((AggregateSPI) aggregate).doAfterStore();
 		assertThis(((AggregateBase) aggregate).doAfterStoreSeqNr > doAfterStoreSeqNr,
-				aggregate.getClass().getSimpleName() + ": doAfterStore was propagated");
+				this.getClassName(aggregate) + ": doAfterStore was propagated");
 		this.discard(aggregate);
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		AppContext.getInstance().publishApplicationEvent(aggregateStoredEvent);
@@ -303,6 +306,14 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 		return (Result<V>) this.getPersistenceProvider().doQuery(table, whereClause, sortFields, offset, limit);
 
+	}
+
+	protected String getClassName() {
+		return this.getClass().getSimpleName();
+	}
+
+	protected String getClassName(A aggregate) {
+		return aggregate.getClass().getSuperclass().getSimpleName();
 	}
 
 }

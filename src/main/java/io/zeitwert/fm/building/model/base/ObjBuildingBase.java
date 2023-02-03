@@ -46,8 +46,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	static final Integer DefaultGeoZoom = 17;
 
 	//@formatter:off
-	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccount", Integer.class);
-
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
 	protected final SimpleProperty<String> description= this.addSimpleProperty("description", String.class);
 	protected final SimpleProperty<String> buildingNr= this.addSimpleProperty("buildingNr", String.class);
@@ -153,12 +151,6 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 			return ObjRepository.getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void setAccountId(Integer id) {
-		super.account.setId(id);
-		this.extnAccountId.setValue(id);
 	}
 
 	@Override

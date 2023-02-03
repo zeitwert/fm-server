@@ -23,7 +23,6 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 public abstract class DocTaskBase extends FMDocBase implements DocTask {
 
 	//@formatter:off
-	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
 	protected final SimpleProperty<Integer> relatedObjId = this.addSimpleProperty("relatedObjId", Integer.class);
 	protected final SimpleProperty<Integer> relatedDocId = this.addSimpleProperty("relatedDocId", Integer.class);
 	protected final SimpleProperty<String> subject = this.addSimpleProperty("subject", String.class);
@@ -102,12 +101,6 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 		// return this.getRepository().getObjRepository().get(relatedId);
 		// }
 		return null;
-	}
-
-	@Override
-	public void setAccountId(Integer id) {
-		super.account.setId(id);
-		this.extnAccountId.setValue(id);
 	}
 
 	@Override

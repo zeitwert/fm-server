@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.obj.model.base;
+package io.zeitwert.ddd.persistence.jooq.base;
 
 import java.time.OffsetDateTime;
 
@@ -13,7 +13,6 @@ import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.AggregatePersistenceProviderBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 
@@ -56,28 +55,6 @@ public abstract class ObjPersistenceProviderBase<O extends Obj> extends Aggregat
 		ObjRecord objRecord = this.getDSLContext().newRecord(Tables.OBJ);
 		AggregateState state = new AggregateState(objRecord, extnRecord);
 		return ((AggregateRepositorySPI<O, ?>) this.getRepository()).newAggregate(state);
-	}
-
-	@Override
-	public final void doInit(O aggregate, Integer id, Integer tenantId) {
-		ObjBase obj = (ObjBase) aggregate;
-		try {
-			obj.disableCalc();
-			obj.objTypeId.setValue(obj.getRepository().getAggregateType().getId());
-			obj.id.setValue(id);
-			obj.tenant.setId(tenantId);
-			AggregateState state = (AggregateState) obj.getAggregateState();
-			UpdatableRecord<?> extnRecord = state.extnRecord();
-			if (extnRecord != null) {
-				extnRecord.setValue(ObjExtnFields.OBJ_ID, id);
-				// obj_tenant does not have a tenant_id field
-				if (extnRecord.field(ObjExtnFields.TENANT_ID) != null) {
-					extnRecord.setValue(ObjExtnFields.TENANT_ID, tenantId);
-				}
-			}
-		} finally {
-			obj.enableCalc();
-		}
 	}
 
 	@SuppressWarnings("unchecked")

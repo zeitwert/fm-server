@@ -24,7 +24,6 @@ public class ObjContactPersistenceProvider extends FMObjPersistenceProviderBase<
 
 	public ObjContactPersistenceProvider(DSLContext dslContext) {
 		super(ObjContactRepository.class, ObjContactBase.class, dslContext);
-		this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
 		this.mapField("contactRole", EXTN, "contact_role_id", String.class);
 		this.mapField("salutation", EXTN, "salutation_id", String.class);
 		this.mapField("title", EXTN, "title_id", String.class);

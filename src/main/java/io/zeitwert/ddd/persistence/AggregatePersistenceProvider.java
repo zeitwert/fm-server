@@ -27,17 +27,9 @@ public interface AggregatePersistenceProvider<A extends Aggregate> extends Prope
 	A doCreate();
 
 	/**
-	 * Initialise the database records of an Aggregate with basic fields (id,
-	 * tenantId) after creation (internal, technical callback).
-	 *
-	 * @param id       aggregate id
-	 * @param tenantId tenant id
-	 */
-	void doInit(A aggregate, Integer id, Integer tenantId);
-
-	/**
 	 * Load core aggregate data from database and instantiate a new Aggregate. This
-	 * must not load Parts, they will be loaded by @see AggregateSPI.doGet
+	 * must not load Parts, they will be loaded by @see AggregateSPI.doGet and their
+	 * corresponding repositories.
 	 * 
 	 * @param id aggregate id
 	 * @return instantiated Aggregate
@@ -46,14 +38,14 @@ public interface AggregatePersistenceProvider<A extends Aggregate> extends Prope
 
 	/**
 	 * Store the database record(s) (of the Aggregate only). The Parts will be
-	 * stored from the repository.
+	 * stored from their corresponding repositories.
 	 * 
 	 * @param aggregate aggregate to store
 	 */
 	void doStore(A aggregate);
 
 	/**
-	 * Store the search tokens.
+	 * Store the search texts and tokens.
 	 * 
 	 * @param aggregate aggregate to store
 	 * @param texts     list of texts to be stored

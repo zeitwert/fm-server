@@ -3,7 +3,7 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.ddd.part.model.base.PartStatus;
+import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -47,7 +47,7 @@ public abstract class ObjPartDtoBase<O extends Obj, P extends ObjPart<O>> {
 	}
 
 	public static void fromPart(ObjPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, ObjPart<?> part) {
-		boolean isNew = ((PartSPI<?>) part).getStatus() == PartStatus.CREATED;
+		boolean isNew = ((PartSPI<?>) part).getPersistenceStatus() == PartPersistenceStatus.CREATED;
 		dtoBuilder.id(isNew ? ServerNewIdPrefix + part.getId() : String.valueOf(part.getId()));
 	}
 

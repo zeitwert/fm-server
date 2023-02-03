@@ -6,7 +6,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.ddd.part.model.base.PartStatus;
+import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
@@ -170,7 +170,7 @@ public final class ObjBuildingDtoAdapter extends FMObjDtoAdapterBase<ObjBuilding
 				.contactIds(obj.getContactSet());
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
-			boolean isNew = ((PartSPI<?>) rating).getStatus() == PartStatus.CREATED;
+			boolean isNew = ((PartSPI<?>) rating).getPersistenceStatus() == PartPersistenceStatus.CREATED;
 			dtoBuilder
 					.ratingId(isNew ? ObjPartDtoBase.ServerNewIdPrefix + rating.getId() : String.valueOf(rating.getId()))
 					.ratingSeqNr((int) obj.getRatingList().stream().filter(r -> this.isActiveRating(r)).count() - 1)

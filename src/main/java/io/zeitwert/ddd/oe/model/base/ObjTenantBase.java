@@ -4,7 +4,7 @@ package io.zeitwert.ddd.oe.model.base;
 import java.math.BigDecimal;
 import java.util.List;
 
-import io.zeitwert.ddd.obj.model.base.ObjBase;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -25,7 +25,7 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 
-public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
+public abstract class ObjTenantBase extends ObjExtnBase implements ObjTenant {
 
 	//@formatter:off
 	protected final EnumProperty<CodeTenantType> tenantType = this.addEnumProperty("tenantType", CodeTenantType.class);

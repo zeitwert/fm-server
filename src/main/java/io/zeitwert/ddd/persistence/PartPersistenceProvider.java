@@ -4,7 +4,6 @@ import java.util.List;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.base.PartStatus;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 
 public interface PartPersistenceProvider<A extends Aggregate, P extends Part<A>> extends PropertyProvider {
@@ -21,7 +20,7 @@ public interface PartPersistenceProvider<A extends Aggregate, P extends Part<A>>
 	 * 
 	 * @return persistence status
 	 */
-	PartStatus getStatus(Part<?> part);
+	PartPersistenceStatus getPersistenceStatus(Part<?> part);
 
 	/**
 	 * Create a new Part instance for the given Aggregate

@@ -14,9 +14,9 @@ import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartFields;
 import io.zeitwert.ddd.part.model.base.PartRepositorySPI;
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.ddd.part.model.base.PartStatus;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.persistence.PartPersistenceProvider;
+import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
@@ -84,17 +84,17 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 	}
 
 	@Override
-	public PartStatus getStatus(Part<?> part) {
+	public PartPersistenceStatus getPersistenceStatus(Part<?> part) {
 		PartRepositorySPI<?, ?> repoSpi = (PartRepositorySPI<?, ?>) this.getRepository();
 		UpdatableRecord<?> dbRecord = this.getDbRecord((EntityWithPropertiesSPI) part);
 		if (part.getMeta().isDeleted()) {
-			return PartStatus.DELETED;
+			return PartPersistenceStatus.DELETED;
 		} else if (repoSpi.hasPartId() && dbRecord.changed(PartFields.ID)) {
-			return PartStatus.CREATED;
+			return PartPersistenceStatus.CREATED;
 		} else if (dbRecord.changed()) {
-			return PartStatus.UPDATED;
+			return PartPersistenceStatus.UPDATED;
 		} else {
-			return PartStatus.READ;
+			return PartPersistenceStatus.READ;
 		}
 	}
 
@@ -112,9 +112,9 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 	@Override
 	public void doStore(P part) {
 		UpdatableRecord<?> dbRecord = this.getDbRecord((EntityWithPropertiesSPI) part);
-		if (this.getStatus(part) == PartStatus.DELETED) {
+		if (this.getPersistenceStatus(part) == PartPersistenceStatus.DELETED) {
 			dbRecord.delete();
-		} else if (this.getStatus(part) != PartStatus.READ) {
+		} else if (this.getPersistenceStatus(part) != PartPersistenceStatus.READ) {
 			dbRecord.store();
 		}
 	}

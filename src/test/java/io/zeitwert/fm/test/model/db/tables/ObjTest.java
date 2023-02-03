@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -58,6 +58,11 @@ public class ObjTest extends TableImpl<ObjTestRecord> {
      * The column <code>public.obj_test.tenant_id</code>.
      */
     public final TableField<ObjTestRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_test.account_id</code>.
+     */
+    public final TableField<ObjTestRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_test.short_text</code>.
@@ -193,11 +198,11 @@ public class ObjTest extends TableImpl<ObjTestRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Integer, Integer, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String, Integer> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

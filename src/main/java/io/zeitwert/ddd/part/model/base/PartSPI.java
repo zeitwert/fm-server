@@ -1,6 +1,7 @@
 package io.zeitwert.ddd.part.model.base;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 
 /**
  * This interface defines the internal callbacks for a Part implementation.
@@ -19,7 +20,7 @@ public interface PartSPI<A extends Aggregate> {
 	 * 
 	 * @return persistence status
 	 */
-	PartStatus getStatus();
+	PartPersistenceStatus getPersistenceStatus();
 
 	/**
 	 * Initialise a Part after creation (external, functional callback).

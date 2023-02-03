@@ -9,16 +9,16 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import io.zeitwert.ddd.obj.model.base.ObjPersistenceProviderBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
+import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
 
 @Configuration("tenantPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjTenantPersistenceProvider extends ObjPersistenceProviderBase<ObjTenant> {
+public class ObjTenantPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjTenant> {
 
 	public ObjTenantPersistenceProvider(DSLContext dslContext) {
 		super(ObjTenantRepository.class, ObjTenantBase.class, dslContext);

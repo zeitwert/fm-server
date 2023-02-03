@@ -15,7 +15,6 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -112,6 +111,11 @@ public class ObjTestV extends TableImpl<ObjTestVRecord> {
     public final TableField<ObjTestVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_test_v.account_id</code>.
+     */
+    public final TableField<ObjTestVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.obj_test_v.short_text</code>.
      */
     public final TableField<ObjTestVRecord, String> SHORT_TEXT = createField(DSL.name("short_text"), SQLDataType.VARCHAR(200), this, "");
@@ -161,7 +165,7 @@ public class ObjTestV extends TableImpl<ObjTestVRecord> {
     }
 
     private ObjTestV(Name alias, Table<ObjTestVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_test_v\" as  SELECT obj.obj_type_id,\n    ot.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ot.obj_id,\n    ot.tenant_id,\n    ot.short_text,\n    ot.long_text,\n    ot.date,\n    ot.\"int\",\n    ot.is_done,\n    ot.json,\n    ot.nr,\n    ot.country_id,\n    ot.ref_test_id\n   FROM (obj_test ot\n     JOIN obj ON ((obj.id = ot.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_test_v\" as  SELECT obj.obj_type_id,\n    ot.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    ot.obj_id,\n    ot.tenant_id,\n    ot.account_id,\n    ot.short_text,\n    ot.long_text,\n    ot.date,\n    ot.\"int\",\n    ot.is_done,\n    ot.json,\n    ot.nr,\n    ot.country_id,\n    ot.ref_test_id\n   FROM (obj_test ot\n     JOIN obj ON ((obj.id = ot.obj_id)));"));
     }
 
     /**
@@ -218,14 +222,5 @@ public class ObjTestV extends TableImpl<ObjTestVRecord> {
     @Override
     public ObjTestV rename(Name name) {
         return new ObjTestV(name, null);
-    }
-
-    // -------------------------------------------------------------------------
-    // Row22 type methods
-    // -------------------------------------------------------------------------
-
-    @Override
-    public Row22<String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, LocalDate, Integer, Boolean, org.jooq.JSON, BigDecimal, String, Integer> fieldsRow() {
-        return (Row22) super.fieldsRow();
     }
 }

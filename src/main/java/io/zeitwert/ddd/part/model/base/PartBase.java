@@ -9,6 +9,7 @@ import io.zeitwert.ddd.part.model.PartMeta;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.persistence.PartPersistenceProvider;
+import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 import io.zeitwert.ddd.persistence.PropertyProvider;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.Property;
@@ -138,8 +139,8 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public PartStatus getStatus() {
-		return ((PartPersistenceProvider<A, ?>) this.getPropertyProvider()).getStatus(this);
+	public PartPersistenceStatus getPersistenceStatus() {
+		return ((PartPersistenceProvider<A, ?>) this.getPropertyProvider()).getPersistenceStatus(this);
 	}
 
 	@Override

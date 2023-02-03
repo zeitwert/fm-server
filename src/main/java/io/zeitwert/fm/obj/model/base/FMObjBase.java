@@ -2,8 +2,9 @@ package io.zeitwert.fm.obj.model.base;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.model.base.ObjBase;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -20,9 +21,12 @@ import java.util.List;
 import org.jooq.Record;
 import org.jooq.TableRecord;
 
-public abstract class FMObjBase extends ObjBase implements FMObj {
+public abstract class FMObjBase extends ObjExtnBase implements FMObj {
 
+	//@formatter:off
 	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
+	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
+	//@formatter:on
 
 	protected FMObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, Object state) {
 		super(repository, state);
@@ -32,6 +36,11 @@ public abstract class FMObjBase extends ObjBase implements FMObj {
 	@SuppressWarnings("unchecked")
 	public FMObjRepository<? extends FMObj, ? extends TableRecord<?>> getRepository() {
 		return (FMObjRepository<? extends FMObj, ? extends Record>) super.getRepository();
+	}
+
+	public final void setAccountId(Integer id) {
+		this.account.setId(id);
+		this.extnAccountId.setValue(id);
 	}
 
 	@Override

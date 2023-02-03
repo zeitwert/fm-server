@@ -3,8 +3,9 @@ package io.zeitwert.fm.doc.model.base;
 
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocRepository;
-import io.zeitwert.ddd.doc.model.base.DocBase;
+import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -21,12 +22,20 @@ import java.util.List;
 import org.jooq.Record;
 import org.jooq.TableRecord;
 
-public abstract class FMDocBase extends DocBase implements FMDoc {
+public abstract class FMDocBase extends DocExtnBase implements FMDoc {
 
+	//@formatter:off
 	protected final ReferenceProperty<ObjAccount> account = this.addReferenceProperty("account", ObjAccount.class);
+	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
+	//@formatter:on
 
 	protected FMDocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, Object state) {
 		super(repository, state);
+	}
+
+	public final void setAccountId(Integer id) {
+		this.account.setId(id);
+		this.extnAccountId.setValue(id);
 	}
 
 	@Override

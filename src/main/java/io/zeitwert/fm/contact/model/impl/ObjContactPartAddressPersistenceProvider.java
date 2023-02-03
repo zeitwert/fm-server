@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.contact.model.base.ObjContactPartAddressBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
+import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 
 @Configuration
 public class ObjContactPartAddressPersistenceProvider

@@ -27,7 +27,6 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio {
 
 	//@formatter:off
-	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
 	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
 	protected final SimpleProperty<String> portfolioNr = this.addSimpleProperty("portfolioNr", String.class);
@@ -71,12 +70,6 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 			return ObjRepository.getItemRepository().create(this, partListType);
 		}
 		return super.addPart(property, partListType);
-	}
-
-	@Override
-	public void setAccountId(Integer id) {
-		super.account.setId(id);
-		this.extnAccountId.setValue(id);
 	}
 
 	@Override

@@ -22,7 +22,6 @@ public class DocTaskPersistenceProvider extends FMDocPersistenceProviderBase<Doc
 
 	public DocTaskPersistenceProvider(DSLContext dslContext) {
 		super(DocTaskRepository.class, DocTaskBase.class, dslContext);
-		this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
 		this.mapField("relatedObjId", EXTN, "related_obj_id", Integer.class);
 		this.mapField("relatedDocId", EXTN, "related_doc_id", Integer.class);
 		this.mapField("subject", EXTN, "subject", String.class);

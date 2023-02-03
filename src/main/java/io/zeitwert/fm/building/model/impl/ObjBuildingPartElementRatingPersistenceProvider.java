@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.building.model.base.ObjBuildingPartElementRatingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartElementRatingRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
+import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 
 @Configuration
 public class ObjBuildingPartElementRatingPersistenceProvider
