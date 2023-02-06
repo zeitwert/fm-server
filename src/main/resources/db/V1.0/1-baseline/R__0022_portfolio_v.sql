@@ -1,10 +1,13 @@
 
+-- execTrigger: 1
+
 drop view if exists obj_portfolio_v;
 
 create or replace view obj_portfolio_v
 as
 select	obj.obj_type_id,
 				pf.obj_id as id,
+				obj.version,
 				obj.owner_id,
 				obj.caption,
 				--
@@ -15,8 +18,6 @@ select	obj.obj_type_id,
 				obj.closed_by_user_id,
 				obj.closed_at,
 				--
-				pf.*,
-				--
-				obj.version
+				pf.*
 from		obj_portfolio pf
 join obj on obj.id = pf.obj_id;

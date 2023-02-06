@@ -14,6 +14,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -100,11 +101,6 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     public final TableField<ObjAccountVRecord, OffsetDateTime> CLOSED_AT = createField(DSL.name("closed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
-     * The column <code>public.obj_account_v.account_id</code>.
-     */
-    public final TableField<ObjAccountVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.obj_account_v.obj_id</code>.
      */
     public final TableField<ObjAccountVRecord, Integer> OBJ_ID = createField(DSL.name("obj_id"), SQLDataType.INTEGER, this, "");
@@ -113,11 +109,6 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
      * The column <code>public.obj_account_v.tenant_id</code>.
      */
     public final TableField<ObjAccountVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.obj_account_v.intl_key</code>.
-     */
-    public final TableField<ObjAccountVRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
 
     /**
      * The column <code>public.obj_account_v.name</code>.
@@ -159,12 +150,17 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
      */
     public final TableField<ObjAccountVRecord, BigDecimal> INFLATION_RATE = createField(DSL.name("inflation_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_account_v.account_id</code>.
+     */
+    public final TableField<ObjAccountVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
+
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    a.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    a.obj_id AS account_id,\n    a.obj_id,\n    a.tenant_id,\n    a.intl_key,\n    a.name,\n    a.description,\n    a.account_type_id,\n    a.client_segment_id,\n    a.main_contact_id,\n    a.reference_currency_id,\n    a.logo_img_id,\n    a.inflation_rate\n   FROM (obj_account a\n     JOIN obj ON ((obj.id = a.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    a.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    a.obj_id,\n    a.tenant_id,\n    a.name,\n    a.description,\n    a.account_type_id,\n    a.client_segment_id,\n    a.main_contact_id,\n    a.reference_currency_id,\n    a.logo_img_id,\n    a.inflation_rate,\n    a.account_id\n   FROM (obj_account a\n     JOIN obj ON ((obj.id = a.obj_id)));"));
     }
 
     /**
@@ -221,5 +217,14 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     @Override
     public ObjAccountV rename(Name name) {
         return new ObjAccountV(name, null);
+    }
+
+    // -------------------------------------------------------------------------
+    // Row22 type methods
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Row22<String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, String, Integer, String, Integer, BigDecimal, Integer> fieldsRow() {
+        return (Row22) super.fieldsRow();
     }
 }

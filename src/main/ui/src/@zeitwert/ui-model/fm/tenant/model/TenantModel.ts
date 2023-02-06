@@ -7,7 +7,6 @@ import { DocumentModel } from "../../dms/model/DocumentModel";
 
 const MstTenantModel = ObjModel.named("Tenant")
 	.props({
-		extlKey: types.maybe(types.string),
 		name: types.maybe(types.string),
 		description: types.maybe(types.string),
 		inflationRate: types.maybe(types.number),

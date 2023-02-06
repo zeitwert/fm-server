@@ -33,13 +33,11 @@ import io.zeitwert.server.Application;
 @ActiveProfiles("test")
 public class BuildingTest {
 
-	private static final String ACCT_KEY = "TA";
-
 	@Autowired
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjAccountRepository accountCache;
+	private ObjAccountRepository accountRepo;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepository;
@@ -147,7 +145,7 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.getByKey(ACCT_KEY).get();
+		return this.accountRepo.get(this.accountRepo.find(null).get(0).getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

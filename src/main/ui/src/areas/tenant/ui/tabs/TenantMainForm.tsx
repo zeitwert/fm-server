@@ -25,12 +25,6 @@ export default class TenantMainForm extends React.Component<TenantMainFormProps>
 			}
 			return false;
 		},
-		isDisabled: (accessor) => {
-			if (["key"].indexOf(accessor.fieldref) >= 0) {
-				return true;
-			}
-			return false;
-		},
 	};
 
 	@observable
@@ -79,8 +73,7 @@ export default class TenantMainForm extends React.Component<TenantMainFormProps>
 									<Input label="Name" type="text" fieldName="name" />
 								</FieldRow>
 								<FieldRow>
-									<Select label="Typ" fieldName="tenantType" size={8} />
-									<Input label="Key" fieldName="extlKey" size={4} />
+									<Select label="Typ" fieldName="tenantType" size={12} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

@@ -9,7 +9,6 @@ import { TenantModel } from "../../tenant/model/TenantModel";
 
 const MstAccountModel = ObjModel.named("Account")
 	.props({
-		key: types.maybe(types.string),
 		name: types.maybe(types.string),
 		description: types.maybe(types.string),
 		//

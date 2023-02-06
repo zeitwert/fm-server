@@ -8,7 +8,6 @@ export const AccountFormDef: FormDefinition<AccountModelType> = {
 	tenant: new EnumeratedField({ source: "oe/objTenant", required: true }),
 	owner: new EnumeratedField({ required: true, source: "oe/objUser" }),
 	name: new TextField({ required: true }),
-	key: new TextField(),
 	description: new TextField(),
 	//
 	accountType: new EnumeratedField({ source: "account/codeAccountType", required: true }),

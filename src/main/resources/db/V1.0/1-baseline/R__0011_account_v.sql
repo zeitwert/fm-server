@@ -1,4 +1,6 @@
 
+-- execTrigger: 1
+
 drop view if exists obj_account_v;
 
 create or replace view obj_account_v
@@ -16,8 +18,6 @@ select	obj.obj_type_id,
 				obj.modified_at,
 				obj.closed_by_user_id,
 				obj.closed_at,
-				--
-				a.obj_id as account_id,
 				--
 				a.*
 from		obj_account a

@@ -58,16 +58,10 @@ public class EnumController {
 						.toList());
 	}
 
-	@GetMapping("/oe/objTenant/{idOrExtlKey}")
-	public ResponseEntity<ObjTenant> getTenant(@PathVariable String idOrExtlKey) {
-		Optional<ObjTenant> tenant = this.tenantCache.getByExtlKey(idOrExtlKey);
-		if (tenant.isEmpty()) {
-			tenant = Optional.of(this.tenantCache.get(Integer.valueOf(idOrExtlKey)));
-		}
-		if (tenant.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		return ResponseEntity.ok(tenant.get());
+	@GetMapping("/oe/objTenant/{id}")
+	public ResponseEntity<ObjTenant> getTenant(@PathVariable Integer id) {
+		ObjTenant tenant = this.tenantCache.get(id);
+		return ResponseEntity.ok(tenant);
 	}
 
 	@GetMapping("/oe/objUser")

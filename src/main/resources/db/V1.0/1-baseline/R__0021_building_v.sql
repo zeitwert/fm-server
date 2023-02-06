@@ -1,4 +1,6 @@
 
+-- execTrigger: 1
+
 drop view if exists obj_building_v;
 
 create or replace view obj_building_v

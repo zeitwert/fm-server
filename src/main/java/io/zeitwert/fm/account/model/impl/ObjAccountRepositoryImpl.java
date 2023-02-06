@@ -2,8 +2,6 @@
 package io.zeitwert.fm.account.model.impl;
 
 import java.util.List;
-import java.util.Optional;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Component;
@@ -38,16 +36,6 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 	@Override
 	protected boolean hasAccountId() {
 		return true;
-	}
-
-	@Override
-	public Optional<ObjAccount> getByKey(String key) {
-		ObjAccountVRecord accountRecord = AppContext.getInstance().getDslContext().fetchOne(Tables.OBJ_ACCOUNT_V,
-				Tables.OBJ_ACCOUNT_V.INTL_KEY.eq(key));
-		if (accountRecord == null) {
-			return Optional.empty();
-		}
-		return Optional.of(this.get(accountRecord.getId()));
 	}
 
 	@Override

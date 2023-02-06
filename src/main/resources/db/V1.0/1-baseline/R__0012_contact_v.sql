@@ -1,4 +1,6 @@
 
+-- execTrigger: 1
+
 drop view if exists obj_contact_v;
 
 create or replace view obj_contact_v

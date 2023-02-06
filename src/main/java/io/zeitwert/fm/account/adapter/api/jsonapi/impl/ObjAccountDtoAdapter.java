@@ -57,7 +57,6 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapterBase<ObjAccount, 
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantInfoId(obj.getTenantId())
-				.key(obj.getKey())
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))
@@ -77,7 +76,6 @@ public final class ObjAccountDtoAdapter extends FMObjDtoAdapterBase<ObjAccount, 
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantInfoId(obj.getTenantId())
-				.key(obj.getIntlKey())
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.accountType(EnumeratedDto.fromEnum(CodeAccountTypeEnum.getAccountType(obj.getAccountTypeId())))

@@ -65,11 +65,6 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     public final TableField<ObjBuildingRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.obj_building.intl_key</code>.
-     */
-    public final TableField<ObjBuildingRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
-
-    /**
      * The column <code>public.obj_building.name</code>.
      */
     public final TableField<ObjBuildingRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100), this, "");

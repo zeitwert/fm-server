@@ -30,7 +30,6 @@ public abstract class ObjTenantBase extends ObjExtnBase implements ObjTenant {
 	//@formatter:off
 	protected final EnumProperty<CodeTenantType> tenantType = this.addEnumProperty("tenantType", CodeTenantType.class);
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
-	protected final SimpleProperty<String> extlKey = this.addSimpleProperty("extlKey", String.class);
 	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
 	protected final SimpleProperty<BigDecimal> inflationRate = this.addSimpleProperty("inflationRate", BigDecimal.class);
 	protected final ReferenceProperty<ObjDocument> logoImage = this.addReferenceProperty("logoImage", ObjDocument.class);
@@ -66,7 +65,6 @@ public abstract class ObjTenantBase extends ObjExtnBase implements ObjTenant {
 
 	@Override
 	public void doCalcSearch() {
-		this.addSearchToken(this.getExtlKey());
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());
 	}

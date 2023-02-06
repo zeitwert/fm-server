@@ -6,12 +6,16 @@ declare
 	tenant_id int;
 	user_id int;
 begin
+	select obj_id into tenant_id from obj_tenant where tenant_type_id = 'kernel' and name = 'Kernel';
+	if tenant_id is not null then
+		return;
+	end if;
 	-- ids
 	select nextval('obj_id_seq') into tenant_id;
 	select nextval('obj_id_seq') into user_id;
 	-- tenant
-	insert into obj_tenant(obj_id, tenant_type_id, extl_key, name)
-	values (tenant_id, 'kernel', 'k', 'Kernel');
+	insert into obj_tenant(obj_id, tenant_type_id, name, tenant_id)
+	values (tenant_id, 'kernel', 'Kernel', tenant_id);
 	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
 	values (tenant_id, tenant_id, 'obj_tenant', 'Kernel', user_id, user_id);
 	-- user

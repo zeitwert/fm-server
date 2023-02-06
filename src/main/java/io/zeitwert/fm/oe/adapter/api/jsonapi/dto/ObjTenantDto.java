@@ -30,7 +30,6 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenant> {
 
 	private String name;
 	private String description;
-	private String extlKey;
 	private EnumeratedDto tenantType;
 	private BigDecimal inflationRate;
 

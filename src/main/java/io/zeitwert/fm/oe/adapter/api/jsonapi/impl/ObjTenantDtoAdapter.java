@@ -33,7 +33,6 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Tabl
 		obj.setTenantType(
 				dto.getTenantType() == null ? null : CodeTenantTypeEnum.getTenantType(dto.getTenantType().getId()));
 		obj.setName(dto.getName());
-		obj.setExtlKey(dto.getExtlKey());
 		obj.setDescription(dto.getDescription());
 		obj.setInflationRate(dto.getInflationRate());
 	}
@@ -48,7 +47,6 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Tabl
 		return dtoBuilder
 				.tenantType(EnumeratedDto.fromEnum(obj.getTenantType()))
 				.name(obj.getName())
-				.extlKey(obj.getExtlKey())
 				.description(obj.getDescription())
 				.inflationRate(obj.getInflationRate())
 				.build();
@@ -76,7 +74,6 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Tabl
 		return dtoBuilder
 				.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))
 				.name(obj.getName())
-				.extlKey(obj.getExtlKey())
 				.description(obj.getDescription())
 				.inflationRate(obj.getInflationRate())
 				.build();

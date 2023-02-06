@@ -7,11 +7,9 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
-import io.zeitwert.fm.building.model.enums.CodeBuildingElementDescriptionEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
@@ -61,21 +59,22 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		part.setDescription(this.description);
 		part.setConditionDescription(this.conditionDescription);
 		part.setMeasureDescription(this.measureDescription);
-		if (this.materialDescriptions != null) {
-			part.clearMaterialDescriptionSet();
-			this.materialDescriptions.forEach(description -> part.addMaterialDescription(
-					CodeBuildingElementDescriptionEnum.getBuildingElementDescription(description.getId())));
-		}
-		if (this.conditionDescriptions != null) {
-			part.clearConditionDescriptionSet();
-			this.conditionDescriptions.forEach(description -> part.addConditionDescription(
-					CodeBuildingElementDescriptionEnum.getBuildingElementDescription(description.getId())));
-		}
-		if (this.measureDescriptions != null) {
-			part.clearMeasureDescriptionSet();
-			this.measureDescriptions.forEach(description -> part.addMeasureDescription(
-					CodeBuildingElementDescriptionEnum.getBuildingElementDescription(description.getId())));
-		}
+		// if (this.materialDescriptions != null) {
+		// part.clearMaterialDescriptionSet();
+		// this.materialDescriptions.forEach(description -> part.addMaterialDescription(
+		// CodeBuildingElementDescriptionEnum.getBuildingElementDescription(description.getId())));
+		// }
+		// if (this.conditionDescriptions != null) {
+		// part.clearConditionDescriptionSet();
+		// this.conditionDescriptions.forEach(description ->
+		// part.addConditionDescription(
+		// CodeBuildingElementDescriptionEnum.getBuildingElementDescription(description.getId())));
+		// }
+		// if (this.measureDescriptions != null) {
+		// part.clearMeasureDescriptionSet();
+		// this.measureDescriptions.forEach(description -> part.addMeasureDescription(
+		// CodeBuildingElementDescriptionEnum.getBuildingElementDescription(description.getId())));
+		// }
 	}
 
 	public static ObjBuildingPartElementRatingDto fromPart(ObjBuildingPartElementRating part) {
@@ -99,12 +98,15 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 				restorationCosts = (double) Math.round(renovationPeriod.getRestorationCosts() / 1000000.0 * elementValue);
 			}
 		}
-		Set<EnumeratedDto> materialDescriptions = part.getMaterialDescriptionSet().stream()
-				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
-		Set<EnumeratedDto> conditionDescriptions = part.getConditionDescriptionSet().stream()
-				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
-		Set<EnumeratedDto> measureDescriptions = part.getMeasureDescriptionSet().stream()
-				.map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		// Set<EnumeratedDto> materialDescriptions =
+		// part.getMaterialDescriptionSet().stream()
+		// .map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		// Set<EnumeratedDto> conditionDescriptions =
+		// part.getConditionDescriptionSet().stream()
+		// .map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		// Set<EnumeratedDto> measureDescriptions =
+		// part.getMeasureDescriptionSet().stream()
+		// .map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
 		return dtoBuilder
 				.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
 				.weight(part.getWeight())
@@ -115,9 +117,9 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 				.description(part.getDescription())
 				.conditionDescription(part.getConditionDescription())
 				.measureDescription(part.getMeasureDescription())
-				.materialDescriptions(materialDescriptions)
-				.conditionDescriptions(conditionDescriptions)
-				.measureDescriptions(measureDescriptions)
+				// .materialDescriptions(materialDescriptions)
+				// .conditionDescriptions(conditionDescriptions)
+				// .measureDescriptions(measureDescriptions)
 				.restorationYear(restorationYear)
 				.restorationCosts(restorationCosts)
 				.lifeTime20(part.getBuildingPart().getLifetime(0.2))

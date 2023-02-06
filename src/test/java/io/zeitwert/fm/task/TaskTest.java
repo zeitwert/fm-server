@@ -18,7 +18,7 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.Application;
 
@@ -46,10 +46,10 @@ public class TaskTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjUserRepository userRepository;
+	private ObjUserCache userCache;
 
 	@Autowired
-	private ObjAccountRepository accountRepository;
+	private ObjAccountRepository accountRepo;
 
 	@Autowired
 	private DocTaskRepository taskRepository;
@@ -123,9 +123,9 @@ public class TaskTest {
 	}
 
 	private void getTestData() {
-		RelatedTo = this.userRepository.getByEmail(USER_EMAIL).get();
+		RelatedTo = this.userCache.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
-		Account = this.accountRepository.getByKey(TEST_ACCOUNT).get();
+		Account = this.accountRepo.get(this.accountRepo.find(null).get(0).getId());
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");

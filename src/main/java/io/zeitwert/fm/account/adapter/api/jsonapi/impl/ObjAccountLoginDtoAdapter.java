@@ -30,7 +30,6 @@ public final class ObjAccountLoginDtoAdapter
 		ObjAccountLoginDto.ObjAccountLoginDtoBuilder<?, ?> dtoBuilder = ObjAccountLoginDto.builder().original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.key(obj.getKey())
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))

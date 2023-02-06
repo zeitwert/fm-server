@@ -15,10 +15,6 @@ public interface ObjTenant extends Obj {
 
 	void setTenantType(CodeTenantType tenantType);
 
-	String getExtlKey();
-
-	void setExtlKey(String extlKey);
-
 	String getName();
 
 	void setName(String name);

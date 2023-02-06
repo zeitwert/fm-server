@@ -22,7 +22,6 @@ public class ObjAccountPersistenceProvider extends FMObjPersistenceProviderBase<
 
 	public ObjAccountPersistenceProvider(DSLContext dslContext) {
 		super(ObjAccountRepository.class, ObjAccountBase.class, dslContext);
-		this.mapField("key", EXTN, "intl_key", String.class);
 		this.mapField("name", EXTN, "name", String.class);
 		this.mapField("description", EXTN, "description", String.class);
 		this.mapField("accountType", EXTN, "account_type_id", String.class);

@@ -252,8 +252,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 
 	@Override
 	public final List<V> find(QuerySpec querySpec) {
-		String tenantField = AggregateFields.TENANT_ID.getName();
+		if (querySpec == null) {
+			querySpec = new QuerySpec(Aggregate.class);
+		}
 		RequestContext requestCtx = AppContext.getInstance().getRequestContext();
+		String tenantField = AggregateFields.TENANT_ID.getName();
 		Integer tenantId = requestCtx.getTenantId();
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));

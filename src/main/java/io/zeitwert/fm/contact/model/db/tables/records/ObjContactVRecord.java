@@ -217,157 +217,143 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
     }
 
     /**
-     * Setter for <code>public.obj_contact_v.intl_key</code>.
-     */
-    public void setIntlKey(String value) {
-        set(14, value);
-    }
-
-    /**
-     * Getter for <code>public.obj_contact_v.intl_key</code>.
-     */
-    public String getIntlKey() {
-        return (String) get(14);
-    }
-
-    /**
      * Setter for <code>public.obj_contact_v.description</code>.
      */
     public void setDescription(String value) {
-        set(15, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.description</code>.
      */
     public String getDescription() {
-        return (String) get(15);
+        return (String) get(14);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.contact_role_id</code>.
      */
     public void setContactRoleId(String value) {
-        set(16, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.contact_role_id</code>.
      */
     public String getContactRoleId() {
-        return (String) get(16);
+        return (String) get(15);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.salutation_id</code>.
      */
     public void setSalutationId(String value) {
-        set(17, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.salutation_id</code>.
      */
     public String getSalutationId() {
-        return (String) get(17);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.title_id</code>.
      */
     public void setTitleId(String value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.title_id</code>.
      */
     public String getTitleId() {
-        return (String) get(18);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.first_name</code>.
      */
     public void setFirstName(String value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.first_name</code>.
      */
     public String getFirstName() {
-        return (String) get(19);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.last_name</code>.
      */
     public void setLastName(String value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.last_name</code>.
      */
     public String getLastName() {
-        return (String) get(20);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.birth_date</code>.
      */
     public void setBirthDate(LocalDate value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.birth_date</code>.
      */
     public LocalDate getBirthDate() {
-        return (LocalDate) get(21);
+        return (LocalDate) get(20);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.phone</code>.
      */
     public void setPhone(String value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.phone</code>.
      */
     public String getPhone() {
-        return (String) get(22);
+        return (String) get(21);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.mobile</code>.
      */
     public void setMobile(String value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.mobile</code>.
      */
     public String getMobile() {
-        return (String) get(23);
+        return (String) get(22);
     }
 
     /**
      * Setter for <code>public.obj_contact_v.email</code>.
      */
     public void setEmail(String value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.obj_contact_v.email</code>.
      */
     public String getEmail() {
-        return (String) get(24);
+        return (String) get(23);
     }
 
     // -------------------------------------------------------------------------
@@ -384,7 +370,7 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
     /**
      * Create a detached, initialised ObjContactVRecord
      */
-    public ObjContactVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String intlKey, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email) {
+    public ObjContactVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email) {
         super(ObjContactV.OBJ_CONTACT_V);
 
         setObjTypeId(objTypeId);
@@ -401,7 +387,6 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
         setObjId(objId);
         setTenantId(tenantId);
         setAccountId(accountId);
-        setIntlKey(intlKey);
         setDescription(description);
         setContactRoleId(contactRoleId);
         setSalutationId(salutationId);

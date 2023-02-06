@@ -1,6 +1,6 @@
 
 import { Card } from "@salesforce/design-system-react";
-import { FieldGroup, FieldRow, Input, Select, SldsForm, Static, TextArea } from "@zeitwert/ui-forms";
+import { FieldGroup, FieldRow, Input, Select, SldsForm, TextArea } from "@zeitwert/ui-forms";
 import { Account, AccountModelType } from "@zeitwert/ui-model";
 import { Col, Grid } from "@zeitwert/ui-slds";
 import { observer } from "mobx-react";
@@ -20,8 +20,6 @@ export default class AccountMainForm extends React.Component<AccountMainFormProp
 		isReadOnly: (accessor) => {
 			if (!this.props.doEdit) {
 				return true;
-			} else if (["key"].indexOf(accessor.fieldref) >= 0) {
-				return true;
 			}
 			return false;
 		},
@@ -40,8 +38,7 @@ export default class AccountMainForm extends React.Component<AccountMainFormProp
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Grunddaten">
 								<FieldRow>
-									<Input label="Name" type="text" fieldName="name" size={8} />
-									<Static label="Schlüssel" value={account.key} size={4} />
+									<Input label="Name" type="text" fieldName="name" size={12} />
 								</FieldRow>
 								<FieldRow>
 									<Select label="Typ" fieldName="accountType" size={6} />

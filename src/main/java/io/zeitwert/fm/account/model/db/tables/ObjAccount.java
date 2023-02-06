@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,11 +57,6 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
      * The column <code>public.obj_account.tenant_id</code>.
      */
     public final TableField<ObjAccountRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.obj_account.intl_key</code>.
-     */
-    public final TableField<ObjAccountRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
 
     /**
      * The column <code>public.obj_account.name</code>.
@@ -221,11 +216,11 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, Integer, String, String, String, String, String, Integer, String, Integer, BigDecimal, Integer> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<Integer, Integer, String, String, String, String, Integer, String, Integer, BigDecimal, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

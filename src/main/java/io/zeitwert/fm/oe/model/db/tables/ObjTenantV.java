@@ -14,7 +14,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row19;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -44,11 +44,6 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     public Class<ObjTenantVRecord> getRecordType() {
         return ObjTenantVRecord.class;
     }
-
-    /**
-     * The column <code>public.obj_tenant_v.tenant_id</code>.
-     */
-    public final TableField<ObjTenantVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.obj_tenant_v.obj_type_id</code>.
@@ -126,11 +121,6 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     public final TableField<ObjTenantVRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.obj_tenant_v.extl_key</code>.
-     */
-    public final TableField<ObjTenantVRecord, String> EXTL_KEY = createField(DSL.name("extl_key"), SQLDataType.VARCHAR(60), this, "");
-
-    /**
      * The column <code>public.obj_tenant_v.logo_img_id</code>.
      */
     public final TableField<ObjTenantVRecord, Integer> LOGO_IMG_ID = createField(DSL.name("logo_img_id"), SQLDataType.INTEGER, this, "");
@@ -140,12 +130,17 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
      */
     public final TableField<ObjTenantVRecord, BigDecimal> INFLATION_RATE = createField(DSL.name("inflation_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_tenant_v.tenant_id</code>.
+     */
+    public final TableField<ObjTenantVRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER, this, "");
+
     private ObjTenantV(Name alias, Table<ObjTenantVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjTenantV(Name alias, Table<ObjTenantVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_tenant_v\" as  SELECT obj.tenant_id,\n    obj.obj_type_id,\n    t.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    t.obj_id,\n    t.tenant_type_id,\n    t.name,\n    t.description,\n    t.extl_key,\n    t.logo_img_id,\n    t.inflation_rate\n   FROM (obj_tenant t\n     JOIN obj ON ((obj.id = t.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_tenant_v\" as  SELECT obj.obj_type_id,\n    t.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    t.obj_id,\n    t.tenant_type_id,\n    t.name,\n    t.description,\n    t.logo_img_id,\n    t.inflation_rate,\n    t.tenant_id\n   FROM (obj_tenant t\n     JOIN obj ON ((obj.id = t.obj_id)));"));
     }
 
     /**
@@ -205,11 +200,11 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row19 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Integer, String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, String, Integer, BigDecimal> fieldsRow() {
-        return (Row19) super.fieldsRow();
+    public Row18<String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, String, String, String, Integer, BigDecimal, Integer> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }

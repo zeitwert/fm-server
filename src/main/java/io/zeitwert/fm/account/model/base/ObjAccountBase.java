@@ -30,7 +30,6 @@ import io.zeitwert.fm.obj.model.base.FMObjBase;
 public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	//@formatter:off
-	protected final SimpleProperty<String> key = this.addSimpleProperty("key", String.class);
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
 	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
 	protected final EnumProperty<CodeAccountType> accountType = this.addEnumProperty("accountType", CodeAccountType.class);
@@ -77,7 +76,6 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	@Override
 	public void doCalcSearch() {
-		this.addSearchToken(this.getKey());
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());
 	}

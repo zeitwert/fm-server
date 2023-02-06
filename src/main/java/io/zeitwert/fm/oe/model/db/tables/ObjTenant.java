@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -67,11 +67,6 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      * The column <code>public.obj_tenant.description</code>.
      */
     public final TableField<ObjTenantRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.obj_tenant.extl_key</code>.
-     */
-    public final TableField<ObjTenantRecord, String> EXTL_KEY = createField(DSL.name("extl_key"), SQLDataType.VARCHAR(60), this, "");
 
     /**
      * The column <code>public.obj_tenant.logo_img_id</code>.
@@ -133,7 +128,7 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
 
     @Override
     public List<UniqueKey<ObjTenantRecord>> getKeys() {
-        return Arrays.<UniqueKey<ObjTenantRecord>>asList(Keys.OBJ_TENANT_PKEY, Keys.EXTL_KEY_UNIQUE);
+        return Arrays.<UniqueKey<ObjTenantRecord>>asList(Keys.OBJ_TENANT_PKEY);
     }
 
     @Override
@@ -185,11 +180,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, String, Integer, BigDecimal, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Integer, String, String, String, Integer, BigDecimal, Integer> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

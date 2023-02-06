@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @ToString(callSuper = true, includeFieldNames = true)
 public class ObjAccountLoginDto extends FMObjDtoBase<ObjAccount> {
 
-	private String key;
 	private String name;
 	private String description;
 	private EnumeratedDto accountType;

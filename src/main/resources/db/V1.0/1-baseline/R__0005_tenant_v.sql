@@ -1,10 +1,11 @@
 
+-- execTrigger: 1
+
 drop view if exists obj_tenant_v;
 
 create or replace view obj_tenant_v
 as
-select	obj.tenant_id,
-				obj.obj_type_id,
+select	obj.obj_type_id,
 				t.obj_id as id,
 				obj.version,
 				--

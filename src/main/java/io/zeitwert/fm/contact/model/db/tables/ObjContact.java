@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row14;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -64,11 +64,6 @@ public class ObjContact extends TableImpl<ObjContactRecord> {
      * The column <code>public.obj_contact.account_id</code>.
      */
     public final TableField<ObjContactRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.obj_contact.intl_key</code>.
-     */
-    public final TableField<ObjContactRecord, String> INTL_KEY = createField(DSL.name("intl_key"), SQLDataType.VARCHAR(60), this, "");
 
     /**
      * The column <code>public.obj_contact.description</code>.
@@ -230,11 +225,11 @@ public class ObjContact extends TableImpl<ObjContactRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Integer, Integer, Integer, String, String, String, String, String, String, String, LocalDate, String, String, String> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row13<Integer, Integer, Integer, String, String, String, String, String, String, LocalDate, String, String, String> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

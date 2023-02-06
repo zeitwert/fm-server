@@ -23,7 +23,6 @@ public class ObjTenantPersistenceProvider extends ObjExtnPersistenceProviderBase
 	public ObjTenantPersistenceProvider(DSLContext dslContext) {
 		super(ObjTenantRepository.class, ObjTenantBase.class, dslContext);
 		this.mapField("tenantType", EXTN, "tenant_type_id", String.class);
-		this.mapField("extlKey", EXTN, "extl_key", String.class);
 		this.mapField("name", EXTN, "name", String.class);
 		this.mapField("description", EXTN, "description", String.class);
 		this.mapField("inflationRate", EXTN, "inflation_rate", BigDecimal.class);
