@@ -21,6 +21,8 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
+import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -122,6 +124,11 @@ public abstract class ObjBuildingBase extends ObjExtnBase implements ObjBuilding
 		this.ratingList.loadParts(ratingRepo.getParts(this, ObjBuildingRepository.ratingListType()));
 		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
 		this.contactSet.loadReferences(itemRepo.getParts(this, ObjBuildingRepository.contactSetType()));
+	}
+
+	@Override
+	public final ObjAccount getAccount() {
+		return ItemWithAccount.getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

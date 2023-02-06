@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
@@ -13,12 +14,15 @@ import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.task.model.ItemWithTasks;
 
-public interface ObjContact extends Obj, ItemWithNotes, ItemWithTasks {
+public interface ObjContact extends Obj, ItemWithAccount, ItemWithNotes, ItemWithTasks {
 
+	@Override
 	Integer getAccountId();
 
+	@Override
 	void setAccountId(Integer id);
 
+	@Override
 	ObjAccount getAccount();
 
 	CodeContactRole getContactRole();

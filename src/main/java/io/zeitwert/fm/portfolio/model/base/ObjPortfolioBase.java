@@ -18,6 +18,8 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -61,6 +63,11 @@ public abstract class ObjPortfolioBase extends ObjExtnBase implements ObjPortfol
 		this.includeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.includeSetType()));
 		this.excludeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.excludeSetType()));
 		this.buildingSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.buildingSetType()));
+	}
+
+	@Override
+	public final ObjAccount getAccount() {
+		return ItemWithAccount.getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

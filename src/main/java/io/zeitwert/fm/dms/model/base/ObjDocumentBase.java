@@ -10,6 +10,8 @@ import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -55,6 +57,11 @@ public abstract class ObjDocumentBase extends ObjExtnBase implements ObjDocument
 	public void doAfterLoad() {
 		super.doAfterLoad();
 		this.loadContent();
+	}
+
+	@Override
+	public final ObjAccount getAccount() {
+		return ItemWithAccount.getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

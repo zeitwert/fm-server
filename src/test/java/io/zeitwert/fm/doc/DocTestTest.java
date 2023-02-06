@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -44,6 +47,12 @@ public class DocTestTest {
 	private ObjTestRepository objTestRepository;
 
 	@Autowired
+	private ObjAccountRepository accountRepo;
+
+	@Autowired
+	private ObjAccountCache accountCache;
+
+	@Autowired
 	private ObjUserRepository userRepository;
 
 	@Autowired
@@ -55,7 +64,9 @@ public class DocTestTest {
 		assertTrue(this.docTestRepository != null, "docTestRepository not null");
 		assertEquals("doc_test", this.docTestRepository.getAggregateType().getId());
 
+		ObjAccount account = this.getTestAccount(this.requestCtx);
 		DocTest testA1 = this.docTestRepository.create(this.requestCtx.getTenantId());
+		testA1.setAccountId(account.getId());
 		this.initDocTest(testA1, "One", USER_EMAIL, CH);
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
@@ -69,6 +80,8 @@ public class DocTestTest {
 		assertNotNull(testA1.getCaseStage(), "caseStage not null");
 		assertEquals("test.new", testA1.getCaseStage().getId(), "caseStage.id");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
+		assertEquals(account.getId(), testA1.getAccountId(), "account id");
+		assertEquals(account.getId(), testA1.getAccount().getId(), account.getId(), "account id");
 
 		this.docTestRepository.store(testA1);
 		testA1 = null;
@@ -80,6 +93,8 @@ public class DocTestTest {
 		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
+		assertEquals(account.getId(), testA2.getAccountId(), "account id");
+		assertEquals(account.getId(), testA2.getAccount().getId(), account.getId(), "account id");
 
 	}
 
@@ -196,6 +211,10 @@ public class DocTestTest {
 		assertTrue(testA2.hasCountry(de));
 		assertTrue(testA2.hasCountry(es));
 
+	}
+
+	private ObjAccount getTestAccount(RequestContext requestCtx) {
+		return this.accountCache.get(this.accountRepo.find(null).get(0).getId());
 	}
 
 	private void initDocTest(DocTest test, String name, String userEmail, String countryId) {

@@ -3,16 +3,20 @@ package io.zeitwert.fm.portfolio.model;
 import java.util.Set;
 
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.ItemWithTasks;
 
-public interface ObjPortfolio extends Obj, ItemWithNotes, ItemWithTasks {
+public interface ObjPortfolio extends Obj, ItemWithAccount, ItemWithNotes, ItemWithTasks {
 
+	@Override
 	Integer getAccountId();
 
+	@Override
 	void setAccountId(Integer id);
 
+	@Override
 	ObjAccount getAccount();
 
 	String getName();

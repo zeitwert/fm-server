@@ -5,11 +5,12 @@ import java.time.OffsetDateTime;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.doc.model.Doc;
+import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
-public interface DocTask extends Doc, ItemWithNotes {
+public interface DocTask extends Doc, ItemWithAccount, ItemWithNotes {
 
 	Integer getRelatedToId();
 
@@ -17,10 +18,13 @@ public interface DocTask extends Doc, ItemWithNotes {
 
 	Aggregate getRelatedTo();
 
+	@Override
 	Integer getAccountId();
 
+	@Override
 	void setAccountId(Integer id);
 
+	@Override
 	ObjAccount getAccount();
 
 	String getSubject();

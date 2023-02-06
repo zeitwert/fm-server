@@ -1,6 +1,8 @@
 
 package io.zeitwert.fm.test.model.base;
 
+import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
@@ -75,6 +77,11 @@ public abstract class DocTestBase extends DocExtnBase implements DocTest {
 		// this.getRepository().getNodeRepository();
 		// this.nodeList.loadParts(nodeRepo.getParts(this,
 		// this.getRepository().getNodeListType()));
+	}
+
+	@Override
+	public final ObjAccount getAccount() {
+		return ItemWithAccount.getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

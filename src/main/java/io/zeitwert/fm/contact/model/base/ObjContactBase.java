@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -58,6 +60,11 @@ public abstract class ObjContactBase extends ObjExtnBase implements ObjContact {
 		super.doAssignParts();
 		ObjContactPartAddressRepository addressRepo = ObjContactRepository.getAddressRepository();
 		this.addressList.loadParts(addressRepo.getParts(this, ObjContactRepository.addressListType()));
+	}
+
+	@Override
+	public final ObjAccount getAccount() {
+		return ItemWithAccount.getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

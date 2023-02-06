@@ -18,6 +18,7 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -38,6 +39,9 @@ public class BuildingTest {
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
+
+	@Autowired
+	private ObjAccountCache accountCache;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepository;
@@ -63,6 +67,8 @@ public class BuildingTest {
 
 		building1a.setAccountId(account.getId());
 		this.initBuilding(building1a);
+		assertEquals(account.getId(), building1a.getAccountId(), "account id");
+		assertEquals(account.getId(), building1a.getAccount().getId(), "account id");
 
 		assertEquals(22, building1a.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(22, building1a.getCurrentRating().getElementList().size(), "element count 22");
@@ -103,6 +109,8 @@ public class BuildingTest {
 		assertNotEquals(building1aIdHash, building1bIdHash);
 		assertNotNull(building1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(building1b.getMeta().getModifiedAt(), "modifiedAt not null");
+		assertEquals(account.getId(), building1b.getAccountId(), "account id");
+		assertEquals(account.getId(), building1b.getAccount().getId(), "account id");
 
 		this.checkBuilding(building1b);
 		assertEquals(bp1, building1b.getCurrentRating().getElementById(e1id).getBuildingPart(), "e1 by id");
@@ -145,7 +153,7 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountRepo.get(this.accountRepo.find(null).get(0).getId());
+		return this.accountCache.get(this.accountRepo.find(null).get(0).getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {

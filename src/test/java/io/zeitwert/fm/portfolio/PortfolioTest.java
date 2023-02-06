@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
@@ -24,6 +25,9 @@ public class PortfolioTest {
 	private RequestContext requestCtx;
 
 	@Autowired
+	private ObjAccountRepository accountRepo;
+
+	@Autowired
 	private ObjAccountRepository accountCache;
 
 	@Autowired
@@ -35,19 +39,21 @@ public class PortfolioTest {
 	@Test
 	public void testPortfolio() throws Exception {
 
-		assertTrue(portfolioRepository != null, "portfolioRepository not null");
-		assertEquals("obj_portfolio", portfolioRepository.getAggregateType().getId());
+		assertTrue(this.portfolioRepository != null, "portfolioRepository not null");
+		assertEquals("obj_portfolio", this.portfolioRepository.getAggregateType().getId());
 
-		assertTrue(accountCache != null, "accountRepository not null");
-		assertEquals("obj_account", accountCache.getAggregateType().getId());
+		assertTrue(this.accountCache != null, "accountRepository not null");
+		assertEquals("obj_account", this.accountCache.getAggregateType().getId());
 
-		assertTrue(buildingRepository != null, "buildingRepository not null");
-		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
+		assertTrue(this.buildingRepository != null, "buildingRepository not null");
+		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
-		ObjPortfolio pf1a = portfolioRepository.create(requestCtx.getTenantId());
+		ObjAccount account = this.getTestAccount(this.requestCtx);
+		ObjPortfolio pf1a = this.portfolioRepository.create(this.requestCtx.getTenantId());
 		// Integer pf1Id = pf1a.getId();
 		// Integer pf1aIdHash = System.identityHashCode(pf1a);
 
+		pf1a.setAccountId(account.getId());
 		pf1a.setName("Portfolio 1");
 		pf1a.setDescription("A test portfolio");
 
@@ -80,6 +86,12 @@ public class PortfolioTest {
 		// assertEquals(2, pf1b.getExcludeSet().size(), "exclude set count 5");
 		// assertEquals(3, pf1b.getBuildingSet().size(), "building set count 5");
 
+		assertEquals(account.getId(), pf1a.getAccountId(), "account id");
+		assertEquals(account.getId(), pf1a.getAccount().getId(), "account id");
+	}
+
+	private ObjAccount getTestAccount(RequestContext requestCtx) {
+		return this.accountCache.get(this.accountRepo.find(null).get(0).getId());
 	}
 
 }

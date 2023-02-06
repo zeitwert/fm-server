@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
@@ -18,8 +17,8 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -71,7 +70,7 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask {
 
 	@Override
 	public final ObjAccount getAccount() {
-		return AppContext.getInstance().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return ItemWithAccount.getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

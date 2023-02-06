@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
@@ -50,6 +51,9 @@ public class TaskTest {
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
+
+	@Autowired
+	private ObjAccountCache accountCache;
 
 	@Autowired
 	private DocTaskRepository taskRepository;
@@ -125,7 +129,7 @@ public class TaskTest {
 	private void getTestData() {
 		RelatedTo = this.userCache.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
-		Account = this.accountRepo.get(this.accountRepo.find(null).get(0).getId());
+		Account = this.accountCache.get(this.accountRepo.find(null).get(0).getId());
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");
@@ -146,8 +150,8 @@ public class TaskTest {
 
 	private void checkTask1(DocTask task) {
 		assertEquals(task.getRelatedToId(), RelatedTo.getId());
-		assertEquals(task.getAccountId(), Account.getId());
-		assertEquals(task.getAccount().getId(), Account.getId());
+		assertEquals(Account.getId(), task.getAccountId(), "account id");
+		assertEquals(Account.getId(), task.getAccount().getId(), Account.getId(), "account id");
 		assertEquals(task.getSubject(), "Todo");
 		assertEquals(task.getContent(), "content");
 		assertEquals(task.getIsPrivate(), false);
@@ -156,6 +160,8 @@ public class TaskTest {
 	}
 
 	private void initTask2(DocTask task) {
+		assertEquals(Account.getId(), task.getAccountId(), "account id");
+		assertEquals(Account.getId(), task.getAccount().getId(), "account id");
 		task.setSubject("Todos");
 		task.setContent("contents");
 		task.setIsPrivate(true);
