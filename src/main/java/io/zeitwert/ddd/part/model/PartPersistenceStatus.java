@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence;
+package io.zeitwert.ddd.part.model;
 
 public enum PartPersistenceStatus {
 

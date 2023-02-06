@@ -16,9 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.enums.CodeCountry;

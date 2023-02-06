@@ -6,13 +6,13 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartMeta;
+import io.zeitwert.ddd.part.model.PartPersistenceProvider;
+import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.PartPersistenceProvider;
-import io.zeitwert.ddd.persistence.PartPersistenceStatus;
-import io.zeitwert.ddd.persistence.PropertyProvider;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.Property;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -78,7 +78,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	@Override
 	public final PropertyProvider getPropertyProvider() {
 		if (this.getRepository() != null) { // possibly null in instatiation phase
-			return ((PartRepositoryBase<?, ?>) this.getRepository()).getPersistenceProvider();
+			return ((PartRepositorySPI<?, ?>) this.getRepository()).getPropertyProvider();
 		}
 		return null;
 	}

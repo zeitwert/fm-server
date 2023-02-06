@@ -17,6 +17,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
@@ -24,9 +25,9 @@ import io.zeitwert.ddd.app.service.api.impl.Repositories;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.persistence.AggregatePersistenceProvider;
-import io.zeitwert.ddd.persistence.PartPersistenceProvider;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
@@ -42,6 +43,7 @@ public final class AppContext {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final DSLContext dslContext;
 	private final Repositories repos;
+	private final Map<Class<?>, PropertyProvider> propertyProviders = new HashMap<>();
 	private final Map<Class<?>, AggregatePersistenceProvider<?>> aggregatePersistenceProviders = new HashMap<>();
 	private final Map<Class<?>, PartPersistenceProvider<?, ? extends Part<?>>> partPersistenceProviders = new HashMap<>();
 	private Map<Class<? extends Aggregate>, AggregateCache<?>> cacheByIntf = new HashMap<>();
@@ -57,6 +59,14 @@ public final class AppContext {
 		this.enums = enums;
 		this.requestContext = requestContext;
 		AppContext.INSTANCE = this;
+	}
+
+	@PostConstruct
+	public void initPropertyProviders() {
+		this.applicationContext
+				.getBeansOfType(PropertyProvider.class, false, true)
+				.values()
+				.forEach(pp -> this.propertyProviders.put(pp.getEntityClass(), pp));
 	}
 
 	@PostConstruct
@@ -91,6 +101,10 @@ public final class AppContext {
 
 	public <A extends Aggregate> AggregateRepository<A, ?> getRepository(Class<A> intfClass) {
 		return this.repos.getRepository(intfClass);
+	}
+
+	public PropertyProvider getPropertyProvider(Class<?> intfClass) {
+		return this.propertyProviders.get(intfClass);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -11,10 +11,10 @@ import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.persistence.AggregatePersistenceProvider;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.fm.search.model.db.Tables;

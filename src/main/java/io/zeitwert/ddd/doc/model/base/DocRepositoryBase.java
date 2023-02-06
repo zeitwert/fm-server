@@ -27,9 +27,4 @@ public abstract class DocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		this.addPartRepository(DocRepository.getTransitionRepository());
 	}
 
-	@Override
-	public void doAfterStore(D doc) {
-		super.doAfterStore(doc);
-	}
-
 }

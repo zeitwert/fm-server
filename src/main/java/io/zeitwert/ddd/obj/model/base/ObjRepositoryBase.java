@@ -37,11 +37,6 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 	}
 
 	@Override
-	public void doAfterStore(O obj) {
-		super.doAfterStore(obj);
-	}
-
-	@Override
 	public void delete(O obj) {
 		obj.delete();
 		this.store(obj);

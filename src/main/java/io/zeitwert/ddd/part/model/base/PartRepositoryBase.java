@@ -15,10 +15,11 @@ import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.PartPersistenceProvider;
+import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.PartPersistenceProvider;
-import io.zeitwert.ddd.persistence.PartPersistenceStatus;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -45,9 +46,15 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, UpdatableRecord.class };
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public final PartPersistenceProvider<A, P> getPersistenceProvider() {
 		return (PartPersistenceProvider<A, P>) AppContext.getInstance().getPartPersistenceProvider(this.intfClass);
+	}
+
+	@Override
+	public final PropertyProvider getPropertyProvider() {
+		return AppContext.getInstance().getPropertyProvider(this.intfClass);
 	}
 
 	@Override

@@ -2,8 +2,8 @@ package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
+import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.ddd.persistence.PartPersistenceStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;

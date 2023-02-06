@@ -24,6 +24,7 @@ import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
@@ -31,7 +32,7 @@ import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.persistence.AggregatePersistenceProvider;
+import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -69,9 +70,15 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		appContext.addRepository(aggregateTypeId, intfClass, this);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public final AggregatePersistenceProvider<A> getPersistenceProvider() {
 		return (AggregatePersistenceProvider<A>) AppContext.getInstance().getAggregatePersistenceProvider(this.intfClass);
+	}
+
+	@Override
+	public final PropertyProvider getPropertyProvider() {
+		return AppContext.getInstance().getPropertyProvider(this.intfClass);
 	}
 
 	@Override
