@@ -195,4 +195,12 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 		this.caption.setValue(caption);
 	}
 
+	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getId() + "");
+		if (this.getId() < DocRepository.MIN_DOC_ID) {
+			this.addSearchToken((this.getId() % DocRepository.MIN_DOC_ID) + "");
+		}
+	}
+
 }

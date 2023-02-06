@@ -165,28 +165,6 @@ public abstract class ObjBuildingBase extends ObjExtnBase implements ObjBuilding
 	}
 
 	@Override
-	public void doCalcSearch() {
-		this.addSearchToken(this.getZip());
-		this.addSearchToken(this.getBuildingNr());
-		this.addSearchToken(this.getInsuranceNr());
-		this.addSearchToken(this.getPlotNr());
-		this.addSearchToken(this.getNationalBuildingId());
-		this.addSearchText(this.getName());
-		this.addSearchText(this.getStreet());
-		this.addSearchText(this.getCity());
-		if (this.getBuildingType() != null) {
-			this.addSearchText(this.getBuildingType().getName());
-		}
-		if (this.getBuildingSubType() != null) {
-			this.addSearchText(this.getBuildingSubType().getName());
-		}
-		if (this.getCurrentRating() != null) {
-			this.addSearchText(this.getCurrentRating().getPartCatalog().getName());
-		}
-		this.addSearchText(this.getDescription());
-	}
-
-	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.ratingList)) {
 			return ObjBuildingRepository.getRatingRepository().create(this, partListType);
@@ -317,6 +295,32 @@ public abstract class ObjBuildingBase extends ObjExtnBase implements ObjBuilding
 				}
 			}
 		}
+	}
+
+	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getZip());
+		this.addSearchToken(this.getBuildingNr());
+		this.addSearchToken(this.getInsuranceNr());
+		this.addSearchToken(this.getPlotNr());
+		this.addSearchToken(this.getNationalBuildingId());
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getStreet());
+		this.addSearchText(this.getCity());
+		if (this.getBuildingType() != null) {
+			this.addSearchText(this.getBuildingType() != null ? this.getBuildingType().getName() : null);
+		}
+		if (this.getBuildingSubType() != null) {
+			this.addSearchText(this.getBuildingSubType() != null ? this.getBuildingSubType().getName() : null);
+		}
+		if (this.getCurrentRating() != null) {
+			this.addSearchText(this.getCurrentRating() != null
+					? this.getCurrentRating().getPartCatalog() != null
+							? this.getCurrentRating().getPartCatalog().getName()
+							: null
+					: null);
+		}
+		this.addSearchText(this.getDescription());
 	}
 
 	private void addCoverFoto() {

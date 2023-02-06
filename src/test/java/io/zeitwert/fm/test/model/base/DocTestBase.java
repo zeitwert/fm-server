@@ -110,10 +110,6 @@ public abstract class DocTestBase extends DocExtnBase implements DocTest {
 	}
 
 	@Override
-	public void doCalcSearch() {
-	}
-
-	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
 		if (property.equals(this.countrySet)) {
 			return DocRepository.getItemRepository().create(this, partListType);

@@ -90,6 +90,7 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask {
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchText(this.getSubject());
 		this.addSearchText(this.getContent());
 	}
