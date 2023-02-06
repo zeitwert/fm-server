@@ -5,8 +5,11 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.obj.model.ObjRepository;
@@ -15,12 +18,17 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.fm.doc.model.base.FMDocBase;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
-public abstract class DocTaskBase extends FMDocBase implements DocTask {
+public abstract class DocTaskBase extends DocExtnBase implements DocTask {
 
 	//@formatter:off
 	protected final SimpleProperty<Integer> relatedObjId = this.addSimpleProperty("relatedObjId", Integer.class);
@@ -32,6 +40,8 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 	protected final SimpleProperty<OffsetDateTime> dueAt = this.addSimpleProperty("dueAt", OffsetDateTime.class);
 	protected final SimpleProperty<OffsetDateTime> remindAt = this.addSimpleProperty("remindAt", OffsetDateTime.class);
 	//@formatter:on
+
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
 
 	protected DocTaskBase(DocTaskRepository repository, Object state) {
 		super(repository, state);
@@ -57,6 +67,26 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask {
 			this.setAccountId(this.getMeta().getRequestContext().getAccountId());
 		}
 		assertThis(this.getAccountId() != null, "account not null");
+	}
+
+	@Override
+	public final ObjAccount getAccount() {
+		return AppContext.getInstance().getBean(ObjAccountCache.class).get(this.getAccountId());
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
 	}
 
 	@Override

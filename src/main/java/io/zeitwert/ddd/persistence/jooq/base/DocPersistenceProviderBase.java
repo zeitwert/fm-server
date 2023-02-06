@@ -28,6 +28,7 @@ public abstract class DocPersistenceProviderBase<D extends Doc> extends Aggregat
 		this.mapField("id", BASE, "id", Integer.class);
 		this.mapField("docTypeId", BASE, "doc_type_id", String.class);
 		this.mapField("tenant", BASE, "tenant_id", Integer.class);
+		this.mapField("accountId", EXTN, "account_id", Integer.class);
 		this.mapField("owner", BASE, "owner_id", Integer.class);
 		this.mapField("caption", BASE, "caption", String.class);
 		this.mapField("version", BASE, "version", Integer.class);

@@ -10,8 +10,8 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import io.zeitwert.ddd.persistence.jooq.base.DocExtnPersistenceProviderBase;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.doc.model.base.FMDocPersistenceProviderBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -21,7 +21,7 @@ import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
 
 @Configuration("docTestPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class DocTestPersistenceProvider extends FMDocPersistenceProviderBase<DocTest> {
+public class DocTestPersistenceProvider extends DocExtnPersistenceProviderBase<DocTest> {
 
 	public DocTestPersistenceProvider(DSLContext dslContext) {
 		super(DocTestRepository.class, DocTestBase.class, dslContext);

@@ -1,9 +1,0 @@
-
-package io.zeitwert.ddd.doc.adapter.api.jsonapi;
-
-import io.crnk.core.repository.ResourceRepository;
-import io.zeitwert.ddd.doc.adapter.api.jsonapi.impl.DocImpl;
-
-public interface DocApiRepository extends ResourceRepository<DocImpl, Integer> {
-
-}

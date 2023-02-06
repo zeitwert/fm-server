@@ -15,6 +15,7 @@ public abstract class DocExtnPersistenceProviderBase<D extends Doc> extends DocP
 		super(repoIntfClass, baseClass, dslContext);
 		this.mapField("extnDocId", EXTN, "doc_id", Integer.class);
 		this.mapField("extnTenantId", EXTN, "tenant_id", Integer.class);
+		this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
 	}
 
 }

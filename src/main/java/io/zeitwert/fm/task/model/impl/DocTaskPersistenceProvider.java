@@ -9,7 +9,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import io.zeitwert.fm.doc.model.base.FMDocPersistenceProviderBase;
+import io.zeitwert.ddd.persistence.jooq.base.DocExtnPersistenceProviderBase;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
@@ -18,7 +18,7 @@ import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
 
 @Configuration("taskPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class DocTaskPersistenceProvider extends FMDocPersistenceProviderBase<DocTask> {
+public class DocTaskPersistenceProvider extends DocExtnPersistenceProviderBase<DocTask> {
 
 	public DocTaskPersistenceProvider(DSLContext dslContext) {
 		super(DocTaskRepository.class, DocTaskBase.class, dslContext);

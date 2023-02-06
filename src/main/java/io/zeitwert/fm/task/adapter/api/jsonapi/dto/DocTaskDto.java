@@ -9,12 +9,12 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.zeitwert.ddd.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.FMDocDtoBase;
 import io.zeitwert.fm.task.model.DocTask;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "task", resourcePath = "collaboration/tasks")
-public class DocTaskDto extends FMDocDtoBase<DocTask> {
+public class DocTaskDto extends DocDtoBase<DocTask> {
 
 	private EnumeratedDto relatedTo;
 

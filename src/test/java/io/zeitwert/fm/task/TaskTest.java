@@ -147,6 +147,7 @@ public class TaskTest {
 	private void checkTask1(DocTask task) {
 		assertEquals(task.getRelatedToId(), RelatedTo.getId());
 		assertEquals(task.getAccountId(), Account.getId());
+		assertEquals(task.getAccount().getId(), Account.getId());
 		assertEquals(task.getSubject(), "Todo");
 		assertEquals(task.getContent(), "content");
 		assertEquals(task.getIsPrivate(), false);

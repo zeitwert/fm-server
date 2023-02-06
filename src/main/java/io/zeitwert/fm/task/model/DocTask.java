@@ -4,11 +4,12 @@ package io.zeitwert.fm.task.model;
 import java.time.OffsetDateTime;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.doc.model.FMDoc;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
-public interface DocTask extends FMDoc {
+public interface DocTask extends Doc, ItemWithNotes {
 
 	Integer getRelatedToId();
 

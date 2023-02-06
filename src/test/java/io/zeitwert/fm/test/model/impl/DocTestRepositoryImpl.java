@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.DocRepository;
-import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
+import io.zeitwert.ddd.doc.model.base.DocRepositoryBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.base.DocTestBase;
@@ -18,7 +18,7 @@ import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.DocTestVRecord;
 
 @Component("docTestRepository")
-public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestVRecord> implements DocTestRepository {
+public class DocTestRepositoryImpl extends DocRepositoryBase<DocTest, DocTestVRecord> implements DocTestRepository {
 
 	private static final String AGGREGATE_TYPE = "doc_test";
 
