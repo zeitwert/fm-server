@@ -2,8 +2,8 @@ package io.zeitwert.fm.dms.adapter.api.jsonapi.dto;
 
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "document", resourcePath = "document/documents")
-public class ObjDocumentDto extends FMObjDtoBase<ObjDocument> {
+public class ObjDocumentDto extends ObjDtoBase<ObjDocument> {
 
 	private String name;
 	private EnumeratedDto contentKind;

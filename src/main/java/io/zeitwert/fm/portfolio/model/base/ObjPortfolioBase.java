@@ -12,6 +12,7 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.Property;
@@ -19,12 +20,18 @@ import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
 import io.zeitwert.fm.obj.model.ObjVRepository;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
 
-public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio {
+public abstract class ObjPortfolioBase extends ObjExtnBase implements ObjPortfolio {
 
 	//@formatter:off
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
@@ -34,6 +41,9 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 	protected final ReferenceSetProperty<Obj> excludeSet = this.addReferenceSetProperty("excludeSet", Obj.class);
 	protected final ReferenceSetProperty<ObjBuilding> buildingSet = this.addReferenceSetProperty("buildingSet", ObjBuilding.class);
 	//@formatter:on
+
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
+	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
 
 	protected ObjPortfolioBase(ObjPortfolioRepository repository, Object state) {
 		super(repository, state);
@@ -51,6 +61,31 @@ public abstract class ObjPortfolioBase extends FMObjBase implements ObjPortfolio
 		this.includeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.includeSetType()));
 		this.excludeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.excludeSetType()));
 		this.buildingSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.buildingSetType()));
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		return this.tasks.getTasks();
+	}
+
+	@Override
+	public DocTask addTask() {
+		return this.tasks.addTask();
 	}
 
 	@Override

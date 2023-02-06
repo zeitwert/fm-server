@@ -9,11 +9,11 @@ import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +27,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
-public class ObjPortfolioDto extends FMObjDtoBase<ObjPortfolio> {
+public class ObjPortfolioDto extends ObjDtoBase<ObjPortfolio> {
 
 	@JsonApiRelationId
 	private Integer accountId;

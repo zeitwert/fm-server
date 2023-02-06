@@ -1,21 +1,30 @@
 
 package io.zeitwert.fm.dms.model.base;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKind;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
 
-public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
+public abstract class ObjDocumentBase extends ObjExtnBase implements ObjDocument {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjDocumentBase.class);
 
@@ -26,6 +35,9 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	protected final ReferenceProperty<ObjDocument> templateDocument = this.addReferenceProperty("templateDocument", ObjDocument.class);
 	protected final EnumProperty<CodeContentKind> contentKind = this.addEnumProperty("contentKind", CodeContentKind.class);
 	//@formatter:on
+
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
+	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
 
 	protected CodeContentType contentType;
 	protected byte[] content;
@@ -43,6 +55,31 @@ public abstract class ObjDocumentBase extends FMObjBase implements ObjDocument {
 	public void doAfterLoad() {
 		super.doAfterLoad();
 		this.loadContent();
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		return this.tasks.getTasks();
+	}
+
+	@Override
+	public DocTask addTask() {
+		return this.tasks.addTask();
 	}
 
 	@Override

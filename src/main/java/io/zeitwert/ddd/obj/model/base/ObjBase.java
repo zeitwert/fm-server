@@ -31,6 +31,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
 	protected final SimpleProperty<String> objTypeId = this.addSimpleProperty("objTypeId", String.class);
 	protected final ReferenceProperty<ObjTenant> tenant = this.addReferenceProperty("tenant", ObjTenant.class);
+	protected final SimpleProperty<Integer> accountId = this.addSimpleProperty("accountId", Integer.class);
 	protected final ReferenceProperty<ObjUser> owner = this.addReferenceProperty("owner", ObjUser.class);
 	protected final SimpleProperty<String> caption = this.addSimpleProperty("caption", String.class);
 	protected final SimpleProperty<Integer> version = this.addSimpleProperty("version", Integer.class);

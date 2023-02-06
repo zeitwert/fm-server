@@ -13,12 +13,12 @@ import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
 
 @Configuration("portfolioPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjPortfolioPersistenceProvider extends FMObjPersistenceProviderBase<ObjPortfolio> {
+public class ObjPortfolioPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjPortfolio> {
 
 	public ObjPortfolioPersistenceProvider(DSLContext dslContext) {
 		super(ObjPortfolioRepository.class, ObjPortfolioBase.class, dslContext);

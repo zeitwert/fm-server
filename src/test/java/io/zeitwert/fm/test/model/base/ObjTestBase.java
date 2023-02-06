@@ -2,13 +2,20 @@
 package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -20,10 +27,11 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.jooq.JSON;
 
-public abstract class ObjTestBase extends FMObjBase implements ObjTest {
+public abstract class ObjTestBase extends ObjExtnBase implements ObjTest {
 
 	protected final SimpleProperty<String> shortText = this.addSimpleProperty("shortText", String.class);
 	protected final SimpleProperty<String> longText = this.addSimpleProperty("longText", String.class);
@@ -36,6 +44,9 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 	protected final ReferenceProperty<ObjTest> refTest = this.addReferenceProperty("refTest", ObjTest.class);
 	protected final EnumSetProperty<CodeCountry> countries = this.addEnumSetProperty("countrySet", CodeCountry.class);
 	protected final PartListProperty<ObjTestPartNode> nodes = this.addPartListProperty("nodeList", ObjTestPartNode.class);
+
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
+	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
 
 	protected ObjTestBase(ObjTestRepository repository, Object state) {
 		super(repository, state);
@@ -53,6 +64,31 @@ public abstract class ObjTestBase extends FMObjBase implements ObjTest {
 		this.countries.loadEnums(itemRepo.getParts(this, ObjTestRepository.countrySetType()));
 		ObjTestPartNodeRepository nodeRepo = ObjTestRepository.getNodeRepository();
 		this.nodes.loadParts(nodeRepo.getParts(this, ObjTestRepository.nodeListType()));
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		return this.tasks.getTasks();
+	}
+
+	@Override
+	public DocTask addTask() {
+		return this.tasks.addTask();
 	}
 
 	@Override

@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objBuildingRepository")
-public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
+public class ObjBuildingRepositoryImpl extends ObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
 		implements ObjBuildingRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_building";

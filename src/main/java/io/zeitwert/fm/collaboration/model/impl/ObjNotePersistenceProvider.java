@@ -34,6 +34,11 @@ public class ObjNotePersistenceProvider extends ObjExtnPersistenceProviderBase<O
 	}
 
 	@Override
+	protected boolean hasAccount() {
+		return false;
+	}
+
+	@Override
 	public ObjNote doCreate() {
 		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_NOTE));
 	}

@@ -4,12 +4,14 @@ package io.zeitwert.fm.building.model.base;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -27,15 +29,21 @@ import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.*;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
 
-public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
+public abstract class ObjBuildingBase extends ObjExtnBase implements ObjBuilding {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjBuildingBase.class);
 
@@ -89,6 +97,9 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 	protected final ReferenceSetProperty<ObjContact> contactSet= this.addReferenceSetProperty("contactSet", ObjContact.class);
 	//@formatter:on
 
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
+	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
+
 	protected ObjBuildingBase(ObjBuildingRepository repository, Object state) {
 		super(repository, state);
 	}
@@ -119,6 +130,31 @@ public abstract class ObjBuildingBase extends FMObjBase implements ObjBuilding {
 		if (this.getCoverFotoId() == null) {
 			this.addCoverFoto();
 		}
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		return this.tasks.getTasks();
+	}
+
+	@Override
+	public DocTask addTask() {
+		return this.tasks.addTask();
 	}
 
 	@Override

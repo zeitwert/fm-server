@@ -2,15 +2,15 @@
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.model.enums.CodeAccountTypeEnum;
 import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapterBase;
 
-public final class ObjAccountDtoAdapter extends FMObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
+public final class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
 
 	private static ObjAccountDtoAdapter instance;
 

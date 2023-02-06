@@ -10,14 +10,14 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapterBase;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
 public class ObjPortfolioDtoAdapter
-		extends FMObjDtoAdapterBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
+		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
 
 	private static final ObjVRepository objRepository = (ObjVRepository) AppContext.getInstance()
 			.getRepository(Obj.class);

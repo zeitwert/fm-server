@@ -5,10 +5,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.obj.model.FMObj;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
+import io.zeitwert.fm.task.model.ItemWithTasks;
 
-public interface ObjTest extends FMObj {
+public interface ObjTest extends Obj, ItemWithNotes, ItemWithTasks {
 
 	String getShortText();
 

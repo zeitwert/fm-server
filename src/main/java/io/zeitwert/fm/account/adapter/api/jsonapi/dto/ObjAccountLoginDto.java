@@ -8,8 +8,8 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-public class ObjAccountLoginDto extends FMObjDtoBase<ObjAccount> {
+public class ObjAccountLoginDto extends ObjDtoBase<ObjAccount> {
 
 	private String name;
 	private String description;

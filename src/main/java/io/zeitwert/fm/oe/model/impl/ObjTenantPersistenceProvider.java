@@ -35,6 +35,11 @@ public class ObjTenantPersistenceProvider extends ObjExtnPersistenceProviderBase
 	}
 
 	@Override
+	protected boolean hasAccount() {
+		return false;
+	}
+
+	@Override
 	public ObjTenant doCreate() {
 		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_TENANT));
 	}

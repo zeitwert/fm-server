@@ -5,6 +5,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
@@ -13,12 +17,15 @@ import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
-public abstract class ObjContactBase extends FMObjBase implements ObjContact {
+public abstract class ObjContactBase extends ObjExtnBase implements ObjContact {
 
 	//@formatter:off
 	protected final EnumProperty<CodeContactRole> contactRole = this.addEnumProperty("contactRole", CodeContactRole.class);
@@ -34,6 +41,9 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 	private final PartListProperty<ObjContactPartAddress> addressList = this.addPartListProperty("addressList", ObjContactPartAddress.class);
 	//@formatter:on
 
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
+	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
+
 	protected ObjContactBase(ObjContactRepository repository, Object state) {
 		super(repository, state);
 	}
@@ -48,6 +58,31 @@ public abstract class ObjContactBase extends FMObjBase implements ObjContact {
 		super.doAssignParts();
 		ObjContactPartAddressRepository addressRepo = ObjContactRepository.getAddressRepository();
 		this.addressList.loadParts(addressRepo.getParts(this, ObjContactRepository.addressListType()));
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		return this.tasks.getTasks();
+	}
+
+	@Override
+	public DocTask addTask() {
+		return this.tasks.addTask();
 	}
 
 	@Override

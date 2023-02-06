@@ -7,16 +7,16 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
-import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
 
 @Configuration("documentPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjDocumentPersistenceProvider extends FMObjPersistenceProviderBase<ObjDocument> {
+public class ObjDocumentPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjDocument> {
 
 	public ObjDocumentPersistenceProvider(DSLContext dslContext) {
 		super(ObjDocumentRepository.class, ObjDocumentBase.class, dslContext);

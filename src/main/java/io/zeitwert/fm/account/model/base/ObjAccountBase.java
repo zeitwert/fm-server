@@ -6,6 +6,7 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 import java.math.BigDecimal;
 import java.util.List;
 
+import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
@@ -17,6 +18,10 @@ import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
@@ -25,9 +30,11 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
-import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
+import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
 
-public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
+public abstract class ObjAccountBase extends ObjExtnBase implements ObjAccount {
 
 	//@formatter:off
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
@@ -39,6 +46,9 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	protected final ReferenceProperty<ObjDocument> logoImage= this.addReferenceProperty("logoImage", ObjDocument.class);
 	protected final ReferenceProperty<ObjContact> mainContact= this.addReferenceProperty("mainContact", ObjContact.class);
 	//@formatter:on
+
+	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
+	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
 
 	protected ObjAccountBase(ObjAccountRepository repository, Object state) {
 		super(repository, state);
@@ -53,7 +63,7 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		assertThis(this.getId() != null, "id must not be null after create");
-		super.account.setId(this.getId());
+		this.setAccountId(this.getId());
 		this.addLogoImage();
 	}
 
@@ -72,6 +82,31 @@ public abstract class ObjAccountBase extends FMObjBase implements ObjAccount {
 
 	@Override
 	public void doAfterStore() {
+	}
+
+	@Override
+	public List<ObjNoteVRecord> getNotes() {
+		return this.notes.getNotes();
+	}
+
+	@Override
+	public ObjNote addNote(CodeNoteType noteType) {
+		return this.notes.addNote(noteType);
+	}
+
+	@Override
+	public void removeNote(Integer noteId) {
+		this.notes.removeNote(noteId);
+	}
+
+	@Override
+	public List<DocTaskVRecord> getTasks() {
+		return this.tasks.getTasks();
+	}
+
+	@Override
+	public DocTask addTask() {
+		return this.tasks.addTask();
 	}
 
 	@Override

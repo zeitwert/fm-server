@@ -2,6 +2,7 @@
 package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactPartAddressDto;
 import io.zeitwert.fm.contact.model.ObjContact;
@@ -9,9 +10,8 @@ import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
 import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
 import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
 import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapterBase;
 
-public final class ObjContactDtoAdapter extends FMObjDtoAdapterBase<ObjContact, ObjContactVRecord, ObjContactDto> {
+public final class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjContactVRecord, ObjContactDto> {
 
 	private static ObjContactDtoAdapter instance;
 

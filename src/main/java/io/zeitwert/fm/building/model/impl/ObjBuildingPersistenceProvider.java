@@ -9,6 +9,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -16,11 +17,10 @@ import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.contact.model.ObjContact;
-import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
 
 @Configuration("buildingPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjBuildingPersistenceProvider extends FMObjPersistenceProviderBase<ObjBuilding> {
+public class ObjBuildingPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjBuilding> {
 
 	public ObjBuildingPersistenceProvider(DSLContext dslContext) {
 		super(ObjBuildingRepository.class, ObjBuildingBase.class, dslContext);

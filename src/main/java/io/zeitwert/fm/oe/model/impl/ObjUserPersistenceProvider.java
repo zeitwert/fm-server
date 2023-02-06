@@ -37,6 +37,11 @@ public class ObjUserPersistenceProvider extends ObjExtnPersistenceProviderBase<O
 	}
 
 	@Override
+	protected boolean hasAccount() {
+		return false;
+	}
+
+	@Override
 	public ObjUser doCreate() {
 		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_USER));
 	}

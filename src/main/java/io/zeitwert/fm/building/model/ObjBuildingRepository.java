@@ -2,14 +2,14 @@
 package io.zeitwert.fm.building.model;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.obj.model.FMObjRepository;
 
-public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjBuildingVRecord> {
+public interface ObjBuildingRepository extends ObjRepository<ObjBuilding, ObjBuildingVRecord> {
 
 	static CodePartListType ratingListType() {
 		return CodePartListTypeEnum.getPartListType("building.ratingList");

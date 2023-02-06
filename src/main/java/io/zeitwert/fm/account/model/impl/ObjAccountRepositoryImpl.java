@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objAccountRepository")
-public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
+public class ObjAccountRepositoryImpl extends ObjRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_account";

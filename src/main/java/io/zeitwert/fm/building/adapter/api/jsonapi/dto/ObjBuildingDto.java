@@ -14,6 +14,7 @@ import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -25,7 +26,6 @@ import io.zeitwert.fm.contact.service.api.ObjContactCache;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -38,7 +38,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "building", resourcePath = "building/buildings")
-public class ObjBuildingDto extends FMObjDtoBase<ObjBuilding> {
+public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 
 	public static final String AddRatingOperation = "addRating";
 

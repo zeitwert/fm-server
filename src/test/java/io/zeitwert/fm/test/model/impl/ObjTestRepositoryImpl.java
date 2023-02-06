@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
+import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.base.ObjTestBase;
@@ -18,7 +18,7 @@ import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
 @Component("objTestRepository")
-public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
+public class ObjTestRepositoryImpl extends ObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 

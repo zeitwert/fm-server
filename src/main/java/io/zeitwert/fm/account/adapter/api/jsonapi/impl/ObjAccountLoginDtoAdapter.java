@@ -2,13 +2,13 @@
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.FMObjDtoAdapterBase;
 
 public final class ObjAccountLoginDtoAdapter
-		extends FMObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountLoginDto> {
+		extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountLoginDto> {
 
 	private static ObjAccountLoginDtoAdapter instance;
 

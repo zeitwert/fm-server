@@ -5,13 +5,15 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
+import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.obj.model.FMObj;
+import io.zeitwert.fm.task.model.ItemWithTasks;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 
-public interface ObjAccount extends FMObj {
+public interface ObjAccount extends Obj, ItemWithNotes, ItemWithTasks {
 
 	String getName();
 

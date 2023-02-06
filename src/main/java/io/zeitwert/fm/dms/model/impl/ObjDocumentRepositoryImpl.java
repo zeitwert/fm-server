@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -24,10 +25,9 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentPartContentRecord;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objDocumentRepository")
-public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, ObjDocumentVRecord>
+public class ObjDocumentRepositoryImpl extends ObjRepositoryBase<ObjDocument, ObjDocumentVRecord>
 		implements ObjDocumentRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_document";

@@ -15,6 +15,15 @@ public abstract class ObjExtnPersistenceProviderBase<O extends Obj> extends ObjP
 		super(repoIntfClass, baseClass, dslContext);
 		this.mapField("extnObjId", EXTN, "obj_id", Integer.class);
 		this.mapField("extnTenantId", EXTN, "tenant_id", Integer.class);
+		if (this.hasAccount()) {
+			this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
+		} else {
+			this.mapField("extnAccountId", BASE, "account_id", Integer.class);
+		}
+	}
+
+	protected boolean hasAccount() {
+		return true;
 	}
 
 }

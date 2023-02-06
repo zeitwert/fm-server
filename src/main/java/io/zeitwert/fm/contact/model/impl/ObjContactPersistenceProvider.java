@@ -10,17 +10,17 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.contact.model.base.ObjContactBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
-import io.zeitwert.fm.obj.model.base.FMObjPersistenceProviderBase;
 
 @Configuration("contactPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
-public class ObjContactPersistenceProvider extends FMObjPersistenceProviderBase<ObjContact> {
+public class ObjContactPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjContact> {
 
 	public ObjContactPersistenceProvider(DSLContext dslContext) {
 		super(ObjContactRepository.class, ObjContactBase.class, dslContext);

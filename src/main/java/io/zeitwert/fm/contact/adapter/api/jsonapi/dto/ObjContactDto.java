@@ -10,12 +10,12 @@ import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.contact.model.ObjContact;
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.FMObjDtoBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "contact", resourcePath = "contact/contacts")
-public class ObjContactDto extends FMObjDtoBase<ObjContact> {
+public class ObjContactDto extends ObjDtoBase<ObjContact> {
 
 	@JsonApiRelationId
 	private Integer accountId;

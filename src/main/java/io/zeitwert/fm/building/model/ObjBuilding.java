@@ -4,16 +4,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
+import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.obj.model.FMObj;
+import io.zeitwert.fm.task.model.ItemWithTasks;
 
-public interface ObjBuilding extends FMObj {
+public interface ObjBuilding extends Obj, ItemWithNotes, ItemWithTasks {
 
 	Integer getAccountId();
 

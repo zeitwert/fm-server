@@ -1,9 +1,0 @@
-
-package io.zeitwert.ddd.obj.adapter.api.jsonapi;
-
-import io.crnk.core.repository.ResourceRepository;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.impl.ObjImpl;
-
-public interface ObjApiRepository extends ResourceRepository<ObjImpl, Integer> {
-
-}

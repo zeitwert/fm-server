@@ -14,6 +14,7 @@ public abstract class ObjExtnBase extends ObjBase {
 	//@formatter:off
 	protected final SimpleProperty<Integer> extnObjId = this.addSimpleProperty("extnObjId", Integer.class);
 	protected final ReferenceProperty<ObjTenant> extnTenantId = this.addReferenceProperty("extnTenantId", ObjTenant.class);
+	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
 	//@formatter:on
 
 	protected ObjExtnBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, Object state) {
@@ -30,6 +31,15 @@ public abstract class ObjExtnBase extends ObjBase {
 		} finally {
 			this.enableCalc();
 		}
+	}
+
+	public final Integer getAccountId() {
+		return this.accountId.getValue();
+	}
+
+	public final void setAccountId(Integer id) {
+		this.accountId.setValue(id);
+		this.extnAccountId.setValue(id);
 	}
 
 }
