@@ -22,12 +22,12 @@ public class ObjContactPartAddressPersistenceProvider
 
 	public ObjContactPartAddressPersistenceProvider(DSLContext dslContext) {
 		super(ObjContact.class, ObjContactPartAddressRepository.class, ObjContactPartAddressBase.class, dslContext);
-		this.mapField("addressChannel", BASE, "address_channel_id", String.class);
-		this.mapField("name", BASE, "name", String.class);
-		this.mapField("street", BASE, "street", String.class);
-		this.mapField("zip", BASE, "zip", String.class);
-		this.mapField("city", BASE, "city", String.class);
-		this.mapField("country", BASE, "country_id", String.class);
+		this.mapField("addressChannel", PartState.BASE, "address_channel_id", String.class);
+		this.mapField("name", PartState.BASE, "name", String.class);
+		this.mapField("street", PartState.BASE, "street", String.class);
+		this.mapField("zip", PartState.BASE, "zip", String.class);
+		this.mapField("city", PartState.BASE, "city", String.class);
+		this.mapField("country", PartState.BASE, "country_id", String.class);
 	}
 
 	@Override
@@ -37,18 +37,18 @@ public class ObjContactPartAddressPersistenceProvider
 
 	@Override
 	public ObjContactPartAddress doCreate(ObjContact obj) {
-		ObjContactPartAddressRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_CONTACT_PART_ADDRESS);
-		return this.newPart(obj, new PartState(dbRecord));
+		ObjContactPartAddressRecord dbRecord = this.dslContext().newRecord(Tables.OBJ_CONTACT_PART_ADDRESS);
+		return this.getRepositorySPI().newPart(obj, new PartState(dbRecord));
 	}
 
 	@Override
 	public List<ObjContactPartAddress> doLoad(ObjContact obj) {
-		Result<ObjContactPartAddressRecord> dbRecords = this.getDSLContext()
+		Result<ObjContactPartAddressRecord> dbRecords = this.dslContext()
 				.selectFrom(Tables.OBJ_CONTACT_PART_ADDRESS)
 				.where(Tables.OBJ_CONTACT_PART_ADDRESS.OBJ_ID.eq(obj.getId()))
 				.orderBy(Tables.OBJ_CONTACT_PART_ADDRESS.SEQ_NR)
 				.fetchInto(Tables.OBJ_CONTACT_PART_ADDRESS);
-		return dbRecords.map(dbRecord -> this.newPart(obj, new PartState(dbRecord)));
+		return dbRecords.map(dbRecord -> this.getRepositorySPI().newPart(obj, new PartState(dbRecord)));
 	}
 
 }

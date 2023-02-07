@@ -13,6 +13,7 @@ import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 
@@ -22,9 +23,9 @@ public class ObjPortfolioPersistenceProvider extends ObjExtnPersistenceProviderB
 
 	public ObjPortfolioPersistenceProvider(DSLContext dslContext) {
 		super(ObjPortfolioRepository.class, ObjPortfolioBase.class, dslContext);
-		this.mapField("name", EXTN, "name", String.class);
-		this.mapField("description", EXTN, "description", String.class);
-		this.mapField("portfolioNr", EXTN, "portfolio_nr", String.class);
+		this.mapField("name", AggregateState.EXTN, "name", String.class);
+		this.mapField("description", AggregateState.EXTN, "description", String.class);
+		this.mapField("portfolioNr", AggregateState.EXTN, "portfolio_nr", String.class);
 		this.mapCollection("includeSet", "portfolio.includeList", Obj.class);
 		this.mapCollection("excludeSet", "portfolio.excludeList", Obj.class);
 		this.mapCollection("buildingSet", "portfolio.buildingList", ObjBuilding.class);
@@ -38,13 +39,13 @@ public class ObjPortfolioPersistenceProvider extends ObjExtnPersistenceProviderB
 
 	@Override
 	public ObjPortfolio doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_PORTFOLIO));
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_PORTFOLIO));
 	}
 
 	@Override
 	public ObjPortfolio doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjPortfolioRecord portfolioRecord = this.getDSLContext().fetchOne(Tables.OBJ_PORTFOLIO,
+		ObjPortfolioRecord portfolioRecord = this.dslContext().fetchOne(Tables.OBJ_PORTFOLIO,
 				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));
 		if (portfolioRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");

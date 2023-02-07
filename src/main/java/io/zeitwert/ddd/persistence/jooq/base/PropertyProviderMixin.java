@@ -41,6 +41,12 @@ record CollectionConfig(CodePartListType partListType, Class<?> fieldType) {
 
 public interface PropertyProviderMixin extends PropertyProvider {
 
+	Map<String, Object> dbConfigMap();
+
+	void mapFields();
+
+	UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType);
+
 	default void mapField(String name, String tableType, String fieldName, Class<?> fieldType) {
 		requireThis(this.getFieldConfig(name) == null, "unique field " + name);
 		this.dbConfigMap().put(name, new FieldConfig(tableType, fieldName, fieldType));
@@ -133,9 +139,5 @@ public interface PropertyProviderMixin extends PropertyProvider {
 			Class<?> type) {
 		assertThis(collectionConfig != null, "field [" + name + "] has valid db configuration");
 	}
-
-	Map<String, Object> dbConfigMap();
-
-	UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType);
 
 }

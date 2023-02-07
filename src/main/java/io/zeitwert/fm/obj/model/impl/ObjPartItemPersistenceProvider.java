@@ -20,7 +20,7 @@ public class ObjPartItemPersistenceProvider extends ObjPartPersistenceProviderBa
 
 	public ObjPartItemPersistenceProvider(DSLContext dslContext) {
 		super(Obj.class, ObjPartItemRepository.class, ObjPartItemBase.class, dslContext);
-		this.mapField("itemId", BASE, "item_id", String.class);
+		this.mapField("itemId", PartState.BASE, "item_id", String.class);
 	}
 
 	@Override
@@ -30,18 +30,18 @@ public class ObjPartItemPersistenceProvider extends ObjPartPersistenceProviderBa
 
 	@Override
 	public ObjPartItem doCreate(Obj obj) {
-		ObjPartItemRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_ITEM);
-		return this.newPart(obj, new PartState(dbRecord));
+		ObjPartItemRecord dbRecord = this.dslContext().newRecord(Tables.OBJ_PART_ITEM);
+		return this.getRepositorySPI().newPart(obj, new PartState(dbRecord));
 	}
 
 	@Override
 	public List<ObjPartItem> doLoad(Obj obj) {
-		Result<ObjPartItemRecord> dbRecords = this.getDSLContext()
+		Result<ObjPartItemRecord> dbRecords = this.dslContext()
 				.selectFrom(Tables.OBJ_PART_ITEM)
 				.where(Tables.OBJ_PART_ITEM.OBJ_ID.eq(obj.getId()))
 				.orderBy(Tables.OBJ_PART_ITEM.SEQ_NR)
 				.fetchInto(Tables.OBJ_PART_ITEM);
-		return dbRecords.map(dbRecord -> this.newPart(obj, new PartState(dbRecord)));
+		return dbRecords.map(dbRecord -> this.getRepositorySPI().newPart(obj, new PartState(dbRecord)));
 	}
 
 }

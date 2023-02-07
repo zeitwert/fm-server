@@ -5,6 +5,7 @@ import org.jooq.DSLContext;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.obj.model.Obj;
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
 
 public abstract class ObjExtnPersistenceProviderBase<O extends Obj> extends ObjPersistenceProviderBase<O> {
 
@@ -13,12 +14,17 @@ public abstract class ObjExtnPersistenceProviderBase<O extends Obj> extends ObjP
 			Class<? extends Aggregate> baseClass,
 			DSLContext dslContext) {
 		super(repoIntfClass, baseClass, dslContext);
-		this.mapField("extnObjId", EXTN, "obj_id", Integer.class);
-		this.mapField("extnTenantId", EXTN, "tenant_id", Integer.class);
+	}
+
+	@Override
+	public void mapFields() {
+		super.mapFields();
+		this.mapField("extnObjId", AggregateState.EXTN, "obj_id", Integer.class);
+		this.mapField("extnTenantId", AggregateState.EXTN, "tenant_id", Integer.class);
 		if (this.hasAccount()) {
-			this.mapField("extnAccountId", EXTN, "account_id", Integer.class);
+			this.mapField("extnAccountId", AggregateState.EXTN, "account_id", Integer.class);
 		} else {
-			this.mapField("extnAccountId", BASE, "account_id", Integer.class);
+			this.mapField("extnAccountId", AggregateState.BASE, "account_id", Integer.class);
 		}
 	}
 

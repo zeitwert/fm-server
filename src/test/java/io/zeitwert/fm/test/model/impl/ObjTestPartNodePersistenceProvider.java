@@ -24,15 +24,15 @@ public class ObjTestPartNodePersistenceProvider extends ObjPartPersistenceProvid
 
 	public ObjTestPartNodePersistenceProvider(DSLContext dslContext) {
 		super(ObjTest.class, ObjTestPartNodeRepository.class, ObjTestPartNodeBase.class, dslContext);
-		this.mapField("shortText", BASE, "short_text", String.class);
-		this.mapField("longText", BASE, "long_text", String.class);
-		this.mapField("date", BASE, "date", LocalDate.class);
-		this.mapField("int", BASE, "int", Integer.class);
-		this.mapField("isDone", BASE, "is_done", Boolean.class);
-		this.mapField("json", BASE, "json", JSON.class);
-		this.mapField("nr", BASE, "nr", BigDecimal.class);
-		this.mapField("country", BASE, "country_id", String.class);
-		this.mapField("refTest", BASE, "ref_obj_id", Integer.class);
+		this.mapField("shortText", PartState.BASE, "short_text", String.class);
+		this.mapField("longText", PartState.BASE, "long_text", String.class);
+		this.mapField("date", PartState.BASE, "date", LocalDate.class);
+		this.mapField("int", PartState.BASE, "int", Integer.class);
+		this.mapField("isDone", PartState.BASE, "is_done", Boolean.class);
+		this.mapField("json", PartState.BASE, "json", JSON.class);
+		this.mapField("nr", PartState.BASE, "nr", BigDecimal.class);
+		this.mapField("country", PartState.BASE, "country_id", String.class);
+		this.mapField("refTest", PartState.BASE, "ref_obj_id", Integer.class);
 	}
 
 	@Override
@@ -42,18 +42,18 @@ public class ObjTestPartNodePersistenceProvider extends ObjPartPersistenceProvid
 
 	@Override
 	public ObjTestPartNode doCreate(ObjTest obj) {
-		ObjTestPartNodeRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_TEST_PART_NODE);
-		return this.newPart(obj, new PartState(dbRecord));
+		ObjTestPartNodeRecord dbRecord = this.dslContext().newRecord(Tables.OBJ_TEST_PART_NODE);
+		return this.getRepositorySPI().newPart(obj, new PartState(dbRecord));
 	}
 
 	@Override
 	public List<ObjTestPartNode> doLoad(ObjTest obj) {
-		Result<ObjTestPartNodeRecord> dbRecords = this.getDSLContext()
+		Result<ObjTestPartNodeRecord> dbRecords = this.dslContext()
 				.selectFrom(Tables.OBJ_TEST_PART_NODE)
 				.where(Tables.OBJ_TEST_PART_NODE.OBJ_ID.eq(obj.getId()))
 				.orderBy(Tables.OBJ_TEST_PART_NODE.SEQ_NR)
 				.fetchInto(Tables.OBJ_TEST_PART_NODE);
-		return dbRecords.map(dbRecord -> this.newPart(obj, new PartState(dbRecord)));
+		return dbRecords.map(dbRecord -> this.getRepositorySPI().newPart(obj, new PartState(dbRecord)));
 	}
 
 }

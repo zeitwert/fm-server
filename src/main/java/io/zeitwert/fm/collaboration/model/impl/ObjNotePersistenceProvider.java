@@ -8,6 +8,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -21,11 +22,11 @@ public class ObjNotePersistenceProvider extends ObjExtnPersistenceProviderBase<O
 
 	public ObjNotePersistenceProvider(DSLContext dslContext) {
 		super(ObjNoteRepository.class, ObjNoteBase.class, dslContext);
-		this.mapField("relatedToId", EXTN, "related_to_id", Integer.class);
-		this.mapField("noteType", EXTN, "note_type_id", String.class);
-		this.mapField("subject", EXTN, "subject", String.class);
-		this.mapField("content", EXTN, "content", String.class);
-		this.mapField("isPrivate", EXTN, "is_private", Boolean.class);
+		this.mapField("relatedToId", AggregateState.EXTN, "related_to_id", Integer.class);
+		this.mapField("noteType", AggregateState.EXTN, "note_type_id", String.class);
+		this.mapField("subject", AggregateState.EXTN, "subject", String.class);
+		this.mapField("content", AggregateState.EXTN, "content", String.class);
+		this.mapField("isPrivate", AggregateState.EXTN, "is_private", Boolean.class);
 	}
 
 	@Override
@@ -40,13 +41,13 @@ public class ObjNotePersistenceProvider extends ObjExtnPersistenceProviderBase<O
 
 	@Override
 	public ObjNote doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_NOTE));
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_NOTE));
 	}
 
 	@Override
 	public ObjNote doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjNoteRecord noteRecord = this.getDSLContext().fetchOne(Tables.OBJ_NOTE,
+		ObjNoteRecord noteRecord = this.dslContext().fetchOne(Tables.OBJ_NOTE,
 				Tables.OBJ_NOTE.OBJ_ID.eq(objId));
 		if (noteRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");

@@ -22,10 +22,10 @@ public class ObjPartTransitionPersistenceProvider extends ObjPartPersistenceProv
 
 	public ObjPartTransitionPersistenceProvider(DSLContext dslContext) {
 		super(Obj.class, ObjPartTransitionRepository.class, ObjPartTransitionBase.class, dslContext);
-		this.mapField("tenantId", BASE, "tenant_id", Integer.class);
-		this.mapField("user", BASE, "user_id", Integer.class);
-		this.mapField("timestamp", BASE, "timestamp", OffsetDateTime.class);
-		this.mapField("changes", BASE, "changes", JSON.class);
+		this.mapField("tenantId", PartState.BASE, "tenant_id", Integer.class);
+		this.mapField("user", PartState.BASE, "user_id", Integer.class);
+		this.mapField("timestamp", PartState.BASE, "timestamp", OffsetDateTime.class);
+		this.mapField("changes", PartState.BASE, "changes", JSON.class);
 	}
 
 	@Override
@@ -35,18 +35,18 @@ public class ObjPartTransitionPersistenceProvider extends ObjPartPersistenceProv
 
 	@Override
 	public ObjPartTransition doCreate(Obj obj) {
-		ObjPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.OBJ_PART_TRANSITION);
-		return this.newPart(obj, new PartState(dbRecord));
+		ObjPartTransitionRecord dbRecord = this.dslContext().newRecord(Tables.OBJ_PART_TRANSITION);
+		return this.getRepositorySPI().newPart(obj, new PartState(dbRecord));
 	}
 
 	@Override
 	public List<ObjPartTransition> doLoad(Obj obj) {
-		Result<ObjPartTransitionRecord> dbRecords = this.getDSLContext()
+		Result<ObjPartTransitionRecord> dbRecords = this.dslContext()
 				.selectFrom(Tables.OBJ_PART_TRANSITION)
 				.where(Tables.OBJ_PART_TRANSITION.OBJ_ID.eq(obj.getId()))
 				.orderBy(Tables.OBJ_PART_TRANSITION.SEQ_NR)
 				.fetchInto(Tables.OBJ_PART_TRANSITION);
-		return dbRecords.map(dbRecord -> this.newPart(obj, new PartState(dbRecord)));
+		return dbRecords.map(dbRecord -> this.getRepositorySPI().newPart(obj, new PartState(dbRecord)));
 	}
 
 }

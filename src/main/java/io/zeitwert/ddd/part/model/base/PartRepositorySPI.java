@@ -3,6 +3,7 @@ package io.zeitwert.ddd.part.model.base;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartPersistenceProvider;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 
 /**
@@ -10,6 +11,8 @@ import io.zeitwert.ddd.property.model.PropertyProvider;
  * implementation.
  */
 public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
+
+	P newPart(A aggregate, PartState partState);
 
 	/**
 	 * Get the PropertyProvider for this repository

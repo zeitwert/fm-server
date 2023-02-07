@@ -7,7 +7,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.jooq.UpdatableRecord;
 import org.springframework.context.event.EventListener;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
@@ -19,6 +18,7 @@ import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
@@ -43,7 +43,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, UpdatableRecord.class };
+		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, PartState.class };
 	}
 
 	@Override
@@ -76,11 +76,12 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		return (PartCache<P>) ((AggregateBase) aggregate).getPartCache(this.intfClass);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	protected final P newPart(A aggregate, UpdatableRecord<?> dbRecord) {
+	public final P newPart(A aggregate, PartState partState) {
 		P part = null;
 		try {
-			part = (P) this.proxyFactory.create(this.paramTypeList, new Object[] { this, aggregate, dbRecord },
+			part = (P) this.proxyFactory.create(this.paramTypeList, new Object[] { this, aggregate, partState },
 					PropertyHandler.INSTANCE);
 		} catch (NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException
 				| InvocationTargetException e) {

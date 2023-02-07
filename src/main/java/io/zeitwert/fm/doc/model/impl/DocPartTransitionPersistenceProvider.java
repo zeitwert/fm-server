@@ -22,12 +22,12 @@ public class DocPartTransitionPersistenceProvider extends DocPartPersistenceProv
 
 	public DocPartTransitionPersistenceProvider(DSLContext dslContext) {
 		super(Doc.class, DocPartTransitionRepository.class, DocPartTransitionBase.class, dslContext);
-		this.mapField("tenantId", BASE, "tenant_id", Integer.class);
-		this.mapField("user", BASE, "user_id", Integer.class);
-		this.mapField("timestamp", BASE, "timestamp", OffsetDateTime.class);
-		this.mapField("oldCaseStage", BASE, "old_case_stage_id", String.class);
-		this.mapField("newCaseStage", BASE, "new_case_stage_id", String.class);
-		this.mapField("changes", BASE, "changes", JSON.class);
+		this.mapField("tenantId", PartState.BASE, "tenant_id", Integer.class);
+		this.mapField("user", PartState.BASE, "user_id", Integer.class);
+		this.mapField("timestamp", PartState.BASE, "timestamp", OffsetDateTime.class);
+		this.mapField("oldCaseStage", PartState.BASE, "old_case_stage_id", String.class);
+		this.mapField("newCaseStage", PartState.BASE, "new_case_stage_id", String.class);
+		this.mapField("changes", PartState.BASE, "changes", JSON.class);
 	}
 
 	@Override
@@ -37,18 +37,18 @@ public class DocPartTransitionPersistenceProvider extends DocPartPersistenceProv
 
 	@Override
 	public DocPartTransition doCreate(Doc doc) {
-		DocPartTransitionRecord dbRecord = this.getDSLContext().newRecord(Tables.DOC_PART_TRANSITION);
-		return this.newPart(doc, new PartState(dbRecord));
+		DocPartTransitionRecord dbRecord = this.dslContext().newRecord(Tables.DOC_PART_TRANSITION);
+		return this.getRepositorySPI().newPart(doc, new PartState(dbRecord));
 	}
 
 	@Override
 	public List<DocPartTransition> doLoad(Doc doc) {
-		Result<DocPartTransitionRecord> dbRecords = this.getDSLContext()
+		Result<DocPartTransitionRecord> dbRecords = this.dslContext()
 				.selectFrom(Tables.DOC_PART_TRANSITION)
 				.where(Tables.DOC_PART_TRANSITION.DOC_ID.eq(doc.getId()))
 				.orderBy(Tables.DOC_PART_TRANSITION.SEQ_NR)
 				.fetchInto(Tables.DOC_PART_TRANSITION);
-		return dbRecords.map(dbRecord -> this.newPart(doc, new PartState(dbRecord)));
+		return dbRecords.map(dbRecord -> this.getRepositorySPI().newPart(doc, new PartState(dbRecord)));
 	}
 
 }

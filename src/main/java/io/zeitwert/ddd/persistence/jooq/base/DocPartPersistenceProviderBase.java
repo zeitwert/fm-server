@@ -11,7 +11,8 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 
 public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Part<D>>
-		extends PartPersistenceProviderBase<D, P> {
+		extends PartPersistenceProviderBase<D, P>
+		implements DocPartPropertyProviderMixin, PartPersistenceProviderMixin<D, P> {
 
 	private static final String DOC_PART_ID_SEQ = "doc_part_id_seq";
 
@@ -21,7 +22,7 @@ public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Pa
 			Class<? extends Part<D>> baseClass,
 			DSLContext dslContext) {
 		super(docIntfClass, repoIntfClass, baseClass, dslContext);
-		this.mapField("docId", BASE, "doc_id", Integer.class);
+		this.mapFields();
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Pa
 
 	@Override
 	public Integer nextPartId() {
-		return this.getDSLContext().nextval(DOC_PART_ID_SEQ).intValue();
+		return this.dslContext().nextval(DOC_PART_ID_SEQ).intValue();
 	}
 
 	@Override

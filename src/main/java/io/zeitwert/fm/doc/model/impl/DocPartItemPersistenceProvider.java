@@ -20,7 +20,7 @@ public class DocPartItemPersistenceProvider extends DocPartPersistenceProviderBa
 
 	public DocPartItemPersistenceProvider(DSLContext dslContext) {
 		super(Doc.class, DocPartItemRepository.class, DocPartItemBase.class, dslContext);
-		this.mapField("itemId", BASE, "item_id", String.class);
+		this.mapField("itemId", PartState.BASE, "item_id", String.class);
 	}
 
 	@Override
@@ -30,18 +30,18 @@ public class DocPartItemPersistenceProvider extends DocPartPersistenceProviderBa
 
 	@Override
 	public DocPartItem doCreate(Doc doc) {
-		DocPartItemRecord dbRecord = this.getDSLContext().newRecord(Tables.DOC_PART_ITEM);
-		return this.newPart(doc, new PartState(dbRecord));
+		DocPartItemRecord dbRecord = this.dslContext().newRecord(Tables.DOC_PART_ITEM);
+		return this.getRepositorySPI().newPart(doc, new PartState(dbRecord));
 	}
 
 	@Override
 	public List<DocPartItem> doLoad(Doc doc) {
-		Result<DocPartItemRecord> dbRecords = this.getDSLContext()
+		Result<DocPartItemRecord> dbRecords = this.dslContext()
 				.selectFrom(Tables.DOC_PART_ITEM)
 				.where(Tables.DOC_PART_ITEM.DOC_ID.eq(doc.getId()))
 				.orderBy(Tables.DOC_PART_ITEM.SEQ_NR)
 				.fetchInto(Tables.DOC_PART_ITEM);
-		return dbRecords.map(dbRecord -> this.newPart(doc, new PartState(dbRecord)));
+		return dbRecords.map(dbRecord -> this.getRepositorySPI().newPart(doc, new PartState(dbRecord)));
 	}
 
 }

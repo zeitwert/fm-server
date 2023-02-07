@@ -12,6 +12,7 @@ import org.springframework.context.annotation.DependsOn;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
@@ -22,11 +23,11 @@ public class ObjTenantPersistenceProvider extends ObjExtnPersistenceProviderBase
 
 	public ObjTenantPersistenceProvider(DSLContext dslContext) {
 		super(ObjTenantRepository.class, ObjTenantBase.class, dslContext);
-		this.mapField("tenantType", EXTN, "tenant_type_id", String.class);
-		this.mapField("name", EXTN, "name", String.class);
-		this.mapField("description", EXTN, "description", String.class);
-		this.mapField("inflationRate", EXTN, "inflation_rate", BigDecimal.class);
-		this.mapField("logoImage", EXTN, "logo_img_id", Integer.class);
+		this.mapField("tenantType", AggregateState.EXTN, "tenant_type_id", String.class);
+		this.mapField("name", AggregateState.EXTN, "name", String.class);
+		this.mapField("description", AggregateState.EXTN, "description", String.class);
+		this.mapField("inflationRate", AggregateState.EXTN, "inflation_rate", BigDecimal.class);
+		this.mapField("logoImage", AggregateState.EXTN, "logo_img_id", Integer.class);
 	}
 
 	@Override
@@ -41,13 +42,13 @@ public class ObjTenantPersistenceProvider extends ObjExtnPersistenceProviderBase
 
 	@Override
 	public ObjTenant doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_TENANT));
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_TENANT));
 	}
 
 	@Override
 	public ObjTenant doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjTenantRecord tenantRecord = this.getDSLContext().fetchOne(Tables.OBJ_TENANT,
+		ObjTenantRecord tenantRecord = this.dslContext().fetchOne(Tables.OBJ_TENANT,
 				Tables.OBJ_TENANT.OBJ_ID.eq(objId));
 		if (tenantRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");

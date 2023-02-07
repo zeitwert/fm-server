@@ -7,6 +7,7 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -20,11 +21,11 @@ public class ObjDocumentPersistenceProvider extends ObjExtnPersistenceProviderBa
 
 	public ObjDocumentPersistenceProvider(DSLContext dslContext) {
 		super(ObjDocumentRepository.class, ObjDocumentBase.class, dslContext);
-		this.mapField("name", EXTN, "name", String.class);
-		this.mapField("documentKind", EXTN, "document_kind_id", String.class);
-		this.mapField("documentCategory", EXTN, "document_category_id", String.class);
-		this.mapField("templateDocument", EXTN, "template_document_id", Integer.class);
-		this.mapField("contentKind", EXTN, "content_kind_id", String.class);
+		this.mapField("name", AggregateState.EXTN, "name", String.class);
+		this.mapField("documentKind", AggregateState.EXTN, "document_kind_id", String.class);
+		this.mapField("documentCategory", AggregateState.EXTN, "document_category_id", String.class);
+		this.mapField("templateDocument", AggregateState.EXTN, "template_document_id", Integer.class);
+		this.mapField("contentKind", AggregateState.EXTN, "content_kind_id", String.class);
 	}
 
 	@Override
@@ -34,13 +35,13 @@ public class ObjDocumentPersistenceProvider extends ObjExtnPersistenceProviderBa
 
 	@Override
 	public ObjDocument doCreate() {
-		return this.doCreate(this.getDSLContext().newRecord(Tables.OBJ_DOCUMENT));
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_DOCUMENT));
 	}
 
 	@Override
 	public ObjDocument doLoad(Integer objId) {
 		requireThis(objId != null, "objId not null");
-		ObjDocumentRecord documentRecord = this.getDSLContext().fetchOne(Tables.OBJ_DOCUMENT,
+		ObjDocumentRecord documentRecord = this.dslContext().fetchOne(Tables.OBJ_DOCUMENT,
 				Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId));
 		if (documentRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
