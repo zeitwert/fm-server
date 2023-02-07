@@ -9,11 +9,11 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.DocExtnPersistenceProviderBase;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.Tables;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.persistence.DocExtnPersistenceProviderBase;
 
 @Configuration("taskPersistenceProvider")
 @DependsOn("codePartListTypeEnum")

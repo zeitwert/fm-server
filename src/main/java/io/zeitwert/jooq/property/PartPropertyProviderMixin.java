@@ -1,10 +1,10 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.property;
 
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.jooq.persistence.PartState;
 
 public interface PartPropertyProviderMixin extends PropertyProviderMixin {
 

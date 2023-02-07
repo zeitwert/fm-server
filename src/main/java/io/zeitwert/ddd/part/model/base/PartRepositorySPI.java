@@ -3,8 +3,8 @@ package io.zeitwert.ddd.part.model.base;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartPersistenceProvider;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.PropertyProvider;
+import io.zeitwert.jooq.persistence.PartState;
 
 /**
  * This class defines the internal callbacks for a PartRepository

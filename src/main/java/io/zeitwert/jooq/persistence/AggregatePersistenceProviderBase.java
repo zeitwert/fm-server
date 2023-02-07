@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.persistence;
 
 import java.util.HashMap;
 import java.util.Map;

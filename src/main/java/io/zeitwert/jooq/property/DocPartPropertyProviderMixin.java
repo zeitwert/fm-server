@@ -1,6 +1,6 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.property;
 
-import io.zeitwert.ddd.persistence.jooq.PartState;
+import io.zeitwert.jooq.persistence.PartState;
 
 public interface DocPartPropertyProviderMixin extends PartPropertyProviderMixin {
 

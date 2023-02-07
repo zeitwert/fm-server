@@ -4,9 +4,9 @@ import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
+import io.zeitwert.jooq.persistence.PartState;
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 

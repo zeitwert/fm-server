@@ -10,9 +10,9 @@ import org.springframework.context.annotation.DependsOn;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.persistence.ObjExtnPersistenceProviderBase;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 
 @Configuration("portfolioPersistenceProvider")

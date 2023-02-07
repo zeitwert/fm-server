@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.persistence.jooq.base.DocPersistenceProviderBase;
+import io.zeitwert.jooq.persistence.DocPersistenceProviderBase;
 
 @Configuration("docPersistenceProvider")
 @DependsOn("codePartListTypeEnum")

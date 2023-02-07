@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.impl;
+package io.zeitwert.jooq.property;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 

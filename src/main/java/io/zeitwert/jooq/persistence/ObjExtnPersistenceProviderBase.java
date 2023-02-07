@@ -1,10 +1,9 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.persistence;
 
 import org.jooq.DSLContext;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
 
 public abstract class ObjExtnPersistenceProviderBase<O extends Obj> extends ObjPersistenceProviderBase<O> {
 

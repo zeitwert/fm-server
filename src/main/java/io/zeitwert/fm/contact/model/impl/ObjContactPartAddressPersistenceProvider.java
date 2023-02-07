@@ -11,8 +11,8 @@ import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord;
-import io.zeitwert.ddd.persistence.jooq.PartState;
-import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
+import io.zeitwert.jooq.persistence.ObjPartPersistenceProviderBase;
+import io.zeitwert.jooq.persistence.PartState;
 
 @Configuration
 public class ObjContactPartAddressPersistenceProvider

@@ -13,8 +13,8 @@ import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingRecord;
-import io.zeitwert.ddd.persistence.jooq.PartState;
-import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
+import io.zeitwert.jooq.persistence.ObjPartPersistenceProviderBase;
+import io.zeitwert.jooq.persistence.PartState;
 
 @Configuration
 public class ObjBuildingPartRatingPersistenceProvider

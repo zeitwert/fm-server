@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq;
+package io.zeitwert.jooq.persistence;
 
 import org.jooq.UpdatableRecord;
 

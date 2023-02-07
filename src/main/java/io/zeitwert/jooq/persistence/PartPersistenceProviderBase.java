@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.persistence;
 
 import static io.zeitwert.ddd.util.Check.requireThis;
 
@@ -17,7 +17,6 @@ import io.zeitwert.ddd.part.model.base.PartFields;
 import io.zeitwert.ddd.part.model.base.PartRepositorySPI;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 
 public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends Part<A>>

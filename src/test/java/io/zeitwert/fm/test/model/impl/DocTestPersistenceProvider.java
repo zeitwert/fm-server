@@ -10,13 +10,13 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.DocExtnPersistenceProviderBase;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.persistence.DocExtnPersistenceProviderBase;
 
 @Configuration("docTestPersistenceProvider")
 @DependsOn("codePartListTypeEnum")

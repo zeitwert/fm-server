@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
-import io.zeitwert.ddd.persistence.jooq.PartState;
-import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartItemRecord;
+import io.zeitwert.jooq.persistence.ObjPartPersistenceProviderBase;
+import io.zeitwert.jooq.persistence.PartState;
 
 @Configuration
 public class ObjPartItemPersistenceProvider extends ObjPartPersistenceProviderBase<Obj, ObjPartItem> {

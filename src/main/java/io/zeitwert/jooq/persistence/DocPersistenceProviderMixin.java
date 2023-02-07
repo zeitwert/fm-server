@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.persistence;
 
 import org.jooq.UpdatableRecord;
 import org.jooq.exception.NoDataFoundException;
@@ -6,7 +6,6 @@ import org.jooq.exception.NoDataFoundException;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositorySPI;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 

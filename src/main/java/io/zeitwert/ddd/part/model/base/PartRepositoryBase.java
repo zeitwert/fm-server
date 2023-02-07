@@ -18,10 +18,10 @@ import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
+import io.zeitwert.jooq.persistence.PartState;
 import javassist.util.proxy.ProxyFactory;
 
 public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>

@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.persistence;
 
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
@@ -8,6 +8,7 @@ import io.zeitwert.ddd.obj.model.base.ObjPartFields;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.jooq.property.ObjPartPropertyProviderMixin;
 
 public abstract class ObjPartPersistenceProviderBase<O extends Obj, P extends Part<O>>
 		extends PartPersistenceProviderBase<O, P>

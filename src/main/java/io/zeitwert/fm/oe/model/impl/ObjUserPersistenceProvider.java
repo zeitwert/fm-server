@@ -9,10 +9,10 @@ import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
-import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.persistence.ObjExtnPersistenceProviderBase;
 
 @Configuration("userPersistenceProvider")
 @DependsOn("codePartListTypeEnum")

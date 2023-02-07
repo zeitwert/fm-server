@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.impl;
+package io.zeitwert.jooq.property;
 
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;

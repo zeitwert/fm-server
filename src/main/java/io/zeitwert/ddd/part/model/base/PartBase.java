@@ -10,12 +10,12 @@ import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class PartBase<A extends Aggregate> extends EntityWithPropertiesBase
 		implements Part<A>, PartMeta<A>, PartSPI<A> {

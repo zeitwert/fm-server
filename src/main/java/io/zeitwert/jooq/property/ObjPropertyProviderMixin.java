@@ -1,9 +1,9 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.property;
 
 import java.time.OffsetDateTime;
 
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
+import io.zeitwert.jooq.persistence.AggregateState;
 
 public interface ObjPropertyProviderMixin
 		extends AggregatePropertyProviderMixin {

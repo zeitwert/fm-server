@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.property;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
@@ -18,9 +18,6 @@ import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.persistence.jooq.impl.EnumPropertyImpl;
-import io.zeitwert.ddd.persistence.jooq.impl.ReferencePropertyImpl;
-import io.zeitwert.ddd.persistence.jooq.impl.SimplePropertyImpl;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;

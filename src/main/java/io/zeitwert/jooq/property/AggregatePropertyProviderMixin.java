@@ -1,10 +1,10 @@
-package io.zeitwert.ddd.persistence.jooq.base;
+package io.zeitwert.jooq.property;
 
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
-import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.jooq.persistence.AggregateState;
 
 public interface AggregatePropertyProviderMixin extends PropertyProviderMixin {
 

@@ -3,8 +3,8 @@ package io.zeitwert.ddd.doc.model.base;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartItem;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class DocPartItemBase extends DocPartBase<Doc> implements DocPartItem {
 
