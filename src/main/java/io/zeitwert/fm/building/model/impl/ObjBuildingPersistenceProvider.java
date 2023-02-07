@@ -13,8 +13,6 @@ import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.contact.model.ObjContact;
@@ -24,7 +22,7 @@ import io.zeitwert.fm.contact.model.ObjContact;
 public class ObjBuildingPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjBuilding> {
 
 	public ObjBuildingPersistenceProvider(DSLContext dslContext) {
-		super(ObjBuildingRepository.class, ObjBuildingBase.class, dslContext);
+		super(ObjBuilding.class, dslContext);
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
 		this.mapField("buildingNr", AggregateState.EXTN, "building_nr", String.class);
@@ -60,11 +58,6 @@ public class ObjBuildingPersistenceProvider extends ObjExtnPersistenceProviderBa
 		this.mapCollection("materialDescriptionSet", "building.materialDescriptionSet", String.class);
 		this.mapCollection("conditionDescriptionSet", "building.conditionDescriptionSet", String.class);
 		this.mapCollection("measureDescriptionSet", "building.measureDescriptionSet", String.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjBuilding.class;
 	}
 
 	@Override

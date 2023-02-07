@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPartTransitionBase;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.obj.model.db.Tables;
@@ -21,16 +19,11 @@ import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord;
 public class ObjPartTransitionPersistenceProvider extends ObjPartPersistenceProviderBase<Obj, ObjPartTransition> {
 
 	public ObjPartTransitionPersistenceProvider(DSLContext dslContext) {
-		super(Obj.class, ObjPartTransitionRepository.class, ObjPartTransitionBase.class, dslContext);
+		super(ObjPartTransition.class, dslContext);
 		this.mapField("tenantId", PartState.BASE, "tenant_id", Integer.class);
 		this.mapField("user", PartState.BASE, "user_id", Integer.class);
 		this.mapField("timestamp", PartState.BASE, "timestamp", OffsetDateTime.class);
 		this.mapField("changes", PartState.BASE, "changes", JSON.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjPartTransition.class;
 	}
 
 	@Override

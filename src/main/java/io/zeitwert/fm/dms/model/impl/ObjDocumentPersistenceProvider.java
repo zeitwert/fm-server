@@ -10,8 +10,6 @@ import org.springframework.context.annotation.DependsOn;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
 
@@ -20,17 +18,12 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
 public class ObjDocumentPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjDocument> {
 
 	public ObjDocumentPersistenceProvider(DSLContext dslContext) {
-		super(ObjDocumentRepository.class, ObjDocumentBase.class, dslContext);
+		super(ObjDocument.class, dslContext);
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("documentKind", AggregateState.EXTN, "document_kind_id", String.class);
 		this.mapField("documentCategory", AggregateState.EXTN, "document_category_id", String.class);
 		this.mapField("templateDocument", AggregateState.EXTN, "template_document_id", Integer.class);
 		this.mapField("contentKind", AggregateState.EXTN, "content_kind_id", String.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjDocument.class;
 	}
 
 	@Override

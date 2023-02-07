@@ -16,8 +16,6 @@ import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.account.model.db.tables.CodeCountry;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
-import io.zeitwert.fm.test.model.base.ObjTestBase;
-import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 
@@ -26,7 +24,7 @@ import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 public class ObjTestPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjTest> {
 
 	public ObjTestPersistenceProvider(DSLContext dslContext) {
-		super(ObjTestRepository.class, ObjTestBase.class, dslContext);
+		super(ObjTest.class, dslContext);
 		this.mapField("shortText", AggregateState.EXTN, "short_text", String.class);
 		this.mapField("longText", AggregateState.EXTN, "long_text", String.class);
 		this.mapField("date", AggregateState.EXTN, "date", LocalDate.class);
@@ -38,11 +36,6 @@ public class ObjTestPersistenceProvider extends ObjExtnPersistenceProviderBase<O
 		this.mapField("refTest", AggregateState.EXTN, "ref_test_id", Integer.class);
 		this.mapCollection("countrySet", "test.countrySet", CodeCountry.class);
 		this.mapCollection("nodeList", "test.nodeList", ObjTestPartNode.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjTest.class;
 	}
 
 	@Override

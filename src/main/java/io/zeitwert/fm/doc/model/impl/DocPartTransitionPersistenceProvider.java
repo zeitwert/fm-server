@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
-import io.zeitwert.ddd.doc.model.base.DocPartTransitionBase;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.persistence.jooq.base.DocPartPersistenceProviderBase;
 import io.zeitwert.fm.doc.model.db.Tables;
@@ -21,18 +19,13 @@ import io.zeitwert.fm.doc.model.db.tables.records.DocPartTransitionRecord;
 public class DocPartTransitionPersistenceProvider extends DocPartPersistenceProviderBase<Doc, DocPartTransition> {
 
 	public DocPartTransitionPersistenceProvider(DSLContext dslContext) {
-		super(Doc.class, DocPartTransitionRepository.class, DocPartTransitionBase.class, dslContext);
+		super(DocPartTransition.class, dslContext);
 		this.mapField("tenantId", PartState.BASE, "tenant_id", Integer.class);
 		this.mapField("user", PartState.BASE, "user_id", Integer.class);
 		this.mapField("timestamp", PartState.BASE, "timestamp", OffsetDateTime.class);
 		this.mapField("oldCaseStage", PartState.BASE, "old_case_stage_id", String.class);
 		this.mapField("newCaseStage", PartState.BASE, "new_case_stage_id", String.class);
 		this.mapField("changes", PartState.BASE, "changes", JSON.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return DocPartTransition.class;
 	}
 
 	@Override

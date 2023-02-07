@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
-import io.zeitwert.fm.building.model.base.ObjBuildingPartRatingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
@@ -23,18 +21,13 @@ public class ObjBuildingPartRatingPersistenceProvider
 		extends ObjPartPersistenceProviderBase<ObjBuilding, ObjBuildingPartRating> {
 
 	public ObjBuildingPartRatingPersistenceProvider(DSLContext dslContext) {
-		super(ObjBuilding.class, ObjBuildingPartRatingRepository.class, ObjBuildingPartRatingBase.class, dslContext);
+		super(ObjBuildingPartRating.class, dslContext);
 		this.mapField("partCatalog", PartState.BASE, "part_catalog_id", String.class);
 		this.mapField("maintenanceStrategy", PartState.BASE, "maintenance_strategy_id", String.class);
 		this.mapField("ratingStatus", PartState.BASE, "rating_status_id", String.class);
 		this.mapField("ratingDate", PartState.BASE, "rating_date", LocalDate.class);
 		this.mapField("ratingUser", PartState.BASE, "rating_user_id", Integer.class);
 		this.mapCollection("elementList", "building.elementRatingList", ObjBuildingPartElementRating.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjBuildingPartRating.class;
 	}
 
 	@Override

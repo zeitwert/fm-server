@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
-import io.zeitwert.fm.building.model.base.ObjBuildingPartElementRatingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartElementRatingRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
@@ -21,8 +19,7 @@ public class ObjBuildingPartElementRatingPersistenceProvider
 		extends ObjPartPersistenceProviderBase<ObjBuilding, ObjBuildingPartElementRating> {
 
 	public ObjBuildingPartElementRatingPersistenceProvider(DSLContext dslContext) {
-		super(ObjBuilding.class, ObjBuildingPartElementRatingRepository.class, ObjBuildingPartElementRatingBase.class,
-				dslContext);
+		super(ObjBuildingPartElementRating.class, dslContext);
 		this.mapField("buildingPart", PartState.BASE, "building_part_id", String.class);
 		this.mapField("weight", PartState.BASE, "weight", Integer.class);
 		this.mapField("condition", PartState.BASE, "condition", Integer.class);
@@ -32,11 +29,6 @@ public class ObjBuildingPartElementRatingPersistenceProvider
 		this.mapField("description", PartState.BASE, "description", String.class);
 		this.mapField("conditionDescription", PartState.BASE, "condition_description", String.class);
 		this.mapField("measureDescription", PartState.BASE, "measure_description", String.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjBuildingPartElementRating.class;
 	}
 
 	@Override

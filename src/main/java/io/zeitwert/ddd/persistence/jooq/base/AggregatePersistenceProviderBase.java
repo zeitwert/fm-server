@@ -6,21 +6,24 @@ import java.util.Map;
 import org.jooq.DSLContext;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
 
-public abstract class AggregatePersistenceProviderBase<A extends Aggregate> {
+public abstract class AggregatePersistenceProviderBase<A extends Aggregate> implements AggregatePersistenceProvider<A> {
 
-	private final Map<String, Object> dbConfigMap = new HashMap<>();
+	private final Class<? extends Aggregate> intfClass;
 	private final DSLContext dslContext;
-	private final Class<? extends AggregateRepository<A, ?>> repoIntfClass;
+	private final Map<String, Object> dbConfigMap = new HashMap<>();
 
-	public AggregatePersistenceProviderBase(
-			Class<? extends AggregateRepository<A, ?>> repoIntfClass,
-			Class<? extends Aggregate> baseClass,
-			DSLContext dslContext) {
-		this.repoIntfClass = repoIntfClass;
+	public AggregatePersistenceProviderBase(Class<? extends Aggregate> intfClass, DSLContext dslContext) {
+		this.intfClass = intfClass;
 		this.dslContext = dslContext;
+	}
+
+	@Override
+	public final Class<? extends Aggregate> getEntityClass() {
+		return this.intfClass;
 	}
 
 	public final Map<String, Object> dbConfigMap() {
@@ -31,8 +34,9 @@ public abstract class AggregatePersistenceProviderBase<A extends Aggregate> {
 		return this.dslContext;
 	}
 
+	@SuppressWarnings("unchecked")
 	public final AggregateRepository<A, ?> getRepository() {
-		return AppContext.getInstance().getBean(this.repoIntfClass);
+		return (AggregateRepository<A, ?>) AppContext.getInstance().getRepository(this.intfClass);
 	}
 
 }

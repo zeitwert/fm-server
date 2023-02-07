@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
-import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
-import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestPartNodeRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
@@ -23,7 +21,7 @@ import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 public class ObjTestPartNodePersistenceProvider extends ObjPartPersistenceProviderBase<ObjTest, ObjTestPartNode> {
 
 	public ObjTestPartNodePersistenceProvider(DSLContext dslContext) {
-		super(ObjTest.class, ObjTestPartNodeRepository.class, ObjTestPartNodeBase.class, dslContext);
+		super(ObjTestPartNode.class, dslContext);
 		this.mapField("shortText", PartState.BASE, "short_text", String.class);
 		this.mapField("longText", PartState.BASE, "long_text", String.class);
 		this.mapField("date", PartState.BASE, "date", LocalDate.class);
@@ -33,11 +31,6 @@ public class ObjTestPartNodePersistenceProvider extends ObjPartPersistenceProvid
 		this.mapField("nr", PartState.BASE, "nr", BigDecimal.class);
 		this.mapField("country", PartState.BASE, "country_id", String.class);
 		this.mapField("refTest", PartState.BASE, "ref_obj_id", Integer.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjTestPartNode.class;
 	}
 
 	@Override

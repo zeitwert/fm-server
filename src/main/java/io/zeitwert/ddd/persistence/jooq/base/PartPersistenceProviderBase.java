@@ -23,17 +23,18 @@ import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends Part<A>>
 		implements PartPersistenceProvider<A, P> {
 
-	private final Map<String, Object> dbConfigMap = new HashMap<>();
+	private final Class<? extends Part<A>> intfClass;
 	private final DSLContext dslContext;
-	private final Class<? extends PartRepository<A, P>> repoIntfClass;
+	private final Map<String, Object> dbConfigMap = new HashMap<>();
 
-	public PartPersistenceProviderBase(
-			final Class<? extends A> aggregateIntfClass,
-			Class<? extends PartRepository<A, P>> repoIntfClass,
-			Class<? extends Part<A>> baseClass,
-			DSLContext dslContext) {
+	public PartPersistenceProviderBase(Class<? extends Part<A>> intfClass, DSLContext dslContext) {
+		this.intfClass = intfClass;
 		this.dslContext = dslContext;
-		this.repoIntfClass = repoIntfClass;
+	}
+
+	@Override
+	public final Class<? extends Part<A>> getEntityClass() {
+		return this.intfClass;
 	}
 
 	public Map<String, Object> dbConfigMap() {
@@ -44,8 +45,9 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 		return this.dslContext;
 	}
 
+	@SuppressWarnings("unchecked")
 	public final PartRepository<A, P> getRepository() {
-		return AppContext.getInstance().getBean(this.repoIntfClass);
+		return (PartRepository<A, P>) AppContext.getInstance().getPartRepository(this.intfClass);
 	}
 
 	@SuppressWarnings("unchecked")

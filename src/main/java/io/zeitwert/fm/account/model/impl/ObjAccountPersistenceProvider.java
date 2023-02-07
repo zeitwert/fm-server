@@ -12,8 +12,6 @@ import org.springframework.context.annotation.DependsOn;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 
@@ -22,7 +20,7 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 public class ObjAccountPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjAccount> {
 
 	public ObjAccountPersistenceProvider(DSLContext dslContext) {
-		super(ObjAccountRepository.class, ObjAccountBase.class, dslContext);
+		super(ObjAccount.class, dslContext);
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
 		this.mapField("accountType", AggregateState.EXTN, "account_type_id", String.class);
@@ -31,11 +29,6 @@ public class ObjAccountPersistenceProvider extends ObjExtnPersistenceProviderBas
 		this.mapField("inflationRate", AggregateState.EXTN, "inflation_rate", BigDecimal.class);
 		this.mapField("logoImage", AggregateState.EXTN, "logo_img_id", Integer.class);
 		this.mapField("mainContact", AggregateState.EXTN, "main_contact_id", Integer.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjAccount.class;
 	}
 
 	@Override

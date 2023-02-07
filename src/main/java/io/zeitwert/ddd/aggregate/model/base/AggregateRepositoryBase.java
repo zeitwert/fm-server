@@ -210,9 +210,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		assertThis(this.didBeforeStore, this.getClassName() + ": doBeforeStore was propagated");
 
 		this.getPersistenceProvider().doStore(aggregate);
-
 		this.doStoreParts(aggregate);
-
 		this.storeSearch(aggregate);
 
 		this.didAfterStore = false;

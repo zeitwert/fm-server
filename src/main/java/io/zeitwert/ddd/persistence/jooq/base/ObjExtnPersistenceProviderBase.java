@@ -3,17 +3,13 @@ package io.zeitwert.ddd.persistence.jooq.base;
 import org.jooq.DSLContext;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
 
 public abstract class ObjExtnPersistenceProviderBase<O extends Obj> extends ObjPersistenceProviderBase<O> {
 
-	public ObjExtnPersistenceProviderBase(
-			Class<? extends AggregateRepository<O, ?>> repoIntfClass,
-			Class<? extends Aggregate> baseClass,
-			DSLContext dslContext) {
-		super(repoIntfClass, baseClass, dslContext);
+	public ObjExtnPersistenceProviderBase(Class<? extends Aggregate> intfClass, DSLContext dslContext) {
+		super(intfClass, dslContext);
 	}
 
 	@Override

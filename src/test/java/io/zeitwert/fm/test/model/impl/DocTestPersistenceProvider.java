@@ -15,8 +15,6 @@ import io.zeitwert.ddd.persistence.jooq.base.DocExtnPersistenceProviderBase;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
-import io.zeitwert.fm.test.model.DocTestRepository;
-import io.zeitwert.fm.test.model.base.DocTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
 
@@ -25,7 +23,7 @@ import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
 public class DocTestPersistenceProvider extends DocExtnPersistenceProviderBase<DocTest> {
 
 	public DocTestPersistenceProvider(DSLContext dslContext) {
-		super(DocTestRepository.class, DocTestBase.class, dslContext);
+		super(DocTest.class, dslContext);
 		this.mapField("shortText", AggregateState.EXTN, "short_text", String.class);
 		this.mapField("longText", AggregateState.EXTN, "long_text", String.class);
 		this.mapField("date", AggregateState.EXTN, "date", LocalDate.class);
@@ -38,11 +36,6 @@ public class DocTestPersistenceProvider extends DocExtnPersistenceProviderBase<D
 		this.mapField("refDoc", AggregateState.EXTN, "ref_doc_id", Integer.class);
 		this.mapCollection("countrySet", "test.countrySet", CodeCountry.class);
 		this.mapCollection("nodeList", "test.nodeList", DocTestPartNode.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return DocTest.class;
 	}
 
 	@Override

@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
-import io.zeitwert.fm.contact.model.base.ObjContactPartAddressBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord;
 import io.zeitwert.ddd.persistence.jooq.PartState;
@@ -21,18 +19,13 @@ public class ObjContactPartAddressPersistenceProvider
 		extends ObjPartPersistenceProviderBase<ObjContact, ObjContactPartAddress> {
 
 	public ObjContactPartAddressPersistenceProvider(DSLContext dslContext) {
-		super(ObjContact.class, ObjContactPartAddressRepository.class, ObjContactPartAddressBase.class, dslContext);
+		super(ObjContactPartAddress.class, dslContext);
 		this.mapField("addressChannel", PartState.BASE, "address_channel_id", String.class);
 		this.mapField("name", PartState.BASE, "name", String.class);
 		this.mapField("street", PartState.BASE, "street", String.class);
 		this.mapField("zip", PartState.BASE, "zip", String.class);
 		this.mapField("city", PartState.BASE, "city", String.class);
 		this.mapField("country", PartState.BASE, "country_id", String.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjContactPartAddress.class;
 	}
 
 	@Override

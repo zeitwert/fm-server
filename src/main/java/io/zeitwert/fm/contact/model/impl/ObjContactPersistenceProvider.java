@@ -14,8 +14,6 @@ import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.ObjContactRepository;
-import io.zeitwert.fm.contact.model.base.ObjContactBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 
@@ -24,7 +22,7 @@ import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 public class ObjContactPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjContact> {
 
 	public ObjContactPersistenceProvider(DSLContext dslContext) {
-		super(ObjContactRepository.class, ObjContactBase.class, dslContext);
+		super(ObjContact.class, dslContext);
 		this.mapField("contactRole", AggregateState.EXTN, "contact_role_id", String.class);
 		this.mapField("salutation", AggregateState.EXTN, "salutation_id", String.class);
 		this.mapField("title", AggregateState.EXTN, "title_id", String.class);
@@ -36,11 +34,6 @@ public class ObjContactPersistenceProvider extends ObjExtnPersistenceProviderBas
 		this.mapField("email", AggregateState.EXTN, "email", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
 		this.mapCollection("addressList", "contact.addressList", ObjContactPartAddress.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjContact.class;
 	}
 
 	@Override

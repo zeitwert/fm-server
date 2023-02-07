@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.ddd.obj.model.Obj;
@@ -22,7 +20,7 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 public class ObjPortfolioPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjPortfolio> {
 
 	public ObjPortfolioPersistenceProvider(DSLContext dslContext) {
-		super(ObjPortfolioRepository.class, ObjPortfolioBase.class, dslContext);
+		super(ObjPortfolio.class, dslContext);
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
 		this.mapField("portfolioNr", AggregateState.EXTN, "portfolio_nr", String.class);
@@ -30,11 +28,6 @@ public class ObjPortfolioPersistenceProvider extends ObjExtnPersistenceProviderB
 		this.mapCollection("excludeSet", "portfolio.excludeList", Obj.class);
 		this.mapCollection("buildingSet", "portfolio.buildingList", ObjBuilding.class);
 
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjPortfolio.class;
 	}
 
 	@Override

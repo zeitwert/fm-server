@@ -6,7 +6,6 @@ import org.jooq.UpdatableRecord;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.base.DocPartFields;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 
@@ -16,18 +15,9 @@ public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Pa
 
 	private static final String DOC_PART_ID_SEQ = "doc_part_id_seq";
 
-	public DocPartPersistenceProviderBase(
-			final Class<? extends D> docIntfClass,
-			Class<? extends PartRepository<D, P>> repoIntfClass,
-			Class<? extends Part<D>> baseClass,
-			DSLContext dslContext) {
-		super(docIntfClass, repoIntfClass, baseClass, dslContext);
+	public DocPartPersistenceProviderBase(Class<? extends Part<D>> intfClass, DSLContext dslContext) {
+		super(intfClass, dslContext);
 		this.mapFields();
-	}
-
-	@Override
-	public Class<?> getEntityClass() { // TODO: remove here
-		return null;
 	}
 
 	@Override

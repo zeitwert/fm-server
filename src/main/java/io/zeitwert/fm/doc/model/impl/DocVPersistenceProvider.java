@@ -8,20 +8,13 @@ import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.persistence.jooq.base.DocPersistenceProviderBase;
-import io.zeitwert.fm.doc.model.DocVRepository;
-import io.zeitwert.fm.doc.model.base.DocVBase;
 
 @Configuration("docPersistenceProvider")
 @DependsOn("codePartListTypeEnum")
 public class DocVPersistenceProvider extends DocPersistenceProviderBase<Doc> {
 
 	public DocVPersistenceProvider(DSLContext dslContext) {
-		super(DocVRepository.class, DocVBase.class, dslContext);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return Doc.class;
+		super(Doc.class, dslContext);
 	}
 
 	@Override

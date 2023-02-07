@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjTenantRepository;
-import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.oe.model.db.Tables;
@@ -22,17 +20,12 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
 public class ObjTenantPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjTenant> {
 
 	public ObjTenantPersistenceProvider(DSLContext dslContext) {
-		super(ObjTenantRepository.class, ObjTenantBase.class, dslContext);
+		super(ObjTenant.class, dslContext);
 		this.mapField("tenantType", AggregateState.EXTN, "tenant_type_id", String.class);
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
 		this.mapField("inflationRate", AggregateState.EXTN, "inflation_rate", BigDecimal.class);
 		this.mapField("logoImage", AggregateState.EXTN, "logo_img_id", Integer.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjTenant.class;
 	}
 
 	@Override

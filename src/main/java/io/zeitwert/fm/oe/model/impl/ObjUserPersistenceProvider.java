@@ -9,8 +9,6 @@ import org.springframework.context.annotation.DependsOn;
 
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
-import io.zeitwert.ddd.oe.model.base.ObjUserBase;
 import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjExtnPersistenceProviderBase;
 import io.zeitwert.fm.oe.model.db.Tables;
@@ -21,7 +19,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 public class ObjUserPersistenceProvider extends ObjExtnPersistenceProviderBase<ObjUser> {
 
 	public ObjUserPersistenceProvider(DSLContext dslContext) {
-		super(ObjUserRepository.class, ObjUserBase.class, dslContext);
+		super(ObjUser.class, dslContext);
 		this.mapField("email", AggregateState.EXTN, "email", String.class);
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
@@ -30,11 +28,6 @@ public class ObjUserPersistenceProvider extends ObjExtnPersistenceProviderBase<O
 		this.mapField("password", AggregateState.EXTN, "password", String.class);
 		this.mapField("needPasswordChange", AggregateState.EXTN, "need_password_change", Boolean.class);
 		this.mapCollection("tenantSet", "user.tenantList", ObjTenant.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjUser.class;
 	}
 
 	@Override

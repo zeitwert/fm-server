@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.base.ObjPartItemBase;
 import io.zeitwert.ddd.persistence.jooq.PartState;
 import io.zeitwert.ddd.persistence.jooq.base.ObjPartPersistenceProviderBase;
 import io.zeitwert.fm.obj.model.db.Tables;
@@ -19,13 +17,8 @@ import io.zeitwert.fm.obj.model.db.tables.records.ObjPartItemRecord;
 public class ObjPartItemPersistenceProvider extends ObjPartPersistenceProviderBase<Obj, ObjPartItem> {
 
 	public ObjPartItemPersistenceProvider(DSLContext dslContext) {
-		super(Obj.class, ObjPartItemRepository.class, ObjPartItemBase.class, dslContext);
+		super(ObjPartItem.class, dslContext);
 		this.mapField("itemId", PartState.BASE, "item_id", String.class);
-	}
-
-	@Override
-	public Class<?> getEntityClass() {
-		return ObjPartItem.class;
 	}
 
 	@Override
