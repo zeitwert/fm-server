@@ -3,6 +3,8 @@ package io.zeitwert.ddd.persistence.jooq.base;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
@@ -23,11 +25,12 @@ import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
 
-public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends Part<A>> extends PropertyProviderBase
-		implements PartPersistenceProvider<A, P> {
+public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends Part<A>>
+		implements PropertyProviderMixin, PartPersistenceProvider<A, P> {
 
 	static public final String BASE = "base";
 
+	private final Map<String, Object> dbConfigMap = new HashMap<>();
 	private final DSLContext dslContext;
 	private final Class<? extends PartRepository<A, P>> repoIntfClass;
 
@@ -51,6 +54,11 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 		this.mapField("seqNr", BASE, "seq_nr", Integer.class);
 	}
 
+	@Override
+	public Map<String, Object> dbConfigMap() {
+		return this.dbConfigMap;
+	}
+
 	protected final DSLContext getDSLContext() {
 		return this.dslContext;
 	}
@@ -60,7 +68,7 @@ public abstract class PartPersistenceProviderBase<A extends Aggregate, P extends
 	}
 
 	@Override
-	protected UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType) {
+	public UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType) {
 		return this.getDbRecord(entity);
 	}
 

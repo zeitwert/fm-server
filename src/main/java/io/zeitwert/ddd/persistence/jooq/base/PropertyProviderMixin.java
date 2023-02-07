@@ -3,7 +3,6 @@ package io.zeitwert.ddd.persistence.jooq.base;
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.Field;
@@ -40,68 +39,41 @@ record FieldConfig(String tableType, String fieldName, Class<?> fieldType) {
 record CollectionConfig(CodePartListType partListType, Class<?> fieldType) {
 }
 
-public abstract class PropertyProviderBase implements PropertyProvider {
+public interface PropertyProviderMixin extends PropertyProvider {
 
-	private final Map<String, Object> dbConfigMap = new HashMap<>();
-
-	protected void mapField(String name, String tableType, String fieldName, Class<?> fieldType) {
+	default void mapField(String name, String tableType, String fieldName, Class<?> fieldType) {
 		requireThis(this.getFieldConfig(name) == null, "unique field " + name);
-		this.dbConfigMap.put(name, new FieldConfig(tableType, fieldName, fieldType));
+		this.dbConfigMap().put(name, new FieldConfig(tableType, fieldName, fieldType));
 	}
 
-	protected void mapCollection(String name, String partListTypeName, Class<?> fieldType) {
+	default void mapCollection(String name, String partListTypeName, Class<?> fieldType) {
 		requireThis(this.getCollectionConfig(name) == null, "unique collection " + name);
 		CodePartListType partListType = CodePartListTypeEnum.getPartListType(partListTypeName);
-		this.dbConfigMap.put(name, new CollectionConfig(partListType, fieldType));
-	}
-
-	private FieldConfig getFieldConfig(String name) {
-		return (FieldConfig) this.dbConfigMap.get(name);
-	}
-
-	private CollectionConfig getCollectionConfig(String name) {
-		return (CollectionConfig) this.dbConfigMap.get(name);
-	}
-
-	private <T> Field<T> checkFieldConfig(FieldConfig fieldConfig, EntityWithPropertiesSPI entity, String name,
-			Class<T> type) {
-		if (fieldConfig == null) {
-			assertThis(false, "field [" + name + "] has valid db configuration");
-			return null;
-		}
-		assertThis(fieldConfig.fieldType() == type, "field [" + name + "] has matching type");
-		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
-		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
-		assertThis(dbRecord.field(field.getName()) != null,
-				"field [" + name + "/" + field.getName() + "] contained in database record");
-		return field;
-	}
-
-	private <T> void checkCollectionConfig(CollectionConfig collectionConfig, EntityWithPropertiesSPI entity, String name,
-			Class<T> type) {
-		assertThis(collectionConfig != null, "field [" + name + "] has valid db configuration");
+		this.dbConfigMap().put(name, new CollectionConfig(partListType, fieldType));
 	}
 
 	@Override
-	public <T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type) {
+	default <T> SimpleProperty<T> getSimpleProperty(EntityWithPropertiesSPI entity, String name, Class<T> type) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
-		Field<T> field = this.checkFieldConfig(fieldConfig, entity, name, type);
+		this.checkFieldConfig(fieldConfig, entity, name, type);
+		Field<T> field = DSL.field(fieldConfig.fieldName(), type);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		return new SimplePropertyImpl<>(entity, dbRecord, name, field);
 	}
 
 	@Override
-	public <E extends Enumerated> EnumProperty<E> getEnumProperty(EntityWithPropertiesSPI entity, String name,
+	default <E extends Enumerated> EnumProperty<E> getEnumProperty(EntityWithPropertiesSPI entity, String name,
 			Class<E> enumType) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
-		Field<String> field = this.checkFieldConfig(fieldConfig, entity, name, String.class);
+		this.checkFieldConfig(fieldConfig, entity, name, String.class);
+		Field<String> field = DSL.field(fieldConfig.fieldName(), String.class);
 		Enumeration<E> enumeration = AppContext.getInstance().getEnumeration(enumType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		return new EnumPropertyImpl<>(entity, dbRecord, name, field, enumeration);
 	}
 
 	@Override
-	public <E extends Enumerated> EnumSetProperty<E> getEnumSetProperty(EntityWithPropertiesSPI entity, String name,
+	default <E extends Enumerated> EnumSetProperty<E> getEnumSetProperty(EntityWithPropertiesSPI entity, String name,
 			Class<E> enumType) {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, enumType);
@@ -110,18 +82,19 @@ public abstract class PropertyProviderBase implements PropertyProvider {
 	}
 
 	@Override
-	public <Aggr extends Aggregate> ReferenceProperty<Aggr> getReferenceProperty(EntityWithPropertiesSPI entity,
+	default <Aggr extends Aggregate> ReferenceProperty<Aggr> getReferenceProperty(EntityWithPropertiesSPI entity,
 			String name,
 			Class<Aggr> aggregateType) {
 		FieldConfig fieldConfig = this.getFieldConfig(name);
-		Field<Integer> field = this.checkFieldConfig(fieldConfig, entity, name, Integer.class);
+		this.checkFieldConfig(fieldConfig, entity, name, Integer.class);
+		Field<Integer> field = DSL.field(fieldConfig.fieldName(), Integer.class);
 		AggregateCache<Aggr> cache = AppContext.getInstance().getCache(aggregateType);
 		UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
 		return new ReferencePropertyImpl<>(entity, dbRecord, name, field, (id) -> cache.get(id));
 	}
 
 	@Override
-	public <Aggr extends Aggregate> ReferenceSetProperty<Aggr> getReferenceSetProperty(EntityWithPropertiesSPI entity,
+	default <Aggr extends Aggregate> ReferenceSetProperty<Aggr> getReferenceSetProperty(EntityWithPropertiesSPI entity,
 			String name, Class<Aggr> aggregateType) {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, aggregateType);
@@ -130,13 +103,39 @@ public abstract class PropertyProviderBase implements PropertyProvider {
 	}
 
 	@Override
-	public <P extends Part<?>> PartListProperty<P> getPartListProperty(EntityWithPropertiesSPI entity, String name,
+	default <P extends Part<?>> PartListProperty<P> getPartListProperty(EntityWithPropertiesSPI entity, String name,
 			Class<P> partType) {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, partType);
 		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
 	}
 
-	protected abstract UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType);
+	private FieldConfig getFieldConfig(String name) {
+		return (FieldConfig) this.dbConfigMap().get(name);
+	}
+
+	private void checkFieldConfig(FieldConfig fieldConfig, EntityWithPropertiesSPI entity, String name, Class<?> type) {
+		if (fieldConfig == null) {
+			assertThis(false, "field [" + name + "] has valid db configuration");
+		} else {
+			assertThis(fieldConfig.fieldType() == type, "field [" + name + "] has matching type");
+			UpdatableRecord<?> dbRecord = this.getDbRecord(entity, fieldConfig.tableType());
+			assertThis(dbRecord.field(fieldConfig.fieldName()) != null,
+					"field [" + name + "/" + fieldConfig.fieldName() + "] contained in database record");
+		}
+	}
+
+	private CollectionConfig getCollectionConfig(String name) {
+		return (CollectionConfig) this.dbConfigMap().get(name);
+	}
+
+	private void checkCollectionConfig(CollectionConfig collectionConfig, EntityWithPropertiesSPI entity, String name,
+			Class<?> type) {
+		assertThis(collectionConfig != null, "field [" + name + "] has valid db configuration");
+	}
+
+	Map<String, Object> dbConfigMap();
+
+	UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType);
 
 }

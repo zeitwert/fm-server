@@ -1,6 +1,8 @@
 package io.zeitwert.ddd.persistence.jooq.base;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -19,12 +21,13 @@ import io.zeitwert.ddd.persistence.jooq.AggregateState;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.fm.search.model.db.Tables;
 
-public abstract class AggregatePersistenceProviderBase<A extends Aggregate> extends PropertyProviderBase
-		implements AggregatePersistenceProvider<A> {
+public abstract class AggregatePersistenceProviderBase<A extends Aggregate>
+		implements PropertyProviderMixin, AggregatePersistenceProvider<A> {
 
 	static public final String BASE = "base";
 	static public final String EXTN = "extn";
 
+	private final Map<String, Object> dbConfigMap = new HashMap<>();
 	private final DSLContext dslContext;
 	private final Class<? extends AggregateRepository<A, ?>> repoIntfClass;
 
@@ -36,6 +39,11 @@ public abstract class AggregatePersistenceProviderBase<A extends Aggregate> exte
 		this.dslContext = dslContext;
 	}
 
+	@Override
+	public Map<String, Object> dbConfigMap() {
+		return this.dbConfigMap;
+	}
+
 	protected final DSLContext getDSLContext() {
 		return this.dslContext;
 	}
@@ -45,7 +53,7 @@ public abstract class AggregatePersistenceProviderBase<A extends Aggregate> exte
 	}
 
 	@Override
-	protected UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType) {
+	public UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType) {
 		Object state = ((AggregateSPI) entity).getAggregateState();
 		if (EXTN.equals(tableType)) {
 			return ((AggregateState) state).extnRecord();
