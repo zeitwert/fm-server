@@ -12,7 +12,7 @@ public abstract class ObjPersistenceProviderBase<O extends Obj>
 
 	public ObjPersistenceProviderBase(Class<? extends Aggregate> intfClass, DSLContext dslContext) {
 		super(intfClass, dslContext);
-		this.mapFields();
+		this.mapProperties();
 	}
 
 }

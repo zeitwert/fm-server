@@ -9,7 +9,7 @@ public interface ObjPropertyProviderMixin
 		extends AggregatePropertyProviderMixin {
 
 	@Override
-	default void mapFields() {
+	default void mapProperties() {
 		this.mapField("id", AggregateState.BASE, "id", Integer.class);
 		this.mapField("objTypeId", AggregateState.BASE, "obj_type_id", String.class);
 		this.mapField("tenant", AggregateState.BASE, "tenant_id", Integer.class);

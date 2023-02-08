@@ -18,7 +18,7 @@ public abstract class ObjPartPersistenceProviderBase<O extends Obj, P extends Pa
 
 	public ObjPartPersistenceProviderBase(Class<? extends Part<O>> intfClass, DSLContext dslContext) {
 		super(intfClass, dslContext);
-		this.mapFields();
+		this.mapProperties();
 	}
 
 	@Override

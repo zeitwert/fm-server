@@ -21,7 +21,7 @@ public interface AggregatePersistenceProviderMixin<A extends Aggregate> extends 
 	AggregateRepository<A, ?> getRepository();
 
 	@Override
-	default void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
+	default void doStoreSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
 		String allTexts = String.join(" ", texts.stream().filter(t -> t != null).toList()).toLowerCase();
 		String allTokens = String.join(" ", tokens.stream().filter(t -> t != null).toList()).toLowerCase();
 		String allTextsAndTokens = (allTexts + " " + allTokens).trim();

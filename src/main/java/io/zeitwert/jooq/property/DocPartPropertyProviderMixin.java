@@ -5,8 +5,8 @@ import io.zeitwert.jooq.persistence.PartState;
 public interface DocPartPropertyProviderMixin extends PartPropertyProviderMixin {
 
 	@Override
-	default void mapFields() {
-		PartPropertyProviderMixin.super.mapFields();
+	default void mapProperties() {
+		PartPropertyProviderMixin.super.mapProperties();
 		this.mapField("docId", PartState.BASE, "doc_id", Integer.class);
 	}
 

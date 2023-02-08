@@ -98,7 +98,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	protected boolean hasAccountId() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -236,11 +236,11 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 	}
 
 	private final void storeSearch(A aggregate) {
-		((AggregateBase) aggregate).storeSearch();
+		((AggregateBase) aggregate).doStoreSearch();
 	}
 
 	protected final void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
-		this.getPersistenceProvider().storeSearch(aggregate, texts, tokens);
+		this.getPersistenceProvider().doStoreSearch(aggregate, texts, tokens);
 	}
 
 	@Override

@@ -38,9 +38,9 @@ record CollectionConfig(CodePartListType partListType, Class<?> fieldType) {
 
 public interface PropertyProviderMixin extends PropertyProvider {
 
-	Map<String, Object> dbConfigMap();
+	void mapProperties();
 
-	void mapFields();
+	Map<String, Object> dbConfigMap();
 
 	UpdatableRecord<?> getDbRecord(EntityWithPropertiesSPI entity, String tableType);
 

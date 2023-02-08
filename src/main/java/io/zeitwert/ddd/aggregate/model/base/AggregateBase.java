@@ -78,7 +78,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	@Override
-	public final PropertyProvider getPropertyProvider() {
+	public final PropertyProvider getPropertyProvider() { // TODO: remove final
 		if (this.getRepository() != null) { // possibly null in instatiation phase
 			return ((AggregateRepositorySPI<?, ?>) this.getRepository()).getPropertyProvider();
 		}
@@ -133,7 +133,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 		this.doBeforeStoreProperties();
 	}
 
-	protected void storeSearch() {
+	protected void doStoreSearch() {
 		this.searchTexts.clear();
 		this.searchTokens.clear();
 		this.doCalcSearch();

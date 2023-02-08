@@ -9,7 +9,7 @@ import io.zeitwert.jooq.persistence.PartState;
 public interface PartPropertyProviderMixin extends PropertyProviderMixin {
 
 	@Override
-	default void mapFields() {
+	default void mapProperties() {
 		this.mapField("id", PartState.BASE, "id", Integer.class);
 		this.mapField("parentPartId", PartState.BASE, "parent_part_id", Integer.class);
 		this.mapField("partListTypeId", PartState.BASE, "part_list_type_id", String.class);

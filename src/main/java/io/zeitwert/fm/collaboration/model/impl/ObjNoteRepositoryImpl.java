@@ -1,34 +1,55 @@
 
 package io.zeitwert.fm.collaboration.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objNoteRepository")
-public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRecord>
+public class ObjNoteRepositoryImpl extends JooqObjExtnRepositoryBase<ObjNote, ObjNoteVRecord>
 		implements ObjNoteRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_note";
 
 	private final RequestContext requestCtx;
 
-	protected ObjNoteRepositoryImpl(AppContext appContext, RequestContext requestCtx) {
-		super(ObjNoteRepository.class, ObjNote.class, ObjNoteBase.class, AGGREGATE_TYPE, appContext);
+	protected ObjNoteRepositoryImpl(AppContext appContext, DSLContext dslContext, RequestContext requestCtx) {
+		super(ObjNoteRepository.class, ObjNote.class, ObjNoteBase.class, AGGREGATE_TYPE, appContext, dslContext);
 		this.requestCtx = requestCtx;
+	}
+
+	@Override
+	public void mapProperties() {
+		super.mapProperties();
+		this.mapField("relatedToId", AggregateState.EXTN, "related_to_id", Integer.class);
+		this.mapField("noteType", AggregateState.EXTN, "note_type_id", String.class);
+		this.mapField("subject", AggregateState.EXTN, "subject", String.class);
+		this.mapField("content", AggregateState.EXTN, "content", String.class);
+		this.mapField("isPrivate", AggregateState.EXTN, "is_private", Boolean.class);
+	}
+
+	@Override
+	public boolean hasAccount() {
+		return false;
 	}
 
 	@Override
@@ -36,6 +57,22 @@ public class ObjNoteRepositoryImpl extends ObjRepositoryBase<ObjNote, ObjNoteVRe
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(ObjRepository.getItemRepository());
+	}
+
+	@Override
+	public ObjNote doCreate() {
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_NOTE));
+	}
+
+	@Override
+	public ObjNote doLoad(Integer objId) {
+		requireThis(objId != null, "objId not null");
+		ObjNoteRecord noteRecord = this.dslContext().fetchOne(Tables.OBJ_NOTE,
+				Tables.OBJ_NOTE.OBJ_ID.eq(objId));
+		if (noteRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return this.doLoad(objId, noteRecord);
 	}
 
 	@Override

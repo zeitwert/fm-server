@@ -4,8 +4,6 @@ package io.zeitwert.ddd.app.service.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -14,6 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
@@ -61,21 +61,24 @@ public final class AppContext {
 		AppContext.INSTANCE = this;
 	}
 
-	@PostConstruct
-	public void initPropertyProviders() {
+	@EventListener
+	public void initPropertyProviders(ContextRefreshedEvent event) {
+		this.propertyProviders.clear();
 		this.applicationContext
 				.getBeansOfType(PropertyProvider.class, false, true)
 				.values()
 				.forEach(pp -> this.propertyProviders.put(pp.getEntityClass(), pp));
 	}
 
-	@PostConstruct
+	@EventListener
 	@SuppressWarnings("unchecked")
-	public void initPersistenceProviders() {
+	public void initPersistenceProviders(ContextRefreshedEvent event) {
+		this.aggregatePersistenceProviders.clear();
 		this.applicationContext
 				.getBeansOfType(AggregatePersistenceProvider.class, false, true)
 				.values()
 				.forEach(pp -> this.aggregatePersistenceProviders.put(pp.getEntityClass(), pp));
+		this.partPersistenceProviders.clear();
 		this.applicationContext
 				.getBeansOfType(PartPersistenceProvider.class, false, true)
 				.values()

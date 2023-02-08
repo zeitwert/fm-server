@@ -1,29 +1,57 @@
 
 package io.zeitwert.fm.test.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
+import org.jooq.JSON;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
+import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.ObjTest;
+import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.base.ObjTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
+import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objTestRepository")
-public class ObjTestRepositoryImpl extends ObjRepositoryBase<ObjTest, ObjTestVRecord> implements ObjTestRepository {
+public class ObjTestRepositoryImpl extends JooqObjExtnRepositoryBase<ObjTest, ObjTestVRecord>
+		implements ObjTestRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
-	protected ObjTestRepositoryImpl(AppContext appContext) {
-		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext);
+	protected ObjTestRepositoryImpl(AppContext appContext, DSLContext dslContext) {
+		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	}
+
+	@Override
+	public void mapProperties() {
+		super.mapProperties();
+		this.mapField("shortText", AggregateState.EXTN, "short_text", String.class);
+		this.mapField("longText", AggregateState.EXTN, "long_text", String.class);
+		this.mapField("date", AggregateState.EXTN, "date", LocalDate.class);
+		this.mapField("int", AggregateState.EXTN, "int", Integer.class);
+		this.mapField("isDone", AggregateState.EXTN, "is_done", Boolean.class);
+		this.mapField("json", AggregateState.EXTN, "json", JSON.class);
+		this.mapField("nr", AggregateState.EXTN, "nr", BigDecimal.class);
+		this.mapField("country", AggregateState.EXTN, "country_id", String.class);
+		this.mapField("refTest", AggregateState.EXTN, "ref_test_id", Integer.class);
+		this.mapCollection("countrySet", "test.countrySet", CodeCountry.class);
+		this.mapCollection("nodeList", "test.nodeList", ObjTestPartNode.class);
 	}
 
 	@Override
@@ -32,6 +60,21 @@ public class ObjTestRepositoryImpl extends ObjRepositoryBase<ObjTest, ObjTestVRe
 		super.registerPartRepositories();
 		this.addPartRepository(ObjRepository.getItemRepository());
 		this.addPartRepository(ObjTestRepository.getNodeRepository());
+	}
+
+	@Override
+	public ObjTest doCreate() {
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_TEST));
+	}
+
+	@Override
+	public ObjTest doLoad(Integer objId) {
+		requireThis(objId != null, "objId not null");
+		ObjTestRecord testRecord = this.dslContext().fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(objId));
+		if (testRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return this.doLoad(objId, testRecord);
 	}
 
 	@Override

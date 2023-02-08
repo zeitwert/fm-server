@@ -26,6 +26,11 @@ public class ObjUserRepositoryImpl extends ObjUserRepositoryBase {
 	}
 
 	@Override
+	protected boolean hasAccountId() {
+		return false;
+	}
+
+	@Override
 	public List<TableRecord<?>> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, querySpec);
 	}

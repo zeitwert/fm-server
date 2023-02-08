@@ -18,7 +18,7 @@ public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Pa
 
 	public DocPartPersistenceProviderBase(Class<? extends Part<D>> intfClass, DSLContext dslContext) {
 		super(intfClass, dslContext);
-		this.mapFields();
+		this.mapProperties();
 	}
 
 	@Override

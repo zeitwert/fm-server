@@ -19,6 +19,11 @@ public class ObjTenantRepositoryImpl extends ObjTenantRepositoryBase {
 	}
 
 	@Override
+	protected boolean hasAccountId() {
+		return false;
+	}
+
+	@Override
 	public List<TableRecord<?>> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, querySpec);
 	}

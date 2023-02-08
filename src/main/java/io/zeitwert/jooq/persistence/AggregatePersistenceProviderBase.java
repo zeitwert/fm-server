@@ -26,12 +26,12 @@ public abstract class AggregatePersistenceProviderBase<A extends Aggregate> impl
 		return this.intfClass;
 	}
 
-	public final Map<String, Object> dbConfigMap() {
-		return this.dbConfigMap;
-	}
-
 	public final DSLContext dslContext() {
 		return this.dslContext;
+	}
+
+	public final Map<String, Object> dbConfigMap() {
+		return this.dbConfigMap;
 	}
 
 	@SuppressWarnings("unchecked")

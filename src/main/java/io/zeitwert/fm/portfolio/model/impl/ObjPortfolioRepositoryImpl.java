@@ -1,32 +1,52 @@
 
 package io.zeitwert.fm.portfolio.model.impl;
 
+import static io.zeitwert.ddd.util.Check.requireThis;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
+import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
+import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase;
 import io.zeitwert.fm.portfolio.model.db.Tables;
+import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+import io.zeitwert.jooq.persistence.AggregateState;
+import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objPortfolioRepository")
 @DependsOn({ "objRepository", "objAccountRepository", "objBuildingRepository" })
-public class ObjPortfolioRepositoryImpl extends ObjRepositoryBase<ObjPortfolio, ObjPortfolioVRecord>
+public class ObjPortfolioRepositoryImpl extends JooqObjExtnRepositoryBase<ObjPortfolio, ObjPortfolioVRecord>
 		implements ObjPortfolioRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_portfolio";
 
-	protected ObjPortfolioRepositoryImpl(AppContext appContext) {
-		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE, appContext);
+	protected ObjPortfolioRepositoryImpl(AppContext appContext, DSLContext dslContext) {
+		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE, appContext,
+				dslContext);
+	}
+
+	@Override
+	public void mapProperties() {
+		super.mapProperties();
+		this.mapField("name", AggregateState.EXTN, "name", String.class);
+		this.mapField("description", AggregateState.EXTN, "description", String.class);
+		this.mapField("portfolioNr", AggregateState.EXTN, "portfolio_nr", String.class);
+		this.mapCollection("includeSet", "portfolio.includeList", Obj.class);
+		this.mapCollection("excludeSet", "portfolio.excludeList", Obj.class);
+		this.mapCollection("buildingSet", "portfolio.buildingList", ObjBuilding.class);
 	}
 
 	@Override
@@ -37,8 +57,19 @@ public class ObjPortfolioRepositoryImpl extends ObjRepositoryBase<ObjPortfolio, 
 	}
 
 	@Override
-	protected boolean hasAccountId() {
-		return true;
+	public ObjPortfolio doCreate() {
+		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_PORTFOLIO));
+	}
+
+	@Override
+	public ObjPortfolio doLoad(Integer objId) {
+		requireThis(objId != null, "objId not null");
+		ObjPortfolioRecord portfolioRecord = this.dslContext().fetchOne(Tables.OBJ_PORTFOLIO,
+				Tables.OBJ_PORTFOLIO.OBJ_ID.eq(objId));
+		if (portfolioRecord == null) {
+			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + objId + "]");
+		}
+		return this.doLoad(objId, portfolioRecord);
 	}
 
 	@Override

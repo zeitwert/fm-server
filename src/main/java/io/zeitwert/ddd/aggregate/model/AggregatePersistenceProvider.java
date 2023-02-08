@@ -56,7 +56,7 @@ public interface AggregatePersistenceProvider<A extends Aggregate> {
 	 * @param texts     list of texts to be stored
 	 * @param tokens    list of tokens to be stored
 	 */
-	void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens);
+	void doStoreSearch(Aggregate aggregate, List<String> texts, List<String> tokens);
 
 	/**
 	 * Execute the given query and return the result.
