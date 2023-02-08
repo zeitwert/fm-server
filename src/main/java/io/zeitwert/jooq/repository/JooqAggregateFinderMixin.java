@@ -13,12 +13,40 @@ import org.jooq.impl.DSL;
 
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
+import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
+import io.zeitwert.ddd.aggregate.model.Aggregate;
+import io.zeitwert.ddd.aggregate.model.base.AggregateFields;
+import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.oe.model.ObjTenantRepository;
+import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.jooq.util.SqlUtils;
 
 public interface JooqAggregateFinderMixin<V extends Object> {
 
 	DSLContext dslContext();
+
+	boolean hasAccountId();
+
+	List<V> doFind(QuerySpec querySpec);
+
+	default QuerySpec queryWithFilter(QuerySpec querySpec) {
+		if (querySpec == null) {
+			querySpec = new QuerySpec(Aggregate.class);
+		}
+		RequestContext requestCtx = AppContext.getInstance().getRequestContext();
+		String tenantField = AggregateFields.TENANT_ID.getName();
+		Integer tenantId = requestCtx.getTenantId();
+		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
+			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
+		}
+		if (this.hasAccountId() && requestCtx.hasAccount()) {
+			String accountField = AggregateFields.ACCOUNT_ID.getName();
+			Integer accountId = requestCtx.getAccountId();
+			querySpec.addFilter(PathSpec.of(accountField).filter(FilterOperator.EQ, accountId));
+		}
+		return querySpec;
+	}
 
 	@SuppressWarnings("unchecked")
 	default List<V> doFind(Table<? extends Record> table, Field<Integer> idField, QuerySpec querySpec) {

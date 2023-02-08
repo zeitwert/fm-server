@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Table;
 import org.jooq.TableRecord;
 
 import io.crnk.core.queryspec.FilterOperator;
@@ -63,11 +60,12 @@ public abstract class JooqObjRepositoryBase<O extends Obj, V extends TableRecord
 	}
 
 	@Override
-	public List<V> doFind(Table<? extends Record> table, Field<Integer> idField, QuerySpec querySpec) {
+	public final List<V> find(QuerySpec querySpec) {
+		querySpec = this.queryWithFilter(querySpec);
 		if (!SqlUtils.hasFilterFor(querySpec, "isClosed")) {
 			querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
 		}
-		return JooqAggregateFinderMixin.super.doFind(table, idField, querySpec);
+		return this.doFind(querySpec);
 	}
 
 }

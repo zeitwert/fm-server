@@ -21,12 +21,10 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.event.AggregateStoredEvent;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
-import io.zeitwert.ddd.session.model.RequestContext;
 import javassist.util.proxy.ProxyFactory;
 
 public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Object>
@@ -87,7 +85,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Obj
 		this.partRepositories.add(partRepository);
 	}
 
-	protected boolean hasAccountId() {
+	public boolean hasAccountId() {
 		return true;
 	}
 
@@ -243,25 +241,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Obj
 		this.discard(aggregate);
 		ApplicationEvent aggregateStoredEvent = new AggregateStoredEvent(aggregate, aggregate);
 		AppContext.getInstance().publishApplicationEvent(aggregateStoredEvent);
-	}
-
-	@Override
-	public final List<V> find(QuerySpec querySpec) {
-		if (querySpec == null) {
-			querySpec = new QuerySpec(Aggregate.class);
-		}
-		RequestContext requestCtx = AppContext.getInstance().getRequestContext();
-		String tenantField = AggregateFields.TENANT_ID.getName();
-		Integer tenantId = requestCtx.getTenantId();
-		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
-			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
-		}
-		if (this.hasAccountId() && requestCtx.hasAccount()) {
-			String accountField = AggregateFields.ACCOUNT_ID.getName();
-			Integer accountId = requestCtx.getAccountId();
-			querySpec.addFilter(PathSpec.of(accountField).filter(FilterOperator.EQ, accountId));
-		}
-		return this.doFind(querySpec);
 	}
 
 	@Override

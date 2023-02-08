@@ -1,11 +1,13 @@
 package io.zeitwert.jooq.repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -51,6 +53,11 @@ public abstract class JooqDocExtnRepositoryBase<D extends Doc, V extends TableRe
 	@Override
 	public final AggregateRepository<D, V> getRepository() {
 		return this;
+	}
+
+	@Override
+	public final List<V> find(QuerySpec querySpec) {
+		return this.doFind(this.queryWithFilter(querySpec));
 	}
 
 }
