@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.util;
+package io.zeitwert.jooq.util;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,6 +21,8 @@ import org.jooq.impl.DSL;
 import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
+import io.zeitwert.ddd.util.CustomFilters;
+import io.zeitwert.ddd.util.StringUtils;
 import io.crnk.core.queryspec.Direction;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;

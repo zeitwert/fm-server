@@ -19,9 +19,9 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
-import io.zeitwert.ddd.util.SqlUtils;
 import io.zeitwert.jooq.persistence.ObjPersistenceProviderMixin;
 import io.zeitwert.jooq.property.ObjPropertyProviderMixin;
+import io.zeitwert.jooq.util.SqlUtils;
 
 public abstract class JooqObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 		extends ObjRepositoryBase<O, V>

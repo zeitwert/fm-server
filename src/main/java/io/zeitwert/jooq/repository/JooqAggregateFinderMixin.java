@@ -14,7 +14,7 @@ import org.jooq.impl.DSL;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.util.SqlUtils;
+import io.zeitwert.jooq.util.SqlUtils;
 
 public interface JooqAggregateFinderMixin<V extends Object> {
 
