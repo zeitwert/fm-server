@@ -57,6 +57,10 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		return AppContext.getInstance().getPropertyProvider(this.intfClass);
 	}
 
+	protected Class<? extends Part<A>> getPartClass() {
+		return this.intfClass;
+	}
+
 	@Override
 	public boolean hasPartId() {
 		return true;
