@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.util;
+package io.zeitwert.fm.app.adapter.api.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

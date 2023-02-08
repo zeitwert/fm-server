@@ -12,7 +12,6 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.part.model.base.PartFields;
 import io.zeitwert.ddd.part.model.base.PartRepositoryBase;
 import io.zeitwert.ddd.part.model.base.PartRepositorySPI;
 import io.zeitwert.ddd.part.model.base.PartSPI;
@@ -20,6 +19,7 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
 import io.zeitwert.jooq.persistence.PartPersistenceProviderMixin;
 import io.zeitwert.jooq.persistence.PartState;
+import io.zeitwert.jooq.property.PartFields;
 
 public abstract class JooqPartRepositoryBase<A extends Aggregate, P extends Part<A>> extends PartRepositoryBase<A, P>
 		implements PartPersistenceProviderMixin<A, P> {

@@ -1,7 +1,5 @@
 
-package io.zeitwert.ddd.obj.model.base;
-
-import io.zeitwert.ddd.aggregate.model.base.AggregateFields;
+package io.zeitwert.jooq.property;
 
 import java.time.OffsetDateTime;
 

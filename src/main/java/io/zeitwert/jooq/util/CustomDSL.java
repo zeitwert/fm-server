@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.util;
+package io.zeitwert.jooq.util;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;

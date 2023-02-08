@@ -8,9 +8,9 @@ import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.part.model.base.PartFields;
 import io.zeitwert.ddd.part.model.base.PartRepositorySPI;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.jooq.property.PartFields;
 
 public interface PartPersistenceProviderMixin<A extends Aggregate, P extends Part<A>>
 		extends PartPersistenceProvider<A, P> {

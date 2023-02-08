@@ -4,11 +4,11 @@ package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.jooq.property.ObjFields;
 
 import org.jooq.TableRecord;
 

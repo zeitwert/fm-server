@@ -20,13 +20,13 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
-import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
+import io.zeitwert.jooq.property.ObjFields;
 
 @RestController("enumController")
 @RequestMapping("/enum")

@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.zeitwert.ddd.util.ResourceReader;
-
 @RestController("configController")
 @RequestMapping("/config")
 public class ConfigController {

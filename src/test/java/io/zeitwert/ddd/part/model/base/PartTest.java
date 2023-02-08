@@ -27,6 +27,7 @@ import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.jooq.persistence.PartState;
+import io.zeitwert.jooq.property.PartFields;
 import io.zeitwert.server.Application;
 
 import java.math.BigDecimal;

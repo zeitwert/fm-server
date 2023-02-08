@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.aggregate.model.base;
+package io.zeitwert.jooq.property;
 
 import java.time.OffsetDateTime;
 import org.jooq.Field;

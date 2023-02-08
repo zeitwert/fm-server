@@ -14,10 +14,10 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.jooq.persistence.ObjPersistenceProviderMixin;
 import io.zeitwert.jooq.property.ObjExtnPropertyProviderMixin;
+import io.zeitwert.jooq.property.ObjFields;
 import io.zeitwert.jooq.util.SqlUtils;
 
 public abstract class JooqObjExtnRepositoryBase<O extends Obj, V extends TableRecord<?>>

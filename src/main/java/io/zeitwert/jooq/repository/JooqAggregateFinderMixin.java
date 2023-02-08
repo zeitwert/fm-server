@@ -16,10 +16,10 @@ import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.base.AggregateFields;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.jooq.property.AggregateFields;
 import io.zeitwert.jooq.util.SqlUtils;
 
 public interface JooqAggregateFinderMixin<V extends Object> {

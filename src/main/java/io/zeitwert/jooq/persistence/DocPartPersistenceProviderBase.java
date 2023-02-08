@@ -4,10 +4,10 @@ import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 
 import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.doc.model.base.DocPartFields;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.jooq.property.DocPartFields;
 import io.zeitwert.jooq.property.DocPartPropertyProviderMixin;
 
 public abstract class DocPartPersistenceProviderBase<D extends Doc, P extends Part<D>>

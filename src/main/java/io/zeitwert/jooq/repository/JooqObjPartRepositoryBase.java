@@ -6,10 +6,10 @@ import org.jooq.UpdatableRecord;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
-import io.zeitwert.ddd.obj.model.base.ObjPartFields;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.jooq.property.ObjPartFields;
 import io.zeitwert.jooq.property.ObjPartPropertyProviderMixin;
 
 public abstract class JooqObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>>

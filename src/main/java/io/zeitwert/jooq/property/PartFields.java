@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.part.model.base;
+package io.zeitwert.jooq.property;
 
 import org.jooq.Field;
 import org.jooq.impl.DSL;

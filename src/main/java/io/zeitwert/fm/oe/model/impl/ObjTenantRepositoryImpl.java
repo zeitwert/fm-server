@@ -10,9 +10,9 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.base.ObjFields;
 import io.zeitwert.ddd.oe.model.base.ObjTenantRepositoryBase;
 import io.zeitwert.fm.oe.model.db.Tables;
+import io.zeitwert.jooq.property.ObjFields;
 import io.zeitwert.jooq.repository.JooqAggregateFinderMixin;
 import io.zeitwert.jooq.util.SqlUtils;
 

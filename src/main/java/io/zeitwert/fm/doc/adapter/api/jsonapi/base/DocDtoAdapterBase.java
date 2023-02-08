@@ -2,11 +2,11 @@ package io.zeitwert.fm.doc.adapter.api.jsonapi.base;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocMetaDto;
+import io.zeitwert.jooq.property.DocFields;
 
 import org.jooq.TableRecord;
 
