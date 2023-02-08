@@ -3,11 +3,10 @@ package io.zeitwert.fm.contact.model.enums;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.CodeGenderRecord;
@@ -18,8 +17,8 @@ public class CodeGenderEnum extends EnumerationBase<CodeGender> {
 
 	private static CodeGenderEnum INSTANCE;
 
-	protected CodeGenderEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext, CodeGender.class);
+	protected CodeGenderEnum(AppContext appContext) {
+		super(appContext, CodeGender.class);
 		INSTANCE = this;
 	}
 

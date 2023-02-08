@@ -1,7 +1,7 @@
 
 package io.zeitwert.ddd.enums.model.base;
 
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 
@@ -21,14 +21,13 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 	static protected final Field<String> ID = DSL.field("id", String.class);
 	static protected final Field<String> NAME = DSL.field("name", String.class);
 
-	private final DSLContext dslContext;
-
+	private final AppContext appContext;
 	private final String module;
 	private final String id;
 	private List<E> items = new ArrayList<E>();
 	private Map<String, E> itemsById = new HashMap<String, E>();
 
-	public EnumerationBase(Enumerations enums, DSLContext dslContext, Class<E> enumeratedClass) {
+	public EnumerationBase(AppContext appContext, Class<E> enumeratedClass) {
 		String[] parts = this.getClass().getCanonicalName().split("\\.");
 		assertThis(parts.length == 7, "valid enumeration class name (io.zeitwert.[area].[module].model.enums.[xyEnum])");
 		assertThis("model".equals(parts[4]),
@@ -36,14 +35,16 @@ public abstract class EnumerationBase<E extends Enumerated> implements Enumerati
 		assertThis("enums".equals(parts[5]),
 				"valid enumeration class name (io.zeitwert.[area].[module].model.enums.[xyEnum])");
 		assertThis(parts[6].endsWith("Enum"), "valid enumeration class name");
-		this.dslContext = dslContext;
+		this.appContext = appContext;
 		this.module = parts[3];
 		this.id = Character.toLowerCase(parts[6].charAt(0)) + parts[6].substring(1);
-		enums.addEnumeration(enumeratedClass, this);
+		if (appContext != null) {
+			appContext.addEnumeration(enumeratedClass, this);
+		}
 	}
 
 	protected DSLContext getDslContext() {
-		return this.dslContext;
+		return this.appContext.getDslContext();
 	}
 
 	@Override

@@ -4,9 +4,15 @@ package io.zeitwert.ddd.app.service.api;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record2;
+import org.jooq.Record9;
 import org.jooq.Schema;
 import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,23 +24,37 @@ import org.springframework.stereotype.Service;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
+import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
+import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.app.service.api.impl.Repositories;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
+import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
+import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
+import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
+import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartRepository;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
-@DependsOn({ "codeAggregateTypeEnum", "codePartListTypeEnum" })
+@DependsOn({ "flyway", "flywayInitializer", "codeAggregateTypeEnum", "codePartListTypeEnum", "codeTenantTypeEnum",
+		"codeUserRoleEnum", "codeCaseStageEnum" })
 public final class AppContext {
 
 	public static final String SCHEMA_NAME = "public";
 	private static Schema SCHEMA;
+
+	private static final Field<String> ID = DSL.field("id", String.class);
+	private static final Field<String> NAME = DSL.field("name", String.class);
 
 	private static AppContext INSTANCE;
 
@@ -49,8 +69,8 @@ public final class AppContext {
 	private final Enumerations enums;
 	private final RequestContext requestContext;
 
-	protected AppContext(final ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher,
-			final DSLContext dslContext, Enumerations enums, RequestContext requestContext) {
+	protected AppContext(ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher,
+			DSLContext dslContext, Enumerations enums, RequestContext requestContext) {
 		this.applicationContext = applicationContext;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.dslContext = dslContext;
@@ -60,8 +80,105 @@ public final class AppContext {
 		AppContext.INSTANCE = this;
 	}
 
+	@PostConstruct
+	private void initKernelCodeTables() {
+		this.initAggregateType();
+		this.initPartListType();
+		this.initTenantType();
+		this.initUserRole();
+		this.initCaseStage();
+	}
+
+	private void initAggregateType() {
+		Table<?> codeAggregateType = this.getTable(CodeAggregateTypeEnum.TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codeAggregateType).fetch()) {
+			CodeAggregateType aggregateType = CodeAggregateType.builder()
+					.enumeration(CodeAggregateTypeEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodeAggregateTypeEnum.getInstance().addItem(aggregateType);
+		}
+	}
+
+	private void initPartListType() {
+		Table<?> codePartListType = this.getTable(CodePartListTypeEnum.TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codePartListType).fetch()) {
+			CodePartListType partListType = CodePartListType.builder()
+					.enumeration(CodePartListTypeEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodePartListTypeEnum.getInstance().addItem(partListType);
+		}
+	}
+
+	private void initTenantType() {
+		Table<?> codeTenantType = this.getTable(CodeTenantTypeEnum.TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codeTenantType).fetch()) {
+			CodeTenantType tenantType = CodeTenantType.builder()
+					.enumeration(CodeTenantTypeEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodeTenantTypeEnum.getInstance().addItem(tenantType);
+		}
+		CodeTenantTypeEnum.getInstance().init();
+	}
+
+	private void initUserRole() {
+		Table<?> codeUserRole = this.getTable(CodeUserRoleEnum.TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codeUserRole).fetch()) {
+			CodeUserRole userRole = CodeUserRole.builder()
+					.enumeration(CodeUserRoleEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodeUserRoleEnum.getInstance().addItem(userRole);
+		}
+		CodeUserRoleEnum.getInstance().init();
+	}
+
+	private void initCaseStage() {
+		Table<?> codeCaseStage = this.getTable(CodeCaseStageEnum.TABLE_NAME);
+		for (final Record9<String, String, String, String, String, Integer, String, String, String> item : this
+				.getDslContext().select(
+						ID,
+						NAME,
+						CodeCaseStageEnum.CASE_DEF_ID,
+						CodeCaseStageEnum.CASE_STAGE_TYPE_ID,
+						CodeCaseStageEnum.DESCRIPTION,
+						CodeCaseStageEnum.SEQ_NR,
+						CodeCaseStageEnum.ABSTRACT_CASE_STAGE_ID,
+						CodeCaseStageEnum.ACTION,
+						CodeCaseStageEnum.AVAILABLE_ACTIONS)
+				.from(codeCaseStage).fetch()) {
+			CodeCaseStageEnum.getInstance().addItem(
+					new CodeCaseStage(
+							CodeCaseStageEnum.getInstance(),
+							item.value1(),
+							item.value3(),
+							item.value4(),
+							item.value2(),
+							item.value5(),
+							item.value6(),
+							item.value7(),
+							item.value8(),
+							item.value9()));
+		}
+	}
+
 	@EventListener
-	public void initPropertyProviders(ContextRefreshedEvent event) {
+	public void init(ContextRefreshedEvent event) {
+		this.initPropertyProviders();
+		this.initPersistenceProviders();
+	}
+
+	private void initPropertyProviders() {
 		this.propertyProviders.clear();
 		this.applicationContext
 				.getBeansOfType(PropertyProvider.class, false, true)
@@ -69,9 +186,8 @@ public final class AppContext {
 				.forEach(pp -> this.propertyProviders.put(pp.getEntityClass(), pp));
 	}
 
-	@EventListener
 	@SuppressWarnings("unchecked")
-	public void initPersistenceProviders(ContextRefreshedEvent event) {
+	private void initPersistenceProviders() {
 		this.aggregatePersistenceProviders.clear();
 		this.applicationContext
 				.getBeansOfType(AggregatePersistenceProvider.class, false, true)
@@ -136,6 +252,10 @@ public final class AppContext {
 
 	public <A extends Aggregate, P extends Part<A>> PartRepository<A, P> getPartRepository(Class<P> intfClass) {
 		return this.repos.getPartRepository(intfClass);
+	}
+
+	public <E extends Enumerated> void addEnumeration(Class<E> enumClass, Enumeration<E> enumeration) {
+		this.enums.addEnumeration(enumClass, enumeration);
 	}
 
 	public <E extends Enumerated> Enumeration<E> getEnumeration(Class<E> enumClass) {

@@ -3,11 +3,10 @@ package io.zeitwert.fm.collaboration.model.enums;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.CodeNoteTypeRecord;
@@ -18,8 +17,8 @@ public class CodeNoteTypeEnum extends EnumerationBase<CodeNoteType> {
 
 	private static CodeNoteTypeEnum INSTANCE;
 
-	protected CodeNoteTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext, CodeNoteType.class);
+	protected CodeNoteTypeEnum(AppContext appContext) {
+		super(appContext, CodeNoteType.class);
 		INSTANCE = this;
 	}
 

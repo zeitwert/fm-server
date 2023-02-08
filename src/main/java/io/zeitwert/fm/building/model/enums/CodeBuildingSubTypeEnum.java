@@ -5,11 +5,10 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingSubTypeRecord;
@@ -20,8 +19,8 @@ public final class CodeBuildingSubTypeEnum extends EnumerationBase<CodeBuildingS
 
 	private static CodeBuildingSubTypeEnum INSTANCE;
 
-	private CodeBuildingSubTypeEnum(final Enumerations enums, final DSLContext dslContext) {
-		super(enums, dslContext, CodeBuildingSubType.class);
+	private CodeBuildingSubTypeEnum(AppContext appContext) {
+		super(appContext, CodeBuildingSubType.class);
 		INSTANCE = this;
 	}
 

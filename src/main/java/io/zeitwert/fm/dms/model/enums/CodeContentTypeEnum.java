@@ -6,11 +6,10 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.records.CodeContentTypeRecord;
@@ -23,9 +22,9 @@ public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
 
 	private final CodeContentKindEnum codeContentKindEnum;
 
-	protected CodeContentTypeEnum(final Enumerations enums, final DSLContext dslContext,
+	protected CodeContentTypeEnum(AppContext appContext,
 			final CodeContentKindEnum codeContentKindEnum) {
-		super(enums, dslContext, CodeContentType.class);
+		super(appContext, CodeContentType.class);
 		this.codeContentKindEnum = codeContentKindEnum;
 		INSTANCE = this;
 	}

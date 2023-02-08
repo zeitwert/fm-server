@@ -1,20 +1,12 @@
 
 package io.zeitwert.ddd.oe.model.enums;
 
-import javax.annotation.PostConstruct;
-
-import org.jooq.DSLContext;
-import org.jooq.Record2;
-import org.jooq.Table;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 
 @Component("codeTenantTypeEnum")
-@DependsOn({ "flyway", "flywayInitializer" })
 public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 
 	// Kernel Tenant (Nr 1)
@@ -25,29 +17,25 @@ public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 	// Container for 1 dedicated Account
 	public static CodeTenantType COMMUNITY;
 
-	static private final String TABLE_NAME = "code_tenant_type";
+	static public final String TABLE_NAME = "code_tenant_type";
 
 	private static CodeTenantTypeEnum INSTANCE;
 
-	private final AppContext appContext;
-
-	protected CodeTenantTypeEnum(final Enumerations enums, final DSLContext dslContext, final AppContext appContext) {
-		super(enums, dslContext, CodeTenantType.class);
-		this.appContext = appContext;
+	protected CodeTenantTypeEnum(Enumerations enums) {
+		super(null, CodeTenantType.class);
+		enums.addEnumeration(CodeTenantType.class, this);
 		INSTANCE = this;
 	}
 
-	@PostConstruct
-	private void init() {
-		Table<?> codeTenantType = this.appContext.getTable(TABLE_NAME);
-		for (final Record2<String, String> item : this.getDslContext().select(ID, NAME).from(codeTenantType).fetch()) {
-			CodeTenantType tenantType = CodeTenantType.builder()
-					.enumeration(this)
-					.id(item.value1())
-					.name(item.value2())
-					.build();
-			this.addItem(tenantType);
-		}
+	public static CodeTenantTypeEnum getInstance() {
+		return INSTANCE;
+	}
+
+	public void addItem(CodeTenantType item) {
+		super.addItem(item);
+	}
+
+	public void init() {
 		KERNEL = getTenantType("kernel");
 		ADVISOR = getTenantType("advisor");
 		COMMUNITY = getTenantType("community");
