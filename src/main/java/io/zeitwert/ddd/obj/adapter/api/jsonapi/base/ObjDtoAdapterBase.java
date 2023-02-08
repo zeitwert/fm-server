@@ -12,13 +12,13 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 
 import org.jooq.TableRecord;
 
-public abstract class ObjDtoAdapterBase<O extends Obj, V extends TableRecord<?>, D extends ObjDtoBase<O>>
+public abstract class ObjDtoAdapterBase<O extends Obj, V extends Object, D extends ObjDtoBase<O>>
 		extends AggregateDtoAdapterBase<O, V, D> {
 
 	@Override
 	public void toAggregate(D dto, O obj) {
 		if (dto.getOwner() != null) {
-			obj.setOwner(getUser(Integer.parseInt(dto.getOwner().getId())));
+			obj.setOwner(this.getUser(Integer.parseInt(dto.getOwner().getId())));
 		}
 	}
 
@@ -36,8 +36,8 @@ public abstract class ObjDtoAdapterBase<O extends Obj, V extends TableRecord<?>,
 	}
 
 	protected void fromRecord(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> obj) {
-		EnumeratedDto tenant = getTenantEnumerated(obj.get(ObjFields.TENANT_ID));
-		EnumeratedDto owner = getUserEnumerated(obj.get(ObjFields.OWNER_ID));
+		EnumeratedDto tenant = this.getTenantEnumerated(obj.get(ObjFields.TENANT_ID));
+		EnumeratedDto owner = this.getUserEnumerated(obj.get(ObjFields.OWNER_ID));
 		// @formatter:off
 		dtoBuilder
 			.tenant(tenant)

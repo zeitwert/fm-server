@@ -5,8 +5,6 @@ import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
-import org.jooq.TableRecord;
-
 public abstract class DocExtnBase extends DocBase {
 
 	//@formatter:off
@@ -15,7 +13,7 @@ public abstract class DocExtnBase extends DocBase {
 	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
 	//@formatter:on
 
-	protected DocExtnBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, Object state) {
+	protected DocExtnBase(DocRepository<? extends Doc, ? extends Object> repository, Object state) {
 		super(repository, state);
 	}
 

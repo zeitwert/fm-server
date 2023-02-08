@@ -4,8 +4,6 @@ package io.zeitwert.ddd.doc.model.base;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.jooq.TableRecord;
-
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
@@ -54,7 +52,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 
 	private CodeCaseStage oldCaseStage;
 
-	protected DocBase(DocRepository<? extends Doc, ? extends TableRecord<?>> repository, Object state) {
+	protected DocBase(DocRepository<? extends Doc, ? extends Object> repository, Object state) {
 		super(repository, state);
 	}
 

@@ -15,7 +15,6 @@ import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class PartBase<A extends Aggregate> extends EntityWithPropertiesBase
 		implements Part<A>, PartMeta<A>, PartSPI<A> {
@@ -43,7 +42,7 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	protected Integer doBeforeStoreSeqNr = 0;
 	protected Integer doAfterStoreSeqNr = 0;
 
-	protected PartBase(PartRepository<A, ?> repository, A aggregate, PartState state) {
+	protected PartBase(PartRepository<A, ?> repository, A aggregate, Object state) {
 		this.repository = repository;
 		this.aggregate = aggregate;
 		this.state = state;

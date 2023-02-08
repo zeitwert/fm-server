@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.springframework.context.ApplicationContext;
@@ -98,7 +97,7 @@ public final class AppContext {
 	}
 
 	public void addRepository(String aggregateTypeId, final Class<? extends Aggregate> intfClass,
-			final AggregateRepository<? extends Aggregate, ? extends Record> repo) {
+			final AggregateRepository<? extends Aggregate, ? extends Object> repo) {
 		this.repos.addRepository(aggregateTypeId, intfClass, repo);
 	}
 

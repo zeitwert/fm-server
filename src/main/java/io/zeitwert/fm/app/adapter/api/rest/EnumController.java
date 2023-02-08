@@ -50,9 +50,10 @@ public class EnumController {
 	@GetMapping("/oe/objTenant")
 	public ResponseEntity<List<EnumeratedDto>> getTenants() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<TableRecord<?>> tenants = this.tenantRepo.find(querySpec);
+		List<Object> tenants = this.tenantRepo.find(querySpec);
 		return ResponseEntity.ok(
 				tenants.stream()
+						.map(obj -> (TableRecord<?>) obj)
 						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
 								.name(tenant.get(ObjFields.CAPTION)).build())
 						.toList());
@@ -67,9 +68,10 @@ public class EnumController {
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<TableRecord<?>> users = this.userRepo.find(querySpec);
+		List<Object> users = this.userRepo.find(querySpec);
 		return ResponseEntity.ok(
 				users.stream()
+						.map(obj -> (TableRecord<?>) obj)
 						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
 								.name(tenant.get(ObjFields.CAPTION)).build())
 						.toList());

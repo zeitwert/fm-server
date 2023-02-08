@@ -21,7 +21,6 @@ import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
-import io.zeitwert.jooq.persistence.PartState;
 import javassist.util.proxy.ProxyFactory;
 
 public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
@@ -43,7 +42,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, PartState.class };
+		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, Object.class };
 	}
 
 	@Override
@@ -82,7 +81,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final P newPart(A aggregate, PartState partState) {
+	public final P newPart(A aggregate, Object partState) {
 		P part = null;
 		try {
 			part = (P) this.proxyFactory.create(this.paramTypeList, new Object[] { this, aggregate, partState },

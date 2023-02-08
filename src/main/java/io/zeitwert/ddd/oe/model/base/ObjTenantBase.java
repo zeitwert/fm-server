@@ -4,6 +4,8 @@ package io.zeitwert.ddd.oe.model.base;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.jooq.TableRecord;
+
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjTenantRepository;
@@ -79,6 +81,7 @@ public abstract class ObjTenantBase extends ObjExtnBase implements ObjTenant {
 		ObjUserRepository userRepo = (ObjUserRepository) this.getAppContext().getRepository(ObjUser.class);
 		return userRepo.getByForeignKey("tenantId", this.getId())
 				.stream()
+				.map(c -> (TableRecord<?>) c)
 				.map(c -> userRepo.get((Integer) c.get("id")))
 				.toList();
 	}

@@ -2,12 +2,6 @@ package io.zeitwert.ddd.aggregate.model;
 
 import java.util.List;
 
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SortField;
-import org.jooq.Table;
-
 public interface AggregatePersistenceProvider<A extends Aggregate> {
 
 	/**
@@ -57,19 +51,5 @@ public interface AggregatePersistenceProvider<A extends Aggregate> {
 	 * @param tokens    list of tokens to be stored
 	 */
 	void doStoreSearch(Aggregate aggregate, List<String> texts, List<String> tokens);
-
-	/**
-	 * Execute the given query and return the result.
-	 *
-	 * .select()
-	 * .from(table)
-	 * .where(whereClause)
-	 * .orderBy(sortFields)
-	 * .limit(offset, limit)
-	 * .fetch();
-	 *
-	 */
-	Result<?> doQuery(Table<? extends Record> table, Condition whereClause, List<SortField<?>> sortFields, Long offset,
-			Long limit);
 
 }

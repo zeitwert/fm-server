@@ -5,11 +5,10 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartBase;
-import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class ObjPartBase<O extends Obj> extends PartBase<O> implements ObjPart<O> {
 
-	protected ObjPartBase(PartRepository<O, ?> repository, O obj, PartState state) {
+	protected ObjPartBase(PartRepository<O, ?> repository, O obj, Object state) {
 		super(repository, obj, state);
 	}
 

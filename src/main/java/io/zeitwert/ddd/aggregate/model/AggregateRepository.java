@@ -3,15 +3,13 @@ package io.zeitwert.ddd.aggregate.model;
 
 import java.util.List;
 
-import org.jooq.TableRecord;
-
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 
 /**
  * A DDD Aggregate Repository
  */
-public interface AggregateRepository<A extends Aggregate, V extends TableRecord<?>> {
+public interface AggregateRepository<A extends Aggregate, V extends Object> {
 
 	/**
 	 * Get aggregate type

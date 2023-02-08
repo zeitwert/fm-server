@@ -6,21 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SortField;
-import org.jooq.Table;
-import org.jooq.TableRecord;
-import org.jooq.impl.DSL;
 import org.springframework.context.ApplicationEvent;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.crnk.core.queryspec.FilterOperator;
-import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
@@ -36,10 +27,9 @@ import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.ddd.util.SqlUtils;
 import javassist.util.proxy.ProxyFactory;
 
-public abstract class AggregateRepositoryBase<A extends Aggregate, V extends TableRecord<?>>
+public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Object>
 		implements AggregateRepository<A, V>, AggregateRepositorySPI<A, V> {
 
 	private final Class<? extends Aggregate> intfClass;
@@ -282,38 +272,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Tab
 		QuerySpec querySpec = new QuerySpec(Aggregate.class);
 		querySpec.addFilter(PathSpec.of(fkName).filter(FilterOperator.EQ, targetId));
 		return this.find(querySpec);
-	}
-
-	@SuppressWarnings("unchecked")
-	protected List<V> doFind(Table<? extends Record> table, Field<Integer> idField, QuerySpec querySpec) {
-
-		Condition whereClause = DSL.noCondition();
-
-		if (querySpec != null) {
-			for (FilterSpec filter : querySpec.getFilters()) {
-				if (filter.getOperator().equals(FilterOperator.OR) && filter.getExpression() != null) {
-					whereClause = SqlUtils.orFilter(whereClause, table, idField, filter);
-				} else {
-					whereClause = SqlUtils.andFilter(whereClause, table, idField, filter);
-				}
-			}
-		}
-
-		// Sort.
-		List<SortField<?>> sortFields = List.of();
-		if (querySpec != null && querySpec.getSort().size() > 0) {
-			sortFields = SqlUtils.sortFilter(table, querySpec.getSort());
-		} else if (table.field("modified_at") != null) {
-			sortFields = List.of(table.field("modified_at").desc());
-		} else {
-			sortFields = List.of(table.field("id").desc());
-		}
-
-		Long offset = querySpec == null ? null : querySpec.getOffset();
-		Long limit = querySpec == null ? null : querySpec.getLimit();
-
-		return (Result<V>) this.getPersistenceProvider().doQuery(table, whereClause, sortFields, offset, limit);
-
 	}
 
 	protected String getClassName() {

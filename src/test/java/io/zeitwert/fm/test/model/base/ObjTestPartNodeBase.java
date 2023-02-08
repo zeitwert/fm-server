@@ -8,7 +8,6 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
-import io.zeitwert.jooq.persistence.PartState;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,7 +26,7 @@ public abstract class ObjTestPartNodeBase extends ObjPartBase<ObjTest> implement
 	protected final EnumProperty<CodeCountry> country = this.addEnumProperty("country", CodeCountry.class);
 	protected final ReferenceProperty<ObjTest> refTest = this.addReferenceProperty("refTest", ObjTest.class);
 
-	public ObjTestPartNodeBase(PartRepository<ObjTest, ?> repository, ObjTest obj, PartState state) {
+	public ObjTestPartNodeBase(PartRepository<ObjTest, ?> repository, ObjTest obj, Object state) {
 		super(repository, obj, state);
 	}
 

@@ -28,7 +28,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
-import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
@@ -44,7 +43,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 
 	protected Integer elementWeights = null;
 
-	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, PartState state) {
+	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, Object state) {
 		super(repository, obj, state);
 	}
 

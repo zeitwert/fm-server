@@ -2,12 +2,7 @@ package io.zeitwert.jooq.persistence;
 
 import java.util.List;
 
-import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SortField;
-import org.jooq.Table;
 
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
@@ -48,19 +43,6 @@ public interface AggregatePersistenceProviderMixin<A extends Aggregate> extends 
 						allTextsAndTokens,
 						allTextsAndTokens)
 				.execute();
-	}
-
-	@Override
-	default Result<?> doQuery(Table<? extends Record> table, Condition whereClause, List<SortField<?>> sortFields,
-			Long offset,
-			Long limit) {
-		return this.dslContext()
-				.select()
-				.from(table)
-				.where(whereClause)
-				.orderBy(sortFields)
-				.limit(offset, limit)
-				.fetch();
 	}
 
 }

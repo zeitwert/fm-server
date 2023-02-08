@@ -4,7 +4,7 @@ package io.zeitwert.fm.oe.model.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.jooq.TableRecord;
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -15,14 +15,18 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.base.ObjUserRepositoryBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
+import io.zeitwert.jooq.repository.JooqAggregateFinderMixin;
 
 @Component("objUserRepository")
-public class ObjUserRepositoryImpl extends ObjUserRepositoryBase {
+public class ObjUserRepositoryImpl extends ObjUserRepositoryBase implements JooqAggregateFinderMixin<Object> {
+
+	private final DSLContext dslContext;
 
 	// passwordEncoder: break cycle from WebSecurityConfig TODO find better solution
 	// (own class)
-	protected ObjUserRepositoryImpl(AppContext appContext, @Lazy PasswordEncoder passwordEncoder) {
+	protected ObjUserRepositoryImpl(AppContext appContext, DSLContext dslContext, @Lazy PasswordEncoder passwordEncoder) {
 		super(appContext, passwordEncoder);
+		this.dslContext = dslContext;
 	}
 
 	@Override
@@ -31,7 +35,12 @@ public class ObjUserRepositoryImpl extends ObjUserRepositoryBase {
 	}
 
 	@Override
-	public List<TableRecord<?>> doFind(QuerySpec querySpec) {
+	public DSLContext dslContext() {
+		return this.dslContext;
+	}
+
+	@Override
+	public List<Object> doFind(QuerySpec querySpec) {
 		return this.doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, querySpec);
 	}
 

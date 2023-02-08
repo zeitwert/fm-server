@@ -3,7 +3,6 @@ package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base;
 
 import java.util.List;
 
-import org.jooq.TableRecord;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,7 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 
-public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>>
+public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends Object, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
 	private final RequestContext requestCtx;
@@ -53,7 +52,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 			this.userCache.touch(this.requestCtx.getUser().getId());
 			Integer tenantId = dto.getTenant() != null
 					? Integer.parseInt(dto.getTenant().getId())
-					: requestCtx.getTenantId();
+					: this.requestCtx.getTenantId();
 			A aggregate = this.repository.create(tenantId);
 			this.dtoAdapter.toAggregate(dto, aggregate);
 			this.repository.store(aggregate);
@@ -72,7 +71,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 			this.requestCtx.addAggregate(aggregate);
 			return this.dtoAdapter.fromAggregate(aggregate);
 		} catch (NoDataFoundException x) {
-			throw new ResourceNotFoundException(repository.getAggregateType().getName() + "[" + objId + "]");
+			throw new ResourceNotFoundException(this.repository.getAggregateType().getName() + "[" + objId + "]");
 		}
 	}
 

@@ -11,7 +11,6 @@ import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.jooq.persistence.PartState;
 
 import org.jooq.JSON;
 
@@ -24,7 +23,7 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	protected final EnumProperty<CodeCaseStage> newCaseStage = this.addEnumProperty("newCaseStage", CodeCaseStage.class);
 	protected final SimpleProperty<JSON> changes = this.addSimpleProperty("changes", JSON.class);
 
-	public DocPartTransitionBase(PartRepository<Doc, ?> repository, Doc doc, PartState state) {
+	public DocPartTransitionBase(PartRepository<Doc, ?> repository, Doc doc, Object state) {
 		super(repository, doc, state);
 	}
 
@@ -32,11 +31,11 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		RequestContext requestCtx = this.getMeta().getRequestContext();
-		tenantId.setValue(this.getAggregate().getTenantId());
-		user.setValue(requestCtx.getUser());
-		timestamp.setValue(requestCtx.getCurrentTime());
-		oldCaseStage.setValue(null);
-		newCaseStage.setValue(null);
+		this.tenantId.setValue(this.getAggregate().getTenantId());
+		this.user.setValue(requestCtx.getUser());
+		this.timestamp.setValue(requestCtx.getCurrentTime());
+		this.oldCaseStage.setValue(null);
+		this.newCaseStage.setValue(null);
 	}
 
 	@Override

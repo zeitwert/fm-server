@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import org.jooq.TableRecord;
-
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
@@ -11,7 +9,7 @@ import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
-public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, TableRecord<?>, ObjTenantDto> {
+public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Object, ObjTenantDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 	private static ObjTenantDtoAdapter INSTANCE;
@@ -64,13 +62,13 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Tabl
 	}
 
 	@Override
-	public ObjTenantDto fromRecord(TableRecord<?> tr) {
+	public ObjTenantDto fromRecord(Object tr) {
 		if (tr == null) {
 			return null;
 		}
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(null);
-		this.fromRecord(dtoBuilder, tr);
 		ObjTenantVRecord obj = (ObjTenantVRecord) tr;
+		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))
 				.name(obj.getName())

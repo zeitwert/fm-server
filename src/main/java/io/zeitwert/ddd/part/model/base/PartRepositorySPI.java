@@ -4,7 +4,6 @@ import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.property.model.PropertyProvider;
-import io.zeitwert.jooq.persistence.PartState;
 
 /**
  * This class defines the internal callbacks for a PartRepository
@@ -12,7 +11,7 @@ import io.zeitwert.jooq.persistence.PartState;
  */
 public interface PartRepositorySPI<A extends Aggregate, P extends Part<A>> {
 
-	P newPart(A aggregate, PartState partState);
+	P newPart(A aggregate, Object partState);
 
 	/**
 	 * Get the PropertyProvider for this repository

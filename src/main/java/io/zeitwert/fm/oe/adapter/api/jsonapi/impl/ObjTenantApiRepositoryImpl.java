@@ -1,7 +1,6 @@
 
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import org.jooq.TableRecord;
 import org.springframework.stereotype.Controller;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
@@ -14,7 +13,7 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 
 @Controller("objTenantApiRepository")
 public class ObjTenantApiRepositoryImpl
-		extends AggregateApiRepositoryBase<ObjTenant, TableRecord<?>, ObjTenantDto>
+		extends AggregateApiRepositoryBase<ObjTenant, Object, ObjTenantDto>
 		implements ObjTenantApiRepository {
 
 	public ObjTenantApiRepositoryImpl(ObjTenantRepository repository, RequestContext requestCtx, ObjUserCache userCache) {

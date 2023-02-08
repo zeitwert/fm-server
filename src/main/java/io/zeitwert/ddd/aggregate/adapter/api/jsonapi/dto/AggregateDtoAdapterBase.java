@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto;
 
-import org.jooq.TableRecord;
-
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
@@ -10,7 +8,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 
-public abstract class AggregateDtoAdapterBase<A extends Aggregate, V extends TableRecord<?>, D extends AggregateDtoBase<A>> {
+public abstract class AggregateDtoAdapterBase<A extends Aggregate, V extends Object, D extends AggregateDtoBase<A>> {
 
 	private static ObjTenantCache tenantCache = null;
 	private static ObjUserCache userCache = null;

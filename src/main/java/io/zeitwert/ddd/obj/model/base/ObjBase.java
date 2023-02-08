@@ -5,8 +5,6 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 
 import java.time.OffsetDateTime;
 
-import org.jooq.TableRecord;
-
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
@@ -44,7 +42,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	protected final PartListProperty<ObjPartTransition> transitionList = this.addPartListProperty("transitionList", ObjPartTransition.class);
 	//@formatter:on
 
-	protected ObjBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, Object state) {
+	protected ObjBase(ObjRepository<? extends Obj, ? extends Object> repository, Object state) {
 		super(repository, state);
 	}
 

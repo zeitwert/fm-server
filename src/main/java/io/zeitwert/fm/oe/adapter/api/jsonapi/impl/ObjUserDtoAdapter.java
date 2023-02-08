@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import org.jooq.TableRecord;
-
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
@@ -11,7 +9,7 @@ import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
-public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, TableRecord<?>, ObjUserDto> {
+public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, Object, ObjUserDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 	private static ObjUserDtoAdapter INSTANCE;
@@ -78,13 +76,13 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, TableRec
 	}
 
 	@Override
-	public ObjUserDto fromRecord(TableRecord<?> tr) {
+	public ObjUserDto fromRecord(Object tr) {
 		if (tr == null) {
 			return null;
 		}
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
-		this.fromRecord(dtoBuilder, tr);
 		ObjUserVRecord obj = (ObjUserVRecord) tr;
+		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.email(obj.getEmail())
 				.name(obj.getName())

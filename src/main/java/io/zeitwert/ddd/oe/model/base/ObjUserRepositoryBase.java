@@ -3,7 +3,6 @@ package io.zeitwert.ddd.oe.model.base;
 
 import javax.annotation.PostConstruct;
 
-import org.jooq.TableRecord;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -13,7 +12,7 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 
-public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, TableRecord<?>>
+public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, Object>
 		implements ObjUserRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_user";

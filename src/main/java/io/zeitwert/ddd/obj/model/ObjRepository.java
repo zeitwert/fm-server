@@ -6,9 +6,7 @@ import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
-import org.jooq.TableRecord;
-
-public interface ObjRepository<O extends Obj, V extends TableRecord<?>> extends AggregateRepository<O, V> {
+public interface ObjRepository<O extends Obj, V extends Object> extends AggregateRepository<O, V> {
 
 	static boolean isObjId(Integer id) {
 		return id != null && id < DocRepository.MIN_DOC_ID;

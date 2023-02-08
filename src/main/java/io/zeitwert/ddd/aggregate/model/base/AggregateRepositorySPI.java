@@ -7,13 +7,11 @@ import io.zeitwert.ddd.property.model.PropertyProvider;
 
 import java.util.List;
 
-import org.jooq.Record;
-
 /**
  * This class defines the internal callbacks for a AggregateRepository
  * implementation.
  */
-public interface AggregateRepositorySPI<A extends Aggregate, V extends Record> {
+public interface AggregateRepositorySPI<A extends Aggregate, V extends Object> {
 
 	/**
 	 * Get the PropertyProvider for this repository

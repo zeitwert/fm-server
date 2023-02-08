@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jooq.TableRecord;
-
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
@@ -29,7 +27,7 @@ import io.zeitwert.ddd.validation.model.impl.AggregatePartValidationImpl;
  */
 public abstract class AggregateBase extends EntityWithPropertiesBase implements Aggregate, AggregateMeta, AggregateSPI {
 
-	private final AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> repository;
+	private final AggregateRepository<? extends Aggregate, ? extends Object> repository;
 	private final Object state;
 
 	private boolean isStale = false;
@@ -52,7 +50,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	private List<String> searchTexts = new ArrayList<>();
 	private List<String> searchTokens = new ArrayList<>();
 
-	protected AggregateBase(AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> repository, Object state) {
+	protected AggregateBase(AggregateRepository<? extends Aggregate, ? extends Object> repository, Object state) {
 		this.repository = repository;
 		this.state = state;
 	}
@@ -63,7 +61,7 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	@Override
-	public AggregateRepository<? extends Aggregate, ? extends TableRecord<?>> getRepository() {
+	public AggregateRepository<? extends Aggregate, ? extends Object> getRepository() {
 		return this.repository;
 	}
 

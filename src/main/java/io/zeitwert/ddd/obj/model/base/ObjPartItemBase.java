@@ -4,13 +4,12 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class ObjPartItemBase extends ObjPartBase<Obj> implements ObjPartItem {
 
 	protected final SimpleProperty<String> itemId = this.addSimpleProperty("itemId", String.class);
 
-	public ObjPartItemBase(PartRepository<Obj, ?> repository, Obj obj, PartState state) {
+	public ObjPartItemBase(PartRepository<Obj, ?> repository, Obj obj, Object state) {
 		super(repository, obj, state);
 	}
 

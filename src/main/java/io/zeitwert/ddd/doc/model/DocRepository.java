@@ -5,9 +5,7 @@ import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
 
-import org.jooq.TableRecord;
-
-public interface DocRepository<D extends Doc, V extends TableRecord<?>> extends AggregateRepository<D, V> {
+public interface DocRepository<D extends Doc, V extends Object> extends AggregateRepository<D, V> {
 
 	static Integer MIN_DOC_ID = 100000000; // doc_id_seq minvalue
 

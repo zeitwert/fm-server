@@ -9,7 +9,6 @@ import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.jooq.persistence.PartState;
 
 import org.jooq.JSON;
 
@@ -20,7 +19,7 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 	protected final SimpleProperty<OffsetDateTime> timestamp = this.addSimpleProperty("timestamp", OffsetDateTime.class);
 	protected final SimpleProperty<JSON> changes = this.addSimpleProperty("changes", JSON.class);
 
-	public ObjPartTransitionBase(PartRepository<Obj, ?> repository, Obj obj, PartState state) {
+	public ObjPartTransitionBase(PartRepository<Obj, ?> repository, Obj obj, Object state) {
 		super(repository, obj, state);
 	}
 

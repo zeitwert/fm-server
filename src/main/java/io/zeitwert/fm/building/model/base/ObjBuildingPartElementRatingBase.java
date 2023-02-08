@@ -10,7 +10,6 @@ import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.jooq.persistence.PartState;
 
 public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartElementRating {
@@ -30,7 +29,7 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 	// protected final EnumSetProperty<CodeBuildingElementDescription> measureDescriptionSet;
 	//@formatter:on
 
-	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, PartState state) {
+	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, Object state) {
 		super(repository, obj, state);
 	}
 

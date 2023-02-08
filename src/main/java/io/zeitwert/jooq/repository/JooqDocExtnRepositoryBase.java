@@ -16,7 +16,7 @@ import io.zeitwert.jooq.property.DocExtnPropertyProviderMixin;
 
 public abstract class JooqDocExtnRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		extends DocRepositoryBase<D, V>
-		implements DocExtnPropertyProviderMixin, DocPersistenceProviderMixin<D> {
+		implements DocExtnPropertyProviderMixin, DocPersistenceProviderMixin<D>, JooqAggregateFinderMixin<V> {
 
 	private final DSLContext dslContext;
 	private final Map<String, Object> dbConfigMap = new HashMap<>();

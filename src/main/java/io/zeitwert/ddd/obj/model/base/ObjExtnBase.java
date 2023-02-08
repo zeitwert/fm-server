@@ -7,8 +7,6 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
-import org.jooq.TableRecord;
-
 public abstract class ObjExtnBase extends ObjBase {
 
 	//@formatter:off
@@ -17,7 +15,7 @@ public abstract class ObjExtnBase extends ObjBase {
 	protected final SimpleProperty<Integer> extnAccountId = this.addSimpleProperty("extnAccountId", Integer.class);
 	//@formatter:on
 
-	protected ObjExtnBase(ObjRepository<? extends Obj, ? extends TableRecord<?>> repository, Object state) {
+	protected ObjExtnBase(ObjRepository<? extends Obj, ? extends Object> repository, Object state) {
 		super(repository, state);
 	}
 
