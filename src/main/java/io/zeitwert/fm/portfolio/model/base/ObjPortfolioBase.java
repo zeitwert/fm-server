@@ -22,18 +22,14 @@ import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.collaboration.model.ObjNote;
-import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
-import io.zeitwert.fm.collaboration.model.impl.ItemWithNotesImpl;
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.fm.task.model.DocTask;
-import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
-import io.zeitwert.fm.task.model.impl.ItemWithTasksImpl;
+import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
-public abstract class ObjPortfolioBase extends ObjExtnBase implements ObjPortfolio {
+public abstract class ObjPortfolioBase extends ObjExtnBase
+		implements ObjPortfolio, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	//@formatter:off
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
@@ -44,9 +40,6 @@ public abstract class ObjPortfolioBase extends ObjExtnBase implements ObjPortfol
 	protected final ReferenceSetProperty<ObjBuilding> buildingSet = this.addReferenceSetProperty("buildingSet", ObjBuilding.class);
 	//@formatter:on
 
-	private final ItemWithNotesImpl notes = new ItemWithNotesImpl(this);
-	private final ItemWithTasksImpl tasks = new ItemWithTasksImpl(this);
-
 	protected ObjPortfolioBase(ObjPortfolioRepository repository, Object state) {
 		super(repository, state);
 	}
@@ -54,6 +47,11 @@ public abstract class ObjPortfolioBase extends ObjExtnBase implements ObjPortfol
 	@Override
 	public ObjPortfolioRepository getRepository() {
 		return (ObjPortfolioRepository) super.getRepository();
+	}
+
+	@Override
+	public ObjPortfolio aggregate() {
+		return this;
 	}
 
 	@Override
@@ -68,31 +66,6 @@ public abstract class ObjPortfolioBase extends ObjExtnBase implements ObjPortfol
 	@Override
 	public final ObjAccount getAccount() {
 		return ItemWithAccount.getAccountCache().get(this.getAccountId());
-	}
-
-	@Override
-	public List<ObjNoteVRecord> getNotes() {
-		return this.notes.getNotes();
-	}
-
-	@Override
-	public ObjNote addNote(CodeNoteType noteType) {
-		return this.notes.addNote(noteType);
-	}
-
-	@Override
-	public void removeNote(Integer noteId) {
-		this.notes.removeNote(noteId);
-	}
-
-	@Override
-	public List<DocTaskVRecord> getTasks() {
-		return this.tasks.getTasks();
-	}
-
-	@Override
-	public DocTask addTask() {
-		return this.tasks.addTask();
 	}
 
 	@Override
