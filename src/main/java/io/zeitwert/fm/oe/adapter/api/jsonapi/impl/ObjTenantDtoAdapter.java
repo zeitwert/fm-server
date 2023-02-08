@@ -3,9 +3,9 @@ package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 

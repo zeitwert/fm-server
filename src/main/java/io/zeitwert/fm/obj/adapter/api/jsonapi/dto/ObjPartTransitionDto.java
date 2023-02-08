@@ -1,9 +1,8 @@
 
-package io.zeitwert.ddd.doc.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
-import io.zeitwert.ddd.doc.model.DocPartTransition;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.obj.model.ObjPartTransition;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.time.OffsetDateTime;
 
 @Data
 @Builder
-public class DocPartTransitionDto {
+public class ObjPartTransitionDto {
 
 	private Integer seqNr;
 
@@ -20,19 +19,13 @@ public class DocPartTransitionDto {
 
 	private OffsetDateTime timestamp;
 
-	private CodeCaseStage oldCaseStage;
-
-	private CodeCaseStage newCaseStage;
-
-	public static DocPartTransitionDto fromPart(DocPartTransition transition) {
+	public static ObjPartTransitionDto fromPart(ObjPartTransition transition) {
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
-		return DocPartTransitionDto.builder()
+		return ObjPartTransitionDto.builder()
 			.seqNr(transition.getSeqNr())
 			.user(userDtoAdapter.asEnumerated(transition.getUser()))
 			.timestamp(transition.getTimestamp())
-			.oldCaseStage(transition.getOldCaseStage())
-			.newCaseStage(transition.getNewCaseStage())
 			.build();
 		// @formatter:on
 	}

@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import java.io.Serializable;
 
@@ -9,22 +9,22 @@ import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 
 @JsonSerialize(using = ToStringSerializer.class)
-public class ObjPartId implements Serializable {
+public class DocPartId implements Serializable {
 
 	@JsonApiId
 	public Integer id;
 
 	@JsonApiRelationId
-	public Integer objId;
+	public Integer docId;
 
-	public ObjPartId(String id) {
+	public DocPartId(String id) {
 		String[] elements = id.split(":");
-		this.objId = Integer.valueOf(elements[0]);
+		this.docId = Integer.valueOf(elements[0]);
 		this.id = Integer.valueOf(elements[1]);
 	}
 
-	public ObjPartId(Integer objId, Integer partId) {
-		this.objId = objId;
+	public DocPartId(Integer docId, Integer partId) {
+		this.docId = docId;
 		this.id = partId;
 	}
 
@@ -36,24 +36,27 @@ public class ObjPartId implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getObjId() {
-		return this.objId;
+	public Integer getDocId() {
+		return this.docId;
 	}
 
-	public void setObjId(Integer objId) {
-		this.objId = objId;
+	public void setDocId(Integer docId) {
+		this.docId = docId;
 	}
 
+	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return this.toString().hashCode();
 	}
 
+	@Override
 	public boolean equals(Object object) {
-		return object instanceof ObjPartId && object.toString().equals(toString());
+		return object instanceof DocPartId && object.toString().equals(this.toString());
 	}
 
+	@Override
 	public String toString() {
-		return this.objId + ":" + this.id;
+		return this.docId + ":" + this.id;
 	}
 
 }

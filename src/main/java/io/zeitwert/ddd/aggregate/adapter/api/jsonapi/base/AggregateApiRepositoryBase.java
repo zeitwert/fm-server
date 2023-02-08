@@ -3,7 +3,6 @@ package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base;
 
 import java.util.List;
 
-import org.jooq.exception.NoDataFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.crnk.core.engine.document.ErrorData;
@@ -70,7 +69,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, V extends 
 			A aggregate = this.repository.get(objId);
 			this.requestCtx.addAggregate(aggregate);
 			return this.dtoAdapter.fromAggregate(aggregate);
-		} catch (NoDataFoundException x) {
+		} catch (Exception x) {
 			throw new ResourceNotFoundException(this.repository.getAggregateType().getName() + "[" + objId + "]");
 		}
 	}

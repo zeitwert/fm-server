@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
+import io.zeitwert.fm.doc.adapter.api.jsonapi.base.DocDtoAdapterBase;
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
@@ -8,7 +9,6 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
-import io.zeitwert.ddd.doc.adapter.api.jsonapi.base.DocDtoAdapterBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 

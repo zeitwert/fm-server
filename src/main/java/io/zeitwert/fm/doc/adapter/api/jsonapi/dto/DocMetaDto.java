@@ -1,8 +1,8 @@
-package io.zeitwert.ddd.doc.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import java.util.List;
 
-import org.jooq.Record;
+import org.jooq.TableRecord;
 
 import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
@@ -13,7 +13,6 @@ import io.zeitwert.ddd.doc.model.base.DocFields;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -41,14 +40,14 @@ public class DocMetaDto extends AggregateMetaDto {
 		return builder
 			.caseStage(EnumeratedDto.fromEnum(doc.getCaseStage()))
 			.isInWork(doc.getCaseStage().isInWork())
-			.assignee(ObjUserDtoAdapter.getInstance().asEnumerated(doc.getAssignee()))
+			.assignee(EnumeratedDto.fromAggregate(doc.getAssignee()))
 			.caseStages(doc.getMeta().getCaseStages().stream().map(cs -> EnumeratedDto.fromEnum(cs)).toList())
 			.transitions(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
 			.build();
 		// @formatter:on
 	}
 
-	public static DocMetaDto fromRecord(Record doc) {
+	public static DocMetaDto fromRecord(TableRecord<?> doc) {
 		DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
 		AggregateMetaDto.fromRecord(builder, doc);
 		ObjUserCache userCache = (ObjUserCache) AppContext.getInstance().getBean(ObjUserCache.class);

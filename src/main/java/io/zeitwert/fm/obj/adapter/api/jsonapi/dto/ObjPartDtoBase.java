@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;

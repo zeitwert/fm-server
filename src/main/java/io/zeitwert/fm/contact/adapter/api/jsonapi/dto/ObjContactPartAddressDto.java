@@ -9,8 +9,8 @@ import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannelEnum;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 
 @Data()
 @EqualsAndHashCode(callSuper = true)

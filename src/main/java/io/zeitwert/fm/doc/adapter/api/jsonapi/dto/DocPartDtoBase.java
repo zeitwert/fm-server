@@ -1,4 +1,4 @@
-package io.zeitwert.ddd.doc.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPart;

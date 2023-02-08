@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.obj.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
 import java.time.OffsetDateTime;
 import java.util.List;

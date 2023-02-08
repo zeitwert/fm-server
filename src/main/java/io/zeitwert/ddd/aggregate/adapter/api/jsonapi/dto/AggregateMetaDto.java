@@ -3,14 +3,11 @@ package io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.jooq.Record;
-
 import io.crnk.core.resource.meta.MetaInformation;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.validation.adapter.api.jsonapi.dto.AggregatePartValidationDto;
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -40,22 +37,21 @@ public class AggregateMetaDto implements MetaInformation {
 
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate) {
 		AggregateMeta meta = aggregate.getMeta();
-		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
 		// @formatter:off
 		builder
 			.itemType(EnumeratedDto.fromEnum(meta.getAggregateType()))
-			.owner(userDtoAdapter.asEnumerated(aggregate.getOwner()))
+			.owner(EnumeratedDto.fromAggregate(aggregate.getOwner()))
 			.version(meta.getVersion())
-			.createdByUser(userDtoAdapter.asEnumerated(meta.getCreatedByUser()))
+			.createdByUser(EnumeratedDto.fromAggregate(meta.getCreatedByUser()))
 			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(userDtoAdapter.asEnumerated(meta.getModifiedByUser()))
+			.modifiedByUser(EnumeratedDto.fromAggregate(meta.getModifiedByUser()))
 			.modifiedAt(meta.getModifiedAt())
 			.validations(meta.getValidations().stream().map(v -> AggregatePartValidationDto.fromValidation(v)).toList())
 			.build();
 		// @formatter:on
 	}
 
-	public static void fromRecord(AggregateMetaDtoBuilder<?, ?> builder, Record aggregate) {
+	public static void fromRecord(AggregateMetaDtoBuilder<?, ?> builder, Object aggregate) {
 		// @formatter:off
 		builder
 			.build();

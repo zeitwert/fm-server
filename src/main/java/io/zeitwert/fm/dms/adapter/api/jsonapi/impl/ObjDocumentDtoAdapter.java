@@ -2,13 +2,13 @@
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 public final class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
 

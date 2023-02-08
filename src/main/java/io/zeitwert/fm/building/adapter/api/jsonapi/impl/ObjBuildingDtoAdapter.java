@@ -4,8 +4,6 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.base.PartSPI;
 import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
@@ -25,6 +23,8 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 
 public final class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {

@@ -2,11 +2,11 @@
 package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 public final class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord, ObjNoteDto> {
 
