@@ -50,6 +50,11 @@ public class ObjNoteRepositoryImpl extends JooqObjExtnRepositoryBase<ObjNote, Ob
 	}
 
 	@Override
+	public boolean hasAccountId() {
+		return false;
+	}
+
+	@Override
 	public ObjNote doCreate() {
 		return this.doCreate(this.dslContext().newRecord(Tables.OBJ_NOTE));
 	}

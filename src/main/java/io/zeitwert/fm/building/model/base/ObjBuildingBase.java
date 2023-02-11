@@ -31,6 +31,8 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
+import io.zeitwert.fm.oe.model.ObjTenantFM;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
 public abstract class ObjBuildingBase extends ObjExtnBase
@@ -119,7 +121,7 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 	@Override
 	public double getInflationRate() {
 		BigDecimal inflationRate = this.getAccount().getInflationRate();
-		inflationRate = inflationRate != null ? inflationRate : this.getTenant().getInflationRate();
+		inflationRate = inflationRate != null ? inflationRate : ((ObjTenantFM) this.getTenant()).getInflationRate();
 		return inflationRate != null ? inflationRate.doubleValue() : 0;
 	}
 
@@ -168,7 +170,7 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 				rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"));
 			}
 			rating.setRatingDate(this.getMeta().getRequestContext().getCurrentDate());
-			rating.setRatingUser(this.getMeta().getRequestContext().getUser());
+			rating.setRatingUser((ObjUserFM) this.getMeta().getRequestContext().getUser());
 		} finally {
 			rating.getMeta().enableCalc();
 			rating.calcAll();

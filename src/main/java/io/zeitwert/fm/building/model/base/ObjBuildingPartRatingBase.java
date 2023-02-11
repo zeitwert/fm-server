@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import org.flywaydb.core.internal.util.Pair;
 
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
-import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
@@ -23,6 +22,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
@@ -32,7 +32,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	protected final EnumProperty<CodeBuildingMaintenanceStrategy> maintenanceStrategy=this.addEnumProperty("maintenanceStrategy", CodeBuildingMaintenanceStrategy.class);
 	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus= this.addEnumProperty("ratingStatus", CodeBuildingRatingStatus.class);
 	protected final SimpleProperty<LocalDate> ratingDate= this.addSimpleProperty("ratingDate", LocalDate.class);
-	protected final ReferenceProperty<ObjUser> ratingUser= this.addReferenceProperty("ratingUser", ObjUser.class);
+	protected final ReferenceProperty<ObjUserFM> ratingUser= this.addReferenceProperty("ratingUser", ObjUserFM.class);
 	protected final PartListProperty<ObjBuildingPartElementRating> elementList= this.addPartListProperty("elementList", ObjBuildingPartElementRating.class);
 	//@formatter:on
 

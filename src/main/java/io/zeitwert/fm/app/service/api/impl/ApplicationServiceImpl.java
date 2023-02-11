@@ -13,6 +13,7 @@ import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationArea;
 import io.zeitwert.fm.app.model.ApplicationInfo;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @Service("applicationService")
 @DependsOn("codeUserRoleEnum")
@@ -24,9 +25,10 @@ class ApplicationServiceImpl implements ApplicationService {
 	private RequestContext requestCtx;
 
 	public List<Application> getAllApplications() {
-		if (requestCtx.getUser().hasRole(CodeUserRoleEnum.APP_ADMIN)) {
+		ObjUserFM user = (ObjUserFM) requestCtx.getUser();
+		if (user.hasRole(CodeUserRoleEnum.APP_ADMIN)) {
 			return appConfig.AppAdminApplications;
-		} else if (requestCtx.getUser().hasRole(CodeUserRoleEnum.ADMIN)) {
+		} else if (user.hasRole(CodeUserRoleEnum.ADMIN)) {
 			return appConfig.AdminApplications;
 		}
 		return appConfig.UserApplications;

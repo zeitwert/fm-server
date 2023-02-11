@@ -3,13 +3,13 @@ package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
-public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, Object, ObjUserDto> {
+public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVRecord, ObjUserDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 	private static ObjUserDtoAdapter INSTANCE;
@@ -26,7 +26,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, Object, 
 	}
 
 	@Override
-	public void toAggregate(ObjUserDto dto, ObjUser obj) {
+	public void toAggregate(ObjUserDto dto, ObjUserFM obj) {
 		super.toAggregate(dto, obj);
 		if (dto.getId() != null && dto.getPassword() != null) {
 			obj.setPassword(dto.getPassword());
@@ -48,7 +48,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, Object, 
 	}
 
 	@Override
-	public ObjUserDto fromAggregate(ObjUser obj) {
+	public ObjUserDto fromAggregate(ObjUserFM obj) {
 		if (obj == null) {
 			return null;
 		}
@@ -64,7 +64,7 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, Object, 
 				.build();
 	}
 
-	public EnumeratedDto asEnumerated(ObjUser obj) {
+	public EnumeratedDto asEnumerated(ObjUserFM obj) {
 		if (obj == null) {
 			return null;
 		}
@@ -76,12 +76,11 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, Object, 
 	}
 
 	@Override
-	public ObjUserDto fromRecord(Object tr) {
-		if (tr == null) {
+	public ObjUserDto fromRecord(ObjUserVRecord obj) {
+		if (obj == null) {
 			return null;
 		}
 		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
-		ObjUserVRecord obj = (ObjUserVRecord) tr;
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.email(obj.getEmail())

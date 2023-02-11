@@ -41,10 +41,10 @@
 	"java.sources.organizeImports.staticStarThreshold": 10,
 	"java.cleanup.actionsOnSave": [
 		"qualifyMembers",
-		"addOverride",
 		"addDeprecated",
 		"stringConcatToTextBlock",
-		"invertEquals"
+		"invertEquals",
+		"addOverride"
 	],
 	"java.compile.nullAnalysis.mode": "automatic",
 	"java.debug.settings.onBuildFailureProceed": true,

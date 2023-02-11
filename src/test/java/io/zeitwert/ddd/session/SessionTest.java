@@ -11,10 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.server.Application;
@@ -36,7 +36,7 @@ public class SessionTest {
 	private ObjTestRepository testRepository;
 
 	@Autowired
-	private ObjUserRepository userRepository;
+	private ObjUserFMRepository userRepository;
 
 	@Autowired
 	private CodeCountryEnum countryEnum;

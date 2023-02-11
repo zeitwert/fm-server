@@ -21,11 +21,13 @@ import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
 import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
+import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
+import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 import io.zeitwert.jooq.property.ObjFields;
 
 @RestController("enumController")
@@ -36,13 +38,13 @@ public class EnumController {
 	Enumerations enumerations;
 
 	@Autowired
-	ObjTenantRepository tenantRepo;
+	ObjTenantFMRepository tenantRepo;
 
 	@Autowired
 	ObjTenantCache tenantCache;
 
 	@Autowired
-	ObjUserRepository userRepo;
+	ObjUserFMRepository userRepo;
 
 	@Autowired
 	ObjUserCache userCache;
@@ -50,7 +52,7 @@ public class EnumController {
 	@GetMapping("/oe/objTenant")
 	public ResponseEntity<List<EnumeratedDto>> getTenants() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<Object> tenants = this.tenantRepo.find(querySpec);
+		List<ObjTenantVRecord> tenants = this.tenantRepo.find(querySpec);
 		return ResponseEntity.ok(
 				tenants.stream()
 						.map(obj -> (TableRecord<?>) obj)
@@ -68,7 +70,7 @@ public class EnumController {
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<Object> users = this.userRepo.find(querySpec);
+		List<ObjUserVRecord> users = this.userRepo.find(querySpec);
 		return ResponseEntity.ok(
 				users.stream()
 						.map(obj -> (TableRecord<?>) obj)

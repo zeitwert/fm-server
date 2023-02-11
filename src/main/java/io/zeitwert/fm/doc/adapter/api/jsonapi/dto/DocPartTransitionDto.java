@@ -5,6 +5,7 @@ import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,15 +27,13 @@ public class DocPartTransitionDto {
 
 	public static DocPartTransitionDto fromPart(DocPartTransition transition) {
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
-		// @formatter:off
 		return DocPartTransitionDto.builder()
-			.seqNr(transition.getSeqNr())
-			.user(userDtoAdapter.asEnumerated(transition.getUser()))
-			.timestamp(transition.getTimestamp())
-			.oldCaseStage(transition.getOldCaseStage())
-			.newCaseStage(transition.getNewCaseStage())
-			.build();
-		// @formatter:on
+				.seqNr(transition.getSeqNr())
+				.user(userDtoAdapter.asEnumerated((ObjUserFM) transition.getUser()))
+				.timestamp(transition.getTimestamp())
+				.oldCaseStage(transition.getOldCaseStage())
+				.newCaseStage(transition.getNewCaseStage())
+				.build();
 	}
 
 }

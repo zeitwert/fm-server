@@ -6,20 +6,31 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.jooq.JSON;
 import org.jooq.Result;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
+import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
+import io.zeitwert.ddd.doc.model.base.DocPartTransitionBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocPartTransitionRecord;
-import io.zeitwert.jooq.persistence.DocPartPersistenceProviderBase;
 import io.zeitwert.jooq.persistence.PartState;
+import io.zeitwert.jooq.repository.JooqDocPartRepositoryBase;
 
-@Configuration
-public class DocPartTransitionPersistenceProvider extends DocPartPersistenceProviderBase<Doc, DocPartTransition> {
+@Component("docPartTransitionRepository")
+public class DocPartTransitionRepositoryImpl extends JooqDocPartRepositoryBase<Doc, DocPartTransition>
+		implements DocPartTransitionRepository {
 
-	public DocPartTransitionPersistenceProvider(DSLContext dslContext) {
-		super(DocPartTransition.class, dslContext);
+	private static final String PART_TYPE = "doc_part_transition";
+
+	protected DocPartTransitionRepositoryImpl(AppContext appContext, DSLContext dslContext) {
+		super(Doc.class, DocPartTransition.class, DocPartTransitionBase.class, PART_TYPE, appContext, dslContext);
+	}
+
+	@Override
+	public void mapProperties() {
+		super.mapProperties();
 		this.mapField("tenantId", PartState.BASE, "tenant_id", Integer.class);
 		this.mapField("user", PartState.BASE, "user_id", Integer.class);
 		this.mapField("timestamp", PartState.BASE, "timestamp", OffsetDateTime.class);

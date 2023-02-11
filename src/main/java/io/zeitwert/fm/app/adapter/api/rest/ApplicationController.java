@@ -23,6 +23,7 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationInfo;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @RestController("fmApplicationController")
 @RequestMapping("/rest/app")
@@ -60,7 +61,7 @@ public class ApplicationController {
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		ObjUser user = maybeUser.get();
+		ObjUserFM user = (ObjUserFM) maybeUser.get();
 		//@formatter:off
 		return ResponseEntity.ok(
 			UserInfoResponse.builder()

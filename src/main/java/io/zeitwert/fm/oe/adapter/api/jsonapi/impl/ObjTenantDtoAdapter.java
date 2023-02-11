@@ -7,9 +7,10 @@ import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
+import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
-public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Object, ObjTenantDto> {
+public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenantVRecord, ObjTenantDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 	private static ObjTenantDtoAdapter INSTANCE;
@@ -26,7 +27,7 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Obje
 	}
 
 	@Override
-	public void toAggregate(ObjTenantDto dto, ObjTenant obj) {
+	public void toAggregate(ObjTenantDto dto, ObjTenantFM obj) {
 		super.toAggregate(dto, obj);
 		obj.setTenantType(
 				dto.getTenantType() == null ? null : CodeTenantTypeEnum.getTenantType(dto.getTenantType().getId()));
@@ -36,7 +37,7 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Obje
 	}
 
 	@Override
-	public ObjTenantDto fromAggregate(ObjTenant obj) {
+	public ObjTenantDto fromAggregate(ObjTenantFM obj) {
 		if (obj == null) {
 			return null;
 		}
@@ -62,12 +63,11 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, Obje
 	}
 
 	@Override
-	public ObjTenantDto fromRecord(Object tr) {
-		if (tr == null) {
+	public ObjTenantDto fromRecord(ObjTenantVRecord obj) {
+		if (obj == null) {
 			return null;
 		}
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(null);
-		ObjTenantVRecord obj = (ObjTenantVRecord) tr;
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))

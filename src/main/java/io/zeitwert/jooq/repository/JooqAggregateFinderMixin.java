@@ -17,8 +17,8 @@ import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.jooq.property.AggregateFields;
 import io.zeitwert.jooq.util.SqlUtils;
 
@@ -37,7 +37,7 @@ public interface JooqAggregateFinderMixin<V extends Object> {
 		RequestContext requestCtx = AppContext.getInstance().getRequestContext();
 		String tenantField = AggregateFields.TENANT_ID.getName();
 		Integer tenantId = requestCtx.getTenantId();
-		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
+		if (tenantId != ObjTenantFMRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
 		}
 		if (this.hasAccountId() && requestCtx.hasAccount()) {

@@ -10,7 +10,7 @@ import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
-import io.zeitwert.ddd.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.ObjTenantFM;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -43,11 +43,11 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjTenantDto getTenantInfo() {
 		if (this.tenantInfoDto == null) {
-			ObjTenant tenant = null;
+			ObjTenantFM tenant = null;
 			if (this.getOriginal() != null) {
-				tenant = this.getOriginal().getTenant();
+				tenant = (ObjTenantFM) this.getOriginal().getTenant();
 			} else if (this.tenantInfoId != null) {
-				tenant = getRepository(ObjTenant.class).get(this.tenantInfoId);
+				tenant = getRepository(ObjTenantFM.class).get(this.tenantInfoId);
 			}
 			this.tenantInfoDto = ObjTenantDtoAdapter.getInstance().fromAggregate(tenant);
 		}

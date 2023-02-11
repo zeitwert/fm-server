@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @Service
 public class ZeitwertUserDetailsService implements UserDetailsService {
@@ -18,7 +18,7 @@ public class ZeitwertUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		ObjUser user = userCache.getByEmail(email)
+		ObjUserFM user = (ObjUserFM) this.userCache.getByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 		return ZeitwertUserDetails.build(user);
 	}

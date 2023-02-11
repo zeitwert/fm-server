@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.oe.model;
+package io.zeitwert.fm.oe.model;
 
 import java.util.Optional;
 
@@ -9,8 +9,10 @@ import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
-public interface ObjUserRepository extends ObjRepository<ObjUser, Object> {
+public interface ObjUserFMRepository
+		extends ObjRepository<ObjUserFM, ObjUserVRecord> {
 
 	static CodePartListType tenantListType() {
 		return CodePartListTypeEnum.getPartListType("user.tenantList");
@@ -23,6 +25,6 @@ public interface ObjUserRepository extends ObjRepository<ObjUser, Object> {
 	/**
 	 * Lookup User with email
 	 */
-	Optional<ObjUser> getByEmail(String email);
+	Optional<ObjUserFM> getByEmail(String email);
 
 }

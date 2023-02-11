@@ -14,6 +14,7 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
 import io.zeitwert.ddd.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.jooq.property.ObjFields;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,13 +36,11 @@ public class ObjMetaDto extends AggregateMetaDto {
 		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
 		AggregateMetaDto.fromAggregate(builder, obj);
 		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
-		// @formatter:off
 		return builder
-			.closedByUser(userDtoAdapter.asEnumerated(meta.getClosedByUser()))
-			.closedAt(meta.getClosedAt())
-			.transitions(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
-			.build();
-		// @formatter:on
+				.closedByUser(userDtoAdapter.asEnumerated((ObjUserFM) meta.getClosedByUser()))
+				.closedAt(meta.getClosedAt())
+				.transitions(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
+				.build();
 	}
 
 	public static ObjMetaDto fromRecord(Record obj) {
@@ -52,19 +51,17 @@ public class ObjMetaDto extends AggregateMetaDto {
 		EnumeratedDto modifiedByUser = modifiedByUserId == null ? null : userCache.getAsEnumerated(modifiedByUserId);
 		Integer closedByUserId = obj.getValue(ObjFields.CLOSED_BY_USER_ID);
 		EnumeratedDto closedByUser = closedByUserId == null ? null : userCache.getAsEnumerated(closedByUserId);
-		// @formatter:off
 		return builder
-			.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
-			.owner(userCache.getAsEnumerated(obj.getValue(ObjFields.OWNER_ID)))
-			.version(obj.get(ObjFields.VERSION))
-			.createdByUser(userCache.getAsEnumerated(obj.getValue(ObjFields.CREATED_BY_USER_ID)))
-			.createdAt(obj.get(ObjFields.CREATED_AT))
-			.modifiedByUser(modifiedByUser)
-			.modifiedAt(obj.get(ObjFields.MODIFIED_AT))
-			.closedByUser(closedByUser)
-			.closedAt(obj.get(ObjFields.CLOSED_AT))
-			.build();
-		// @formatter:on
+				.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
+				.owner(userCache.getAsEnumerated(obj.getValue(ObjFields.OWNER_ID)))
+				.version(obj.get(ObjFields.VERSION))
+				.createdByUser(userCache.getAsEnumerated(obj.getValue(ObjFields.CREATED_BY_USER_ID)))
+				.createdAt(obj.get(ObjFields.CREATED_AT))
+				.modifiedByUser(modifiedByUser)
+				.modifiedAt(obj.get(ObjFields.MODIFIED_AT))
+				.closedByUser(closedByUser)
+				.closedAt(obj.get(ObjFields.CLOSED_AT))
+				.build();
 	}
 
 }

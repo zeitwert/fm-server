@@ -19,6 +19,7 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
@@ -64,7 +65,7 @@ public abstract class ObjPortfolioBase extends ObjExtnBase
 	@Override
 	public double getInflationRate() {
 		BigDecimal inflationRate = this.getAccount().getInflationRate();
-		inflationRate = inflationRate != null ? inflationRate : this.getTenant().getInflationRate();
+		inflationRate = inflationRate != null ? inflationRate : ((ObjTenantFM) this.getTenant()).getInflationRate();
 		return inflationRate != null ? inflationRate.doubleValue() : 0;
 	}
 

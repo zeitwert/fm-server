@@ -14,8 +14,8 @@ import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
@@ -39,7 +39,7 @@ public class NoteTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjUserRepository userRepository;
+	private ObjUserFMRepository userRepository;
 
 	@Autowired
 	private CodeCountryEnum countryEnum;

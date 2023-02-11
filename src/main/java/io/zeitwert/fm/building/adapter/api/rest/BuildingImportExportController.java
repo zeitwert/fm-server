@@ -42,6 +42,7 @@ import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/rest/building/buildings")
@@ -224,7 +225,7 @@ public class BuildingImportExportController {
 			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? this.userCache.getByEmail(dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null ? (ObjUserFM) this.userCache.getByEmail(dto.getRatingUser()).get() : null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPart.class, dtoElement.getBuildingPart());

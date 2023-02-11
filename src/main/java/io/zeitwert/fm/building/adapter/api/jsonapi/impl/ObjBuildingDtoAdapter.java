@@ -26,6 +26,7 @@ import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 public final class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
 
@@ -100,7 +101,7 @@ public final class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, 
 				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus().getId()));
 				rating.setRatingDate(dto.getRatingDate());
 				Integer userId = dto.getRatingUser() == null ? null : Integer.parseInt(dto.getRatingUser().getId());
-				rating.setRatingUser(userId == null ? null : this.getUser(userId));
+				rating.setRatingUser(userId == null ? null : (ObjUserFM) this.getUser(userId));
 				if (dto.getElements() != null) {
 					dto.getElements().forEach(elementDto -> {
 						ObjBuildingPartElementRating element = null;

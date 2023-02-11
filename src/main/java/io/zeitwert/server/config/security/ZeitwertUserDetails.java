@@ -9,9 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.base.ObjUserBase;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 
 public class ZeitwertUserDetails implements UserDetails {
 
@@ -25,16 +24,16 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public static ZeitwertUserDetails build(ObjUser user) {
+	public static ZeitwertUserDetails build(ObjUserFM user) {
 		List<SimpleGrantedAuthority> authorities = List
 				.of(user.getRole() == null ? null : new SimpleGrantedAuthority(user.getRole().getId()));
 		return new ZeitwertUserDetails(user, authorities);
 	}
 
-	public ZeitwertUserDetails(ObjUser user, Collection<? extends GrantedAuthority> authorities) {
+	public ZeitwertUserDetails(ObjUserFM user, Collection<? extends GrantedAuthority> authorities) {
 		this.userId = user.getId();
 		this.userEmail = user.getEmail();
-		this.userPassword = ((ObjUserBase) user).getPassword();
+		this.userPassword = user.getPassword();
 		this.authorities = authorities;
 	}
 

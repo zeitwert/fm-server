@@ -71,10 +71,6 @@ public abstract class ObjAccountBase extends ObjExtnBase
 	}
 
 	@Override
-	public void doAfterStore() {
-	}
-
-	@Override
 	public void doCalcSearch() {
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());

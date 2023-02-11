@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.server.config.security.ZeitwertUserDetails;
 import io.zeitwert.server.session.adapter.rest.dto.LoginRequest;
 import io.zeitwert.server.session.adapter.rest.dto.LoginResponse;
@@ -91,7 +91,7 @@ public class SessionController {
 		if (this.requestCtx == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		ObjTenant tenant = this.tenantCache.get(this.requestCtx.getTenantId());
+		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(this.requestCtx.getTenantId());
 		ObjAccount account = this.requestCtx.hasAccount() ? this.accountCache.get(this.requestCtx.getAccountId()) : null;
 		return ResponseEntity.ok(SessionInfoReponse.fromRequest(this.requestCtx, tenant, account));
 	}

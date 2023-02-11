@@ -16,19 +16,19 @@ import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 
 public abstract class AggregateCacheBase<A extends Aggregate> implements AggregateCache<A> {
 
-	private final AggregateRepository<A, ?> repository;
+	private final AggregateRepository<? extends A, ?> repository;
 	private final Cache<Integer, A> objCache = Caffeine.newBuilder().maximumSize(100).recordStats().build();
 	private final Cache<Integer, EnumeratedDto> enumCache = Caffeine.newBuilder().maximumSize(100).recordStats().build();
 
 	private int objCacheClear = 0;
 	private int enumCacheClear = 0;
 
-	public AggregateCacheBase(AggregateRepository<A, ?> repository, Class<A> aggregateClass) {
+	public AggregateCacheBase(AggregateRepository<? extends A, ?> repository, Class<A> aggregateClass) {
 		this.repository = repository;
 		AppContext.getInstance().addCache(aggregateClass, this);
 	}
 
-	protected AggregateRepository<A, ?> getRepository() {
+	protected AggregateRepository<? extends A, ?> getRepository() {
 		return this.repository;
 	}
 

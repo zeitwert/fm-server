@@ -4,20 +4,36 @@ import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
+import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
+import io.zeitwert.ddd.obj.model.base.ObjPartItemBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartItemRecord;
-import io.zeitwert.jooq.persistence.ObjPartPersistenceProviderBase;
 import io.zeitwert.jooq.persistence.PartState;
+import io.zeitwert.jooq.repository.JooqObjPartRepositoryBase;
 
-@Configuration
-public class ObjPartItemPersistenceProvider extends ObjPartPersistenceProviderBase<Obj, ObjPartItem> {
+@Component("objPartItemRepository")
+public class ObjPartItemRepositoryImpl extends JooqObjPartRepositoryBase<Obj, ObjPartItem>
+		implements ObjPartItemRepository {
 
-	public ObjPartItemPersistenceProvider(DSLContext dslContext) {
-		super(ObjPartItem.class, dslContext);
+	private static final String PART_TYPE = "obj_part_item";
+
+	protected ObjPartItemRepositoryImpl(AppContext appContext, DSLContext dslContext) {
+		super(Obj.class, ObjPartItem.class, ObjPartItemBase.class, PART_TYPE, appContext, dslContext);
+	}
+
+	@Override
+	public boolean hasPartId() {
+		return false;
+	}
+
+	@Override
+	public void mapProperties() {
+		super.mapProperties();
 		this.mapField("itemId", PartState.BASE, "item_id", String.class);
 	}
 

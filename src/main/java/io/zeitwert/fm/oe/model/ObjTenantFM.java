@@ -1,0 +1,25 @@
+
+package io.zeitwert.fm.oe.model;
+
+import io.zeitwert.ddd.oe.model.ObjTenant;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.dms.model.ObjDocument;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public interface ObjTenantFM extends ObjTenant {
+
+	BigDecimal getInflationRate();
+
+	void setInflationRate(BigDecimal rate);
+
+	List<ObjUserFM> getUsers();
+
+	List<ObjAccount> getAccounts();
+
+	Integer getLogoImageId();
+
+	ObjDocument getLogoImage();
+
+}
