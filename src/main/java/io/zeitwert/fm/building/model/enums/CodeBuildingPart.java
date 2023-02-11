@@ -93,20 +93,17 @@ public class CodeBuildingPart extends EnumeratedBase {
 		if (this.getLinearDuration() > 0 && relativeAge <= this.getLinearDuration()) {
 			return 1 - relativeAge / this.getLinearDuration() * (1 - this.getLinearTimeValue());
 		}
-		//@formatter:off
-		return
-			this.getC0() +
-			this.getC1() * relativeAge +
-			this.getC2() * Math.pow(relativeAge, 2) +
-			this.getC3() * Math.pow(relativeAge, 3) +
-			this.getC4() * Math.pow(relativeAge, 4) +
-			this.getC5() * Math.pow(relativeAge, 5) +
-			this.getC6() * Math.pow(relativeAge, 6) +
-			this.getC7() * Math.pow(relativeAge, 7) +
-			this.getC8() * Math.pow(relativeAge, 8) +
-			this.getC9() * Math.pow(relativeAge, 9) +
-			this.getC10() * Math.pow(relativeAge, 10);
-		//@formatter:on
+		return this.getC0() +
+				this.getC1() * relativeAge +
+				this.getC2() * Math.pow(relativeAge, 2) +
+				this.getC3() * Math.pow(relativeAge, 3) +
+				this.getC4() * Math.pow(relativeAge, 4) +
+				this.getC5() * Math.pow(relativeAge, 5) +
+				this.getC6() * Math.pow(relativeAge, 6) +
+				this.getC7() * Math.pow(relativeAge, 7) +
+				this.getC8() * Math.pow(relativeAge, 8) +
+				this.getC9() * Math.pow(relativeAge, 9) +
+				this.getC10() * Math.pow(relativeAge, 10);
 	}
 
 	/**
@@ -172,7 +169,6 @@ public class CodeBuildingPart extends EnumeratedBase {
 			double condition,
 			int startYear,
 			int duration) {
-		//@formatter:on
 
 		requireThis(ratingYear <= startYear, "valid start year (" + ratingYear + "<=" + startYear + ")");
 		requireThis(0 <= condition && condition <= 1.0, "valid condition (0 <=" + condition + " <= 1)");
@@ -200,18 +196,16 @@ public class CodeBuildingPart extends EnumeratedBase {
 			}
 			double maintenanceRate = getMaintenanceRate(timeValue) / 100.0;
 			if (simYear >= startYear) {
-				//@formatter:off
 				ProjectionPeriod period = ProjectionPeriod.builder()
-					.year(simYear)
-					.originalValue(elementValue)
-					.timeValue(timeValue * elementValue)
-					.restorationCosts(restorationCosts)
-					.techPart(techPart)
-					.techRate(techRate)
-					.maintenanceRate(maintenanceRate)
-					.maintenanceCosts(maintenanceRate * techRate * elementValue)
-					.build();
-				//@formatter:on
+						.year(simYear)
+						.originalValue(elementValue)
+						.timeValue(timeValue * elementValue)
+						.restorationCosts(restorationCosts)
+						.techPart(techPart)
+						.techRate(techRate)
+						.maintenanceRate(maintenanceRate)
+						.maintenanceCosts(maintenanceRate * techRate * elementValue)
+						.build();
 				periodList.add(period);
 			}
 			relativeAge += 1;

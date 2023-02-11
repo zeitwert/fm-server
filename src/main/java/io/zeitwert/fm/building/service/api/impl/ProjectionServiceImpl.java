@@ -144,15 +144,13 @@ public class ProjectionServiceImpl implements ProjectionService {
 				if (elementRestorationCosts != 0) {
 					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
 					EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
-					//@formatter:off
 					ProjectionElement restorationElement = ProjectionElement.builder()
-						.element(elementEnum)
-						.building(buildingEnum)
-						.buildingPart(buildingPartEnum)
-						.restorationCosts(elementRestorationCosts)
-						.build();
+							.element(elementEnum)
+							.building(buildingEnum)
+							.buildingPart(buildingPartEnum)
+							.restorationCosts(elementRestorationCosts)
+							.build();
 					restorationElements.add(restorationElement);
-					//@formatter:on
 				}
 			}
 
@@ -164,9 +162,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 			restorationCosts = roundProgressive(restorationCosts);
 			maintenanceCosts = roundProgressive(maintenanceCosts);
 
-			//@formatter:off
-			ProjectionPeriod buildingPeriod =
-				ProjectionPeriod.builder()
+			ProjectionPeriod buildingPeriod = ProjectionPeriod.builder()
 					.year(year)
 					.originalValue(originalValue)
 					.timeValue(timeValue)
@@ -177,21 +173,18 @@ public class ProjectionServiceImpl implements ProjectionService {
 					.maintenanceRate(maintenanceRate)
 					.maintenanceCosts(maintenanceCosts)
 					.build();
-			//@formatter:on
 			buildingPeriodList.add(buildingPeriod);
 
 		}
 
-		//@formatter:off
 		return ProjectionResult.builder()
-			.startYear(projectionResult.getStartYear())
-			.duration(projectionResult.getDuration())
-			.elementList(projectionResult.getElementList())
-			.elementMap(projectionResult.getElementMap())
-			.elementResultMap(projectionResult.getElementResultMap())
-			.periodList(buildingPeriodList)
-			.build();
-		//@formatter:on
+				.startYear(projectionResult.getStartYear())
+				.duration(projectionResult.getDuration())
+				.elementList(projectionResult.getElementList())
+				.elementMap(projectionResult.getElementMap())
+				.elementResultMap(projectionResult.getElementResultMap())
+				.periodList(buildingPeriodList)
+				.build();
 
 	}
 

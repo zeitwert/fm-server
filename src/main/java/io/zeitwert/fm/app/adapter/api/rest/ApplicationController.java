@@ -62,17 +62,14 @@ public class ApplicationController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		ObjUserFM user = (ObjUserFM) maybeUser.get();
-		//@formatter:off
 		return ResponseEntity.ok(
-			UserInfoResponse.builder()
-				.id(user.getId())
-				.email(user.getEmail())
-				.name(user.getName())
-				.role(EnumeratedDto.fromEnum(user.getRole()))
-				.tenants(user.getTenantSet().stream().map(t -> this.tenantCache.getAsEnumerated(t.getId())).toList())
-				.build()
-		);
-		//@formatter:on
+				UserInfoResponse.builder()
+						.id(user.getId())
+						.email(user.getEmail())
+						.name(user.getName())
+						.role(EnumeratedDto.fromEnum(user.getRole()))
+						.tenants(user.getTenantSet().stream().map(t -> this.tenantCache.getAsEnumerated(t.getId())).toList())
+						.build());
 	}
 
 	@GetMapping("/tenantInfo/{id}")
@@ -82,15 +79,12 @@ public class ApplicationController {
 		List<EnumeratedDto> accountDtos = accounts.stream()
 				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
 				.toList();
-		//@formatter:off
 		return ResponseEntity.ok(
-			TenantInfoResponse.builder()
-				.id(id)
-				.tenantType(EnumeratedDto.fromEnum(tenant.getTenantType()))
-				.accounts(accountDtos)
-				.build()
-		);
-		//@formatter:on
+				TenantInfoResponse.builder()
+						.id(id)
+						.tenantType(EnumeratedDto.fromEnum(tenant.getTenantType()))
+						.accounts(accountDtos)
+						.build());
 	}
 
 }

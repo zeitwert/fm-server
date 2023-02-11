@@ -99,19 +99,20 @@ public class BuildingImportExportController {
 	}
 
 	private BuildingTransferDto getTransferDto(ObjBuilding building) {
-		//@formatter:off
 		TransferMetaDto meta = TransferMetaDto
-			.builder()
+				.builder()
 				.aggregate(AGGREGATE)
 				.version(VERSION)
 				.createdByUser(building.getMeta().getCreatedByUser().getEmail())
 				.createdAt(building.getMeta().getCreatedAt())
-				.modifiedByUser(building.getMeta().getModifiedByUser() != null ? building.getMeta().getModifiedByUser().getEmail() : null)
+				.modifiedByUser(building.getMeta().getModifiedByUser() != null
+						? building.getMeta().getModifiedByUser().getEmail()
+						: null)
 				.modifiedAt(building.getMeta().getModifiedAt())
-			.build();
+				.build();
 		List<BuildingTransferElementRatingDto> elements = building.getCurrentRating().getElementList().stream().map(e -> {
 			return BuildingTransferElementRatingDto
-				.builder()
+					.builder()
 					.buildingPart(e.getBuildingPart().getId())
 					.weight(e.getWeight())
 					.condition(e.getCondition())
@@ -121,22 +122,24 @@ public class BuildingImportExportController {
 					.description(e.getDescription())
 					.conditionDescription(e.getConditionDescription())
 					.measureDescription(e.getMeasureDescription())
-				.build();
+					.build();
 		}).toList();
 		List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
 			return NoteTransferDto
-				.builder()
+					.builder()
 					.subject(note.getSubject())
 					.content(note.getContent())
 					.isPrivate(note.getIsPrivate())
 					.createdByUser(this.userCache.get(note.getCreatedByUserId()).getEmail())
 					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null ? this.userCache.get(note.getModifiedByUserId()).getEmail() : null)
+					.modifiedByUser(note.getModifiedByUserId() != null
+							? this.userCache.get(note.getModifiedByUserId()).getEmail()
+							: null)
 					.modifiedAt(note.getModifiedAt())
-				.build();
+					.build();
 		}).toList();
 		BuildingTransferDto export = BuildingTransferDto
-			.builder()
+				.builder()
 				.meta(meta)
 				.id(building.getId())
 				.name(building.getName())
@@ -145,7 +148,9 @@ public class BuildingImportExportController {
 				.buildingInsuranceNr(building.getInsuranceNr())
 				.plotNr(building.getPlotNr())
 				.nationalBuildingId(building.getNationalBuildingId())
-				.historicPreservation(building.getHistoricPreservation() != null ? building.getHistoricPreservation().getId() : null)
+				.historicPreservation(building.getHistoricPreservation() != null
+						? building.getHistoricPreservation().getId()
+						: null)
 				.street(building.getStreet())
 				.zip(building.getZip())
 				.city(building.getCity())
@@ -168,15 +173,20 @@ public class BuildingImportExportController {
 				.notInsuredValueYear(building.getNotInsuredValueYear())
 				.thirdPartyValue(building.getThirdPartyValue())
 				.thirdPartyValueYear(building.getThirdPartyValueYear())
-				.buildingPartCatalog(building.getCurrentRating().getPartCatalog() != null ? building.getCurrentRating().getPartCatalog().getId() : null)
-				.buildingMaintenanceStrategy(building.getCurrentRating().getMaintenanceStrategy() != null ? building.getCurrentRating().getMaintenanceStrategy().getId() : null)
+				.buildingPartCatalog(building.getCurrentRating().getPartCatalog() != null
+						? building.getCurrentRating().getPartCatalog().getId()
+						: null)
+				.buildingMaintenanceStrategy(building.getCurrentRating().getMaintenanceStrategy() != null
+						? building.getCurrentRating().getMaintenanceStrategy().getId()
+						: null)
 				.ratingStatus(building.getCurrentRating().getRatingStatus().getId())
 				.ratingDate(building.getCurrentRating().getRatingDate())
-				.ratingUser(building.getCurrentRating().getRatingUser() != null ? building.getCurrentRating().getRatingUser().getEmail() : null)
+				.ratingUser(building.getCurrentRating().getRatingUser() != null
+						? building.getCurrentRating().getRatingUser().getEmail()
+						: null)
 				.elements(elements)
 				.notes(notes)
-			.build();
-		//@formatter:on
+				.build();
 		return export;
 	}
 
@@ -189,7 +199,6 @@ public class BuildingImportExportController {
 		try {
 			building.getMeta().disableCalc();
 
-			//@formatter:off
 			building.setOwner(this.requestCtx.getUser());
 			building.setName(dto.getName());
 			building.setDescription(dto.getDescription());
@@ -197,7 +206,8 @@ public class BuildingImportExportController {
 			building.setInsuranceNr(dto.getBuildingInsuranceNr());
 			building.setPlotNr(dto.getPlotNr());
 			building.setNationalBuildingId(dto.getNationalBuildingId());
-			building.setHistoricPreservation(CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation()));
+			building
+					.setHistoricPreservation(CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation()));
 			building.setStreet(dto.getStreet());
 			building.setZip(dto.getZip());
 			building.setCity(dto.getCity());
@@ -220,22 +230,28 @@ public class BuildingImportExportController {
 			building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
 			building.setThirdPartyValue(dto.getThirdPartyValue());
 			building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-			final ObjBuildingPartRating rating = building.getCurrentRating() != null ? building.getCurrentRating() : building.addRating();
+			final ObjBuildingPartRating rating = building.getCurrentRating() != null
+					? building.getCurrentRating()
+					: building.addRating();
 			rating.setPartCatalog(CodeBuildingPartCatalogEnum.getPartCatalog(dto.getBuildingPartCatalog()));
-			rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
+			rating.setMaintenanceStrategy(
+					CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null ? (ObjUserFM) this.userCache.getByEmail(dto.getRatingUser()).get() : null);
+			rating.setRatingUser(dto.getRatingUser() != null
+					? (ObjUserFM) this.userCache.getByEmail(dto.getRatingUser()).get()
+					: null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
-					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPart.class, dtoElement.getBuildingPart());
+					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPart.class,
+							dtoElement.getBuildingPart());
 					ObjBuildingPartElementRating element = rating.getElement(buildingPart);
 					if (element == null) {
 						element = rating.addElement(buildingPart);
 					}
 					element.setWeight(dtoElement.getWeight());
 					element.setCondition(dtoElement.getCondition());
-					//element.setRatingYear(dtoElement.getRatingYear());
+					// element.setRatingYear(dtoElement.getRatingYear());
 					element.setStrain(dtoElement.getStrain());
 					element.setStrength(dtoElement.getStrength());
 					element.setDescription(dtoElement.getDescription());
@@ -253,7 +269,6 @@ public class BuildingImportExportController {
 					this.noteRepo.store(note);
 				});
 			}
-			//@formatter:on
 
 		} finally {
 			building.getMeta().enableCalc();

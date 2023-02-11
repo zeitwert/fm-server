@@ -1,7 +1,6 @@
 package io.zeitwert.ddd.oe.service.api;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
@@ -14,7 +13,5 @@ public interface ObjUserCache extends AggregateCache<ObjUser> {
 	OffsetDateTime touch(Integer userId);
 
 	OffsetDateTime getLastTouch(Integer userId);
-
-	Map<String, Integer> getStatistics();
 
 }

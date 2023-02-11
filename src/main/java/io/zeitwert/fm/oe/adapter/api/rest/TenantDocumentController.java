@@ -1,8 +1,6 @@
 
 package io.zeitwert.fm.oe.adapter.api.rest;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,11 +34,6 @@ public class TenantDocumentController {
 			return ResponseEntity.noContent().build();
 		}
 		return this.documentController.getContent(documentId);
-	}
-
-	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Integer>> getStatistics() {
-		return ResponseEntity.ok().body(this.tenantCache.getStatistics());
 	}
 
 }

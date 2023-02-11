@@ -51,13 +51,11 @@ public class SqlUtils {
 	}
 
 	public static List<SortField<?>> sortFilter(Table<?> table, List<SortSpec> sortSpec) {
-		//@formatter:off
 		return sortSpec.stream()
-			.map(s -> {
-				return table.field(StringUtils.toSnakeCase(s.getPath().toString()))
-				.sort(Direction.ASC.equals(s.getDirection()) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
-			}).collect(Collectors.toList());
-		//@formatter:on
+				.map(s -> {
+					return table.field(StringUtils.toSnakeCase(s.getPath().toString()))
+							.sort(Direction.ASC.equals(s.getDirection()) ? SortOrder.ASC : SortOrder.DESC).nullsLast();
+				}).collect(Collectors.toList());
 	}
 
 	private static String getPath(FilterSpec filter) {
@@ -67,20 +65,18 @@ public class SqlUtils {
 	private static Condition searchFilter(Field<Integer> idField, FilterSpec filter) {
 		String searchText = filter.getValue();
 		String searchToken = "'" + searchText + "':*";
-		//@formatter:off
 		return idField.in(
-			DSL
-				.select(ITEM_SEARCH.ITEM_ID)
-				.from(ITEM_SEARCH)
-				.where(
-					DSL.noCondition()
-						.or("search_key @@ to_tsquery('simple', ?)", searchToken)
-						.or("search_key @@ to_tsquery('german', ?)", searchToken)
-						.or("search_key @@ to_tsquery('english', ?)", searchToken)
-				)
-				.orderBy(DSL.field("(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc", BigDecimal.class, searchToken, searchToken, searchToken))
-			);
-		//@formatter:on
+				DSL
+						.select(ITEM_SEARCH.ITEM_ID)
+						.from(ITEM_SEARCH)
+						.where(
+								DSL.noCondition()
+										.or("search_key @@ to_tsquery('simple', ?)", searchToken)
+										.or("search_key @@ to_tsquery('german', ?)", searchToken)
+										.or("search_key @@ to_tsquery('english', ?)", searchToken))
+						.orderBy(DSL.field(
+								"(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc",
+								BigDecimal.class, searchToken, searchToken, searchToken)));
 	}
 
 	private static Condition closedFilter(Table<?> table, FilterSpec filter) {

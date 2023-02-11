@@ -89,21 +89,22 @@ public class SearchServiceImpl implements SearchService {
 				.or("search_key @@ to_tsquery('german', ?)", searchToken)
 				.or("search_key @@ to_tsquery('english', ?)", searchToken);
 
-		//@formatter:off
 		SelectWithTiesAfterOffsetStep<Record4<String, Integer, String, BigDecimal>> searchSelect = this.dslContext
-			.select(
-				ITEM_SEARCH.ITEM_TYPE_ID,
-				OBJ.ID,
-				OBJ.CAPTION,
-				DSL.field("(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?)))", BigDecimal.class, searchToken, searchToken, searchToken)
-			)
-			.from(ITEM_SEARCH)
-			.join(OBJ)
-			.on(OBJ.ID.eq(ITEM_SEARCH.ITEM_ID))
-			.where(DSL.and(searchCondition, tenantCondition, accountCondition, itemTypeCondition))
-			.orderBy(DSL.field("(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc", BigDecimal.class, searchToken, searchToken, searchToken))
-			.limit(0, maxResultSize);
-		//@formatter:on
+				.select(
+						ITEM_SEARCH.ITEM_TYPE_ID,
+						OBJ.ID,
+						OBJ.CAPTION,
+						DSL.field(
+								"(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?)))",
+								BigDecimal.class, searchToken, searchToken, searchToken))
+				.from(ITEM_SEARCH)
+				.join(OBJ)
+				.on(OBJ.ID.eq(ITEM_SEARCH.ITEM_ID))
+				.where(DSL.and(searchCondition, tenantCondition, accountCondition, itemTypeCondition))
+				.orderBy(DSL.field(
+						"(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc",
+						BigDecimal.class, searchToken, searchToken, searchToken))
+				.limit(0, maxResultSize);
 
 		Result<Record4<String, Integer, String, BigDecimal>> items = searchSelect.fetch();
 		List<SearchResult> result = new ArrayList<>();
