@@ -20,9 +20,10 @@ import org.jooq.impl.DSL;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.util.CustomFilters;
 import io.zeitwert.ddd.util.StringUtils;
+import io.zeitwert.fm.search.model.db.Tables;
+import io.zeitwert.fm.search.model.db.tables.ItemSearch;
 import io.crnk.core.queryspec.Direction;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
@@ -31,9 +32,7 @@ import io.crnk.core.queryspec.SortSpec;
 
 public class SqlUtils {
 
-	private static final String SEARCH_TABLE_NAME = "item_search";
-	private static final Table<?> SEARCH_TABLE = AppContext.getInstance().getTable(SEARCH_TABLE_NAME);
-	private static final Field<Integer> ITEM_ID = DSL.field("item_id", Integer.class);
+	private static final ItemSearch ITEM_SEARCH = Tables.ITEM_SEARCH;
 
 	public static boolean hasFilterFor(QuerySpec querySpec, String fieldName) {
 		return querySpec.getFilters().stream().anyMatch(f -> getPath(f).equals(fieldName));
@@ -71,8 +70,8 @@ public class SqlUtils {
 		//@formatter:off
 		return idField.in(
 			DSL
-				.select(ITEM_ID)
-				.from(SEARCH_TABLE)
+				.select(ITEM_SEARCH.ITEM_ID)
+				.from(ITEM_SEARCH)
 				.where(
 					DSL.noCondition()
 						.or("search_key @@ to_tsquery('simple', ?)", searchToken)

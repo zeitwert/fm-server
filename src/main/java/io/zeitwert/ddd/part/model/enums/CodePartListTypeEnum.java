@@ -9,8 +9,6 @@ import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 @Component("codePartListTypeEnum")
 public class CodePartListTypeEnum extends EnumerationBase<CodePartListType> {
 
-	static public final String TABLE_NAME = "code_part_list_type";
-
 	private static CodePartListTypeEnum INSTANCE;
 
 	protected CodePartListTypeEnum(Enumerations enums) {

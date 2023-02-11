@@ -9,8 +9,6 @@ import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 @Component("codeAggregateTypeEnum")
 public class CodeAggregateTypeEnum extends EnumerationBase<CodeAggregateType> {
 
-	static public final String TABLE_NAME = "code_aggregate_type";
-
 	private static CodeAggregateTypeEnum INSTANCE;
 
 	protected CodeAggregateTypeEnum(Enumerations enums) {

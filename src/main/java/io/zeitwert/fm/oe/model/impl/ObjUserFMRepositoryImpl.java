@@ -96,8 +96,7 @@ public class ObjUserFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjUserFM
 
 	@Override
 	public Optional<ObjUserFM> getByEmail(String email) {
-		ObjUserVRecord userRecord = AppContext.getInstance().getDslContext().fetchOne(Tables.OBJ_USER_V,
-				Tables.OBJ_USER_V.EMAIL.eq(email));
+		ObjUserVRecord userRecord = this.dslContext().fetchOne(Tables.OBJ_USER_V, Tables.OBJ_USER_V.EMAIL.eq(email));
 		if (userRecord == null) {
 			return Optional.empty();
 		}

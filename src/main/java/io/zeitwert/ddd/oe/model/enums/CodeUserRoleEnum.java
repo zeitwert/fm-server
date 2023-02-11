@@ -23,8 +23,6 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 	// login to kernel tenant only, without account
 	public static CodeUserRole APP_ADMIN;
 
-	static public final String TABLE_NAME = "code_user_role";
-
 	private static CodeUserRoleEnum INSTANCE;
 
 	protected CodeUserRoleEnum(Enumerations enums) {

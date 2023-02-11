@@ -17,8 +17,6 @@ public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 	// Container for 1 dedicated Account
 	public static CodeTenantType COMMUNITY;
 
-	static public final String TABLE_NAME = "code_tenant_type";
-
 	private static CodeTenantTypeEnum INSTANCE;
 
 	protected CodeTenantTypeEnum(Enumerations enums) {

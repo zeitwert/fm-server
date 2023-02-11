@@ -81,34 +81,31 @@ public class ObjDocumentRepositoryImpl extends JooqObjExtnRepositoryBase<ObjDocu
 
 	@Override
 	public CodeContentType getContentType(ObjDocument document) {
-		Integer maxVersionNr = AppContext.getInstance().getDslContext()
-				.fetchValue(this.getContentMaxVersionQuery(document));
+		Integer maxVersionNr = this.dslContext().fetchValue(this.getContentMaxVersionQuery(document));
 		if (maxVersionNr == null) {
 			return null;
 		}
 		Table<ObjDocumentPartContentRecord> query = this.getContentWithMaxVersionQuery(document);
-		String contentTypeId = AppContext.getInstance().getDslContext().fetchOne(query).getContentTypeId();
+		String contentTypeId = this.dslContext().fetchOne(query).getContentTypeId();
 		return CodeContentTypeEnum.getContentType(contentTypeId);
 	}
 
 	@Override
 	public byte[] getContent(ObjDocument document) {
 		Table<ObjDocumentPartContentRecord> query = this.getContentWithMaxVersionQuery(document);
-		return AppContext.getInstance().getDslContext().fetchOne(query).getContent();
+		return this.dslContext().fetchOne(query).getContent();
 	}
 
 	@Override
 	public void storeContent(RequestContext requestCtx, ObjDocument document, CodeContentType contentType,
 			byte[] content) {
-		Integer versionNr = AppContext.getInstance().getDslContext().fetchValue(this.getContentMaxVersionQuery(document));
+		Integer versionNr = this.dslContext().fetchValue(this.getContentMaxVersionQuery(document));
 		versionNr = versionNr == null ? 1 : versionNr + 1;
-		//@formatter:off
-		AppContext.getInstance().getDslContext()
-			.insertInto(DOCUMENT_CONTENT)
-			.columns(OBJ_ID, VERSION_NR, CONTENT_TYPE_ID, CONTENT, CREATED_BY_USER_ID)
-			.values(document.getId(), versionNr, contentType.getId(), content, requestCtx.getUser().getId())
-			.execute();
-		//@formatter:on
+		this.dslContext()
+				.insertInto(DOCUMENT_CONTENT)
+				.columns(OBJ_ID, VERSION_NR, CONTENT_TYPE_ID, CONTENT, CREATED_BY_USER_ID)
+				.values(document.getId(), versionNr, contentType.getId(), content, requestCtx.getUser().getId())
+				.execute();
 		this.store(document); // modifiedBy, trigger event
 	}
 
@@ -118,7 +115,7 @@ public class ObjDocumentRepositoryImpl extends JooqObjExtnRepositoryBase<ObjDocu
 	}
 
 	private SelectConditionStep<Record1<Integer>> getContentMaxVersionQuery(ObjDocument document) {
-		return AppContext.getInstance().getDslContext().select(DSL.max(VERSION_NR)).from(DOCUMENT_CONTENT)
+		return this.dslContext().select(DSL.max(VERSION_NR)).from(DOCUMENT_CONTENT)
 				.where(OBJ_ID.eq(document.getId()));
 	}
 

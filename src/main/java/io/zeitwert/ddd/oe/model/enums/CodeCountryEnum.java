@@ -9,8 +9,6 @@ import io.zeitwert.ddd.enums.model.base.EnumerationBase;
 @Component("codeCountryEnum")
 public class CodeCountryEnum extends EnumerationBase<CodeCountry> {
 
-	static public final String TABLE_NAME = "code_country";
-
 	private static CodeCountryEnum INSTANCE;
 
 	protected CodeCountryEnum(Enumerations enums) {
