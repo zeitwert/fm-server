@@ -1,5 +1,5 @@
 
-package io.zeitwert.fm.account.model.enums;
+package io.zeitwert.ddd.oe.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder
-public class CodeLocale extends EnumeratedBase {
+public class CodeCountry extends EnumeratedBase {
 
 	@Override
 	public boolean equals(Object other) {

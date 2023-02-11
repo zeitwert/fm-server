@@ -4,9 +4,9 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 import static io.zeitwert.ddd.util.Check.assertThis;
 
 import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.base.PartSPI;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;

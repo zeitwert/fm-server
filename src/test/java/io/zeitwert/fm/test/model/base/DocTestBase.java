@@ -3,7 +3,6 @@ package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.DocTest;
@@ -12,6 +11,7 @@ import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.ReferenceProperty;

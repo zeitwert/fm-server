@@ -33,6 +33,10 @@ import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.enums.model.Enumeration;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
+import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.ddd.oe.model.enums.CodeLocale;
+import io.zeitwert.ddd.oe.model.enums.CodeLocaleEnum;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
@@ -47,7 +51,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
 @DependsOn({ "flyway", "flywayInitializer", "codeAggregateTypeEnum", "codePartListTypeEnum", "codeTenantTypeEnum",
-		"codeUserRoleEnum", "codeCaseStageEnum" })
+		"codeUserRoleEnum", "codeCountryEnum", "codeLocaleEnum", "codeCaseStageEnum" })
 public final class AppContext {
 
 	public static final String SCHEMA_NAME = "public";
@@ -86,6 +90,8 @@ public final class AppContext {
 		this.initPartListType();
 		this.initTenantType();
 		this.initUserRole();
+		this.initCountry();
+		this.initLocale();
 		this.initCaseStage();
 	}
 
@@ -141,6 +147,32 @@ public final class AppContext {
 			CodeUserRoleEnum.getInstance().addItem(userRole);
 		}
 		CodeUserRoleEnum.getInstance().init();
+	}
+
+	private void initCountry() {
+		Table<?> codeCountry = this.getTable(CodeCountryEnum.TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codeCountry).fetch()) {
+			CodeCountry country = CodeCountry.builder()
+					.enumeration(CodeCountryEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodeCountryEnum.getInstance().addItem(country);
+		}
+	}
+
+	private void initLocale() {
+		Table<?> codeLocale = this.getTable(CodeLocaleEnum.TABLE_NAME);
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codeLocale).fetch()) {
+			CodeLocale locale = CodeLocale.builder()
+					.enumeration(CodeLocaleEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodeLocaleEnum.getInstance().addItem(locale);
+		}
 	}
 
 	private void initCaseStage() {

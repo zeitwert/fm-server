@@ -9,6 +9,8 @@
 				| obj_tenant.*
 				| code_user.*
 				| obj_user.*
+				| code_country
+				| code_locale
 			</includes>
 			<inputSchema>public</inputSchema>
 		</database>

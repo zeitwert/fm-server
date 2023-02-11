@@ -1,13 +1,13 @@
 
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;

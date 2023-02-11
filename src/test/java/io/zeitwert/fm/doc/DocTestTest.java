@@ -12,8 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
-import io.zeitwert.fm.account.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -21,6 +19,8 @@ import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
+import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.ddd.session.model.RequestContext;
 import io.zeitwert.server.Application;
 

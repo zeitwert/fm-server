@@ -1,10 +1,10 @@
 package io.zeitwert.fm.contact.model.base;
 
-import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;

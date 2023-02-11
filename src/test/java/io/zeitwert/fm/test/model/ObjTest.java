@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.fm.account.model.enums.CodeCountry;
+import io.zeitwert.ddd.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.ItemWithTasks;
 
