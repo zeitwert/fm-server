@@ -12,8 +12,6 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.RequestContext;
 
-import org.jooq.JSON;
-
 public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements DocPartTransition {
 
 	protected final SimpleProperty<Integer> tenantId = this.addSimpleProperty("tenantId", Integer.class);
@@ -21,7 +19,6 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 	protected final SimpleProperty<OffsetDateTime> timestamp = this.addSimpleProperty("timestamp", OffsetDateTime.class);
 	protected final EnumProperty<CodeCaseStage> oldCaseStage = this.addEnumProperty("oldCaseStage", CodeCaseStage.class);
 	protected final EnumProperty<CodeCaseStage> newCaseStage = this.addEnumProperty("newCaseStage", CodeCaseStage.class);
-	protected final SimpleProperty<JSON> changes = this.addSimpleProperty("changes", JSON.class);
 
 	public DocPartTransitionBase(PartRepository<Doc, ?> repository, Doc doc, Object state) {
 		super(repository, doc, state);
@@ -36,16 +33,6 @@ public abstract class DocPartTransitionBase extends DocPartBase<Doc> implements 
 		this.timestamp.setValue(requestCtx.getCurrentTime());
 		this.oldCaseStage.setValue(null);
 		this.newCaseStage.setValue(null);
-	}
-
-	@Override
-	public String getChanges() {
-		JSON changes = this.changes.getValue();
-		return changes != null ? changes.toString() : null;
-	}
-
-	public void setChanges(String changes) {
-		this.changes.setValue(JSON.valueOf(changes));
 	}
 
 }

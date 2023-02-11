@@ -14,6 +14,4 @@ public interface ObjPartTransition extends ObjPart<Obj> {
 
 	OffsetDateTime getTimestamp();
 
-	String getChanges();
-
 }

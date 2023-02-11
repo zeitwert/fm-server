@@ -10,14 +10,11 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.RequestContext;
 
-import org.jooq.JSON;
-
 public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements ObjPartTransition {
 
 	protected final SimpleProperty<Integer> tenantId = this.addSimpleProperty("tenantId", Integer.class);
 	protected final ReferenceProperty<ObjUser> user = this.addReferenceProperty("user", ObjUser.class);
 	protected final SimpleProperty<OffsetDateTime> timestamp = this.addSimpleProperty("timestamp", OffsetDateTime.class);
-	protected final SimpleProperty<JSON> changes = this.addSimpleProperty("changes", JSON.class);
 
 	public ObjPartTransitionBase(PartRepository<Obj, ?> repository, Obj obj, Object state) {
 		super(repository, obj, state);
@@ -30,16 +27,6 @@ public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements 
 		this.tenantId.setValue(this.getAggregate().getTenantId());
 		this.user.setValue(requestCtx.getUser());
 		this.timestamp.setValue(requestCtx.getCurrentTime());
-	}
-
-	@Override
-	public String getChanges() {
-		JSON changes = this.changes.getValue();
-		return changes != null ? changes.toString() : null;
-	}
-
-	public void setChanges(String changes) {
-		this.changes.setValue(JSON.valueOf(changes));
 	}
 
 }

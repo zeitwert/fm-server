@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.JSON;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,6 @@ public class ObjPartTransitionRepositoryImpl extends JooqObjPartRepositoryBase<O
 		this.mapField("tenantId", PartState.BASE, "tenant_id", Integer.class);
 		this.mapField("user", PartState.BASE, "user_id", Integer.class);
 		this.mapField("timestamp", PartState.BASE, "timestamp", OffsetDateTime.class);
-		this.mapField("changes", PartState.BASE, "changes", JSON.class);
 	}
 
 	@Override

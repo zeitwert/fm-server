@@ -17,6 +17,4 @@ public interface DocPartTransition extends DocPart<Doc> {
 
 	CodeCaseStage getNewCaseStage();
 
-	String getChanges();
-
 }
