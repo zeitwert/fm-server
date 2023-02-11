@@ -3,7 +3,6 @@ package io.zeitwert.fm.building.model.base;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.flywaydb.core.internal.util.Pair;
 
@@ -17,10 +16,8 @@ import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
@@ -54,15 +51,6 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		this.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
-	}
-
-	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-		ObjBuildingPartElementRatingRepository elementRepo = ObjBuildingRepository.getElementRepository();
-		List<ObjBuildingPartElementRating> elementList = elementRepo.getParts(this,
-				ObjBuildingPartRatingRepository.getElementListType());
-		this.elementList.loadParts(elementList);
 	}
 
 	@Override

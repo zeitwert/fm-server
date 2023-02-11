@@ -5,7 +5,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.math.BigDecimal;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
@@ -44,13 +42,6 @@ public class ObjAccountRepositoryImpl extends JooqObjExtnRepositoryBase<ObjAccou
 		this.mapField("inflationRate", AggregateState.EXTN, "inflation_rate", BigDecimal.class);
 		this.mapField("logoImage", AggregateState.EXTN, "logo_img_id", Integer.class);
 		this.mapField("mainContact", AggregateState.EXTN, "main_contact_id", Integer.class);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 	@Override

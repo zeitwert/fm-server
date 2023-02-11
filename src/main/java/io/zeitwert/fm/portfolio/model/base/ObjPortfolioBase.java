@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -49,15 +47,6 @@ public abstract class ObjPortfolioBase extends ObjExtnBase
 	@Override
 	public ObjPortfolio aggregate() {
 		return this;
-	}
-
-	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
-		this.includeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.includeSetType()));
-		this.excludeSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.excludeSetType()));
-		this.buildingSet.loadReferences(itemRepo.getParts(this, ObjPortfolioRepository.buildingSetType()));
 	}
 
 	@Override

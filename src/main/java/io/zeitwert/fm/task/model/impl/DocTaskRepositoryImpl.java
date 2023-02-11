@@ -6,8 +6,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
@@ -51,12 +49,6 @@ public class DocTaskRepositoryImpl extends JooqDocExtnRepositoryBase<DocTask, Do
 		this.mapField("priority", AggregateState.EXTN, "priority_id", String.class);
 		this.mapField("dueAt", AggregateState.EXTN, "due_at", OffsetDateTime.class);
 		this.mapField("remindAt", AggregateState.EXTN, "remind_at", OffsetDateTime.class);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
 	}
 
 	@Override

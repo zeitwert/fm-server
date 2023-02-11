@@ -6,15 +6,12 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -78,10 +75,8 @@ public class ObjBuildingRepositoryImpl extends JooqObjExtnRepositoryBase<ObjBuil
 	}
 
 	@Override
-	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(ObjRepository.getItemRepository());
 		this.addPartRepository(ObjBuildingRepository.getRatingRepository());
 		this.addPartRepository(ObjBuildingRepository.getElementRepository());
 	}

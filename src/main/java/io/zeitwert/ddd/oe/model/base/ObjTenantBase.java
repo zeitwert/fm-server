@@ -50,11 +50,6 @@ public abstract class ObjTenantBase extends ObjExtnBase implements ObjTenant {
 	}
 
 	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-	}
-
-	@Override
 	public void doBeforeStore() {
 		super.doBeforeStore();
 		if (this.getLogoImageId() == null) {

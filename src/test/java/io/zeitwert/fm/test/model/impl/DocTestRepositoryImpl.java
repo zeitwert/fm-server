@@ -7,15 +7,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
@@ -52,14 +49,6 @@ public class DocTestRepositoryImpl extends JooqDocExtnRepositoryBase<DocTest, Do
 		this.mapField("refDoc", AggregateState.EXTN, "ref_doc_id", Integer.class);
 		this.mapCollection("countrySet", "test.countrySet", CodeCountry.class);
 		this.mapCollection("nodeList", "test.nodeList", DocTestPartNode.class);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(DocRepository.getItemRepository());
-		// this.addPartRepository(this.getNodeRepository());
 	}
 
 	@Override

@@ -12,8 +12,9 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocMeta;
+import io.zeitwert.ddd.doc.model.DocPartItem;
+import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
 import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.service.api.DocService;
@@ -136,8 +137,18 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		DocPartTransitionRepository transitionRepo = DocRepository.getTransitionRepository();
-		this.transitionList.loadParts(transitionRepo.getParts(this, DocRepository.transitionListType()));
+		DocPartItemRepository itemRepository = DocRepository.getItemRepository();
+		for (Property<?> property : this.getProperties()) {
+			if (property instanceof EnumSetProperty<?>) {
+				EnumSetProperty<?> enumSet = (EnumSetProperty<?>) property;
+				List<DocPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
+				enumSet.loadEnums(partList);
+			} else if (property instanceof ReferenceSetProperty<?>) {
+				ReferenceSetProperty<?> referenceSet = (ReferenceSetProperty<?>) property;
+				List<DocPartItem> partList = itemRepository.getParts(this, referenceSet.getPartListType());
+				referenceSet.loadReferences(partList);
+			}
+		}
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 
 package io.zeitwert.ddd.obj.model.base;
 
+import javax.annotation.PostConstruct;
+
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositoryBase;
 import io.zeitwert.ddd.app.service.api.AppContext;
@@ -21,8 +23,10 @@ public abstract class ObjRepositoryBase<O extends Obj, V extends Object>
 	}
 
 	@Override
+	@PostConstruct
 	public void registerPartRepositories() {
 		this.addPartRepository(ObjRepository.getTransitionRepository());
+		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 	@Override

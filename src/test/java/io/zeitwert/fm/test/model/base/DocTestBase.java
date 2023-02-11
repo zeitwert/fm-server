@@ -9,8 +9,6 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.ddd.doc.model.DocPartItemRepository;
-import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
@@ -60,17 +58,6 @@ public abstract class DocTestBase extends DocExtnBase
 	public void doInitWorkflow() {
 		CodeCaseStage initStage = CodeCaseStageEnum.getCaseStage("test.new");
 		this.doInitWorkflow("test", initStage);
-	}
-
-	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-		DocPartItemRepository itemRepo = DocRepository.getItemRepository();
-		this.countrySet.loadEnums(itemRepo.getParts(this, DocTestRepository.countrySetType()));
-		// ObjTestPartNodeRepository nodeRepo =
-		// this.getRepository().getNodeRepository();
-		// this.nodeList.loadParts(nodeRepo.getParts(this,
-		// this.getRepository().getNodeListType()));
 	}
 
 	@Override

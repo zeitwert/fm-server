@@ -2,14 +2,16 @@
 package io.zeitwert.ddd.obj.model.base;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjMeta;
+import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjPartTransition;
-import io.zeitwert.ddd.obj.model.ObjPartTransitionRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
@@ -106,8 +108,18 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	@Override
 	public void doAssignParts() {
 		super.doAssignParts();
-		ObjPartTransitionRepository transitionRepo = ObjRepository.getTransitionRepository();
-		this.transitionList.loadParts(transitionRepo.getParts(this, ObjRepository.transitionListType()));
+		ObjPartItemRepository itemRepository = ObjRepository.getItemRepository();
+		for (Property<?> property : this.getProperties()) {
+			if (property instanceof EnumSetProperty<?>) {
+				EnumSetProperty<?> enumSet = (EnumSetProperty<?>) property;
+				List<ObjPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
+				enumSet.loadEnums(partList);
+			} else if (property instanceof ReferenceSetProperty<?>) {
+				ReferenceSetProperty<?> referenceSet = (ReferenceSetProperty<?>) property;
+				List<ObjPartItem> partList = itemRepository.getParts(this, referenceSet.getPartListType());
+				referenceSet.loadReferences(partList);
+			}
+		}
 	}
 
 	@Override

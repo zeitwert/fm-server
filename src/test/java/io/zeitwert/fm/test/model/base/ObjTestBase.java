@@ -6,10 +6,7 @@ import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
-import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -49,15 +46,6 @@ public abstract class ObjTestBase extends ObjExtnBase
 	@Override
 	public ObjTest aggregate() {
 		return this;
-	}
-
-	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
-		this.countries.loadEnums(itemRepo.getParts(this, ObjTestRepository.countrySetType()));
-		ObjTestPartNodeRepository nodeRepo = ObjTestRepository.getNodeRepository();
-		this.nodes.loadParts(nodeRepo.getParts(this, ObjTestRepository.nodeListType()));
 	}
 
 	@Override

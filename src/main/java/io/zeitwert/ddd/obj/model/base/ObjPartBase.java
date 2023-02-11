@@ -1,8 +1,12 @@
 
 package io.zeitwert.ddd.obj.model.base;
 
+import java.util.List;
+
 import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPart;
+import io.zeitwert.ddd.obj.model.ObjPartItem;
+import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
@@ -16,6 +20,23 @@ public abstract class ObjPartBase<O extends Obj> extends PartBase<O> implements 
 
 	protected ObjPartBase(PartRepository<O, ?> repository, O obj, Object state) {
 		super(repository, obj, state);
+	}
+
+	@Override
+	public void doAssignParts() {
+		super.doAssignParts();
+		ObjPartItemRepository itemRepository = ObjRepository.getItemRepository();
+		for (Property<?> property : this.getProperties()) {
+			if (property instanceof EnumSetProperty<?>) {
+				EnumSetProperty<?> enumSet = (EnumSetProperty<?>) property;
+				List<ObjPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
+				enumSet.loadEnums(partList);
+			} else if (property instanceof ReferenceSetProperty<?>) {
+				ReferenceSetProperty<?> referenceSet = (ReferenceSetProperty<?>) property;
+				List<ObjPartItem> partList = itemRepository.getParts(this, referenceSet.getPartListType());
+				referenceSet.loadReferences(partList);
+			}
+		}
 	}
 
 	@Override

@@ -1,11 +1,10 @@
 
 package io.zeitwert.fm.doc.model.impl;
 
+import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
@@ -29,14 +28,9 @@ public class DocVRepositoryImpl extends JooqDocRepositoryBase<Doc, DocRecord> im
 	}
 
 	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-	}
-
-	@Override
 	public Doc doCreate() {
-		return this.doCreate(null);
+		assertThis(false, "not supported");
+		return null;
 	}
 
 	@Override

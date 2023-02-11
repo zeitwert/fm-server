@@ -10,7 +10,6 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
@@ -44,20 +43,8 @@ public abstract class ObjContactBase extends ObjExtnBase
 	}
 
 	@Override
-	public ObjContactRepository getRepository() {
-		return (ObjContactRepository) super.getRepository();
-	}
-
-	@Override
 	public ObjContact aggregate() {
 		return this;
-	}
-
-	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-		ObjContactPartAddressRepository addressRepo = ObjContactRepository.getAddressRepository();
-		this.addressList.loadParts(addressRepo.getParts(this, ObjContactRepository.addressListType()));
 	}
 
 	@Override

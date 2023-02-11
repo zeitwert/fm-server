@@ -6,8 +6,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
@@ -51,7 +49,6 @@ public class ObjContactRepositoryImpl extends JooqObjExtnRepositoryBase<ObjConta
 	}
 
 	@Override
-	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
 		this.addPartRepository(ObjContactRepository.getAddressRepository());

@@ -1,8 +1,6 @@
 
 package io.zeitwert.ddd.oe.model.base;
 
-import javax.annotation.PostConstruct;
-
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjTenant;
@@ -15,12 +13,6 @@ public abstract class ObjTenantRepositoryBase extends ObjRepositoryBase<ObjTenan
 
 	protected ObjTenantRepositoryBase(AppContext appContext) {
 		super(ObjTenantRepository.class, ObjTenant.class, ObjTenantBase.class, AGGREGATE_TYPE, appContext);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
 	}
 
 }

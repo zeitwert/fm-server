@@ -5,8 +5,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
@@ -58,12 +56,6 @@ public class ObjDocumentRepositoryImpl extends JooqObjExtnRepositoryBase<ObjDocu
 		this.mapField("documentCategory", AggregateState.EXTN, "document_category_id", String.class);
 		this.mapField("templateDocument", AggregateState.EXTN, "template_document_id", Integer.class);
 		this.mapField("contentKind", AggregateState.EXTN, "content_kind_id", String.class);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
 	}
 
 	@Override

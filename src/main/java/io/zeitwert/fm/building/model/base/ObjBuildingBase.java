@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
@@ -24,7 +22,6 @@ import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.*;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
@@ -96,11 +93,6 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 	}
 
 	@Override
-	public ObjBuildingRepository getRepository() {
-		return (ObjBuildingRepository) super.getRepository();
-	}
-
-	@Override
 	public ObjBuilding aggregate() {
 		return this;
 	}
@@ -109,15 +101,6 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		this.addCoverFoto();
-	}
-
-	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-		ObjBuildingPartRatingRepository ratingRepo = ObjBuildingRepository.getRatingRepository();
-		this.ratingList.loadParts(ratingRepo.getParts(this, ObjBuildingRepository.ratingListType()));
-		ObjPartItemRepository itemRepo = ObjRepository.getItemRepository();
-		this.contactSet.loadReferences(itemRepo.getParts(this, ObjBuildingRepository.contactSetType()));
 	}
 
 	@Override

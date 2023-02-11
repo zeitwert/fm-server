@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.JSON;
 import org.jooq.exception.NoDataFoundException;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.account.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
@@ -55,10 +52,8 @@ public class ObjTestRepositoryImpl extends JooqObjExtnRepositoryBase<ObjTest, Ob
 	}
 
 	@Override
-	@PostConstruct
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(ObjRepository.getItemRepository());
 		this.addPartRepository(ObjTestRepository.getNodeRepository());
 	}
 

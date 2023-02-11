@@ -5,8 +5,6 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.DependsOn;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -47,13 +44,6 @@ public class ObjPortfolioRepositoryImpl extends JooqObjExtnRepositoryBase<ObjPor
 		this.mapCollection("includeSet", "portfolio.includeList", Obj.class);
 		this.mapCollection("excludeSet", "portfolio.excludeList", Obj.class);
 		this.mapCollection("buildingSet", "portfolio.buildingList", ObjBuilding.class);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 	@Override

@@ -63,11 +63,6 @@ public abstract class ObjAccountBase extends ObjExtnBase
 	}
 
 	@Override
-	public void doAssignParts() {
-		super.doAssignParts();
-	}
-
-	@Override
 	public void doBeforeStore() {
 		super.doBeforeStore();
 		if (this.getLogoImageId() == null) {

@@ -1,12 +1,9 @@
 
 package io.zeitwert.ddd.oe.model.base;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjRepositoryBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
@@ -32,13 +29,6 @@ public abstract class ObjUserRepositoryBase extends ObjRepositoryBase<ObjUser, O
 	@Override
 	public ObjTenantCache getTenantCache() {
 		return AppContext.getInstance().getBean(ObjTenantCache.class);
-	}
-
-	@Override
-	@PostConstruct
-	public void registerPartRepositories() {
-		super.registerPartRepositories();
-		this.addPartRepository(ObjRepository.getItemRepository());
 	}
 
 }

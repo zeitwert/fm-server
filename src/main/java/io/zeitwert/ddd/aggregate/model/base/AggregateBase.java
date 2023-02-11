@@ -99,12 +99,13 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	}
 
 	public void initPartCache(Class<? extends Part<?>> clazz) {
-		requireThis(!this.hasPartCache(clazz), "not yet initialised");
+		requireThis(!this.hasPartCache(clazz), "aggregate not yet initialised");
 		this.partCaches.put(clazz, new PartCache<>());
 	}
 
 	public PartCache<?> getPartCache(Class<? extends Part<?>> clazz) {
-		requireThis(this.hasPartCache(clazz), "initialised");
+		requireThis(this.hasPartCache(clazz), "part cache for " + clazz.getSimpleName() + " initialised"
+				+ " (did you forget to registerPartRepositories() in repository?)");
 		return this.partCaches.get(clazz);
 	}
 
@@ -121,6 +122,21 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	@Override
 	public void doAssignParts() {
 		this.doAssignPartsSeqNr += 1;
+		for (Property<?> property : this.getProperties()) {
+			if (property instanceof PartListProperty<?>) {
+				PartListProperty<?> partListProperty = (PartListProperty<?>) property;
+				this.assignPartListParts(partListProperty, partListProperty.getPartListType());
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <A extends Aggregate, P extends Part<A>> void assignPartListParts(PartListProperty<?> property,
+			CodePartListType partListType) {
+		Class<P> partType = ((PartListProperty<P>) property).getPartType();
+		PartRepository<A, P> partRepository = AppContext.getInstance().getPartRepository(partType);
+		List<P> partList = partRepository.getParts((A) this, partListType);
+		property.loadParts(partList);
 	}
 
 	@Override

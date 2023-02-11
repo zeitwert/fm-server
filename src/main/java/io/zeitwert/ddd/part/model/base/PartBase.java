@@ -2,6 +2,8 @@ package io.zeitwert.ddd.part.model.base;
 
 import static io.zeitwert.ddd.util.Check.assertThis;
 
+import java.util.List;
+
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
@@ -130,6 +132,21 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 	@Override
 	public void doAssignParts() {
 		this.doAssignPartsSeqNr += 1;
+		for (Property<?> property : this.getProperties()) {
+			if (property instanceof PartListProperty<?>) {
+				PartListProperty<?> partListProperty = (PartListProperty<?>) property;
+				this.assignPartListParts(partListProperty, partListProperty.getPartListType());
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <P extends Part<A>> void assignPartListParts(PartListProperty<?> property,
+			CodePartListType partListType) {
+		Class<P> partType = ((PartListProperty<P>) property).getPartType();
+		PartRepository<A, P> partRepository = AppContext.getInstance().getPartRepository(partType);
+		List<P> partList = partRepository.getParts(this, partListType);
+		property.loadParts(partList);
 	}
 
 	@Override
