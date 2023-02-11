@@ -3,22 +3,23 @@ package io.zeitwert.fm.collaboration.model.enums;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.CodeNoteTypeRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeNoteTypeEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
-public class CodeNoteTypeEnum extends EnumerationBase<CodeNoteType> {
+public class CodeNoteTypeEnum extends JooqEnumerationBase<CodeNoteType> {
 
 	private static CodeNoteTypeEnum INSTANCE;
 
-	protected CodeNoteTypeEnum(AppContext appContext) {
-		super(appContext, CodeNoteType.class);
+	protected CodeNoteTypeEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeNoteType.class, enums, dslContext);
 		INSTANCE = this;
 	}
 

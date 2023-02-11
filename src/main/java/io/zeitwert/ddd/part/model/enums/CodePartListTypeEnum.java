@@ -14,8 +14,7 @@ public class CodePartListTypeEnum extends EnumerationBase<CodePartListType> {
 	private static CodePartListTypeEnum INSTANCE;
 
 	protected CodePartListTypeEnum(Enumerations enums) {
-		super(null, CodePartListType.class);
-		enums.addEnumeration(CodePartListType.class, this);
+		super(CodePartListType.class, enums);
 		INSTANCE = this;
 	}
 

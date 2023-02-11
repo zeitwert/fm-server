@@ -2,12 +2,16 @@
 package io.zeitwert.ddd.doc.model.enums;
 
 import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class CodeCaseStage extends EnumeratedBase {
+@Data
+@SuperBuilder
+public class CodeCaseStage extends EnumeratedBase {
 
 	private final String caseDefId;
 	private final Integer seqNr;
@@ -29,8 +33,8 @@ public final class CodeCaseStage extends EnumeratedBase {
 		this.availableActions = availableActions == null ? new ArrayList<>() : Arrays.asList(availableActions.split(","));
 	}
 
-	public String getCaseDefId() {
-		return this.caseDefId;
+	public CodeCaseDef getCaseDef() {
+		return CodeCaseDefEnum.getCaseDef(this.caseDefId);
 	}
 
 	public boolean isInWork() {
@@ -53,8 +57,8 @@ public final class CodeCaseStage extends EnumeratedBase {
 		return this.getCaseStageTypeId().equals("abstract");
 	}
 
-	public String getAbstractCaseStageId() {
-		return this.abstractCaseStageId;
+	public CodeCaseStage getAbstractCaseStage() {
+		return CodeCaseStageEnum.getCaseStage(this.abstractCaseStageId);
 	}
 
 	public String getAction() {
@@ -63,6 +67,16 @@ public final class CodeCaseStage extends EnumeratedBase {
 
 	public List<String> getAvailableActions() {
 		return this.availableActions;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

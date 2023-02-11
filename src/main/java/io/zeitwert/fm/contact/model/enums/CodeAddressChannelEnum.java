@@ -3,22 +3,23 @@ package io.zeitwert.fm.contact.model.enums;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.CodeAddressChannelRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeInteractionChannelEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
-public class CodeAddressChannelEnum extends EnumerationBase<CodeAddressChannel> {
+public class CodeAddressChannelEnum extends JooqEnumerationBase<CodeAddressChannel> {
 
 	private static CodeAddressChannelEnum INSTANCE;
 
-	protected CodeAddressChannelEnum(AppContext appContext) {
-		super(appContext, CodeAddressChannel.class);
+	protected CodeAddressChannelEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeAddressChannel.class, enums, dslContext);
 		INSTANCE = this;
 	}
 

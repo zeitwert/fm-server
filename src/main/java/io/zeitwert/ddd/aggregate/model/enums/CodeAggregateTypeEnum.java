@@ -14,8 +14,7 @@ public class CodeAggregateTypeEnum extends EnumerationBase<CodeAggregateType> {
 	private static CodeAggregateTypeEnum INSTANCE;
 
 	protected CodeAggregateTypeEnum(Enumerations enums) {
-		super(null, CodeAggregateType.class);
-		enums.addEnumeration(CodeAggregateType.class, this);
+		super(CodeAggregateType.class, enums);
 		INSTANCE = this;
 	}
 

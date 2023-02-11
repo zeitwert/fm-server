@@ -9,15 +9,15 @@ import static io.zeitwert.ddd.util.Check.requireThis;
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.doc.model.Doc;
 import io.zeitwert.ddd.doc.model.DocMeta;
 import io.zeitwert.ddd.doc.model.DocPartItem;
 import io.zeitwert.ddd.doc.model.DocPartItemRepository;
 import io.zeitwert.ddd.doc.model.DocPartTransition;
 import io.zeitwert.ddd.doc.model.DocRepository;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseDef;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseDefEnum;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
-import io.zeitwert.ddd.doc.service.api.DocService;
 import io.zeitwert.ddd.oe.model.ObjTenant;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
@@ -188,8 +188,13 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	}
 
 	@Override
+	public CodeCaseDef getCaseDef() {
+		return CodeCaseDefEnum.getCaseDef(this.caseDefId.getValue());
+	}
+
+	@Override
 	public List<CodeCaseStage> getCaseStages() {
-		return AppContext.getInstance().getBean(DocService.class).getCaseStages(this.getCaseStage().getCaseDefId());
+		return this.getCaseDef().getCaseStages();
 	}
 
 	@Override

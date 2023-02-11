@@ -25,6 +25,7 @@ import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.impl.PropertyFilter;
 import io.zeitwert.ddd.property.model.impl.PropertyHandler;
+import io.zeitwert.ddd.search.service.api.SearchService;
 import javassist.util.proxy.ProxyFactory;
 
 public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Object>
@@ -228,7 +229,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Obj
 	}
 
 	protected final void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
-		this.getPersistenceProvider().doStoreSearch(aggregate, texts, tokens);
+		AppContext.getInstance().getBean(SearchService.class).storeSearch(aggregate, texts, tokens);
 	}
 
 	@Override

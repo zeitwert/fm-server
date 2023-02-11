@@ -1,8 +1,11 @@
 package io.zeitwert.jooq.persistence;
 
+import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 import org.jooq.exception.NoDataFoundException;
 
+import io.zeitwert.ddd.aggregate.model.AggregatePersistenceProvider;
+import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.aggregate.model.base.AggregateRepositorySPI;
 import io.zeitwert.ddd.aggregate.model.base.AggregateSPI;
 import io.zeitwert.ddd.obj.model.Obj;
@@ -10,9 +13,13 @@ import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 
 public interface ObjPersistenceProviderMixin<O extends Obj>
-		extends AggregatePersistenceProviderMixin<O> {
+		extends AggregatePersistenceProvider<O> {
 
 	static final String OBJ_ID_SEQ = "obj_id_seq";
+
+	DSLContext dslContext();
+
+	AggregateRepository<O, ?> getRepository();
 
 	@Override
 	default Integer nextAggregateId() {

@@ -28,8 +28,7 @@ public class CodeUserRoleEnum extends EnumerationBase<CodeUserRole> {
 	private static CodeUserRoleEnum INSTANCE;
 
 	protected CodeUserRoleEnum(Enumerations enums) {
-		super(null, CodeUserRole.class);
-		enums.addEnumeration(CodeUserRole.class, this);
+		super(CodeUserRole.class, enums);
 		INSTANCE = this;
 	}
 

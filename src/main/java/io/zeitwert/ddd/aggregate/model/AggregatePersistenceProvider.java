@@ -1,7 +1,5 @@
 package io.zeitwert.ddd.aggregate.model;
 
-import java.util.List;
-
 public interface AggregatePersistenceProvider<A extends Aggregate> {
 
 	/**
@@ -42,14 +40,5 @@ public interface AggregatePersistenceProvider<A extends Aggregate> {
 	 * @param aggregate aggregate to store
 	 */
 	void doStore(A aggregate);
-
-	/**
-	 * Store the search texts and tokens.
-	 *
-	 * @param aggregate aggregate to store
-	 * @param texts     list of texts to be stored
-	 * @param tokens    list of tokens to be stored
-	 */
-	void doStoreSearch(Aggregate aggregate, List<String> texts, List<String> tokens);
 
 }

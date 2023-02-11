@@ -6,33 +6,30 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.records.CodeContentTypeRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeContentTypeEnum")
 @DependsOn({ "flyway", "flywayInitializer", "codeContentKindEnum" })
-public class CodeContentTypeEnum extends EnumerationBase<CodeContentType> {
+public class CodeContentTypeEnum extends JooqEnumerationBase<CodeContentType> {
 
 	private static CodeContentTypeEnum INSTANCE;
 
-	private final CodeContentKindEnum codeContentKindEnum;
-
-	protected CodeContentTypeEnum(AppContext appContext,
-			final CodeContentKindEnum codeContentKindEnum) {
-		super(appContext, CodeContentType.class);
-		this.codeContentKindEnum = codeContentKindEnum;
+	protected CodeContentTypeEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeContentType.class, enums, dslContext);
 		INSTANCE = this;
 	}
 
 	@PostConstruct
 	private void init() {
 		for (final CodeContentTypeRecord item : this.getDslContext().selectFrom(Tables.CODE_CONTENT_TYPE).fetch()) {
-			CodeContentKind contentKind = this.codeContentKindEnum.getItem(item.getContentKindId());
+			CodeContentKind contentKind = CodeContentKindEnum.getContentKind(item.getContentKindId());
 			CodeContentType contentType = CodeContentType.builder()
 					.enumeration(this)
 					.id(item.getId())

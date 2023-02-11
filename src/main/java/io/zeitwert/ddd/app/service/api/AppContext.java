@@ -2,6 +2,7 @@
 package io.zeitwert.ddd.app.service.api;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +30,8 @@ import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
 import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.ddd.app.service.api.impl.Repositories;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseDef;
+import io.zeitwert.ddd.doc.model.enums.CodeCaseDefEnum;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.enums.model.Enumerated;
@@ -51,7 +54,7 @@ import io.zeitwert.ddd.session.model.RequestContext;
 
 @Service("appContext")
 @DependsOn({ "flyway", "flywayInitializer", "codeAggregateTypeEnum", "codePartListTypeEnum", "codeTenantTypeEnum",
-		"codeUserRoleEnum", "codeCountryEnum", "codeLocaleEnum", "codeCaseStageEnum" })
+		"codeUserRoleEnum", "codeCountryEnum", "codeLocaleEnum", "codeCaseDefEnum", "codeCaseStageEnum" })
 public final class AppContext {
 
 	public static final String SCHEMA_NAME = "public";
@@ -59,6 +62,16 @@ public final class AppContext {
 
 	private static final Field<String> ID = DSL.field("id", String.class);
 	private static final Field<String> NAME = DSL.field("name", String.class);
+
+	static public final String TABLE_NAME = "code_case_stage";
+
+	static public final Field<String> CASE_DEF_ID = DSL.field("case_def_id", String.class);
+	static public final Field<String> CASE_STAGE_TYPE_ID = DSL.field("case_stage_type_id", String.class);
+	static public final Field<String> DESCRIPTION = DSL.field("description", String.class);
+	static public final Field<Integer> SEQ_NR = DSL.field("seq_nr", Integer.class);
+	static public final Field<String> ABSTRACT_CASE_STAGE_ID = DSL.field("abstract_case_stage_id", String.class);
+	static public final Field<String> ACTION = DSL.field("action", String.class);
+	static public final Field<String> AVAILABLE_ACTIONS = DSL.field("available_actions", String.class);
 
 	private static AppContext INSTANCE;
 
@@ -86,13 +99,19 @@ public final class AppContext {
 
 	@PostConstruct
 	private void initKernelCodeTables() {
-		this.initAggregateType();
-		this.initPartListType();
-		this.initTenantType();
-		this.initUserRole();
-		this.initCountry();
-		this.initLocale();
-		this.initCaseStage();
+		try {
+			this.initAggregateType();
+			this.initPartListType();
+			this.initTenantType();
+			this.initUserRole();
+			this.initCountry();
+			this.initLocale();
+			this.initCaseDef();
+			this.initCaseStage();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void initAggregateType() {
@@ -175,32 +194,49 @@ public final class AppContext {
 		}
 	}
 
+	private void initCaseDef() {
+		Table<?> codeDef = this.getTable("code_case_def");
+		for (final Record2<String, String> item : this.getDslContext().select(ID,
+				NAME).from(codeDef).fetch()) {
+			CodeCaseDef caseDef = CodeCaseDef.builder()
+					.enumeration(CodeCaseDefEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.build();
+			CodeCaseDefEnum.getInstance().addItem(caseDef);
+		}
+	}
+
 	private void initCaseStage() {
-		Table<?> codeCaseStage = this.getTable(CodeCaseStageEnum.TABLE_NAME);
+		Table<?> codeCaseStage = this.getTable(TABLE_NAME);
 		for (final Record9<String, String, String, String, String, Integer, String, String, String> item : this
 				.getDslContext().select(
 						ID,
 						NAME,
-						CodeCaseStageEnum.CASE_DEF_ID,
-						CodeCaseStageEnum.CASE_STAGE_TYPE_ID,
-						CodeCaseStageEnum.DESCRIPTION,
-						CodeCaseStageEnum.SEQ_NR,
-						CodeCaseStageEnum.ABSTRACT_CASE_STAGE_ID,
-						CodeCaseStageEnum.ACTION,
-						CodeCaseStageEnum.AVAILABLE_ACTIONS)
-				.from(codeCaseStage).fetch()) {
-			CodeCaseStageEnum.getInstance().addItem(
-					new CodeCaseStage(
-							CodeCaseStageEnum.getInstance(),
-							item.value1(),
-							item.value3(),
-							item.value4(),
-							item.value2(),
-							item.value5(),
-							item.value6(),
-							item.value7(),
-							item.value8(),
-							item.value9()));
+						CASE_DEF_ID,
+						CASE_STAGE_TYPE_ID,
+						DESCRIPTION,
+						SEQ_NR,
+						ABSTRACT_CASE_STAGE_ID,
+						ACTION,
+						AVAILABLE_ACTIONS)
+				.from(codeCaseStage)
+				.orderBy(CASE_DEF_ID, SEQ_NR)
+				.fetch()) {
+			CodeCaseStage caseStage = CodeCaseStage.builder()
+					.enumeration(CodeCaseStageEnum.getInstance())
+					.id(item.value1())
+					.name(item.value2())
+					.caseDefId(item.value3())
+					.caseStageTypeId(item.value4())
+					.description(item.value5())
+					.seqNr(item.value6())
+					.abstractCaseStageId(item.value7())
+					.action(item.value8())
+					.availableActions(item.value9() != null ? List.of(item.value9().split(",")) : List.of())
+					.build();
+			CodeCaseStageEnum.getInstance().addItem(caseStage);
+			CodeCaseDefEnum.getCaseDef(item.value3()).addCaseStage(caseStage);
 		}
 	}
 

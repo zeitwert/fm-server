@@ -3,22 +3,23 @@ package io.zeitwert.fm.task.model.enums;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.task.model.db.Tables;
 import io.zeitwert.fm.task.model.db.tables.records.CodeTaskPriorityRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeTaskPriorityEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
-public class CodeTaskPriorityEnum extends EnumerationBase<CodeTaskPriority> {
+public class CodeTaskPriorityEnum extends JooqEnumerationBase<CodeTaskPriority> {
 
 	private static CodeTaskPriorityEnum INSTANCE;
 
-	protected CodeTaskPriorityEnum(AppContext appContext) {
-		super(appContext, CodeTaskPriority.class);
+	protected CodeTaskPriorityEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeTaskPriority.class, enums, dslContext);
 		INSTANCE = this;
 	}
 

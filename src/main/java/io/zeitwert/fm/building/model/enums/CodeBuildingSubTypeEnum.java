@@ -5,22 +5,23 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingSubTypeRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeBuildingSubTypeEnum")
 @DependsOn({ "flyway", "flywayInitializer", "codeBuildingTypeEnum" })
-public final class CodeBuildingSubTypeEnum extends EnumerationBase<CodeBuildingSubType> {
+public final class CodeBuildingSubTypeEnum extends JooqEnumerationBase<CodeBuildingSubType> {
 
 	private static CodeBuildingSubTypeEnum INSTANCE;
 
-	private CodeBuildingSubTypeEnum(AppContext appContext) {
-		super(appContext, CodeBuildingSubType.class);
+	private CodeBuildingSubTypeEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeBuildingSubType.class, enums, dslContext);
 		INSTANCE = this;
 	}
 

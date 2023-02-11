@@ -1,5 +1,5 @@
 
-package io.zeitwert.ddd.search.service.api.impl;
+package io.zeitwert.fm.search.service.api.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,12 +16,14 @@ import org.jooq.impl.DSL;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
+import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
 import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.search.model.SearchResult;
 import io.zeitwert.ddd.search.service.api.SearchService;
 import io.zeitwert.ddd.session.model.RequestContext;
+import io.zeitwert.fm.search.model.db.Tables;
 
 @Service("searchService")
 @DependsOn("appContext")
@@ -49,6 +51,37 @@ public class SearchServiceImpl implements SearchService {
 		this.requestContext = requestContext;
 	}
 
+	@Override
+	public void storeSearch(Aggregate aggregate, List<String> texts, List<String> tokens) {
+		String allTexts = String.join(" ", texts.stream().filter(t -> t != null).toList()).toLowerCase();
+		String allTokens = String.join(" ", tokens.stream().filter(t -> t != null).toList()).toLowerCase();
+		String allTextsAndTokens = (allTexts + " " + allTokens).trim();
+		String aggregateType = aggregate.getMeta().getAggregateType().getId();
+		Integer aggregateId = aggregate.getId();
+		String id = aggregateType + ":" + aggregateId;
+		this.dslContext
+				.delete(Tables.ITEM_SEARCH)
+				.where(Tables.ITEM_SEARCH.ID.eq(id))
+				.execute();
+		this.dslContext
+				.insertInto(
+						Tables.ITEM_SEARCH,
+						Tables.ITEM_SEARCH.ID,
+						Tables.ITEM_SEARCH.ITEM_TYPE_ID,
+						Tables.ITEM_SEARCH.ITEM_ID,
+						Tables.ITEM_SEARCH.A_SIMPLE,
+						Tables.ITEM_SEARCH.B_GERMAN,
+						Tables.ITEM_SEARCH.B_ENGLISH)
+				.values(
+						id,
+						aggregateType,
+						aggregateId,
+						allTokens,
+						allTextsAndTokens,
+						allTextsAndTokens)
+				.execute();
+	}
+
 	public List<SearchResult> find(String searchText, int maxResultSize) {
 		return this.find(List.of(), searchText, maxResultSize);
 	}
@@ -57,7 +90,9 @@ public class SearchServiceImpl implements SearchService {
 
 		Condition tenantCondition = OBJ__TENANT_ID.eq(this.requestContext.getTenantId());
 		Condition accountCondition = OBJ__ACCOUNT_ID.isNull().or(OBJ__ACCOUNT_ID.eq(this.requestContext.getAccountId()));
-		Condition itemTypeCondition = itemTypes != null ? SEARCH__ITEM_TYPE_ID.in(itemTypes) : DSL.noCondition();
+		Condition itemTypeCondition = itemTypes != null && itemTypes.size() > 0
+				? SEARCH__ITEM_TYPE_ID.in(itemTypes)
+				: DSL.noCondition();
 		String searchToken = "'" + searchText + "':*";
 		Condition searchCondition = DSL.noCondition()
 				.or("search_key @@ to_tsquery('simple', ?)", searchToken)

@@ -6,23 +6,24 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingPriceIndexRecord;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingPriceIndexValueRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeBuildingPriceIndexEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
-public final class CodeBuildingPriceIndexEnum extends EnumerationBase<CodeBuildingPriceIndex> {
+public final class CodeBuildingPriceIndexEnum extends JooqEnumerationBase<CodeBuildingPriceIndex> {
 
 	private static CodeBuildingPriceIndexEnum INSTANCE;
 
-	private CodeBuildingPriceIndexEnum(AppContext appContext) {
-		super(appContext, CodeBuildingPriceIndex.class);
+	private CodeBuildingPriceIndexEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeBuildingPriceIndex.class, enums, dslContext);
 		INSTANCE = this;
 	}
 

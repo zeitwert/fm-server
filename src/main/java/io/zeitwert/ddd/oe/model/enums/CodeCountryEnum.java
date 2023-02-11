@@ -14,8 +14,7 @@ public class CodeCountryEnum extends EnumerationBase<CodeCountry> {
 	private static CodeCountryEnum INSTANCE;
 
 	protected CodeCountryEnum(Enumerations enums) {
-		super(null, CodeCountry.class);
-		enums.addEnumeration(CodeCountry.class, this);
+		super(CodeCountry.class, enums);
 		INSTANCE = this;
 	}
 

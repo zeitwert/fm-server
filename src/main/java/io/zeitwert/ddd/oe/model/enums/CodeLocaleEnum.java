@@ -14,8 +14,7 @@ public class CodeLocaleEnum extends EnumerationBase<CodeLocale> {
 	private static CodeLocaleEnum INSTANCE;
 
 	protected CodeLocaleEnum(Enumerations enums) {
-		super(null, CodeLocale.class);
-		enums.addEnumeration(CodeLocale.class, this);
+		super(CodeLocale.class, enums);
 		INSTANCE = this;
 	}
 

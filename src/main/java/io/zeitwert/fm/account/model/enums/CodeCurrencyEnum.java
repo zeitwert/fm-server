@@ -2,22 +2,23 @@ package io.zeitwert.fm.account.model.enums;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.CodeCurrencyRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeCurrencyEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
-public class CodeCurrencyEnum extends EnumerationBase<CodeCurrency> {
+public class CodeCurrencyEnum extends JooqEnumerationBase<CodeCurrency> {
 
 	private static CodeCurrencyEnum INSTANCE;
 
-	protected CodeCurrencyEnum(AppContext appContext) {
-		super(appContext, CodeCurrency.class);
+	protected CodeCurrencyEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeCurrency.class, enums, dslContext);
 		INSTANCE = this;
 	}
 

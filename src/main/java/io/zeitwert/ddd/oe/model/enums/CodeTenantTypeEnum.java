@@ -22,8 +22,7 @@ public class CodeTenantTypeEnum extends EnumerationBase<CodeTenantType> {
 	private static CodeTenantTypeEnum INSTANCE;
 
 	protected CodeTenantTypeEnum(Enumerations enums) {
-		super(null, CodeTenantType.class);
-		enums.addEnumeration(CodeTenantType.class, this);
+		super(CodeTenantType.class, enums);
 		INSTANCE = this;
 	}
 

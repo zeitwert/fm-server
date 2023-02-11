@@ -3,22 +3,23 @@ package io.zeitwert.fm.dms.model.enums;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.model.base.EnumerationBase;
+import io.zeitwert.ddd.app.service.api.impl.Enumerations;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.records.CodeContentKindRecord;
+import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeContentKindEnum")
 @DependsOn({ "flyway", "flywayInitializer" })
-public class CodeContentKindEnum extends EnumerationBase<CodeContentKind> {
+public class CodeContentKindEnum extends JooqEnumerationBase<CodeContentKind> {
 
 	private static CodeContentKindEnum INSTANCE;
 
-	protected CodeContentKindEnum(AppContext appContext) {
-		super(appContext, CodeContentKind.class);
+	protected CodeContentKindEnum(Enumerations enums, DSLContext dslContext) {
+		super(CodeContentKind.class, enums, dslContext);
 		INSTANCE = this;
 	}
 
