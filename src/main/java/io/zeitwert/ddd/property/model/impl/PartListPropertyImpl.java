@@ -17,24 +17,26 @@ import static io.zeitwert.ddd.util.Check.assertThis;
 public class PartListPropertyImpl<P extends Part<?>> extends PropertyBase<P> implements PartListProperty<P> {
 
 	private final String name;
+	private final Class<P> partType;
 	private final CodePartListType partListType;
 	private final List<P> partList = new ArrayList<>();
 
-	public PartListPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType) {
-		super(entity);
-		this.name = partListType.getId();
-		this.partListType = partListType;
-	}
-
-	public PartListPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType) {
+	public PartListPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType,
+			Class<P> partType) {
 		super(entity);
 		this.name = name;
+		this.partType = partType;
 		this.partListType = partListType;
 	}
 
 	@Override
 	public String getName() {
 		return this.name;
+	}
+
+	@Override
+	public Class<P> getPartType() {
+		return this.partType;
 	}
 
 	@Override

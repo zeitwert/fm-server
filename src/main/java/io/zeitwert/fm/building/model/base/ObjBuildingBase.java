@@ -11,11 +11,8 @@ import org.slf4j.LoggerFactory;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -134,16 +131,6 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 		if (this.getCoverFotoId() == null) {
 			this.addCoverFoto();
 		}
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.ratingList)) {
-			return ObjBuildingRepository.getRatingRepository().create(this, partListType);
-		} else if (property.equals(this.contactSet)) {
-			return ObjRepository.getItemRepository().create(this, partListType);
-		}
-		return super.addPart(property, partListType);
 	}
 
 	@Override

@@ -9,9 +9,7 @@ import org.flywaydb.core.internal.util.Pair;
 
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
 import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
@@ -65,14 +63,6 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		List<ObjBuildingPartElementRating> elementList = elementRepo.getParts(this,
 				ObjBuildingPartRatingRepository.getElementListType());
 		this.elementList.loadParts(elementList);
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.elementList)) {
-			return ObjBuildingRepository.getElementRepository().create(this, partListType);
-		}
-		return super.addPart(property, partListType);
 	}
 
 	@Override

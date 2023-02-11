@@ -2,10 +2,7 @@
 package io.zeitwert.fm.collaboration.model.base;
 
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -34,11 +31,6 @@ public abstract class ObjNoteBase extends ObjExtnBase implements ObjNote {
 	public void doCalcSearch() {
 		this.addSearchText(this.getSubject());
 		this.addSearchText(this.getContent());
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		return super.addPart(property, partListType);
 	}
 
 	@Override

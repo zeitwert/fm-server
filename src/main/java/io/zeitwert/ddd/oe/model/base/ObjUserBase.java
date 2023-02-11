@@ -13,9 +13,6 @@ import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
 import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -94,14 +91,6 @@ public abstract class ObjUserBase extends ObjExtnBase implements ObjUser {
 		this.addSearchText(this.getEmail().replace("@", " ").replace(".", " ").replace("_", " ").replace("-", " "));
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.tenantSet)) {
-			return ObjRepository.getItemRepository().create(this, partListType);
-		}
-		return super.addPart(property, partListType);
 	}
 
 	@Override

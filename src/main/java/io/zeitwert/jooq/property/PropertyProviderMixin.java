@@ -110,7 +110,7 @@ public interface PropertyProviderMixin extends PropertyProvider {
 			Class<P> partType) {
 		CollectionConfig collectionConfig = this.getCollectionConfig(name);
 		this.checkCollectionConfig(collectionConfig, entity, name, partType);
-		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType());
+		return new PartListPropertyImpl<>(entity, name, collectionConfig.partListType(), partType);
 	}
 
 	private FieldConfig getFieldConfig(String name) {

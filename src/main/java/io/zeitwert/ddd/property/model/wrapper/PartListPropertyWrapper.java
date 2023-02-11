@@ -24,6 +24,11 @@ public class PartListPropertyWrapper<P extends Part<?>> extends PropertyWrapperB
 	}
 
 	@Override
+	public Class<P> getPartType() {
+		return this.getProperty().getPartType();
+	}
+
+	@Override
 	public CodePartListType getPartListType() {
 		return this.getProperty().getPartListType();
 	}

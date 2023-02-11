@@ -13,9 +13,6 @@ import io.zeitwert.ddd.obj.model.Obj;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ItemWithAccount;
@@ -73,18 +70,6 @@ public abstract class ObjPortfolioBase extends ObjExtnBase
 		this.addSearchToken(this.getPortfolioNr());
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.includeSet)) {
-			return ObjRepository.getItemRepository().create(this, partListType);
-		} else if (property.equals(this.excludeSet)) {
-			return ObjRepository.getItemRepository().create(this, partListType);
-		} else if (property.equals(this.buildingSet)) {
-			return ObjRepository.getItemRepository().create(this, partListType);
-		}
-		return super.addPart(property, partListType);
 	}
 
 	@Override

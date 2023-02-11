@@ -12,10 +12,7 @@ import io.zeitwert.ddd.oe.model.ObjTenantRepository;
 import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.oe.model.ObjUserRepository;
 import io.zeitwert.ddd.oe.model.enums.CodeTenantType;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -69,11 +66,6 @@ public abstract class ObjTenantBase extends ObjExtnBase implements ObjTenant {
 	public void doCalcSearch() {
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		return super.addPart(property, partListType);
 	}
 
 	@Override

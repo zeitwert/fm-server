@@ -14,7 +14,10 @@ import io.zeitwert.ddd.aggregate.model.AggregateMeta;
 import io.zeitwert.ddd.aggregate.model.AggregateRepository;
 import io.zeitwert.ddd.app.service.api.AppContext;
 import io.zeitwert.ddd.part.model.Part;
+import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.base.PartCache;
+import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.base.EntityWithPropertiesBase;
@@ -152,6 +155,24 @@ public abstract class AggregateBase extends EntityWithPropertiesBase implements 
 	@Override
 	public void doAfterStore() {
 		this.doAfterStoreSeqNr += 1;
+	}
+
+	@Override
+	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+		if (property instanceof PartListProperty<?>) {
+			return this.addPartListPart(property, partListType);
+		}
+		assertThis(false, "could instantiate part for property " + property.getName() + " (" + partListType.getId() + ", "
+				+ property.getClass().getSimpleName() + ")");
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <A extends Aggregate, P extends Part<A>> Part<A> addPartListPart(Property<?> property,
+			CodePartListType partListType) {
+		Class<P> partType = ((PartListProperty<P>) property).getPartType();
+		PartRepository<A, P> partRepository = AppContext.getInstance().getPartRepository(partType);
+		return partRepository.create((A) this, partListType);
 	}
 
 	@Override

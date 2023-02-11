@@ -4,7 +4,6 @@ package io.zeitwert.ddd.doc.model.base;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
 import static io.zeitwert.ddd.util.Check.requireThis;
 
 import io.zeitwert.ddd.aggregate.model.base.AggregateBase;
@@ -23,9 +22,11 @@ import io.zeitwert.ddd.oe.model.ObjUser;
 import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
+import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
+import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.ddd.session.model.RequestContext;
 
@@ -182,11 +183,12 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.transitionList)) {
-			return DocRepository.getTransitionRepository().create(this, partListType);
+		if (property instanceof EnumSetProperty<?>) {
+			return DocRepository.getItemRepository().create(this, partListType);
+		} else if (property instanceof ReferenceSetProperty<?>) {
+			return DocRepository.getItemRepository().create(this, partListType);
 		}
-		assertThis(false, "could instantiate part for partListType " + partListType);
-		return null;
+		return super.addPart(property, partListType);
 	}
 
 	protected void setCaption(String caption) {

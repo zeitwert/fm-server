@@ -22,14 +22,6 @@ public class ReferenceSetPropertyImpl<A extends Aggregate> extends PropertyBase<
 	private final CodePartListType partListType;
 	private Set<AggregatePartItem<?>> itemSet = new HashSet<>();
 
-	// cache is not used, since checking it is too expensive (for now)
-	public ReferenceSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
-			AggregateResolver<A> repository) {
-		super(entity);
-		this.name = partListType.getId();
-		this.partListType = partListType;
-	}
-
 	public ReferenceSetPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType,
 			AggregateResolver<A> repository) {
 		super(entity);

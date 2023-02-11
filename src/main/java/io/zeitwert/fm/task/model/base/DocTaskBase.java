@@ -11,10 +11,7 @@ import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -77,11 +74,6 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 		super.doCalcSearch();
 		this.addSearchText(this.getSubject());
 		this.addSearchText(this.getContent());
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		return super.addPart(property, partListType);
 	}
 
 	@Override

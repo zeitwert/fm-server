@@ -23,14 +23,6 @@ public class EnumSetPropertyImpl<E extends Enumerated> extends PropertyBase<E> i
 
 	private Set<AggregatePartItem<?>> itemSet = new HashSet<>();
 
-	public EnumSetPropertyImpl(EntityWithPropertiesSPI entity, CodePartListType partListType,
-			Enumeration<E> enumeration) {
-		super(entity);
-		this.name = partListType.getId();
-		this.partListType = partListType;
-		this.enumeration = enumeration;
-	}
-
 	public EnumSetPropertyImpl(EntityWithPropertiesSPI entity, String name, CodePartListType partListType,
 			Enumeration<E> enumeration) {
 		super(entity);

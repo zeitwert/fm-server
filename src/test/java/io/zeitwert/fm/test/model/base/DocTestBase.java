@@ -14,11 +14,8 @@ import io.zeitwert.ddd.doc.model.DocRepository;
 import io.zeitwert.ddd.doc.model.base.DocExtnBase;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
 import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
@@ -79,18 +76,6 @@ public abstract class DocTestBase extends DocExtnBase
 	@Override
 	public final ObjAccount getAccount() {
 		return ItemWithAccount.getAccountCache().get(this.getAccountId());
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.countrySet)) {
-			return DocRepository.getItemRepository().create(this, partListType);
-		}
-		// if (property.equals(this.nodeList)) {
-		// return (P) this.getRepository().getNodeRepository().create(this,
-		// partListType);
-		// }
-		return super.addPart(property, partListType);
 	}
 
 	@Override

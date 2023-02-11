@@ -1,11 +1,8 @@
 package io.zeitwert.fm.building.model.base;
 
 import io.zeitwert.ddd.obj.model.base.ObjPartBase;
-import io.zeitwert.ddd.part.model.Part;
 import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
@@ -31,20 +28,6 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 
 	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, Object state) {
 		super(repository, obj, state);
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		// PartRepository<?, ObjPartItem> itemRepo =
-		// AppContext.getInstance().getPartRepository(ObjPartItem.class);
-		// if (property.equals(this.materialDescriptionSet)) {
-		// return itemRepo.create(this, partListType);
-		// } else if (property.equals(this.conditionDescriptionSet)) {
-		// return itemRepo.create(this, partListType);
-		// } else if (property.equals(this.measureDescriptionSet)) {
-		// return itemRepo.create(this, partListType);
-		// }
-		return super.addPart(property, partListType);
 	}
 
 	// @Override

@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface PartListProperty<P extends Part<?>> extends CollectionProperty<P> {
 
+	Class<P> getPartType();
+
 	Integer getPartCount();
 
 	P getPart(Integer seqNr);

@@ -8,7 +8,6 @@ import java.util.Map;
 import io.zeitwert.ddd.aggregate.model.Aggregate;
 import io.zeitwert.ddd.enums.model.Enumerated;
 import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EntityWithProperties;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
@@ -18,7 +17,6 @@ import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.ReferenceSetProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.property.model.impl.PartListPropertyImpl;
 import io.zeitwert.ddd.property.model.wrapper.EnumPropertyWrapper;
 import io.zeitwert.ddd.property.model.wrapper.EnumSetPropertyWrapper;
 import io.zeitwert.ddd.property.model.wrapper.PartListPropertyWrapper;
@@ -105,13 +103,6 @@ public interface EntityWithPropertiesMixin extends EntityWithProperties, EntityW
 		} else {
 			property = this.getPropertyProvider().getReferenceSetProperty(this, name, type);
 		}
-		this.addProperty(property);
-		return property;
-	}
-
-	default <P extends Part<?>> PartListProperty<P> addPartListProperty(CodePartListType partListType) {
-		requireThis(partListType != null, "partListType not null");
-		PartListProperty<P> property = new PartListPropertyImpl<>(this, partListType);
 		this.addProperty(property);
 		return property;
 	}

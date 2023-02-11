@@ -10,6 +10,7 @@ import io.zeitwert.ddd.part.model.PartPersistenceProvider;
 import io.zeitwert.ddd.part.model.PartPersistenceStatus;
 import io.zeitwert.ddd.part.model.PartRepository;
 import io.zeitwert.ddd.part.model.enums.CodePartListType;
+import io.zeitwert.ddd.property.model.PartListProperty;
 import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.PropertyProvider;
 import io.zeitwert.ddd.property.model.SimpleProperty;
@@ -165,8 +166,19 @@ public abstract class PartBase<A extends Aggregate> extends EntityWithProperties
 
 	@Override
 	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
+		if (property instanceof PartListProperty<?>) {
+			return this.addPartListPart(property, partListType);
+		}
 		assertThis(false, "could instantiate part for partListType " + partListType);
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <P extends Part<A>> Part<A> addPartListPart(Property<?> property,
+			CodePartListType partListType) {
+		Class<P> partType = ((PartListProperty<P>) property).getPartType();
+		PartRepository<A, P> partRepository = AppContext.getInstance().getPartRepository(partType);
+		return partRepository.create(this, partListType);
 	}
 
 	@Override

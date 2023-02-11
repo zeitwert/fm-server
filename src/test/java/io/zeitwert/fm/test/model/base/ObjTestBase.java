@@ -11,12 +11,9 @@ import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.ddd.obj.model.ObjPartItemRepository;
 import io.zeitwert.ddd.obj.model.ObjRepository;
 import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.part.model.Part;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
 import io.zeitwert.ddd.property.model.EnumProperty;
 import io.zeitwert.ddd.property.model.EnumSetProperty;
 import io.zeitwert.ddd.property.model.PartListProperty;
-import io.zeitwert.ddd.property.model.Property;
 import io.zeitwert.ddd.property.model.ReferenceProperty;
 import io.zeitwert.ddd.property.model.SimpleProperty;
 
@@ -65,16 +62,6 @@ public abstract class ObjTestBase extends ObjExtnBase
 
 	@Override
 	public void doCalcSearch() {
-	}
-
-	@Override
-	public Part<?> addPart(Property<?> property, CodePartListType partListType) {
-		if (property.equals(this.countries)) {
-			return ObjRepository.getItemRepository().create(this, partListType);
-		} else if (property.equals(this.nodes)) {
-			return ObjTestRepository.getNodeRepository().create(this, partListType);
-		}
-		return super.addPart(property, partListType);
 	}
 
 	@Override
