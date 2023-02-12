@@ -17,6 +17,7 @@ import io.dddrive.jooq.ddd.JooqAggregateFinderMixin;
 import io.dddrive.jooq.util.SqlUtils;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.base.ObjRepositoryBase;
+import io.zeitwert.fm.app.model.RequestContextFM;
 
 public abstract class JooqObjRepositoryBase<O extends Obj, V extends TableRecord<?>>
 		extends ObjRepositoryBase<O, V>
@@ -59,7 +60,7 @@ public abstract class JooqObjRepositoryBase<O extends Obj, V extends TableRecord
 
 	@Override
 	public final List<V> find(QuerySpec querySpec) {
-		querySpec = this.queryWithFilter(querySpec, this.getAppContext().getRequestContext());
+		querySpec = this.queryWithFilter(querySpec, (RequestContextFM) this.getAppContext().getRequestContext());
 		if (!SqlUtils.hasFilterFor(querySpec, "isClosed")) {
 			querySpec.addFilter(PathSpec.of(ObjFields.CLOSED_AT.getName()).filter(FilterOperator.EQ, null));
 		}

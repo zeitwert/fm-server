@@ -14,6 +14,7 @@ import io.dddrive.ddd.model.AggregateRepository;
 import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.base.DocRepositoryBase;
 import io.dddrive.jooq.ddd.JooqAggregateFinderMixin;
+import io.zeitwert.fm.app.model.RequestContextFM;
 
 public abstract class JooqDocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		extends DocRepositoryBase<D, V>
@@ -56,7 +57,7 @@ public abstract class JooqDocRepositoryBase<D extends Doc, V extends TableRecord
 
 	@Override
 	public final List<V> find(QuerySpec querySpec) {
-		return this.doFind(this.queryWithFilter(querySpec, this.getAppContext().getRequestContext()));
+		return this.doFind(this.queryWithFilter(querySpec, (RequestContextFM) this.getAppContext().getRequestContext()));
 	}
 
 }

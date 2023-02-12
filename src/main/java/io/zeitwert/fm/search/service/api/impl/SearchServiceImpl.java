@@ -14,12 +14,12 @@ import org.jooq.impl.DSL;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import io.dddrive.app.model.RequestContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.search.model.SearchResult;
 import io.dddrive.search.service.api.SearchService;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.obj.model.db.tables.Obj;
 import io.zeitwert.fm.search.model.db.Tables;
 import io.zeitwert.fm.search.model.db.tables.ItemSearch;
@@ -33,9 +33,9 @@ public class SearchServiceImpl implements SearchService {
 
 	private final CodeAggregateTypeEnum aggregateTypeEnum;
 	private final DSLContext dslContext;
-	private final RequestContext requestContext;
+	private final RequestContextFM requestContext;
 
-	SearchServiceImpl(CodeAggregateTypeEnum aggregateTypeEnum, DSLContext dslContext, RequestContext requestContext) {
+	SearchServiceImpl(CodeAggregateTypeEnum aggregateTypeEnum, DSLContext dslContext, RequestContextFM requestContext) {
 		this.aggregateTypeEnum = aggregateTypeEnum;
 		this.dslContext = dslContext;
 		this.requestContext = requestContext;

@@ -1,8 +1,9 @@
 package io.zeitwert.ddd.session;
 
-import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeLocaleEnum;
+import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.impl.RequestContextImpl;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
@@ -21,14 +22,21 @@ public class TestRequestContextProvider {
 	@Bean
 	@Autowired
 	@SessionScope
-	public RequestContext getRequestContext(ObjUserFMRepository userRepository) {
+	public RequestContextFM getRequestContext(ObjUserFMRepository userRepository) {
+
 		String userEmail = "tt@zeitwert.io";
 		Optional<ObjUserFM> maybeUser = userRepository.getByEmail(userEmail);
 		if (maybeUser.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
 		}
+
 		ObjUser user = maybeUser.get();
-		return new RequestContext(user, user.getTenantId(), null, CodeLocaleEnum.getLocale("en-US"));
+		return RequestContextImpl.builder()
+				.tenantId(user.getTenantId())
+				.user(user)
+				.accountId(null)
+				.locale(CodeLocaleEnum.getLocale("en-US"))
+				.build();
 	}
 
 }

@@ -8,10 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.annotation.RequestScope;
 
-import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeLocaleEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
+import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.impl.RequestContextImpl;
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
 
 @Configuration
@@ -24,7 +25,7 @@ public class RequestContextProvider {
 	@Autowired
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public RequestContext getRequestContext(ObjUserCache userCache) {
+	public RequestContextFM getRequestContext(ObjUserCache userCache) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if ("anonymousUser".equals(auth.getPrincipal())) {
@@ -36,7 +37,12 @@ public class RequestContextProvider {
 		Integer tenantId = userDetails.getTenantId();
 		Integer accountId = userDetails.getAccountId();
 
-		return new RequestContext(user, tenantId, accountId, CodeLocaleEnum.getLocale(DEFAULT_LOCALE));
+		return RequestContextImpl.builder()
+				.tenantId(tenantId)
+				.user(user)
+				.accountId(accountId)
+				.locale(CodeLocaleEnum.getLocale(DEFAULT_LOCALE))
+				.build();
 
 	}
 

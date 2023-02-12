@@ -3,75 +3,27 @@ package io.dddrive.app.model;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeLocale;
 
-public class RequestContext {
+public interface RequestContext {
 
-	private final ObjUser user;
-	private final Integer tenantId;
-	private final Integer accountId;
-	private final CodeLocale locale;
-	private final Map<Integer, Aggregate> aggregates = new ConcurrentHashMap<>();
+	Integer getTenantId();
 
-	public RequestContext(ObjUser user, Integer tenantId, Integer accountId, CodeLocale locale) {
-		this.user = user;
-		this.tenantId = tenantId;
-		this.accountId = accountId;
-		this.locale = locale;
-	}
+	ObjUser getUser();
 
-	public ObjUser getUser() {
-		return this.user;
-	}
+	CodeLocale getLocale();
 
-	public Integer getTenantId() {
-		return this.tenantId;
-	}
+	boolean hasAggregate(Integer id);
 
-	public boolean hasAccount() {
-		return this.accountId != null;
-	}
+	Aggregate getAggregate(Integer id);
 
-	public Integer getAccountId() {
-		return this.accountId;
-	}
+	void addAggregate(Aggregate aggregate);
 
-	public CodeLocale getLocale() {
-		return this.locale;
-	}
+	LocalDate getCurrentDate();
 
-	public boolean hasAggregate(Integer id) {
-		return this.aggregates.containsKey(id);
-	}
-
-	public Aggregate getAggregate(Integer id) {
-		return this.aggregates.get(id);
-	}
-
-	public Aggregate addAggregate(Aggregate aggregate) {
-		return this.aggregates.put(aggregate.getId(), aggregate);
-	}
-
-	public LocalDate getCurrentDate() {
-		return LocalDate.now();
-	}
-
-	public OffsetDateTime getCurrentTime() {
-		return OffsetDateTime.now();
-	}
-
-	@Override
-	public String toString() {
-		return "RequestContext("
-				+ "user: " + (this.user != null ? this.user.getId() : "null")
-				+ ", accountId: " + this.accountId
-				+ ", locale: " + (this.locale != null ? this.locale.getId() : "null")
-				+ ")";
-	}
+	OffsetDateTime getCurrentTime();
 
 }

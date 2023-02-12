@@ -15,6 +15,7 @@ import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
@@ -59,7 +60,7 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 		requireThis(this.getRelatedToId() != null, "relatedTo not null");
 		if (this.getAccountId() == null) { // TODO: set accountId to relatedTo's accountId
 			assertThis(ObjRepository.isObjId(this.getRelatedToId()), "relatedTo is obj (doc nyi)");
-			this.setAccountId(this.getMeta().getRequestContext().getAccountId());
+			this.setAccountId(((RequestContextFM) this.getMeta().getRequestContext()).getAccountId());
 		}
 		assertThis(this.getAccountId() != null, "account not null");
 	}

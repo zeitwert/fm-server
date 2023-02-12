@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.dddrive.app.model.RequestContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 import io.dddrive.oe.service.api.ObjTenantCache;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
@@ -62,7 +62,7 @@ public class SessionController {
 	JwtProvider jwtProvider;
 
 	@Autowired
-	RequestContext requestCtx;
+	RequestContextFM requestCtx;
 
 	@Autowired
 	ObjTenantDtoAdapter tenantDtoAdapter;
