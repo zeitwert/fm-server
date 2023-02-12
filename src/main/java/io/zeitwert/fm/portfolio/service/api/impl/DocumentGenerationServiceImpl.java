@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 import com.aspose.words.*;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
-import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.ddd.util.Formatter;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.util.Formatter;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
@@ -27,7 +27,7 @@ import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
 import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
 import io.zeitwert.fm.portfolio.service.api.PortfolioService;
 import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
-import io.zeitwert.server.config.aspose.AsposeConfig;
+import io.zeitwert.fm.server.config.aspose.AsposeConfig;
 
 @Component("portfolioDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {

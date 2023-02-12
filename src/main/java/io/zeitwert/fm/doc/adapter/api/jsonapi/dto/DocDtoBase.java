@@ -3,9 +3,9 @@ package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiMetaInformation;
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
-import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
+import io.dddrive.doc.model.Doc;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

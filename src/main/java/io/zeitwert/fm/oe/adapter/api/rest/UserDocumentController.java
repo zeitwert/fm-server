@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.ddd.oe.service.api.ObjUserCache;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 

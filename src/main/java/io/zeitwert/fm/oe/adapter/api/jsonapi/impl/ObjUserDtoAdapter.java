@@ -1,28 +1,27 @@
 
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
-public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVRecord, ObjUserDto> {
+@Component("objUserDtoAdapter")
+@DependsOn("kernelBootstrap")
+public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVRecord, ObjUserDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
-	private static ObjUserDtoAdapter INSTANCE;
 
-	private ObjUserDtoAdapter() {
-	}
-
-	public static final ObjUserDtoAdapter getInstance() {
-		if (INSTANCE == null) {
-			AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_user"));
-			INSTANCE = new ObjUserDtoAdapter();
-		}
-		return INSTANCE;
+	protected ObjUserDtoAdapter(AppContext appContext) {
+		super(appContext);
+		AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_user"));
 	}
 
 	@Override
@@ -52,7 +51,9 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUse
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(obj);
+		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder()
+				.appContext(this.getAppContext())
+				.original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.email(obj.getEmail())
@@ -80,7 +81,9 @@ public final class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUse
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder().original(null);
+		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder()
+				.appContext(this.getAppContext())
+				.original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.email(obj.getEmail())

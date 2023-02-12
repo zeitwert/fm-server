@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
+import io.dddrive.obj.model.Obj;
+import io.dddrive.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.ItemWithTasks;
 

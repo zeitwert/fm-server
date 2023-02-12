@@ -1,10 +1,11 @@
 package io.zeitwert.fm.app.adapter.api.rest.dto;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 
 @Data
 @Builder

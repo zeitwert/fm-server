@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.ddd.search.model.SearchResult;
-import io.zeitwert.ddd.search.service.api.SearchService;
+import io.dddrive.search.model.SearchResult;
+import io.dddrive.search.service.api.SearchService;
 import io.zeitwert.fm.search.adapter.api.rest.dto.SearchResultDto;
 
 @RestController("searchController")

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.portfolio.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
@@ -11,8 +11,10 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.Obj;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
+import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -20,8 +22,6 @@ import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase;
 import io.zeitwert.fm.portfolio.model.db.Tables;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objPortfolioRepository")
 @DependsOn({ "objRepository", "objAccountRepository", "objBuildingRepository" })

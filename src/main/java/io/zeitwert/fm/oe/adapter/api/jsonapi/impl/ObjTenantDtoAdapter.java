@@ -1,29 +1,26 @@
 
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.enums.CodeTenantTypeEnum;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.oe.model.ObjTenant;
+import io.dddrive.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
-public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenantVRecord, ObjTenantDto> {
+@Component("objTenantDtoAdapter")
+public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenantVRecord, ObjTenantDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
-	private static ObjTenantDtoAdapter INSTANCE;
 
-	private ObjTenantDtoAdapter() {
-	}
-
-	public static final ObjTenantDtoAdapter getInstance() {
-		if (INSTANCE == null) {
-			AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_tenant"));
-			INSTANCE = new ObjTenantDtoAdapter();
-		}
-		return INSTANCE;
+	protected ObjTenantDtoAdapter(AppContext appContext) {
+		super(appContext);
+		AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_tenant"));
 	}
 
 	@Override
@@ -41,7 +38,9 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, Ob
 		if (obj == null) {
 			return null;
 		}
-		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(obj);
+		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder()
+				.appContext(this.getAppContext())
+				.original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantType(EnumeratedDto.fromEnum(obj.getTenantType()))
@@ -67,7 +66,9 @@ public final class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, Ob
 		if (obj == null) {
 			return null;
 		}
-		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder().original(null);
+		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder()
+				.appContext(this.getAppContext())
+				.original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))

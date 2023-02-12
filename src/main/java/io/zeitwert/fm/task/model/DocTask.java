@@ -3,8 +3,8 @@ package io.zeitwert.fm.task.model;
 
 import java.time.OffsetDateTime;
 
-import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.doc.model.Doc;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.doc.model.Doc;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;

@@ -1,24 +1,24 @@
 
 package io.zeitwert.fm.building.model.base;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.PartListProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.ReferenceSetProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.ddd.validation.model.enums.CodeValidationLevelEnum;
-import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.dddrive.obj.model.base.ObjExtnBase;
+import io.dddrive.oe.model.enums.CodeCountry;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.PartListProperty;
+import io.dddrive.property.model.ReferenceProperty;
+import io.dddrive.property.model.ReferenceSetProperty;
+import io.dddrive.property.model.SimpleProperty;
+import io.dddrive.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -100,6 +100,11 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 	}
 
 	@Override
+	public ObjBuildingRepository getRepository() {
+		return (ObjBuildingRepository) super.getRepository();
+	}
+
+	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		this.addCoverFoto();
@@ -107,7 +112,7 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return ItemWithAccount.getAccountCache().get(this.getAccountId());
+		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
 	}
 
 	@Override
@@ -268,7 +273,7 @@ public abstract class ObjBuildingBase extends ObjExtnBase
 	}
 
 	private void addCoverFoto() {
-		ObjDocumentRepository documentRepo = ObjBuildingRepository.getDocumentRepository();
+		ObjDocumentRepository documentRepo = this.getRepository().getDocumentRepository();
 		ObjDocument coverFoto = documentRepo.create(this.getTenantId());
 		coverFoto.setName("CoverFoto");
 		coverFoto.setContentKind(CodeContentKindEnum.getContentKind("foto"));

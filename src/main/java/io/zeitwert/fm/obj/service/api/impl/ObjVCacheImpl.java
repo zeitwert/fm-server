@@ -3,8 +3,8 @@ package io.zeitwert.fm.obj.service.api.impl;
 
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.aggregate.service.api.base.AggregateCacheBase;
-import io.zeitwert.ddd.obj.model.Obj;
+import io.dddrive.ddd.service.api.base.AggregateCacheBase;
+import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.service.api.ObjVCache;
 

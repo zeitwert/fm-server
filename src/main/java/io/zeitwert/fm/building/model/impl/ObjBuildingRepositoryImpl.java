@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.building.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,7 +11,9 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -20,8 +22,6 @@ import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContact;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objBuildingRepository")
 public class ObjBuildingRepositoryImpl extends JooqObjExtnRepositoryBase<ObjBuilding, ObjBuildingVRecord>
@@ -77,8 +77,8 @@ public class ObjBuildingRepositoryImpl extends JooqObjExtnRepositoryBase<ObjBuil
 	@Override
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(ObjBuildingRepository.getRatingRepository());
-		this.addPartRepository(ObjBuildingRepository.getElementRepository());
+		this.addPartRepository(this.getRatingRepository());
+		this.addPartRepository(this.getElementRepository());
 	}
 
 	@Override

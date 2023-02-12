@@ -1,9 +1,9 @@
 package io.zeitwert.fm.building.model.base;
 
-import io.zeitwert.ddd.obj.model.base.ObjPartBase;
-import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.ddd.model.PartRepository;
+import io.dddrive.obj.model.base.ObjPartBase;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;

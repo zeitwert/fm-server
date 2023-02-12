@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.service.api;
 
-import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
+import io.dddrive.ddd.service.api.AggregateCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 
 import java.util.Map;

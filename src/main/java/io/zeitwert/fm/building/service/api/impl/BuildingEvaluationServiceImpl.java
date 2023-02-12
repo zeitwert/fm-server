@@ -1,8 +1,7 @@
 package io.zeitwert.fm.building.service.api.impl;
 
+import static io.dddrive.util.Invariant.requireThis;
 import static io.zeitwert.fm.util.NumericUtils.roundProgressive;
-
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.Set;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.util.Formatter;
+import io.dddrive.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;

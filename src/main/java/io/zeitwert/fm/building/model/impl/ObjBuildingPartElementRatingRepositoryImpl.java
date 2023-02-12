@@ -6,15 +6,15 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.PartState;
+import io.dddrive.jooq.obj.JooqObjPartRepositoryBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingPartElementRatingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartElementRatingRecord;
-import io.zeitwert.jooq.persistence.PartState;
-import io.zeitwert.jooq.repository.JooqObjPartRepositoryBase;
 
 @Component("buildingPartElementRatingRepository")
 public class ObjBuildingPartElementRatingRepositoryImpl

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.oe.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,15 +11,15 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjTenantFMBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objTenantRepository")
 public class ObjTenantFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjTenantFM, ObjTenantVRecord>

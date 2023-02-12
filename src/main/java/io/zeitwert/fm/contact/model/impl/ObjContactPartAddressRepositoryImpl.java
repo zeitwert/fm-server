@@ -6,15 +6,15 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.PartState;
+import io.dddrive.jooq.obj.JooqObjPartRepositoryBase;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.base.ObjContactPartAddressBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord;
-import io.zeitwert.jooq.persistence.PartState;
-import io.zeitwert.jooq.repository.JooqObjPartRepositoryBase;
 
 @Component("contactPartAddressRepository")
 public class ObjContactPartAddressRepositoryImpl extends JooqObjPartRepositoryBase<ObjContact, ObjContactPartAddress>

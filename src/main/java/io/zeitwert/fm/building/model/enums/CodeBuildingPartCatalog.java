@@ -1,13 +1,14 @@
 
 package io.zeitwert.fm.building.model.enums;
 
-import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 import org.flywaydb.core.internal.util.Pair;
+
+import io.dddrive.enums.model.base.EnumeratedBase;
 
 @Data
 @SuperBuilder

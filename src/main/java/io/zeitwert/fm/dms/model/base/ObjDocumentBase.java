@@ -4,12 +4,12 @@ package io.zeitwert.fm.dms.model.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.dddrive.obj.model.base.ObjExtnBase;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.ReferenceProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -57,7 +57,7 @@ public abstract class ObjDocumentBase extends ObjExtnBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return ItemWithAccount.getAccountCache().get(this.getAccountId());
+		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
 	}
 
 	@Override

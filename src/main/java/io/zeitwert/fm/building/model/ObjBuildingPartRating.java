@@ -4,7 +4,7 @@ package io.zeitwert.fm.building.model;
 import java.time.LocalDate;
 import java.util.List;
 
-import io.zeitwert.ddd.obj.model.ObjPart;
+import io.dddrive.obj.model.ObjPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;

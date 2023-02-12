@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.test.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,8 +12,10 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
+import io.dddrive.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -21,8 +23,6 @@ import io.zeitwert.fm.test.model.base.DocTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.DocTestVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqDocExtnRepositoryBase;
 
 @Component("docTestRepository")
 public class DocTestRepositoryImpl extends JooqDocExtnRepositoryBase<DocTest, DocTestVRecord>

@@ -1,7 +1,10 @@
 
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
@@ -10,18 +13,11 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
-public final class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
+@Component("objDocumentDtoAdapter")
+public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
 
-	private static ObjDocumentDtoAdapter instance;
-
-	private ObjDocumentDtoAdapter() {
-	}
-
-	public static final ObjDocumentDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjDocumentDtoAdapter();
-		}
-		return instance;
+	protected ObjDocumentDtoAdapter(AppContext appContext) {
+		super(appContext);
 	}
 
 	@Override
@@ -50,7 +46,9 @@ public final class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, 
 		if (obj == null) {
 			return null;
 		}
-		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder().original(obj);
+		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder()
+		.appContext(this.getAppContext())
+		.original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
@@ -69,7 +67,9 @@ public final class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, 
 		if (obj == null) {
 			return null;
 		}
-		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder().original(null);
+		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder()
+				.appContext(this.getAppContext())
+				.original(null);
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder

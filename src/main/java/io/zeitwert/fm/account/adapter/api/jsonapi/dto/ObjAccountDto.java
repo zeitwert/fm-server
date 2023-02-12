@@ -47,9 +47,9 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 			if (this.getOriginal() != null) {
 				tenant = (ObjTenantFM) this.getOriginal().getTenant();
 			} else if (this.tenantInfoId != null) {
-				tenant = getRepository(ObjTenantFM.class).get(this.tenantInfoId);
+				tenant = this.getCache(ObjTenantFM.class).get(this.tenantInfoId);
 			}
-			this.tenantInfoDto = ObjTenantDtoAdapter.getInstance().fromAggregate(tenant);
+			this.tenantInfoDto = this.getAdapter(ObjTenantDtoAdapter.class).fromAggregate(tenant);
 		}
 		return this.tenantInfoDto;
 	}
@@ -76,9 +76,9 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 			if (this.getOriginal() != null) {
 				contact = this.getOriginal().getMainContact();
 			} else if (this.mainContactId != null) {
-				contact = getRepository(ObjContact.class).get(this.mainContactId);
+				contact = getCache(ObjContact.class).get(this.mainContactId);
 			}
-			this.mainContactDto = ObjContactDtoAdapter.getInstance().fromAggregate(contact);
+			this.mainContactDto = this.getAdapter(ObjContactDtoAdapter.class).fromAggregate(contact);
 		}
 		return this.mainContactDto;
 	}
@@ -95,8 +95,8 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	public List<? extends ObjContactDto> getContacts() {
 		if (this.contactsDto == null) {
 			if (this.getOriginal() != null) {
-				this.contactsDto = this.getOriginal().getContacts().stream()
-						.map(c -> ObjContactDtoAdapter.getInstance().fromAggregate(c)).toList();
+				ObjContactDtoAdapter contactAdapter = this.getAdapter(ObjContactDtoAdapter.class);
+				this.contactsDto = this.getOriginal().getContacts().stream().map(c -> contactAdapter.fromAggregate(c)).toList();
 			} else {
 			}
 		}

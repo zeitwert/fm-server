@@ -7,15 +7,15 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.doc.model.DocPartTransition;
-import io.zeitwert.ddd.doc.model.DocPartTransitionRepository;
-import io.zeitwert.ddd.doc.model.base.DocPartTransitionBase;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.doc.model.Doc;
+import io.dddrive.doc.model.DocPartTransition;
+import io.dddrive.doc.model.DocPartTransitionRepository;
+import io.dddrive.doc.model.base.DocPartTransitionBase;
+import io.dddrive.jooq.ddd.PartState;
+import io.dddrive.jooq.doc.JooqDocPartRepositoryBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocPartTransitionRecord;
-import io.zeitwert.jooq.persistence.PartState;
-import io.zeitwert.jooq.repository.JooqDocPartRepositoryBase;
 
 @Component("docPartTransitionRepository")
 public class DocPartTransitionRepositoryImpl extends JooqDocPartRepositoryBase<Doc, DocPartTransition>

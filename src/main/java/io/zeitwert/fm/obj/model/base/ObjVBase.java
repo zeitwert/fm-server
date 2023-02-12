@@ -1,7 +1,7 @@
 package io.zeitwert.fm.obj.model.base;
 
+import io.dddrive.obj.model.base.ObjBase;
 import io.zeitwert.fm.obj.model.ObjVRepository;
-import io.zeitwert.ddd.obj.model.base.ObjBase;
 
 public abstract class ObjVBase extends ObjBase {
 

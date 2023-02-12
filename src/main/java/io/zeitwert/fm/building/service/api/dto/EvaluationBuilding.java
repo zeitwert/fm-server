@@ -2,7 +2,7 @@ package io.zeitwert.fm.building.service.api.dto;
 
 import java.awt.Color;
 
-import io.zeitwert.ddd.util.Formatter;
+import io.dddrive.util.Formatter;
 import lombok.Builder;
 import lombok.Data;
 

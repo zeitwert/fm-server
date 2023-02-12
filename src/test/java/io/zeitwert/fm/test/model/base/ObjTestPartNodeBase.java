@@ -1,11 +1,11 @@
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.ddd.obj.model.base.ObjPartBase;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
-import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.ddd.model.PartRepository;
+import io.dddrive.obj.model.base.ObjPartBase;
+import io.dddrive.oe.model.enums.CodeCountry;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.ReferenceProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 

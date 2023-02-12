@@ -14,21 +14,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.enums.model.Enumerated;
-import io.zeitwert.ddd.enums.model.Enumeration;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
-import io.zeitwert.ddd.oe.service.api.ObjUserCache;
+import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.enums.model.Enumerated;
+import io.dddrive.enums.model.Enumeration;
+import io.dddrive.jooq.obj.ObjFields;
+import io.dddrive.oe.model.ObjTenant;
+import io.dddrive.oe.model.ObjUser;
+import io.dddrive.oe.service.api.ObjTenantCache;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.jooq.property.ObjFields;
 
 @RestController("enumController")
 @RequestMapping("/enum")

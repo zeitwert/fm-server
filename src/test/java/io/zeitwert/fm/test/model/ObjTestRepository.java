@@ -1,9 +1,8 @@
 package io.zeitwert.fm.test.model;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.dddrive.ddd.model.enums.CodePartListType;
+import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
+import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
 public interface ObjTestRepository extends ObjRepository<ObjTest, ObjTestVRecord> {
@@ -16,8 +15,8 @@ public interface ObjTestRepository extends ObjRepository<ObjTest, ObjTestVRecord
 		return CodePartListTypeEnum.getPartListType("test.nodeList");
 	}
 
-	static ObjTestPartNodeRepository getNodeRepository() {
-		return AppContext.getInstance().getBean(ObjTestPartNodeRepository.class);
+	default ObjTestPartNodeRepository getNodeRepository() {
+		return this.getAppContext().getBean(ObjTestPartNodeRepository.class);
 	}
 
 }

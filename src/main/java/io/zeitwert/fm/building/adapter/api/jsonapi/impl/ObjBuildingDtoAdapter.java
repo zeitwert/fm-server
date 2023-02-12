@@ -1,12 +1,15 @@
 
 package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.dddrive.util.Invariant.assertThis;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.part.model.PartPersistenceStatus;
-import io.zeitwert.ddd.part.model.base.PartSPI;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.ddd.model.PartPersistenceStatus;
+import io.dddrive.ddd.model.base.PartSPI;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
@@ -28,18 +31,14 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 
-public final class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
+@Component("objBuildingDtoAdapter")
+public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
 
-	private static ObjBuildingDtoAdapter instance;
+	protected final ObjUserDtoAdapter userDtoAdapter;
 
-	private ObjBuildingDtoAdapter() {
-	}
-
-	public static final ObjBuildingDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjBuildingDtoAdapter();
-		}
-		return instance;
+	protected ObjBuildingDtoAdapter(AppContext appContext, ObjUserDtoAdapter userDtoAdapter) {
+		super(appContext);
+		this.userDtoAdapter = userDtoAdapter;
 	}
 
 	@Override
@@ -133,8 +132,9 @@ public final class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, 
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
-		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(obj);
+		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder()
+				.appContext(this.getAppContext())
+				.original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		dtoBuilder
 				.accountId(obj.getAccountId())
@@ -197,7 +197,9 @@ public final class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, 
 			return null;
 		}
 		EnumeratedDto ratingUser = obj.getRatingUserId() != null ? this.getUserEnumerated(obj.getRatingUserId()) : null;
-		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder().original(null);
+		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder()
+		.appContext(this.getAppContext())
+		.original(null);
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		dtoBuilder = dtoBuilder

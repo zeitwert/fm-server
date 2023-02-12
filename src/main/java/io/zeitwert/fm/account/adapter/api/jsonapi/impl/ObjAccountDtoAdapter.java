@@ -1,7 +1,10 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
@@ -10,18 +13,11 @@ import io.zeitwert.fm.account.model.enums.CodeClientSegmentEnum;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
-public final class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
+@Component("objAccountDtoAdapter")
+public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountDto> {
 
-	private static ObjAccountDtoAdapter instance;
-
-	private ObjAccountDtoAdapter() {
-	}
-
-	public static final ObjAccountDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjAccountDtoAdapter();
-		}
-		return instance;
+	protected ObjAccountDtoAdapter(AppContext appContext) {
+		super(appContext);
 	}
 
 	@Override
@@ -53,7 +49,9 @@ public final class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, Ob
 		if (obj == null) {
 			return null;
 		}
-		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(obj);
+		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder()
+		.appContext(this.getAppContext())
+		.original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantInfoId(obj.getTenantId())
@@ -72,7 +70,9 @@ public final class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, Ob
 		if (obj == null) {
 			return null;
 		}
-		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder().original(null);
+		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder()
+				.appContext(this.getAppContext())
+				.original(null);
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantInfoId(obj.getTenantId())

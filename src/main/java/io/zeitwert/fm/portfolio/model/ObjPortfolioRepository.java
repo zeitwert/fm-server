@@ -1,9 +1,8 @@
 package io.zeitwert.fm.portfolio.model;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.dddrive.ddd.model.enums.CodePartListType;
+import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
+import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.obj.model.ObjVRepository;
@@ -23,16 +22,16 @@ public interface ObjPortfolioRepository extends ObjRepository<ObjPortfolio, ObjP
 		return CodePartListTypeEnum.getPartListType("portfolio.buildingSet");
 	}
 
-	static ObjVRepository getObjRepository() {
-		return AppContext.getInstance().getBean(ObjVRepository.class);
+	default ObjVRepository getObjRepository() {
+		return this.getAppContext().getBean(ObjVRepository.class);
 	}
 
-	static ObjAccountRepository getAccountRepository() {
-		return AppContext.getInstance().getBean(ObjAccountRepository.class);
+	default ObjAccountRepository getAccountRepository() {
+		return this.getAppContext().getBean(ObjAccountRepository.class);
 	}
 
-	static ObjBuildingRepository getBuildingRepository() {
-		return AppContext.getInstance().getBean(ObjBuildingRepository.class);
+	default ObjBuildingRepository getBuildingRepository() {
+		return this.getAppContext().getBean(ObjBuildingRepository.class);
 	}
 
 }

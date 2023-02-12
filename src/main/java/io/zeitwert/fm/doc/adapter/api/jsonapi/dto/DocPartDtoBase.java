@@ -1,7 +1,5 @@
 package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
-import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.doc.model.DocPart;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -10,6 +8,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.dddrive.doc.model.Doc;
+import io.dddrive.doc.model.DocPart;
 
 @Data
 @NoArgsConstructor

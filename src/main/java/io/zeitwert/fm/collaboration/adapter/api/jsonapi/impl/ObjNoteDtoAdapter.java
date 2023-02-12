@@ -1,25 +1,21 @@
 
 package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
-public final class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord, ObjNoteDto> {
+@Component("objNoteDtoAdapter")
+public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord, ObjNoteDto> {
 
-	private static ObjNoteDtoAdapter instance;
-
-	private ObjNoteDtoAdapter() {
-	}
-
-	public static final ObjNoteDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjNoteDtoAdapter();
-		}
-		return instance;
+	protected ObjNoteDtoAdapter(AppContext appContext) {
+		super(appContext);
 	}
 
 	@Override
@@ -37,7 +33,9 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteV
 		if (note == null) {
 			return null;
 		}
-		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder().original(note);
+		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder()
+				.appContext(this.getAppContext())
+				.original(note);
 		this.fromAggregate(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder
@@ -55,7 +53,9 @@ public final class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteV
 		if (note == null) {
 			return null;
 		}
-		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder().original(null);
+		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder()
+		.appContext(this.getAppContext())
+		.original(null);
 		this.fromRecord(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder

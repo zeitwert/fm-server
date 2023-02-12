@@ -1,20 +1,22 @@
 
 package io.zeitwert.fm.portfolio.model.base;
 
+import static io.dddrive.util.Invariant.requireThis;
+
 import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.property.model.ReferenceSetProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.obj.model.Obj;
+import io.dddrive.obj.model.base.ObjExtnBase;
+import io.dddrive.property.model.ReferenceSetProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
@@ -26,6 +28,11 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
 public abstract class ObjPortfolioBase extends ObjExtnBase
 		implements ObjPortfolio, AggregateWithNotesMixin, AggregateWithTasksMixin {
+
+	private static final List<CodeAggregateType> OBJ_TYPES = List.of(
+			CodeAggregateTypeEnum.getAggregateType("obj_portfolio"),
+			CodeAggregateTypeEnum.getAggregateType("obj_account"),
+			CodeAggregateTypeEnum.getAggregateType("obj_building"));
 
 	//@formatter:off
 	protected final SimpleProperty<String> name = this.addSimpleProperty("name", String.class);
@@ -52,14 +59,23 @@ public abstract class ObjPortfolioBase extends ObjExtnBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return ItemWithAccount.getAccountCache().get(this.getAccountId());
+		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
 	}
 
-	@Override
-	public void doCalcSearch() {
-		this.addSearchToken(this.getPortfolioNr());
-		this.addSearchText(this.getName());
-		this.addSearchText(this.getDescription());
+	public void addInclude(Integer id) {
+		requireThis(this.hasValidObjType(id), "supported objType " + id);
+		this.includeSet.addItem(id);
+	}
+
+	public void addExclude(Integer id) {
+		requireThis(this.hasValidObjType(id), "supported objType " + id);
+		this.excludeSet.addItem(id);
+	}
+
+	protected boolean hasValidObjType(Integer id) {
+		Obj obj = this.getRepository().getObjRepository().get(id);
+		CodeAggregateType objType = obj.getMeta().getAggregateType();
+		return OBJ_TYPES.indexOf(objType) >= 0;
 	}
 
 	@Override
@@ -110,7 +126,7 @@ public abstract class ObjPortfolioBase extends ObjExtnBase
 	}
 
 	private Set<Integer> getBuildingIds(Integer id) {
-		ObjVRepository objRepo = ObjPortfolioRepository.getObjRepository();
+		ObjVRepository objRepo = this.getRepository().getObjRepository();
 		Obj obj = objRepo.get(id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		if (objType == CodeAggregateTypeEnum.getAggregateType("obj_building")) {
@@ -119,11 +135,18 @@ public abstract class ObjPortfolioBase extends ObjExtnBase
 			ObjPortfolio pf = this.getRepository().get(id);
 			return pf.getBuildingSet();
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_account")) {
-			List<ObjBuildingVRecord> buildings = ObjPortfolioRepository.getBuildingRepository().getByForeignKey("account_id",
+			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepository().getByForeignKey("account_id",
 					id);
 			return buildings.stream().map(bldg -> bldg.getId()).collect(Collectors.toSet());
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());
+	}
+
+	@Override
+	public void doCalcSearch() {
+		this.addSearchToken(this.getPortfolioNr());
+		this.addSearchText(this.getName());
+		this.addSearchText(this.getDescription());
 	}
 
 }

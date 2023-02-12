@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.zeitwert.ddd.obj.model.ObjPart;
+import io.dddrive.obj.model.ObjPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 
 public interface ObjBuildingPartElementRating extends ObjPart<ObjBuilding> {

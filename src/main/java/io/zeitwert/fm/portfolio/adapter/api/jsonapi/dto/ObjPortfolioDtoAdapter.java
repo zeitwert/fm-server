@@ -1,42 +1,27 @@
 
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-
-import java.util.List;
 import java.util.stream.Collectors;
 
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.model.Obj;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
-import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
+@Component("objPortfolioDtoAdapter")
 public class ObjPortfolioDtoAdapter
 		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
 
-	private static final ObjVRepository objRepository = (ObjVRepository) AppContext.getInstance()
-			.getRepository(Obj.class);
+	protected ObjVCache objCache;
 
-	private static final List<CodeAggregateType> OBJ_TYPES = List.of(
-			CodeAggregateTypeEnum.getAggregateType("obj_portfolio"),
-			CodeAggregateTypeEnum.getAggregateType("obj_account"),
-			CodeAggregateTypeEnum.getAggregateType("obj_building"));
-
-	private static ObjPortfolioDtoAdapter instance;
-
-	private ObjPortfolioDtoAdapter() {
-	}
-
-	public static final ObjPortfolioDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjPortfolioDtoAdapter();
-		}
-		return instance;
+	protected ObjPortfolioDtoAdapter(AppContext appContext, ObjVCache objCache) {
+		super(appContext);
+		this.objCache = objCache;
 	}
 
 	@Override
@@ -54,9 +39,6 @@ public class ObjPortfolioDtoAdapter
 				pf.clearIncludeSet();
 				dto.getIncludes().forEach(item -> {
 					Integer id = Integer.parseInt(item.getId());
-					Obj obj = objRepository.get(id);
-					CodeAggregateType objType = obj.getMeta().getAggregateType();
-					assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 					pf.addInclude(id);
 				});
 			}
@@ -64,9 +46,6 @@ public class ObjPortfolioDtoAdapter
 				pf.clearExcludeSet();
 				dto.getExcludes().forEach(item -> {
 					Integer id = Integer.parseInt(item.getId());
-					Obj obj = objRepository.get(id);
-					CodeAggregateType objType = obj.getMeta().getAggregateType();
-					assertThis(OBJ_TYPES.indexOf(objType) >= 0, "supported objType " + id);
 					pf.addExclude(id);
 				});
 			}
@@ -82,7 +61,9 @@ public class ObjPortfolioDtoAdapter
 		if (pf == null) {
 			return null;
 		}
-		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder().original(pf);
+		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder()
+				.appContext(this.getAppContext())
+				.original(pf);
 		this.fromAggregate(dtoBuilder, pf);
 		// @formatter:off
 		return dtoBuilder
@@ -102,7 +83,9 @@ public class ObjPortfolioDtoAdapter
 		if (obj == null) {
 			return null;
 		}
-		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder().original(null);
+		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder()
+				.appContext(this.getAppContext())
+				.original(null);
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
@@ -114,8 +97,8 @@ public class ObjPortfolioDtoAdapter
 		// @formatter:on
 	}
 
-	private static EnumeratedDto getObj(Integer id) {
-		Obj obj = objRepository.get(id);
+	private EnumeratedDto getObj(Integer id) {
+		Obj obj = this.objCache.get(id);
 		// @formatter:off
 		return EnumeratedDto.builder()
 			.id(obj.getId().toString())

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.building.model.enums;
 
-import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import io.dddrive.enums.model.base.EnumeratedBase;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 

@@ -2,7 +2,7 @@ package io.zeitwert.fm.portfolio.model;
 
 import java.util.Set;
 
-import io.zeitwert.ddd.obj.model.Obj;
+import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
@@ -37,17 +37,17 @@ public interface ObjPortfolio extends Obj, ItemWithAccount, ItemWithNotes, ItemW
 
 	void clearIncludeSet();
 
-	void addInclude(Integer include);
+	void addInclude(Integer id);
 
-	void removeInclude(Integer include);
+	void removeInclude(Integer id);
 
 	Set<Integer> getExcludeSet();
 
 	void clearExcludeSet();
 
-	void addExclude(Integer exclude);
+	void addExclude(Integer id);
 
-	void removeExclude(Integer exclude);
+	void removeExclude(Integer id);
 
 	double getInflationRate();
 

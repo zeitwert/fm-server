@@ -4,12 +4,12 @@ package io.zeitwert.fm.account.adapter.api.jsonapi.dto;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -51,9 +51,9 @@ public class ObjAccountLoginDto extends ObjDtoBase<ObjAccount> {
 			if (this.getOriginal() != null) {
 				logo = this.getOriginal().getLogoImage();
 			} else if (this.logoId != null) {
-				logo = getRepository(ObjDocument.class).get(this.logoId);
+				logo = getCache(ObjDocument.class).get(this.logoId);
 			}
-			this.logoDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(logo);
+			this.logoDto = this.getAdapter(ObjDocumentDtoAdapter.class).fromAggregate(logo);
 		}
 		return this.logoDto;
 	}

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.collaboration.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
@@ -10,16 +10,16 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objNoteRepository")
 public class ObjNoteRepositoryImpl extends JooqObjExtnRepositoryBase<ObjNote, ObjNoteVRecord>

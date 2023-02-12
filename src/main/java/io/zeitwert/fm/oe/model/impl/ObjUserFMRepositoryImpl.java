@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.oe.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,17 +13,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.service.api.ObjTenantCache;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
+import io.dddrive.oe.model.ObjTenant;
+import io.dddrive.oe.service.api.ObjTenantCache;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjUserFMBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objUserRepository")
 public class ObjUserFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjUserFM, ObjUserVRecord>
@@ -41,6 +41,7 @@ public class ObjUserFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjUserFM
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	@Override
 	public void mapProperties() {
 		super.mapProperties();
 		this.mapField("email", AggregateState.EXTN, "email", String.class);
@@ -70,7 +71,7 @@ public class ObjUserFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjUserFM
 
 	@Override
 	public ObjTenantCache getTenantCache() {
-		return AppContext.getInstance().getBean(ObjTenantCache.class);
+		return this.getAppContext().getBean(ObjTenantCache.class);
 	}
 
 	@Override

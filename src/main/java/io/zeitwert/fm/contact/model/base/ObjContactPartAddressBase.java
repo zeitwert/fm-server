@@ -3,11 +3,11 @@ package io.zeitwert.fm.contact.model.base;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
-import io.zeitwert.ddd.obj.model.base.ObjPartBase;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
-import io.zeitwert.ddd.part.model.PartRepository;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.ddd.model.PartRepository;
+import io.dddrive.obj.model.base.ObjPartBase;
+import io.dddrive.oe.model.enums.CodeCountry;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.SimpleProperty;
 
 public abstract class ObjContactPartAddressBase extends ObjPartBase<ObjContact> implements ObjContactPartAddress {
 

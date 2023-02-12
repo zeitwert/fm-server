@@ -2,7 +2,7 @@ package io.zeitwert.fm.portfolio.service.api.impl;
 
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.aggregate.service.api.base.AggregateCacheBase;
+import io.dddrive.ddd.service.api.base.AggregateCacheBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;

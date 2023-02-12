@@ -7,10 +7,10 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.CodeNoteTypeRecord;
-import io.zeitwert.jooq.repository.JooqEnumerationBase;
 
 @Component("codeNoteTypeEnum")
 @DependsOn({ "flyway", "flywayInitializer" })

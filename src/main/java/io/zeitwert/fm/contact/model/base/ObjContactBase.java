@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
@@ -16,10 +16,10 @@ import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
-import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.PartListProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.obj.model.base.ObjExtnBase;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.PartListProperty;
+import io.dddrive.property.model.SimpleProperty;
 
 public abstract class ObjContactBase extends ObjExtnBase
 		implements ObjContact, AggregateWithNotesMixin, AggregateWithTasksMixin {
@@ -49,7 +49,7 @@ public abstract class ObjContactBase extends ObjExtnBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return ItemWithAccount.getAccountCache().get(this.getAccountId());
+		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
 	}
 
 	@Override

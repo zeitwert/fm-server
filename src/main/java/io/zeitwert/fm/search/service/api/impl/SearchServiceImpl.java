@@ -14,12 +14,12 @@ import org.jooq.impl.DSL;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.search.model.SearchResult;
-import io.zeitwert.ddd.search.service.api.SearchService;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.search.model.SearchResult;
+import io.dddrive.search.service.api.SearchService;
 import io.zeitwert.fm.obj.model.db.tables.Obj;
 import io.zeitwert.fm.search.model.db.Tables;
 import io.zeitwert.fm.search.model.db.tables.ItemSearch;

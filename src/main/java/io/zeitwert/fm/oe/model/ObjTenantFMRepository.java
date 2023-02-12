@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.oe.model;
 
-import io.zeitwert.ddd.obj.model.ObjRepository;
+import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
 public interface ObjTenantFMRepository

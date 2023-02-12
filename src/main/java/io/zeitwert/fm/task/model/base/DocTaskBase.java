@@ -1,20 +1,20 @@
 
 package io.zeitwert.fm.task.model.base;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.assertThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.time.OffsetDateTime;
 
-import io.zeitwert.ddd.aggregate.model.Aggregate;
-import io.zeitwert.ddd.doc.model.base.DocExtnBase;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
-import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.doc.model.base.DocExtnBase;
+import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.obj.model.ObjRepository;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
@@ -66,7 +66,7 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 
 	@Override
 	public final ObjAccount getAccount() {
-		return ItemWithAccount.getAccountCache().get(this.getAccountId());
+		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 	public Aggregate getRelatedTo() {
 		Integer relatedToId = this.relatedObjId.getValue();
 		if (relatedToId != null) {
-			return DocTaskRepository.getObjRepository().get(relatedToId);
+			return this.getRepository().getObjRepository().get(relatedToId);
 		}
 		relatedToId = this.relatedDocId.getValue();
 		// if (relatedId != null) {

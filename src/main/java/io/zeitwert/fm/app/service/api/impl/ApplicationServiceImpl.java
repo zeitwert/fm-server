@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.oe.model.enums.CodeUserRoleEnum;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationArea;

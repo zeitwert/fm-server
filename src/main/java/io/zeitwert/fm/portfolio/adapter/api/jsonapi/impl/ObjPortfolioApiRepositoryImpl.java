@@ -3,9 +3,9 @@ package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 
 import org.springframework.stereotype.Controller;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
-import io.zeitwert.ddd.oe.service.api.ObjUserCache;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.ObjPortfolioApiRepository;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto.ObjPortfolioDto;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto.ObjPortfolioDtoAdapter;
@@ -18,9 +18,12 @@ public class ObjPortfolioApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto>
 		implements ObjPortfolioApiRepository {
 
-	public ObjPortfolioApiRepositoryImpl(ObjPortfolioRepository repository, RequestContext requestCtx,
-			ObjUserCache userCache) {
-		super(ObjPortfolioDto.class, requestCtx, userCache, repository, ObjPortfolioDtoAdapter.getInstance());
+	public ObjPortfolioApiRepositoryImpl(
+			ObjPortfolioRepository repository,
+			RequestContext requestCtx,
+			ObjUserCache userCache,
+			ObjPortfolioDtoAdapter dtoAdapter) {
+		super(ObjPortfolioDto.class, requestCtx, userCache, repository, dtoAdapter);
 	}
 
 }

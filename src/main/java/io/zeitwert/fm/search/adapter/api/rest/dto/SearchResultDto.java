@@ -1,8 +1,7 @@
 package io.zeitwert.fm.search.adapter.api.rest.dto;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.search.model.SearchResult;
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.search.model.SearchResult;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,10 +18,9 @@ public class SearchResultDto {
 	private BigDecimal rank;
 
 	public static SearchResultDto fromItem(SearchResult searchResult) {
-		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
 		// @formatter:off
 		return SearchResultDto.builder()
-			.tenant(tenantDtoAdapter.asEnumerated(searchResult.getTenant()))
+			.tenant(EnumeratedDto.fromAggregate(searchResult.getTenant()))
 			.itemType(EnumeratedDto.fromEnum(searchResult.getAggregateType()))
 			.id(searchResult.getId())
 			.caption(searchResult.getCaption())

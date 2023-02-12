@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
-import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.oe.model.ObjUser;
+import io.dddrive.oe.model.enums.CodeCountry;
+import io.dddrive.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.server.Application;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

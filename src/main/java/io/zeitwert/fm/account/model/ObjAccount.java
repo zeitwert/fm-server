@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
-import io.zeitwert.ddd.obj.model.Obj;
+import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.dms.model.ObjDocument;

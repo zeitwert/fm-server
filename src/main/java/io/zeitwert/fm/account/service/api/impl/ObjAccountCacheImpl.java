@@ -2,7 +2,7 @@ package io.zeitwert.fm.account.service.api.impl;
 
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.aggregate.service.api.base.AggregateCacheBase;
+import io.dddrive.ddd.service.api.base.AggregateCacheBase;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.test.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,8 +13,10 @@ import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
+import io.dddrive.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -22,8 +24,6 @@ import io.zeitwert.fm.test.model.base.ObjTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqObjExtnRepositoryBase;
 
 @Component("objTestRepository")
 public class ObjTestRepositoryImpl extends JooqObjExtnRepositoryBase<ObjTest, ObjTestVRecord>
@@ -54,7 +54,7 @@ public class ObjTestRepositoryImpl extends JooqObjExtnRepositoryBase<ObjTest, Ob
 	@Override
 	public void registerPartRepositories() {
 		super.registerPartRepositories();
-		this.addPartRepository(ObjTestRepository.getNodeRepository());
+		this.addPartRepository(this.getNodeRepository());
 	}
 
 	@Override

@@ -14,21 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
-import io.zeitwert.ddd.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.ddd.part.model.PartPersistenceStatus;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.ddd.model.PartPersistenceStatus;
+import io.dddrive.ddd.model.base.PartSPI;
+import io.dddrive.ddd.model.enums.CodePartListType;
+import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
+import io.dddrive.jooq.ddd.PartFields;
+import io.dddrive.jooq.ddd.PartState;
+import io.dddrive.oe.model.ObjUser;
+import io.dddrive.oe.model.enums.CodeCountry;
+import io.dddrive.oe.model.enums.CodeCountryEnum;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.jooq.persistence.PartState;
-import io.zeitwert.jooq.property.PartFields;
-import io.zeitwert.server.Application;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -59,7 +60,7 @@ public class PartTest {
 		assertTrue(this.testRepository != null, "testRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		ObjTestPartNodeRepository testNodeRepository = ObjTestRepository.getNodeRepository();
+		ObjTestPartNodeRepository testNodeRepository = testRepository.getNodeRepository();
 		assertTrue(testNodeRepository != null, "testNodeRepository not null");
 		CodePartListType nodeListType = ObjTestRepository.nodeListType();
 		assertTrue(CodePartListTypeEnum.getPartListType("test.nodeList").equals(nodeListType), "nodeListType");

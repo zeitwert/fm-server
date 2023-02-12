@@ -10,9 +10,9 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoBase;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.oe.service.api.ObjUserCache;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.oe.model.ObjUser;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -45,7 +45,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUserFM> {
 	private String password; // write: change password
 
 	public String getLastTouch() {
-		OffsetDateTime lastTouch = AggregateDtoBase.getService(ObjUserCache.class).getLastTouch(this.getId());
+		OffsetDateTime lastTouch = ((ObjUserCache) this.getCache(ObjUser.class)).getLastTouch(this.getId());
 		return lastTouch != null ? touchFmt.format(lastTouch) : null;
 	}
 
@@ -66,9 +66,9 @@ public class ObjUserDto extends ObjDtoBase<ObjUserFM> {
 			if (this.getOriginal() != null) {
 				avatar = this.getOriginal().getAvatarImage();
 			} else if (this.avatarId != null) {
-				avatar = getRepository(ObjDocument.class).get(this.avatarId);
+				avatar = getCache(ObjDocument.class).get(this.avatarId);
 			}
-			this.avatarDto = ObjDocumentDtoAdapter.getInstance().fromAggregate(avatar);
+			this.avatarDto = this.getAdapter(ObjDocumentDtoAdapter.class).fromAggregate(avatar);
 		}
 		return this.avatarDto;
 	}

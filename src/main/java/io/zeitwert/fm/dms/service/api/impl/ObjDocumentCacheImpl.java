@@ -2,7 +2,7 @@ package io.zeitwert.fm.dms.service.api.impl;
 
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.ddd.aggregate.service.api.base.AggregateCacheBase;
+import io.dddrive.ddd.service.api.base.AggregateCacheBase;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.service.api.ObjDocumentCache;

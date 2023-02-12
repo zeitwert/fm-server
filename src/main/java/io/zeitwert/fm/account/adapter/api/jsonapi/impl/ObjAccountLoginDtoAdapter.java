@@ -1,25 +1,21 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import org.springframework.stereotype.Component;
+
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
-public final class ObjAccountLoginDtoAdapter
+@Component("objAccountLoginDtoAdapter")
+public class ObjAccountLoginDtoAdapter
 		extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountLoginDto> {
 
-	private static ObjAccountLoginDtoAdapter instance;
-
-	private ObjAccountLoginDtoAdapter() {
-	}
-
-	public static final ObjAccountLoginDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new ObjAccountLoginDtoAdapter();
-		}
-		return instance;
+	protected ObjAccountLoginDtoAdapter(AppContext appContext) {
+		super(appContext);
 	}
 
 	@Override
@@ -27,7 +23,9 @@ public final class ObjAccountLoginDtoAdapter
 		if (obj == null) {
 			return null;
 		}
-		ObjAccountLoginDto.ObjAccountLoginDtoBuilder<?, ?> dtoBuilder = ObjAccountLoginDto.builder().original(obj);
+		ObjAccountLoginDto.ObjAccountLoginDtoBuilder<?, ?> dtoBuilder = ObjAccountLoginDto.builder()
+				.appContext(this.getAppContext())
+				.original(obj);
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.name(obj.getName())

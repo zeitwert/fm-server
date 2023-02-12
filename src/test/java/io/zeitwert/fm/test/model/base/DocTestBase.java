@@ -1,21 +1,21 @@
 
 package io.zeitwert.fm.test.model.base;
 
-import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.ddd.doc.model.base.DocExtnBase;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.ddd.oe.model.enums.CodeCountry;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.EnumSetProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.doc.model.base.DocExtnBase;
+import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.oe.model.enums.CodeCountry;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.EnumSetProperty;
+import io.dddrive.property.model.ReferenceProperty;
+import io.dddrive.property.model.SimpleProperty;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,7 +62,7 @@ public abstract class DocTestBase extends DocExtnBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return ItemWithAccount.getAccountCache().get(this.getAccountId());
+		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
 	}
 
 	@Override

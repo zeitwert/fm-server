@@ -1,0 +1,66 @@
+
+package io.dddrive.ddd.model;
+
+import java.util.List;
+
+import io.crnk.core.queryspec.QuerySpec;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
+
+/**
+ * A DDD Aggregate Repository
+ */
+public interface AggregateRepository<A extends Aggregate, V extends Object> {
+
+	/**
+	 * Get aggregate type
+	 */
+	CodeAggregateType getAggregateType();
+
+	/**
+	 * Get aggregate class
+	 */
+	Class<A> getAggregateClass();
+
+	/**
+	 * Get application context
+	 */
+	AppContext getAppContext();
+
+	/**
+	 * Create a new Aggregate instance
+	 * 
+	 * @param tenantId the tenant in which to create the instance (could be
+	 *                 different from session, e.g. new Tenant in
+	 *                 Kernel-Admin-Session)
+	 */
+	A create(Integer tenantId);
+
+	/**
+	 * Lookup an Aggregate with given id
+	 * return aggregate
+	 * throws NoDataFound exception when aggregate not found
+	 */
+	A get(Integer id);
+
+	/**
+	 * Discard/rollback in-memory changes to Aggregate
+	 */
+	void discard(A aggregate);
+
+	/**
+	 * Store the Aggregate
+	 */
+	void store(A aggregate);
+
+	/**
+	 * Find list of Aggregates matching search criteria
+	 */
+	List<V> find(QuerySpec querySpec);
+
+	/**
+	 * Get a list of Aggregates with the given foreign key pointing to targetId
+	 */
+	List<V> getByForeignKey(String fkName, Integer targetId);
+
+}

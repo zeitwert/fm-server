@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.task.model.impl;
 
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
+import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
 import io.zeitwert.fm.task.model.db.Tables;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
-import io.zeitwert.jooq.persistence.AggregateState;
-import io.zeitwert.jooq.repository.JooqDocExtnRepositoryBase;
 
 @Component("docTaskRepository")
 public class DocTaskRepositoryImpl extends JooqDocExtnRepositoryBase<DocTask, DocTaskVRecord>

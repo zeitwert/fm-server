@@ -1,15 +1,15 @@
 
 package io.zeitwert.fm.account.model.base;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.dddrive.util.Invariant.assertThis;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.obj.model.base.ObjExtnBase;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.ReferenceProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;

@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.time.OffsetDateTime;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 
 @Data
 @Builder

@@ -1,9 +1,9 @@
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
-import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjPart;
-import io.zeitwert.ddd.part.model.PartPersistenceStatus;
-import io.zeitwert.ddd.part.model.base.PartSPI;
+import io.dddrive.ddd.model.PartPersistenceStatus;
+import io.dddrive.ddd.model.base.PartSPI;
+import io.dddrive.obj.model.Obj;
+import io.dddrive.obj.model.ObjPart;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;

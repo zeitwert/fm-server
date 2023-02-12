@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.jooq.TableRecord;
 
-import io.zeitwert.ddd.oe.model.base.ObjTenantBase;
-import io.zeitwert.ddd.property.model.ReferenceProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.oe.model.base.ObjTenantBase;
+import io.dddrive.property.model.ReferenceProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;

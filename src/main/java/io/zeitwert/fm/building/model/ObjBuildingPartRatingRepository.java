@@ -1,9 +1,9 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.zeitwert.ddd.obj.model.ObjPartRepository;
-import io.zeitwert.ddd.part.model.enums.CodePartListType;
-import io.zeitwert.ddd.part.model.enums.CodePartListTypeEnum;
+import io.dddrive.ddd.model.enums.CodePartListType;
+import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
+import io.dddrive.obj.model.ObjPartRepository;
 
 public interface ObjBuildingPartRatingRepository
 		extends ObjPartRepository<ObjBuilding, ObjBuildingPartRating> {

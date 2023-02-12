@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.app.adapter.api.rest;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.dddrive.util.Invariant.assertThis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.obj.model.Obj;
+import io.dddrive.obj.model.ObjRepository;
+import io.dddrive.oe.service.api.ObjUserCache;
+import io.dddrive.util.Formatter;
 import io.zeitwert.fm.collaboration.model.db.Tables;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateType;
-import io.zeitwert.ddd.aggregate.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStage;
-import io.zeitwert.ddd.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.model.Obj;
-import io.zeitwert.ddd.obj.model.ObjRepository;
-import io.zeitwert.ddd.oe.service.api.ObjUserCache;
-import io.zeitwert.ddd.util.Formatter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse;

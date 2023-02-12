@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.test.service.api;
 
-import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
+import io.dddrive.ddd.service.api.AggregateCache;
 import io.zeitwert.fm.test.model.DocTest;
 
 import java.util.Map;

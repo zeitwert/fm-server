@@ -38,9 +38,8 @@ import com.aspose.words.Table;
 import com.aspose.words.WrapType;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
-
-import io.zeitwert.ddd.session.model.RequestContext;
-import io.zeitwert.ddd.util.Formatter;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.service.api.BuildingService;
 import io.zeitwert.fm.building.service.api.DocumentGenerationService;
@@ -48,7 +47,7 @@ import io.zeitwert.fm.building.service.api.BuildingEvaluationService;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
-import io.zeitwert.server.config.aspose.AsposeConfig;
+import io.zeitwert.fm.server.config.aspose.AsposeConfig;
 
 @Component("buildingDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {

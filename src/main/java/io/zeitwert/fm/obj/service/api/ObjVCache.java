@@ -1,8 +1,8 @@
 
 package io.zeitwert.fm.obj.service.api;
 
-import io.zeitwert.ddd.aggregate.service.api.AggregateCache;
-import io.zeitwert.ddd.obj.model.Obj;
+import io.dddrive.ddd.service.api.AggregateCache;
+import io.dddrive.obj.model.Obj;
 
 import java.util.Map;
 

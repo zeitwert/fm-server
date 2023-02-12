@@ -1,9 +1,9 @@
 
 package io.zeitwert.fm.oe.model;
 
-import io.zeitwert.ddd.oe.model.ObjTenant;
-import io.zeitwert.ddd.oe.model.ObjUser;
-import io.zeitwert.ddd.oe.model.enums.CodeUserRole;
+import io.dddrive.oe.model.ObjTenant;
+import io.dddrive.oe.model.ObjUser;
+import io.dddrive.oe.model.enums.CodeUserRole;
 import io.zeitwert.fm.dms.model.ObjDocument;
 
 import java.util.Set;

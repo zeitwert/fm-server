@@ -6,15 +6,15 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.doc.model.Doc;
-import io.zeitwert.ddd.doc.model.DocPartItem;
-import io.zeitwert.ddd.doc.model.DocPartItemRepository;
-import io.zeitwert.ddd.doc.model.base.DocPartItemBase;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.doc.model.Doc;
+import io.dddrive.doc.model.DocPartItem;
+import io.dddrive.doc.model.DocPartItemRepository;
+import io.dddrive.doc.model.base.DocPartItemBase;
+import io.dddrive.jooq.ddd.PartState;
+import io.dddrive.jooq.doc.JooqDocPartRepositoryBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocPartItemRecord;
-import io.zeitwert.jooq.persistence.PartState;
-import io.zeitwert.jooq.repository.JooqDocPartRepositoryBase;
 
 @Component("docPartItemRepository")
 public class DocPartItemRepositoryImpl extends JooqDocPartRepositoryBase<Doc, DocPartItem>

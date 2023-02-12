@@ -7,23 +7,19 @@ import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
+import static io.dddrive.util.Invariant.assertThis;
 
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.model.ObjRepository;
+import org.springframework.stereotype.Component;
 
-public final class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord, DocTaskDto> {
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.obj.model.ObjRepository;
 
-	private static DocTaskDtoAdapter instance;
+@Component("docTaskDtoAdapter")
+public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord, DocTaskDto> {
 
-	private DocTaskDtoAdapter() {
-	}
-
-	public static final DocTaskDtoAdapter getInstance() {
-		if (instance == null) {
-			instance = new DocTaskDtoAdapter();
-		}
-		return instance;
+	protected DocTaskDtoAdapter(AppContext appContext) {
+		super(appContext);
 	}
 
 	@Override
@@ -45,7 +41,9 @@ public final class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskV
 		if (doc == null) {
 			return null;
 		}
-		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder().original(doc);
+		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder()
+		.appContext(this.getAppContext())
+		.original(doc);
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
 				.accountId(doc.getAccountId())
@@ -64,7 +62,9 @@ public final class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskV
 		if (doc == null) {
 			return null;
 		}
-		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder().original(null);
+		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder()
+				.appContext(this.getAppContext())
+				.original(null);
 		this.fromRecord(dtoBuilder, doc);
 		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
 		assertThis(ObjRepository.isObjId(relatedToId), "relatedToId is obj (doc nyi)");

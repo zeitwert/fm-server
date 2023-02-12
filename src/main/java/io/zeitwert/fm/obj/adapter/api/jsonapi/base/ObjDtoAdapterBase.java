@@ -1,19 +1,27 @@
 
 package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
-import io.zeitwert.ddd.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.ddd.obj.model.Obj;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
+import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.jooq.obj.ObjFields;
+import io.dddrive.obj.model.Obj;
+import io.dddrive.obj.model.ObjMeta;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto;
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.jooq.property.ObjFields;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto.ObjMetaDtoBuilder;
 
 import org.jooq.TableRecord;
 
 public abstract class ObjDtoAdapterBase<O extends Obj, V extends Object, D extends ObjDtoBase<O>>
 		extends AggregateDtoAdapterBase<O, V, D> {
+
+	public ObjDtoAdapterBase(AppContext appContext) {
+		super(appContext);
+	}
 
 	@Override
 	public void toAggregate(D dto, O obj) {
@@ -23,29 +31,49 @@ public abstract class ObjDtoAdapterBase<O extends Obj, V extends Object, D exten
 	}
 
 	protected void fromAggregate(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj) {
-		ObjTenantDtoAdapter tenantDtoAdapter = ObjTenantDtoAdapter.getInstance();
-		ObjUserDtoAdapter userDtoAdapter = ObjUserDtoAdapter.getInstance();
-		// @formatter:off
 		dtoBuilder
-			.tenant(tenantDtoAdapter.asEnumerated(obj.getTenant()))
-			.meta(ObjMetaDto.fromObj(obj))
-			.id(obj.getId())
-			.caption(obj.getCaption())
-			.owner(userDtoAdapter.asEnumerated(obj.getOwner()));
-		// @formatter:on
+				.tenant(EnumeratedDto.fromAggregate(obj.getTenant()))
+				.meta(this.metaFromObj(obj))
+				.id(obj.getId())
+				.caption(obj.getCaption())
+				.owner(EnumeratedDto.fromAggregate(obj.getOwner()));
+	}
+
+	private ObjMetaDto metaFromObj(Obj obj) {
+		ObjMeta meta = obj.getMeta();
+		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
+		AggregateMetaDto.fromAggregate(builder, obj);
+		return builder
+				.closedByUser(EnumeratedDto.fromAggregate(meta.getClosedByUser()))
+				.closedAt(meta.getClosedAt())
+				.transitions(meta.getTransitionList().stream().map(t -> ObjPartTransitionDto.fromPart(t)).toList())
+				.build();
 	}
 
 	protected void fromRecord(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, TableRecord<?> obj) {
 		EnumeratedDto tenant = this.getTenantEnumerated(obj.get(ObjFields.TENANT_ID));
 		EnumeratedDto owner = this.getUserEnumerated(obj.get(ObjFields.OWNER_ID));
-		// @formatter:off
 		dtoBuilder
-			.tenant(tenant)
-			.meta(ObjMetaDto.fromRecord(obj))
-			.id(obj.get(ObjFields.ID))
-			.caption(obj.get(ObjFields.CAPTION))
-			.owner(owner);
-		// @formatter:on
+				.tenant(tenant)
+				.meta(this.metaFromRecord(obj))
+				.id(obj.get(ObjFields.ID))
+				.caption(obj.get(ObjFields.CAPTION))
+				.owner(owner);
+	}
+
+	private ObjMetaDto metaFromRecord(TableRecord<?> obj) {
+		ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
+		return builder
+				.itemType(EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType(obj.get(ObjFields.OBJ_TYPE_ID))))
+				.owner(this.getUserEnumerated(obj.getValue(ObjFields.OWNER_ID)))
+				.version(obj.get(ObjFields.VERSION))
+				.createdByUser(this.getUserEnumerated(obj.getValue(ObjFields.CREATED_BY_USER_ID)))
+				.createdAt(obj.get(ObjFields.CREATED_AT))
+				.modifiedByUser(this.getUserEnumerated(obj.getValue(ObjFields.MODIFIED_BY_USER_ID)))
+				.modifiedAt(obj.get(ObjFields.MODIFIED_AT))
+				.closedByUser(this.getUserEnumerated(obj.getValue(ObjFields.CLOSED_BY_USER_ID)))
+				.closedAt(obj.get(ObjFields.CLOSED_AT))
+				.build();
 	}
 
 }

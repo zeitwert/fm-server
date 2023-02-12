@@ -1,9 +1,9 @@
 
 package io.zeitwert.fm.collaboration.model.base;
 
-import io.zeitwert.ddd.obj.model.base.ObjExtnBase;
-import io.zeitwert.ddd.property.model.EnumProperty;
-import io.zeitwert.ddd.property.model.SimpleProperty;
+import io.dddrive.obj.model.base.ObjExtnBase;
+import io.dddrive.property.model.EnumProperty;
+import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;

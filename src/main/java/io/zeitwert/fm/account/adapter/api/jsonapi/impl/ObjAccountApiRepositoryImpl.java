@@ -3,9 +3,9 @@ package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
 import org.springframework.stereotype.Controller;
 
-import io.zeitwert.ddd.aggregate.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
-import io.zeitwert.ddd.oe.service.api.ObjUserCache;
-import io.zeitwert.ddd.session.model.RequestContext;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.account.adapter.api.jsonapi.ObjAccountApiRepository;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -17,9 +17,12 @@ public class ObjAccountApiRepositoryImpl
 		extends AggregateApiRepositoryBase<ObjAccount, ObjAccountVRecord, ObjAccountDto>
 		implements ObjAccountApiRepository {
 
-	public ObjAccountApiRepositoryImpl(ObjAccountRepository repository, RequestContext requestCtx,
-			ObjUserCache userCache) {
-		super(ObjAccountDto.class, requestCtx, userCache, repository, ObjAccountDtoAdapter.getInstance());
+	public ObjAccountApiRepositoryImpl(
+			ObjAccountRepository repository,
+			RequestContext requestCtx,
+			ObjUserCache userCache,
+			ObjAccountDtoAdapter dtoAdapter) {
+		super(ObjAccountDto.class, requestCtx, userCache, repository, dtoAdapter);
 	}
 
 }

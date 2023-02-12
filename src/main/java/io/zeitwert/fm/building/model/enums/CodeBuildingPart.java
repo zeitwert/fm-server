@@ -1,15 +1,15 @@
 package io.zeitwert.fm.building.model.enums;
 
-import io.zeitwert.ddd.enums.model.base.EnumeratedBase;
+import io.dddrive.enums.model.base.EnumeratedBase;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import static io.dddrive.util.Invariant.assertThis;
+import static io.dddrive.util.Invariant.requireThis;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.requireThis;
 
 @Data
 @SuperBuilder

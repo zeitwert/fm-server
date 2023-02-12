@@ -3,7 +3,7 @@
 	"java.jdt.ls.java.home": "C:\\Program Files\\Java\\jdk-19",
 	"java.configuration.updateBuildConfiguration": "automatic",
 	"java.completion.favoriteStaticMembers": [
-		"io.zeitwert.ddd.util.Check.*",
+		"io.dddrive.util.Invariant.*",
 		"org.junit.Assert.*",
 		"org.junit.Assume.*",
 		"org.junit.jupiter.api.Assertions.*",

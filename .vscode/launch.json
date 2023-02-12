@@ -6,7 +6,7 @@
 			"name": "Debug - Dev",
 			"request": "launch",
 			"projectName": "zeitwert-server",
-			"mainClass": "io.zeitwert.server.Application",
+			"mainClass": "io.zeitwert.fm.server.Application",
 			"vmArgs": " -Dspring.profiles.active=dev"
 		}
 	]

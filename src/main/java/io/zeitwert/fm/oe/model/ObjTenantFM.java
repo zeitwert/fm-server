@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.oe.model;
 
-import io.zeitwert.ddd.oe.model.ObjTenant;
+import io.dddrive.oe.model.ObjTenant;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.dms.model.ObjDocument;
 

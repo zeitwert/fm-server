@@ -1,8 +1,8 @@
 
 package io.zeitwert.fm.doc.model.impl;
 
-import static io.zeitwert.ddd.util.Check.assertThis;
-import static io.zeitwert.ddd.util.Check.requireThis;
+import static io.dddrive.util.Invariant.assertThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.zeitwert.ddd.app.service.api.AppContext;
-import io.zeitwert.ddd.doc.model.Doc;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.doc.model.Doc;
+import io.dddrive.jooq.doc.JooqDocRepositoryBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
-import io.zeitwert.jooq.repository.JooqDocRepositoryBase;
 import io.zeitwert.fm.doc.model.DocVRepository;
 import io.zeitwert.fm.doc.model.base.DocVBase;
 
