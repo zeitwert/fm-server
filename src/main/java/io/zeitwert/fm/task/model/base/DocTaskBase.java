@@ -8,8 +8,6 @@ import java.time.OffsetDateTime;
 
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.doc.model.base.DocExtnBase;
-import io.dddrive.doc.model.enums.CodeCaseStage;
-import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.obj.model.ObjRepository;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.SimpleProperty;
@@ -46,12 +44,6 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 	@Override
 	public DocTask aggregate() {
 		return this;
-	}
-
-	@Override
-	public void doInitWorkflow() {
-		CodeCaseStage initStage = CodeCaseStageEnum.getCaseStage("task.new");
-		this.doInitWorkflow("task", initStage);
 	}
 
 	@Override

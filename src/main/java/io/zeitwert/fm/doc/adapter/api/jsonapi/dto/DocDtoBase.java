@@ -18,7 +18,8 @@ import lombok.experimental.SuperBuilder;
 public abstract class DocDtoBase<D extends Doc> extends AggregateDtoBase<D> {
 
 	private EnumeratedDto assignee;
-	private EnumeratedDto nextCaseStage;
+	private EnumeratedDto caseDef;
+	private EnumeratedDto caseStage;
 
 	@JsonApiMetaInformation
 	private DocMetaDto meta;

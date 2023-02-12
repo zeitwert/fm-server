@@ -71,8 +71,6 @@ public class TaskTest {
 		assertNotNull(task1a, "task not null");
 		assertNotNull(task1a.getId(), "id not null");
 		assertNotNull(task1a.getTenant(), "tenant not null");
-		assertEquals(task1a.getCaseStage(), StageNew);
-		assertEquals(task1a.isInWork(), true);
 
 		Integer task1Id = task1a.getId();
 		Integer task1aIdHash = System.identityHashCode(task1a);
@@ -81,6 +79,8 @@ public class TaskTest {
 		assertNotNull(task1a.getMeta().getCreatedAt(), "createdAt not null");
 
 		this.initTask1(task1a);
+		assertEquals(task1a.getMeta().getCaseStage(), StageNew);
+		assertEquals(task1a.getMeta().isInWork(), true);
 		this.checkTask1(task1a);
 
 		this.taskRepository.store(task1a);
@@ -92,35 +92,35 @@ public class TaskTest {
 		assertNotEquals(task1aIdHash, task1bIdHash);
 		assertNotNull(task1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(task1b.getMeta().getModifiedAt(), "modifiedAt not null");
-		assertEquals(task1b.getCaseStage(), StageNew);
-		assertEquals(task1b.isInWork(), true);
+		assertEquals(task1b.getMeta().getCaseStage(), StageNew);
+		assertEquals(task1b.getMeta().isInWork(), true);
 
 		this.checkTask1(task1b);
 
 		this.initTask2(task1b);
-		assertEquals(task1b.isInWork(), true);
+		assertEquals(task1b.getMeta().isInWork(), true);
 
 		this.taskRepository.store(task1b);
 		task1b = null;
 
 		DocTask task1c = this.taskRepository.get(task1Id);
 
-		assertEquals(task1c.getCaseStage(), StageProgress);
-		assertEquals(task1c.isInWork(), true);
+		assertEquals(task1c.getMeta().getCaseStage(), StageProgress);
+		assertEquals(task1c.getMeta().isInWork(), true);
 
 		this.checkTask2(task1c);
 
 		this.initTask1(task1c);
 		task1c.setCaseStage(StageDone);
-		assertEquals(task1c.isInWork(), false);
+		assertEquals(task1c.getMeta().isInWork(), false);
 
 		this.taskRepository.store(task1c);
 		task1c = null;
 
 		DocTask task1d = this.taskRepository.get(task1Id);
 
-		assertEquals(task1d.getCaseStage(), StageDone);
-		assertEquals(task1d.isInWork(), false);
+		assertEquals(task1d.getMeta().getCaseStage(), StageDone);
+		assertEquals(task1d.getMeta().isInWork(), false);
 
 		this.checkTask1(task1d);
 
@@ -139,6 +139,7 @@ public class TaskTest {
 	}
 
 	private void initTask1(DocTask task) {
+		task.setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"));
 		task.setRelatedToId(RelatedTo.getId());
 		task.setAccountId(Account.getId());
 		task.setSubject("Todo");
@@ -176,7 +177,7 @@ public class TaskTest {
 		assertEquals(task.getIsPrivate(), true);
 		assertEquals(task.getPriority(), PrioHigh);
 		assertEquals(task.getDueAt(), DueDate.plusDays(4));
-		assertEquals(task.getCaseStage(), StageProgress);
+		assertEquals(task.getMeta().getCaseStage(), StageProgress);
 	}
 
 }

@@ -4,6 +4,7 @@ import { Enumerated } from "../../aggregate/model/EnumeratedModel";
 import { CaseStage } from "./BpmModel";
 
 export interface DocMeta extends AggregateMeta {
+	caseDef: Enumerated;
 	caseStage: CaseStage;
 	isInWork: boolean;
 	assignee: Enumerated;

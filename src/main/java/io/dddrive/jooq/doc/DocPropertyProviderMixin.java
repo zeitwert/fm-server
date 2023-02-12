@@ -22,7 +22,7 @@ public interface DocPropertyProviderMixin
 		this.mapField("createdAt", AggregateState.BASE, "created_at", OffsetDateTime.class);
 		this.mapField("modifiedByUser", AggregateState.BASE, "modified_by_user_id", Integer.class);
 		this.mapField("modifiedAt", AggregateState.BASE, "modified_at", OffsetDateTime.class);
-		this.mapField("caseDefId", AggregateState.BASE, "case_def_id", String.class);
+		this.mapField("caseDef", AggregateState.BASE, "case_def_id", String.class);
 		this.mapField("caseStage", AggregateState.BASE, "case_stage_id", String.class);
 		this.mapField("isInWork", AggregateState.BASE, "is_in_work", Boolean.class);
 		this.mapField("assignee", AggregateState.BASE, "assignee_id", Integer.class);

@@ -6,6 +6,7 @@ import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.DocMeta;
+import io.dddrive.doc.model.enums.CodeCaseDefEnum;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.dddrive.jooq.doc.DocFields;
@@ -25,14 +26,17 @@ public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>,
 
 	@Override
 	public void toAggregate(D dto, A doc) {
+		if (dto.getCaseDef() != null) {
+			doc.setCaseDef(CodeCaseDefEnum.getCaseDef(dto.getCaseDef().getId()));
+		}
+		if (dto.getCaseStage() != null) {
+			doc.setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getCaseStage().getId()));
+		}
 		if (dto.getOwner() != null) {
 			doc.setOwner(this.getUser(Integer.parseInt(dto.getOwner().getId())));
 		}
 		if (dto.getAssignee() != null) {
 			doc.setAssignee(this.getUser(Integer.parseInt(dto.getAssignee().getId())));
-		}
-		if (dto.getNextCaseStage() != null) {
-			doc.setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getNextCaseStage().getId()));
 		}
 	}
 
@@ -51,8 +55,9 @@ public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>,
 		DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
 		AggregateMetaDto.fromAggregate(builder, doc);
 		return builder
-				.caseStage(EnumeratedDto.fromEnum(doc.getCaseStage()))
-				.isInWork(doc.getCaseStage().isInWork())
+				.caseDef(EnumeratedDto.fromEnum(doc.getMeta().getCaseDef()))
+				.caseStage(EnumeratedDto.fromEnum(doc.getMeta().getCaseStage()))
+				.isInWork(doc.getMeta().getCaseStage().isInWork())
 				.assignee(EnumeratedDto.fromAggregate(doc.getAssignee()))
 				.caseStages(doc.getMeta().getCaseStages().stream().map(cs -> EnumeratedDto.fromEnum(cs)).toList())
 				.transitions(meta.getTransitionList().stream().map(v -> DocPartTransitionDto.fromPart(v)).toList())
@@ -82,6 +87,7 @@ public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>,
 				.createdAt(doc.get(DocFields.CREATED_AT))
 				.modifiedByUser(this.getUserEnumerated(doc.getValue(DocFields.MODIFIED_BY_USER_ID)))
 				.modifiedAt(doc.get(DocFields.MODIFIED_AT))
+				.caseDef(EnumeratedDto.fromEnum(CodeCaseDefEnum.getCaseDef(doc.get(DocFields.CASE_DEF_ID))))
 				.caseStage(EnumeratedDto.fromEnum(CodeCaseStageEnum.getCaseStage(doc.get(DocFields.CASE_STAGE_ID))))
 				.isInWork(doc.get(DocFields.IS_IN_WORK))
 				.assignee(this.getUserEnumerated(doc.getValue(DocFields.ASSIGNEE_ID)))

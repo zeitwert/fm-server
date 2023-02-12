@@ -20,6 +20,7 @@ import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.dddrive.app.model.RequestContext;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.oe.model.enums.CodeCountryEnum;
@@ -77,8 +78,8 @@ public class DocTestTest {
 
 		assertNotNull(testA1.getMeta().getCreatedByUser(), "createdByUser not null");
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
-		assertNotNull(testA1.getCaseStage(), "caseStage not null");
-		assertEquals("test.new", testA1.getCaseStage().getId(), "caseStage.id");
+		assertNotNull(testA1.getMeta().getCaseStage(), "caseStage not null");
+		assertEquals("test.new", testA1.getMeta().getCaseStage().getId(), "caseStage.id");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
 		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 		assertEquals(account.getId(), testA1.getAccount().getId(), account.getId(), "account id");
@@ -218,6 +219,7 @@ public class DocTestTest {
 	}
 
 	private void initDocTest(DocTest test, String name, String userEmail, String countryId) {
+		test.setCaseStage(CodeCaseStageEnum.getCaseStage("test.new"));
 		assertEquals("[, ]", test.getCaption());
 		test.setShortText("Short Test " + name);
 		assertEquals("[Short Test " + name + ", ]", test.getCaption());

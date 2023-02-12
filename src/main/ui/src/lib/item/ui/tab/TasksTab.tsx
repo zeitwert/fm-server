@@ -199,7 +199,7 @@ export default class TasksTab extends React.Component<TasksTabProps> {
 	}
 
 	private completeTask = async (task: Task) => {
-		this.modifyTask(task.id, Object.assign({}, task, { nextCaseStage: { id: "task.done" } }));
+		this.modifyTask(task.id, Object.assign({}, task, { caseStage: { id: "task.done" } }));
 	}
 
 	private modifyTask = async (id: string, task: TaskPayload) => {
@@ -387,6 +387,8 @@ class TaskEditor extends React.Component<TaskEditorProps> {
 			this.taskStore.create({
 				owner: session.sessionInfo!.user,
 				assignee: session.sessionInfo?.user,
+				caseDef: { id: "task", name: "Task" },
+				caseStage: { id: "task.new", name: "New" },
 				tenant: session.sessionInfo?.tenant,
 				relatedTo: { id: this.props.relatedToId },
 				isPrivate: false,

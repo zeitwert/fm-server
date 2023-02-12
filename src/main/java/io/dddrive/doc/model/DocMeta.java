@@ -13,6 +13,10 @@ public interface DocMeta extends AggregateMeta {
 
 	CodeCaseDef getCaseDef();
 
+	CodeCaseStage getCaseStage();
+
+	boolean isInWork();
+
 	List<CodeCaseStage> getCaseStages();
 
 	// availableActions: string[];

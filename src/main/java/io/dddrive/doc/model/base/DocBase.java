@@ -19,7 +19,6 @@ import io.dddrive.doc.model.DocPartItemRepository;
 import io.dddrive.doc.model.DocPartTransition;
 import io.dddrive.doc.model.DocRepository;
 import io.dddrive.doc.model.enums.CodeCaseDef;
-import io.dddrive.doc.model.enums.CodeCaseDefEnum;
 import io.dddrive.doc.model.enums.CodeCaseStage;
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.model.ObjUser;
@@ -31,7 +30,7 @@ import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.ReferenceSetProperty;
 import io.dddrive.property.model.SimpleProperty;
 
-public abstract class DocBase extends AggregateBase implements Doc, DocMeta, DocSPI {
+public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 	//@formatter:off
 	protected final SimpleProperty<Integer> id = this.addSimpleProperty("id", Integer.class);
@@ -45,7 +44,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	protected final SimpleProperty<OffsetDateTime> createdAt = this.addSimpleProperty("createdAt", OffsetDateTime.class);
 	protected final ReferenceProperty<ObjUser> modifiedByUser = this.addReferenceProperty("modifiedByUser", ObjUser.class);
 	protected final SimpleProperty<OffsetDateTime> modifiedAt = this.addSimpleProperty("modifiedAt", OffsetDateTime.class);
-	protected final SimpleProperty<String> caseDefId = this.addSimpleProperty("caseDefId", String.class);
+	protected final EnumProperty<CodeCaseDef> caseDef = this.addEnumProperty("caseDef", CodeCaseDef.class);
 	protected final EnumProperty<CodeCaseStage> caseStage = this.addEnumProperty("caseStage", CodeCaseStage.class);
 	protected final SimpleProperty<Boolean> isInWork = this.addSimpleProperty("isInWork", Boolean.class);
 	protected final ReferenceProperty<ObjUser> assignee = this.addReferenceProperty("assignee", ObjUser.class);
@@ -91,19 +90,8 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 			this.id.setValue(id);
 			this.docTypeId.setValue(this.getRepository().getAggregateType().getId());
 			this.tenant.setId(tenantId);
-			this.doInitWorkflow();
 		} finally {
 			this.enableCalc();
-		}
-	}
-
-	@Override
-	public abstract void doInitWorkflow();
-
-	protected final void doInitWorkflow(String caseDefId, CodeCaseStage defaultInitCaseStage) {
-		this.caseDefId.setValue(caseDefId);
-		if (this.getCaseStage() == null) {
-			this.setCaseStage(defaultInitCaseStage);
 		}
 	}
 
@@ -181,15 +169,27 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta, Doc
 	}
 
 	@Override
-	public void setCaseStage(CodeCaseStage caseStage) {
-		requireThis(caseStage != null && !caseStage.getIsAbstract(), "valid caseStage");
-		this.caseStage.setValue(caseStage);
-		this.isInWork.setValue(caseStage != null && caseStage.isInWork());
+	public void setCaseDef(CodeCaseDef caseDef) {
+		requireThis(this.getMeta().getCaseDef() == null, "caseDef empty");
+		requireThis(caseDef != null, "caseDef not null");
+		this.caseDef.setValue(caseDef);
 	}
 
 	@Override
-	public CodeCaseDef getCaseDef() {
-		return CodeCaseDefEnum.getCaseDef(this.caseDefId.getValue());
+	public void setCaseStage(CodeCaseStage caseStage) {
+		requireThis(caseStage != null && !caseStage.getIsAbstract(), "valid caseStage (i)");
+		if (caseStage == null) { // make compiler happy
+			return;
+		}
+		requireThis(this.caseDef.getValue() == null || caseStage.getCaseDef() == this.caseDef.getValue(),
+				"valid caseStage (ii)");
+		requireThis(this.caseDef.getValue() == null || this.caseDef.getValue().getCaseStages().contains(caseStage),
+				"valid caseStage (iii)");
+		if (this.caseDef.getValue() == null) {
+			this.caseDef.setValue(caseStage.getCaseDef());
+		}
+		this.caseStage.setValue(caseStage);
+		this.isInWork.setValue(caseStage != null && caseStage.isInWork());
 	}
 
 	@Override

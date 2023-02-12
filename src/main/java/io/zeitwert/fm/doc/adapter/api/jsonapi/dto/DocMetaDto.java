@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class DocMetaDto extends AggregateMetaDto {
 
+	private EnumeratedDto caseDef;
 	private EnumeratedDto caseStage;
 	private boolean isInWork;
 	private EnumeratedDto assignee;

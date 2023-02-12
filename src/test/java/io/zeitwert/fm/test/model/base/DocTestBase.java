@@ -9,8 +9,6 @@ import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.dddrive.doc.model.base.DocExtnBase;
-import io.dddrive.doc.model.enums.CodeCaseStage;
-import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.EnumSetProperty;
@@ -52,12 +50,6 @@ public abstract class DocTestBase extends DocExtnBase
 	@Override
 	public DocTest aggregate() {
 		return this;
-	}
-
-	@Override
-	public void doInitWorkflow() {
-		CodeCaseStage initStage = CodeCaseStageEnum.getCaseStage("test.new");
-		this.doInitWorkflow("test", initStage);
 	}
 
 	@Override

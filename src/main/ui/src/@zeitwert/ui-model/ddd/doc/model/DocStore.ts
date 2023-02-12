@@ -25,7 +25,7 @@ const MstDocStoreModel = AggregateStoreModel
 			if (!self.isInTrx) {
 				self.startTrx();
 			}
-			self.item!.nextCaseStage = stage;
+			self.item!.caseStage = stage;
 			return self.store();
 		}
 	}))
