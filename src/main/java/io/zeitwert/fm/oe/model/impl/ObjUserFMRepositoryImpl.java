@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jooq.exception.NoDataFoundException;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserRepository")
+@DependsOn("appContext")
 public class ObjUserFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjUserFM, ObjUserVRecord>
 		implements ObjUserFMRepository {
 

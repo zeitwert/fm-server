@@ -23,13 +23,12 @@
 		<maven-model.version>3.8.7</maven-model.version>
 		<compiler.version>3.10.1</compiler.version>
 		<release.version>2.5.3</release.version>
-		<flyway.version>9.10.1</flyway.version>
+		<flyway.version>9.14.1</flyway.version>
+		<dddrive.version>1.0.12</dddrive.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<jjwt.version>0.11.5</jjwt.version>
 		<lombok.version>1.18.24</lombok.version>
 		<jooq-codegen.version>3.14.16</jooq-codegen.version>
-		<javassist.version>3.29.2-GA</javassist.version>
-		<caffeine.version>3.1.2</caffeine.version>
 		<aspose-words.version>22.12</aspose-words.version>
 		<google-maps.version>2.1.2</google-maps.version>
 		<maven.resources.version>3.3.0</maven.resources.version>
@@ -82,6 +81,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.zeitwert</groupId>
+			<artifactId>dddrive</artifactId>
+			<version>${dddrive.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.crnk</groupId>
 			<artifactId>crnk-setup-spring-boot2</artifactId>
 			<version>${crnk.version}</version>
@@ -99,16 +103,6 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>${javassist.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-			<version>${caffeine.version}</version>
 		</dependency>
 
 		<!-- Aspose, Google Maps -->
