@@ -51,6 +51,14 @@ example:
 * staging: Staging Server on heroku
 * prod: Production Sever on heroku
 
+
+
+### Development
+
+In order to directly link to `dddrive` sources (instead of library), make a symbolic link to corresponding source directory from within `src/main/java/io` directory (as admin on windows):
+
+`mklink /D dddrive "..\..\..\..\..\dddrive\src\main\java\io\dddrive"`
+
 ### Build
 
 Heroku-like build: `mvnw -DskipTests clean dependency:list install`
