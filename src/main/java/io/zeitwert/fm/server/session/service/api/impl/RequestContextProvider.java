@@ -1,4 +1,4 @@
-package io.zeitwert.fm.server.config;
+package io.zeitwert.fm.server.session.service.api.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

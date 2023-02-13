@@ -2,7 +2,6 @@ package io.dddrive.jooq.util;
 
 import static io.dddrive.util.Invariant.assertThis;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -20,19 +19,22 @@ import org.jooq.SortOrder;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 
-import io.zeitwert.fm.search.model.db.Tables;
-import io.zeitwert.fm.search.model.db.tables.ItemSearch;
 import io.crnk.core.queryspec.Direction;
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.queryspec.SortSpec;
+import io.dddrive.search.service.api.SearchService;
 import io.dddrive.util.CustomFilters;
 import io.dddrive.util.StringUtils;
 
 public class SqlUtils {
 
-	private static final ItemSearch ITEM_SEARCH = Tables.ITEM_SEARCH;
+	static SearchService searchService;
+
+	public static void setSearchService(SearchService searchService) {
+		SqlUtils.searchService = searchService;
+	}
 
 	public static boolean hasFilterFor(QuerySpec querySpec, String fieldName) {
 		return querySpec.getFilters().stream().anyMatch(f -> getPath(f).equals(fieldName));
@@ -60,23 +62,6 @@ public class SqlUtils {
 
 	private static String getPath(FilterSpec filter) {
 		return String.join(".", filter.getPath().getElements()).replace(".id", "Id");
-	}
-
-	private static Condition searchFilter(Field<Integer> idField, FilterSpec filter) {
-		String searchText = filter.getValue();
-		String searchToken = "'" + searchText + "':*";
-		return idField.in(
-				DSL
-						.select(ITEM_SEARCH.ITEM_ID)
-						.from(ITEM_SEARCH)
-						.where(
-								DSL.noCondition()
-										.or("search_key @@ to_tsquery('simple', ?)", searchToken)
-										.or("search_key @@ to_tsquery('german', ?)", searchToken)
-										.or("search_key @@ to_tsquery('english', ?)", searchToken))
-						.orderBy(DSL.field(
-								"(ts_rank(search_key, to_tsquery('simple', ?)) + ts_rank(search_key, to_tsquery('german', ?)) + ts_rank(search_key, to_tsquery('english', ?))) desc",
-								BigDecimal.class, searchToken, searchToken, searchToken)));
 	}
 
 	private static Condition closedFilter(Table<?> table, FilterSpec filter) {
@@ -261,7 +246,7 @@ public class SqlUtils {
 	private static Condition filter(Table<?> table, Field<Integer> idField, FilterSpec filter) {
 		String fieldName = StringUtils.toSnakeCase(getPath(filter));
 		if ("search_text".equals(fieldName)) {
-			return searchFilter(idField, filter);
+			return searchService.searchFilter(idField, filter);
 		} else if ("is_closed".equals(fieldName)) {
 			return closedFilter(table, filter);
 		}

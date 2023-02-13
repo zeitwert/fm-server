@@ -38,7 +38,6 @@ import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 public final class KernelBootstrap {
 
 	public static final String SCHEMA_NAME = "public";
-	private static Schema SCHEMA;
 
 	private static final Field<String> ID = DSL.field("id", String.class);
 	private static final Field<String> NAME = DSL.field("name", String.class);
@@ -53,9 +52,11 @@ public final class KernelBootstrap {
 	static public final Field<String> CODE_CASE_STAGE__AVAILABLE_ACTIONS = DSL.field("available_actions", String.class);
 
 	private final DSLContext dslContext;
+	private final Schema schema;
 
 	protected KernelBootstrap(DSLContext dslContext) {
 		this.dslContext = dslContext;
+		this.schema = this.dslContext.meta().getSchemas(SCHEMA_NAME).get(0);
 	}
 
 	@PostConstruct
@@ -76,7 +77,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initAggregateType() {
-		Table<?> codeAggregateType = this.getTable("code_aggregate_type");
+		Table<?> codeAggregateType = this.schema.getTable("code_aggregate_type");
 		for (final Record2<String, String> item : this.dslContext.select(ID, NAME).from(codeAggregateType).fetch()) {
 			CodeAggregateType aggregateType = CodeAggregateType.builder()
 					.enumeration(CodeAggregateTypeEnum.getInstance())
@@ -88,7 +89,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initPartListType() {
-		Table<?> codePartListType = this.getTable("code_part_list_type");
+		Table<?> codePartListType = this.schema.getTable("code_part_list_type");
 		for (final Record2<String, String> item : this.dslContext.select(ID,
 				NAME).from(codePartListType).fetch()) {
 			CodePartListType partListType = CodePartListType.builder()
@@ -101,7 +102,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initTenantType() {
-		Table<?> codeTenantType = this.getTable("code_tenant_type");
+		Table<?> codeTenantType = this.schema.getTable("code_tenant_type");
 		for (final Record2<String, String> item : this.dslContext.select(ID,
 				NAME).from(codeTenantType).fetch()) {
 			CodeTenantType tenantType = CodeTenantType.builder()
@@ -115,7 +116,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initUserRole() {
-		Table<?> codeUserRole = this.getTable("code_user_role");
+		Table<?> codeUserRole = this.schema.getTable("code_user_role");
 		for (final Record2<String, String> item : this.dslContext.select(ID,
 				NAME).from(codeUserRole).fetch()) {
 			CodeUserRole userRole = CodeUserRole.builder()
@@ -129,7 +130,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initCountry() {
-		Table<?> codeCountry = this.getTable("code_country");
+		Table<?> codeCountry = this.schema.getTable("code_country");
 		for (final Record2<String, String> item : this.dslContext.select(ID,
 				NAME).from(codeCountry).fetch()) {
 			CodeCountry country = CodeCountry.builder()
@@ -142,7 +143,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initLocale() {
-		Table<?> codeLocale = this.getTable("code_locale");
+		Table<?> codeLocale = this.schema.getTable("code_locale");
 		for (final Record2<String, String> item : this.dslContext.select(ID,
 				NAME).from(codeLocale).fetch()) {
 			CodeLocale locale = CodeLocale.builder()
@@ -155,7 +156,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initCaseDef() {
-		Table<?> codeDef = this.getTable("code_case_def");
+		Table<?> codeDef = this.schema.getTable("code_case_def");
 		for (final Record2<String, String> item : this.dslContext.select(ID,
 				NAME).from(codeDef).fetch()) {
 			CodeCaseDef caseDef = CodeCaseDef.builder()
@@ -168,7 +169,7 @@ public final class KernelBootstrap {
 	}
 
 	private void initCaseStage() {
-		Table<?> codeCaseStage = this.getTable("code_case_stage");
+		Table<?> codeCaseStage = this.schema.getTable("code_case_stage");
 		for (Record9<String, String, String, String, String, Integer, String, String, String> item : this.dslContext.select(
 				ID,
 				NAME,
@@ -197,17 +198,6 @@ public final class KernelBootstrap {
 			CodeCaseStageEnum.getInstance().addItem(caseStage);
 			CodeCaseDefEnum.getCaseDef(item.value3()).addCaseStage(caseStage);
 		}
-	}
-
-	private Table<?> getTable(String tableName) {
-		return this.getSchema().getTable(tableName);
-	}
-
-	private Schema getSchema() {
-		if (SCHEMA == null) {
-			SCHEMA = this.dslContext.meta().getSchemas(SCHEMA_NAME).get(0);
-		}
-		return SCHEMA;
 	}
 
 }
