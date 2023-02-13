@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase;
@@ -25,7 +25,7 @@ import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
 @Component("objPortfolioRepository")
 @DependsOn({ "objRepository", "objAccountRepository", "objBuildingRepository" })
-public class ObjPortfolioRepositoryImpl extends JooqObjExtnRepositoryBase<ObjPortfolio, ObjPortfolioVRecord>
+public class ObjPortfolioRepositoryImpl extends FMObjExtnRepositoryBase<ObjPortfolio, ObjPortfolioVRecord>
 		implements ObjPortfolioRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_portfolio";

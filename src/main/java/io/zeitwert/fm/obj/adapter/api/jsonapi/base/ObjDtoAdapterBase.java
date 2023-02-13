@@ -6,13 +6,13 @@ import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.jooq.obj.ObjFields;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjMeta;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto.ObjMetaDtoBuilder;
+import io.zeitwert.fm.obj.model.base.ObjFields;
 
 import org.jooq.TableRecord;
 

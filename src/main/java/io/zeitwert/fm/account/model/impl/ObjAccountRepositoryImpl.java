@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 
 @Component("objAccountRepository")
-public class ObjAccountRepositoryImpl extends JooqObjExtnRepositoryBase<ObjAccount, ObjAccountVRecord>
+public class ObjAccountRepositoryImpl extends FMObjExtnRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_account";

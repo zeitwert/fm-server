@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
-import io.dddrive.jooq.obj.JooqObjPartRepositoryBase;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjPartItem;
 import io.dddrive.obj.model.ObjPartItemRepository;
 import io.dddrive.obj.model.base.ObjPartItemBase;
+import io.zeitwert.fm.obj.model.base.FMObjPartRepositoryBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartItemRecord;
 
 @Component("objPartItemRepository")
-public class ObjPartItemRepositoryImpl extends JooqObjPartRepositoryBase<Obj, ObjPartItem>
+public class ObjPartItemRepositoryImpl extends FMObjPartRepositoryBase<Obj, ObjPartItem>
 		implements ObjPartItemRepository {
 
 	private static final String PART_TYPE = "obj_part_item";

@@ -10,12 +10,11 @@ import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.DocPart;
 import io.dddrive.jooq.ddd.JooqPartRepositoryBase;
 import io.dddrive.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.fm.doc.model.base.DocPartFields;
 
 public abstract class JooqDocPartRepositoryBase<D extends Doc, P extends DocPart<D>>
 		extends JooqPartRepositoryBase<D, P>
 		implements DocPartPropertyProviderMixin {
-
-	private static final String DOC_PART_ID_SEQ = "doc_part_id_seq";
 
 	protected JooqDocPartRepositoryBase(
 			Class<? extends D> aggregateIntfClass,
@@ -26,11 +25,6 @@ public abstract class JooqDocPartRepositoryBase<D extends Doc, P extends DocPart
 			DSLContext dslContext) {
 		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext, dslContext);
 		this.mapProperties();
-	}
-
-	@Override
-	public Integer nextPartId() {
-		return this.dslContext().nextval(DOC_PART_ID_SEQ).intValue();
 	}
 
 	@Override

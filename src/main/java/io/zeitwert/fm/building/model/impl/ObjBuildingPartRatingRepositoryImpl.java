@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
-import io.dddrive.jooq.obj.JooqObjPartRepositoryBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -17,10 +16,10 @@ import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingPartRatingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingRecord;
+import io.zeitwert.fm.obj.model.base.FMObjPartRepositoryBase;
 
 @Component("buildingPartRatingRepository")
-public class ObjBuildingPartRatingRepositoryImpl
-		extends JooqObjPartRepositoryBase<ObjBuilding, ObjBuildingPartRating>
+public class ObjBuildingPartRatingRepositoryImpl extends FMObjPartRepositoryBase<ObjBuilding, ObjBuildingPartRating>
 		implements ObjBuildingPartRatingRepository {
 
 	private static final String PART_TYPE = "obj_building_part_element_rating";

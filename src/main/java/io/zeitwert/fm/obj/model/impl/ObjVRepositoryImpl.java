@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
-import io.dddrive.jooq.obj.JooqObjRepositoryBase;
 import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
 import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.obj.model.base.ObjVBase;
 
 @Component("objRepository")
-public class ObjVRepositoryImpl extends JooqObjRepositoryBase<Obj, ObjRecord> implements ObjVRepository {
+public class ObjVRepositoryImpl extends FMObjRepositoryBase<Obj, ObjRecord> implements ObjVRepository {
 
 	private static final String AGGREGATE_TYPE = "obj";
 

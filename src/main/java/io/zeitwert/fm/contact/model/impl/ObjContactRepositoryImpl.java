@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
@@ -21,9 +20,10 @@ import io.zeitwert.fm.contact.model.base.ObjContactBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 
 @Component("objContactRepository")
-public class ObjContactRepositoryImpl extends JooqObjExtnRepositoryBase<ObjContact, ObjContactVRecord>
+public class ObjContactRepositoryImpl extends FMObjExtnRepositoryBase<ObjContact, ObjContactVRecord>
 		implements ObjContactRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_contact";

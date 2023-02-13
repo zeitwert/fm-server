@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.service.api.ObjTenantCache;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjUserFMBase;
@@ -26,7 +26,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserRepository")
-public class ObjUserFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjUserFM, ObjUserVRecord>
+public class ObjUserFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjUserFM, ObjUserVRecord>
 		implements ObjUserFMRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_user";

@@ -13,16 +13,16 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 
 @Component("objNoteRepository")
-public class ObjNoteRepositoryImpl extends JooqObjExtnRepositoryBase<ObjNote, ObjNoteVRecord>
+public class ObjNoteRepositoryImpl extends FMObjExtnRepositoryBase<ObjNote, ObjNoteVRecord>
 		implements ObjNoteRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_note";

@@ -1,4 +1,4 @@
-package io.dddrive.jooq.obj;
+package io.zeitwert.fm.obj.model.base;
 
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;

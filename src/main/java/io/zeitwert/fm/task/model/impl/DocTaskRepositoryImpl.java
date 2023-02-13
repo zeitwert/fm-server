@@ -16,8 +16,8 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
 import io.dddrive.obj.model.ObjRepository;
+import io.zeitwert.fm.doc.model.base.FMDocExtnRepositoryBase;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
@@ -26,7 +26,7 @@ import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 @Component("docTaskRepository")
-public class DocTaskRepositoryImpl extends JooqDocExtnRepositoryBase<DocTask, DocTaskVRecord>
+public class DocTaskRepositoryImpl extends FMDocExtnRepositoryBase<DocTask, DocTaskVRecord>
 		implements DocTaskRepository {
 
 	private static final String AGGREGATE_TYPE = "doc_task";
@@ -67,12 +67,12 @@ public class DocTaskRepositoryImpl extends JooqDocExtnRepositoryBase<DocTask, Do
 	}
 
 	@Override
-	public List<DocTaskVRecord> doFind(QuerySpec uiQuerySpec) {
+	public List<DocTaskVRecord> doFind(QuerySpec querySpec) {
 		PathSpec relatedToIdField = PathSpec.of("relatedToId");
 		QuerySpec dbQuerySpec = null;
-		if (uiQuerySpec.findFilter(relatedToIdField).isPresent()) {
+		if (querySpec.findFilter(relatedToIdField).isPresent()) {
 			dbQuerySpec = new QuerySpec(DocTaskVRecord.class);
-			Integer relatedToId = uiQuerySpec.findFilter(relatedToIdField).get().getValue();
+			Integer relatedToId = querySpec.findFilter(relatedToIdField).get().getValue();
 			if (ObjRepository.isObjId(relatedToId)) {
 				PathSpec relatedToObjIdField = PathSpec.of("related_obj_id");
 				dbQuerySpec.addFilter(relatedToObjIdField.filter(FilterOperator.EQ, relatedToId));
@@ -80,12 +80,12 @@ public class DocTaskRepositoryImpl extends JooqDocExtnRepositoryBase<DocTask, Do
 				PathSpec relatedToDocIdField = PathSpec.of("related_doc_id");
 				dbQuerySpec.addFilter(relatedToDocIdField.filter(FilterOperator.EQ, relatedToId));
 			}
-			uiQuerySpec.getFilters()
+			querySpec.getFilters()
 					.stream()
 					.filter(f -> !f.getPath().equals(relatedToIdField))
 					.forEach(dbQuerySpec::addFilter);
 		} else {
-			dbQuerySpec = uiQuerySpec;
+			dbQuerySpec = querySpec;
 		}
 		List<DocTaskVRecord> tasks = this.doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, dbQuerySpec);
 		Integer userId = this.requestCtx.getUser().getId();

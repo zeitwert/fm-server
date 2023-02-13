@@ -9,11 +9,11 @@ import io.dddrive.doc.model.DocMeta;
 import io.dddrive.doc.model.enums.CodeCaseDefEnum;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.jooq.doc.DocFields;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocMetaDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocPartTransitionDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocMetaDto.DocMetaDtoBuilder;
+import io.zeitwert.fm.doc.model.base.DocFields;
 
 import org.jooq.TableRecord;
 

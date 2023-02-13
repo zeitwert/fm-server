@@ -13,12 +13,12 @@ import io.dddrive.doc.model.DocPartTransition;
 import io.dddrive.doc.model.DocPartTransitionRepository;
 import io.dddrive.doc.model.base.DocPartTransitionBase;
 import io.dddrive.jooq.ddd.PartState;
-import io.dddrive.jooq.doc.JooqDocPartRepositoryBase;
+import io.zeitwert.fm.doc.model.base.FMDocPartRepositoryBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocPartTransitionRecord;
 
 @Component("docPartTransitionRepository")
-public class DocPartTransitionRepositoryImpl extends JooqDocPartRepositoryBase<Doc, DocPartTransition>
+public class DocPartTransitionRepositoryImpl extends FMDocPartRepositoryBase<Doc, DocPartTransition>
 		implements DocPartTransitionRepository {
 
 	private static final String PART_TYPE = "doc_part_transition";

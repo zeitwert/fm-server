@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
-import io.dddrive.jooq.obj.JooqObjPartRepositoryBase;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjPartTransition;
 import io.dddrive.obj.model.ObjPartTransitionRepository;
 import io.dddrive.obj.model.base.ObjPartTransitionBase;
+import io.zeitwert.fm.obj.model.base.FMObjPartRepositoryBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord;
 
 @Component("objPartTransitionRepository")
-public class ObjPartTransitionRepositoryImpl extends JooqObjPartRepositoryBase<Obj, ObjPartTransition>
+public class ObjPartTransitionRepositoryImpl extends FMObjPartRepositoryBase<Obj, ObjPartTransition>
 		implements ObjPartTransitionRepository {
 
 	private static final String PART_TYPE = "obj_part_transition";

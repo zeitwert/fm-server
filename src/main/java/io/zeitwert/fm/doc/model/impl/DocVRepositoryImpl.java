@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.doc.model.Doc;
-import io.dddrive.jooq.doc.JooqDocRepositoryBase;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 import io.zeitwert.fm.doc.model.DocVRepository;
+import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.doc.model.base.DocVBase;
 
 @Component("docRepository")
-public class DocVRepositoryImpl extends JooqDocRepositoryBase<Doc, DocRecord> implements DocVRepository {
+public class DocVRepositoryImpl extends FMDocRepositoryBase<Doc, DocRecord> implements DocVRepository {
 
 	private static final String AGGREGATE_TYPE = "doc";
 

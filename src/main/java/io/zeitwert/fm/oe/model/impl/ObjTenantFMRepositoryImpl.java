@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjTenantFMBase;
@@ -22,7 +22,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
 @Component("objTenantRepository")
-public class ObjTenantFMRepositoryImpl extends JooqObjExtnRepositoryBase<ObjTenantFM, ObjTenantVRecord>
+public class ObjTenantFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjTenantFM, ObjTenantVRecord>
 		implements ObjTenantFMRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_tenant";

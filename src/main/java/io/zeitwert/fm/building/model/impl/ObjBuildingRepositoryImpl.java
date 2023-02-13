@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -22,9 +21,10 @@ import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 
 @Component("objBuildingRepository")
-public class ObjBuildingRepositoryImpl extends JooqObjExtnRepositoryBase<ObjBuilding, ObjBuildingVRecord>
+public class ObjBuildingRepositoryImpl extends FMObjExtnRepositoryBase<ObjBuilding, ObjBuildingVRecord>
 		implements ObjBuildingRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_building";

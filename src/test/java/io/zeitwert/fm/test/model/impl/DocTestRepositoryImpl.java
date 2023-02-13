@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
 import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.doc.model.base.FMDocExtnRepositoryBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -25,7 +25,7 @@ import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.DocTestVRecord;
 
 @Component("docTestRepository")
-public class DocTestRepositoryImpl extends JooqDocExtnRepositoryBase<DocTest, DocTestVRecord>
+public class DocTestRepositoryImpl extends FMDocExtnRepositoryBase<DocTest, DocTestVRecord>
 		implements DocTestRepository {
 
 	private static final String AGGREGATE_TYPE = "doc_test";

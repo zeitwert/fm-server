@@ -1,4 +1,4 @@
-package io.dddrive.jooq.ddd;
+package io.zeitwert.fm.ddd.model.base;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.SortField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -16,17 +15,16 @@ import io.crnk.core.queryspec.FilterSpec;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.jooq.ddd.AggregateFields;
 import io.dddrive.jooq.util.SqlUtils;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 
-public interface JooqAggregateFinderMixin<V extends Object> {
+public interface AggregateFindMixin<V extends Object> {
 
 	DSLContext dslContext();
 
 	boolean hasAccountId();
-
-	List<V> doFind(QuerySpec querySpec);
 
 	default QuerySpec queryWithFilter(QuerySpec querySpec, RequestContextFM requestCtx) {
 		if (querySpec == null) {
@@ -73,20 +71,14 @@ public interface JooqAggregateFinderMixin<V extends Object> {
 		Long offset = querySpec == null ? null : querySpec.getOffset();
 		Long limit = querySpec == null ? null : querySpec.getLimit();
 
-		return (List<V>) this.doQuery(table, whereClause, sortFields, offset, limit);
-
-	}
-
-	default Result<?> doQuery(Table<? extends Record> table, Condition whereClause, List<SortField<?>> sortFields,
-			Long offset,
-			Long limit) {
-		return this.dslContext()
+		return (List<V>) this.dslContext()
 				.select()
 				.from(table)
 				.where(whereClause)
 				.orderBy(sortFields)
 				.limit(offset, limit)
 				.fetch();
+
 	}
 
 }

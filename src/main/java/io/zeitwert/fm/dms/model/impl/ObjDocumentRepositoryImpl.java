@@ -18,7 +18,6 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
@@ -29,9 +28,10 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
+import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
 
 @Component("objDocumentRepository")
-public class ObjDocumentRepositoryImpl extends JooqObjExtnRepositoryBase<ObjDocument, ObjDocumentVRecord>
+public class ObjDocumentRepositoryImpl extends FMObjExtnRepositoryBase<ObjDocument, ObjDocumentVRecord>
 		implements ObjDocumentRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_document";

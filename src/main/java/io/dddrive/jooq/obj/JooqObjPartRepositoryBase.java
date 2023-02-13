@@ -10,12 +10,11 @@ import io.dddrive.jooq.ddd.JooqPartRepositoryBase;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjPart;
 import io.dddrive.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.fm.obj.model.base.ObjPartFields;
 
 public abstract class JooqObjPartRepositoryBase<O extends Obj, P extends ObjPart<O>>
 		extends JooqPartRepositoryBase<O, P>
 		implements ObjPartPropertyProviderMixin {
-
-	private static final String OBJ_PART_ID_SEQ = "obj_part_id_seq";
 
 	protected JooqObjPartRepositoryBase(
 			Class<? extends O> aggregateIntfClass,
@@ -26,11 +25,6 @@ public abstract class JooqObjPartRepositoryBase<O extends Obj, P extends ObjPart
 			DSLContext dslContext) {
 		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext, dslContext);
 		this.mapProperties();
-	}
-
-	@Override
-	public Integer nextPartId() {
-		return this.dslContext().nextval(OBJ_PART_ID_SEQ).intValue();
 	}
 
 	@Override

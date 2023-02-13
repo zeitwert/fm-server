@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
-import io.dddrive.jooq.obj.JooqObjPartRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjPartRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
@@ -20,7 +20,7 @@ import io.zeitwert.fm.test.model.db.Tables;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestPartNodeRecord;
 
 @Component("testPartNodeRepository")
-public class ObjTestPartNodeRepositoryImpl extends JooqObjPartRepositoryBase<ObjTest, ObjTestPartNode>
+public class ObjTestPartNodeRepositoryImpl extends FMObjPartRepositoryBase<ObjTest, ObjTestPartNode>
 		implements ObjTestPartNodeRepository {
 
 	private static final String PART_TYPE = "obj_test_part_node";
