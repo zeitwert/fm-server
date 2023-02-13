@@ -5,13 +5,10 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.model.RequestContext;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -27,11 +24,8 @@ public class ObjNoteRepositoryImpl extends FMObjExtnRepositoryBase<ObjNote, ObjN
 
 	private static final String AGGREGATE_TYPE = "obj_note";
 
-	private final RequestContext requestCtx;
-
-	protected ObjNoteRepositoryImpl(AppContext appContext, DSLContext dslContext, RequestContext requestCtx) {
-		super(ObjNoteRepository.class, ObjNote.class, ObjNoteBase.class, AGGREGATE_TYPE, appContext, dslContext);
-		this.requestCtx = requestCtx;
+	protected ObjNoteRepositoryImpl() {
+		super(ObjNoteRepository.class, ObjNote.class, ObjNoteBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override
@@ -73,7 +67,7 @@ public class ObjNoteRepositoryImpl extends FMObjExtnRepositoryBase<ObjNote, ObjN
 	@Override
 	public List<ObjNoteVRecord> doFind(QuerySpec querySpec) {
 		List<ObjNoteVRecord> notes = this.doFind(Tables.OBJ_NOTE_V, Tables.OBJ_NOTE_V.ID, querySpec);
-		Integer userId = this.requestCtx.getUser().getId();
+		Integer userId = this.getAppContext().getRequestContext().getUser().getId();
 		notes.removeIf(n -> !this.isVisible(n, userId));
 		notes.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
 		return notes;

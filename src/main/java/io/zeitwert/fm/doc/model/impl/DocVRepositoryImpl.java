@@ -6,11 +6,9 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.doc.model.Doc;
 import io.zeitwert.fm.doc.model.db.Tables;
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
@@ -23,8 +21,8 @@ public class DocVRepositoryImpl extends FMDocRepositoryBase<Doc, DocRecord> impl
 
 	private static final String AGGREGATE_TYPE = "doc";
 
-	protected DocVRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(DocVRepository.class, Doc.class, DocVBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected DocVRepositoryImpl() {
+		super(DocVRepository.class, Doc.class, DocVBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

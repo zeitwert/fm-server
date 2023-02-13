@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.JSON;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
 import io.zeitwert.fm.obj.model.base.FMObjPartRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -25,8 +23,8 @@ public class ObjTestPartNodeRepositoryImpl extends FMObjPartRepositoryBase<ObjTe
 
 	private static final String PART_TYPE = "obj_test_part_node";
 
-	protected ObjTestPartNodeRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjTest.class, ObjTestPartNode.class, ObjTestPartNodeBase.class, PART_TYPE, appContext, dslContext);
+	protected ObjTestPartNodeRepositoryImpl() {
+		super(ObjTest.class, ObjTestPartNode.class, ObjTestPartNodeBase.class, PART_TYPE);
 	}
 
 	@Override

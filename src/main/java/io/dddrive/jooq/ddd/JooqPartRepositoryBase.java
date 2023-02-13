@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.Part;
 import io.dddrive.ddd.model.PartRepository;
@@ -21,17 +21,19 @@ import io.dddrive.property.model.base.EntityWithPropertiesSPI;
 public abstract class JooqPartRepositoryBase<A extends Aggregate, P extends Part<A>> extends PartRepositoryBase<A, P>
 		implements PartPersistenceProviderMixin<A, P> {
 
-	private final DSLContext dslContext;
+	private DSLContext dslContext;
 	private final Map<String, Object> dbConfigMap = new HashMap<>();
 
 	protected JooqPartRepositoryBase(
 			Class<? extends A> aggregateIntfClass,
 			Class<? extends Part<A>> intfClass,
 			Class<? extends Part<A>> baseClass,
-			String partTypeId,
-			AppContext appContext,
-			DSLContext dslContext) {
-		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext);
+			String partTypeId) {
+		super(aggregateIntfClass, intfClass, baseClass, partTypeId);
+	}
+
+	@Autowired
+	protected void setDSLContext(DSLContext dslContext) {
 		this.dslContext = dslContext;
 	}
 

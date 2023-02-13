@@ -2,11 +2,9 @@ package io.zeitwert.fm.contact.model.impl;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
@@ -22,9 +20,8 @@ public class ObjContactPartAddressRepositoryImpl extends FMObjPartRepositoryBase
 
 	private static final String PART_TYPE = "obj_contact_part_address";
 
-	protected ObjContactPartAddressRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjContact.class, ObjContactPartAddress.class, ObjContactPartAddressBase.class, PART_TYPE, appContext,
-				dslContext);
+	protected ObjContactPartAddressRepositoryImpl() {
+		super(ObjContact.class, ObjContactPartAddress.class, ObjContactPartAddressBase.class, PART_TYPE);
 	}
 
 	@Override

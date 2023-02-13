@@ -6,12 +6,10 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
@@ -28,8 +26,8 @@ public class ObjContactRepositoryImpl extends FMObjExtnRepositoryBase<ObjContact
 
 	private static final String AGGREGATE_TYPE = "obj_contact";
 
-	protected ObjContactRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjContactRepository.class, ObjContact.class, ObjContactBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjContactRepositoryImpl() {
+		super(ObjContactRepository.class, ObjContact.class, ObjContactBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

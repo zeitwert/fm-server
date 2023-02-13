@@ -7,12 +7,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.doc.model.base.FMDocExtnRepositoryBase;
@@ -30,8 +28,8 @@ public class DocTestRepositoryImpl extends FMDocExtnRepositoryBase<DocTest, DocT
 
 	private static final String AGGREGATE_TYPE = "doc_test";
 
-	protected DocTestRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(DocTestRepository.class, DocTest.class, DocTestBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected DocTestRepositoryImpl() {
+		super(DocTestRepository.class, DocTest.class, DocTestBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

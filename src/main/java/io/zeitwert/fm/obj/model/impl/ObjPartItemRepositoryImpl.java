@@ -2,11 +2,9 @@ package io.zeitwert.fm.obj.model.impl;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjPartItem;
@@ -22,8 +20,8 @@ public class ObjPartItemRepositoryImpl extends FMObjPartRepositoryBase<Obj, ObjP
 
 	private static final String PART_TYPE = "obj_part_item";
 
-	protected ObjPartItemRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(Obj.class, ObjPartItem.class, ObjPartItemBase.class, PART_TYPE, appContext, dslContext);
+	protected ObjPartItemRepositoryImpl() {
+		super(Obj.class, ObjPartItem.class, ObjPartItemBase.class, PART_TYPE);
 	}
 
 	@Override

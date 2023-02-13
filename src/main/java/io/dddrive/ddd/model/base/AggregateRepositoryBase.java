@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 
 import io.crnk.core.queryspec.FilterOperator;
@@ -34,7 +35,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Obj
 
 	private final Class<? extends Aggregate> intfClass;
 	private final String aggregateTypeId;
-	private final AppContext appContext;
+	private AppContext appContext;
 
 	private final List<PartRepository<? super A, ?>> partRepositories = new ArrayList<>();
 
@@ -50,16 +51,19 @@ public abstract class AggregateRepositoryBase<A extends Aggregate, V extends Obj
 			Class<? extends AggregateRepository<A, V>> repoIntfClass,
 			Class<? extends Aggregate> intfClass,
 			Class<? extends Aggregate> baseClass,
-			String aggregateTypeId,
-			AppContext appContext) {
+			String aggregateTypeId) {
 		this.intfClass = intfClass;
 		this.aggregateTypeId = aggregateTypeId;
-		this.appContext = appContext;
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
 		this.proxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Object.class };
-		((AppContextSPI) appContext).addRepository(intfClass, this);
+	}
+
+	@Autowired
+	protected void setAppContext(AppContext appContext) {
+		this.appContext = appContext;
+		((AppContextSPI) this.appContext).addRepository(intfClass, this);
 	}
 
 	@Override

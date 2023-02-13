@@ -3,11 +3,9 @@ package io.zeitwert.fm.doc.model.impl;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.DocPartTransition;
 import io.dddrive.doc.model.DocPartTransitionRepository;
@@ -23,8 +21,8 @@ public class DocPartTransitionRepositoryImpl extends FMDocPartRepositoryBase<Doc
 
 	private static final String PART_TYPE = "doc_part_transition";
 
-	protected DocPartTransitionRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(Doc.class, DocPartTransition.class, DocPartTransitionBase.class, PART_TYPE, appContext, dslContext);
+	protected DocPartTransitionRepositoryImpl() {
+		super(Doc.class, DocPartTransition.class, DocPartTransitionBase.class, PART_TYPE);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 
 import io.dddrive.app.event.AggregateStoredEvent;
@@ -27,7 +28,7 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 		implements PartRepository<A, P>, PartRepositorySPI<A, P> {
 
 	private final Class<? extends Part<A>> intfClass;
-	private final AppContext appContext;
+	private AppContext appContext;
 
 	private final ProxyFactory proxyFactory;
 	private final Class<?>[] paramTypeList;
@@ -36,15 +37,18 @@ public abstract class PartRepositoryBase<A extends Aggregate, P extends Part<A>>
 			Class<? extends A> aggregateIntfClass,
 			Class<? extends Part<A>> intfClass,
 			Class<? extends Part<A>> baseClass,
-			String partTypeId,
-			AppContext appContext) {
+			String partTypeId) {
 		this.intfClass = intfClass;
-		this.appContext = appContext;
-		((AppContextSPI) appContext).addPartRepository(intfClass, this);
 		this.proxyFactory = new ProxyFactory();
 		this.proxyFactory.setSuperclass(baseClass);
 		this.proxyFactory.setFilter(PropertyFilter.INSTANCE);
 		this.paramTypeList = new Class<?>[] { PartRepository.class, aggregateIntfClass, Object.class };
+	}
+
+	@Autowired
+	protected void setAppContext(AppContext appContext) {
+		this.appContext = appContext;
+		((AppContextSPI) this.appContext).addPartRepository(intfClass, this);
 	}
 
 	@Override

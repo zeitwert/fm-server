@@ -3,11 +3,9 @@ package io.zeitwert.fm.building.model.impl;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.PartState;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
@@ -24,9 +22,8 @@ public class ObjBuildingPartRatingRepositoryImpl extends FMObjPartRepositoryBase
 
 	private static final String PART_TYPE = "obj_building_part_element_rating";
 
-	protected ObjBuildingPartRatingRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjBuilding.class, ObjBuildingPartRating.class, ObjBuildingPartRatingBase.class, PART_TYPE, appContext,
-				dslContext);
+	protected ObjBuildingPartRatingRepositoryImpl() {
+		super(ObjBuilding.class, ObjBuildingPartRating.class, ObjBuildingPartRatingBase.class, PART_TYPE);
 	}
 
 	@Override

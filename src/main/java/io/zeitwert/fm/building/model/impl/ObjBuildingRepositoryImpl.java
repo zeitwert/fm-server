@@ -6,12 +6,10 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -29,9 +27,8 @@ public class ObjBuildingRepositoryImpl extends FMObjExtnRepositoryBase<ObjBuildi
 
 	private static final String AGGREGATE_TYPE = "obj_building";
 
-	protected ObjBuildingRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE, appContext,
-				dslContext);
+	protected ObjBuildingRepositoryImpl() {
+		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

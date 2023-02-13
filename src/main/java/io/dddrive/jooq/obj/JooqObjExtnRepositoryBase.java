@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.TableRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.AggregateRepository;
 import io.dddrive.obj.model.Obj;
@@ -16,19 +16,21 @@ public abstract class JooqObjExtnRepositoryBase<O extends Obj, V extends TableRe
 		extends ObjRepositoryBase<O, V>
 		implements ObjExtnPropertyProviderMixin {
 
-	private final DSLContext dslContext;
+	private DSLContext dslContext;
 	private final Map<String, Object> dbConfigMap = new HashMap<>();
 
 	public JooqObjExtnRepositoryBase(
 			Class<? extends AggregateRepository<O, V>> repoIntfClass,
 			Class<? extends Obj> intfClass,
 			Class<? extends Obj> baseClass,
-			String aggregateTypeId,
-			AppContext appContext,
-			DSLContext dslContext) {
-		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext);
-		this.dslContext = dslContext;
+			String aggregateTypeId) {
+		super(repoIntfClass, intfClass, baseClass, aggregateTypeId);
 		this.mapProperties();
+	}
+
+	@Autowired
+	protected void setDSLContext(DSLContext dslContext) {
+		this.dslContext = dslContext;
 	}
 
 	@Override

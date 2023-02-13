@@ -2,11 +2,9 @@ package io.zeitwert.fm.doc.model.base;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.TableRecord;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.AggregateRepository;
 import io.dddrive.doc.model.Doc;
 import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
@@ -21,10 +19,8 @@ public abstract class FMDocExtnRepositoryBase<D extends Doc, V extends TableReco
 			Class<? extends AggregateRepository<D, V>> repoIntfClass,
 			Class<? extends Doc> intfClass,
 			Class<? extends Doc> baseClass,
-			String aggregateTypeId,
-			AppContext appContext,
-			DSLContext dslContext) {
-		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext, dslContext);
+			String aggregateTypeId) {
+		super(repoIntfClass, intfClass, baseClass, aggregateTypeId);
 	}
 
 	@Override

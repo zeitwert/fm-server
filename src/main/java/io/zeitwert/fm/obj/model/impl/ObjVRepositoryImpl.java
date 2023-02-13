@@ -6,11 +6,9 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord;
@@ -23,8 +21,8 @@ public class ObjVRepositoryImpl extends FMObjRepositoryBase<Obj, ObjRecord> impl
 
 	private static final String AGGREGATE_TYPE = "obj";
 
-	protected ObjVRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjVRepository.class, Obj.class, ObjVBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjVRepositoryImpl() {
+		super(ObjVRepository.class, Obj.class, ObjVBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

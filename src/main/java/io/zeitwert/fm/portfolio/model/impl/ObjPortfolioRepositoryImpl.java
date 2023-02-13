@@ -5,13 +5,11 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -30,9 +28,8 @@ public class ObjPortfolioRepositoryImpl extends FMObjExtnRepositoryBase<ObjPortf
 
 	private static final String AGGREGATE_TYPE = "obj_portfolio";
 
-	protected ObjPortfolioRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE, appContext,
-				dslContext);
+	protected ObjPortfolioRepositoryImpl() {
+		super(ObjPortfolioRepository.class, ObjPortfolio.class, ObjPortfolioBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

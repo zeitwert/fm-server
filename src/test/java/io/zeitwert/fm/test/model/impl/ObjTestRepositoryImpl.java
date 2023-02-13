@@ -7,13 +7,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.JSON;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
@@ -31,8 +29,8 @@ public class ObjTestRepositoryImpl extends FMObjExtnRepositoryBase<ObjTest, ObjT
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
-	protected ObjTestRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjTestRepositoryImpl() {
+		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

@@ -6,14 +6,12 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.util.List;
 import java.util.Optional;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.service.api.ObjTenantCache;
@@ -35,9 +33,8 @@ public class ObjUserFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjUserFM, 
 
 	// passwordEncoder: break cycle from WebSecurityConfig TODO find better solution
 	// (own class)
-	protected ObjUserFMRepositoryImpl(AppContext appContext, DSLContext dslContext,
-			@Lazy PasswordEncoder passwordEncoder) {
-		super(ObjUserFMRepository.class, ObjUserFM.class, ObjUserFMBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjUserFMRepositoryImpl(@Lazy PasswordEncoder passwordEncoder) {
+		super(ObjUserFMRepository.class, ObjUserFM.class, ObjUserFMBase.class, AGGREGATE_TYPE);
 		this.passwordEncoder = passwordEncoder;
 	}
 

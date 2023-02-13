@@ -3,7 +3,6 @@ package io.dddrive.doc.model.base;
 
 import javax.annotation.PostConstruct;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.AggregateRepository;
 import io.dddrive.ddd.model.base.AggregateRepositoryBase;
 import io.dddrive.doc.model.Doc;
@@ -17,9 +16,8 @@ public abstract class DocRepositoryBase<D extends Doc, V extends Object>
 			Class<? extends AggregateRepository<D, V>> repoIntfClass,
 			Class<? extends Doc> intfClass,
 			Class<? extends Doc> baseClass,
-			String aggregateTypeId,
-			AppContext appContext) {
-		super(repoIntfClass, intfClass, baseClass, aggregateTypeId, appContext);
+			String aggregateTypeId) {
+		super(repoIntfClass, intfClass, baseClass, aggregateTypeId);
 	}
 
 	@Override

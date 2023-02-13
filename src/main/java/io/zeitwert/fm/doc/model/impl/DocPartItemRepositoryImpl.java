@@ -2,11 +2,9 @@ package io.zeitwert.fm.doc.model.impl;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.DocPartItem;
 import io.dddrive.doc.model.DocPartItemRepository;
@@ -22,8 +20,8 @@ public class DocPartItemRepositoryImpl extends FMDocPartRepositoryBase<Doc, DocP
 
 	private static final String PART_TYPE = "doc_part_item";
 
-	protected DocPartItemRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(Doc.class, DocPartItem.class, DocPartItemBase.class, PART_TYPE, appContext, dslContext);
+	protected DocPartItemRepositoryImpl() {
+		super(Doc.class, DocPartItem.class, DocPartItemBase.class, PART_TYPE);
 	}
 
 	@Override

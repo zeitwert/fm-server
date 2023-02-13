@@ -6,12 +6,10 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -27,8 +25,8 @@ public class ObjAccountRepositoryImpl extends FMObjExtnRepositoryBase<ObjAccount
 
 	private static final String AGGREGATE_TYPE = "obj_account";
 
-	protected ObjAccountRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE, appContext, dslContext);
+	protected ObjAccountRepositoryImpl() {
+		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override

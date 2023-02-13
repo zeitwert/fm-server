@@ -1,9 +1,7 @@
 package io.dddrive.jooq.doc;
 
-import org.jooq.DSLContext;
 import org.jooq.UpdatableRecord;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.Part;
 import io.dddrive.ddd.model.enums.CodePartListType;
 import io.dddrive.doc.model.Doc;
@@ -20,10 +18,8 @@ public abstract class JooqDocPartRepositoryBase<D extends Doc, P extends DocPart
 			Class<? extends D> aggregateIntfClass,
 			Class<? extends DocPart<D>> intfClass,
 			Class<? extends DocPart<D>> baseClass,
-			String partTypeId,
-			AppContext appContext,
-			DSLContext dslContext) {
-		super(aggregateIntfClass, intfClass, baseClass, partTypeId, appContext, dslContext);
+			String partTypeId) {
+		super(aggregateIntfClass, intfClass, baseClass, partTypeId);
 		this.mapProperties();
 	}
 

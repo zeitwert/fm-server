@@ -6,15 +6,12 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.exception.NoDataFoundException;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.model.RequestContext;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.doc.model.base.FMDocExtnRepositoryBase;
@@ -31,11 +28,8 @@ public class DocTaskRepositoryImpl extends FMDocExtnRepositoryBase<DocTask, DocT
 
 	private static final String AGGREGATE_TYPE = "doc_task";
 
-	private final RequestContext requestCtx;
-
-	protected DocTaskRepositoryImpl(AppContext appContext, DSLContext dslContext, RequestContext requestCtx) {
-		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE, appContext, dslContext);
-		this.requestCtx = requestCtx;
+	protected DocTaskRepositoryImpl() {
+		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override
@@ -88,7 +82,7 @@ public class DocTaskRepositoryImpl extends FMDocExtnRepositoryBase<DocTask, DocT
 			dbQuerySpec = querySpec;
 		}
 		List<DocTaskVRecord> tasks = this.doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, dbQuerySpec);
-		Integer userId = this.requestCtx.getUser().getId();
+		Integer userId = this.getAppContext().getRequestContext().getUser().getId();
 		tasks.removeIf(t -> !this.isVisible(t, userId));
 		tasks.sort((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()));
 		return tasks;

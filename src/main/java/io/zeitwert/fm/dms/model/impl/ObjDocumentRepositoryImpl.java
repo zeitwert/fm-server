@@ -5,7 +5,6 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.Table;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.model.RequestContext;
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -43,9 +41,8 @@ public class ObjDocumentRepositoryImpl extends FMObjExtnRepositoryBase<ObjDocume
 	private static final TableField<ObjDocumentPartContentRecord, byte[]> CONTENT = DOCUMENT_CONTENT.CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> CREATED_BY_USER_ID = DOCUMENT_CONTENT.CREATED_BY_USER_ID;
 
-	protected ObjDocumentRepositoryImpl(AppContext appContext, DSLContext dslContext) {
-		super(ObjDocumentRepository.class, ObjDocument.class, ObjDocumentBase.class, AGGREGATE_TYPE, appContext,
-				dslContext);
+	protected ObjDocumentRepositoryImpl() {
+		super(ObjDocumentRepository.class, ObjDocument.class, ObjDocumentBase.class, AGGREGATE_TYPE);
 	}
 
 	@Override
