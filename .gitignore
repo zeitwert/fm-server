@@ -1,4 +1,8 @@
 
+src/main/java/io/dddrive
+src/main/java/io/dddrive/
+**/dddrive/**
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
