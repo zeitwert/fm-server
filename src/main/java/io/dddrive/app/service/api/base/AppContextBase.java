@@ -76,7 +76,7 @@ public abstract class AppContextBase {
 				.forEach(pp -> this.partPersistenceProviders.put(pp.getEntityClass(), pp));
 	}
 
-	public RequestContext getRequestContext() { // TODO: remove this method
+	public RequestContext getRequestContext() {
 		return this.requestContext;
 	}
 
