@@ -67,8 +67,8 @@ public class DocTestTest {
 
 		ObjAccount account = this.getTestAccount(this.requestCtx);
 		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId());
-		testA1.setAccountId(account.getId());
 		this.initDocTest(testA1, "One", USER_EMAIL, CH);
+		testA1.setAccountId(account.getId());
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
 		assertNotNull(testA1.getTenant(), "tenant not null");
