@@ -20,7 +20,6 @@ import io.dddrive.app.model.RequestContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.jooq.util.SqlUtils;
 import io.dddrive.search.model.SearchResult;
 import io.dddrive.search.service.api.SearchService;
 import io.zeitwert.fm.app.model.RequestContextFM;
@@ -39,7 +38,6 @@ public class SearchServiceImpl implements SearchService {
 
 	SearchServiceImpl(DSLContext dslContext) {
 		this.dslContext = dslContext;
-		SqlUtils.setSearchService(this);
 	}
 
 	@Override

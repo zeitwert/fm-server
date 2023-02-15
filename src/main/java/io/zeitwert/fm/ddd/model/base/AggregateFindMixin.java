@@ -26,6 +26,8 @@ public interface AggregateFindMixin<V extends Object> {
 
 	boolean hasAccountId();
 
+	SqlUtils sqlUtils();
+
 	default QuerySpec queryWithFilter(QuerySpec querySpec, RequestContextFM requestCtx) {
 		if (querySpec == null) {
 			querySpec = new QuerySpec(Aggregate.class);
@@ -51,9 +53,9 @@ public interface AggregateFindMixin<V extends Object> {
 		if (querySpec != null) {
 			for (FilterSpec filter : querySpec.getFilters()) {
 				if (filter.getOperator().equals(FilterOperator.OR) && filter.getExpression() != null) {
-					whereClause = SqlUtils.orFilter(whereClause, table, idField, filter);
+					whereClause = this.sqlUtils().orFilter(whereClause, table, idField, filter);
 				} else {
-					whereClause = SqlUtils.andFilter(whereClause, table, idField, filter);
+					whereClause = this.sqlUtils().andFilter(whereClause, table, idField, filter);
 				}
 			}
 		}
@@ -61,7 +63,7 @@ public interface AggregateFindMixin<V extends Object> {
 		// Sort.
 		List<SortField<?>> sortFields = List.of();
 		if (querySpec != null && querySpec.getSort().size() > 0) {
-			sortFields = SqlUtils.sortFilter(table, querySpec.getSort());
+			sortFields = this.sqlUtils().sortFilter(table, querySpec.getSort());
 		} else if (table.field("modified_at") != null) {
 			sortFields = List.of(table.field("modified_at").desc());
 		} else {
