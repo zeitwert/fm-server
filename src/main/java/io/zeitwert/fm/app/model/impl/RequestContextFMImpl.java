@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-public class RequestContextImpl extends RequestContextBase implements RequestContextFM {
+public class RequestContextFMImpl extends RequestContextBase implements RequestContextFM {
 
 	private final Integer accountId;
 

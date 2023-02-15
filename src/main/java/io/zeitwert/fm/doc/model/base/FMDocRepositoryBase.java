@@ -6,14 +6,14 @@ import org.jooq.TableRecord;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.ddd.model.AggregateRepository;
-import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.doc.model.Doc;
-import io.dddrive.jooq.doc.JooqDocRepositoryBase;
+import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.ddd.model.base.AggregateFindMixin;
 
 public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?>>
-		extends JooqDocRepositoryBase<D, V>
+		extends JooqDocExtnRepositoryBase<D, V>
 		implements DocPersistenceProviderMixin<D>, AggregateFindMixin<V> {
 
 	public FMDocRepositoryBase(
@@ -25,8 +25,15 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 	}
 
 	@Override
-	public final AggregateRepositorySPI<D, V> repositorySPI() {
-		return this;
+	public void mapProperties() {
+		super.mapProperties();
+		this.mapField("accountId", AggregateState.BASE, "account_id", Integer.class);
+		this.mapField("extnAccountId", AggregateState.EXTN, "account_id", Integer.class);
+	}
+
+	@Override
+	public boolean hasAccount() {
+		return true;
 	}
 
 	@Override

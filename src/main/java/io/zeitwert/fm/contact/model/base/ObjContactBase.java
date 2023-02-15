@@ -15,13 +15,13 @@ import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
-import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.PartListProperty;
 import io.dddrive.property.model.SimpleProperty;
 
-public abstract class ObjContactBase extends ObjExtnBase
+public abstract class ObjContactBase extends FMObjBase
 		implements ObjContact, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	//@formatter:off

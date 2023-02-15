@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.obj.model.Obj;
-import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.property.model.ReferenceSetProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -21,12 +20,13 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
-public abstract class ObjPortfolioBase extends ObjExtnBase
+public abstract class ObjPortfolioBase extends FMObjBase
 		implements ObjPortfolio, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	private static final List<CodeAggregateType> OBJ_TYPES = List.of(

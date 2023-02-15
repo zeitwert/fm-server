@@ -16,7 +16,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.service.api.ObjTenantCache;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjUserFMBase;
@@ -26,7 +26,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserRepository")
 @DependsOn("appContext")
-public class ObjUserFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjUserFM, ObjUserVRecord>
+public class ObjUserFMRepositoryImpl extends FMObjRepositoryBase<ObjUserFM, ObjUserVRecord>
 		implements ObjUserFMRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_user";
@@ -55,11 +55,6 @@ public class ObjUserFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjUserFM, 
 
 	@Override
 	public boolean hasAccount() {
-		return false;
-	}
-
-	@Override
-	public boolean hasAccountId() {
 		return false;
 	}
 

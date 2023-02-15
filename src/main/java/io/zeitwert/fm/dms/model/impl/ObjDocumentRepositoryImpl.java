@@ -26,10 +26,10 @@ import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord;
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objDocumentRepository")
-public class ObjDocumentRepositoryImpl extends FMObjExtnRepositoryBase<ObjDocument, ObjDocumentVRecord>
+public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, ObjDocumentVRecord>
 		implements ObjDocumentRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_document";

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.enums.CodeCountry;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -24,7 +24,7 @@ import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord;
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestVRecord;
 
 @Component("objTestRepository")
-public class ObjTestRepositoryImpl extends FMObjExtnRepositoryBase<ObjTest, ObjTestVRecord>
+public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestVRecord>
 		implements ObjTestRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_test";

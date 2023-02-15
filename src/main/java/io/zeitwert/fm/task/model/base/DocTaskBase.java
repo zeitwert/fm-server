@@ -8,18 +8,18 @@ import java.time.OffsetDateTime;
 
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.base.AggregateRepositorySPI;
-import io.dddrive.doc.model.base.DocExtnBase;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
+import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
-public abstract class DocTaskBase extends DocExtnBase implements DocTask, AggregateWithNotesMixin {
+public abstract class DocTaskBase extends FMDocBase implements DocTask, AggregateWithNotesMixin {
 
 	//@formatter:off
 	protected final SimpleProperty<Integer> relatedObjId = this.addSimpleProperty("relatedObjId", Integer.class);

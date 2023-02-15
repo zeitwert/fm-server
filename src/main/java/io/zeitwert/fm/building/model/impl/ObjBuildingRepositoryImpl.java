@@ -19,10 +19,10 @@ import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContact;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objBuildingRepository")
-public class ObjBuildingRepositoryImpl extends FMObjExtnRepositoryBase<ObjBuilding, ObjBuildingVRecord>
+public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, ObjBuildingVRecord>
 		implements ObjBuildingRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_building";

@@ -16,11 +16,10 @@ import io.zeitwert.fm.collaboration.model.base.ObjNoteBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objNoteRepository")
-public class ObjNoteRepositoryImpl extends FMObjExtnRepositoryBase<ObjNote, ObjNoteVRecord>
-		implements ObjNoteRepository {
+public class ObjNoteRepositoryImpl extends FMObjRepositoryBase<ObjNote, ObjNoteVRecord> implements ObjNoteRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_note";
 
@@ -40,11 +39,6 @@ public class ObjNoteRepositoryImpl extends FMObjExtnRepositoryBase<ObjNote, ObjN
 
 	@Override
 	public boolean hasAccount() {
-		return false;
-	}
-
-	@Override
-	public boolean hasAccountId() {
 		return false;
 	}
 

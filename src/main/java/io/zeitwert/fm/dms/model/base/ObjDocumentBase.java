@@ -4,7 +4,6 @@ package io.zeitwert.fm.dms.model.base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;
@@ -17,9 +16,10 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKind;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
-public abstract class ObjDocumentBase extends ObjExtnBase
+public abstract class ObjDocumentBase extends FMObjBase
 		implements ObjDocument, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjDocumentBase.class);

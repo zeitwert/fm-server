@@ -17,10 +17,10 @@ import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objAccountRepository")
-public class ObjAccountRepositoryImpl extends FMObjExtnRepositoryBase<ObjAccount, ObjAccountVRecord>
+public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_account";

@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.PartListProperty;
@@ -31,11 +30,12 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
-public abstract class ObjBuildingBase extends ObjExtnBase
+public abstract class ObjBuildingBase extends FMObjBase
 		implements ObjBuilding, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	protected static final Logger logger = LoggerFactory.getLogger(ObjBuildingBase.class);

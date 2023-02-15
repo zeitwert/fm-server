@@ -3,7 +3,7 @@ package io.zeitwert.ddd.session;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeLocaleEnum;
 import io.zeitwert.fm.app.model.RequestContextFM;
-import io.zeitwert.fm.app.model.impl.RequestContextImpl;
+import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
@@ -31,7 +31,7 @@ public class TestRequestContextProvider {
 		}
 
 		ObjUser user = maybeUser.get();
-		return RequestContextImpl.builder()
+		return RequestContextFMImpl.builder()
 				.tenantId(user.getTenantId())
 				.user(user)
 				.accountId(null)

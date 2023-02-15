@@ -4,11 +4,11 @@ package io.zeitwert.fm.test.model.base;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
+import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.dddrive.doc.model.base.DocExtnBase;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.EnumSetProperty;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 
 import org.jooq.JSON;
 
-public abstract class DocTestBase extends DocExtnBase
+public abstract class DocTestBase extends FMDocBase
 		implements DocTest, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	//@formatter:off

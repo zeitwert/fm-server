@@ -13,7 +13,7 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.zeitwert.fm.doc.model.base.FMDocExtnRepositoryBase;
+import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
@@ -22,7 +22,7 @@ import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 @Component("docTaskRepository")
-public class DocTaskRepositoryImpl extends FMDocExtnRepositoryBase<DocTask, DocTaskVRecord>
+public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskVRecord>
 		implements DocTaskRepository {
 
 	private static final String AGGREGATE_TYPE = "doc_task";

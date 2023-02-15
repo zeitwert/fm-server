@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.zeitwert.fm.obj.model.base.FMObjExtnRepositoryBase;
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjTenantFMBase;
@@ -20,7 +20,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
 @Component("objTenantRepository")
-public class ObjTenantFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjTenantFM, ObjTenantVRecord>
+public class ObjTenantFMRepositoryImpl extends FMObjRepositoryBase<ObjTenantFM, ObjTenantVRecord>
 		implements ObjTenantFMRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_tenant";
@@ -40,11 +40,6 @@ public class ObjTenantFMRepositoryImpl extends FMObjExtnRepositoryBase<ObjTenant
 
 	@Override
 	public boolean hasAccount() {
-		return false;
-	}
-
-	@Override
-	public boolean hasAccountId() {
 		return false;
 	}
 

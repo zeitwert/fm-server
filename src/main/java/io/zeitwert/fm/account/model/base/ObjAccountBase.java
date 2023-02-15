@@ -6,7 +6,6 @@ import static io.dddrive.util.Invariant.assertThis;
 import java.math.BigDecimal;
 import java.util.List;
 
-import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;
@@ -24,9 +23,10 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategoryEnum;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKindEnum;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 
-public abstract class ObjAccountBase extends ObjExtnBase
+public abstract class ObjAccountBase extends FMObjBase
 		implements ObjAccount, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	//@formatter:off

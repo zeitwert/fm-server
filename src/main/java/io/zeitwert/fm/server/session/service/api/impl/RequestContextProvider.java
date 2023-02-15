@@ -12,7 +12,7 @@ import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeLocaleEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
-import io.zeitwert.fm.app.model.impl.RequestContextImpl;
+import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
 
 @Configuration
@@ -37,7 +37,7 @@ public class RequestContextProvider {
 		Integer tenantId = userDetails.getTenantId();
 		Integer accountId = userDetails.getAccountId();
 
-		return RequestContextImpl.builder()
+		return RequestContextFMImpl.builder()
 				.tenantId(tenantId)
 				.user(user)
 				.accountId(accountId)

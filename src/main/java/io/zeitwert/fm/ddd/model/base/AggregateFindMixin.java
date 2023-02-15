@@ -24,7 +24,7 @@ public interface AggregateFindMixin<V extends Object> {
 
 	DSLContext dslContext();
 
-	boolean hasAccountId();
+	boolean hasAccount();
 
 	SqlUtils sqlUtils();
 
@@ -37,10 +37,9 @@ public interface AggregateFindMixin<V extends Object> {
 		if (tenantId != ObjTenantFMRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId));
 		}
-		if (this.hasAccountId() && requestCtx.hasAccount()) {
-			String accountField = AggregateFields.ACCOUNT_ID.getName();
+		if (this.hasAccount() && requestCtx.hasAccount()) {
 			Integer accountId = requestCtx.getAccountId();
-			querySpec.addFilter(PathSpec.of(accountField).filter(FilterOperator.EQ, accountId));
+			querySpec.addFilter(PathSpec.of("account_id").filter(FilterOperator.EQ, accountId));
 		}
 		return querySpec;
 	}

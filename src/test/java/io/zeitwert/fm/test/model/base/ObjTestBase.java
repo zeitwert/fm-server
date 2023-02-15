@@ -2,11 +2,11 @@
 package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
+import io.zeitwert.fm.obj.model.base.FMObjBase;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.EnumSetProperty;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 
 import org.jooq.JSON;
 
-public abstract class ObjTestBase extends ObjExtnBase
+public abstract class ObjTestBase extends FMObjBase
 		implements ObjTest, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
 	protected final SimpleProperty<String> shortText = this.addSimpleProperty("shortText", String.class);
