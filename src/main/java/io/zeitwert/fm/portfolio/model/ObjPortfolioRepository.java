@@ -5,8 +5,10 @@ import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
 import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.building.service.api.ObjBuildingCache;
+import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;
 
 public interface ObjPortfolioRepository extends ObjRepository<ObjPortfolio, ObjPortfolioVRecord> {
 
@@ -22,16 +24,24 @@ public interface ObjPortfolioRepository extends ObjRepository<ObjPortfolio, ObjP
 		return CodePartListTypeEnum.getPartListType("portfolio.buildingSet");
 	}
 
-	default ObjVRepository getObjRepository() {
-		return this.getAppContext().getBean(ObjVRepository.class);
+	default ObjVCache getObjCache() {
+		return this.getAppContext().getBean(ObjVCache.class);
 	}
 
-	default ObjAccountRepository getAccountRepository() {
+	default ObjAccountRepository getAccountCache() {
 		return this.getAppContext().getBean(ObjAccountRepository.class);
 	}
 
-	default ObjBuildingRepository getBuildingRepository() {
+	default ObjBuildingCache getBuildingCache() {
+		return this.getAppContext().getBean(ObjBuildingCache.class);
+	}
+
+	default ObjBuildingRepository getBuildingRepo() {
 		return this.getAppContext().getBean(ObjBuildingRepository.class);
+	}
+
+	default ObjPortfolioCache getPortfolioCache() {
+		return this.getAppContext().getBean(ObjPortfolioCache.class);
 	}
 
 }

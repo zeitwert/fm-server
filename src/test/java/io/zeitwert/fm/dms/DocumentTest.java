@@ -54,46 +54,46 @@ public class DocumentTest {
 		assertTrue(this.documentRepository != null, "documentRepository not null");
 		assertEquals("obj_document", this.documentRepository.getAggregateType().getId());
 
-		ObjDocument document1a = this.documentRepository.create(this.requestCtx.getTenantId());
+		ObjDocument documentA1 = this.documentRepository.create(this.requestCtx.getTenantId());
 
-		assertNotNull(document1a, "test not null");
-		assertNotNull(document1a.getId(), "id not null");
-		assertNotNull(document1a.getTenant(), "tenant not null");
+		assertNotNull(documentA1, "test not null");
+		assertNotNull(documentA1.getId(), "id not null");
+		assertNotNull(documentA1.getTenant(), "tenant not null");
 
-		Integer document1Id = document1a.getId();
-		Integer document1aIdHash = System.identityHashCode(document1a);
+		Integer documentA_id = documentA1.getId();
+		Integer documentA_idHash = System.identityHashCode(documentA1);
 
-		assertNotNull(document1a.getMeta().getCreatedByUser(), "createdByUser not null");
-		assertNotNull(document1a.getMeta().getCreatedAt(), "createdAt not null");
+		assertNotNull(documentA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(documentA1.getMeta().getCreatedAt(), "createdAt not null");
 
-		this.initDocument(document1a);
-		this.checkDocument(document1a);
+		this.initDocument(documentA1);
+		this.checkDocument(documentA1);
 
-		this.documentRepository.store(document1a);
+		this.documentRepository.store(documentA1);
 
-		this.documentRepository.storeContent(this.requestCtx, document1a, PNG,
+		this.documentRepository.storeContent(this.requestCtx, documentA1, PNG,
 				TEST_PNG_CONTENT.getBytes(StandardCharsets.UTF_8));
-		assertEquals(PNG, this.documentRepository.getContentType(document1a));
-		assertEquals(TEST_PNG_CONTENT, new String(this.documentRepository.getContent(document1a), StandardCharsets.UTF_8));
+		assertEquals(PNG, this.documentRepository.getContentType(documentA1));
+		assertEquals(TEST_PNG_CONTENT, new String(this.documentRepository.getContent(documentA1), StandardCharsets.UTF_8));
 
-		document1a = null;
+		documentA1 = null;
 
-		ObjDocument document1b = this.documentRepository.get(document1Id);
-		Integer document1bIdHash = System.identityHashCode(document1b);
+		ObjDocument documentA2 = this.documentRepository.load(documentA_id);
+		Integer document1bIdHash = System.identityHashCode(documentA2);
 
-		assertNotEquals(document1aIdHash, document1bIdHash);
-		assertNotNull(document1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
-		assertNotNull(document1b.getMeta().getModifiedAt(), "modifiedAt not null");
+		assertNotEquals(documentA_idHash, document1bIdHash);
+		assertNotNull(documentA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
+		assertNotNull(documentA2.getMeta().getModifiedAt(), "modifiedAt not null");
 
-		assertEquals(PNG, this.documentRepository.getContentType(document1b));
-		assertEquals(TEST_PNG_CONTENT, new String(this.documentRepository.getContent(document1b), StandardCharsets.UTF_8));
+		assertEquals(PNG, this.documentRepository.getContentType(documentA2));
+		assertEquals(TEST_PNG_CONTENT, new String(this.documentRepository.getContent(documentA2), StandardCharsets.UTF_8));
 
-		this.documentRepository.storeContent(this.requestCtx, document1b, JPG,
+		this.documentRepository.storeContent(this.requestCtx, documentA2, JPG,
 				TEST_JPG_CONTENT.getBytes(StandardCharsets.UTF_8));
-		assertEquals(JPG, this.documentRepository.getContentType(document1b));
-		assertEquals(TEST_JPG_CONTENT, new String(this.documentRepository.getContent(document1b), StandardCharsets.UTF_8));
+		assertEquals(JPG, this.documentRepository.getContentType(documentA2));
+		assertEquals(TEST_JPG_CONTENT, new String(this.documentRepository.getContent(documentA2), StandardCharsets.UTF_8));
 
-		this.checkDocument(document1b);
+		this.checkDocument(documentA2);
 	}
 
 	private void getTestData() {

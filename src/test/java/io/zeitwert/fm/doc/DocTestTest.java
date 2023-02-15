@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
@@ -24,6 +23,7 @@ import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.dddrive.oe.service.api.ObjUserCache;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,10 +42,10 @@ public class DocTestTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private DocTestRepository docTestRepository;
+	private DocTestRepository docTestRepo;
 
 	@Autowired
-	private ObjTestRepository objTestRepository;
+	private ObjTestRepository objTestRepo;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
@@ -54,7 +54,7 @@ public class DocTestTest {
 	private ObjAccountCache accountCache;
 
 	@Autowired
-	private ObjUserFMRepository userRepository;
+	private ObjUserCache userCache;
 
 	@Autowired
 	private CodeCountryEnum countryEnum;
@@ -62,11 +62,11 @@ public class DocTestTest {
 	@Test
 	public void testAggregate() throws Exception {
 
-		assertTrue(this.docTestRepository != null, "docTestRepository not null");
-		assertEquals("doc_test", this.docTestRepository.getAggregateType().getId());
+		assertTrue(this.docTestRepo != null, "docTestRepository not null");
+		assertEquals("doc_test", this.docTestRepo.getAggregateType().getId());
 
 		ObjAccount account = this.getTestAccount(this.requestCtx);
-		DocTest testA1 = this.docTestRepository.create(this.requestCtx.getTenantId());
+		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId());
 		testA1.setAccountId(account.getId());
 		this.initDocTest(testA1, "One", USER_EMAIL, CH);
 		assertNotNull(testA1, "test not null");
@@ -84,10 +84,10 @@ public class DocTestTest {
 		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 		assertEquals(account.getId(), testA1.getAccount().getId(), account.getId(), "account id");
 
-		this.docTestRepository.store(testA1);
+		this.docTestRepo.store(testA1);
 		testA1 = null;
 
-		DocTest testA2 = this.docTestRepository.get(testA_id);
+		DocTest testA2 = this.docTestRepo.get(testA_id);
 		Integer testA2_idHash = System.identityHashCode(testA2);
 		assertNotEquals(testA1_idHash, testA2_idHash);
 
@@ -102,12 +102,12 @@ public class DocTestTest {
 	@Test
 	public void testAggregateProperties() throws Exception {
 
-		ObjUser user = this.userRepository.getByEmail(USER_EMAIL).get();
+		ObjUser user = this.userCache.getByEmail(USER_EMAIL).get();
 		CodeCountry ch = this.countryEnum.getItem(CH);
 		CodeCountry de = this.countryEnum.getItem(DE);
 		CodeCountry es = this.countryEnum.getItem(ES);
 
-		DocTest testA1 = this.docTestRepository.create(this.requestCtx.getTenantId());
+		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId());
 		Integer testA_id = testA1.getId();
 		this.initDocTest(testA1, "One", USER_EMAIL, CH);
 
@@ -124,18 +124,18 @@ public class DocTestTest {
 		assertEquals(user.getId(), testA1.getOwner().getId());
 		assertEquals(ch, testA1.getCountry());
 
-		ObjTest refObj = this.objTestRepository.create(this.requestCtx.getTenantId());
+		ObjTest refObj = this.objTestRepo.create(this.requestCtx.getTenantId());
 		this.initObjTest(refObj, "Two", USER_EMAIL, DE);
 		Integer refObj_id = refObj.getId();
-		this.objTestRepository.store(refObj);
+		this.objTestRepo.store(refObj);
 
 		testA1.setRefObjId(refObj_id);
 		assertEquals("[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two])", testA1.getCaption());
 
-		DocTest refDoc = this.docTestRepository.create(this.requestCtx.getTenantId());
+		DocTest refDoc = this.docTestRepo.create(this.requestCtx.getTenantId());
 		this.initDocTest(refDoc, "Two", USER_EMAIL, DE);
 		Integer refDoc_id = refDoc.getId();
-		this.docTestRepository.store(refDoc);
+		this.docTestRepo.store(refDoc);
 
 		testA1.setRefDocId(refDoc_id);
 		assertEquals(
@@ -156,10 +156,10 @@ public class DocTestTest {
 		assertTrue(testA1.hasCountry(es));
 		assertEquals(2, testA1.getCountrySet().size());
 
-		this.docTestRepository.store(testA1);
+		this.docTestRepo.store(testA1);
 		testA1 = null;
 
-		DocTest testA2 = this.docTestRepository.get(testA_id);
+		DocTest testA2 = this.docTestRepo.load(testA_id);
 
 		assertEquals(
 				"[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two]) (RefDoc:[Short Test Two, Long Test Two])",
@@ -230,7 +230,7 @@ public class DocTestTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = this.userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userCache.getByEmail(userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);
@@ -247,7 +247,7 @@ public class DocTestTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = this.userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userCache.getByEmail(userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);

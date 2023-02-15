@@ -14,7 +14,7 @@ import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.oe.model.enums.CodeCountryEnum;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -33,10 +33,10 @@ public class SessionTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjTestRepository testRepository;
+	private ObjTestRepository testRepo;
 
 	@Autowired
-	private ObjUserFMRepository userRepository;
+	private ObjUserCache userCache;
 
 	@Autowired
 	private CodeCountryEnum countryEnum;
@@ -44,17 +44,17 @@ public class SessionTest {
 	@Test
 	public void testSessionHandling() throws Exception {
 
-		ObjTest test1a = this.testRepository.create(this.requestCtx.getTenantId());
-		this.initObjTest(test1a, "One", USER_EMAIL, "ch");
-		Integer test1Id = test1a.getId();
-		Integer test1aIdHash = System.identityHashCode(test1a);
-		this.testRepository.store(test1a);
-		test1a = null;
+		ObjTest testA1 = this.testRepo.create(this.requestCtx.getTenantId());
+		this.initObjTest(testA1, "One", USER_EMAIL, "ch");
+		Integer testA1_id = testA1.getId();
+		Integer testA1_idHash = System.identityHashCode(testA1);
+		this.testRepo.store(testA1);
+		testA1 = null;
 
-		ObjTest test1b = this.testRepository.get(test1Id);
-		Integer test1bIdHash = System.identityHashCode(test1b);
-		assertNotEquals(test1aIdHash, test1bIdHash);
-		assertEquals(this.requestCtx, test1b.getMeta().getRequestContext());
+		ObjTest testA2 = this.testRepo.get(testA1_id);
+		Integer testA2_idHash = System.identityHashCode(testA2);
+		assertNotEquals(testA1_idHash, testA2_idHash);
+		assertEquals(this.requestCtx, testA2.getMeta().getRequestContext());
 
 		// ObjUser user = userRepository.getByEmail(requestCtx, USER_EMAIL).get();
 
@@ -100,7 +100,7 @@ public class SessionTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = this.userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userCache.getByEmail(userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);

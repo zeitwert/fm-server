@@ -20,6 +20,7 @@ import io.dddrive.app.model.RequestContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.jooq.util.SqlUtils.SearchConditionProvider;
 import io.dddrive.search.model.SearchResult;
 import io.dddrive.search.service.api.SearchService;
 import io.zeitwert.fm.app.model.RequestContextFM;
@@ -29,7 +30,7 @@ import io.zeitwert.fm.search.model.db.tables.ItemSearch;
 
 @Service("searchService")
 @DependsOn("appContext")
-public class SearchServiceImpl implements SearchService {
+public class SearchServiceImpl implements SearchService, SearchConditionProvider {
 
 	private static final ItemSearch ITEM_SEARCH = Tables.ITEM_SEARCH;
 	private static final Obj OBJ = io.zeitwert.fm.obj.model.db.Tables.OBJ;
@@ -119,7 +120,11 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public Condition searchFilter(Field<Integer> idField, FilterSpec filter) {
+	public Condition apply(Field<Integer> idField, FilterSpec filter) {
+		return this.searchCondition(idField, filter);
+	}
+
+	private Condition searchCondition(Field<Integer> idField, FilterSpec filter) {
 		String searchText = filter.getValue();
 		String searchToken = "'" + searchText + "':*";
 		return idField.in(

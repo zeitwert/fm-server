@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -18,6 +17,7 @@ import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeCountry;
 import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.dddrive.oe.service.api.ObjUserCache;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,7 +39,7 @@ public class ObjTestTest {
 	private ObjTestRepository testRepository;
 
 	@Autowired
-	private ObjUserFMRepository userRepository;
+	private ObjUserCache userCache;
 
 	@Autowired
 	private CodeCountryEnum countryEnum;
@@ -59,6 +59,7 @@ public class ObjTestTest {
 		Integer testA_id = testA1.getId();
 		Integer testA1_idHash = System.identityHashCode(testA1);
 
+		assertFalse(testA1.getMeta().isFrozen(), "not frozen");
 		assertNotNull(testA1.getMeta().getCreatedByUser(), "createdByUser not null");
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
@@ -70,6 +71,7 @@ public class ObjTestTest {
 		Integer testA2_idHash = System.identityHashCode(testA2);
 		assertNotEquals(testA1_idHash, testA2_idHash);
 
+		assertTrue(testA2.getMeta().isFrozen(), "frozen");
 		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
@@ -79,7 +81,7 @@ public class ObjTestTest {
 	@Test
 	public void testAggregateProperties() throws Exception {
 
-		ObjUser user = this.userRepository.getByEmail(USER_EMAIL).get();
+		ObjUser user = this.userCache.getByEmail(USER_EMAIL).get();
 		CodeCountry ch = this.countryEnum.getItem(CH);
 		CodeCountry de = this.countryEnum.getItem(DE);
 		CodeCountry es = this.countryEnum.getItem(ES);
@@ -126,7 +128,7 @@ public class ObjTestTest {
 		this.testRepository.store(testA1);
 		testA1 = null;
 
-		ObjTest testA2 = this.testRepository.get(testA_id);
+		ObjTest testA2 = this.testRepository.load(testA_id);
 
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", testA2.getCaption());
 		assertEquals("Short Test One", testA2.getShortText());
@@ -188,7 +190,7 @@ public class ObjTestTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		ObjUser user = this.userRepository.getByEmail(userEmail).get();
+		ObjUser user = this.userCache.getByEmail(userEmail).get();
 		test.setOwner(user);
 		CodeCountry country = this.countryEnum.getItem(countryId);
 		test.setCountry(country);

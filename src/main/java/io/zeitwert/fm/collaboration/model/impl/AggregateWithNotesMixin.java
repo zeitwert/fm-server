@@ -34,7 +34,7 @@ public interface AggregateWithNotesMixin extends ItemWithNotes {
 
 	@Override
 	default void removeNote(Integer noteId) {
-		ObjNote note = this.noteRepository().get(noteId);
+		ObjNote note = this.noteRepository().load(noteId);
 		requireThis(this.aggregate().getId().equals(note.getRelatedToId()), "Note is related to this item.");
 		this.noteRepository().delete(note);
 	}

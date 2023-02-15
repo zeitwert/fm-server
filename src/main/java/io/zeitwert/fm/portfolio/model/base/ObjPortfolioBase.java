@@ -19,8 +19,8 @@ import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
-import io.zeitwert.fm.obj.model.ObjVRepository;
 import io.zeitwert.fm.obj.model.base.FMObjBase;
+import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -73,7 +73,7 @@ public abstract class ObjPortfolioBase extends FMObjBase
 	}
 
 	protected boolean hasValidObjType(Integer id) {
-		Obj obj = this.getRepository().getObjRepository().get(id);
+		Obj obj = this.getRepository().getObjCache().get(id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		return OBJ_TYPES.indexOf(objType) >= 0;
 	}
@@ -126,17 +126,16 @@ public abstract class ObjPortfolioBase extends FMObjBase
 	}
 
 	private Set<Integer> getBuildingIds(Integer id) {
-		ObjVRepository objRepo = this.getRepository().getObjRepository();
-		Obj obj = objRepo.get(id);
+		ObjVCache objCache = this.getRepository().getObjCache();
+		Obj obj = objCache.get(id);
 		CodeAggregateType objType = obj.getMeta().getAggregateType();
 		if (objType == CodeAggregateTypeEnum.getAggregateType("obj_building")) {
 			return Set.of(obj.getId());
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_portfolio")) {
-			ObjPortfolio pf = this.getRepository().get(id);
+			ObjPortfolio pf = this.getRepository().getPortfolioCache().get(id);
 			return pf.getBuildingSet();
 		} else if (objType == CodeAggregateTypeEnum.getAggregateType("obj_account")) {
-			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepository().getByForeignKey("account_id",
-					id);
+			List<ObjBuildingVRecord> buildings = this.getRepository().getBuildingRepo().getByForeignKey("account_id", id);
 			return buildings.stream().map(bldg -> bldg.getId()).collect(Collectors.toSet());
 		}
 		throw new InvalidParameterException("unsupported objType " + objType.getId());

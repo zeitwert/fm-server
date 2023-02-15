@@ -18,6 +18,7 @@ import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
+import io.zeitwert.fm.contact.service.api.ObjContactCache;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -79,8 +80,9 @@ public abstract class ObjAccountBase extends FMObjBase
 	@Override
 	public List<ObjContact> getContacts() {
 		ObjContactRepository contactRepo = (ObjContactRepository) this.getAppContext().getRepository(ObjContact.class);
+		ObjContactCache contactCache = (ObjContactCache) this.getAppContext().getCache(ObjContact.class);
 		List<ObjContactVRecord> contactIds = contactRepo.getByForeignKey("accountId", this.getId());
-		return contactIds.stream().map(c -> contactRepo.get(c.getId())).toList();
+		return contactIds.stream().map(c -> contactCache.get(c.getId())).toList();
 	}
 
 	@Override

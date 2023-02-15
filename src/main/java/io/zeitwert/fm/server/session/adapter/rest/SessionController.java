@@ -28,7 +28,7 @@ import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 import io.dddrive.oe.service.api.ObjTenantCache;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
@@ -56,7 +56,7 @@ public class SessionController {
 	ObjTenantCache tenantCache;
 
 	@Autowired
-	ObjAccountRepository accountCache;
+	ObjAccountCache accountCache;
 
 	@Autowired
 	JwtProvider jwtProvider;

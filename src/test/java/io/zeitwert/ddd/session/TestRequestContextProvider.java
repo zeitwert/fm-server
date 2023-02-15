@@ -2,10 +2,9 @@ package io.zeitwert.ddd.session;
 
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.enums.CodeLocaleEnum;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
 import java.util.Optional;
 
@@ -22,10 +21,10 @@ public class TestRequestContextProvider {
 	@Bean
 	@Autowired
 	@SessionScope
-	public RequestContextFM getRequestContext(ObjUserFMRepository userRepository) {
+	public RequestContextFM getRequestContext(ObjUserCache userCache) {
 
 		String userEmail = "tt@zeitwert.io";
-		Optional<ObjUserFM> maybeUser = userRepository.getByEmail(userEmail);
+		Optional<ObjUser> maybeUser = userCache.getByEmail(userEmail);
 		if (maybeUser.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
 		}

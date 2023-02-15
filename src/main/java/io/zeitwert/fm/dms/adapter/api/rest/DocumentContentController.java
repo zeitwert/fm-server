@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeContentTypeEnum;
 import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
@@ -22,11 +21,9 @@ import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 @RequestMapping("/rest/dms/documents")
 public class DocumentContentController {
 
-	private final ObjDocumentRepository documentRepo;
 	private final ObjDocumentCache documentCache;
 
-	public DocumentContentController(ObjDocumentRepository documentRepo, ObjDocumentCache documentCache) {
-		this.documentRepo = documentRepo;
+	public DocumentContentController(ObjDocumentCache documentCache) {
 		this.documentCache = documentCache;
 	}
 
@@ -55,7 +52,7 @@ public class DocumentContentController {
 			if (contentType == null) {
 				return ResponseEntity.badRequest().body(null);
 			}
-			ObjDocument document = this.documentRepo.get(documentId);
+			ObjDocument document = this.documentCache.get(documentId);
 			document.storeContent(contentType, file.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();

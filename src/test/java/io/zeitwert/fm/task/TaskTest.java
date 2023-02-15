@@ -66,63 +66,63 @@ public class TaskTest {
 		assertTrue(this.taskRepository != null, "taskRepository not null");
 		assertEquals("doc_task", this.taskRepository.getAggregateType().getId());
 
-		DocTask task1a = this.taskRepository.create(this.requestCtx.getTenantId());
+		DocTask taskA1 = this.taskRepository.create(this.requestCtx.getTenantId());
 
-		assertNotNull(task1a, "task not null");
-		assertNotNull(task1a.getId(), "id not null");
-		assertNotNull(task1a.getTenant(), "tenant not null");
+		assertNotNull(taskA1, "task not null");
+		assertNotNull(taskA1.getId(), "id not null");
+		assertNotNull(taskA1.getTenant(), "tenant not null");
 
-		Integer task1Id = task1a.getId();
-		Integer task1aIdHash = System.identityHashCode(task1a);
+		Integer taskA_id = taskA1.getId();
+		Integer taskA_idHash = System.identityHashCode(taskA1);
 
-		assertNotNull(task1a.getMeta().getCreatedByUser(), "createdByUser not null");
-		assertNotNull(task1a.getMeta().getCreatedAt(), "createdAt not null");
+		assertNotNull(taskA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(taskA1.getMeta().getCreatedAt(), "createdAt not null");
 
-		this.initTask1(task1a);
-		assertEquals(task1a.getMeta().getCaseStage(), StageNew);
-		assertEquals(task1a.getMeta().isInWork(), true);
-		this.checkTask1(task1a);
+		this.initTask1(taskA1);
+		assertEquals(taskA1.getMeta().getCaseStage(), StageNew);
+		assertEquals(taskA1.getMeta().isInWork(), true);
+		this.checkTask1(taskA1);
 
-		this.taskRepository.store(task1a);
-		task1a = null;
+		this.taskRepository.store(taskA1);
+		taskA1 = null;
 
-		DocTask task1b = this.taskRepository.get(task1Id);
-		Integer task1bIdHash = System.identityHashCode(task1b);
+		DocTask taskA2 = this.taskRepository.load(taskA_id);
+		Integer taskA2_idHash = System.identityHashCode(taskA2);
 
-		assertNotEquals(task1aIdHash, task1bIdHash);
-		assertNotNull(task1b.getMeta().getModifiedByUser(), "modifiedByUser not null");
-		assertNotNull(task1b.getMeta().getModifiedAt(), "modifiedAt not null");
-		assertEquals(task1b.getMeta().getCaseStage(), StageNew);
-		assertEquals(task1b.getMeta().isInWork(), true);
+		assertNotEquals(taskA_idHash, taskA2_idHash);
+		assertNotNull(taskA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
+		assertNotNull(taskA2.getMeta().getModifiedAt(), "modifiedAt not null");
+		assertEquals(taskA2.getMeta().getCaseStage(), StageNew);
+		assertEquals(taskA2.getMeta().isInWork(), true);
 
-		this.checkTask1(task1b);
+		this.checkTask1(taskA2);
 
-		this.initTask2(task1b);
-		assertEquals(task1b.getMeta().isInWork(), true);
+		this.initTask2(taskA2);
+		assertEquals(taskA2.getMeta().isInWork(), true);
 
-		this.taskRepository.store(task1b);
-		task1b = null;
+		this.taskRepository.store(taskA2);
+		taskA2 = null;
 
-		DocTask task1c = this.taskRepository.get(task1Id);
+		DocTask taskA3 = this.taskRepository.load(taskA_id);
 
-		assertEquals(task1c.getMeta().getCaseStage(), StageProgress);
-		assertEquals(task1c.getMeta().isInWork(), true);
+		assertEquals(taskA3.getMeta().getCaseStage(), StageProgress);
+		assertEquals(taskA3.getMeta().isInWork(), true);
 
-		this.checkTask2(task1c);
+		this.checkTask2(taskA3);
 
-		this.initTask1(task1c);
-		task1c.setCaseStage(StageDone);
-		assertEquals(task1c.getMeta().isInWork(), false);
+		this.initTask1(taskA3);
+		taskA3.setCaseStage(StageDone);
+		assertEquals(taskA3.getMeta().isInWork(), false);
 
-		this.taskRepository.store(task1c);
-		task1c = null;
+		this.taskRepository.store(taskA3);
+		taskA3 = null;
 
-		DocTask task1d = this.taskRepository.get(task1Id);
+		DocTask taskA4 = this.taskRepository.get(taskA_id);
 
-		assertEquals(task1d.getMeta().getCaseStage(), StageDone);
-		assertEquals(task1d.getMeta().isInWork(), false);
+		assertEquals(taskA4.getMeta().getCaseStage(), StageDone);
+		assertEquals(taskA4.getMeta().isInWork(), false);
 
-		this.checkTask1(task1d);
+		this.checkTask1(taskA4);
 
 	}
 

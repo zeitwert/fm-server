@@ -2,23 +2,23 @@
 package io.zeitwert.fm.task.model;
 
 import io.dddrive.doc.model.DocRepository;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-import io.zeitwert.fm.doc.model.DocVRepository;
-import io.zeitwert.fm.obj.model.ObjVRepository;
+import io.zeitwert.fm.collaboration.service.api.ObjNoteCache;
+import io.zeitwert.fm.doc.service.api.DocVCache;
+import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 public interface DocTaskRepository extends DocRepository<DocTask, DocTaskVRecord> {
 
-	default ObjVRepository getObjRepository() {
-		return this.getAppContext().getBean(ObjVRepository.class);
+	default ObjVCache getObjCache() {
+		return this.getAppContext().getBean(ObjVCache.class);
 	}
 
-	default DocVRepository getDocRepository() {
-		return this.getAppContext().getBean(DocVRepository.class);
+	default DocVCache getDocCache() {
+		return this.getAppContext().getBean(DocVCache.class);
 	}
 
-	default ObjNoteRepository getNoteRepository() {
-		return this.getAppContext().getBean(ObjNoteRepository.class);
+	default ObjNoteCache getNoteCache() {
+		return this.getAppContext().getBean(ObjNoteCache.class);
 	}
 
 }

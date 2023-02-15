@@ -6,12 +6,15 @@ import java.util.List;
 
 import org.jooq.TableRecord;
 
+import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.base.ObjTenantBase;
+import io.dddrive.oe.service.api.ObjUserCache;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentKindEnum;
@@ -55,10 +58,11 @@ public abstract class ObjTenantFMBase extends ObjTenantBase implements ObjTenant
 	@Override
 	public List<ObjUserFM> getUsers() {
 		ObjUserFMRepository userRepo = (ObjUserFMRepository) this.getAppContext().getRepository(ObjUserFM.class);
+		ObjUserCache userCache = (ObjUserCache) this.getAppContext().getCache(ObjUser.class);
 		return userRepo.getByForeignKey("tenantId", this.getId())
 				.stream()
 				.map(c -> (TableRecord<?>) c)
-				.map(c -> userRepo.get((Integer) c.get("id")))
+				.map(c -> (ObjUserFM) userCache.get((Integer) c.get("id")))
 				.toList();
 	}
 
@@ -66,7 +70,8 @@ public abstract class ObjTenantFMBase extends ObjTenantBase implements ObjTenant
 	public List<ObjAccount> getAccounts() {
 		ObjAccountRepository accountRepo = (ObjAccountRepository) this.getAppContext().getRepository(ObjAccount.class);
 		List<ObjAccountVRecord> accountIds = accountRepo.getByForeignKey("tenantId", this.getId());
-		return accountIds.stream().map(c -> accountRepo.get(c.getId())).toList();
+		ObjAccountCache accountCache = (ObjAccountCache) this.getAppContext().getCache(ObjAccount.class);
+		return accountIds.stream().map(c -> accountCache.get(c.getId())).toList();
 	}
 
 	private void addLogoImage() {
