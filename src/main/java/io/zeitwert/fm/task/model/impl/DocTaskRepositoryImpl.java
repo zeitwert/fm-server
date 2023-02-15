@@ -13,7 +13,6 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.obj.model.ObjRepository;
 import io.zeitwert.fm.doc.model.base.FMDocExtnRepositoryBase;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
@@ -67,7 +66,7 @@ public class DocTaskRepositoryImpl extends FMDocExtnRepositoryBase<DocTask, DocT
 		if (querySpec.findFilter(relatedToIdField).isPresent()) {
 			dbQuerySpec = new QuerySpec(DocTaskVRecord.class);
 			Integer relatedToId = querySpec.findFilter(relatedToIdField).get().getValue();
-			if (ObjRepository.isObjId(relatedToId)) {
+			if (this.getIdProvider().isObjId(relatedToId)) {
 				PathSpec relatedToObjIdField = PathSpec.of("related_obj_id");
 				dbQuerySpec.addFilter(relatedToObjIdField.filter(FilterOperator.EQ, relatedToId));
 			} else {

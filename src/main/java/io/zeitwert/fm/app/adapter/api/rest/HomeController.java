@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
+import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.doc.model.enums.CodeCaseStage;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.dddrive.obj.model.Obj;
-import io.dddrive.obj.model.ObjRepository;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.dddrive.util.Formatter;
 import io.zeitwert.fm.collaboration.model.db.Tables;
@@ -147,7 +147,8 @@ public class HomeController {
 	private HomeActivityResponse getTaskResponse(DocTaskVRecord record) {
 		DocTask task = this.taskCache.get(record.getId());
 		Integer relatedToId = record.getRelatedObjId() != null ? record.getRelatedObjId() : record.getRelatedDocId();
-		assertThis(ObjRepository.isObjId(relatedToId), "only obj supported yet");
+		assertThis(((AggregateRepositorySPI<?, ?>) this.taskRepository).getIdProvider().isObjId(relatedToId),
+				"only obj supported yet");
 		Obj relatedTo = this.objCache.get(relatedToId);
 		return HomeActivityResponse.builder()
 				.item(EnumeratedDto.fromDoc(task))

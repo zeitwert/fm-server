@@ -8,6 +8,7 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.ddd.model.AggregateRepository;
+import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.jooq.obj.JooqObjExtnRepositoryBase;
 import io.dddrive.jooq.util.SqlUtils;
@@ -27,7 +28,7 @@ public abstract class FMObjExtnRepositoryBase<O extends Obj, V extends TableReco
 	}
 
 	@Override
-	public final AggregateRepository<O, V> getRepository() {
+	public final AggregateRepositorySPI<O, V> repositorySPI() {
 		return this;
 	}
 

@@ -6,6 +6,7 @@ import org.jooq.TableRecord;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.ddd.model.AggregateRepository;
+import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.doc.model.Doc;
 import io.dddrive.jooq.doc.JooqDocRepositoryBase;
 import io.zeitwert.fm.app.model.RequestContextFM;
@@ -24,7 +25,7 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 	}
 
 	@Override
-	public final AggregateRepository<D, V> getRepository() {
+	public final AggregateRepositorySPI<D, V> repositorySPI() {
 		return this;
 	}
 

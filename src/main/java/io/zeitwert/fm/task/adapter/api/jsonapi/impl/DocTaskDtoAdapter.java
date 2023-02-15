@@ -7,13 +7,10 @@ import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
 
-import static io.dddrive.util.Invariant.assertThis;
-
 import org.springframework.stereotype.Component;
 
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.obj.model.ObjRepository;
 
 @Component("docTaskDtoAdapter")
 public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord, DocTaskDto> {
@@ -42,8 +39,8 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 			return null;
 		}
 		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder()
-		.appContext(this.getAppContext())
-		.original(doc);
+				.appContext(this.getAppContext())
+				.original(doc);
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
 				.accountId(doc.getAccountId())
@@ -67,7 +64,6 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 				.original(null);
 		this.fromRecord(dtoBuilder, doc);
 		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
-		assertThis(ObjRepository.isObjId(relatedToId), "relatedToId is obj (doc nyi)");
 		EnumeratedDto relatedTo = EnumeratedDto.builder().id(relatedToId.toString()).build();
 		return dtoBuilder
 				.accountId(doc.getAccountId())

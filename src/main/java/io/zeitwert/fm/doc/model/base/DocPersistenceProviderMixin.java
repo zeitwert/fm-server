@@ -5,7 +5,6 @@ import org.jooq.UpdatableRecord;
 import org.jooq.exception.NoDataFoundException;
 
 import io.dddrive.ddd.model.AggregatePersistenceProvider;
-import io.dddrive.ddd.model.AggregateRepository;
 import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.ddd.model.base.AggregateSPI;
 import io.dddrive.doc.model.Doc;
@@ -16,32 +15,28 @@ import io.zeitwert.fm.doc.model.db.tables.records.DocRecord;
 public interface DocPersistenceProviderMixin<D extends Doc>
 		extends AggregatePersistenceProvider<D> {
 
-	static final String DOC_ID_SEQ = "doc_id_seq";
-
 	DSLContext dslContext();
 
-	AggregateRepository<D, ?> getRepository();
+	AggregateRepositorySPI<D, ?> repositorySPI();
 
 	@Override
 	default Integer nextAggregateId() {
-		return this.dslContext().nextval(DOC_ID_SEQ).intValue();
+		return this.repositorySPI().getIdProvider().nextDocId();
 	}
 
-	@SuppressWarnings("unchecked")
 	default D doCreate(UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.dslContext().newRecord(Tables.DOC);
 		AggregateState state = new AggregateState(docRecord, extnRecord);
-		return ((AggregateRepositorySPI<D, ?>) this.getRepository()).newAggregate(state);
+		return this.repositorySPI().newAggregate(state);
 	}
 
-	@SuppressWarnings("unchecked")
 	default D doLoad(Integer docId, UpdatableRecord<?> extnRecord) {
 		DocRecord docRecord = this.dslContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(docId));
 		if (docRecord == null) {
 			throw new NoDataFoundException(this.getClass().getSimpleName() + "[" + docId + "]");
 		}
 		AggregateState state = new AggregateState(docRecord, extnRecord);
-		return ((AggregateRepositorySPI<D, ?>) this.getRepository()).newAggregate(state);
+		return this.repositorySPI().newAggregate(state);
 	}
 
 	@Override

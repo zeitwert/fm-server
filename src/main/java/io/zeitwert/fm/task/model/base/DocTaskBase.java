@@ -7,8 +7,8 @@ import static io.dddrive.util.Invariant.requireThis;
 import java.time.OffsetDateTime;
 
 import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.doc.model.base.DocExtnBase;
-import io.dddrive.obj.model.ObjRepository;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -51,7 +51,8 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 		super.doBeforeStore();
 		requireThis(this.getRelatedToId() != null, "relatedTo not null");
 		if (this.getAccountId() == null) { // TODO: set accountId to relatedTo's accountId
-			assertThis(ObjRepository.isObjId(this.getRelatedToId()), "relatedTo is obj (doc nyi)");
+			assertThis(((AggregateRepositorySPI<?, ?>) this.getRepository()).getIdProvider().isObjId(this.getRelatedToId()),
+					"relatedTo is obj (doc nyi)");
 			this.setAccountId(((RequestContextFM) this.getMeta().getRequestContext()).getAccountId());
 		}
 		assertThis(this.getAccountId() != null, "account not null");
@@ -80,7 +81,7 @@ public abstract class DocTaskBase extends DocExtnBase implements DocTask, Aggreg
 		if (id == null) {
 			this.relatedObjId.setValue(null);
 			this.relatedDocId.setValue(null);
-		} else if (ObjRepository.isObjId(id)) {
+		} else if (((AggregateRepositorySPI<?, ?>) this.getRepository()).getIdProvider().isObjId(id)) {
 			this.relatedObjId.setValue(id);
 			this.relatedDocId.setValue(null);
 		} else {
