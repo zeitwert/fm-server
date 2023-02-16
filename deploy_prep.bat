@@ -3,6 +3,6 @@
 
 git push
 
-mvn clean
+mvn release:clean
 
-call mvn -B release:prepare -DpushChanges=false -Darguments=-DskipTests -Dresume=true
+call mvn -B release:prepare -DpushChanges=false -Darguments=-DskipTests
