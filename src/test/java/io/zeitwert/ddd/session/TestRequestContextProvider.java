@@ -1,7 +1,7 @@
 package io.zeitwert.ddd.session;
 
 import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.model.enums.CodeLocaleEnum;
+import io.zeitwert.fm.oe.model.enums.CodeLocaleEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;

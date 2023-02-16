@@ -1,7 +1,7 @@
 package io.zeitwert.fm.test.model;
 
 import io.dddrive.obj.model.ObjPart;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

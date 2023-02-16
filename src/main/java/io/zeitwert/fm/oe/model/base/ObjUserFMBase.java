@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.model.base.ObjUserBase;
-import io.dddrive.oe.model.enums.CodeUserRole;
-import io.dddrive.oe.model.enums.CodeUserRoleEnum;
+import io.zeitwert.fm.oe.model.enums.CodeUserRole;
+import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
 import io.dddrive.oe.service.api.ObjTenantCache;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.ReferenceSetProperty;
@@ -58,6 +58,16 @@ public abstract class ObjUserFMBase extends ObjUserBase implements ObjUserFM {
 	@Override
 	public void setRole(CodeUserRole role) {
 		this.role.setValue(role == null ? null : role.getId());
+	}
+
+	@Override
+	public boolean isAppAdmin() {
+		return this.getRepository().isAppAdmin(this);
+	}
+
+	@Override
+	public boolean isAdmin() {
+		return this.getRepository().isAdmin(this);
 	}
 
 	@Override

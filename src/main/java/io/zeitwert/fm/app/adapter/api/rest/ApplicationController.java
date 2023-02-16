@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.service.api.ObjTenantCache;
 import io.dddrive.oe.service.api.ObjUserCache;
@@ -23,6 +22,7 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationInfo;
+import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @RestController("fmApplicationController")
@@ -74,7 +74,7 @@ public class ApplicationController {
 
 	@GetMapping("/tenantInfo/{id}")
 	public ResponseEntity<TenantInfoResponse> tenantInfo(@PathVariable("id") Integer id) {
-		ObjTenant tenant = this.tenantCache.get(id);
+		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(id);
 		List<ObjAccountVRecord> accounts = this.accountService.getAccounts(tenant);
 		List<EnumeratedDto> accountDtos = accounts.stream()
 				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())

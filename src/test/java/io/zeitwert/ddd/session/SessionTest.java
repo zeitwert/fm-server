@@ -12,8 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.model.enums.CodeCountry;
-import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;

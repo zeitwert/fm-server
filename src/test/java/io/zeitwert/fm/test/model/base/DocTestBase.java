@@ -9,7 +9,7 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.EnumSetProperty;
 import io.dddrive.property.model.ReferenceProperty;

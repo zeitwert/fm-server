@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import io.dddrive.doc.model.Doc;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.ItemWithTasks;

@@ -9,6 +9,7 @@ import org.jooq.TableRecord;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.base.ObjTenantBase;
 import io.dddrive.oe.service.api.ObjUserCache;
+import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -24,10 +25,12 @@ import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.enums.CodeTenantType;
 
 public abstract class ObjTenantFMBase extends ObjTenantBase implements ObjTenantFM {
 
 	//@formatter:off
+	protected final EnumProperty<CodeTenantType> tenantType = this.addEnumProperty("tenantType", CodeTenantType.class);
 	protected final SimpleProperty<BigDecimal> inflationRate = this.addSimpleProperty("inflationRate", BigDecimal.class);
 	protected final ReferenceProperty<ObjDocument> logoImage = this.addReferenceProperty("logoImage", ObjDocument.class);
 	//@formatter:on

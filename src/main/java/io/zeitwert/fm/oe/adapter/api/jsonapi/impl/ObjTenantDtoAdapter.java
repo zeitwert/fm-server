@@ -7,7 +7,7 @@ import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.dddrive.oe.model.ObjTenant;
-import io.dddrive.oe.model.enums.CodeTenantTypeEnum;
+import io.zeitwert.fm.oe.model.enums.CodeTenantTypeEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.ObjTenantFM;

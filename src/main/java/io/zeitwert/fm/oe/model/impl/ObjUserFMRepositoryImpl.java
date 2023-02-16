@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
 import io.dddrive.oe.service.api.ObjTenantCache;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjUserFM;
@@ -25,7 +26,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserRepository")
-@DependsOn("appContext")
+@DependsOn({ "appContext", "codeUserRoleEnum" })
 public class ObjUserFMRepositoryImpl extends FMObjRepositoryBase<ObjUserFM, ObjUserVRecord>
 		implements ObjUserFMRepository {
 
@@ -66,6 +67,16 @@ public class ObjUserFMRepositoryImpl extends FMObjRepositoryBase<ObjUserFM, ObjU
 	@Override
 	public ObjTenantCache getTenantCache() {
 		return this.getAppContext().getBean(ObjTenantCache.class);
+	}
+
+	@Override
+	public boolean isAppAdmin(ObjUserFM user) {
+		return user.hasRole(CodeUserRoleEnum.APP_ADMIN);
+	}
+
+	@Override
+	public boolean isAdmin(ObjUserFM user) {
+		return user.hasRole(CodeUserRoleEnum.ADMIN);
 	}
 
 	@Override

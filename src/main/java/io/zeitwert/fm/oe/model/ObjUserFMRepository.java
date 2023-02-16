@@ -27,4 +27,8 @@ public interface ObjUserFMRepository
 	 */
 	Optional<ObjUserFM> getByEmail(String email);
 
+	boolean isAppAdmin(ObjUserFM user);
+
+	boolean isAdmin(ObjUserFM user);
+
 }
