@@ -5,4 +5,4 @@ git push
 
 mvn release:clean
 
-call mvn -B release:prepare -DpushChanges=false -Darguments=-DskipTests
+mvn release:prepare -D arguments="-D skipTests" -D pushChanges=false

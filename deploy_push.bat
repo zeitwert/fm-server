@@ -10,6 +10,4 @@ git stash pop --quiet
 git add -u --quiet
 git commit -m "Deployed to heroku, prepare for next release" --quiet
 
-del pom.xml.releaseBackup
-
 git push
