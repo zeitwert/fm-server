@@ -48,7 +48,7 @@
 	</repositories>
 
 	<scm>
-		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeitwert.git</developerConnection>
+		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeit-wert/zeitwert.git</developerConnection>
 	  <tag>HEAD</tag>
   </scm>
 
