@@ -15,7 +15,6 @@ export * from "./collaboration/service/TaskApi";
 export * from "./contact/model/AddressModel";
 export * from "./contact/model/ContactModel";
 export * from "./contact/model/ContactStore";
-export * from "./contact/model/LifeEventModel";
 export * from "./contact/service/ContactApi";
 export * from "./dms/model/DocumentModel";
 export * from "./dms/model/DocumentStore";

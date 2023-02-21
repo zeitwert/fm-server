@@ -1,6 +1,6 @@
 
 import { IconSettings } from "@salesforce/design-system-react";
-import { assertThis, Env, Locale, observeMutation, session, unregisterServiceWorker } from "@zeitwert/ui-model";
+import { assertThis, Config, Locale, observeMutation, session, unregisterServiceWorker } from "@zeitwert/ui-model";
 import { NavigatorImpl } from "app/frame/impl/NavigationImpl";
 import "assets/app.css";
 import Highcharts from "highcharts";
@@ -10,7 +10,6 @@ import { observer, Provider } from "mobx-react";
 import moment from "moment";
 import "moment/locale/de-ch";
 import React from "react";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App, { AppCtx } from "./app/App";
@@ -44,7 +43,7 @@ Highcharts.setOptions({
 	}
 });
 
-const logLevel: Logger.LogLevelDesc = Env.getParam("LOG_LEVEL") as Logger.LogLevelDesc;
+const logLevel: Logger.LogLevelDesc = Config.getEnvParam("LOG_LEVEL") as Logger.LogLevelDesc;
 Logger.setLevel(logLevel);
 
 // Navigation.

@@ -1,5 +1,3 @@
-export * from "./activity/model/ActivityModel";
-export * from "./activity/model/ActivityStore";
 export * from "./aggregate/model/AggregateModel";
 export * from "./aggregate/model/AggregateStore";
 export * from "./aggregate/model/EnumeratedModel";

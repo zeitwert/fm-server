@@ -1,7 +1,7 @@
 
 import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { API, Building } from "@zeitwert/ui-model";
-import FotoUploadForm from "areas/document/ui/forms/FotoUploadForm";
+import FotoUploadForm from "lib/item/ui/tab/FotoUploadForm";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

@@ -1,7 +1,7 @@
 
 import { Button, ButtonGroup } from "@salesforce/design-system-react";
 import { AggregateStore, EntityType, EntityTypes, ItemList, ItemListModel, session } from "@zeitwert/ui-model";
-import { DataTableCellWithDocumentIcon, DataTableCellWithEntityIcon, DataTableCellWithLink, DateDataTableCell } from "@zeitwert/ui-slds";
+import { DataTableCellWithEntityIcon, DataTableCellWithLink, DateDataTableCell } from "@zeitwert/ui-slds";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -53,7 +53,6 @@ class ItemsPage extends React.Component<ItemsPageProps> {
 					dataTableCellTemplates={{
 						date: DateDataTableCell,
 						link: DataTableCellWithLink,
-						documentIcon: DataTableCellWithDocumentIcon,
 						entityIcon: DataTableCellWithEntityIcon
 					}}
 					actionButtons={
