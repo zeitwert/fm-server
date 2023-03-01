@@ -6,7 +6,6 @@ import { ObjStoreModel } from "../../../ddd/obj/model/ObjStore";
 import { StoreWithAccountsModel } from "../../account/model/StoreWithAccounts";
 import { ContactApi, CONTACT_API } from "../service/ContactApi";
 import { Contact, ContactModel, ContactModelType, ContactSnapshot } from "./ContactModel";
-import { LifeEvent } from "./LifeEventModel";
 
 const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 	.props({
@@ -61,17 +60,6 @@ const MstContactStoreModel = ObjStoreModel.named("ContactStore")
 				}
 			})();
 		},
-		loadAllLifeEvents(): Promise<LifeEvent[]> {
-			requireThis(!self.isInTrx, "not in transaction");
-			return flow<LifeEvent[], any[]>(function* (): any {
-				try {
-					return yield CONTACT_API.getAllLifeEvents();
-				} catch (error: any) {
-					Logger.error("Failed to get life events", error);
-					return Promise.reject(error);
-				}
-			})();
-		}
 	}));
 
 type MstContactStoreType = typeof MstContactStoreModel;

@@ -1,9 +1,8 @@
 
 import { DataTableCell, Icon } from "@salesforce/design-system-react";
 import { DATA_TABLE_CELL } from "@salesforce/design-system-react/utilities/constants";
-import { channels, DateFormat, EntityTypes, NumberFormat } from "@zeitwert/ui-model";
-import { Col, CustomIcon, Grid } from "@zeitwert/ui-slds";
-import { DocumentUtils } from "areas/document/utils/DocumentUtils";
+import { DateFormat, EntityTypes, NumberFormat } from "@zeitwert/ui-model";
+import { Col, Grid } from "@zeitwert/ui-slds";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -107,45 +106,6 @@ const DataTableCellWithEntityIcon: React.FunctionComponent<any> = ({ children, i
 
 DataTableCellWithEntityIcon.displayName = DATA_TABLE_CELL;
 
-const DataTableCellWithDocumentIcon = ({ children, item, ...props }: any) => {
-	const iconName = DocumentUtils.fullIconName(item.contentTypeId);
-	return (
-		<DataTableCell {...props}>
-			<Icon
-				containerClassName="slds-m-right_small"
-				category={iconName.split(":")[0] as any}
-				name={iconName.split(":")[1]}
-				size="small"
-			/>
-			<Link to={item.link}>{children}</Link>
-		</DataTableCell>
-	);
-};
-
-DataTableCellWithDocumentIcon.displayName = DATA_TABLE_CELL;
-
-const DataTableCellWithChannelIcon = ({ children, item, type, ...props }: any) => {
-	const typeDatum = item[type];
-	const channelType = channels.filter((channel) => channel.type === typeDatum)[0];
-	return (
-		<DataTableCell {...props}>
-			{
-				channelType && (
-					<CustomIcon
-						containerClassName="slds-m-right_small"
-						category={channelType.iconCategory}
-						name={channelType.iconName}
-						size="small"
-					/>
-				)
-			}
-			{children}
-		</DataTableCell>
-	);
-};
-
-DataTableCellWithChannelIcon.displayName = DATA_TABLE_CELL;
-
 const DataTableCellForTemperature = ({ children, item, ...props }: any) => {
 	const temperature = Math.min(Math.max(item.temperature, 0), TEMPERATURE_TRESHOLD * 2);
 	return (
@@ -213,8 +173,6 @@ export {
 	DataTableCellWithText,
 	DataTableCellWithLink,
 	DataTableCellWithEntityIcon,
-	DataTableCellWithDocumentIcon,
-	DataTableCellWithChannelIcon,
 	DataTableCellForTemperature,
 	DateDataTableCell,
 	CurrencyDataTableCell,

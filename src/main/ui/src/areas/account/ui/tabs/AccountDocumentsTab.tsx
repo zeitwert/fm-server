@@ -2,8 +2,8 @@
 import { Tabs, TabsPanel } from "@salesforce/design-system-react";
 import { Account } from "@zeitwert/ui-model";
 import AppBanner from "app/ui/AppBannerSvg";
-import FotoUploadForm from "areas/document/ui/forms/FotoUploadForm";
 import { Canvg, presets } from "canvg";
+import FotoUploadForm from "lib/item/ui/tab/FotoUploadForm";
 import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";

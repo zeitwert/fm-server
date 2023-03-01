@@ -1,4 +1,5 @@
-import { API, Env } from "../../../common";
+
+import { API, Config } from "../../../common";
 import { KanbanApi } from "../KanbanApi";
 
 const API_HEADERS = {
@@ -6,7 +7,7 @@ const API_HEADERS = {
 	"Accept": "application/json,application/vnd.api+json"
 };
 
-const baseUrl = Env.getParam("API_BASE_URL");
+const baseUrl = Config.getEnvParam("API_BASE_URL");
 const enumBaseUrl = "{{enumBaseUrl}}/";
 const apiBaseUrl = "{{apiBaseUrl}}/";
 

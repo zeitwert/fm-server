@@ -1,12 +1,11 @@
 import { toJS } from "mobx";
 import { getRoot, getSnapshot, IAnyModelType, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { DateFormat, faTypes, requireThis } from "../../../app/common";
+import { DateFormat, faTypes } from "../../../app/common";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
 import { Address, AddressModel, AddressPayload, AddressSnapshot } from "./AddressModel";
 import { ContactStore } from "./ContactStore";
-import { LifeEvent } from "./LifeEventModel";
 
 const MstContactModel = ObjModel.named("Contact")
 	.props({
@@ -114,9 +113,6 @@ const MstContactModel = ObjModel.named("Contact")
 				1
 			);
 		},
-		setItem(part: LifeEvent | undefined) {
-			requireThis(false, "setItem() is implemented");
-		}
 	}));
 
 type MstContactType = typeof MstContactModel;
