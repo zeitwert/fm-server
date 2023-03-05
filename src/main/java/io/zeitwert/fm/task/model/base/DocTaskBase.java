@@ -11,7 +11,6 @@ import io.dddrive.ddd.model.base.AggregateRepositorySPI;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.doc.model.base.FMDocBase;
@@ -53,14 +52,14 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask, Aggregat
 		if (this.getAccountId() == null) { // TODO: set accountId to relatedTo's accountId
 			assertThis(((AggregateRepositorySPI<?, ?>) this.getRepository()).getIdProvider().isObjId(this.getRelatedToId()),
 					"relatedTo is obj (doc nyi)");
-			this.setAccountId(((RequestContextFM) this.getMeta().getRequestContext()).getAccountId());
+			this.setAccountId(((RequestContextFM) this.getRepository().getRequestContext()).getAccountId());
 		}
 		assertThis(this.getAccountId() != null, "account not null");
 	}
 
 	@Override
 	public final ObjAccount getAccount() {
-		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return this.getRepository().getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

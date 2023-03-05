@@ -3,7 +3,6 @@ package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -13,10 +12,6 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 @Component("objNoteDtoAdapter")
 public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord, ObjNoteDto> {
-
-	protected ObjNoteDtoAdapter(AppContext appContext) {
-		super(appContext);
-	}
 
 	@Override
 	public void toAggregate(ObjNoteDto dto, ObjNote note) {
@@ -33,9 +28,7 @@ public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord
 		if (note == null) {
 			return null;
 		}
-		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder()
-				.appContext(this.getAppContext())
-				.original(note);
+		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder();
 		this.fromAggregate(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder
@@ -53,9 +46,7 @@ public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord
 		if (note == null) {
 			return null;
 		}
-		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder()
-		.appContext(this.getAppContext())
-		.original(null);
+		ObjNoteDto.ObjNoteDtoBuilder<?, ?> dtoBuilder = ObjNoteDto.builder();
 		this.fromRecord(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder

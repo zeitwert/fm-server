@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.CodeCountryRecord;
@@ -16,8 +16,8 @@ public class CodeCountryEnum extends JooqEnumerationBase<CodeCountry> {
 
 	private static CodeCountryEnum INSTANCE;
 
-	protected CodeCountryEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeCountry.class, enums, dslContext);
+	protected CodeCountryEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeCountry.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

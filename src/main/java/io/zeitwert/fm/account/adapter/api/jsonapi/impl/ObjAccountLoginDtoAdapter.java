@@ -1,21 +1,37 @@
 
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
+import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 @Component("objAccountLoginDtoAdapter")
 public class ObjAccountLoginDtoAdapter
 		extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountLoginDto> {
 
-	protected ObjAccountLoginDtoAdapter(AppContext appContext) {
-		super(appContext);
+	private ObjDocumentCache documentCache = null;
+	private ObjDocumentDtoAdapter documentDtoAdapter = null;
+
+	@Autowired
+	void setDocumentCache(ObjDocumentCache documentCache) {
+		this.documentCache = documentCache;
+	}
+
+	@Autowired
+	void setDocumentDtoAdapter(ObjDocumentDtoAdapter documentDtoAdapter) {
+		this.documentDtoAdapter = documentDtoAdapter;
+	}
+
+	public ObjDocumentDto getDocumentDto(Integer id) {
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentCache.get(id)) : null;
 	}
 
 	@Override
@@ -23,9 +39,7 @@ public class ObjAccountLoginDtoAdapter
 		if (obj == null) {
 			return null;
 		}
-		ObjAccountLoginDto.ObjAccountLoginDtoBuilder<?, ?> dtoBuilder = ObjAccountLoginDto.builder()
-				.appContext(this.getAppContext())
-				.original(obj);
+		ObjAccountLoginDto.ObjAccountLoginDtoBuilder<?, ?> dtoBuilder = ObjAccountLoginDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.name(obj.getName())
@@ -33,7 +47,7 @@ public class ObjAccountLoginDtoAdapter
 				.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))
 				.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
 				.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
-				.inflationRate(obj.getInflationRate())
+				.logoId(obj.getLogoImageId())
 				.build();
 	}
 

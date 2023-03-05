@@ -10,8 +10,6 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
-import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import lombok.Data;
@@ -28,6 +26,11 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
 public class ObjPortfolioDto extends ObjDtoBase<ObjPortfolio> {
 
+	@Override
+	public ObjPortfolioDtoAdapter getAdapter() {
+		return (ObjPortfolioDtoAdapter) super.getAdapter();
+	}
+
 	@JsonApiRelationId
 	private Integer accountId;
 
@@ -42,13 +45,7 @@ public class ObjPortfolioDto extends ObjDtoBase<ObjPortfolio> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
-			ObjAccount account = null;
-			if (this.getOriginal() != null) {
-				account = this.getOriginal().getAccount();
-			} else if (this.accountId != null) {
-				account = getCache(ObjAccount.class).get(this.accountId);
-			}
-			this.accountDto = this.getAdapter(ObjAccountDtoAdapter.class).fromAggregate(account);
+			this.accountDto = this.getAdapter().getAccountDto(this.accountId);
 		}
 		return this.accountDto;
 	}

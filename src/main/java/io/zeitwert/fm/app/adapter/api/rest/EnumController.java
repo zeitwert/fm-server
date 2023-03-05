@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContext;
 import io.dddrive.doc.model.enums.CodeCaseStage;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
@@ -35,7 +35,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 public class EnumController {
 
 	@Autowired
-	Enumerations enumerations;
+	AppContext appContext;
 
 	@Autowired
 	ObjTenantFMRepository tenantRepo;
@@ -93,7 +93,7 @@ public class EnumController {
 
 	@GetMapping("/doc/codeCaseStage/{caseDef}")
 	public ResponseEntity<List<CodeCaseStage>> getCaseStageDomain(@PathVariable String caseDef) {
-		CodeCaseStageEnum enumeration = (CodeCaseStageEnum) this.enumerations.getEnumeration(CodeCaseStage.class);
+		CodeCaseStageEnum enumeration = (CodeCaseStageEnum) this.appContext.getEnumeration(CodeCaseStage.class);
 		if (enumeration == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -106,7 +106,7 @@ public class EnumController {
 	@GetMapping("/{module}/{enumerationName}")
 	public ResponseEntity<List<? extends Enumerated>> getEnumDomain(@PathVariable String module,
 			@PathVariable String enumerationName, @RequestParam(required = false, defaultValue = "") List<String> filter) {
-		Enumeration<? extends Enumerated> enumeration = this.enumerations.getEnumeration(module, enumerationName);
+		Enumeration<? extends Enumerated> enumeration = this.appContext.getEnumeration(module, enumerationName);
 		if (enumeration == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -117,7 +117,7 @@ public class EnumController {
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<Enumerated> getEnumItem(@PathVariable String module, @PathVariable String enumerationName,
 			@PathVariable String id) {
-		Enumerated item = ((Enumeration<Enumerated>) this.enumerations.getEnumeration(module, enumerationName)).getItem(id);
+		Enumerated item = ((Enumeration<Enumerated>) this.appContext.getEnumeration(module, enumerationName)).getItem(id);
 		if (item == null) {
 			return ResponseEntity.notFound().build();
 		}

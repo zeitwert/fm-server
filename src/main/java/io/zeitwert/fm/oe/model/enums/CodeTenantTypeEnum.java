@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.CodeTenantTypeRecord;
@@ -24,8 +24,8 @@ public class CodeTenantTypeEnum extends JooqEnumerationBase<CodeTenantType> {
 
 	private static CodeTenantTypeEnum INSTANCE;
 
-	protected CodeTenantTypeEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeTenantType.class, enums, dslContext);
+	protected CodeTenantTypeEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeTenantType.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

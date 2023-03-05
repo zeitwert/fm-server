@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.CodeSalutationRecord;
@@ -18,8 +18,8 @@ public class CodeSalutationEnum extends JooqEnumerationBase<CodeSalutation> {
 
 	private static CodeSalutationEnum INSTANCE;
 
-	protected CodeSalutationEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeSalutation.class, enums, dslContext);
+	protected CodeSalutationEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeSalutation.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

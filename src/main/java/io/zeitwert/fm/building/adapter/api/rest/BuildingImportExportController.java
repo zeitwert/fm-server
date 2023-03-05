@@ -52,6 +52,9 @@ public class BuildingImportExportController {
 	private static final String VERSION = "1.0";
 
 	@Autowired
+	private AppContext appContext;
+
+	@Autowired
 	private ObjBuildingCache buildingCache;
 
 	@Autowired
@@ -195,7 +198,6 @@ public class BuildingImportExportController {
 	}
 
 	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
-		AppContext appContext = building.getMeta().getAppContext();
 		try {
 			building.getMeta().disableCalc();
 

@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingPartCatalogRecord;
@@ -18,8 +18,8 @@ public final class CodeBuildingPartCatalogEnum extends JooqEnumerationBase<CodeB
 
 	private static CodeBuildingPartCatalogEnum INSTANCE;
 
-	private CodeBuildingPartCatalogEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeBuildingPartCatalog.class, enums, dslContext);
+	private CodeBuildingPartCatalogEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeBuildingPartCatalog.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

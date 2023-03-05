@@ -1,24 +1,18 @@
 
 package io.zeitwert.fm.task.model;
 
-import io.dddrive.doc.model.DocRepository;
-import io.zeitwert.fm.collaboration.service.api.ObjNoteCache;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.doc.model.FMDocRepository;
 import io.zeitwert.fm.doc.service.api.DocVCache;
 import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
-public interface DocTaskRepository extends DocRepository<DocTask, DocTaskVRecord> {
+public interface DocTaskRepository extends FMDocRepository<DocTask, DocTaskVRecord> {
 
-	default ObjVCache getObjCache() {
-		return this.getAppContext().getBean(ObjVCache.class);
-	}
+	ObjVCache getObjCache();
 
-	default DocVCache getDocCache() {
-		return this.getAppContext().getBean(DocVCache.class);
-	}
+	DocVCache getDocCache();
 
-	default ObjNoteCache getNoteCache() {
-		return this.getAppContext().getBean(ObjNoteCache.class);
-	}
+	ObjAccountCache getAccountCache();
 
 }

@@ -9,7 +9,7 @@ import NotesTab from "lib/item/ui/tab/NotesTab";
 import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
 import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
-import { makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import ContactMainForm from "./tabs/ContactMainForm";
@@ -39,6 +39,16 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.NOTES;
 
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
+	}
+
 	constructor(props: any) {
 		super(props);
 		makeObservable(this);
@@ -47,11 +57,15 @@ class ContactPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
 		await this.contactStore.load(this.props.params.contactId!);
+		await this.notesStore.load(this.props.params.contactId!);
+		await this.tasksStore.load(this.props.params.contactId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.contactId !== prevProps.params.contactId) {
 			await this.contactStore.load(this.props.params.contactId!);
+			await this.notesStore.load(this.props.params.contactId!);
+			await this.tasksStore.load(this.props.params.contactId!);
 		}
 	}
 
@@ -66,9 +80,6 @@ class ContactPage extends React.Component<RouteComponentProps> {
 
 		const isActive = !contact.meta?.closedAt;
 		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
-
-		const notesCount = this.notesStore.notes.length;
-		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 
 		return (
 			<>
@@ -101,13 +112,13 @@ class ContactPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.contactStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.TASKS &&
 									<TasksTab relatedToId={this.contactStore.id!} tasksStore={this.tasksStore} />

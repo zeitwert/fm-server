@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.task.model.db.Tables;
 import io.zeitwert.fm.task.model.db.tables.records.CodeTaskPriorityRecord;
@@ -18,8 +18,8 @@ public class CodeTaskPriorityEnum extends JooqEnumerationBase<CodeTaskPriority> 
 
 	private static CodeTaskPriorityEnum INSTANCE;
 
-	protected CodeTaskPriorityEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeTaskPriority.class, enums, dslContext);
+	protected CodeTaskPriorityEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeTaskPriority.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

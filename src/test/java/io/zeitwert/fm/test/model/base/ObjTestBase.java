@@ -49,10 +49,6 @@ public abstract class ObjTestBase extends FMObjBase
 	}
 
 	@Override
-	public void doCalcSearch() {
-	}
-
-	@Override
 	public String getJson() {
 		return this.json.getValue() == null ? null : this.json.getValue().toString();
 	}

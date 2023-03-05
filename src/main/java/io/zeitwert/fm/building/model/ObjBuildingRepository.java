@@ -1,37 +1,22 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.dddrive.ddd.model.enums.CodePartListType;
-import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
-import io.dddrive.obj.model.ObjRepository;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.obj.model.FMObjRepository;
 
-public interface ObjBuildingRepository extends ObjRepository<ObjBuilding, ObjBuildingVRecord> {
+public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjBuildingVRecord> {
 
-	static CodePartListType ratingListType() {
-		return CodePartListTypeEnum.getPartListType("building.ratingList");
-	}
+	ObjAccountCache getAccountCache();
 
-	static CodePartListType contactSetType() {
-		return CodePartListTypeEnum.getPartListType("building.contactSet");
-	}
+	ObjContactRepository getContactRepository();
 
-	default ObjContactRepository getContactRepository() {
-		return this.getAppContext().getBean(ObjContactRepository.class);
-	}
+	ObjDocumentRepository getDocumentRepository();
 
-	default ObjDocumentRepository getDocumentRepository() {
-		return this.getAppContext().getBean(ObjDocumentRepository.class);
-	}
+	ObjBuildingPartRatingRepository getRatingRepository();
 
-	default ObjBuildingPartRatingRepository getRatingRepository() {
-		return this.getAppContext().getBean(ObjBuildingPartRatingRepository.class);
-	}
-
-	default ObjBuildingPartElementRatingRepository getElementRepository() {
-		return this.getAppContext().getBean(ObjBuildingPartElementRatingRepository.class);
-	}
+	ObjBuildingPartElementRatingRepository getElementRepository();
 
 }

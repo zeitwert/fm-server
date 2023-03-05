@@ -84,7 +84,7 @@ public abstract class ObjUserFMBase extends ObjUserBase implements ObjUserFM {
 	}
 
 	private void addAvatarImage() {
-		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocumentRepository documentRepo = this.getRepository().getDocumentRepository();
 		ObjDocument image = documentRepo.create(this.getTenantId());
 		image.setName("Avatar");
 		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));

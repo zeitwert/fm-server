@@ -13,18 +13,12 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.dddrive.ddd.service.api.AggregateCache;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
-import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.building.adapter.api.jsonapi.impl.ObjBuildingDtoAdapter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
-import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
-import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
-import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,6 +36,11 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 
 	public static final String AddRatingOperation = "addRating";
 
+	@Override
+	public ObjBuildingDtoAdapter getAdapter() {
+		return (ObjBuildingDtoAdapter) super.getAdapter();
+	}
+
 	@JsonApiRelationId
 	private Integer accountId;
 
@@ -56,13 +55,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
-			ObjAccount account = null;
-			if (this.getOriginal() != null) {
-				account = this.getOriginal().getAccount();
-			} else if (this.accountId != null) {
-				account = getCache(ObjAccount.class).get(this.accountId);
-			}
-			this.accountDto = this.getAdapter(ObjAccountDtoAdapter.class).fromAggregate(account);
+			this.accountDto = this.getAdapter().getAccountDto(this.accountId);
 		}
 		return this.accountDto;
 	}
@@ -86,22 +79,12 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public Set<ObjContactDto> getContacts() {
 		if (this.contactsDtos == null) {
-			AggregateCache<ObjContact> contactCache = this.getCache(ObjContact.class);
-			ObjContactDtoAdapter contactAdapter = this.getAdapter(ObjContactDtoAdapter.class);
-			if (this.getOriginal() != null) {
-				this.contactsDtos = this.getOriginal()
-						.getContactSet()
-						.stream()
-						.map(id -> contactCache.get(id))
-						.map(contact -> contactAdapter.fromAggregate(contact))
-						.collect(Collectors.toSet());
-			} else if (this.contactIds != null) {
-				this.contactsDtos = this.contactIds
-						.stream()
-						.map(id -> contactCache.get(id))
-						.map(contact -> contactAdapter.fromAggregate(contact))
-						.collect(Collectors.toSet());
-			}
+			this.contactsDtos = this.contactIds != null
+					? this.contactIds
+							.stream()
+							.map(id -> this.getAdapter().getContactDto(id))
+							.collect(Collectors.toSet())
+					: Set.of();
 		}
 		return this.contactsDtos;
 	}
@@ -165,13 +148,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjDocumentDto getCoverFoto() {
 		if (this.coverFotoDto == null) {
-			ObjDocument cf = null;
-			if (this.getOriginal() != null) {
-				cf = this.getOriginal().getCoverFoto();
-			} else if (this.coverFotoId != null) {
-				cf = getCache(ObjDocument.class).get(this.coverFotoId);
-			}
-			this.coverFotoDto = this.getAdapter(ObjDocumentDtoAdapter.class).fromAggregate(cf);
+			this.coverFotoDto = this.getAdapter().getDocumentDto(this.coverFotoId);
 		}
 		return this.coverFotoDto;
 	}

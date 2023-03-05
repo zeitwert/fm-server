@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingTypeRecord;
@@ -18,8 +18,8 @@ public final class CodeBuildingTypeEnum extends JooqEnumerationBase<CodeBuilding
 
 	private static CodeBuildingTypeEnum INSTANCE;
 
-	private CodeBuildingTypeEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeBuildingType.class, enums, dslContext);
+	private CodeBuildingTypeEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeBuildingType.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

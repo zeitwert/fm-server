@@ -1,13 +1,19 @@
 
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
+import java.time.OffsetDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
+import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.model.ObjUserFM;
@@ -19,9 +25,29 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 
-	protected ObjUserDtoAdapter(AppContext appContext) {
-		super(appContext);
+	private ObjDocumentCache documentCache = null;
+	private ObjDocumentDtoAdapter documentDtoAdapter = null;
+
+	protected ObjUserDtoAdapter() {
 		AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_user"));
+	}
+
+	@Autowired
+	void setDocumentCache(ObjDocumentCache documentCache) {
+		this.documentCache = documentCache;
+	}
+
+	@Autowired
+	void setDocumentDtoAdapter(ObjDocumentDtoAdapter documentDtoAdapter) {
+		this.documentDtoAdapter = documentDtoAdapter;
+	}
+
+	public ObjDocumentDto getDocumentDto(Integer id) {
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentCache.get(id)) : null;
+	}
+
+	public OffsetDateTime getLastTouch(Integer id) {
+		return this.getUserCache().getLastTouch(id);
 	}
 
 	@Override
@@ -51,9 +77,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder()
-				.appContext(this.getAppContext())
-				.original(obj);
+		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.email(obj.getEmail())
@@ -62,10 +86,11 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 				.role(EnumeratedDto.fromEnum(obj.getRole()))
 				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated(t.getId())).toList())
 				.needPasswordChange(obj.getNeedPasswordChange())
+				.avatarId(obj.getAvatarImageId())
 				.build();
 	}
 
-	public EnumeratedDto asEnumerated(ObjUserFM obj) {
+	public EnumeratedDto asEnumerated(ObjUser obj) {
 		if (obj == null) {
 			return null;
 		}
@@ -81,15 +106,14 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder()
-				.appContext(this.getAppContext())
-				.original(null);
+		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder();
 		this.fromRecord(dtoBuilder, obj);
 		return dtoBuilder
 				.email(obj.getEmail())
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(obj.getRoleList())))
+				.avatarId(obj.getAvatarImgId())
 				.build();
 	}
 

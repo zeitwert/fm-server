@@ -26,6 +26,11 @@ public class IdProviderImpl implements IdProvider {
 	}
 
 	@Override
+	public Integer getOrderNr(Integer id) {
+		return id;
+	}
+
+	@Override
 	public Integer nextDocPartId() {
 		return this.dslContext.nextval(Sequences.DOC_PART_ID_SEQ).intValue();
 	}

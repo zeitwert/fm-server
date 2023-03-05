@@ -5,18 +5,15 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
-import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
-import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,12 +24,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @ToString(callSuper = true, includeFieldNames = true)
 public class ObjAccountLoginDto extends ObjDtoBase<ObjAccount> {
 
+	@Override
+	public ObjAccountLoginDtoAdapter getAdapter() {
+		return (ObjAccountLoginDtoAdapter) super.getAdapter();
+	}
+
 	private String name;
 	private String description;
 	private EnumeratedDto accountType;
 	private EnumeratedDto clientSegment;
 	private EnumeratedDto referenceCurrency;
-	private BigDecimal inflationRate;
 
 	@JsonApiRelationId
 	private Integer logoId;
@@ -47,13 +48,7 @@ public class ObjAccountLoginDto extends ObjDtoBase<ObjAccount> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjDocumentDto getLogo() {
 		if (this.logoDto == null) {
-			ObjDocument logo = null;
-			if (this.getOriginal() != null) {
-				logo = this.getOriginal().getLogoImage();
-			} else if (this.logoId != null) {
-				logo = getCache(ObjDocument.class).get(this.logoId);
-			}
-			this.logoDto = this.getAdapter(ObjDocumentDtoAdapter.class).fromAggregate(logo);
+			this.logoDto = this.getAdapter().getDocumentDto(this.logoId);
 		}
 		return this.logoDto;
 	}

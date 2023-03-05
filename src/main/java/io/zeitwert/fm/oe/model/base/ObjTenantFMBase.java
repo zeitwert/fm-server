@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jooq.TableRecord;
 
-import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.model.base.ObjTenantBase;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.dddrive.property.model.EnumProperty;
@@ -14,7 +13,6 @@ import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -60,8 +58,8 @@ public abstract class ObjTenantFMBase extends ObjTenantBase implements ObjTenant
 
 	@Override
 	public List<ObjUserFM> getUsers() {
-		ObjUserFMRepository userRepo = (ObjUserFMRepository) this.getAppContext().getRepository(ObjUserFM.class);
-		ObjUserCache userCache = (ObjUserCache) this.getAppContext().getCache(ObjUser.class);
+		ObjUserFMRepository userRepo = this.getRepository().getUserRepository();
+		ObjUserCache userCache = this.getRepository().getUserCache();
 		return userRepo.getByForeignKey("tenantId", this.getId())
 				.stream()
 				.map(c -> (TableRecord<?>) c)
@@ -71,14 +69,16 @@ public abstract class ObjTenantFMBase extends ObjTenantBase implements ObjTenant
 
 	@Override
 	public List<ObjAccount> getAccounts() {
-		ObjAccountRepository accountRepo = (ObjAccountRepository) this.getAppContext().getRepository(ObjAccount.class);
-		List<ObjAccountVRecord> accountIds = accountRepo.getByForeignKey("tenantId", this.getId());
-		ObjAccountCache accountCache = (ObjAccountCache) this.getAppContext().getCache(ObjAccount.class);
-		return accountIds.stream().map(c -> accountCache.get(c.getId())).toList();
+		ObjAccountRepository accountRepo = this.getRepository().getAccountRepository();
+		ObjAccountCache accountCache = this.getRepository().getAccountCache();
+		return accountRepo.getByForeignKey("tenantId", this.getId())
+				.stream()
+				.map(c -> accountCache.get(c.getId()))
+				.toList();
 	}
 
 	private void addLogoImage() {
-		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocumentRepository documentRepo = this.getRepository().getDocumentRepository();
 		ObjDocument image = documentRepo.create(this.getTenantId());
 		image.setName("Logo");
 		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));

@@ -12,7 +12,7 @@ import ItemPath from "lib/item/ui/ItemPath";
 import DocStageHistoryTab from "lib/item/ui/tab/DocStageHistoryTab";
 import NotesTab from "lib/item/ui/tab/NotesTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
-import { makeObservable, observable, toJS } from "mobx";
+import { computed, makeObservable, observable, toJS } from "mobx";
 import { inject, observer } from "mobx-react";
 import React from "react";
 import TaskMainForm from "./tabs/TaskMainForm";
@@ -42,6 +42,11 @@ class TaskPage extends React.Component<RouteComponentProps> {
 	@observable activeRightTabId = RIGHT_TABS.NOTES;
 	@observable doStageSelection = false;
 	@observable abstractStage?: CaseStage;
+
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
 
 	get ctx() {
 		return this.props as any as AppCtx;
@@ -75,8 +80,6 @@ class TaskPage extends React.Component<RouteComponentProps> {
 		}
 
 		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
-
-		const notesCount = this.notesStore.notes.length;
 
 		return (
 			<>
@@ -117,7 +120,7 @@ class TaskPage extends React.Component<RouteComponentProps> {
 							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
 							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
 						>
-							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.taskStore.id!} notesStore={this.notesStore} />

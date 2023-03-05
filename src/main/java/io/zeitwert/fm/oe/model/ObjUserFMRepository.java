@@ -9,6 +9,7 @@ import io.dddrive.ddd.model.enums.CodePartListType;
 import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
 import io.dddrive.obj.model.ObjRepository;
 import io.dddrive.oe.service.api.ObjTenantCache;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 public interface ObjUserFMRepository
@@ -21,6 +22,8 @@ public interface ObjUserFMRepository
 	PasswordEncoder getPasswordEncoder();
 
 	ObjTenantCache getTenantCache();
+
+	ObjDocumentRepository getDocumentRepository();
 
 	/**
 	 * Lookup User with email

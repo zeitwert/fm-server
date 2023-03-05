@@ -3,7 +3,6 @@ package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
 
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
@@ -15,10 +14,6 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 @Component("objDocumentDtoAdapter")
 public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDocumentVRecord, ObjDocumentDto> {
-
-	protected ObjDocumentDtoAdapter(AppContext appContext) {
-		super(appContext);
-	}
 
 	@Override
 	public void toAggregate(ObjDocumentDto dto, ObjDocument obj) {
@@ -46,9 +41,7 @@ public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDoc
 		if (obj == null) {
 			return null;
 		}
-		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder()
-		.appContext(this.getAppContext())
-		.original(obj);
+		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
@@ -67,9 +60,7 @@ public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDoc
 		if (obj == null) {
 			return null;
 		}
-		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder()
-				.appContext(this.getAppContext())
-				.original(null);
+		ObjDocumentDto.ObjDocumentDtoBuilder<?, ?> dtoBuilder = ObjDocumentDto.builder();
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder

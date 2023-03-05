@@ -57,6 +57,16 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 	@observable confirmationAction: () => void = () => { };
 
 	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
+	}
+
+	@computed
 	get hasCoverFoto(): boolean {
 		return !!this.buildingStore.building?.coverFoto?.contentTypeId;
 	}
@@ -101,8 +111,6 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		const isActive = !building.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
-		const notesCount = this.notesStore.notes.length;
-		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 		const missingDocument = !this.hasCoverFoto;
 
 		return (
@@ -174,13 +182,13 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 									<BuildingDocumentsTab building={building} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.buildingStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.TASKS &&
 									<TasksTab relatedToId={this.buildingStore.id!} tasksStore={this.tasksStore} />

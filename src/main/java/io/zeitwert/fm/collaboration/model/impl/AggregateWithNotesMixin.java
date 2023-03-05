@@ -15,9 +15,7 @@ public interface AggregateWithNotesMixin extends ItemWithNotes {
 
 	Aggregate aggregate();
 
-	default ObjNoteRepository noteRepository() {
-		return this.aggregate().getMeta().getAppContext().getBean(ObjNoteRepository.class);
-	}
+	ObjNoteRepository noteRepository();
 
 	@Override
 	default List<ObjNoteVRecord> getNotes() {

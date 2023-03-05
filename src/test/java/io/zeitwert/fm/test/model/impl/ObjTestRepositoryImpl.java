@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.jooq.JSON;
 import org.jooq.exception.NoDataFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -17,6 +18,7 @@ import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
+import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.base.ObjTestBase;
 import io.zeitwert.fm.test.model.db.Tables;
@@ -29,8 +31,20 @@ public class ObjTestRepositoryImpl extends FMObjRepositoryBase<ObjTest, ObjTestV
 
 	private static final String AGGREGATE_TYPE = "obj_test";
 
+	private ObjTestPartNodeRepository nodeRepository;
+
 	protected ObjTestRepositoryImpl() {
 		super(ObjTestRepository.class, ObjTest.class, ObjTestBase.class, AGGREGATE_TYPE);
+	}
+
+	@Autowired
+	void setNodeRepository(ObjTestPartNodeRepository nodeRepository) {
+		this.nodeRepository = nodeRepository;
+	}
+
+	@Override
+	public ObjTestPartNodeRepository getNodeRepository() {
+		return this.nodeRepository;
 	}
 
 	@Override

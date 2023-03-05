@@ -1,6 +1,5 @@
 package io.zeitwert.fm.doc.adapter.api.jsonapi.base;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
@@ -20,10 +19,6 @@ import org.jooq.TableRecord;
 public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>, D extends DocDtoBase<A>>
 		extends AggregateDtoAdapterBase<A, V, D> {
 
-	public DocDtoAdapterBase(AppContext appContext) {
-		super(appContext);
-	}
-
 	@Override
 	public void toAggregate(D dto, A doc) {
 		if (dto.getCaseDef() != null) {
@@ -42,6 +37,7 @@ public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>,
 
 	protected void fromAggregate(DocDtoBase.DocDtoBaseBuilder<?, ?, ?> dtoBuilder, A doc) {
 		dtoBuilder
+				.adapter(this)
 				.tenant(EnumeratedDto.fromAggregate(doc.getTenant()))
 				.meta(this.metaFromDoc(doc))
 				.id(doc.getId())
@@ -69,6 +65,7 @@ public abstract class DocDtoAdapterBase<A extends Doc, V extends TableRecord<?>,
 		EnumeratedDto owner = this.getUserEnumerated(doc.get(DocFields.OWNER_ID));
 		EnumeratedDto assignee = this.getUserEnumerated(doc.get(DocFields.ASSIGNEE_ID));
 		dtoBuilder
+				.adapter(this)
 				.tenant(tenant)
 				.meta(this.metaFromRecord(doc))
 				.id(doc.get(DocFields.ID))

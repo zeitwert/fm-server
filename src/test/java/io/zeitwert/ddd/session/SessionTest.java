@@ -54,7 +54,7 @@ public class SessionTest {
 		ObjTest testA2 = this.testRepo.get(testA1_id);
 		Integer testA2_idHash = System.identityHashCode(testA2);
 		assertNotEquals(testA1_idHash, testA2_idHash);
-		assertEquals(this.requestCtx, testA2.getMeta().getRequestContext());
+		assertEquals(this.requestCtx, testA2.getMeta().getRepository().getRequestContext());
 
 		// ObjUser user = userRepository.getByEmail(requestCtx, USER_EMAIL).get();
 

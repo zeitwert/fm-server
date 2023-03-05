@@ -11,12 +11,9 @@ import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
-import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
+import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,6 +31,11 @@ public class ObjUserDto extends ObjDtoBase<ObjUserFM> {
 
 	private static final DateTimeFormatter touchFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
+	@Override
+	public ObjUserDtoAdapter getAdapter() {
+		return (ObjUserDtoAdapter) super.getAdapter();
+	}
+
 	private String email;
 	private String name;
 	private String description;
@@ -45,7 +47,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUserFM> {
 	private String password; // write: change password
 
 	public String getLastTouch() {
-		OffsetDateTime lastTouch = ((ObjUserCache) this.getCache(ObjUser.class)).getLastTouch(this.getId());
+		OffsetDateTime lastTouch = this.getAdapter().getLastTouch(this.getId());
 		return lastTouch != null ? touchFmt.format(lastTouch) : null;
 	}
 
@@ -62,13 +64,7 @@ public class ObjUserDto extends ObjDtoBase<ObjUserFM> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjDocumentDto getAvatar() {
 		if (this.avatarDto == null) {
-			ObjDocument avatar = null;
-			if (this.getOriginal() != null) {
-				avatar = this.getOriginal().getAvatarImage();
-			} else if (this.avatarId != null) {
-				avatar = getCache(ObjDocument.class).get(this.avatarId);
-			}
-			this.avatarDto = this.getAdapter(ObjDocumentDtoAdapter.class).fromAggregate(avatar);
+			this.avatarDto = this.getAdapter().getDocumentDto(this.avatarId);
 		}
 		return this.avatarDto;
 	}

@@ -5,18 +5,20 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
+import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
-import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
-import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
-import io.zeitwert.fm.oe.model.ObjTenantFM;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,15 +29,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "account", resourcePath = "account/accounts")
-public class ObjAccountDto extends ObjAccountLoginDto {
+public class ObjAccountDto extends ObjDtoBase<ObjAccount> {
+
+	@Override
+	public ObjAccountDtoAdapter getAdapter() {
+		return (ObjAccountDtoAdapter) super.getAdapter();
+	}
+
+	private String name;
+	private String description;
+	private EnumeratedDto accountType;
+	private EnumeratedDto clientSegment;
+	private EnumeratedDto referenceCurrency;
+	private BigDecimal inflationRate;
 
 	@JsonApiRelationId
 	private Integer tenantInfoId;
-
-	@Override
-	public void setLogoId(Integer tenantId) {
-		// assertThis(false, "tenantInfoId is read-only");
-	}
 
 	@JsonIgnore
 	private ObjTenantDto tenantInfoDto;
@@ -43,13 +52,7 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjTenantDto getTenantInfo() {
 		if (this.tenantInfoDto == null) {
-			ObjTenantFM tenant = null;
-			if (this.getOriginal() != null) {
-				tenant = (ObjTenantFM) this.getOriginal().getTenant();
-			} else if (this.tenantInfoId != null) {
-				tenant = this.getCache(ObjTenantFM.class).get(this.tenantInfoId);
-			}
-			this.tenantInfoDto = this.getAdapter(ObjTenantDtoAdapter.class).fromAggregate(tenant);
+			this.tenantInfoDto = this.getAdapter().getTenantDto(this.tenantInfoId);
 		}
 		return this.tenantInfoDto;
 	}
@@ -72,13 +75,7 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjContactDto getMainContact() {
 		if (this.mainContactDto == null) {
-			ObjContact contact = null;
-			if (this.getOriginal() != null) {
-				contact = this.getOriginal().getMainContact();
-			} else if (this.mainContactId != null) {
-				contact = getCache(ObjContact.class).get(this.mainContactId);
-			}
-			this.mainContactDto = this.getAdapter(ObjContactDtoAdapter.class).fromAggregate(contact);
+			this.mainContactDto = this.getAdapter().getContactDto(this.mainContactId);
 		}
 		return this.mainContactDto;
 	}
@@ -89,18 +86,41 @@ public class ObjAccountDto extends ObjAccountLoginDto {
 	}
 
 	@JsonIgnore
+	private List<Integer> contactIdList;
+
+	@JsonIgnore
 	private List<ObjContactDto> contactsDto;
 
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public List<? extends ObjContactDto> getContacts() {
 		if (this.contactsDto == null) {
-			if (this.getOriginal() != null) {
-				ObjContactDtoAdapter contactAdapter = this.getAdapter(ObjContactDtoAdapter.class);
-				this.contactsDto = this.getOriginal().getContacts().stream().map(c -> contactAdapter.fromAggregate(c)).toList();
-			} else {
-			}
+			this.contactsDto = this.contactIdList != null
+					? this.contactIdList.stream().map(id -> this.getAdapter().getContactDto(id)).toList()
+					: List.of();
 		}
 		return this.contactsDto;
+	}
+
+	@JsonApiRelationId
+	private Integer logoId;
+
+	public void setLogoId(Integer logoId) {
+		// assertThis(false, "logoId is read-only");
+	}
+
+	@JsonIgnore
+	private ObjDocumentDto logoDto;
+
+	@JsonApiRelation(serialize = SerializeType.LAZY)
+	public ObjDocumentDto getLogo() {
+		if (this.logoDto == null) {
+			this.logoDto = this.getAdapter().getDocumentDto(this.logoId);
+		}
+		return this.logoDto;
+	}
+
+	public void setLogo(ObjDocumentDto logo) {
+		// assertThis(false, "logo is read-only");
 	}
 
 }

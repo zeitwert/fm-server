@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 public class SearchResultDto {
 
-	private EnumeratedDto tenant;
+	private Integer tenantId;
 	private EnumeratedDto itemType;
 	private String id;
 	private String caption;
@@ -20,9 +20,9 @@ public class SearchResultDto {
 	public static SearchResultDto fromItem(SearchResult searchResult) {
 		// @formatter:off
 		return SearchResultDto.builder()
-			.tenant(EnumeratedDto.fromAggregate(searchResult.getTenant()))
+			.tenantId(searchResult.getTenantId())
 			.itemType(EnumeratedDto.fromEnum(searchResult.getAggregateType()))
-			.id(searchResult.getId())
+			.id(searchResult.getId().toString())
 			.caption(searchResult.getCaption())
 			.rank(searchResult.getRank())
 			.build();
