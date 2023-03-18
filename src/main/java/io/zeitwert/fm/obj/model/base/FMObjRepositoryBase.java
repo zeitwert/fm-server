@@ -78,4 +78,9 @@ public abstract class FMObjRepositoryBase<O extends Obj, V extends TableRecord<?
 		return this.doFind(querySpec);
 	}
 
+	@Override
+	public Integer getId(String key) {
+		return null;
+	}
+
 }

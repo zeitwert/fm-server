@@ -24,7 +24,7 @@
 		<compiler.version>3.10.1</compiler.version>
 		<release.version>2.5.3</release.version>
 		<flyway.version>9.14.1</flyway.version>
-		<dddrive.version>1.0.16</dddrive.version>
+		<dddrive.version>1.0.18</dddrive.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<jjwt.version>0.11.5</jjwt.version>
 		<lombok.version>1.18.24</lombok.version>

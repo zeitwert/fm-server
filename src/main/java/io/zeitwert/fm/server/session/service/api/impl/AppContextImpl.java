@@ -5,16 +5,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import io.dddrive.app.model.RequestContext;
-import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.app.service.api.base.AppContextBase;
 import io.dddrive.oe.model.ObjUser;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.enums.CodeLocaleEnum;
 
 @Service("appContext")
-public class AppContextImpl extends AppContextBase implements AppContextSPI {
+public class AppContextImpl extends AppContextBase {
 
 	private static final String K_ZEITWERT_IO = "k@zeitwert.io";
 
@@ -33,11 +31,12 @@ public class AppContextImpl extends AppContextBase implements AppContextSPI {
 	}
 
 	@Override
-	public void beginKernelSession() {
-		ObjUser kernelUser = ((ObjUserCache) this.getCache(ObjUser.class)).getByEmail(K_ZEITWERT_IO).get();
+	public void beginKernelSession(String userEmail) {
+		String email = userEmail != null ? userEmail : K_ZEITWERT_IO;
+		ObjUser user = ((ObjUserCache) this.getCache(ObjUser.class)).getByEmail(email).get();
 		this.kernelRequestContext = RequestContextFMImpl.builder()
-				.tenantId(ObjTenantFMRepository.KERNEL_TENANT_ID)
-				.user(kernelUser)
+				.tenantId(user.getTenantId())
+				.user(user)
 				.locale(CodeLocaleEnum.getLocale("en-US"))
 				.accountId(null)
 				.build();

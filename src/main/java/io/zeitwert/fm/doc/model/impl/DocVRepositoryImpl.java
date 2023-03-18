@@ -63,4 +63,9 @@ public class DocVRepositoryImpl extends JooqDocRepositoryBase<Doc, DocRecord>
 		return this.doFind(this.queryWithFilter(querySpec, (RequestContextFM) this.getAppContext().getRequestContext()));
 	}
 
+	@Override
+	public Integer getId(String key) {
+		return null;
+	}
+
 }

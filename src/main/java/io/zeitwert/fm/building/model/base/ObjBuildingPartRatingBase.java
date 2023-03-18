@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import org.flywaydb.core.internal.util.Pair;
 
+import io.dddrive.ddd.model.Part;
 import io.dddrive.ddd.model.PartRepository;
 import io.dddrive.obj.model.base.ObjPartBase;
 import io.dddrive.oe.model.ObjUser;
@@ -54,7 +55,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public void doAfterAdd(Property<?> property) {
+	public void doAfterAdd(Property<?> property, Part<?> part) {
 		if (property == this.elementList) {
 			if (this.getRatingDate() != null) {
 				Integer year = this.getRatingDate().getYear();

@@ -24,6 +24,8 @@ buildNumber.properties
 
 ### Misc ###
 .apt_generated
+.factorypath
+.classpath
 
 # UI
 

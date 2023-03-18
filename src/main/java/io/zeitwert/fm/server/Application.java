@@ -15,7 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @SpringBootApplication(exclude = { io.crnk.spring.setup.boot.mvc.CrnkErrorControllerAutoConfiguration.class })
 @Configuration
 @EnableAsync
-@ComponentScan({ "io.zeitwert", "io.dddrive" })
+@ComponentScan({ "io.zeitwert" })
 public class Application {
 
 	public static void main(String[] args) {

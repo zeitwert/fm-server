@@ -71,4 +71,9 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 		return this.doFind(this.queryWithFilter(querySpec, (RequestContextFM) this.getAppContext().getRequestContext()));
 	}
 
+	@Override
+	public Integer getId(String key) {
+		return null;
+	}
+
 }
