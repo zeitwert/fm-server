@@ -78,7 +78,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		return (
 			<div className="slds-grid slds-wrap slds-m-top_xx-large" style={{ marginTop: "15em" }}>
 				<div className="slds-col slds-size_1-of-12 slds-large-size_1-of-4" />
-				<div className="slds-col slds-size_10-of-12 slds-large-size_2-of-4">
+				<div className="slds-col slds-size_10-of-12 slds-large-size_2-of-4" style={{ maxWidth: "800px" }}>
 					<Card heading={CARD_HEADER}>
 						<form id="login" onSubmit={(evt: any) => this.login(evt, "form")}>
 							<div className="slds-grid slds-wrap">
