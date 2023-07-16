@@ -72,6 +72,7 @@ export class LineReport extends React.Component<LineReportProps> {
 				joined={isJoined === false ? false : true}
 				fixedLayout={fixedLayout === false ? false : true}
 				fixedHeader={fixedHeader === false ? false : true}
+				resizable={true}
 				onRowChange={this.handleChanged}
 				onSort={this.handleSort}
 				selection={toJS(this.selection)}
