@@ -8,7 +8,6 @@ import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -57,7 +56,7 @@ public abstract class ObjDocumentBase extends FMObjBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return this.getRepository().getAccountCache().get(this.getAccountId());
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public abstract class ObjDocumentBase extends FMObjBase
 
 	@Override
 	public void storeContent(CodeContentType contentType, byte[] content) {
-		this.getRepository().storeContent(this.getRequestContext(), this, contentType, content);
+		this.getRepository().storeContent(this.getRepository().getRequestContext(), this, contentType, content);
 		this.contentType = contentType;
 		this.content = content;
 		this.calcAll();
@@ -80,6 +79,7 @@ public abstract class ObjDocumentBase extends FMObjBase
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchText(this.getName());
 	}
 

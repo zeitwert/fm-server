@@ -3,11 +3,14 @@ package io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto;
 
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.dddrive.obj.model.Obj;
+import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
@@ -17,11 +20,27 @@ import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 public class ObjPortfolioDtoAdapter
 		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
 
-	protected ObjVCache objCache;
+	private ObjAccountCache accountCache = null;
+	private ObjAccountDtoAdapter accountDtoAdapter;
 
-	protected ObjPortfolioDtoAdapter(AppContext appContext, ObjVCache objCache) {
-		super(appContext);
+	private final ObjVCache objCache;
+
+	protected ObjPortfolioDtoAdapter(ObjVCache objCache) {
 		this.objCache = objCache;
+	}
+
+	@Autowired
+	void setAccountCache(ObjAccountCache accountCache) {
+		this.accountCache = accountCache;
+	}
+
+	@Autowired
+	void setAccountDtoAdapter(ObjAccountDtoAdapter accountDtoAdapter) {
+		this.accountDtoAdapter = accountDtoAdapter;
+	}
+
+	public ObjAccountDto getAccountDto(Integer id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
 	}
 
 	@Override
@@ -61,9 +80,7 @@ public class ObjPortfolioDtoAdapter
 		if (pf == null) {
 			return null;
 		}
-		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder()
-				.appContext(this.getAppContext())
-				.original(pf);
+		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder();
 		this.fromAggregate(dtoBuilder, pf);
 		// @formatter:off
 		return dtoBuilder
@@ -83,9 +100,7 @@ public class ObjPortfolioDtoAdapter
 		if (obj == null) {
 			return null;
 		}
-		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder()
-				.appContext(this.getAppContext())
-				.original(null);
+		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder();
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder

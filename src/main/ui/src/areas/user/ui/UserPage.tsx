@@ -1,6 +1,6 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, User, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
+import { EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, User, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
 import { AppCtx } from "app/App";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
@@ -9,6 +9,7 @@ import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import NotesTab from "lib/item/ui/tab/NotesTab";
 import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -39,6 +40,7 @@ class UserPage extends React.Component<RouteComponentProps> {
 
 	@observable userStore = UserStoreModel.create({});
 	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
 
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
@@ -47,6 +49,16 @@ class UserPage extends React.Component<RouteComponentProps> {
 	@computed
 	get hasAvatar(): boolean {
 		return !!this.userStore.user?.avatar?.contentTypeId;
+	}
+
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 	}
 
 	get ctx() {
@@ -61,11 +73,15 @@ class UserPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		session.setHelpContext(`${EntityType.USER}-${this.activeLeftTabId}`);
 		await this.userStore.load(this.props.params.userId!);
+		await this.notesStore.load(this.props.params.userId!);
+		await this.tasksStore.load(this.props.params.userId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.userId !== prevProps.params.userId) {
 			await this.userStore.load(this.props.params.userId!);
+			await this.notesStore.load(this.props.params.userId!);
+			await this.tasksStore.load(this.props.params.userId!);
 		}
 	}
 
@@ -81,8 +97,6 @@ class UserPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !user.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
-
-		const notesCount = this.notesStore.notes.length;
 
 		return (
 			<>
@@ -134,21 +148,24 @@ class UserPage extends React.Component<RouteComponentProps> {
 									<UserDocumentsTab user={user} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.userStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							{
-								!session.isKernelTenant &&
-								<TabsPanel label="Aktivität">
-									{
-										this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-										<ObjActivityHistoryTab obj={user} />
-									}
-								</TabsPanel>
-							}
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")} disabled={!session.sessionInfo?.account}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.userStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<ObjActivityHistoryTab obj={user} />
+								}
+							</TabsPanel>
 							{
 								user.hasValidations &&
 								<TabsPanel label={`Validierungen (${user.validationsCount})`}>

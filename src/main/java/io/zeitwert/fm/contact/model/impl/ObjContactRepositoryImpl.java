@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
+import io.zeitwert.fm.contact.model.ObjContactPartAddressRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.contact.model.base.ObjContactBase;
 import io.zeitwert.fm.contact.model.db.Tables;
@@ -26,8 +28,23 @@ public class ObjContactRepositoryImpl extends FMObjRepositoryBase<ObjContact, Ob
 
 	private static final String AGGREGATE_TYPE = "obj_contact";
 
-	protected ObjContactRepositoryImpl() {
+	private ObjAccountCache accountCache;
+	private ObjContactPartAddressRepository addressRepository;
+
+	protected ObjContactRepositoryImpl(ObjAccountCache accountCache, ObjContactPartAddressRepository addressRepository) {
 		super(ObjContactRepository.class, ObjContact.class, ObjContactBase.class, AGGREGATE_TYPE);
+		this.accountCache = accountCache;
+		this.addressRepository = addressRepository;
+	}
+
+	@Override
+	public ObjAccountCache getAccountCache() {
+		return this.accountCache;
+	}
+
+	@Override
+	public ObjContactPartAddressRepository getAddressRepository() {
+		return this.addressRepository;
 	}
 
 	@Override

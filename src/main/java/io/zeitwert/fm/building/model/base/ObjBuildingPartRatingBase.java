@@ -8,6 +8,7 @@ import org.flywaydb.core.internal.util.Pair;
 
 import io.dddrive.ddd.model.PartRepository;
 import io.dddrive.obj.model.base.ObjPartBase;
+import io.dddrive.oe.model.ObjUser;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.PartListProperty;
 import io.dddrive.property.model.Property;
@@ -22,7 +23,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
-import io.zeitwert.fm.oe.model.ObjUserFM;
 
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
@@ -32,7 +32,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	protected final EnumProperty<CodeBuildingMaintenanceStrategy> maintenanceStrategy=this.addEnumProperty("maintenanceStrategy", CodeBuildingMaintenanceStrategy.class);
 	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus= this.addEnumProperty("ratingStatus", CodeBuildingRatingStatus.class);
 	protected final SimpleProperty<LocalDate> ratingDate= this.addSimpleProperty("ratingDate", LocalDate.class);
-	protected final ReferenceProperty<ObjUserFM> ratingUser= this.addReferenceProperty("ratingUser", ObjUserFM.class);
+	protected final ReferenceProperty<ObjUser> ratingUser= this.addReferenceProperty("ratingUser", ObjUser.class);
 	protected final PartListProperty<ObjBuildingPartElementRating> elementList= this.addPartListProperty("elementList", ObjBuildingPartElementRating.class);
 	//@formatter:on
 
@@ -54,7 +54,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public void afterAdd(Property<?> property) {
+	public void doAfterAdd(Property<?> property) {
 		if (property == this.elementList) {
 			if (this.getRatingDate() != null) {
 				Integer year = this.getRatingDate().getYear();
@@ -64,7 +64,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public void afterSet(Property<?> property) {
+	public void doAfterSet(Property<?> property) {
 		if (property == this.partCatalog) {
 			this.elementList.clearParts();
 			if (this.getPartCatalog() != null) {

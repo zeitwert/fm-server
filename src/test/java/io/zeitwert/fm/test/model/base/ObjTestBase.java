@@ -7,7 +7,7 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.EnumSetProperty;
 import io.dddrive.property.model.PartListProperty;
@@ -46,10 +46,6 @@ public abstract class ObjTestBase extends FMObjBase
 	@Override
 	public ObjTest aggregate() {
 		return this;
-	}
-
-	@Override
-	public void doCalcSearch() {
 	}
 
 	@Override

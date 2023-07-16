@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.PartListProperty;
 import io.dddrive.property.model.ReferenceProperty;
@@ -17,7 +17,6 @@ import io.dddrive.property.model.SimpleProperty;
 import io.dddrive.validation.model.enums.CodeValidationLevelEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -112,7 +111,7 @@ public abstract class ObjBuildingBase extends FMObjBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return this.getRepository().getAccountCache().get(this.getAccountId());
 	}
 
 	@Override
@@ -174,8 +173,8 @@ public abstract class ObjBuildingBase extends FMObjBase
 			} else {
 				rating.setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"));
 			}
-			rating.setRatingDate(this.getMeta().getRequestContext().getCurrentDate());
-			rating.setRatingUser((ObjUserFM) this.getMeta().getRequestContext().getUser());
+			rating.setRatingDate(this.getRepository().getRequestContext().getCurrentDate());
+			rating.setRatingUser((ObjUserFM) this.getRepository().getRequestContext().getUser());
 		} finally {
 			rating.getMeta().enableCalc();
 			rating.calcAll();
@@ -248,6 +247,7 @@ public abstract class ObjBuildingBase extends FMObjBase
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchToken(this.getZip());
 		this.addSearchToken(this.getBuildingNr());
 		this.addSearchToken(this.getInsuranceNr());

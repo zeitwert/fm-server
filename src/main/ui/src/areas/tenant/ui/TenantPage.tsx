@@ -1,6 +1,6 @@
 
 import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
-import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, NotesStore, NotesStoreModel, session, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
+import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import NotFound from "app/ui/NotFound";
 import AccountCreationForm from "areas/account/ui/AccountCreationForm";
@@ -11,6 +11,7 @@ import ItemModal from "lib/item/ui/ItemModal";
 import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
 import NotesTab from "lib/item/ui/tab/NotesTab";
 import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
 import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
@@ -41,6 +42,7 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	@observable accountStore = AccountStoreModel.create({});
 	@observable userStore = UserStoreModel.create({});
 	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
 
 	@observable activeLeftTabId = LEFT_TABS.MAIN;
 	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
@@ -48,6 +50,16 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	@computed
 	get hasLogo(): boolean {
 		return !!this.tenantStore.tenant?.logo?.contentTypeId;
+	}
+
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 	}
 
 	constructor(props: any) {
@@ -58,11 +70,15 @@ class TenantPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		session.setHelpContext(`${EntityType.TENANT}-${this.activeLeftTabId}`);
 		await this.tenantStore.load(this.props.params.tenantId!);
+		await this.notesStore.load(this.props.params.tenantId!);
+		await this.tasksStore.load(this.props.params.tenantId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.tenantId !== prevProps.params.tenantId) {
 			await this.tenantStore.load(this.props.params.tenantId!);
+			await this.notesStore.load(this.props.params.tenantId!);
+			await this.tasksStore.load(this.props.params.tenantId!);
 		}
 	}
 
@@ -78,8 +94,6 @@ class TenantPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = session.isAdmin;
 		const isActive = !tenant.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
-
-		const notesCount = this.notesStore.notes.length;
 
 		return (
 			<>
@@ -131,21 +145,24 @@ class TenantPage extends React.Component<RouteComponentProps> {
 									<TenantDocumentsTab tenant={tenant} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.tenantStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							{
-								!session.isKernelTenant &&
-								<TabsPanel label="Aktivität">
-									{
-										this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
-										<ObjActivityHistoryTab obj={tenant} />
-									}
-								</TabsPanel>
-							}
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")} disabled={!session.sessionInfo?.account}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<ObjActivityHistoryTab obj={tenant} />
+								}
+							</TabsPanel>
 							{
 								tenant.hasValidations &&
 								<TabsPanel label={`Validierungen (${tenant.validationsCount})`}>

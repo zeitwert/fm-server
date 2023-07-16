@@ -1,22 +1,38 @@
 
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
+import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.base.DocDtoAdapterBase;
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 
 @Component("docTaskDtoAdapter")
 public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord, DocTaskDto> {
 
-	protected DocTaskDtoAdapter(AppContext appContext) {
-		super(appContext);
+	private ObjAccountCache accountCache = null;
+	private ObjAccountDtoAdapter accountDtoAdapter;
+
+	@Autowired
+	void setAccountCache(ObjAccountCache accountCache) {
+		this.accountCache = accountCache;
+	}
+
+	@Autowired
+	void setAccountDtoAdapter(ObjAccountDtoAdapter accountDtoAdapter) {
+		this.accountDtoAdapter = accountDtoAdapter;
+	}
+
+	public ObjAccountDto getAccountDto(Integer id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
 	}
 
 	@Override
@@ -38,9 +54,7 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 		if (doc == null) {
 			return null;
 		}
-		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder()
-				.appContext(this.getAppContext())
-				.original(doc);
+		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
 				.accountId(doc.getAccountId())
@@ -59,9 +73,7 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 		if (doc == null) {
 			return null;
 		}
-		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder()
-				.appContext(this.getAppContext())
-				.original(null);
+		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
 		this.fromRecord(dtoBuilder, doc);
 		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
 		EnumeratedDto relatedTo = EnumeratedDto.builder().id(relatedToId.toString()).build();

@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
 import io.dddrive.oe.service.api.ObjTenantCache;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
@@ -25,19 +27,41 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserRepository")
-@DependsOn("appContext")
+@DependsOn({ "appContext", "codeUserRoleEnum" })
 public class ObjUserFMRepositoryImpl extends FMObjRepositoryBase<ObjUserFM, ObjUserVRecord>
 		implements ObjUserFMRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_user";
 
 	private final PasswordEncoder passwordEncoder;
+	private final ObjTenantCache tenantCache;
+	private final ObjDocumentRepository documentRepository;
 
 	// passwordEncoder: break cycle from WebSecurityConfig TODO find better solution
 	// (own class)
-	protected ObjUserFMRepositoryImpl(@Lazy PasswordEncoder passwordEncoder) {
+	protected ObjUserFMRepositoryImpl(
+			@Lazy PasswordEncoder passwordEncoder,
+			ObjTenantCache tenantCache,
+			ObjDocumentRepository documentRepository) {
 		super(ObjUserFMRepository.class, ObjUserFM.class, ObjUserFMBase.class, AGGREGATE_TYPE);
 		this.passwordEncoder = passwordEncoder;
+		this.tenantCache = tenantCache;
+		this.documentRepository = documentRepository;
+	}
+
+	@Override
+	public PasswordEncoder getPasswordEncoder() {
+		return this.passwordEncoder;
+	}
+
+	@Override
+	public ObjTenantCache getTenantCache() {
+		return this.tenantCache;
+	}
+
+	@Override
+	public ObjDocumentRepository getDocumentRepository() {
+		return this.documentRepository;
 	}
 
 	@Override
@@ -59,13 +83,13 @@ public class ObjUserFMRepositoryImpl extends FMObjRepositoryBase<ObjUserFM, ObjU
 	}
 
 	@Override
-	public PasswordEncoder getPasswordEncoder() {
-		return this.passwordEncoder;
+	public boolean isAppAdmin(ObjUserFM user) {
+		return user.hasRole(CodeUserRoleEnum.APP_ADMIN);
 	}
 
 	@Override
-	public ObjTenantCache getTenantCache() {
-		return this.getAppContext().getBean(ObjTenantCache.class);
+	public boolean isAdmin(ObjUserFM user) {
+		return user.hasRole(CodeUserRoleEnum.ADMIN);
 	}
 
 	@Override

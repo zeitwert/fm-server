@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.CodeAddressTypeRecord;
@@ -18,8 +18,8 @@ public class CodeAddressTypeEnum extends JooqEnumerationBase<CodeAddressType> {
 
 	private static CodeAddressTypeEnum INSTANCE;
 
-	protected CodeAddressTypeEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeAddressType.class, enums, dslContext);
+	protected CodeAddressTypeEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeAddressType.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

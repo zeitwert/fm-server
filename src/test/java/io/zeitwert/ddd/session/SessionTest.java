@@ -12,8 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.model.enums.CodeCountry;
-import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -54,7 +54,7 @@ public class SessionTest {
 		ObjTest testA2 = this.testRepo.get(testA1_id);
 		Integer testA2_idHash = System.identityHashCode(testA2);
 		assertNotEquals(testA1_idHash, testA2_idHash);
-		assertEquals(this.requestCtx, testA2.getMeta().getRequestContext());
+		assertEquals(this.requestCtx, testA2.getMeta().getRepository().getRequestContext());
 
 		// ObjUser user = userRepository.getByEmail(requestCtx, USER_EMAIL).get();
 

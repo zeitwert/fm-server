@@ -56,6 +56,16 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		return !!this.accountStore.account?.logo?.contentTypeId;
 	}
 
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
+	}
+
 	get ctx() {
 		return this.props as any as AppCtx;
 	}
@@ -68,11 +78,15 @@ class AccountPage extends React.Component<RouteComponentProps> {
 	async componentDidMount() {
 		session.setHelpContext(`${EntityType.ACCOUNT}-${this.activeLeftTabId}`);
 		await this.accountStore.load(this.props.params.accountId!);
+		await this.notesStore.load(this.props.params.accountId!);
+		await this.tasksStore.load(this.props.params.accountId!);
 	}
 
 	async componentDidUpdate(prevProps: RouteComponentProps) {
 		if (this.props.params.accountId !== prevProps.params.accountId) {
 			await this.accountStore.load(this.props.params.accountId!);
+			await this.notesStore.load(this.props.params.accountId!);
+			await this.tasksStore.load(this.props.params.accountId!);
 		}
 	}
 
@@ -88,9 +102,6 @@ class AccountPage extends React.Component<RouteComponentProps> {
 		const allowEditStaticData = session.isAdmin || session.hasSuperUserRole;
 		const isActive = !account.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
-
-		const notesCount = this.notesStore.notes.length;
-		const tasksCount = this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
 
 		return (
 			<>
@@ -130,21 +141,18 @@ class AccountPage extends React.Component<RouteComponentProps> {
 									<AccountDocumentsTab account={account} afterSave={this.reload} />
 								}
 							</TabsPanel>
-							<TabsPanel label={"Notizen" + (notesCount ? ` (${notesCount})` : "")}>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
 								{
 									this.activeRightTabId === RIGHT_TABS.NOTES &&
 									<NotesTab relatedToId={this.accountStore.id!} notesStore={this.notesStore} />
 								}
 							</TabsPanel>
-							{
-								!session.isKernelTenant &&
-								<TabsPanel label={"Aufgaben" + (tasksCount ? ` (${tasksCount})` : "")}>
-									{
-										this.activeRightTabId === RIGHT_TABS.TASKS &&
-										<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
-									}
-								</TabsPanel>
-							}
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")} disabled={!session.sessionInfo?.account}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
 							<TabsPanel label="Aktivität">
 								{
 									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&

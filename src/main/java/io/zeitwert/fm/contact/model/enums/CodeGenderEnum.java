@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.contact.model.db.Tables;
 import io.zeitwert.fm.contact.model.db.tables.records.CodeGenderRecord;
@@ -18,8 +18,8 @@ public class CodeGenderEnum extends JooqEnumerationBase<CodeGender> {
 
 	private static CodeGenderEnum INSTANCE;
 
-	protected CodeGenderEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeGender.class, enums, dslContext);
+	protected CodeGenderEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeGender.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

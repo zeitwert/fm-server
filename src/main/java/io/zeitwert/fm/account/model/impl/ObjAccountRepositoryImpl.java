@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.exception.NoDataFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
@@ -17,16 +20,57 @@ import io.zeitwert.fm.account.model.base.ObjAccountBase;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
+import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.contact.service.api.ObjContactCache;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objAccountRepository")
+@DependsOn({ "appContext", "kernelBootstrap" })
 public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, ObjAccountVRecord>
 		implements ObjAccountRepository {
 
 	private static final String AGGREGATE_TYPE = "obj_account";
 
+	private ObjContactRepository contactRepository;
+	private ObjContactCache contactCache;
+	private ObjDocumentRepository documentRepository;
+
 	protected ObjAccountRepositoryImpl() {
 		super(ObjAccountRepository.class, ObjAccount.class, ObjAccountBase.class, AGGREGATE_TYPE);
+	}
+
+	@Autowired
+	@Lazy
+	void setContactRepository(ObjContactRepository contactRepository) {
+		this.contactRepository = contactRepository;
+	}
+
+	@Autowired
+	@Lazy
+	void setContactCache(ObjContactCache contactCache) {
+		this.contactCache = contactCache;
+	}
+
+	@Autowired
+	@Lazy
+	void setDocumentRepository(ObjDocumentRepository documentRepository) {
+		this.documentRepository = documentRepository;
+	}
+
+	@Override
+	public ObjContactRepository getContactRepository() {
+		return this.contactRepository;
+	}
+
+	@Override
+	public ObjContactCache getContactCache() {
+		return this.contactCache;
+	}
+
+	@Override
+	public ObjDocumentRepository getDocumentRepository() {
+		return this.documentRepository;
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.dddrive.ddd.model.PartRepository;
 import io.dddrive.obj.model.base.ObjPartBase;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.SimpleProperty;
 

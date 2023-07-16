@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestPartNode;
@@ -28,8 +29,16 @@ public class DocTestRepositoryImpl extends FMDocRepositoryBase<DocTest, DocTestV
 
 	private static final String AGGREGATE_TYPE = "doc_test";
 
-	protected DocTestRepositoryImpl() {
+	private final ObjAccountCache accountCache;
+
+	protected DocTestRepositoryImpl(ObjAccountCache accountCache) {
 		super(DocTestRepository.class, DocTest.class, DocTestBase.class, AGGREGATE_TYPE);
+		this.accountCache = accountCache;
+	}
+
+	@Override
+	public ObjAccountCache getAccountCache() {
+		return this.accountCache;
 	}
 
 	@Override

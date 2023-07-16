@@ -3,14 +3,17 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
 import static io.dddrive.util.Invariant.assertThis;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.ddd.model.PartPersistenceStatus;
 import io.dddrive.ddd.model.base.PartSPI;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -26,6 +29,12 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
+import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
+import io.zeitwert.fm.contact.adapter.api.jsonapi.impl.ObjContactDtoAdapter;
+import io.zeitwert.fm.contact.service.api.ObjContactCache;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
+import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
+import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
@@ -34,11 +43,62 @@ import io.zeitwert.fm.oe.model.ObjUserFM;
 @Component("objBuildingDtoAdapter")
 public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingVRecord, ObjBuildingDto> {
 
-	protected final ObjUserDtoAdapter userDtoAdapter;
+	private ObjAccountCache accountCache = null;
+	private ObjAccountDtoAdapter accountDtoAdapter;
 
-	protected ObjBuildingDtoAdapter(AppContext appContext, ObjUserDtoAdapter userDtoAdapter) {
-		super(appContext);
+	private ObjContactCache contactCache = null;
+	private ObjContactDtoAdapter contactDtoAdapter;
+
+	private ObjDocumentCache documentCache = null;
+	private ObjDocumentDtoAdapter documentDtoAdapter = null;
+
+	private final ObjUserDtoAdapter userDtoAdapter;
+
+	// @Autowired
+	protected ObjBuildingDtoAdapter(ObjUserDtoAdapter userDtoAdapter) {
 		this.userDtoAdapter = userDtoAdapter;
+	}
+
+	@Autowired
+	void setAccountCache(ObjAccountCache accountCache) {
+		this.accountCache = accountCache;
+	}
+
+	@Autowired
+	void setAccountDtoAdapter(ObjAccountDtoAdapter accountDtoAdapter) {
+		this.accountDtoAdapter = accountDtoAdapter;
+	}
+
+	@Autowired
+	void setContactCache(ObjContactCache contactCache) {
+		this.contactCache = contactCache;
+	}
+
+	@Autowired
+	void setContactDtoAdapter(ObjContactDtoAdapter contactDtoAdapter) {
+		this.contactDtoAdapter = contactDtoAdapter;
+	}
+
+	@Autowired
+	void setDocumentCache(ObjDocumentCache documentCache) {
+		this.documentCache = documentCache;
+	}
+
+	@Autowired
+	void setDocumentDtoAdapter(ObjDocumentDtoAdapter documentDtoAdapter) {
+		this.documentDtoAdapter = documentDtoAdapter;
+	}
+
+	public ObjAccountDto getAccountDto(Integer id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
+	}
+
+	public ObjContactDto getContactDto(Integer id) {
+		return id != null ? this.contactDtoAdapter.fromAggregate(this.contactCache.get(id)) : null;
+	}
+
+	public ObjDocumentDto getDocumentDto(Integer id) {
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentCache.get(id)) : null;
 	}
 
 	@Override
@@ -132,9 +192,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 		if (obj == null) {
 			return null;
 		}
-		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder()
-				.appContext(this.getAppContext())
-				.original(obj);
+		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		dtoBuilder
 				.accountId(obj.getAccountId())
@@ -197,9 +255,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			return null;
 		}
 		EnumeratedDto ratingUser = obj.getRatingUserId() != null ? this.getUserEnumerated(obj.getRatingUserId()) : null;
-		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder()
-		.appContext(this.getAppContext())
-		.original(null);
+		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder();
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		dtoBuilder = dtoBuilder

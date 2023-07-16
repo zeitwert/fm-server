@@ -7,13 +7,19 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.exception.NoDataFoundException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.oe.service.api.ObjUserCache;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.base.ObjTenantFMBase;
 import io.zeitwert.fm.oe.model.db.Tables;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord;
@@ -25,8 +31,49 @@ public class ObjTenantFMRepositoryImpl extends FMObjRepositoryBase<ObjTenantFM, 
 
 	private static final String AGGREGATE_TYPE = "obj_tenant";
 
-	protected ObjTenantFMRepositoryImpl() {
+	private final ObjUserFMRepository userRepository;
+	private final ObjAccountRepository accountRepository;
+	private final ObjDocumentRepository documentRepository;
+	private final ObjUserCache userCache;
+	private final ObjAccountCache accountCache;
+
+	protected ObjTenantFMRepositoryImpl(
+			@Lazy ObjUserFMRepository userRepository,
+			@Lazy ObjUserCache userCache,
+			ObjAccountRepository accountRepository,
+			ObjAccountCache accountCache,
+			ObjDocumentRepository documentRepository) {
 		super(ObjTenantFMRepository.class, ObjTenantFM.class, ObjTenantFMBase.class, AGGREGATE_TYPE);
+		this.userRepository = userRepository;
+		this.userCache = userCache;
+		this.accountRepository = accountRepository;
+		this.accountCache = accountCache;
+		this.documentRepository = documentRepository;
+	}
+
+	@Override
+	public ObjUserFMRepository getUserRepository() {
+		return this.userRepository;
+	}
+
+	@Override
+	public ObjUserCache getUserCache() {
+		return this.userCache;
+	}
+
+	@Override
+	public ObjAccountRepository getAccountRepository() {
+		return this.accountRepository;
+	}
+
+	@Override
+	public ObjAccountCache getAccountCache() {
+		return this.accountCache;
+	}
+
+	@Override
+	public ObjDocumentRepository getDocumentRepository() {
+		return this.documentRepository;
 	}
 
 	public void mapProperties() {

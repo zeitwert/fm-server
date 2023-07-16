@@ -135,6 +135,7 @@ class ElementRowRatingForm extends React.Component<ElementRowRatingFormProps> {
 			const targetRow = (this.props.rowCount + row + rowDelta) % this.props.rowCount;
 			const target = document.getElementById("cell-" + targetRow + "-" + col);
 			target?.focus(); // focus field and possibly trigger row change
+			setTimeout(() => { (target as HTMLInputElement)?.select(); }, 10); // select text in field
 		}
 	}
 

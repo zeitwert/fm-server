@@ -73,14 +73,15 @@ public abstract class ObjAccountBase extends FMObjBase
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());
 	}
 
 	@Override
 	public List<ObjContact> getContacts() {
-		ObjContactRepository contactRepo = (ObjContactRepository) this.getAppContext().getRepository(ObjContact.class);
-		ObjContactCache contactCache = (ObjContactCache) this.getAppContext().getCache(ObjContact.class);
+		ObjContactRepository contactRepo = this.getRepository().getContactRepository();
+		ObjContactCache contactCache = this.getRepository().getContactCache();
 		List<ObjContactVRecord> contactIds = contactRepo.getByForeignKey("accountId", this.getId());
 		return contactIds.stream().map(c -> contactCache.get(c.getId())).toList();
 	}
@@ -96,7 +97,7 @@ public abstract class ObjAccountBase extends FMObjBase
 	}
 
 	private void addLogoImage() {
-		ObjDocumentRepository documentRepo = (ObjDocumentRepository) this.getAppContext().getRepository(ObjDocument.class);
+		ObjDocumentRepository documentRepo = this.getRepository().getDocumentRepository();
 		ObjDocument image = documentRepo.create(this.getTenantId());
 		image.setName("Logo");
 		image.setContentKind(CodeContentKindEnum.getContentKind("foto"));

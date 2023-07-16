@@ -23,6 +23,7 @@ export default class ObjActivityHistoryTab extends React.Component<ObjActivityHi
 	}
 
 	render() {
+		console.log("obj activity history tab render", this.transitions);
 		return (
 			<div className="slds-m-around_medium">
 				<Timeline>

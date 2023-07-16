@@ -13,7 +13,10 @@ import io.crnk.core.queryspec.FilterOperator;
 import io.crnk.core.queryspec.PathSpec;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase;
+import io.zeitwert.fm.doc.service.api.DocVCache;
+import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.base.DocTaskBase;
@@ -27,8 +30,30 @@ public class DocTaskRepositoryImpl extends FMDocRepositoryBase<DocTask, DocTaskV
 
 	private static final String AGGREGATE_TYPE = "doc_task";
 
-	protected DocTaskRepositoryImpl() {
+	private final ObjVCache objCache;
+	private final DocVCache docCache;
+	private final ObjAccountCache accountCache;
+
+	protected DocTaskRepositoryImpl(ObjVCache objCache, DocVCache docCache, ObjAccountCache accountCache) {
 		super(DocTaskRepository.class, DocTask.class, DocTaskBase.class, AGGREGATE_TYPE);
+		this.objCache = objCache;
+		this.docCache = docCache;
+		this.accountCache = accountCache;
+	}
+
+	@Override
+	public ObjVCache getObjCache() {
+		return this.objCache;
+	}
+
+	@Override
+	public DocVCache getDocCache() {
+		return this.docCache;
+	}
+
+	@Override
+	public ObjAccountCache getAccountCache() {
+		return this.accountCache;
 	}
 
 	@Override

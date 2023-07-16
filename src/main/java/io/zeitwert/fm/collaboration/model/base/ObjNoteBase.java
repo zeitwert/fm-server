@@ -29,6 +29,7 @@ public abstract class ObjNoteBase extends ObjExtnBase implements ObjNote {
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchText(this.getSubject());
 		this.addSearchText(this.getContent());
 	}

@@ -21,8 +21,8 @@ import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.model.enums.CodeCountry;
-import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
 
 import java.math.BigDecimal;

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.jooq.ddd.AggregateState;
+import io.dddrive.property.model.base.EntityWithPropertiesSPI;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase;
@@ -41,8 +43,16 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	private static final TableField<ObjDocumentPartContentRecord, byte[]> CONTENT = DOCUMENT_CONTENT.CONTENT;
 	private static final TableField<ObjDocumentPartContentRecord, Integer> CREATED_BY_USER_ID = DOCUMENT_CONTENT.CREATED_BY_USER_ID;
 
-	protected ObjDocumentRepositoryImpl() {
+	private final ObjAccountCache accountCache;
+
+	protected ObjDocumentRepositoryImpl(ObjAccountCache accountCache) {
 		super(ObjDocumentRepository.class, ObjDocument.class, ObjDocumentBase.class, AGGREGATE_TYPE);
+		this.accountCache = accountCache;
+	}
+
+	@Override
+	public ObjAccountCache getAccountCache() {
+		return this.accountCache;
 	}
 
 	@Override
@@ -96,6 +106,7 @@ public class ObjDocumentRepositoryImpl extends FMObjRepositoryBase<ObjDocument, 
 	@Override
 	public void storeContent(RequestContext requestCtx, ObjDocument document, CodeContentType contentType,
 			byte[] content) {
+		requireThis(!((EntityWithPropertiesSPI) document).isFrozen(), "document not frozen");
 		Integer versionNr = this.dslContext().fetchValue(this.getContentMaxVersionQuery(document));
 		versionNr = versionNr == null ? 1 : versionNr + 1;
 		this.dslContext()

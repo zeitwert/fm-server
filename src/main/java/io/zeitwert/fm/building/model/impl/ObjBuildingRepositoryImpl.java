@@ -11,14 +11,19 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.jooq.ddd.AggregateState;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingPartElementRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
+import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.base.ObjBuildingBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.contact.model.ObjContactRepository;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase;
 
 @Component("objBuildingRepository")
@@ -27,8 +32,49 @@ public class ObjBuildingRepositoryImpl extends FMObjRepositoryBase<ObjBuilding, 
 
 	private static final String AGGREGATE_TYPE = "obj_building";
 
-	protected ObjBuildingRepositoryImpl() {
+	private ObjAccountCache accountCache;
+	private ObjContactRepository contactRepository;
+	private ObjDocumentRepository documentRepository;
+	private ObjBuildingPartRatingRepository ratingRepository;
+	private ObjBuildingPartElementRatingRepository elementRepository;
+
+	protected ObjBuildingRepositoryImpl(
+			ObjAccountCache accountCache,
+			ObjContactRepository contactRepository,
+			ObjDocumentRepository documentRepository,
+			ObjBuildingPartRatingRepository ratingRepository,
+			ObjBuildingPartElementRatingRepository elementRepository) {
 		super(ObjBuildingRepository.class, ObjBuilding.class, ObjBuildingBase.class, AGGREGATE_TYPE);
+		this.accountCache = accountCache;
+		this.contactRepository = contactRepository;
+		this.documentRepository = documentRepository;
+		this.ratingRepository = ratingRepository;
+		this.elementRepository = elementRepository;
+	}
+
+	@Override
+	public ObjAccountCache getAccountCache() {
+		return this.accountCache;
+	}
+
+	@Override
+	public ObjContactRepository getContactRepository() {
+		return this.contactRepository;
+	}
+
+	@Override
+	public ObjDocumentRepository getDocumentRepository() {
+		return this.documentRepository;
+	}
+
+	@Override
+	public ObjBuildingPartRatingRepository getRatingRepository() {
+		return this.ratingRepository;
+	}
+
+	@Override
+	public ObjBuildingPartElementRatingRepository getElementRepository() {
+		return this.elementRepository;
 	}
 
 	@Override

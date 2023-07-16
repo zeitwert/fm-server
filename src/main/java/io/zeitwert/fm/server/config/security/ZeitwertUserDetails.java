@@ -9,16 +9,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 
 public class ZeitwertUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer userId;
-	private String userEmail;
-	private String userPassword;
+	private ObjUserFM user;
 	private Integer tenantId;
 	private Integer accountId;
 
@@ -31,24 +28,22 @@ public class ZeitwertUserDetails implements UserDetails {
 	}
 
 	public ZeitwertUserDetails(ObjUserFM user, Collection<? extends GrantedAuthority> authorities) {
-		this.userId = user.getId();
-		this.userEmail = user.getEmail();
-		this.userPassword = user.getPassword();
+		this.user = user;
 		this.authorities = authorities;
 	}
 
 	public Integer getUserId() {
-		return this.userId;
+		return this.user.getId();
 	}
 
 	@Override
 	public String getUsername() {
-		return this.userEmail;
+		return this.user.getEmail();
 	}
 
 	@Override
 	public String getPassword() {
-		return this.userPassword;
+		return this.user.getPassword();
 	}
 
 	public Integer getTenantId() {
@@ -69,15 +64,15 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
-	}
-
-	public boolean isAdmin() {
-		return authorities.stream().anyMatch((a) -> CodeUserRoleEnum.ADMIN.getId().equals(a.getAuthority()));
+		return this.authorities;
 	}
 
 	public boolean isAppAdmin() {
-		return authorities.stream().anyMatch((a) -> CodeUserRoleEnum.APP_ADMIN.getId().equals(a.getAuthority()));
+		return this.user.isAppAdmin();
+	}
+
+	public boolean isAdmin() {
+		return this.user.isAdmin();
 	}
 
 	@Override
@@ -104,10 +99,10 @@ public class ZeitwertUserDetails implements UserDetails {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (o == null || this.getClass() != o.getClass())
 			return false;
 		ZeitwertUserDetails user = (ZeitwertUserDetails) o;
-		return Objects.equals(this.userId, user.getUserId());
+		return Objects.equals(this.user.getId(), user.getUserId());
 	}
 
 }

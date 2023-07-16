@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.dddrive.oe.model.enums.CodeUserRoleEnum;
+import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
 import io.dddrive.oe.service.api.ObjTenantCache;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -109,11 +109,11 @@ public class SessionController {
 		}
 		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(this.requestCtx.getTenantId());
 		ObjAccount account = this.requestCtx.hasAccount() ? this.accountCache.get(this.requestCtx.getAccountId()) : null;
-		ObjUserFM user = (ObjUserFM) requestCtx.getUser();
+		ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
 		String defaultApp = null;
-		if (user.hasRole(CodeUserRoleEnum.APP_ADMIN)) {
+		if (user.isAppAdmin()) {
 			defaultApp = "appAdmin";
-		} else if (user.hasRole(CodeUserRoleEnum.ADMIN)) {
+		} else if (user.isAdmin()) {
 			defaultApp = "tenantAdmin";
 		} else {
 			defaultApp = "fm";
@@ -121,10 +121,10 @@ public class SessionController {
 		SessionInfoReponse response = SessionInfoReponse.builder()
 				.applicationName(ApplicationInfo.getName())
 				.applicationVersion(ApplicationInfo.getVersion())
-				.user(userDtoAdapter.fromAggregate((ObjUserFM) requestCtx.getUser()))
-				.tenant(tenantDtoAdapter.fromAggregate(tenant))
-				.account(accountDtoAdapter.fromAggregate(account))
-				.locale(requestCtx.getLocale().getId())
+				.user(this.userDtoAdapter.fromAggregate((ObjUserFM) this.requestCtx.getUser()))
+				.tenant(this.tenantDtoAdapter.fromAggregate(tenant))
+				.account(this.accountDtoAdapter.fromAggregate(account))
+				.locale(this.requestCtx.getLocale().getId())
 				.applicationId(defaultApp)
 				.availableApplications(List.of())
 				.build();

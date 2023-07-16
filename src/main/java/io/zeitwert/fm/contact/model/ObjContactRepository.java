@@ -1,19 +1,14 @@
 
 package io.zeitwert.fm.contact.model;
 
-import io.dddrive.ddd.model.enums.CodePartListType;
-import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
-import io.dddrive.obj.model.ObjRepository;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
+import io.zeitwert.fm.obj.model.FMObjRepository;
 
-public interface ObjContactRepository extends ObjRepository<ObjContact, ObjContactVRecord> {
+public interface ObjContactRepository extends FMObjRepository<ObjContact, ObjContactVRecord> {
 
-	static CodePartListType addressListType() {
-		return CodePartListTypeEnum.getPartListType("contact.addressList");
-	}
+	ObjAccountCache getAccountCache();
 
-	default ObjContactPartAddressRepository getAddressRepository() {
-		return this.getAppContext().getBean(ObjContactPartAddressRepository.class);
-	}
+	ObjContactPartAddressRepository getAddressRepository();
 
 }

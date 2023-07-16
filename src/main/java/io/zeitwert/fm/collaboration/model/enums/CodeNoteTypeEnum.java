@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.collaboration.model.db.Tables;
 import io.zeitwert.fm.collaboration.model.db.tables.records.CodeNoteTypeRecord;
@@ -18,8 +18,8 @@ public class CodeNoteTypeEnum extends JooqEnumerationBase<CodeNoteType> {
 
 	private static CodeNoteTypeEnum INSTANCE;
 
-	protected CodeNoteTypeEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeNoteType.class, enums, dslContext);
+	protected CodeNoteTypeEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeNoteType.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

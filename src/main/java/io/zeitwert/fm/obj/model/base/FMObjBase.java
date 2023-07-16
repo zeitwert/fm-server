@@ -4,6 +4,9 @@ import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjRepository;
 import io.dddrive.obj.model.base.ObjExtnBase;
 import io.dddrive.property.model.SimpleProperty;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.obj.model.FMObjRepository;
+import io.zeitwert.fm.task.model.DocTaskRepository;
 
 public abstract class FMObjBase extends ObjExtnBase {
 
@@ -14,6 +17,19 @@ public abstract class FMObjBase extends ObjExtnBase {
 
 	protected FMObjBase(ObjRepository<? extends Obj, ? extends Object> repository, Object state) {
 		super(repository, state);
+	}
+
+	@Override
+	public FMObjRepository<? extends Obj, ? extends Object> getRepository() {
+		return (FMObjRepository<? extends Obj, ? extends Object>) super.getRepository();
+	}
+
+	public ObjNoteRepository noteRepository() {
+		return this.getRepository().getNoteRepository();
+	}
+
+	public DocTaskRepository taskRepository() {
+		return this.getRepository().getTaskRepository();
 	}
 
 	public final Integer getAccountId() {

@@ -22,8 +22,8 @@ import io.dddrive.ddd.model.enums.CodePartListTypeEnum;
 import io.dddrive.jooq.ddd.PartFields;
 import io.dddrive.jooq.ddd.PartState;
 import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.model.enums.CodeCountry;
-import io.dddrive.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.server.Application;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -62,7 +62,7 @@ public class PartTest {
 
 		ObjTestPartNodeRepository testNodeRepository = testRepository.getNodeRepository();
 		assertTrue(testNodeRepository != null, "testNodeRepository not null");
-		CodePartListType nodeListType = ObjTestRepository.nodeListType();
+		CodePartListType nodeListType = CodePartListTypeEnum.getPartListType("test.nodeList");
 		assertTrue(CodePartListTypeEnum.getPartListType("test.nodeList").equals(nodeListType), "nodeListType");
 
 		ObjTest testA1 = this.testRepository.create(this.requestCtx.getTenantId());

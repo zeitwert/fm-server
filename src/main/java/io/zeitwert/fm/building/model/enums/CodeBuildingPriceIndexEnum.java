@@ -10,7 +10,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingPriceIndexRecord;
@@ -22,8 +22,8 @@ public final class CodeBuildingPriceIndexEnum extends JooqEnumerationBase<CodeBu
 
 	private static CodeBuildingPriceIndexEnum INSTANCE;
 
-	private CodeBuildingPriceIndexEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeBuildingPriceIndex.class, enums, dslContext);
+	private CodeBuildingPriceIndexEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeBuildingPriceIndex.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

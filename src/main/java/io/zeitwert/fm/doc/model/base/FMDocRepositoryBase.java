@@ -3,6 +3,8 @@ package io.zeitwert.fm.doc.model.base;
 import java.util.List;
 
 import org.jooq.TableRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.ddd.model.AggregateRepository;
@@ -10,11 +12,17 @@ import io.dddrive.doc.model.Doc;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
 import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.ddd.model.base.AggregateFindMixin;
+import io.zeitwert.fm.doc.model.FMDocRepository;
+import io.zeitwert.fm.task.model.DocTaskRepository;
 
 public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?>>
 		extends JooqDocExtnRepositoryBase<D, V>
-		implements DocPersistenceProviderMixin<D>, AggregateFindMixin<V> {
+		implements FMDocRepository<D, V>, DocPersistenceProviderMixin<D>, AggregateFindMixin<V> {
+
+	private ObjNoteRepository noteRepository;
+	private DocTaskRepository taskRepository;
 
 	public FMDocRepositoryBase(
 			Class<? extends AggregateRepository<D, V>> repoIntfClass,
@@ -22,6 +30,28 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 			Class<? extends Doc> baseClass,
 			String aggregateTypeId) {
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId);
+	}
+
+	@Autowired
+	@Lazy
+	void setNoteRepository(ObjNoteRepository noteRepository) {
+		this.noteRepository = noteRepository;
+	}
+
+	@Autowired
+	@Lazy
+	void setTaskRepository(DocTaskRepository taskRepository) {
+		this.taskRepository = taskRepository;
+	}
+
+	@Override
+	public ObjNoteRepository getNoteRepository() {
+		return this.noteRepository;
+	}
+
+	@Override
+	public DocTaskRepository getTaskRepository() {
+		return this.taskRepository;
 	}
 
 	@Override

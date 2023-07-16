@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.dms.model.db.Tables;
 import io.zeitwert.fm.dms.model.db.tables.records.CodeDocumentKindRecord;
@@ -18,8 +18,8 @@ public class CodeDocumentKindEnum extends JooqEnumerationBase<CodeDocumentKind> 
 
 	private static CodeDocumentKindEnum INSTANCE;
 
-	protected CodeDocumentKindEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeDocumentKind.class, enums, dslContext);
+	protected CodeDocumentKindEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeDocumentKind.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

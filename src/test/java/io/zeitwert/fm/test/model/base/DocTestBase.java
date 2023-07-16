@@ -2,14 +2,13 @@
 package io.zeitwert.fm.test.model.base;
 
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.EnumSetProperty;
 import io.dddrive.property.model.ReferenceProperty;
@@ -54,7 +53,7 @@ public abstract class DocTestBase extends FMDocBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return this.getRepository().getAccountCache().get(this.getAccountId());
 	}
 
 	@Override

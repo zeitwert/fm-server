@@ -11,9 +11,8 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
-import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
+import io.zeitwert.fm.task.adapter.api.jsonapi.impl.DocTaskDtoAdapter;
 import io.zeitwert.fm.task.model.DocTask;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +27,11 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true, includeFieldNames = true)
 @JsonApiResource(type = "task", resourcePath = "collaboration/tasks")
 public class DocTaskDto extends DocDtoBase<DocTask> {
+
+	@Override
+	public DocTaskDtoAdapter getAdapter() {
+		return (DocTaskDtoAdapter) super.getAdapter();
+	}
 
 	private EnumeratedDto relatedTo;
 
@@ -50,13 +54,7 @@ public class DocTaskDto extends DocDtoBase<DocTask> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
 		if (this.accountDto == null) {
-			ObjAccount account = null;
-			if (this.getOriginal() != null) {
-				account = this.getOriginal().getAccount();
-			} else if (this.accountId != null) {
-				account = this.getCache(ObjAccount.class).get(this.accountId);
-			}
-			this.accountDto = this.getAdapter(ObjAccountDtoAdapter.class).fromAggregate(account);
+			this.accountDto = this.getAdapter().getAccountDto(this.accountId);
 		}
 		return this.accountDto;
 	}

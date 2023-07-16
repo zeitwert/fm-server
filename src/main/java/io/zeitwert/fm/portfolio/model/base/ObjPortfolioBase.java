@@ -15,7 +15,6 @@ import io.dddrive.obj.model.Obj;
 import io.dddrive.property.model.ReferenceSetProperty;
 import io.dddrive.property.model.SimpleProperty;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
@@ -59,7 +58,7 @@ public abstract class ObjPortfolioBase extends FMObjBase
 
 	@Override
 	public final ObjAccount getAccount() {
-		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return this.getRepository().getAccountCache().get(this.getAccountId());
 	}
 
 	public void addInclude(Integer id) {
@@ -143,6 +142,7 @@ public abstract class ObjPortfolioBase extends FMObjBase
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchToken(this.getPortfolioNr());
 		this.addSearchText(this.getName());
 		this.addSearchText(this.getDescription());

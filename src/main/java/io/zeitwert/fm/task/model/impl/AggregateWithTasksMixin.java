@@ -12,9 +12,7 @@ public interface AggregateWithTasksMixin extends ItemWithTasks {
 
 	Aggregate aggregate();
 
-	default DocTaskRepository taskRepository() {
-		return this.aggregate().getMeta().getAppContext().getBean(DocTaskRepository.class);
-	}
+	DocTaskRepository taskRepository();
 
 	@Override
 	default List<DocTaskVRecord> getTasks() {

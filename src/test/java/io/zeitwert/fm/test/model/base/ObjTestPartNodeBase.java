@@ -2,7 +2,7 @@ package io.zeitwert.fm.test.model.base;
 
 import io.dddrive.ddd.model.PartRepository;
 import io.dddrive.obj.model.base.ObjPartBase;
-import io.dddrive.oe.model.enums.CodeCountry;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.property.model.EnumProperty;
 import io.dddrive.property.model.ReferenceProperty;
 import io.dddrive.property.model.SimpleProperty;

@@ -6,9 +6,8 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
-import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
+import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +27,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @JsonApiResource(type = "tenant", resourcePath = "oe/tenants")
 public class ObjTenantDto extends ObjDtoBase<ObjTenantFM> {
 
+	@Override
+	public ObjTenantDtoAdapter getAdapter() {
+		return (ObjTenantDtoAdapter) super.getAdapter();
+	}
+
 	private String name;
 	private String description;
 	private EnumeratedDto tenantType;
@@ -46,13 +50,7 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenantFM> {
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjDocumentDto getLogo() {
 		if (this.logoDto == null) {
-			ObjDocument logo = null;
-			if (this.getOriginal() != null) {
-				logo = this.getOriginal().getLogoImage();
-			} else if (this.logoId != null) {
-				logo = getCache(ObjDocument.class).get(this.logoId);
-			}
-			this.logoDto = this.getAdapter(ObjDocumentDtoAdapter.class).fromAggregate(logo);
+			this.logoDto = this.getAdapter().getDocumentDto(this.logoId);
 		}
 		return this.logoDto;
 	}

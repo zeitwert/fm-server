@@ -1,10 +1,13 @@
 
 package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.AppContext;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
+import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactPartAddressDto;
 import io.zeitwert.fm.contact.model.ObjContact;
@@ -17,8 +20,21 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 @Component("objContactDtoAdapter")
 public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjContactVRecord, ObjContactDto> {
 
-	protected ObjContactDtoAdapter(AppContext appContext) {
-		super(appContext);
+	private ObjAccountCache accountCache = null;
+	private ObjAccountDtoAdapter accountDtoAdapter;
+
+	@Autowired
+	void setAccountCache(ObjAccountCache accountCache) {
+		this.accountCache = accountCache;
+	}
+
+	@Autowired
+	void setAccountDtoAdapter(ObjAccountDtoAdapter accountDtoAdapter) {
+		this.accountDtoAdapter = accountDtoAdapter;
+	}
+
+	public ObjAccountDto getAccountDto(Integer id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
 	}
 
 	@Override
@@ -70,9 +86,7 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		if (obj == null) {
 			return null;
 		}
-		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder()
-				.appContext(this.getAppContext())
-				.original(obj);
+		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
@@ -98,9 +112,7 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		if (obj == null) {
 			return null;
 		}
-		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder()
-				.appContext(this.getAppContext())
-				.original(null);
+		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder();
 		this.fromRecord(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder

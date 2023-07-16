@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
@@ -43,17 +42,23 @@ public abstract class ObjContactBase extends FMObjBase
 	}
 
 	@Override
+	public final ObjContactRepository getRepository() {
+		return (ObjContactRepository) super.getRepository();
+	}
+
+	@Override
 	public ObjContact aggregate() {
 		return this;
 	}
 
 	@Override
 	public final ObjAccount getAccount() {
-		return this.getAppContext().getBean(ObjAccountCache.class).get(this.getAccountId());
+		return this.getRepository().getAccountCache().get(this.getAccountId());
 	}
 
 	@Override
 	public void doCalcSearch() {
+		super.doCalcSearch();
 		this.addSearchToken(this.getFirstName());
 		this.addSearchToken(this.getLastName());
 		this.addSearchToken(this.getEmail());

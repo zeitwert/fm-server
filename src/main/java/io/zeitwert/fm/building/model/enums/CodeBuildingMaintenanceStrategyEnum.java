@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingMaintenanceStrategyRecord;
@@ -18,8 +18,8 @@ public final class CodeBuildingMaintenanceStrategyEnum extends JooqEnumerationBa
 
 	private static CodeBuildingMaintenanceStrategyEnum INSTANCE;
 
-	private CodeBuildingMaintenanceStrategyEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeBuildingMaintenanceStrategy.class, enums, dslContext);
+	private CodeBuildingMaintenanceStrategyEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeBuildingMaintenanceStrategy.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 

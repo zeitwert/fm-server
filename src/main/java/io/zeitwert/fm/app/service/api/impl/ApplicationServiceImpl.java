@@ -8,7 +8,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import io.dddrive.app.model.RequestContext;
-import io.dddrive.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationArea;
@@ -24,24 +23,28 @@ class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	private RequestContext requestCtx;
 
+	@Override
 	public List<Application> getAllApplications() {
-		ObjUserFM user = (ObjUserFM) requestCtx.getUser();
-		if (user.hasRole(CodeUserRoleEnum.APP_ADMIN)) {
+		ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
+		if (user.isAppAdmin()) {
 			return appConfig.AppAdminApplications;
-		} else if (user.hasRole(CodeUserRoleEnum.ADMIN)) {
+		} else if (user.isAdmin()) {
 			return appConfig.AdminApplications;
 		}
 		return appConfig.UserApplications;
 	}
 
+	@Override
 	public Application getApplication(String id) {
 		return appConfig.ApplicationMap.get(id);
 	}
 
+	@Override
 	public ApplicationInfo getApplicationMenu(String id) {
 		return appConfig.ApplicationMenus.get(id);
 	}
 
+	@Override
 	public ApplicationArea getArea(String id) {
 		return appConfig.Areas.get(id);
 	}

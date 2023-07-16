@@ -5,11 +5,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import io.dddrive.obj.model.ObjPart;
+import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
-import io.zeitwert.fm.oe.model.ObjUserFM;
 
 public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 
@@ -23,9 +23,9 @@ public interface ObjBuildingPartRating extends ObjPart<ObjBuilding> {
 
 	void setRatingDate(LocalDate ratingDate);
 
-	ObjUserFM getRatingUser();
+	ObjUser getRatingUser();
 
-	void setRatingUser(ObjUserFM ratingUser);
+	void setRatingUser(ObjUser ratingUser);
 
 	CodeBuildingPartCatalog getPartCatalog();
 

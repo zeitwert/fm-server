@@ -3,12 +3,16 @@ package io.zeitwert.fm.oe.model;
 
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.model.enums.CodeUserRole;
+import io.zeitwert.fm.oe.model.enums.CodeUserRole;
 import io.zeitwert.fm.dms.model.ObjDocument;
 
 import java.util.Set;
 
 public interface ObjUserFM extends ObjUser {
+
+	boolean isAppAdmin();
+
+	boolean isAdmin();
 
 	Boolean getNeedPasswordChange();
 

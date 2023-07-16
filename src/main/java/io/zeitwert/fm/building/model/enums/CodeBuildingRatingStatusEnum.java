@@ -7,7 +7,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.app.service.api.impl.Enumerations;
+import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.jooq.enums.JooqEnumerationBase;
 import io.zeitwert.fm.building.model.db.Tables;
 import io.zeitwert.fm.building.model.db.tables.records.CodeBuildingRatingStatusRecord;
@@ -18,8 +18,8 @@ public final class CodeBuildingRatingStatusEnum extends JooqEnumerationBase<Code
 
 	private static CodeBuildingRatingStatusEnum INSTANCE;
 
-	private CodeBuildingRatingStatusEnum(Enumerations enums, DSLContext dslContext) {
-		super(CodeBuildingRatingStatus.class, enums, dslContext);
+	private CodeBuildingRatingStatusEnum(AppContextSPI appContext, DSLContext dslContext) {
+		super(CodeBuildingRatingStatus.class, appContext, dslContext);
 		INSTANCE = this;
 	}
 
