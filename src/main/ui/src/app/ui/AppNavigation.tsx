@@ -60,17 +60,14 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 					{
 						session.appInfo!.areas.map((area: ApplicationArea) => {
 							if (area.menuAction) {
+								const isDefault = session.appInfo?.defaultArea === area.path;
 								return (
 									<GlobalNavigationBarLink
-										active={this.isActive(area.path, session.appInfo?.defaultArea === area.path)}
+										active={this.isActive(area.path, isDefault)}
 										label={area.name}
 										id={area.id}
 										key={area.id}
-										onClick={() =>
-											this.props.navigate(
-												this.ctx.navigator.navigate(area.id, area.menuAction!.navigation)
-											)
-										}
+										onClick={() => (!isDefault || !this.isActive(area.path, false)) && this.props.navigate(this.ctx.navigator.navigate(area.id, area.menuAction!.navigation))}
 									/>
 								);
 							}
@@ -123,6 +120,7 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 	};
 
 	private isActive(areaPath: string, isDefault: boolean) {
+		console.log("isActive", areaPath, isDefault, this.props.location.pathname);
 		const path = this.props.location.pathname;
 		if (!path) {
 			return false;
