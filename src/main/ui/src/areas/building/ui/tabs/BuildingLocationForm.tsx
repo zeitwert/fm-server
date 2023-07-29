@@ -79,12 +79,14 @@ export default class BuildingLocationForm extends React.Component<BuildingLocati
 									<Input label="Addresse" fieldName="geoAddress" helpText={ALT_GEO_ADDRESS_HELP_TEXT} />
 								</FieldRow>
 							</FieldGroup>
+							{/*
 							<FieldGroup legend="Aufgelöste Geo-Addresse" className="slds-m-top_medium">
 								<FieldRow>
 									<Input label="Koordinaten" fieldName="geoCoordinates" size={8} />
 									<Input label="Zoom" fieldName="geoZoom" size={4} />
 								</FieldRow>
 							</FieldGroup>
+							*/}
 						</Card>
 					</Col>
 					<Col cols={2} totalCols={3}>

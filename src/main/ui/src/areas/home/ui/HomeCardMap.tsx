@@ -1,3 +1,4 @@
+
 import { Card, Icon } from "@salesforce/design-system-react";
 import { API, Config } from "@zeitwert/ui-model";
 import BuildingMap, { BuildingInfo } from "areas/building/ui/components/BuildingMap";
@@ -33,16 +34,19 @@ export default class HomeCardMap extends React.Component<HomeCardMapProps> {
 				bodyClassName="slds-m-around_none"
 			>
 				{
-					!this.buildingList.length && !!this.buildingCount &&
-					<p className="slds-m-horizontal_medium">Keine Koordinaten berechnet (aus {this.buildingCount} Gebäuden).</p>
-				}
-				{
-					!this.buildingList.length && !this.buildingCount &&
+					!this.buildingCount &&
 					<p className="slds-m-horizontal_medium">Keine Immobilien vorhanden.</p>
 				}
 				{
+					!!this.buildingCount && !this.buildingList.length &&
+					<p className="slds-m-horizontal_medium">Keine Koordinaten berechnet (aus {this.buildingCount} Gebäuden).</p>
+				}
+				{
 					!!this.buildingList.length &&
-					<BuildingMap buildings={toJS(this.buildingList)} onClick={(building) => this.props.onClick?.(building.id)} />
+					<BuildingMap
+						buildings={toJS(this.buildingList)}
+						onClick={(building) => this.props.onClick?.(building.id)}
+					/>
 				}
 			</Card>
 		);

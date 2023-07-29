@@ -15,7 +15,7 @@
 	<name>Zeitwert Application Server</name>
 	<description />
 	<packaging>jar</packaging>
-	<version>1.0.14-SNAPSHOT</version>
+	<version>1.0.15-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,7 +48,7 @@
 	</repositories>
 
 	<scm>
-		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeitwert.git</developerConnection>
+		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeit-wert/zeitwert.git</developerConnection>
 	  <tag>HEAD</tag>
   </scm>
 

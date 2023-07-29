@@ -1,5 +1,6 @@
 
 import GoogleMapReact from "google-map-react";
+import { makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 
@@ -28,11 +29,27 @@ export interface BuildingMapProps {
 @observer
 export default class BuildingMap extends React.Component<BuildingMapProps> {
 
+	container: any;
+	@observable width: number = 0;
+	@observable height: number = 0;
+
+	constructor(props: any) {
+		super(props);
+		makeObservable(this);
+	}
+
+	componentDidMount() {
+		setTimeout(this.getDimensions, 1);
+	}
+
+	getDimensions = () => {
+		this.width = this.container?.offsetWidth ?? 800;
+		this.height = this.container?.offsetHeight ?? 800;
+	}
+
 	render() {
 		const buildings = this.props.buildings;
-		if (buildings.length === 0) {
-			return <div><p>Keine Immobilien ausgewählt oder keine Koordinaten berechnet.</p></div>;
-		} else if (buildings.length === 1) {
+		if (buildings.length === 1) {
 			const { name, lat, lng } = buildings[0];
 			const { zoom } = this.props;
 			return (
@@ -50,22 +67,30 @@ export default class BuildingMap extends React.Component<BuildingMapProps> {
 			const minLng = buildings.reduce((min, b) => Math.min(min, b.lng), 180);
 			const maxLat = buildings.reduce((max, b) => Math.max(max, b.lat), 0);
 			const maxLng = buildings.reduce((max, b) => Math.max(max, b.lng), 0);
-			const zoom = this.getBoundsZoomLevel({ lat: minLat, lng: minLng }, { lat: maxLat, lng: maxLng }, { width: 800, height: 800 });
+			const zoom = this.getBoundsZoomLevel({ lat: minLat, lng: minLng }, { lat: maxLat, lng: maxLng }, { width: this.width, height: this.height });
 			const centerLat = minLat + (maxLat - minLat) / 2;
 			const centerLng = minLng + (maxLng - minLng) / 2;
 			return (
-				<GoogleMapReact
-					bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
-					defaultCenter={{ lat: centerLat, lng: centerLng }}
-					defaultZoom={zoom ? zoom : 7}
-					onZoomAnimationStart={this.onZoom}
+				<div
+					style={{ width: "100%", height: "100%" }}
+					ref={(el: any) => { this.container = el; }}
 				>
 					{
-						buildings.map(
-							(b, index) => <MarkerWithHover key={"marker-" + index} text={b.name} lat={b.lat} lng={b.lng} onClick={() => this.props.onClick?.(b)} />
-						)
+						isFinite(zoom) &&
+						<GoogleMapReact
+							bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
+							defaultCenter={{ lat: centerLat, lng: centerLng }}
+							defaultZoom={zoom}
+							onZoomAnimationStart={this.onZoom}
+						>
+							{
+								buildings.map(
+									(b, index) => <MarkerWithHover key={"marker-" + index} text={b.name} lat={b.lat} lng={b.lng} onClick={() => this.props.onClick?.(b)} />
+								)
+							}
+						</GoogleMapReact>
 					}
-				</GoogleMapReact>
+				</div>
 			);
 		}
 	}

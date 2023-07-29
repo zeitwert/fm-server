@@ -1,6 +1,6 @@
 
 import { Button, Card, Checkbox, MediaObject } from "@salesforce/design-system-react";
-import { COMMUNITY_TENANT, Config, Enumerated, LoginTenantInfo, LoginUserInfo, LOGIN_INFO_ITEM, session, Session } from "@zeitwert/ui-model";
+import { COMMUNITY_TENANT, Config, Enumerated, LOGIN_INFO_ITEM, LoginTenantInfo, LoginUserInfo, Session, session } from "@zeitwert/ui-model";
 import { computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import React, { ChangeEvent } from "react";
@@ -77,8 +77,8 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 	render() {
 		return (
 			<div className="slds-grid slds-wrap slds-m-top_xx-large" style={{ marginTop: "15em" }}>
-				<div className="slds-col slds-size_1-of-3" />
-				<div className="slds-col slds-size_1-of-3">
+				<div className="slds-col slds-size_1-of-12 slds-large-size_1-of-4" />
+				<div className="slds-col slds-size_10-of-12 slds-large-size_2-of-4" style={{ maxWidth: "800px" }}>
 					<Card heading={CARD_HEADER}>
 						<form id="login" onSubmit={(evt: any) => this.login(evt, "form")}>
 							<div className="slds-grid slds-wrap">
@@ -179,7 +179,7 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 						</form>
 					</Card>
 				</div >
-				<div className="slds-col slds-size_1-of-3" />
+				<div className="slds-col slds-size_1-of-12 slds-large-size_1-of-4" />
 			</div >
 		);
 	}
