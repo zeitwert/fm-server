@@ -61,14 +61,35 @@ In order to directly link to `dddrive` sources (instead of library), make a symb
 
 ### Build
 
-Heroku-like build: `mvnw -DskipTests clean dependency:list install`
+We cannot use the vanilla maven release tool, since it is not properly integrated with heroku.
+So we use custom deployment scripts, deploy_prep and deploy_push.
 
-- Prepare release:
-1) builds, runs tests;
+#### Dev Test Build
+
+A heroku-like build can be initiated like this: `mvnw -DskipTests clean dependency:list install`
+
+#### Deployment to Heroku Staging
+
+Prepare release with `deploy_prep`:
+0) checks that there are no open sources around
+1) pushes all remaining commits to origin
+2) builds, without running tests;
 if successful:
-2) git commits pom.xml with non-snapshot version & release tag;
-3) git commits pom.xml with new snapshot version
-`mvnw clean release:prepare -Dresume=false`
+3) git commits pom.xml with non-snapshot version & release tag;
+4) git commits pom.xml with new snapshot version
+5) does not push these commits to origin, since we need to push to heroku first
+`mvn release:prepare -D arguments="-D skipTests" -D pushChanges=false`
+`mvnw clean release:clean release:prepare -Dresume=false`
+
+Deploy release with `deploy_push`:
+- we need to push the sources to heroku, we do not deploy the build artifacts
+- we locally roll back the last commit, so pom.xml is back to non-snapshot version, and stash the changes
+- now we can push main to heroku
+- once done, we pop the stash, so we are back to snapshot version
+- we create a new local commit, which the script does not push, so it is easier to fix if something goes wrong
+
+Push the new snapshot version to origin:
+`git push`
 
 - push tag to heroku main
 `git push heroku %LATEST_TAG%:main`
