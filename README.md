@@ -1,8 +1,5 @@
 # zeitwert Application Server
 
-## Testing
-
-`mvnw surefire:test`
 
 ## Modularisation
 
@@ -52,58 +49,10 @@ example:
 * prod: Production Sever on heroku
 
 
-
-### Development
-
-In order to directly link to `dddrive` sources (instead of library), make a symbolic link to corresponding source directory from within `src/main/java/io` directory (as admin on windows):
-
-`mklink /D dddrive "..\..\..\..\..\dddrive\src\main\java\io\dddrive"`
-
-### Build
-
-We cannot use the vanilla maven release tool, since it is not properly integrated with heroku.
-So we use custom deployment scripts, deploy_prep and deploy_push.
-
-#### Dev Test Build
-
-A heroku-like build can be initiated like this: `mvnw -DskipTests clean dependency:list install`
-
-#### Deployment to Heroku Staging
-
-Prepare release with `deploy_prep`:
-0) checks that there are no open sources around
-1) pushes all remaining commits to origin
-2) builds, without running tests;
-if successful:
-3) git commits pom.xml with non-snapshot version & release tag;
-4) git commits pom.xml with new snapshot version
-5) does not push these commits to origin, since we need to push to heroku first
-`mvn release:prepare -D arguments="-D skipTests" -D pushChanges=false`
-`mvnw clean release:clean release:prepare -Dresume=false`
-
-Deploy release with `deploy_push`:
-- we need to push the sources to heroku, we do not deploy the build artifacts
-- we locally roll back the last commit, so pom.xml is back to non-snapshot version, and stash the changes
-- now we can push main to heroku
-- once done, we pop the stash, so we are back to snapshot version
-- we create a new local commit, which the script does not push, so it is easier to fix if something goes wrong
-
-Push the new snapshot version to origin:
-`git push`
-
-- push tag to heroku main
-`git push heroku %LATEST_TAG%:main`
-
-- commit tracked files (f.ex. release.properties)
-`git add -u`
-`git commit -m "released to heroku"`
-
-- delete untracked files
-`del pom.xml.releaseBackup`
-
 ### Flyway
 
 Trigger manual migration `mvnw flyway:migrate`
+
 
 ### jOOQ
 
@@ -135,6 +84,57 @@ Using [versions-maven-plugin](https://www.mojohaus.org/versions-maven-plugin/) l
 
 Displays newer versions of dependencies.
 
+
+## Development
+
+In order to directly link to `dddrive` sources (instead of library), make a symbolic link to corresponding source directory from within `src/main/java/io` directory (as admin on windows):
+
+`mklink /D dddrive "..\..\..\..\..\dddrive\src\main\java\io\dddrive"`
+
+
+## Testing
+
+`mvnw surefire:test`
+
+
+## Deployment
+
+We cannot use the vanilla maven release tool, since it is not properly integrated with heroku.
+So we use custom deployment scripts, deploy_prep and deploy_push.
+
+### Dev Test Build
+
+A heroku-like build can be initiated like this: `mvnw -DskipTests clean dependency:list install`
+
+### Deployment to Heroku (zeitwert-staging)
+
+We cannot use the maven resource plugin for the whole procedure, since we cannot deploy the build artifacts but need to push the sources to heroku.
+The prepare step can be done with maven release plugin, but the push step needs to be done with a custom script.
+
+1. Prepare release with `deploy_prep` (all done through maven release plugin):
+- checks that there are no open sources around
+- builds, without running tests;
+
+if successful:
+- commits pom.xml with non-snapshot version & release tag;
+- commits pom.xml with new snapshot version
+- does not push these commits to origin, since we need to push to heroku first
+
+`deploy_prep` basically contains just this command:
+
+`mvn clean release:clean release:prepare -D arguments="-D skipTests" -D pushChanges=false`
+
+2. Deploy release with `deploy_push`:
+- locally roll back the last commit, so pom.xml is back to non-snapshot version, and stash the changes
+- push main branch to heroku (whose last commit is the non-snapshot version)
+- once done, we pop the stash, so we are back to snapshot version (there is no easy way to roll git forward, since there could be multiple commits after the current one, so we pop the stash and create a new commit)
+- we create a new local commit with the snapshot version
+- script does not push the commit, so it is easier to fix if something goes wrong
+
+3. Push the new snapshot version to origin:
+`git push`
+
+
 ## Heroku deployment
 
 First you need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).
@@ -150,7 +150,7 @@ Create authorization key:
 
 Attach the current application:
 
-`heroku git:remote -a zeitwert`
+`heroku git:remote -a zeitwert-staging`
 
 To show logs from application:
 

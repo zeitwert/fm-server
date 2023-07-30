@@ -10,8 +10,8 @@ git push heroku main
 
 rem roll forward to snapshot version commit
 git stash pop --quiet
-git add -u --quiet
-git commit -m "Deployed to heroku, prepare for next release" --quiet
+git add .
+git commit -m "[deploy_push] prepare for next development iteration" --quiet
 
 rem don't push, makes it easier to roll back if something goes wrong
 rem git push
