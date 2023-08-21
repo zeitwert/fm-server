@@ -263,9 +263,9 @@ export default class LoginForm extends React.Component<LoginFormProps> {
 		} else {
 			if (window["PasswordCredential"]) {
 				var c = new window["PasswordCredential"](evt.target);
-				return navigator.credentials.store(c);
+				navigator.credentials.store(c);
 			}
-			window.history.replaceState({}, "", "/");
+			window.location.href = "/home";
 		}
 	}
 
