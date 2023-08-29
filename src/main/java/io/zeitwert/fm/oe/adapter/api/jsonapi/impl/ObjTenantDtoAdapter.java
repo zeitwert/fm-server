@@ -50,6 +50,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
 		obj.setInflationRate(dto.getInflationRate());
+		obj.setDiscountRate(dto.getDiscountRate());
 	}
 
 	@Override
@@ -64,6 +65,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.inflationRate(obj.getInflationRate())
+				.discountRate(obj.getDiscountRate())
 				.logoId(obj.getLogoImageId())
 				.build();
 	}
@@ -91,6 +93,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.inflationRate(obj.getInflationRate())
+				.discountRate(obj.getDiscountRate())
 				.logoId(obj.getLogoImgId())
 				.build();
 	}

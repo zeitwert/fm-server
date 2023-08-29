@@ -88,6 +88,7 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 			obj.setReferenceCurrency(
 					dto.getReferenceCurrency() == null ? null : CodeCurrencyEnum.getCurrency(dto.getReferenceCurrency().getId()));
 			obj.setInflationRate(dto.getInflationRate());
+			obj.setDiscountRate(dto.getDiscountRate());
 			obj.setMainContactId(dto.getMainContactId());
 
 		} finally {
@@ -111,6 +112,7 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 				.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
 				.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
 				.inflationRate(obj.getInflationRate())
+				.discountRate(obj.getDiscountRate())
 				.mainContactId(obj.getMainContactId())
 				.contactIdList(obj.getContacts().stream().map(c -> c.getId()).toList())
 				.logoId(obj.getLogoImageId())
@@ -132,6 +134,7 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 				.clientSegment(EnumeratedDto.fromEnum(CodeClientSegmentEnum.getClientSegment(obj.getClientSegmentId())))
 				.referenceCurrency(EnumeratedDto.fromEnum(CodeCurrencyEnum.getCurrency(obj.getReferenceCurrencyId())))
 				.inflationRate(obj.getInflationRate())
+				.discountRate(obj.getDiscountRate())
 				.mainContactId(obj.getMainContactId())
 				.logoId(obj.getLogoImgId())
 				.build();

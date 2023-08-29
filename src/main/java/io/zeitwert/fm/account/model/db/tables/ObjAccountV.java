@@ -14,7 +14,6 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -155,12 +154,17 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
      */
     public final TableField<ObjAccountVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
+    /**
+     * The column <code>public.obj_account_v.discount_rate</code>.
+     */
+    public final TableField<ObjAccountVRecord, BigDecimal> DISCOUNT_RATE = createField(DSL.name("discount_rate"), SQLDataType.NUMERIC, this, "");
+
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    a.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    a.obj_id,\n    a.tenant_id,\n    a.name,\n    a.description,\n    a.account_type_id,\n    a.client_segment_id,\n    a.main_contact_id,\n    a.reference_currency_id,\n    a.logo_img_id,\n    a.inflation_rate,\n    a.account_id\n   FROM (obj_account a\n     JOIN obj ON ((obj.id = a.obj_id)));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"obj_account_v\" as  SELECT obj.obj_type_id,\n    a.obj_id AS id,\n    obj.version,\n    obj.owner_id,\n    obj.caption,\n    obj.created_by_user_id,\n    obj.created_at,\n    obj.modified_by_user_id,\n    obj.modified_at,\n    obj.closed_by_user_id,\n    obj.closed_at,\n    a.obj_id,\n    a.tenant_id,\n    a.name,\n    a.description,\n    a.account_type_id,\n    a.client_segment_id,\n    a.main_contact_id,\n    a.reference_currency_id,\n    a.logo_img_id,\n    a.inflation_rate,\n    a.account_id,\n    a.discount_rate\n   FROM (obj_account a\n     JOIN obj ON ((obj.id = a.obj_id)));"));
     }
 
     /**
@@ -217,14 +221,5 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
     @Override
     public ObjAccountV rename(Name name) {
         return new ObjAccountV(name, null);
-    }
-
-    // -------------------------------------------------------------------------
-    // Row22 type methods
-    // -------------------------------------------------------------------------
-
-    @Override
-    public Row22<String, Integer, Integer, Integer, String, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, OffsetDateTime, Integer, Integer, String, String, String, String, Integer, String, Integer, BigDecimal, Integer> fieldsRow() {
-        return (Row22) super.fieldsRow();
     }
 }

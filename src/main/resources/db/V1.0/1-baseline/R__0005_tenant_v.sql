@@ -1,5 +1,5 @@
 
--- execTrigger: 1
+-- execTrigger: 2
 
 drop view if exists obj_tenant_v;
 

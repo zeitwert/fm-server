@@ -39,6 +39,10 @@ public interface ObjAccount extends Obj, ItemWithNotes, ItemWithTasks {
 
 	void setInflationRate(BigDecimal rate);
 
+	BigDecimal getDiscountRate();
+
+	void setDiscountRate(BigDecimal rate);
+
 	Integer getLogoImageId();
 
 	ObjDocument getLogoImage();

@@ -163,6 +163,8 @@ public interface ObjBuilding extends Obj, ItemWithAccount, ItemWithNotes, ItemWi
 
 	double getInflationRate();
 
+	double getDiscountRate();
+
 	Integer getCondition(int year);
 
 	double getBuildingValue(int year);

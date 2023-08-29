@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -82,6 +82,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      * The column <code>public.obj_tenant.tenant_id</code>.
      */
     public final TableField<ObjTenantRecord, Integer> TENANT_ID = createField(DSL.name("tenant_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.obj_tenant.discount_rate</code>.
+     */
+    public final TableField<ObjTenantRecord, BigDecimal> DISCOUNT_RATE = createField(DSL.name("discount_rate"), SQLDataType.NUMERIC, this, "");
 
     private ObjTenant(Name alias, Table<ObjTenantRecord> aliased) {
         this(alias, aliased, null);
@@ -180,11 +185,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, Integer, BigDecimal, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, Integer, BigDecimal, Integer, BigDecimal> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

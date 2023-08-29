@@ -36,6 +36,7 @@ public class ObjTenantDto extends ObjDtoBase<ObjTenantFM> {
 	private String description;
 	private EnumeratedDto tenantType;
 	private BigDecimal inflationRate;
+	private BigDecimal discountRate;
 
 	@JsonApiRelationId
 	private Integer logoId;

@@ -14,6 +14,7 @@ export const AccountFormDef: FormDefinition<AccountModelType> = {
 	clientSegment: new EnumeratedField({ source: "account/codeClientSegment" }),
 	//
 	inflationRate: new NumberField(),
+	discountRate: new NumberField(),
 };
 
 const AccountForm = new Form(AccountModel, AccountFormDef);

@@ -37,6 +37,7 @@ public abstract class ObjAccountBase extends FMObjBase
 	protected final EnumProperty<CodeClientSegment> clientSegment = this.addEnumProperty("clientSegment", CodeClientSegment.class);
 	protected final EnumProperty<CodeCurrency> referenceCurrency = this.addEnumProperty("referenceCurrency", CodeCurrency.class);
 	protected final SimpleProperty<BigDecimal> inflationRate = this.addSimpleProperty("inflationRate", BigDecimal.class);
+	protected final SimpleProperty<BigDecimal> discountRate = this.addSimpleProperty("discountRate", BigDecimal.class);
 	protected final ReferenceProperty<ObjDocument> logoImage= this.addReferenceProperty("logoImage", ObjDocument.class);
 	protected final ReferenceProperty<ObjContact> mainContact= this.addReferenceProperty("mainContact", ObjContact.class);
 	//@formatter:on

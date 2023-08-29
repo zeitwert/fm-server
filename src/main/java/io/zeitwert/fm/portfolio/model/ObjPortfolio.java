@@ -51,6 +51,8 @@ public interface ObjPortfolio extends Obj, ItemWithAccount, ItemWithNotes, ItemW
 
 	double getInflationRate();
 
+	double getDiscountRate();
+
 	Integer getCondition(int year);
 
 	double getPortfolioValue(int year);

@@ -62,7 +62,8 @@ export default class AccountMainForm extends React.Component<AccountMainFormProp
 						<Card hasNoHeader={true} bodyClassName="slds-card__body_inner">
 							<FieldGroup legend="Berechnungsparameter">
 								<FieldRow>
-									<Input label={`Inflationsrate in % (Mandant: ${account.tenantInfo?.inflationRate || 0}%)`} fieldName="inflationRate" size={3} />
+									<Input label={`Inflationsrate (in %, Mandant: ${account.tenantInfo?.inflationRate || 0}%)`} fieldName="inflationRate" size={3} />
+									<Input label={`Zinssatz Annuität (in %, Mandant: ${account.tenantInfo?.discountRate || 0}%)`} fieldName="discountRate" size={3} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

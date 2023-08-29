@@ -10,6 +10,7 @@ const MstTenantModel = ObjModel.named("Tenant")
 		name: types.maybe(types.string),
 		description: types.maybe(types.string),
 		inflationRate: types.maybe(types.number),
+		discountRate: types.maybe(types.number),
 		//
 		tenantType: types.maybe(types.frozen<Enumerated>()),
 		//

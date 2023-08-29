@@ -17,6 +17,7 @@ const MstAccountModel = ObjModel.named("Account")
 		referenceCurrency: types.maybe(types.frozen<Enumerated>()),
 		tenantInfo: types.maybe(types.reference(TenantModel)),
 		inflationRate: types.maybe(types.number),
+		discountRate: types.maybe(types.number),
 		//
 		contacts: types.optional(types.array(types.reference(types.late((): IAnyModelType => ContactModel))), []),
 		mainContact: types.maybe(types.reference(types.late((): IAnyModelType => ContactModel))),

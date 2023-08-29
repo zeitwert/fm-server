@@ -82,6 +82,7 @@ public class ObjTenantFMRepositoryImpl extends FMObjRepositoryBase<ObjTenantFM, 
 		this.mapField("name", AggregateState.EXTN, "name", String.class);
 		this.mapField("description", AggregateState.EXTN, "description", String.class);
 		this.mapField("inflationRate", AggregateState.EXTN, "inflation_rate", BigDecimal.class);
+		this.mapField("discountRate", AggregateState.EXTN, "discount_rate", BigDecimal.class);
 		this.mapField("logoImage", AggregateState.EXTN, "logo_img_id", Integer.class);
 	}
 

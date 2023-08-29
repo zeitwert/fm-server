@@ -30,6 +30,7 @@ public abstract class ObjTenantFMBase extends ObjTenantBase implements ObjTenant
 	//@formatter:off
 	protected final EnumProperty<CodeTenantType> tenantType = this.addEnumProperty("tenantType", CodeTenantType.class);
 	protected final SimpleProperty<BigDecimal> inflationRate = this.addSimpleProperty("inflationRate", BigDecimal.class);
+	protected final SimpleProperty<BigDecimal> discountRate = this.addSimpleProperty("discountRate", BigDecimal.class);
 	protected final ReferenceProperty<ObjDocument> logoImage = this.addReferenceProperty("logoImage", ObjDocument.class);
 	//@formatter:on
 

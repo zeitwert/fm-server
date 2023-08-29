@@ -42,6 +42,7 @@ public class ObjAccountDto extends ObjDtoBase<ObjAccount> {
 	private EnumeratedDto clientSegment;
 	private EnumeratedDto referenceCurrency;
 	private BigDecimal inflationRate;
+	private BigDecimal discountRate;
 
 	@JsonApiRelationId
 	private Integer tenantInfoId;

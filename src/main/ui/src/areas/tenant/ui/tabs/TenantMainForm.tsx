@@ -94,6 +94,7 @@ export default class TenantMainForm extends React.Component<TenantMainFormProps>
 							<FieldGroup legend="Berechnungsparameter">
 								<FieldRow>
 									<Input label="Inflationsrate (in %)" fieldName="inflationRate" size={3} />
+									<Input label="Zinssatz Annuität (in %)" fieldName="discountRate" size={3} />
 								</FieldRow>
 							</FieldGroup>
 						</Card>

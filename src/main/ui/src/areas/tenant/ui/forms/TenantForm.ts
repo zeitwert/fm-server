@@ -10,6 +10,7 @@ export const TenantFormDef: FormDefinition<TenantModelType> = {
 	tenantType: new EnumeratedField({ source: "oe/codeTenantType", required: true }),
 	//
 	inflationRate: new NumberField(),
+	discountRate: new NumberField(),
 };
 
 const TenantForm = new Form(TenantModel, TenantFormDef);

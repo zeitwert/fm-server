@@ -130,6 +130,13 @@ public abstract class ObjBuildingBase extends FMObjBase
 	}
 
 	@Override
+	public double getDiscountRate() {
+		BigDecimal discountRate = this.getAccount().getDiscountRate();
+		discountRate = discountRate != null ? discountRate : ((ObjTenantFM) this.getTenant()).getDiscountRate();
+		return discountRate != null ? discountRate.doubleValue() : 0;
+	}
+
+	@Override
 	public double getBuildingValue(int year) {
 		if (this.getInsuredValueYear() != null && this.getInsuredValue() != null) {
 			return ObjBuildingBase.DefaultPriceIndex.priceAt(this.getInsuredValueYear(),

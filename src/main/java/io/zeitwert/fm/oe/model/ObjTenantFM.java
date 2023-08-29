@@ -19,6 +19,10 @@ public interface ObjTenantFM extends ObjTenant {
 
 	void setInflationRate(BigDecimal rate);
 
+	BigDecimal getDiscountRate();
+
+	void setDiscountRate(BigDecimal rate);
+
 	List<ObjUserFM> getUsers();
 
 	List<ObjAccount> getAccounts();

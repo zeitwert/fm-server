@@ -82,6 +82,7 @@ public class ObjAccountRepositoryImpl extends FMObjRepositoryBase<ObjAccount, Ob
 		this.mapField("clientSegment", AggregateState.EXTN, "client_segment_id", String.class);
 		this.mapField("referenceCurrency", AggregateState.EXTN, "reference_currency_id", String.class);
 		this.mapField("inflationRate", AggregateState.EXTN, "inflation_rate", BigDecimal.class);
+		this.mapField("discountRate", AggregateState.EXTN, "discount_rate", BigDecimal.class);
 		this.mapField("logoImage", AggregateState.EXTN, "logo_img_id", Integer.class);
 		this.mapField("mainContact", AggregateState.EXTN, "main_contact_id", Integer.class);
 	}
