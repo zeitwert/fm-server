@@ -7,7 +7,6 @@ import AppNavigation from "./AppNavigation";
 import Help from "./header/Help";
 import Profile from "./header/Profile";
 import SearchBar from "./header/SearchBar";
-import Setup from "./header/Setup";
 
 @observer
 export default class AppHeader extends React.Component {
@@ -27,7 +26,7 @@ export default class AppHeader extends React.Component {
 				{/*<RecentItems store={this.ctx.appStore} user={session.sessionInfo!.user} />*/}
 				{/*<FrequentItems store={this.ctx.appStore} user={session.sessionInfo!.user} />*/}
 				<Help />
-				<Setup />
+				{/*<Setup />*/}
 				<Profile />
 			</GlobalHeader>
 		);

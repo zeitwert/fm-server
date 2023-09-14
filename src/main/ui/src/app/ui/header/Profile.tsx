@@ -9,6 +9,7 @@ const HeaderProfileCustomContent = (props: any) => (
 		<div className="slds-m-top_x-small">
 			<div className="slds-tile slds-tile_board">
 				<div className="slds-tile__detail">
+					<hr style={{ marginBlockStart: "6px", marginBlockEnd: "6px" }} />
 					<dl className="slds-list_horizontal slds-wrap">
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Email:</dt>
 						<dd className="slds-item_detail slds-truncate">{props.email}</dd>
@@ -18,21 +19,23 @@ const HeaderProfileCustomContent = (props: any) => (
 						<dd className="slds-item_detail slds-truncate">{props.account?.name ?? "Kein Kunde"}</dd>
 					</dl>
 					<hr style={{ marginBlockStart: "6px", marginBlockEnd: "6px" }} />
-					<p className="slds-truncate">
-						<Button variant="base" className="slds-m-right_medium" onClick={props.onSettings}>
-							Settings
-						</Button>
-						<Button variant="base" onClick={props.onLogout}>
-							Log Out
-						</Button>
-					</p>
-					<hr style={{ marginBlockStart: "6px", marginBlockEnd: "6px" }} />
 					<dl className="slds-list_horizontal slds-wrap">
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Application:</dt>
 						<dd className="slds-item_detail slds-truncate">{session.sessionInfo?.applicationName ?? "???"}</dd>
 						<dt className="slds-item_label slds-text-color_weak slds-truncate">Version:</dt>
 						<dd className="slds-item_detail slds-truncate">{session.sessionInfo?.applicationVersion ?? "???"}</dd>
 					</dl>
+					<hr style={{ marginBlockStart: "6px", marginBlockEnd: "6px" }} />
+					<p className="slds-truncate">
+						{/*
+						<Button variant="base" className="slds-m-right_medium" onClick={props.onSettings}>
+							Settings
+						</Button>
+						*/}
+						<Button iconCategory="utility" iconName="logout" iconPosition="left" onClick={props.onLogout}>
+							Log Out
+						</Button>
+					</p>
 				</div>
 				{/*
 				<p className="tile__title slds-text-heading_small">
