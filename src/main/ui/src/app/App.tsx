@@ -57,8 +57,9 @@ export default class App extends React.Component<AppProps> {
 				<AppHeader />
 				<section className="fa-page">
 					<BrandBand
-						id="brand-band-lightning-blue"
+						image="none"
 						className="slds-p-around_small slds-scrollable_y"
+						style={{ zIndex: 1, backgroundColor: '#fff' }}
 					>
 						{content}
 					</BrandBand>
