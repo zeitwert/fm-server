@@ -26,6 +26,11 @@
   margin-top: 0.65em;
 }
 
+/* */
+.slds-table_header-fixed_scroller {
+  background-color: #fff;
+}
+
 /* Sales Path */
 .slds-path__track.slds-has-overflow .slds-path__scroller_inner {
   display: block;

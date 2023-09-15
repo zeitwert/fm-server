@@ -1,5 +1,5 @@
 
-import { Button, Dropdown, DropdownTrigger, Icon, PageHeader, PageHeaderControl } from "@salesforce/design-system-react";
+import { Button, Dropdown, Icon, PageHeader, PageHeaderControl } from "@salesforce/design-system-react";
 import { Enumerated } from "@zeitwert/ui-model";
 import { ScrollablePageHeader } from "@zeitwert/ui-slds";
 import { makeObservable, observable } from "mobx";
@@ -54,6 +54,7 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 		);
 		const controls = () => (
 			<>
+				{/*
 				<PageHeaderControl>
 					<Dropdown
 						align="right"
@@ -103,7 +104,6 @@ export default class ItemListHeader extends React.Component<ItemListHeaderProps>
 						</DropdownTrigger>
 					</Dropdown>
 				</PageHeaderControl>
-				{/*
 				<PageHeaderControl>
 					<Button
 						assistiveText={{ icon: "Edit List" }}

@@ -25,8 +25,8 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 			return null;
 		}
 		return (
-			<GlobalNavigationBar>
-				<GlobalNavigationBarRegion region="primary">
+			<GlobalNavigationBar className="slds-context-bar_tabs">
+				<GlobalNavigationBarRegion region="primary" className="slds-context-bar__item_tab">
 					<AppLauncher
 						id="app-launcher-trigger"
 						triggerName={session.appInfo!.name}
@@ -67,6 +67,7 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 										label={area.name}
 										id={area.id}
 										key={area.id}
+										className="slds-context-bar__item_tab"
 										onClick={() => (!isDefault || !this.isActive(area.path, false)) && this.props.navigate(this.ctx.navigator.navigate(area.id, area.menuAction!.navigation))}
 									/>
 								);
