@@ -2,6 +2,8 @@
 package io.zeitwert.fm.oe.adapter.api.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +33,9 @@ public class UserDocumentController {
 		ObjUserFM user = (ObjUserFM) this.userCache.get(id);
 		Integer documentId = user.getAvatarImageId();
 		if (documentId == null) {
-			return ResponseEntity.noContent().build();
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Location", "/default-user.png");
+			return new ResponseEntity<byte[]>(headers, HttpStatus.FOUND);
 		}
 		return this.documentController.getContent(documentId);
 	}
