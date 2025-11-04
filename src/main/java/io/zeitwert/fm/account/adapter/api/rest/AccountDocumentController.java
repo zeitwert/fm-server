@@ -13,8 +13,6 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 
-import java.util.Map;
-
 @RestController("accountDocumentController")
 @RequestMapping("/rest/account/accounts")
 public class AccountDocumentController {
@@ -36,11 +34,6 @@ public class AccountDocumentController {
 			return ResponseEntity.noContent().build();
 		}
 		return this.documentController.getContent(documentId);
-	}
-
-	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Integer>> getStatistics() {
-		return ResponseEntity.ok().body(this.accountCache.getStatistics());
 	}
 
 }
