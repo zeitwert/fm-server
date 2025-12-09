@@ -1,8 +1,8 @@
 {
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.organizeImports": true,
-		"source.addMissingImports": true
+		"source.organizeImports": "explicit",
+		"source.addMissingImports": "explicit"
 	},
 	"workbench.colorCustomizations": {
 		"titleBar.activeBackground": "#215732",
