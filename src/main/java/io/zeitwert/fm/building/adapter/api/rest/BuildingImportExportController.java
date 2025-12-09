@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 import java.util.List;

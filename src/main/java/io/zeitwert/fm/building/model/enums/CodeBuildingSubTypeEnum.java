@@ -3,7 +3,7 @@ package io.zeitwert.fm.building.model.enums;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.portfolio.service.api.impl;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
 
 package io.zeitwert.fm.collaboration.model.enums;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;

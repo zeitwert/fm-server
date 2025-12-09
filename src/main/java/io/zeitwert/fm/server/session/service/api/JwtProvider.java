@@ -4,13 +4,12 @@ import javax.crypto.SecretKey;
 
 import org.springframework.security.core.Authentication;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Jwts;
 
 public interface JwtProvider {
 
 	final String AUTH_HEADER_PREFIX = "Bearer ";
-	final SecretKey JWT_SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+	final SecretKey JWT_SECRET_KEY = Jwts.SIG.HS512.key().build();
 
 	final String TENANT_CLAIM = "zw/tenantId";
 	final String ACCOUNT_CLAIM = "zw/accountId";

@@ -3,7 +3,7 @@ package io.zeitwert.fm.server.config.bootstrap;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;

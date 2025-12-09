@@ -1,6 +1,5 @@
 package io.zeitwert.fm.server.session.service.api.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -22,7 +21,6 @@ public class RequestContextProvider {
 	static final String DEFAULT_LOCALE = "de-CH";
 
 	@Bean
-	@Autowired
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
 	public RequestContextFM getRequestContext(ObjUserCache userCache) {

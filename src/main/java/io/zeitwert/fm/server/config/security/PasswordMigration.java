@@ -1,6 +1,6 @@
 package io.zeitwert.fm.server.config.security;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.jooq.Record;

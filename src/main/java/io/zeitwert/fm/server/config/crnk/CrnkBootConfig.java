@@ -1,18 +1,22 @@
 package io.zeitwert.fm.server.config.crnk;
 
+import org.springframework.stereotype.Component;
+
 import io.crnk.core.boot.CrnkBoot;
-import io.crnk.spring.setup.boot.core.CrnkBootConfigurer;
+import io.crnk.core.queryspec.mapper.QuerySpecUrlMapper;
 import io.dddrive.util.CustomFilters;
 
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
+/**
+ * Custom CrnkBoot configurer that adds support for the IN filter operator.
+ */
+@Component
 public class CrnkBootConfig implements CrnkBootConfigurer {
 
 	@Override
 	public void configure(CrnkBoot boot) {
-		DefaultQuerySpecUrlMapper mapper = (DefaultQuerySpecUrlMapper) boot.getUrlMapper();
-		mapper.addSupportedOperator(CustomFilters.IN);
+		QuerySpecUrlMapper urlMapper = boot.getUrlMapper();
+		if (urlMapper instanceof DefaultQuerySpecUrlMapper mapper) {
+			mapper.addSupportedOperator(CustomFilters.IN);
+		}
 	}
-
 }

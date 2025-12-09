@@ -1,6 +1,6 @@
 package io.zeitwert.fm.server.session.version;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.server.config.aspose;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import java.io.File;
 import java.io.FileOutputStream;

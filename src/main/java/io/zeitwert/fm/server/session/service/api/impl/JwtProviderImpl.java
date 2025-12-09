@@ -34,9 +34,9 @@ public class JwtProviderImpl implements JwtProvider {
 			claims = Map.of(TENANT_CLAIM, tenantId, ACCOUNT_CLAIM, accountId);
 		}
 		return Jwts.builder()
-				.setSubject((userPrincipal.getUsername()))
-				.setExpiration(new Date((new Date()).getTime() + this.jwtExpirationMs))
-				.addClaims(claims)
+				.subject(userPrincipal.getUsername())
+				.expiration(new Date((new Date()).getTime() + this.jwtExpirationMs))
+				.claims(claims)
 				.signWith(JWT_SECRET_KEY)
 				.compact();
 	}
@@ -44,10 +44,10 @@ public class JwtProviderImpl implements JwtProvider {
 	@Override
 	public boolean isValidJwt(String authToken) {
 		try {
-			Jwts.parserBuilder()
-					.setSigningKey(JWT_SECRET_KEY)
+			Jwts.parser()
+					.verifyWith(JWT_SECRET_KEY)
 					.build()
-					.parseClaimsJws(authToken);
+					.parseSignedClaims(authToken);
 			return true;
 		} catch (MalformedJwtException e) {
 			logger.error("Invalid JWT token: {}", e.getMessage());

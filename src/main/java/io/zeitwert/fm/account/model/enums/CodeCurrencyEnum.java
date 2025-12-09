@@ -1,6 +1,6 @@
 package io.zeitwert.fm.account.model.enums;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.DependsOn;

@@ -5,32 +5,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfiguration {
 
 	@Autowired
 	private ZeitwertAuthenticationEntryPoint unauthorizedHandler;
 
 	@Bean
-	public AuthenticationManager authenticationManager(
-			HttpSecurity http,
-			PasswordEncoder bCryptPasswordEncoder,
-			UserDetailsService userDetailsService)
-			throws Exception {
-		return http.getSharedObject(AuthenticationManagerBuilder.class)
-				.userDetailsService(userDetailsService)
-				.passwordEncoder(bCryptPasswordEncoder)
-				.and()
-				.build();
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
 	}
 
 	@Bean
@@ -46,48 +39,53 @@ public class WebSecurityConfiguration {
 	@Bean
 	// TODO Revoke unnecessary permissions
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.cors().and()
-				.csrf().disable()
-				.exceptionHandling().authenticationEntryPoint(this.unauthorizedHandler).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeRequests()
+		// Spring Security 6 lambda DSL
+		http
+			.cors(cors -> cors.configure(http))
+			.csrf(csrf -> csrf.disable())
+			.exceptionHandling(ex -> ex.authenticationEntryPoint(this.unauthorizedHandler))
+			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.authorizeHttpRequests(auth -> auth
 				// monitoring
-				// .antMatchers("/actuator/**").permitAll()
+				// .requestMatchers("/actuator/**").permitAll()
 				// login
-				.antMatchers(HttpMethod.GET, "/rest/app/**").permitAll()
-				.antMatchers(HttpMethod.POST, "/rest/session/login/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/rest/app/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/rest/session/login/**").permitAll()
 				// enumerations
-				.antMatchers(HttpMethod.GET, "/enum/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/enum/**").permitAll()
 				// static content
-				.antMatchers(HttpMethod.GET, "/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/static/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/assets/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/images/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/static/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/assets/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/images/**").permitAll()
 				// ui paths (necessary for hyperlinks, since JWT is not propagated)
-				.antMatchers(HttpMethod.GET, "/home/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/tenant/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/user/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/account/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/contact/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/portfolio/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/building/*").permitAll()
-				.antMatchers(HttpMethod.GET, "/task/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/home/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/tenant/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/user/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/account/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/contact/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/portfolio/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/building/*").permitAll()
+				.requestMatchers(HttpMethod.GET, "/task/*").permitAll()
 				// user, tenant and account pictures
-				.antMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
-				.antMatchers(HttpMethod.GET, "/rest/oe/tenants/**/{logo|banner}").permitAll()
-				.antMatchers(HttpMethod.GET, "/rest/account/accounts/**/{logo|banner}").permitAll()
+				.requestMatchers(HttpMethod.GET, "/rest/oe/users/**/avatar").permitAll()
+				.requestMatchers(HttpMethod.GET, "/rest/oe/tenants/**/logo", "/rest/oe/tenants/**/banner").permitAll()
+				.requestMatchers(HttpMethod.GET, "/rest/account/accounts/**/logo", "/rest/account/accounts/**/banner").permitAll()
 				// special paths via <img src="" />
-				.antMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/rest/building/buildings/*/evaluation/**").permitAll() // revoke
-				.antMatchers(HttpMethod.GET, "/rest/portfolio/portfolios/*/evaluation/**").permitAll() // revoke
+				.requestMatchers(HttpMethod.GET, "/rest/dms/documents/**/content").permitAll() // revoke
+				.requestMatchers(HttpMethod.GET, "/rest/building/buildings/*/evaluation/**").permitAll() // revoke
+				.requestMatchers(HttpMethod.GET, "/rest/portfolio/portfolios/*/evaluation/**").permitAll() // revoke
 				// statistics
-				.antMatchers(HttpMethod.GET, "/**/statistics").permitAll()
+				.requestMatchers(HttpMethod.GET, "/**/statistics").permitAll()
 				// test paths
-				.antMatchers(HttpMethod.GET, "/rest/test/all").permitAll()
-				.antMatchers(HttpMethod.GET, "/rest/test/**").authenticated()
-				.anyRequest().authenticated();
+				.requestMatchers(HttpMethod.GET, "/rest/test/all").permitAll()
+				.requestMatchers(HttpMethod.GET, "/rest/test/**").authenticated()
+				.anyRequest().authenticated()
+			);
+		
 		http.addFilterBefore(this.authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-		http.headers().frameOptions().disable();
+		http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
+		
 		return http.build();
 	}
 
