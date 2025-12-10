@@ -2,6 +2,11 @@ package io.zeitwert.fm.oe.model.base
 
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
+import io.dddrive.core.property.model.ReferenceProperty
+import io.zeitwert.fm.dms.model.ObjDocument
+import io.zeitwert.fm.dms.model.enums.CodeContentKind
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjCoreBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
@@ -9,23 +14,17 @@ import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import java.math.BigDecimal
 
-/**
- * Base class for ObjTenantFM using the NEW dddrive framework.
- */
 abstract class ObjTenantFMBase(
     repository: ObjTenantFMRepository
 ) : FMObjCoreBase(repository), ObjTenantFM {
 
-    //@formatter:off
     private val _tenantType: EnumProperty<CodeTenantType> = this.addEnumProperty("tenantType", CodeTenantType::class.java)
     private val _inflationRate: BaseProperty<BigDecimal> = this.addBaseProperty("inflationRate", BigDecimal::class.java)
     private val _discountRate: BaseProperty<BigDecimal> = this.addBaseProperty("discountRate", BigDecimal::class.java)
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // private val _logoImage: ReferenceProperty<ObjDocument> = this.addReferenceProperty("logoImage", ObjDocument::class.java)
+    private val _logoImage: ReferenceProperty<ObjDocument> = this.addReferenceProperty("logoImage", ObjDocument::class.java)
     private val _key: BaseProperty<String> = this.addBaseProperty("key", String::class.java)
     private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
     private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
-    //@formatter:on
 
     override fun getRepository(): ObjTenantFMRepository {
         return super.getRepository() as ObjTenantFMRepository
@@ -40,33 +39,28 @@ abstract class ObjTenantFMBase(
         this.caption.value = _name.value ?: "Tenant"
     }
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun doAfterCreate() {
-    //     super.doAfterCreate()
-    //     this.addLogoImage()
-    // }
+    override fun doAfterCreate() {
+        super.doAfterCreate()
+        this.addLogoImage()
+    }
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun doBeforeStore() {
-    //     super.doBeforeStore()
-    //     if (this.getLogoImageId() == null) {
-    //         this.addLogoImage()
-    //     }
-    // }
+    override fun doBeforeStore() {
+        super.doBeforeStore()
+        if (this.getLogoImageId() == null) {
+            this.addLogoImage()
+        }
+    }
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // private fun addLogoImage() {
-    //     val documentRepo = this.getRepository().getDocumentRepository()
-    //     val image = documentRepo.create(this.tenantId)
-    //     image.name = "Logo"
-    //     image.contentKind = CodeContentKindEnum.getContentKind("foto")
-    //     image.documentKind = CodeDocumentKindEnum.getDocumentKind("standalone")
-    //     image.documentCategory = CodeDocumentCategoryEnum.getDocumentCategory("logo")
-    //     documentRepo.store(image)
-    //     _logoImage.id = image.id
-    // }
-
-    // ObjTenantFM interface implementation
+    private fun addLogoImage() {
+        val documentRepo = this.getRepository().documentRepository
+        val image = documentRepo.create(this.tenantId as Int)
+        image.name = "Logo"
+        image.contentKind = CodeContentKind.getContentKind("foto")
+        image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
+        image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
+        documentRepo.store(image)
+        _logoImage.id = image.id
+    }
 
     override fun getTenantType(): CodeTenantType? = _tenantType.value
 
@@ -94,23 +88,12 @@ abstract class ObjTenantFMBase(
             .filterIsInstance<ObjUserFM>()
     }
 
-    // TODO-MIGRATION: Account - uncomment after Account is migrated
-    // override fun getAccounts(): List<ObjAccount> {
-    //     val accountRepo = getRepository().getAccountRepository()
-    //     return accountRepo.getByForeignKey("tenantId", this.id)
-    //         .filterIsInstance<ObjAccount>()
-    // }
+    override fun getLogoImageId(): Int? = _logoImage.id as? Int
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun getLogoImageId(): Int? = _logoImage.id as? Int
-
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun getLogoImage(): ObjDocument? {
-    //     val id = _logoImage.id ?: return null
-    //     return getRepository().getDocumentRepository().get(id) as? ObjDocument
-    // }
-
-    // ObjTenant interface implementation (from core framework)
+    override fun getLogoImage(): ObjDocument? {
+        val id = _logoImage.id ?: return null
+        return getRepository().documentRepository.get(id) as? ObjDocument
+    }
 
     override fun getKey(): String? = _key.value
 
@@ -130,4 +113,3 @@ abstract class ObjTenantFMBase(
         _description.value = description
     }
 }
-

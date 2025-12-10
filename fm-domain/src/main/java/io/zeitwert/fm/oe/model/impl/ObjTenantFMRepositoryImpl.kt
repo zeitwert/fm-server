@@ -1,6 +1,7 @@
 package io.zeitwert.fm.oe.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
+import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
@@ -11,17 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-/**
- * Repository implementation for ObjTenantFM using the NEW dddrive framework.
- */
 @Component("objTenantRepository")
 class ObjTenantFMRepositoryImpl(
-    @Lazy private val userRepository: ObjUserFMRepository
-    // TODO-MIGRATION: Account - uncomment after Account is migrated
-    // private val accountRepository: ObjAccountRepository,
-    // private val accountCache: ObjAccountCache,
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // private val documentRepository: ObjDocumentRepository
+    @Lazy private val userRepository: ObjUserFMRepository,
+    @Lazy private val documentRepository: ObjDocumentRepository
 ) : FMObjCoreRepositoryBase<ObjTenantFM>(
     ObjTenantFMRepository::class.java,
     ObjTenantFM::class.java,
@@ -41,17 +35,9 @@ class ObjTenantFMRepositoryImpl(
 
     override fun getUserRepository(): ObjUserFMRepository = userRepository
 
-    // TODO-MIGRATION: Account - uncomment after Account is migrated
-    // override fun getAccountRepository(): ObjAccountRepository = accountRepository
-
-    // TODO-MIGRATION: Account - uncomment after Account is migrated
-    // override fun getAccountCache(): ObjAccountCache = accountCache
-
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
+    override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
 
     companion object {
         private const val AGGREGATE_TYPE_ID = "obj_tenant"
     }
 }
-

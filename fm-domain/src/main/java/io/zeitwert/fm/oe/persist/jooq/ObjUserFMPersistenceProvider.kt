@@ -2,6 +2,7 @@ package io.zeitwert.fm.oe.persist.jooq
 
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
+import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
 import io.zeitwert.fm.obj.model.db.Sequences
@@ -15,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
-/**
- * jOOQ-based persistence provider for ObjUserFM aggregates.
- */
 @Component("objUserFMPersistenceProvider")
 open class ObjUserFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjUserFM>() {
 
@@ -70,8 +68,7 @@ open class ObjUserFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjUser
         record.roleList = (aggregate.getProperty("role") as? EnumProperty<CodeUserRole>)?.value?.id
         record.password = (aggregate.getProperty("password") as? BaseProperty<String?>)?.value
         record.needPasswordChange = (aggregate.getProperty("needPasswordChange") as? BaseProperty<Boolean?>)?.value
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // record.avatarImgId = (aggregate.getProperty("avatarImage") as? ReferenceProperty<*>)?.id as? Int
+        record.avatarImgId = (aggregate.getProperty("avatarImage") as? ReferenceProperty<*>)?.id as? Int
 
         if (existingRecord != null) {
             record.update()
@@ -79,7 +76,6 @@ open class ObjUserFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjUser
             record.insert()
         }
 
-        // Store tenant set (many-to-many relationship)
         storeTenantSet(aggregate, objId)
     }
 
@@ -87,12 +83,8 @@ open class ObjUserFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjUser
     private fun storeTenantSet(aggregate: ObjUserFM, objId: Int) {
         val tenantSet = (aggregate.getProperty("tenantSet") as? ReferenceSetProperty<*>)?.getItems() ?: return
 
-        // Delete existing mappings
         dslContext().deleteFrom(Tables.OBJ_USER)
             .where(Tables.OBJ_USER.OBJ_ID.eq(objId))
-
-        // Note: tenant set storage may need a separate mapping table
-        // This is a simplified implementation - adjust based on actual schema
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -116,21 +108,19 @@ open class ObjUserFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjUser
         (aggregate.getProperty("password") as? BaseProperty<String?>)?.value = record.password
         (aggregate.getProperty("needPasswordChange") as? BaseProperty<Boolean?>)?.value = record.needPasswordChange
 
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // (aggregate.getProperty("avatarImage") as? ReferenceProperty<*>)?.id = record.avatarImgId
+        (aggregate.getProperty("avatarImage") as? ReferenceProperty<*>)?.let { prop ->
+            @Suppress("UNCHECKED_CAST")
+            (prop as ReferenceProperty<Any>).id = record.avatarImgId
+        }
 
-        // Load tenant set (many-to-many relationship)
         loadTenantSet(aggregate, objId)
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun loadTenantSet(aggregate: ObjUserFM, objId: Int) {
-        // Note: tenant set loading may need a separate mapping table
-        // This is a simplified implementation - adjust based on actual schema
     }
 
     companion object {
         private const val AGGREGATE_TYPE_ID = "obj_user"
     }
 }
-

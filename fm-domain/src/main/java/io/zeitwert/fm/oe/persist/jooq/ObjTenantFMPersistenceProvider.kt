@@ -2,6 +2,7 @@ package io.zeitwert.fm.oe.persist.jooq
 
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
+import io.dddrive.core.property.model.ReferenceProperty
 import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
 import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.oe.model.ObjTenantFM
@@ -15,9 +16,6 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
-/**
- * jOOQ-based persistence provider for ObjTenantFM aggregates.
- */
 @Component("objTenantFMPersistenceProvider")
 open class ObjTenantFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjTenantFM>() {
 
@@ -68,8 +66,7 @@ open class ObjTenantFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjTe
         record.description = (aggregate.getProperty("description") as? BaseProperty<String?>)?.value
         record.inflationRate = (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value
         record.discountRate = (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // record.logoImgId = (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id as? Int
+        record.logoImgId = (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id as? Int
 
         if (existingRecord != null) {
             record.update()
@@ -97,12 +94,13 @@ open class ObjTenantFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjTe
         (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value = record.inflationRate
         (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value = record.discountRate
 
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id = record.logoImgId
+        (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.let { prop ->
+            @Suppress("UNCHECKED_CAST")
+            (prop as ReferenceProperty<Any>).id = record.logoImgId
+        }
     }
 
     companion object {
         private const val AGGREGATE_TYPE_ID = "obj_tenant"
     }
 }
-

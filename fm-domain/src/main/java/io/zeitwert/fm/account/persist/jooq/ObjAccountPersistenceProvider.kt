@@ -18,9 +18,6 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
-/**
- * jOOQ-based persistence provider for ObjAccount aggregates.
- */
 @Component("objAccountPersistenceProvider")
 open class ObjAccountPersistenceProvider : JooqObjPersistenceProviderBase<ObjAccount>() {
 
@@ -75,8 +72,7 @@ open class ObjAccountPersistenceProvider : JooqObjPersistenceProviderBase<ObjAcc
         record.referenceCurrencyId = (aggregate.getProperty("referenceCurrency") as? EnumProperty<CodeCurrency>)?.value?.id
         record.inflationRate = (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value
         record.discountRate = (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // record.logoImgId = (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id as? Int
+        record.logoImgId = (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id as? Int
         record.mainContactId = (aggregate.getProperty("mainContact") as? ReferenceProperty<*>)?.id as? Int
 
         if (existingRecord != null) {
@@ -117,10 +113,10 @@ open class ObjAccountPersistenceProvider : JooqObjPersistenceProviderBase<ObjAcc
         (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value = record.inflationRate
         (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value = record.discountRate
 
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.let { prop ->
-        //     (prop as ReferenceProperty<Any>).id = record.logoImgId
-        // }
+        (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.let { prop ->
+            @Suppress("UNCHECKED_CAST")
+            (prop as ReferenceProperty<Any>).id = record.logoImgId
+        }
 
         (aggregate.getProperty("mainContact") as? ReferenceProperty<*>)?.let { prop ->
             @Suppress("UNCHECKED_CAST")
@@ -132,4 +128,3 @@ open class ObjAccountPersistenceProvider : JooqObjPersistenceProviderBase<ObjAcc
         private const val AGGREGATE_TYPE_ID = "obj_account"
     }
 }
-

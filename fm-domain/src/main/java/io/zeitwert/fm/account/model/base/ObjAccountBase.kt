@@ -9,19 +9,17 @@ import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.contact.model.ObjContact
-// TODO-MIGRATION: DMS - uncomment after DMS is migrated
-// import io.zeitwert.fm.dms.model.ObjDocument
+import io.zeitwert.fm.dms.model.ObjDocument
+import io.zeitwert.fm.dms.model.enums.CodeContentKind
+import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
+import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjCoreBase
 import java.math.BigDecimal
 
-/**
- * Base class for ObjAccount using the NEW dddrive framework.
- */
 abstract class ObjAccountBase(
     repository: ObjAccountRepository
 ) : FMObjCoreBase(repository), ObjAccount {
 
-    //@formatter:off
     private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
     private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
     private val _accountType: EnumProperty<CodeAccountType> = this.addEnumProperty("accountType", CodeAccountType::class.java)
@@ -29,32 +27,25 @@ abstract class ObjAccountBase(
     private val _referenceCurrency: EnumProperty<CodeCurrency> = this.addEnumProperty("referenceCurrency", CodeCurrency::class.java)
     private val _inflationRate: BaseProperty<BigDecimal> = this.addBaseProperty("inflationRate", BigDecimal::class.java)
     private val _discountRate: BaseProperty<BigDecimal> = this.addBaseProperty("discountRate", BigDecimal::class.java)
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // private val _logoImage: ReferenceProperty<ObjDocument> = this.addReferenceProperty("logoImage", ObjDocument::class.java)
+    private val _logoImage: ReferenceProperty<ObjDocument> = this.addReferenceProperty("logoImage", ObjDocument::class.java)
     private val _mainContact: ReferenceProperty<ObjContact> = this.addReferenceProperty("mainContact", ObjContact::class.java)
-    //@formatter:on
 
     override fun getRepository(): ObjAccountRepository {
         return super.getRepository() as ObjAccountRepository
     }
 
-    // TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-    // override fun aggregate(): ObjAccount = this
-
     override fun doAfterCreate() {
         super.doAfterCreate()
         check(this.id != null) { "id must not be null after create" }
         this.accountId = this.id as Int
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // this.addLogoImage()
+        this.addLogoImage()
     }
 
     override fun doBeforeStore() {
         super.doBeforeStore()
-        // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-        // if (this.getLogoImageId() == null) {
-        //     this.addLogoImage()
-        // }
+        if (this.getLogoImageId() == null) {
+            this.addLogoImage()
+        }
     }
 
     override fun doCalcSearch() {
@@ -72,19 +63,16 @@ abstract class ObjAccountBase(
         this.caption.value = this.name
     }
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // private fun addLogoImage() {
-    //     val documentRepo = this.getRepository().documentRepository
-    //     val image = documentRepo.create(this.tenantId as Int)
-    //     image.name = "Logo"
-    //     image.contentKind = CodeContentKindEnum.getContentKind("foto")
-    //     image.documentKind = CodeDocumentKindEnum.getDocumentKind("standalone")
-    //     image.documentCategory = CodeDocumentCategoryEnum.getDocumentCategory("logo")
-    //     documentRepo.store(image)
-    //     _logoImage.id = image.id
-    // }
-
-    // ObjAccount interface implementation
+    private fun addLogoImage() {
+        val documentRepo = this.getRepository().documentRepository
+        val image = documentRepo.create(this.tenantId as Int)
+        image.name = "Logo"
+        image.contentKind = CodeContentKind.getContentKind("foto")
+        image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
+        image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
+        documentRepo.store(image)
+        _logoImage.id = image.id
+    }
 
     override fun getName(): String? = _name.value
 
@@ -128,11 +116,9 @@ abstract class ObjAccountBase(
         _discountRate.value = rate
     }
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun getLogoImageId(): Int? = _logoImage.id as? Int
+    override fun getLogoImageId(): Int? = _logoImage.id as? Int
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun getLogoImage(): ObjDocument? = _logoImage.value
+    override fun getLogoImage(): ObjDocument? = _logoImage.value
 
     override fun getMainContactId(): Int? = _mainContact.id as? Int
 
@@ -147,4 +133,3 @@ abstract class ObjAccountBase(
         return contactRepo.getByForeignKey("accountId", this.id as Any)
     }
 }
-

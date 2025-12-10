@@ -1,6 +1,7 @@
 package io.zeitwert.fm.oe.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
+import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
@@ -14,15 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.util.*
 
-/**
- * Repository implementation for ObjUserFM using the NEW dddrive framework.
- */
 @Component("objUserRepository")
 class ObjUserFMRepositoryImpl(
-    // passwordEncoder: break cycle from WebSecurityConfig
-    @Lazy private val passwordEncoder: PasswordEncoder
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // private val documentRepository: ObjDocumentRepository
+    @Lazy private val passwordEncoder: PasswordEncoder,
+    @Lazy private val documentRepository: ObjDocumentRepository
 ) : FMObjCoreRepositoryBase<ObjUserFM>(
     ObjUserFMRepository::class.java,
     ObjUserFM::class.java,
@@ -42,8 +38,7 @@ class ObjUserFMRepositoryImpl(
 
     override fun getPasswordEncoder(): PasswordEncoder = passwordEncoder
 
-    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
-    // override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
+    override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
 
     override fun isAppAdmin(user: ObjUserFM): Boolean {
         return user.hasRole(CodeUserRole.APP_ADMIN)
@@ -68,4 +63,3 @@ class ObjUserFMRepositoryImpl(
         private const val AGGREGATE_TYPE_ID = "obj_user"
     }
 }
-

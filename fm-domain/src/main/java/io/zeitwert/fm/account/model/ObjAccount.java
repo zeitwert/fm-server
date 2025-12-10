@@ -8,14 +8,10 @@ import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.contact.model.ObjContact;
-// TODO-MIGRATION: DMS - uncomment after DMS is migrated
-// import io.zeitwert.fm.dms.model.ObjDocument;
-// TODO-MIGRATION: Task - uncomment after Task is migrated
-// import io.zeitwert.fm.task.model.ItemWithTasks;
+import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 
-// TODO-MIGRATION: Task - add "ItemWithTasks" after Task is migrated
 public interface ObjAccount extends Obj, ItemWithNotes {
 
 	String getName();
@@ -46,11 +42,9 @@ public interface ObjAccount extends Obj, ItemWithNotes {
 
 	void setDiscountRate(BigDecimal rate);
 
-	// TODO-MIGRATION: DMS - uncomment after DMS is migrated
-	// Integer getLogoImageId();
+	Integer getLogoImageId();
 
-	// TODO-MIGRATION: DMS - uncomment after DMS is migrated
-	// ObjDocument getLogoImage();
+	ObjDocument getLogoImage();
 
 	Integer getMainContactId();
 
