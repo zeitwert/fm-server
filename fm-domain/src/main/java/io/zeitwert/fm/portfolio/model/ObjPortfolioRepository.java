@@ -1,23 +1,16 @@
 package io.zeitwert.fm.portfolio.model;
 
+import io.dddrive.core.obj.model.ObjRepository;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
-import io.zeitwert.fm.obj.model.FMObjRepository;
-import io.zeitwert.fm.obj.service.api.ObjVCache;
-import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
-import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;
+import io.zeitwert.fm.task.model.DocTaskRepository;
 
-public interface ObjPortfolioRepository extends FMObjRepository<ObjPortfolio, ObjPortfolioVRecord> {
+public interface ObjPortfolioRepository extends ObjRepository<ObjPortfolio> {
 
-	ObjVCache getObjCache();
+	ObjAccountRepository getAccountRepository();
 
-	ObjAccountRepository getAccountCache();
+	ObjBuildingRepository getBuildingRepository();
 
-	ObjBuildingCache getBuildingCache();
-
-	ObjBuildingRepository getBuildingRepo();
-
-	ObjPortfolioCache getPortfolioCache();
+	DocTaskRepository getTaskRepository();
 
 }

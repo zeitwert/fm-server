@@ -41,7 +41,6 @@ import io.zeitwert.fm.obj.service.api.ObjVCache;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
-import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
@@ -66,9 +65,6 @@ public class HomeController {
 
 	@Autowired
 	ObjBuildingRepository buildingRepository;
-
-	@Autowired
-	ObjPortfolioCache portfolioCache;
 
 	@Autowired
 	ObjPortfolioRepository portfolioRepository;

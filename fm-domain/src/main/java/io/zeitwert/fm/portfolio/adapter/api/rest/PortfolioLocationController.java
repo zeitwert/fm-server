@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.service.api.PortfolioService;
 
 @RestController("portfolioLocationController")
@@ -22,14 +22,14 @@ public class PortfolioLocationController {
 	private static final Size DefaultMapSize = new Size(800, 600);
 
 	@Autowired
-	private ObjPortfolioCache cache;
+	private ObjPortfolioRepository portfolioRepository;
 
 	@Autowired
 	PortfolioService portfolioService;
 
 	@GetMapping("/{id}/location")
 	protected ResponseEntity<byte[]> getMap(@PathVariable("id") Integer id) {
-		ObjPortfolio portfolio = this.cache.get(id);
+		ObjPortfolio portfolio = this.portfolioRepository.get(id);
 		ImageResult ir = this.portfolioService.getMap(portfolio, DefaultMapSize);
 		if (ir == null) {
 			return ResponseEntity.noContent().build();

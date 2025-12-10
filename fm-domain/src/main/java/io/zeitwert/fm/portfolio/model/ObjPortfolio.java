@@ -2,7 +2,7 @@ package io.zeitwert.fm.portfolio.model;
 
 import java.util.Set;
 
-import io.dddrive.obj.model.Obj;
+import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;

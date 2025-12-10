@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
-import io.zeitwert.fm.portfolio.service.api.ObjPortfolioCache;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
@@ -40,10 +40,10 @@ public class PortfolioDocumentController {
 	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	@Autowired
-	private ObjPortfolioCache portfolioCache;
+	private ObjPortfolioRepository portfolioRepository;
 
 	@Autowired
-	private ObjBuildingCache buildingCache;
+	private ObjBuildingRepository buildingRepository;
 
 	@Autowired
 	private ProjectionService projectionService;
@@ -53,11 +53,11 @@ public class PortfolioDocumentController {
 
 	@GetMapping("/{id}/projection")
 	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer id) {
-		Set<ObjBuilding> buildings = this.portfolioCache
+		Set<ObjBuilding> buildings = this.portfolioRepository
 				.get(id)
 				.getBuildingSet()
 				.stream()
-				.map((buildingId) -> this.buildingCache.get(buildingId))
+				.map((buildingId) -> this.buildingRepository.get(buildingId))
 				.collect(Collectors.toSet());
 		return ResponseEntity
 				.ok(this.projectionService.getProjection(buildings, ProjectionService.DefaultDuration));
@@ -85,7 +85,7 @@ public class PortfolioDocumentController {
 	}
 
 	protected ResponseEntity<byte[]> getPortfolioEvaluation(Integer id, String format, Boolean isInline) {
-		ObjPortfolio portfolio = this.portfolioCache.get(id);
+		ObjPortfolio portfolio = this.portfolioRepository.get(id);
 		if (portfolio == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -111,7 +111,7 @@ public class PortfolioDocumentController {
 
 	private ResponseEntity<byte[]> getPortfolioEvaluation(String[] ids, String format) {
 		for (String id : ids) {
-			ObjPortfolio portfolio = this.portfolioCache.get(Integer.parseInt(id));
+			ObjPortfolio portfolio = this.portfolioRepository.get(Integer.parseInt(id));
 			if (portfolio == null) {
 				return ResponseEntity.notFound().build();
 			}
@@ -121,7 +121,7 @@ public class PortfolioDocumentController {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ZipOutputStream zos = new ZipOutputStream(baos)) {
 			for (String id : ids) {
-				ObjPortfolio portfolio = this.portfolioCache.get(Integer.parseInt(id));
+				ObjPortfolio portfolio = this.portfolioRepository.get(Integer.parseInt(id));
 				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 					this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
 					String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
