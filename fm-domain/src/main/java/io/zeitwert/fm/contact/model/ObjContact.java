@@ -5,16 +5,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import io.dddrive.obj.model.Obj;
+import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
-import io.zeitwert.fm.task.model.ItemWithTasks;
+// TODO-MIGRATION: Task - uncomment after Task is migrated
+// import io.zeitwert.fm.task.model.ItemWithTasks;
 
-public interface ObjContact extends Obj, ItemWithAccount, ItemWithNotes, ItemWithTasks {
+// TODO-MIGRATION: Task - add "ItemWithTasks" after Task is migrated
+public interface ObjContact extends Obj, ItemWithAccount, ItemWithNotes {
 
 	@Override
 	Integer getAccountId();

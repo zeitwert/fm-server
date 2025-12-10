@@ -3,7 +3,7 @@ package io.zeitwert.fm.contact.model;
 
 import io.zeitwert.fm.contact.model.enums.CodeAddressType;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
-import io.dddrive.obj.model.ObjPart;
+import io.dddrive.core.obj.model.ObjPart;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 
 public interface ObjContactPartAddress extends ObjPart<ObjContact> {

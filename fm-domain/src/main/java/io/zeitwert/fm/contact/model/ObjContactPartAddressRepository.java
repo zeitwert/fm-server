@@ -1,7 +1,6 @@
 package io.zeitwert.fm.contact.model;
 
-import io.dddrive.obj.model.ObjPartRepository;
+import io.dddrive.core.ddd.model.PartRepository;
 
-public interface ObjContactPartAddressRepository extends ObjPartRepository<ObjContact, ObjContactPartAddress> {
-
+public interface ObjContactPartAddressRepository extends PartRepository<ObjContact, ObjContactPartAddress> {
 }
