@@ -1,6 +1,9 @@
-
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
+// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
+// This DTO adapter uses OLD dddrive base classes. Will be replaced with REST response mapping in Phase 3.
+
+/*
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
@@ -8,7 +11,7 @@ import io.zeitwert.fm.doc.adapter.api.jsonapi.base.DocDtoAdapterBase;
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
-import io.zeitwert.fm.task.model.enums.CodeTaskPriorityEnum;
+import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,7 +47,7 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 		doc.setSubject(dto.getSubject());
 		doc.setContent(dto.getContent());
 		doc.setIsPrivate(dto.getIsPrivate());
-		doc.setPriority(dto.getPriority() == null ? null : CodeTaskPriorityEnum.getPriority(dto.getPriority().getId()));
+		doc.setPriority(dto.getPriority() == null ? null : CodeTaskPriority.getPriority(dto.getPriority().getId()));
 		doc.setDueAt(dto.getDueAt());
 		doc.setRemindAt(dto.getRemindAt());
 	}
@@ -83,10 +86,11 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 				.subject(doc.getSubject())
 				.content(doc.getContent())
 				.isPrivate(doc.getIsPrivate())
-				.priority(EnumeratedDto.fromEnum(CodeTaskPriorityEnum.getPriority(doc.getPriorityId())))
+				.priority(EnumeratedDto.fromEnum(CodeTaskPriority.getPriority(doc.getPriorityId())))
 				.dueAt(doc.getDueAt())
 				.remindAt(doc.getRemindAt())
 				.build();
 	}
 
 }
+*/

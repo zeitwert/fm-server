@@ -1,16 +1,13 @@
-
 package io.zeitwert.fm.task.model;
 
 import java.time.OffsetDateTime;
 
-import io.dddrive.ddd.model.Aggregate;
-import io.dddrive.doc.model.Doc;
-import io.zeitwert.fm.account.model.ItemWithAccount;
+import io.dddrive.core.ddd.model.Aggregate;
+import io.dddrive.core.doc.model.Doc;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
-public interface DocTask extends Doc, ItemWithAccount, ItemWithNotes {
+public interface DocTask extends Doc {
 
 	Integer getRelatedToId();
 
@@ -18,13 +15,6 @@ public interface DocTask extends Doc, ItemWithAccount, ItemWithNotes {
 
 	Aggregate getRelatedTo();
 
-	@Override
-	Integer getAccountId();
-
-	@Override
-	void setAccountId(Integer id);
-
-	@Override
 	ObjAccount getAccount();
 
 	String getSubject();

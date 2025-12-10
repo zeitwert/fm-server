@@ -1,6 +1,9 @@
-
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
+// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
+// This JSON:API repository uses OLD dddrive base classes. Will be replaced with REST controller in Phase 3.
+
+/*
 import org.springframework.stereotype.Controller;
 
 import io.dddrive.app.model.RequestContext;
@@ -26,3 +29,4 @@ public class DocTaskApiRepositoryImpl
 	}
 
 }
+*/

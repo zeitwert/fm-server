@@ -1,5 +1,9 @@
 package io.zeitwert.fm.task.adapter.api.jsonapi.dto;
 
+// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
+// This JSON:API DTO uses Crnk framework. Will be replaced with REST response DTO in Phase 3.
+
+/*
 import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -75,3 +79,4 @@ public class DocTaskDto extends DocDtoBase<DocTask> {
 	private OffsetDateTime remindAt;
 
 }
+*/

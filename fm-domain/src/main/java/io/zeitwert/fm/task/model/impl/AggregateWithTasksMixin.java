@@ -1,12 +1,12 @@
 package io.zeitwert.fm.task.model.impl;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
-import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.core.ddd.model.Aggregate;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.ItemWithTasks;
-import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 public interface AggregateWithTasksMixin extends ItemWithTasks {
 
@@ -15,14 +15,14 @@ public interface AggregateWithTasksMixin extends ItemWithTasks {
 	DocTaskRepository taskRepository();
 
 	@Override
-	default List<DocTaskVRecord> getTasks() {
-		return this.taskRepository().getByForeignKey("related_to_obj_id", this.aggregate().getId());
+	default List<DocTask> getTasks() {
+		return this.taskRepository().getByForeignKey("related_obj_id", this.aggregate().getId());
 	}
 
 	@Override
 	default DocTask addTask() {
-		DocTask task = this.taskRepository().create(this.aggregate().getTenantId());
-		task.setRelatedToId(this.aggregate().getId());
+		DocTask task = this.taskRepository().create(this.aggregate().getTenantId(), null, OffsetDateTime.now());
+		task.setRelatedToId((Integer) this.aggregate().getId());
 		return task;
 	}
 
