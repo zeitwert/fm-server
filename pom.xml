@@ -52,6 +52,7 @@
 		<aspose-words.version>22.12</aspose-words.version>
 		<google-maps.version>2.1.2</google-maps.version>
 		<caffeine.version>3.2.1</caffeine.version>
+		<jackson.version>2.19.1</jackson.version>
 		<!-- Frontend -->
 		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
 		<node.version>v18.12.1</node.version>
@@ -81,6 +82,13 @@
 				<groupId>io.zeitwert</groupId>
 				<artifactId>fm-common</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeitwert</groupId>
+				<artifactId>fm-common</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.zeitwert</groupId>
@@ -121,6 +129,18 @@
 				<artifactId>kotlin-test</artifactId>
 				<version>${kotlin.version}</version>
 				<scope>test</scope>
+			</dependency>
+
+			<!-- Jackson -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-kotlin</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<!-- Runtime -->

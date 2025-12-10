@@ -51,10 +51,11 @@ public abstract class ObjAccountBase extends FMObjBase
 		return (ObjAccountRepository) super.getRepository();
 	}
 
-	@Override
-	public ObjAccount aggregate() {
-		return this;
-	}
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Override
+	// public ObjAccount aggregate() {
+	// 	return this;
+	// }
 
 	@Override
 	public void doAfterCreate() {

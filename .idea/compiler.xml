@@ -19,11 +19,12 @@
         <module name="fm-dddrive" />
         <module name="fm-common" />
         <module name="fm-domain" />
-        <module name="fm-jooq-adapter" />
         <module name="fm-server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="21">
+      <module name="fm-jooq-adapter" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

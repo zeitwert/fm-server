@@ -31,10 +31,11 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration("dDDriveConfig")
 open class DDDriveConfig : EnumConfigBase() {
+
 	@Bean("directory")
 	open fun directory(): RepositoryDirectory = RepositoryDirectory.getInstance()
 
-	@Bean("codeAggregateTypeEnum")
+	@Bean("coreCodeAggregateTypeEnum")
 	open fun aggregateTypeEnum(): CodeAggregateTypeEnum {
 		try {
 			startConfig()
@@ -48,7 +49,7 @@ open class DDDriveConfig : EnumConfigBase() {
 		}
 	}
 
-	@Bean("codeCaseDefEnum")
+	@Bean("coreCodeCaseDefEnum")
 	open fun caseDefEnum(): CodeCaseDefEnum {
 		try {
 			startConfig()
@@ -58,7 +59,7 @@ open class DDDriveConfig : EnumConfigBase() {
 		}
 	}
 
-	@Bean("codeCaseStageEnum")
+	@Bean("coreCodeCaseStageEnum")
 	open fun caseStageEnum(): CodeCaseStageEnum {
 		try {
 			startConfig()
@@ -68,7 +69,7 @@ open class DDDriveConfig : EnumConfigBase() {
 		}
 	}
 
-	@Bean("codeValidationLevelEnum")
+	@Bean("coreCodeValidationLevelEnum")
 	open fun validationLevelEnum(): CodeValidationLevelEnum {
 		try {
 			startConfig()

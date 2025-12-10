@@ -1,6 +1,9 @@
-
 package io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto;
 
+// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
+// This JSON:API DTO uses OLD dddrive base classes. Will be replaced with REST DTOs in Phase 3.
+
+/*
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.collaboration.model.ObjNote;
@@ -26,3 +29,4 @@ public class ObjNoteDto extends ObjDtoBase<ObjNote> {
 	private Boolean isPrivate;
 
 }
+*/

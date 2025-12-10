@@ -15,7 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @SpringBootApplication
 @Configuration
 @EnableAsync
-@ComponentScan({ "io.zeitwert" })
+@ComponentScan({ "io.zeitwert", "io.dddrive.core" })
 public class Application {
 
 	public static void main(String[] args) {

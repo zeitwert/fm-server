@@ -1,21 +1,27 @@
 package io.zeitwert.fm.collaboration.model.enums;
 
-import io.dddrive.enums.model.base.EnumeratedBase;
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import io.dddrive.core.enums.model.Enumeration;
+import io.dddrive.core.enums.model.base.EnumeratedBase;
 
-@Data
-@SuperBuilder
+/**
+ * CodeNoteType enum using the NEW dddrive framework.
+ */
 public final class CodeNoteType extends EnumeratedBase {
 
-	@Override
-	public boolean equals(Object other) {
-		return super.equals(other);
-	}
+    public CodeNoteType(Enumeration<CodeNoteType> enumeration, String id, String name) {
+        super(enumeration, id, name);
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        CodeNoteType that = (CodeNoteType) other;
+        return getId().equals(that.getId());
+    }
 
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }

@@ -6,7 +6,7 @@ import org.jooq.impl.DefaultExecuteListener;
 public class ExecuteListener extends DefaultExecuteListener {
 
 	@Override
-	public void start(ExecuteContext ctx) {
+	public void executeStart(ExecuteContext ctx) {
 		String sql = (ctx.query() != null ? ctx.query().toString().replace("\n", " ") : "")
 				+ (ctx.sql() != null ? ctx.sql().toString().replace("\n", " ") : "");
 		int fromPos = sql.indexOf(" from ");

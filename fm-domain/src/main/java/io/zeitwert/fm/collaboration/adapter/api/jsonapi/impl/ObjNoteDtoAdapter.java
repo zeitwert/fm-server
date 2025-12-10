@@ -1,6 +1,9 @@
-
 package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
+// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
+// This JSON:API adapter uses OLD dddrive base classes. Will be replaced with REST mapper in Phase 3.
+
+/*
 import org.springframework.stereotype.Component;
 
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
@@ -60,3 +63,4 @@ public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteVRecord
 	}
 
 }
+*/

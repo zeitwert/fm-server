@@ -1,5 +1,11 @@
 package io.zeitwert.fm.collaboration.model.impl;
 
+// TODO-MIGRATION: Collaboration - uncomment after all domains using this mixin are migrated
+// This mixin requires the OLD dddrive interface. It will be re-implemented when:
+// 1. All domains (Account, Building, Contact, DMS, Portfolio, Task) are migrated to new dddrive
+// 2. The mixin is updated to use new dddrive signatures (with userId and timestamp parameters)
+
+/*
 import static io.dddrive.util.Invariant.requireThis;
 
 import java.util.List;
@@ -37,4 +43,9 @@ public interface AggregateWithNotesMixin extends ItemWithNotes {
 		this.noteRepository().delete(note);
 	}
 
+}
+*/
+
+// Temporary empty interface to allow compilation
+public interface AggregateWithNotesMixin {
 }

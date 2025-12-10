@@ -22,11 +22,22 @@
 			<groupId>io.zeitwert</groupId>
 			<artifactId>fm-common</artifactId>
 		</dependency>
+		<!-- New embedded DDDrive (io.dddrive.core.*) -->
+		<dependency>
+			<groupId>io.zeitwert</groupId>
+			<artifactId>fm-dddrive</artifactId>
+		</dependency>
 
-		<!-- External DDDrive (to be replaced with fm-dddrive in Phase 2) -->
+		<!-- External DDDrive (io.dddrive.* - old, kept for coexistence during migration) -->
 		<dependency>
 			<groupId>io.zeitwert</groupId>
 			<artifactId>dddrive</artifactId>
+		</dependency>
+
+		<!-- Kotlin -->
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
 		</dependency>
 
 		<!-- Crnk JSON:API -->
@@ -100,11 +111,26 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>io.zeitwert</groupId>
+			<artifactId>fm-common</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

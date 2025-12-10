@@ -46,10 +46,11 @@ public abstract class ObjContactBase extends FMObjBase
 		return (ObjContactRepository) super.getRepository();
 	}
 
-	@Override
-	public ObjContact aggregate() {
-		return this;
-	}
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Override
+	// public ObjContact aggregate() {
+	// 	return this;
+	// }
 
 	@Override
 	public final ObjAccount getAccount() {

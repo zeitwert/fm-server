@@ -40,10 +40,11 @@ public abstract class DocTaskBase extends FMDocBase implements DocTask, Aggregat
 		return (DocTaskRepository) super.getRepository();
 	}
 
-	@Override
-	public DocTask aggregate() {
-		return this;
-	}
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Override
+	// public DocTask aggregate() {
+	// 	return this;
+	// }
 
 	@Override
 	public void doBeforeStore() {

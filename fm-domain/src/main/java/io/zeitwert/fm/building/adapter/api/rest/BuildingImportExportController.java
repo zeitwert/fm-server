@@ -38,10 +38,11 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
 import io.zeitwert.fm.building.service.api.ObjBuildingCache;
-import io.zeitwert.fm.collaboration.model.ObjNote;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
+// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+// import io.zeitwert.fm.collaboration.model.ObjNote;
+// import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+// import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+// import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @RestController("buildingFileTransferController")
@@ -63,8 +64,9 @@ public class BuildingImportExportController {
 	@Autowired
 	private ObjUserCache userCache;
 
-	@Autowired
-	private ObjNoteRepository noteRepo;
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Autowired
+	// private ObjNoteRepository noteRepo;
 
 	@Autowired
 	RequestContextFM requestCtx;
@@ -127,20 +129,22 @@ public class BuildingImportExportController {
 					.measureDescription(e.getMeasureDescription())
 					.build();
 		}).toList();
-		List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
-			return NoteTransferDto
-					.builder()
-					.subject(note.getSubject())
-					.content(note.getContent())
-					.isPrivate(note.getIsPrivate())
-					.createdByUser(this.userCache.get(note.getCreatedByUserId()).getEmail())
-					.createdAt(note.getCreatedAt())
-					.modifiedByUser(note.getModifiedByUserId() != null
-							? this.userCache.get(note.getModifiedByUserId()).getEmail()
-							: null)
-					.modifiedAt(note.getModifiedAt())
-					.build();
-		}).toList();
+		// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+		// List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
+		// 	return NoteTransferDto
+		// 			.builder()
+		// 			.subject(note.getSubject())
+		// 			.content(note.getContent())
+		// 			.isPrivate(note.getIsPrivate())
+		// 			.createdByUser(this.userCache.get(note.getCreatedByUserId()).getEmail())
+		// 			.createdAt(note.getCreatedAt())
+		// 			.modifiedByUser(note.getModifiedByUserId() != null
+		// 					? this.userCache.get(note.getModifiedByUserId()).getEmail()
+		// 					: null)
+		// 			.modifiedAt(note.getModifiedAt())
+		// 			.build();
+		// }).toList();
+		List<NoteTransferDto> notes = List.of(); // Temporary empty list
 		BuildingTransferDto export = BuildingTransferDto
 				.builder()
 				.meta(meta)
@@ -261,16 +265,17 @@ public class BuildingImportExportController {
 					element.setMeasureDescription(dtoElement.getMeasureDescription());
 				});
 			}
-			if (dto.getNotes() != null) {
-				CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
-				dto.getNotes().forEach((dtoNote) -> {
-					ObjNote note = building.addNote(noteType);
-					note.setSubject(dtoNote.getSubject());
-					note.setContent(dtoNote.getContent());
-					note.setIsPrivate(dtoNote.getIsPrivate());
-					this.noteRepo.store(note);
-				});
-			}
+			// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+			// if (dto.getNotes() != null) {
+			// 	CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
+			// 	dto.getNotes().forEach((dtoNote) -> {
+			// 		ObjNote note = building.addNote(noteType);
+			// 		note.setSubject(dtoNote.getSubject());
+			// 		note.setContent(dtoNote.getContent());
+			// 		note.setIsPrivate(dtoNote.getIsPrivate());
+			// 		this.noteRepo.store(note);
+			// 	});
+			// }
 
 		} finally {
 			building.getMeta().enableCalc();

@@ -2,6 +2,7 @@ package io.zeitwert.fm.server.session.service.api.impl;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import io.dddrive.app.model.RequestContext;
@@ -12,6 +13,7 @@ import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
 import io.zeitwert.fm.oe.model.enums.CodeLocaleEnum;
 
 @Service("appContext")
+@Profile({ "dev", "staging", "prod" })
 public class AppContextImpl extends AppContextBase {
 
 	private static final String K_ZEITWERT_IO = "k@zeitwert.io";

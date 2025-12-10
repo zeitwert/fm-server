@@ -51,10 +51,11 @@ public abstract class ObjPortfolioBase extends FMObjBase
 		return (ObjPortfolioRepository) super.getRepository();
 	}
 
-	@Override
-	public ObjPortfolio aggregate() {
-		return this;
-	}
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Override
+	// public ObjPortfolio aggregate() {
+	// 	return this;
+	// }
 
 	@Override
 	public final ObjAccount getAccount() {

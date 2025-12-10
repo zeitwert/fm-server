@@ -43,10 +43,11 @@ public abstract class ObjDocumentBase extends FMObjBase
 		return (ObjDocumentRepository) super.getRepository();
 	}
 
-	@Override
-	public ObjDocument aggregate() {
-		return this;
-	}
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Override
+	// public ObjDocument aggregate() {
+	// 	return this;
+	// }
 
 	@Override
 	public void doAfterLoad() {

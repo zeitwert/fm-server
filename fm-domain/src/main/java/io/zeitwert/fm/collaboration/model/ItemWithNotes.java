@@ -1,5 +1,9 @@
 package io.zeitwert.fm.collaboration.model;
 
+// TODO-MIGRATION: Collaboration - uncomment after all domains are migrated and mixin is restored
+// This interface defines note operations that are implemented by AggregateWithNotesMixin.
+
+/*
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 
@@ -13,4 +17,9 @@ public interface ItemWithNotes {
 
 	void removeNote(Integer noteId);
 
+}
+*/
+
+// Temporary empty interface to allow compilation
+public interface ItemWithNotes {
 }

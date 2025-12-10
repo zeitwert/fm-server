@@ -93,10 +93,11 @@ public abstract class ObjBuildingBase extends FMObjBase
 		super(repository, state);
 	}
 
-	@Override
-	public ObjBuilding aggregate() {
-		return this;
-	}
+	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
+	// @Override
+	// public ObjBuilding aggregate() {
+	// 	return this;
+	// }
 
 	@Override
 	public ObjBuildingRepository getRepository() {
