@@ -1,9 +1,9 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.dddrive.obj.model.ObjPartRepository;
+import io.dddrive.core.ddd.model.PartRepository;
 
 public interface ObjBuildingPartElementRatingRepository
-		extends ObjPartRepository<ObjBuilding, ObjBuildingPartElementRating> {
+		extends PartRepository<ObjBuilding, ObjBuildingPartElementRating> {
 
 }

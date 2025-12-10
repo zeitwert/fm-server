@@ -4,7 +4,7 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.time.LocalDate;
 
-import org.flywaydb.core.internal.util.Pair;
+import kotlin.Pair;
 
 import io.dddrive.ddd.model.Part;
 import io.dddrive.ddd.model.PartRepository;
@@ -23,7 +23,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
-import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
 
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
@@ -51,7 +50,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
-		this.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus("open"));
+		this.setRatingStatus(CodeBuildingRatingStatus.OPEN);
 	}
 
 	@Override
@@ -70,7 +69,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 			this.elementList.clearParts();
 			if (this.getPartCatalog() != null) {
 				for (Pair<CodeBuildingPart, Integer> part : this.getPartCatalog().getParts()) {
-					this.addElement(part.getLeft()).setWeight(part.getRight());
+					this.addElement(part.getFirst()).setWeight(part.getSecond());
 				}
 			}
 		} else if (property == this.ratingDate) {

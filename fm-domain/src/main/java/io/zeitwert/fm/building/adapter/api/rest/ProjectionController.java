@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 
 @RestController("projectionController")
@@ -21,7 +20,7 @@ public class ProjectionController {
 	@GetMapping("/elements/{elementId}")
 	ResponseEntity<List<ProjectionPeriod>> getElementProjection(@PathVariable String elementId)
 			throws InterruptedException, ExecutionException {
-		final CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
+		final CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
 		final int startYear = 2021;
 		final double condition = 1;
 		final int duration = 50;
@@ -33,7 +32,7 @@ public class ProjectionController {
 	@GetMapping("/elements/{elementId}/withRestoration")
 	ResponseEntity<List<Double>> getRestoredTimeValue(@PathVariable String elementId)
 			throws InterruptedException, ExecutionException {
-		CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
+		CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
 		List<Double> timeValues = new ArrayList<Double>();
 		int year = 0;
 		for (int t = 0; t < 100; t++) {
@@ -50,7 +49,7 @@ public class ProjectionController {
 	@GetMapping("/elements/{elementId}/relativeAge/{timeValue}")
 	ResponseEntity<Double> getRelativeAge(@PathVariable String elementId, @PathVariable Double timeValue)
 			throws InterruptedException, ExecutionException {
-		CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
+		CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
 		return ResponseEntity.ok(buildingPart.getRelativeAge(timeValue));
 	}
 
@@ -59,7 +58,7 @@ public class ProjectionController {
 			@PathVariable Integer ratingYear,
 			@PathVariable Double condition)
 			throws InterruptedException, ExecutionException {
-		CodeBuildingPart buildingPart = CodeBuildingPartEnum.getBuildingPart(elementId);
+		CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
 		return ResponseEntity
 				.ok(buildingPart.getNextRestoration(1000000, ratingYear, condition));
 	}

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import io.dddrive.obj.model.Obj;
+import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -148,6 +148,8 @@ public interface ObjBuilding extends Obj, ItemWithAccount, ItemWithNotes, ItemWi
 	void setThirdPartyValueYear(Integer year);
 
 	ObjBuildingPartRating getCurrentRating();
+
+	ObjBuildingPartRating getCurrentRatingForView();
 
 	Integer getRatingCount();
 

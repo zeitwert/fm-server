@@ -11,7 +11,7 @@ import java.util.Set;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 
@@ -50,7 +50,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 	public void toPart(ObjBuildingPartElementRating part) {
 		super.toPart(part);
 		part.setBuildingPart(
-				this.buildingPart == null ? null : CodeBuildingPartEnum.getBuildingPart(this.buildingPart.getId()));
+				this.buildingPart == null ? null : CodeBuildingPart.getBuildingPart(this.buildingPart.getId()));
 		part.setWeight(this.weight);
 		part.setCondition(this.condition);
 		part.setRatingYear(this.ratingYear);

@@ -1,22 +1,20 @@
 
 package io.zeitwert.fm.building.model;
 
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
+import io.dddrive.core.obj.model.ObjRepository;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.contact.model.ObjContactRepository;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.obj.model.FMObjRepository;
+import io.zeitwert.fm.task.model.DocTaskRepository;
 
-public interface ObjBuildingRepository extends FMObjRepository<ObjBuilding, ObjBuildingVRecord> {
+public interface ObjBuildingRepository extends ObjRepository<ObjBuilding> {
 
-	ObjAccountCache getAccountCache();
+	ObjAccountRepository getAccountRepository();
 
 	ObjContactRepository getContactRepository();
 
 	ObjDocumentRepository getDocumentRepository();
 
-	ObjBuildingPartRatingRepository getRatingRepository();
-
-	ObjBuildingPartElementRatingRepository getElementRepository();
+	DocTaskRepository getTaskRepository();
 
 }

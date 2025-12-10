@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.OffsetDateTime;
+
 import io.dddrive.app.service.api.AppContext;
-import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.oe.service.api.ObjUserCache;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto;
@@ -30,20 +31,18 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatusEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeHistoricPreservationEnum;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
-// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-// import io.zeitwert.fm.collaboration.model.ObjNote;
-// import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-// import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
-// import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
+import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
+import io.zeitwert.fm.building.model.enums.CodeBuildingType;
+import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/rest/building/buildings")
@@ -56,17 +55,13 @@ public class BuildingImportExportController {
 	private AppContext appContext;
 
 	@Autowired
-	private ObjBuildingCache buildingCache;
-
-	@Autowired
 	private ObjBuildingRepository buildingRepo;
 
 	@Autowired
 	private ObjUserCache userCache;
 
-	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-	// @Autowired
-	// private ObjNoteRepository noteRepo;
+	@Autowired
+	private ObjNoteRepository noteRepo;
 
 	@Autowired
 	RequestContextFM requestCtx;
@@ -74,10 +69,9 @@ public class BuildingImportExportController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
 			throws ServletException, IOException {
-		ObjBuilding building = this.buildingCache.get(id);
+		ObjBuilding building = this.buildingRepo.get(id);
 		BuildingTransferDto export = this.getTransferDto(building);
 		String fileName = this.getFileName(building);
-		// mark file for download
 		ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDisposition(contentDisposition);
@@ -95,10 +89,12 @@ public class BuildingImportExportController {
 		} else if (!VERSION.equals(dto.getMeta().getVersion())) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
-		ObjBuilding building = this.buildingRepo.create(this.requestCtx.getTenantId());
+		Object userId = this.requestCtx.getUser().getId();
+		OffsetDateTime timestamp = OffsetDateTime.now();
+		ObjBuilding building = this.buildingRepo.create(this.requestCtx.getTenantId(), userId, timestamp);
 		building.setAccountId(accountId);
 		this.fillFromDto(building, dto);
-		this.buildingRepo.store(building);
+		this.buildingRepo.store(building, userId, timestamp);
 		BuildingTransferDto export = this.getTransferDto(building);
 		return ResponseEntity.ok().body(export);
 	}
@@ -129,26 +125,24 @@ public class BuildingImportExportController {
 					.measureDescription(e.getMeasureDescription())
 					.build();
 		}).toList();
-		// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-		// List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
-		// 	return NoteTransferDto
-		// 			.builder()
-		// 			.subject(note.getSubject())
-		// 			.content(note.getContent())
-		// 			.isPrivate(note.getIsPrivate())
-		// 			.createdByUser(this.userCache.get(note.getCreatedByUserId()).getEmail())
-		// 			.createdAt(note.getCreatedAt())
-		// 			.modifiedByUser(note.getModifiedByUserId() != null
-		// 					? this.userCache.get(note.getModifiedByUserId()).getEmail()
-		// 					: null)
-		// 			.modifiedAt(note.getModifiedAt())
-		// 			.build();
-		// }).toList();
-		List<NoteTransferDto> notes = List.of(); // Temporary empty list
+		List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
+			return NoteTransferDto
+					.builder()
+					.subject(note.getSubject())
+					.content(note.getContent())
+					.isPrivate(note.getIsPrivate())
+					.createdByUser(note.getMeta().getCreatedByUser().getEmail())
+					.createdAt(note.getMeta().getCreatedAt())
+					.modifiedByUser(note.getMeta().getModifiedByUser() != null
+							? note.getMeta().getModifiedByUser().getEmail()
+							: null)
+					.modifiedAt(note.getMeta().getModifiedAt())
+					.build();
+		}).toList();
 		BuildingTransferDto export = BuildingTransferDto
 				.builder()
 				.meta(meta)
-				.id(building.getId())
+				.id((Integer) building.getId())
 				.name(building.getName())
 				.description(building.getDescription())
 				.buildingNr(building.getBuildingNr())
@@ -205,7 +199,7 @@ public class BuildingImportExportController {
 		try {
 			building.getMeta().disableCalc();
 
-			building.setOwner(this.requestCtx.getUser());
+			building.setOwner((ObjUserFM) this.requestCtx.getUser());
 			building.setName(dto.getName());
 			building.setDescription(dto.getDescription());
 			building.setBuildingNr(dto.getBuildingNr());
@@ -213,7 +207,7 @@ public class BuildingImportExportController {
 			building.setPlotNr(dto.getPlotNr());
 			building.setNationalBuildingId(dto.getNationalBuildingId());
 			building
-					.setHistoricPreservation(CodeHistoricPreservationEnum.getHistoricPreservation(dto.getHistoricPreservation()));
+					.setHistoricPreservation(CodeHistoricPreservation.getHistoricPreservation(dto.getHistoricPreservation()));
 			building.setStreet(dto.getStreet());
 			building.setZip(dto.getZip());
 			building.setCity(dto.getCity());
@@ -221,14 +215,14 @@ public class BuildingImportExportController {
 			building.setGeoAddress(dto.getGeoAddress());
 			building.setGeoCoordinates(dto.getGeoCoordinates());
 			building.setGeoZoom(dto.getGeoZoom());
-			building.setCurrency(CodeCurrencyEnum.getCurrency(dto.getCurrency()));
+			building.setCurrency(CodeCurrency.getCurrency(dto.getCurrency()));
 			building.setVolume(dto.getVolume());
 			building.setAreaGross(dto.getAreaGross());
 			building.setAreaNet(dto.getAreaNet());
 			building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
 			building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-			building.setBuildingType(CodeBuildingTypeEnum.getBuildingType(dto.getBuildingType()));
-			building.setBuildingSubType(CodeBuildingSubTypeEnum.getBuildingSubType(dto.getBuildingSubType()));
+			building.setBuildingType(CodeBuildingType.getBuildingType(dto.getBuildingType()));
+			building.setBuildingSubType(CodeBuildingSubType.getBuildingSubType(dto.getBuildingSubType()));
 			building.setBuildingYear(dto.getBuildingYear());
 			building.setInsuredValue(dto.getInsuredValue());
 			building.setInsuredValueYear(dto.getInsuredValueYear());
@@ -239,10 +233,10 @@ public class BuildingImportExportController {
 			final ObjBuildingPartRating rating = building.getCurrentRating() != null
 					? building.getCurrentRating()
 					: building.addRating();
-			rating.setPartCatalog(CodeBuildingPartCatalogEnum.getPartCatalog(dto.getBuildingPartCatalog()));
+			rating.setPartCatalog(CodeBuildingPartCatalog.getPartCatalog(dto.getBuildingPartCatalog()));
 			rating.setMaintenanceStrategy(
-					CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
-			rating.setRatingStatus(CodeBuildingRatingStatusEnum.getRatingStatus(dto.getRatingStatus()));
+					CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
+			rating.setRatingStatus(CodeBuildingRatingStatus.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
 			rating.setRatingUser(dto.getRatingUser() != null
 					? (ObjUserFM) this.userCache.getByEmail(dto.getRatingUser()).get()
@@ -265,17 +259,18 @@ public class BuildingImportExportController {
 					element.setMeasureDescription(dtoElement.getMeasureDescription());
 				});
 			}
-			// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-			// if (dto.getNotes() != null) {
-			// 	CodeNoteType noteType = CodeNoteTypeEnum.getNoteType("note");
-			// 	dto.getNotes().forEach((dtoNote) -> {
-			// 		ObjNote note = building.addNote(noteType);
-			// 		note.setSubject(dtoNote.getSubject());
-			// 		note.setContent(dtoNote.getContent());
-			// 		note.setIsPrivate(dtoNote.getIsPrivate());
-			// 		this.noteRepo.store(note);
-			// 	});
-			// }
+			if (dto.getNotes() != null) {
+				CodeNoteType noteType = CodeNoteType.getNoteType("note");
+				Object noteUserId = this.requestCtx.getUser().getId();
+				OffsetDateTime noteTimestamp = OffsetDateTime.now();
+				dto.getNotes().forEach((dtoNote) -> {
+					ObjNote note = building.addNote(noteType);
+					note.setSubject(dtoNote.getSubject());
+					note.setContent(dtoNote.getContent());
+					note.setIsPrivate(dtoNote.getIsPrivate());
+					this.noteRepo.store(note, noteUserId, noteTimestamp);
+				});
+			}
 
 		} finally {
 			building.getMeta().enableCalc();
