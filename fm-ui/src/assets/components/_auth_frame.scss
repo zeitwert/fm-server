@@ -1,0 +1,40 @@
+
+/* The flip card container - set the width and height to whatever you want.
+We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.fa-flip-card {
+  background-color: transparent;
+  position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+  border: 1px solid #f1f1f1;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.fa-flip-card-inner {
+  height: 100%;
+  width: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.fa-flip-card-inner.fa-is-authenticated {
+  transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.fa-flip-card-front, .fa-flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the back side */
+.fa-flip-card-back {
+  transform: rotateY(180deg);
+}

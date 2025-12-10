@@ -1,0 +1,514 @@
+
+package io.zeitwert.fm.building.service.api.impl;
+
+import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
+
+import com.aspose.words.AxisBound;
+import com.aspose.words.Cell;
+import com.aspose.words.Chart;
+import com.aspose.words.Document;
+import com.aspose.words.DocumentBuilder;
+import com.aspose.words.MarkerSymbol;
+import com.aspose.words.Node;
+import com.aspose.words.NodeType;
+import com.aspose.words.PdfEncryptionDetails;
+import com.aspose.words.PdfPermissions;
+import com.aspose.words.PdfSaveOptions;
+import com.aspose.words.RelativeHorizontalPosition;
+import com.aspose.words.RelativeVerticalPosition;
+import com.aspose.words.ReportingEngine;
+import com.aspose.words.Row;
+import com.aspose.words.Run;
+import com.aspose.words.SaveFormat;
+import com.aspose.words.Shape;
+import com.aspose.words.ShapeType;
+import com.aspose.words.Table;
+import com.aspose.words.WrapType;
+import com.google.maps.ImageResult;
+import com.google.maps.model.Size;
+import io.dddrive.app.model.RequestContext;
+import io.dddrive.util.Formatter;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.service.api.BuildingService;
+import io.zeitwert.fm.building.service.api.DocumentGenerationService;
+import io.zeitwert.fm.building.service.api.BuildingEvaluationService;
+import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
+import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
+import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
+import io.zeitwert.fm.server.config.aspose.AsposeConfig;
+
+@Component("buildingDocumentGenerationService")
+public class DocumentGenerationServiceImpl implements DocumentGenerationService {
+
+	private Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
+
+	private static final double POINTS_PER_MM = 2.834647454889553;
+
+	private static final int CoverFotoWidth = 400;
+	private static final int CoverFotoHeight = 230;
+
+	private static final String OptimumRenovationMarker = Character.toString((char) 110);
+
+	static final String CoverfotoBookmark = "CoverFoto";
+	static final String LocationBookmark = "Location";
+	static final String OnePagerBookmark = "OnePager";
+
+	static final int BasicDataTable = 0;
+	static final int EvaluationTable = 1;
+	static final int ElementTable = 2;
+	static final int OptimalRenovationTable = 3;
+	static final int CostsTable = 4;
+	static final int OnePageDetailsTable = 5;
+	static final int OnePageBasicDataTable = 6;
+	static final int OnePageEvaluationTable = 7;
+
+	@Autowired
+	private AsposeConfig asposeConfig;
+
+	@Autowired
+	private BuildingService buildingService;
+
+	@Autowired
+	RequestContext requestCtx;
+
+	@Autowired
+	BuildingEvaluationService evaluationService;
+
+	@Value("classpath:templates/Building Evaluation Template.docx")
+	Resource templateFile;
+
+	@Value("classpath:templates/missing.jpg")
+	Resource missingImage;
+
+	ReportingEngine engine = new ReportingEngine();
+
+	public DocumentGenerationServiceImpl() {
+		this.engine.getKnownTypes().add(BuildingEvaluationResult.class);
+	}
+
+	@Override
+	public void generateEvaluationReport(ObjBuilding building, ByteArrayOutputStream stream, int format) {
+
+		BuildingEvaluationResult evaluationResult = this.evaluationService.getEvaluation(building);
+
+		try {
+
+			Document doc = new Document(this.templateFile.getInputStream());
+			doc.setFontSettings(this.asposeConfig.getFontSettings());
+
+			this.insertCoverFoto(doc, building);
+			this.insertLocationImage(doc, building);
+			this.engine.buildReport(doc, evaluationResult, "building");
+			this.fillOptRenovationTable(doc, evaluationResult);
+			this.fillCostsChart(doc, evaluationResult);
+			this.fillCostsTable(doc, evaluationResult);
+			this.fillOnePagerCostsChart(doc, evaluationResult);
+			this.fillOnePager(doc, evaluationResult);
+
+			if (format == SaveFormat.PDF) {
+				PdfSaveOptions saveOptions = new PdfSaveOptions();
+				saveOptions.setSaveFormat(format);
+				// Create encryption details and set user password = 1
+				int year = Calendar.getInstance().get(Calendar.YEAR);
+				PdfEncryptionDetails encryptionDetails = new PdfEncryptionDetails(null, "zeit" + year + "wert");
+				// Disallow all
+				encryptionDetails.setPermissions(PdfPermissions.DISALLOW_ALL);
+				// Allow printing
+				encryptionDetails.setPermissions(PdfPermissions.PRINTING);
+				saveOptions.setEncryptionDetails(encryptionDetails);
+				doc.save(stream, saveOptions);
+			} else {
+				doc.save(stream, format);
+			}
+
+		} catch (Exception ex) {
+			this.logger.error("Document generation crashed", ex);
+			ex.printStackTrace();
+			throw new RuntimeException("Document generation crashed", ex);
+		}
+
+	}
+
+	private void insertCoverFoto(Document doc, ObjBuilding building) throws IOException {
+
+		byte[] imageContent;
+		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
+			imageContent = this.missingImage.getInputStream().readAllBytes();
+		} else {
+			imageContent = building.getCoverFoto().getContent();
+		}
+
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		try {
+			builder.moveToBookmark(CoverfotoBookmark);
+			Shape coverFoto = builder.insertImage(imageContent);
+			coverFoto.setAspectRatioLocked(true);
+			// adjust either width or height
+			if (coverFoto.getWidth() / coverFoto.getHeight() > ((double) CoverFotoWidth) / ((double) CoverFotoHeight)) {
+				coverFoto.setWidth(CoverFotoWidth);
+			} else {
+				coverFoto.setHeight(CoverFotoHeight);
+			}
+			coverFoto.setWrapType(WrapType.NONE);
+			coverFoto.setRelativeHorizontalPosition(RelativeHorizontalPosition.RIGHT_MARGIN);
+			coverFoto.setRelativeVerticalPosition(RelativeVerticalPosition.TOP_MARGIN);
+			coverFoto.setTop(170);
+			coverFoto.setLeft(-coverFoto.getWidth() - 20);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not insert cover foto", e);
+		}
+
+	}
+
+	private void insertLocationImage(Document doc, ObjBuilding building) throws IOException {
+
+		byte[] imageContent;
+		if (building.getGeoCoordinates() == null || "".equals(building.getGeoCoordinates())) {
+			imageContent = this.missingImage.getInputStream().readAllBytes();
+		} else {
+			String address = building.getGeoCoordinates().substring(4);
+			ImageResult ir = this.buildingService.getMap(building.getName(), address, new Size(1200, 1200),
+					building.getGeoZoom());
+			if (ir == null) {
+				imageContent = this.missingImage.getInputStream().readAllBytes();
+			} else {
+				imageContent = ir.imageData;
+			}
+		}
+
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		try {
+			builder.moveToBookmark(LocationBookmark);
+			builder.insertImage(imageContent, 360, 360);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not insert location image", e);
+		}
+
+	}
+
+	private void fillOptRenovationTable(Document doc, BuildingEvaluationResult evaluationResult) {
+
+		Table optRenovationTable = (Table) doc.getChild(NodeType.TABLE, OptimalRenovationTable, true);
+		DocumentBuilder builder = new DocumentBuilder(doc);
+
+		Cell yearCell = ((Row) optRenovationTable.getFirstRow().getNextSibling()).getFirstCell();
+		for (int i = 0; i <= 25; i++) {
+			yearCell = (Cell) yearCell.getNextSibling();
+			builder.moveTo(yearCell.getFirstParagraph());
+			builder.write("" + (evaluationResult.getStartYear() + i));
+		}
+
+		int totalRestorationCosts = 0;
+		for (EvaluationElement e : evaluationResult.getElements()) {
+			if (e.getWeight() != null && e.getWeight() > 0 && !"Total".equals(e.getName())) {
+				Row row = this.addRenovationTableRow(optRenovationTable);
+				Cell cell = row.getFirstCell();
+				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
+				Integer restorationYear = e.getRestorationYear();
+				if (restorationYear != null) {
+					Integer delta = (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
+					cell = this.getNthNextSibling(row.getFirstCell(), delta);
+					builder.moveTo(cell.getFirstParagraph());
+					builder.write(OptimumRenovationMarker);
+					cell = row.getLastCell();
+					String costs = Formatter.INSTANCE.formatNumber(e.getRestorationCosts());
+					builder.moveTo(cell.getFirstParagraph());
+					builder.write(costs);
+					cell = (Cell) cell.getPreviousSibling();
+					builder.moveTo(cell.getFirstParagraph());
+					builder.write("" + restorationYear);
+					totalRestorationCosts += e.getRestorationCosts() != null ? e.getRestorationCosts() : 0;
+				}
+			}
+		}
+
+		Row row = this.addRenovationTableRow(optRenovationTable);
+		Cell cell = row.getFirstCell();
+		builder.getFont().setBold(true);
+		builder.moveTo(cell.getFirstParagraph());
+		builder.write("Total");
+		cell = row.getLastCell();
+		String costs = Formatter.INSTANCE.formatNumber(totalRestorationCosts);
+		builder.moveTo(cell.getFirstParagraph());
+		builder.write(costs);
+
+		optRenovationTable.getFirstRow().getNextSibling().getNextSibling().remove();
+
+	}
+
+	private Row addRenovationTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling().getNextSibling();
+		Row clonedRow = (Row) templateRow.deepClone(true);
+		table.appendChild(clonedRow);
+		return clonedRow;
+	}
+
+	private void fillCostsChart(Document doc, BuildingEvaluationResult evaluationResult) {
+
+		int periodCount = (int) evaluationResult.getPeriods().stream().filter(p -> p.getYear() != null).count();
+		String[] years = new String[periodCount];
+		double[] originalValues = new double[periodCount];
+		double[] timeValues = new double[periodCount];
+		double[] maintenanceCosts = new double[periodCount];
+		double[] restorationCosts = new double[periodCount];
+
+		int index = 0;
+		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
+			if (ep.getYear() != null && ep.getYear() > 0) { // only yearly summary records
+				years[index] = ep.getYear().toString();
+				originalValues[index] = ep.getOriginalValue();
+				timeValues[index] = ep.getTimeValue();
+				maintenanceCosts[index] = ep.getMaintenanceCosts();
+				restorationCosts[index] = ep.getRestorationCosts();
+				index += 1;
+			}
+		}
+
+		Shape valueChartShape = (Shape) doc.getChild(NodeType.SHAPE, 5, true);
+		Chart valueChart = valueChartShape.getChart();
+		valueChart.getSeries().clear();
+		valueChart.getSeries().add("Neuwert (indexiert)", years, originalValues);
+		valueChart.getSeries().add("Zeitwert", years, timeValues);
+
+		Arrays.sort(timeValues);
+		double minValue = timeValues[0];
+		valueChart.getAxisY().getScaling().setMinimum(new AxisBound(minValue));
+		valueChart.getSeries().get(0).getMarker().setSymbol(MarkerSymbol.CIRCLE);
+		valueChart.getSeries().get(0).getMarker().setSize(5);
+
+		valueChart.getSeries().get(1).getMarker().setSymbol(MarkerSymbol.CIRCLE);
+		valueChart.getSeries().get(1).getMarker().setSize(5);
+
+		Shape costChartShape = (Shape) doc.getChild(NodeType.SHAPE, 6, true);
+		Chart costChart = costChartShape.getChart();
+		costChart.getSeries().clear();
+		costChart.getSeries().add("Instandhaltung", years, maintenanceCosts);
+		costChart.getSeries().add("Instandsetzung", years, restorationCosts);
+
+	}
+
+	private void fillCostsTable(Document doc, BuildingEvaluationResult evaluationResult) {
+
+		Table costsTable = (Table) doc.getChild(NodeType.TABLE, CostsTable, true);
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		Formatter fmt = Formatter.INSTANCE;
+
+		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
+			Row row = this.addCostsTableRow(costsTable);
+			Cell cell = row.getFirstCell();
+			if (ep.getYear() != null) { // only yearly summary records
+				// year
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write("" + ep.getYear());
+				// originalValue
+				cell = (Cell) cell.getNextSibling();
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(fmt.formatNumber(ep.getOriginalValue()));
+				// timeValue
+				cell = (Cell) cell.getNextSibling();
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(fmt.formatNumber(ep.getTimeValue()));
+				// maintenanceCosts
+				cell = (Cell) cell.getNextSibling();
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(fmt.formatNumber(ep.getMaintenanceCosts()));
+			} else {
+				cell = (Cell) cell.getNextSibling().getNextSibling().getNextSibling();
+			}
+			// restorationCosts
+			cell = (Cell) cell.getNextSibling();
+			if (ep.getRestorationCosts() != null && ep.getRestorationCosts() > 0) {
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(fmt.formatNumber(ep.getRestorationCosts()));
+			}
+			// restorationElement
+			cell = (Cell) cell.getNextSibling();
+			builder.moveTo(cell.getFirstParagraph());
+			builder.write(ep.getRestorationElement());
+			if (ep.getYear() != null) { // only yearly summary records
+				// totalCosts
+				cell = (Cell) cell.getNextSibling();
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(fmt.formatNumber(ep.getTotalCosts()));
+				// aggrCosts
+				cell = (Cell) cell.getNextSibling();
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(fmt.formatNumber(ep.getAggrCosts()));
+			}
+		}
+
+		costsTable.getFirstRow().getNextSibling().remove();
+
+	}
+
+	private Row addCostsTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling();
+		Row clonedRow = (Row) templateRow.deepClone(true);
+		table.appendChild(clonedRow);
+		return clonedRow;
+	}
+
+	private void fillOnePagerCostsChart(Document doc, BuildingEvaluationResult evaluationResult) {
+
+		int periodCount = (int) evaluationResult.getPeriods().stream().filter(p -> p.getYear() != null).count();
+		String[] years = new String[periodCount];
+		double[] maintenanceCosts = new double[periodCount];
+		double[] restorationCosts = new double[periodCount];
+
+		int index = 0;
+		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
+			if (ep.getYear() != null && ep.getYear() > 0) { // only yearly summary records
+				years[index] = ep.getYear().toString();
+				maintenanceCosts[index] = ep.getMaintenanceCosts() / 1000.0;
+				restorationCosts[index] = ep.getRestorationCosts() / 1000.0;
+				index += 1;
+			}
+		}
+
+		Shape costChartShape = (Shape) doc.getChild(NodeType.SHAPE, 9, true);
+		Chart costChart = costChartShape.getChart();
+		costChart.getSeries().clear();
+		costChart.getSeries().add("Instandhaltung", years, maintenanceCosts);
+		costChart.getSeries().add("Instandsetzung", years, restorationCosts);
+
+	}
+
+	private void fillOnePager(Document doc, BuildingEvaluationResult evaluationResult) throws Exception {
+
+		Table onePagerDetailsTable = (Table) doc.getChild(NodeType.TABLE, OnePageDetailsTable, true);
+		DocumentBuilder builder = new DocumentBuilder(doc);
+		DocumentBuilder shapeBuilder = new DocumentBuilder(doc);
+		shapeBuilder.moveToBookmark(OnePagerBookmark);
+
+		Cell yearCell = onePagerDetailsTable.getLastRow().getFirstCell();
+		yearCell = this.getNthNextSibling(yearCell, 8);
+		for (int i = 0; i <= 25; i++) {
+			yearCell = (Cell) yearCell.getNextSibling();
+			builder.moveTo(yearCell.getFirstParagraph());
+			builder.write("" + (evaluationResult.getStartYear() + i));
+		}
+
+		{
+
+			EvaluationElement titleElement = evaluationResult.getElements().get(evaluationResult.getElements().size() - 1);
+			Row titleRow = (Row) onePagerDetailsTable.getFirstRow().getNextSibling();
+			Cell titleCell = titleRow.getFirstCell();
+
+			Shape shape = shapeBuilder.insertShape(ShapeType.FLOW_CHART_CONNECTOR, 8, 8);
+			shape.setStroked(false);
+			shape.setFillColor(titleElement.getConditionColor());
+			shape.setWrapType(WrapType.NONE);
+			shape.setAllowOverlap(true);
+			shape.setRelativeHorizontalPosition(RelativeHorizontalPosition.PAGE);
+			shape.setRelativeVerticalPosition(RelativeVerticalPosition.PAGE);
+			shape.setTop(this.getRatingLineVOffset(0));
+			shape.setLeft(this.getRatingHOffset(titleElement.getCondition()));
+
+			titleCell = this.getNthNextSibling(titleRow.getFirstCell(), 13);
+			builder.moveTo(titleCell.getFirstParagraph());
+			builder.write("" + titleElement.getCondition());
+
+		}
+
+		List<EvaluationElement> elements = evaluationResult.getElements().stream()
+				.filter(e -> !"Total".equals(e.getName()))
+				.filter(e -> e.getWeight() != null && e.getWeight() > 0)
+				.toList();
+
+		Integer maxWeight = elements.stream()
+				.map(a -> a.getWeight())
+				.reduce(0, (a, b) -> Math.max(a, b));
+
+		int lineNr = 1;
+		for (EvaluationElement e : elements) {
+
+			Row row = this.addOnePageTableRow(onePagerDetailsTable);
+
+			Cell cell = row.getFirstCell();
+			builder.moveTo(cell.getFirstParagraph());
+			builder.write(e.getName());
+
+			cell = (Cell) cell.getNextSibling();
+			int weight = (int) Math.round(76.0 * e.getWeight() / maxWeight);
+			builder.moveTo(cell.getFirstParagraph());
+			builder.write(new String(new char[weight]).replace('\0', 'I'));
+
+			String weightPC = Formatter.INSTANCE.formatValueWithUnit(e.getWeight(), "%");
+			cell = (Cell) cell.getNextSibling();
+			builder.moveTo(cell.getFirstParagraph());
+			builder.write(weightPC);
+
+			Shape shape = shapeBuilder.insertShape(ShapeType.FLOW_CHART_CONNECTOR, 8, 8);
+			shape.setStroked(false);
+			shape.setFillColor(e.getConditionColor());
+			shape.setWrapType(WrapType.NONE);
+			shape.setAllowOverlap(true);
+			shape.setRelativeHorizontalPosition(RelativeHorizontalPosition.PAGE);
+			shape.setRelativeVerticalPosition(RelativeVerticalPosition.PAGE);
+			shape.setTop(this.getRatingLineVOffset(lineNr));
+			shape.setLeft(this.getRatingHOffset(e.getCondition()));
+
+			cell = this.getNthNextSibling(row.getFirstCell(), 13);
+			builder.moveTo(cell.getFirstParagraph());
+			builder.write("" + e.getCondition());
+
+			Integer restorationYear = e.getRestorationYear();
+			if (restorationYear != null) {
+				Integer delta = 15 + (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
+				cell = this.getNthNextSibling(row.getFirstCell(), delta);
+				builder.moveTo(cell.getFirstParagraph());
+				builder.write(OptimumRenovationMarker);
+			}
+
+			lineNr++;
+		}
+
+		onePagerDetailsTable.getFirstRow().getNextSibling().getNextSibling().remove();
+
+		Cell cell = ((Row) onePagerDetailsTable.getFirstRow().getNextSibling()).getFirstCell();
+		cell.getCellFormat().getBorders().getBottom().setColor(Color.BLACK);
+		cell.getCellFormat().getBorders().getBottom().setLineWidth(1);
+		for (int i = 0; i < 13; i++) {
+			cell = (Cell) cell.getNextSibling();
+			cell.getCellFormat().getBorders().getBottom().setColor(Color.BLACK);
+			cell.getCellFormat().getBorders().getBottom().setLineWidth(1);
+		}
+
+	}
+
+	private Row addOnePageTableRow(Table table) {
+		Row templateRow = (Row) table.getFirstRow().getNextSibling().getNextSibling();
+		Row clonedRow = (Row) templateRow.deepClone(true);
+		table.insertBefore(clonedRow, table.getLastRow());
+		return clonedRow;
+	}
+
+	private double getRatingLineVOffset(int lineNr) {
+		return 98.8 * POINTS_PER_MM + 11.84 * lineNr;
+	}
+
+	private double getRatingHOffset(int rating) {
+		double ratingDelta = Math.min(100 - rating, 50.0) / 50.0;
+		return 90.3 * POINTS_PER_MM + ratingDelta * (124.5 - 75.3) * POINTS_PER_MM;
+	}
+
+	private Cell getNthNextSibling(Node cell, int n) {
+		if (n >= 0) {
+			return this.getNthNextSibling(cell.getNextSibling(), n - 1);
+		}
+		return (Cell) cell;
+	}
+
+}

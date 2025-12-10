@@ -1,0 +1,35 @@
+
+.fa-page .slds-has-coordinates {
+	overflow: hidden;
+	max-height: unset;
+	height: 100%;
+	background-color: #fafaf9;
+}
+
+.fa-page .slds-map_container {
+	overflow: hidden;
+	max-height: unset;
+	height: 100%;
+	background-color: #fafaf9;
+}
+
+.fa-page .slds-map {
+	overflow: hidden;
+	max-height: unset;
+	height: 100%;
+	background-color: #fafaf9;
+}
+
+#map {
+	height: 100%;
+	position: static !important;
+}
+
+.slds-table {
+	tbody tr.fa-hover {
+		> td,
+		> th {
+			background-color: #f3f2f2;
+		}
+	}
+}

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.zeitwert</groupId>
+		<artifactId>fm-parent</artifactId>
+		<version>1.0.21-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>fm-domain</artifactId>
+	<name>FM Domain</name>
+	<description>Domain models for FM (account, building, contact, portfolio, etc.)</description>
+
+	<dependencies>
+
+		<!-- FM Internal modules -->
+		<dependency>
+			<groupId>io.zeitwert</groupId>
+			<artifactId>fm-common</artifactId>
+		</dependency>
+
+		<!-- External DDDrive (to be replaced with fm-dddrive in Phase 2) -->
+		<dependency>
+			<groupId>io.zeitwert</groupId>
+			<artifactId>dddrive</artifactId>
+		</dependency>
+
+		<!-- Crnk JSON:API -->
+		<dependency>
+			<groupId>io.crnk</groupId>
+			<artifactId>crnk-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.crnk</groupId>
+			<artifactId>crnk-setup-spring</artifactId>
+		</dependency>
+
+		<!-- Spring Boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
+		</dependency>
+
+		<!-- Database -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Aspose (for document generation) -->
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-words</artifactId>
+			<classifier>jdk17</classifier>
+		</dependency>
+
+		<!-- Google Maps -->
+		<dependency>
+			<groupId>com.google.maps</groupId>
+			<artifactId>google-maps-services</artifactId>
+		</dependency>
+
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<!-- jOOQ code generation - configured in parent, runs when skip.jooq.generation=false -->
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<executions>
+					<execution>
+						<id>jooq-codegen-fm-obj</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/obj/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-doc</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/doc/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-search</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/search/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-oe</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/oe/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-collaboration</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/collaboration/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-account</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/account/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-contact</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/contact/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-dms</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/dms/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-building</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/building/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-portfolio</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/portfolio/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jooq-codegen-fm-task</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/main/java/io/zeitwert/fm/task/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+

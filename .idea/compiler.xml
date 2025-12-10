@@ -8,7 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
       </profile>
-      <profile name="Annotation profile for Zeitwert Application Server" enabled="true">
+      <profile name="Annotation profile for FM (Facilities Management) Parent" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -16,12 +16,22 @@
           <entry name="E:/Maven/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
         </processorPath>
         <module name="zeitwert-server" />
+        <module name="fm-dddrive" />
+        <module name="fm-common" />
+        <module name="fm-domain" />
+        <module name="fm-jooq-adapter" />
+        <module name="fm-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="21" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="fm-common" options="-parameters" />
+      <module name="fm-dddrive" options="-parameters" />
+      <module name="fm-domain" options="-parameters" />
+      <module name="fm-jooq-adapter" options="-parameters" />
+      <module name="fm-server" options="-parameters" />
       <module name="zeitwert-server" options="-parameters" />
     </option>
   </component>

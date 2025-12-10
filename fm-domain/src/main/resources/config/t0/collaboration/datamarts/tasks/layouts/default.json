@@ -1,0 +1,62 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Aufgabe",
+				"value": "subject",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "related",
+				"label": "Related to",
+				"value": "relName"
+			},
+			{
+				"id": "stage",
+				"label": "Stage",
+				"value": "stage"
+			},
+			{
+				"id": "priority",
+				"label": "Priority",
+				"value": "priority"
+			},
+			{
+				"id": "dueAt",
+				"label": "Due at",
+				"template": "date",
+				"value": "dueAt"
+			},
+			{
+				"id": "remindAt",
+				"label": "Reminder at",
+				"template": "date",
+				"value": "remindAt"
+			},
+			{
+				"id": "assignee",
+				"label": "Assignee",
+				"value": "assignee"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"subject": "{{subject}}",
+				"link": "/task/{{id}}",
+				"relName": "{{relatedTo.name}}",
+				"priority": "{{priority.name}}",
+				"dueAt": "{{dueAt}}",
+				"remindAt": "{{remindAt}}",
+				"stage": "{{meta.caseStage.name}}",
+				"assignee": "{{meta.assignee.name}}"
+			}
+		]
+	}
+}

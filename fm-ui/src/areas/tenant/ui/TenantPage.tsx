@@ -1,0 +1,274 @@
+
+import { Avatar, Button, ButtonGroup, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { AccountStoreModel, EntityType, EntityTypeInfo, EntityTypes, Enumerated, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, Tenant, TenantStoreModel, UserInfo, UserStoreModel } from "@zeitwert/ui-model";
+import { RouteComponentProps, withRouter } from "app/frame/withRouter";
+import NotFound from "app/ui/NotFound";
+import AccountCreationForm from "areas/account/ui/AccountCreationForm";
+import UserCreationForm from "areas/user/ui/UserCreationForm";
+import ItemEditor from "lib/item/ui/ItemEditor";
+import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
+import ItemModal from "lib/item/ui/ItemModal";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
+import { computed, makeObservable, observable } from "mobx";
+import { observer } from "mobx-react";
+import React from "react";
+import TenantDocumentsTab from "./tabs/TenantDocumentsTab";
+import TenantMainForm from "./tabs/TenantMainForm";
+
+enum LEFT_TABS {
+	MAIN = "main",
+}
+const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+enum RIGHT_TABS {
+	DOCUMENTS = "documents",
+	NOTES = "notes",
+	TASKS = "tasks",
+	ACTIVITIES = "activities",
+	VALIDATIONS = "validations",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
+
+@observer
+class TenantPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.TENANT];
+
+	@observable tenantStore = TenantStoreModel.create({});
+	@observable accountStore = AccountStoreModel.create({});
+	@observable userStore = UserStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.DOCUMENTS;
+
+	@computed
+	get hasLogo(): boolean {
+		return !!this.tenantStore.tenant?.logo?.contentTypeId;
+	}
+
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
+	}
+
+	constructor(props: any) {
+		super(props);
+		makeObservable(this);
+	}
+
+	async componentDidMount() {
+		session.setHelpContext(`${EntityType.TENANT}-${this.activeLeftTabId}`);
+		await this.tenantStore.load(this.props.params.tenantId!);
+		await this.notesStore.load(this.props.params.tenantId!);
+		await this.tasksStore.load(this.props.params.tenantId!);
+	}
+
+	async componentDidUpdate(prevProps: RouteComponentProps) {
+		if (this.props.params.tenantId !== prevProps.params.tenantId) {
+			await this.tenantStore.load(this.props.params.tenantId!);
+			await this.notesStore.load(this.props.params.tenantId!);
+			await this.tasksStore.load(this.props.params.tenantId!);
+		}
+	}
+
+	render() {
+
+		const tenant = this.tenantStore.tenant!;
+		if (!tenant && session.isNetworkActive) {
+			return <></>;
+		} else if (!tenant) {
+			return <NotFound entityType={this.entityType} id={this.props.params.tenantId!} />;
+		}
+
+		const allowEditStaticData = session.isAdmin;
+		const isActive = !tenant.meta?.closedAt;
+		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		return (
+			<>
+				<ItemHeader
+					store={this.tenantStore}
+					details={this.getHeaderDetails(tenant)}
+					customActions={this.getHeaderActions()}
+				/>
+				<ItemGrid>
+					<ItemLeftPart>
+						<ItemEditor
+							key={"tenant-" + this.tenantStore.tenant?.id}
+							store={this.tenantStore}
+							entityType={EntityType.TENANT}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
+						>
+							<Tabs
+								className="full-height"
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
+							>
+								<TabsPanel label="Details">
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <TenantMainForm tenant={this.tenantStore.tenant!} doEdit={this.tenantStore.isInTrx} />}
+								</TabsPanel>
+								{
+									/*
+								<TabsPanel label={"Cases (" + this.tenantStore.counters?.docCount + ")"}>
+									{this.activeLeftTabId === LEFT_TABS.CASES && (
+										<TenantTabOrders
+											tenant={this.tenantStore.tenant!}
+											template="doc.docs.by-tenant"
+										/>
+									)}
+								</TabsPanel>
+									*/
+								}
+							</Tabs>
+						</ItemEditor>
+					</ItemLeftPart>
+					<ItemRightPart isFullWidth={false}>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={<span>Dokumente{!this.hasLogo && <abbr className="slds-required"> *</abbr>}</span>}>
+								{
+									this.activeRightTabId === RIGHT_TABS.DOCUMENTS &&
+									<TenantDocumentsTab tenant={tenant} afterSave={this.reload} />
+								}
+							</TabsPanel>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.tenantStore.id!} notesStore={this.notesStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")} disabled={!session.sessionInfo?.account}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.accountStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<ObjActivityHistoryTab obj={tenant} />
+								}
+							</TabsPanel>
+							{
+								tenant.hasValidations &&
+								<TabsPanel label={`Validierungen (${tenant.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validations={tenant.meta?.validations!} />
+									}
+								</TabsPanel>
+							}
+						</Tabs>
+					</ItemRightPart>
+				</ItemGrid>
+				{
+					this.accountStore.isInTrx &&
+					<ItemModal
+						store={this.accountStore}
+						entityType={EntityType.ACCOUNT}
+					>
+						{() => <AccountCreationForm account={this.accountStore.account!} />}
+					</ItemModal>
+
+				}
+				{
+					this.userStore.isInTrx &&
+					<ItemModal
+						store={this.userStore}
+						entityType={EntityType.USER}
+					>
+						{() => <UserCreationForm user={this.userStore.user!} />}
+					</ItemModal>
+				}
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
+			</>
+		);
+	}
+
+	private getHeaderDetails(tenant: Tenant): HeaderDetail[] {
+		const tenantOwner: UserInfo = tenant.owner as UserInfo;
+		return [
+			{ label: "Type", content: tenant.tenantType?.name },
+			{
+				label: "Owner",
+				content: tenantOwner.name,
+				icon: (
+					<Avatar
+						variant="user"
+						size="small"
+						imgSrc={session.avatarUrl(tenantOwner.id)}
+						imgAlt={tenantOwner.name}
+						label={tenantOwner.name}
+					/>
+				),
+				link: "/user/" + tenant.owner!.id
+			},
+		];
+	}
+
+	private getHeaderActions() {
+		return (
+			<>
+				<ButtonGroup variant="list">
+					<Button onClick={this.openUserEditor}>Add User</Button>
+				</ButtonGroup>
+				<ButtonGroup variant="list">
+					<Button onClick={this.openAccountEditor}>Add Account</Button>
+				</ButtonGroup>
+			</>
+		);
+	}
+
+	private openAccountEditor = () => {
+		const tenant = this.tenantStore.tenant!;
+		const tenantEnum: Enumerated = {
+			id: tenant.id,
+			name: tenant.caption!
+		};
+		this.accountStore.create({
+			tenant: tenantEnum,
+			owner: session.sessionInfo!.user
+		});
+	};
+
+	private openUserEditor = () => {
+		const tenant = this.tenantStore.tenant!;
+		const tenantEnum: Enumerated = {
+			id: tenant.id,
+			name: tenant.caption!
+		};
+		const roleEnum: Enumerated = {
+			id: "user",
+			name: "User"
+		};
+		this.userStore.create({
+			tenant: tenantEnum,
+			owner: session.sessionInfo!.user,
+			role: roleEnum
+		});
+	};
+
+	private reload = async () => {
+		this.tenantStore.load(this.tenantStore.id!);
+	};
+
+}
+
+export default withRouter(TenantPage);

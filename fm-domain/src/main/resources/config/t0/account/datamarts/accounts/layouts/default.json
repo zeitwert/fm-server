@@ -1,0 +1,65 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "accountType",
+				"label": "Type",
+				"value": "accountType"
+			},
+			{
+				"id": "tenant",
+				"label": "Mandant",
+				"value": "tenant"
+			},
+			{
+				"id": "mainContact",
+				"label": "Main Contact",
+				"value": "mainContactName",
+				"template": "link",
+				"link": "mainContactLink"
+			},
+			{
+				"id": "email",
+				"label": "Email",
+				"value": "email"
+			},
+			{
+				"id": "phone",
+				"label": "Phone",
+				"value": "phone"
+			},
+			{
+				"id": "owner",
+				"label": "Owner",
+				"value": "owner"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"name": "{{name}}",
+				"link": "/account/{{id}}",
+				"accountType": "{{accountType.name}}",
+				"tenant": "{{tenant.name}}",
+				"clientSegment": "{{clientSegment.name}}",
+				"mainContactId": "{{mainContact.id}}",
+				"mainContactName": "{{mainContact.caption}}",
+				"mainContactLink": "/contact/{{mainContact.id}}",
+				"phone": "=> nvl(mainContact.mobile, mainContact.phone)",
+				"email": "{{mainContact.email}}",
+				"owner": "{{meta.owner.name}}"
+			}
+		]
+	}
+}

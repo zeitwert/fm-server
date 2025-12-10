@@ -1,0 +1,61 @@
+{
+	"id": "kanban",
+	"name": "Kanban",
+	"layout": {
+		"layoutType": "kanban",
+		"isTimelineHeader": true,
+		"header": {
+			"dynamic": {
+				"url": "{{enumBaseUrl}}/doc/codeCaseStage/task",
+				"valueField": "id",
+				"displayNameField": "name"
+			}
+		},
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"link": "/task/{{id}}",
+				"stageId": "{{meta.caseStage.id}}",
+				"stageName": "{{meta.caseStage.name}}",
+				"name": "{{caption}}",
+				"assignee": "{{assignee.name}}",
+				"priority": "{{priority.name}}",
+				"relatedTo": "{{relatedTo.name}}",
+				"dueAt": "=> formatDate(dueAt)"
+			}
+		],
+		"groupBy": {
+			"value": "stageId",
+			"serverFieldName": "nextCaseStage"
+		},
+		"cardLayout": {
+			"title": {
+				"value": "name",
+				"displayName": "name"
+			},
+			"body": [
+				{
+					"title": "Assignee",
+					"name": "Assignees",
+					"value": "assignee",
+					"displayName": "assignee"
+				},
+				{
+					"value": "dueAt",
+					"displayName": "dueAt"
+				},
+				{
+					"value": "relatedTo",
+					"displayName": "relatedTo"
+				},
+				{
+					"value": "priority",
+					"displayName": "priority"
+				}
+			]
+		},
+		"docType": "task",
+		"modifyUrl": "{{apiBaseUrl}}/collaboration/tasks"
+	}
+}

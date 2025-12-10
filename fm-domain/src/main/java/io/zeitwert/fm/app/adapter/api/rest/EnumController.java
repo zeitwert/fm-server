@@ -1,0 +1,127 @@
+
+package io.zeitwert.fm.app.adapter.api.rest;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.jooq.TableRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.crnk.core.queryspec.QuerySpec;
+import io.dddrive.app.service.api.AppContext;
+import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.dddrive.enums.model.Enumerated;
+import io.dddrive.enums.model.Enumeration;
+import io.dddrive.oe.model.ObjTenant;
+import io.dddrive.oe.model.ObjUser;
+import io.dddrive.oe.service.api.ObjTenantCache;
+import io.dddrive.oe.service.api.ObjUserCache;
+import io.zeitwert.fm.obj.model.base.ObjFields;
+import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
+import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
+
+@RestController("enumController")
+@RequestMapping("/enum")
+public class EnumController {
+
+	@Autowired
+	AppContext appContext;
+
+	@Autowired
+	ObjTenantFMRepository tenantRepo;
+
+	@Autowired
+	ObjTenantCache tenantCache;
+
+	@Autowired
+	ObjUserFMRepository userRepo;
+
+	@Autowired
+	ObjUserCache userCache;
+
+	@GetMapping("/oe/objTenant")
+	public ResponseEntity<List<EnumeratedDto>> getTenants() {
+		QuerySpec querySpec = new QuerySpec(ObjUser.class);
+		List<ObjTenantVRecord> tenants = this.tenantRepo.find(querySpec);
+		return ResponseEntity.ok(
+				tenants.stream()
+						.map(obj -> (TableRecord<?>) obj)
+						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
+								.name(tenant.get(ObjFields.CAPTION)).build())
+						.toList());
+	}
+
+	@GetMapping("/oe/objTenant/{id}")
+	public ResponseEntity<ObjTenant> getTenant(@PathVariable Integer id) {
+		ObjTenant tenant = this.tenantCache.get(id);
+		return ResponseEntity.ok(tenant);
+	}
+
+	@GetMapping("/oe/objUser")
+	public ResponseEntity<List<EnumeratedDto>> getUsers() {
+		QuerySpec querySpec = new QuerySpec(ObjUser.class);
+		List<ObjUserVRecord> users = this.userRepo.find(querySpec);
+		return ResponseEntity.ok(
+				users.stream()
+						.map(obj -> (TableRecord<?>) obj)
+						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
+								.name(tenant.get(ObjFields.CAPTION)).build())
+						.toList());
+	}
+
+	@GetMapping("/oe/objUser/{idOrEmail}")
+	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
+		Optional<ObjUser> user = this.userCache.getByEmail(idOrEmail);
+		if (user.isEmpty()) {
+			user = Optional.of(this.userCache.get(Integer.valueOf(idOrEmail)));
+		}
+		if (user.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(user.get());
+	}
+
+	@GetMapping("/doc/codeCaseStage/{caseDef}")
+	public ResponseEntity<List<CodeCaseStage>> getCaseStageDomain(@PathVariable String caseDef) {
+		CodeCaseStageEnum enumeration = (CodeCaseStageEnum) this.appContext.getEnumeration(CodeCaseStage.class);
+		if (enumeration == null) {
+			return ResponseEntity.notFound().build();
+		}
+		List<CodeCaseStage> itemList = enumeration.getItems().stream()
+				.filter((item) -> item.getId().startsWith(caseDef + ".") && !"abstract".equals(item.getCaseStageTypeId()))
+				.toList();
+		return ResponseEntity.ok(itemList);
+	}
+
+	@GetMapping("/{module}/{enumerationName}")
+	public ResponseEntity<List<? extends Enumerated>> getEnumDomain(@PathVariable String module,
+			@PathVariable String enumerationName, @RequestParam(required = false, defaultValue = "") List<String> filter) {
+		Enumeration<? extends Enumerated> enumeration = this.appContext.getEnumeration(module, enumerationName);
+		if (enumeration == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok().body(enumeration.getItems().stream().filter(i -> !filter.contains(i.getId())).toList());
+	}
+
+	@GetMapping("/{module}/{enumerationName}/{id}")
+	@SuppressWarnings("unchecked")
+	public ResponseEntity<Enumerated> getEnumItem(@PathVariable String module, @PathVariable String enumerationName,
+			@PathVariable String id) {
+		Enumerated item = ((Enumeration<Enumerated>) this.appContext.getEnumeration(module, enumerationName)).getItem(id);
+		if (item == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(item);
+	}
+
+}

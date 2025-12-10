@@ -1,0 +1,23 @@
+package io.zeitwert.fm.building.adapter.api.rest.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data()
+@Builder
+public class BuildingTransferElementRatingDto {
+
+	private String buildingPart;
+	private Integer weight;
+	private Integer condition;
+	private Integer ratingYear;
+	private Integer strain;
+	private Integer strength;
+	private String description;
+	private String conditionDescription;
+	private String measureDescription;
+	// private String[] conditionDescriptions;
+	// private String[] materialDescriptions;
+	// private String[] measureDescriptions;
+
+}

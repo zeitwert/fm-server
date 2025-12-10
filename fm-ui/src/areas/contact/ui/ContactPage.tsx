@@ -1,0 +1,198 @@
+import { Avatar, ButtonGroup, Icon, Spinner, Tabs, TabsPanel } from "@salesforce/design-system-react";
+import { Contact, ContactStoreModel, EntityType, EntityTypeInfo, EntityTypes, NotesStore, NotesStoreModel, session, TasksStore, TasksStoreModel, UserInfo } from "@zeitwert/ui-model";
+import { RouteComponentProps, withRouter } from "app/frame/withRouter";
+import NotFound from "app/ui/NotFound";
+import ItemEditor from "lib/item/ui/ItemEditor";
+import ItemHeader, { HeaderDetail } from "lib/item/ui/ItemHeader";
+import { ItemGrid, ItemLeftPart, ItemRightPart } from "lib/item/ui/ItemPage";
+import NotesTab from "lib/item/ui/tab/NotesTab";
+import ObjActivityHistoryTab from "lib/item/ui/tab/ObjActivityHistoryTab";
+import TasksTab from "lib/item/ui/tab/TasksTab";
+import ValidationsTab from "lib/item/ui/tab/ValidationsTab";
+import { computed, makeObservable, observable } from "mobx";
+import { observer } from "mobx-react";
+import React from "react";
+import ContactMainForm from "./tabs/ContactMainForm";
+
+enum LEFT_TABS {
+	MAIN = "main",
+}
+const LEFT_TAB_VALUES = Object.values(LEFT_TABS);
+
+enum RIGHT_TABS {
+	NOTES = "notes",
+	TASKS = "tasks",
+	ACTIVITIES = "activities",
+	VALIDATIONS = "validations",
+}
+const RIGHT_TAB_VALUES = Object.values(RIGHT_TABS);
+
+@observer
+class ContactPage extends React.Component<RouteComponentProps> {
+
+	entityType: EntityTypeInfo = EntityTypes[EntityType.CONTACT];
+
+	@observable contactStore = ContactStoreModel.create({});
+	@observable notesStore: NotesStore = NotesStoreModel.create({});
+	@observable tasksStore: TasksStore = TasksStoreModel.create({});
+
+	@observable activeLeftTabId = LEFT_TABS.MAIN;
+	@observable activeRightTabId = RIGHT_TABS.NOTES;
+
+	@computed
+	get notesCount(): number {
+		return this.notesStore.notes.length;
+	}
+
+	@computed
+	get tasksCount(): number {
+		return this.tasksStore.futureTasks.length + this.tasksStore.overdueTasks.length;
+	}
+
+	constructor(props: any) {
+		super(props);
+		makeObservable(this);
+	}
+
+	async componentDidMount() {
+		session.setHelpContext(`${EntityType.CONTACT}-${this.activeLeftTabId}`);
+		await this.contactStore.load(this.props.params.contactId!);
+		await this.notesStore.load(this.props.params.contactId!);
+		await this.tasksStore.load(this.props.params.contactId!);
+	}
+
+	async componentDidUpdate(prevProps: RouteComponentProps) {
+		if (this.props.params.contactId !== prevProps.params.contactId) {
+			await this.contactStore.load(this.props.params.contactId!);
+			await this.notesStore.load(this.props.params.contactId!);
+			await this.tasksStore.load(this.props.params.contactId!);
+		}
+	}
+
+	render() {
+
+		const contact = this.contactStore.contact!;
+		if (!contact && session.isNetworkActive) {
+			return <></>;
+		} else if (!contact) {
+			return <NotFound entityType={this.entityType} id={this.props.params.contactId!} />;
+		}
+
+		const isActive = !contact.meta?.closedAt;
+		const allowEdit = ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0);
+
+		return (
+			<>
+				<ItemHeader
+					store={this.contactStore}
+					details={this.getHeaderDetails(contact)}
+					customActions={this.getHeaderActions()}
+				/>
+				<ItemGrid>
+					<ItemLeftPart>
+						<ItemEditor
+							store={this.contactStore}
+							entityType={EntityType.CONTACT}
+							showEditButtons={isActive && allowEdit && !session.hasReadOnlyRole}
+						>
+							<Tabs
+								className="full-height"
+								selectedIndex={LEFT_TAB_VALUES.indexOf(this.activeLeftTabId)}
+								onSelect={(tabId: number) => (this.activeLeftTabId = LEFT_TAB_VALUES[tabId])}
+							>
+								<TabsPanel label="Details">
+									{this.activeLeftTabId === LEFT_TABS.MAIN && <ContactMainForm contact={this.contactStore.contact!} doEdit={this.contactStore.isInTrx} />}
+								</TabsPanel>
+							</Tabs>
+						</ItemEditor>
+					</ItemLeftPart>
+					<ItemRightPart isFullWidth={false}>
+						<Tabs
+							className="full-height"
+							selectedIndex={RIGHT_TAB_VALUES.indexOf(this.activeRightTabId)}
+							onSelect={(tabId: number) => (this.activeRightTabId = RIGHT_TAB_VALUES[tabId])}
+						>
+							<TabsPanel label={"Notizen" + (this.notesCount ? ` (${this.notesCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.NOTES &&
+									<NotesTab relatedToId={this.contactStore.id!} notesStore={this.notesStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label={"Aufgaben" + (this.tasksCount ? ` (${this.tasksCount})` : "")}>
+								{
+									this.activeRightTabId === RIGHT_TABS.TASKS &&
+									<TasksTab relatedToId={this.contactStore.id!} tasksStore={this.tasksStore} />
+								}
+							</TabsPanel>
+							<TabsPanel label="Aktivität">
+								{
+									this.activeRightTabId === RIGHT_TABS.ACTIVITIES &&
+									<ObjActivityHistoryTab obj={contact} />
+								}
+							</TabsPanel>
+							{
+								contact.hasValidations &&
+								<TabsPanel label={`Validierungen (${contact.validationsCount})`}>
+									{
+										this.activeRightTabId === RIGHT_TABS.VALIDATIONS &&
+										<ValidationsTab validations={contact.meta?.validations!} />
+									}
+								</TabsPanel>
+							}
+						</Tabs>
+					</ItemRightPart>
+				</ItemGrid>
+				{
+					session.isNetworkActive &&
+					<Spinner variant="brand" size="large" />
+				}
+			</>
+		);
+	}
+
+	private getHeaderDetails(contact: Contact): HeaderDetail[] {
+		const contactOwner: UserInfo = contact.owner as UserInfo;
+		return [
+			{
+				label: "Account",
+				content: contact.account?.caption,
+				icon: <Icon category="standard" name="account" size="small" />,
+				link: "/account/" + contact.account?.id
+			},
+			{
+				label: "Email",
+				content: contact.email,
+				url: "mailto://" + contact.email
+			},
+			{
+				label: "Mobile",
+				content: contact.mobile,
+				url: "tel://" + contact.mobile
+			},
+			{
+				label: "Owner",
+				content: contactOwner.name,
+				icon: (
+					<Avatar
+						variant="user"
+						size="small"
+						imgSrc={session.avatarUrl(contactOwner.id)}
+						imgAlt={contactOwner.name}
+						label={contactOwner.name}
+					/>
+				),
+				link: "/user/" + contact.owner!.id
+			},
+		];
+	}
+
+	private getHeaderActions() {
+		return (
+			<ButtonGroup variant="list">
+			</ButtonGroup>
+		);
+	}
+
+}
+
+export default withRouter(ContactPage);

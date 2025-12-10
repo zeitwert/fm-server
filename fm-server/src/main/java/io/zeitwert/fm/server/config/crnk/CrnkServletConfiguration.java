@@ -1,0 +1,15 @@
+package io.zeitwert.fm.server.config.crnk;
+
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Marker configuration for Crnk servlet setup.
+ * 
+ * The actual servlet filter configuration is handled in {@link CrnkConfiguration}
+ * which manually configures CrnkBoot and CrnkFilter for Spring Boot 3 compatibility.
+ */
+@Configuration
+public class CrnkServletConfiguration {
+	// Configuration is handled by CrnkConfiguration class
+}
+

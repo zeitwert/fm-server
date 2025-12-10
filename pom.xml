@@ -1,42 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.zeitwert</groupId>
+	<artifactId>fm-parent</artifactId>
+	<name>FM (Facilities Management) Parent</name>
+	<description>Parent POM for FM Application Server</description>
+	<packaging>pom</packaging>
+	<version>1.0.21-SNAPSHOT</version>
+
+	<modules>
+		<module>fm-common</module>
+		<module>fm-dddrive</module>
+		<module>fm-domain</module>
+		<module>fm-ui</module>
+		<module>fm-server</module>
+	</modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.8</version>
-		<relativePath />
+		<relativePath/>
 	</parent>
 
-	<groupId>io.zeitwert</groupId>
-	<artifactId>zeitwert-server</artifactId>
-	<name>Zeitwert Application Server</name>
-	<description />
-	<packaging>jar</packaging>
-	<version>1.0.21-SNAPSHOT</version>
-
 	<properties>
+		<!-- Build -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>21</java.version>
 		<maven.compiler.release>21</maven.compiler.release>
-		<maven-model.version>3.9.9</maven-model.version>
-		<compiler.version>3.13.0</compiler.version>
-		<release.version>3.0.1</release.version>
-		<flyway.version>10.21.0</flyway.version>
-		<dddrive.version>1.0.18</dddrive.version>
-		<crnk.version>3.4.20210509072026</crnk.version>
-		<jjwt.version>0.12.5</jjwt.version>
-		<lombok.version>1.18.34</lombok.version>
-		<jooq-codegen.version>3.19.8</jooq-codegen.version>
-		<aspose-words.version>22.12</aspose-words.version>
-		<google-maps.version>2.1.2</google-maps.version>
+		<!-- Maven plugins -->
+		<maven.compiler.version>3.13.0</maven.compiler.version>
+		<maven.model.version>3.9.9</maven.model.version>
+		<maven.release.version>3.0.1</maven.release.version>
 		<maven.resources.version>3.3.1</maven.resources.version>
 		<maven.clean.version>3.3.2</maven.clean.version>
-		<frontend-src-dir>${project.basedir}/src/main/ui</frontend-src-dir>
+		<maven.dependency.version>3.7.0</maven.dependency.version>
+		<maven.versions.version>2.17.0</maven.versions.version>
+		<!-- Dependencies -->
+		<dddrive.version>1.0.18</dddrive.version>
+		<crnk.version>3.4.20210509072026</crnk.version>
+		<flyway.version>10.21.0</flyway.version>
+		<jooq-codegen.version>3.19.8</jooq-codegen.version>
+		<jjwt.version>0.12.5</jjwt.version>
+		<lombok.version>1.18.34</lombok.version>
+		<aspose-words.version>22.12</aspose-words.version>
+		<google-maps.version>2.1.2</google-maps.version>
+		<!-- Frontend -->
+		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
 		<node.version>v18.12.1</node.version>
 		<yarn.version>v1.22.19</yarn.version>
-		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
+		<!-- jOOQ generation (disabled by default) -->
 		<skip.jooq.generation>true</skip.jooq.generation>
 	</properties>
 
@@ -50,447 +66,184 @@
 
 	<scm>
 		<developerConnection>scm:git:https://gitlab.com/zeit-wert/zeit-wert/zeitwert.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
-	<dependencies>
+	<dependencyManagement>
+		<dependencies>
 
-		<!-- Runtime -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-api</artifactId>
-			<version>${jjwt.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-impl</artifactId>
-			<version>${jjwt.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId>
-			<version>${jjwt.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.zeitwert</groupId>
-			<artifactId>dddrive</artifactId>
-			<version>${dddrive.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.crnk</groupId>
-			<artifactId>crnk-core</artifactId>
-			<version>${crnk.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.crnk</groupId>
-			<artifactId>crnk-setup-spring</artifactId>
-			<version>${crnk.version}</version>
-			<exclusions>
-				<!-- Exclude Spring Boot auto-configuration as it doesn't support SB3 -->
-				<exclusion>
-					<groupId>io.crnk</groupId>
-					<artifactId>crnk-setup-spring-boot2</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>${flyway.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-database-postgresql</artifactId>
-			<version>${flyway.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jooq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+			<!-- FM Internal modules -->
+			<dependency>
+				<groupId>io.zeitwert</groupId>
+				<artifactId>fm-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeitwert</groupId>
+				<artifactId>fm-dddrive</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeitwert</groupId>
+				<artifactId>fm-domain</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeitwert</groupId>
+				<artifactId>fm-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-		<!-- Aspose, Google Maps -->
-		<dependency>
-			<groupId>com.aspose</groupId>
-			<artifactId>aspose-words</artifactId>
-			<version>${aspose-words.version}</version>
-			<classifier>jdk17</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.aspose</groupId>
-			<artifactId>aspose-words</artifactId>
-			<version>${aspose-words.version}</version>
-			<classifier>javadoc</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.maps</groupId>
-			<artifactId>google-maps-services</artifactId>
-			<version>${google-maps.version}</version>
-		</dependency>
+			<!-- External DDDrive (to be replaced with fm-dddrive in Phase 2) -->
+			<dependency>
+				<groupId>io.zeitwert</groupId>
+				<artifactId>dddrive</artifactId>
+				<version>${dddrive.version}</version>
+			</dependency>
 
-		<!-- Monitoring -->
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model</artifactId>
-			<version>${maven-model.version}</version>
-		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		-->
+			<!-- Crnk JSON:API -->
+			<dependency>
+				<groupId>io.crnk</groupId>
+				<artifactId>crnk-core</artifactId>
+				<version>${crnk.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.crnk</groupId>
+				<artifactId>crnk-setup-spring</artifactId>
+				<version>${crnk.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>io.crnk</groupId>
+						<artifactId>crnk-setup-spring-boot2</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-		<!-- Test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+			<!-- Database -->
+			<dependency>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-core</artifactId>
+				<version>${flyway.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-database-postgresql</artifactId>
+				<version>${flyway.version}</version>
+			</dependency>
 
-		<!-- Development -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
-			<scope>provided</scope>
-		</dependency>
+			<!-- JWT -->
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
 
-	</dependencies>
+			<!-- Aspose -->
+			<dependency>
+				<groupId>com.aspose</groupId>
+				<artifactId>aspose-words</artifactId>
+				<version>${aspose-words.version}</version>
+				<classifier>jdk17</classifier>
+			</dependency>
+
+			<!-- Google Maps -->
+			<dependency>
+				<groupId>com.google.maps</groupId>
+				<artifactId>google-maps-services</artifactId>
+				<version>${google-maps.version}</version>
+			</dependency>
+
+			<!-- Monitoring -->
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-model</artifactId>
+				<version>${maven.model.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${compiler.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>/ui/**</exclude>
-					</excludes>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>${release.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<image>
-						<name>zeitwert-server</name>
-					</image>
-					<layers>
-						<enabled>true</enabled>
-					</layers>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<configuration>
-					<url>jdbc:postgresql://localhost:5432/zeitwert</url>
-					<user>zeitwert</user>
-					<password>zeitwert</password>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-				<version>${jooq-codegen.version}</version>
-				<configuration>
-					<jdbc>
-						<driver>org.postgresql.Driver</driver>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven.compiler.version}</version>
+					<configuration>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</path>
+						</annotationProcessorPaths>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${maven.release.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>${maven.versions.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven.resources.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${maven.clean.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven.dependency.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<configuration>
 						<url>jdbc:postgresql://localhost:5432/zeitwert</url>
 						<user>zeitwert</user>
 						<password>zeitwert</password>
-					</jdbc>
-				</configuration>
-				<executions>
-					<execution>
-						<id>jooq-codegen-fm-obj</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/obj/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-doc</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/doc/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-search</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/search/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-oe</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/oe/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-collaboration</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/collaboration/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-account</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/account/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-contact</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/contact/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-dms</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/dms/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-building</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/building/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-portfolio</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/portfolio/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-task</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/task/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>jooq-codegen-fm-test</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/test/java/io/zeitwert/fm/test/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.17.0</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.7.0</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals><goal>copy-dependencies</goal></goals>
-						<configuration>
-							<includeScope>compile</includeScope>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>${frontend-maven-plugin.version}</version>
-				<configuration>
-					<nodeVersion>${node.version}</nodeVersion>
-					<yarnVersion>${yarn.version}</yarnVersion>
-					<workingDirectory>${frontend-src-dir}</workingDirectory>
-					<installDirectory>${project.build.directory}</installDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>install-frontend-tools</id>
-						<goals>
-							<goal>install-node-and-yarn</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>yarn-install</id>
-						<goals>
-							<goal>yarn</goal>
-						</goals>
-						<configuration>
-							<arguments>install</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>build-frontend</id>
-						<goals>
-							<goal>yarn</goal>
-						</goals>
-						<phase>prepare-package</phase>
-						<configuration>
-							<arguments>build</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven.resources.version}</version>
-				<executions>
-					<execution>
-						<id>position-react-build</id>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<phase>prepare-package</phase>
-						<configuration>
-							<outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${frontend-src-dir}/build</directory>
-									<filtering>false</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>${maven.clean.version}</version>
-				<executions>
-					<execution>
-						<id>clean-jar-artifacts</id>
-						<phase>install</phase>
-						<goals><goal>clean</goal></goals>
-						<configuration>
-							<excludeDefaultDirectories>true</excludeDefaultDirectories>
-							<filesets>
-								<fileset>
-									<directory>${frontend-src-dir}/node_modules</directory>
-								</fileset>
-								<fileset>
-									<directory>${frontend-src-dir}/build</directory>
-								</fileset>
-								<fileset>
-									<directory>target/node</directory>
-								</fileset>
-								<fileset>
-									<directory>target/classes</directory>
-								</fileset>
-								<fileset>
-									<directory>target/dependency</directory>
-									<includes>
-										<include>**/*.jar</include>
-									</includes>
-								</fileset>
-							</filesets>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.jooq</groupId>
+					<artifactId>jooq-codegen-maven</artifactId>
+					<version>${jooq-codegen.version}</version>
+					<configuration>
+						<jdbc>
+							<driver>org.postgresql.Driver</driver>
+							<url>jdbc:postgresql://localhost:5432/zeitwert</url>
+							<user>zeitwert</user>
+							<password>zeitwert</password>
+						</jdbc>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>${frontend-maven-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

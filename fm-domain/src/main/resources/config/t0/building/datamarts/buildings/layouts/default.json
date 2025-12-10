@@ -1,0 +1,69 @@
+{
+	"id": "default",
+	"name": "Default",
+	"layout": {
+		"layoutType": "line",
+		"header": [
+			{
+				"id": "name",
+				"label": "Name",
+				"value": "name",
+				"template": "link",
+				"link": "link"
+			},
+			{
+				"id": "address",
+				"label": "Addresse",
+				"value": "address"
+			},
+			{
+				"id": "nr",
+				"label": "Nr",
+				"value": "nr"
+			},
+			{
+				"id": "status",
+				"label": "Status",
+				"value": "statusName"
+			},
+			{
+				"id": "type",
+				"label": "Typ",
+				"value": "buildingType"
+			},
+			{
+				"id": "owner",
+				"label": "Verantwortlich",
+				"value": "owner"
+			},
+			{
+				"id": "insuranceValue",
+				"label": "GV Neuwert",
+				"value": "insuranceValue"
+			},
+			{
+				"id": "modifiedBy",
+				"label": "Letzte Modifikation",
+				"value": "modifiedBy"
+			}
+		],
+		"data": [
+			"{{data}}",
+			{
+				"id": "{{id}}",
+				"nr": "{{buildingNr}}",
+				"name": "{{name}}",
+				"link": "/building/{{id}}",
+				"insuranceValue": "{{insuredValue}} kCHF ({{insuredValueYear}})",
+				"statusName": "{{ratingStatus.name}}",
+				"accountId": "{{account.id}}",
+				"accountName": "{{account.caption}}",
+				"accountLink": "/account/{{account.id}}",
+				"buildingType": "{{buildingType.name}}",
+				"address": "{{street}} {{zip}} {{city}}",
+				"owner": "{{meta.owner.name}}",
+				"modifiedBy": "{{meta.modifiedByUser.name}} {{meta.modifiedAt}}"
+			}
+		]
+	}
+}

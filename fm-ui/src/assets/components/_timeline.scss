@@ -1,0 +1,31 @@
+.slds-timeline__item_meeting::before {
+	background-color: var(--sds-c-icon-color-background, #48c3cc);
+}
+
+.slds-timeline__item_opportunity::before {
+	background-color: var(--sds-c-icon-color-background, #fcb95b);
+}
+
+.slds-timeline__item_advice::before {
+	background-color: var(--sds-c-icon-color-background, #3c97dd);
+}
+
+.slds-timeline__item_lead::before {
+	background-color: var(--sds-c-icon-color-background, #f88962);
+}
+
+.slds-timeline__item_call::before {
+	background-color: var(--sds-c-icon-color-background, #f2cf5b);
+}
+
+.slds-timeline__item_visit::before {
+	background-color: var(--sds-c-icon-color-background, #0eb58a);
+}
+
+.slds-timeline__item_note::before {
+	background-color: var(--sds-c-icon-color-background, #e6d478);
+}
+
+.slds-timeline__item_stage::before {
+	background-color: var(--sds-c-icon-color-background, #ff9a3c);
+}

@@ -1,0 +1,8 @@
+{
+	"id": "closed",
+	"name": "Closed",
+	"layout": "default",
+	"params": {
+		"isClosed": true
+	}
+}
