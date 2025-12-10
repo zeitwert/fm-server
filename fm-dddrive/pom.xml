@@ -13,27 +13,76 @@
 
 	<artifactId>fm-dddrive</artifactId>
 	<name>FM DDDrive</name>
-	<description>Embedded DDDrive framework (placeholder for Phase 2)</description>
+	<description>
+		Embedded DDDrive framework incorporating functional reactive programming (FRP) and domain driven design (DDD)
+		principles. Migrated from dfp-dddrive.
+	</description>
 
-	<!--
-	This module is a placeholder for Phase 2a.
-	DDDrive will be copied from dfp-dddrive and adapted for FM.
-	Currently, fm-domain uses the external io.zeitwert:dddrive dependency.
-	-->
+	<properties>
+		<javassist.version>3.29.2-GA</javassist.version>
+	</properties>
 
 	<dependencies>
 
-		<!-- Lombok -->
+		<!-- Kotlin -->
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
+		</dependency>
+
+		<!-- Runtime -->
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>${javassist.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Runtime, Provided -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -42,4 +91,3 @@
 	</build>
 
 </project>
-

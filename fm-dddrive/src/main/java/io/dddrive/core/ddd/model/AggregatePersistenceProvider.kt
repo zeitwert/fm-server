@@ -1,0 +1,77 @@
+package io.dddrive.core.ddd.model
+
+interface AggregatePersistenceProvider<A : Aggregate?> {
+	/**
+	 * The repository.
+	 *
+	 * @return the repository
+	 */
+	fun getRepository(): AggregateRepository<A>
+
+	/**
+	 * Is the given Any a valid id
+	 */
+	fun isValidId(id: Any): Boolean
+
+	/**
+	 * Convert id to string
+	 */
+	fun idToString(id: Any): String
+
+	/**
+	 * Convert string to id
+	 */
+	fun idFromString(id: String): Any
+
+	/**
+	 * Generate new aggregate id.
+	 *
+	 * @return new aggregate id
+	 */
+	fun nextAggregateId(): Any
+
+	/**
+	 * Generate new part id.
+	 *
+	 * @return new part id
+	 */
+	fun <P : Part<A>> nextPartId(
+		aggregate: A,
+		partClass: Class<P>,
+	): Int
+
+	/**
+	 * Load the aggregate from persistence store.
+	 * Actual storage strategy depends on persistence provider.
+	 *
+	 * @param aggregate newly created, yet empty aggregate
+	 * @param id        aggregate id
+	 */
+	fun doLoad(
+		aggregate: A,
+		id: Any,
+	)
+
+	/**
+	 * Store the aggregate on the persistence layer.
+	 *
+	 * @param aggregate aggregate to store
+	 */
+	fun doStore(aggregate: A)
+
+	/**
+	 * Get all aggregates for the given tenant.
+	 *
+	 * @param tenantId tenant id
+	 * @return all aggregates
+	 */
+	fun getAll(tenantId: Any): List<A>
+
+	/**
+	 * Get a list of Aggregates with the given foreign key pointing to targetId
+	 */
+	fun getByForeignKey(
+		fkName: String,
+		targetId: Any,
+	): List<A>
+}

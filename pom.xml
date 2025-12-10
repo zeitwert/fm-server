@@ -31,6 +31,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>21</java.version>
 		<maven.compiler.release>21</maven.compiler.release>
+		<!-- Kotlin -->
+		<kotlin.version>2.2.0</kotlin.version>
+		<kotlin.compiler.incremental>false</kotlin.compiler.incremental>
 		<!-- Maven plugins -->
 		<maven.compiler.version>3.13.0</maven.compiler.version>
 		<maven.model.version>3.9.9</maven.model.version>
@@ -48,6 +51,7 @@
 		<lombok.version>1.18.34</lombok.version>
 		<aspose-words.version>22.12</aspose-words.version>
 		<google-maps.version>2.1.2</google-maps.version>
+		<caffeine.version>3.2.1</caffeine.version>
 		<!-- Frontend -->
 		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
 		<node.version>v18.12.1</node.version>
@@ -99,6 +103,31 @@
 				<groupId>io.zeitwert</groupId>
 				<artifactId>dddrive</artifactId>
 				<version>${dddrive.version}</version>
+			</dependency>
+
+			<!-- Kotlin -->
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-stdlib</artifactId>
+				<version>${kotlin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-reflect</artifactId>
+				<version>${kotlin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-test</artifactId>
+				<version>${kotlin.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- Runtime -->
+			<dependency>
+				<groupId>com.github.ben-manes.caffeine</groupId>
+				<artifactId>caffeine</artifactId>
+				<version>${caffeine.version}</version>
 			</dependency>
 
 			<!-- Crnk JSON:API -->
@@ -176,10 +205,60 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<!-- Kotlin -->
+				<plugin>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-maven-plugin</artifactId>
+					<version>${kotlin.version}</version>
+					<extensions>true</extensions>
+					<executions>
+						<execution>
+							<id>compile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>test-compile</id>
+							<phase>test-compile</phase>
+							<goals>
+								<goal>test-compile</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<jvmTarget>21</jvmTarget>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven.compiler.version}</version>
+					<executions>
+						<execution>
+							<id>default-compile</id>
+							<phase>none</phase>
+						</execution>
+						<execution>
+							<id>default-testCompile</id>
+							<phase>none</phase>
+						</execution>
+						<execution>
+							<id>compile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>testCompile</id>
+							<phase>test-compile</phase>
+							<goals>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+					</executions>
 					<configuration>
 						<annotationProcessorPaths>
 							<path>
