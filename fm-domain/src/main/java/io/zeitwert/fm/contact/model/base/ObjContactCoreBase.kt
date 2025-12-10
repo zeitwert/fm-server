@@ -5,6 +5,7 @@ import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.ReferenceProperty
 import io.zeitwert.fm.account.model.ObjAccount
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository
@@ -19,7 +20,9 @@ import java.time.LocalDate
  */
 abstract class ObjContactCoreBase(
     repository: ObjContactRepository
-) : FMObjCoreBase(repository), ObjContact {
+) : FMObjCoreBase(repository), ObjContact, AggregateWithNotesMixin {
+
+    override fun aggregate(): ObjContact = this
 
     //@formatter:off
     private val _contactRole: EnumProperty<CodeContactRole> = this.addEnumProperty("contactRole", CodeContactRole::class.java)

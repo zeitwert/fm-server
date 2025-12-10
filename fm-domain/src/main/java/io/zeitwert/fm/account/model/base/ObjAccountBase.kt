@@ -8,6 +8,7 @@ import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
@@ -18,7 +19,9 @@ import java.math.BigDecimal
 
 abstract class ObjAccountBase(
     repository: ObjAccountRepository
-) : FMObjCoreBase(repository), ObjAccount {
+) : FMObjCoreBase(repository), ObjAccount, AggregateWithNotesMixin {
+
+    override fun aggregate(): ObjAccount = this
 
     private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
     private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)

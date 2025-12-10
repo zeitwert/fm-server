@@ -4,8 +4,10 @@ import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjRepositoryBase
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 
 /**
  * Base repository class for FM Obj entities using the NEW dddrive framework.
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
  * This class extends the new dddrive ObjRepositoryBase and adds:
  * - DSLContext injection for jOOQ operations
  * - Persistence provider wiring
+ * - ObjNoteRepository for collaboration notes
  *
  * Subclasses must implement getPersistenceProvider() to return their specific provider.
  *
@@ -26,13 +29,22 @@ abstract class FMObjCoreRepositoryBase<O : Obj>(
 ) : ObjRepositoryBase<O>(repoIntfClass, intfClass, baseClass, aggregateTypeId) {
 
     private lateinit var _dslContext: DSLContext
+    private lateinit var _noteRepository: ObjNoteRepository
 
     @Autowired
     fun setDslContext(dslContext: DSLContext) {
         this._dslContext = dslContext
     }
 
+    @Autowired
+    @Lazy
+    fun setNoteRepository(noteRepository: ObjNoteRepository) {
+        this._noteRepository = noteRepository
+    }
+
     fun dslContext(): DSLContext = _dslContext
+
+    fun getNoteRepository(): ObjNoteRepository = _noteRepository
 
     /**
      * Subclasses must implement this to return their persistence provider.

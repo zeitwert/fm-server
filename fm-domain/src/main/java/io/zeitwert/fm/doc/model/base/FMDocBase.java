@@ -4,8 +4,7 @@ import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.DocRepository;
 import io.dddrive.doc.model.base.DocExtnBase;
 import io.dddrive.property.model.SimpleProperty;
-// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-// import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.doc.model.FMDocRepository;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 
@@ -25,10 +24,9 @@ public abstract class FMDocBase extends DocExtnBase {
 		return (FMDocRepository<? extends Doc, ? extends Object>) super.getRepository();
 	}
 
-	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-	// public ObjNoteRepository noteRepository() {
-	// 	return this.getRepository().getNoteRepository();
-	// }
+	public ObjNoteRepository noteRepository() {
+		return this.getRepository().getNoteRepository();
+	}
 
 	public DocTaskRepository taskRepository() {
 		return this.getRepository().getTaskRepository();

@@ -1,20 +1,14 @@
 package io.zeitwert.fm.collaboration.model.impl;
 
-// TODO-MIGRATION: Collaboration - uncomment after all domains using this mixin are migrated
-// This mixin requires the OLD dddrive interface. It will be re-implemented when:
-// 1. All domains (Account, Building, Contact, DMS, Portfolio, Task) are migrated to new dddrive
-// 2. The mixin is updated to use new dddrive signatures (with userId and timestamp parameters)
-
-/*
 import static io.dddrive.util.Invariant.requireThis;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
-import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.core.ddd.model.Aggregate;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteVRecord;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 
 public interface AggregateWithNotesMixin extends ItemWithNotes {
@@ -24,28 +18,23 @@ public interface AggregateWithNotesMixin extends ItemWithNotes {
 	ObjNoteRepository noteRepository();
 
 	@Override
-	default List<ObjNoteVRecord> getNotes() {
-		return this.noteRepository().getByForeignKey("related_to_id", this.aggregate().getId());
+	default List<ObjNote> getNotes() {
+		return this.noteRepository().getByForeignKey("relatedToId", this.aggregate().getId());
 	}
 
 	@Override
 	default ObjNote addNote(CodeNoteType noteType) {
-		ObjNote note = this.noteRepository().create(this.aggregate().getTenantId());
+		ObjNote note = this.noteRepository().create((Integer) this.aggregate().getTenantId(), null, OffsetDateTime.now());
 		note.setNoteType(noteType);
 		note.setRelatedToId(this.aggregate().getId());
 		return note;
 	}
 
 	@Override
-	default void removeNote(Integer noteId) {
+	default void removeNote(Object noteId) {
 		ObjNote note = this.noteRepository().load(noteId);
 		requireThis(this.aggregate().getId().equals(note.getRelatedToId()), "Note is related to this item.");
-		this.noteRepository().delete(note);
+		this.noteRepository().delete(note, null, OffsetDateTime.now());
 	}
 
-}
-*/
-
-// Temporary empty interface to allow compilation
-public interface AggregateWithNotesMixin {
 }

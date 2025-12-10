@@ -4,6 +4,7 @@ import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjBase
 import io.dddrive.core.property.model.BaseProperty
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.obj.model.EntityWithExtn
 
 /**
@@ -12,6 +13,7 @@ import io.zeitwert.fm.obj.model.EntityWithExtn
  * This class extends the new dddrive ObjBase and adds FM-specific functionality:
  * - accountId and extnAccountId properties for account association
  * - Extension map support via EntityWithExtn interface
+ * - Note repository access for AggregateWithNotesMixin support
  *
  * This class coexists with the old FMObjBase (which extends io.dddrive.obj.model.base.ObjExtnBase)
  * to allow gradual migration of domain entities from old to new dddrive.
@@ -51,6 +53,13 @@ abstract class FMObjCoreBase(
      */
     val extnAccountId: Int?
         get() = _extnAccountId.value
+
+    /**
+     * Returns the note repository for collaboration notes support.
+     */
+    fun noteRepository(): ObjNoteRepository {
+        return (repository as FMObjCoreRepositoryBase<*>).getNoteRepository()
+    }
 
     // EntityWithExtn implementation
 

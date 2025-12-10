@@ -12,8 +12,7 @@ import io.dddrive.doc.model.Doc;
 import io.dddrive.jooq.ddd.AggregateState;
 import io.dddrive.jooq.doc.JooqDocExtnRepositoryBase;
 import io.zeitwert.fm.app.model.RequestContextFM;
-// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-// import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.ddd.model.base.AggregateFindMixin;
 import io.zeitwert.fm.doc.model.FMDocRepository;
 import io.zeitwert.fm.task.model.DocTaskRepository;
@@ -22,8 +21,7 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 		extends JooqDocExtnRepositoryBase<D, V>
 		implements FMDocRepository<D, V>, DocPersistenceProviderMixin<D>, AggregateFindMixin<V> {
 
-	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-	// private ObjNoteRepository noteRepository;
+	private ObjNoteRepository noteRepository;
 	private DocTaskRepository taskRepository;
 
 	public FMDocRepositoryBase(
@@ -34,12 +32,11 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 		super(repoIntfClass, intfClass, baseClass, aggregateTypeId);
 	}
 
-	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-	// @Autowired
-	// @Lazy
-	// void setNoteRepository(ObjNoteRepository noteRepository) {
-	// 	this.noteRepository = noteRepository;
-	// }
+	@Autowired
+	@Lazy
+	void setNoteRepository(ObjNoteRepository noteRepository) {
+		this.noteRepository = noteRepository;
+	}
 
 	@Autowired
 	@Lazy
@@ -47,11 +44,10 @@ public abstract class FMDocRepositoryBase<D extends Doc, V extends TableRecord<?
 		this.taskRepository = taskRepository;
 	}
 
-	// TODO-MIGRATION: Collaboration - uncomment after Collaboration mixin is restored
-	// @Override
-	// public ObjNoteRepository getNoteRepository() {
-	// 	return this.noteRepository;
-	// }
+	@Override
+	public ObjNoteRepository getNoteRepository() {
+		return this.noteRepository;
+	}
 
 	@Override
 	public DocTaskRepository getTaskRepository() {

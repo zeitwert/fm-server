@@ -4,6 +4,7 @@ import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.ReferenceProperty
 import io.zeitwert.fm.account.model.ObjAccount
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
@@ -16,7 +17,9 @@ import org.slf4j.LoggerFactory
 
 abstract class ObjDocumentBase(
     repository: ObjDocumentRepository
-) : FMObjCoreBase(repository), ObjDocument {
+) : FMObjCoreBase(repository), ObjDocument, AggregateWithNotesMixin {
+
+    override fun aggregate(): ObjDocument = this
 
     private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
     private val _documentKind: EnumProperty<CodeDocumentKind> = this.addEnumProperty("documentKind", CodeDocumentKind::class.java)
