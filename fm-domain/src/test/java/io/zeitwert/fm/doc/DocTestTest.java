@@ -21,7 +21,6 @@ import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
-import io.zeitwert.fm.test.model.enums.CodeTestTypeEnum;
 import io.zeitwert.test.TestApplication;
 
 import java.math.BigDecimal;
@@ -52,8 +51,7 @@ public class DocTestTest {
 	@Autowired
 	private ObjAccountCache accountCache;
 
-	@Autowired
-	private CodeTestTypeEnum testTypeEnum;
+	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
 	@Test
 	public void testAggregate() throws Exception {
@@ -105,9 +103,9 @@ public class DocTestTest {
 		// Timestamp for new dddrive signatures (userId can be null for test)
 		OffsetDateTime timestamp = OffsetDateTime.now();
 
-		CodeTestType typeA = this.testTypeEnum.getItem(TYPE_A);
-		CodeTestType typeB = this.testTypeEnum.getItem(TYPE_B);
-		CodeTestType typeC = this.testTypeEnum.getItem(TYPE_C);
+		CodeTestType typeA = CodeTestType.getTestType(TYPE_A);
+		CodeTestType typeB = CodeTestType.getTestType(TYPE_B);
+		CodeTestType typeC = CodeTestType.getTestType(TYPE_C);
 
 		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId(), null, timestamp);
 		Object testA_id = testA1.getId();
@@ -229,7 +227,7 @@ public class DocTestTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = this.testTypeEnum.getItem(testTypeId);
+		CodeTestType testType = CodeTestType.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 
@@ -244,7 +242,7 @@ public class DocTestTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = this.testTypeEnum.getItem(testTypeId);
+		CodeTestType testType = CodeTestType.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.dddrive.app.model.RequestContext;
-import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -166,7 +166,7 @@ public class BuildingTest {
 		building.setStreet("Teststrasse 10");
 		building.setZip("1111");
 		building.setCity("Testingen");
-		building.setCountry(CodeCountryEnum.getCountry("ch"));
+		building.setCountry(CodeCountry.getCountry("ch"));
 		building.setCurrency(CodeCurrencyEnum.getCurrency("chf"));
 
 		building.setVolume(BigDecimal.valueOf(1000.0));
@@ -201,7 +201,7 @@ public class BuildingTest {
 		assertEquals("Teststrasse 10", building.getStreet());
 		assertEquals("1111", building.getZip());
 		assertEquals("Testingen", building.getCity());
-		assertEquals(CodeCountryEnum.getCountry("ch"), building.getCountry());
+		assertEquals(CodeCountry.getCountry("ch"), building.getCountry());
 		assertEquals(CodeCurrencyEnum.getCurrency("chf"), building.getCurrency());
 
 		assertEquals(BigDecimal.valueOf(1000.0), building.getVolume());

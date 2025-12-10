@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.dddrive.app.service.api.AppContext;
-import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
 import io.zeitwert.fm.app.model.RequestContextFM;
@@ -217,7 +217,7 @@ public class BuildingImportExportController {
 			building.setStreet(dto.getStreet());
 			building.setZip(dto.getZip());
 			building.setCity(dto.getCity());
-			building.setCountry(CodeCountryEnum.getCountry(dto.getCountry()));
+			building.setCountry(CodeCountry.getCountry(dto.getCountry()));
 			building.setGeoAddress(dto.getGeoAddress());
 			building.setGeoCoordinates(dto.getGeoCoordinates());
 			building.setGeoZoom(dto.getGeoZoom());

@@ -1,25 +1,25 @@
-package io.zeitwert.fm.test.config
+package io.zeitwert.fm.oe.config
 
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.enums.model.base.EnumConfigBase
-import io.zeitwert.fm.test.model.enums.CodeTestType
+import io.zeitwert.fm.oe.model.enums.CodeCountry
+import io.zeitwert.fm.oe.model.enums.CodeLocale
+import io.zeitwert.fm.oe.model.enums.CodeTenantType
+import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 /**
- * Test configuration that registers test aggregate types in the NEW dddrive framework.
+ * OE domain configuration that registers aggregate types and enums in the NEW dddrive framework.
  * 
  * This follows the dfp-app-server pattern where domain-specific config classes
  * register their aggregate types via InitializingBean.afterPropertiesSet().
- * 
- * The test aggregate types are also defined in R__1099_test_config.sql for database
- * reference data (intentional duplication for the dual-framework approach).
  */
-@Component("testConfig")
-class TestConfig : EnumConfigBase(), InitializingBean {
+@Component("oeConfig")
+class OEConfig : EnumConfigBase(), InitializingBean {
 
     @Autowired
     @Qualifier("coreCodeAggregateTypeEnum")
@@ -31,14 +31,17 @@ class TestConfig : EnumConfigBase(), InitializingBean {
             initCodeAggregateType(aggregateTypeEnum)
 
             // Trigger enum initialization
-            CodeTestType.entries
+            CodeUserRole.entries
+            CodeTenantType.entries
+            CodeCountry.entries
+            CodeLocale.entries
         } finally {
             endConfig()
         }
     }
 
     private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-        e.addItem(CodeAggregateType(e, "obj_test", "Test Object"))
-        e.addItem(CodeAggregateType(e, "doc_test", "Test Order"))
+        e.addItem(CodeAggregateType(e, "obj_user", "User"))
+        e.addItem(CodeAggregateType(e, "obj_tenant", "Tenant"))
     }
 }

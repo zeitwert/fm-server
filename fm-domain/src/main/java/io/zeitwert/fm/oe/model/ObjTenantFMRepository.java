@@ -1,26 +1,25 @@
-
 package io.zeitwert.fm.oe.model;
 
-import io.dddrive.obj.model.ObjRepository;
-import io.dddrive.oe.service.api.ObjUserCache;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
+import io.dddrive.core.obj.model.ObjRepository;
+// TODO-MIGRATION: Account - uncomment after Account is migrated
+// import io.zeitwert.fm.account.model.ObjAccountRepository;
+// import io.zeitwert.fm.account.service.api.ObjAccountCache;
+// TODO-MIGRATION: DMS - uncomment after DMS is migrated
+// import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 
-public interface ObjTenantFMRepository
-		extends ObjRepository<ObjTenantFM, ObjTenantVRecord> {
+public interface ObjTenantFMRepository extends ObjRepository<ObjTenantFM> {
 
 	static final int KERNEL_TENANT_ID = 1;
 
 	ObjUserFMRepository getUserRepository();
 
-	ObjUserCache getUserCache();
+	// TODO-MIGRATION: Account - uncomment after Account is migrated
+	// ObjAccountRepository getAccountRepository();
 
-	ObjAccountRepository getAccountRepository();
+	// TODO-MIGRATION: Account - uncomment after Account is migrated
+	// ObjAccountCache getAccountCache();
 
-	ObjAccountCache getAccountCache();
-
-	ObjDocumentRepository getDocumentRepository();
+	// TODO-MIGRATION: DMS - uncomment after DMS is migrated
+	// ObjDocumentRepository getDocumentRepository();
 
 }

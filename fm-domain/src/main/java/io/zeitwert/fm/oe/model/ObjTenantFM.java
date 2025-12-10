@@ -1,9 +1,10 @@
-
 package io.zeitwert.fm.oe.model;
 
-import io.dddrive.oe.model.ObjTenant;
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.dms.model.ObjDocument;
+import io.dddrive.core.oe.model.ObjTenant;
+// TODO-MIGRATION: Account - uncomment after Account is migrated
+// import io.zeitwert.fm.account.model.ObjAccount;
+// TODO-MIGRATION: DMS - uncomment after DMS is migrated
+// import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.oe.model.enums.CodeTenantType;
 
 import java.math.BigDecimal;
@@ -25,10 +26,13 @@ public interface ObjTenantFM extends ObjTenant {
 
 	List<ObjUserFM> getUsers();
 
-	List<ObjAccount> getAccounts();
+	// TODO-MIGRATION: Account - uncomment after Account is migrated
+	// List<ObjAccount> getAccounts();
 
-	Integer getLogoImageId();
+	// TODO-MIGRATION: DMS - uncomment after DMS is migrated
+	// Integer getLogoImageId();
 
-	ObjDocument getLogoImage();
+	// TODO-MIGRATION: DMS - uncomment after DMS is migrated
+	// ObjDocument getLogoImage();
 
 }

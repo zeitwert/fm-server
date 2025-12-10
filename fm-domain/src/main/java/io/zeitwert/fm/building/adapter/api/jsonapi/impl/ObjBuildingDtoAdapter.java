@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import io.dddrive.ddd.model.PartPersistenceStatus;
 import io.dddrive.ddd.model.base.PartSPI;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
@@ -123,7 +123,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			obj.setStreet(dto.getStreet());
 			obj.setZip(dto.getZip());
 			obj.setCity(dto.getCity());
-			obj.setCountry(dto.getCountry() == null ? null : CodeCountryEnum.getCountry(dto.getCountry().getId()));
+			obj.setCountry(dto.getCountry() == null ? null : CodeCountry.getCountry(dto.getCountry().getId()));
 			obj.setGeoAddress(dto.getGeoAddress());
 			obj.setGeoCoordinates(dto.getGeoCoordinates());
 			obj.setGeoZoom(dto.getGeoZoom());
@@ -273,7 +273,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			.street(obj.getStreet())
 			.zip(obj.getZip())
 			.city(obj.getCity())
-			.country(EnumeratedDto.fromEnum(CodeCountryEnum.getCountry(obj.getCountryId())))
+			.country(EnumeratedDto.fromEnum(CodeCountry.getCountry(obj.getCountryId())))
 			.geoAddress(obj.getGeoAddress())
 			.geoCoordinates(obj.getGeoCoordinates())
 			.geoZoom(obj.getGeoZoom())

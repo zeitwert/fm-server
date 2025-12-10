@@ -1,6 +1,9 @@
-
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
+// TODO-MIGRATION: Phase 3 - restore adapter layer after REST API migration
+// This file is commented out during OE domain migration (Phase 2b)
+
+/*
 import org.springframework.stereotype.Controller;
 
 import io.dddrive.app.model.RequestContext;
@@ -26,3 +29,4 @@ public class ObjUserApiRepositoryImpl
 	}
 
 }
+*/

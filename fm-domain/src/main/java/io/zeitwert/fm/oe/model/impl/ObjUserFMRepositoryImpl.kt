@@ -1,0 +1,71 @@
+package io.zeitwert.fm.oe.model.impl
+
+import io.dddrive.core.ddd.model.AggregatePersistenceProvider
+import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.oe.model.ObjUserFM
+import io.zeitwert.fm.oe.model.ObjUserFMRepository
+import io.zeitwert.fm.oe.model.base.ObjUserFMBase
+import io.zeitwert.fm.oe.model.db.Tables
+import io.zeitwert.fm.oe.model.enums.CodeUserRole
+import io.zeitwert.fm.oe.persist.jooq.ObjUserFMPersistenceProvider
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Component
+import java.util.*
+
+/**
+ * Repository implementation for ObjUserFM using the NEW dddrive framework.
+ */
+@Component("objUserRepository")
+class ObjUserFMRepositoryImpl(
+    // passwordEncoder: break cycle from WebSecurityConfig
+    @Lazy private val passwordEncoder: PasswordEncoder
+    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
+    // private val documentRepository: ObjDocumentRepository
+) : FMObjCoreRepositoryBase<ObjUserFM>(
+    ObjUserFMRepository::class.java,
+    ObjUserFM::class.java,
+    ObjUserFMBase::class.java,
+    AGGREGATE_TYPE_ID
+), ObjUserFMRepository {
+
+    private lateinit var persistenceProvider: ObjUserFMPersistenceProvider
+
+    @Autowired
+    @Lazy
+    fun setPersistenceProvider(persistenceProvider: ObjUserFMPersistenceProvider) {
+        this.persistenceProvider = persistenceProvider
+    }
+
+    override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjUserFM> = persistenceProvider
+
+    override fun getPasswordEncoder(): PasswordEncoder = passwordEncoder
+
+    // TODO-MIGRATION: DMS - uncomment after DMS is migrated
+    // override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
+
+    override fun isAppAdmin(user: ObjUserFM): Boolean {
+        return user.hasRole(CodeUserRole.APP_ADMIN)
+    }
+
+    override fun isAdmin(user: ObjUserFM): Boolean {
+        return user.hasRole(CodeUserRole.ADMIN)
+    }
+
+    override fun getByEmail(email: String): Optional<ObjUserFM> {
+        val userId = dslContext()
+            .select(Tables.OBJ_USER_V.ID)
+            .from(Tables.OBJ_USER_V)
+            .where(Tables.OBJ_USER_V.EMAIL.eq(email))
+            .fetchOne(Tables.OBJ_USER_V.ID)
+            ?: return Optional.empty()
+
+        return Optional.ofNullable(get(userId))
+    }
+
+    companion object {
+        private const val AGGREGATE_TYPE_ID = "obj_user"
+    }
+}
+

@@ -14,7 +14,6 @@ import io.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
-import io.zeitwert.fm.test.model.enums.CodeTestTypeEnum;
 import io.zeitwert.test.TestApplication;
 
 import java.math.BigDecimal;
@@ -33,8 +32,7 @@ public class SessionTest {
 	@Autowired
 	private ObjTestRepository testRepo;
 
-	@Autowired
-	private CodeTestTypeEnum testTypeEnum;
+	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
 	@Test
 	public void testSessionHandling() throws Exception {
@@ -68,7 +66,7 @@ public class SessionTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = this.testTypeEnum.getItem(testTypeId);
+		CodeTestType testType = CodeTestType.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 

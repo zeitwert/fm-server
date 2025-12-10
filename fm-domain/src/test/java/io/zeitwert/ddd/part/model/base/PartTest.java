@@ -18,7 +18,6 @@ import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
-import io.zeitwert.fm.test.model.enums.CodeTestTypeEnum;
 import io.zeitwert.test.TestApplication;
 
 import java.math.BigDecimal;
@@ -35,8 +34,7 @@ public class PartTest {
 	@Autowired
 	private RequestContext requestCtx;
 
-	@Autowired
-	private CodeTestTypeEnum testTypeEnum;
+	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
 	@Autowired
 	private ObjTestRepository testRepository;
@@ -133,7 +131,7 @@ public class PartTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = this.testTypeEnum.getItem(testTypeId);
+		CodeTestType testType = CodeTestType.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 
@@ -145,7 +143,7 @@ public class PartTest {
 		node.setIsDone(false);
 		node.setDate(LocalDate.of(1966, 9, 8));
 		node.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = this.testTypeEnum.getItem(testTypeId);
+		CodeTestType testType = CodeTestType.getTestType(testTypeId);
 		node.setTestType(testType);
 	}
 

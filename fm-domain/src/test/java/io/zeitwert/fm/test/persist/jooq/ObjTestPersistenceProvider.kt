@@ -8,7 +8,6 @@ import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestRepository
 import io.zeitwert.fm.test.model.enums.CodeTestType
-import io.zeitwert.fm.test.model.enums.CodeTestTypeEnum
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.jooq.UpdatableRecord
@@ -139,7 +138,7 @@ open class ObjTestPersistenceProvider : JooqObjPersistenceProviderBase<ObjTest>(
         // Load testType enum
         record.get("test_type_id", String::class.java)?.let { testTypeId ->
             (aggregate.getProperty("testType") as? EnumProperty<CodeTestType>)?.value =
-                CodeTestTypeEnum.getTestType(testTypeId)
+                CodeTestType.getTestType(testTypeId)
         }
     }
 

@@ -10,7 +10,7 @@ import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannelEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
-import io.zeitwert.fm.oe.model.enums.CodeCountryEnum;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 
 @Data()
 @EqualsAndHashCode(callSuper = true)
@@ -34,7 +34,7 @@ public class ObjContactPartAddressDto extends ObjPartDtoBase<ObjContact, ObjCont
 		part.setStreet(street);
 		part.setZip(zip);
 		part.setCity(city);
-		part.setCountry(country == null ? null : CodeCountryEnum.getCountry(country.getId()));
+		part.setCountry(country == null ? null : CodeCountry.getCountry(country.getId()));
 	}
 
 	public static ObjContactPartAddressDto fromPart(ObjContactPartAddress part) {

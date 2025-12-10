@@ -12,14 +12,13 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.dddrive.app.model.RequestContext;
 import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
-import io.zeitwert.fm.test.model.enums.CodeTestTypeEnum;
 import io.zeitwert.test.TestApplication;
 
 import java.math.BigDecimal;
@@ -41,8 +40,7 @@ public class NoteTest {
 	@Autowired
 	private ObjUserFMRepository userRepo;
 
-	@Autowired
-	private CodeTestTypeEnum testTypeEnum;
+	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
 	@Autowired
 	private ObjTestRepository testRepo;
@@ -71,17 +69,17 @@ public class NoteTest {
 		// remove 1 note in the middle [1, 2]
 		// store
 		{
-			ObjNote noteA1 = testA1.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			ObjNote noteA1 = testA1.addNote(CodeNoteType.getNoteType("note"));
 			this.initNote(noteA1, "Subject 1", "Content 1", false);
 			this.noteRepo.store(noteA1, userId, timestamp);
 			assertEquals(1, testA1.getNotes().size());
 
-			ObjNote noteB1 = testA1.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			ObjNote noteB1 = testA1.addNote(CodeNoteType.getNoteType("note"));
 			this.initNote(noteB1, "Subject 2", "Content 2", false);
 			this.noteRepo.store(noteB1, userId, timestamp);
 			assertEquals(2, testA1.getNotes().size());
 
-			ObjNote noteC1 = testA1.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			ObjNote noteC1 = testA1.addNote(CodeNoteType.getNoteType("note"));
 			this.initNote(noteC1, "Subject 3", "Content 3", false);
 			this.noteRepo.store(noteC1, userId, timestamp);
 			assertEquals(3, testA1.getNotes().size());
@@ -120,7 +118,7 @@ public class NoteTest {
 			assertEquals("Subject 1,Subject 3", String.join(",", testA2_noteList.stream().map(n -> n.getSubject()).toList()));
 			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
 
-			ObjNote noteD1 = testA2.addNote(CodeNoteTypeEnum.getNoteType("note"));
+			ObjNote noteD1 = testA2.addNote(CodeNoteType.getNoteType("note"));
 			this.initNote(noteD1, "Subject 4", "Content 4", false);
 			this.noteRepo.store(noteD1, userId, timestamp);
 			assertEquals(3, testA2.getNotes().size());
@@ -170,7 +168,7 @@ public class NoteTest {
 		test.setIsDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 //		test.setOwner(user);
-		CodeTestType testType = this.testTypeEnum.getItem(testTypeId);
+		CodeTestType testType = CodeTestType.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 

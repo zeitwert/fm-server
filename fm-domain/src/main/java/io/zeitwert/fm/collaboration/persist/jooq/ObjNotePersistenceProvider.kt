@@ -8,7 +8,6 @@ import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteTypeEnum
 import io.zeitwert.fm.obj.model.db.Sequences
 import org.jooq.DSLContext
 import org.jooq.UpdatableRecord
@@ -91,7 +90,7 @@ open class ObjNotePersistenceProvider : JooqObjPersistenceProviderBase<ObjNote>(
 
         record.noteTypeId?.let { noteTypeId ->
             (aggregate.getProperty("noteType") as? EnumProperty<CodeNoteType>)?.value =
-                CodeNoteTypeEnum.getNoteType(noteTypeId)
+                CodeNoteType.getNoteType(noteTypeId)
         }
 
         (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value = record.subject

@@ -1,6 +1,9 @@
-
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
+// TODO-MIGRATION: Phase 3 - restore adapter layer after REST API migration
+// This file is commented out during OE domain migration (Phase 2b)
+
+/*
 import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,3 +121,4 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 	}
 
 }
+*/
