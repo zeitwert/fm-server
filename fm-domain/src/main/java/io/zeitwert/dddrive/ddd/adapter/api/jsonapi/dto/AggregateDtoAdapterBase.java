@@ -36,7 +36,7 @@ public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends Agg
 	}
 
 	protected EnumeratedDto getTenantEnumerated(Integer tenantId) {
-		return tenantId != null ? this.tenantCache.getAsEnumerated(tenantId) : null;
+		return tenantId != null ? EnumeratedDto.of(tenantCache.get(tenantId)) : null;
 	}
 
 	protected ObjUserFMRepository getUserCache() {
@@ -48,11 +48,11 @@ public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends Agg
 	}
 
 	protected EnumeratedDto getUserEnumerated(Integer userId) {
-		return userId != null ? this.userCache.getAsEnumerated(userId) : null;
+		return userId != null ? EnumeratedDto.of(userCache.get(userId)) : null;
 	}
 
 	protected EnumeratedDto asEnumerated(Aggregate a) {
-		return EnumeratedDto.builder().id(a.getId().toString()).name(a.getCaption()).build();
+		return EnumeratedDto.of(a.getId().toString(), a.getCaption());
 	}
 
 }
