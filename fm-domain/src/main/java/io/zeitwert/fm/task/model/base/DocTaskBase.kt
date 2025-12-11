@@ -9,6 +9,7 @@ import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
+import kotlin.text.get
 
 abstract class DocTaskBase(
     repository: DocTaskRepository
@@ -36,7 +37,7 @@ abstract class DocTaskBase(
         this.caption.value = getSubject()
     }
 
-    override fun getAccount(): ObjAccount? = getRepository().accountCache.get(accountId)
+    override fun getAccount(): ObjAccount? = directory.getRepository(ObjAccount::class.java).get(accountId)
 
     override fun getRelatedToId(): Int? {
         val objId = _relatedObjId.value

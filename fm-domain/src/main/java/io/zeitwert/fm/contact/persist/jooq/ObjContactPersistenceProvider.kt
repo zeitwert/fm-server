@@ -165,7 +165,7 @@ open class ObjContactPersistenceProvider : JooqObjPersistenceProviderBase<ObjCon
             .fetch()
 
         for (record in records) {
-            val address = addressList.loadPart(record.id)
+            val address = addressList.addPart(record.id)
 
             record.addressChannelId?.let { id ->
                 (address.getProperty("addressChannel") as? EnumProperty<CodeAddressChannel>)?.value =

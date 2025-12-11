@@ -46,7 +46,7 @@ enum class CodeBuildingPartCatalog(
         return parts.split(",").map { p ->
             val partWeight = if (p.contains(":")) p else "$p:0"
             val (partId, weight) = partWeight.split(":")
-            val part = CodeBuildingPart.getBuildingPart(partId)
+            val part = CodeBuildingPart.Enumeration.getBuildingPart(partId)
                 ?: throw IllegalArgumentException("Unknown building part: $partId")
             Pair(part, weight.toInt())
         }

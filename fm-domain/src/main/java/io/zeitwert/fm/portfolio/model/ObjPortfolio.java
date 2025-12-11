@@ -11,12 +11,6 @@ import io.zeitwert.fm.task.model.ItemWithTasks;
 public interface ObjPortfolio extends Obj, ItemWithAccount, ItemWithNotes, ItemWithTasks {
 
 	@Override
-	Integer getAccountId();
-
-	@Override
-	void setAccountId(Integer id);
-
-	@Override
 	ObjAccount getAccount();
 
 	String getName();

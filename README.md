@@ -106,6 +106,8 @@ So we use custom deployment scripts, deploy_prep and deploy_push.
 
 A heroku-like build can be initiated like this: `mvnw -DskipTests clean dependency:list install`
 
+A build without running tests and without building the UI can be initiated like this: `mvnw -DskipTests clean compile -pl !fm-ui`
+
 ### Deployment to Heroku (zeitwert-staging)
 
 We cannot use the maven resource plugin for the whole procedure, since we cannot deploy the build artifacts but need to push the sources to heroku.

@@ -2,9 +2,9 @@ package io.zeitwert.fm.account.model;
 
 public interface ItemWithAccount {
 
-	Integer getAccountId();
+	Object getAccountId();
 
-	void setAccountId(Integer accountId);
+	void setAccountId(Object accountId);
 
 	ObjAccount getAccount();
 

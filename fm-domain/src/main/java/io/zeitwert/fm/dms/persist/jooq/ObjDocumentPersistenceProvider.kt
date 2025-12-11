@@ -145,7 +145,7 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
                 versionNr,
                 contentType.id,
                 content,
-                document.modifiedByUser?.id as? Int
+                document.meta.createdByUser?.id as Int
             )
             .execute()
     }

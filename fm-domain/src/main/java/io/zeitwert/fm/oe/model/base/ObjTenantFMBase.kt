@@ -13,6 +13,7 @@ import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import java.math.BigDecimal
+import java.time.OffsetDateTime
 
 abstract class ObjTenantFMBase(
     repository: ObjTenantFMRepository
@@ -39,26 +40,26 @@ abstract class ObjTenantFMBase(
         this.caption.value = _name.value ?: "Tenant"
     }
 
-    override fun doAfterCreate() {
-        super.doAfterCreate()
-        this.addLogoImage()
+    override fun doAfterCreate(userId: Any?, timestamp: OffsetDateTime?) {
+        super.doAfterCreate(userId, timestamp)
+        this.addLogoImage(userId, timestamp)
     }
 
-    override fun doBeforeStore() {
-        super.doBeforeStore()
+    override fun doBeforeStore(userId: Any?, timestamp: OffsetDateTime?) {
+        super.doBeforeStore(userId, timestamp)
         if (this.getLogoImageId() == null) {
-            this.addLogoImage()
+            this.addLogoImage(userId, timestamp)
         }
     }
 
-    private fun addLogoImage() {
+    private fun addLogoImage(userId: Any?, timestamp: OffsetDateTime?) {
         val documentRepo = this.getRepository().documentRepository
-        val image = documentRepo.create(this.tenantId as Int)
+        val image = documentRepo.create(this.tenantId, userId, timestamp)
         image.name = "Logo"
         image.contentKind = CodeContentKind.getContentKind("foto")
         image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
         image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
-        documentRepo.store(image)
+        documentRepo.store(image, userId, timestamp)
         _logoImage.id = image.id
     }
 

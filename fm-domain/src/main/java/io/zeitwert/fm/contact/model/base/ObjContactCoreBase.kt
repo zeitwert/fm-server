@@ -54,15 +54,15 @@ abstract class ObjContactCoreBase(
         this.caption.value = "${getFirstName() ?: ""} ${getLastName() ?: ""}".trim()
     }
 
-    private fun doCalcSearch() {
-        addSearchToken(getFirstName())
-        addSearchToken(getLastName())
-        addSearchToken(getEmail())
-        getEmail()?.let { email ->
-            addSearchText(email.replace("@", " ").replace(".", " ").replace("_", " ").replace("-", " "))
-        }
-        addSearchText(getDescription())
-    }
+     private fun doCalcSearch() {
+    //     addSearchToken(getFirstName())
+    //     addSearchToken(getLastName())
+    //     addSearchToken(getEmail())
+    //     getEmail()?.let { email ->
+    //         addSearchText(email.replace("@", " ").replace(".", " ").replace("_", " ").replace("-", " "))
+    //     }
+    //     addSearchText(getDescription())
+     }
 
     // ObjContact interface implementation
 
@@ -147,7 +147,7 @@ abstract class ObjContactCoreBase(
     }
 
     override fun addMailAddress(): ObjContactPartAddress {
-        return _addressList.addPart()
+        return _addressList.addPart(null)
     }
 
     override fun removeMailAddress(addressId: Int?) {
@@ -167,7 +167,7 @@ abstract class ObjContactCoreBase(
     }
 
     override fun addElectronicAddress(): ObjContactPartAddress {
-        return _addressList.addPart()
+        return _addressList.addPart(null)
     }
 
     override fun removeElectronicAddress(addressId: Int?) {

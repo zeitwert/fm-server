@@ -6,6 +6,7 @@ import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
 import io.dddrive.core.validation.model.enums.CodeValidationLevel
+import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -87,8 +88,8 @@ abstract class ObjBuildingBase(
         return super.getRepository() as ObjBuildingRepository
     }
 
-    override fun doAfterCreate() {
-        super.doAfterCreate()
+    override fun doAfterCreate(userId: Any?, timestamp: OffsetDateTime?) {
+        super.doAfterCreate(userId, timestamp)
         check(this.id != null) { "id must not be null after create" }
         this.accountId = this.id as Int
         this.addCoverFoto()
@@ -98,8 +99,8 @@ abstract class ObjBuildingBase(
         return getRepository().accountRepository.get(accountId)
     }
 
-    override fun doBeforeStore() {
-        super.doBeforeStore()
+    override fun doBeforeStore(userId: Any?, timestamp: OffsetDateTime?) {
+        super.doBeforeStore(userId, timestamp)
         if (getCoverFotoId() == null) {
             addCoverFoto()
         }
@@ -149,7 +150,7 @@ abstract class ObjBuildingBase(
         return getCurrentRating()?.getCondition(year)
     }
 
-    override fun addRating(): ObjBuildingPartRating {
+    override fun addRating(user: ObjUserFM?, timestamp: OffsetDateTime?): ObjBuildingPartRating {
         val oldRating = getCurrentRating()
         require(oldRating == null || oldRating.ratingStatus == CodeBuildingRatingStatus.DONE) { "rating done" }
         val rating = _ratingList.addPart(null)
@@ -162,8 +163,8 @@ abstract class ObjBuildingBase(
             } else {
                 rating.maintenanceStrategy = CodeBuildingMaintenanceStrategy.N
             }
-            rating.ratingDate = getRepository().requestContext.currentDate
-            rating.ratingUser = getRepository().requestContext.user as? ObjUserFM
+            rating.ratingUser = user
+            rating.ratingDate = timestamp?.toLocalDate()
         } finally {
             rating.meta.enableCalc()
             rating.calcAll()
@@ -196,54 +197,54 @@ abstract class ObjBuildingBase(
     @Suppress("LongMethod")
     private fun validateElements() {
         if (getCoverFoto() == null || getCoverFoto()?.contentType == null) {
-            addValidation(CodeValidationLevel.WARNING, "Für den Druck muss ein Coverfoto hochgeladen werden")
+            addValidation(CodeValidationLevelEnum.WARNING, "Für den Druck muss ein Coverfoto hochgeladen werden")
         }
         if (getGeoCoordinates().isNullOrEmpty()) {
-            addValidation(CodeValidationLevel.WARNING, "Koordinaten der Immobilie fehlen")
+            addValidation(CodeValidationLevelEnum.WARNING, "Koordinaten der Immobilie fehlen")
         }
         if (getInsuredValue() == null || getInsuredValue() == BigDecimal.ZERO) {
-            addValidation(CodeValidationLevel.ERROR, "Versicherungswert muss erfasst werden")
+            addValidation(CodeValidationLevelEnum.ERROR, "Versicherungswert muss erfasst werden")
         }
         if (getInsuredValueYear() == null) {
-            addValidation(CodeValidationLevel.ERROR, "Jahr der Bestimmung des Versicherungswerts muss erfasst werden")
+            addValidation(CodeValidationLevelEnum.ERROR, "Jahr der Bestimmung des Versicherungswerts muss erfasst werden")
         }
         val currentRating = getCurrentRating()
         if (currentRating == null) {
-            addValidation(CodeValidationLevel.ERROR, "Es fehlt eine Zustandsbewertung")
+            addValidation(CodeValidationLevelEnum.ERROR, "Es fehlt eine Zustandsbewertung")
         } else {
             if (currentRating.ratingDate == null) {
-                addValidation(CodeValidationLevel.ERROR, "Datum der Zustandsbewertung muss erfasst werden")
+                addValidation(CodeValidationLevelEnum.ERROR, "Datum der Zustandsbewertung muss erfasst werden")
             }
             if (currentRating.elementWeights != 100) {
-                addValidation(CodeValidationLevel.ERROR, "Summe der Bauteilanteile muss 100% sein (ist ${currentRating.elementWeights}%)")
+                addValidation(CodeValidationLevelEnum.ERROR, "Summe der Bauteilanteile muss 100% sein (ist ${currentRating.elementWeights}%)")
             }
             for (element in currentRating.elementList) {
                 if (element.weight != null && element.weight != 0) {
                     if (element.condition == null || element.condition == 0) {
-                        addValidation(CodeValidationLevel.ERROR, "Zustand für Element [${element.buildingPart?.name}] muss erfasst werden")
+                        addValidation(CodeValidationLevelEnum.ERROR, "Zustand für Element [${element.buildingPart?.name}] muss erfasst werden")
                     } else if (element.ratingYear == null || element.ratingYear!! < 1800) {
-                        addValidation(CodeValidationLevel.ERROR, "Jahr der Zustandsbewertung für Element [${element.buildingPart?.name}] muss erfasst werden")
+                        addValidation(CodeValidationLevelEnum.ERROR, "Jahr der Zustandsbewertung für Element [${element.buildingPart?.name}] muss erfasst werden")
                     }
                 }
             }
         }
     }
 
-    override fun doCalcSearch() {
-        super.doCalcSearch()
-        addSearchText(getZip())
-        addSearchText(getBuildingNr())
-        addSearchText(getInsuranceNr())
-        addSearchText(getPlotNr())
-        addSearchText(getNationalBuildingId())
-        addSearchText(getName())
-        addSearchText(getStreet())
-        addSearchText(getCity())
-        addSearchText(getBuildingType()?.name)
-        addSearchText(getBuildingSubType()?.name)
-        addSearchText(getCurrentRating()?.partCatalog?.name)
-        addSearchText(getDescription())
-    }
+    // override fun doCalcSearch() {
+    //     super.doCalcSearch()
+    //     addSearchText(getZip())
+    //     addSearchText(getBuildingNr())
+    //     addSearchText(getInsuranceNr())
+    //     addSearchText(getPlotNr())
+    //     addSearchText(getNationalBuildingId())
+    //     addSearchText(getName())
+    //     addSearchText(getStreet())
+    //     addSearchText(getCity())
+    //     addSearchText(getBuildingType()?.name)
+    //     addSearchText(getBuildingSubType()?.name)
+    //     addSearchText(getCurrentRating()?.partCatalog?.name)
+    //     addSearchText(getDescription())
+    // }
 
     private fun addCoverFoto() {
         val documentRepo = getRepository().documentRepository
@@ -446,18 +447,18 @@ abstract class ObjBuildingBase(
         return _ratingList.parts.find { it.id == ratingId }
     }
 
-    override fun getContactSet(): Set<Int> = _contactSet.ids.mapNotNull { it as? Int }.toSet()
+    override fun getContactSet(): Set<Int> = _contactSet.items.mapNotNull { it as? Int }.toSet()
 
     override fun clearContactSet() {
-        _contactSet.clearIds()
+        _contactSet.clearItems()
     }
 
     override fun addContact(contactId: Int?) {
-        _contactSet.addId(contactId)
+        _contactSet.addItem(contactId)
     }
 
     override fun removeContact(contactId: Int?) {
-        _contactSet.removeId(contactId)
+        _contactSet.removeItem(contactId)
     }
 
     override fun getTasks(): List<DocTask> = taskRepository().getByForeignKey("related_obj_id", id)

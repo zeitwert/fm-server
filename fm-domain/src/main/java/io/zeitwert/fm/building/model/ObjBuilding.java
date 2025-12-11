@@ -1,10 +1,12 @@
 package io.zeitwert.fm.building.model;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
 import io.dddrive.core.obj.model.Obj;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -17,12 +19,6 @@ import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.task.model.ItemWithTasks;
 
 public interface ObjBuilding extends Obj, ItemWithAccount, ItemWithNotes, ItemWithTasks {
-
-	@Override
-	Integer getAccountId();
-
-	@Override
-	void setAccountId(Integer id);
 
 	@Override
 	ObjAccount getAccount();
@@ -159,7 +155,7 @@ public interface ObjBuilding extends Obj, ItemWithAccount, ItemWithNotes, ItemWi
 
 	ObjBuildingPartRating getRatingById(Integer ratingId);
 
-	ObjBuildingPartRating addRating();
+	ObjBuildingPartRating addRating(ObjUserFM user, OffsetDateTime timestamp);
 
 	void removeRating(Integer ratingId);
 

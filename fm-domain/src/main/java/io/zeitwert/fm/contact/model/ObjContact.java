@@ -19,12 +19,6 @@ import io.zeitwert.fm.contact.model.enums.CodeTitle;
 public interface ObjContact extends Obj, ItemWithAccount, ItemWithNotes {
 
 	@Override
-	Integer getAccountId();
-
-	@Override
-	void setAccountId(Integer id);
-
-	@Override
 	ObjAccount getAccount();
 
 	CodeContactRole getContactRole();

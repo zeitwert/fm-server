@@ -37,25 +37,25 @@ abstract class ObjAccountBase(
         return super.getRepository() as ObjAccountRepository
     }
 
-    override fun doAfterCreate() {
-        super.doAfterCreate()
+    override fun doAfterCreate(userId: Any?, timestamp: java.time.OffsetDateTime?) {
+        super.doAfterCreate(userId, timestamp)
         check(this.id != null) { "id must not be null after create" }
         this.accountId = this.id as Int
-        this.addLogoImage()
+        this.addLogoImage(userId, timestamp)
     }
 
-    override fun doBeforeStore() {
-        super.doBeforeStore()
+    override fun doBeforeStore(userId: Any?, timestamp: java.time.OffsetDateTime?) {
+        super.doBeforeStore(userId, timestamp)
         if (this.getLogoImageId() == null) {
-            this.addLogoImage()
+            this.addLogoImage(userId, timestamp)
         }
     }
 
-    override fun doCalcSearch() {
-        super.doCalcSearch()
-        this.addSearchText(this.name)
-        this.addSearchText(this.description)
-    }
+    // override fun doCalcSearch() {
+    //     super.doCalcSearch()
+    //     this.addSearchText(this.name)
+    //     this.addSearchText(this.description)
+    // }
 
     override fun doCalcAll() {
         super.doCalcAll()
@@ -66,14 +66,14 @@ abstract class ObjAccountBase(
         this.caption.value = this.name
     }
 
-    private fun addLogoImage() {
+    private fun addLogoImage(userId: Any?, timestamp: java.time.OffsetDateTime?) {
         val documentRepo = this.getRepository().documentRepository
-        val image = documentRepo.create(this.tenantId as Int)
+        val image = documentRepo.create(this.tenantId, userId, timestamp)
         image.name = "Logo"
         image.contentKind = CodeContentKind.getContentKind("foto")
         image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
         image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
-        documentRepo.store(image)
+        documentRepo.store(image, userId, timestamp)
         _logoImage.id = image.id
     }
 

@@ -112,7 +112,7 @@ abstract class ObjPortfolioBase(
     private fun hasValidObjType(id: Int?): Boolean {
         if (id == null) return false
         val obj = getRepository().get(id)
-        val objType = obj?.meta?.aggregateType
+        val objType = obj?.meta?.repository?.aggregateType
         return OBJ_TYPES.contains(objType)
     }
 
@@ -157,7 +157,7 @@ abstract class ObjPortfolioBase(
     }
 
     private fun getBuildingIds(id: Int): Set<Int> {
-        val objType = getRepository().get(id)?.meta?.aggregateType
+        val objType = getRepository().get(id)?.meta?.repository?.aggregateType
         return when (objType?.id) {
             "obj_building" -> setOf(id)
             "obj_portfolio" -> {
@@ -174,12 +174,12 @@ abstract class ObjPortfolioBase(
         }
     }
 
-    override fun doCalcSearch() {
-        super.doCalcSearch()
-        this.addSearchToken(this.portfolioNr)
-        this.addSearchText(this.name)
-        this.addSearchText(this.description)
-    }
+    // override fun doCalcSearch() {
+    //     super.doCalcSearch()
+    //     this.addSearchToken(this.portfolioNr)
+    //     this.addSearchText(this.name)
+    //     this.addSearchText(this.description)
+    // }
 
     override fun getTasks(): List<DocTask> = taskRepository().getByForeignKey("related_obj_id", id)
 

@@ -13,6 +13,7 @@ import io.zeitwert.fm.obj.model.base.FMObjCoreBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
+import java.time.OffsetDateTime
 
 abstract class ObjUserFMBase(
     repository: ObjUserFMRepository
@@ -40,26 +41,26 @@ abstract class ObjUserFMBase(
         this.caption.value = _name.value ?: "User"
     }
 
-    override fun doAfterCreate() {
-        super.doAfterCreate()
-        this.addAvatarImage()
+    override fun doAfterCreate(userId: Any?, timestamp: OffsetDateTime?) {
+        super.doAfterCreate(userId, timestamp)
+        this.addAvatarImage(userId, timestamp)
     }
 
-    override fun doBeforeStore() {
-        super.doBeforeStore()
+    override fun doBeforeStore(userId: Any?, timestamp: OffsetDateTime?) {
+        super.doBeforeStore(userId, timestamp)
         if (this.getAvatarImageId() == null) {
-            this.addAvatarImage()
+            this.addAvatarImage(userId, timestamp)
         }
     }
 
-    private fun addAvatarImage() {
+    private fun addAvatarImage(userId: Any?, timestamp: OffsetDateTime?) {
         val documentRepo = this.getRepository().documentRepository
-        val image = documentRepo.create(this.tenantId as Int)
+        val image = documentRepo.create(this.tenantId, userId, timestamp)
         image.name = "Avatar"
         image.contentKind = CodeContentKind.getContentKind("foto")
         image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
         image.documentCategory = CodeDocumentCategory.getDocumentCategory("avatar")
-        documentRepo.store(image)
+        documentRepo.store(image, userId, timestamp)
         _avatarImage.id = image.id
     }
 

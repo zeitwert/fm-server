@@ -11,6 +11,8 @@ public interface Part<A extends Aggregate> extends EntityWithProperties {
 
 	Integer getId();
 
+	PartMeta<A> getMeta();
+
 	/**
 	 * Calculate all the derived fields, typically after a field change.
 	 */

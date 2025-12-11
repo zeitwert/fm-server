@@ -59,6 +59,11 @@ public abstract class PartBase<A extends Aggregate>
 	}
 
 	@Override
+	public PartMeta<A> getMeta() {
+		return this;
+	}
+
+	@Override
 	public boolean isInLoad() {
 		return this.getAggregate().getMeta().isInLoad();
 	}

@@ -1,5 +1,7 @@
 package io.zeitwert.fm.dms.model;
 
+import java.time.OffsetDateTime;
+
 import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
@@ -37,6 +39,6 @@ public interface ObjDocument extends Obj, ItemWithAccount, ItemWithNotes, ItemWi
 
 	byte[] getContent();
 
-	void storeContent(CodeContentType contentType, byte[] content);
+	void storeContent(CodeContentType contentType, byte[] content, Object userId, OffsetDateTime timestamp);
 
 }

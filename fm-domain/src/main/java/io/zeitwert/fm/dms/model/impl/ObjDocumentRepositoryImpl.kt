@@ -9,9 +9,11 @@ import io.zeitwert.fm.dms.model.base.ObjDocumentBase
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.persist.jooq.ObjDocumentPersistenceProvider
 import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.oe.model.ObjUserFM
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
+import java.time.OffsetDateTime
 
 @Component("objDocumentRepository")
 class ObjDocumentRepositoryImpl : FMObjCoreRepositoryBase<ObjDocument>(
@@ -48,9 +50,9 @@ class ObjDocumentRepositoryImpl : FMObjCoreRepositoryBase<ObjDocument>(
         return persistenceProvider.getContentType(document)
     }
 
-    override fun storeContent(document: ObjDocument, contentType: CodeContentType?, content: ByteArray?) {
+    override fun storeContent(document: ObjDocument, contentType: CodeContentType?, content: ByteArray?, userId: Any, timestamp: OffsetDateTime) {
         persistenceProvider.storeContent(document, contentType, content)
-        this.store(document)
+        this.store(document, directory.getRepository(ObjUserFM::class.java).get(userId), timestamp)
     }
 
     companion object {

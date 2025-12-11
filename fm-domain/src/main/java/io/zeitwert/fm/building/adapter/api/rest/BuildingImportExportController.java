@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import jakarta.servlet.ServletException;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class BuildingImportExportController {
 	private ObjBuildingRepository buildingRepo;
 
 	@Autowired
-	private ObjUserCache userCache;
+	private ObjUserFMRepository userRepo;
 
 	@Autowired
 	private ObjNoteRepository noteRepo;
@@ -199,15 +200,16 @@ public class BuildingImportExportController {
 		try {
 			building.getMeta().disableCalc();
 
-			building.setOwner((ObjUserFM) this.requestCtx.getUser());
+			ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
+			OffsetDateTime now = this.requestCtx.getCurrentTime();
+			building.setOwner(user);
 			building.setName(dto.getName());
 			building.setDescription(dto.getDescription());
 			building.setBuildingNr(dto.getBuildingNr());
 			building.setInsuranceNr(dto.getBuildingInsuranceNr());
 			building.setPlotNr(dto.getPlotNr());
 			building.setNationalBuildingId(dto.getNationalBuildingId());
-			building
-					.setHistoricPreservation(CodeHistoricPreservation.getHistoricPreservation(dto.getHistoricPreservation()));
+			building.setHistoricPreservation(CodeHistoricPreservation.getHistoricPreservation(dto.getHistoricPreservation()));
 			building.setStreet(dto.getStreet());
 			building.setZip(dto.getZip());
 			building.setCity(dto.getCity());
@@ -232,14 +234,14 @@ public class BuildingImportExportController {
 			building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
 			final ObjBuildingPartRating rating = building.getCurrentRating() != null
 					? building.getCurrentRating()
-					: building.addRating();
+					: building.addRating(user, now);
 			rating.setPartCatalog(CodeBuildingPartCatalog.getPartCatalog(dto.getBuildingPartCatalog()));
 			rating.setMaintenanceStrategy(
 					CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
 			rating.setRatingStatus(CodeBuildingRatingStatus.getRatingStatus(dto.getRatingStatus()));
 			rating.setRatingDate(dto.getRatingDate());
 			rating.setRatingUser(dto.getRatingUser() != null
-					? (ObjUserFM) this.userCache.getByEmail(dto.getRatingUser()).get()
+					? this.userRepo.getByEmail(dto.getRatingUser()).get()
 					: null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {

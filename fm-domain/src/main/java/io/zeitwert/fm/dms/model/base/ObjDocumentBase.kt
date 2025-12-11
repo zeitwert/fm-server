@@ -14,6 +14,7 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjCoreBase
 import io.zeitwert.fm.task.model.DocTask
 import org.slf4j.LoggerFactory
+import java.time.OffsetDateTime
 
 abstract class ObjDocumentBase(
     repository: ObjDocumentRepository
@@ -40,24 +41,24 @@ abstract class ObjDocumentBase(
     }
 
     override fun getAccount(): ObjAccount? {
-        return this.getRepository().getAccountRepository()?.get(this.accountId)
+        return this.repository.directory.getRepository(ObjAccount::class.java).get(this.accountId)
     }
 
     override fun getContentType(): CodeContentType? = _contentType
 
     override fun getContent(): ByteArray? = _content
 
-    override fun storeContent(contentType: CodeContentType?, content: ByteArray?) {
-        this.getRepository().storeContent(this, contentType, content)
+    override fun storeContent(contentType: CodeContentType?, content: ByteArray?, userId: Any?, timestamp: OffsetDateTime?) {
+        this.getRepository().storeContent(this, contentType, content, userId, timestamp)
         this._contentType = contentType
         this._content = content
         this.calcAll()
     }
 
-    override fun doCalcSearch() {
-        super.doCalcSearch()
-        this.addSearchText(this.name)
-    }
+    // override fun doCalcSearch() {
+    //     super.doCalcSearch()
+    //     this.addSearchText(this.name)
+    // }
 
     override fun doAfterStore() {
         super.doAfterStore()
