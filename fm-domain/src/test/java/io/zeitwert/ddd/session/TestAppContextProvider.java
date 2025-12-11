@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import io.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.app.service.api.base.AppContextBase;
 

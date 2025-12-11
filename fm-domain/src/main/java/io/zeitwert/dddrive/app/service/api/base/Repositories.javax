@@ -1,0 +1,40 @@
+
+package io.zeitwert.dddrive.app.service.api.base;
+
+import static io.dddrive.util.Invariant.assertThis;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.AggregateRepository;
+import io.dddrive.ddd.model.Part;
+import io.dddrive.ddd.model.PartRepository;
+
+class Repositories {
+
+	private Map<Class<? extends Aggregate>, AggregateRepository<?, ?>> repoByIntf = new HashMap<>();
+	private Map<Class<? extends Part<?>>, PartRepository<?, ?>> partRepoByIntf = new HashMap<>();
+
+	public void addRepository(Class<? extends Aggregate> intfClass, AggregateRepository<?, ?> repo) {
+		assertThis(this.getRepository(intfClass) == null, "unique repo for class " + intfClass);
+		this.repoByIntf.put(intfClass, repo);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <A extends Aggregate> AggregateRepository<A, ?> getRepository(Class<A> intfClass) {
+		return (AggregateRepository<A, ?>) this.repoByIntf.get(intfClass);
+	}
+
+	public void addPartRepository(Class<? extends Part<?>> intfClass, PartRepository<?, ?> repo) {
+		assertThis(this.getPartRepository(intfClass) == null, "unique repo for class " + intfClass);
+		this.partRepoByIntf.put(intfClass, repo);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <A extends Aggregate, P extends Part<A>> PartRepository<A, P> getPartRepository(
+			Class<? extends Part<?>> intfClass) {
+		return (PartRepository<A, P>) this.partRepoByIntf.get(intfClass);
+	}
+
+}

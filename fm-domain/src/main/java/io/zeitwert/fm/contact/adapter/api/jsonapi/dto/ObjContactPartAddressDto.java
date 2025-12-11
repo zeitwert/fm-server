@@ -9,7 +9,7 @@ import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannelEnum;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 
 @Data()

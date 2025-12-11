@@ -13,7 +13,7 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.impl.ObjBuildingDtoAdapter;
 import io.zeitwert.fm.building.model.ObjBuilding;

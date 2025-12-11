@@ -22,7 +22,7 @@ import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.doc.model.enums.CodeCaseStage;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.dddrive.util.Formatter;

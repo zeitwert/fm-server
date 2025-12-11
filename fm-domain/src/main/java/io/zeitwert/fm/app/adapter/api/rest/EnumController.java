@@ -17,7 +17,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.app.service.api.AppContext;
 import io.dddrive.doc.model.enums.CodeCaseStage;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.enums.model.Enumerated;
 import io.dddrive.enums.model.Enumeration;
 import io.dddrive.oe.model.ObjTenant;

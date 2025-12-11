@@ -16,7 +16,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import io.crnk.core.queryspec.FilterSpec;
-import io.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.search.adapter.api.rest.dto;
 
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.search.model.SearchResult;
 import lombok.Builder;
 import lombok.Data;

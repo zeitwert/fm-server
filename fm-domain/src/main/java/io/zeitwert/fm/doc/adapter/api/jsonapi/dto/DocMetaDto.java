@@ -2,8 +2,8 @@ package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import java.util.List;
 
-import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

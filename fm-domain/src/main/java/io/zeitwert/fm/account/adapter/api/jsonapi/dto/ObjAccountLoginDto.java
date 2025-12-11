@@ -4,7 +4,7 @@ package io.zeitwert.fm.account.adapter.api.jsonapi.dto;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;

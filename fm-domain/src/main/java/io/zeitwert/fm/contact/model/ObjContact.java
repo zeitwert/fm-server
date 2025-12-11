@@ -12,11 +12,9 @@ import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
-// TODO-MIGRATION: Task - uncomment after Task is migrated
-// import io.zeitwert.fm.task.model.ItemWithTasks;
+import io.zeitwert.fm.task.model.ItemWithTasks;
 
-// TODO-MIGRATION: Task - add "ItemWithTasks" after Task is migrated
-public interface ObjContact extends Obj, ItemWithAccount, ItemWithNotes {
+public interface ObjContact extends Obj, ItemWithAccount, ItemWithNotes, ItemWithTasks {
 
 	@Override
 	ObjAccount getAccount();

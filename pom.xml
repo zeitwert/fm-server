@@ -43,7 +43,6 @@
 		<maven.dependency.version>3.7.0</maven.dependency.version>
 		<maven.versions.version>2.17.0</maven.versions.version>
 		<!-- Dependencies -->
-		<dddrive.version>1.0.18</dddrive.version>
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<flyway.version>10.21.0</flyway.version>
 		<jooq-codegen.version>3.19.8</jooq-codegen.version>
@@ -104,13 +103,6 @@
 				<groupId>io.zeitwert</groupId>
 				<artifactId>fm-ui</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-
-			<!-- External DDDrive (to be replaced with fm-dddrive in Phase 2) -->
-			<dependency>
-				<groupId>io.zeitwert</groupId>
-				<artifactId>dddrive</artifactId>
-				<version>${dddrive.version}</version>
 			</dependency>
 
 			<!-- Kotlin -->

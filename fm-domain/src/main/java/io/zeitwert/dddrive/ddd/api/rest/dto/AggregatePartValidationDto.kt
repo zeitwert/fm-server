@@ -1,0 +1,19 @@
+package io.zeitwert.dddrive.ddd.api.rest.dto
+
+import io.dddrive.core.validation.model.AggregatePartValidation
+
+data class AggregatePartValidationDto(
+	val seqNr: Int?,
+	val validationLevel: EnumeratedDto?,
+	val validation: String,
+) {
+	companion object {
+		@JvmStatic
+		fun fromValidation(validation: AggregatePartValidation): AggregatePartValidationDto =
+			AggregatePartValidationDto(
+				validation.seqNr,
+				EnumeratedDto.of(validation.validationLevel),
+				validation.message,
+			)
+	}
+}

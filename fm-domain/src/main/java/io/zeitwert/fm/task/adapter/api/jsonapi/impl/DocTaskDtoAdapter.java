@@ -1,9 +1,5 @@
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
-// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
-// This DTO adapter uses OLD dddrive base classes. Will be replaced with REST response mapping in Phase 3.
-
-/*
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;
@@ -16,7 +12,7 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 
 @Component("docTaskDtoAdapter")
 public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord, DocTaskDto> {
@@ -93,4 +89,3 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 	}
 
 }
-*/

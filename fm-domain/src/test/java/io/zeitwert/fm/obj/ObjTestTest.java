@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
 

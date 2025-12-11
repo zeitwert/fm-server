@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import io.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 import io.zeitwert.fm.oe.model.ObjUserFM;

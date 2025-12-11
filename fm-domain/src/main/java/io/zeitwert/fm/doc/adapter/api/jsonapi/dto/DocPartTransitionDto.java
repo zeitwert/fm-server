@@ -3,7 +3,7 @@ package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import io.dddrive.doc.model.DocPartTransition;
 import io.dddrive.doc.model.enums.CodeCaseStage;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Builder;
 import lombok.Data;
 

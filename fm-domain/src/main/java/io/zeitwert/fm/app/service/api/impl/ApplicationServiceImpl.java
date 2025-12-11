@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import io.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationArea;

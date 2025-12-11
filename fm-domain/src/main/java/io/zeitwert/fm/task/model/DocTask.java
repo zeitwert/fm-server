@@ -4,10 +4,11 @@ import java.time.OffsetDateTime;
 
 import io.dddrive.core.ddd.model.Aggregate;
 import io.dddrive.core.doc.model.Doc;
+import io.zeitwert.fm.account.model.ItemWithAccount;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 
-public interface DocTask extends Doc {
+public interface DocTask extends Doc, ItemWithAccount {
 
 	Integer getRelatedToId();
 

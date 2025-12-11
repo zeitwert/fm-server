@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.obj.model.Obj;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;

@@ -1,0 +1,30 @@
+
+package io.zeitwert.dddrive.app.service.api;
+
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.AggregateRepository;
+import io.dddrive.ddd.model.Part;
+import io.dddrive.ddd.model.PartRepository;
+import io.dddrive.ddd.service.api.AggregateCache;
+import io.dddrive.enums.model.Enumerated;
+import io.dddrive.enums.model.Enumeration;
+
+public interface AppContextSPI {
+
+	void addRepository(
+			Class<? extends Aggregate> intfClass,
+			AggregateRepository<? extends Aggregate, ? extends Object> repo);
+
+	void addCache(
+			Class<? extends Aggregate> intfClass,
+			AggregateCache<? extends Aggregate> cache);
+
+	<A extends Aggregate> void addPartRepository(
+			Class<? extends Part<A>> intfClass,
+			PartRepository<A, ? extends Part<A>> repo);
+
+	<E extends Enumerated> void addEnumeration(
+			Class<E> enumClass,
+			Enumeration<E> enumeration);
+
+}

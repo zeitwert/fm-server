@@ -5,12 +5,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import io.dddrive.app.model.RequestContext;
-import io.dddrive.app.service.api.base.AppContextBase;
-import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.service.api.ObjUserCache;
+import io.dddrive.core.oe.model.ObjUser;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.service.api.base.AppContextBase;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
-import io.zeitwert.fm.oe.model.enums.CodeLocaleEnum;
+import io.zeitwert.fm.oe.model.enums.CodeLocale;
 
 @Service("appContext")
 @Profile({ "dev", "staging", "prod" })
@@ -39,7 +38,7 @@ public class AppContextImpl extends AppContextBase {
 		this.kernelRequestContext = RequestContextFMImpl.builder()
 				.tenantId(user.getTenantId())
 				.user(user)
-				.locale(CodeLocaleEnum.getLocale("en-US"))
+				.locale(CodeLocale.EN_US)
 				.accountId(null)
 				.build();
 	}

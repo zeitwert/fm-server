@@ -1,9 +1,5 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-// TODO-MIGRATION: Phase 3 - restore adapter layer after REST API migration
-// This file is commented out during OE domain migration (Phase 2b)
-
-/*
 import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +7,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
@@ -121,4 +117,3 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 	}
 
 }
-*/

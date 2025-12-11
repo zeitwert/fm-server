@@ -4,7 +4,7 @@ package io.zeitwert.fm.contact.adapter.api.jsonapi.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.service.api.ObjAccountCache;

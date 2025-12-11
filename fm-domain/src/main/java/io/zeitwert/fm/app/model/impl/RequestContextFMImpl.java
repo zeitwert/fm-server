@@ -1,6 +1,6 @@
 package io.zeitwert.fm.app.model.impl;
 
-import io.dddrive.app.model.base.RequestContextBase;
+import io.zeitwert.dddrive.app.model.base.RequestContextBase;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 import lombok.Data;

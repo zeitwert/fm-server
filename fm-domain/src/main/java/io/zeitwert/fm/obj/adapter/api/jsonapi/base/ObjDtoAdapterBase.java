@@ -1,10 +1,10 @@
 
 package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
 
-import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
-import io.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.obj.model.Obj;
 import io.dddrive.obj.model.ObjMeta;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;

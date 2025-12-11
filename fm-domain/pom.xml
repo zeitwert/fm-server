@@ -28,12 +28,6 @@
 			<artifactId>fm-dddrive</artifactId>
 		</dependency>
 
-		<!-- External DDDrive (io.dddrive.* - old, kept for coexistence during migration) -->
-		<dependency>
-			<groupId>io.zeitwert</groupId>
-			<artifactId>dddrive</artifactId>
-		</dependency>
-
 		<!-- Kotlin -->
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>

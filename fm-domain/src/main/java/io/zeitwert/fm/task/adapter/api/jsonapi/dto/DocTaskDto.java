@@ -1,9 +1,5 @@
 package io.zeitwert.fm.task.adapter.api.jsonapi.dto;
 
-// TODO-MIGRATION: REST-API - remove after Phase 3 (REST API migration)
-// This JSON:API DTO uses Crnk framework. Will be replaced with REST response DTO in Phase 3.
-
-/*
 import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +9,7 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.dddrive.enums.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.fm.task.adapter.api.jsonapi.impl.DocTaskDtoAdapter;
@@ -79,4 +75,3 @@ public class DocTaskDto extends DocDtoBase<DocTask> {
 	private OffsetDateTime remindAt;
 
 }
-*/

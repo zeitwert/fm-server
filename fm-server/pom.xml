@@ -27,12 +27,6 @@
 			<artifactId>fm-domain</artifactId>
 		</dependency>
 
-		<!-- External DDDrive (to be replaced with fm-dddrive in Phase 2) -->
-		<dependency>
-			<groupId>io.zeitwert</groupId>
-			<artifactId>dddrive</artifactId>
-		</dependency>
-
 		<!-- Crnk JSON:API -->
 		<dependency>
 			<groupId>io.crnk</groupId>
