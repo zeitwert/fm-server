@@ -1,24 +1,21 @@
-
 package io.zeitwert.fm.obj;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -40,13 +37,14 @@ public class ObjTestTest {
 	@Test
 	public void testAggregate() throws Exception {
 
-		assertTrue(this.testRepository != null, "objTestRepository not null");
+		assertNotNull(this.testRepository, "objTestRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		// Timestamp for new dddrive signatures (userId can be null for test)
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
 
-		ObjTest testA1 = this.testRepository.create(this.requestCtx.getTenantId(), null, timestamp);
+		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
 		assertNotNull(testA1.getTenantId(), "tenant not null");
@@ -60,7 +58,7 @@ public class ObjTestTest {
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
 
-		this.testRepository.store(testA1, null, timestamp);
+		this.testRepository.store(testA1, userId, now);
 		testA1 = null;
 
 		ObjTest testA2 = this.testRepository.get(testA_id);
@@ -77,14 +75,15 @@ public class ObjTestTest {
 	@Test
 	public void testAggregateProperties() throws Exception {
 
-		// Timestamp for new dddrive signatures (userId can be null for test)
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
 
 		CodeTestType typeA = CodeTestType.getTestType(TYPE_A);
 		CodeTestType typeB = CodeTestType.getTestType(TYPE_B);
 		CodeTestType typeC = CodeTestType.getTestType(TYPE_C);
 
-		ObjTest testA1 = this.testRepository.create(this.requestCtx.getTenantId(), null, timestamp);
+		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
 		Object testA_id = testA1.getId();
 		this.initObjTest(testA1, "One", TYPE_A);
 
@@ -100,10 +99,10 @@ public class ObjTestTest {
 		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.getJson()));
 		assertEquals(typeA, testA1.getTestType());
 
-		ObjTest testB1 = this.testRepository.create(this.requestCtx.getTenantId(), null, timestamp);
+		ObjTest testB1 = this.testRepository.create(tenantId, userId, now);
 		this.initObjTest(testB1, "Two", TYPE_B);
 		Object testB_id = testB1.getId();
-		this.testRepository.store(testB1, null, timestamp);
+		this.testRepository.store(testB1, userId, now);
 
 		testA1.setRefTestId((Integer) testB_id);
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", testA1.getCaption());
@@ -123,7 +122,7 @@ public class ObjTestTest {
 		assertTrue(testA1.hasTestType(typeC));
 		assertEquals(2, testA1.getTestTypeSet().size());
 
-		this.testRepository.store(testA1, null, timestamp);
+		this.testRepository.store(testA1, userId, now);
 		testA1 = null;
 
 		ObjTest testA2 = this.testRepository.load(testA_id);

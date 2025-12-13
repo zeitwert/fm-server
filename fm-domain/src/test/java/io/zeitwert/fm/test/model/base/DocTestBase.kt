@@ -7,7 +7,7 @@ import io.dddrive.core.property.model.ReferenceProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.DocTestRepository
@@ -21,10 +21,10 @@ import java.time.LocalDate
  * Base class for DocTest using the NEW dddrive framework.
  */
 abstract class DocTestBase(
-    repository: DocTestRepository
-) : FMDocBase(repository), DocTest {
+	repository: DocTestRepository
+) : FMDocBase(repository), DocTest, AggregateWithNotesMixin {
 
-    //@formatter:off
+	//@formatter:off
     private val _shortText: BaseProperty<String> = this.addBaseProperty("shortText", String::class.java)
     private val _longText: BaseProperty<String> = this.addBaseProperty("longText", String::class.java)
     private val _date: BaseProperty<LocalDate> = this.addBaseProperty("date", LocalDate::class.java)
@@ -38,128 +38,111 @@ abstract class DocTestBase(
     private val _testTypeSet: EnumSetProperty<CodeTestType> = this.addEnumSetProperty("testTypeSet", CodeTestType::class.java)
     //@formatter:on
 
-    override fun getRepository(): DocTestRepository = super.getRepository() as DocTestRepository
+	override fun getRepository(): DocTestRepository = super.getRepository() as DocTestRepository
 
-    override fun doCalcAll() {
-        super.doCalcAll()
-        this.calcCaption()
-    }
+	override fun noteRepository(): ObjNoteRepository = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
-    private fun calcCaption() {
-        val shortTextStr = getShortText() ?: ""
-        val longTextStr = getLongText() ?: ""
-        val refObjSuffix = if (getRefObjId() == null) "" else " (RefObj:${getRefObj()?.getCaption() ?: ""})"
-        val refDocSuffix = if (getRefDocId() == null) "" else " (RefDoc:${getRefDoc()?.getCaption() ?: ""})"
-        this.caption.value = "[$shortTextStr, $longTextStr]$refObjSuffix$refDocSuffix"
-    }
+	override fun aggregate(): DocTest = this
 
-    // Account operations
-    override fun getAccount(): ObjAccount? = repository.directory.getRepository(ObjAccount::class.java).get(accountId)
+	override fun doCalcAll() {
+		super.doCalcAll()
+		this.calcCaption()
+	}
 
-    // DocTest interface implementation
+	private fun calcCaption() {
+		val shortTextStr = getShortText() ?: ""
+		val longTextStr = getLongText() ?: ""
+		val refObjSuffix = if (getRefObjId() == null) "" else " (RefObj:${getRefObj()?.getCaption() ?: ""})"
+		val refDocSuffix = if (getRefDocId() == null) "" else " (RefDoc:${getRefDoc()?.getCaption() ?: ""})"
+		this.caption.value = "[$shortTextStr, $longTextStr]$refObjSuffix$refDocSuffix"
+	}
 
-    override fun getShortText(): String? = _shortText.value
+	// Account operations
+	override fun getAccount(): ObjAccount? = repository.directory.getRepository(ObjAccount::class.java).get(accountId)
 
-    override fun setShortText(shortText: String?) {
-        _shortText.value = shortText
-    }
+	// DocTest interface implementation
 
-    override fun getLongText(): String? = _longText.value
+	override fun getShortText(): String? = _shortText.value
 
-    override fun setLongText(longText: String?) {
-        _longText.value = longText
-    }
+	override fun setShortText(shortText: String?) {
+		_shortText.value = shortText
+	}
 
-    override fun getDate(): LocalDate? = _date.value
+	override fun getLongText(): String? = _longText.value
 
-    override fun setDate(date: LocalDate?) {
-        _date.value = date
-    }
+	override fun setLongText(longText: String?) {
+		_longText.value = longText
+	}
 
-    override fun getInt(): Int? = _int.value
+	override fun getDate(): LocalDate? = _date.value
 
-    override fun setInt(i: Int?) {
-        _int.value = i
-    }
+	override fun setDate(date: LocalDate?) {
+		_date.value = date
+	}
 
-    override fun getIsDone(): Boolean? = _isDone.value
+	override fun getInt(): Int? = _int.value
 
-    override fun setIsDone(isDone: Boolean?) {
-        _isDone.value = isDone
-    }
+	override fun setInt(i: Int?) {
+		_int.value = i
+	}
 
-    override fun getJson(): String? = _json.value?.toString()
+	override fun getIsDone(): Boolean? = _isDone.value
 
-    override fun setJson(json: String?) {
-        _json.value = if (json == null) null else JSON.valueOf(json)
-    }
+	override fun setIsDone(isDone: Boolean?) {
+		_isDone.value = isDone
+	}
 
-    override fun getNr(): BigDecimal? = _nr.value
+	override fun getJson(): String? = _json.value?.toString()
 
-    override fun setNr(nr: BigDecimal?) {
-        _nr.value = nr
-    }
+	override fun setJson(json: String?) {
+		_json.value = if (json == null) null else JSON.valueOf(json)
+	}
 
-    override fun getTestType(): CodeTestType? = _testType.value
+	override fun getNr(): BigDecimal? = _nr.value
 
-    override fun setTestType(testType: CodeTestType?) {
-        _testType.value = testType
-    }
+	override fun setNr(nr: BigDecimal?) {
+		_nr.value = nr
+	}
 
-    fun getTestTypeId(): String? = _testType.value?.id
+	override fun getTestType(): CodeTestType? = _testType.value
 
-    override fun getRefObjId(): Int? = _refObj.id as? Int
+	override fun setTestType(testType: CodeTestType?) {
+		_testType.value = testType
+	}
 
-    override fun setRefObjId(id: Int?) {
-        _refObj.id = id
-    }
+	fun getTestTypeId(): String? = _testType.value?.id
 
-    override fun getRefObj(): ObjTest? = _refObj.value
+	override fun getRefObjId(): Int? = _refObj.id as? Int
 
-    override fun getRefDocId(): Int? = _refDoc.id as? Int
+	override fun setRefObjId(id: Int?) {
+		_refObj.id = id
+	}
 
-    override fun setRefDocId(id: Int?) {
-        _refDoc.id = id
-    }
+	override fun getRefObj(): ObjTest? = _refObj.value
 
-    override fun getRefDoc(): DocTest? = _refDoc.value
+	override fun getRefDocId(): Int? = _refDoc.id as? Int
 
-    // EnumSet operations
-    override fun hasTestType(testType: CodeTestType): Boolean = _testTypeSet.hasItem(testType)
+	override fun setRefDocId(id: Int?) {
+		_refDoc.id = id
+	}
 
-    override fun getTestTypeSet(): MutableSet<CodeTestType> = _testTypeSet.items.toMutableSet()
+	override fun getRefDoc(): DocTest? = _refDoc.value
 
-    override fun clearTestTypeSet() {
-        _testTypeSet.clearItems()
-    }
+	// EnumSet operations
+	override fun hasTestType(testType: CodeTestType): Boolean = _testTypeSet.hasItem(testType)
 
-    override fun addTestType(testType: CodeTestType) {
-        _testTypeSet.addItem(testType)
-    }
+	override fun getTestTypeSet(): MutableSet<CodeTestType> = _testTypeSet.items.toMutableSet()
 
-    override fun removeTestType(testType: CodeTestType) {
-        _testTypeSet.removeItem(testType)
-    }
+	override fun clearTestTypeSet() {
+		_testTypeSet.clearItems()
+	}
 
-    // Note operations (implemented directly, bypassing mixin)
-    private fun noteRepository(): ObjNoteRepository =
-        (getRepository() as io.zeitwert.fm.test.model.impl.DocTestRepositoryImpl).getNoteRepository()
+	override fun addTestType(testType: CodeTestType) {
+		_testTypeSet.addItem(testType)
+	}
 
-    override fun getNotes(): List<ObjNote> {
-        return noteRepository().getByForeignKey("related_to_id", this.id)
-    }
+	override fun removeTestType(testType: CodeTestType) {
+		_testTypeSet.removeItem(testType)
+	}
 
-    override fun addNote(noteType: CodeNoteType): ObjNote {
-        val note = noteRepository().create(this.tenantId, null, null)
-        note.noteType = noteType
-        note.relatedToId = this.id as? Int
-        return note
-    }
-
-    override fun removeNote(noteId: Int?) {
-        if (noteId == null) return
-        val note = noteRepository().load(noteId)
-        check((this.id as? Int) == note.relatedToId) { "Note is not related to this item." }
-        noteRepository().delete(note, null, null)
-    }
 }

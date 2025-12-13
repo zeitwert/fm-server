@@ -2,24 +2,22 @@ package io.zeitwert.fm.test.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 import io.dddrive.core.doc.model.Doc;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.collaboration.model.ObjNote;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 
 /**
  * Test Doc interface using the NEW dddrive framework (io.dddrive.core.*).
- *
+ * <p>
  * Note: getAccountId() and setAccountId() are NOT declared here because
  * they are inherited from FMDocCoreBase (Kotlin property accessors).
  * Declaring them would cause a JVM signature clash with Kotlin.
  * Use ((FMDocCoreBase) docTest).getAccountId() to access this property.
  */
-public interface DocTest extends Doc {
+public interface DocTest extends Doc, ItemWithNotes {
 
 	ObjAccount getAccount();
 
@@ -76,12 +74,5 @@ public interface DocTest extends Doc {
 	void addTestType(CodeTestType testType);
 
 	void removeTestType(CodeTestType testType);
-
-	// Note operations (implemented directly, bypassing mixin)
-	List<ObjNote> getNotes();
-
-	ObjNote addNote(CodeNoteType noteType);
-
-	void removeNote(Integer noteId);
 
 }

@@ -1,26 +1,6 @@
-
 package io.zeitwert.fm.collaboration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-import io.dddrive.core.oe.model.ObjUser;
-import io.zeitwert.fm.collaboration.model.ObjNote;
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
-import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.fm.test.model.enums.CodeTestType;
-import io.zeitwert.test.TestApplication;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,20 +8,30 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.fm.collaboration.model.ObjNote;
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.test.model.ObjTest;
+import io.zeitwert.fm.test.model.ObjTestRepository;
+import io.zeitwert.fm.test.model.enums.CodeTestType;
+import io.zeitwert.test.TestApplication;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
 public class NoteTest {
-
-	private static final String USER_EMAIL = "tt@zeitwert.io";
 
 	@Autowired
 	private RequestContext requestCtx;
 
 	@Autowired
 	private ObjUserFMRepository userRepo;
-
-	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
 	@Autowired
 	private ObjTestRepository testRepo;
@@ -52,16 +42,15 @@ public class NoteTest {
 	@Test
 	public void testNoteList() throws Exception {
 
-		assertTrue(this.testRepo != null, "testRepository not null");
+		assertNotNull(this.testRepo, "testRepository not null");
 		assertEquals("obj_test", this.testRepo.getAggregateType().getId());
 
-		// Get user and timestamp for new dddrive signatures
-		ObjUserFM user = this.userRepo.getByEmail(USER_EMAIL).get();
-		Object userId = user.getId();
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
 
-		ObjTest testA1 = this.testRepo.create(this.requestCtx.getTenantId(), userId, timestamp);
-		this.initObjTest(testA1, "One", user, "type_a");
+		ObjTest testA1 = this.testRepo.create(tenantId, userId, now);
+		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();
 
 		assertEquals(0, testA1.getNotes().size());
@@ -70,19 +59,19 @@ public class NoteTest {
 		// remove 1 note in the middle [1, 2]
 		// store
 		{
-			ObjNote noteA1 = testA1.addNote(CodeNoteType.getNoteType("note"));
+			ObjNote noteA1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteA1, "Subject 1", "Content 1", false);
-			this.noteRepo.store(noteA1, userId, timestamp);
+			this.noteRepo.store(noteA1, userId, now);
 			assertEquals(1, testA1.getNotes().size());
 
-			ObjNote noteB1 = testA1.addNote(CodeNoteType.getNoteType("note"));
+			ObjNote noteB1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteB1, "Subject 2", "Content 2", false);
-			this.noteRepo.store(noteB1, userId, timestamp);
+			this.noteRepo.store(noteB1, userId, now);
 			assertEquals(2, testA1.getNotes().size());
 
-			ObjNote noteC1 = testA1.addNote(CodeNoteType.getNoteType("note"));
+			ObjNote noteC1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteC1, "Subject 3", "Content 3", false);
-			this.noteRepo.store(noteC1, userId, timestamp);
+			this.noteRepo.store(noteC1, userId, now);
 			assertEquals(3, testA1.getNotes().size());
 
 			List<ObjNote> testA1_noteList = testA1.getNotes();
@@ -95,7 +84,7 @@ public class NoteTest {
 					String.join(",", testA1.getNotes().stream().map(n -> n.getSubject()).toList()));
 			assertEquals("Subject 2", testA1.getNotes().get(1).getSubject());
 
-			testA1.removeNote(noteB1.getId());
+			testA1.removeNote(noteB1.getId(), userId);
 			testA1_noteList = testA1.getNotes();
 			assertEquals(2, testA1_noteList.size());
 			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
@@ -103,7 +92,7 @@ public class NoteTest {
 			assertEquals(noteC1.getId(), testA1_noteList.get(1).getId());
 			assertEquals(noteC1.getSubject(), testA1_noteList.get(1).getSubject());
 
-			this.testRepo.store(testA1, userId, timestamp);
+			this.testRepo.store(testA1, userId, now);
 			testA1 = null;
 		}
 
@@ -119,17 +108,17 @@ public class NoteTest {
 			assertEquals("Subject 1,Subject 3", String.join(",", testA2_noteList.stream().map(n -> n.getSubject()).toList()));
 			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
 
-			ObjNote noteD1 = testA2.addNote(CodeNoteType.getNoteType("note"));
+			ObjNote noteD1 = testA2.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteD1, "Subject 4", "Content 4", false);
-			this.noteRepo.store(noteD1, userId, timestamp);
+			this.noteRepo.store(noteD1, userId, now);
 			assertEquals(3, testA2.getNotes().size());
 
 			ObjNote noteC2 = testA2.getNotes().get(1);
 			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
 			noteC2.setIsPrivate(true);
-			this.noteRepo.store(noteC2, userId, timestamp);
+			this.noteRepo.store(noteC2, userId, now);
 
-			this.testRepo.store(testA2, userId, timestamp);
+			this.testRepo.store(testA2, userId, now);
 			testA2 = null;
 		}
 
@@ -158,7 +147,7 @@ public class NoteTest {
 
 	}
 
-	private void initObjTest(ObjTest test, String name, ObjUser user, String testTypeId) {
+	private void initObjTest(ObjTest test, String name, String testTypeId) {
 		assertEquals("[, ]", test.getCaption());
 		test.setShortText("Short Test " + name);
 		assertEquals("[Short Test " + name + ", ]", test.getCaption());

@@ -2,11 +2,16 @@ package io.zeitwert.fm.test.config
 
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
+import io.dddrive.core.ddd.model.enums.CodePartListType
+import io.dddrive.core.ddd.model.enums.CodePartListTypeEnum
+import io.dddrive.core.doc.model.enums.CodeCaseDef
+import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
+import io.dddrive.core.doc.model.enums.CodeCaseStage
+import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
 import io.dddrive.core.enums.model.base.EnumConfigBase
 import io.zeitwert.fm.test.model.enums.CodeTestType
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 /**
@@ -21,23 +26,65 @@ import org.springframework.stereotype.Component
 @Component("testConfig")
 class TestConfig : EnumConfigBase(), InitializingBean {
 
-    @Autowired
-    lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
+	@Autowired
+	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
-    override fun afterPropertiesSet() {
-        try {
-            startConfig()
-            initCodeAggregateType(aggregateTypeEnum)
+	@Autowired
+	lateinit var partListTypeEnum: CodePartListTypeEnum
 
-            // Trigger enum initialization
-            CodeTestType.entries
-        } finally {
-            endConfig()
-        }
-    }
+	@Autowired
+	lateinit var caseDefEnum: CodeCaseDefEnum
 
-    private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-        e.addItem(CodeAggregateType(e, "obj_test", "Test Object"))
-        e.addItem(CodeAggregateType(e, "doc_test", "Test Order"))
-    }
+	@Autowired
+	lateinit var caseStageEnum: CodeCaseStageEnum
+
+	override fun afterPropertiesSet() {
+		try {
+			startConfig()
+			initCodeAggregateType(aggregateTypeEnum)
+			initCodePartListType(partListTypeEnum)
+			initCodeCaseDef(caseDefEnum)
+			initCodeCaseStage(caseStageEnum)
+
+			// Trigger enum initialization
+			CodeTestType.entries
+		} finally {
+			endConfig()
+		}
+	}
+
+	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
+		e.addItem(CodeAggregateType(e, "obj_test", "Test Object"))
+		e.addItem(CodeAggregateType(e, "doc_test", "Test Order"))
+	}
+
+	private fun initCodePartListType(e: CodePartListTypeEnum) {
+		e.addItem(CodePartListType(e, "test.nodeList", "TestNode List"))
+		e.addItem(CodePartListType(e, "test.testTypeSet", "Test Type Set"))
+	}
+
+	private fun initCodeCaseDef(e: CodeCaseDefEnum) {
+		e.addItem(CodeCaseDef(e, "test", "Test Process", "doc_test"))
+	}
+
+	private fun initCodeCaseStage(e: CodeCaseStageEnum) {
+		e.addItem(CodeCaseStage(e, "test.new", "test", "initial", "New", "New", 10, null, null, null))
+		e.addItem(CodeCaseStage(e, "test.open", "test", "intermediate", "Assigned", "Assigned", 20, null, null, null))
+		e.addItem(
+			CodeCaseStage(
+				e,
+				"test.progress",
+				"test",
+				"intermediate",
+				"In Progress",
+				"In Progress",
+				30,
+				null,
+				null,
+				null
+			)
+		)
+		e.addItem(CodeCaseStage(e, "test.done", "test", "terminal", "Done", "Done", 40, null, null, null))
+	}
+
 }

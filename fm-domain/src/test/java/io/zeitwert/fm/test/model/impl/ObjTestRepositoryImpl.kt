@@ -1,12 +1,12 @@
 package io.zeitwert.fm.test.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.test.model.ObjTest
-import io.zeitwert.fm.test.model.ObjTestPartNodeRepository
+import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.ObjTestRepository
 import io.zeitwert.fm.test.model.base.ObjTestBase
+import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase
 import io.zeitwert.fm.test.persist.jooq.ObjTestPersistenceProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -17,42 +17,29 @@ import org.springframework.stereotype.Component
  */
 @Component("objTestRepository")
 class ObjTestRepositoryImpl : FMObjRepositoryBase<ObjTest>(
-    ObjTestRepository::class.java,
-    ObjTest::class.java,
-    ObjTestBase::class.java,
-    AGGREGATE_TYPE_ID
+	ObjTestRepository::class.java,
+	ObjTest::class.java,
+	ObjTestBase::class.java,
+	AGGREGATE_TYPE_ID
 ), ObjTestRepository {
 
-    private lateinit var persistenceProvider: ObjTestPersistenceProvider
-    private lateinit var nodeRepository: ObjTestPartNodeRepository
-    private lateinit var noteRepository: ObjNoteRepository
+	private lateinit var persistenceProvider: ObjTestPersistenceProvider
 
-    @Autowired
-    @Lazy
-    fun setPersistenceProvider(persistenceProvider: ObjTestPersistenceProvider) {
-        this.persistenceProvider = persistenceProvider
-    }
+	@Autowired
+	@Lazy
+	fun setPersistenceProvider(persistenceProvider: ObjTestPersistenceProvider) {
+		this.persistenceProvider = persistenceProvider
+	}
 
-    @Autowired
-    @Lazy
-    fun setNodeRepository(nodeRepository: ObjTestPartNodeRepository) {
-        this.nodeRepository = nodeRepository
-    }
+	override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjTest> = persistenceProvider
 
-    @Autowired
-    @Lazy
-    fun setNoteRepository(noteRepository: ObjNoteRepository) {
-        this.noteRepository = noteRepository
-    }
+	override fun registerParts() {
+		this.addPart(ObjTest::class.java, ObjTestPartNode::class.java, ObjTestPartNodeBase::class.java)
+	}
 
-    override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjTest> = persistenceProvider
+	companion object {
+		private const val AGGREGATE_TYPE_ID = "obj_test"
+	}
 
-    override fun getNodeRepository(): ObjTestPartNodeRepository = nodeRepository
-
-    fun getNoteRepository(): ObjNoteRepository = noteRepository
-
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "obj_test"
-    }
 }
 

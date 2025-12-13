@@ -17,108 +17,117 @@ import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 
 abstract class ObjDocumentBase(
-    repository: ObjDocumentRepository
+	repository: ObjDocumentRepository
 ) : FMObjBase(repository), ObjDocument, AggregateWithNotesMixin {
 
-    override fun aggregate(): ObjDocument = this
+	override fun aggregate(): ObjDocument = this
 
-    private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
-    private val _documentKind: EnumProperty<CodeDocumentKind> = this.addEnumProperty("documentKind", CodeDocumentKind::class.java)
-    private val _documentCategory: EnumProperty<CodeDocumentCategory> = this.addEnumProperty("documentCategory", CodeDocumentCategory::class.java)
-    private val _templateDocument: ReferenceProperty<ObjDocument> = this.addReferenceProperty("templateDocument", ObjDocument::class.java)
-    private val _contentKind: EnumProperty<CodeContentKind> = this.addEnumProperty("contentKind", CodeContentKind::class.java)
+	private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
+	private val _documentKind: EnumProperty<CodeDocumentKind> =
+		this.addEnumProperty("documentKind", CodeDocumentKind::class.java)
+	private val _documentCategory: EnumProperty<CodeDocumentCategory> =
+		this.addEnumProperty("documentCategory", CodeDocumentCategory::class.java)
+	private val _templateDocument: ReferenceProperty<ObjDocument> =
+		this.addReferenceProperty("templateDocument", ObjDocument::class.java)
+	private val _contentKind: EnumProperty<CodeContentKind> =
+		this.addEnumProperty("contentKind", CodeContentKind::class.java)
 
-    private var _contentType: CodeContentType? = null
-    private var _content: ByteArray? = null
+	private var _contentType: CodeContentType? = null
+	private var _content: ByteArray? = null
 
-    override fun getRepository(): ObjDocumentRepository {
-        return super.getRepository() as ObjDocumentRepository
-    }
+	override fun getRepository(): ObjDocumentRepository {
+		return super.getRepository() as ObjDocumentRepository
+	}
 
-    override fun doAfterLoad() {
-        super.doAfterLoad()
-        this.loadContent()
-    }
+	override fun doAfterLoad() {
+		super.doAfterLoad()
+		this.loadContent()
+	}
 
-    override fun getAccount(): ObjAccount? {
-        return this.repository.directory.getRepository(ObjAccount::class.java).get(this.accountId)
-    }
+	override fun getAccount(): ObjAccount? {
+		return directory.getRepository(ObjAccount::class.java).get(this.accountId)
+	}
 
-    override fun getContentType(): CodeContentType? = _contentType
+	override fun getContentType(): CodeContentType? = _contentType
 
-    override fun getContent(): ByteArray? = _content
+	override fun getContent(): ByteArray? = _content
 
-    override fun storeContent(contentType: CodeContentType?, content: ByteArray?, userId: Any?, timestamp: OffsetDateTime?) {
-        this.getRepository().storeContent(this, contentType, content, userId, timestamp)
-        this._contentType = contentType
-        this._content = content
-        this.calcAll()
-    }
+	override fun storeContent(
+		contentType: CodeContentType?,
+		content: ByteArray?,
+		userId: Any?,
+		timestamp: OffsetDateTime?
+	) {
+		this.repository.storeContent(this, contentType, content, userId, timestamp)
+		this._contentType = contentType
+		this._content = content
+		this.calcAll()
+	}
 
-    // override fun doCalcSearch() {
-    //     super.doCalcSearch()
-    //     this.addSearchText(this.name)
-    // }
+	// override fun doCalcSearch() {
+	//     super.doCalcSearch()
+	//     this.addSearchText(this.name)
+	// }
 
-    override fun doAfterStore() {
-        super.doAfterStore()
-        this.loadContent()
-    }
+	override fun doAfterStore() {
+		super.doAfterStore()
+		this.loadContent()
+	}
 
-    private fun loadContent() {
-        this._contentType = this.getRepository().getContentType(this)
-        if (this._contentType != null) {
-            this._content = this.getRepository().getContent(this)
-        }
-    }
+	private fun loadContent() {
+		this._contentType = this.repository.getContentType(this)
+		if (this._contentType != null) {
+			this._content = this.repository.getContent(this)
+		}
+	}
 
-    override fun doCalcAll() {
-        super.doCalcAll()
-        this.calcCaption()
-    }
+	override fun doCalcAll() {
+		super.doCalcAll()
+		this.calcCaption()
+	}
 
-    private fun calcCaption() {
-        this.caption.value = this.name
-    }
+	private fun calcCaption() {
+		this.caption.value = this.name
+	}
 
-    override fun getName(): String? = _name.value
+	override fun getName(): String? = _name.value
 
-    override fun setName(name: String?) {
-        _name.value = name
-    }
+	override fun setName(name: String?) {
+		_name.value = name
+	}
 
-    override fun getContentKind(): CodeContentKind? = _contentKind.value
+	override fun getContentKind(): CodeContentKind? = _contentKind.value
 
-    override fun setContentKind(contentKind: CodeContentKind?) {
-        _contentKind.value = contentKind
-    }
+	override fun setContentKind(contentKind: CodeContentKind?) {
+		_contentKind.value = contentKind
+	}
 
-    override fun getDocumentKind(): CodeDocumentKind? = _documentKind.value
+	override fun getDocumentKind(): CodeDocumentKind? = _documentKind.value
 
-    override fun setDocumentKind(documentKind: CodeDocumentKind?) {
-        _documentKind.value = documentKind
-    }
+	override fun setDocumentKind(documentKind: CodeDocumentKind?) {
+		_documentKind.value = documentKind
+	}
 
-    override fun getDocumentCategory(): CodeDocumentCategory? = _documentCategory.value
+	override fun getDocumentCategory(): CodeDocumentCategory? = _documentCategory.value
 
-    override fun setDocumentCategory(documentCategory: CodeDocumentCategory?) {
-        _documentCategory.value = documentCategory
-    }
+	override fun setDocumentCategory(documentCategory: CodeDocumentCategory?) {
+		_documentCategory.value = documentCategory
+	}
 
-    override fun getTemplateDocumentId(): Int? = _templateDocument.id as? Int
+	override fun getTemplateDocumentId(): Int? = _templateDocument.id as? Int
 
-    override fun setTemplateDocumentId(id: Int?) {
-        _templateDocument.id = id
-    }
+	override fun setTemplateDocumentId(id: Int?) {
+		_templateDocument.id = id
+	}
 
-    override fun getTemplateDocument(): ObjDocument? = _templateDocument.value
+	override fun getTemplateDocument(): ObjDocument? = _templateDocument.value
 
-    override fun getTasks(): List<DocTask> = emptyList()
+	override fun getTasks(): List<DocTask> = emptyList()
 
-    override fun addTask(): DocTask? = null
+	override fun addTask(): DocTask? = null
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(ObjDocumentBase::class.java)
-    }
+	companion object {
+		private val logger = LoggerFactory.getLogger(ObjDocumentBase::class.java)
+	}
 }
 

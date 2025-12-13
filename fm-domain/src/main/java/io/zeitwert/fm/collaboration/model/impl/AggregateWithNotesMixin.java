@@ -19,22 +19,22 @@ public interface AggregateWithNotesMixin extends ItemWithNotes {
 
 	@Override
 	default List<ObjNote> getNotes() {
-		return this.noteRepository().getByForeignKey("relatedToId", this.aggregate().getId());
+		return noteRepository().getByForeignKey("relatedToId", aggregate().getId());
 	}
 
 	@Override
-	default ObjNote addNote(CodeNoteType noteType) {
-		ObjNote note = this.noteRepository().create((Integer) this.aggregate().getTenantId(), null, OffsetDateTime.now());
+	default ObjNote addNote(CodeNoteType noteType, Object userId) {
+		ObjNote note = noteRepository().create(aggregate().getTenantId(), userId, OffsetDateTime.now());
 		note.setNoteType(noteType);
-		note.setRelatedToId(this.aggregate().getId());
+		note.setRelatedToId(aggregate().getId());
 		return note;
 	}
 
 	@Override
-	default void removeNote(Object noteId) {
-		ObjNote note = this.noteRepository().load(noteId);
-		requireThis(this.aggregate().getId().equals(note.getRelatedToId()), "Note is related to this item.");
-		this.noteRepository().delete(note, null, OffsetDateTime.now());
+	default void removeNote(Object noteId, Object userId) {
+		ObjNote note = noteRepository().load(noteId);
+		requireThis(aggregate().getId().equals(note.getRelatedToId()), "Note is related to this item.");
+		noteRepository().delete(note, userId, OffsetDateTime.now());
 	}
 
 }

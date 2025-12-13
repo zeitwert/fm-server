@@ -1,13 +1,14 @@
-
 package io.zeitwert.ddd.part.model.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,15 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
-import io.zeitwert.fm.test.model.ObjTestPartNodeRepository;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -42,16 +37,17 @@ public class PartTest {
 	@Test
 	public void testNodeList() throws Exception {
 
-		assertTrue(this.testRepository != null, "testRepository not null");
+		assertNotNull(this.testRepository, "testRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		ObjTestPartNodeRepository testNodeRepository = testRepository.getNodeRepository();
-		assertTrue(testNodeRepository != null, "testNodeRepository not null");
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
 
-		// Timestamp for new dddrive signatures (userId can be null for test)
-		OffsetDateTime timestamp = OffsetDateTime.now();
+//		ObjTestPartNodeRepository testNodeRepository = testRepository.getNodeRepository();
+//		assertTrue(testNodeRepository != null, "testNodeRepository not null");
 
-		ObjTest testA1 = this.testRepository.create(this.requestCtx.getTenantId(), null, timestamp);
+		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();
 
@@ -78,10 +74,10 @@ public class PartTest {
 				String.join(",", testA1.getNodeList().stream().map(n -> n.getShortText()).toList()));
 		assertEquals("Short Test Node Second", testA1.getNodeList().get(1).getShortText());
 
-		testA1.removeNode((Integer) testA1_n1.getId());
+		testA1.removeNode(testA1_n1.getId());
 		assertEquals(2, testA1.getNodeCount());
 		assertEquals(testA1_n2, testA1.getNode(1));
-		assertEquals(testA1_n2, testA1.getNodeById((Integer) testA1_n2.getId()));
+		assertEquals(testA1_n2, testA1.getNodeById(testA1_n2.getId()));
 		assertEquals(2, testA1.getNodeList().size());
 		assertEquals(testA1_n0.getShortText(), testA1.getNode(0).getShortText());
 		assertEquals(testA1_n2.getShortText(), testA1.getNode(1).getShortText());
@@ -91,7 +87,7 @@ public class PartTest {
 		assertEquals(testA1_n2.getShortText(), testA1_nodeList.get(1).getShortText());
 		assertEquals(testA1_nodeList, List.of(testA1_n0, testA1_n2));
 
-		this.testRepository.store(testA1, null, timestamp);
+		this.testRepository.store(testA1, userId, now);
 		testA1 = null;
 
 		ObjTest testA2 = this.testRepository.load(testA_id);
@@ -105,7 +101,7 @@ public class PartTest {
 		this.initObjTestPartNode(testA2_n2, "Fourth", "type_b");
 		testA2.getNode(1).setInt(43);
 
-		this.testRepository.store(testA2, null, timestamp);
+		this.testRepository.store(testA2, userId, now);
 		testA2 = null;
 
 		ObjTest testA3 = this.testRepository.load(testA_id);

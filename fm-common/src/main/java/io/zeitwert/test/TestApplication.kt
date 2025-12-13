@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 
 @SpringBootApplication(exclude = [CodecsAutoConfiguration::class])
 @EnableAsync
-@ComponentScan("io.zeitwert", "io.dddrive.core")
+@ComponentScan("io.zeitwert")
 @Profile("test", "ci")
 open class TestApplication {
 	companion object {

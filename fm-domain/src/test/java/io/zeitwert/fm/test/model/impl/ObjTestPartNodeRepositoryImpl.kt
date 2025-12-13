@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component
  */
 @Component("testPartNodeRepository")
 class ObjTestPartNodeRepositoryImpl : PartRepositoryBase<ObjTest, ObjTestPartNode>(
-    ObjTest::class.java,
-    ObjTestPartNode::class.java,
-    ObjTestPartNodeBase::class.java
+	ObjTest::class.java,
+	ObjTestPartNode::class.java,
+	ObjTestPartNodeBase::class.java
 ), ObjTestPartNodeRepository
 

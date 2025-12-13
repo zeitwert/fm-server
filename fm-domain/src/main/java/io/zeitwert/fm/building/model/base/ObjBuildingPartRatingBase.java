@@ -4,25 +4,23 @@ import static io.dddrive.util.Invariant.requireThis;
 
 import java.time.LocalDate;
 
-import kotlin.Pair;
-
 import io.dddrive.core.ddd.model.Part;
 import io.dddrive.core.ddd.model.PartRepository;
 import io.dddrive.core.obj.model.base.ObjPartBase;
 import io.dddrive.core.oe.model.ObjUser;
+import io.dddrive.core.property.model.BaseProperty;
 import io.dddrive.core.property.model.EnumProperty;
 import io.dddrive.core.property.model.PartListProperty;
 import io.dddrive.core.property.model.Property;
 import io.dddrive.core.property.model.ReferenceProperty;
-import io.dddrive.core.property.model.BaseProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
-import io.zeitwert.fm.building.model.ObjBuildingPartRatingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
+import kotlin.Pair;
 
 public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		implements ObjBuildingPartRating {
@@ -43,14 +41,18 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	}
 
 	@Override
-	public ObjBuildingPartRatingRepository getRepository() {
-		return (ObjBuildingPartRatingRepository) super.getRepository();
-	}
-
-	@Override
 	public void doAfterCreate() {
 		super.doAfterCreate();
 		this.setRatingStatus(CodeBuildingRatingStatus.OPEN);
+	}
+
+	@Override
+	public Part<?> doAddPart(Property<?> property, Integer partId) {
+		if (property == this.elementList) {
+			PartRepository<ObjBuilding, ?> partRepo = getDirectory().getPartRepository(ObjBuildingPartElementRating.class);
+			return partRepo.create(getAggregate(), property, partId);
+		}
+		return super.doAddPart(property, partId);
 	}
 
 	@Override

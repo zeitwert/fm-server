@@ -1,10 +1,10 @@
-
 package io.zeitwert.fm.dms;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,9 +20,6 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
 import io.zeitwert.test.TestApplication;
-
-import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -50,10 +47,10 @@ public class DocumentTest {
 
 		this.getTestData(tenantId, userId, timestamp);
 
-		assertTrue(this.documentRepository != null, "documentRepository not null");
+		assertNotNull(this.documentRepository, "documentRepository not null");
 		assertEquals("obj_document", this.documentRepository.getAggregateType().getId());
 
-		ObjDocument documentA1 = this.documentRepository.create(tenantId,  userId, timestamp);
+		ObjDocument documentA1 = this.documentRepository.create(tenantId, userId, timestamp);
 
 		assertNotNull(documentA1, "test not null");
 		assertNotNull(documentA1.getId(), "id not null");
@@ -69,7 +66,6 @@ public class DocumentTest {
 		this.checkDocument(documentA1);
 
 		this.documentRepository.store(documentA1, userId, timestamp);
-
 		this.documentRepository.storeContent(documentA1, CodeContentType.PNG, TEST_PNG_CONTENT.getBytes(StandardCharsets.UTF_8), userId, timestamp);
 		assertEquals(CodeContentType.PNG, this.documentRepository.getContentType(documentA1));
 		assertEquals(TEST_PNG_CONTENT, new String(this.documentRepository.getContent(documentA1), StandardCharsets.UTF_8));
@@ -93,7 +89,7 @@ public class DocumentTest {
 		this.checkDocument(documentA2);
 	}
 
-	private void getTestData(Object tenantId, Object userId,  OffsetDateTime timestamp) throws Exception {
+	private void getTestData(Object tenantId, Object userId, OffsetDateTime timestamp) throws Exception {
 		Account = accountRepo.create(tenantId, userId, timestamp);
 		Account.setName("Test HH");
 		Account.setAccountType(CodeAccountType.CLIENT);

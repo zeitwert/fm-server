@@ -1,7 +1,7 @@
-
 package io.zeitwert.fm.portfolio;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,7 @@ public class PortfolioTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.getAll(null).get(0).getId());
+		return this.accountCache.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0).getId());
 	}
 
 }

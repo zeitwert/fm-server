@@ -148,6 +148,10 @@ public abstract class PartBase<A extends Aggregate>
 	}
 
 	@Override
+	public void delete() {
+	}
+
+	@Override
 	public void doAfterRemove(Property<?> property) {
 		this.calcAll();
 	}

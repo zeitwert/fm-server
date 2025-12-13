@@ -1,13 +1,8 @@
-
 package io.zeitwert.fm.building.adapter.api.rest;
 
-import io.dddrive.core.ddd.model.RepositoryDirectory;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
-import jakarta.servlet.ServletException;
-
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.OffsetDateTime;
-
+import io.dddrive.core.ddd.model.RepositoryDirectory;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
@@ -42,7 +36,9 @@ import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
+import jakarta.servlet.ServletException;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/rest/building/buildings")
@@ -50,21 +46,16 @@ public class BuildingImportExportController {
 
 	private static final String AGGREGATE = "zeitwert/building";
 	private static final String VERSION = "1.0";
-
-	@Autowired
-	private RepositoryDirectory directory;
-
-	@Autowired
-	private ObjBuildingRepository buildingRepo;
-
-	@Autowired
-	private ObjUserFMRepository userRepo;
-
-	@Autowired
-	private ObjNoteRepository noteRepo;
-
 	@Autowired
 	RequestContextFM requestCtx;
+	@Autowired
+	private RepositoryDirectory directory;
+	@Autowired
+	private ObjBuildingRepository buildingRepo;
+	@Autowired
+	private ObjUserFMRepository userRepo;
+	@Autowired
+	private ObjNoteRepository noteRepo;
 
 	@GetMapping("/{id}")
 	public ResponseEntity<BuildingTransferDto> exportBuilding(@PathVariable("id") Integer id)
@@ -264,7 +255,7 @@ public class BuildingImportExportController {
 				Object noteUserId = this.requestCtx.getUser().getId();
 				OffsetDateTime noteTimestamp = OffsetDateTime.now();
 				dto.getNotes().forEach((dtoNote) -> {
-					ObjNote note = building.addNote(noteType);
+					ObjNote note = building.addNote(noteType, noteUserId);
 					note.setSubject(dtoNote.getSubject());
 					note.setContent(dtoNote.getContent());
 					note.setIsPrivate(dtoNote.getIsPrivate());

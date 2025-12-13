@@ -20,116 +20,116 @@ import java.time.OffsetDateTime
  */
 abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenceProviderBase<O>() {
 
-    /**
-     * Returns the aggregate type ID for this Obj type (e.g., "obj_contact", "obj_building").
-     */
-    protected abstract fun getAggregateTypeId(): String
+	/**
+	 * Returns the aggregate type ID for this Obj type (e.g., "obj_contact", "obj_building").
+	 */
+	protected abstract fun getAggregateTypeId(): String
 
-    /**
-     * Creates a new ObjRecord populated from the aggregate.
-     */
-    @Suppress("UNCHECKED_CAST")
-    protected fun createObjRecord(aggregate: O): ObjRecord {
-        val record = dslContext().newRecord(Tables.OBJ)
+	/**
+	 * Creates a new ObjRecord populated from the aggregate.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	protected fun createObjRecord(aggregate: O): ObjRecord {
+		val record = dslContext().newRecord(Tables.OBJ)
 
-        // Set base fields
-        record.id = aggregate.getProperty("id")?.let { (it as BaseProperty<Int?>).value }
-        record.objTypeId = getAggregateTypeId()
-        record.tenantId = (aggregate.getProperty("tenant") as? ReferenceProperty<*>)?.id as? Int
-        record.version = (aggregate.getProperty("version") as? BaseProperty<Int?>)?.value ?: 0
-        record.ownerId = (aggregate.getProperty("owner") as? ReferenceProperty<*>)?.id as? Int
-        record.caption = (aggregate.getProperty("caption") as? BaseProperty<String?>)?.value
-        record.createdByUserId = (aggregate.getProperty("createdByUser") as? ReferenceProperty<*>)?.id as? Int
-        record.createdAt = (aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value
-        record.modifiedByUserId = (aggregate.getProperty("modifiedByUser") as? ReferenceProperty<*>)?.id as? Int
-        record.modifiedAt = (aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value
+		// Set base fields
+		record.id = aggregate.getProperty("id")?.let { (it as BaseProperty<Int?>).value }
+		record.objTypeId = getAggregateTypeId()
+		record.tenantId = (aggregate.getProperty("tenant") as? ReferenceProperty<*>)?.id as? Int
+		record.version = (aggregate.getProperty("version") as? BaseProperty<Int?>)?.value ?: 0
+		record.ownerId = (aggregate.getProperty("owner") as? ReferenceProperty<*>)?.id as? Int
+		record.caption = (aggregate.getProperty("caption") as? BaseProperty<String?>)?.value
+		record.createdByUserId = (aggregate.getProperty("createdByUser") as? ReferenceProperty<*>)?.id as? Int
+		record.createdAt = (aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value
+		record.modifiedByUserId = (aggregate.getProperty("modifiedByUser") as? ReferenceProperty<*>)?.id as? Int
+		record.modifiedAt = (aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value
 
-        // Obj-specific fields
-        record.closedByUserId = (aggregate.getProperty("closedByUser") as? ReferenceProperty<*>)?.id as? Int
-        record.closedAt = (aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value
+		// Obj-specific fields
+		record.closedByUserId = (aggregate.getProperty("closedByUser") as? ReferenceProperty<*>)?.id as? Int
+		record.closedAt = (aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value
 
-        // Account ID (FM-specific, may be null for some obj types)
-        if (aggregate.hasProperty("accountId")) {
-            record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
-        }
+		// Account ID (FM-specific, may be null for some obj types)
+		if (aggregate.hasProperty("accountId")) {
+			record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
+		}
 
-        return record
-    }
+		return record
+	}
 
-    /**
-     * Loads the OBJ record from the database.
-     */
-    override fun loadRecord(id: Int): ObjRecord? {
-        return dslContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(id))
-    }
+	/**
+	 * Loads the OBJ record from the database.
+	 */
+	override fun loadRecord(id: Int): ObjRecord? {
+		return dslContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(id))
+	}
 
-    /**
-     * Maps OBJ record fields to the aggregate, including Obj-specific fields.
-     */
-    @Suppress("UNCHECKED_CAST")
-    override fun toAggregate(record: UpdatableRecord<*>, aggregate: O) {
-        super.toAggregate(record, aggregate)
+	/**
+	 * Maps OBJ record fields to the aggregate, including Obj-specific fields.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	override fun toAggregate(record: UpdatableRecord<*>, aggregate: O) {
+		super.toAggregate(record, aggregate)
 
-        val objRecord = record as ObjRecord
+		val objRecord = record as ObjRecord
 
-        // Obj-specific fields
-        (aggregate.getProperty("objTypeId") as? BaseProperty<String?>)?.value = objRecord.objTypeId
-        (aggregate.getProperty("closedByUser") as? ReferenceProperty<ObjUser>)?.id = objRecord.closedByUserId
-        (aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value = objRecord.closedAt
+		// Obj-specific fields
+		(aggregate.getProperty("objTypeId") as? BaseProperty<String?>)?.value = objRecord.objTypeId
+		(aggregate.getProperty("closedByUser") as? ReferenceProperty<ObjUser>)?.id = objRecord.closedByUserId
+		(aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value = objRecord.closedAt
 
-        // Account ID (FM-specific)
-        if (aggregate.hasProperty("accountId")) {
-            (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = objRecord.accountId
-        }
+		// Account ID (FM-specific)
+		if (aggregate.hasProperty("accountId")) {
+			(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = objRecord.accountId
+		}
 
-        // Load maxPartId from some source - this may need to be tracked differently in jOOQ
-        // For now, we'll load it from extension data or calculate it
-        loadMaxPartId(aggregate)
+		// Load maxPartId from some source - this may need to be tracked differently in jOOQ
+		// For now, we'll load it from extension data or calculate it
+		loadMaxPartId(aggregate)
 
-        // Load extension data if present
-        loadExtension(aggregate, objRecord.id)
-    }
+		// Load extension data if present
+		loadExtension(aggregate, objRecord.id)
+	}
 
-    /**
-     * Loads or calculates the maxPartId for the aggregate.
-     * Override in subclasses if needed.
-     */
-    protected open fun loadMaxPartId(aggregate: O) {
-        // Default implementation - subclasses may need to track this differently
-    }
+	/**
+	 * Loads or calculates the maxPartId for the aggregate.
+	 * Override in subclasses if needed.
+	 */
+	protected open fun loadMaxPartId(aggregate: O) {
+		// Default implementation - subclasses may need to track this differently
+	}
 
-    /**
-     * Loads extension data for the aggregate.
-     * Override in subclasses to load from extension tables.
-     */
-    protected open fun loadExtension(aggregate: O, objId: Int?) {
-        // Default: no extension data to load
-    }
+	/**
+	 * Loads extension data for the aggregate.
+	 * Override in subclasses to load from extension tables.
+	 */
+	protected open fun loadExtension(aggregate: O, objId: Int?) {
+		// Default: no extension data to load
+	}
 
-    override fun getAllRecordIds(tenantId: Int): List<Int> {
-        return dslContext()
-            .select(Tables.OBJ.ID)
-            .from(Tables.OBJ)
-            .where(Tables.OBJ.TENANT_ID.eq(tenantId))
-            .and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
-            .fetch(Tables.OBJ.ID)
-    }
+	override fun getAllRecordIds(tenantId: Int): List<Int> {
+		return dslContext()
+			.select(Tables.OBJ.ID)
+			.from(Tables.OBJ)
+			.where(Tables.OBJ.TENANT_ID.eq(tenantId))
+			.and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
+			.fetch(Tables.OBJ.ID)
+	}
 
-    override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
-        // Handle common foreign keys
-        val field = when (fkName) {
-            "accountId" -> Tables.OBJ.ACCOUNT_ID
-            "ownerId" -> Tables.OBJ.OWNER_ID
-            "tenantId" -> Tables.OBJ.TENANT_ID
-            else -> return emptyList() // Unknown FK - subclasses may override for custom FKs
-        }
+	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
+		// Handle common foreign keys
+		val field = when (fkName) {
+			"accountId" -> Tables.OBJ.ACCOUNT_ID
+			"ownerId" -> Tables.OBJ.OWNER_ID
+			"tenantId" -> Tables.OBJ.TENANT_ID
+			else -> return emptyList() // Unknown FK - subclasses may override for custom FKs
+		}
 
-        return dslContext()
-            .select(Tables.OBJ.ID)
-            .from(Tables.OBJ)
-            .where(field.eq(targetId))
-            .and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
-            .fetch(Tables.OBJ.ID)
-    }
+		return dslContext()
+			.select(Tables.OBJ.ID)
+			.from(Tables.OBJ)
+			.where(field.eq(targetId))
+			.and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
+			.fetch(Tables.OBJ.ID)
+	}
 }
 

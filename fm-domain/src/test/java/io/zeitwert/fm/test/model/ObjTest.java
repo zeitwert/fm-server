@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import io.dddrive.core.obj.model.Obj;
-import io.zeitwert.fm.collaboration.model.ObjNote;
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 
 /**
  * Test Obj interface using the NEW dddrive framework (io.dddrive.core.*).
  */
-public interface ObjTest extends Obj {
+public interface ObjTest extends Obj, ItemWithNotes {
 
 	String getShortText();
 
@@ -76,12 +75,5 @@ public interface ObjTest extends Obj {
 	ObjTestPartNode addNode();
 
 	void removeNode(Integer nodeId);
-
-	// Note operations (implemented directly, bypassing mixin)
-	List<ObjNote> getNotes();
-
-	ObjNote addNote(CodeNoteType noteType);
-
-	void removeNote(Object noteId);
 
 }

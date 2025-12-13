@@ -1,13 +1,10 @@
 package io.zeitwert.fm.test.model.base
 
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
-import io.dddrive.core.property.model.EnumSetProperty
-import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.ReferenceProperty
+import io.dddrive.core.ddd.model.Part
+import io.dddrive.core.property.model.*
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
-import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
@@ -22,7 +19,7 @@ import java.time.LocalDate
  */
 abstract class ObjTestBase(
 	repository: ObjTestRepository
-) : FMObjBase(repository), ObjTest {
+) : FMObjBase(repository), ObjTest, AggregateWithNotesMixin {
 
 	//@formatter:off
 	private val _shortText: BaseProperty<String> = this.addBaseProperty("shortText", String::class.java)
@@ -39,6 +36,17 @@ abstract class ObjTestBase(
 	//@formatter:on
 
 	override fun getRepository(): ObjTestRepository = super.getRepository() as ObjTestRepository
+
+	override fun noteRepository(): ObjNoteRepository = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
+
+	override fun aggregate(): ObjTest = this
+
+	override fun doAddPart(property: Property<*>, partId: Int?): Part<*>? {
+		if (property === this._nodeList) {
+			return directory.getPartRepository(ObjTestPartNode::class.java).create(this, property, partId)
+		}
+		return super.doAddPart(property, partId)
+	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -146,27 +154,6 @@ abstract class ObjTestBase(
 
 	override fun removeNode(nodeId: Int?) {
 		_nodeList.removePart(nodeId)
-	}
-
-	// Note operations (implemented directly, bypassing mixin)
-	private fun noteRepository(): ObjNoteRepository =
-		(getRepository() as io.zeitwert.fm.test.model.impl.ObjTestRepositoryImpl).getNoteRepository()
-
-	override fun getNotes(): List<ObjNote> {
-		return noteRepository().getByForeignKey("related_to_id", this.id)
-	}
-
-	override fun addNote(noteType: CodeNoteType): ObjNote {
-		val note = noteRepository().create(this.tenantId, null, null)
-		note.noteType = noteType
-		note.relatedToId = this.id
-		return note
-	}
-
-	override fun removeNote(noteId: Any) {
-		val note = noteRepository().load(noteId)
-		check(this.id == note.relatedToId) { "Note is not related to this item." }
-		noteRepository().delete(note, null, null)
 	}
 
 }

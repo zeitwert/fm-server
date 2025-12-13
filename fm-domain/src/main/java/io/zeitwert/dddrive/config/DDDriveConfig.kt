@@ -1,4 +1,4 @@
-package io.dddrive.core.config
+package io.zeitwert.dddrive.config
 
 import io.dddrive.core.ddd.model.RepositoryDirectory
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration
  * Domain-specific configurations should import this base configuration and add
  * their own domain-specific initializations.
  */
-@Configuration("dDDriveConfig")
+@Configuration("dddriveConfig")
 open class DDDriveConfig : EnumConfigBase() {
 
 	@Bean("directory")

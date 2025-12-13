@@ -7,6 +7,4 @@ import io.dddrive.core.obj.model.ObjRepository;
  */
 public interface ObjTestRepository extends ObjRepository<ObjTest> {
 
-	ObjTestPartNodeRepository getNodeRepository();
-
 }

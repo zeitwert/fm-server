@@ -1,20 +1,18 @@
-package io.zeitwert.fm.account.config
+package io.zeitwert.fm.collaboration.config
 
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.enums.model.base.EnumConfigBase
-import io.zeitwert.fm.account.model.enums.CodeAccountType
-import io.zeitwert.fm.account.model.enums.CodeClientSegment
-import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
- * Account domain configuration that registers aggregate types and enums in the NEW dddrive framework.
+ * Collaboration domain configuration that registers aggregate types and enums in the NEW dddrive framework.
  */
-@Component("accountConfig")
-class AccountConfig : EnumConfigBase(), InitializingBean {
+@Component("collaborationConfig")
+class CollaborationConfig : EnumConfigBase(), InitializingBean {
 
 	@Autowired
 	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
@@ -25,16 +23,15 @@ class AccountConfig : EnumConfigBase(), InitializingBean {
 			initCodeAggregateType(aggregateTypeEnum)
 
 			// Trigger enum initialization
-			CodeAccountType.entries
-			CodeClientSegment.entries
-			CodeCurrency.entries
+			CodeNoteType.entries
 		} finally {
 			endConfig()
 		}
 	}
 
 	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType(e, "obj_account", "Account"))
+		e.addItem(CodeAggregateType(e, "obj_note", "Note"))
 	}
+
 }
 

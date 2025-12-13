@@ -1,15 +1,18 @@
-
 package io.zeitwert.fm.doc;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.doc.model.base.FMDocBase;
@@ -17,14 +20,8 @@ import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -55,14 +52,15 @@ public class DocTestTest {
 	@Test
 	public void testAggregate() throws Exception {
 
-		assertTrue(this.docTestRepo != null, "docTestRepository not null");
+		assertNotNull(this.docTestRepo, "docTestRepository not null");
 		assertEquals("doc_test", this.docTestRepo.getAggregateType().getId());
 
-		// Timestamp for new dddrive signatures (userId can be null for test)
-		OffsetDateTime timestamp = OffsetDateTime.now();
-
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
 		ObjAccount account = this.getTestAccount(this.requestCtx);
-		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId(), null, timestamp);
+		OffsetDateTime now = requestCtx.getCurrentTime();
+
+		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
 		this.initDocTest(testA1, "One", TYPE_A);
 		// Cast to FMDocCoreBase to access accountId (Kotlin property)
 		((FMDocBase) testA1).setAccountId((Integer) account.getId());
@@ -81,7 +79,7 @@ public class DocTestTest {
 		assertEquals(account.getId(), ((FMDocBase) testA1).getAccountId(), "account id");
 		assertEquals(account.getId(), testA1.getAccount().getId(), "account id");
 
-		this.docTestRepo.store(testA1, null, timestamp);
+		this.docTestRepo.store(testA1, userId, now);
 		testA1 = null;
 
 		DocTest testA2 = this.docTestRepo.get(testA_id);
@@ -99,14 +97,15 @@ public class DocTestTest {
 	@Test
 	public void testAggregateProperties() throws Exception {
 
-		// Timestamp for new dddrive signatures (userId can be null for test)
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
 
 		CodeTestType typeA = CodeTestType.getTestType(TYPE_A);
 		CodeTestType typeB = CodeTestType.getTestType(TYPE_B);
 		CodeTestType typeC = CodeTestType.getTestType(TYPE_C);
 
-		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId(), null, timestamp);
+		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
 		Object testA_id = testA1.getId();
 		this.initDocTest(testA1, "One", TYPE_A);
 
@@ -122,18 +121,18 @@ public class DocTestTest {
 		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.getJson()));
 		assertEquals(typeA, testA1.getTestType());
 
-		ObjTest refObj = this.objTestRepo.create(this.requestCtx.getTenantId(), null, timestamp);
+		ObjTest refObj = this.objTestRepo.create(tenantId, userId, now);
 		this.initObjTest(refObj, "Two", TYPE_B);
 		Object refObj_id = refObj.getId();
-		this.objTestRepo.store(refObj, null, timestamp);
+		this.objTestRepo.store(refObj, userId, now);
 
 		testA1.setRefObjId((Integer) refObj_id);
 		assertEquals("[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two])", testA1.getCaption());
 
-		DocTest refDoc = this.docTestRepo.create(this.requestCtx.getTenantId(), null, timestamp);
+		DocTest refDoc = this.docTestRepo.create(tenantId, userId, now);
 		this.initDocTest(refDoc, "Two", TYPE_B);
 		Object refDoc_id = refDoc.getId();
-		this.docTestRepo.store(refDoc, null, timestamp);
+		this.docTestRepo.store(refDoc, userId, now);
 
 		testA1.setRefDocId((Integer) refDoc_id);
 		assertEquals(
@@ -155,7 +154,7 @@ public class DocTestTest {
 		assertTrue(testA1.hasTestType(typeC));
 		assertEquals(2, testA1.getTestTypeSet().size());
 
-		this.docTestRepo.store(testA1, null, timestamp);
+		this.docTestRepo.store(testA1, userId, now);
 		testA1 = null;
 
 		DocTest testA2 = this.docTestRepo.load(testA_id);
@@ -211,7 +210,7 @@ public class DocTestTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.getAll(null).get(0).getId());
+		return this.accountCache.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0).getId());
 	}
 
 	private void initDocTest(DocTest test, String name, String testTypeId) {

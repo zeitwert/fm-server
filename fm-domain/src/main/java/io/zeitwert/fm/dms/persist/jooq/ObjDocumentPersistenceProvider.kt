@@ -22,166 +22,169 @@ import org.springframework.stereotype.Component
 @Component("objDocumentPersistenceProvider")
 open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDocument>() {
 
-    private lateinit var _dslContext: DSLContext
-    private lateinit var _repository: ObjDocumentRepository
+	private lateinit var _dslContext: DSLContext
+	private lateinit var _repository: ObjDocumentRepository
 
-    @Autowired
-    fun setDslContext(dslContext: DSLContext) {
-        this._dslContext = dslContext
-    }
+	@Autowired
+	fun setDslContext(dslContext: DSLContext) {
+		this._dslContext = dslContext
+	}
 
-    @Autowired
-    @Lazy
-    fun setRepository(repository: ObjDocumentRepository) {
-        this._repository = repository
-    }
+	@Autowired
+	@Lazy
+	fun setRepository(repository: ObjDocumentRepository) {
+		this._repository = repository
+	}
 
-    override fun dslContext(): DSLContext = _dslContext
+	override fun dslContext(): DSLContext = _dslContext
 
-    override fun getRepository(): ObjDocumentRepository = _repository
+	override fun getRepository(): ObjDocumentRepository = _repository
 
-    override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
+	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
-    override fun nextAggregateId(): Any {
-        return dslContext()
-            .nextval(Sequences.OBJ_ID_SEQ)
-            .toInt()
-    }
+	override fun nextAggregateId(): Any {
+		return dslContext()
+			.nextval(Sequences.OBJ_ID_SEQ)
+			.toInt()
+	}
 
-    override fun fromAggregate(aggregate: ObjDocument): UpdatableRecord<*> {
-        return createObjRecord(aggregate)
-    }
+	override fun fromAggregate(aggregate: ObjDocument): UpdatableRecord<*> {
+		return createObjRecord(aggregate)
+	}
 
-    @Suppress("UNCHECKED_CAST")
-    override fun storeExtension(aggregate: ObjDocument) {
-        val objId = aggregate.id as Int
+	@Suppress("UNCHECKED_CAST")
+	override fun storeExtension(aggregate: ObjDocument) {
+		val objId = aggregate.id as Int
 
-        val existingRecord = dslContext().fetchOne(
-            Tables.OBJ_DOCUMENT,
-            Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId)
-        )
+		val existingRecord = dslContext().fetchOne(
+			Tables.OBJ_DOCUMENT,
+			Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId)
+		)
 
-        val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_DOCUMENT)
+		val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_DOCUMENT)
 
-        record.objId = objId
-        record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
-        record.name = (aggregate.getProperty("name") as? BaseProperty<String?>)?.value
-        record.documentKindId = (aggregate.getProperty("documentKind") as? EnumProperty<CodeDocumentKind>)?.value?.id
-        record.documentCategoryId = (aggregate.getProperty("documentCategory") as? EnumProperty<CodeDocumentCategory>)?.value?.id
-        record.templateDocumentId = (aggregate.getProperty("templateDocument") as? ReferenceProperty<*>)?.id as? Int
-        record.contentKindId = (aggregate.getProperty("contentKind") as? EnumProperty<CodeContentKind>)?.value?.id
+		record.objId = objId
+		record.tenantId = aggregate.tenant.id as Int
+		record.accountId = aggregate.account?.id as? Int
+		record.name = aggregate.name
+		record.documentKindId = aggregate.documentKind.id
+		record.documentCategoryId = aggregate.documentCategory.id
+		record.templateDocumentId = aggregate.templateDocument?.id as? Int
+		record.contentKindId = aggregate.contentKind.id
 
-        if (existingRecord != null) {
-            record.update()
-        } else {
-            record.insert()
-        }
-    }
+		if (existingRecord != null) {
+			record.update()
+		} else {
+			record.insert()
+		}
+	}
 
-    @Suppress("UNCHECKED_CAST")
-    override fun loadExtension(aggregate: ObjDocument, objId: Int?) {
-        if (objId == null) return
+	@Suppress("UNCHECKED_CAST")
+	override fun loadExtension(aggregate: ObjDocument, objId: Int?) {
 
-        val record = dslContext().fetchOne(
-            Tables.OBJ_DOCUMENT,
-            Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId)
-        ) ?: return
+		if (objId == null) return
 
-        (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
-        (aggregate.getProperty("name") as? BaseProperty<String?>)?.value = record.name
+		val record = dslContext().fetchOne(
+			Tables.OBJ_DOCUMENT,
+			Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId)
+		) ?: return
 
-        record.documentKindId?.let { id ->
-            (aggregate.getProperty("documentKind") as? EnumProperty<CodeDocumentKind>)?.value =
-                CodeDocumentKind.getDocumentKind(id)
-        }
+		(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
+		(aggregate.getProperty("name") as? BaseProperty<String?>)?.value = record.name
 
-        record.documentCategoryId?.let { id ->
-            (aggregate.getProperty("documentCategory") as? EnumProperty<CodeDocumentCategory>)?.value =
-                CodeDocumentCategory.getDocumentCategory(id)
-        }
+		record.documentKindId?.let { id ->
+			(aggregate.getProperty("documentKind") as? EnumProperty<CodeDocumentKind>)?.value =
+				CodeDocumentKind.getDocumentKind(id)
+		}
 
-        (aggregate.getProperty("templateDocument") as? ReferenceProperty<*>)?.let { prop ->
-            @Suppress("UNCHECKED_CAST")
-            (prop as ReferenceProperty<Any>).id = record.templateDocumentId
-        }
+		record.documentCategoryId?.let { id ->
+			(aggregate.getProperty("documentCategory") as? EnumProperty<CodeDocumentCategory>)?.value =
+				CodeDocumentCategory.getDocumentCategory(id)
+		}
 
-        record.contentKindId?.let { id ->
-            (aggregate.getProperty("contentKind") as? EnumProperty<CodeContentKind>)?.value =
-                CodeContentKind.getContentKind(id)
-        }
-    }
+		(aggregate.getProperty("templateDocument") as? ReferenceProperty<*>)?.let { prop ->
+			@Suppress("UNCHECKED_CAST")
+			(prop as ReferenceProperty<Any>).id = record.templateDocumentId
+		}
 
-    fun getContentType(document: ObjDocument): CodeContentType? {
-        val maxVersionNr = dslContext().fetchValue(getContentMaxVersionQuery(document))
-        if (maxVersionNr == null) return null
+		record.contentKindId?.let { id ->
+			(aggregate.getProperty("contentKind") as? EnumProperty<CodeContentKind>)?.value =
+				CodeContentKind.getContentKind(id)
+		}
+	}
 
-        val query = getContentWithMaxVersionQuery(document)
-        val contentTypeId = dslContext().fetchOne(query)?.getContentTypeId() ?: return null
-        return CodeContentType.getContentType(contentTypeId)
-    }
+	fun getContentType(document: ObjDocument): CodeContentType? {
+		val maxVersionNr = dslContext().fetchValue(getContentMaxVersionQuery(document))
+		if (maxVersionNr == null) return null
 
-    fun getContent(document: ObjDocument): ByteArray? {
-        val query = getContentWithMaxVersionQuery(document)
-        return dslContext().fetchOne(query)?.content
-    }
+		val query = getContentWithMaxVersionQuery(document)
+		val contentTypeId = dslContext().fetchOne(query)?.contentTypeId ?: return null
+		return CodeContentType.getContentType(contentTypeId)
+	}
 
-    fun storeContent(document: ObjDocument, contentType: CodeContentType?, content: ByteArray?) {
-        if (contentType == null || content == null) return
+	fun getContent(document: ObjDocument): ByteArray? {
+		val query = getContentWithMaxVersionQuery(document)
+		return dslContext().fetchOne(query)?.content
+	}
 
-        var versionNr = dslContext().fetchValue(getContentMaxVersionQuery(document))
-        versionNr = if (versionNr == null) 1 else versionNr + 1
+	fun storeContent(document: ObjDocument, contentType: CodeContentType?, content: ByteArray?) {
+		if (contentType == null || content == null) return
 
-        dslContext()
-            .insertInto(Tables.OBJ_DOCUMENT_PART_CONTENT)
-            .columns(
-                Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID,
-                Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR,
-                Tables.OBJ_DOCUMENT_PART_CONTENT.CONTENT_TYPE_ID,
-                Tables.OBJ_DOCUMENT_PART_CONTENT.CONTENT,
-                Tables.OBJ_DOCUMENT_PART_CONTENT.CREATED_BY_USER_ID
-            )
-            .values(
-                document.id as Int,
-                versionNr,
-                contentType.id,
-                content,
-                document.meta.createdByUser?.id as Int
-            )
-            .execute()
-    }
+		var versionNr = dslContext().fetchValue(getContentMaxVersionQuery(document))
+		versionNr = if (versionNr == null) 1 else versionNr + 1
 
-    private fun getContentWithMaxVersionQuery(document: ObjDocument) =
-        Tables.OBJ_DOCUMENT_PART_CONTENT.where(
-            Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID.eq(document.id as Int)
-                .and(Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR.eq(getContentMaxVersionQuery(document)))
-        )
+		dslContext()
+			.insertInto(Tables.OBJ_DOCUMENT_PART_CONTENT)
+			.columns(
+				Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID,
+				Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR,
+				Tables.OBJ_DOCUMENT_PART_CONTENT.CONTENT_TYPE_ID,
+				Tables.OBJ_DOCUMENT_PART_CONTENT.CONTENT,
+				Tables.OBJ_DOCUMENT_PART_CONTENT.CREATED_BY_USER_ID
+			)
+			.values(
+				document.id as Int,
+				versionNr,
+				contentType.id,
+				content,
+				document.meta.createdByUser?.id as Int
+			)
+			.execute()
+	}
 
-    private fun getContentMaxVersionQuery(document: ObjDocument) =
-        dslContext()
-            .select(DSL.max(Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR))
-            .from(Tables.OBJ_DOCUMENT_PART_CONTENT)
-            .where(Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID.eq(document.id as Int))
+	private fun getContentWithMaxVersionQuery(document: ObjDocument) =
+		Tables.OBJ_DOCUMENT_PART_CONTENT.where(
+			Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID.eq(document.id as Int)
+				.and(Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR.eq(getContentMaxVersionQuery(document)))
+		)
 
-    override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
-        if (fkName == "accountId") {
-            return dslContext()
-                .select(Tables.OBJ_DOCUMENT.OBJ_ID)
-                .from(Tables.OBJ_DOCUMENT)
-                .where(Tables.OBJ_DOCUMENT.ACCOUNT_ID.eq(targetId))
-                .fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
-        }
-        if (fkName == "templateDocumentId") {
-            return dslContext()
-                .select(Tables.OBJ_DOCUMENT.OBJ_ID)
-                .from(Tables.OBJ_DOCUMENT)
-                .where(Tables.OBJ_DOCUMENT.TEMPLATE_DOCUMENT_ID.eq(targetId))
-                .fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
-        }
-        return super.getRecordIdsByForeignKey(fkName, targetId)
-    }
+	private fun getContentMaxVersionQuery(document: ObjDocument) =
+		dslContext()
+			.select(DSL.max(Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR))
+			.from(Tables.OBJ_DOCUMENT_PART_CONTENT)
+			.where(Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID.eq(document.id as Int))
 
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "obj_document"
-    }
+	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
+		if (fkName == "accountId") {
+			return dslContext()
+				.select(Tables.OBJ_DOCUMENT.OBJ_ID)
+				.from(Tables.OBJ_DOCUMENT)
+				.where(Tables.OBJ_DOCUMENT.ACCOUNT_ID.eq(targetId))
+				.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
+		}
+		if (fkName == "templateDocumentId") {
+			return dslContext()
+				.select(Tables.OBJ_DOCUMENT.OBJ_ID)
+				.from(Tables.OBJ_DOCUMENT)
+				.where(Tables.OBJ_DOCUMENT.TEMPLATE_DOCUMENT_ID.eq(targetId))
+				.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
+		}
+		return super.getRecordIdsByForeignKey(fkName, targetId)
+	}
+
+	companion object {
+		private const val AGGREGATE_TYPE_ID = "obj_document"
+	}
+
 }
 

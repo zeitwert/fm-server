@@ -1,15 +1,17 @@
 package io.zeitwert.fm.collaboration.model;
 
 // This interface defines note operations that are implemented by AggregateWithNotesMixin.
+
 import java.util.List;
+
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 
 public interface ItemWithNotes {
 
 	List<ObjNote> getNotes();
 
-	ObjNote addNote(CodeNoteType noteType);
+	ObjNote addNote(CodeNoteType noteType, Object userId);
 
-	void removeNote(Object noteId);
+	void removeNote(Object noteId, Object userId);
 
 }

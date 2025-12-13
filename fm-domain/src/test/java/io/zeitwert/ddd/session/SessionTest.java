@@ -3,6 +3,7 @@ package io.zeitwert.ddd.session;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.assertj.core.data.Offset;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
 
@@ -37,14 +38,15 @@ public class SessionTest {
 	@Test
 	public void testSessionHandling() throws Exception {
 
-		// Timestamp for new dddrive signatures (userId can be null for test)
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
 
-		ObjTest testA1 = this.testRepo.create(this.requestCtx.getTenantId(), null, timestamp);
+		ObjTest testA1 = this.testRepo.create(tenantId, userId, now);
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA1_id = testA1.getId();
 		Integer testA1_idHash = System.identityHashCode(testA1);
-		this.testRepo.store(testA1, null, timestamp);
+		this.testRepo.store(testA1, userId, now);
 		testA1 = null;
 
 		ObjTest testA2 = this.testRepo.get(testA1_id);

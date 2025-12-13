@@ -1,6 +1,7 @@
 package io.zeitwert.fm.oe.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
+import io.dddrive.core.oe.model.ObjUser
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
@@ -21,7 +22,7 @@ class ObjUserFMRepositoryImpl(
     @Lazy private val documentRepository: ObjDocumentRepository
 ) : FMObjRepositoryBase<ObjUserFM>(
     ObjUserFMRepository::class.java,
-    ObjUserFM::class.java,
+    ObjUser::class.java,
     ObjUserFMBase::class.java,
     AGGREGATE_TYPE_ID
 ), ObjUserFMRepository {

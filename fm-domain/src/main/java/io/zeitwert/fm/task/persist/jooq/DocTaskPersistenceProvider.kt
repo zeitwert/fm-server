@@ -18,110 +18,110 @@ import java.time.OffsetDateTime
 @Component("docTaskPersistenceProvider")
 open class DocTaskPersistenceProvider : JooqDocPersistenceProviderBase<DocTask>() {
 
-    private lateinit var _dslContext: DSLContext
-    private lateinit var _repository: DocTaskRepository
+	private lateinit var _dslContext: DSLContext
+	private lateinit var _repository: DocTaskRepository
 
-    @Autowired
-    fun setDslContext(dslContext: DSLContext) {
-        this._dslContext = dslContext
-    }
+	@Autowired
+	fun setDslContext(dslContext: DSLContext) {
+		this._dslContext = dslContext
+	}
 
-    @Autowired
-    @Lazy
-    fun setRepository(repository: DocTaskRepository) {
-        this._repository = repository
-    }
+	@Autowired
+	@Lazy
+	fun setRepository(repository: DocTaskRepository) {
+		this._repository = repository
+	}
 
-    override fun dslContext(): DSLContext = _dslContext
+	override fun dslContext(): DSLContext = _dslContext
 
-    override fun getRepository(): DocTaskRepository = _repository
+	override fun getRepository(): DocTaskRepository = _repository
 
-    override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
+	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
-    override fun getDefaultCaseDefId(): String = "task"
+	override fun getDefaultCaseDefId(): String = "task"
 
-    override fun getDefaultCaseStageId(): String = "task.new"
+	override fun getDefaultCaseStageId(): String = "task.new"
 
-    override fun nextAggregateId(): Any {
-        return dslContext()
-            .nextval(Sequences.DOC_ID_SEQ)
-            .toInt()
-    }
+	override fun nextAggregateId(): Any {
+		return dslContext()
+			.nextval(Sequences.DOC_ID_SEQ)
+			.toInt()
+	}
 
-    override fun fromAggregate(aggregate: DocTask): UpdatableRecord<*> {
-        return createDocRecord(aggregate)
-    }
+	override fun fromAggregate(aggregate: DocTask): UpdatableRecord<*> {
+		return createDocRecord(aggregate)
+	}
 
-    @Suppress("UNCHECKED_CAST")
-    override fun storeExtension(aggregate: DocTask) {
-        val docId = aggregate.id as Int
+	@Suppress("UNCHECKED_CAST")
+	override fun storeExtension(aggregate: DocTask) {
+		val docId = aggregate.id as Int
 
-        val existingRecord = dslContext().fetchOne(
-            Tables.DOC_TASK,
-            Tables.DOC_TASK.DOC_ID.eq(docId)
-        )
+		val existingRecord = dslContext().fetchOne(
+			Tables.DOC_TASK,
+			Tables.DOC_TASK.DOC_ID.eq(docId)
+		)
 
-        val record = existingRecord ?: dslContext().newRecord(Tables.DOC_TASK)
+		val record = existingRecord ?: dslContext().newRecord(Tables.DOC_TASK)
 
-        record.docId = docId
-        record.tenantId = aggregate.tenantId as? Int
-        record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
-        record.relatedObjId = (aggregate.getProperty("relatedObjId") as? BaseProperty<Int?>)?.value
-        record.relatedDocId = (aggregate.getProperty("relatedDocId") as? BaseProperty<Int?>)?.value
-        record.subject = (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value
-        record.content = (aggregate.getProperty("content") as? BaseProperty<String?>)?.value
-        record.isPrivate = (aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value
-        record.priorityId = (aggregate.getProperty("priority") as? EnumProperty<CodeTaskPriority>)?.value?.id
-        record.dueAt = (aggregate.getProperty("dueAt") as? BaseProperty<OffsetDateTime?>)?.value
-        record.remindAt = (aggregate.getProperty("remindAt") as? BaseProperty<OffsetDateTime?>)?.value
+		record.docId = docId
+		record.tenantId = aggregate.tenantId as? Int
+		record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
+		record.relatedObjId = (aggregate.getProperty("relatedObjId") as? BaseProperty<Int?>)?.value
+		record.relatedDocId = (aggregate.getProperty("relatedDocId") as? BaseProperty<Int?>)?.value
+		record.subject = (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value
+		record.content = (aggregate.getProperty("content") as? BaseProperty<String?>)?.value
+		record.isPrivate = (aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value
+		record.priorityId = (aggregate.getProperty("priority") as? EnumProperty<CodeTaskPriority>)?.value?.id
+		record.dueAt = (aggregate.getProperty("dueAt") as? BaseProperty<OffsetDateTime?>)?.value
+		record.remindAt = (aggregate.getProperty("remindAt") as? BaseProperty<OffsetDateTime?>)?.value
 
-        if (existingRecord != null) {
-            record.update()
-        } else {
-            record.insert()
-        }
-    }
+		if (existingRecord != null) {
+			record.update()
+		} else {
+			record.insert()
+		}
+	}
 
-    @Suppress("UNCHECKED_CAST")
-    override fun loadExtension(aggregate: DocTask, docId: Int?) {
-        if (docId == null) return
+	@Suppress("UNCHECKED_CAST")
+	override fun loadExtension(aggregate: DocTask, docId: Int?) {
+		if (docId == null) return
 
-        val record = dslContext().fetchOne(
-            Tables.DOC_TASK,
-            Tables.DOC_TASK.DOC_ID.eq(docId)
-        ) ?: return
+		val record = dslContext().fetchOne(
+			Tables.DOC_TASK,
+			Tables.DOC_TASK.DOC_ID.eq(docId)
+		) ?: return
 
-        (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
-        (aggregate.getProperty("relatedObjId") as? BaseProperty<Int?>)?.value = record.relatedObjId
-        (aggregate.getProperty("relatedDocId") as? BaseProperty<Int?>)?.value = record.relatedDocId
-        (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value = record.subject
-        (aggregate.getProperty("content") as? BaseProperty<String?>)?.value = record.content
-        (aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value = record.isPrivate
-        (aggregate.getProperty("dueAt") as? BaseProperty<OffsetDateTime?>)?.value = record.dueAt
-        (aggregate.getProperty("remindAt") as? BaseProperty<OffsetDateTime?>)?.value = record.remindAt
+		(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
+		(aggregate.getProperty("relatedObjId") as? BaseProperty<Int?>)?.value = record.relatedObjId
+		(aggregate.getProperty("relatedDocId") as? BaseProperty<Int?>)?.value = record.relatedDocId
+		(aggregate.getProperty("subject") as? BaseProperty<String?>)?.value = record.subject
+		(aggregate.getProperty("content") as? BaseProperty<String?>)?.value = record.content
+		(aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value = record.isPrivate
+		(aggregate.getProperty("dueAt") as? BaseProperty<OffsetDateTime?>)?.value = record.dueAt
+		(aggregate.getProperty("remindAt") as? BaseProperty<OffsetDateTime?>)?.value = record.remindAt
 
-        record.priorityId?.let { priorityId ->
-            (aggregate.getProperty("priority") as? EnumProperty<CodeTaskPriority>)?.value =
-                CodeTaskPriority.getPriority(priorityId)
-        }
-    }
+		record.priorityId?.let { priorityId ->
+			(aggregate.getProperty("priority") as? EnumProperty<CodeTaskPriority>)?.value =
+				CodeTaskPriority.getPriority(priorityId)
+		}
+	}
 
-    override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
-        val field = when (fkName) {
-            "related_obj_id", "relatedObjId" -> Tables.DOC_TASK.RELATED_OBJ_ID
-            "related_doc_id", "relatedDocId" -> Tables.DOC_TASK.RELATED_DOC_ID
-            else -> return super.getRecordIdsByForeignKey(fkName, targetId)
-        }
+	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
+		val field = when (fkName) {
+			"related_obj_id", "relatedObjId" -> Tables.DOC_TASK.RELATED_OBJ_ID
+			"related_doc_id", "relatedDocId" -> Tables.DOC_TASK.RELATED_DOC_ID
+			else -> return super.getRecordIdsByForeignKey(fkName, targetId)
+		}
 
-        return dslContext()
-            .select(Tables.DOC_TASK.DOC_ID)
-            .from(Tables.DOC_TASK)
-            .where(field.eq(targetId))
-            .fetch(Tables.DOC_TASK.DOC_ID)
-    }
+		return dslContext()
+			.select(Tables.DOC_TASK.DOC_ID)
+			.from(Tables.DOC_TASK)
+			.where(field.eq(targetId))
+			.fetch(Tables.DOC_TASK.DOC_ID)
+	}
 
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "doc_task"
-    }
+	companion object {
+		private const val AGGREGATE_TYPE_ID = "doc_task"
+	}
 }
 

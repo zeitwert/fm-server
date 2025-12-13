@@ -1,21 +1,14 @@
-
 package io.zeitwert.fm.building;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
@@ -25,9 +18,10 @@ import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
 import io.zeitwert.fm.building.model.enums.CodeBuildingType;
+import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.test.TestApplication;
 
 @SpringBootTest(classes = TestApplication.class)
@@ -39,9 +33,6 @@ public class BuildingTest {
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
-
-	@Autowired
-	private ObjAccountRepository accountCache;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepository;
@@ -153,7 +144,7 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.getAll(null).get(0).getId());
+		return this.accountRepo.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0).getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {
