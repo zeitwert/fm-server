@@ -204,6 +204,14 @@
 				<version>${google-maps.version}</version>
 			</dependency>
 
+			<!-- Lombok -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
 			<!-- Monitoring -->
 			<dependency>
 				<groupId>org.apache.maven</groupId>
@@ -224,6 +232,35 @@
 					<version>${kotlin.version}</version>
 					<extensions>true</extensions>
 					<executions>
+						<!-- Disable Kotlin plugin default lifecycle bindings (avoid running twice) -->
+						<execution>
+							<id>default-compile</id>
+							<phase>none</phase>
+						</execution>
+						<execution>
+							<id>default-testCompile</id>
+							<phase>none</phase>
+						</execution>
+						<!-- Run kapt to process Lombok annotations before Kotlin compilation -->
+						<execution>
+							<id>kapt</id>
+							<phase>process-sources</phase>
+							<goals>
+								<goal>kapt</goal>
+							</goals>
+							<configuration>
+								<sourceDirs>
+									<sourceDir>${project.basedir}/src/main/java</sourceDir>
+								</sourceDirs>
+								<annotationProcessorPaths>
+									<path>
+										<groupId>org.projectlombok</groupId>
+										<artifactId>lombok</artifactId>
+										<version>${lombok.version}</version>
+									</path>
+								</annotationProcessorPaths>
+							</configuration>
+						</execution>
 						<execution>
 							<id>compile</id>
 							<phase>compile</phase>
@@ -271,15 +308,15 @@
 							</goals>
 						</execution>
 					</executions>
-					<configuration>
-						<annotationProcessorPaths>
-							<path>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-								<version>${lombok.version}</version>
-							</path>
-						</annotationProcessorPaths>
-					</configuration>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

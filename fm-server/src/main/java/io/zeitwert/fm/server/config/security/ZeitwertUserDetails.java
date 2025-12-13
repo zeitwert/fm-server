@@ -33,7 +33,7 @@ public class ZeitwertUserDetails implements UserDetails {
 	}
 
 	public Integer getUserId() {
-		return this.user.getId();
+		return (Integer) this.user.getId();
 	}
 
 	@Override

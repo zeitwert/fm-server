@@ -14,20 +14,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.model.enums.CodeCurrencyEnum;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategyEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalogEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingSubTypeEnum;
-import io.zeitwert.fm.building.model.enums.CodeBuildingTypeEnum;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
+import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
+import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
+import io.zeitwert.fm.building.model.enums.CodeBuildingType;
 import io.zeitwert.test.TestApplication;
 
 @SpringBootTest(classes = TestApplication.class)
@@ -41,7 +41,7 @@ public class BuildingTest {
 	private ObjAccountRepository accountRepo;
 
 	@Autowired
-	private ObjAccountCache accountCache;
+	private ObjAccountRepository accountCache;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepository;
@@ -49,17 +49,17 @@ public class BuildingTest {
 	@Test
 	public void testBuilding() throws Exception {
 
-		assertTrue(this.buildingRepository != null, "buildingRepository not null");
+		assertNotNull(this.buildingRepository, "buildingRepository not null");
 		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = this.getTestAccount(this.requestCtx);
-		ObjBuilding buildingA1 = this.buildingRepository.create(this.requestCtx.getTenantId());
+		ObjAccount account = this.getTestAccount(requestCtx);
+		ObjBuilding buildingA1 = this.buildingRepository.create(requestCtx.getTenantId(), requestCtx.getUserId(), requestCtx.getCurrentTime());
 
 		assertNotNull(buildingA1, "test not null");
 		assertNotNull(buildingA1.getId(), "id not null");
 		assertNotNull(buildingA1.getTenant(), "tenant not null");
 
-		Integer buildingA_id = buildingA1.getId();
+		Integer buildingA_id = (Integer) buildingA1.getId();
 		Integer buildingA_idHash = System.identityHashCode(buildingA1);
 
 		assertNotNull(buildingA1.getMeta().getCreatedByUser(), "createdByUser not null");
@@ -74,7 +74,7 @@ public class BuildingTest {
 		assertEquals(22, buildingA1.getCurrentRating().getElementList().size(), "element count 22");
 		assertEquals(100, buildingA1.getCurrentRating().getElementWeights(), "element contributions 100");
 
-		CodeBuildingPart bp1 = CodeBuildingPartEnum.getBuildingPart("P2");
+		CodeBuildingPart bp1 = CodeBuildingPart.P2;
 		ObjBuildingPartElementRating e1 = buildingA1.getCurrentRating().getElement(bp1);
 		e1.setCondition(100);
 		e1.setRatingYear(2000);
@@ -88,7 +88,7 @@ public class BuildingTest {
 		// assertEquals(50, building1a.getCurrentRating().getElementContributions(), 50,
 		// "element contributions 50");
 
-		CodeBuildingPart bp2 = CodeBuildingPartEnum.getBuildingPart("P3");
+		CodeBuildingPart bp2 = CodeBuildingPart.P3;
 		ObjBuildingPartElementRating e2 = buildingA1.getCurrentRating().getElement(bp2);
 		e2.setCondition(100);
 		e2.setRatingYear(2000);
@@ -101,7 +101,7 @@ public class BuildingTest {
 		assertEquals(e1, buildingA1.getCurrentRating().getElement(bp1), "e1 by buildingPart");
 		assertEquals(e2, buildingA1.getCurrentRating().getElement(bp2), "e2 by buildingPart");
 
-		this.buildingRepository.store(buildingA1);
+		this.buildingRepository.store(buildingA1, requestCtx.getUserId(), requestCtx.getCurrentTime());
 		buildingA1 = null;
 
 		ObjBuilding buildingA2 = this.buildingRepository.load(buildingA_id);
@@ -118,7 +118,7 @@ public class BuildingTest {
 		assertEquals(bp1, buildingA2.getCurrentRating().getElement(bp1).getBuildingPart(), "e1 by buildingPart");
 		assertEquals(bp2, buildingA2.getCurrentRating().getElement(bp2).getBuildingPart(), "e2 by buildingPart");
 
-		CodeBuildingPart bp3 = CodeBuildingPartEnum.getBuildingPart("P4");
+		CodeBuildingPart bp3 = CodeBuildingPart.P4;
 		ObjBuildingPartElementRating e3 = buildingA2.getCurrentRating().getElement(bp3);
 		e3.setCondition(100);
 		e3.setRatingYear(2000);
@@ -136,7 +136,7 @@ public class BuildingTest {
 		assertEquals(bp1, buildingA2.getCurrentRating().getElement(bp1).getBuildingPart(), "e1 by buildingPart");
 		assertEquals(bp3, buildingA2.getCurrentRating().getElement(bp3).getBuildingPart(), "e3 by buildingPart");
 
-		this.buildingRepository.store(buildingA2);
+		this.buildingRepository.store(buildingA2, requestCtx.getUserId(), requestCtx.getCurrentTime());
 		buildingA2 = null;
 
 		ObjBuilding buildingA3 = this.buildingRepository.get(buildingA_id);
@@ -153,7 +153,7 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.find(null).get(0).getId());
+		return this.accountCache.get(this.accountRepo.getAll(null).get(0).getId());
 	}
 
 	private void initBuilding(ObjBuilding building) {
@@ -167,7 +167,7 @@ public class BuildingTest {
 		building.setZip("1111");
 		building.setCity("Testingen");
 		building.setCountry(CodeCountry.getCountry("ch"));
-		building.setCurrency(CodeCurrencyEnum.getCurrency("chf"));
+		building.setCurrency(CodeCurrency.CHF);
 
 		building.setVolume(BigDecimal.valueOf(1000.0));
 		building.setAreaGross(BigDecimal.valueOf(100.0));
@@ -175,8 +175,8 @@ public class BuildingTest {
 		building.setNrOfFloorsAboveGround(3);
 		building.setNrOfFloorsBelowGround(1);
 
-		building.setBuildingType(CodeBuildingTypeEnum.getBuildingType("T01"));
-		building.setBuildingSubType(CodeBuildingSubTypeEnum.getBuildingSubType("ST05-26"));
+		building.setBuildingType(CodeBuildingType.T01);
+		building.setBuildingSubType(CodeBuildingSubType.ST05_26);
 		building.setBuildingYear(1985);
 
 		building.setInsuredValue(BigDecimal.valueOf(1000000.0));
@@ -186,9 +186,9 @@ public class BuildingTest {
 		building.setThirdPartyValue(BigDecimal.valueOf(0.0));
 		building.setThirdPartyValueYear(2000);
 
-		building.addRating();
-		building.getCurrentRating().setPartCatalog(CodeBuildingPartCatalogEnum.getPartCatalog("C6"));
-		building.getCurrentRating().setMaintenanceStrategy(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"));
+		building.addRating((ObjUserFM) requestCtx.getUser(), requestCtx.getCurrentTime());
+		building.getCurrentRating().setPartCatalog(CodeBuildingPartCatalog.C6);
+		building.getCurrentRating().setMaintenanceStrategy(CodeBuildingMaintenanceStrategy.N);
 
 	}
 
@@ -202,7 +202,7 @@ public class BuildingTest {
 		assertEquals("1111", building.getZip());
 		assertEquals("Testingen", building.getCity());
 		assertEquals(CodeCountry.getCountry("ch"), building.getCountry());
-		assertEquals(CodeCurrencyEnum.getCurrency("chf"), building.getCurrency());
+		assertEquals(CodeCurrency.CHF, building.getCurrency());
 
 		assertEquals(BigDecimal.valueOf(1000.0), building.getVolume());
 		assertEquals(BigDecimal.valueOf(100.0), building.getAreaGross());
@@ -210,8 +210,8 @@ public class BuildingTest {
 		assertEquals(3, building.getNrOfFloorsAboveGround());
 		assertEquals(1, building.getNrOfFloorsBelowGround());
 
-		assertEquals(CodeBuildingTypeEnum.getBuildingType("T01"), building.getBuildingType());
-		assertEquals(CodeBuildingSubTypeEnum.getBuildingSubType("ST05-26"), building.getBuildingSubType());
+		assertEquals(CodeBuildingType.T01, building.getBuildingType());
+		assertEquals(CodeBuildingSubType.ST05_26, building.getBuildingSubType());
 		assertEquals(1985, building.getBuildingYear());
 
 		assertEquals(BigDecimal.valueOf(1000000.0), building.getInsuredValue());
@@ -221,9 +221,8 @@ public class BuildingTest {
 		assertEquals(BigDecimal.valueOf(0.0), building.getThirdPartyValue());
 		assertEquals(2000, building.getThirdPartyValueYear());
 
-		assertEquals(CodeBuildingMaintenanceStrategyEnum.getMaintenanceStrategy("N"),
-				building.getCurrentRating().getMaintenanceStrategy());
-		assertEquals(CodeBuildingPartCatalogEnum.getPartCatalog("C6"), building.getCurrentRating().getPartCatalog());
+		assertEquals(CodeBuildingMaintenanceStrategy.N, building.getCurrentRating().getMaintenanceStrategy());
+		assertEquals(CodeBuildingPartCatalog.C6, building.getCurrentRating().getPartCatalog());
 
 		assertEquals(22, building.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(22, building.getCurrentRating().getElementList().size(), "element count 22");

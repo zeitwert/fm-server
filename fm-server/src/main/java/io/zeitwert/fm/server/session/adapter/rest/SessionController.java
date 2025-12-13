@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
-import io.dddrive.oe.service.api.ObjTenantCache;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.enums.CodeUserRole;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
@@ -53,10 +53,10 @@ public class SessionController {
 	AuthenticationManager authenticationManager;
 
 	@Autowired
-	ObjTenantCache tenantCache;
+	ObjTenantFMRepository tenantCache;
 
 	@Autowired
-	ObjAccountCache accountCache;
+	ObjAccountRepository accountCache;
 
 	@Autowired
 	JwtProvider jwtProvider;
@@ -89,7 +89,7 @@ public class SessionController {
 					.username(userDetails.getUsername())
 					.email(userDetails.getUsername())
 					.accountId(accountId)
-					.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(role)))
+					.role(EnumeratedDto.of(CodeUserRole.getUserRole(role)))
 					.build();
 			return ResponseEntity.ok(loginResponse);
 		} catch (Exception ex) {

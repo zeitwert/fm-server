@@ -1,33 +1,31 @@
-package io.zeitwert.fm.obj.model.base
+package io.zeitwert.fm.doc.model.base
 
-import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.obj.model.ObjRepository
-import io.dddrive.core.obj.model.base.ObjBase
+import io.dddrive.core.doc.model.Doc
+import io.dddrive.core.doc.model.DocRepository
+import io.dddrive.core.doc.model.base.DocBase
 import io.dddrive.core.property.model.BaseProperty
-import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.obj.model.EntityWithExtn
 
 /**
- * Base class for FM Obj entities using the NEW dddrive framework (io.dddrive.core.*).
+ * Base class for FM Doc entities using the NEW dddrive framework (io.dddrive.core.*).
  *
- * This class extends the new dddrive ObjBase and adds FM-specific functionality:
+ * This class extends the new dddrive DocBase and adds FM-specific functionality:
  * - accountId and extnAccountId properties for account association
  * - Extension map support via EntityWithExtn interface
- * - Note repository access for AggregateWithNotesMixin support
  *
- * This class coexists with the old FMObjBase (which extends io.dddrive.obj.model.base.ObjExtnBase)
+ * This class coexists with the old FMDocBase (which extends io.dddrive.doc.model.base.DocExtnBase)
  * to allow gradual migration of domain entities from old to new dddrive.
  *
  * Usage during migration:
- * - New entities should extend FMObjCoreBase
- * - Old entities remain on FMObjBase until migrated
+ * - New entities should extend FMDocCoreBase
+ * - Old entities remain on FMDocBase until migrated
  * - Both can coexist in the same application
  *
- * @param repository The repository for managing this Obj
+ * @param repository The repository for managing this Doc
  */
-abstract class FMObjCoreBase(
-    repository: ObjRepository<out Obj>
-) : ObjBase(repository), EntityWithExtn {
+abstract class FMDocBase(
+    repository: DocRepository<out Doc>
+) : DocBase(repository), EntityWithExtn {
 
     //@formatter:off
     private val _accountId: BaseProperty<Int> = this.addBaseProperty("accountId", Int::class.java)
@@ -38,7 +36,7 @@ abstract class FMObjCoreBase(
     //@formatter:on
 
     /**
-     * Gets/sets the account ID associated with this Obj.
+     * Gets/sets the account ID associated with this Doc.
      * Setting accountId also sets extnAccountId to the same value.
      */
     var accountId: Int?
@@ -53,13 +51,6 @@ abstract class FMObjCoreBase(
      */
     val extnAccountId: Int?
         get() = _extnAccountId.value
-
-    /**
-     * Returns the note repository for collaboration notes support.
-     */
-    fun noteRepository(): ObjNoteRepository {
-        return (repository as FMObjCoreRepositoryBase<*>).getNoteRepository()
-    }
 
     // EntityWithExtn implementation
 

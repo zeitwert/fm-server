@@ -4,16 +4,15 @@ import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.zeitwert.fm.account.model.ObjAccount
-import io.zeitwert.fm.doc.model.base.FMDocCoreBase
+import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
-import kotlin.text.get
 
 abstract class DocTaskBase(
     repository: DocTaskRepository
-) : FMDocCoreBase(repository), DocTask {
+) : FMDocBase(repository), DocTask {
 
     //@formatter:off
     private val _relatedObjId: BaseProperty<Int> = this.addBaseProperty("relatedObjId", Int::class.java)

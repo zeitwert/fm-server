@@ -1,5 +1,6 @@
 package io.zeitwert.fm.portfolio.service.api.impl;
 
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import jakarta.annotation.PreDestroy;
 
 import java.io.IOException;
@@ -16,7 +17,6 @@ import com.google.maps.StaticMapsRequest.StaticMapType;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.Size;
 import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.service.api.PortfolioService;
 
@@ -28,7 +28,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 	private final GeoApiContext context;
 
 	@Autowired
-	private ObjBuildingCache buildingCache;
+	private ObjBuildingRepository buildingCache;
 
 	protected PortfolioServiceImpl() {
 		this.context = new GeoApiContext.Builder()

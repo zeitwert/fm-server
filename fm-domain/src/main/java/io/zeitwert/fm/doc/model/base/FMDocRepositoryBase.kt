@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
  *
  * @param D The Doc entity type
  */
-abstract class FMDocCoreRepositoryBase<D : Doc>(
+abstract class FMDocRepositoryBase<D : Doc>(
     repoIntfClass: Class<out DocRepository<D>>,
     intfClass: Class<out Doc>,
     baseClass: Class<out Doc>,

@@ -9,7 +9,7 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
@@ -17,7 +17,7 @@ import java.time.OffsetDateTime
 
 abstract class ObjUserFMBase(
     repository: ObjUserFMRepository
-) : FMObjCoreBase(repository), ObjUserFM {
+) : FMObjBase(repository), ObjUserFM {
 
     private val _avatarImage: ReferenceProperty<ObjDocument> = this.addReferenceProperty("avatarImage", ObjDocument::class.java)
     private val _role: EnumProperty<CodeUserRole> = this.addEnumProperty("role", CodeUserRole::class.java)

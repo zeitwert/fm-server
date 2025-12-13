@@ -15,7 +15,6 @@ import io.zeitwert.fm.app.model.ApplicationInfo;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 
 @Service("applicationService")
-@DependsOn("codeUserRoleEnum")
 class ApplicationServiceImpl implements ApplicationService {
 
 	private static final ApplicationConfig appConfig = new ApplicationConfig();

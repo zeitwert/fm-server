@@ -9,7 +9,7 @@ import io.dddrive.util.Invariant.requireThis
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
@@ -19,7 +19,7 @@ import java.time.OffsetDateTime
 
 abstract class ObjPortfolioBase(
     repository: ObjPortfolioRepository
-) : FMObjCoreBase(repository), ObjPortfolio, AggregateWithNotesMixin, AggregateWithTasksMixin {
+) : FMObjBase(repository), ObjPortfolio, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
     companion object {
         private val OBJ_TYPES: List<CodeAggregateType> by lazy {

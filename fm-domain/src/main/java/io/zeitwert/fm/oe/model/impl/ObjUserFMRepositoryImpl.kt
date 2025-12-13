@@ -2,7 +2,7 @@ package io.zeitwert.fm.oe.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.base.ObjUserFMBase
@@ -19,7 +19,7 @@ import java.util.*
 class ObjUserFMRepositoryImpl(
     @Lazy private val passwordEncoder: PasswordEncoder,
     @Lazy private val documentRepository: ObjDocumentRepository
-) : FMObjCoreRepositoryBase<ObjUserFM>(
+) : FMObjRepositoryBase<ObjUserFM>(
     ObjUserFMRepository::class.java,
     ObjUserFM::class.java,
     ObjUserFMBase::class.java,

@@ -6,14 +6,14 @@ import io.dddrive.core.property.model.EnumProperty
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 
 /**
  * Base class for ObjNote using the NEW dddrive framework.
  */
 abstract class ObjNoteBase(
     repository: ObjNoteRepository
-) : FMObjCoreBase(repository), ObjNote {
+) : FMObjBase(repository), ObjNote {
 
     //@formatter:off
     private val _relatedToId: BaseProperty<Any> = this.addBaseProperty("relatedToId", Any::class.java)

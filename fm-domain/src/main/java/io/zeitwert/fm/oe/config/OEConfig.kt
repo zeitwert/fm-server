@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 
 /**
  * OE domain configuration that registers aggregate types and enums in the NEW dddrive framework.
- * 
+ *
  * This follows the dfp-app-server pattern where domain-specific config classes
  * register their aggregate types via InitializingBean.afterPropertiesSet().
  */
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component
 class OEConfig : EnumConfigBase(), InitializingBean {
 
     @Autowired
-    @Qualifier("coreCodeAggregateTypeEnum")
     lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
     override fun afterPropertiesSet() {

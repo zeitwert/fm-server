@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import io.dddrive.core.oe.model.ObjUser;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -55,7 +56,7 @@ public class NoteTest {
 		assertEquals("obj_test", this.testRepo.getAggregateType().getId());
 
 		// Get user and timestamp for new dddrive signatures
-		ObjUser user = this.userRepo.getByEmail(USER_EMAIL).get();
+		ObjUserFM user = this.userRepo.getByEmail(USER_EMAIL).get();
 		Object userId = user.getId();
 		OffsetDateTime timestamp = OffsetDateTime.now();
 

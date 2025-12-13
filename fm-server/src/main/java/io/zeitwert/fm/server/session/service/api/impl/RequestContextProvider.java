@@ -7,9 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.annotation.RequestScope;
 
-import io.dddrive.oe.model.ObjUser;
-import io.zeitwert.fm.oe.model.enums.CodeLocaleEnum;
-import io.dddrive.oe.service.api.ObjUserCache;
+import io.dddrive.core.ddd.model.enums.CodePartListType;
+import io.dddrive.core.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.enums.CodeLocale;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
@@ -18,12 +19,10 @@ import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
 @Profile({ "dev", "staging", "prod" })
 public class RequestContextProvider {
 
-	static final String DEFAULT_LOCALE = "de-CH";
-
 	@Bean
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public RequestContextFM getRequestContext(ObjUserCache userCache) {
+	public RequestContextFM getRequestContext(ObjUserFMRepository userCache) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if ("anonymousUser".equals(auth.getPrincipal())) {
@@ -39,7 +38,7 @@ public class RequestContextProvider {
 				.tenantId(tenantId)
 				.user(user)
 				.accountId(accountId)
-				.locale(CodeLocaleEnum.getLocale(DEFAULT_LOCALE))
+				.locale(CodeLocale.DE_CH)
 				.build();
 
 	}

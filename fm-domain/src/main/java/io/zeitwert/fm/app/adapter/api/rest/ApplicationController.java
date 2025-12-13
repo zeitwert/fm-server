@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.service.api.ObjTenantCache;
-import io.dddrive.oe.service.api.ObjUserCache;
+import io.dddrive.core.oe.model.ObjUser;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
 import io.zeitwert.fm.app.ApplicationService;
@@ -23,17 +21,19 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationInfo;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
+import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
 @RestController("fmApplicationController")
 @RequestMapping("/rest/app")
 public class ApplicationController {
 
 	@Autowired
-	private ObjTenantCache tenantCache;
+	private ObjTenantFMRepository tenantCache;
 
 	@Autowired
-	private ObjUserCache userCache;
+	private ObjUserFMRepository userCache;
 
 	@Autowired
 	private AccountService accountService;
@@ -57,18 +57,18 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		Optional<ObjUser> maybeUser = this.userCache.getByEmail(email);
+		Optional<ObjUserFM> maybeUser = this.userCache.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		ObjUserFM user = (ObjUserFM) maybeUser.get();
 		return ResponseEntity.ok(
 				UserInfoResponse.builder()
-						.id(user.getId())
+						.id((Integer)user.getId())
 						.email(user.getEmail())
 						.name(user.getName())
-						.role(EnumeratedDto.fromEnum(user.getRole()))
-						.tenants(user.getTenantSet().stream().map(t -> this.tenantCache.getAsEnumerated(t.getId())).toList())
+						.role(EnumeratedDto.of(user.getRole()))
+						.tenants(user.getTenantSet().stream().map(EnumeratedDto::of).toList())
 						.build());
 	}
 
@@ -77,12 +77,12 @@ public class ApplicationController {
 		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(id);
 		List<ObjAccountVRecord> accounts = this.accountService.getAccounts(tenant);
 		List<EnumeratedDto> accountDtos = accounts.stream()
-				.map(account -> EnumeratedDto.builder().id(account.getId().toString()).name(account.getName()).build())
+				.map(account -> EnumeratedDto.of(account.getId().toString(), account.getName()))
 				.toList();
 		return ResponseEntity.ok(
 				TenantInfoResponse.builder()
 						.id(id)
-						.tenantType(EnumeratedDto.fromEnum(tenant.getTenantType()))
+						.tenantType(EnumeratedDto.of(tenant.getTenantType()))
 						.accounts(accountDtos)
 						.build());
 	}

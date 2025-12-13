@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 class TaskConfig : EnumConfigBase(), InitializingBean {
 
     @Autowired
-    @Qualifier("coreCodeAggregateTypeEnum")
     lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
     override fun afterPropertiesSet() {

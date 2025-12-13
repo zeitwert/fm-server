@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.service.api.DocumentGenerationService;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
@@ -38,7 +38,7 @@ public class BuildingDocumentController {
 	static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	@Autowired
-	private ObjBuildingCache cache;
+	private ObjBuildingRepository cache;
 
 	@Autowired
 	private ProjectionService projectionService;

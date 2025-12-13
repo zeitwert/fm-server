@@ -1,9 +1,8 @@
 package io.zeitwert.fm.test.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
-import io.zeitwert.fm.account.service.api.ObjAccountCache
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
-import io.zeitwert.fm.doc.model.base.FMDocCoreRepositoryBase
+import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.DocTestRepository
 import io.zeitwert.fm.test.model.base.DocTestBase
@@ -16,9 +15,7 @@ import org.springframework.stereotype.Component
  * Repository implementation for DocTest using the NEW dddrive framework.
  */
 @Component("docTestRepository")
-class DocTestRepositoryImpl(
-    private val _accountCache: ObjAccountCache
-) : FMDocCoreRepositoryBase<DocTest>(
+class DocTestRepositoryImpl() : FMDocRepositoryBase<DocTest>(
     DocTestRepository::class.java,
     DocTest::class.java,
     DocTestBase::class.java,
@@ -41,8 +38,6 @@ class DocTestRepositoryImpl(
     }
 
     override fun getPersistenceProvider(): AggregatePersistenceProvider<DocTest> = persistenceProvider
-
-    override fun getAccountCache(): ObjAccountCache = _accountCache
 
     fun getNoteRepository(): ObjNoteRepository = noteRepository
 

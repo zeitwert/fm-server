@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
 @RestController("userDocumentController")
 @RequestMapping("/rest/oe/users")
 public class UserDocumentController {
 
 	@Autowired
-	private ObjUserCache userCache;
+	private ObjUserFMRepository userCache;
 
 	@Autowired
 	RequestContext requestCtx;

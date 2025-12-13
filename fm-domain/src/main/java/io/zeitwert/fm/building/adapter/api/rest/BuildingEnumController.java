@@ -42,7 +42,7 @@ public class BuildingEnumController {
 				.body(
 						partCatalog.getParts().stream().map(p -> {
 							return BuildingPartWeightDto.builder()
-									.part(EnumeratedDto.fromEnum(p.getFirst()))
+									.part(EnumeratedDto.of(p.getFirst()))
 									.weight(p.getSecond())
 									.lifeTime20(p.getFirst().getLifetime(0.2))
 									.lifeTime50(p.getFirst().getLifetime(0.5))

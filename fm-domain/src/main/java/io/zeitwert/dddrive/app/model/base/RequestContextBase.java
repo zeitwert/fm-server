@@ -8,7 +8,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.dddrive.core.ddd.model.Aggregate;
 import io.dddrive.core.oe.model.ObjUser;
 import io.zeitwert.dddrive.app.model.RequestContext;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
+@Data()
+@SuperBuilder
+@ToString(callSuper = true, includeFieldNames = true)
 public abstract class RequestContextBase implements RequestContext {
 
 	private final ObjUser user;

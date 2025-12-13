@@ -7,7 +7,7 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFM
@@ -17,7 +17,7 @@ import java.time.OffsetDateTime
 
 abstract class ObjTenantFMBase(
     repository: ObjTenantFMRepository
-) : FMObjCoreBase(repository), ObjTenantFM {
+) : FMObjBase(repository), ObjTenantFM {
 
     private val _tenantType: EnumProperty<CodeTenantType> = this.addEnumProperty("tenantType", CodeTenantType::class.java)
     private val _inflationRate: BaseProperty<BigDecimal> = this.addBaseProperty("inflationRate", BigDecimal::class.java)

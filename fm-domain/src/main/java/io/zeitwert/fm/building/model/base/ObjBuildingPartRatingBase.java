@@ -6,15 +6,15 @@ import java.time.LocalDate;
 
 import kotlin.Pair;
 
-import io.dddrive.ddd.model.Part;
-import io.dddrive.ddd.model.PartRepository;
-import io.dddrive.obj.model.base.ObjPartBase;
-import io.dddrive.oe.model.ObjUser;
-import io.dddrive.property.model.EnumProperty;
-import io.dddrive.property.model.PartListProperty;
-import io.dddrive.property.model.Property;
-import io.dddrive.property.model.ReferenceProperty;
-import io.dddrive.property.model.SimpleProperty;
+import io.dddrive.core.ddd.model.Part;
+import io.dddrive.core.ddd.model.PartRepository;
+import io.dddrive.core.obj.model.base.ObjPartBase;
+import io.dddrive.core.oe.model.ObjUser;
+import io.dddrive.core.property.model.EnumProperty;
+import io.dddrive.core.property.model.PartListProperty;
+import io.dddrive.core.property.model.Property;
+import io.dddrive.core.property.model.ReferenceProperty;
+import io.dddrive.core.property.model.BaseProperty;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -31,15 +31,15 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	protected final EnumProperty<CodeBuildingPartCatalog> partCatalog= this.addEnumProperty("partCatalog", CodeBuildingPartCatalog.class);
 	protected final EnumProperty<CodeBuildingMaintenanceStrategy> maintenanceStrategy=this.addEnumProperty("maintenanceStrategy", CodeBuildingMaintenanceStrategy.class);
 	protected final EnumProperty<CodeBuildingRatingStatus> ratingStatus= this.addEnumProperty("ratingStatus", CodeBuildingRatingStatus.class);
-	protected final SimpleProperty<LocalDate> ratingDate= this.addSimpleProperty("ratingDate", LocalDate.class);
+	protected final BaseProperty<LocalDate> ratingDate= this.addBaseProperty("ratingDate", LocalDate.class);
 	protected final ReferenceProperty<ObjUser> ratingUser= this.addReferenceProperty("ratingUser", ObjUser.class);
 	protected final PartListProperty<ObjBuildingPartElementRating> elementList= this.addPartListProperty("elementList", ObjBuildingPartElementRating.class);
 	//@formatter:on
 
 	protected Integer elementWeights = null;
 
-	public ObjBuildingPartRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, Object state) {
-		super(repository, obj, state);
+	protected ObjBuildingPartRatingBase(ObjBuilding obj, PartRepository<ObjBuilding, ? extends Part<ObjBuilding>> repository, Property<?> property, Integer id) {
+		super(obj, repository, property, id);
 	}
 
 	@Override
@@ -68,7 +68,8 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 		if (property == this.partCatalog) {
 			this.elementList.clearParts();
 			if (this.getPartCatalog() != null) {
-				for (Pair<CodeBuildingPart, Integer> part : this.getPartCatalog().getParts()) {
+				CodeBuildingPartCatalog catalog = this.getPartCatalog();
+				for (Pair<CodeBuildingPart, Integer> part : catalog.getParts()) {
 					this.addElement(part.getFirst()).setWeight(part.getSecond());
 				}
 			}
@@ -102,7 +103,7 @@ public abstract class ObjBuildingPartRatingBase extends ObjPartBase<ObjBuilding>
 	public ObjBuildingPartElementRating addElement(CodeBuildingPart buildingPart) {
 		requireThis(this.getElement(buildingPart) == null,
 				"unique element for buildingPart [" + buildingPart.getId() + "]");
-		ObjBuildingPartElementRating e = this.elementList.addPart();
+		ObjBuildingPartElementRating e = this.elementList.addPart(null);
 		e.setBuildingPart(buildingPart);
 		return e;
 	}

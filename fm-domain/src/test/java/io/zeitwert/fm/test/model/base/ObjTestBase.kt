@@ -8,7 +8,7 @@ import io.dddrive.core.property.model.ReferenceProperty
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.ObjTestRepository
@@ -22,7 +22,7 @@ import java.time.LocalDate
  */
 abstract class ObjTestBase(
 	repository: ObjTestRepository
-) : FMObjCoreBase(repository), ObjTest {
+) : FMObjBase(repository), ObjTest {
 
 	//@formatter:off
 	private val _shortText: BaseProperty<String> = this.addBaseProperty("shortText", String::class.java)

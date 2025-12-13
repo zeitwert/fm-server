@@ -17,21 +17,20 @@ import org.springframework.stereotype.Service;
 
 import io.crnk.core.queryspec.FilterSpec;
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.ddd.model.Aggregate;
-import io.dddrive.ddd.model.enums.CodeAggregateType;
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.jooq.util.SqlUtils.SearchConditionProvider;
-import io.dddrive.search.model.SearchResult;
-import io.dddrive.search.service.api.SearchService;
+import io.dddrive.core.ddd.model.Aggregate;
+import io.dddrive.core.ddd.model.enums.CodeAggregateType;
+import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.ddd.model.SearchResult;
+import io.zeitwert.fm.ddd.service.api.SearchService;
 import io.zeitwert.fm.obj.model.db.tables.Obj;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.search.model.db.Tables;
 import io.zeitwert.fm.search.model.db.tables.ItemSearch;
+import io.zeitwert.fm.util.SqlUtils;
 
 @Service("searchService")
-@DependsOn("appContext")
-public class SearchServiceImpl implements SearchService, SearchConditionProvider {
+public class SearchServiceImpl implements SearchService, SqlUtils.SearchConditionProvider {
 
 	private static final ItemSearch ITEM_SEARCH = Tables.ITEM_SEARCH;
 	private static final Obj OBJ = io.zeitwert.fm.obj.model.db.Tables.OBJ;
@@ -47,8 +46,8 @@ public class SearchServiceImpl implements SearchService, SearchConditionProvider
 		String allTexts = String.join(" ", texts.stream().filter(t -> t != null).toList()).toLowerCase();
 		String allTokens = String.join(" ", tokens.stream().filter(t -> t != null).toList()).toLowerCase();
 		String allTextsAndTokens = (allTexts + " " + allTokens).trim();
-		String aggregateType = aggregate.getMeta().getAggregateType().getId();
-		Integer aggregateId = aggregate.getId();
+		String aggregateType = aggregate.getMeta().getRepository().getAggregateType().getId();
+		Integer aggregateId = (Integer) aggregate.getId();
 		String id = aggregateType + ":" + aggregateId;
 		this.dslContext
 				.delete(ITEM_SEARCH)
@@ -88,7 +87,7 @@ public class SearchServiceImpl implements SearchService, SearchConditionProvider
 	public List<SearchResult> find(RequestContext requestCtx, List<String> itemTypes, String searchToken,
 			int maxResultSize) {
 
-		Integer tenantId = requestCtx.getTenantId();
+		Integer tenantId = (Integer) requestCtx.getTenantId();
 		Integer accountId = ((RequestContextFM) requestCtx).getAccountId();
 
 		Condition tenantCondition = tenantId == ObjTenantFMRepository.KERNEL_TENANT_ID

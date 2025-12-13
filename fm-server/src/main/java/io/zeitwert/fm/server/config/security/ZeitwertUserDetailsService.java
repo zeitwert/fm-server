@@ -7,14 +7,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
 @Service
 public class ZeitwertUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	ObjUserCache userCache;
+	ObjUserFMRepository userCache;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

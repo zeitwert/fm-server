@@ -14,12 +14,12 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.math.BigDecimal
 
 abstract class ObjAccountBase(
     repository: ObjAccountRepository
-) : FMObjCoreBase(repository), ObjAccount, AggregateWithNotesMixin {
+) : FMObjBase(repository), ObjAccount, AggregateWithNotesMixin {
 
     override fun aggregate(): ObjAccount = this
 

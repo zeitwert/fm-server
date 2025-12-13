@@ -14,18 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.app.service.api.AppContext;
-import io.dddrive.doc.model.enums.CodeCaseStage;
-import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.core.ddd.model.RepositoryDirectory;
+import io.dddrive.core.doc.model.enums.CodeCaseStage;
+import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.enums.model.Enumerated;
-import io.dddrive.enums.model.Enumeration;
-import io.dddrive.oe.model.ObjTenant;
-import io.dddrive.oe.model.ObjUser;
-import io.dddrive.oe.service.api.ObjTenantCache;
-import io.dddrive.oe.service.api.ObjUserCache;
-import io.zeitwert.fm.obj.model.base.ObjFields;
+import io.dddrive.core.enums.model.Enumerated;
+import io.dddrive.core.enums.model.Enumeration;
+import io.dddrive.core.oe.model.ObjTenant;
+import io.dddrive.core.oe.model.ObjUser;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
@@ -35,53 +34,49 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 public class EnumController {
 
 	@Autowired
-	AppContext appContext;
+	RequestContextFM requestContext;
+
+	@Autowired
+	RepositoryDirectory directory;
 
 	@Autowired
 	ObjTenantFMRepository tenantRepo;
 
 	@Autowired
-	ObjTenantCache tenantCache;
-
-	@Autowired
 	ObjUserFMRepository userRepo;
 
 	@Autowired
-	ObjUserCache userCache;
+	ObjUserFMRepository userCache;
 
-	@GetMapping("/oe/objTenant")
-	public ResponseEntity<List<EnumeratedDto>> getTenants() {
-		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<ObjTenantVRecord> tenants = this.tenantRepo.find(querySpec);
-		return ResponseEntity.ok(
-				tenants.stream()
-						.map(obj -> (TableRecord<?>) obj)
-						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
-								.name(tenant.get(ObjFields.CAPTION)).build())
-						.toList());
-	}
+//	@GetMapping("/oe/objTenant")
+//	public ResponseEntity<List<EnumeratedDto>> getTenants() {
+//		QuerySpec querySpec = new QuerySpec(ObjUser.class);
+//		List<ObjTenantVRecord> tenants = this.tenantRepo.find(querySpec);
+//		return ResponseEntity.ok(
+//				tenants.stream()
+//						.map(obj -> (TableRecord<?>) obj)
+//						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
+//								.name(tenant.get(ObjFields.CAPTION)).build())
+//						.toList());
+//	}
 
 	@GetMapping("/oe/objTenant/{id}")
 	public ResponseEntity<ObjTenant> getTenant(@PathVariable Integer id) {
-		ObjTenant tenant = this.tenantCache.get(id);
+		ObjTenant tenant = this.tenantRepo.get(id);
 		return ResponseEntity.ok(tenant);
 	}
 
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-		List<ObjUserVRecord> users = this.userRepo.find(querySpec);
-		return ResponseEntity.ok(
-				users.stream()
-						.map(obj -> (TableRecord<?>) obj)
-						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
-								.name(tenant.get(ObjFields.CAPTION)).build())
-						.toList());
+//		List<ObjUserVRecord> users = this.userRepo.find(querySpec);
+		List<ObjUserFM> users = this.userRepo.getAll(requestContext.getTenantId());
+		return ResponseEntity.ok(users.stream().map(u -> EnumeratedDto.of(u.getId().toString(), u.getCaption())).toList());
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
-		Optional<ObjUser> user = this.userCache.getByEmail(idOrEmail);
+		Optional<ObjUserFM> user = this.userCache.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
 			user = Optional.of(this.userCache.get(Integer.valueOf(idOrEmail)));
 		}
@@ -93,11 +88,7 @@ public class EnumController {
 
 	@GetMapping("/doc/codeCaseStage/{caseDef}")
 	public ResponseEntity<List<CodeCaseStage>> getCaseStageDomain(@PathVariable String caseDef) {
-		CodeCaseStageEnum enumeration = (CodeCaseStageEnum) this.appContext.getEnumeration(CodeCaseStage.class);
-		if (enumeration == null) {
-			return ResponseEntity.notFound().build();
-		}
-		List<CodeCaseStage> itemList = enumeration.getItems().stream()
+		List<CodeCaseStage> itemList = CodeCaseStageEnum.getInstance().getItems().stream()
 				.filter((item) -> item.getId().startsWith(caseDef + ".") && !"abstract".equals(item.getCaseStageTypeId()))
 				.toList();
 		return ResponseEntity.ok(itemList);
@@ -106,7 +97,7 @@ public class EnumController {
 	@GetMapping("/{module}/{enumerationName}")
 	public ResponseEntity<List<? extends Enumerated>> getEnumDomain(@PathVariable String module,
 			@PathVariable String enumerationName, @RequestParam(required = false, defaultValue = "") List<String> filter) {
-		Enumeration<? extends Enumerated> enumeration = this.appContext.getEnumeration(module, enumerationName);
+		Enumeration<? extends Enumerated> enumeration = directory.getEnumeration(module, enumerationName);
 		if (enumeration == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -117,7 +108,7 @@ public class EnumController {
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<Enumerated> getEnumItem(@PathVariable String module, @PathVariable String enumerationName,
 			@PathVariable String id) {
-		Enumerated item = ((Enumeration<Enumerated>) this.appContext.getEnumeration(module, enumerationName)).getItem(id);
+		Enumerated item = ((Enumeration<Enumerated>) directory.getEnumeration(module, enumerationName)).getItem(id);
 		if (item == null) {
 			return ResponseEntity.notFound().build();
 		}

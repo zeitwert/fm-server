@@ -4,22 +4,21 @@ import org.springframework.stereotype.Controller;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
-import io.dddrive.oe.service.api.ObjUserCache;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.task.adapter.api.jsonapi.DocTaskApiRepository;
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
-import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
 
 @Controller("docTaskApiRepository")
 public class DocTaskApiRepositoryImpl
-		extends AggregateApiRepositoryBase<DocTask, DocTaskVRecord, DocTaskDto>
+		extends AggregateApiRepositoryBase<DocTask, DocTaskDto>
 		implements DocTaskApiRepository {
 
 	public DocTaskApiRepositoryImpl(
 			DocTaskRepository repository,
 			RequestContext requestCtx,
-			ObjUserCache userCache,
+			ObjUserFMRepository userCache,
 			DocTaskDtoAdapter dtoAdapter) {
 		super(DocTaskDto.class, requestCtx, userCache, repository, dtoAdapter);
 	}

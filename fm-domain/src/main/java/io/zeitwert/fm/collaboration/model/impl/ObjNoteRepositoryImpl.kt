@@ -5,7 +5,7 @@ import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.base.ObjNoteBase
 import io.zeitwert.fm.collaboration.persist.jooq.ObjNotePersistenceProvider
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
  * Repository implementation for ObjNote using the NEW dddrive framework.
  */
 @Component("objNoteRepository")
-class ObjNoteRepositoryImpl : FMObjCoreRepositoryBase<ObjNote>(
+class ObjNoteRepositoryImpl : FMObjRepositoryBase<ObjNote>(
     ObjNoteRepository::class.java,
     ObjNote::class.java,
     ObjNoteBase::class.java,

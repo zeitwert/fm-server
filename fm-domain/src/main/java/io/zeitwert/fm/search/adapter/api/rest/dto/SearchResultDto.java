@@ -1,7 +1,7 @@
 package io.zeitwert.fm.search.adapter.api.rest.dto;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.search.model.SearchResult;
+import io.zeitwert.fm.ddd.model.SearchResult;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,7 +21,7 @@ public class SearchResultDto {
 		// @formatter:off
 		return SearchResultDto.builder()
 			.tenantId(searchResult.getTenantId())
-			.itemType(EnumeratedDto.fromEnum(searchResult.getAggregateType()))
+			.itemType(EnumeratedDto.of(searchResult.getAggregateType()))
 			.id(searchResult.getId().toString())
 			.caption(searchResult.getCaption())
 			.rank(searchResult.getRank())

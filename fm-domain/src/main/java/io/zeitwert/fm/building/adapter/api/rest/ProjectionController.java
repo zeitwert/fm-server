@@ -20,7 +20,7 @@ public class ProjectionController {
 	@GetMapping("/elements/{elementId}")
 	ResponseEntity<List<ProjectionPeriod>> getElementProjection(@PathVariable String elementId)
 			throws InterruptedException, ExecutionException {
-		final CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
+		final CodeBuildingPart buildingPart = CodeBuildingPart.Enumeration.getBuildingPart(elementId);
 		final int startYear = 2021;
 		final double condition = 1;
 		final int duration = 50;
@@ -32,7 +32,7 @@ public class ProjectionController {
 	@GetMapping("/elements/{elementId}/withRestoration")
 	ResponseEntity<List<Double>> getRestoredTimeValue(@PathVariable String elementId)
 			throws InterruptedException, ExecutionException {
-		CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
+		CodeBuildingPart buildingPart = CodeBuildingPart.Enumeration.getBuildingPart(elementId);
 		List<Double> timeValues = new ArrayList<Double>();
 		int year = 0;
 		for (int t = 0; t < 100; t++) {
@@ -49,7 +49,7 @@ public class ProjectionController {
 	@GetMapping("/elements/{elementId}/relativeAge/{timeValue}")
 	ResponseEntity<Double> getRelativeAge(@PathVariable String elementId, @PathVariable Double timeValue)
 			throws InterruptedException, ExecutionException {
-		CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
+		CodeBuildingPart buildingPart = CodeBuildingPart.Enumeration.getBuildingPart(elementId);
 		return ResponseEntity.ok(buildingPart.getRelativeAge(timeValue));
 	}
 
@@ -58,7 +58,7 @@ public class ProjectionController {
 			@PathVariable Integer ratingYear,
 			@PathVariable Double condition)
 			throws InterruptedException, ExecutionException {
-		CodeBuildingPart buildingPart = CodeBuildingPart.getBuildingPart(elementId);
+		CodeBuildingPart buildingPart = CodeBuildingPart.Enumeration.getBuildingPart(elementId);
 		return ResponseEntity
 				.ok(buildingPart.getNextRestoration(1000000, ratingYear, condition));
 	}

@@ -10,8 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.doc.model.base.FMDocCoreBase;
+import io.zeitwert.fm.doc.model.base.FMDocBase;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
@@ -19,7 +19,6 @@ import io.zeitwert.dddrive.app.model.RequestContext;
 import io.dddrive.core.doc.model.enums.CodeCaseStage;
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.core.oe.model.ObjUser;
-import io.dddrive.core.oe.service.api.ObjUserCache;
 import io.zeitwert.test.TestApplication;
 
 import java.time.OffsetDateTime;
@@ -46,13 +45,10 @@ public class TaskTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjUserCache userCache;
+	private ObjUserFMRepository userCache;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
-
-	@Autowired
-	private ObjAccountCache accountCache;
 
 	@Autowired
 	private DocTaskRepository taskRepository;
@@ -130,7 +126,7 @@ public class TaskTest {
 	private void getTestData() {
 		RelatedTo = this.userCache.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
-		Account = this.accountCache.get(this.accountRepo.find(null).get(0).getId());
+		Account = this.accountRepo.get(this.accountRepo.getAll(null).get(0).getId());
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");
@@ -142,7 +138,7 @@ public class TaskTest {
 	private void initTask1(DocTask task, OffsetDateTime timestamp) {
 		task.setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"), null, timestamp);
 		task.setRelatedToId((Integer) RelatedTo.getId());
-		((FMDocCoreBase) task).setAccountId((Integer) Account.getId());
+		((FMDocBase) task).setAccountId((Integer) Account.getId());
 		task.setSubject("Todo");
 		task.setContent("content");
 		task.setIsPrivate(false);
@@ -152,7 +148,7 @@ public class TaskTest {
 
 	private void checkTask1(DocTask task) {
 		assertEquals(task.getRelatedToId(), RelatedTo.getId());
-		assertEquals(Account.getId(), ((FMDocCoreBase) task).getAccountId(), "account id");
+		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
 		assertEquals(Account.getId(), task.getAccount().getId(), "account id");
 		assertEquals(task.getSubject(), "Todo");
 		assertEquals(task.getContent(), "content");
@@ -162,7 +158,7 @@ public class TaskTest {
 	}
 
 	private void initTask2(DocTask task, OffsetDateTime timestamp) {
-		assertEquals(Account.getId(), ((FMDocCoreBase) task).getAccountId(), "account id");
+		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
 		assertEquals(Account.getId(), task.getAccount().getId(), "account id");
 		task.setSubject("Todos");
 		task.setContent("contents");

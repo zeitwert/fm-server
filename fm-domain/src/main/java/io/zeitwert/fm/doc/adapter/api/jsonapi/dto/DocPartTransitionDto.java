@@ -1,8 +1,8 @@
 
 package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
-import io.dddrive.doc.model.DocPartTransition;
-import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.core.doc.model.DocPartTransition;
+import io.dddrive.core.doc.model.enums.CodeCaseStage;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class DocPartTransitionDto {
 	public static DocPartTransitionDto fromPart(DocPartTransition transition) {
 		return DocPartTransitionDto.builder()
 				.seqNr(transition.getSeqNr())
-				.user(EnumeratedDto.fromAggregate(transition.getUser()))
+				.user(EnumeratedDto.of(transition.getUser()))
 				.timestamp(transition.getTimestamp())
 				.oldCaseStage(transition.getOldCaseStage())
 				.newCaseStage(transition.getNewCaseStage())

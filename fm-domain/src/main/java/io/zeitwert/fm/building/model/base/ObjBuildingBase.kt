@@ -5,12 +5,10 @@ import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
-import io.dddrive.core.validation.model.enums.CodeValidationLevel
 import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
-import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
 import io.zeitwert.fm.building.model.ObjBuildingRepository
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
@@ -25,7 +23,7 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.enums.CodeCountry
@@ -36,7 +34,7 @@ import java.time.OffsetDateTime
 
 abstract class ObjBuildingBase(
     repository: ObjBuildingRepository
-) : FMObjCoreBase(repository), ObjBuilding, AggregateWithNotesMixin, AggregateWithTasksMixin {
+) : FMObjBase(repository), ObjBuilding, AggregateWithNotesMixin, AggregateWithTasksMixin {
 
     private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
     private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)

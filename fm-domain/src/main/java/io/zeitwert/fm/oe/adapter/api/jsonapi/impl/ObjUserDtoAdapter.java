@@ -6,33 +6,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.oe.model.ObjUser;
-import io.zeitwert.fm.oe.model.enums.CodeUserRoleEnum;
+import io.dddrive.core.oe.model.ObjUser;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.oe.model.enums.CodeUserRole;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
 
 @Component("objUserDtoAdapter")
-@DependsOn("kernelBootstrap")
-public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVRecord, ObjUserDto> {
+public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 
-	private ObjDocumentCache documentCache = null;
+	private ObjDocumentRepository documentCache = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
 	protected ObjUserDtoAdapter() {
-		AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_user"));
+		AGGREGATE_TYPE = EnumeratedDto.of(CodeAggregateTypeEnum.getAggregateType("obj_user"));
 	}
 
 	@Autowired
-	void setDocumentCache(ObjDocumentCache documentCache) {
+	void setDocumentCache(ObjDocumentRepository documentCache) {
 		this.documentCache = documentCache;
 	}
 
@@ -46,7 +45,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 	}
 
 	public OffsetDateTime getLastTouch(Integer id) {
-		return this.getUserCache().getLastTouch(id);
+		return null; // this.getUserCache().getLastTouch(id);
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 			}
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
-			obj.setRole(CodeUserRoleEnum.getUserRole(dto.getRole().getId()));
+			obj.setRole(CodeUserRole.getUserRole(dto.getRole().getId()));
 			obj.clearTenantSet();
 			for (EnumeratedDto tenant : dto.getTenants()) {
 				obj.addTenant(this.getTenant(Integer.parseInt(tenant.getId())));
@@ -82,8 +81,8 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 				.email(obj.getEmail())
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.role(EnumeratedDto.fromEnum(obj.getRole()))
-				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated(t.getId())).toList())
+				.role(EnumeratedDto.of(obj.getRole()))
+				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated((Integer) t.getId())).toList())
 				.needPasswordChange(obj.getNeedPasswordChange())
 				.avatarId(obj.getAvatarImageId())
 				.build();
@@ -93,27 +92,28 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserVReco
 		if (obj == null) {
 			return null;
 		}
-		return EnumeratedDto.builder()
-				.id("" + obj.getId())
-				.itemType(AGGREGATE_TYPE)
-				.name(obj.getCaption())
-				.build();
+		return EnumeratedDto.of("" + obj.getId(), obj.getCaption());
+//		return EnumeratedDto.builder() TODO-MIGRATION
+//				.id("" + obj.getId())
+//				.itemType(AGGREGATE_TYPE)
+//				.name(obj.getCaption())
+//				.build();
 	}
 
-	@Override
-	public ObjUserDto fromRecord(ObjUserVRecord obj) {
-		if (obj == null) {
-			return null;
-		}
-		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder();
-		this.fromRecord(dtoBuilder, obj);
-		return dtoBuilder
-				.email(obj.getEmail())
-				.name(obj.getName())
-				.description(obj.getDescription())
-				.role(EnumeratedDto.fromEnum(CodeUserRoleEnum.getUserRole(obj.getRoleList())))
-				.avatarId(obj.getAvatarImgId())
-				.build();
-	}
+//	@Override
+//	public ObjUserDto fromRecord(ObjUserVRecord obj) {
+//		if (obj == null) {
+//			return null;
+//		}
+//		ObjUserDto.ObjUserDtoBuilder<?, ?> dtoBuilder = ObjUserDto.builder();
+//		this.fromRecord(dtoBuilder, obj);
+//		return dtoBuilder
+//				.email(obj.getEmail())
+//				.name(obj.getName())
+//				.description(obj.getDescription())
+//				.role(EnumeratedDto.of(CodeUserRole.getUserRole(obj.getRoleList())))
+//				.avatarId(obj.getAvatarImgId())
+//				.build();
+//	}
 
 }

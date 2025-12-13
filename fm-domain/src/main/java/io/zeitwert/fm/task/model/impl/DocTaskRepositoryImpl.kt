@@ -1,7 +1,7 @@
 package io.zeitwert.fm.task.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
-import io.zeitwert.fm.doc.model.base.FMDocCoreRepositoryBase
+import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.base.DocTaskBase
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("docTaskRepository")
-class DocTaskRepositoryImpl() : FMDocCoreRepositoryBase<DocTask>(
+class DocTaskRepositoryImpl() : FMDocRepositoryBase<DocTask>(
     DocTaskRepository::class.java,
     DocTask::class.java,
     DocTaskBase::class.java,

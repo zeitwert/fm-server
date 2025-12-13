@@ -5,22 +5,21 @@ import org.springframework.stereotype.Controller;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
-import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.ObjDocumentApiRepository;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
 @Controller("objDocumentApiRepository")
 public class ObjDocumentApiRepositoryImpl
-		extends AggregateApiRepositoryBase<ObjDocument, ObjDocumentVRecord, ObjDocumentDto>
+		extends AggregateApiRepositoryBase<ObjDocument, ObjDocumentDto>
 		implements ObjDocumentApiRepository {
 
 	public ObjDocumentApiRepositoryImpl(
 			ObjDocumentRepository repository,
 			RequestContext requestCtx,
-			ObjUserCache userCache,
+			ObjUserFMRepository userCache,
 			ObjDocumentDtoAdapter dtoAdapter) {
 		super(ObjDocumentDto.class, requestCtx, userCache, repository, dtoAdapter);
 	}

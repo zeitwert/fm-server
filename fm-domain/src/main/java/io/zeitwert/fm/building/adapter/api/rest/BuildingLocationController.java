@@ -16,8 +16,8 @@ import com.google.maps.model.Size;
 import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeRequestDto;
 import io.zeitwert.fm.building.adapter.api.rest.dto.GeocodeResponseDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.service.api.BuildingService;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 
 @RestController("buildingLocationController")
 @RequestMapping("/rest/building/buildings")
@@ -27,7 +27,7 @@ public class BuildingLocationController {
 	private static final Size DefaultMapSize = new Size(800, 600);
 
 	@Autowired
-	private ObjBuildingCache cache;
+	private ObjBuildingRepository cache;
 
 	@Autowired
 	BuildingService buildingService;

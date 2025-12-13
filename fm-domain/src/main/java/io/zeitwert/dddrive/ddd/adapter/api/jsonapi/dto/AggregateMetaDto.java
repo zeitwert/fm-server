@@ -38,7 +38,7 @@ public class AggregateMetaDto implements MetaInformation {
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate) {
 		AggregateMeta meta = aggregate.getMeta();
 		// @formatter:off
-		builder
+		builder()
 			.itemType(EnumeratedDto.of(meta.getRepository().getAggregateType()))
 			.owner(EnumeratedDto.of(aggregate.getOwner()))
 			.version(meta.getVersion())

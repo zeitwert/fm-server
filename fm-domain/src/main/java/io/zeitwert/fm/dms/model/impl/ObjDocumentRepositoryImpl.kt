@@ -1,14 +1,13 @@
 package io.zeitwert.fm.dms.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
-import io.dddrive.core.obj.model.ObjRepository
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.persist.jooq.ObjDocumentPersistenceProvider
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 
 @Component("objDocumentRepository")
-class ObjDocumentRepositoryImpl : FMObjCoreRepositoryBase<ObjDocument>(
+class ObjDocumentRepositoryImpl : FMObjRepositoryBase<ObjDocument>(
     ObjDocumentRepository::class.java,
     ObjDocument::class.java,
     ObjDocumentBase::class.java,

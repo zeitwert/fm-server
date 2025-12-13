@@ -1,8 +1,7 @@
 
 package io.zeitwert.fm.portfolio;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +38,17 @@ public class PortfolioTest {
 	@Test
 	public void testPortfolio() throws Exception {
 
-		assertTrue(this.portfolioRepository != null, "portfolioRepository not null");
+		assertNotNull(this.portfolioRepository, "portfolioRepository not null");
 		assertEquals("obj_portfolio", this.portfolioRepository.getAggregateType().getId());
 
-		assertTrue(this.accountCache != null, "accountRepository not null");
+		assertNotNull(this.accountCache, "accountRepository not null");
 		assertEquals("obj_account", this.accountCache.getAggregateType().getId());
 
-		assertTrue(this.buildingRepository != null, "buildingRepository not null");
+		assertNotNull(this.buildingRepository, "buildingRepository not null");
 		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = this.getTestAccount(this.requestCtx);
-		ObjPortfolio pf1a = this.portfolioRepository.create(this.requestCtx.getTenantId());
+		ObjAccount account = this.getTestAccount(requestCtx);
+		ObjPortfolio pf1a = this.portfolioRepository.create(requestCtx.getTenantId(), requestCtx.getUserId(), requestCtx.getCurrentTime());
 		// Integer pf1Id = pf1a.getId();
 		// Integer pf1aIdHash = System.identityHashCode(pf1a);
 
@@ -91,7 +90,7 @@ public class PortfolioTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.find(null).get(0).getId());
+		return this.accountCache.get(this.accountRepo.getAll(null).get(0).getId());
 	}
 
 }

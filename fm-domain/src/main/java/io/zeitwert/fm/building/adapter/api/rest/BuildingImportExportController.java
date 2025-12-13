@@ -1,6 +1,7 @@
 
 package io.zeitwert.fm.building.adapter.api.rest;
 
+import io.dddrive.core.ddd.model.RepositoryDirectory;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import jakarta.servlet.ServletException;
 
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 
-import io.dddrive.app.service.api.AppContext;
-import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto;
@@ -53,7 +52,7 @@ public class BuildingImportExportController {
 	private static final String VERSION = "1.0";
 
 	@Autowired
-	private AppContext appContext;
+	private RepositoryDirectory directory;
 
 	@Autowired
 	private ObjBuildingRepository buildingRepo;
@@ -245,8 +244,7 @@ public class BuildingImportExportController {
 					: null);
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
-					CodeBuildingPart buildingPart = appContext.getEnumerated(CodeBuildingPart.class,
-							dtoElement.getBuildingPart());
+					CodeBuildingPart buildingPart = directory.getEnumeration(CodeBuildingPart.class).getItem(dtoElement.getBuildingPart());
 					ObjBuildingPartElementRating element = rating.getElement(buildingPart);
 					if (element == null) {
 						element = rating.addElement(buildingPart);

@@ -18,7 +18,6 @@ import com.aspose.words.*;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.util.Formatter;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
@@ -28,11 +27,14 @@ import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
 import io.zeitwert.fm.portfolio.service.api.PortfolioService;
 import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.fm.server.config.aspose.AsposeConfig;
+import io.zeitwert.fm.util.Formatter;
 
 @Component("portfolioDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
 	private Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
+
+	Formatter fmt = Formatter.INSTANCE;
 
 	private static final int CoverFotoWidth = 400;
 	private static final int CoverFotoHeight = 230;
@@ -389,7 +391,6 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 		Table costsTable = (Table) doc.getChild(NodeType.TABLE, CostsDetailTable, true);
 		DocumentBuilder builder = new DocumentBuilder(doc);
-		Formatter fmt = Formatter.INSTANCE;
 
 		for (EvaluationPeriod ep : evaluationResult.getPeriods()) {
 			Row row = this.addCostsTableRow(costsTable);

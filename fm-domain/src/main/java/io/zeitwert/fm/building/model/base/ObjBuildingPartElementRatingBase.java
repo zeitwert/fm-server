@@ -1,9 +1,11 @@
 package io.zeitwert.fm.building.model.base;
 
-import io.dddrive.ddd.model.PartRepository;
-import io.dddrive.obj.model.base.ObjPartBase;
-import io.dddrive.property.model.EnumProperty;
-import io.dddrive.property.model.SimpleProperty;
+import io.dddrive.core.ddd.model.Part;
+import io.dddrive.core.ddd.model.PartRepository;
+import io.dddrive.core.obj.model.base.ObjPartBase;
+import io.dddrive.core.property.model.EnumProperty;
+import io.dddrive.core.property.model.BaseProperty;
+import io.dddrive.core.property.model.Property;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -13,21 +15,21 @@ public abstract class ObjBuildingPartElementRatingBase extends ObjPartBase<ObjBu
 
 	//@formatter:off
 	protected final EnumProperty<CodeBuildingPart> buildingPart = this.addEnumProperty("buildingPart", CodeBuildingPart.class);
-	protected final SimpleProperty<Integer> weight = this.addSimpleProperty("weight", Integer.class);
-	protected final SimpleProperty<Integer> condition = this.addSimpleProperty("condition", Integer.class);
-	protected final SimpleProperty<Integer> ratingYear = this.addSimpleProperty("ratingYear", Integer.class);
-	protected final SimpleProperty<Integer> strain = this.addSimpleProperty("strain", Integer.class);
-	protected final SimpleProperty<Integer> strength = this.addSimpleProperty("strength", Integer.class);
-	protected final SimpleProperty<String> description = this.addSimpleProperty("description", String.class);
-	protected final SimpleProperty<String> conditionDescription = this.addSimpleProperty("conditionDescription", String.class);
-	protected final SimpleProperty<String> measureDescription = this.addSimpleProperty("measureDescription", String.class);
+	protected final BaseProperty<Integer> weight = this.addBaseProperty("weight", Integer.class);
+	protected final BaseProperty<Integer> condition = this.addBaseProperty("condition", Integer.class);
+	protected final BaseProperty<Integer> ratingYear = this.addBaseProperty("ratingYear", Integer.class);
+	protected final BaseProperty<Integer> strain = this.addBaseProperty("strain", Integer.class);
+	protected final BaseProperty<Integer> strength = this.addBaseProperty("strength", Integer.class);
+	protected final BaseProperty<String> description = this.addBaseProperty("description", String.class);
+	protected final BaseProperty<String> conditionDescription = this.addBaseProperty("conditionDescription", String.class);
+	protected final BaseProperty<String> measureDescription = this.addBaseProperty("measureDescription", String.class);
 	// protected final EnumSetProperty<CodeBuildingElementDescription> materialDescriptionSet;
 	// protected final EnumSetProperty<CodeBuildingElementDescription> conditionDescriptionSet;
 	// protected final EnumSetProperty<CodeBuildingElementDescription> measureDescriptionSet;
 	//@formatter:on
 
-	public ObjBuildingPartElementRatingBase(PartRepository<ObjBuilding, ?> repository, ObjBuilding obj, Object state) {
-		super(repository, obj, state);
+	protected ObjBuildingPartElementRatingBase(ObjBuilding obj, PartRepository<ObjBuilding, ? extends Part<ObjBuilding>> repository, Property<?> property, Integer id) {
+		super(obj, repository, property, id);
 	}
 
 	// @Override

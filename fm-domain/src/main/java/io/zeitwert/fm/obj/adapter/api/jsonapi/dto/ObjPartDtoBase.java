@@ -1,9 +1,8 @@
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
-import io.dddrive.ddd.model.PartPersistenceStatus;
-import io.dddrive.ddd.model.base.PartSPI;
-import io.dddrive.obj.model.Obj;
-import io.dddrive.obj.model.ObjPart;
+import io.dddrive.core.ddd.model.PartSPI;
+import io.dddrive.core.obj.model.Obj;
+import io.dddrive.core.obj.model.ObjPart;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -47,8 +46,10 @@ public abstract class ObjPartDtoBase<O extends Obj, P extends ObjPart<O>> {
 	}
 
 	public static void fromPart(ObjPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, ObjPart<?> part) {
-		boolean isNew = ((PartSPI<?>) part).getPersistenceStatus() == PartPersistenceStatus.CREATED;
-		dtoBuilder.id(isNew ? ServerNewIdPrefix + part.getId() : String.valueOf(part.getId()));
+		// TODO-MIGRATION
+//		boolean isNew = ((PartSPI<?>) part).getPersistenceStatus() == PartPersistenceStatus.CREATED;
+//		dtoBuilder.id(isNew ? ServerNewIdPrefix + part.getId() : String.valueOf(part.getId()));
+		dtoBuilder.id(String.valueOf(part.getId()));
 	}
 
 }

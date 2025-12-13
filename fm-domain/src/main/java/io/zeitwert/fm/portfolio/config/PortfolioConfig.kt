@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 class PortfolioConfig : EnumConfigBase(), InitializingBean {
 
     @Autowired
-    @Qualifier("coreCodeAggregateTypeEnum")
     lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
     override fun afterPropertiesSet() {

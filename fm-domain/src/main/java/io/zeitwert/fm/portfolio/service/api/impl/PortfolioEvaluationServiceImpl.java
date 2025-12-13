@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartEnum;
-import io.zeitwert.fm.building.service.api.ObjBuildingCache;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
@@ -37,15 +36,12 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 	public static final Color OK_CONDITION = new Color(120, 192, 107);
 	public static final Color GOOD_CONDITION = new Color(51, 135, 33);
 
-	private final CodeBuildingPartEnum buildingPartEnum;
-	private final ObjBuildingCache buildingCache;
+	private final ObjBuildingRepository buildingCache;
 	private final ProjectionService projectionService;
 
-	public PortfolioEvaluationServiceImpl(ObjBuildingCache buildingCache, ProjectionService projectionService,
-			CodeBuildingPartEnum buildingPartEnum) {
+	public PortfolioEvaluationServiceImpl(ObjBuildingRepository buildingCache, ProjectionService projectionService) {
 		this.buildingCache = buildingCache;
 		this.projectionService = projectionService;
-		this.buildingPartEnum = buildingPartEnum;
 	}
 
 	@Override
@@ -63,7 +59,7 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 			ObjBuildingPartRating rating = building.getCurrentRating();
 			Integer ratingYear = rating != null ? rating.getRatingDate().getYear() : null;
 			EvaluationBuilding evaluationBuilding = EvaluationBuilding.builder()
-					.id(building.getId())
+					.id((Integer)building.getId())
 					.name(building.getName())
 					.description(building.getDescription())
 					.buildingNr(building.getBuildingNr())
@@ -106,7 +102,7 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 		}
 
 		List<EvaluationElement> elements = new ArrayList<>();
-		for (CodeBuildingPart buildingPart : this.buildingPartEnum.getItems()) {
+		for (CodeBuildingPart buildingPart : CodeBuildingPart.Enumeration.INSTANCE.getItems()) {
 			EvaluationElement ee = elementMap.get(buildingPart.getId());
 			if (ee != null) {
 				elements.add(ee);
@@ -146,7 +142,7 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 			}
 		}
 
-		return PortfolioEvaluationResult.builder().id(portfolio.getId()).name(portfolio.getName())
+		return PortfolioEvaluationResult.builder().id((Integer)portfolio.getId()).name(portfolio.getName())
 				.description(this.replaceEol(portfolio.getDescription())).accountName(portfolio.getAccount().getName())
 				.buildings(buildingList).elements(elements).startYear(projectionResult.getStartYear()).periods(periods).build();
 	}

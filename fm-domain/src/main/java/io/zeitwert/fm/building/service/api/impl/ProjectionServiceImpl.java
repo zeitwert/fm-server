@@ -21,7 +21,6 @@ import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 
 @Service("projectionService")
-@DependsOn("codeBuildingPriceIndexEnum")
 public class ProjectionServiceImpl implements ProjectionService {
 
 	public ProjectionResult getProjection(ObjBuilding building, int duration) {
@@ -48,7 +47,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 			if (building.getCurrentRating() != null) {
 				for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
 					EnumeratedDto elementEnum = this.getAsEnumerated(element);
-					EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
+					EnumeratedDto buildingPartEnum = EnumeratedDto.of(element.getBuildingPart());
 					if (element.getWeight() != null && element.getRatingYear() != null) {
 						if (element.getWeight() > 0 && element.getCondition() > 0) {
 							List<ProjectionPeriod> elementPeriodList = element.getBuildingPart().getProjection(
@@ -102,14 +101,13 @@ public class ProjectionServiceImpl implements ProjectionService {
 	}
 
 	private EnumeratedDto getAsEnumerated(ObjBuilding building) {
-		String id = Integer.toString(building.getId());
-		return EnumeratedDto.builder().id(id).name(building.getName()).build();
+		String id = building.getId().toString();
+		return EnumeratedDto.of(id, building.getName());
 	}
 
 	private EnumeratedDto getAsEnumerated(ObjBuildingPartElementRating element) {
 		String id = Integer.toString(element.getId());
-		return EnumeratedDto.builder().id(id)
-				.name(element.getMeta().getAggregate().getName() + ": " + element.getBuildingPart().getName()).build();
+		return EnumeratedDto.of(id, element.getMeta().getAggregate().getName() + ": " + element.getBuildingPart().getName());
 	}
 
 	private ProjectionResult consolidateProjection(ProjectionResult projectionResult) {
@@ -120,7 +118,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 		for (ObjBuildingPartElementRating part : projectionResult.getElementMap().values()) {
 			techPart += part.getWeight() / 100 * part.getBuildingPart().getTechRate();
 		}
-		double techRate = CodeBuildingPart.getTechRate(techPart);
+		double techRate = CodeBuildingPart.Enumeration.getTechRate(techPart);
 
 		for (int year = projectionResult.getStartYear(); year <= projectionResult.getEndYear(); year++) {
 
@@ -143,7 +141,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				restorationCosts += elementRestorationCosts;
 				if (elementRestorationCosts != 0) {
 					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
-					EnumeratedDto buildingPartEnum = EnumeratedDto.fromEnum(element.getBuildingPart());
+					EnumeratedDto buildingPartEnum = EnumeratedDto.of(element.getBuildingPart());
 					ProjectionElement restorationElement = ProjectionElement.builder()
 							.element(elementEnum)
 							.building(buildingEnum)
@@ -154,7 +152,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				}
 			}
 
-			double maintenanceRate = techRate * CodeBuildingPart.getMaintenanceRate(timeValue / originalValue) / 100.0;
+			double maintenanceRate = techRate * CodeBuildingPart.Enumeration.getMaintenanceRate(timeValue / originalValue) / 100.0;
 			double maintenanceCosts = maintenanceRate * originalValue;
 
 			originalValue = roundProgressive(originalValue);

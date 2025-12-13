@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import java.awt.Color;
 
-import io.dddrive.util.Formatter;
+import io.zeitwert.fm.util.Formatter;
 
 @Data()
 @Builder

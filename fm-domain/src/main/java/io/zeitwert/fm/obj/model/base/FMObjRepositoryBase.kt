@@ -7,7 +7,6 @@ import io.dddrive.core.obj.model.base.ObjRepositoryBase
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 
 /**
  * Base repository class for FM Obj entities using the NEW dddrive framework.
@@ -21,7 +20,7 @@ import org.springframework.context.annotation.Lazy
  *
  * @param O The Obj entity type
  */
-abstract class FMObjCoreRepositoryBase<O : Obj>(
+abstract class FMObjRepositoryBase<O : Obj>(
     repoIntfClass: Class<out ObjRepository<O>>,
     intfClass: Class<out Obj>,
     baseClass: Class<out Obj>,
@@ -36,15 +35,7 @@ abstract class FMObjCoreRepositoryBase<O : Obj>(
         this._dslContext = dslContext
     }
 
-    @Autowired
-    @Lazy
-    fun setNoteRepository(noteRepository: ObjNoteRepository) {
-        this._noteRepository = noteRepository
-    }
-
     fun dslContext(): DSLContext = _dslContext
-
-    fun getNoteRepository(): ObjNoteRepository = _noteRepository
 
     /**
      * Subclasses must implement this to return their persistence provider.

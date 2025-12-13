@@ -12,8 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
-import io.zeitwert.fm.doc.model.base.FMDocCoreBase;
+import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -49,7 +48,7 @@ public class DocTestTest {
 	private ObjAccountRepository accountRepo;
 
 	@Autowired
-	private ObjAccountCache accountCache;
+	private ObjAccountRepository accountCache;
 
 	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
@@ -66,7 +65,7 @@ public class DocTestTest {
 		DocTest testA1 = this.docTestRepo.create(this.requestCtx.getTenantId(), null, timestamp);
 		this.initDocTest(testA1, "One", TYPE_A);
 		// Cast to FMDocCoreBase to access accountId (Kotlin property)
-		((FMDocCoreBase) testA1).setAccountId((Integer) account.getId());
+		((FMDocBase) testA1).setAccountId((Integer) account.getId());
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
 		assertNotNull(testA1.getTenantId(), "tenant not null");
@@ -79,7 +78,7 @@ public class DocTestTest {
 		assertNotNull(testA1.getMeta().getCaseStage(), "caseStage not null");
 		assertEquals("test.new", testA1.getMeta().getCaseStage().getId(), "caseStage.id");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
-		assertEquals(account.getId(), ((FMDocCoreBase) testA1).getAccountId(), "account id");
+		assertEquals(account.getId(), ((FMDocBase) testA1).getAccountId(), "account id");
 		assertEquals(account.getId(), testA1.getAccount().getId(), "account id");
 
 		this.docTestRepo.store(testA1, null, timestamp);
@@ -92,7 +91,7 @@ public class DocTestTest {
 		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
-		assertEquals(account.getId(), ((FMDocCoreBase) testA2).getAccountId(), "account id");
+		assertEquals(account.getId(), ((FMDocBase) testA2).getAccountId(), "account id");
 		assertEquals(account.getId(), testA2.getAccount().getId(), "account id");
 
 	}
@@ -212,7 +211,7 @@ public class DocTestTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.find(null).get(0).getId());
+		return this.accountCache.get(this.accountRepo.getAll(null).get(0).getId());
 	}
 
 	private void initDocTest(DocTest test, String name, String testTypeId) {

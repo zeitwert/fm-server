@@ -4,22 +4,21 @@ import org.springframework.stereotype.Controller;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
-import io.dddrive.oe.service.api.ObjUserCache;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.ObjTenantApiRepository;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 
 @Controller("objTenantApiRepository")
 public class ObjTenantApiRepositoryImpl
-		extends AggregateApiRepositoryBase<ObjTenantFM, ObjTenantVRecord, ObjTenantDto>
+		extends AggregateApiRepositoryBase<ObjTenantFM, ObjTenantDto>
 		implements ObjTenantApiRepository {
 
 	public ObjTenantApiRepositoryImpl(
 			ObjTenantFMRepository repository,
 			RequestContext requestCtx,
-			ObjUserCache userCache,
+			ObjUserFMRepository userCache,
 			ObjTenantDtoAdapter dtoAdapter) {
 		super(ObjTenantDto.class, requestCtx, userCache, repository, dtoAdapter);
 	}

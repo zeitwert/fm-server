@@ -50,7 +50,7 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 	public void toPart(ObjBuildingPartElementRating part) {
 		super.toPart(part);
 		part.setBuildingPart(
-				this.buildingPart == null ? null : CodeBuildingPart.getBuildingPart(this.buildingPart.getId()));
+				this.buildingPart == null ? null : CodeBuildingPart.Enumeration.getBuildingPart(this.buildingPart.getId()));
 		part.setWeight(this.weight);
 		part.setCondition(this.condition);
 		part.setRatingYear(this.ratingYear);
@@ -100,15 +100,15 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		}
 		// Set<EnumeratedDto> materialDescriptions =
 		// part.getMaterialDescriptionSet().stream()
-		// .map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		// .map(a -> EnumeratedDto.of(a)).collect(Collectors.toSet());
 		// Set<EnumeratedDto> conditionDescriptions =
 		// part.getConditionDescriptionSet().stream()
-		// .map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		// .map(a -> EnumeratedDto.of(a)).collect(Collectors.toSet());
 		// Set<EnumeratedDto> measureDescriptions =
 		// part.getMeasureDescriptionSet().stream()
-		// .map(a -> EnumeratedDto.fromEnum(a)).collect(Collectors.toSet());
+		// .map(a -> EnumeratedDto.of(a)).collect(Collectors.toSet());
 		return dtoBuilder
-				.buildingPart(EnumeratedDto.fromEnum(part.getBuildingPart()))
+				.buildingPart(EnumeratedDto.of(part.getBuildingPart()))
 				.weight(part.getWeight())
 				.condition(part.getCondition())
 				.ratingYear(part.getRatingYear())

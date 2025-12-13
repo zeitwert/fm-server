@@ -2,7 +2,7 @@ package io.zeitwert.fm.oe.model.impl
 
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 class ObjTenantFMRepositoryImpl(
     @Lazy private val userRepository: ObjUserFMRepository,
     @Lazy private val documentRepository: ObjDocumentRepository
-) : FMObjCoreRepositoryBase<ObjTenantFM>(
+) : FMObjRepositoryBase<ObjTenantFM>(
     ObjTenantFMRepository::class.java,
     ObjTenantFM::class.java,
     ObjTenantFMBase::class.java,

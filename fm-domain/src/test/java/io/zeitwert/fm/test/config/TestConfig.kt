@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component
 
 /**
  * Test configuration that registers test aggregate types in the NEW dddrive framework.
- * 
+ *
  * This follows the dfp-app-server pattern where domain-specific config classes
  * register their aggregate types via InitializingBean.afterPropertiesSet().
- * 
+ *
  * The test aggregate types are also defined in R__1099_test_config.sql for database
  * reference data (intentional duplication for the dual-framework approach).
  */
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component
 class TestConfig : EnumConfigBase(), InitializingBean {
 
     @Autowired
-    @Qualifier("coreCodeAggregateTypeEnum")
     lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
     override fun afterPropertiesSet() {

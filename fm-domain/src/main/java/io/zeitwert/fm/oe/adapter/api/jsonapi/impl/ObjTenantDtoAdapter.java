@@ -1,34 +1,35 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.oe.model.ObjTenant;
-import io.zeitwert.fm.oe.model.enums.CodeTenantTypeEnum;
+import io.dddrive.core.oe.model.ObjTenant;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
+import io.zeitwert.fm.oe.model.enums.CodeTenantType;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
 
 @Component("objTenantDtoAdapter")
-public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenantVRecord, ObjTenantDto> {
+@DependsOn("oeConfig")
+public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenantDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 
-	private ObjDocumentCache documentCache = null;
+	private ObjDocumentRepository documentCache = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
 	protected ObjTenantDtoAdapter() {
-		AGGREGATE_TYPE = EnumeratedDto.fromEnum(CodeAggregateTypeEnum.getAggregateType("obj_tenant"));
+		AGGREGATE_TYPE = EnumeratedDto.of(CodeAggregateTypeEnum.getAggregateType("obj_tenant"));
 	}
 
 	@Autowired
-	void setDocumentCache(ObjDocumentCache documentCache) {
+	void setDocumentCache(ObjDocumentRepository documentCache) {
 		this.documentCache = documentCache;
 	}
 
@@ -45,7 +46,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	public void toAggregate(ObjTenantDto dto, ObjTenantFM obj) {
 		super.toAggregate(dto, obj);
 		obj.setTenantType(
-				dto.getTenantType() == null ? null : CodeTenantTypeEnum.getTenantType(dto.getTenantType().getId()));
+				dto.getTenantType() == null ? null : CodeTenantType.getTenantType(dto.getTenantType().getId()));
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
 		obj.setInflationRate(dto.getInflationRate());
@@ -60,7 +61,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.tenantType(EnumeratedDto.fromEnum(obj.getTenantType()))
+				.tenantType(EnumeratedDto.of(obj.getTenantType()))
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.inflationRate(obj.getInflationRate())
@@ -73,28 +74,29 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 		if (obj == null) {
 			return null;
 		}
-		return EnumeratedDto.builder()
-				.id("" + obj.getId())
-				.itemType(AGGREGATE_TYPE)
-				.name(obj.getCaption())
-				.build();
+		return EnumeratedDto.of("" + obj.getId(), obj.getCaption());
+//		return EnumeratedDto.builder()
+//				.id("" + obj.getId())
+//				.itemType(AGGREGATE_TYPE)
+//				.name(obj.getCaption())
+//				.build();
 	}
 
-	@Override
-	public ObjTenantDto fromRecord(ObjTenantVRecord obj) {
-		if (obj == null) {
-			return null;
-		}
-		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder();
-		this.fromRecord(dtoBuilder, obj);
-		return dtoBuilder
-				.tenantType(EnumeratedDto.fromEnum(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))
-				.name(obj.getName())
-				.description(obj.getDescription())
-				.inflationRate(obj.getInflationRate())
-				.discountRate(obj.getDiscountRate())
-				.logoId(obj.getLogoImgId())
-				.build();
-	}
+//	@Override
+//	public ObjTenantDto fromRecord(ObjTenantVRecord obj) {
+//		if (obj == null) {
+//			return null;
+//		}
+//		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder();
+//		this.fromRecord(dtoBuilder, obj);
+//		return dtoBuilder
+//				.tenantType(EnumeratedDto.of(CodeTenantTypeEnum.getTenantType(obj.getTenantTypeId())))
+//				.name(obj.getName())
+//				.description(obj.getDescription())
+//				.inflationRate(obj.getInflationRate())
+//				.discountRate(obj.getDiscountRate())
+//				.logoId(obj.getLogoImgId())
+//				.build();
+//	}
 
 }

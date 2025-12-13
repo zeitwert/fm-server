@@ -10,6 +10,7 @@ enum class CodeLocale(
     private val id: String,
     private val itemName: String,
 ) : Enumerated {
+
     EN_US("en-US", "English US"),
     EN_UK("en-UK", "English UK"),
     DE_CH("de-CH", "German CH"),

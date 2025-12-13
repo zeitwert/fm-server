@@ -11,6 +11,7 @@ enum class CodeBuildingPriceIndex(
     val maxIndexYear: Int,
     val indexPerYear: Map<Int, Double>,
 ) : Enumerated {
+
     CH_ZRH(
         "ch-ZRH",
         "Baukostenindex Zürich (Basis 1939)",
@@ -68,5 +69,5 @@ enum class CodeBuildingPriceIndex(
         @JvmStatic
         fun getBuildingPriceIndex(itemId: String): CodeBuildingPriceIndex? = getItem(itemId)
     }
-}
 
+}

@@ -8,8 +8,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.dddrive.doc.model.Doc;
-import io.dddrive.doc.model.DocPart;
+import io.dddrive.core.doc.model.Doc;
+import io.dddrive.core.doc.model.DocPart;
 
 @Data
 @NoArgsConstructor

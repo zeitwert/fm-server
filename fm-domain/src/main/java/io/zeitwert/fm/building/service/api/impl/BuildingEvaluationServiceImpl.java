@@ -11,7 +11,6 @@ import java.util.Set;
 import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Service;
 
-import io.dddrive.util.Formatter;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
@@ -24,6 +23,7 @@ import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
+import io.zeitwert.fm.util.Formatter;
 
 @Service("buildingEvaluationService")
 public class BuildingEvaluationServiceImpl implements BuildingEvaluationService {
@@ -184,7 +184,7 @@ public class BuildingEvaluationServiceImpl implements BuildingEvaluationService 
 		}
 
 		return BuildingEvaluationResult.builder()
-				.id(building.getId())
+				.id((Integer)building.getId())
 				.name(building.getName())
 				.description(this.replaceEol(building.getDescription()))
 				.address(building.getStreet() + ", " + building.getZip() + " " + building.getCity() + ", "

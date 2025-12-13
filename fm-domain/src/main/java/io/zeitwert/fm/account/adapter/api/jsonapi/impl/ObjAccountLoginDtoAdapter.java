@@ -10,18 +10,18 @@ import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
-import io.zeitwert.fm.dms.service.api.ObjDocumentCache;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 @Component("objAccountLoginDtoAdapter")
 public class ObjAccountLoginDtoAdapter
-		extends ObjDtoAdapterBase<ObjAccount, ObjAccountVRecord, ObjAccountLoginDto> {
+		extends ObjDtoAdapterBase<ObjAccount, ObjAccountLoginDto> {
 
-	private ObjDocumentCache documentCache = null;
+	private ObjDocumentRepository documentCache = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
 	@Autowired
-	void setDocumentCache(ObjDocumentCache documentCache) {
+	void setDocumentCache(ObjDocumentRepository documentCache) {
 		this.documentCache = documentCache;
 	}
 
@@ -44,16 +44,16 @@ public class ObjAccountLoginDtoAdapter
 		return dtoBuilder
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.accountType(EnumeratedDto.fromEnum(obj.getAccountType()))
-				.clientSegment(EnumeratedDto.fromEnum(obj.getClientSegment()))
-				.referenceCurrency(EnumeratedDto.fromEnum(obj.getReferenceCurrency()))
+				.accountType(EnumeratedDto.of(obj.getAccountType()))
+				.clientSegment(EnumeratedDto.of(obj.getClientSegment()))
+				.referenceCurrency(EnumeratedDto.of(obj.getReferenceCurrency()))
 				.logoId(obj.getLogoImageId())
 				.build();
 	}
 
-	@Override
-	public ObjAccountLoginDto fromRecord(ObjAccountVRecord obj) {
-		return null;
-	}
+//	@Override
+//	public ObjAccountLoginDto fromRecord(ObjAccountVRecord obj) {
+//		return null;
+//	}
 
 }

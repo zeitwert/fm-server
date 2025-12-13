@@ -1,6 +1,6 @@
 package io.zeitwert.fm.account.service.api;
 
-import io.dddrive.oe.model.ObjTenant;
+import io.dddrive.core.oe.model.ObjTenant;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 
 import java.util.List;

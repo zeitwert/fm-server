@@ -6,8 +6,9 @@ import io.dddrive.core.enums.model.base.EnumerationBase
 enum class CodeBuildingPartCatalog(
     private val id: String,
     private val itemName: String,
-    val parts: String,
+    private val partList: String,
 ) : Enumerated {
+
     C0("C0", "Custom", "P48:31,P49,P2:8,P3,P4:8,P5:8,P50:5,P51:1,P6:1,P7:2,P52,P53,P55:4,P54:2,P56,P10:3,P57:15,P58:12,P59,P60,P61,P62"),
     C6("C6", "Einfamilienhaus", "P48:30,P49,P2:13,P3,P4:8,P5:13,P50:2,P51:1,P6:4,P7:3,P52,P53,P55:4,P54:2,P56,P10,P57:10,P58:6,P59:4,P60,P61,P62"),
     C7("C7", "Mehrfamilienhaus", "P48:35,P49,P2:8,P3,P4:7,P5:11,P50:3,P51:1,P6:2,P7:3,P52,P53,P55:4,P54:3,P56:2,P10,P57:9,P58:8,P59:4,P60,P61,P62"),
@@ -43,7 +44,7 @@ enum class CodeBuildingPartCatalog(
     override fun getEnumeration() = Enumeration
 
     fun getParts(): List<Pair<CodeBuildingPart, Int>> {
-        return parts.split(",").map { p ->
+        return partList.split(",").map { p ->
             val partWeight = if (p.contains(":")) p else "$p:0"
             val (partId, weight) = partWeight.split(":")
             val part = CodeBuildingPart.Enumeration.getBuildingPart(partId)
@@ -60,5 +61,6 @@ enum class CodeBuildingPartCatalog(
         @JvmStatic
         fun getPartCatalog(itemId: String): CodeBuildingPartCatalog? = getItem(itemId)
     }
+
 }
 

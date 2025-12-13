@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.oe.service.api.ObjTenantCache;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
+import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 
 @RestController("tenantDocumentController")
 @RequestMapping("/rest/oe/tenants")
 public class TenantDocumentController {
 
 	@Autowired
-	private ObjTenantCache tenantCache;
+	private ObjTenantFMRepository tenantCache;
 
 	@Autowired
 	RequestContext requestCtx;

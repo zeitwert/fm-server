@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 
 @RestController("accountDocumentController")
@@ -18,7 +18,7 @@ import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 public class AccountDocumentController {
 
 	@Autowired
-	private ObjAccountCache accountCache;
+	private ObjAccountRepository accountCache;
 
 	@Autowired
 	RequestContext requestCtx;

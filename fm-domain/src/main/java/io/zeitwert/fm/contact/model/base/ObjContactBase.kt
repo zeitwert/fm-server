@@ -12,15 +12,15 @@ import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.time.LocalDate
 
 /**
  * Base class for ObjContact using the NEW dddrive framework.
  */
-abstract class ObjContactCoreBase(
+abstract class ObjContactBase(
     repository: ObjContactRepository
-) : FMObjCoreBase(repository), ObjContact, AggregateWithNotesMixin {
+) : FMObjBase(repository), ObjContact, AggregateWithNotesMixin {
 
     override fun aggregate(): ObjContact = this
 

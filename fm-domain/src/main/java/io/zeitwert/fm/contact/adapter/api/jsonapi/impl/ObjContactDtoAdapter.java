@@ -7,24 +7,24 @@ import org.springframework.stereotype.Component;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactPartAddressDto;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactVRecord;
-import io.zeitwert.fm.contact.model.enums.CodeContactRoleEnum;
-import io.zeitwert.fm.contact.model.enums.CodeSalutationEnum;
-import io.zeitwert.fm.contact.model.enums.CodeTitleEnum;
+import io.zeitwert.fm.contact.model.enums.CodeContactRole;
+import io.zeitwert.fm.contact.model.enums.CodeSalutation;
+import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 
 @Component("objContactDtoAdapter")
-public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjContactVRecord, ObjContactDto> {
+public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjContactDto> {
 
-	private ObjAccountCache accountCache = null;
+	private ObjAccountRepository accountCache = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
 	@Autowired
-	void setAccountCache(ObjAccountCache accountCache) {
+	void setAccountCache(ObjAccountRepository accountCache) {
 		this.accountCache = accountCache;
 	}
 
@@ -45,10 +45,10 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 
 			obj.setAccountId(dto.getAccountId());
 			obj.setContactRole(
-					dto.getContactRole() == null ? null : CodeContactRoleEnum.getContactRole(dto.getContactRole().getId()));
+					dto.getContactRole() == null ? null : CodeContactRole.getContactRole(dto.getContactRole().getId()));
 			obj.setSalutation(
-					dto.getSalutation() == null ? null : CodeSalutationEnum.getSalutation(dto.getSalutation().getId()));
-			obj.setTitle(dto.getTitle() == null ? null : CodeTitleEnum.getTitle(dto.getTitle().getId()));
+					dto.getSalutation() == null ? null : CodeSalutation.getSalutation(dto.getSalutation().getId()));
+			obj.setTitle(dto.getTitle() == null ? null : CodeTitle.getTitle(dto.getTitle().getId()));
 			obj.setFirstName(dto.getFirstName());
 			obj.setLastName(dto.getLastName());
 			obj.setDescription(dto.getDescription());
@@ -90,10 +90,10 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
-			.accountId(obj.getAccountId())
-			.contactRole(EnumeratedDto.fromEnum(obj.getContactRole()))
-			.salutation(EnumeratedDto.fromEnum(obj.getSalutation()))
-			.title(EnumeratedDto.fromEnum(obj.getTitle()))
+			.accountId((Integer)obj.getAccountId())
+			.contactRole(EnumeratedDto.of(obj.getContactRole()))
+			.salutation(EnumeratedDto.of(obj.getSalutation()))
+			.title(EnumeratedDto.of(obj.getTitle()))
 			.firstName(obj.getFirstName())
 			.lastName(obj.getLastName())
 			.description(obj.getDescription())
@@ -107,30 +107,30 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		// @formatter:on
 	}
 
-	@Override
-	public ObjContactDto fromRecord(ObjContactVRecord obj) {
-		if (obj == null) {
-			return null;
-		}
-		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder();
-		this.fromRecord(dtoBuilder, obj);
-		// @formatter:off
-		return dtoBuilder
-			.accountId(obj.getAccountId())
-			.contactRole(EnumeratedDto.fromEnum(CodeContactRoleEnum.getContactRole(obj.getContactRoleId())))
-			.salutation(EnumeratedDto.fromEnum(CodeSalutationEnum.getSalutation(obj.getSalutationId())))
-			.title(EnumeratedDto.fromEnum(CodeTitleEnum.getTitle(obj.getTitleId())))
-			.firstName(obj.getFirstName())
-			.lastName(obj.getLastName())
-			.description(obj.getDescription())
-			.birthDate(obj.getBirthDate())
-			.phone(obj.getPhone())
-			.mobile(obj.getMobile())
-			.email(obj.getEmail())
-			//.mailAddresses(obj.getMailAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
-			//.electronicAddresses(obj.getElectronicAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
-			.build();
-		// @formatter:on
-	}
+//	@Override
+//	public ObjContactDto fromRecord(ObjContactVRecord obj) {
+//		if (obj == null) {
+//			return null;
+//		}
+//		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder();
+//		this.fromRecord(dtoBuilder, obj);
+//		// @formatter:off
+//		return dtoBuilder
+//			.accountId(obj.getAccountId())
+//			.contactRole(EnumeratedDto.of(CodeContactRoleEnum.getContactRole(obj.getContactRoleId())))
+//			.salutation(EnumeratedDto.of(CodeSalutationEnum.getSalutation(obj.getSalutationId())))
+//			.title(EnumeratedDto.of(CodeTitleEnum.getTitle(obj.getTitleId())))
+//			.firstName(obj.getFirstName())
+//			.lastName(obj.getLastName())
+//			.description(obj.getDescription())
+//			.birthDate(obj.getBirthDate())
+//			.phone(obj.getPhone())
+//			.mobile(obj.getMobile())
+//			.email(obj.getEmail())
+//			//.mailAddresses(obj.getMailAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
+//			//.electronicAddresses(obj.getElectronicAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
+//			.build();
+//		// @formatter:on
+//	}
 
 }

@@ -7,13 +7,13 @@ import io.zeitwert.fm.account.model.base.ObjAccountBase
 import io.zeitwert.fm.account.persist.jooq.ObjAccountPersistenceProvider
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objAccountRepository")
-class ObjAccountRepositoryImpl : FMObjCoreRepositoryBase<ObjAccount>(
+class ObjAccountRepositoryImpl : FMObjRepositoryBase<ObjAccount>(
     ObjAccountRepository::class.java,
     ObjAccount::class.java,
     ObjAccountBase::class.java,

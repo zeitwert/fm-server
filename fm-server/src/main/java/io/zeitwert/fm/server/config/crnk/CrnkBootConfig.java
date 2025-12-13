@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import io.crnk.core.boot.CrnkBoot;
 import io.crnk.core.queryspec.mapper.QuerySpecUrlMapper;
-import io.dddrive.util.CustomFilters;
+import io.zeitwert.fm.util.CustomFilters;
 
 /**
  * Custom CrnkBoot configurer that adds support for the IN filter operator.

@@ -3,7 +3,7 @@ package io.zeitwert.fm.portfolio.model.impl
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuildingRepository
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
 import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objPortfolioRepository")
-class ObjPortfolioRepositoryImpl : FMObjCoreRepositoryBase<ObjPortfolio>(
+class ObjPortfolioRepositoryImpl : FMObjRepositoryBase<ObjPortfolio>(
     ObjPortfolioRepository::class.java,
     ObjPortfolio::class.java,
     ObjPortfolioBase::class.java,

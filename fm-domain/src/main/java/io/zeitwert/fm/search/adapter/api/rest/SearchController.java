@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.search.model.SearchResult;
-import io.dddrive.search.service.api.SearchService;
+import io.zeitwert.fm.ddd.model.SearchResult;
+import io.zeitwert.fm.ddd.service.api.SearchService;
 import io.zeitwert.fm.search.adapter.api.rest.dto.SearchResultDto;
 
 @RestController("searchController")
@@ -35,7 +35,7 @@ public class SearchController {
 		List<SearchResult> items = this.searchService.find(this.requestCtx, itemTypes, searchText, SEARCH_RESULT_SIZE);
 		Collections.sort(items, Collections.reverseOrder());
 		return ResponseEntity.ok(
-				items.stream().limit(SEARCH_RESULT_SIZE).map(sr -> SearchResultDto.fromItem(sr)).toList());
+				items.stream().limit(SEARCH_RESULT_SIZE).map(SearchResultDto::fromItem).toList());
 	}
 
 }

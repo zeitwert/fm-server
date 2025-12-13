@@ -8,7 +8,7 @@ import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
-import io.zeitwert.fm.doc.model.base.FMDocCoreBase
+import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.DocTestRepository
 import io.zeitwert.fm.test.model.ObjTest
@@ -22,7 +22,7 @@ import java.time.LocalDate
  */
 abstract class DocTestBase(
     repository: DocTestRepository
-) : FMDocCoreBase(repository), DocTest {
+) : FMDocBase(repository), DocTest {
 
     //@formatter:off
     private val _shortText: BaseProperty<String> = this.addBaseProperty("shortText", String::class.java)
@@ -54,7 +54,7 @@ abstract class DocTestBase(
     }
 
     // Account operations
-    override fun getAccount(): ObjAccount? = getRepository().accountCache.get(accountId)
+    override fun getAccount(): ObjAccount? = repository.directory.getRepository(ObjAccount::class.java).get(accountId)
 
     // DocTest interface implementation
 

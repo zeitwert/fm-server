@@ -11,6 +11,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 
 @Configuration
 open class JacksonConfig {
@@ -19,6 +20,7 @@ open class JacksonConfig {
 	 * This mapper typically does not have any special type discriminators or modules.
 	 */
 	@Bean
+	@Primary
 	@Qualifier("std")
 	open fun stdObjectMapper(
 		@Qualifier("std") modules: List<Module>,

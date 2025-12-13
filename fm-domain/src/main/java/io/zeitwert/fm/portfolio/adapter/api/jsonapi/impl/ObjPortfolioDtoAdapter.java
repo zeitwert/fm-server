@@ -1,5 +1,5 @@
 
-package io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto;
+package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 
 import java.util.stream.Collectors;
 
@@ -7,30 +7,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.obj.model.Obj;
+import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
-import io.zeitwert.fm.obj.service.api.ObjVCache;
+import io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto.ObjPortfolioDto;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 
 @Component("objPortfolioDtoAdapter")
 public class ObjPortfolioDtoAdapter
-		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioVRecord, ObjPortfolioDto> {
+		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioDto> {
 
-	private ObjAccountCache accountCache = null;
+	private ObjAccountRepository accountCache = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
-	private final ObjVCache objCache;
+// private final ObjVCache objCache;
 
-	protected ObjPortfolioDtoAdapter(ObjVCache objCache) {
-		this.objCache = objCache;
-	}
+//	protected ObjPortfolioDtoAdapter(ObjVCache objCache) {
+//		this.objCache = objCache;
+//	}
 
 	@Autowired
-	void setAccountCache(ObjAccountCache accountCache) {
+	void setAccountCache(ObjAccountRepository accountCache) {
 		this.accountCache = accountCache;
 	}
 
@@ -87,39 +87,41 @@ public class ObjPortfolioDtoAdapter
 			.name(pf.getName())
 			.description(pf.getDescription())
 			.portfolioNr(pf.getPortfolioNr())
-			.accountId(pf.getAccountId())
-			.includes(pf.getIncludeSet().stream().map(a -> getObj(a)).collect(Collectors.toSet()))
-			.excludes(pf.getExcludeSet().stream().map(a -> getObj(a)).collect(Collectors.toSet()))
-			.buildings(pf.getBuildingSet().stream().map(a -> getObj(a)).collect(Collectors.toSet()))
+			.accountId((Integer)pf.getAccountId())
+			.includes(pf.getIncludeSet().stream().map(this::getObj).collect(Collectors.toSet()))
+			.excludes(pf.getExcludeSet().stream().map(this::getObj).collect(Collectors.toSet()))
+			.buildings(pf.getBuildingSet().stream().map(this::getObj).collect(Collectors.toSet()))
 			.build();
 		// @formatter:on
 	}
 
-	@Override
-	public ObjPortfolioDto fromRecord(ObjPortfolioVRecord obj) {
-		if (obj == null) {
-			return null;
-		}
-		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder();
-		this.fromRecord(dtoBuilder, obj);
-		// @formatter:off
-		return dtoBuilder
-			.name(obj.getName())
-			.description(obj.getDescription())
-			.portfolioNr(obj.getPortfolioNr())
-			.accountId(obj.getAccountId())
-			.build();
-		// @formatter:on
-	}
+//	@Override
+//	public ObjPortfolioDto fromRecord(ObjPortfolioVRecord obj) {
+//		if (obj == null) {
+//			return null;
+//		}
+//		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder();
+//		this.fromRecord(dtoBuilder, obj);
+//		// @formatter:off
+//		return dtoBuilder
+//			.name(obj.getName())
+//			.description(obj.getDescription())
+//			.portfolioNr(obj.getPortfolioNr())
+//			.accountId(obj.getAccountId())
+//			.build();
+//		// @formatter:on
+//	}
 
 	private EnumeratedDto getObj(Integer id) {
-		Obj obj = this.objCache.get(id);
+		return EnumeratedDto.of(id.toString(), id.toString());
+//		Obj obj = this.objCache.get(id);
+//		return EnumeratedDto.of(obj.getId().toString(), obj.getCaption());
 		// @formatter:off
-		return EnumeratedDto.builder()
-			.id(obj.getId().toString())
-			.name(obj.getCaption())
-			.itemType(EnumeratedDto.fromEnum(obj.getMeta().getAggregateType()))
-			.build();
+//		return EnumeratedDto.builder()
+//			.id(obj.getId().toString())
+//			.name(obj.getCaption())
+//			.itemType(EnumeratedDto.of(obj.getMeta().getAggregateType()))
+//			.build();
 		// @formatter:on
 	}
 

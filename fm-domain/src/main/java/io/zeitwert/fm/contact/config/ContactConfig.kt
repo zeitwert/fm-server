@@ -2,6 +2,8 @@ package io.zeitwert.fm.contact.config
 
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
+import io.dddrive.core.ddd.model.enums.CodePartListType
+import io.dddrive.core.ddd.model.enums.CodePartListTypeEnum
 import io.dddrive.core.enums.model.base.EnumConfigBase
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel
 import io.zeitwert.fm.contact.model.enums.CodeAddressType
@@ -21,18 +23,16 @@ import org.springframework.stereotype.Component
 class ContactConfig : EnumConfigBase(), InitializingBean {
 
     @Autowired
-    @Qualifier("coreCodeAggregateTypeEnum")
     lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
-//    @Autowired
-//    @Qualifier("coreCodePartListTypeEnum")
-//    lateinit var partListTypeEnum: CodePartListTypeEnum
+    @Autowired
+    lateinit var partListTypeEnum: CodePartListTypeEnum
 
     override fun afterPropertiesSet() {
         try {
             startConfig()
             initCodeAggregateType(aggregateTypeEnum)
-//            initCodePartListType(partListTypeEnum)
+            initCodePartListType(partListTypeEnum)
 
             // Trigger enum initialization
             CodeContactRole.entries
@@ -50,9 +50,8 @@ class ContactConfig : EnumConfigBase(), InitializingBean {
         e.addItem(CodeAggregateType(e, "obj_contact", "Contact"))
     }
 
-//    private fun initCodePartListType(e: CodePartListTypeEnum) {
-//        e.addItem(CodePartListType(e, "contact.addressList", "Address"))
-//    }
+    private fun initCodePartListType(e: CodePartListTypeEnum) {
+        e.addItem(CodePartListType(e, "contact.addressList", "Address"))
+    }
 
 }
-

@@ -8,14 +8,14 @@ import io.zeitwert.fm.building.model.base.ObjBuildingBase
 import io.zeitwert.fm.building.persist.jooq.ObjBuildingPersistenceProvider
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.task.model.DocTaskRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objBuildingRepository")
-class ObjBuildingRepositoryImpl : FMObjCoreRepositoryBase<ObjBuilding>(
+class ObjBuildingRepositoryImpl : FMObjRepositoryBase<ObjBuilding>(
     ObjBuildingRepository::class.java,
     ObjBuilding::class.java,
     ObjBuildingBase::class.java,

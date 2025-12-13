@@ -2,7 +2,7 @@ package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
-import io.zeitwert.fm.account.service.api.ObjAccountCache;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.base.DocDtoAdapterBase;
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto;
 import io.zeitwert.fm.task.model.DocTask;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 
 @Component("docTaskDtoAdapter")
-public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord, DocTaskDto> {
+public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 
-	private ObjAccountCache accountCache = null;
+	private ObjAccountRepository accountCache = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
 	@Autowired
-	void setAccountCache(ObjAccountCache accountCache) {
+	void setAccountCache(ObjAccountRepository accountCache) {
 		this.accountCache = accountCache;
 	}
 
@@ -56,36 +56,36 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskVRecord
 		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
-				.accountId(doc.getAccountId())
+				.accountId((Integer)doc.getAccountId())
 				.relatedTo(this.asEnumerated(doc.getRelatedTo()))
 				.subject(doc.getSubject())
 				.content(doc.getContent())
 				.isPrivate(doc.getIsPrivate())
-				.priority(EnumeratedDto.fromEnum(doc.getPriority()))
+				.priority(EnumeratedDto.of(doc.getPriority()))
 				.dueAt(doc.getDueAt())
 				.remindAt(doc.getRemindAt())
 				.build();
 	}
 
-	@Override
-	public DocTaskDto fromRecord(DocTaskVRecord doc) {
-		if (doc == null) {
-			return null;
-		}
-		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
-		this.fromRecord(dtoBuilder, doc);
-		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
-		EnumeratedDto relatedTo = EnumeratedDto.builder().id(relatedToId.toString()).build();
-		return dtoBuilder
-				.accountId(doc.getAccountId())
-				.relatedTo(relatedTo)
-				.subject(doc.getSubject())
-				.content(doc.getContent())
-				.isPrivate(doc.getIsPrivate())
-				.priority(EnumeratedDto.fromEnum(CodeTaskPriority.getPriority(doc.getPriorityId())))
-				.dueAt(doc.getDueAt())
-				.remindAt(doc.getRemindAt())
-				.build();
-	}
+//	@Override
+//	public DocTaskDto fromRecord(DocTaskVRecord doc) {
+//		if (doc == null) {
+//			return null;
+//		}
+//		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
+//		this.fromRecord(dtoBuilder, doc);
+//		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
+//		EnumeratedDto relatedTo = EnumeratedDto.builder().id(relatedToId.toString()).build();
+//		return dtoBuilder
+//				.accountId(doc.getAccountId())
+//				.relatedTo(relatedTo)
+//				.subject(doc.getSubject())
+//				.content(doc.getContent())
+//				.isPrivate(doc.getIsPrivate())
+//				.priority(EnumeratedDto.of(CodeTaskPriority.getPriority(doc.getPriorityId())))
+//				.dueAt(doc.getDueAt())
+//				.remindAt(doc.getRemindAt())
+//				.build();
+//	}
 
 }

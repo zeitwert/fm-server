@@ -7,7 +7,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import io.zeitwert.fm.contact.model.ObjContact;
 import io.zeitwert.fm.contact.model.ObjContactPartAddress;
-import io.zeitwert.fm.contact.model.enums.CodeAddressChannelEnum;
+import io.zeitwert.fm.contact.model.enums.CodeAddressChannel;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartDtoBase;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
@@ -29,7 +29,7 @@ public class ObjContactPartAddressDto extends ObjPartDtoBase<ObjContact, ObjCont
 	public void toPart(ObjContactPartAddress part) {
 		super.toPart(part);
 		part.setAddressChannel(
-				addressChannel == null ? null : CodeAddressChannelEnum.getAddressChannel(addressChannel.getId()));
+				addressChannel == null ? null : CodeAddressChannel.getAddressChannel(addressChannel.getId()));
 		part.setName(name);
 		part.setStreet(street);
 		part.setZip(zip);
@@ -45,13 +45,13 @@ public class ObjContactPartAddressDto extends ObjPartDtoBase<ObjContact, ObjCont
 		ObjPartDtoBase.fromPart(dtoBuilder, part);
 		// @formatter:off
 		return dtoBuilder
-			.addressChannel(EnumeratedDto.fromEnum(part.getAddressChannel()))
+			.addressChannel(EnumeratedDto.of(part.getAddressChannel()))
 			.isMailAddress(part.getIsMailAddress())
 			.name(part.getName())
 			.street(part.getStreet())
 			.zip(part.getZip())
 			.city(part.getCity())
-			.country(EnumeratedDto.fromEnum(part.getCountry()))
+			.country(EnumeratedDto.of(part.getCountry()))
 			.build();
 		// @formatter:on
 	}

@@ -11,14 +11,14 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjCoreBase
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.task.model.DocTask
 import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 
 abstract class ObjDocumentBase(
     repository: ObjDocumentRepository
-) : FMObjCoreBase(repository), ObjDocument, AggregateWithNotesMixin {
+) : FMObjBase(repository), ObjDocument, AggregateWithNotesMixin {
 
     override fun aggregate(): ObjDocument = this
 
