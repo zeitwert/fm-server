@@ -1,14 +1,30 @@
-
 package io.zeitwert.fm.app.adapter.api.rest;
 
-import static io.dddrive.util.Invariant.assertThis;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
+import io.dddrive.core.ddd.model.Aggregate;
+import io.dddrive.core.ddd.model.enums.CodeAggregateType;
+import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.core.doc.model.enums.CodeCaseStage;
+import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.core.oe.model.ObjUser;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.fm.account.model.ObjAccount;
+import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
+import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.model.ObjBuildingPartRating;
+import io.zeitwert.fm.building.model.ObjBuildingRepository;
+import io.zeitwert.fm.collaboration.model.db.Tables;
+import io.zeitwert.fm.collaboration.model.db.tables.records.ActivityVRecord;
+import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
+import io.zeitwert.fm.task.model.DocTask;
+import io.zeitwert.fm.task.model.DocTaskRepository;
+import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
+import io.zeitwert.fm.util.Formatter;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,74 +34,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.crnk.core.queryspec.QuerySpec;
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.AggregateRepositorySPI;
-import io.dddrive.core.ddd.model.enums.CodeAggregateType;
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.core.doc.model.enums.CodeCaseStage;
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
-import io.dddrive.core.obj.model.Obj;
-import io.dddrive.core.oe.model.ObjUser;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.building.model.ObjBuildingPartRating;
-import io.zeitwert.fm.collaboration.model.db.Tables;
-import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
-import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingVRecord;
-import io.zeitwert.fm.collaboration.model.db.tables.records.ActivityVRecord;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
-import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
-import io.zeitwert.fm.task.model.DocTask;
-import io.zeitwert.fm.task.model.DocTaskRepository;
-import io.zeitwert.fm.task.model.db.tables.records.DocTaskVRecord;
-import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
-import io.zeitwert.fm.util.Formatter;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController("homeController")
 @RequestMapping("/rest/home")
 public class HomeController {
 
+	private static final List<String> activeRatings = Arrays.asList("open", "review");
+	@Autowired
+	DSLContext dslContext;
+	@Autowired
+	ObjUserFMRepository userRepository;
+	@Autowired
+	ObjAccountRepository accountRepository;
+	@Autowired
+	ObjBuildingRepository buildingRepository;
+	@Autowired
+	ObjPortfolioRepository portfolioRepository;
+	@Autowired
+	DocTaskRepository taskRepository;
 	@Autowired
 	private RequestContext requestContext;
 
-	@Autowired
-	DSLContext dslContext;
-
-	@Autowired
-	ObjUserFMRepository userCache;
-
-	@Autowired
-	ObjAccountRepository accountCache;
-
-	@Autowired
-	ObjBuildingRepository buildingRepository;
-
-	@Autowired
-	ObjPortfolioRepository portfolioRepository;
-
-	@Autowired
-	DocTaskRepository taskCache;
-
-	@Autowired
-	DocTaskRepository taskRepository;
-
-	private static final List<String> activeRatings = Arrays.asList("open", "review");
-
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
-		ObjAccount account = this.accountCache.get(accountId);
-		List<ObjPortfolio> portfolioList = this.portfolioRepository.getAll(requestContext.getTenantId());
-		List<ObjBuilding> buildingList = this.buildingRepository.getAll(requestContext.getTenantId());
+		ObjAccount account = accountRepository.get(accountId);
+		Object tenantId = requestContext.getTenantId();
+		List<ObjPortfolio> portfolioList = portfolioRepository.getAll(tenantId).stream().map(it -> portfolioRepository.get(it)).toList();
+		List<ObjBuilding> buildingList = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
 		Integer ratingCount = (int) buildingList.stream()
 				.filter(b -> b.getCurrentRating() != null && activeRatings.contains(b.getCurrentRating().getRatingStatus().getId()))
 				.count();
@@ -107,13 +86,14 @@ public class HomeController {
 
 	@GetMapping("/openActivities/{accountId}")
 	public ResponseEntity<List<HomeActivityResponse>> getOpenActivities(@PathVariable("accountId") Integer accountId) {
-		List<ObjBuilding> buildingList = this.buildingRepository.getAll(requestContext.getTenantId());
+		Object tenantId = requestContext.getTenantId();
+		List<ObjBuilding> buildingList = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
 		List<HomeActivityResponse> rrList = buildingList
 				.stream()
 				.filter(b -> b.getCurrentRating() != null && activeRatings.contains(b.getCurrentRating().getRatingStatus().getId()))
 				.map(this::getRatingResponse)
 				.toList();
-		List<DocTask> taskList = this.taskRepository.getAll(requestContext.getTenantId());
+		List<DocTask> taskList = taskRepository.getAll(tenantId).stream().map(it -> taskRepository.get(it)).toList();
 		List<HomeActivityResponse> ttList = taskList
 				.stream()
 				.filter(b -> !"task.done".equals(b.getMeta().getCaseStage().getId()))
@@ -164,7 +144,7 @@ public class HomeController {
 
 	@GetMapping("/recentActions/{accountId}")
 	public ResponseEntity<List<HomeActionResponse>> getRecentActions(@PathVariable("accountId") Integer accountId) {
-		ObjAccount account = this.accountCache.get(accountId);
+		ObjAccount account = this.accountRepository.get(accountId);
 		Result<ActivityVRecord> result = this.dslContext
 				.selectFrom(Tables.ACTIVITY_V)
 				.where(
@@ -194,7 +174,7 @@ public class HomeController {
 				.item(item)
 				.seqNr(a.getSeqNr())
 				.timestamp(a.getTimestamp())
-				.user(EnumeratedDto.of(this.userCache.get(a.getUserId())))
+				.user(EnumeratedDto.of(this.userRepository.get(a.getUserId())))
 				.changes(null)
 				.oldCaseStage(EnumeratedDto.of(oldCaseStage))
 				.newCaseStage(EnumeratedDto.of(newCaseStage))

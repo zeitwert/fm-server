@@ -20,7 +20,7 @@ import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
 public class ObjPortfolioDtoAdapter
 		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioDto> {
 
-	private ObjAccountRepository accountCache = null;
+	private ObjAccountRepository accountRepository = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
 // private final ObjVCache objCache;
@@ -30,8 +30,8 @@ public class ObjPortfolioDtoAdapter
 //	}
 
 	@Autowired
-	void setAccountCache(ObjAccountRepository accountCache) {
-		this.accountCache = accountCache;
+	void setAccountRepository(ObjAccountRepository accountRepository) {
+		this.accountRepository = accountRepository;
 	}
 
 	@Autowired
@@ -40,7 +40,7 @@ public class ObjPortfolioDtoAdapter
 	}
 
 	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
 	}
 
 	@Override

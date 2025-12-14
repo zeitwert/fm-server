@@ -39,19 +39,14 @@ open class ObjBuildingPersistenceProvider : JooqObjPersistenceProviderBase<ObjBu
 
 	override fun dslContext(): DSLContext = _dslContext
 
-	override fun getRepository(): ObjBuildingRepository = _repository
-
 	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
-	override fun nextAggregateId(): Any {
-		return dslContext()
+	override fun nextAggregateId(): Any =
+		dslContext()
 			.nextval(Sequences.OBJ_ID_SEQ)
 			.toInt()
-	}
 
-	override fun fromAggregate(aggregate: ObjBuilding): UpdatableRecord<*> {
-		return createObjRecord(aggregate)
-	}
+	override fun fromAggregate(aggregate: ObjBuilding): UpdatableRecord<*> = createObjRecord(aggregate)
 
 	@Suppress("UNCHECKED_CAST", "LongMethod")
 	override fun storeExtension(aggregate: ObjBuilding) {
@@ -59,7 +54,7 @@ open class ObjBuildingPersistenceProvider : JooqObjPersistenceProviderBase<ObjBu
 
 		val existingRecord = dslContext().fetchOne(
 			Tables.OBJ_BUILDING,
-			Tables.OBJ_BUILDING.OBJ_ID.eq(objId)
+			Tables.OBJ_BUILDING.OBJ_ID.eq(objId),
 		)
 
 		val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_BUILDING)
@@ -108,12 +103,15 @@ open class ObjBuildingPersistenceProvider : JooqObjPersistenceProviderBase<ObjBu
 	}
 
 	@Suppress("UNCHECKED_CAST", "LongMethod")
-	override fun loadExtension(aggregate: ObjBuilding, objId: Int?) {
+	override fun loadExtension(
+		aggregate: ObjBuilding,
+		objId: Int?,
+	) {
 		if (objId == null) return
 
 		val record = dslContext().fetchOne(
 			Tables.OBJ_BUILDING,
-			Tables.OBJ_BUILDING.OBJ_ID.eq(objId)
+			Tables.OBJ_BUILDING.OBJ_ID.eq(objId),
 		) ?: return
 
 		(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
@@ -178,6 +176,7 @@ open class ObjBuildingPersistenceProvider : JooqObjPersistenceProviderBase<ObjBu
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "obj_building"
 	}
 

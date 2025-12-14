@@ -1,14 +1,24 @@
 package io.zeitwert.fm.building.model.base
 
 import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.property.model.*
+import io.dddrive.core.property.model.BaseProperty
+import io.dddrive.core.property.model.EnumProperty
+import io.dddrive.core.property.model.PartListProperty
+import io.dddrive.core.property.model.Property
+import io.dddrive.core.property.model.ReferenceProperty
+import io.dddrive.core.property.model.ReferenceSetProperty
 import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
 import io.zeitwert.fm.building.model.ObjBuildingRepository
-import io.zeitwert.fm.building.model.enums.*
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
+import io.zeitwert.fm.building.model.enums.CodeBuildingPriceIndex
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
+import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
+import io.zeitwert.fm.building.model.enums.CodeBuildingType
+import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
@@ -27,8 +37,11 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 abstract class ObjBuildingBase(
-	repository: ObjBuildingRepository
-) : FMObjBase(repository), ObjBuilding, AggregateWithNotesMixin, AggregateWithTasksMixin {
+	repository: ObjBuildingRepository,
+) : FMObjBase(repository),
+	ObjBuilding,
+	AggregateWithNotesMixin,
+	AggregateWithTasksMixin {
 
 	private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
 	private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
@@ -88,17 +101,21 @@ abstract class ObjBuildingBase(
 
 	override fun aggregate(): ObjBuilding = this
 
-	override fun doAfterCreate(userId: Any?, timestamp: OffsetDateTime?) {
+	override fun doAfterCreate(
+		userId: Any?,
+		timestamp: OffsetDateTime?,
+	) {
 		super.doAfterCreate(userId, timestamp)
 		check(this.id != null) { "id must not be null after create" }
 		this.addCoverFoto(userId, timestamp)
 	}
 
-	override fun getAccount(): ObjAccount? {
-		return repository.accountRepository.get(accountId)
-	}
+	override fun getAccount(): ObjAccount? = repository.accountRepository.get(accountId)
 
-	override fun doAddPart(property: Property<*>, partId: Int?): Part<*>? {
+	override fun doAddPart(
+		property: Property<*>,
+		partId: Int?,
+	): Part<*>? {
 		if (property === this._ratingList) {
 			val partRepo = directory.getPartRepository(ObjBuildingPartRating::class.java)
 			return partRepo.create(this, property, partId)
@@ -106,7 +123,10 @@ abstract class ObjBuildingBase(
 		return super.doAddPart(property, partId)
 	}
 
-	override fun doBeforeStore(userId: Any?, timestamp: OffsetDateTime?) {
+	override fun doBeforeStore(
+		userId: Any?,
+		timestamp: OffsetDateTime?,
+	) {
 		super.doBeforeStore(userId, timestamp)
 		if (getCoverFotoId() == null) {
 			addCoverFoto(userId, timestamp)
@@ -137,7 +157,7 @@ abstract class ObjBuildingBase(
 				insuredValueYear,
 				1000.0 * insuredValue.toDouble(),
 				year,
-				getInflationRate()
+				getInflationRate(),
 			)
 		}
 		return 0.0
@@ -153,11 +173,12 @@ abstract class ObjBuildingBase(
 		return null
 	}
 
-	override fun getCondition(year: Int): Int? {
-		return getCurrentRating()?.getCondition(year)
-	}
+	override fun getCondition(year: Int): Int? = getCurrentRating()?.getCondition(year)
 
-	override fun addRating(user: ObjUserFM?, timestamp: OffsetDateTime?): ObjBuildingPartRating {
+	override fun addRating(
+		user: ObjUserFM?,
+		timestamp: OffsetDateTime?,
+	): ObjBuildingPartRating {
 		val oldRating = getCurrentRating()
 		require(oldRating == null || oldRating.ratingStatus == CodeBuildingRatingStatus.DONE) { "rating done" }
 		val rating = _ratingList.addPart(null)
@@ -225,7 +246,7 @@ abstract class ObjBuildingBase(
 			if (currentRating.elementWeights != 100) {
 				addValidation(
 					CodeValidationLevelEnum.ERROR,
-					"Summe der Bauteilanteile muss 100% sein (ist ${currentRating.elementWeights}%)"
+					"Summe der Bauteilanteile muss 100% sein (ist ${currentRating.elementWeights}%)",
 				)
 			}
 			for (element in currentRating.elementList) {
@@ -233,12 +254,12 @@ abstract class ObjBuildingBase(
 					if (element.condition == null || element.condition == 0) {
 						addValidation(
 							CodeValidationLevelEnum.ERROR,
-							"Zustand für Element [${element.buildingPart?.name}] muss erfasst werden"
+							"Zustand für Element [${element.buildingPart?.name}] muss erfasst werden",
 						)
 					} else if (element.ratingYear == null || element.ratingYear!! < 1800) {
 						addValidation(
 							CodeValidationLevelEnum.ERROR,
-							"Jahr der Zustandsbewertung für Element [${element.buildingPart?.name}] muss erfasst werden"
+							"Jahr der Zustandsbewertung für Element [${element.buildingPart?.name}] muss erfasst werden",
 						)
 					}
 				}
@@ -262,7 +283,10 @@ abstract class ObjBuildingBase(
 	//     addSearchText(getDescription())
 	// }
 
-	private fun addCoverFoto(userId: Any?, timestamp: OffsetDateTime?) {
+	private fun addCoverFoto(
+		userId: Any?,
+		timestamp: OffsetDateTime?,
+	) {
 		val documentRepo = repository.documentRepository
 		val coverFoto = documentRepo.create(tenantId, userId, timestamp)
 		coverFoto.name = "CoverFoto"
@@ -459,9 +483,7 @@ abstract class ObjBuildingBase(
 
 	override fun getRatingList(): List<ObjBuildingPartRating> = _ratingList.parts
 
-	override fun getRatingById(ratingId: Int?): ObjBuildingPartRating? {
-		return _ratingList.parts.find { it.id == ratingId }
-	}
+	override fun getRatingById(ratingId: Int?): ObjBuildingPartRating? = _ratingList.parts.find { it.id == ratingId }
 
 	override fun getContactSet(): Set<Int> = _contactSet.items.mapNotNull { it as? Int }.toSet()
 
@@ -477,12 +499,10 @@ abstract class ObjBuildingBase(
 		_contactSet.removeItem(contactId)
 	}
 
-	override fun getTasks(): List<DocTask> = taskRepository().getByForeignKey("related_obj_id", id)
-
 	override fun addTask(): DocTask {
 		val task = taskRepository().create(tenantId, null, OffsetDateTime.now())
 		task.relatedToId = id as Int
 		return task
 	}
-}
 
+}

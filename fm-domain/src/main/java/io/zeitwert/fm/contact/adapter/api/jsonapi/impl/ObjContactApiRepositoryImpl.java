@@ -19,9 +19,9 @@ public class ObjContactApiRepositoryImpl
 	public ObjContactApiRepositoryImpl(
 			ObjContactRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			ObjContactDtoAdapter dtoAdapter) {
-		super(ObjContactDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(ObjContactDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

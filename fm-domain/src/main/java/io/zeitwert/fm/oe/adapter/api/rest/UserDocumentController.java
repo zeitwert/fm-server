@@ -20,7 +20,7 @@ import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 public class UserDocumentController {
 
 	@Autowired
-	private ObjUserFMRepository userCache;
+	private ObjUserFMRepository userRepository;
 
 	@Autowired
 	RequestContext requestCtx;
@@ -30,7 +30,7 @@ public class UserDocumentController {
 
 	@RequestMapping(value = "/{id}/avatar", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getAvatar(@PathVariable Integer id) {
-		ObjUserFM user = (ObjUserFM) this.userCache.get(id);
+		ObjUserFM user = (ObjUserFM) this.userRepository.get(id);
 		Integer documentId = user.getAvatarImageId();
 		if (documentId == null) {
 			HttpHeaders headers = new HttpHeaders();

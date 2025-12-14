@@ -28,10 +28,10 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 
 	private ObjTenantDtoAdapter tenantDtoAdapter;
 
-	private ObjContactRepository contactCache = null;
+	private ObjContactRepository contactRepository = null;
 	private ObjContactDtoAdapter contactDtoAdapter;
 
-	private ObjDocumentRepository documentCache = null;
+	private ObjDocumentRepository documentRepository = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
 	@Autowired
@@ -40,8 +40,8 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 	}
 
 	@Autowired
-	void setContactCache(ObjContactRepository contactCache) {
-		this.contactCache = contactCache;
+	void setContactRepository(ObjContactRepository contactRepository) {
+		this.contactRepository = contactRepository;
 	}
 
 	@Autowired
@@ -51,8 +51,8 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 	}
 
 	@Autowired
-	void setDocumentCache(ObjDocumentRepository documentCache) {
-		this.documentCache = documentCache;
+	void setDocumentRepository(ObjDocumentRepository documentRepository) {
+		this.documentRepository = documentRepository;
 	}
 
 	@Autowired
@@ -65,11 +65,11 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 	}
 
 	public ObjContactDto getContactDto(Integer id) {
-		return id != null ? this.contactDtoAdapter.fromAggregate(this.contactCache.get(id)) : null;
+		return id != null ? this.contactDtoAdapter.fromAggregate(this.contactRepository.get(id)) : null;
 	}
 
 	public ObjDocumentDto getDocumentDto(Integer id) {
-		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentCache.get(id)) : null;
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(id)) : null;
 	}
 
 	@Override

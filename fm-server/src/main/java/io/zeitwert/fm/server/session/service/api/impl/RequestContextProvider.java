@@ -22,7 +22,7 @@ public class RequestContextProvider {
 	@Bean
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public RequestContextFM getRequestContext(ObjUserFMRepository userCache) {
+	public RequestContextFM getRequestContext(ObjUserFMRepository userRepository) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if ("anonymousUser".equals(auth.getPrincipal())) {
@@ -30,7 +30,7 @@ public class RequestContextProvider {
 		}
 
 		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
-		ObjUser user = userCache.get(userDetails.getUserId());
+		ObjUser user = userRepository.get(userDetails.getUserId());
 		Integer tenantId = userDetails.getTenantId();
 		Integer accountId = userDetails.getAccountId();
 

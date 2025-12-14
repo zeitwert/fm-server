@@ -20,9 +20,9 @@ public class ObjBuildingApiRepositoryImpl
 	public ObjBuildingApiRepositoryImpl(
 			ObjBuildingRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			ObjBuildingDtoAdapter dtoAdapter) {
-		super(ObjBuildingDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(ObjBuildingDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

@@ -18,7 +18,7 @@ import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 public class TenantDocumentController {
 
 	@Autowired
-	private ObjTenantFMRepository tenantCache;
+	private ObjTenantFMRepository tenantRepository;
 
 	@Autowired
 	RequestContext requestCtx;
@@ -28,7 +28,7 @@ public class TenantDocumentController {
 
 	@RequestMapping(value = "/{id}/logo", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
-		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(id);
+		ObjTenantFM tenant = (ObjTenantFM) this.tenantRepository.get(id);
 		Integer documentId = tenant.getLogoImageId();
 		if (documentId == null) {
 			return ResponseEntity.noContent().build();

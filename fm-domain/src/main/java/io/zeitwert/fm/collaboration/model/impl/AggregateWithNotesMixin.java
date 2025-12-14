@@ -1,15 +1,15 @@
 package io.zeitwert.fm.collaboration.model.impl;
 
-import static io.dddrive.util.Invariant.requireThis;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import io.dddrive.core.ddd.model.Aggregate;
 import io.zeitwert.fm.collaboration.model.ItemWithNotes;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static io.dddrive.util.Invariant.requireThis;
 
 public interface AggregateWithNotesMixin extends ItemWithNotes {
 
@@ -19,7 +19,7 @@ public interface AggregateWithNotesMixin extends ItemWithNotes {
 
 	@Override
 	default List<ObjNote> getNotes() {
-		return noteRepository().getByForeignKey("relatedToId", aggregate().getId());
+		return noteRepository().getByForeignKey("relatedToId", aggregate().getId()).stream().map(it -> noteRepository().get(it)).toList();
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.time.OffsetDateTime
  * @param O The Obj aggregate type
  */
 abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenceProviderBase<O>() {
+
 	/**
 	 * Returns the aggregate type ID for this Obj type (e.g., "obj_contact", "obj_building").
 	 */
@@ -109,31 +110,30 @@ abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenc
 		// Default: no extension data to load
 	}
 
-	override fun getAllRecordIds(tenantId: Int): List<Int> =
+	override fun getAll(tenantId: Any): List<Any> =
 		dslContext()
 			.select(Tables.OBJ.ID)
 			.from(Tables.OBJ)
-			.where(Tables.OBJ.TENANT_ID.eq(tenantId))
+			.where(Tables.OBJ.TENANT_ID.eq(tenantId as Int))
 			.and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
 			.fetch(Tables.OBJ.ID)
 
-	override fun getRecordIdsByForeignKey(
+	override fun getByForeignKey(
 		fkName: String,
-		targetId: Int,
-	): List<Int> {
-		// Handle common foreign keys
+		targetId: Any,
+	): List<Any> {
 		val field = when (fkName) {
+			"tenantId" -> Tables.OBJ.TENANT_ID
 			"accountId" -> Tables.OBJ.ACCOUNT_ID
 			"ownerId" -> Tables.OBJ.OWNER_ID
-			"tenantId" -> Tables.OBJ.TENANT_ID
-			else -> return emptyList() // Unknown FK - subclasses may override for custom FKs
+			else -> throw IllegalArgumentException("unknown fkName: $fkName")
 		}
-
 		return dslContext()
 			.select(Tables.OBJ.ID)
 			.from(Tables.OBJ)
-			.where(field.eq(targetId))
+			.where(field.eq(targetId as Int))
 			.and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
 			.fetch(Tables.OBJ.ID)
 	}
+
 }

@@ -1,16 +1,5 @@
 package io.zeitwert.fm.doc;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import org.jooq.JSON;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -22,6 +11,17 @@ import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
+import org.jooq.JSON;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -45,7 +45,7 @@ public class DocTestTest {
 	private ObjAccountRepository accountRepo;
 
 	@Autowired
-	private ObjAccountRepository accountCache;
+	private ObjAccountRepository accountRepository;
 
 	// CodeTestType is now a Kotlin enum with companion object Enumeration
 
@@ -210,7 +210,7 @@ public class DocTestTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0).getId());
+		return this.accountRepository.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0));
 	}
 
 	private void initDocTest(DocTest test, String name, String testTypeId) {

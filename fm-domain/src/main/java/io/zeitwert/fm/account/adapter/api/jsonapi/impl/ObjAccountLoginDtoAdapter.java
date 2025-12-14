@@ -17,12 +17,12 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 public class ObjAccountLoginDtoAdapter
 		extends ObjDtoAdapterBase<ObjAccount, ObjAccountLoginDto> {
 
-	private ObjDocumentRepository documentCache = null;
+	private ObjDocumentRepository documentRepository = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
 	@Autowired
-	void setDocumentCache(ObjDocumentRepository documentCache) {
-		this.documentCache = documentCache;
+	void setDocumentRepository(ObjDocumentRepository documentRepository) {
+		this.documentRepository = documentRepository;
 	}
 
 	@Autowired
@@ -31,7 +31,7 @@ public class ObjAccountLoginDtoAdapter
 	}
 
 	public ObjDocumentDto getDocumentDto(Integer id) {
-		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentCache.get(id)) : null;
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(id)) : null;
 	}
 
 	@Override

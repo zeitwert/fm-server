@@ -14,41 +14,41 @@ import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends AggregateDto<A>>
 		implements AggregateDtoAdapter<A, D> {
 
-	private ObjTenantFMRepository tenantCache = null;
-	private ObjUserFMRepository userCache = null;
+	private ObjTenantFMRepository tenantRepository = null;
+	private ObjUserFMRepository userRepository = null;
 
 	@Autowired
-	void setTenantCache(ObjTenantFMRepository tenantCache) {
-		this.tenantCache = tenantCache;
+	void setTenantRepository(ObjTenantFMRepository tenantRepository) {
+		this.tenantRepository = tenantRepository;
 	}
 
 	@Autowired
-	void setUserCache(ObjUserFMRepository userCache) {
-		this.userCache = userCache;
+	void setUserRepository(ObjUserFMRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
-	protected ObjTenantFMRepository getTenantCache() {
-		return this.tenantCache;
+	protected ObjTenantFMRepository getTenantRepository() {
+		return this.tenantRepository;
 	}
 
 	protected ObjTenant getTenant(Integer tenantId) {
-		return this.tenantCache.get(tenantId);
+		return this.tenantRepository.get(tenantId);
 	}
 
 	protected EnumeratedDto getTenantEnumerated(Integer tenantId) {
-		return tenantId != null ? EnumeratedDto.of(tenantCache.get(tenantId)) : null;
+		return tenantId != null ? EnumeratedDto.of(tenantRepository.get(tenantId)) : null;
 	}
 
-	protected ObjUserFMRepository getUserCache() {
-		return this.userCache;
+	protected ObjUserFMRepository getUserRepository() {
+		return this.userRepository;
 	}
 
 	protected ObjUser getUser(Integer userId) {
-		return this.userCache.get(userId);
+		return this.userRepository.get(userId);
 	}
 
 	protected EnumeratedDto getUserEnumerated(Integer userId) {
-		return userId != null ? EnumeratedDto.of(userCache.get(userId)) : null;
+		return userId != null ? EnumeratedDto.of(userRepository.get(userId)) : null;
 	}
 
 	protected EnumeratedDto asEnumerated(Aggregate a) {

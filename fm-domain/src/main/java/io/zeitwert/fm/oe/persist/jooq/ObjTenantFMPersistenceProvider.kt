@@ -19,88 +19,88 @@ import java.math.BigDecimal
 @Component("objTenantFMPersistenceProvider")
 open class ObjTenantFMPersistenceProvider : JooqObjPersistenceProviderBase<ObjTenantFM>() {
 
-    private lateinit var _dslContext: DSLContext
-    private lateinit var _repository: ObjTenantFMRepository
+	private lateinit var _dslContext: DSLContext
+	private lateinit var _repository: ObjTenantFMRepository
 
-    @Autowired
-    fun setDslContext(dslContext: DSLContext) {
-        this._dslContext = dslContext
-    }
+	@Autowired
+	fun setDslContext(dslContext: DSLContext) {
+		this._dslContext = dslContext
+	}
 
-    @Autowired
-    @Lazy
-    fun setRepository(repository: ObjTenantFMRepository) {
-        this._repository = repository
-    }
+	@Autowired
+	@Lazy
+	fun setRepository(repository: ObjTenantFMRepository) {
+		this._repository = repository
+	}
 
-    override fun dslContext(): DSLContext = _dslContext
+	override fun dslContext(): DSLContext = _dslContext
 
-    override fun getRepository(): ObjTenantFMRepository = _repository
+	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
-    override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
+	override fun nextAggregateId(): Any =
+		dslContext()
+			.nextval(Sequences.OBJ_ID_SEQ)
+			.toInt()
 
-    override fun nextAggregateId(): Any {
-        return dslContext()
-            .nextval(Sequences.OBJ_ID_SEQ)
-            .toInt()
-    }
+	override fun fromAggregate(aggregate: ObjTenantFM): UpdatableRecord<*> = createObjRecord(aggregate)
 
-    override fun fromAggregate(aggregate: ObjTenantFM): UpdatableRecord<*> {
-        return createObjRecord(aggregate)
-    }
+	@Suppress("UNCHECKED_CAST")
+	override fun storeExtension(aggregate: ObjTenantFM) {
+		val objId = aggregate.id as Int
 
-    @Suppress("UNCHECKED_CAST")
-    override fun storeExtension(aggregate: ObjTenantFM) {
-        val objId = aggregate.id as Int
+		val existingRecord = dslContext().fetchOne(
+			Tables.OBJ_TENANT,
+			Tables.OBJ_TENANT.OBJ_ID.eq(objId),
+		)
 
-        val existingRecord = dslContext().fetchOne(
-            Tables.OBJ_TENANT,
-            Tables.OBJ_TENANT.OBJ_ID.eq(objId)
-        )
+		val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_TENANT)
 
-        val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_TENANT)
+		record.objId = objId
+		record.tenantTypeId = (aggregate.getProperty("tenantType") as? EnumProperty<CodeTenantType>)?.value?.id
+		record.name = (aggregate.getProperty("name") as? BaseProperty<String?>)?.value
+		record.description = (aggregate.getProperty("description") as? BaseProperty<String?>)?.value
+		record.inflationRate = (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value
+		record.discountRate = (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value
+		record.logoImgId = (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id as? Int
 
-        record.objId = objId
-        record.tenantTypeId = (aggregate.getProperty("tenantType") as? EnumProperty<CodeTenantType>)?.value?.id
-        record.name = (aggregate.getProperty("name") as? BaseProperty<String?>)?.value
-        record.description = (aggregate.getProperty("description") as? BaseProperty<String?>)?.value
-        record.inflationRate = (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value
-        record.discountRate = (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value
-        record.logoImgId = (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.id as? Int
+		if (existingRecord != null) {
+			record.update()
+		} else {
+			record.insert()
+		}
+	}
 
-        if (existingRecord != null) {
-            record.update()
-        } else {
-            record.insert()
-        }
-    }
+	@Suppress("UNCHECKED_CAST")
+	override fun loadExtension(
+		aggregate: ObjTenantFM,
+		objId: Int?,
+	) {
+		if (objId == null) return
 
-    @Suppress("UNCHECKED_CAST")
-    override fun loadExtension(aggregate: ObjTenantFM, objId: Int?) {
-        if (objId == null) return
+		val record = dslContext().fetchOne(
+			Tables.OBJ_TENANT,
+			Tables.OBJ_TENANT.OBJ_ID.eq(objId),
+		) ?: return
 
-        val record = dslContext().fetchOne(
-            Tables.OBJ_TENANT,
-            Tables.OBJ_TENANT.OBJ_ID.eq(objId)
-        ) ?: return
+		record.tenantTypeId?.let { tenantTypeId ->
+			(aggregate.getProperty("tenantType") as? EnumProperty<CodeTenantType>)?.value =
+				CodeTenantType.getTenantType(tenantTypeId)
+		}
 
-        record.tenantTypeId?.let { tenantTypeId ->
-            (aggregate.getProperty("tenantType") as? EnumProperty<CodeTenantType>)?.value =
-                CodeTenantType.getTenantType(tenantTypeId)
-        }
+		(aggregate.getProperty("name") as? BaseProperty<String?>)?.value = record.name
+		(aggregate.getProperty("description") as? BaseProperty<String?>)?.value = record.description
+		(aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value = record.inflationRate
+		(aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value = record.discountRate
 
-        (aggregate.getProperty("name") as? BaseProperty<String?>)?.value = record.name
-        (aggregate.getProperty("description") as? BaseProperty<String?>)?.value = record.description
-        (aggregate.getProperty("inflationRate") as? BaseProperty<BigDecimal?>)?.value = record.inflationRate
-        (aggregate.getProperty("discountRate") as? BaseProperty<BigDecimal?>)?.value = record.discountRate
+		(aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.let { prop ->
+			@Suppress("UNCHECKED_CAST")
+			(prop as ReferenceProperty<Any>).id = record.logoImgId
+		}
+	}
 
-        (aggregate.getProperty("logoImage") as? ReferenceProperty<*>)?.let { prop ->
-            @Suppress("UNCHECKED_CAST")
-            (prop as ReferenceProperty<Any>).id = record.logoImgId
-        }
-    }
+	companion object {
 
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "obj_tenant"
-    }
+		private const val AGGREGATE_TYPE_ID = "obj_tenant"
+	}
+
 }

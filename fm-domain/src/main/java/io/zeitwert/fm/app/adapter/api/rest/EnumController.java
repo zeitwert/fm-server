@@ -1,33 +1,23 @@
-
 package io.zeitwert.fm.app.adapter.api.rest;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.jooq.TableRecord;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.crnk.core.queryspec.QuerySpec;
 import io.dddrive.core.ddd.model.RepositoryDirectory;
 import io.dddrive.core.doc.model.enums.CodeCaseStage;
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.core.enums.model.Enumerated;
 import io.dddrive.core.enums.model.Enumeration;
 import io.dddrive.core.oe.model.ObjTenant;
 import io.dddrive.core.oe.model.ObjUser;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantVRecord;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController("enumController")
 @RequestMapping("/enum")
@@ -44,9 +34,6 @@ public class EnumController {
 
 	@Autowired
 	ObjUserFMRepository userRepo;
-
-	@Autowired
-	ObjUserFMRepository userCache;
 
 //	@GetMapping("/oe/objTenant")
 //	public ResponseEntity<List<EnumeratedDto>> getTenants() {
@@ -68,17 +55,16 @@ public class EnumController {
 
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
-		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-//		List<ObjUserVRecord> users = this.userRepo.find(querySpec);
-		List<ObjUserFM> users = this.userRepo.getAll(requestContext.getTenantId());
+		Object tenantId = requestContext.getTenantId();
+		List<ObjUserFM> users = userRepo.getAll(tenantId).stream().map(it -> userRepo.get(it)).toList();
 		return ResponseEntity.ok(users.stream().map(u -> EnumeratedDto.of(u.getId().toString(), u.getCaption())).toList());
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
-		Optional<ObjUserFM> user = this.userCache.getByEmail(idOrEmail);
+		Optional<ObjUserFM> user = this.userRepo.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
-			user = Optional.of(this.userCache.get(Integer.valueOf(idOrEmail)));
+			user = Optional.of(this.userRepo.get(Integer.valueOf(idOrEmail)));
 		}
 		if (user.isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -96,7 +82,7 @@ public class EnumController {
 
 	@GetMapping("/{module}/{enumerationName}")
 	public ResponseEntity<List<? extends Enumerated>> getEnumDomain(@PathVariable String module,
-			@PathVariable String enumerationName, @RequestParam(required = false, defaultValue = "") List<String> filter) {
+																																	@PathVariable String enumerationName, @RequestParam(required = false, defaultValue = "") List<String> filter) {
 		Enumeration<? extends Enumerated> enumeration = directory.getEnumeration(module, enumerationName);
 		if (enumeration == null) {
 			return ResponseEntity.notFound().build();
@@ -107,7 +93,7 @@ public class EnumController {
 	@GetMapping("/{module}/{enumerationName}/{id}")
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<Enumerated> getEnumItem(@PathVariable String module, @PathVariable String enumerationName,
-			@PathVariable String id) {
+																								@PathVariable String id) {
 		Enumerated item = ((Enumeration<Enumerated>) directory.getEnumeration(module, enumerationName)).getItem(id);
 		if (item == null) {
 			return ResponseEntity.notFound().build();

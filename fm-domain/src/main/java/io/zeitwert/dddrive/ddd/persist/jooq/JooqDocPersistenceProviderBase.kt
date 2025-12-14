@@ -80,15 +80,16 @@ abstract class JooqDocPersistenceProviderBase<D : Doc> : JooqAggregatePersistenc
 	/**
 	 * Loads the DOC record from the database.
 	 */
-	override fun loadRecord(id: Int): DocRecord? {
-		return dslContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(id))
-	}
+	override fun loadRecord(id: Int): DocRecord? = dslContext().fetchOne(Tables.DOC, Tables.DOC.ID.eq(id))
 
 	/**
 	 * Maps DOC record fields to the aggregate, including Doc-specific fields.
 	 */
 	@Suppress("UNCHECKED_CAST")
-	override fun toAggregate(record: UpdatableRecord<*>, aggregate: D) {
+	override fun toAggregate(
+		record: UpdatableRecord<*>,
+		aggregate: D,
+	) {
 		super.toAggregate(record, aggregate)
 
 		val docRecord = record as DocRecord
@@ -138,7 +139,10 @@ abstract class JooqDocPersistenceProviderBase<D : Doc> : JooqAggregatePersistenc
 	 * Loads transition history for the document.
 	 * Override in subclasses to load from transition tables.
 	 */
-	protected open fun loadTransitions(aggregate: D, docId: Int?) {
+	protected open fun loadTransitions(
+		aggregate: D,
+		docId: Int?,
+	) {
 		// Default: no transitions to load
 		// Subclasses should load from doc_part_transition table
 	}
@@ -147,35 +151,38 @@ abstract class JooqDocPersistenceProviderBase<D : Doc> : JooqAggregatePersistenc
 	 * Loads extension data for the aggregate.
 	 * Override in subclasses to load from extension tables.
 	 */
-	protected open fun loadExtension(aggregate: D, docId: Int?) {
+	protected open fun loadExtension(
+		aggregate: D,
+		docId: Int?,
+	) {
 		// Default: no extension data to load
 	}
 
-	override fun getAllRecordIds(tenantId: Int): List<Int> {
-		return dslContext()
+	override fun getAll(tenantId: Any): List<Any> =
+		dslContext()
 			.select(Tables.DOC.ID)
 			.from(Tables.DOC)
-			.where(Tables.DOC.TENANT_ID.eq(tenantId))
+			.where(Tables.DOC.TENANT_ID.eq(tenantId as Int))
 			.and(Tables.DOC.DOC_TYPE_ID.eq(getAggregateTypeId()))
 			.fetch(Tables.DOC.ID)
-	}
 
-	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
-		// Handle common foreign keys
+	override fun getByForeignKey(
+		fkName: String,
+		targetId: Any,
+	): List<Any> {
 		val field = when (fkName) {
+			"tenantId" -> Tables.DOC.TENANT_ID
 			"accountId" -> Tables.DOC.ACCOUNT_ID
 			"ownerId" -> Tables.DOC.OWNER_ID
-			"tenantId" -> Tables.DOC.TENANT_ID
 			"assigneeId" -> Tables.DOC.ASSIGNEE_ID
-			else -> return emptyList() // Unknown FK - subclasses may override for custom FKs
+			else -> throw IllegalArgumentException("unknown fkName: $fkName")
 		}
-
 		return dslContext()
 			.select(Tables.DOC.ID)
 			.from(Tables.DOC)
-			.where(field.eq(targetId))
+			.where(field.eq(targetId as Int))
 			.and(Tables.DOC.DOC_TYPE_ID.eq(getAggregateTypeId()))
 			.fetch(Tables.DOC.ID)
 	}
-}
 
+}

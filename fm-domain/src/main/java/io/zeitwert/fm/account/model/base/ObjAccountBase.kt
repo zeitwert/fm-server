@@ -18,12 +18,14 @@ import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.math.BigDecimal
 
 abstract class ObjAccountBase(
-	repository: ObjAccountRepository
-) : FMObjBase(repository), ObjAccount, AggregateWithNotesMixin {
+	repository: ObjAccountRepository,
+) : FMObjBase(repository),
+	ObjAccount,
+	AggregateWithNotesMixin {
 
 	override fun aggregate(): ObjAccount = this
 
-	//@formatter:off
+	// @formatter:off
 	private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
 	private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
 	private val _accountType: EnumProperty<CodeAccountType> = this.addEnumProperty("accountType", CodeAccountType::class.java)
@@ -33,20 +35,24 @@ abstract class ObjAccountBase(
 	private val _discountRate: BaseProperty<BigDecimal> = this.addBaseProperty("discountRate", BigDecimal::class.java)
 	private val _logoImage: ReferenceProperty<ObjDocument> = this.addReferenceProperty("logoImage", ObjDocument::class.java)
 	private val _mainContact: ReferenceProperty<ObjContact> = this.addReferenceProperty("mainContact", ObjContact::class.java)
-	//@formatter:on
+	// @formatter:on
 
-	override fun getRepository(): ObjAccountRepository {
-		return super.getRepository() as ObjAccountRepository
-	}
+	override fun getRepository(): ObjAccountRepository = super.getRepository() as ObjAccountRepository
 
-	override fun doAfterCreate(userId: Any?, timestamp: java.time.OffsetDateTime?) {
+	override fun doAfterCreate(
+		userId: Any?,
+		timestamp: java.time.OffsetDateTime?,
+	) {
 		super.doAfterCreate(userId, timestamp)
 		check(this.id.value != null) { "id must not be null after create" }
 		this.accountId = this.id.value as Int
 		this.addLogoImage(userId, timestamp)
 	}
 
-	override fun doBeforeStore(userId: Any?, timestamp: java.time.OffsetDateTime?) {
+	override fun doBeforeStore(
+		userId: Any?,
+		timestamp: java.time.OffsetDateTime?,
+	) {
 		super.doBeforeStore(userId, timestamp)
 		if (this.getLogoImageId() == null) {
 			this.addLogoImage(userId, timestamp)
@@ -68,10 +74,13 @@ abstract class ObjAccountBase(
 		this.caption.value = this.name
 	}
 
-	private fun addLogoImage(userId: Any?, timestamp: java.time.OffsetDateTime?) {
+	private fun addLogoImage(
+		userId: Any?,
+		timestamp: java.time.OffsetDateTime?,
+	) {
 		val documentRepo = this.repository.documentRepository
 		val image = documentRepo.create(this.tenantId, userId, timestamp)
-//		image.accountId = this.id.value
+// 		image.accountId = this.id.value
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.FOTO
 		image.documentKind = CodeDocumentKind.STANDALONE
@@ -136,7 +145,7 @@ abstract class ObjAccountBase(
 
 	override fun getContacts(): List<ObjContact> {
 		val contactRepo = this.repository.contactRepository
-		return contactRepo.getByForeignKey("accountId", this.id as Any)
+		return contactRepo.getByForeignKey("accountId", this.id as Any).map { contactRepo.get(it) }
 	}
 
 }

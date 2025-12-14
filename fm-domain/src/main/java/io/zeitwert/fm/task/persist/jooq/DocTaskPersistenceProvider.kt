@@ -34,23 +34,18 @@ open class DocTaskPersistenceProvider : JooqDocPersistenceProviderBase<DocTask>(
 
 	override fun dslContext(): DSLContext = _dslContext
 
-	override fun getRepository(): DocTaskRepository = _repository
-
 	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
 	override fun getDefaultCaseDefId(): String = "task"
 
 	override fun getDefaultCaseStageId(): String = "task.new"
 
-	override fun nextAggregateId(): Any {
-		return dslContext()
+	override fun nextAggregateId(): Any =
+		dslContext()
 			.nextval(Sequences.DOC_ID_SEQ)
 			.toInt()
-	}
 
-	override fun fromAggregate(aggregate: DocTask): UpdatableRecord<*> {
-		return createDocRecord(aggregate)
-	}
+	override fun fromAggregate(aggregate: DocTask): UpdatableRecord<*> = createDocRecord(aggregate)
 
 	@Suppress("UNCHECKED_CAST")
 	override fun storeExtension(aggregate: DocTask) {
@@ -58,7 +53,7 @@ open class DocTaskPersistenceProvider : JooqDocPersistenceProviderBase<DocTask>(
 
 		val existingRecord = dslContext().fetchOne(
 			Tables.DOC_TASK,
-			Tables.DOC_TASK.DOC_ID.eq(docId)
+			Tables.DOC_TASK.DOC_ID.eq(docId),
 		)
 
 		val record = existingRecord ?: dslContext().newRecord(Tables.DOC_TASK)
@@ -83,12 +78,15 @@ open class DocTaskPersistenceProvider : JooqDocPersistenceProviderBase<DocTask>(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun loadExtension(aggregate: DocTask, docId: Int?) {
+	override fun loadExtension(
+		aggregate: DocTask,
+		docId: Int?,
+	) {
 		if (docId == null) return
 
 		val record = dslContext().fetchOne(
 			Tables.DOC_TASK,
-			Tables.DOC_TASK.DOC_ID.eq(docId)
+			Tables.DOC_TASK.DOC_ID.eq(docId),
 		) ?: return
 
 		(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
@@ -106,22 +104,28 @@ open class DocTaskPersistenceProvider : JooqDocPersistenceProviderBase<DocTask>(
 		}
 	}
 
-	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
+	override fun getByForeignKey(
+		fkName: String,
+		targetId: Any,
+	): List<Any> {
 		val field = when (fkName) {
-			"related_obj_id", "relatedObjId" -> Tables.DOC_TASK.RELATED_OBJ_ID
-			"related_doc_id", "relatedDocId" -> Tables.DOC_TASK.RELATED_DOC_ID
-			else -> return super.getRecordIdsByForeignKey(fkName, targetId)
+			"relatedObjId" -> Tables.DOC_TASK.RELATED_OBJ_ID
+			"relatedDocId" -> Tables.DOC_TASK.RELATED_DOC_ID
+			else -> null
 		}
-
-		return dslContext()
-			.select(Tables.DOC_TASK.DOC_ID)
-			.from(Tables.DOC_TASK)
-			.where(field.eq(targetId))
-			.fetch(Tables.DOC_TASK.DOC_ID)
+		if (field != null) {
+			return dslContext()
+				.select(Tables.DOC_TASK.DOC_ID)
+				.from(Tables.DOC_TASK)
+				.where(field.eq(targetId as Int))
+				.fetch(Tables.DOC_TASK.DOC_ID)
+		}
+		return super.getByForeignKey(fkName, targetId)
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "doc_task"
 	}
-}
 
+}

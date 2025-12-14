@@ -26,19 +26,19 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 		extends ResourceRepositoryBase<D, Integer> {
 
 	private final RequestContext requestCtx;
-	private final ObjUserFMRepository userCache;
+	private final ObjUserFMRepository userRepository;
 	private final AggregateRepository<A> repository;
 	private final AggregateDtoAdapterBase<A, D> dtoAdapter;
 
 	public AggregateApiRepositoryBase(
 			Class<D> dtoClass,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			AggregateRepository<A> repository,
 			AggregateDtoAdapterBase<A, D> dtoAdapter) {
 		super(dtoClass);
 		this.requestCtx = requestCtx;
-		this.userCache = userCache;
+		this.userRepository = userRepository;
 		this.repository = repository;
 		this.dtoAdapter = dtoAdapter;
 	}
@@ -51,7 +51,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
 		}
 		try {
-//			this.userCache.touch(this.requestCtx.getUser().getId());
+//			this.userRepository.touch(this.requestCtx.getUser().getId());
 			Integer tenantId = dto.getTenant() != null
 					? Integer.parseInt(dto.getTenant().getId())
 					: (Integer) this.requestCtx.getTenantId();
@@ -68,7 +68,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	public D findOne(Integer objId, QuerySpec querySpec) {
 		try {
-//			this.userCache.touch(this.requestCtx.getUser().getId());
+//			this.userRepository.touch(this.requestCtx.getUser().getId());
 			A aggregate = this.repository.load(objId);
 			this.requestCtx.addAggregate(objId, aggregate);
 			return this.dtoAdapter.fromAggregate(aggregate);
@@ -82,7 +82,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
 //		try {
-//			this.userCache.touch(this.requestCtx.getUser().getId());
+//			this.userRepository.touch(this.requestCtx.getUser().getId());
 //			List<V> itemList = this.repository.find(querySpec);
 //			ResourceList<D> list = new DefaultResourceList<>();
 //			list.addAll(itemList.stream().map(item -> this.dtoAdapter.fromRecord(item)).toList());
@@ -97,7 +97,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public <S extends D> S save(S dto) {
-//		this.userCache.touch(this.requestCtx.getUser().getId());
+//		this.userRepository.touch(this.requestCtx.getUser().getId());
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		} else if (dto.getMeta() == null) {
@@ -140,7 +140,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public void delete(Integer id) {
-//		this.userCache.touch(this.requestCtx.getUser().getId());
+//		this.userRepository.touch(this.requestCtx.getUser().getId());
 		if (id == null) {
 			throw new ResourceNotFoundException("Can only delete existing object (missing id)");
 		}

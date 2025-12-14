@@ -21,7 +21,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 
-	private ObjDocumentRepository documentCache = null;
+	private ObjDocumentRepository documentRepository = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
 	protected ObjTenantDtoAdapter() {
@@ -29,8 +29,8 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	}
 
 	@Autowired
-	void setDocumentCache(ObjDocumentRepository documentCache) {
-		this.documentCache = documentCache;
+	void setDocumentRepository(ObjDocumentRepository documentRepository) {
+		this.documentRepository = documentRepository;
 	}
 
 	@Autowired
@@ -39,7 +39,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	}
 
 	public ObjDocumentDto getDocumentDto(Integer id) {
-		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentCache.get(id)) : null;
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(id)) : null;
 	}
 
 	@Override

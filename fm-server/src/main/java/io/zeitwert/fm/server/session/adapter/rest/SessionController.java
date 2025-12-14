@@ -53,10 +53,10 @@ public class SessionController {
 	AuthenticationManager authenticationManager;
 
 	@Autowired
-	ObjTenantFMRepository tenantCache;
+	ObjTenantFMRepository tenantRepository;
 
 	@Autowired
-	ObjAccountRepository accountCache;
+	ObjAccountRepository accountRepository;
 
 	@Autowired
 	JwtProvider jwtProvider;
@@ -107,8 +107,8 @@ public class SessionController {
 		if (this.requestCtx == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(this.requestCtx.getTenantId());
-		ObjAccount account = this.requestCtx.hasAccount() ? this.accountCache.get(this.requestCtx.getAccountId()) : null;
+		ObjTenantFM tenant = (ObjTenantFM) this.tenantRepository.get(this.requestCtx.getTenantId());
+		ObjAccount account = this.requestCtx.hasAccount() ? this.accountRepository.get(this.requestCtx.getAccountId()) : null;
 		ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
 		String defaultApp = null;
 		if (user.isAppAdmin()) {

@@ -1,9 +1,9 @@
 package io.dddrive.core.ddd.model;
 
+import io.dddrive.core.ddd.model.enums.CodeAggregateType;
+
 import java.time.OffsetDateTime;
 import java.util.List;
-
-import io.dddrive.core.ddd.model.enums.CodeAggregateType;
 
 /**
  * A DDD Aggregate Repository
@@ -70,11 +70,11 @@ public interface AggregateRepository<A extends Aggregate> {
 	/**
 	 * Get all Aggregates (read-only) in the given tenant
 	 */
-	List<A> getAll(Object tenantId);
+	List<Object> getAll(Object tenantId);
 
 	/**
 	 * Get a list of Aggregates with the given foreign key pointing to targetId
 	 */
-	List<A> getByForeignKey(String fkName, Object targetId);
+	List<Object> getByForeignKey(String fkName, Object targetId);
 
 }

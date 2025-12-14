@@ -31,6 +31,7 @@ import java.time.OffsetDateTime
  * @param A The aggregate type
  */
 abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePersistenceProvider<A> {
+
 	/**
 	 * Returns the jOOQ DSLContext for database operations.
 	 */
@@ -186,36 +187,4 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 		}
 	}
 
-	override fun getAll(tenantId: Any): List<A> =
-		getAllRecordIds(tenantId as Int).mapNotNull { id ->
-			getRepository().get(id)
-		}
-
-	/**
-	 * Gets all record IDs for a given tenant.
-	 *
-	 * @param tenantId The tenant ID
-	 * @return List of aggregate IDs
-	 */
-	protected abstract fun getAllRecordIds(tenantId: Int): List<Int>
-
-	override fun getByForeignKey(
-		fkName: String,
-		targetId: Any,
-	): List<A> =
-		getRecordIdsByForeignKey(fkName, targetId as Int).mapNotNull { id ->
-			getRepository().get(id)
-		}
-
-	/**
-	 * Gets record IDs by foreign key.
-	 *
-	 * @param fkName The foreign key field name
-	 * @param targetId The target ID value
-	 * @return List of matching aggregate IDs
-	 */
-	protected abstract fun getRecordIdsByForeignKey(
-		fkName: String,
-		targetId: Int,
-	): List<Int>
 }

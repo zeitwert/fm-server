@@ -1,6 +1,5 @@
 package io.zeitwert.fm.collaboration.persist.jooq
 
-import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
@@ -21,85 +20,84 @@ import org.springframework.stereotype.Component
 @Component("objNotePersistenceProvider")
 open class ObjNotePersistenceProvider : JooqObjPersistenceProviderBase<ObjNote>() {
 
-    private lateinit var _dslContext: DSLContext
-    private lateinit var _repository: ObjNoteRepository
+	private lateinit var _dslContext: DSLContext
+	private lateinit var _repository: ObjNoteRepository
 
-    @Autowired
-    fun setDslContext(dslContext: DSLContext) {
-        this._dslContext = dslContext
-    }
+	@Autowired
+	fun setDslContext(dslContext: DSLContext) {
+		this._dslContext = dslContext
+	}
 
-    @Autowired
-    @Lazy
-    fun setRepository(repository: ObjNoteRepository) {
-        this._repository = repository
-    }
+	@Autowired
+	@Lazy
+	fun setRepository(repository: ObjNoteRepository) {
+		this._repository = repository
+	}
 
-    override fun dslContext(): DSLContext = _dslContext
+	override fun dslContext(): DSLContext = _dslContext
 
-    override fun getRepository(): ObjNoteRepository = _repository
+	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
-    override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
+	override fun nextAggregateId(): Any =
+		dslContext()
+			.nextval(Sequences.OBJ_ID_SEQ)
+			.toInt()
 
-    override fun nextAggregateId(): Any {
-        return dslContext()
-            .nextval(Sequences.OBJ_ID_SEQ)
-            .toInt()
-    }
+	override fun fromAggregate(aggregate: ObjNote): UpdatableRecord<*> = createObjRecord(aggregate)
 
-    override fun fromAggregate(aggregate: ObjNote): UpdatableRecord<*> {
-        return createObjRecord(aggregate)
-    }
+	@Suppress("UNCHECKED_CAST")
+	override fun storeExtension(aggregate: ObjNote) {
+		val objId = aggregate.id as Int
 
-    @Suppress("UNCHECKED_CAST")
-    override fun storeExtension(aggregate: ObjNote) {
-        val objId = aggregate.id as Int
+		val existingRecord = dslContext().fetchOne(
+			Tables.OBJ_NOTE,
+			Tables.OBJ_NOTE.OBJ_ID.eq(objId),
+		)
 
-        val existingRecord = dslContext().fetchOne(
-            Tables.OBJ_NOTE,
-            Tables.OBJ_NOTE.OBJ_ID.eq(objId)
-        )
+		val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_NOTE)
 
-        val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_NOTE)
+		record.objId = objId
+		record.tenantId = aggregate.tenantId as? Int
+		record.relatedToId = (aggregate.getProperty("relatedToId") as? BaseProperty<Int?>)?.value
+		record.noteTypeId = (aggregate.getProperty("noteType") as? EnumProperty<CodeNoteType>)?.value?.id
+		record.subject = (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value
+		record.content = (aggregate.getProperty("content") as? BaseProperty<String?>)?.value
+		record.isPrivate = (aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value
 
-        record.objId = objId
-        record.tenantId = aggregate.tenantId as? Int
-        record.relatedToId = (aggregate.getProperty("relatedToId") as? BaseProperty<Int?>)?.value
-        record.noteTypeId = (aggregate.getProperty("noteType") as? EnumProperty<CodeNoteType>)?.value?.id
-        record.subject = (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value
-        record.content = (aggregate.getProperty("content") as? BaseProperty<String?>)?.value
-        record.isPrivate = (aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value
+		if (existingRecord != null) {
+			record.update()
+		} else {
+			record.insert()
+		}
+	}
 
-        if (existingRecord != null) {
-            record.update()
-        } else {
-            record.insert()
-        }
-    }
+	@Suppress("UNCHECKED_CAST")
+	override fun loadExtension(
+		aggregate: ObjNote,
+		objId: Int?,
+	) {
+		if (objId == null) return
 
-    @Suppress("UNCHECKED_CAST")
-    override fun loadExtension(aggregate: ObjNote, objId: Int?) {
-        if (objId == null) return
+		val record = dslContext().fetchOne(
+			Tables.OBJ_NOTE,
+			Tables.OBJ_NOTE.OBJ_ID.eq(objId),
+		) ?: return
 
-        val record = dslContext().fetchOne(
-            Tables.OBJ_NOTE,
-            Tables.OBJ_NOTE.OBJ_ID.eq(objId)
-        ) ?: return
+		(aggregate.getProperty("relatedToId") as? BaseProperty<Int?>)?.value = record.relatedToId
 
-        (aggregate.getProperty("relatedToId") as? BaseProperty<Int?>)?.value = record.relatedToId
+		record.noteTypeId?.let { noteTypeId ->
+			(aggregate.getProperty("noteType") as? EnumProperty<CodeNoteType>)?.value =
+				CodeNoteType.getNoteType(noteTypeId)
+		}
 
-        record.noteTypeId?.let { noteTypeId ->
-            (aggregate.getProperty("noteType") as? EnumProperty<CodeNoteType>)?.value =
-                CodeNoteType.getNoteType(noteTypeId)
-        }
+		(aggregate.getProperty("subject") as? BaseProperty<String?>)?.value = record.subject
+		(aggregate.getProperty("content") as? BaseProperty<String?>)?.value = record.content
+		(aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value = record.isPrivate
+	}
 
-        (aggregate.getProperty("subject") as? BaseProperty<String?>)?.value = record.subject
-        (aggregate.getProperty("content") as? BaseProperty<String?>)?.value = record.content
-        (aggregate.getProperty("isPrivate") as? BaseProperty<Boolean?>)?.value = record.isPrivate
-    }
+	companion object {
 
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "obj_note"
-    }
+		private const val AGGREGATE_TYPE_ID = "obj_note"
+	}
+
 }
-

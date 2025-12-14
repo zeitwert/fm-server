@@ -18,9 +18,9 @@ public class DocTaskApiRepositoryImpl
 	public DocTaskApiRepositoryImpl(
 			DocTaskRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			DocTaskDtoAdapter dtoAdapter) {
-		super(DocTaskDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(DocTaskDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

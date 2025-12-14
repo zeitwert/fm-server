@@ -24,6 +24,7 @@ import java.time.LocalDate
 /** jOOQ-based persistence provider for ObjContact aggregates. */
 @Component("objContactPersistenceProvider")
 open class ObjContactPersistenceProvider : JooqObjPersistenceProviderBase<ObjContact>() {
+
 	private lateinit var _dslContext: DSLContext
 	private lateinit var _repository: ObjContactRepository
 
@@ -39,8 +40,6 @@ open class ObjContactPersistenceProvider : JooqObjPersistenceProviderBase<ObjCon
 	}
 
 	override fun dslContext(): DSLContext = _dslContext
-
-	override fun getRepository(): ObjContactRepository = _repository
 
 	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
@@ -191,22 +190,27 @@ open class ObjContactPersistenceProvider : JooqObjPersistenceProviderBase<ObjCon
 		}
 	}
 
-	override fun getRecordIdsByForeignKey(
+	override fun getByForeignKey(
 		fkName: String,
-		targetId: Int,
-	): List<Int> {
-		// Handle Contact-specific foreign keys
-		if (fkName == "accountId") {
+		targetId: Any,
+	): List<Any> {
+		val field = when (fkName) {
+			"accountId" -> Tables.OBJ_CONTACT.ACCOUNT_ID
+			else -> null
+		}
+		if (field != null) {
 			return dslContext()
 				.select(Tables.OBJ_CONTACT.OBJ_ID)
 				.from(Tables.OBJ_CONTACT)
-				.where(Tables.OBJ_CONTACT.ACCOUNT_ID.eq(targetId))
+				.where(field.eq(targetId as Int))
 				.fetch(Tables.OBJ_CONTACT.OBJ_ID)
 		}
-		return super.getRecordIdsByForeignKey(fkName, targetId)
+		return super.getByForeignKey(fkName, targetId)
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "obj_contact"
 	}
+
 }

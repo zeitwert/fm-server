@@ -1,12 +1,6 @@
 package io.dddrive.core.ddd.model
 
 interface AggregatePersistenceProvider<A : Aggregate?> {
-	/**
-	 * The repository.
-	 *
-	 * @return the repository
-	 */
-	fun getRepository(): AggregateRepository<A>
 
 	/**
 	 * Is the given Any a valid id
@@ -60,18 +54,19 @@ interface AggregatePersistenceProvider<A : Aggregate?> {
 	fun doStore(aggregate: A)
 
 	/**
-	 * Get all aggregates for the given tenant.
+	 * Get all aggregate Ids for the given tenant.
 	 *
 	 * @param tenantId tenant id
 	 * @return all aggregates
 	 */
-	fun getAll(tenantId: Any): List<A>
+	fun getAll(tenantId: Any): List<Any>
 
 	/**
-	 * Get a list of Aggregates with the given foreign key pointing to targetId
+	 * Get a list of Aggregate Ids with the given foreign key pointing to targetId
 	 */
 	fun getByForeignKey(
 		fkName: String,
 		targetId: Any,
-	): List<A>
+	): List<Any>
+
 }

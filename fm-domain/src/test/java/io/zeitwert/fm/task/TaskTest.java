@@ -1,14 +1,5 @@
 package io.zeitwert.fm.task;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
 import io.dddrive.core.doc.model.enums.CodeCaseStage;
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.dddrive.core.oe.model.ObjUser;
@@ -21,6 +12,15 @@ import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
 import io.zeitwert.test.TestApplication;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -43,7 +43,7 @@ public class TaskTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjUserFMRepository userCache;
+	private ObjUserFMRepository userRepository;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
@@ -124,9 +124,10 @@ public class TaskTest {
 	}
 
 	private void getTestData(RequestContext requestCtx) {
-		RelatedTo = this.userCache.getByEmail(USER_EMAIL).get();
+		RelatedTo = this.userRepository.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
-		Account = this.accountRepo.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0).getId());
+		Object tenantId = requestCtx.getTenantId();
+		Account = this.accountRepo.get(this.accountRepo.getAll(tenantId).get(0));
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");

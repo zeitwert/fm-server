@@ -1,6 +1,5 @@
 package io.zeitwert.dddrive.ddd.api.rest.base
 
-import io.zeitwert.dddrive.ddd.api.rest.DtoDetailLevel
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.AggregateRepository
 import io.dddrive.core.obj.model.Obj
@@ -9,6 +8,7 @@ import io.dddrive.core.oe.model.ObjUser
 import io.zeitwert.dddrive.ddd.api.rest.AggregateApiRepository
 import io.zeitwert.dddrive.ddd.api.rest.AggregateApiRepository.Companion.CalculationOnlyOperation
 import io.zeitwert.dddrive.ddd.api.rest.AggregateDtoAdapter
+import io.zeitwert.dddrive.ddd.api.rest.DtoDetailLevel
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregateDto
 import io.zeitwert.fm.app.model.RequestContextFM
 import org.springframework.http.HttpStatus
@@ -22,6 +22,7 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 	private val repository: AggregateRepository<A>,
 	private val dtoAdapter: AggregateDtoAdapter<A, D>,
 ) : AggregateApiRepository<A, D> {
+
 	override fun getResourceClass(): Class<D> = dtoClass
 
 	protected fun getUserRepo(): ObjRepository<ObjUser> = userRepo
@@ -59,12 +60,13 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 	}
 
 	override fun findAll(): List<D> {
-		try {
-			val itemList = repository.getAll(requestContext.tenantId)
-			return itemList.map { item -> dtoAdapter.fromAggregate(item, DtoDetailLevel.REPORT) }
-		} catch (x: Exception) {
-			throw RuntimeException("crashed on findAll", x)
-		}
+		return emptyList()
+		// try {
+		// 	val itemList = repository.getAll(requestContext.tenantId)
+		// 	return itemList.map { item -> dtoAdapter.fromAggregate(item, DtoDetailLevel.REPORT) }
+		// } catch (x: Exception) {
+		// 	throw RuntimeException("crashed on findAll", x)
+		// }
 	}
 
 	override fun findAll(ids: Collection<String>): List<D> = findAll().filter { item -> ids.contains(item.getId()) }

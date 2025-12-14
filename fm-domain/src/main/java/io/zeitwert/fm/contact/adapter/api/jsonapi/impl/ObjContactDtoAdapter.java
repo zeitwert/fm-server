@@ -20,12 +20,12 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 @Component("objContactDtoAdapter")
 public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjContactDto> {
 
-	private ObjAccountRepository accountCache = null;
+	private ObjAccountRepository accountRepository = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
 	@Autowired
-	void setAccountCache(ObjAccountRepository accountCache) {
-		this.accountCache = accountCache;
+	void setAccountRepository(ObjAccountRepository accountRepository) {
+		this.accountRepository = accountRepository;
 	}
 
 	@Autowired
@@ -34,7 +34,7 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 	}
 
 	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
 	}
 
 	@Override

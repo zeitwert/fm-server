@@ -19,9 +19,9 @@ public class ObjAccountApiRepositoryImpl
 	public ObjAccountApiRepositoryImpl(
 			ObjAccountRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			ObjAccountDtoAdapter dtoAdapter) {
-		super(ObjAccountDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(ObjAccountDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

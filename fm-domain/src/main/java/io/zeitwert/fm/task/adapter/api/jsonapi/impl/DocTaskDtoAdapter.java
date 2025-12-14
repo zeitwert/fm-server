@@ -17,12 +17,12 @@ import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 @Component("docTaskDtoAdapter")
 public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 
-	private ObjAccountRepository accountCache = null;
+	private ObjAccountRepository accountRepository = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
 	@Autowired
-	void setAccountCache(ObjAccountRepository accountCache) {
-		this.accountCache = accountCache;
+	void setAccountRepository(ObjAccountRepository accountRepository) {
+		this.accountRepository = accountRepository;
 	}
 
 	@Autowired
@@ -31,7 +31,7 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 	}
 
 	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountCache.get(id)) : null;
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
 	}
 
 	@Override

@@ -1,13 +1,5 @@
 package io.zeitwert.fm.portfolio;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -15,6 +7,13 @@ import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.test.TestApplication;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -27,7 +26,7 @@ public class PortfolioTest {
 	private ObjAccountRepository accountRepo;
 
 	@Autowired
-	private ObjAccountRepository accountCache;
+	private ObjAccountRepository accountRepository;
 
 	@Autowired
 	private ObjPortfolioRepository portfolioRepository;
@@ -41,8 +40,8 @@ public class PortfolioTest {
 		assertNotNull(this.portfolioRepository, "portfolioRepository not null");
 		assertEquals("obj_portfolio", this.portfolioRepository.getAggregateType().getId());
 
-		assertNotNull(this.accountCache, "accountRepository not null");
-		assertEquals("obj_account", this.accountCache.getAggregateType().getId());
+		assertNotNull(this.accountRepository, "accountRepository not null");
+		assertEquals("obj_account", this.accountRepository.getAggregateType().getId());
 
 		assertNotNull(this.buildingRepository, "buildingRepository not null");
 		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
@@ -90,7 +89,7 @@ public class PortfolioTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountCache.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0).getId());
+		return this.accountRepository.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0));
 	}
 
 }

@@ -20,9 +20,9 @@ public class TestRequestContextProvider {
 
 	@Bean
 	@SessionScope
-	public RequestContextFM getRequestContext(ObjUserFMRepository userCache) {
+	public RequestContextFM getRequestContext(ObjUserFMRepository userRepository) {
 		String userEmail = "tt@zeitwert.io";
-		Optional<ObjUserFM> maybeUser = userCache.getByEmail(userEmail);
+		Optional<ObjUserFM> maybeUser = userRepository.getByEmail(userEmail);
 		if (maybeUser.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
 		}

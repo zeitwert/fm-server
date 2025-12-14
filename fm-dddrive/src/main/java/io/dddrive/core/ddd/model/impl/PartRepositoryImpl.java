@@ -1,20 +1,16 @@
-package io.dddrive.core.ddd.model.base;
+package io.dddrive.core.ddd.model.impl;
 
-import static io.dddrive.util.Invariant.requireThis;
-
-import java.util.Set;
-
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.AggregateRepositorySPI;
-import io.dddrive.core.ddd.model.Part;
-import io.dddrive.core.ddd.model.PartRepository;
-import io.dddrive.core.ddd.model.PartSPI;
+import io.dddrive.core.ddd.model.*;
 import io.dddrive.core.property.model.Property;
 import io.dddrive.core.property.model.impl.PropertyFilter;
 import io.dddrive.core.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
 
-public class PartRepositoryBase<A extends Aggregate, P extends Part<A>> implements PartRepository<A, P> {
+import java.util.Set;
+
+import static io.dddrive.util.Invariant.requireThis;
+
+public final class PartRepositoryImpl<A extends Aggregate, P extends Part<A>> implements PartRepository<A, P> {
 
 	private static final Set<String> NotLoggedProperties = Set.of("id");
 
@@ -23,7 +19,7 @@ public class PartRepositoryBase<A extends Aggregate, P extends Part<A>> implemen
 	private final ProxyFactory partProxyFactory;
 	private final Class<?>[] partProxyFactoryParamTypeList;
 
-	protected PartRepositoryBase(Class<? extends A> aggregateIntfClass, Class<? extends P> intfClass, Class<? extends P> baseClass) {
+	public PartRepositoryImpl(Class<? extends A> aggregateIntfClass, Class<? extends P> intfClass, Class<? extends P> baseClass) {
 		this.intfClass = intfClass;
 		this.baseClass = baseClass;
 		this.partProxyFactory = new ProxyFactory();
@@ -46,11 +42,7 @@ public class PartRepositoryBase<A extends Aggregate, P extends Part<A>> implemen
 		AggregateRepositorySPI<A> repo = (AggregateRepositorySPI<A>) aggregate.getMeta().getRepository();
 		int id = isInLoad ? partId : repo.getPersistenceProvider().nextPartId(aggregate, this.intfClass);
 		try {
-			P part = (P) this.partProxyFactory.create(
-					this.partProxyFactoryParamTypeList,
-					new Object[]{aggregate, this, property, id},
-					PropertyHandler.INSTANCE
-			);
+			P part = (P) this.partProxyFactory.create(this.partProxyFactoryParamTypeList, new Object[]{aggregate, this, property, id}, PropertyHandler.INSTANCE);
 			if (!isInLoad && part instanceof PartSPI) {
 				((PartSPI<A>) part).doAfterCreate();
 			}

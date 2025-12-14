@@ -19,9 +19,9 @@ public class ObjDocumentApiRepositoryImpl
 	public ObjDocumentApiRepositoryImpl(
 			ObjDocumentRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			ObjDocumentDtoAdapter dtoAdapter) {
-		super(ObjDocumentDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(ObjDocumentDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

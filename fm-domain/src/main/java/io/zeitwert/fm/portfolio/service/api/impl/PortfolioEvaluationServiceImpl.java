@@ -36,18 +36,18 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 	public static final Color OK_CONDITION = new Color(120, 192, 107);
 	public static final Color GOOD_CONDITION = new Color(51, 135, 33);
 
-	private final ObjBuildingRepository buildingCache;
+	private final ObjBuildingRepository buildingRepository;
 	private final ProjectionService projectionService;
 
-	public PortfolioEvaluationServiceImpl(ObjBuildingRepository buildingCache, ProjectionService projectionService) {
-		this.buildingCache = buildingCache;
+	public PortfolioEvaluationServiceImpl(ObjBuildingRepository buildingRepository, ProjectionService projectionService) {
+		this.buildingRepository = buildingRepository;
 		this.projectionService = projectionService;
 	}
 
 	@Override
 	public PortfolioEvaluationResult getEvaluation(ObjPortfolio portfolio) {
 
-		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream().map(id -> this.buildingCache.get(id))
+		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream().map(id -> this.buildingRepository.get(id))
 				.collect(Collectors.toSet());
 		ProjectionResult projectionResult = this.projectionService.getProjection(buildings,
 				ProjectionService.DefaultDuration);

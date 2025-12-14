@@ -1,20 +1,21 @@
 package io.dddrive.core.ddd.model.base;
 
-import static io.dddrive.util.Invariant.assertThis;
-import static io.dddrive.util.Invariant.requireThis;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.dddrive.core.ddd.model.*;
 import io.dddrive.core.ddd.model.enums.CodeAggregateType;
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.core.ddd.model.impl.PartRepositoryImpl;
 import io.dddrive.core.property.model.impl.PropertyFilter;
 import io.dddrive.core.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Set;
+
+import static io.dddrive.util.Invariant.assertThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 public abstract class AggregateRepositoryBase<A extends Aggregate>
 		implements AggregateRepository<A>, AggregateRepositorySPI<A> {
@@ -72,7 +73,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	}
 
 	protected <AA extends Aggregate> void addPart(Class<AA> aggregateIntfClass, Class<? extends Part<AA>> partIntfClass, Class<? extends Part<AA>> partBaseClass) {
-		PartRepository<AA, ? extends Part<AA>> partRepository = new PartRepositoryBase<>(aggregateIntfClass, partIntfClass, partBaseClass);
+		PartRepository<AA, ? extends Part<AA>> partRepository = new PartRepositoryImpl<>(aggregateIntfClass, partIntfClass, partBaseClass);
 		((RepositoryDirectorySPI) this.getDirectory()).addPartRepository(partIntfClass, partRepository);
 	}
 
@@ -205,12 +206,12 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	}
 
 	@Override
-	public List<A> getAll(Object tenantId) {
+	public List<Object> getAll(Object tenantId) {
 		return this.getPersistenceProvider().getAll(tenantId);
 	}
 
 	@Override
-	public List<A> getByForeignKey(String fkName, Object targetId) {
+	public List<Object> getByForeignKey(String fkName, Object targetId) {
 		return this.getPersistenceProvider().getByForeignKey(fkName, targetId);
 	}
 

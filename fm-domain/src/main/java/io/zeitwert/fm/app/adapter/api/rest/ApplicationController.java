@@ -30,10 +30,10 @@ import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 public class ApplicationController {
 
 	@Autowired
-	private ObjTenantFMRepository tenantCache;
+	private ObjTenantFMRepository tenantRepository;
 
 	@Autowired
-	private ObjUserFMRepository userCache;
+	private ObjUserFMRepository userRepository;
 
 	@Autowired
 	private AccountService accountService;
@@ -57,7 +57,7 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		Optional<ObjUserFM> maybeUser = this.userCache.getByEmail(email);
+		Optional<ObjUserFM> maybeUser = this.userRepository.getByEmail(email);
 		if (!maybeUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -74,7 +74,7 @@ public class ApplicationController {
 
 	@GetMapping("/tenantInfo/{id}")
 	public ResponseEntity<TenantInfoResponse> tenantInfo(@PathVariable("id") Integer id) {
-		ObjTenantFM tenant = (ObjTenantFM) this.tenantCache.get(id);
+		ObjTenantFM tenant = (ObjTenantFM) this.tenantRepository.get(id);
 		List<ObjAccountVRecord> accounts = this.accountService.getAccounts(tenant);
 		List<EnumeratedDto> accountDtos = accounts.stream()
 				.map(account -> EnumeratedDto.of(account.getId().toString(), account.getName()))

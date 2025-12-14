@@ -18,9 +18,9 @@ public class ObjTenantApiRepositoryImpl
 	public ObjTenantApiRepositoryImpl(
 			ObjTenantFMRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			ObjTenantDtoAdapter dtoAdapter) {
-		super(ObjTenantDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(ObjTenantDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

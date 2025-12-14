@@ -38,19 +38,14 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
 
 	override fun dslContext(): DSLContext = _dslContext
 
-	override fun getRepository(): ObjDocumentRepository = _repository
-
 	override fun getAggregateTypeId(): String = AGGREGATE_TYPE_ID
 
-	override fun nextAggregateId(): Any {
-		return dslContext()
+	override fun nextAggregateId(): Any =
+		dslContext()
 			.nextval(Sequences.OBJ_ID_SEQ)
 			.toInt()
-	}
 
-	override fun fromAggregate(aggregate: ObjDocument): UpdatableRecord<*> {
-		return createObjRecord(aggregate)
-	}
+	override fun fromAggregate(aggregate: ObjDocument): UpdatableRecord<*> = createObjRecord(aggregate)
 
 	@Suppress("UNCHECKED_CAST")
 	override fun storeExtension(aggregate: ObjDocument) {
@@ -58,7 +53,7 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
 
 		val existingRecord = dslContext().fetchOne(
 			Tables.OBJ_DOCUMENT,
-			Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId)
+			Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId),
 		)
 
 		val record = existingRecord ?: dslContext().newRecord(Tables.OBJ_DOCUMENT)
@@ -80,13 +75,15 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun loadExtension(aggregate: ObjDocument, objId: Int?) {
-
+	override fun loadExtension(
+		aggregate: ObjDocument,
+		objId: Int?,
+	) {
 		if (objId == null) return
 
 		val record = dslContext().fetchOne(
 			Tables.OBJ_DOCUMENT,
-			Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId)
+			Tables.OBJ_DOCUMENT.OBJ_ID.eq(objId),
 		) ?: return
 
 		(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = record.accountId
@@ -127,7 +124,11 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
 		return dslContext().fetchOne(query)?.content
 	}
 
-	fun storeContent(document: ObjDocument, contentType: CodeContentType?, content: ByteArray?) {
+	fun storeContent(
+		document: ObjDocument,
+		contentType: CodeContentType?,
+		content: ByteArray?,
+	) {
 		if (contentType == null || content == null) return
 
 		var versionNr = dslContext().fetchValue(getContentMaxVersionQuery(document))
@@ -140,22 +141,21 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
 				Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR,
 				Tables.OBJ_DOCUMENT_PART_CONTENT.CONTENT_TYPE_ID,
 				Tables.OBJ_DOCUMENT_PART_CONTENT.CONTENT,
-				Tables.OBJ_DOCUMENT_PART_CONTENT.CREATED_BY_USER_ID
-			)
-			.values(
+				Tables.OBJ_DOCUMENT_PART_CONTENT.CREATED_BY_USER_ID,
+			).values(
 				document.id as Int,
 				versionNr,
 				contentType.id,
 				content,
-				document.meta.createdByUser?.id as Int
-			)
-			.execute()
+				document.meta.createdByUser?.id as Int,
+			).execute()
 	}
 
 	private fun getContentWithMaxVersionQuery(document: ObjDocument) =
 		Tables.OBJ_DOCUMENT_PART_CONTENT.where(
-			Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID.eq(document.id as Int)
-				.and(Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR.eq(getContentMaxVersionQuery(document)))
+			Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID
+				.eq(document.id as Int)
+				.and(Tables.OBJ_DOCUMENT_PART_CONTENT.VERSION_NR.eq(getContentMaxVersionQuery(document))),
 		)
 
 	private fun getContentMaxVersionQuery(document: ObjDocument) =
@@ -164,27 +164,28 @@ open class ObjDocumentPersistenceProvider : JooqObjPersistenceProviderBase<ObjDo
 			.from(Tables.OBJ_DOCUMENT_PART_CONTENT)
 			.where(Tables.OBJ_DOCUMENT_PART_CONTENT.OBJ_ID.eq(document.id as Int))
 
-	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
-		if (fkName == "accountId") {
+	override fun getByForeignKey(
+		fkName: String,
+		targetId: Any,
+	): List<Any> {
+		val field = when (fkName) {
+			"accountId" -> Tables.OBJ_DOCUMENT.ACCOUNT_ID
+			"templateDocumentId" -> io.zeitwert.fm.doc.model.db.Tables.DOC.OWNER_ID
+			else -> null
+		}
+		if (field != null) {
 			return dslContext()
 				.select(Tables.OBJ_DOCUMENT.OBJ_ID)
 				.from(Tables.OBJ_DOCUMENT)
-				.where(Tables.OBJ_DOCUMENT.ACCOUNT_ID.eq(targetId))
+				.where(field.eq(targetId as Int))
 				.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
 		}
-		if (fkName == "templateDocumentId") {
-			return dslContext()
-				.select(Tables.OBJ_DOCUMENT.OBJ_ID)
-				.from(Tables.OBJ_DOCUMENT)
-				.where(Tables.OBJ_DOCUMENT.TEMPLATE_DOCUMENT_ID.eq(targetId))
-				.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
-		}
-		return super.getRecordIdsByForeignKey(fkName, targetId)
+		return super.getByForeignKey(fkName, targetId)
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "obj_document"
 	}
 
 }
-

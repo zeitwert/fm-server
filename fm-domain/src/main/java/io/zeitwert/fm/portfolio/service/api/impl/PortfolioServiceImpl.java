@@ -28,7 +28,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 	private final GeoApiContext context;
 
 	@Autowired
-	private ObjBuildingRepository buildingCache;
+	private ObjBuildingRepository buildingRepository;
 
 	protected PortfolioServiceImpl() {
 		this.context = new GeoApiContext.Builder()
@@ -46,7 +46,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 		try {
 			Markers markers = new Markers();
 			for (Integer bldgId : portfolio.getBuildingSet()) {
-				ObjBuilding bldg = this.buildingCache.get(bldgId);
+				ObjBuilding bldg = this.buildingRepository.get(bldgId);
 				String coordinates = bldg.getGeoCoordinates();
 				if (coordinates != null && coordinates.startsWith("WGS:")) {
 					markers.addLocation(coordinates.substring(4));

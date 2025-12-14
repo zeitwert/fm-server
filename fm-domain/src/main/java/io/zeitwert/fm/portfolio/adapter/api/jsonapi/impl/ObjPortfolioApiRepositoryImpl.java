@@ -19,9 +19,9 @@ public class ObjPortfolioApiRepositoryImpl
 	public ObjPortfolioApiRepositoryImpl(
 			ObjPortfolioRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userCache,
+			ObjUserFMRepository userRepository,
 			ObjPortfolioDtoAdapter dtoAdapter) {
-		super(ObjPortfolioDto.class, requestCtx, userCache, repository, dtoAdapter);
+		super(ObjPortfolioDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}
 
 }

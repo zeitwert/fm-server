@@ -14,11 +14,11 @@ import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 public class ZeitwertUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	ObjUserFMRepository userCache;
+	ObjUserFMRepository userRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		ObjUserFM user = (ObjUserFM) this.userCache.getByEmail(email)
+		ObjUserFM user = (ObjUserFM) this.userRepository.getByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 		return ZeitwertUserDetails.build(user);
 	}
