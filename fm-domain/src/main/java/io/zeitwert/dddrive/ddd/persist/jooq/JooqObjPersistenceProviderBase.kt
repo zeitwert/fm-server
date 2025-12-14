@@ -19,7 +19,6 @@ import java.time.OffsetDateTime
  * @param O The Obj aggregate type
  */
 abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenceProviderBase<O>() {
-
 	/**
 	 * Returns the aggregate type ID for this Obj type (e.g., "obj_contact", "obj_building").
 	 */
@@ -59,15 +58,16 @@ abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenc
 	/**
 	 * Loads the OBJ record from the database.
 	 */
-	override fun loadRecord(id: Int): ObjRecord? {
-		return dslContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(id))
-	}
+	override fun loadRecord(id: Int): ObjRecord? = dslContext().fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(id))
 
 	/**
 	 * Maps OBJ record fields to the aggregate, including Obj-specific fields.
 	 */
 	@Suppress("UNCHECKED_CAST")
-	override fun toAggregate(record: UpdatableRecord<*>, aggregate: O) {
+	override fun toAggregate(
+		record: UpdatableRecord<*>,
+		aggregate: O,
+	) {
 		super.toAggregate(record, aggregate)
 
 		val objRecord = record as ObjRecord
@@ -102,20 +102,25 @@ abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenc
 	 * Loads extension data for the aggregate.
 	 * Override in subclasses to load from extension tables.
 	 */
-	protected open fun loadExtension(aggregate: O, objId: Int?) {
+	protected open fun loadExtension(
+		aggregate: O,
+		objId: Int?,
+	) {
 		// Default: no extension data to load
 	}
 
-	override fun getAllRecordIds(tenantId: Int): List<Int> {
-		return dslContext()
+	override fun getAllRecordIds(tenantId: Int): List<Int> =
+		dslContext()
 			.select(Tables.OBJ.ID)
 			.from(Tables.OBJ)
 			.where(Tables.OBJ.TENANT_ID.eq(tenantId))
 			.and(Tables.OBJ.OBJ_TYPE_ID.eq(getAggregateTypeId()))
 			.fetch(Tables.OBJ.ID)
-	}
 
-	override fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int> {
+	override fun getRecordIdsByForeignKey(
+		fkName: String,
+		targetId: Int,
+	): List<Int> {
 		// Handle common foreign keys
 		val field = when (fkName) {
 			"accountId" -> Tables.OBJ.ACCOUNT_ID
@@ -132,4 +137,3 @@ abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenc
 			.fetch(Tables.OBJ.ID)
 	}
 }
-

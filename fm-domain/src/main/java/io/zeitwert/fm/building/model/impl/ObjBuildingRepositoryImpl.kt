@@ -19,12 +19,14 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objBuildingRepository")
-class ObjBuildingRepositoryImpl : FMObjRepositoryBase<ObjBuilding>(
-	ObjBuildingRepository::class.java,
-	ObjBuilding::class.java,
-	ObjBuildingBase::class.java,
-	AGGREGATE_TYPE_ID
-), ObjBuildingRepository {
+class ObjBuildingRepositoryImpl :
+	FMObjRepositoryBase<ObjBuilding>(
+		ObjBuildingRepository::class.java,
+		ObjBuilding::class.java,
+		ObjBuildingBase::class.java,
+		AGGREGATE_TYPE_ID,
+	),
+	ObjBuildingRepository {
 
 	private lateinit var persistenceProvider: ObjBuildingPersistenceProvider
 	private lateinit var _accountRepository: ObjAccountRepository
@@ -77,11 +79,12 @@ class ObjBuildingRepositoryImpl : FMObjRepositoryBase<ObjBuilding>(
 		this.addPart(
 			ObjBuilding::class.java,
 			ObjBuildingPartElementRating::class.java,
-			ObjBuildingPartElementRatingBase::class.java
+			ObjBuildingPartElementRatingBase::class.java,
 		)
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "obj_building"
 	}
 

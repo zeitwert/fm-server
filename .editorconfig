@@ -1,0 +1,53 @@
+# top-most EditorConfig file
+root = true
+
+# General settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Windows batch files need CRLF
+[*.{bat,cmd}]
+end_of_line = crlf
+
+# Kotlin files
+[*.{kt,kts}]
+# Non-default settings that need to be specified
+indent_style = tab
+indent_size = 2
+
+# Disable star imports (not the default)
+ij_kotlin_name_count_to_use_star_import = 9999
+ij_kotlin_name_count_to_use_star_import_for_members = 9999
+
+# IntelliJ IDEA specific settings (if you use IntelliJ)
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ij_kotlin_line_comment_at_first_column = false
+ij_kotlin_line_comment_add_space = true
+ij_kotlin_keep_blank_lines_in_declarations = 1
+ij_kotlin_keep_blank_lines_in_code = 1
+ij_kotlin_keep_blank_lines_before_right_brace = 1
+ij_kotlin_continuation_indent_size = 4
+ij_kotlin_blank_lines_after_class_header = 1
+
+# Blank lines in class bodies: disable rules that prevent blank lines
+# (ktlint can't enforce adding blank lines, but we can stop it from removing them)
+ktlint_standard_no-empty-first-line-in-class-body = disabled
+ktlint_standard_no-blank-line-before-rbrace = disabled
+
+# TODO: Enable and fix errors manually (temporary workaround to enable ktlint)
+ktlint_standard_backing-property-naming = disabled
+ktlint_standard_class-naming = disabled
+ktlint_standard_comment-wrapping = disabled
+ktlint_standard_enum-entry-name-case = disabled
+ktlint_standard_filename = disabled
+# ktlint_standard_indent = disabled
+ktlint_standard_max-line-length = disabled
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_no-consecutive-comments = disabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_property-naming = disabled
+ktlint_standard_string-template-indent = disabled
+ktlint_standard_value-parameter-comment = disabled

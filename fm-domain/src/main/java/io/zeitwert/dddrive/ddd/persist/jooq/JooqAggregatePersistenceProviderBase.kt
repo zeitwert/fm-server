@@ -1,6 +1,10 @@
 package io.zeitwert.dddrive.ddd.persist.jooq
 
-import io.dddrive.core.ddd.model.*
+import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.core.ddd.model.AggregateMeta
+import io.dddrive.core.ddd.model.AggregatePersistenceProvider
+import io.dddrive.core.ddd.model.AggregateSPI
+import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.core.oe.model.ObjUser
 import io.dddrive.core.property.model.BaseProperty
@@ -27,7 +31,6 @@ import java.time.OffsetDateTime
  * @param A The aggregate type
  */
 abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePersistenceProvider<A> {
-
 	/**
 	 * Returns the jOOQ DSLContext for database operations.
 	 */
@@ -39,8 +42,10 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 
 	override fun idFromString(id: String): Any = id.toInt()
 
-	override fun <P : Part<A>> nextPartId(aggregate: A, partClass: Class<P>): Int =
-		(aggregate as AggregateSPI).nextPartId(partClass)
+	override fun <P : Part<A>> nextPartId(
+		aggregate: A,
+		partClass: Class<P>,
+	): Int = (aggregate as AggregateSPI).nextPartId(partClass)
 
 	/**
 	 * Loads an aggregate from the database.
@@ -48,7 +53,10 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	 * @param aggregate The empty aggregate instance to populate
 	 * @param id The aggregate ID
 	 */
-	override fun doLoad(aggregate: A, id: Any) {
+	override fun doLoad(
+		aggregate: A,
+		id: Any,
+	) {
 		requireThis(isValidId(id)) { "valid id" }
 		val record = loadRecord(id as Int)
 		assertThis(record != null) { "aggregate found for id ($id)" }
@@ -77,7 +85,7 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 				System.err.println("stored:\n$record")
 			} catch (e: RuntimeException) {
 				System.err.println("${e.message}:\n$record")
-				throw e  // Re-throw to trigger rollback
+				throw e // Re-throw to trigger rollback
 			}
 		}
 	}
@@ -116,7 +124,10 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	 * @param aggregate The target aggregate
 	 */
 	@Suppress("UNCHECKED_CAST")
-	protected open fun toAggregate(record: UpdatableRecord<*>, aggregate: A) {
+	protected open fun toAggregate(
+		record: UpdatableRecord<*>,
+		aggregate: A,
+	) {
 		// Base aggregate fields - these are common to all aggregates
 		(aggregate.getProperty("id") as? BaseProperty<Any?>)?.value = getRecordField(record, "id")
 		(aggregate.getProperty("version") as? BaseProperty<Int?>)?.value = getRecordField(record, "version") as? Int
@@ -136,7 +147,10 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	/**
 	 * Helper to get a field value from a jOOQ record by getter name.
 	 */
-	protected fun getRecordField(record: UpdatableRecord<*>, fieldName: String): Any? {
+	protected fun getRecordField(
+		record: UpdatableRecord<*>,
+		fieldName: String,
+	): Any? {
 		val getterName = "get${fieldName.replaceFirstChar { it.uppercase() }}"
 		return try {
 			val method = record.javaClass.getMethod(getterName)
@@ -153,7 +167,11 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	/**
 	 * Helper to set a field value on a jOOQ record by setter name.
 	 */
-	protected fun setRecordField(record: UpdatableRecord<*>, fieldName: String, value: Any?) {
+	protected fun setRecordField(
+		record: UpdatableRecord<*>,
+		fieldName: String,
+		value: Any?,
+	) {
 		val setterName = "set${fieldName.replaceFirstChar { it.uppercase() }}"
 		try {
 			// Find the setter method (may need to handle multiple overloads)
@@ -168,11 +186,10 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 		}
 	}
 
-	override fun getAll(tenantId: Any): List<A> {
-		return getAllRecordIds(tenantId as Int).mapNotNull { id ->
+	override fun getAll(tenantId: Any): List<A> =
+		getAllRecordIds(tenantId as Int).mapNotNull { id ->
 			getRepository().get(id)
 		}
-	}
 
 	/**
 	 * Gets all record IDs for a given tenant.
@@ -182,11 +199,13 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	 */
 	protected abstract fun getAllRecordIds(tenantId: Int): List<Int>
 
-	override fun getByForeignKey(fkName: String, targetId: Any): List<A> {
-		return getRecordIdsByForeignKey(fkName, targetId as Int).mapNotNull { id ->
+	override fun getByForeignKey(
+		fkName: String,
+		targetId: Any,
+	): List<A> =
+		getRecordIdsByForeignKey(fkName, targetId as Int).mapNotNull { id ->
 			getRepository().get(id)
 		}
-	}
 
 	/**
 	 * Gets record IDs by foreign key.
@@ -195,6 +214,8 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	 * @param targetId The target ID value
 	 * @return List of matching aggregate IDs
 	 */
-	protected abstract fun getRecordIdsByForeignKey(fkName: String, targetId: Int): List<Int>
+	protected abstract fun getRecordIdsByForeignKey(
+		fkName: String,
+		targetId: Int,
+	): List<Int>
 }
-
