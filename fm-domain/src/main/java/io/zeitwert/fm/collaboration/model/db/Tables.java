@@ -13,7 +13,7 @@ import io.zeitwert.fm.collaboration.model.db.tables.ObjNoteV;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
     /**

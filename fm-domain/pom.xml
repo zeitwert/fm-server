@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xmlns="http://maven.apache.org/POM/4.0.0"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -129,6 +129,19 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
+			<!-- Flyway migrations - only in fm-domain where migrations live -->
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+					<locations>
+						<location>filesystem:src/main/resources/db/V1.0/1-baseline</location>
+						<location>filesystem:src/main/resources/db/V1.0/2-upgrade/V1.0.1</location>
+						<location>filesystem:src/main/resources/db/V1.0/3-config</location>
+					</locations>
+				</configuration>
+			</plugin>
 			<!-- jOOQ code generation - configured in parent, runs when skip.jooq.generation=false -->
 			<plugin>
 				<groupId>org.jooq</groupId>
@@ -255,7 +268,18 @@
 							<configurationFile>src/main/java/io/zeitwert/fm/task/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
-				</executions>
+					<execution>
+						<id>jooq-codegen-fm-test</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<skip>${skip.jooq.generation}</skip>
+							<configurationFile>src/test/java/io/zeitwert/fm/test/jooq-config.xml</configurationFile>
+						</configuration>
+					</execution>
+			</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -45,7 +45,7 @@
 		<!-- Dependencies -->
 		<crnk.version>3.4.20210509072026</crnk.version>
 		<flyway.version>10.21.0</flyway.version>
-		<jooq-codegen.version>3.19.8</jooq-codegen.version>
+		<!-- jOOQ version is managed by Spring Boot (${jooq.version}) -->
 		<jjwt.version>0.12.5</jjwt.version>
 		<lombok.version>1.18.34</lombok.version>
 		<aspose-words.version>22.12</aspose-words.version>
@@ -343,23 +343,36 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>${maven.dependency.version}</version>
 				</plugin>
-				<plugin>
-					<groupId>org.flywaydb</groupId>
-					<artifactId>flyway-maven-plugin</artifactId>
-					<configuration>
-						<url>jdbc:postgresql://localhost:5432/zeitwert</url>
-						<user>zeitwert</user>
-						<password>zeitwert</password>
-					</configuration>
-				</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+					<url>jdbc:postgresql://localhost:9999/zeitwert</url>
+					<user>zeitwert</user>
+					<password>zeitwert</password>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.flywaydb</groupId>
+						<artifactId>flyway-database-postgresql</artifactId>
+						<version>${flyway.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 				<plugin>
 					<groupId>org.jooq</groupId>
 					<artifactId>jooq-codegen-maven</artifactId>
-					<version>${jooq-codegen.version}</version>
+					<version>${jooq.version}</version>
 					<configuration>
 						<jdbc>
 							<driver>org.postgresql.Driver</driver>
-							<url>jdbc:postgresql://localhost:5432/zeitwert</url>
+							<url>jdbc:postgresql://localhost:9999/zeitwert</url>
 							<user>zeitwert</user>
 							<password>zeitwert</password>
 						</jdbc>

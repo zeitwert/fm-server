@@ -4,6 +4,7 @@
 package io.zeitwert.fm.test.model.db;
 
 
+import io.zeitwert.fm.test.model.db.tables.CodeTestType;
 import io.zeitwert.fm.test.model.db.tables.DocTest;
 import io.zeitwert.fm.test.model.db.tables.DocTestPartNode;
 import io.zeitwert.fm.test.model.db.tables.DocTestV;
@@ -15,8 +16,13 @@ import io.zeitwert.fm.test.model.db.tables.ObjTestV;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * The table <code>public.code_test_type</code>.
+     */
+    public static final CodeTestType CODE_TEST_TYPE = CodeTestType.CODE_TEST_TYPE;
 
     /**
      * The table <code>public.doc_test</code>.

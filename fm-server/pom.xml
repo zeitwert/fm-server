@@ -226,25 +226,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- jOOQ test code generation -->
-			<plugin>
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-				<executions>
-					<execution>
-						<id>jooq-codegen-fm-test</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/test/java/io/zeitwert/fm/test/jooq-config.xml</configurationFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+			</plugins>
 	</build>
 
 	<profiles>

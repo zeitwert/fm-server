@@ -1,6 +1,5 @@
 # zeitwert Application Server
 
-
 ## Modularisation
 
 1. by Functional Module
@@ -8,16 +7,16 @@
 2. by Layer
 
 - adapter
-  - api (adapters for incoming/driving ports)
-    - topic
-  - spi (adapters for outgoing/driven ports)
-    - topic
+	- api (adapters for incoming/driving ports)
+		- topic
+	- spi (adapters for outgoing/driven ports)
+		- topic
 - model (domain model)
 - service
-  - api (service, incoming/driven port)
-    - topic
-  - spi (outgoing/driving port)
-    - topic
+	- api (service, incoming/driven port)
+		- topic
+	- spi (outgoing/driving port)
+		- topic
 
 example:
 
@@ -48,33 +47,43 @@ example:
 * staging: Staging Server on heroku
 * prod: Production Sever on heroku
 
-
 ### Flyway
 
 Trigger manual migration `mvnw flyway:migrate`
 
-
 ### jOOQ
 
 **Code Generation**
-Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/db` (according to definition in jooq XML config files).
+Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/db` (according to
+definition in jooq XML config files).
 
-Sources can be generated (after database has been set up through flyway) with `mvnw -Dskip.jooq.generation=false generate-sources`;
+Sources can be generated (after database has been set up through flyway) with:
 
-Generating sources for only a single component can be done like this: `mvnw -Dskip.jooq.generation=false jooq-codegen:generate@jooq-codegen-fm-account`.
+```bash
+mvnw -Dskip.jooq.generation=false generate-sources -pl !fm-ui
+```
 
-**Subclassing Records (instead of manual proxying)**
-UpdatableRecord cannot be subclassed, since instantiation seems to be hardcoded.
+To also generate test table sources (configured in `fm-domain/src/test/java/io/zeitwert/fm/test/jooq-config.xml`):
 
-An option could be to hook into the code generator, so that our xxBase classes could be generated (would need to be investigated whether that would then still work with Crank).
+```bash
+mvnw -Dskip.jooq.generation=false generate-sources generate-test-sources -pl !fm-ui
+```
 
-**Enumeration Loading**
-When loading enum domains from DB in the `@PostConstruct` method, it must be guaranteed that flyway migrations have done their work. This can be achieved by specifying a corresponding dependency: `@DependsOn({ "flyway", "flywayInitializer" })`.
+Generating sources for only a single component can be done like this:
+
+```bash
+mvnw -Dskip.jooq.generation=false jooq-codegen:generate@jooq-codegen-fm-account
+```
+
+**Enumeration Loading** (TODO)
+When loading enum domains from DB in the `@PostConstruct` method, it must be guaranteed that flyway migrations have done their work. This can be achieved by specifying a corresponding dependency:
+`@DependsOn({ "flyway", "flywayInitializer" })`.
 
 ### Crank (io.crnk)
 
 Does not work with interfaces, resource definition must be a (abstract) class.
-So our JsonApi Repositories work with the bottom level implementation classes (e.g. DocLeadImpl) instead of the corresponding interfaces.
+So our JsonApi Repositories work with the bottom level implementation classes (e.g. DocLeadImpl) instead of the
+corresponding interfaces.
 
 ### Updating dependencies
 
@@ -84,17 +93,13 @@ Using [versions-maven-plugin](https://www.mojohaus.org/versions-maven-plugin/) l
 
 Displays newer versions of dependencies.
 
-
-## Development
-
-In order to directly link to `dddrive` sources (instead of library), make a symbolic link to corresponding source directory from within `src/main/java/io` directory (as admin on windows):
-
-`mklink /D dddrive "..\..\..\..\..\dddrive\src\main\java\io\dddrive"`
-
-
 ## Testing
 
 `mvnw surefire:test`
+
+mvnw clean test-compile -pl !fm-ui
+
+mvnw -pl :fm-domain surefire:test -Dtest=ObjTestTest
 
 
 ## Deployment
@@ -106,7 +111,8 @@ So we use custom deployment scripts, deploy_prep and deploy_push.
 
 A heroku-like build can be initiated like this: `mvnw -DskipTests clean dependency:list install`
 
-A build without running tests and without building the UI can be initiated like this: `mvnw -DskipTests clean compile -pl !fm-ui`
+A build without running tests and without building the UI can be initiated like this:
+`mvnw -DskipTests clean compile -pl !fm-ui`
 
 ### Deployment to Heroku (zeitwert-staging)
 
@@ -114,10 +120,12 @@ We cannot use the maven resource plugin for the whole procedure, since we cannot
 The prepare step can be done with maven release plugin, but the push step needs to be done with a custom script.
 
 1. Prepare release with `deploy_prep` (all done through maven release plugin):
+
 - checks that there are no open sources around
 - builds, without running tests;
 
 if successful:
+
 - commits pom.xml with non-snapshot version & release tag;
 - commits pom.xml with new snapshot version
 - does not push these commits to origin, since we need to push to heroku first
@@ -127,6 +135,7 @@ if successful:
 `mvn clean release:clean release:prepare -D arguments="-D skipTests" -D pushChanges=false`
 
 2. Deploy release with `deploy_push`:
+
 - locally roll back the last commit, so pom.xml is back to non-snapshot version, and stash the changes
 - push main branch to heroku (whose last commit is the non-snapshot version)
 - once done, we pop the stash, so we are back to snapshot version (there is no easy way to roll git forward, since there could be multiple commits after the current one, so we pop the stash and create a new commit)
@@ -134,8 +143,7 @@ if successful:
 - script does not push the commit, so it is easier to fix if something goes wrong
 
 3. Push the new snapshot version to origin:
-`git push`
-
+	 `git push`
 
 ## Heroku deployment
 
@@ -158,12 +166,6 @@ To show logs from application:
 
 `heroku logs --tail`
 
-
-
-
-
-
-
 # zeitwert
 
 zeitwert server and ui
@@ -172,12 +174,15 @@ zeitwert server and ui
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Already a pro? Just edit this README.md and make it your own. Want to make it
+easy? [Use the template at the bottom](#editing-this-readme)!
 
 ## Add your files
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file)
+	or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
+- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line)
+	or push an existing Git repository with the following command:
 
 ```
 cd existing_repo
@@ -212,47 +217,82 @@ Use the built-in continuous integration in GitLab.
 
 # Editing this README
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to
+structure it however you want - this is just a starting point!). Thank you
+to [makeareadme.com](https://www.makeareadme.com/) for this template.
 
 ## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+
+Every project is different, so consider which of these sections apply to yours. The sections used in the template are
+suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long
+is better than too short. If you think your README is too long, consider utilizing another form of documentation rather
+than cutting out information.
 
 ## Name
+
 Choose a self-explaining name for your project.
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+
+Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be
+unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your
+project, this is a good place to list differentiating factors.
 
 ## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+
+On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the
+project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
 ## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+
+Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see
+GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew.
+However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing
+specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a
+specific context like a particular programming language version or operating system or has dependencies that have to be
+installed manually, also add a Requirements subsection.
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+
+Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of
+usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably
+include in the README.
 
 ## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+
+Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address,
+etc.
 
 ## Roadmap
+
 If you have ideas for releases in the future, it is a good idea to list them in the README.
 
 ## Contributing
+
 State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+For people who want to make changes to your project, it's helpful to have some documentation on how to get started.
+Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps
+explicit. These instructions could also be useful to your future self.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce
+the likelihood that the changes inadvertently break something. Having instructions for running tests is especially
+helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
 
 ## Authors and acknowledgment
+
 Show your appreciation to those who have contributed to the project.
 
 ## License
+
 For open source projects, say how it is licensed.
 
 ## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+If you have run out of energy or time for your project, put a note at the top of the README saying that development has
+slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or
+owner, allowing your project to keep going. You can also make an explicit request for maintainers.

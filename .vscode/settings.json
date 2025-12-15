@@ -52,5 +52,5 @@
 	"editor.tabCompletion": "on",
 	"terminal.integrated.tabStopWidth": 2,
 	"editor.formatOnSave": true,
-	"kotlin.codegen.enabled": false
+	"kotlin.codegen.enabled": true
 }

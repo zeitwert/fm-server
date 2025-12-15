@@ -18,7 +18,7 @@ import io.zeitwert.fm.contact.model.db.tables.ObjContactV;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes" })
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
     /**
