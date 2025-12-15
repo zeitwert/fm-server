@@ -19,7 +19,8 @@ import java.time.OffsetDateTime
 
 abstract class ObjPortfolioBase(
 	repository: ObjPortfolioRepository,
-) : FMObjBase(repository),
+	isNew: Boolean,
+) : FMObjBase(repository, isNew),
 	ObjPortfolio,
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {

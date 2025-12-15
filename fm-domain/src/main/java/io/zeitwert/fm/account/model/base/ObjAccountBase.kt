@@ -19,7 +19,8 @@ import java.math.BigDecimal
 
 abstract class ObjAccountBase(
 	repository: ObjAccountRepository,
-) : FMObjBase(repository),
+	isNew: Boolean,
+) : FMObjBase(repository, isNew),
 	ObjAccount,
 	AggregateWithNotesMixin {
 

@@ -7,7 +7,7 @@ import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.ObjTestRepository
 import io.zeitwert.fm.test.model.base.ObjTestBase
 import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase
-import io.zeitwert.fm.test.persist.jooq.ObjTestPersistenceProvider
+import io.zeitwert.fm.test.persist.ObjTestPersistenceProviderImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -16,18 +16,20 @@ import org.springframework.stereotype.Component
  * Repository implementation for ObjTest using the NEW dddrive framework.
  */
 @Component("objTestRepository")
-class ObjTestRepositoryImpl : FMObjRepositoryBase<ObjTest>(
-	ObjTestRepository::class.java,
-	ObjTest::class.java,
-	ObjTestBase::class.java,
-	AGGREGATE_TYPE_ID
-), ObjTestRepository {
+class ObjTestRepositoryImpl :
+	FMObjRepositoryBase<ObjTest>(
+		ObjTestRepository::class.java,
+		ObjTest::class.java,
+		ObjTestBase::class.java,
+		AGGREGATE_TYPE_ID,
+	),
+	ObjTestRepository {
 
-	private lateinit var persistenceProvider: ObjTestPersistenceProvider
+	private lateinit var persistenceProvider: ObjTestPersistenceProviderImpl
 
 	@Autowired
 	@Lazy
-	fun setPersistenceProvider(persistenceProvider: ObjTestPersistenceProvider) {
+	fun setPersistenceProvider(persistenceProvider: ObjTestPersistenceProviderImpl) {
 		this.persistenceProvider = persistenceProvider
 	}
 
@@ -38,8 +40,8 @@ class ObjTestRepositoryImpl : FMObjRepositoryBase<ObjTest>(
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "obj_test"
 	}
 
 }
-

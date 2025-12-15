@@ -17,8 +17,11 @@ import org.slf4j.LoggerFactory
 import java.time.OffsetDateTime
 
 abstract class ObjDocumentBase(
-	repository: ObjDocumentRepository
-) : FMObjBase(repository), ObjDocument, AggregateWithNotesMixin {
+	repository: ObjDocumentRepository,
+	isNew: Boolean,
+) : FMObjBase(repository, isNew),
+	ObjDocument,
+	AggregateWithNotesMixin {
 
 	override fun aggregate(): ObjDocument = this
 
@@ -35,18 +38,14 @@ abstract class ObjDocumentBase(
 	private var _contentType: CodeContentType? = null
 	private var _content: ByteArray? = null
 
-	override fun getRepository(): ObjDocumentRepository {
-		return super.getRepository() as ObjDocumentRepository
-	}
+	override fun getRepository(): ObjDocumentRepository = super.getRepository() as ObjDocumentRepository
 
 	override fun doAfterLoad() {
 		super.doAfterLoad()
 		this.loadContent()
 	}
 
-	override fun getAccount(): ObjAccount? {
-		return directory.getRepository(ObjAccount::class.java).get(this.accountId)
-	}
+	override fun getAccount(): ObjAccount? = directory.getRepository(ObjAccount::class.java).get(this.accountId)
 
 	override fun getContentType(): CodeContentType? = _contentType
 
@@ -56,7 +55,7 @@ abstract class ObjDocumentBase(
 		contentType: CodeContentType?,
 		content: ByteArray?,
 		userId: Any?,
-		timestamp: OffsetDateTime?
+		timestamp: OffsetDateTime?,
 	) {
 		this.repository.storeContent(this, contentType, content, userId, timestamp)
 		this._contentType = contentType
@@ -127,7 +126,8 @@ abstract class ObjDocumentBase(
 	override fun addTask(): DocTask? = null
 
 	companion object {
+
 		private val logger = LoggerFactory.getLogger(ObjDocumentBase::class.java)
 	}
-}
 
+}

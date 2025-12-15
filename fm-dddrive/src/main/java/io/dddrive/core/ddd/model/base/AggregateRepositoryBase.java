@@ -1,8 +1,23 @@
 package io.dddrive.core.ddd.model.base;
 
+import static io.dddrive.util.Invariant.assertThis;
+import static io.dddrive.util.Invariant.requireThis;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Set;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.dddrive.core.ddd.model.*;
+import io.dddrive.core.ddd.model.Aggregate;
+import io.dddrive.core.ddd.model.AggregateMeta;
+import io.dddrive.core.ddd.model.AggregateRepository;
+import io.dddrive.core.ddd.model.AggregateRepositorySPI;
+import io.dddrive.core.ddd.model.AggregateSPI;
+import io.dddrive.core.ddd.model.Part;
+import io.dddrive.core.ddd.model.PartRepository;
+import io.dddrive.core.ddd.model.RepositoryDirectory;
+import io.dddrive.core.ddd.model.RepositoryDirectorySPI;
 import io.dddrive.core.ddd.model.enums.CodeAggregateType;
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.core.ddd.model.impl.PartRepositoryImpl;
@@ -10,17 +25,11 @@ import io.dddrive.core.property.model.impl.PropertyFilter;
 import io.dddrive.core.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
-
-import static io.dddrive.util.Invariant.assertThis;
-import static io.dddrive.util.Invariant.requireThis;
-
 public abstract class AggregateRepositoryBase<A extends Aggregate>
 		implements AggregateRepository<A>, AggregateRepositorySPI<A> {
 
-	private static final Set<String> NotLoggedProperties = Set.of("id", "maxPartId", "version", "createdByUser", "createdAt", "modifiedByUser", "modifiedAt");
+	private static final Set<String> NotLoggedProperties = Set.of("id", "maxPartId", "version", "createdByUser",
+			"createdAt", "modifiedByUser", "modifiedAt");
 
 	private final Class<? extends Aggregate> baseClass;
 	private final String aggregateTypeId;
@@ -42,7 +51,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		this.aggregateProxyFactory = new ProxyFactory();
 		this.aggregateProxyFactory.setSuperclass(baseClass);
 		this.aggregateProxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.aggregateProxyFactoryParamTypeList = new Class<?>[]{repoIntfClass};
+		this.aggregateProxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Boolean.TYPE };
 		((RepositoryDirectorySPI) this.getDirectory()).addRepository(intfClass, this);
 		this.registerParts();
 	}
@@ -72,8 +81,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		return !NotLoggedProperties.contains(propertyName);
 	}
 
-	protected <AA extends Aggregate> void addPart(Class<AA> aggregateIntfClass, Class<? extends Part<AA>> partIntfClass, Class<? extends Part<AA>> partBaseClass) {
-		PartRepository<AA, ? extends Part<AA>> partRepository = new PartRepositoryImpl<>(aggregateIntfClass, partIntfClass, partBaseClass);
+	protected <AA extends Aggregate> void addPart(Class<AA> aggregateIntfClass, Class<? extends Part<AA>> partIntfClass,
+			Class<? extends Part<AA>> partBaseClass) {
+		PartRepository<AA, ? extends Part<AA>> partRepository = new PartRepositoryImpl<>(aggregateIntfClass, partIntfClass,
+				partBaseClass);
 		((RepositoryDirectorySPI) this.getDirectory()).addPartRepository(partIntfClass, partRepository);
 	}
 
@@ -86,11 +97,12 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 
 		AggregatePersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
 		Object aggregateId = persistenceProvider.nextAggregateId();
-		A aggregate = this.createAggregate();
+		A aggregate = this.createAggregate(true);
 
 		Integer doCreateSeqNr = ((AggregateBase) aggregate).doCreateSeqNr;
 		((AggregateSPI) aggregate).doCreate(aggregateId, tenantId, userId, timestamp);
-		assertThis(((AggregateBase) aggregate).doCreateSeqNr > doCreateSeqNr, this.getBaseClassName(aggregate) + ": doCreate was propagated");
+		assertThis(((AggregateBase) aggregate).doCreateSeqNr > doCreateSeqNr,
+				this.getBaseClassName(aggregate) + ": doCreate was propagated");
 
 		aggregate.calcAll();
 
@@ -106,7 +118,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		this.didAfterCreate = true;
 		Integer doAfterCreateSeqNr = ((AggregateBase) aggregate).doAfterCreateSeqNr;
 		((AggregateSPI) aggregate).doAfterCreate(userId, timestamp);
-		assertThis(((AggregateBase) aggregate).doAfterCreateSeqNr > doAfterCreateSeqNr, this.getBaseClassName(aggregate) + ": doAfterCreate was propagated");
+		assertThis(((AggregateBase) aggregate).doAfterCreateSeqNr > doAfterCreateSeqNr,
+				this.getBaseClassName(aggregate) + ": doAfterCreate was propagated");
 	}
 
 	@Override
@@ -128,7 +141,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		AggregatePersistenceProvider<A> persistenceProvider = this.getPersistenceProvider();
 		requireThis(persistenceProvider.isValidId(id), "valid id " + id + " (" + id.getClass().getSimpleName() + ")");
 
-		A aggregate = this.createAggregate();
+		A aggregate = this.createAggregate(false);
 		((AggregateMeta) aggregate).beginLoad();
 		persistenceProvider.doLoad(aggregate, id);
 		((AggregateMeta) aggregate).endLoad();
@@ -147,9 +160,10 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	}
 
 	@SuppressWarnings("unchecked")
-	private A createAggregate() {
+	private A createAggregate(boolean isNew) {
 		try {
-			return (A) this.aggregateProxyFactory.create(this.aggregateProxyFactoryParamTypeList, new Object[]{this}, PropertyHandler.INSTANCE);
+			return (A) this.aggregateProxyFactory.create(this.aggregateProxyFactoryParamTypeList,
+					new Object[] { this, isNew }, PropertyHandler.INSTANCE);
 		} catch (ReflectiveOperationException | RuntimeException e) {
 			throw new RuntimeException("Could not create aggregate " + this.getBaseClassName(), e);
 		}
@@ -160,7 +174,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		this.didAfterLoad = true;
 		Integer doAfterLoadSeqNr = ((AggregateBase) aggregate).doAfterLoadSeqNr;
 		((AggregateSPI) aggregate).doAfterLoad();
-		assertThis(((AggregateBase) aggregate).doAfterLoadSeqNr > doAfterLoadSeqNr, this.getBaseClassName(aggregate) + ": doAfterLoad was propagated");
+		assertThis(((AggregateBase) aggregate).doAfterLoadSeqNr > doAfterLoadSeqNr,
+				this.getBaseClassName(aggregate) + ": doAfterLoad was propagated");
 	}
 
 	@Override
@@ -173,10 +188,6 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 			assertThis(this.didBeforeStore, this.getBaseClassName() + ": doBeforeStore was propagated");
 
 			this.getPersistenceProvider().doStore(aggregate);
-//			if (this instanceof AggregateDbRepository<?, ?>) { // TODO: move to persistence provider
-//				((AggregateDbRepository<A, ?>) this).doStoreParts(aggregate);
-//			}
-			//this.storeSearch(aggregate);
 
 			this.didAfterStore = false;
 			this.doAfterStore(aggregate);
@@ -193,7 +204,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		this.didBeforeStore = true;
 		Integer doBeforeStoreSeqNr = ((AggregateBase) aggregate).doBeforeStoreSeqNr;
 		((AggregateSPI) aggregate).doBeforeStore(userId, timestamp);
-		assertThis(((AggregateBase) aggregate).doBeforeStoreSeqNr > doBeforeStoreSeqNr, this.getBaseClassName(aggregate) + ": doBeforeStore was propagated");
+		assertThis(((AggregateBase) aggregate).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
+				this.getBaseClassName(aggregate) + ": doBeforeStore was propagated");
 	}
 
 	@Override
@@ -201,7 +213,8 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		this.didAfterStore = true;
 		Integer doAfterStoreSeqNr = ((AggregateBase) aggregate).doAfterStoreSeqNr;
 		((AggregateSPI) aggregate).doAfterStore();
-		assertThis(((AggregateBase) aggregate).doAfterStoreSeqNr > doAfterStoreSeqNr, this.getBaseClassName(aggregate) + ": doAfterStore was propagated");
+		assertThis(((AggregateBase) aggregate).doAfterStoreSeqNr > doAfterStoreSeqNr,
+				this.getBaseClassName(aggregate) + ": doAfterStore was propagated");
 		this.handleAggregateStored(aggregate.getId());
 	}
 

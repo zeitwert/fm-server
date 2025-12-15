@@ -38,7 +38,8 @@ import java.time.OffsetDateTime
 
 abstract class ObjBuildingBase(
 	repository: ObjBuildingRepository,
-) : FMObjBase(repository),
+	isNew: Boolean,
+) : FMObjBase(repository, isNew),
 	ObjBuilding,
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {

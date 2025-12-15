@@ -1,13 +1,13 @@
 package io.zeitwert.fm.test.model;
 
+import io.dddrive.core.obj.model.Obj;
+import io.zeitwert.fm.collaboration.model.ItemWithNotes;
+import io.zeitwert.fm.test.model.enums.CodeTestType;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-
-import io.dddrive.core.obj.model.Obj;
-import io.zeitwert.fm.collaboration.model.ItemWithNotes;
-import io.zeitwert.fm.test.model.enums.CodeTestType;
 
 /**
  * Test Obj interface using the NEW dddrive framework (io.dddrive.core.*).

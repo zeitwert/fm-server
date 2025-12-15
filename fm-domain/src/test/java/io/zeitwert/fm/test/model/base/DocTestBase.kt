@@ -21,22 +21,25 @@ import java.time.LocalDate
  * Base class for DocTest using the NEW dddrive framework.
  */
 abstract class DocTestBase(
-	repository: DocTestRepository
-) : FMDocBase(repository), DocTest, AggregateWithNotesMixin {
+	repository: DocTestRepository,
+	isNew: Boolean,
+) : FMDocBase(repository, isNew),
+	DocTest,
+	AggregateWithNotesMixin {
 
-	//@formatter:off
-    private val _shortText: BaseProperty<String> = this.addBaseProperty("shortText", String::class.java)
-    private val _longText: BaseProperty<String> = this.addBaseProperty("longText", String::class.java)
-    private val _date: BaseProperty<LocalDate> = this.addBaseProperty("date", LocalDate::class.java)
-    private val _int: BaseProperty<Int> = this.addBaseProperty("int", Int::class.java)
-    private val _isDone: BaseProperty<Boolean> = this.addBaseProperty("isDone", Boolean::class.java)
-    private val _json: BaseProperty<JSON> = this.addBaseProperty("json", JSON::class.java)
-    private val _nr: BaseProperty<BigDecimal> = this.addBaseProperty("nr", BigDecimal::class.java)
-    private val _testType: EnumProperty<CodeTestType> = this.addEnumProperty("testType", CodeTestType::class.java)
-    private val _refObj: ReferenceProperty<ObjTest> = this.addReferenceProperty("refObj", ObjTest::class.java)
-    private val _refDoc: ReferenceProperty<DocTest> = this.addReferenceProperty("refDoc", DocTest::class.java)
-    private val _testTypeSet: EnumSetProperty<CodeTestType> = this.addEnumSetProperty("testTypeSet", CodeTestType::class.java)
-    //@formatter:on
+	// @formatter:off
+	private val _shortText: BaseProperty<String> = this.addBaseProperty("shortText", String::class.java)
+	private val _longText: BaseProperty<String> = this.addBaseProperty("longText", String::class.java)
+	private val _date: BaseProperty<LocalDate> = this.addBaseProperty("date", LocalDate::class.java)
+	private val _int: BaseProperty<Int> = this.addBaseProperty("int", Int::class.java)
+	private val _isDone: BaseProperty<Boolean> = this.addBaseProperty("isDone", Boolean::class.java)
+	private val _json: BaseProperty<JSON> = this.addBaseProperty("json", JSON::class.java)
+	private val _nr: BaseProperty<BigDecimal> = this.addBaseProperty("nr", BigDecimal::class.java)
+	private val _testType: EnumProperty<CodeTestType> = this.addEnumProperty("testType", CodeTestType::class.java)
+	private val _refObj: ReferenceProperty<ObjTest> = this.addReferenceProperty("refObj", ObjTest::class.java)
+	private val _refDoc: ReferenceProperty<DocTest> = this.addReferenceProperty("refDoc", DocTest::class.java)
+	private val _testTypeSet: EnumSetProperty<CodeTestType> = this.addEnumSetProperty("testTypeSet", CodeTestType::class.java)
+	// @formatter:on
 
 	override fun getRepository(): DocTestRepository = super.getRepository() as DocTestRepository
 

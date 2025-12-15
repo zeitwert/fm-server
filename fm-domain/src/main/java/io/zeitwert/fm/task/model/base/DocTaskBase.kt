@@ -14,19 +14,22 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
 
 abstract class DocTaskBase(
-	repository: DocTaskRepository
-) : FMDocBase(repository), DocTask, AggregateWithNotesMixin {
+	repository: DocTaskRepository,
+	isNew: Boolean,
+) : FMDocBase(repository, isNew),
+	DocTask,
+	AggregateWithNotesMixin {
 
-	//@formatter:off
-    private val _relatedObjId: BaseProperty<Int> = this.addBaseProperty("relatedObjId", Int::class.java)
-    private val _relatedDocId: BaseProperty<Int> = this.addBaseProperty("relatedDocId", Int::class.java)
-    private val _subject: BaseProperty<String> = this.addBaseProperty("subject", String::class.java)
-    private val _content: BaseProperty<String> = this.addBaseProperty("content", String::class.java)
-    private val _isPrivate: BaseProperty<Boolean> = this.addBaseProperty("isPrivate", Boolean::class.java)
-    private val _priority: EnumProperty<CodeTaskPriority> = this.addEnumProperty("priority", CodeTaskPriority::class.java)
-    private val _dueAt: BaseProperty<OffsetDateTime> = this.addBaseProperty("dueAt", OffsetDateTime::class.java)
-    private val _remindAt: BaseProperty<OffsetDateTime> = this.addBaseProperty("remindAt", OffsetDateTime::class.java)
-    //@formatter:on
+	// @formatter:off
+	private val _relatedObjId: BaseProperty<Int> = this.addBaseProperty("relatedObjId", Int::class.java)
+	private val _relatedDocId: BaseProperty<Int> = this.addBaseProperty("relatedDocId", Int::class.java)
+	private val _subject: BaseProperty<String> = this.addBaseProperty("subject", String::class.java)
+	private val _content: BaseProperty<String> = this.addBaseProperty("content", String::class.java)
+	private val _isPrivate: BaseProperty<Boolean> = this.addBaseProperty("isPrivate", Boolean::class.java)
+	private val _priority: EnumProperty<CodeTaskPriority> = this.addEnumProperty("priority", CodeTaskPriority::class.java)
+	private val _dueAt: BaseProperty<OffsetDateTime> = this.addBaseProperty("dueAt", OffsetDateTime::class.java)
+	private val _remindAt: BaseProperty<OffsetDateTime> = this.addBaseProperty("remindAt", OffsetDateTime::class.java)
+	// @formatter:on
 
 	override fun getRepository(): DocTaskRepository = super.getRepository() as DocTaskRepository
 
@@ -60,9 +63,7 @@ abstract class DocTaskBase(
 		}
 	}
 
-	override fun getRelatedTo(): Aggregate? {
-		return null
-	}
+	override fun getRelatedTo(): Aggregate? = null
 
 	override fun getSubject(): String? = _subject.value
 
@@ -103,4 +104,3 @@ abstract class DocTaskBase(
 	}
 
 }
-
