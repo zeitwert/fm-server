@@ -1,29 +1,21 @@
 package io.dddrive.core.ddd.model.base;
 
-import static io.dddrive.util.Invariant.assertThis;
-import static io.dddrive.util.Invariant.requireThis;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.AggregateMeta;
-import io.dddrive.core.ddd.model.AggregateRepository;
-import io.dddrive.core.ddd.model.AggregateRepositorySPI;
-import io.dddrive.core.ddd.model.AggregateSPI;
-import io.dddrive.core.ddd.model.Part;
-import io.dddrive.core.ddd.model.PartRepository;
-import io.dddrive.core.ddd.model.RepositoryDirectory;
-import io.dddrive.core.ddd.model.RepositoryDirectorySPI;
+import io.dddrive.core.ddd.model.*;
 import io.dddrive.core.ddd.model.enums.CodeAggregateType;
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.core.ddd.model.impl.PartRepositoryImpl;
 import io.dddrive.core.property.model.impl.PropertyFilter;
 import io.dddrive.core.property.model.impl.PropertyHandler;
 import javassist.util.proxy.ProxyFactory;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Set;
+
+import static io.dddrive.util.Invariant.assertThis;
+import static io.dddrive.util.Invariant.requireThis;
 
 public abstract class AggregateRepositoryBase<A extends Aggregate>
 		implements AggregateRepository<A>, AggregateRepositorySPI<A> {
@@ -51,7 +43,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		this.aggregateProxyFactory = new ProxyFactory();
 		this.aggregateProxyFactory.setSuperclass(baseClass);
 		this.aggregateProxyFactory.setFilter(PropertyFilter.INSTANCE);
-		this.aggregateProxyFactoryParamTypeList = new Class<?>[] { repoIntfClass, Boolean.TYPE };
+		this.aggregateProxyFactoryParamTypeList = new Class<?>[]{repoIntfClass, Boolean.TYPE};
 		((RepositoryDirectorySPI) this.getDirectory()).addRepository(intfClass, this);
 		this.registerParts();
 	}
@@ -82,7 +74,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	}
 
 	protected <AA extends Aggregate> void addPart(Class<AA> aggregateIntfClass, Class<? extends Part<AA>> partIntfClass,
-			Class<? extends Part<AA>> partBaseClass) {
+																								Class<? extends Part<AA>> partBaseClass) {
 		PartRepository<AA, ? extends Part<AA>> partRepository = new PartRepositoryImpl<>(aggregateIntfClass, partIntfClass,
 				partBaseClass);
 		((RepositoryDirectorySPI) this.getDirectory()).addPartRepository(partIntfClass, partRepository);
@@ -163,7 +155,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	private A createAggregate(boolean isNew) {
 		try {
 			return (A) this.aggregateProxyFactory.create(this.aggregateProxyFactoryParamTypeList,
-					new Object[] { this, isNew }, PropertyHandler.INSTANCE);
+					new Object[]{this, isNew}, PropertyHandler.INSTANCE);
 		} catch (ReflectiveOperationException | RuntimeException e) {
 			throw new RuntimeException("Could not create aggregate " + this.getBaseClassName(), e);
 		}

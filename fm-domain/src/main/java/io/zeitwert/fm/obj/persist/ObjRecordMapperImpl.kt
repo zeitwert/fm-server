@@ -83,8 +83,18 @@ class ObjRecordMapperImpl : SqlAggregateRecordMapper<Obj, ObjRecord> {
 		if ((aggregate as FMObjBase).isNew) {
 			record.insert()
 		} else {
-			record.update()
+			// Mark the record as changed so JOOQ will perform an update
+			// The version field is already set to the old version from aggregate.meta.version
+			// JOOQ will automatically:
+			// - Use version in WHERE clause for optimistic locking
+			// - Increment version in SET clause
+			// - Throw DataChangedException if no rows updated
+			record.changed(true)
+			record.store()
 		}
+		// After store(), JOOQ has updated the record with the new version
+		// Refresh the version in the aggregate so it can be used for parts
+		(aggregate as Obj).setValueByPath("version", record.version)
 	}
 
 	override fun getAll(tenantId: Any): List<Any> = emptyList()
