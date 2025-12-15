@@ -4,28 +4,28 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeDocumentCategory(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    AVATAR("avatar", "Avatar"),
-    BANNER("banner", "Banner"),
-    FOTO("foto", "Foto"),
-    LOGO("logo", "Logo"),
-    ;
 
-    override fun getId() = id
+	AVATAR("avatar", "Avatar"),
+	BANNER("banner", "Banner"),
+	FOTO("foto", "Foto"),
+	LOGO("logo", "Logo"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeDocumentCategory>(CodeDocumentCategory::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getDocumentCategory(itemId: String): CodeDocumentCategory? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeDocumentCategory>(CodeDocumentCategory::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getDocumentCategory(itemId: String): CodeDocumentCategory? = getItem(itemId)
+	}
 }
-

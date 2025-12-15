@@ -7,27 +7,27 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Note type enum using the NEW dddrive framework.
  */
 enum class CodeNoteType(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    NOTE("note", "Note"),
-    CALL("call", "Call"),
-    VISIT("visit", "Visit"),
-    ;
 
-    override fun getId() = id
+	NOTE("note", "Note"),
+	CALL("call", "Call"),
+	VISIT("visit", "Visit"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeNoteType>(CodeNoteType::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getNoteType(itemId: String): CodeNoteType? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeNoteType>(CodeNoteType::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getNoteType(itemId: String): CodeNoteType? = getItem(itemId)
+	}
 }
-

@@ -4,27 +4,27 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeDocumentKind(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    STANDALONE("standalone", "Standalone"),
-    TEMPLATE("template", "Template"),
-    INSTANCE("instance", "Instance"),
-    ;
 
-    override fun getId() = id
+	STANDALONE("standalone", "Standalone"),
+	TEMPLATE("template", "Template"),
+	INSTANCE("instance", "Instance"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeDocumentKind>(CodeDocumentKind::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getDocumentKind(itemId: String): CodeDocumentKind? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeDocumentKind>(CodeDocumentKind::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getDocumentKind(itemId: String): CodeDocumentKind? = getItem(itemId)
+	}
 }
-

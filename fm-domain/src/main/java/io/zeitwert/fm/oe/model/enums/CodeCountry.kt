@@ -7,25 +7,25 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Country enum using the NEW dddrive framework.
  */
 enum class CodeCountry(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    CH("ch", "Schweiz"),
-    ;
 
-    override fun getId() = id
+	CH("ch", "Schweiz"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeCountry>(CodeCountry::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getCountry(itemId: String): CodeCountry? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeCountry>(CodeCountry::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getCountry(itemId: String): CodeCountry? = getItem(itemId)
+	}
 }
-

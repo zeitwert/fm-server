@@ -9,26 +9,26 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Values derived from: db/V1.0/3-config/R__1011_account_config.sql
  */
 enum class CodeAccountType(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    PROSPECT("prospect", "Prospekt / Pilot"),
-    CLIENT("client", "Kunde"),
-    ;
 
-    override fun getId() = id
+	PROSPECT("prospect", "Prospekt / Pilot"),
+	CLIENT("client", "Kunde"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeAccountType>(CodeAccountType::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getAccountType(itemId: String): CodeAccountType? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeAccountType>(CodeAccountType::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getAccountType(itemId: String): CodeAccountType? = getItem(itemId)
+	}
 }
-

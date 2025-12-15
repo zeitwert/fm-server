@@ -4,31 +4,31 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeContentKind(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    DOCUMENT("document", "Document"),
-    FOTO("foto", "Foto"),
-    VIDEO("video", "Video"),
-    ;
 
-    override fun getId() = id
+	DOCUMENT("document", "Document"),
+	FOTO("foto", "Foto"),
+	VIDEO("video", "Video"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    fun getContentTypes(): List<CodeContentType> = CodeContentType.entries.filter { it.contentKind == this }
+	override fun getEnumeration() = Enumeration
 
-    fun getExtensions(): List<String> = getContentTypes().map { ".${it.extension}" }
+	fun getContentTypes(): List<CodeContentType> = CodeContentType.entries.filter { it.contentKind == this }
 
-    companion object Enumeration : EnumerationBase<CodeContentKind>(CodeContentKind::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	fun getExtensions(): List<String> = getContentTypes().map { ".${it.extension}" }
 
-        @JvmStatic
-        fun getContentKind(itemId: String): CodeContentKind? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeContentKind>(CodeContentKind::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getContentKind(itemId: String): CodeContentKind? = getItem(itemId)
+	}
 }
-

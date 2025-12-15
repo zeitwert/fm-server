@@ -47,15 +47,15 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 		}
 	}
 
-	override fun findOne(objId: String): D {
+	override fun findOne(id: String): D {
 		try {
-			val aggregate = repository.load(repository.idFromString(objId))
+			val aggregate = repository.load(repository.idFromString(id))
 			requestContext.clearAggregates()
 			requestContext.addAggregate(aggregate.id, aggregate)
 			return dtoAdapter.fromAggregate(aggregate, DtoDetailLevel.FULL)
 		} catch (x: Exception) {
 			x.printStackTrace()
-			throw ResponseStatusException(HttpStatus.NOT_FOUND, "${repository.aggregateType.name}[$objId]")
+			throw ResponseStatusException(HttpStatus.NOT_FOUND, "${repository.aggregateType.name}[$id]")
 		}
 	}
 
@@ -111,17 +111,17 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun delete(uiId: String) {
-		val id = repository.idFromString(uiId)
-		if (id == null) {
+	override fun delete(id: String) {
+		val objId = repository.idFromString(id)
+		if (objId == null) {
 			throw ResponseStatusException(HttpStatus.NOT_FOUND, "Can only delete existing object (missing id)")
 		}
 
 		try {
-			val aggregate = if (requestContext.hasAggregate(id)) {
-				requestContext.getAggregate(id) as A
+			val aggregate = if (requestContext.hasAggregate(objId)) {
+				requestContext.getAggregate(objId) as A
 			} else {
-				repository.load(id)
+				repository.load(objId)
 			}
 
 			if (aggregate !is Obj) {

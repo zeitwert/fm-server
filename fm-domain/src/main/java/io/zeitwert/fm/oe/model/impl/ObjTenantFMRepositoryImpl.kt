@@ -15,30 +15,33 @@ import org.springframework.stereotype.Component
 
 @Component("objTenantRepository")
 class ObjTenantFMRepositoryImpl(
-    @Lazy private val userRepository: ObjUserFMRepository,
-    @Lazy private val documentRepository: ObjDocumentRepository
+	@param:Lazy private val userRepository: ObjUserFMRepository,
+	@param:Lazy private val documentRepository: ObjDocumentRepository,
 ) : FMObjRepositoryBase<ObjTenantFM>(
-    ObjTenantFMRepository::class.java,
-    ObjTenant::class.java,
-    ObjTenantFMBase::class.java,
-    AGGREGATE_TYPE_ID
-), ObjTenantFMRepository {
+		ObjTenantFMRepository::class.java,
+		ObjTenant::class.java,
+		ObjTenantFMBase::class.java,
+		AGGREGATE_TYPE_ID,
+	),
+	ObjTenantFMRepository {
 
-    private lateinit var persistenceProvider: ObjTenantFMPersistenceProvider
+	private lateinit var persistenceProvider: ObjTenantFMPersistenceProvider
 
-    @Autowired
-    @Lazy
-    fun setPersistenceProvider(persistenceProvider: ObjTenantFMPersistenceProvider) {
-        this.persistenceProvider = persistenceProvider
-    }
+	@Autowired
+	@Lazy
+	fun setPersistenceProvider(persistenceProvider: ObjTenantFMPersistenceProvider) {
+		this.persistenceProvider = persistenceProvider
+	}
 
-    override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjTenantFM> = persistenceProvider
+	override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjTenantFM> = persistenceProvider
 
-    override fun getUserRepository(): ObjUserFMRepository = userRepository
+	override fun getUserRepository(): ObjUserFMRepository = userRepository
 
-    override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
+	override fun getDocumentRepository(): ObjDocumentRepository = documentRepository
 
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "obj_tenant"
-    }
+	companion object {
+
+		private const val AGGREGATE_TYPE_ID = "obj_tenant"
+	}
+
 }

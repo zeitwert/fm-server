@@ -27,8 +27,8 @@ import org.springframework.context.annotation.Configuration
  * - Path processing handlers for property access
  * - Repository directory
  *
- * Domain-specific configurations should import this base configuration and add
- * their own domain-specific initializations.
+ * Domain-specific configurations should import this base configuration and add their own
+ * domain-specific initializations.
  */
 @Configuration("dddriveConfig")
 open class DDDriveConfig : EnumConfigBase() {
@@ -111,5 +111,4 @@ open class DDDriveConfig : EnumConfigBase() {
 
 	@Bean
 	open fun pathProcessor(handlers: List<PathElementHandler>): PathProcessor = PathProcessor(handlers)
-
 }

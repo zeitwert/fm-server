@@ -7,27 +7,27 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Salutation enum using the NEW dddrive framework.
  */
 enum class CodeSalutation(
-    private val id: String,
-    private val itemName: String,
-    val genderId: String,
+	private val id: String,
+	private val itemName: String,
+	val genderId: String,
 ) : Enumerated {
-    MR("mr", "Herr", "male"),
-    MRS("mrs", "Frau", "female"),
-    ;
 
-    override fun getId() = id
+	MR("mr", "Herr", "male"),
+	MRS("mrs", "Frau", "female"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeSalutation>(CodeSalutation::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getSalutation(itemId: String): CodeSalutation? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeSalutation>(CodeSalutation::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getSalutation(itemId: String): CodeSalutation? = getItem(itemId)
+	}
 }
-

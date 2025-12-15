@@ -23,7 +23,7 @@ abstract class FMObjRepositoryBase<O : Obj>(
 	repoIntfClass: Class<out ObjRepository<O>>,
 	intfClass: Class<out Obj>,
 	baseClass: Class<out Obj>,
-	aggregateTypeId: String
+	aggregateTypeId: String,
 ) : ObjRepositoryBase<O>(repoIntfClass, intfClass, baseClass, aggregateTypeId) {
 
 	private lateinit var _dslContext: DSLContext

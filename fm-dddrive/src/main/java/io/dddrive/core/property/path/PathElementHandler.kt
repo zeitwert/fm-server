@@ -14,6 +14,7 @@ import io.dddrive.core.property.model.Property
  * responsibility for any given path to avoid conflicts.
  */
 interface PathElementHandler {
+
 	/**
 	 * Determines if this handler can process the given path segment and property.
 	 *
@@ -61,4 +62,5 @@ interface PathElementHandler {
 		entity: Any,
 		context: PathHandlingContext,
 	): PathHandlingResult
+
 }

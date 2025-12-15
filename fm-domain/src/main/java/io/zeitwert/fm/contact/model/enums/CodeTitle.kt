@@ -7,26 +7,26 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Title enum using the NEW dddrive framework.
  */
 enum class CodeTitle(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    DR("dr", "Dr."),
-    PROF("prof", "Prof."),
-    ;
 
-    override fun getId() = id
+	DR("dr", "Dr."),
+	PROF("prof", "Prof."),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeTitle>(CodeTitle::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getTitle(itemId: String): CodeTitle? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeTitle>(CodeTitle::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getTitle(itemId: String): CodeTitle? = getItem(itemId)
+	}
 }
-

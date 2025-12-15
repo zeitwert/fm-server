@@ -4,27 +4,29 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeBuildingMaintenanceStrategy(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    M("M", "Minimal"),
-    N("N", "Normal"),
-    NW("NW", "Normal Wohlen"),
-    ;
 
-    override fun getId() = id
+	M("M", "Minimal"),
+	N("N", "Normal"),
+	NW("NW", "Normal Wohlen"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeBuildingMaintenanceStrategy>(CodeBuildingMaintenanceStrategy::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getMaintenanceStrategy(itemId: String): CodeBuildingMaintenanceStrategy? = getItem(itemId)
-    }
+	companion object Enumeration :
+		EnumerationBase<CodeBuildingMaintenanceStrategy>(CodeBuildingMaintenanceStrategy::class.java) {
+
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getMaintenanceStrategy(itemId: String): CodeBuildingMaintenanceStrategy? = getItem(itemId)
+	}
 }
-

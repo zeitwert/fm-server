@@ -13,42 +13,46 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objAccountRepository")
-class ObjAccountRepositoryImpl : FMObjRepositoryBase<ObjAccount>(
-    ObjAccountRepository::class.java,
-    ObjAccount::class.java,
-    ObjAccountBase::class.java,
-    AGGREGATE_TYPE_ID
-), ObjAccountRepository {
+class ObjAccountRepositoryImpl :
+	FMObjRepositoryBase<ObjAccount>(
+		ObjAccountRepository::class.java,
+		ObjAccount::class.java,
+		ObjAccountBase::class.java,
+		AGGREGATE_TYPE_ID,
+	),
+	ObjAccountRepository {
 
-    private lateinit var persistenceProvider: ObjAccountPersistenceProvider
-    private lateinit var _contactRepository: ObjContactRepository
-    private lateinit var _documentRepository: ObjDocumentRepository
+	private lateinit var persistenceProvider: ObjAccountPersistenceProvider
+	private lateinit var _contactRepository: ObjContactRepository
+	private lateinit var _documentRepository: ObjDocumentRepository
 
-    @Autowired
-    @Lazy
-    fun setPersistenceProvider(persistenceProvider: ObjAccountPersistenceProvider) {
-        this.persistenceProvider = persistenceProvider
-    }
+	@Autowired
+	@Lazy
+	fun setPersistenceProvider(persistenceProvider: ObjAccountPersistenceProvider) {
+		this.persistenceProvider = persistenceProvider
+	}
 
-    @Autowired
-    @Lazy
-    fun setContactRepository(contactRepository: ObjContactRepository) {
-        this._contactRepository = contactRepository
-    }
+	@Autowired
+	@Lazy
+	fun setContactRepository(contactRepository: ObjContactRepository) {
+		this._contactRepository = contactRepository
+	}
 
-    @Autowired
-    @Lazy
-    fun setDocumentRepository(documentRepository: ObjDocumentRepository) {
-        this._documentRepository = documentRepository
-    }
+	@Autowired
+	@Lazy
+	fun setDocumentRepository(documentRepository: ObjDocumentRepository) {
+		this._documentRepository = documentRepository
+	}
 
-    override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjAccount> = persistenceProvider
+	override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjAccount> = persistenceProvider
 
-    override fun getContactRepository(): ObjContactRepository = _contactRepository
+	override fun getContactRepository(): ObjContactRepository = _contactRepository
 
-    override fun getDocumentRepository(): ObjDocumentRepository = _documentRepository
+	override fun getDocumentRepository(): ObjDocumentRepository = _documentRepository
 
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "obj_account"
-    }
+	companion object {
+
+		private const val AGGREGATE_TYPE_ID = "obj_account"
+	}
+
 }

@@ -4,28 +4,28 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeBuildingRatingStatus(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    OPEN("open", "Open"),
-    REVIEW("review", "Review"),
-    DONE("done", "Done"),
-    DISCARD("discard", "Discarded"),
-    ;
 
-    override fun getId() = id
+	OPEN("open", "Open"),
+	REVIEW("review", "Review"),
+	DONE("done", "Done"),
+	DISCARD("discard", "Discarded"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeBuildingRatingStatus>(CodeBuildingRatingStatus::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getRatingStatus(itemId: String): CodeBuildingRatingStatus? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeBuildingRatingStatus>(CodeBuildingRatingStatus::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getRatingStatus(itemId: String): CodeBuildingRatingStatus? = getItem(itemId)
+	}
 }
-

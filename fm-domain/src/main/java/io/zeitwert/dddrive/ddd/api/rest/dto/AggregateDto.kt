@@ -3,6 +3,7 @@ package io.zeitwert.dddrive.ddd.api.rest.dto
 import io.dddrive.core.ddd.model.Aggregate
 
 interface AggregateDto<A : Aggregate> {
+
 	fun getMeta(): AggregateMetaDto?
 
 	fun getId(): String?
@@ -21,4 +22,5 @@ interface AggregateDto<A : Aggregate> {
 	fun getTenantId(): String? = null
 
 	fun getSearchText(): String? = null
+
 }

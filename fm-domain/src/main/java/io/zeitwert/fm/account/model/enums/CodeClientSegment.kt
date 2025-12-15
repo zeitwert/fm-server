@@ -9,26 +9,26 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Values derived from: db/V1.0/3-config/R__1011_account_config.sql
  */
 enum class CodeClientSegment(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    COMMUNITY("community", "Gemeinde"),
-    FAMILY("family", "Family Office"),
-    ;
 
-    override fun getId() = id
+	COMMUNITY("community", "Gemeinde"),
+	FAMILY("family", "Family Office"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeClientSegment>(CodeClientSegment::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getClientSegment(itemId: String): CodeClientSegment? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeClientSegment>(CodeClientSegment::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getClientSegment(itemId: String): CodeClientSegment? = getItem(itemId)
+	}
 }
-

@@ -4,39 +4,39 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeBuildingType(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    T01("T01", "01 Wohngebäude"),
-    T02("T02", "02 Schulen"),
-    T03("T03", "03 Industriebauten"),
-    T04("T04", "04 Landw. Gebäude"),
-    T05("T05", "05 Techn. Betriebe"),
-    T06("T06", "06 Handel und Verwaltung"),
-    T07("T07", "07 Justiz und Polizei"),
-    T08("T08", "08 Fürsorge und Gesundheit"),
-    T09("T09", "09 Kultus"),
-    T10("T10", "10 Kultur und Geselligkeit"),
-    T11("T11", "11 Gastgewerbe"),
-    T12("T12", "12 Freizeit, Sport, Erholung"),
-    T13("T13", "13 Verkehrsanlagen"),
-    T14("T14", "14 Militär- und Schutzanlagen"),
-    T15("T15", "15 Schutzbauten"),
-    ;
 
-    override fun getId() = id
+	T01("T01", "01 Wohngebäude"),
+	T02("T02", "02 Schulen"),
+	T03("T03", "03 Industriebauten"),
+	T04("T04", "04 Landw. Gebäude"),
+	T05("T05", "05 Techn. Betriebe"),
+	T06("T06", "06 Handel und Verwaltung"),
+	T07("T07", "07 Justiz und Polizei"),
+	T08("T08", "08 Fürsorge und Gesundheit"),
+	T09("T09", "09 Kultus"),
+	T10("T10", "10 Kultur und Geselligkeit"),
+	T11("T11", "11 Gastgewerbe"),
+	T12("T12", "12 Freizeit, Sport, Erholung"),
+	T13("T13", "13 Verkehrsanlagen"),
+	T14("T14", "14 Militär- und Schutzanlagen"),
+	T15("T15", "15 Schutzbauten"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeBuildingType>(CodeBuildingType::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getBuildingType(itemId: String): CodeBuildingType? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeBuildingType>(CodeBuildingType::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getBuildingType(itemId: String): CodeBuildingType? = getItem(itemId)
+	}
 }
-

@@ -7,27 +7,27 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Contact role enum using the NEW dddrive framework.
  */
 enum class CodeContactRole(
-    private val id: String,
-    private val itemName: String,
+	private val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    COUNCILOR("councilor", "Gemeinderat"),
-    CARETAKER("caretaker", "Hauswart"),
-    OTHER("other", "Anderes"),
-    ;
 
-    override fun getId() = id
+	COUNCILOR("councilor", "Gemeinderat"),
+	CARETAKER("caretaker", "Hauswart"),
+	OTHER("other", "Anderes"),
+	;
 
-    override fun getName() = itemName
+	override fun getId() = id
 
-    override fun getEnumeration() = Enumeration
+	override fun getName() = itemName
 
-    companion object Enumeration : EnumerationBase<CodeContactRole>(CodeContactRole::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	override fun getEnumeration() = Enumeration
 
-        @JvmStatic
-        fun getContactRole(itemId: String): CodeContactRole? = getItem(itemId)
-    }
+	companion object Enumeration : EnumerationBase<CodeContactRole>(CodeContactRole::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		@JvmStatic
+		fun getContactRole(itemId: String): CodeContactRole? = getItem(itemId)
+	}
 }
-

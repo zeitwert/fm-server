@@ -1,8 +1,8 @@
 package io.dddrive.core.obj.model;
 
-import java.time.OffsetDateTime;
-
 import io.dddrive.core.ddd.model.Aggregate;
+
+import java.time.OffsetDateTime;
 
 public interface Obj extends Aggregate {
 
