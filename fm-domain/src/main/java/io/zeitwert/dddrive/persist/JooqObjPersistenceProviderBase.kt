@@ -1,4 +1,4 @@
-package io.zeitwert.dddrive.ddd.persist.jooq
+package io.zeitwert.dddrive.persist
 
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.oe.model.ObjUser

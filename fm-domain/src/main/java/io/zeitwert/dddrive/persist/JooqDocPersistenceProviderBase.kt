@@ -1,4 +1,4 @@
-package io.zeitwert.dddrive.ddd.persist.jooq
+package io.zeitwert.dddrive.persist
 
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.core.doc.model.enums.CodeCaseDef

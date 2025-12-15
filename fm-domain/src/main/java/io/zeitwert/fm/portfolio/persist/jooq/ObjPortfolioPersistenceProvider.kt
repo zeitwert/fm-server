@@ -2,7 +2,7 @@ package io.zeitwert.fm.portfolio.persist.jooq
 
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
-import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
+import io.zeitwert.dddrive.persist.JooqObjPersistenceProviderBase
 import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.obj.model.db.tables.ObjPartItem
 import io.zeitwert.fm.portfolio.model.ObjPortfolio

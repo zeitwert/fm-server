@@ -3,7 +3,7 @@ package io.zeitwert.fm.contact.persist.jooq
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
-import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
+import io.zeitwert.dddrive.persist.JooqObjPersistenceProviderBase
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository

@@ -3,7 +3,7 @@ package io.zeitwert.fm.dms.persist.jooq
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.ReferenceProperty
-import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
+import io.zeitwert.dddrive.persist.JooqObjPersistenceProviderBase
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.db.Tables

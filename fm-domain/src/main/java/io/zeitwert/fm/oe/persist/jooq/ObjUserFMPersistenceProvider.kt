@@ -4,7 +4,7 @@ import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
-import io.zeitwert.dddrive.ddd.persist.jooq.JooqObjPersistenceProviderBase
+import io.zeitwert.dddrive.persist.JooqObjPersistenceProviderBase
 import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository

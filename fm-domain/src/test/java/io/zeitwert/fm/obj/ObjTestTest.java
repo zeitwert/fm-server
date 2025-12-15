@@ -1,21 +1,21 @@
 package io.zeitwert.fm.obj;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.fm.test.model.ObjTest;
+import io.zeitwert.fm.test.model.ObjTestRepository;
+import io.zeitwert.fm.test.model.enums.CodeTestType;
+import io.zeitwert.test.TestApplication;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.fm.test.model.ObjTest;
-import io.zeitwert.fm.test.model.ObjTestRepository;
-import io.zeitwert.fm.test.model.enums.CodeTestType;
-import io.zeitwert.test.TestApplication;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -32,10 +32,8 @@ public class ObjTestTest {
 	@Autowired
 	private ObjTestRepository testRepository;
 
-	// CodeTestType is now a Kotlin enum with companion object Enumeration
-
 	@Test
-	public void testAggregate() throws Exception {
+	public void testBase() throws Exception {
 
 		assertNotNull(this.testRepository, "objTestRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
@@ -68,12 +66,11 @@ public class ObjTestTest {
 		assertTrue(testA2.getMeta().isFrozen(), "frozen");
 		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
-		assertEquals(2, testA2.getMeta().getTransitionList().size());
 
 	}
 
 	@Test
-	public void testAggregateProperties() throws Exception {
+	public void testProperties() throws Exception {
 
 		Object tenantId = requestCtx.getTenantId();
 		Object userId = requestCtx.getUserId();
@@ -81,7 +78,6 @@ public class ObjTestTest {
 
 		CodeTestType typeA = CodeTestType.getTestType(TYPE_A);
 		CodeTestType typeB = CodeTestType.getTestType(TYPE_B);
-		CodeTestType typeC = CodeTestType.getTestType(TYPE_C);
 
 		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
 		Object testA_id = testA1.getId();
@@ -107,21 +103,6 @@ public class ObjTestTest {
 		testA1.setRefTestId((Integer) testB_id);
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", testA1.getCaption());
 
-		// Test EnumSet operations with TestType
-		assertFalse(testA1.hasTestType(typeA));
-		testA1.addTestType(typeA);
-		assertTrue(testA1.hasTestType(typeA));
-		testA1.addTestType(typeB);
-		assertTrue(testA1.hasTestType(typeB));
-		assertEquals(2, testA1.getTestTypeSet().size());
-		testA1.removeTestType(typeB);
-		assertTrue(testA1.hasTestType(typeA));
-		assertFalse(testA1.hasTestType(typeB));
-		assertEquals(1, testA1.getTestTypeSet().size());
-		testA1.addTestType(typeC);
-		assertTrue(testA1.hasTestType(typeC));
-		assertEquals(2, testA1.getTestTypeSet().size());
-
 		this.testRepository.store(testA1, userId, now);
 		testA1 = null;
 
@@ -138,10 +119,6 @@ public class ObjTestTest {
 		assertEquals(typeA, testA2.getTestType());
 		assertEquals(testB_id, testA2.getRefTest().getId());
 
-		assertEquals(2, testA2.getTestTypeSet().size());
-		assertTrue(testA2.hasTestType(typeA));
-		assertTrue(testA2.hasTestType(typeC));
-
 		testA2.setShortText("another shortText");
 		testA2.setLongText("another longText");
 		testA2.setInt(41);
@@ -151,9 +128,6 @@ public class ObjTestTest {
 		testA2.setJson(null);
 		testA2.setTestType(typeB);
 		testA2.setRefTestId(null);
-
-		testA2.removeTestType(typeA);
-		testA2.addTestType(typeB);
 
 		assertEquals("[another shortText, another longText]", testA2.getCaption());
 		assertEquals("another shortText", testA2.getShortText());
@@ -165,6 +139,54 @@ public class ObjTestTest {
 		assertNull(testA2.getJson());
 		assertEquals(typeB, testA2.getTestType());
 		assertNull(testA2.getRefTest());
+
+	}
+
+	@Test
+	public void testParts() throws Exception {
+
+		Object tenantId = requestCtx.getTenantId();
+		Object userId = requestCtx.getUserId();
+		OffsetDateTime now = requestCtx.getCurrentTime();
+
+		CodeTestType typeA = CodeTestType.getTestType(TYPE_A);
+		CodeTestType typeB = CodeTestType.getTestType(TYPE_B);
+		CodeTestType typeC = CodeTestType.getTestType(TYPE_C);
+
+		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
+		Object testA_id = testA1.getId();
+		this.initObjTest(testA1, "One", TYPE_A);
+
+		// Test EnumSet operations with TestType
+		assertFalse(testA1.hasTestType(typeA));
+		testA1.addTestType(typeA);
+		assertTrue(testA1.hasTestType(typeA));
+		testA1.addTestType(typeB);
+		assertTrue(testA1.hasTestType(typeB));
+		assertEquals(2, testA1.getTestTypeSet().size());
+		testA1.removeTestType(typeB);
+		assertTrue(testA1.hasTestType(typeA));
+		assertFalse(testA1.hasTestType(typeB));
+		assertEquals(1, testA1.getTestTypeSet().size());
+		testA1.addTestType(typeC);
+		assertTrue(testA1.hasTestType(typeC));
+		assertEquals(2, testA1.getTestTypeSet().size());
+
+		assertEquals(1, testA1.getMeta().getTransitionList().size());
+
+		this.testRepository.store(testA1, userId, now);
+		testA1 = null;
+
+		ObjTest testA2 = this.testRepository.load(testA_id);
+
+		assertEquals(2, testA2.getMeta().getTransitionList().size());
+
+		assertEquals(2, testA2.getTestTypeSet().size());
+		assertTrue(testA2.hasTestType(typeA));
+		assertTrue(testA2.hasTestType(typeC));
+
+		testA2.removeTestType(typeA);
+		testA2.addTestType(typeB);
 
 		assertEquals(2, testA2.getTestTypeSet().size());
 		assertFalse(testA2.hasTestType(typeA));

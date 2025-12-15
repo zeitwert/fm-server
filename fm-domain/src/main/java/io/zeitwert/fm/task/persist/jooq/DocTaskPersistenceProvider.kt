@@ -2,7 +2,7 @@ package io.zeitwert.fm.task.persist.jooq
 
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
-import io.zeitwert.dddrive.ddd.persist.jooq.JooqDocPersistenceProviderBase
+import io.zeitwert.dddrive.persist.JooqDocPersistenceProviderBase
 import io.zeitwert.fm.doc.model.db.Sequences
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository

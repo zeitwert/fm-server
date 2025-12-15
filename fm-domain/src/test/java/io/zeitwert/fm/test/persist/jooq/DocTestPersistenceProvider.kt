@@ -3,7 +3,7 @@ package io.zeitwert.fm.test.persist.jooq
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.ReferenceProperty
-import io.zeitwert.dddrive.ddd.persist.jooq.JooqDocPersistenceProviderBase
+import io.zeitwert.dddrive.persist.JooqDocPersistenceProviderBase
 import io.zeitwert.fm.doc.model.db.Sequences
 import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.DocTestRepository

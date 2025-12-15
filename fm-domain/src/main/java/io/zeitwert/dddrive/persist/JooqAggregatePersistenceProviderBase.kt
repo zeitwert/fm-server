@@ -1,4 +1,4 @@
-package io.zeitwert.dddrive.ddd.persist.jooq
+package io.zeitwert.dddrive.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.AggregateMeta
@@ -17,18 +17,11 @@ import java.lang.reflect.InvocationTargetException
 import java.time.OffsetDateTime
 
 /**
- * Base class for jOOQ-based persistence providers implementing the new dddrive AggregatePersistenceProvider interface.
+ * Base class for jOOQ-based persistence providers implementing the AggregatePersistenceProvider interface.
  *
  * This class provides the foundation for persisting aggregates to PostgreSQL using jOOQ.
  * Concrete implementations should handle specific aggregate types (Obj, Doc) with their
  * respective table structures.
- *
- * Key differences from MongoDB provider:
- * - Uses Integer IDs (PostgreSQL sequences) instead of ObjectId
- * - Works with jOOQ UpdatableRecord instead of PTOs
- * - Delegates to jOOQ DSLContext for database operations
- *
- * @param A The aggregate type
  */
 abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePersistenceProvider<A> {
 
@@ -61,7 +54,6 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 		requireThis(isValidId(id)) { "valid id" }
 		val record = loadRecord(id as Int)
 		assertThis(record != null) { "aggregate found for id ($id)" }
-
 		(aggregate as AggregateMeta).disableCalc()
 		try {
 			toAggregate(record!!, aggregate)
@@ -72,50 +64,12 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	}
 
 	/**
-	 * Stores an aggregate to the database.
-	 * All operations are wrapped in a transaction to ensure atomicity.
-	 *
-	 * @param aggregate The aggregate to store
-	 */
-	override fun doStore(aggregate: A) {
-		dslContext().transaction { _ ->
-			val record = fromAggregate(aggregate)
-			try {
-				record.store()
-				storeExtension(aggregate)
-				System.err.println("stored:\n$record")
-			} catch (e: RuntimeException) {
-				System.err.println("${e.message}:\n$record")
-				throw e // Re-throw to trigger rollback
-			}
-		}
-	}
-
-	/**
 	 * Loads the base record from the database.
 	 *
 	 * @param id The aggregate ID
 	 * @return The loaded record, or null if not found
 	 */
 	protected abstract fun loadRecord(id: Int): UpdatableRecord<*>?
-
-	/**
-	 * Creates a jOOQ record from the aggregate for storage.
-	 *
-	 * @param aggregate The aggregate to convert
-	 * @return The jOOQ record
-	 */
-	protected abstract fun fromAggregate(aggregate: A): UpdatableRecord<*>
-
-	/**
-	 * Stores any extension data for the aggregate (e.g., extension table records).
-	 * Default implementation does nothing - override in subclasses if needed.
-	 *
-	 * @param aggregate The aggregate whose extension data should be stored
-	 */
-	protected open fun storeExtension(aggregate: A) {
-		// Default: no extension data to store
-	}
 
 	/**
 	 * Maps fields from a jOOQ record to an aggregate.
@@ -143,6 +97,44 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 			getRecordField(record, "modifiedByUserId")
 		(aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value =
 			getRecordField(record, "modifiedAt") as? OffsetDateTime
+	}
+
+	/**
+	 * Stores an aggregate to the database.
+	 * All operations are wrapped in a transaction to ensure atomicity.
+	 *
+	 * @param aggregate The aggregate to store
+	 */
+	override fun doStore(aggregate: A) {
+		dslContext().transaction { _ ->
+			val record = fromAggregate(aggregate)
+			try {
+				record.store()
+				storeExtension(aggregate)
+				System.err.println("stored:\n$record")
+			} catch (e: RuntimeException) {
+				System.err.println("${e.message}:\n$record")
+				throw e // Re-throw to trigger rollback
+			}
+		}
+	}
+
+	/**
+	 * Creates a jOOQ record from the aggregate for storage.
+	 *
+	 * @param aggregate The aggregate to convert
+	 * @return The jOOQ record
+	 */
+	protected abstract fun fromAggregate(aggregate: A): UpdatableRecord<*>
+
+	/**
+	 * Stores any extension data for the aggregate (e.g., extension table records).
+	 * Default implementation does nothing - override in subclasses if needed.
+	 *
+	 * @param aggregate The aggregate whose extension data should be stored
+	 */
+	protected open fun storeExtension(aggregate: A) {
+		// Default: no extension data to store
 	}
 
 	/**
