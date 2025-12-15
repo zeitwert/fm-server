@@ -34,6 +34,7 @@ create table obj_test_part_node (
 	parent_part_id												integer,						-- optional reference to parent obj-part
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
 	seq_nr																integer,
+	aver																	integer							not null default 0,
 	-- simple fields
 	short_text														varchar(200),
 	long_text															text,
@@ -79,6 +80,7 @@ create table doc_test_part_node (
 	parent_part_id												integer,						-- optional reference to parent doc-part
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
 	seq_nr																integer,
+	aver																	integer							not null default 0,
 	-- simple fields
 	short_text														varchar(200),
 	long_text															text,
