@@ -56,6 +56,8 @@ public class ObjTestTest {
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
 
+		assertEquals(1, testA1.getMeta().getTransitionList().size());
+
 		this.testRepository.store(testA1, userId, now);
 		testA1 = null;
 

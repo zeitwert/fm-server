@@ -6,9 +6,7 @@ public interface PartMeta<A extends Aggregate> {
 
 	PartRepository<A, ? extends Part<A>> getRepository();
 
-	boolean isChanged();
-
-	boolean isDeleted();
+	boolean isNew();
 
 	boolean isCalcEnabled();
 

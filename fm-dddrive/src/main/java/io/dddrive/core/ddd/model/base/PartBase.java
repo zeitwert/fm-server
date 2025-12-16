@@ -1,20 +1,14 @@
 package io.dddrive.core.ddd.model.base;
 
-import static io.dddrive.util.Invariant.assertThis;
-
-import org.springframework.lang.Nullable;
-
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.Part;
-import io.dddrive.core.ddd.model.PartMeta;
-import io.dddrive.core.ddd.model.PartRepository;
-import io.dddrive.core.ddd.model.PartSPI;
-import io.dddrive.core.ddd.model.RepositoryDirectory;
+import io.dddrive.core.ddd.model.*;
 import io.dddrive.core.property.model.BaseProperty;
 import io.dddrive.core.property.model.EntityWithPropertiesSPI;
 import io.dddrive.core.property.model.PartListProperty;
 import io.dddrive.core.property.model.Property;
 import io.dddrive.core.property.model.base.EntityWithPropertiesBase;
+import org.springframework.lang.Nullable;
+
+import static io.dddrive.util.Invariant.assertThis;
 
 public abstract class PartBase<A extends Aggregate>
 		extends EntityWithPropertiesBase
@@ -25,7 +19,7 @@ public abstract class PartBase<A extends Aggregate>
 	private final A aggregate;
 	private final PartRepository<A, ? extends Part<A>> repository;
 	private final Property<?> parentProperty;
-	private boolean isChanged = false;
+	private final boolean isNew;
 	private int isCalcDisabled = 0;
 	private boolean isInCalc = false;
 	private boolean didCalcAll = false;
@@ -36,6 +30,7 @@ public abstract class PartBase<A extends Aggregate>
 		this.repository = repository;
 		this.parentProperty = parentProperty;
 		this.id.setValue(id);
+		this.isNew = !aggregate.getMeta().isInLoad();
 	}
 
 	@Override
@@ -162,8 +157,8 @@ public abstract class PartBase<A extends Aggregate>
 	}
 
 	@Override
-	public boolean isChanged() {
-		return this.isChanged;
+	public boolean isNew() {
+		return this.isNew;
 	}
 
 	@Override
@@ -198,7 +193,6 @@ public abstract class PartBase<A extends Aggregate>
 
 	@Override
 	public void calcAll() {
-		this.isChanged = true;
 		if (!this.isCalcEnabled() || this.isInCalc()) {
 			return;
 		}

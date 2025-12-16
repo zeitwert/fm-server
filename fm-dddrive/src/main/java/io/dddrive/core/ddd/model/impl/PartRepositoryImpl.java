@@ -43,6 +43,8 @@ public final class PartRepositoryImpl<A extends Aggregate, P extends Part<A>> im
 		int id = isInLoad ? partId : repo.getPersistenceProvider().nextPartId(aggregate, this.intfClass);
 		try {
 			P part = (P) this.partProxyFactory.create(this.partProxyFactoryParamTypeList, new Object[]{aggregate, this, property, id}, PropertyHandler.INSTANCE);
+			requireThis(isInLoad || part.getMeta().isNew(), "load or part.isNew");
+			requireThis(!isInLoad || !part.getMeta().isNew(), "outside load or !part.isNew");
 			if (!isInLoad && part instanceof PartSPI) {
 				((PartSPI<A>) part).doAfterCreate();
 			}
