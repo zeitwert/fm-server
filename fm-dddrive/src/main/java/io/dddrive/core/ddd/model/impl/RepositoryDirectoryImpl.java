@@ -1,13 +1,13 @@
 package io.dddrive.core.ddd.model.impl;
 
-import static io.dddrive.util.Invariant.assertThis;
+import io.dddrive.core.ddd.model.*;
+import io.dddrive.core.enums.model.Enumerated;
+import io.dddrive.core.enums.model.Enumeration;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.dddrive.core.ddd.model.*;
-import io.dddrive.core.enums.model.Enumerated;
-import io.dddrive.core.enums.model.Enumeration;
+import static io.dddrive.util.Invariant.assertThis;
 
 public final class RepositoryDirectoryImpl implements RepositoryDirectory, RepositoryDirectorySPI {
 
@@ -17,7 +17,7 @@ public final class RepositoryDirectoryImpl implements RepositoryDirectory, Repos
 	private final Map<Class<? extends Part<?>>, PartRepository<?, ?>> partRepoByIntf = new HashMap<>();
 
 	private final Map<Class<? extends Aggregate>, AggregatePersistenceProvider<?>> appByIntf = new HashMap<>();
-//	private final Map<Class<? extends Part<?>>, PartPersistenceProvider<?, ?>> pppByIntf = new HashMap<>();
+	private final Map<Class<? extends Part<?>>, PartPersistenceProvider<?>> pppByIntf = new HashMap<>();
 
 	private final Map<String, Enumeration<? extends Enumerated>> enumsById = new HashMap<>();
 	private final Map<Class<? extends Enumerated>, Enumeration<? extends Enumerated>> enumsByEnumeratedClass = new HashMap<>();
@@ -88,6 +88,18 @@ public final class RepositoryDirectoryImpl implements RepositoryDirectory, Repos
 	public void addPersistenceProvider(Class<? extends Aggregate> intfClass, AggregatePersistenceProvider<? extends Aggregate> app) {
 		assertThis(this.getPersistenceProvider(intfClass) == null, "unique persistence provider for class " + intfClass);
 		this.appByIntf.put(intfClass, app);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <P extends Part<?>> PartPersistenceProvider<P> getPartPersistenceProvider(Class<P> intfClass) {
+		return (PartPersistenceProvider<P>) this.pppByIntf.get(intfClass);
+	}
+
+	@Override
+	public <P extends Part<?>> void addPartPersistenceProvider(Class<P> intfClass, PartPersistenceProvider<P> ppp) {
+		assertThis(this.getPartPersistenceProvider(intfClass) == null, "unique persistence provider for class " + intfClass);
+		this.pppByIntf.put(intfClass, ppp);
 	}
 
 }

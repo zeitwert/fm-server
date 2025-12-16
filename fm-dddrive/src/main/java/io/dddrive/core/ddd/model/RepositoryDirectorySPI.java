@@ -11,7 +11,7 @@ public interface RepositoryDirectorySPI {
 
 	void addPersistenceProvider(Class<? extends Aggregate> intfClass, AggregatePersistenceProvider<? extends Aggregate> repo);
 
-//	<A extends Aggregate> void addPartPersistenceProvider(Class<? extends Part<A>> intfClass, PartPersistenceProvider<A, ? extends Part<A>> repo);
+	<P extends Part<?>> void addPartPersistenceProvider(Class<P> intfClass, PartPersistenceProvider<P> ppp);
 
 	<E extends Enumerated> void addEnumeration(Class<E> enumClass, Enumeration<E> enumeration);
 

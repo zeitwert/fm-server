@@ -16,7 +16,7 @@ public interface RepositoryDirectory {
 
 	<A extends Aggregate> AggregatePersistenceProvider<A> getPersistenceProvider(Class<A> intfClass);
 
-//	<A extends Aggregate, P extends Part<A>> PartPersistenceProvider<A, P> getPartPersistenceProvider(Class<P> intfClass);
+	<P extends Part<?>> PartPersistenceProvider<P> getPartPersistenceProvider(Class<P> intfClass);
 
 	<E extends Enumerated> Enumeration<E> getEnumeration(Class<E> enumClass);
 
