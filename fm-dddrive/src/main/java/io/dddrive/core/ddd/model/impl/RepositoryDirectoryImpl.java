@@ -5,23 +5,22 @@ import static io.dddrive.util.Invariant.assertThis;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.AggregateRepository;
-import io.dddrive.core.ddd.model.Part;
-import io.dddrive.core.ddd.model.PartRepository;
-import io.dddrive.core.ddd.model.RepositoryDirectory;
-import io.dddrive.core.ddd.model.RepositoryDirectorySPI;
+import io.dddrive.core.ddd.model.*;
 import io.dddrive.core.enums.model.Enumerated;
 import io.dddrive.core.enums.model.Enumeration;
 
 public final class RepositoryDirectoryImpl implements RepositoryDirectory, RepositoryDirectorySPI {
 
 	private static RepositoryDirectoryImpl instance;
-	private final Map<String, Enumeration<? extends Enumerated>> enumsById = new HashMap<>();
-	private final Map<Class<? extends Enumerated>, Enumeration<? extends Enumerated>> enumsByEnumeratedClass = new HashMap<>();
 
 	private final Map<Class<? extends Aggregate>, AggregateRepository<?>> repoByIntf = new HashMap<>();
 	private final Map<Class<? extends Part<?>>, PartRepository<?, ?>> partRepoByIntf = new HashMap<>();
+
+	private final Map<Class<? extends Aggregate>, AggregatePersistenceProvider<?>> appByIntf = new HashMap<>();
+//	private final Map<Class<? extends Part<?>>, PartPersistenceProvider<?, ?>> pppByIntf = new HashMap<>();
+
+	private final Map<String, Enumeration<? extends Enumerated>> enumsById = new HashMap<>();
+	private final Map<Class<? extends Enumerated>, Enumeration<? extends Enumerated>> enumsByEnumeratedClass = new HashMap<>();
 
 	private RepositoryDirectoryImpl() {
 	}
@@ -77,6 +76,18 @@ public final class RepositoryDirectoryImpl implements RepositoryDirectory, Repos
 	public <A extends Aggregate> void addPartRepository(Class<? extends Part<A>> intfClass, PartRepository<A, ? extends Part<A>> repo) {
 		//assertThis(this.getPartRepository(intfClass) == null, "unique repo for class " + intfClass);
 		this.partRepoByIntf.put(intfClass, repo);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <A extends Aggregate> AggregatePersistenceProvider<A> getPersistenceProvider(Class<A> intfClass) {
+		return (AggregatePersistenceProvider<A>) appByIntf.get(intfClass);
+	}
+
+	@Override
+	public void addPersistenceProvider(Class<? extends Aggregate> intfClass, AggregatePersistenceProvider<? extends Aggregate> app) {
+		assertThis(this.getPersistenceProvider(intfClass) == null, "unique persistence provider for class " + intfClass);
+		this.appByIntf.put(intfClass, app);
 	}
 
 }

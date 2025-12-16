@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 open class ObjTestPersistenceProviderImpl(
 	override val baseRecordMapper: ObjRecordMapperImpl,
 	val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjTest, ObjRecord, ObjTestRecord>(),
+) : SqlAggregatePersistenceProviderBase<ObjTest, ObjRecord, ObjTestRecord>(ObjTest::class.java),
 	SqlAggregateRecordMapper<ObjTest, ObjTestRecord> {
 
 	override fun dslContext(): DSLContext = dslContext

@@ -23,11 +23,13 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	private static final Set<String> NotLoggedProperties = Set.of("id", "maxPartId", "version", "createdByUser",
 			"createdAt", "modifiedByUser", "modifiedAt");
 
+	private final Class<? extends Aggregate> intfClass;
 	private final Class<? extends Aggregate> baseClass;
 	private final String aggregateTypeId;
 	private final ProxyFactory aggregateProxyFactory;
 	private final Class<?>[] aggregateProxyFactoryParamTypeList;
 	private final Cache<Object, A> objCache = Caffeine.newBuilder().maximumSize(200).recordStats().build();
+	private AggregatePersistenceProvider<A> persistenceProvider;
 	private boolean didAfterCreate = false;
 	private boolean didAfterLoad = false;
 	private boolean didBeforeStore = false;
@@ -38,6 +40,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 			Class<? extends Aggregate> intfClass,
 			Class<? extends Aggregate> baseClass,
 			String aggregateTypeId) {
+		this.intfClass = intfClass;
 		this.baseClass = baseClass;
 		this.aggregateTypeId = aggregateTypeId;
 		this.aggregateProxyFactory = new ProxyFactory();
@@ -59,6 +62,15 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public /*final TODO*/ AggregatePersistenceProvider<A> getPersistenceProvider() {
+		if (persistenceProvider == null) {
+			persistenceProvider = (AggregatePersistenceProvider<A>) getDirectory().getPersistenceProvider(intfClass);
+		}
+		return persistenceProvider;
+	}
+
+	@Override
 	public final String idToString(Object id) {
 		return id == null ? null : this.getPersistenceProvider().idToString(id);
 	}
@@ -73,8 +85,7 @@ public abstract class AggregateRepositoryBase<A extends Aggregate>
 		return !NotLoggedProperties.contains(propertyName);
 	}
 
-	protected <AA extends Aggregate> void addPart(Class<AA> aggregateIntfClass, Class<? extends Part<AA>> partIntfClass,
-																								Class<? extends Part<AA>> partBaseClass) {
+	protected <AA extends Aggregate> void addPart(Class<AA> aggregateIntfClass, Class<? extends Part<AA>> partIntfClass, Class<? extends Part<AA>> partBaseClass) {
 		PartRepository<AA, ? extends Part<AA>> partRepository = new PartRepositoryImpl<>(aggregateIntfClass, partIntfClass,
 				partBaseClass);
 		((RepositoryDirectorySPI) this.getDirectory()).addPartRepository(partIntfClass, partRepository);

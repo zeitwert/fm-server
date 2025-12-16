@@ -1,6 +1,5 @@
 package io.zeitwert.fm.obj.model.base
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjRepositoryBase
@@ -34,10 +33,5 @@ abstract class FMObjRepositoryBase<O : Obj>(
 	}
 
 	fun dslContext(): DSLContext = _dslContext
-
-	/**
-	 * Subclasses must implement this to return their persistence provider.
-	 */
-	abstract override fun getPersistenceProvider(): AggregatePersistenceProvider<O>
 
 }

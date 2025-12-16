@@ -1,8 +1,8 @@
 package io.zeitwert.dddrive.persist
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
+import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.util.Invariant.requireThis
 import org.jooq.DSLContext
@@ -15,7 +15,9 @@ import org.jooq.UpdatableRecord
  * Concrete implementations should handle specific aggregate types (Obj, Doc) with their
  * respective table structures.
  */
-abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord<BR>, ER : UpdatableRecord<ER>> : AggregatePersistenceProvider<A> {
+abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord<BR>, ER : UpdatableRecord<ER>>(
+	intfClass: Class<A>,
+) : AggregatePersistenceProviderBase<A>(intfClass) {
 
 	abstract val baseRecordMapper: SqlAggregateRecordMapper<Obj, BR>
 
