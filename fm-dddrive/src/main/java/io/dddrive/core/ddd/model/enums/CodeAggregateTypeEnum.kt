@@ -14,6 +14,7 @@ class CodeAggregateTypeEnum : EnumerationBase<CodeAggregateType>(CodeAggregateTy
 
 		@JvmStatic
 		fun getAggregateType(aggregateTypeId: String): CodeAggregateType = instance.getItem(aggregateTypeId)
+
 	}
 
 }

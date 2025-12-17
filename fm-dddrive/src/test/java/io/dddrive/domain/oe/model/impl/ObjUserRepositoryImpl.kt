@@ -3,7 +3,7 @@ package io.dddrive.domain.oe.model.impl
 import io.dddrive.core.obj.model.base.ObjRepositoryBase
 import io.dddrive.core.oe.model.ObjUser
 import io.dddrive.domain.oe.model.ObjUserRepository
-import io.dddrive.domain.oe.model.base.ObjUserExtnBase
+import io.dddrive.domain.oe.model.base.ObjUserTestBase
 import io.dddrive.domain.oe.persist.ObjUserPersistenceProvider
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
@@ -15,7 +15,7 @@ class ObjUserRepositoryImpl :
 	ObjRepositoryBase<ObjUser>(
 		ObjUserRepository::class.java,
 		ObjUser::class.java,
-		ObjUserExtnBase::class.java,
+		ObjUserTestBase::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjUserRepository {

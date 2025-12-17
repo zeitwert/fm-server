@@ -17,7 +17,8 @@ import java.time.OffsetDateTime
 
 abstract class DocBase protected constructor(
 	repository: DocRepository<out Doc>,
-) : AggregateBase(repository),
+	isNew: Boolean,
+) : AggregateBase(repository, isNew),
 	Doc,
 	DocMeta {
 

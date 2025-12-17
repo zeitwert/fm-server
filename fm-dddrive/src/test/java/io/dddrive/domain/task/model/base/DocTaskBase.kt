@@ -16,7 +16,7 @@ import java.time.OffsetDateTime
 abstract class DocTaskBase(
 	repository: DocTaskRepository,
 	isNew: Boolean,
-) : DocBase(repository), DocTask {
+) : DocBase(repository, isNew), DocTask {
 
 	//@formatter:off
 	private val _subject: BaseProperty<String> = this.addBaseProperty("subject", String::class.java)

@@ -22,6 +22,7 @@ import java.util.function.Consumer
 abstract class AggregateBase
 	protected constructor(
 		repository: AggregateRepository<out Aggregate>,
+		override val isNew: Boolean,
 	) : AggregateWithRepositoryBase(repository),
 		Aggregate,
 		AggregateMeta,

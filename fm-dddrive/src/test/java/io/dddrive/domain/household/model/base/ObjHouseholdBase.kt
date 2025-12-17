@@ -18,7 +18,7 @@ import io.dddrive.domain.household.model.enums.CodeLabel
 abstract class ObjHouseholdBase(
 	repository: ObjHouseholdRepository,
 	isNew: Boolean,
-) : ObjBase(repository), ObjHousehold {
+) : ObjBase(repository, isNew), ObjHousehold {
 
 	//@formatter:off
 	protected val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)

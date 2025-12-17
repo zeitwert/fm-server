@@ -54,7 +54,7 @@ class AggregateBaseValidationPathTest {
 		when(mockRepositoryDirectory.getRepository(ObjTenant.class)).thenReturn(mockTenantRepository);
 		when(mockRepositoryDirectory.getRepository(ObjUser.class)).thenReturn(mockUserRepository);
 
-		aggregate = new TestAggregate(mockRepository);
+		aggregate = new TestAggregate(mockRepository, true);
 	}
 
 	@Test
@@ -208,8 +208,8 @@ class AggregateBaseValidationPathTest {
 
 	private static class TestAggregate extends AggregateBase {
 
-		protected TestAggregate(AggregateRepository<? extends Aggregate> repository) {
-			super(repository);
+		protected TestAggregate(AggregateRepository<? extends Aggregate> repository, boolean isNew) {
+			super(repository, isNew);
 		}
 
 		// Dummy implementations for abstract methods not under test
@@ -284,7 +284,7 @@ class AggregateBaseValidationPathTest {
 		private boolean coordinatesMissing = false;
 
 		protected VolatileTestAggregate(AggregateRepository<? extends Aggregate> repository) {
-			super(repository);
+			super(repository, true);
 		}
 
 		public void setInsuredValueMissing(boolean insuredValueMissing) {

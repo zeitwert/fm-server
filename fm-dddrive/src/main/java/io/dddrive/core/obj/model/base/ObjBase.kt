@@ -15,7 +15,8 @@ import java.time.OffsetDateTime
 
 abstract class ObjBase(
 	repository: ObjRepository<out Obj>,
-) : AggregateBase(repository),
+	isNew: Boolean,
+) : AggregateBase(repository, isNew),
 	Obj,
 	ObjMeta {
 
