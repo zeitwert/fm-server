@@ -13,7 +13,6 @@ import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.Property
 import io.dddrive.core.property.model.ReferenceProperty
-import io.dddrive.util.Invariant
 import java.time.OffsetDateTime
 
 abstract class DocBase protected constructor(
@@ -111,7 +110,7 @@ abstract class DocBase protected constructor(
 	override val isInWork: Boolean get() = this._isInWork.value!!
 
 	override fun setCaseDef(caseDef: CodeCaseDef) {
-		Invariant.requireThis(this.meta.caseDef == null, "caseDef empty")
+		require(this.meta.caseDef == null) { "caseDef empty" }
 		this.unfreeze()
 		this._caseDef.value = caseDef
 	}
@@ -121,8 +120,8 @@ abstract class DocBase protected constructor(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		Invariant.requireThis(!caseStage.isAbstract, "valid caseStage (i)")
-		Invariant.requireThis(this.caseDef == null || caseStage.caseDef === this.caseDef, "valid caseStage (ii)")
+		require(!caseStage.isAbstract) { "valid caseStage (i)" }
+		require(this.caseDef == null || caseStage.caseDef === this.caseDef) { "valid caseStage (ii)" }
 		if (this.caseDef == null) {
 			this.setCaseDef(caseStage.caseDef)
 		}

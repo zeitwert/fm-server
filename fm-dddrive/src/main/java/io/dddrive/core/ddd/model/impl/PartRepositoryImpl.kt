@@ -8,7 +8,6 @@ import io.dddrive.core.ddd.model.PartSPI
 import io.dddrive.core.property.model.Property
 import io.dddrive.core.property.model.impl.PropertyFilter
 import io.dddrive.core.property.model.impl.PropertyHandler
-import io.dddrive.util.Invariant
 import javassist.util.proxy.ProxyFactory
 
 class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
@@ -36,8 +35,8 @@ class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
 		partId: Int?,
 	): P {
 		val isInLoad = aggregate.meta.isInLoad
-		Invariant.requireThis(!isInLoad || partId != null, "partId != null on load")
-		Invariant.requireThis(isInLoad || partId == null, "partId == null on create")
+		require(!isInLoad || partId != null) { "partId != null on load" }
+		require(isInLoad || partId == null) { "partId == null on create" }
 		val repo = aggregate.meta.repository as AggregateRepositorySPI<A>
 		val id: Int = (if (isInLoad) partId else repo.persistenceProvider.nextPartId(aggregate, this.intfClass))!!
 		try {
@@ -46,8 +45,8 @@ class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
 				arrayOf<Any?>(aggregate, this, property, id),
 				PropertyHandler.INSTANCE,
 			) as P
-			Invariant.requireThis(isInLoad || part.meta.isNew, "load or part.isNew")
-			Invariant.requireThis(!isInLoad || !part.meta.isNew, "outside load or !part.isNew")
+			check(isInLoad || part.meta.isNew) { "load or part.isNew" }
+			check(!isInLoad || !part.meta.isNew) { "outside load or !part.isNew" }
 			if (!isInLoad && part is PartSPI<*>) {
 				(part as PartSPI<A?>).doAfterCreate()
 			}

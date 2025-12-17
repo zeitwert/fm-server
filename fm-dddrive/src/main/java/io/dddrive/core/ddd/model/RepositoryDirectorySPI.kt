@@ -17,7 +17,7 @@ interface RepositoryDirectorySPI {
 
 	fun addPersistenceProvider(
 		intfClass: Class<out Aggregate>,
-		repo: AggregatePersistenceProvider<out Aggregate>,
+		app: AggregatePersistenceProvider<out Aggregate>,
 	)
 
 	fun <P : Part<*>> addPartPersistenceProvider(

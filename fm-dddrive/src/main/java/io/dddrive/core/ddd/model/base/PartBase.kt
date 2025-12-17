@@ -11,7 +11,6 @@ import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
 import io.dddrive.core.property.model.base.EntityWithPropertiesBase
-import io.dddrive.util.Invariant
 
 abstract class PartBase<A : Aggregate>(
 	override val aggregate: A,
@@ -162,7 +161,7 @@ abstract class PartBase<A : Aggregate>(
 			this.beginCalc()
 			this.doCalcAll()
 			this.aggregate.meta.calcAll()
-			Invariant.assertThis(this.didCalcAll, this.className + ": doCalcAll was propagated")
+			check(this.didCalcAll) { this.className + ": doCalcAll was propagated" }
 		} finally {
 			this.endCalc()
 		}
@@ -179,7 +178,7 @@ abstract class PartBase<A : Aggregate>(
 		try {
 			this.beginCalc()
 			this.doCalcVolatile()
-			Invariant.assertThis(this.didCalcVolatile, this.className + ": doCalcAll was propagated")
+			check(this.didCalcVolatile) { this.className + ": doCalcAll was propagated" }
 		} finally {
 			this.endCalc()
 		}

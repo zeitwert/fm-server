@@ -10,7 +10,6 @@ import io.dddrive.core.ddd.model.RepositoryDirectory
 import io.dddrive.core.ddd.model.RepositoryDirectorySPI
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.Enumeration
-import io.dddrive.util.Invariant
 
 class RepositoryDirectoryImpl :
 	RepositoryDirectory,
@@ -53,7 +52,7 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Aggregate>,
 		repo: AggregateRepository<out Aggregate>,
 	) {
-		Invariant.assertThis(this.repoByIntf[intfClass] == null, "unique repo for class $intfClass")
+		require(this.repoByIntf[intfClass] == null) { "unique repo for class $intfClass" }
 		this.repoByIntf.put(intfClass, repo)
 	}
 
@@ -75,10 +74,7 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Aggregate>,
 		app: AggregatePersistenceProvider<out Aggregate>,
 	) {
-		Invariant.assertThis(
-			this.appByIntf[intfClass] == null,
-			"unique persistence provider for class $intfClass",
-		)
+		require(this.appByIntf[intfClass] == null) { "unique persistence provider for class $intfClass" }
 		this.appByIntf.put(intfClass, app)
 	}
 
@@ -89,10 +85,7 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<P>,
 		ppp: PartPersistenceProvider<P>,
 	) {
-		Invariant.assertThis(
-			this.pppByIntf[intfClass] == null,
-			"unique persistence provider for class $intfClass",
-		)
+		require(this.pppByIntf[intfClass] == null) { "unique persistence provider for class $intfClass" }
 		this.pppByIntf.put(intfClass, ppp)
 	}
 

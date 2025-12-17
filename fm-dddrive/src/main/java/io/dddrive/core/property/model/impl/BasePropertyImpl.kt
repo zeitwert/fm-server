@@ -4,7 +4,6 @@ import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.base.PropertyBase
-import io.dddrive.util.Invariant
 
 class BasePropertyImpl<T>(
 	entity: EntityWithProperties,
@@ -15,7 +14,7 @@ class BasePropertyImpl<T>(
 
 	override var value: T? = null
 		set(value) {
-			Invariant.requireThis(this.isWritable, "not frozen")
+			require(this.isWritable) { "writable" }
 			if (field == value) {
 				return
 			}

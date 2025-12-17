@@ -17,7 +17,6 @@ import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.ddd.model.impl.PartRepositoryImpl
 import io.dddrive.core.property.model.impl.PropertyFilter
 import io.dddrive.core.property.model.impl.PropertyHandler
-import io.dddrive.util.Invariant
 import javassist.util.proxy.ProxyFactory
 import java.time.OffsetDateTime
 import java.util.function.Function
@@ -98,16 +97,13 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 		val doCreateSeqNr = (aggregate as AggregateBase).doCreateSeqNr
 		(aggregate as AggregateSPI).doCreate(aggregateId, tenantId, userId, timestamp)
-		Invariant.assertThis(
-			(aggregate as AggregateBase).doCreateSeqNr > doCreateSeqNr,
-			this.getBaseClassName(aggregate) + ": doCreate was propagated",
-		)
+		check(aggregate.doCreateSeqNr > doCreateSeqNr) { this.getBaseClassName(aggregate) + ": doCreate was propagated" }
 
 		aggregate.meta.calcAll()
 
 		this.didAfterCreate = false
 		this.doAfterCreate(aggregate, userId, timestamp)
-		Invariant.assertThis(this.didAfterCreate, this.baseClassName + ": doAfterCreate was propagated")
+		check(this.didAfterCreate) { this.baseClassName + ": doAfterCreate was propagated" }
 
 		return aggregate
 	}
@@ -120,10 +116,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		this.didAfterCreate = true
 		val doAfterCreateSeqNr = (aggregate as AggregateBase).doAfterCreateSeqNr
 		(aggregate as AggregateSPI).doAfterCreate(userId, timestamp)
-		Invariant.assertThis(
-			(aggregate as AggregateBase).doAfterCreateSeqNr > doAfterCreateSeqNr,
-			this.getBaseClassName(aggregate) + ": doAfterCreate was propagated",
-		)
+		check(aggregate.doAfterCreateSeqNr > doAfterCreateSeqNr) { this.getBaseClassName(aggregate) + ": doAfterCreate was propagated" }
 	}
 
 	override fun get(id: Any): A = this.objCache.get(id, Function { aggrId: Any? -> this.get(aggrId!!, true) })
@@ -135,10 +128,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		isFrozen: Boolean,
 	): A {
 		val persistenceProvider = this.persistenceProvider
-		Invariant.requireThis(
-			persistenceProvider.isValidId(id),
-			"valid id " + id + " (" + id.javaClass.getSimpleName() + ")",
-		)
+		check(persistenceProvider.isValidId(id)) { "valid id " + id + " (" + id.javaClass.getSimpleName() + ")" }
 
 		val aggregate = this.createAggregate(false)
 		(aggregate as AggregateMeta).beginLoad()
@@ -153,7 +143,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 		this.didAfterLoad = false
 		this.doAfterLoad(aggregate)
-		Invariant.assertThis(this.didAfterLoad, this.baseClassName + ": doAfterLoad was propagated")
+		check(this.didAfterLoad) { this.baseClassName + ": doAfterLoad was propagated" }
 
 		return aggregate
 	}
@@ -177,10 +167,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		this.didAfterLoad = true
 		val doAfterLoadSeqNr = (aggregate as AggregateBase).doAfterLoadSeqNr
 		(aggregate as AggregateSPI).doAfterLoad()
-		Invariant.assertThis(
-			(aggregate as AggregateBase).doAfterLoadSeqNr > doAfterLoadSeqNr,
-			this.getBaseClassName(aggregate) + ": doAfterLoad was propagated",
-		)
+		check(aggregate.doAfterLoadSeqNr > doAfterLoadSeqNr) { this.getBaseClassName(aggregate) + ": doAfterLoad was propagated" }
 	}
 
 	override fun store(
@@ -191,13 +178,13 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		try {
 			this.didBeforeStore = false
 			this.doBeforeStore(aggregate, userId, timestamp)
-			Invariant.assertThis(this.didBeforeStore, this.baseClassName + ": doBeforeStore was propagated")
+			check(this.didBeforeStore) { this.baseClassName + ": doBeforeStore was propagated" }
 
 			this.persistenceProvider!!.doStore(aggregate)
 
 			this.didAfterStore = false
 			this.doAfterStore(aggregate)
-			Invariant.assertThis(this.didAfterStore, this.baseClassName + ": doAfterStore was propagated")
+			check(this.didAfterStore) { this.baseClassName + ": doAfterStore was propagated" }
 		} catch (e: Exception) {
 			throw RuntimeException("$baseClassName: could not store aggregate (${e.message})", e)
 		}
@@ -211,20 +198,14 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		this.didBeforeStore = true
 		val doBeforeStoreSeqNr = (aggregate as AggregateBase).doBeforeStoreSeqNr
 		(aggregate as AggregateSPI).doBeforeStore(userId, timestamp)
-		Invariant.assertThis(
-			(aggregate as AggregateBase).doBeforeStoreSeqNr > doBeforeStoreSeqNr,
-			this.getBaseClassName(aggregate) + ": doBeforeStore was propagated",
-		)
+		check(aggregate.doBeforeStoreSeqNr > doBeforeStoreSeqNr) { this.getBaseClassName(aggregate) + ": doBeforeStore was propagated" }
 	}
 
 	override fun doAfterStore(aggregate: A) {
 		this.didAfterStore = true
 		val doAfterStoreSeqNr = (aggregate as AggregateBase).doAfterStoreSeqNr
 		(aggregate as AggregateSPI).doAfterStore()
-		Invariant.assertThis(
-			(aggregate as AggregateBase).doAfterStoreSeqNr > doAfterStoreSeqNr,
-			this.getBaseClassName(aggregate) + ": doAfterStore was propagated",
-		)
+		check(aggregate.doAfterStoreSeqNr > doAfterStoreSeqNr) { this.getBaseClassName(aggregate) + ": doAfterStore was propagated" }
 		this.handleAggregateStored(aggregate.id)
 	}
 

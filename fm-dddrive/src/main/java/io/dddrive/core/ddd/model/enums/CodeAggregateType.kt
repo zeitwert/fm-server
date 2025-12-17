@@ -8,7 +8,7 @@ class CodeAggregateType(
 ) : Enumerated {
 
 	override val enumeration: CodeAggregateTypeEnum
-		get() = CodeAggregateTypeEnum.getInstance()
+		get() = CodeAggregateTypeEnum.instance
 
 	override fun getName(): String = name
 

@@ -6,7 +6,6 @@ import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.base.PropertyBase
-import io.dddrive.util.Invariant
 
 open class PartListPropertyImpl<P : Part<*>>(
 	entity: EntityWithProperties,
@@ -18,7 +17,7 @@ open class PartListPropertyImpl<P : Part<*>>(
 	private val partList: MutableList<P> = mutableListOf()
 
 	override fun clearParts() {
-		Invariant.requireThis(this.isWritable, "not frozen")
+		require(this.isWritable) { "writable" }
 		for (part in this.partList) {
 			(part as PartSPI<*>).delete()
 		}
@@ -28,7 +27,7 @@ open class PartListPropertyImpl<P : Part<*>>(
 
 	@Suppress("UNCHECKED_CAST")
 	override fun addPart(partId: Int?): P {
-		Invariant.requireThis(this.isWritable, "not frozen")
+		require(this.isWritable) { "writable" }
 		val entity = this.entity as EntityWithPropertiesSPI
 		val part = entity.doAddPart(this, partId) as P
 		this.partList.add(part)
@@ -41,7 +40,7 @@ open class PartListPropertyImpl<P : Part<*>>(
 		get() = this.partList.size
 
 	override fun getPart(seqNr: Int): P {
-		Invariant.assertThis(0 <= seqNr && seqNr < this.partCount, "valid seqNr ($seqNr)")
+		require(0 <= seqNr && seqNr < this.partCount) { "valid seqNr (0 <= $seqNr < ${this.partCount})" }
 		return this.partList.get(seqNr)
 	}
 
@@ -51,12 +50,12 @@ open class PartListPropertyImpl<P : Part<*>>(
 		get() = this.partList.toList()
 
 	override fun removePart(partId: Int) {
-		Invariant.requireThis(this.isWritable, "not frozen")
+		require(this.isWritable) { "writable" }
 		this.removePart(this.getPartById(partId))
 	}
 
 	override fun removePart(part: P) {
-		Invariant.requireThis(this.isWritable, "not frozen")
+		require(this.isWritable) { "writable" }
 		(part as EntityWithPropertiesSPI).fireEntityRemovedChange()
 		(part as PartSPI<*>).delete()
 		this.partList.remove(part)

@@ -6,8 +6,6 @@ import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.EnumSetProperty
 import io.dddrive.core.property.model.base.PropertyBase
-import io.dddrive.util.Invariant
-import io.dddrive.util.Invariant.MessageProvider
 import java.util.function.Consumer
 
 class EnumSetPropertyImpl<E : Enumerated>(
@@ -20,19 +18,15 @@ class EnumSetPropertyImpl<E : Enumerated>(
 	private val itemSet: MutableSet<E> = mutableSetOf()
 
 	override fun clearItems() {
-		Invariant.requireThis(this.isWritable, "not frozen")
+		require(this.isWritable) { "writable" }
 		this.itemSet.forEach(Consumer { item: E -> this.removeItem(item) })
 		this.itemSet.clear()
 		(this.entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
 	override fun addItem(item: E) {
-		Invariant.requireThis(this.isWritable, "not frozen")
-		println("addItem: $item ${item.id} ${item.enumeration} ${item.enumeration.id}")
-		Invariant.assertThis(
-			this.isValidEnum(item),
-			MessageProvider { "valid enumeration item for " + this.enumeration.id + " (" + item.id + ")" },
-		)
+		require(this.isWritable) { "writable" }
+		require(this.isValidEnum(item)) { "valid enumeration item for " + this.enumeration.id + " (" + item.id + ")" }
 		if (!this.hasItem(item)) {
 			val entity = this.entity as EntityWithPropertiesSPI
 			entity.fireValueAddedChange(this, item.id)
@@ -47,7 +41,7 @@ class EnumSetPropertyImpl<E : Enumerated>(
 	override fun hasItem(item: E): Boolean = this.itemSet.contains(item)
 
 	override fun removeItem(item: E) {
-		Invariant.requireThis(this.isWritable, "not frozen")
+		require(this.isWritable) { "writable" }
 		if (this.hasItem(item)) {
 			val entity = this.entity as EntityWithPropertiesSPI
 			entity.fireValueRemovedChange(this, item.id)

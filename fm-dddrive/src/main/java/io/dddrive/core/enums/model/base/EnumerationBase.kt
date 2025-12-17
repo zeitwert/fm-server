@@ -4,8 +4,6 @@ import io.dddrive.core.ddd.model.RepositoryDirectory.Companion.instance
 import io.dddrive.core.ddd.model.RepositoryDirectorySPI
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.Enumeration
-import io.dddrive.util.Invariant
-import io.dddrive.util.Invariant.MessageProvider
 
 abstract class EnumerationBase<E : Enumerated>(
 	enumeratedClass: Class<E>,
@@ -25,33 +23,18 @@ abstract class EnumerationBase<E : Enumerated>(
 			.toTypedArray()
 		val numOfParts = parts.size
 
-		Invariant.assertThis(
-			numOfParts > 5,
-			MessageProvider {
-				(
-					"valid enumeration class name (i), ([company/project].[area].[module].model.enums.[xyEnum]): " +
-						this.javaClass.getCanonicalName()
-				)
-			},
-		)
-		Invariant.assertThis(
-			"model" == parts[numOfParts - 3],
-			MessageProvider {
-				(
-					"valid enumeration class name (ii), must end with (model.enums.[xyEnum]): " +
-						this.javaClass.getCanonicalName()
-				)
-			},
-		)
-		Invariant.assertThis(
-			"enums" == parts[numOfParts - 2],
-			MessageProvider {
-				(
-					"valid enumeration class name (iii), must end with (model.enums.[xyEnum]): " +
-						this.javaClass.getCanonicalName()
-				)
-			},
-		)
+		check(numOfParts > 5) {
+			"valid enumeration class name (i), ([company/project].[area].[module].model.enums.[xyEnum]): " +
+				this.javaClass.getCanonicalName()
+		}
+		check("model" == parts[numOfParts - 3]) {
+			"valid enumeration class name (ii), must end with (model.enums.[xyEnum]): " +
+				this.javaClass.getCanonicalName()
+		}
+		check("enums" == parts[numOfParts - 2]) {
+			"valid enumeration class name (iii), must end with (model.enums.[xyEnum]): " +
+				this.javaClass.getCanonicalName()
+		}
 
 		this.area = parts[numOfParts - 5]
 		this.module = parts[numOfParts - 4]
@@ -63,24 +46,21 @@ abstract class EnumerationBase<E : Enumerated>(
 	override val items = _items.toList()
 
 	open fun addItem(item: E) {
-		Invariant.requireThis(EnumConfigBase.isInConfig(), MessageProvider { "in ddd configuration" })
-		Invariant.requireThis(
-			this._itemsById[item.id] == null,
-			MessageProvider { "unique item [" + item.id + "] in enumeration [" + this.id + "]" },
-		)
+		require(EnumConfigBase.isInConfig()) { "in ddd configuration" }
+		require(this._itemsById[item.id] == null) { "unique item [" + item.id + "] in enumeration [" + this.id + "]" }
 		EnumConfigBase.addEnum(this)
 		this._items.add(item)
 		this._itemsById.put(item.id, item)
 	}
 
 	open fun assignItems() {
-		Invariant.requireThis(EnumConfigBase.isInConfig(), MessageProvider { "in ddd configuration" })
+		require(EnumConfigBase.isInConfig()) { "in ddd configuration" }
 	}
 
 	override fun getItem(id: String): E {
 		val item = this._itemsById[id]
-		Invariant.assertThis(item != null, MessageProvider { "valid item [" + id + "] in enumeration [" + this.id + "]" })
-		return item as E
+		check(item != null) { "valid item [" + id + "] in enumeration [" + this.id + "]" }
+		return item
 	}
 
 	override val resourcePath: String

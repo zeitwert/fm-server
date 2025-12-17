@@ -3,7 +3,6 @@ package io.dddrive.core.property.model.base
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
-import io.dddrive.util.Invariant
 
 abstract class ReferencePropertyBase<E : Any, ID : Any>(
 	entity: EntityWithProperties,
@@ -14,11 +13,11 @@ abstract class ReferencePropertyBase<E : Any, ID : Any>(
 	val idProperty: BaseProperty<ID>
 	open var id: ID? = null
 		set(id) {
-			Invariant.requireThis(this.isWritable, "not frozen")
+			require(this.isWritable) { "not frozen" }
 			if (field == id) {
 				return
 			}
-			Invariant.assertThis(isValidId(id), "valid id [$id]")
+			require(isValidId(id)) { "valid id [$id]" }
 			val entity = this.entity as EntityWithPropertiesSPI
 			entity.doBeforeSet(this, id, field)
 			entity.fireFieldSetChange(this, id, field)

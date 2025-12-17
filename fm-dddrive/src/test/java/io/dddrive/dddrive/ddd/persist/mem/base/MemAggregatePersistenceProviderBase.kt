@@ -9,8 +9,6 @@ import io.dddrive.core.oe.model.ObjUser
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.dddrive.ddd.persist.mem.pto.AggregatePto
-import io.dddrive.util.Invariant.assertThis
-import io.dddrive.util.Invariant.requireThis
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
@@ -47,7 +45,7 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate, Pto : Aggregat
 		version: Int,
 	): Int {
 		val currentVersion = aggregates[id]?.meta?.version ?: 0
-		assertThis(version == currentVersion + 1, "correct version")
+		check(version == currentVersion + 1) { "correct version" }
 		return currentVersion + 1
 	}
 
@@ -56,11 +54,11 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate, Pto : Aggregat
 		aggregate: A,
 		id: Any,
 	) {
-		requireThis(isValidId(id), "valid id")
+		require(isValidId(id)) { "valid id" }
 		val pto = aggregates[id] as? Pto
-		assertThis(pto != null) { "aggregate found for id ($id)" }
+		check(pto != null) { "aggregate found for id ($id)" }
 
-		val nonNullPto = pto!!
+		val nonNullPto = pto
 
 		(aggregate as AggregateMeta).disableCalc()
 		try {

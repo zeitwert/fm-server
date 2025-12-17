@@ -22,7 +22,6 @@ import io.dddrive.core.property.model.impl.PartListPropertyImpl
 import io.dddrive.core.property.model.impl.PartReferencePropertyImpl
 import io.dddrive.core.property.model.impl.ReferencePropertyImpl
 import io.dddrive.core.property.model.impl.ReferenceSetPropertyImpl
-import io.dddrive.util.Invariant
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -49,7 +48,7 @@ abstract class EntityWithPropertiesBase :
 	}
 
 	fun addProperty(property: Property<*>) {
-		Invariant.requireThis(!hasProperty(property.name), "property [" + property.name + "] is unique")
+		require(!hasProperty(property.name)) { "property [" + property.name + "] is unique" }
 		propertyMap.put(property.name, property)
 	}
 

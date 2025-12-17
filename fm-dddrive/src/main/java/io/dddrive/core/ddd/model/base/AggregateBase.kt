@@ -15,7 +15,6 @@ import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.validation.model.AggregatePartValidation
 import io.dddrive.core.validation.model.enums.CodeValidationLevel
 import io.dddrive.core.validation.model.impl.AggregatePartValidationImpl
-import io.dddrive.util.Invariant
 import java.time.OffsetDateTime
 import java.util.function.Consumer
 
@@ -261,7 +260,7 @@ abstract class AggregateBase
 				beginCalc()
 				clearValidationList()
 				doCalcAll()
-				Invariant.assertThis(didCalcAll, className + ": doCalcAll was propagated")
+				check(didCalcAll) { "$className: doCalcAll was propagated" }
 			} finally {
 				endCalc()
 			}
@@ -278,7 +277,7 @@ abstract class AggregateBase
 			try {
 				beginCalc()
 				doCalcVolatile()
-				Invariant.assertThis(didCalcVolatile, className + ": doCalcAll was propagated")
+				check(didCalcVolatile) { "$className: doCalcAll was propagated" }
 			} finally {
 				endCalc()
 			}
