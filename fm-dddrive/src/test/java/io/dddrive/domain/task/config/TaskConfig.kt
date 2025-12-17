@@ -38,7 +38,7 @@ open class TaskConfig :
 	}
 
 	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType(e, "docTask", "Task Document"))
+		e.addItem(CodeAggregateType("docTask", "Task Document"))
 	}
 
 	private fun initTaskCaseDefinitions(
@@ -46,55 +46,49 @@ open class TaskConfig :
 		stageEnum: CodeCaseStageEnum,
 	) {
 		// Define a simple task workflow
-		val simpleTaskDef = CodeCaseDef(defEnum, "simpleTask", "Simple Task Workflow", "docTask")
+		val simpleTaskDef = CodeCaseDef("simpleTask", "Simple Task Workflow", "docTask")
 		defEnum.addItem(simpleTaskDef)
 
 		// Define stages for simple task workflow
-		val newStage =
-			CodeCaseStage(
-				stageEnum,
-				"task.new",
-				"simpleTask",
-				"initial",
-				"New",
-				"Task is newly created",
-				1,
-				null,
-				"CREATE",
-				listOf("START", "DONE"),
-			)
+		val newStage = CodeCaseStage(
+			"task.new",
+			"simpleTask",
+			"initial",
+			"New",
+			"Task is newly created",
+			1,
+			null,
+			"CREATE",
+			listOf("START", "DONE"),
+		)
 		stageEnum.addItem(newStage)
 		simpleTaskDef.addCaseStage(newStage)
 
-		val inProgressStage =
-			CodeCaseStage(
-				stageEnum,
-				"task.inProgress",
-				"simpleTask",
-				"active",
-				"In Progress",
-				"Task is being worked on",
-				2,
-				null,
-				"START",
-				listOf("DONE"),
-			)
+		val inProgressStage = CodeCaseStage(
+			"task.inProgress",
+			"simpleTask",
+			"active",
+			"In Progress",
+			"Task is being worked on",
+			2,
+			null,
+			"START",
+			listOf("DONE"),
+		)
 		stageEnum.addItem(inProgressStage)
 		simpleTaskDef.addCaseStage(inProgressStage)
 
-		val doneStage =
-			CodeCaseStage(
-				stageEnum,
-				"task.done",
-				"simpleTask",
-				"terminal",
-				"Done",
-				"Task has been completed",
-				3,
-				null,
-				"DONE",
-				listOf(),
-			)
+		val doneStage = CodeCaseStage(
+			"task.done",
+			"simpleTask",
+			"terminal",
+			"Done",
+			"Task has been completed",
+			3,
+			null,
+			"DONE",
+			listOf(),
+		)
 		stageEnum.addItem(doneStage)
 		simpleTaskDef.addCaseStage(doneStage)
 	}

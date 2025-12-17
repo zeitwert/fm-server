@@ -14,7 +14,7 @@ public class CodeCaseDef implements Enumerated {
 	private final String name;
 	private final CodeAggregateType docType;
 
-	public CodeCaseDef(CodeCaseDefEnum enumeration, String id, String name, String docTypeId) {
+	public CodeCaseDef(String id, String name, String docTypeId) {
 		this.id = id;
 		this.name = name;
 		docType = CodeAggregateTypeEnum.getAggregateType(docTypeId);

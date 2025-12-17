@@ -29,7 +29,7 @@ class HouseholdConfig :
 	}
 
 	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType(e, "objHousehold", "Household"))
+		e.addItem(CodeAggregateType("objHousehold", "Household"))
 	}
 
 }

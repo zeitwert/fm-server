@@ -17,7 +17,6 @@ public class CodeCaseStage implements Enumerated {
 	private final List<String> availableActions;
 
 	public CodeCaseStage(
-			CodeCaseStageEnum enumeration,
 			String id,
 			String caseDefId,
 			String caseStageTypeId,

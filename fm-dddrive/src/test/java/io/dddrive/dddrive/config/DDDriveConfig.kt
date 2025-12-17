@@ -42,8 +42,8 @@ open class DDDriveConfig : EnumConfigBase() {
 			startConfig()
 			val enum = CodeAggregateTypeEnum()
 			// Register core OE aggregate types
-			enum.addItem(CodeAggregateType(enum, "objTenant", "Tenant"))
-			enum.addItem(CodeAggregateType(enum, "objUser", "User"))
+			enum.addItem(CodeAggregateType("objTenant", "Tenant"))
+			enum.addItem(CodeAggregateType("objUser", "User"))
 			return enum
 		} finally {
 			endConfig()
