@@ -150,7 +150,7 @@ class AggregateBaseValidationPathTest {
 		// Assert
 		List<AggregatePartValidation> validations = aggregate.getValidations();
 		assertEquals(1, validations.size());
-		assertEquals(path, validations.get(0).getPath());
+		assertEquals(path, validations.getFirst().getPath());
 	}
 
 	@Test
