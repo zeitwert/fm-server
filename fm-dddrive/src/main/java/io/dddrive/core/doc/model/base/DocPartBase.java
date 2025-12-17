@@ -9,7 +9,7 @@ import io.dddrive.core.property.model.Property;
 
 public abstract class DocPartBase<D extends Doc> extends PartBase<D> implements DocPart<D> {
 
-	protected DocPartBase(D doc, PartRepository<D, ? extends Part<D>> repository, Property<?> property, Integer id) {
+	protected DocPartBase(D doc, PartRepository<D, ? extends Part<D>> repository, Property<?> property, int id) {
 		super(doc, repository, property, id);
 	}
 

@@ -1,7 +1,5 @@
 package io.dddrive.core.obj.model.base;
 
-import java.time.OffsetDateTime;
-
 import io.dddrive.core.ddd.model.PartRepository;
 import io.dddrive.core.obj.model.Obj;
 import io.dddrive.core.obj.model.ObjPartTransition;
@@ -10,13 +8,15 @@ import io.dddrive.core.property.model.BaseProperty;
 import io.dddrive.core.property.model.Property;
 import io.dddrive.core.property.model.ReferenceProperty;
 
+import java.time.OffsetDateTime;
+
 public abstract class ObjPartTransitionBase extends ObjPartBase<Obj> implements ObjPartTransition {
 
 	protected final BaseProperty<Object> tenantId = this.addBaseProperty("tenantId", Object.class);
 	protected final ReferenceProperty<ObjUser> user = this.addReferenceProperty("user", ObjUser.class);
 	protected final BaseProperty<OffsetDateTime> timestamp = this.addBaseProperty("timestamp", OffsetDateTime.class);
 
-	public ObjPartTransitionBase(Obj obj, PartRepository<Obj, ObjPartTransition> repository, Property<?> property, Integer id) {
+	public ObjPartTransitionBase(Obj obj, PartRepository<Obj, ObjPartTransition> repository, Property<?> property, int id) {
 		super(obj, repository, property, id);
 	}
 

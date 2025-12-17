@@ -8,6 +8,7 @@ import io.dddrive.core.property.path.handlers.DefaultPropertyHandler
  * Allows runtime registration and removal of handlers for extensibility.
  */
 class PathElementHandlerRegistry {
+
 	private val handlers = mutableListOf<PathElementHandler>()
 
 	/**

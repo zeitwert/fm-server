@@ -1,6 +1,7 @@
 package io.dddrive.core.property.path
 
 import io.dddrive.core.property.model.EntityWithProperties
+import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.Property
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -15,6 +16,7 @@ class PathProcessor
 	constructor(
 		handlers: List<PathElementHandler>,
 	) : PathHandlingContext {
+
 		private val handlerRegistry = PathElementHandlerRegistry()
 
 		init {
@@ -64,7 +66,7 @@ class PathProcessor
 			path: String,
 		): Property<*>? =
 			when (entity) {
-				is EntityWithProperties -> entity.getPropertyByPath<Any>(path) as? Property<*>
+				is EntityWithPropertiesSPI -> entity.getPropertyByPath<Any>(path) as? Property<*>
 				else -> throw IllegalArgumentException("Entity $entity does not support property access")
 			}
 

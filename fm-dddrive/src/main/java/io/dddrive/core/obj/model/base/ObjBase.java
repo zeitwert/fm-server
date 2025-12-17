@@ -1,7 +1,5 @@
 package io.dddrive.core.obj.model.base;
 
-import java.time.OffsetDateTime;
-
 import io.dddrive.core.ddd.model.Part;
 import io.dddrive.core.ddd.model.base.AggregateBase;
 import io.dddrive.core.obj.model.Obj;
@@ -13,6 +11,8 @@ import io.dddrive.core.property.model.BaseProperty;
 import io.dddrive.core.property.model.PartListProperty;
 import io.dddrive.core.property.model.Property;
 import io.dddrive.core.property.model.ReferenceProperty;
+
+import java.time.OffsetDateTime;
 
 public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
@@ -38,11 +38,6 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	@Override
-	public Object getTenantId() {
-		return this.tenant.getId();
-	}
-
-	@Override
 	public void doCreate(Object id, Object tenantId, Object userId, OffsetDateTime timestamp) {
 		try {
 			this.disableCalc();
@@ -58,10 +53,10 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 		super.doAfterCreate(userId, timestamp);
 		try {
 			this.disableCalc();
-			this.owner.setId(userId);
-			this.version.setValue(0);
-			this.createdByUser.setId(userId);
-			this.createdAt.setValue(timestamp);
+			this.get_owner().setId(userId);
+			this.get_version().setValue(0);
+			this.get_createdByUser().setId(userId);
+			this.get_createdAt().setValue(timestamp);
 			ObjPartTransitionBase transition = (ObjPartTransitionBase) this.transitionList.addPart(null);
 			//transition.setSeqNr(0);
 			transition.user.setId(userId);
@@ -98,9 +93,9 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 
 		try {
 			this.disableCalc();
-			this.version.setValue(this.version.getValue() + 1);
-			this.modifiedByUser.setId(userId);
-			this.modifiedAt.setValue(timestamp);
+			this.get_version().setValue(this.get_version().getValue() + 1);
+			this.get_modifiedByUser().setId(userId);
+			this.get_modifiedAt().setValue(timestamp);
 		} finally {
 			this.enableCalc();
 		}
@@ -122,7 +117,7 @@ public abstract class ObjBase extends AggregateBase implements Obj, ObjMeta {
 	}
 
 	protected void setCaption(String caption) {
-		this.caption.setValue(caption);
+		this.get_caption().setValue(caption);
 	}
 
 }

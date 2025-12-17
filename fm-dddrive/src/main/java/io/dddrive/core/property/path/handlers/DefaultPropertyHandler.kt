@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class DefaultPropertyHandler : PathElementHandler {
+
 	override fun canHandle(
 		path: String,
 		property: Property<*>?,
@@ -35,8 +36,11 @@ class DefaultPropertyHandler : PathElementHandler {
 				enumProperty.value =
 					when (value) {
 						null -> null
+
 						is io.dddrive.core.enums.model.Enumerated -> value
+
 						is String -> enumProperty.enumeration.getItem(value)
+
 						else -> throw IllegalArgumentException(
 							"Cannot set enum property to value of type ${value.javaClass.simpleName}. " +
 								"Expected Enumerated instance or String ID.",

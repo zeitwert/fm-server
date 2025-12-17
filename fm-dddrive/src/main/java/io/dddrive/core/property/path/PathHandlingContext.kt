@@ -10,6 +10,7 @@ import io.dddrive.core.property.model.Property
  * segment and then delegate the rest of the path to the processing framework.
  */
 interface PathHandlingContext {
+
 	/**
 	 * Process the remaining path on the given entity.
 	 *

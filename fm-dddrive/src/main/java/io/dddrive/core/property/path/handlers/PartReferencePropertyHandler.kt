@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class PartReferencePropertyHandler : PathElementHandler {
+
 	override fun canHandle(
 		path: String,
 		property: Property<*>?,
@@ -35,7 +36,7 @@ class PartReferencePropertyHandler : PathElementHandler {
 		if (segments.size == 1) {
 			// Direct access to the property
 			@Suppress("UNCHECKED_CAST")
-			(property as PartReferenceProperty<Part<*>>).setValue(value as Part<*>?)
+			(property as PartReferenceProperty<Part<*>>).value = value as Part<*>?
 			return PathHandlingResult.complete()
 		}
 

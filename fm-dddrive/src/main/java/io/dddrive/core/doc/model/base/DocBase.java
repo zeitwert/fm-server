@@ -1,10 +1,5 @@
 package io.dddrive.core.doc.model.base;
 
-import static io.dddrive.util.Invariant.requireThis;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import io.dddrive.core.ddd.model.Part;
 import io.dddrive.core.ddd.model.base.AggregateBase;
 import io.dddrive.core.doc.model.Doc;
@@ -14,11 +9,12 @@ import io.dddrive.core.doc.model.DocRepository;
 import io.dddrive.core.doc.model.enums.CodeCaseDef;
 import io.dddrive.core.doc.model.enums.CodeCaseStage;
 import io.dddrive.core.oe.model.ObjUser;
-import io.dddrive.core.property.model.BaseProperty;
-import io.dddrive.core.property.model.EnumProperty;
-import io.dddrive.core.property.model.PartListProperty;
-import io.dddrive.core.property.model.Property;
-import io.dddrive.core.property.model.ReferenceProperty;
+import io.dddrive.core.property.model.*;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static io.dddrive.util.Invariant.requireThis;
 
 public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
@@ -48,11 +44,6 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	@Override
-	public Object getTenantId() {
-		return this.tenant.getId();
-	}
-
-	@Override
 	public void doCreate(Object id, Object tenantId, Object userId, OffsetDateTime timestamp) {
 		try {
 			this.disableCalc();
@@ -68,10 +59,10 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		super.doAfterCreate(userId, timestamp);
 		try {
 			this.disableCalc();
-			this.owner.setId(userId);
-			this.version.setValue(0);
-			this.createdByUser.setId(userId);
-			this.createdAt.setValue(timestamp);
+			this.get_owner().setId(userId);
+			this.get_version().setValue(0);
+			this.get_createdByUser().setId(userId);
+			this.get_createdAt().setValue(timestamp);
 		} finally {
 			this.enableCalc();
 		}
@@ -105,18 +96,18 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 
 		DocPartTransitionBase transition = (DocPartTransitionBase) this.transitionList.addPart(null);
 		//transition.setSeqNr(this.transitionList.getPartCount() - 1);
-		transition.user.setId(userId);
-		transition.timestamp.setValue(timestamp);
-		transition.oldCaseStage.setValue(this.oldCaseStage);
-		transition.newCaseStage.setValue(this.getCaseStage());
+		transition._user.setId(userId);
+		transition._timestamp.setValue(timestamp);
+		transition._oldCaseStage.setValue(this.oldCaseStage);
+		transition._newCaseStage.setValue(this.getCaseStage());
 
 		super.doBeforeStore(userId, timestamp);
 
 		try {
 			this.disableCalc();
-			this.version.setValue(this.version.getValue() + 1);
-			this.modifiedByUser.setId(userId);
-			this.modifiedAt.setValue(timestamp);
+			this.get_version().setValue(this.get_version().getValue() + 1);
+			this.get_modifiedByUser().setId(userId);
+			this.get_modifiedAt().setValue(timestamp);
 		} finally {
 			this.enableCalc();
 		}
@@ -146,9 +137,9 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 		if (this.getCaseStage() == null) { // initial transition
 			DocPartTransitionBase transition = (DocPartTransitionBase) this.transitionList.addPart(null);
 			//transition.setSeqNr(0);
-			transition.user.setId(userId);
-			transition.timestamp.setValue(timestamp);
-			transition.newCaseStage.setValue(caseStage);
+			transition._user.setId(userId);
+			transition._timestamp.setValue(timestamp);
+			transition._newCaseStage.setValue(caseStage);
 			this.oldCaseStage = caseStage;
 		}
 		this.caseStage.setValue(caseStage);
@@ -169,7 +160,7 @@ public abstract class DocBase extends AggregateBase implements Doc, DocMeta {
 	}
 
 	protected void setCaption(String caption) {
-		this.caption.setValue(caption);
+		this.get_caption().setValue(caption);
 	}
 
 //	@Override

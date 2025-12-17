@@ -36,7 +36,7 @@ class ReferencePropertyHandler : PathElementHandler {
 		if (segments.size == 1) {
 			// Direct access to the property
 			@Suppress("UNCHECKED_CAST")
-			(property as ReferenceProperty<Aggregate>).setValue(value as Aggregate?)
+			(property as ReferenceProperty<Aggregate>).value = value as Aggregate?
 			return PathHandlingResult.complete()
 		}
 

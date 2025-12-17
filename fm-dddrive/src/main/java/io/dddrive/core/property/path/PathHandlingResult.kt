@@ -18,7 +18,9 @@ data class PathHandlingResult(
 	val continueWithPath: String? = null,
 	val continueWithEntity: Any? = null,
 ) {
+
 	companion object {
+
 		/**
 		 * Creates a result indicating processing is complete.
 		 *

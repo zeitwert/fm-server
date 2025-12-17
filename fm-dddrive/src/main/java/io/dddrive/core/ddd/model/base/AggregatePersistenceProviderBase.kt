@@ -9,7 +9,7 @@ abstract class AggregatePersistenceProviderBase<A : Aggregate>(
 	intfClass: Class<A>,
 ) : AggregatePersistenceProvider<A> {
 
-	val directory: RepositoryDirectory get() = RepositoryDirectory.getInstance()
+	val directory: RepositoryDirectory get() = RepositoryDirectory.instance
 
 	init {
 		(directory as RepositoryDirectorySPI).addPersistenceProvider(intfClass, this)

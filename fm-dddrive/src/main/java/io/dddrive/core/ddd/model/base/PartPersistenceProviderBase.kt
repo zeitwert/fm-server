@@ -9,7 +9,7 @@ abstract class PartPersistenceProviderBase<P : Part<*>>(
 	intfClass: Class<P>,
 ) : PartPersistenceProvider<P> {
 
-	val directory: RepositoryDirectory get() = RepositoryDirectory.getInstance()
+	val directory: RepositoryDirectory get() = RepositoryDirectory.instance
 
 	init {
 		(directory as RepositoryDirectorySPI).addPartPersistenceProvider(intfClass, this)

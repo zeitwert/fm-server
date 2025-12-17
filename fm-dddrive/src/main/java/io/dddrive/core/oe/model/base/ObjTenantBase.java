@@ -1,11 +1,11 @@
 package io.dddrive.core.oe.model.base;
 
-import java.time.OffsetDateTime;
-
 import io.dddrive.core.obj.model.ObjRepository;
 import io.dddrive.core.obj.model.base.ObjBase;
 import io.dddrive.core.oe.model.ObjTenant;
 import io.dddrive.core.property.model.BaseProperty;
+
+import java.time.OffsetDateTime;
 
 public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 
@@ -29,7 +29,7 @@ public abstract class ObjTenantBase extends ObjBase implements ObjTenant {
 	@Override
 	public void doAfterCreate(Object userId, OffsetDateTime timestamp) {
 		super.doAfterCreate(userId, timestamp);
-		this.tenant.setId(this.getId());
+		this.get_tenant().setId(this.getId());
 	}
 
 	@Override
