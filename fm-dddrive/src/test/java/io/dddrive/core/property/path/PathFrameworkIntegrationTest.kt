@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test
  * - End-to-end functionality works for real-world scenarios
  */
 class PathFrameworkIntegrationTest {
+
 	private lateinit var pathProcessor: PathProcessor
 	private lateinit var rootEntity: TestEntity
 
@@ -70,7 +71,7 @@ class PathFrameworkIntegrationTest {
 	fun `direct enum property access works`() {
 		val result = pathProcessor.getValueByPath("status", rootEntity)
 		assertNotNull(result)
-		assertEquals("active", (result as TestEnum).getId())
+		assertEquals("active", (result as TestEnum).id)
 	}
 
 	@Test

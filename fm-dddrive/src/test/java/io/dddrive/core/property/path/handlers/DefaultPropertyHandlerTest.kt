@@ -2,7 +2,11 @@ package io.dddrive.core.property.path.handlers
 
 import io.dddrive.core.property.path.PathHandlingResult
 import io.dddrive.core.property.path.PathTestUtils
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -10,6 +14,7 @@ import org.junit.jupiter.api.Test
  * Unit tests for DefaultPropertyHandler
  */
 class DefaultPropertyHandlerTest {
+
 	private lateinit var handler: DefaultPropertyHandler
 	private lateinit var mockContext: MockPathHandlingContext
 
@@ -135,7 +140,7 @@ class DefaultPropertyHandlerTest {
 		val result = handler.handleSet("enumProp", "value2", enumProperty, "testEntity", mockContext)
 
 		assertTrue(result.isComplete)
-		assertEquals("value2", enumProperty.value?.getId())
+		assertEquals("value2", enumProperty.value?.id)
 	}
 
 	@Test
@@ -252,6 +257,7 @@ class DefaultPropertyHandlerTest {
 	}
 
 	private class MockPathHandlingContext : io.dddrive.core.property.path.PathHandlingContext {
+
 		override fun processRemainingPath(
 			path: String,
 			entity: Any,

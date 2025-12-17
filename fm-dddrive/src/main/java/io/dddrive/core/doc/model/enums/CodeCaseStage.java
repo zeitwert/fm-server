@@ -1,12 +1,13 @@
-
 package io.dddrive.core.doc.model.enums;
+
+import io.dddrive.core.enums.model.Enumerated;
 
 import java.util.List;
 
-import io.dddrive.core.enums.model.base.EnumeratedBase;
+public class CodeCaseStage implements Enumerated {
 
-public class CodeCaseStage extends EnumeratedBase {
-
+	private final String id;
+	private final String name;
 	private final String caseDefId;
 	private final Integer seqNr;
 	private final String caseStageTypeId;
@@ -26,7 +27,8 @@ public class CodeCaseStage extends EnumeratedBase {
 			String abstractCaseStageId,
 			String action,
 			List<String> availableActions) {
-		super(enumeration, id, name);
+		this.id = id;
+		this.name = name;
 		this.caseDefId = caseDefId;
 		this.seqNr = seqNr;
 		this.description = description;
@@ -34,6 +36,21 @@ public class CodeCaseStage extends EnumeratedBase {
 		this.abstractCaseStageId = abstractCaseStageId;
 		this.action = action;
 		this.availableActions = availableActions;
+	}
+
+	@Override
+	public CodeCaseStageEnum getEnumeration() {
+		return CodeCaseStageEnum.getInstance();
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	public CodeCaseDef getCaseDef() {

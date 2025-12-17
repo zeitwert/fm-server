@@ -33,7 +33,7 @@ object PathTestUtils {
 	 */
 	fun createMockEnumeration(): Enumeration<TestEnum> =
 		object : Enumeration<TestEnum> {
-			private val items =
+			override val items =
 				listOf(
 					TestEnum("active", "Active"),
 					TestEnum("inactive", "Inactive"),
@@ -44,17 +44,15 @@ object PathTestUtils {
 					TestEnum("value2", "Value 2"),
 				)
 
-			override fun getArea(): String = "test"
+			override val area = "test"
 
-			override fun getModule(): String = "test"
+			override val module = "test"
 
-			override fun getId(): String = "TestEnumeration"
+			override val id = "TestEnumeration"
 
-			override fun getResourcePath(): String = "test/enum"
+			override val resourcePath = "test/enum"
 
-			override fun getItem(id: String): TestEnum? = items.find { it.getId() == id }
-
-			override fun getItems(): List<TestEnum> = items
+			override fun getItem(id: String): TestEnum = items.find { it.id == id }!!
 		}
 
 	/**
@@ -91,9 +89,9 @@ object PathTestUtils {
 		object : EnumProperty<TestEnum> {
 			override var value: TestEnum? = initialValue
 
-			override var id: String? = initialValue?.getId()
+			override var id: String? = initialValue?.id
 
-			override val idProperty: BaseProperty<String> = createBaseProperty(String::class.java, initialValue?.getId())
+			override val idProperty: BaseProperty<String> = createBaseProperty(String::class.java, initialValue?.id)
 
 			override val enumeration: Enumeration<TestEnum> = enumeration
 
@@ -237,15 +235,14 @@ object PathTestUtils {
  * Test enumerated value
  */
 data class TestEnum(
-	private val id: String,
-	private val name: String,
+	override val id: String,
+	private val itemName: String,
 ) : Enumerated {
 
-	override fun getId(): String = id
+	override val enumeration: Enumeration<out Enumerated> get() = PathTestUtils.createMockEnumeration()
 
-	override fun getName(): String = name
+	override fun getName(): String = itemName
 
-	override fun getEnumeration(): Enumeration<out Enumerated> = PathTestUtils.createMockEnumeration()
 }
 
 /**

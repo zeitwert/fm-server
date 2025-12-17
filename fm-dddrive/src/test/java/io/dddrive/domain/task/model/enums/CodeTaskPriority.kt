@@ -4,7 +4,7 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeTaskPriority(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
 
@@ -14,11 +14,9 @@ enum class CodeTaskPriority(
 	URGENT("urgent", "Urgent"),
 	;
 
-	override fun getId() = id
+	override val enumeration = Enumeration
 
 	override fun getName() = itemName
-
-	override fun getEnumeration() = Enumeration
 
 	companion object Enumeration : EnumerationBase<CodeTaskPriority>(CodeTaskPriority::class.java) {
 		init {

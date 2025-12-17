@@ -10,16 +10,20 @@ public class CodeValidationLevelEnum extends EnumerationBase<CodeValidationLevel
 
 	private static CodeValidationLevelEnum INSTANCE;
 
-	public static CodeValidationLevel getValidationLevel(String validationLevelId) {
-		return INSTANCE.getItem(validationLevelId);
-	}
-
 	public CodeValidationLevelEnum() {
 		super(CodeValidationLevel.class);
 		INSTANCE = this;
 		this.addItem(new CodeValidationLevel(this, "info", "Info"));
 		this.addItem(new CodeValidationLevel(this, "warning", "Warning"));
 		this.addItem(new CodeValidationLevel(this, "error", "Error"));
+	}
+
+	public static CodeValidationLevelEnum getInstance() {
+		return INSTANCE;
+	}
+
+	public static CodeValidationLevel getValidationLevel(String validationLevelId) {
+		return INSTANCE.getItem(validationLevelId);
 	}
 
 	@Override

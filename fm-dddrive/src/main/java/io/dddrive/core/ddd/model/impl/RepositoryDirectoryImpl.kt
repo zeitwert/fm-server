@@ -40,10 +40,10 @@ class RepositoryDirectoryImpl :
 
 	override fun <E : Enumerated> addEnumeration(
 		enumClass: Class<E>,
-		e: Enumeration<E>,
+		enumeration: Enumeration<E>,
 	) {
-		this.enumsById.put(e.getModule() + "." + e.getId(), e)
-		this.enumsByEnumeratedClass.put(enumClass, e)
+		this.enumsById.put(enumeration.module + "." + enumeration.id, enumeration)
+		this.enumsByEnumeratedClass.put(enumClass, enumeration)
 	}
 
 	@Suppress("UNCHECKED_CAST")
@@ -53,7 +53,6 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Aggregate>,
 		repo: AggregateRepository<out Aggregate>,
 	) {
-		println("addRepository $intfClass")
 		Invariant.assertThis(this.repoByIntf[intfClass] == null, "unique repo for class $intfClass")
 		this.repoByIntf.put(intfClass, repo)
 	}
@@ -65,7 +64,6 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Part<A>>,
 		repo: PartRepository<A, out Part<A>>,
 	) {
-		println("addPartRepository $intfClass")
 		// assertThis(this.getPartRepository(intfClass) == null, "unique repo for class " + intfClass);
 		this.partRepoByIntf.put(intfClass, repo)
 	}
@@ -81,7 +79,6 @@ class RepositoryDirectoryImpl :
 			this.appByIntf[intfClass] == null,
 			"unique persistence provider for class $intfClass",
 		)
-		println("addPersistenceProvider $intfClass")
 		this.appByIntf.put(intfClass, app)
 	}
 
@@ -96,7 +93,6 @@ class RepositoryDirectoryImpl :
 			this.pppByIntf[intfClass] == null,
 			"unique persistence provider for class $intfClass",
 		)
-		println("addPartPersistenceProvider $intfClass")
 		this.pppByIntf.put(intfClass, ppp)
 	}
 

@@ -2,12 +2,30 @@ package io.dddrive.core.ddd.model.enums;
 
 import io.dddrive.core.enums.model.Enumerated;
 import io.dddrive.core.enums.model.Enumeration;
-import io.dddrive.core.enums.model.base.EnumeratedBase;
 
-public final class CodePartListType extends EnumeratedBase {
+public final class CodePartListType implements Enumerated {
+
+	private final String id;
+	private final String name;
 
 	public CodePartListType(Enumeration<? extends Enumerated> enumeration, String id, String name) {
-		super(enumeration, id, name);
+		this.id = id;
+		this.name = name;
+	}
+
+	@Override
+	public CodePartListTypeEnum getEnumeration() {
+		return CodePartListTypeEnum.getInstance();
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 }

@@ -199,7 +199,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 			this.doAfterStore(aggregate)
 			Invariant.assertThis(this.didAfterStore, this.baseClassName + ": doAfterStore was propagated")
 		} catch (e: Exception) {
-			throw RuntimeException(this.baseClassName + ": could not store aggregate", e)
+			throw RuntimeException("$baseClassName: could not store aggregate (${e.message})", e)
 		}
 	}
 

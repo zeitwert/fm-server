@@ -115,12 +115,12 @@ class TaskMemTest : PropertyChangeListener {
 		assertTrue(task.isFrozen, "Task should be frozen initially")
 
 		// Set the case definition - this will unfreeze the task
-		task.setCaseDef(simpleTaskDef)
+		task.meta.setCaseDef(simpleTaskDef)
 		assertFalse(task.isFrozen, "Task should be unfrozen after setting caseDef")
 		assertEquals(simpleTaskDef, task.meta.caseDef, "CaseDef should be set")
 
 		// Set initial case stage
-		task.setCaseStage(taskNewStage, user.id as Int, now)
+		task.meta.setCaseStage(taskNewStage, user.id as Int, now)
 		assertEquals(taskNewStage, task.meta.caseStage, "CaseStage should be 'New'")
 		assertTrue(task.meta.isInWork, "Task should be in work (not terminal)")
 
@@ -143,7 +143,7 @@ class TaskMemTest : PropertyChangeListener {
 		assertEquals(false, task.private)
 		assertEquals(dueDate, task.dueAt)
 		assertEquals(remindDate, task.remindAt)
-		assertEquals(user1.id, task.assignee.id)
+		assertEquals(user1.id, task.assignee?.id)
 		assertEquals("Implement new feature with comments", task.caption, "Caption should be derived from subject")
 
 		// Check initial transition
@@ -199,7 +199,7 @@ class TaskMemTest : PropertyChangeListener {
 		assertEquals(CodeTaskPriority.HIGH, loadedTask.priority)
 		assertEquals(simpleTaskDef, loadedTask.meta.caseDef)
 		assertEquals(taskNewStage, loadedTask.meta.caseStage)
-		assertEquals(user1.id, loadedTask.assignee.id)
+		assertEquals(user1.id, loadedTask.assignee?.id)
 
 		// Verify comments persisted
 		assertEquals(2, loadedTask.commentList.size, "Loaded task should have 2 comments")
@@ -222,7 +222,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Move task to "In Progress"
 		val progressTime = now.plusMinutes(10)
-		mutableTask.setCaseStage(taskInProgressStage, user1.id as Int, progressTime)
+		mutableTask.meta.setCaseStage(taskInProgressStage, user1.id as Int, progressTime)
 		assertEquals(taskInProgressStage, mutableTask.meta.caseStage)
 
 		// Add a comment after stage change
@@ -286,7 +286,7 @@ class TaskMemTest : PropertyChangeListener {
 		// Complete the task
 		val completeTask = taskRepo.load(taskId)
 		val completeTime = now.plusMinutes(30)
-		completeTask.setCaseStage(taskDoneStage, user1.id as Int, completeTime)
+		completeTask.meta.setCaseStage(taskDoneStage, user1.id as Int, completeTime)
 		assertEquals(taskDoneStage, completeTask.meta.caseStage)
 		assertFalse(completeTask.meta.isInWork, "Done task should not be in work (terminal stage)")
 
@@ -307,8 +307,8 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Create task with minimal data
 		val task = taskRepo.create(tenant.id, user.id, now)
-		task.setCaseDef(simpleTaskDef)
-		task.setCaseStage(taskNewStage, user.id as Int, now)
+		task.meta.setCaseDef(simpleTaskDef)
+		task.meta.setCaseStage(taskNewStage, user.id as Int, now)
 		task.subject = "Minimal task, no comments"
 		// Not setting: content, priority, isPrivate, dueAt, remindAt, assignee
 
@@ -336,8 +336,8 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Create multiple tasks
 		val task1 = taskRepo.create(tenant.id, user.id, now)
-		task1.setCaseDef(simpleTaskDef)
-		task1.setCaseStage(taskNewStage, user.id as Int, now)
+		task1.meta.setCaseDef(simpleTaskDef)
+		task1.meta.setCaseStage(taskNewStage, user.id as Int, now)
 		task1.subject = "Task 1"
 		task1.priority = CodeTaskPriority.LOW
 		val comment = task1.addComment()
@@ -345,8 +345,8 @@ class TaskMemTest : PropertyChangeListener {
 		taskRepo.store(task1, user.id, now)
 
 		val task2 = taskRepo.create(tenant.id, user.id, now.plusMinutes(1))
-		task2.setCaseDef(simpleTaskDef)
-		task2.setCaseStage(taskInProgressStage, user.id as Int, now.plusMinutes(1))
+		task2.meta.setCaseDef(simpleTaskDef)
+		task2.meta.setCaseStage(taskInProgressStage, user.id as Int, now.plusMinutes(1))
 		task2.subject = "Task 2"
 		task2.priority = CodeTaskPriority.URGENT
 		task2.assignee = user1
@@ -378,7 +378,7 @@ class TaskMemTest : PropertyChangeListener {
 	@Test
 	fun testSetValueByPath() {
 		val task = taskRepo.create(tenant.id, user.id, OffsetDateTime.now())
-		task.setCaseDef(simpleTaskDef)
+		task.meta.setCaseDef(simpleTaskDef)
 
 		// Set simple property
 		val newSubject = "Updated Subject via Path"
@@ -387,7 +387,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Set reference property
 		task.setValueByPath("assignee.id", user1.id)
-		assertEquals(user1.id, task.assignee.id)
+		assertEquals(user1.id, task.assignee?.id)
 
 		// Set property on a part in a list
 		val comment = task.addComment()

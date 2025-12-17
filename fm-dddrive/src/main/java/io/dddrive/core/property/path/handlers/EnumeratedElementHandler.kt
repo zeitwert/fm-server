@@ -17,7 +17,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class EnumeratedElementHandler : PathElementHandler {
+
 	private companion object {
+
 		private const val ID_SUFFIX = ".id"
 	}
 
@@ -88,7 +90,7 @@ class EnumeratedElementHandler : PathElementHandler {
 		}
 
 		val enumValue = baseProperty.value
-		return PathHandlingResult.complete(enumValue?.getId())
+		return PathHandlingResult.complete(enumValue?.id)
 	}
 
 	private fun getBaseProperty(

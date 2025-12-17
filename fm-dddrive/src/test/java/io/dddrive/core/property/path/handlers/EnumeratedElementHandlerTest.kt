@@ -3,7 +3,11 @@ package io.dddrive.core.property.path.handlers
 import io.dddrive.core.property.path.PathHandlingResult
 import io.dddrive.core.property.path.PathTestUtils
 import io.dddrive.core.property.path.TestEntity
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -14,6 +18,7 @@ import org.junit.jupiter.api.Test
  * and verify it correctly rejects complex paths that should be handled by other handlers.
  */
 class EnumeratedElementHandlerTest {
+
 	private lateinit var handler: EnumeratedElementHandler
 	private lateinit var mockContext: MockPathHandlingContext
 	private lateinit var testEntity: TestEntity
@@ -64,7 +69,7 @@ class EnumeratedElementHandlerTest {
 		val result = handler.handleSet("status.id", "value1", enumProperty, testEntity, mockContext)
 
 		assertTrue(result.isComplete)
-		assertEquals("value1", enumProperty.value?.getId())
+		assertEquals("value1", enumProperty.value?.id)
 	}
 
 	@Test
@@ -160,6 +165,7 @@ class EnumeratedElementHandlerTest {
 	 * Returns empty results since this handler doesn't delegate to other handlers.
 	 */
 	private class MockPathHandlingContext : io.dddrive.core.property.path.PathHandlingContext {
+
 		override fun processRemainingPath(
 			path: String,
 			entity: Any,

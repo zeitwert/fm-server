@@ -28,6 +28,7 @@ class EnumSetPropertyImpl<E : Enumerated>(
 
 	override fun addItem(item: E) {
 		Invariant.requireThis(this.isWritable, "not frozen")
+		println("addItem: $item ${item.id} ${item.enumeration} ${item.enumeration.id}")
 		Invariant.assertThis(
 			this.isValidEnum(item),
 			MessageProvider { "valid enumeration item for " + this.enumeration.id + " (" + item.id + ")" },
@@ -49,17 +50,17 @@ class EnumSetPropertyImpl<E : Enumerated>(
 		Invariant.requireThis(this.isWritable, "not frozen")
 		if (this.hasItem(item)) {
 			val entity = this.entity as EntityWithPropertiesSPI
-			entity.fireValueRemovedChange(this, item.getId())
+			entity.fireValueRemovedChange(this, item.id)
 			this.itemSet.remove(item)
 			entity.doAfterRemove(this)
 		}
 	}
 
 	private fun isValidEnum(value: E): Boolean {
-		if (value.getEnumeration() != this.enumeration) {
+		if (value.enumeration != this.enumeration) {
 			return false
 		}
-		return value == this.enumeration.getItem(value.getId())
+		return value == this.enumeration.getItem(value.id)
 	}
 
 }

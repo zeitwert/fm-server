@@ -4,7 +4,7 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeLabel(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
 
@@ -13,11 +13,9 @@ enum class CodeLabel(
 	C("c", "Label C"),
 	;
 
-	override fun getId() = id
+	override val enumeration get() = Enumeration
 
 	override fun getName() = itemName
-
-	override fun getEnumeration() = Enumeration
 
 	companion object Enumeration : EnumerationBase<CodeLabel>(CodeLabel::class.java) {
 		init {
