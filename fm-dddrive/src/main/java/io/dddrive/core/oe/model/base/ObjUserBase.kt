@@ -3,7 +3,6 @@ package io.dddrive.core.oe.model.base
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjBase
 import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.BaseProperty
 
 abstract class ObjUserBase(
 	repository: ObjRepository<ObjUser>,
@@ -11,12 +10,10 @@ abstract class ObjUserBase(
 ) : ObjBase(repository, isNew),
 	ObjUser {
 
-	// @formatter:off
-	protected val _email: BaseProperty<String> = this.addBaseProperty<String>("email", String::class.java)
-	protected val _password: BaseProperty<String> = this.addBaseProperty<String>("password", String::class.java)
-	protected val _name: BaseProperty<String> = this.addBaseProperty<String>("name", String::class.java)
-	protected val _description: BaseProperty<String> = this.addBaseProperty<String>("description", String::class.java)
-	// 	@Override
+	protected val _email = this.addBaseProperty("email", String::class.java)
+	protected val _password = this.addBaseProperty("password", String::class.java)
+	protected val _name = this.addBaseProperty("name", String::class.java)
+	protected val _description = this.addBaseProperty("description", String::class.java)
 
 	// 	public void doCalcSearch() {
 	// 		super.doCalcSearch();

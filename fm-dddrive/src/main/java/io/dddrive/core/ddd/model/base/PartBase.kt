@@ -6,7 +6,6 @@ import io.dddrive.core.ddd.model.PartMeta
 import io.dddrive.core.ddd.model.PartRepository
 import io.dddrive.core.ddd.model.PartSPI
 import io.dddrive.core.ddd.model.RepositoryDirectory
-import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
@@ -22,7 +21,7 @@ abstract class PartBase<A : Aggregate>(
 	PartMeta<A>,
 	PartSPI<A> {
 
-	protected val _id: BaseProperty<Int> = this.addBaseProperty<Int>("id", Int::class.java)
+	protected val _id = this.addBaseProperty("id", Int::class.java)
 
 	override val isNew: Boolean = !aggregate.meta.isInLoad
 	private var isCalcDisabled = 0

@@ -7,9 +7,6 @@ import io.dddrive.core.obj.model.ObjMeta
 import io.dddrive.core.obj.model.ObjPartTransition
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.AggregateReferenceProperty
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
 import java.time.OffsetDateTime
 
@@ -20,12 +17,10 @@ abstract class ObjBase(
 	Obj,
 	ObjMeta {
 
-	// @formatter:off
-	protected val _objTypeId: BaseProperty<String> = this.addBaseProperty<String>("objTypeId", String::class.java)
-	protected val _closedByUser: AggregateReferenceProperty<ObjUser> = this.addReferenceProperty<ObjUser>("closedByUser", ObjUser::class.java)
-	protected val _closedAt: BaseProperty<OffsetDateTime> = this.addBaseProperty<OffsetDateTime>("closedAt", OffsetDateTime::class.java)
-	protected val _transitionList: PartListProperty<ObjPartTransition> = this.addPartListProperty<ObjPartTransition>("transitionList", ObjPartTransition::class.java)
-	// @formatter:on
+	protected val _objTypeId = this.addBaseProperty("objTypeId", String::class.java)
+	protected val _closedByUser = this.addReferenceProperty("closedByUser", ObjUser::class.java)
+	protected val _closedAt = this.addBaseProperty("closedAt", OffsetDateTime::class.java)
+	protected val _transitionList = this.addPartListProperty("transitionList", ObjPartTransition::class.java)
 
 	override val repository: ObjRepository<*>
 		get() = super.repository as ObjRepository<*>

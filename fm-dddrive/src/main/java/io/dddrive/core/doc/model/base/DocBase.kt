@@ -9,9 +9,6 @@ import io.dddrive.core.doc.model.DocRepository
 import io.dddrive.core.doc.model.enums.CodeCaseDef
 import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.AggregateReferenceProperty
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.Property
 import java.time.OffsetDateTime
 
@@ -22,14 +19,12 @@ abstract class DocBase protected constructor(
 	Doc,
 	DocMeta {
 
-	// @formatter:off
-	protected val _docTypeId: BaseProperty<String> = this.addBaseProperty<String>("docTypeId", String::class.java)
-	protected val _caseDef: EnumProperty<CodeCaseDef> = this.addEnumProperty<CodeCaseDef>("caseDef", CodeCaseDef::class.java)
-	protected val _caseStage: EnumProperty<CodeCaseStage> = this.addEnumProperty<CodeCaseStage>("caseStage", CodeCaseStage::class.java)
-	protected val _isInWork: BaseProperty<Boolean> = this.addBaseProperty<Boolean>("isInWork", Boolean::class.java)
-	protected val _assignee: AggregateReferenceProperty<ObjUser> = this.addReferenceProperty<ObjUser>("assignee", ObjUser::class.java)
-	private val _transitionList = this.addPartListProperty<DocPartTransition>("transitionList", DocPartTransition::class.java)
-	// @formatter:on
+	protected val _docTypeId = this.addBaseProperty("docTypeId", String::class.java)
+	protected val _caseDef = this.addEnumProperty("caseDef", CodeCaseDef::class.java)
+	protected val _caseStage = this.addEnumProperty("caseStage", CodeCaseStage::class.java)
+	protected val _isInWork = this.addBaseProperty("isInWork", Boolean::class.java)
+	protected val _assignee = this.addReferenceProperty("assignee", ObjUser::class.java)
+	private val _transitionList = this.addPartListProperty("transitionList", DocPartTransition::class.java)
 
 	private var oldCaseStage: CodeCaseStage? = null
 

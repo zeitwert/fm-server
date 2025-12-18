@@ -15,11 +15,9 @@ abstract class ObjPartTransitionBase(
 ) : ObjPartBase<Obj>(obj, repository, property, id),
 	ObjPartTransition {
 
-	// @formatter:off
 	protected val _tenantId = this.addBaseProperty("tenantId", Any::class.java)
 	protected val _user = this.addReferenceProperty("user", ObjUser::class.java)
 	protected val _timestamp = this.addBaseProperty("timestamp", OffsetDateTime::class.java)
-	// @formatter:on
 
 	@Suppress("UNCHECKED_CAST")
 	override val repository: PartRepository<Obj, ObjPartTransition>

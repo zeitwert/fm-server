@@ -7,8 +7,6 @@ import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.AggregateReferenceProperty
-import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.Property
 import io.dddrive.core.property.model.PropertyChangeListener
@@ -28,18 +26,16 @@ abstract class AggregateBase
 		AggregateMeta,
 		AggregateSPI {
 
-		// @formatter:off
-		protected val _id: BaseProperty<Any> = addBaseProperty<Any>("id", Any::class.java)
-		protected val _maxPartId: BaseProperty<Int> = addBaseProperty<Int>("maxPartId", Int::class.java)
-		protected val _version: BaseProperty<Int> = addBaseProperty<Int>("version", Int::class.java)
-		protected val _tenant: AggregateReferenceProperty<ObjTenant> = addReferenceProperty<ObjTenant>("tenant", ObjTenant::class.java)
-		protected val _owner: AggregateReferenceProperty<ObjUser> = addReferenceProperty<ObjUser>("owner", ObjUser::class.java)
-		protected val _caption: BaseProperty<String> = addBaseProperty<String>("caption", String::class.java)
-		protected val _createdByUser: AggregateReferenceProperty<ObjUser> = addReferenceProperty<ObjUser>("createdByUser", ObjUser::class.java)
-		protected val _createdAt: BaseProperty<OffsetDateTime> = addBaseProperty<OffsetDateTime>("createdAt", OffsetDateTime::class.java)
-		protected val _modifiedByUser: AggregateReferenceProperty<ObjUser> = addReferenceProperty<ObjUser>("modifiedByUser", ObjUser::class.java)
-		protected val _modifiedAt: BaseProperty<OffsetDateTime> = addBaseProperty<OffsetDateTime>("modifiedAt", OffsetDateTime::class.java)
-		// @formatter:on
+		protected val _id = addBaseProperty("id", Any::class.java)
+		protected val _maxPartId = addBaseProperty("maxPartId", Int::class.java)
+		protected val _version = addBaseProperty("version", Int::class.java)
+		protected val _tenant = addReferenceProperty("tenant", ObjTenant::class.java)
+		protected val _owner = addReferenceProperty("owner", ObjUser::class.java)
+		protected val _caption = addBaseProperty("caption", String::class.java)
+		protected val _createdByUser = addReferenceProperty("createdByUser", ObjUser::class.java)
+		protected val _createdAt = addBaseProperty("createdAt", OffsetDateTime::class.java)
+		protected val _modifiedByUser = addReferenceProperty("modifiedByUser", ObjUser::class.java)
+		protected val _modifiedAt = addBaseProperty("modifiedAt", OffsetDateTime::class.java)
 
 		private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
 		private val _validations: MutableList<AggregatePartValidation> = mutableListOf()

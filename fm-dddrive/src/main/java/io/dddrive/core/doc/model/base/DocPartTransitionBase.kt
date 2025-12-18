@@ -16,13 +16,11 @@ abstract class DocPartTransitionBase(
 ) : DocPartBase<Doc>(doc, repository, property, id),
 	DocPartTransition {
 
-	// @formatter:off
 	protected val _tenantId = this.addBaseProperty("tenantId", Any::class.java)
 	protected val _user = this.addReferenceProperty("user", ObjUser::class.java)
 	protected val _timestamp = this.addBaseProperty("timestamp", OffsetDateTime::class.java)
 	protected val _oldCaseStage = this.addEnumProperty("oldCaseStage", CodeCaseStage::class.java)
 	protected val _newCaseStage = this.addEnumProperty("newCaseStage", CodeCaseStage::class.java)
-	// @formatter:on
 
 	@Suppress("UNCHECKED_CAST")
 	override val repository: PartRepository<Doc, DocPartTransition>
