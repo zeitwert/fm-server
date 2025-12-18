@@ -16,9 +16,4 @@ interface EntityWithProperties {
 
 	fun getPart(partId: Int): Part<*>
 
-	fun <T> setValueByPath(
-		relativePath: String,
-		value: T?,
-	)
-
 }

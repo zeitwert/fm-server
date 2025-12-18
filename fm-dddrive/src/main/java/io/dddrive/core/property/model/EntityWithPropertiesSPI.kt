@@ -67,6 +67,4 @@ interface EntityWithPropertiesSPI {
 
 	fun doAfterRemove(property: Property<*>)
 
-	fun <T> getPropertyByPath(relativePath: String): Property<T>
-
 }

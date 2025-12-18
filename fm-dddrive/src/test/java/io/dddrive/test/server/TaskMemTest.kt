@@ -11,6 +11,7 @@ import io.dddrive.domain.oe.model.ObjTenantRepository
 import io.dddrive.domain.oe.model.ObjUserRepository
 import io.dddrive.domain.task.model.DocTaskRepository
 import io.dddrive.domain.task.model.enums.CodeTaskPriority
+import io.dddrive.path.setValueByPath
 import io.dddrive.test.server.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -385,8 +386,8 @@ class TaskMemTest : PropertyChangeListener {
 		task.setValueByPath("subject", newSubject)
 		assertEquals(newSubject, task.subject)
 
-		// Set reference property
-		task.setValueByPath("assignee.id", user1.id)
+		// Set reference property - use Id suffix for setters
+		task.setValueByPath("assigneeId", user1.id)
 		assertEquals(user1.id, task.assignee?.id)
 
 		// Set property on a part in a list

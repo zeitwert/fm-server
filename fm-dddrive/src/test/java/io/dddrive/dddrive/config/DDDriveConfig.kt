@@ -7,14 +7,6 @@ import io.dddrive.core.ddd.model.enums.CodePartListTypeEnum
 import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
 import io.dddrive.core.enums.model.base.EnumConfigBase
-import io.dddrive.core.property.path.PathElementHandler
-import io.dddrive.core.property.path.PathProcessor
-import io.dddrive.core.property.path.handlers.DefaultPropertyHandler
-import io.dddrive.core.property.path.handlers.EnumeratedElementHandler
-import io.dddrive.core.property.path.handlers.ListPathElementHandler
-import io.dddrive.core.property.path.handlers.PartReferencePropertyHandler
-import io.dddrive.core.property.path.handlers.ReferencePropertyHandler
-import io.dddrive.core.property.path.handlers.ReferencePropertyIdHandler
 import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,7 +16,6 @@ import org.springframework.context.annotation.Configuration
  *
  * This configuration provides fundamental beans that are needed across all modules:
  * - Core enumeration types (CodeAggregateTypeEnum, CodeCaseDefEnum, etc.)
- * - Path processing handlers for property access
  * - Repository directory
  *
  * Domain-specific configurations should import this base configuration and add their own
@@ -90,25 +81,4 @@ open class DDDriveConfig : EnumConfigBase() {
 			endConfig()
 		}
 	}
-
-	@Bean
-	open fun listPathElementHandler(): ListPathElementHandler = ListPathElementHandler()
-
-	@Bean
-	open fun enumeratedElementHandler(): EnumeratedElementHandler = EnumeratedElementHandler()
-
-	@Bean
-	open fun referencePropertyHandler(): ReferencePropertyHandler = ReferencePropertyHandler()
-
-	@Bean
-	open fun referencePropertyIdHandler(): ReferencePropertyIdHandler = ReferencePropertyIdHandler()
-
-	@Bean
-	open fun partReferencePropertyHandler(): PartReferencePropertyHandler = PartReferencePropertyHandler()
-
-	@Bean
-	open fun defaultPropertyHandler(): DefaultPropertyHandler = DefaultPropertyHandler()
-
-	@Bean
-	open fun pathProcessor(handlers: List<PathElementHandler>): PathProcessor = PathProcessor(handlers)
 }
