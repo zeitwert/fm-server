@@ -287,8 +287,8 @@ class TestEntity : EntityWithPropertiesBase() {
 	) {
 	}
 
-	override fun <T> getPropertyByPath(path: String): Property<T> {
-		val segments = path.split('.')
+	override fun <T> getPropertyByPath(relativePath: String): Property<T> {
+		val segments = relativePath.split('.')
 		var currentEntity: Any = this
 
 		for (i in 0 until segments.size - 1) {

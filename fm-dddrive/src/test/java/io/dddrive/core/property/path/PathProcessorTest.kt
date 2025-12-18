@@ -142,6 +142,7 @@ class PathProcessorTest {
 	}
 
 	@Test
+	@Suppress("UNCHECKED_CAST")
 	fun `expandListsOnPath handles list expansion`() {
 		// For this test, we need to use real handlers that can process list notation
 		val realHandlers =
