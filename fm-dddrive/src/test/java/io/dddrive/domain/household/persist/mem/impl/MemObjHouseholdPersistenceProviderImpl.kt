@@ -9,6 +9,8 @@ import io.dddrive.domain.household.model.enums.CodeSalutation
 import io.dddrive.domain.household.persist.ObjHouseholdPersistenceProvider
 import io.dddrive.domain.household.persist.mem.pto.ObjHouseholdPartMemberPto
 import io.dddrive.domain.household.persist.mem.pto.ObjHouseholdPto
+import io.dddrive.domain.task.model.DocTaskPartComment
+import io.dddrive.path.getPropertyByPath
 import org.springframework.stereotype.Component
 
 @Component("objHouseholdPersistenceProvider")
@@ -39,7 +41,7 @@ class MemObjHouseholdPersistenceProviderImpl :
 			aggregate.clearUserSet()
 			pto.users?.forEach(aggregate::addUser)
 
-			val memberListProperty = aggregate.getProperty("memberList") as? PartListProperty<ObjHouseholdPartMember>
+			val memberListProperty = aggregate.getPropertyByPath<ObjHouseholdPartMember>("memberList") as? PartListProperty<ObjHouseholdPartMember>
 			pto.members?.forEach { memberPto ->
 				val member = memberListProperty?.addPart(memberPto.id)
 				member?.salutation = memberPto.salutation?.let { CodeSalutation.Enumeration.getItem(it) }

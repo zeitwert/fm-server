@@ -4,7 +4,7 @@ import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.Property
 
-abstract class PropertyBase<T>(
+abstract class PropertyBase<T : Any>(
 	override val entity: EntityWithProperties,
 	override val name: String,
 ) : Property<T> {

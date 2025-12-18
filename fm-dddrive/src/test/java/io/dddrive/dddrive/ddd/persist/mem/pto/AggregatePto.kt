@@ -8,4 +8,5 @@ open class AggregatePto(
 ) {
 
 	open val meta: AggregateMetaPto? = initialMeta
+
 }

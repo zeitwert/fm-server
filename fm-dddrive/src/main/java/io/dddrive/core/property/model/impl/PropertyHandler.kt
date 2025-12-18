@@ -149,12 +149,12 @@ class PropertyHandler : MethodHandler {
 		fieldName: String,
 	): Property<*> {
 		val entity = obj as EntityWithProperties
-		var property: Property<*>? = if (entity.hasProperty(fieldName)) entity.getProperty(fieldName) else null
+		var property: Property<*>? = if (entity.hasProperty(fieldName)) entity.getProperty(fieldName, Any::class) else null
 		if (property != null) {
 			return property
 		}
 		// look for field with underscore prefix (e.g. _name), kotlin style
-		property = if (entity.hasProperty("_$fieldName")) entity.getProperty("_$fieldName") else null
+		property = if (entity.hasProperty("_$fieldName")) entity.getProperty("_$fieldName", Any::class) else null
 		if (property != null) {
 			return property
 		}

@@ -12,7 +12,7 @@ interface DocPartTransition : DocPart<Doc> {
 
 	val timestamp: OffsetDateTime
 
-	val oldCaseStage: CodeCaseStage
+	val oldCaseStage: CodeCaseStage?
 
 	val newCaseStage: CodeCaseStage
 

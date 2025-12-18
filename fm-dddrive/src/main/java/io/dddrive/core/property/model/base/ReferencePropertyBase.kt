@@ -53,7 +53,7 @@ abstract class ReferencePropertyBase<T : Any, ID : Any>(
 		override var value: ID?
 			get() = this@ReferencePropertyBase.id
 			set(value) {
-				this@ReferencePropertyBase.id = value!!
+				this@ReferencePropertyBase.id = value
 			}
 
 		override val type: Class<ID>

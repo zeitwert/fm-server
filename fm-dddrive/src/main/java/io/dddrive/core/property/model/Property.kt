@@ -1,6 +1,6 @@
 package io.dddrive.core.property.model
 
-interface Property<T> {
+interface Property<T : Any> {
 
 	val entity: EntityWithProperties
 

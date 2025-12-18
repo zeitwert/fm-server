@@ -1,14 +1,12 @@
 package io.dddrive.dddrive.obj.persist.mem.base
 
 import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.AggregateReferenceProperty
-import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjMetaPto
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjPartTransitionPto
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjPto
-import java.time.OffsetDateTime
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
 
 abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 	intfClass: Class<O>,
@@ -20,18 +18,16 @@ abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 		aggregate: O,
 	) {
 		super.toAggregate(pto, aggregate)
-
 		val objMetaPto = pto.meta
-
-		(aggregate.getProperty("objTypeId") as? BaseProperty<String?>)?.value = objMetaPto?.objTypeId
-		(aggregate.getProperty("closedByUser") as? AggregateReferenceProperty<ObjUser>)?.id = objMetaPto?.closedByUserId
-		(aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value = objMetaPto?.closedAt
+		aggregate.setValueByPath("objTypeId", objMetaPto?.objTypeId)
+		aggregate.setValueByPath("closedByUserId", objMetaPto?.closedByUserId)
+		aggregate.setValueByPath("closedAt", objMetaPto?.closedAt)
 		// TODO transitions
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	protected fun getMeta(aggregate: O): ObjMetaPto {
-		val maxPartId = (aggregate.getProperty("maxPartId") as? BaseProperty<Int?>)?.value
+		val maxPartId = aggregate.getValueByPath("maxPartId") as? Int?
 
 		// Map transitions from the domain model (ObjPartTransition) to PTO (ObjPartTransitionPto)
 		val transitions =
@@ -39,7 +35,7 @@ abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 				.map { domainTransition ->
 					ObjPartTransitionPto(
 						id = domainTransition.id,
-						userId = domainTransition.user?.id,
+						userId = domainTransition.user.id,
 						timestamp = domainTransition.timestamp,
 					)
 				}.toList()

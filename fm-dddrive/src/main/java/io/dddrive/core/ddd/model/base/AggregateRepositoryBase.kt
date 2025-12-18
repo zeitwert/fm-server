@@ -121,7 +121,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 	override fun get(id: Any): A = this.objCache.get(id, Function { aggrId: Any? -> this.get(aggrId!!, true) })
 
-	override fun load(id: Any): A = this.get(id, false)!!
+	override fun load(id: Any): A = this.get(id, false)
 
 	private fun get(
 		id: Any,
@@ -180,7 +180,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 			this.doBeforeStore(aggregate, userId, timestamp)
 			check(this.didBeforeStore) { this.baseClassName + ": doBeforeStore was propagated" }
 
-			this.persistenceProvider!!.doStore(aggregate)
+			this.persistenceProvider.doStore(aggregate)
 
 			this.didAfterStore = false
 			this.doAfterStore(aggregate)

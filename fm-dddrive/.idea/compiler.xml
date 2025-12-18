@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="E:/Maven/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
+          <entry name="E:/Maven/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
         </processorPath>
         <module name="fm-dddrive" />
       </profile>

@@ -4,7 +4,6 @@ import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.AggregateMeta
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.PartMeta
-import io.dddrive.core.ddd.model.RepositoryDirectory
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.Enumeration
 import io.dddrive.core.oe.model.ObjTenant
@@ -12,7 +11,6 @@ import io.dddrive.core.oe.model.ObjUser
 import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
-import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.PartReferenceProperty
@@ -24,6 +22,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import kotlin.reflect.KClass
 
 /**
  * Tests for PathAccess extension functions.
@@ -42,7 +41,7 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath returns simple property value`() {
-			val result = rootEntity.getValueByPath("name")
+			val result: String? = rootEntity.getValueByPath("name")
 			assertEquals("TestEntity", result)
 		}
 
@@ -54,10 +53,10 @@ class PathAccessTest {
 
 		@Test
 		fun `getPropertyByPath returns property object`() {
-			val property = rootEntity.getPropertyByPath("name")
+			val property: Property<String>? = rootEntity.getPropertyByPath("name")
 			assertNotNull(property)
 			// Verify we can get the value from the resolved property
-			assertEquals("TestEntity", (property as? io.dddrive.core.property.model.BaseProperty<*>)?.value)
+			assertEquals("TestEntity", (property as? BaseProperty<*>)?.value)
 		}
 	}
 
@@ -66,20 +65,20 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath returns enum instance`() {
-			val result = rootEntity.getValueByPath("status")
+			val result: TestEnum? = rootEntity.getValueByPath("status")
 			assertNotNull(result)
 			assertEquals("active", (result as TestEnum).id)
 		}
 
 		@Test
 		fun `getValueByPath with dot id returns enum ID string`() {
-			val result = rootEntity.getValueByPath("status.id")
+			val result: String? = rootEntity.getValueByPath("status.id")
 			assertEquals("active", result)
 		}
 
 		@Test
 		fun `getValueByPath with Id suffix returns enum ID string`() {
-			val result = rootEntity.getValueByPath("statusId")
+			val result: String? = rootEntity.getValueByPath("statusId")
 			assertEquals("active", result)
 		}
 
@@ -103,27 +102,27 @@ class PathAccessTest {
 		@Test
 		fun `getValueByPath with bracket syntax works`() {
 			rootEntity.setValueByPath("children[0].name", "Child1")
-			val result = rootEntity.getValueByPath("children[0].name")
+			val result: String? = rootEntity.getValueByPath("children[0].name")
 			assertEquals("Child1", result)
 		}
 
 		@Test
 		fun `getValueByPath with dot syntax works`() {
 			rootEntity.setValueByPath("children.0.name", "Child1")
-			val result = rootEntity.getValueByPath("children.0.name")
+			val result: String? = rootEntity.getValueByPath("children.0.name")
 			assertEquals("Child1", result)
 		}
 
 		@Test
 		fun `setValueByPath auto-expands list`() {
 			rootEntity.setValueByPath("children[2].name", "Child3")
-			val result = rootEntity.getValueByPath("children[2].name")
+			val result: String? = rootEntity.getValueByPath("children[2].name")
 			assertEquals("Child3", result)
 		}
 
 		@Test
 		fun `getValueByPath returns null for missing index`() {
-			val result = rootEntity.getValueByPath("children[5].name")
+			val result: String? = rootEntity.getValueByPath("children[5].name")
 			assertNull(result)
 		}
 
@@ -145,7 +144,7 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath navigates through reference`() {
-			val result = rootEntity.getValueByPath("reference.name")
+			val result: String? = rootEntity.getValueByPath("reference.name")
 			assertEquals("ReferencedEntity", result)
 		}
 
@@ -157,7 +156,7 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath with Id suffix returns reference ID`() {
-			val result = rootEntity.getValueByPath("referenceId")
+			val result: Any? = rootEntity.getValueByPath("referenceId")
 			assertNotNull(result)
 		}
 
@@ -169,7 +168,7 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath with dot id returns reference ID`() {
-			val result = rootEntity.getValueByPath("reference.id")
+			val result: Any? = rootEntity.getValueByPath("reference.id")
 			assertNotNull(result)
 		}
 
@@ -186,7 +185,7 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath navigates through part reference`() {
-			val result = rootEntity.getValueByPath("part.name")
+			val result: String? = rootEntity.getValueByPath("part.name")
 			assertEquals("PartEntity", result)
 		}
 
@@ -203,7 +202,7 @@ class PathAccessTest {
 		@Test
 		fun `getValueByPath returns null for null reference`() {
 			rootEntity.setReferenceToNull()
-			val result = rootEntity.getValueByPath("reference.name")
+			val result: String? = rootEntity.getValueByPath("reference.name")
 			assertNull(result)
 		}
 
@@ -218,7 +217,7 @@ class PathAccessTest {
 		@Test
 		fun `getValueByPath returns null for deep null path`() {
 			rootEntity.setReferenceToNull()
-			val result = rootEntity.getValueByPath("reference.children[0].name")
+			val result: String? = rootEntity.getValueByPath("reference.children[0].name")
 			assertNull(result)
 		}
 	}
@@ -229,7 +228,7 @@ class PathAccessTest {
 		@Test
 		fun `complex nested path through reference and list`() {
 			rootEntity.setValueByPath("reference.children[0].statusId", "completed")
-			val result = rootEntity.getValueByPath("reference.children[0].statusId")
+			val result: String? = rootEntity.getValueByPath("reference.children[0].statusId")
 			assertEquals("completed", result)
 		}
 
@@ -251,7 +250,7 @@ class PathAccessTest {
 			// Add a literal property named "literalId"
 			rootEntity.addProperty("literalId", createBaseProperty(String::class.java, "literal-value"))
 
-			val result = rootEntity.getValueByPath("literalId")
+			val result: String? = rootEntity.getValueByPath("literalId")
 			assertEquals("literal-value", result)
 		}
 	}
@@ -261,14 +260,14 @@ class PathAccessTest {
 
 		@Test
 		fun `getValueByPath throws for invalid property`() {
-			assertThrows(IllegalArgumentException::class.java) {
-				rootEntity.getValueByPath("nonexistent")
+			assertThrows(NullPointerException::class.java) {
+				rootEntity.getValueByPath<Any>("nonexistent")
 			}
 		}
 
 		@Test
 		fun `setValueByPath throws for invalid property`() {
-			assertThrows(IllegalArgumentException::class.java) {
+			assertThrows(NullPointerException::class.java) {
 				rootEntity.setValueByPath("nonexistent", "value")
 			}
 		}
@@ -276,7 +275,7 @@ class PathAccessTest {
 		@Test
 		fun `navigation through non-reference property throws`() {
 			assertThrows(IllegalStateException::class.java) {
-				rootEntity.getValueByPath("name.something")
+				rootEntity.getValueByPath<Any>("name.something")
 			}
 		}
 	}
@@ -338,10 +337,14 @@ class PathAccessTest {
 			override val module = "test"
 			override val id = "TestEnumeration"
 			override val resourcePath = "test/enum"
+
 			override fun getItem(id: String): TestEnum = items.find { it.id == id }!!
 		}
 
-	private fun <T> createBaseProperty(type: Class<T>, initialValue: T? = null): BaseProperty<T> =
+	private fun <T : Any> createBaseProperty(
+		type: Class<T>,
+		initialValue: T? = null,
+	): BaseProperty<T> =
 		object : BaseProperty<T> {
 			override var value: T? = initialValue
 			override val type: Class<T> = type
@@ -352,14 +355,19 @@ class PathAccessTest {
 			override val isWritable: Boolean = true
 		}
 
-	private fun createEnumProperty(enumeration: Enumeration<TestEnum>, initialValue: TestEnum? = null): EnumProperty<TestEnum> =
+	private fun createEnumProperty(
+		enumeration: Enumeration<TestEnum>,
+		initialValue: TestEnum? = null,
+	): EnumProperty<TestEnum> =
 		object : EnumProperty<TestEnum> {
 			private var _value: TestEnum? = initialValue
 			private var _id: String? = initialValue?.id
 			private val _idProperty = object : BaseProperty<String> {
 				override var value: String?
 					get() = _id
-					set(v) { _id = v }
+					set(v) {
+						_id = v
+					}
 				override val type: Class<String> = String::class.java
 				override val entity: EntityWithProperties get() = rootEntity
 				override val relativePath: String = "test.id"
@@ -397,10 +405,16 @@ class PathAccessTest {
 
 			override val partType: Class<TestPart> = TestPart::class.java
 			override val partCount: Int get() = _parts.size
+
 			override fun getPart(seqNr: Int): TestPart = _parts[seqNr]
+
 			override fun getPartById(partId: Int): TestPart = _parts.find { it.id == partId }!!
+
 			override val parts: List<TestPart> get() = _parts.toList()
-			override fun clearParts() { _parts.clear() }
+
+			override fun clearParts() {
+				_parts.clear()
+			}
 
 			override fun addPart(partId: Int?): TestPart {
 				val id = partId ?: nextId++
@@ -412,9 +426,16 @@ class PathAccessTest {
 				return newPart
 			}
 
-			override fun removePart(partId: Int) { _parts.removeIf { it.id == partId } }
-			override fun removePart(part: TestPart) { _parts.remove(part) }
+			override fun removePart(partId: Int) {
+				_parts.removeIf { it.id == partId }
+			}
+
+			override fun removePart(part: TestPart) {
+				_parts.remove(part)
+			}
+
 			override fun getIndexOfPart(part: Part<*>): Int = _parts.indexOfFirst { it.id == part.id }
+
 			override val entity: EntityWithProperties get() = rootEntity
 			override val relativePath: String = "test"
 			override val path: String = "test"
@@ -429,7 +450,9 @@ class PathAccessTest {
 			private val _idProperty = object : BaseProperty<Any> {
 				override var value: Any?
 					get() = _id
-					set(v) { _id = v }
+					set(v) {
+						_id = v
+					}
 				override val type: Class<Any> = Any::class.java
 				override val entity: EntityWithProperties get() = rootEntity
 				override val relativePath: String = "test.id"
@@ -446,7 +469,9 @@ class PathAccessTest {
 				}
 			override var id: Any?
 				get() = _id
-				set(v) { _id = v }
+				set(v) {
+					_id = v
+				}
 			override val idProperty: BaseProperty<Any> = _idProperty
 			override val type: Class<TestAggregate> = TestAggregate::class.java
 			override val entity: EntityWithProperties get() = rootEntity
@@ -463,7 +488,9 @@ class PathAccessTest {
 			private val _idProperty = object : BaseProperty<Int> {
 				override var value: Int?
 					get() = _id
-					set(v) { _id = v }
+					set(v) {
+						_id = v
+					}
 				override val type: Class<Int> = Int::class.java
 				override val entity: EntityWithProperties get() = rootEntity
 				override val relativePath: String = "test.id"
@@ -480,7 +507,9 @@ class PathAccessTest {
 				}
 			override var id: Int?
 				get() = _id
-				set(v) { _id = v }
+				set(v) {
+					_id = v
+				}
 			override val idProperty: BaseProperty<Int> = _idProperty
 			override val type: Class<TestPart> = TestPart::class.java
 			override val entity: EntityWithProperties get() = rootEntity
@@ -497,6 +526,7 @@ data class TestEnum(
 	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
+
 	override val enumeration: Enumeration<out Enumerated>
 		get() = object : Enumeration<TestEnum> {
 			override val items = emptyList<TestEnum>()
@@ -504,16 +534,22 @@ data class TestEnum(
 			override val module = "test"
 			override val id = "TestEnumeration"
 			override val resourcePath = "test/enum"
+
 			override fun getItem(id: String): TestEnum = TestEnum(id, id)
 		}
+
 	override fun getName(): String = itemName
 }
 
 class TestEntity : EntityWithProperties {
+
 	private val _properties = mutableMapOf<String, Property<*>>()
 	private var _referenceProperty: AggregateReferenceProperty<TestAggregate>? = null
 
-	fun addProperty(name: String, property: Property<*>) {
+	fun addProperty(
+		name: String,
+		property: Property<*>,
+	) {
 		_properties[name] = property
 		if (property is AggregateReferenceProperty<*> && name == "reference") {
 			@Suppress("UNCHECKED_CAST")
@@ -526,18 +562,32 @@ class TestEntity : EntityWithProperties {
 	}
 
 	override val isFrozen: Boolean = false
+
 	override fun hasProperty(name: String): Boolean = _properties.containsKey(name)
-	override fun getProperty(name: String): Property<*> =
-		_properties[name] ?: throw IllegalArgumentException("Property '$name' not found")
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T : Any> getProperty(
+		name: String,
+		type: KClass<T>,
+	): Property<T> = _properties[name] as Property<T>
+
 	override val properties: List<Property<*>> get() = _properties.values.toList()
+
 	override fun hasPart(partId: Int): Boolean = false
+
 	override fun getPart(partId: Int): Part<*> = throw IllegalArgumentException("Part '$partId' not found")
 }
 
-class TestAggregate(override val id: Int = 1) : Aggregate {
+class TestAggregate(
+	override val id: Int = 1,
+) : Aggregate {
+
 	private val _properties = mutableMapOf<String, Property<*>>()
 
-	fun addProperty(name: String, property: Property<*>) {
+	fun addProperty(
+		name: String,
+		property: Property<*>,
+	) {
 		_properties[name] = property
 	}
 
@@ -549,28 +599,50 @@ class TestAggregate(override val id: Int = 1) : Aggregate {
 	override val caption: String = "TestAggregate"
 	override val meta: AggregateMeta get() = throw NotImplementedError()
 	override val isFrozen: Boolean = false
+
 	override fun hasProperty(name: String): Boolean = _properties.containsKey(name)
-	override fun getProperty(name: String): Property<*> =
-		_properties[name] ?: throw IllegalArgumentException("Property '$name' not found")
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T : Any> getProperty(
+		name: String,
+		type: KClass<T>,
+	): Property<T> = _properties[name] as Property<T>
+
 	override val properties: List<Property<*>> get() = _properties.values.toList()
+
 	override fun hasPart(partId: Int): Boolean = false
+
 	override fun getPart(partId: Int): Part<*> = throw IllegalArgumentException("Part '$partId' not found")
 }
 
-class TestPart(override val id: Int = 1) : Part<TestAggregate> {
+class TestPart(
+	override val id: Int = 1,
+) : Part<TestAggregate> {
+
 	private val _properties = mutableMapOf<String, Property<*>>()
 	override val aggregate = TestAggregate(1)
 
-	fun addProperty(name: String, property: Property<*>) {
+	fun addProperty(
+		name: String,
+		property: Property<*>,
+	) {
 		_properties[name] = property
 	}
 
 	override val meta: PartMeta<TestAggregate> get() = throw NotImplementedError()
 	override val isFrozen: Boolean = false
+
 	override fun hasProperty(name: String): Boolean = _properties.containsKey(name)
-	override fun getProperty(name: String): Property<*> =
-		_properties[name] ?: throw IllegalArgumentException("Property '$name' not found")
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T : Any> getProperty(
+		name: String,
+		type: KClass<T>,
+	): Property<T> = _properties[name] as Property<T>
+
 	override val properties: List<Property<*>> get() = _properties.values.toList()
+
 	override fun hasPart(partId: Int): Boolean = false
+
 	override fun getPart(partId: Int): Part<*> = throw IllegalArgumentException("Part '$partId' not found")
 }

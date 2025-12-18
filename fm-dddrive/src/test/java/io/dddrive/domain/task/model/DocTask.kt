@@ -18,4 +18,5 @@ interface DocTask : Doc {
 	fun addComment(): DocTaskPartComment
 
 	fun removeComment(commentId: Int)
+
 }

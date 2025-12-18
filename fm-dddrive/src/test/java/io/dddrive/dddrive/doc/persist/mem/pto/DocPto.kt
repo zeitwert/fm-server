@@ -17,4 +17,5 @@ abstract class DocPto(
 	// Override the meta property with the covariant return type DocMetaPto
 	override val meta: DocMetaPto?
 		get() = super.meta as? DocMetaPto
+
 }

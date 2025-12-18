@@ -133,6 +133,7 @@ class TaskMemTest : PropertyChangeListener {
 		task.dueAt = dueDate
 		task.remindAt = remindDate
 		task.assignee = user1
+		println("docTask.assignee.1: ${task.assignee?.id}")
 
 		// Verify properties
 		assertEquals("Implement new feature with comments", task.subject)
@@ -188,10 +189,11 @@ class TaskMemTest : PropertyChangeListener {
 		assertEquals(2, task.commentList.size, "Task should have 2 comments")
 
 		// Store the task
+		println("docTask.assignee.2: ${task.assignee?.id}")
 		taskRepo.store(task, user.id, now.plusMinutes(1))
 
 		// Load and verify
-		val loadedTask = taskRepo.get(taskId)!!
+		val loadedTask = taskRepo.get(taskId)
 		assertNotNull(loadedTask)
 		assertTrue(loadedTask.isFrozen, "Loaded task should be frozen (read-only)")
 
@@ -240,7 +242,7 @@ class TaskMemTest : PropertyChangeListener {
 		taskRepo.store(mutableTask, user1.id, progressTime.plusSeconds(5))
 
 		// Verify stage change and new comment
-		val taskAfterProgress = taskRepo.get(taskId)!!
+		val taskAfterProgress = taskRepo.get(taskId)
 		assertEquals(taskInProgressStage, taskAfterProgress.meta.caseStage)
 		assertEquals(3, taskAfterProgress.meta.transitionList.size) // initial + store + stage change
 		assertEquals(3, taskAfterProgress.commentList.size, "Task after progress should have 3 comments")
@@ -261,7 +263,7 @@ class TaskMemTest : PropertyChangeListener {
 			taskToEditComments.commentList.find { it.id == comment1.id },
 			"Comment 1 should exist before removal",
 		)
-		taskToEditComments.removeComment(comment1.id!!)
+		taskToEditComments.removeComment(comment1.id)
 		assertEquals(2, taskToEditComments.commentList.size, "Task should have 2 comments after removal")
 		assertNull(
 			taskToEditComments.commentList.find { it.id == comment1.id },
@@ -269,7 +271,7 @@ class TaskMemTest : PropertyChangeListener {
 		)
 		taskRepo.store(taskToEditComments, user.id, now.plusMinutes(20))
 
-		val taskAfterCommentRemoval = taskRepo.get(taskId)!!
+		val taskAfterCommentRemoval = taskRepo.get(taskId)
 		assertEquals(2, taskAfterCommentRemoval.commentList.size, "Loaded task should have 2 comments after removal")
 		assertNull(
 			taskAfterCommentRemoval.commentList.find { it.id == comment1.id },
@@ -294,7 +296,7 @@ class TaskMemTest : PropertyChangeListener {
 		taskRepo.store(completeTask, user1.id, completeTime.plusSeconds(5))
 
 		// Verify final state
-		val completedTask = taskRepo.get(taskId)!!
+		val completedTask = taskRepo.get(taskId)
 		assertEquals(taskDoneStage, completedTask.meta.caseStage)
 		assertFalse(completedTask.meta.isInWork)
 		// Transitions: initial, store1, stage_change_store, comment_removal_store, final_stage_change_store
@@ -318,7 +320,7 @@ class TaskMemTest : PropertyChangeListener {
 		taskRepo.store(task, user.id, now.plusMinutes(1))
 
 		// Load and verify defaults/nulls
-		val loaded = taskRepo.get(task.id)!!
+		val loaded = taskRepo.get(task.id)
 		assertNotNull(loaded)
 		assertEquals("Minimal task, no comments", loaded.subject)
 		assertNull(loaded.content, "content should be null")
@@ -364,11 +366,11 @@ class TaskMemTest : PropertyChangeListener {
 
 		val retrievedTask1Id = allTasks.find { it == task1.id }!!
 		val retrievedTask1 = taskRepo.get(retrievedTask1Id)
-		assertEquals(1, retrievedTask1!!.commentList.size)
+		assertEquals(1, retrievedTask1.commentList.size)
 
 		val retrievedTask2Id = allTasks.find { it == task2.id }!!
 		val retrievedTask2 = taskRepo.get(retrievedTask2Id)
-		assertEquals(2, retrievedTask2!!.commentList.size)
+		assertEquals(2, retrievedTask2.commentList.size)
 
 		// Test getByForeignKey for assignee
 // 		val user1Tasks = taskRepo.getByForeignKey("assigneeId", user1.id!!)

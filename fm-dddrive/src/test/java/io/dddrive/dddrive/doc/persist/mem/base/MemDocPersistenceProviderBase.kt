@@ -2,19 +2,15 @@ package io.dddrive.dddrive.doc.persist.mem.base
 
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.core.doc.model.DocPartTransition
-import io.dddrive.core.doc.model.enums.CodeCaseDef
 import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.AggregateReferenceProperty
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import io.dddrive.dddrive.doc.persist.mem.pto.DocPartTransitionPto
 import io.dddrive.dddrive.doc.persist.mem.pto.DocPto
-import io.dddrive.domain.doc.persist.mem.pto.DocMetaPto // Ensure correct import for DocMetaPto
+import io.dddrive.domain.doc.persist.mem.pto.DocMetaPto
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
 
 abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 	intfClass: Class<D>,
@@ -33,23 +29,24 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 		aggregate.meta // This is DocMeta from the domain object
 
 		// Load Doc-specific properties from pto.meta into the doc aggregate
-		(aggregate.getProperty("docTypeId") as? BaseProperty<String?>)?.value = docMetaPto?.docTypeId
+		aggregate.setValueByPath("docTypeId", docMetaPto?.docTypeId)
 
 		docMetaPto?.caseDefId?.let { caseDefId ->
 			val caseDef = CodeCaseDefEnum.getCaseDef(caseDefId)
-			(aggregate.getProperty("caseDef") as? EnumProperty<CodeCaseDef>)?.value = caseDef
+			aggregate.setValueByPath("caseDef", caseDef)
 		}
 
 		docMetaPto?.caseStageId?.let { caseStageId ->
 			val caseStage = CodeCaseStageEnum.getCaseStage(caseStageId)
-			(aggregate.getProperty("caseStage") as? EnumProperty<CodeCaseStage>)?.value = caseStage
+			aggregate.setValueByPath("caseStage", caseStage)
 		}
 
-		(aggregate.getProperty("isInWork") as? BaseProperty<Boolean?>)?.value = docMetaPto?.isInWork
-		(aggregate.getProperty("assignee") as? AggregateReferenceProperty<ObjUser>)?.id = docMetaPto?.assigneeId
+		aggregate.setValueByPath("isInWork", docMetaPto?.isInWork)
+		aggregate.setValueByPath("assigneeId", docMetaPto?.assigneeId)
 
 		// Load transitions
-		val transitionListProperty = aggregate.getProperty("transitionList") as? PartListProperty<DocPartTransition>
+		val transitionListProperty =
+			aggregate.getProperty("transitionList", DocPartTransition::class) as? PartListProperty<DocPartTransition>
 		transitionListProperty?.clearParts()
 		docMetaPto?.transitions?.forEach { transitionPto ->
 			// When adding a part from PTO, if transitionPto.id is null, a new ID will be generated.
@@ -57,18 +54,14 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 			val transition = transitionListProperty?.addPart(transitionPto.id)
 			transition?.let { domainTransition ->
 				// Populate properties of the domainTransition from transitionPto
-				(domainTransition.getProperty("tenantId") as? BaseProperty<Any?>)?.value =
-					aggregate.tenantId // tenantId is from Aggregate
-				(domainTransition.getProperty("user") as? AggregateReferenceProperty<ObjUser>)?.id = transitionPto.userId
-				(domainTransition.getProperty("timestamp") as? BaseProperty<java.time.OffsetDateTime?>)?.value =
-					transitionPto.timestamp
+				domainTransition.setValueByPath("tenantId", aggregate.tenantId)
+				domainTransition.setValueByPath("userId", transitionPto.userId)
+				domainTransition.setValueByPath("timestamp", transitionPto.timestamp)
 				transitionPto.oldCaseStageId?.let { stageId ->
-					(domainTransition.getProperty("oldCaseStage") as? EnumProperty<CodeCaseStage>)?.value =
-						CodeCaseStageEnum.getCaseStage(stageId)
+					domainTransition.setValueByPath("oldCaseStageId", stageId)
 				}
 				transitionPto.newCaseStageId?.let { stageId ->
-					(domainTransition.getProperty("newCaseStage") as? EnumProperty<CodeCaseStage>)?.value =
-						CodeCaseStageEnum.getCaseStage(stageId)
+					domainTransition.setValueByPath("newCaseStageId", stageId)
 				}
 			}
 		}
@@ -76,38 +69,37 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 
 	@Suppress("UNCHECKED_CAST")
 	protected fun getMeta(aggregate: D): DocMetaPto {
-		val maxPartId = (aggregate.getProperty("maxPartId") as? BaseProperty<Int?>)?.value
-
+		val maxPartId = aggregate.getValueByPath("maxPartId") as? Int?
 		val transitions =
 			aggregate.meta.transitionList
 				.map { domainTransition ->
 					DocPartTransitionPto(
 						id = domainTransition.id,
-						userId = domainTransition.user?.id,
+						userId = domainTransition.user.id,
 						timestamp = domainTransition.timestamp,
 						oldCaseStageId = domainTransition.oldCaseStage?.id,
-						newCaseStageId = domainTransition.newCaseStage?.id,
+						newCaseStageId = domainTransition.newCaseStage.id,
 					)
 				}.toList()
 
-		return DocMetaPto(
+		val meta = DocMetaPto(
 			// Doc specific meta fields
-			docTypeId = aggregate.meta.repository
-				?.aggregateType
-				?.id,
+			docTypeId = aggregate.meta.docTypeId,
 			caseDefId = aggregate.meta.caseDef?.id,
 			caseStageId = aggregate.meta.caseStage?.id,
 			isInWork = aggregate.meta.isInWork,
-			assigneeId = (aggregate.getProperty("assignee") as? AggregateReferenceProperty<ObjUser>)?.id,
+			assigneeId = aggregate.assignee?.id,
 			transitions = transitions,
 			// Properties inherited from AggregateMetaPto
 			maxPartId = maxPartId,
-			ownerId = aggregate.owner?.id as? Int,
+			ownerId = aggregate.owner.id as? Int,
 			version = aggregate.meta.version,
 			createdAt = aggregate.meta.createdAt,
-			createdByUserId = aggregate.meta.createdByUser?.id as? Int,
+			createdByUserId = aggregate.meta.createdByUser.id as? Int,
 			modifiedAt = aggregate.meta.modifiedAt,
 			modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int,
 		)
+		return meta
 	}
+
 }

@@ -1,6 +1,7 @@
 package io.dddrive.core.property.model
 
 import io.dddrive.core.ddd.model.Part
+import kotlin.reflect.KClass
 
 interface EntityWithProperties {
 
@@ -8,7 +9,10 @@ interface EntityWithProperties {
 
 	fun hasProperty(name: String): Boolean
 
-	fun getProperty(name: String): Property<*>
+	fun <T : Any> getProperty(
+		name: String,
+		type: KClass<T>,
+	): Property<T>
 
 	val properties: List<Property<*>>
 

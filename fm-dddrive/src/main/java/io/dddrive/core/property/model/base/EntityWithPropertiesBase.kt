@@ -22,6 +22,7 @@ import io.dddrive.core.property.model.impl.EnumSetPropertyImpl
 import io.dddrive.core.property.model.impl.PartListPropertyImpl
 import io.dddrive.core.property.model.impl.PartReferencePropertyImpl
 import io.dddrive.core.property.model.impl.ReferenceSetPropertyImpl
+import kotlin.reflect.KClass
 
 abstract class EntityWithPropertiesBase :
 	EntityWithProperties,
@@ -32,7 +33,13 @@ abstract class EntityWithPropertiesBase :
 
 	override fun hasProperty(name: String): Boolean = propertyMap.containsKey(name)
 
-	override fun getProperty(name: String): Property<*> = propertyMap[name]!!
+	// override fun getProperty(name: String): Property<*> = propertyMap[name]!!
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T : Any> getProperty(
+		name: String,
+		type: KClass<T>,
+	): Property<T> = propertyMap[name]!! as Property<T>
 
 	override val properties: List<Property<*>>
 		get() = propertyMap.values.toList()
@@ -50,7 +57,7 @@ abstract class EntityWithPropertiesBase :
 		propertyMap.put(property.name, property)
 	}
 
-	fun <T> addBaseProperty(
+	fun <T : Any> addBaseProperty(
 		name: String,
 		type: Class<T>,
 	): BaseProperty<T> {

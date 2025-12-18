@@ -4,15 +4,11 @@ import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.AggregateMeta
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
-import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.AggregateReferenceProperty
-import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.dddrive.ddd.persist.mem.pto.AggregatePto
+import io.dddrive.path.setValueByPath
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
-import java.time.OffsetDateTime
 import java.util.concurrent.atomic.AtomicReference
 
 abstract class MemAggregatePersistenceProviderBase<A : Aggregate, Pto : AggregatePto>(
@@ -79,16 +75,16 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate, Pto : Aggregat
 		pto: Pto,
 		aggregate: A,
 	) {
-		(aggregate.getProperty("id") as? BaseProperty<Any?>)?.value = pto.id
-		(aggregate.getProperty("version") as? BaseProperty<Int?>)?.value = pto.meta?.version
-		(aggregate.getProperty("maxPartId") as? BaseProperty<Int?>)?.value = pto.meta?.maxPartId
-		(aggregate.getProperty("tenant") as? AggregateReferenceProperty<ObjTenant>)?.id = pto.tenantId
-		(aggregate.getProperty("owner") as? AggregateReferenceProperty<ObjUser>)?.id = pto.meta?.ownerId
-		(aggregate.getProperty("caption") as? BaseProperty<String?>)?.value = pto.caption
-		(aggregate.getProperty("createdByUser") as? AggregateReferenceProperty<ObjUser>)?.id = pto.meta?.createdByUserId
-		(aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value = pto.meta?.createdAt
-		(aggregate.getProperty("modifiedByUser") as? AggregateReferenceProperty<ObjUser>)?.id = pto.meta?.modifiedByUserId
-		(aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value = pto.meta?.modifiedAt
+		aggregate.setValueByPath("id", pto.id)
+		aggregate.setValueByPath("version", pto.meta?.version)
+		aggregate.setValueByPath("maxPartId", pto.meta?.maxPartId)
+		aggregate.setValueByPath("tenantId", pto.tenantId)
+		aggregate.setValueByPath("ownerId", pto.meta?.ownerId)
+		aggregate.setValueByPath("caption", pto.caption)
+		aggregate.setValueByPath("createdByUserId", pto.meta?.createdByUserId)
+		aggregate.setValueByPath("createdAt", pto.meta?.createdAt)
+		aggregate.setValueByPath("modifiedByUserId", pto.meta?.modifiedByUserId)
+		aggregate.setValueByPath("modifiedAt", pto.meta?.modifiedAt)
 	}
 
 	protected abstract fun fromAggregate(aggregate: A): Pto

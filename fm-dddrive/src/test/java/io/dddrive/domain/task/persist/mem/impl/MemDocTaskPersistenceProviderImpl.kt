@@ -1,32 +1,21 @@
 package io.dddrive.domain.task.persist.mem.impl
 
-import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.dddrive.doc.persist.mem.base.MemDocPersistenceProviderBase
 import io.dddrive.domain.task.model.DocTask
 import io.dddrive.domain.task.model.DocTaskPartComment
-import io.dddrive.domain.task.model.DocTaskRepository
 import io.dddrive.domain.task.model.enums.CodeTaskPriority
 import io.dddrive.domain.task.persist.DocTaskPersistenceProvider
 import io.dddrive.domain.task.persist.mem.pto.DocTaskPartCommentPto
 import io.dddrive.domain.task.persist.mem.pto.DocTaskPto
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
+import io.dddrive.path.getPropertyByPath
+import io.dddrive.path.setValueByPath
 import org.springframework.stereotype.Component
-import java.time.OffsetDateTime
 
 @Component("docTaskPersistenceProvider")
 class MemDocTaskPersistenceProviderImpl :
 	MemDocPersistenceProviderBase<DocTask, DocTaskPto>(DocTask::class.java),
 	DocTaskPersistenceProvider {
-
-	private lateinit var _repository: DocTaskRepository
-
-	@Autowired
-	@Lazy
-	protected fun setRepository(repository: DocTaskRepository) {
-		this._repository = repository
-	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun toAggregate(
@@ -38,6 +27,8 @@ class MemDocTaskPersistenceProviderImpl :
 		try {
 			aggregateMeta.disableCalc()
 			super.toAggregate(pto, aggregate)
+			println("docTask.load.metaPto: ${pto.meta?.assigneeId}")
+			println("docTask.load.meta.assignee: ${aggregate.assignee}")
 
 			// Load ONLY DocTask-specific properties here
 			aggregate.subject = pto.subject
@@ -48,13 +39,14 @@ class MemDocTaskPersistenceProviderImpl :
 			aggregate.remindAt = pto.remindAt
 
 			// Load comments
-			val commentListProperty = aggregate.getProperty("commentList") as? PartListProperty<DocTaskPartComment>
+			val commentListProperty =
+				aggregate.getPropertyByPath<DocTaskPartComment>("commentList") as? PartListProperty<DocTaskPartComment>
 			commentListProperty?.clearParts()
 			pto.comments?.forEach { commentPto ->
 				val comment = commentListProperty?.addPart(commentPto.id)
 				comment?.let { domainComment ->
 					domainComment.text = commentPto.text
-					(domainComment.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value = commentPto.createdAt
+					domainComment.setValueByPath("createdAt", commentPto.createdAt)
 				}
 			}
 		} finally {
@@ -65,7 +57,7 @@ class MemDocTaskPersistenceProviderImpl :
 
 	override fun fromAggregate(aggregate: DocTask): DocTaskPto {
 		val metaPto = this.getMeta(aggregate)
-
+		println("docTask.metaPto: ${metaPto.assigneeId}")
 		val commentPtos =
 			aggregate.commentList
 				.map { domainComment ->
@@ -73,15 +65,7 @@ class MemDocTaskPersistenceProviderImpl :
 						// Renamed
 						id = domainComment.id,
 						text = domainComment.text,
-						createdAt =
-							domainComment.getProperty("createdAt")?.let { property ->
-								if (property is BaseProperty<*> && property.type == OffsetDateTime::class.java) {
-									@Suppress("UNCHECKED_CAST")
-									(property as BaseProperty<OffsetDateTime?>).value
-								} else {
-									null
-								}
-							},
+						createdAt = domainComment.createdAt,
 					)
 				}.toList()
 
@@ -101,4 +85,5 @@ class MemDocTaskPersistenceProviderImpl :
 			caption = aggregate.caption,
 		)
 	}
+
 }

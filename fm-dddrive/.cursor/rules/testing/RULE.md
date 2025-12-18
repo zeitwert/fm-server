@@ -31,4 +31,4 @@ example:
 
 Before terminating your task, check that the builds are still correctly done.
 
-`mvn clean compile -DskipTests`
+`mvn clean compile test-compile -DskipTests`
