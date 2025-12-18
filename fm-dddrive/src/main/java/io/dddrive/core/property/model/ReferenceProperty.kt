@@ -1,13 +1,11 @@
 package io.dddrive.core.property.model
 
-import io.dddrive.core.ddd.model.Aggregate
+interface ReferenceProperty<T : Any, ID : Any> : BaseProperty<T> {
 
-interface ReferenceProperty<A : Aggregate> : BaseProperty<A> {
+	val idProperty: BaseProperty<ID>
 
-	var id: Any?
+	var id: ID?
 
-	val idProperty: BaseProperty<Any>
-
-	override var value: A?
+	override var value: T?
 
 }

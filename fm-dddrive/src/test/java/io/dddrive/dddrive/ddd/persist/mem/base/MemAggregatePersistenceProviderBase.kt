@@ -6,8 +6,8 @@ import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
 import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.dddrive.ddd.persist.mem.pto.AggregatePto
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
@@ -82,12 +82,12 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate, Pto : Aggregat
 		(aggregate.getProperty("id") as? BaseProperty<Any?>)?.value = pto.id
 		(aggregate.getProperty("version") as? BaseProperty<Int?>)?.value = pto.meta?.version
 		(aggregate.getProperty("maxPartId") as? BaseProperty<Int?>)?.value = pto.meta?.maxPartId
-		(aggregate.getProperty("tenant") as? ReferenceProperty<ObjTenant>)?.id = pto.tenantId
-		(aggregate.getProperty("owner") as? ReferenceProperty<ObjUser>)?.id = pto.meta?.ownerId
+		(aggregate.getProperty("tenant") as? AggregateReferenceProperty<ObjTenant>)?.id = pto.tenantId
+		(aggregate.getProperty("owner") as? AggregateReferenceProperty<ObjUser>)?.id = pto.meta?.ownerId
 		(aggregate.getProperty("caption") as? BaseProperty<String?>)?.value = pto.caption
-		(aggregate.getProperty("createdByUser") as? ReferenceProperty<ObjUser>)?.id = pto.meta?.createdByUserId
+		(aggregate.getProperty("createdByUser") as? AggregateReferenceProperty<ObjUser>)?.id = pto.meta?.createdByUserId
 		(aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value = pto.meta?.createdAt
-		(aggregate.getProperty("modifiedByUser") as? ReferenceProperty<ObjUser>)?.id = pto.meta?.modifiedByUserId
+		(aggregate.getProperty("modifiedByUser") as? AggregateReferenceProperty<ObjUser>)?.id = pto.meta?.modifiedByUserId
 		(aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value = pto.meta?.modifiedAt
 	}
 

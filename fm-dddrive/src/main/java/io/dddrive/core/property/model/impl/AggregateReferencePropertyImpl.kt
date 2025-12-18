@@ -1,17 +1,17 @@
 package io.dddrive.core.property.model.impl
 
 import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.EntityWithProperties
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.base.ReferencePropertyBase
 
-class ReferencePropertyImpl<A : Aggregate>(
+class AggregateReferencePropertyImpl<A : Aggregate>(
 	entity: EntityWithProperties,
 	name: String,
 	private val resolver: AggregateResolver<A>,
 	override val type: Class<A>,
 ) : ReferencePropertyBase<A, Any>(entity, name, Any::class.java),
-	ReferenceProperty<A> {
+	AggregateReferenceProperty<A> {
 
 	override var value: A?
 		get() = if (id == null) null else this.resolver.get(id!!)

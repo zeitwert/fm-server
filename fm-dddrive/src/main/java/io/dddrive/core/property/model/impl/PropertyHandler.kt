@@ -3,6 +3,7 @@ package io.dddrive.core.property.model.impl
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.enums.model.Enumerated
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EnumProperty
@@ -10,7 +11,6 @@ import io.dddrive.core.property.model.EnumSetProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.PartReferenceProperty
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
 import javassist.util.proxy.MethodHandler
 import java.lang.reflect.Method
@@ -101,7 +101,7 @@ class PropertyHandler : MethodHandler {
 			if (this.isGetter(methodName, args)) {
 				return if (property is EnumProperty<*>) {
 					(property as EnumProperty<Enumerated>).value
-				} else if (property is ReferenceProperty<*>) {
+				} else if (property is AggregateReferenceProperty<*>) {
 					if (m.name.endsWith("Id")) {
 						property.id
 					} else {
@@ -121,11 +121,11 @@ class PropertyHandler : MethodHandler {
 			} else if (this.isSetter(m.name, args)) {
 				if (property is EnumProperty<*>) {
 					(property as EnumProperty<Enumerated>).value = args[0] as Enumerated?
-				} else if (property is ReferenceProperty<*>) {
+				} else if (property is AggregateReferenceProperty<*>) {
 					if (m.name.endsWith("Id")) {
-						(property as ReferenceProperty<Aggregate>).id = args[0]
+						(property as AggregateReferenceProperty<Aggregate>).id = args[0]
 					} else {
-						(property as ReferenceProperty<Aggregate>).value = args[0] as Aggregate?
+						(property as AggregateReferenceProperty<Aggregate>).value = args[0] as Aggregate?
 					}
 				} else if (property is PartReferenceProperty<*>) {
 					if (m.name.endsWith("Id")) {

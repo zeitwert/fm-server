@@ -5,6 +5,7 @@ import io.dddrive.core.ddd.model.AggregateRepository
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.Enumeration
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
@@ -13,14 +14,13 @@ import io.dddrive.core.property.model.EnumSetProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.PartReferenceProperty
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.ReferenceSetProperty
+import io.dddrive.core.property.model.impl.AggregateReferencePropertyImpl
 import io.dddrive.core.property.model.impl.BasePropertyImpl
 import io.dddrive.core.property.model.impl.EnumPropertyImpl
 import io.dddrive.core.property.model.impl.EnumSetPropertyImpl
 import io.dddrive.core.property.model.impl.PartListPropertyImpl
 import io.dddrive.core.property.model.impl.PartReferencePropertyImpl
-import io.dddrive.core.property.model.impl.ReferencePropertyImpl
 import io.dddrive.core.property.model.impl.ReferenceSetPropertyImpl
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -84,9 +84,10 @@ abstract class EntityWithPropertiesBase :
 	fun <A : Aggregate> addReferenceProperty(
 		name: String,
 		aggregateType: Class<A>,
-	): ReferenceProperty<A> {
+	): AggregateReferenceProperty<A> {
 		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: ReferenceProperty<A> = ReferencePropertyImpl(this, name, { id: Any -> repo.get(id)!! }, aggregateType)
+		val property: AggregateReferenceProperty<A> =
+			AggregateReferencePropertyImpl(this, name, { id: Any -> repo.get(id)!! }, aggregateType)
 		addProperty(property)
 		return property
 	}
@@ -282,14 +283,14 @@ abstract class EntityWithPropertiesBase :
 		val nextSegment: String? = pathSegments[currentIndex + 1]
 
 		if (currentIndex + 2 == pathSegments.size && "id" == nextSegment) {
-			if (property is ReferenceProperty<*>) {
+			if (property is AggregateReferenceProperty<*>) {
 				return property.idProperty as Property<T>
 			} else if (property is PartReferenceProperty<*>) {
 				return property.idProperty as Property<T>
 			}
 		}
 
-		require(!((property is ReferenceProperty<*> || property is PartReferenceProperty<*>) && "id" == nextSegment)) { "cannot navigate deeper from '.id' of a reference property. Path: $originalPath" }
+		require(!((property is AggregateReferenceProperty<*> || property is PartReferenceProperty<*>) && "id" == nextSegment)) { "cannot navigate deeper from '.id' of a reference property. Path: $originalPath" }
 
 		val nextEntity: EntityWithProperties = getEntityWithProperties(originalPath, property, propName)
 		return findPropertyRecursive(nextEntity, pathSegments, currentIndex + 1, originalPath)
@@ -307,7 +308,7 @@ abstract class EntityWithPropertiesBase :
 			val nextEntity: EntityWithProperties
 			nextEntity = if (property is PartReferenceProperty<*>) {
 				property.value!!
-			} else if (property is ReferenceProperty<*>) {
+			} else if (property is AggregateReferenceProperty<*>) {
 				property.value!!
 			} else {
 				throw IllegalArgumentException("Property '" + propName + "' is not a container (PartList, PartReference, or Reference). Cannot navigate deeper in path '" + originalPath + "'")

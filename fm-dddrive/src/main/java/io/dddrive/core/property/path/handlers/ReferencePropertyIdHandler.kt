@@ -1,8 +1,8 @@
 package io.dddrive.core.property.path.handlers
 
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.path.PathElementHandler
 import io.dddrive.core.property.path.PathHandlingContext
 import io.dddrive.core.property.path.PathHandlingResult
@@ -25,7 +25,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class ReferencePropertyIdHandler : PathElementHandler {
+
 	private companion object {
+
 		private const val ID_SUFFIX = "Id"
 	}
 
@@ -35,16 +37,16 @@ class ReferencePropertyIdHandler : PathElementHandler {
 		entity: Any,
 	): Boolean {
 		if (!path.endsWith(ID_SUFFIX)) return false
-		
+
 		// Only handle simple property names, not complex paths
 		if (path.contains('.')) return false
-		
+
 		val basePath = path.removeSuffix(ID_SUFFIX)
 		if (basePath.isEmpty()) return false
-		
+
 		return try {
 			val baseProperty = getBaseProperty(basePath, entity)
-			baseProperty is ReferenceProperty<*>
+			baseProperty is AggregateReferenceProperty<*>
 		} catch (_: Exception) {
 			false
 		}
@@ -64,7 +66,7 @@ class ReferencePropertyIdHandler : PathElementHandler {
 		val basePath = path.removeSuffix(ID_SUFFIX)
 		val baseProperty = getBaseProperty(basePath, entity)
 
-		if (baseProperty !is ReferenceProperty<*>) {
+		if (baseProperty !is AggregateReferenceProperty<*>) {
 			throw IllegalArgumentException("Property at path '$basePath' is not a ReferenceProperty, required for Id handling.")
 		}
 
@@ -86,7 +88,7 @@ class ReferencePropertyIdHandler : PathElementHandler {
 		val basePath = path.removeSuffix(ID_SUFFIX)
 		val baseProperty = getBaseProperty(basePath, entity)
 
-		if (baseProperty !is ReferenceProperty<*>) {
+		if (baseProperty !is AggregateReferenceProperty<*>) {
 			return PathHandlingResult.complete(null)
 		}
 

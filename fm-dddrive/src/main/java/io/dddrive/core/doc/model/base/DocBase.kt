@@ -9,10 +9,10 @@ import io.dddrive.core.doc.model.DocRepository
 import io.dddrive.core.doc.model.enums.CodeCaseDef
 import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
 import java.time.OffsetDateTime
 
 abstract class DocBase protected constructor(
@@ -27,7 +27,7 @@ abstract class DocBase protected constructor(
 	protected val _caseDef: EnumProperty<CodeCaseDef> = this.addEnumProperty<CodeCaseDef>("caseDef", CodeCaseDef::class.java)
 	protected val _caseStage: EnumProperty<CodeCaseStage> = this.addEnumProperty<CodeCaseStage>("caseStage", CodeCaseStage::class.java)
 	protected val _isInWork: BaseProperty<Boolean> = this.addBaseProperty<Boolean>("isInWork", Boolean::class.java)
-	protected val _assignee: ReferenceProperty<ObjUser> = this.addReferenceProperty<ObjUser>("assignee", ObjUser::class.java)
+	protected val _assignee: AggregateReferenceProperty<ObjUser> = this.addReferenceProperty<ObjUser>("assignee", ObjUser::class.java)
 	private val _transitionList = this.addPartListProperty<DocPartTransition>("transitionList", DocPartTransition::class.java)
 	// @formatter:on
 

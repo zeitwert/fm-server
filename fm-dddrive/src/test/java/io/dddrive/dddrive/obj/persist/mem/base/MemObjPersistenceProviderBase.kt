@@ -2,8 +2,8 @@ package io.dddrive.dddrive.obj.persist.mem.base
 
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjMetaPto
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjPartTransitionPto
@@ -24,7 +24,7 @@ abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 		val objMetaPto = pto.meta
 
 		(aggregate.getProperty("objTypeId") as? BaseProperty<String?>)?.value = objMetaPto?.objTypeId
-		(aggregate.getProperty("closedByUser") as? ReferenceProperty<ObjUser>)?.id = objMetaPto?.closedByUserId
+		(aggregate.getProperty("closedByUser") as? AggregateReferenceProperty<ObjUser>)?.id = objMetaPto?.closedByUserId
 		(aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value = objMetaPto?.closedAt
 		// TODO transitions
 	}

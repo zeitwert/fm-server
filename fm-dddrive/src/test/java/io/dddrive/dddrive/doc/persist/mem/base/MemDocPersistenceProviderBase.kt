@@ -7,10 +7,10 @@ import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
 import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import io.dddrive.dddrive.doc.persist.mem.pto.DocPartTransitionPto
 import io.dddrive.dddrive.doc.persist.mem.pto.DocPto
@@ -46,7 +46,7 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 		}
 
 		(aggregate.getProperty("isInWork") as? BaseProperty<Boolean?>)?.value = docMetaPto?.isInWork
-		(aggregate.getProperty("assignee") as? ReferenceProperty<ObjUser>)?.id = docMetaPto?.assigneeId
+		(aggregate.getProperty("assignee") as? AggregateReferenceProperty<ObjUser>)?.id = docMetaPto?.assigneeId
 
 		// Load transitions
 		val transitionListProperty = aggregate.getProperty("transitionList") as? PartListProperty<DocPartTransition>
@@ -59,7 +59,7 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 				// Populate properties of the domainTransition from transitionPto
 				(domainTransition.getProperty("tenantId") as? BaseProperty<Any?>)?.value =
 					aggregate.tenantId // tenantId is from Aggregate
-				(domainTransition.getProperty("user") as? ReferenceProperty<ObjUser>)?.id = transitionPto.userId
+				(domainTransition.getProperty("user") as? AggregateReferenceProperty<ObjUser>)?.id = transitionPto.userId
 				(domainTransition.getProperty("timestamp") as? BaseProperty<java.time.OffsetDateTime?>)?.value =
 					transitionPto.timestamp
 				transitionPto.oldCaseStageId?.let { stageId ->
@@ -98,7 +98,7 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 			caseDefId = aggregate.meta.caseDef?.id,
 			caseStageId = aggregate.meta.caseStage?.id,
 			isInWork = aggregate.meta.isInWork,
-			assigneeId = (aggregate.getProperty("assignee") as? ReferenceProperty<ObjUser>)?.id,
+			assigneeId = (aggregate.getProperty("assignee") as? AggregateReferenceProperty<ObjUser>)?.id,
 			transitions = transitions,
 			// Properties inherited from AggregateMetaPto
 			maxPartId = maxPartId,

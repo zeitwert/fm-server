@@ -1,9 +1,9 @@
 package io.dddrive.core.property.path.handlers
 
 import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.PartReferenceProperty
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.path.PathElementHandler
 import io.dddrive.core.property.path.PathHandlingContext
 import io.dddrive.core.property.path.PathHandlingResult
@@ -15,11 +15,12 @@ import org.springframework.stereotype.Component
  */
 @Component
 class ReferencePropertyHandler : PathElementHandler {
+
 	override fun canHandle(
 		path: String,
 		property: Property<*>?,
 		entity: Any,
-	): Boolean = property is ReferenceProperty<*> && property !is PartReferenceProperty<*>
+	): Boolean = property is AggregateReferenceProperty<*> && property !is PartReferenceProperty<*>
 
 	override fun handleSet(
 		path: String,
@@ -28,7 +29,7 @@ class ReferencePropertyHandler : PathElementHandler {
 		entity: Any,
 		context: PathHandlingContext,
 	): PathHandlingResult {
-		if (property !is ReferenceProperty<*>) {
+		if (property !is AggregateReferenceProperty<*>) {
 			return PathHandlingResult.complete()
 		}
 
@@ -36,7 +37,7 @@ class ReferencePropertyHandler : PathElementHandler {
 		if (segments.size == 1) {
 			// Direct access to the property
 			@Suppress("UNCHECKED_CAST")
-			(property as ReferenceProperty<Aggregate>).value = value as Aggregate?
+			(property as AggregateReferenceProperty<Aggregate>).value = value as Aggregate?
 			return PathHandlingResult.complete()
 		}
 
@@ -55,7 +56,7 @@ class ReferencePropertyHandler : PathElementHandler {
 		entity: Any,
 		context: PathHandlingContext,
 	): PathHandlingResult {
-		if (property !is ReferenceProperty<*>) {
+		if (property !is AggregateReferenceProperty<*>) {
 			return PathHandlingResult.complete()
 		}
 

@@ -3,15 +3,18 @@ package io.dddrive.core.property.model.base
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
+import io.dddrive.core.property.model.ReferenceProperty
 
-abstract class ReferencePropertyBase<E : Any, ID : Any>(
+abstract class ReferencePropertyBase<T : Any, ID : Any>(
 	entity: EntityWithProperties,
 	name: String,
 	private val idType: Class<ID>,
-) : PropertyBase<E>(entity, name) {
+) : PropertyBase<T>(entity, name),
+	ReferenceProperty<T, ID> {
 
-	val idProperty: BaseProperty<ID>
-	open var id: ID? = null
+	override val idProperty: BaseProperty<ID> = IdProperty()
+
+	override var id: ID? = null
 		set(id) {
 			require(this.isWritable) { "not frozen" }
 			if (field == id) {
@@ -24,10 +27,6 @@ abstract class ReferencePropertyBase<E : Any, ID : Any>(
 			field = id
 			entity.doAfterSet(this)
 		}
-
-	init {
-		this.idProperty = IdProperty()
-	}
 
 	protected abstract fun isValidId(id: ID?): Boolean
 

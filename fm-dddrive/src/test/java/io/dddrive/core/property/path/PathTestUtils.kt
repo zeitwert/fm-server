@@ -9,13 +9,13 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.Enumeration
 import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.AggregateReferenceProperty
 import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithProperties
 import io.dddrive.core.property.model.EnumProperty
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.PartReferenceProperty
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
 import io.dddrive.core.property.model.base.EntityWithPropertiesBase
 
 /**
@@ -185,8 +185,8 @@ object PathTestUtils {
 	/**
 	 * Creates a ReferenceProperty for testing
 	 */
-	fun createReferenceProperty(initialValue: TestAggregate? = null): ReferenceProperty<TestAggregate> =
-		object : ReferenceProperty<TestAggregate> {
+	fun createReferenceProperty(initialValue: TestAggregate? = null): AggregateReferenceProperty<TestAggregate> =
+		object : AggregateReferenceProperty<TestAggregate> {
 			override var value: TestAggregate? = initialValue
 
 			override var id: Any? = initialValue?.id
@@ -297,7 +297,7 @@ class TestEntity : EntityWithPropertiesBase() {
 
 			currentEntity =
 				when (property) {
-					is ReferenceProperty<*> -> property.value ?: throw IllegalArgumentException("Reference is null")
+					is AggregateReferenceProperty<*> -> property.value ?: throw IllegalArgumentException("Reference is null")
 					is PartReferenceProperty<*> -> property.value ?: throw IllegalArgumentException("Part reference is null")
 					else -> throw IllegalArgumentException("Cannot navigate through property of type ${property.javaClass.simpleName}")
 				}

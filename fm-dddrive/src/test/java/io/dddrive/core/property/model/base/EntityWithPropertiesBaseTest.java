@@ -4,10 +4,10 @@ import io.dddrive.core.ddd.model.*;
 import io.dddrive.core.enums.model.Enumeration;
 import io.dddrive.core.oe.model.ObjTenant;
 import io.dddrive.core.oe.model.ObjUser;
+import io.dddrive.core.property.model.AggregateReferenceProperty;
 import io.dddrive.core.property.model.BaseProperty;
 import io.dddrive.core.property.model.PartListProperty;
 import io.dddrive.core.property.model.Property;
-import io.dddrive.core.property.model.ReferenceProperty;
 import io.dddrive.core.property.model.impl.PartListPropertyImpl;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
@@ -232,7 +232,7 @@ class EntityWithPropertiesBaseTest {
 			BaseProperty<Integer> nestedProp = referencedEntity.addBaseProperty("nestedProp", Integer.class);
 			nestedProp.setValue(100);
 
-			ReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
+			AggregateReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
 			lenient().when(testEntityRepository.get(any())).thenReturn(referencedEntity);
 			refProp.setValue(referencedEntity);
 
@@ -258,7 +258,7 @@ class EntityWithPropertiesBaseTest {
 
 		@Test
 		void shouldSetReferencePropertyDirectly() {
-			ReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
+			AggregateReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
 			TestEntity referencedEntity = new TestEntity("", "e", directory);
 
 			rootEntity.setValueByPath("ref", referencedEntity);
@@ -270,7 +270,7 @@ class EntityWithPropertiesBaseTest {
 
 		@Test
 		void shouldSetReferenceIdProperty() {
-			ReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
+			AggregateReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
 
 			rootEntity.setValueByPath("ref.id", "some-id");
 
@@ -356,7 +356,7 @@ class EntityWithPropertiesBaseTest {
 
 		@Test
 		void shouldThrowWhenReferenceIsNull() {
-			ReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
+			AggregateReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
 			refProp.setValue(null); // Explicitly set to null
 
 			assertThrows(NullPointerException.class, () -> rootEntity.setValueByPath("ref.nestedProp", "value"));
@@ -386,7 +386,7 @@ class EntityWithPropertiesBaseTest {
 		@Test
 		void shouldThrowOnDeeperNavigationFailure() {
 			TestEntity referencedEntity = new TestEntity("ref", "root.ref", directory);
-			ReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
+			AggregateReferenceProperty<TestEntity> refProp = rootEntity.addReferenceProperty("ref", TestEntity.class);
 			lenient().when(testEntityRepository.get(any())).thenReturn(referencedEntity);
 			refProp.setValue(referencedEntity);
 
