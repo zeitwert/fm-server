@@ -5,7 +5,7 @@ import io.dddrive.core.enums.model.base.EnumerationBase
 import kotlin.math.pow
 
 enum class CodeBuildingPriceIndex(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 	val minIndexYear: Int,
 	val maxIndexYear: Int,
@@ -106,11 +106,9 @@ enum class CodeBuildingPriceIndex(
 	),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	fun indexAt(
 		origYear: Int,
@@ -141,7 +139,6 @@ enum class CodeBuildingPriceIndex(
 			entries.forEach { addItem(it) }
 		}
 
-		@JvmStatic
 		fun getBuildingPriceIndex(itemId: String): CodeBuildingPriceIndex? = getItem(itemId)
 	}
 }

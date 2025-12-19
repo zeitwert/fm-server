@@ -25,10 +25,7 @@ abstract class ObjHouseholdPartMemberBase(
 	//@formatter:on
 
 	@Suppress("UNCHECKED_CAST")
-	override val repository: PartRepository<ObjHousehold, ObjHouseholdPartMember>
-		get() {
-			return super.repository as PartRepository<ObjHousehold, ObjHouseholdPartMember>
-		}
+	override val repository get() = super.repository as PartRepository<ObjHousehold, ObjHouseholdPartMember>
 
 	override fun delete() {}
 

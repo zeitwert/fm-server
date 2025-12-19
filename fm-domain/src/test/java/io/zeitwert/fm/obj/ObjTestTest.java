@@ -94,7 +94,7 @@ public class ObjTestTest {
 		assertEquals(BigDecimal.valueOf(42), testA1.getNr());
 		assertEquals(false, testA1.getIsDone());
 		assertEquals(LocalDate.of(1966, 9, 8), testA1.getDate());
-		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.getJson()));
+		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.json));
 		assertEquals(typeA, testA1.getTestType());
 
 		ObjTest testB1 = this.testRepository.create(tenantId, userId, now);
@@ -114,12 +114,12 @@ public class ObjTestTest {
 		assertEquals("Short Test One", testA2.getShortText());
 		assertEquals("Long Test One", testA2.getLongText());
 		assertEquals(42, testA2.getInt());
-		assertEquals(BigDecimal.valueOf(42).setScale(3), testA2.getNr().setScale(3));
+		assertEquals(BigDecimal.valueOf(42).setScale(3), testA2.nr.setScale(3));
 		assertEquals(false, testA2.getIsDone());
 		assertEquals(LocalDate.of(1966, 9, 8), testA2.getDate());
-		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA2.getJson()));
+		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA2.json));
 		assertEquals(typeA, testA2.getTestType());
-		assertEquals(testB_id, testA2.getRefTest().getId());
+		assertEquals(testB_id, testA2.refTest.getId());
 
 		testA2.setShortText("another shortText");
 		testA2.setLongText("another longText");
@@ -135,12 +135,12 @@ public class ObjTestTest {
 		assertEquals("another shortText", testA2.getShortText());
 		assertEquals("another longText", testA2.getLongText());
 		assertEquals(41, testA2.getInt());
-		assertEquals(BigDecimal.valueOf(41).setScale(3), testA2.getNr().setScale(3));
-		assertEquals(true, testA2.getIsDone());
-		assertEquals(LocalDate.of(1966, 1, 5), testA2.getDate());
-		assertNull(testA2.getJson());
-		assertEquals(typeB, testA2.getTestType());
-		assertNull(testA2.getRefTest());
+		assertEquals(BigDecimal.valueOf(41).setScale(3), testA2.nr.setScale(3));
+		assertEquals(true, testA2.isDone);
+		assertEquals(LocalDate.of(1966, 1, 5), testA2.date);
+		assertNull(testA2.json);
+		assertEquals(typeB, testA2.testType);
+		assertNull(testA2.refTest);
 
 	}
 
@@ -165,14 +165,14 @@ public class ObjTestTest {
 		assertTrue(testA1.hasTestType(typeA));
 		testA1.addTestType(typeB);
 		assertTrue(testA1.hasTestType(typeB));
-		assertEquals(2, testA1.getTestTypeSet().size());
+		assertEquals(2, testA1.testTypeSet.size());
 		testA1.removeTestType(typeB);
 		assertTrue(testA1.hasTestType(typeA));
 		assertFalse(testA1.hasTestType(typeB));
-		assertEquals(1, testA1.getTestTypeSet().size());
+		assertEquals(1, testA1.testTypeSet.size());
 		testA1.addTestType(typeC);
 		assertTrue(testA1.hasTestType(typeC));
-		assertEquals(2, testA1.getTestTypeSet().size());
+		assertEquals(2, testA1.testTypeSet.size());
 
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
 
@@ -183,14 +183,14 @@ public class ObjTestTest {
 
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
 
-		assertEquals(2, testA2.getTestTypeSet().size());
+		assertEquals(2, testA2.testTypeSet.size());
 		assertTrue(testA2.hasTestType(typeA));
 		assertTrue(testA2.hasTestType(typeC));
 
 		testA2.removeTestType(typeA);
 		testA2.addTestType(typeB);
 
-		assertEquals(2, testA2.getTestTypeSet().size());
+		assertEquals(2, testA2.testTypeSet.size());
 		assertFalse(testA2.hasTestType(typeA));
 		assertTrue(testA2.hasTestType(typeB));
 		assertTrue(testA2.hasTestType(typeC));

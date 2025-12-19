@@ -1,35 +1,33 @@
-
 package io.zeitwert.fm.server.config.security;
+
+import io.zeitwert.fm.oe.model.ObjUserFM;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import io.zeitwert.fm.oe.model.ObjUserFM;
-
 public class ZeitwertUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	private ObjUserFM user;
+	private final ObjUserFM user;
 	private Integer tenantId;
 	private Integer accountId;
 
-	private Collection<? extends GrantedAuthority> authorities;
-
-	public static ZeitwertUserDetails build(ObjUserFM user) {
-		List<SimpleGrantedAuthority> authorities = List
-				.of(user.getRole() == null ? null : new SimpleGrantedAuthority(user.getRole().getId()));
-		return new ZeitwertUserDetails(user, authorities);
-	}
+	private final Collection<? extends GrantedAuthority> authorities;
 
 	public ZeitwertUserDetails(ObjUserFM user, Collection<? extends GrantedAuthority> authorities) {
 		this.user = user;
 		this.authorities = authorities;
+	}
+
+	public static ZeitwertUserDetails build(ObjUserFM user) {
+		List<SimpleGrantedAuthority> authorities = List
+				.of(user.role == null ? null : new SimpleGrantedAuthority(user.role.getId()));
+		return new ZeitwertUserDetails(user, authorities);
 	}
 
 	public Integer getUserId() {
@@ -43,7 +41,7 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return this.user.getPassword();
+		return this.user.password;
 	}
 
 	public Integer getTenantId() {
@@ -68,11 +66,11 @@ public class ZeitwertUserDetails implements UserDetails {
 	}
 
 	public boolean isAppAdmin() {
-		return this.user.isAppAdmin();
+		return this.user.isAppAdmin;
 	}
 
 	public boolean isAdmin() {
-		return this.user.isAdmin();
+		return this.user.isAdmin;
 	}
 
 	@Override

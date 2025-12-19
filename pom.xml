@@ -225,14 +225,18 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!-- Kotlin -->
+				<!--
+				Mixed Java/Kotlin with Lombok compilation order:
+				1. Java compiles first (process-sources) - Lombok generates bytecode
+				2. Kotlin compiles (compile) - can see Lombok-generated methods
+				3. Java compiles again (compile) - for Java that depends on Kotlin
+			-->
 				<plugin>
-					<groupId>org.jetbrains.kotlin</groupId>
-					<artifactId>kotlin-maven-plugin</artifactId>
-					<version>${kotlin.version}</version>
-					<extensions>true</extensions>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven.compiler.version}</version>
 					<executions>
-						<!-- Disable Kotlin plugin default lifecycle bindings (avoid running twice) -->
+						<!-- Disable default executions -->
 						<execution>
 							<id>default-compile</id>
 							<phase>none</phase>
@@ -241,25 +245,62 @@
 							<id>default-testCompile</id>
 							<phase>none</phase>
 						</execution>
-						<!-- Run kapt to process Lombok annotations before Kotlin compilation -->
+						<!-- Compile Java first (with Lombok) so Kotlin can see generated methods -->
 						<execution>
-							<id>kapt</id>
+							<id>java-compile</id>
 							<phase>process-sources</phase>
 							<goals>
-								<goal>kapt</goal>
+								<goal>compile</goal>
 							</goals>
-							<configuration>
-								<sourceDirs>
-									<sourceDir>${project.basedir}/src/main/java</sourceDir>
-								</sourceDirs>
-								<annotationProcessorPaths>
-									<path>
-										<groupId>org.projectlombok</groupId>
-										<artifactId>lombok</artifactId>
-										<version>${lombok.version}</version>
-									</path>
-								</annotationProcessorPaths>
-							</configuration>
+						</execution>
+						<!-- Compile remaining Java after Kotlin (for Java that depends on Kotlin) -->
+						<execution>
+							<id>java-compile-after-kotlin</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+						<!-- Test compilation -->
+						<execution>
+							<id>java-test-compile</id>
+							<phase>process-test-sources</phase>
+							<goals>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>java-test-compile-after-kotlin</id>
+							<phase>test-compile</phase>
+							<goals>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</path>
+						</annotationProcessorPaths>
+					</configuration>
+				</plugin>
+				<!-- Kotlin compilation (after Java with Lombok) -->
+				<plugin>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-maven-plugin</artifactId>
+					<version>${kotlin.version}</version>
+					<executions>
+						<!-- Disable default executions (avoid running twice) -->
+						<execution>
+							<id>default-compile</id>
+							<phase>none</phase>
+						</execution>
+						<execution>
+							<id>default-testCompile</id>
+							<phase>none</phase>
 						</execution>
 						<execution>
 							<id>compile</id>
@@ -267,6 +308,12 @@
 							<goals>
 								<goal>compile</goal>
 							</goals>
+							<configuration>
+								<sourceDirs>
+									<sourceDir>${project.basedir}/src/main/java</sourceDir>
+									<sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+								</sourceDirs>
+							</configuration>
 						</execution>
 						<execution>
 							<id>test-compile</id>
@@ -274,49 +321,17 @@
 							<goals>
 								<goal>test-compile</goal>
 							</goals>
+							<configuration>
+								<sourceDirs>
+									<sourceDir>${project.basedir}/src/test/java</sourceDir>
+									<sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+								</sourceDirs>
+							</configuration>
 						</execution>
 					</executions>
 					<configuration>
 						<jvmTarget>21</jvmTarget>
 					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven.compiler.version}</version>
-					<executions>
-						<execution>
-							<id>default-compile</id>
-							<phase>none</phase>
-						</execution>
-						<execution>
-							<id>default-testCompile</id>
-							<phase>none</phase>
-						</execution>
-						<execution>
-							<id>compile</id>
-							<phase>compile</phase>
-							<goals>
-								<goal>compile</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>testCompile</id>
-							<phase>test-compile</phase>
-							<goals>
-								<goal>testCompile</goal>
-							</goals>
-						</execution>
-					</executions>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

@@ -9,31 +9,31 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 @Component("dmsConfig")
-class DMSConfig : EnumConfigBase(), InitializingBean {
+class DMSConfig :
+	EnumConfigBase(),
+	InitializingBean {
 
-    @Autowired
-    lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
+	@Autowired
+	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
-    override fun afterPropertiesSet() {
-        try {
-            startConfig()
-            initCodeAggregateType(aggregateTypeEnum)
+	override fun afterPropertiesSet() {
+		try {
+			startConfig()
+			initCodeAggregateType(aggregateTypeEnum)
 
-            CodeContentKind.entries
-            CodeContentType.entries
-            CodeDocumentCategory.entries
-            CodeDocumentKind.entries
-        } finally {
-            endConfig()
-        }
-    }
+			CodeContentKind.Enumeration
+			CodeContentType.Enumeration
+			CodeDocumentCategory.Enumeration
+			CodeDocumentKind.Enumeration
+		} finally {
+			endConfig()
+		}
+	}
 
-    private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-        e.addItem(CodeAggregateType(e, "obj_document", "Document"))
-    }
+	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
+		e.addItem(CodeAggregateType("obj_document", "Document"))
+	}
 }
-

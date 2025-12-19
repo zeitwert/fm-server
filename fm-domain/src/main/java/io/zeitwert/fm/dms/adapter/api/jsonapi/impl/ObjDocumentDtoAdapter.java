@@ -1,16 +1,13 @@
-
 package io.zeitwert.fm.dms.adapter.api.jsonapi.impl;
-
-import org.springframework.stereotype.Component;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.model.ObjDocument;
-import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentVRecord;
 import io.zeitwert.fm.dms.model.enums.CodeContentKind;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
+import org.springframework.stereotype.Component;
 
 @Component("objDocumentDtoAdapter")
 public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDocumentDto> {
@@ -20,16 +17,14 @@ public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDoc
 		try {
 			obj.getMeta().disableCalc();
 			super.toAggregate(dto, obj);
-			obj.setName(dto.getName());
-			obj.setContentKind(dto.getContentKind() == null ? null
+			obj.name = dto.getName();
+			obj.contentKind = dto.getContentKind() == null ? null
 					: CodeContentKind.getContentKind(
-							dto.getContentKind().getId()));
-			obj.setDocumentKind(
-					dto.getDocumentKind() == null ? null : CodeDocumentKind.getDocumentKind(dto.getDocumentKind().getId()));
-			obj.setDocumentCategory(
-					dto.getDocumentCategory() == null ? null
-							: CodeDocumentCategory.getDocumentCategory(
-									dto.getDocumentCategory().getId()));
+					dto.getContentKind().getId());
+			obj.documentKind = dto.getDocumentKind() == null ? null : CodeDocumentKind.getDocumentKind(dto.getDocumentKind().getId());
+			obj.documentCategory = dto.getDocumentCategory() == null ? null
+					: CodeDocumentCategory.getDocumentCategory(
+					dto.getDocumentCategory().getId());
 		} finally {
 			obj.getMeta().enableCalc();
 			obj.calcAll();
@@ -45,12 +40,12 @@ public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDoc
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
-			.name(obj.getName())
-			.contentKind(EnumeratedDto.of(obj.getContentKind()))
-			.supportedContentTypes(obj.getContentKind().getExtensions().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
-			.documentKind(EnumeratedDto.of(obj.getDocumentKind()))
-			.documentCategory(EnumeratedDto.of(obj.getDocumentCategory()))
-			.contentType(EnumeratedDto.of(obj.getContentType()))
+			.name(obj.name)
+			.contentKind(EnumeratedDto.of(obj.contentKind))
+			.supportedContentTypes(obj.contentKind.getExtensions().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
+			.documentKind(EnumeratedDto.of(obj.documentKind))
+			.documentCategory(EnumeratedDto.of(obj.documentCategory))
+			.contentType(EnumeratedDto.of(obj.contentType))
 			.build();
 		// @formatter:on
 	}

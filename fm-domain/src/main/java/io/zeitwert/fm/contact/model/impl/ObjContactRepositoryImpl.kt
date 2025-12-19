@@ -1,15 +1,11 @@
 package io.zeitwert.fm.contact.model.impl
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.base.ObjContactBase
 import io.zeitwert.fm.contact.model.base.ObjContactPartAddressBase
-import io.zeitwert.fm.contact.persist.jooq.ObjContactPersistenceProvider
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 /**
@@ -24,16 +20,6 @@ class ObjContactRepositoryImpl :
 		AGGREGATE_TYPE_ID,
 	),
 	ObjContactRepository {
-
-	private lateinit var persistenceProvider: ObjContactPersistenceProvider
-
-	@Autowired
-	@Lazy
-	fun setPersistenceProvider(persistenceProvider: ObjContactPersistenceProvider) {
-		this.persistenceProvider = persistenceProvider
-	}
-
-	override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjContact> = persistenceProvider
 
 	override fun registerParts() {
 		super.registerParts()

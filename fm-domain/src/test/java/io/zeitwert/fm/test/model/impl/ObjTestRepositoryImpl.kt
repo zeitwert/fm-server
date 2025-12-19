@@ -8,9 +8,6 @@ import io.zeitwert.fm.test.model.base.ObjTestBase
 import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase
 import org.springframework.stereotype.Component
 
-/**
- * Repository implementation for ObjTest using the NEW dddrive framework.
- */
 @Component("objTestRepository")
 class ObjTestRepositoryImpl :
 	FMObjRepositoryBase<ObjTest>(

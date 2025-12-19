@@ -1,34 +1,19 @@
 package io.zeitwert.fm.util;
 
-import static io.dddrive.util.Invariant.assertThis;
+import io.crnk.core.queryspec.Direction;
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.FilterSpec;
+import io.crnk.core.queryspec.SortSpec;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.SortField;
-import org.jooq.SortOrder;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-
-import io.crnk.core.queryspec.Direction;
-import io.crnk.core.queryspec.FilterOperator;
-import io.crnk.core.queryspec.FilterSpec;
-import io.crnk.core.queryspec.SortSpec;
-
 public class SqlUtils {
-
-	public interface SearchConditionProvider {
-		Condition apply(Field<Integer> idField, FilterSpec filter);
-	}
 
 	private final SearchConditionProvider searchConditionProvider;
 
@@ -56,7 +41,7 @@ public class SqlUtils {
 
 	private Condition closedFilter(Table<?> table, FilterSpec filter) {
 		Field<?> field = table.field("closed_at");
-		assertThis(field != null, "known field closed_at");
+//		TODO assertThis(field != null, "known field closed_at");
 		if (field == null) {
 			return null; // make compiler happy (potential null pointer)
 		}
@@ -89,7 +74,7 @@ public class SqlUtils {
 		} else if (value.getClass() == String.class) {
 			return Integer.valueOf((String) value);
 		}
-		assertThis(false, value + " (" + value.getClass() + ") is an integer");
+		//		TODO assertThis(false, value + " (" + value.getClass() + ") is an integer");
 		return null;
 	}
 
@@ -99,7 +84,7 @@ public class SqlUtils {
 			if (filter.getOperator() == CustomFilters.IN || filter.getOperator() == FilterOperator.EQ) {
 				return field.in((Collection<Integer>) filter.getValue());
 			}
-			assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+			//		TODO assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		} else {
 			Integer value = this.toInteger(filter.getValue());
 			if (filter.getOperator() == FilterOperator.EQ) {
@@ -124,7 +109,7 @@ public class SqlUtils {
 				return field.le(value);
 			}
 		}
-		assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
+		//		TODO assertThis(false, "supported integer filter operator " + filter.getOperator() + " on " + filter.getValue());
 		return DSL.falseCondition();
 	}
 
@@ -163,7 +148,7 @@ public class SqlUtils {
 			return DSL.lower(field).like(value.replace("*", "%"));
 		}
 
-		assertThis(false, "supported string filter operator " + filter.getOperator());
+		//		TODO assertThis(false, "supported string filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -172,7 +157,7 @@ public class SqlUtils {
 		if (filter.getOperator() == FilterOperator.EQ) {
 			return field.eq(value);
 		}
-		assertThis(false, "supported boolean filter operator " + filter.getOperator());
+		//		TODO assertThis(false, "supported boolean filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -199,12 +184,12 @@ public class SqlUtils {
 		} else if (filter.getOperator() == FilterOperator.LE) {
 			return field.le(value);
 		}
-		assertThis(false, "supported local date time filter operator " + filter.getOperator());
+		//		TODO assertThis(false, "supported local date time filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
 	private Condition offsetDateTimeFilter(Field<OffsetDateTime> field, FilterSpec filter) {
-		OffsetDateTime value = (OffsetDateTime) filter.getValue();
+		OffsetDateTime value = filter.getValue();
 		if (value == null) {
 			if (filter.getOperator() == FilterOperator.EQ) {
 				return field.isNull();
@@ -228,7 +213,7 @@ public class SqlUtils {
 				return field.le(value);
 			}
 		}
-		assertThis(false, "supported offset date time filter operator " + filter.getOperator());
+		//		TODO assertThis(false, "supported offset date time filter operator " + filter.getOperator());
 		return DSL.falseCondition();
 	}
 
@@ -241,7 +226,7 @@ public class SqlUtils {
 			return this.closedFilter(table, filter);
 		}
 		Field<?> field = table.field(fieldName);
-		assertThis(field != null, "known field " + fieldName);
+		//		TODO assertThis(field != null, "known field " + fieldName);
 		if (field == null) {
 			return null; // make compiler happy (potential null pointer)
 		}
@@ -256,8 +241,14 @@ public class SqlUtils {
 		} else if (field.getType() == OffsetDateTime.class) {
 			return this.offsetDateTimeFilter((Field<OffsetDateTime>) field, filter);
 		}
-		assertThis(false, "supported field type " + fieldName + ": " + field.getType());
+		//		TODO assertThis(false, "supported field type " + fieldName + ": " + field.getType());
 		return DSL.falseCondition();
+	}
+
+	public interface SearchConditionProvider {
+
+		Condition apply(Field<Integer> idField, FilterSpec filter);
+
 	}
 
 }

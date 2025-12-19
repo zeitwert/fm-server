@@ -1,14 +1,5 @@
 package io.zeitwert.fm.dms;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -20,6 +11,15 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory;
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind;
 import io.zeitwert.test.TestApplication;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -91,26 +91,26 @@ public class DocumentTest {
 
 	private void getTestData(Object tenantId, Object userId, OffsetDateTime timestamp) throws Exception {
 		Account = accountRepo.create(tenantId, userId, timestamp);
-		Account.setName("Test HH");
-		Account.setAccountType(CodeAccountType.CLIENT);
+		Account.name = "Test HH";
+		Account.accountType = CodeAccountType.CLIENT;
 		accountRepo.store(Account, userId, timestamp);
 		assertNotNull(Account, "account");
 	}
 
 	private void initDocument(ObjDocument document) {
-		document.setAccountId(Account.getId());
-		document.setName("Schulhaus Isenweg");
-		document.setContentKind(CodeContentKind.FOTO);
-		document.setDocumentKind(CodeDocumentKind.STANDALONE);
-		document.setDocumentCategory(CodeDocumentCategory.FOTO);
+		document.accountId = Account.getId();
+		document.name = "Schulhaus Isenweg";
+		document.contentKind = CodeContentKind.FOTO;
+		document.documentKind = CodeDocumentKind.STANDALONE;
+		document.documentCategory = CodeDocumentCategory.FOTO;
 	}
 
 	private void checkDocument(ObjDocument document) {
-		assertEquals(Account.getId(), document.getAccountId(), "account id");
-		assertEquals("Schulhaus Isenweg", document.getName());
-		assertEquals(CodeContentKind.FOTO, document.getContentKind());
-		assertEquals(CodeDocumentKind.STANDALONE, document.getDocumentKind());
-		assertEquals(CodeDocumentCategory.FOTO, document.getDocumentCategory());
+		assertEquals(Account.getId(), document.accountId, "account id");
+		assertEquals("Schulhaus Isenweg", document.name);
+		assertEquals(CodeContentKind.FOTO, document.contentKind);
+		assertEquals(CodeDocumentKind.STANDALONE, document.documentKind);
+		assertEquals(CodeDocumentCategory.FOTO, document.documentCategory);
 	}
 
 }

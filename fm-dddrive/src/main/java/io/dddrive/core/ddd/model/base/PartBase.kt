@@ -166,7 +166,7 @@ abstract class PartBase<A : Aggregate>(
 		}
 	}
 
-	protected fun doCalcAll() {
+	protected open fun doCalcAll() {
 		this.didCalcAll = true
 	}
 
@@ -183,7 +183,7 @@ abstract class PartBase<A : Aggregate>(
 		}
 	}
 
-	protected fun doCalcVolatile() {
+	protected open fun doCalcVolatile() {
 		this.didCalcVolatile = true
 	}
 

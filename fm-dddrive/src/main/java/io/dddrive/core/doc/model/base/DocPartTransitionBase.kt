@@ -23,8 +23,7 @@ abstract class DocPartTransitionBase(
 	protected val _newCaseStage = this.addEnumProperty("newCaseStage", CodeCaseStage::class.java)
 
 	@Suppress("UNCHECKED_CAST")
-	override val repository: PartRepository<Doc, DocPartTransition>
-		get() = super.repository as PartRepository<Doc, DocPartTransition>
+	override val repository get() = super.repository as PartRepository<Doc, DocPartTransition>
 
 	override fun doAfterCreate() {
 		this._tenantId.value = this.aggregate.tenantId

@@ -1,8 +1,5 @@
 package io.zeitwert.fm.oe.model.base
 
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
-import io.dddrive.core.property.model.ReferenceProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
@@ -21,16 +18,15 @@ abstract class ObjTenantFMBase(
 ) : FMObjBase(repository, isNew),
 	ObjTenantFM {
 
-	private val _tenantType: EnumProperty<CodeTenantType> = this.addEnumProperty("tenantType", CodeTenantType::class.java)
-	private val _inflationRate: BaseProperty<BigDecimal> = this.addBaseProperty("inflationRate", BigDecimal::class.java)
-	private val _discountRate: BaseProperty<BigDecimal> = this.addBaseProperty("discountRate", BigDecimal::class.java)
-	private val _logoImage: ReferenceProperty<ObjDocument> =
-		this.addReferenceProperty("logoImage", ObjDocument::class.java)
-	private val _key: BaseProperty<String> = this.addBaseProperty("key", String::class.java)
-	private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
-	private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
+	private val _tenantType = addEnumProperty("tenantType", CodeTenantType::class.java)
+	private val _inflationRate = addBaseProperty("inflationRate", BigDecimal::class.java)
+	private val _discountRate = addBaseProperty("discountRate", BigDecimal::class.java)
+	private val _logoImage = addReferenceProperty("logoImage", ObjDocument::class.java)
+	private val _key = addBaseProperty("key", String::class.java)
+	private val _name = addBaseProperty("name", String::class.java)
+	private val _description = addBaseProperty("description", String::class.java)
 
-	override fun getRepository(): ObjTenantFMRepository = super.getRepository() as ObjTenantFMRepository
+	override val repository get() = super.repository as ObjTenantFMRepository
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -38,32 +34,32 @@ abstract class ObjTenantFMBase(
 	}
 
 	private fun calcCaption() {
-		this.caption.value = _name.value ?: "Tenant"
+		this._caption.value = _name.value ?: "Tenant"
 	}
 
 	override fun doAfterCreate(
-		userId: Any?,
-		timestamp: OffsetDateTime?,
+		userId: Any,
+		timestamp: OffsetDateTime,
 	) {
 		super.doAfterCreate(userId, timestamp)
 		this.addLogoImage(userId, timestamp)
 	}
 
 	override fun doBeforeStore(
-		userId: Any?,
-		timestamp: OffsetDateTime?,
+		userId: Any,
+		timestamp: OffsetDateTime,
 	) {
 		super.doBeforeStore(userId, timestamp)
-		if (this.getLogoImageId() == null) {
+		if (this.logoImageId == null) {
 			this.addLogoImage(userId, timestamp)
 		}
 	}
 
 	private fun addLogoImage(
-		userId: Any?,
-		timestamp: OffsetDateTime?,
+		userId: Any,
+		timestamp: OffsetDateTime,
 	) {
-		val documentRepo = this.getRepository().documentRepository
+		val documentRepo = this.repository.documentRepository
 		val image = documentRepo.create(this.tenantId, userId, timestamp)
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.getContentKind("foto")
@@ -73,56 +69,13 @@ abstract class ObjTenantFMBase(
 		_logoImage.id = image.id
 	}
 
-	override fun getTenantType(): CodeTenantType? = _tenantType.value
-
-	override fun setTenantType(tenantType: CodeTenantType?) {
-		_tenantType.value = tenantType
-	}
-
-	fun getTenantTypeId(): String? = _tenantType.value?.id
-
-	override fun getInflationRate(): BigDecimal? = _inflationRate.value
-
-	override fun setInflationRate(rate: BigDecimal?) {
-		_inflationRate.value = rate
-	}
-
-	override fun getDiscountRate(): BigDecimal? = _discountRate.value
-
-	override fun setDiscountRate(rate: BigDecimal?) {
-		_discountRate.value = rate
-	}
-
-	override fun getUsers(): List<ObjUserFM> {
-		val userRepo = getRepository().userRepository
-		return userRepo
+	override val users: List<ObjUserFM>
+		get() = repository.userRepository
 			.getByForeignKey("tenantId", this.id)
-			.filterIsInstance<ObjUserFM>()
-	}
+			.map { repository.userRepository.get(it) }
 
-	override fun getLogoImageId(): Int? = _logoImage.id as? Int
+	override val logoImageId get() = _logoImage.id
 
-	override fun getLogoImage(): ObjDocument? {
-		val id = _logoImage.id ?: return null
-		return getRepository().documentRepository.get(id) as? ObjDocument
-	}
-
-	override fun getKey(): String? = _key.value
-
-	override fun setKey(key: String?) {
-		_key.value = key
-	}
-
-	override fun getName(): String? = _name.value
-
-	override fun setName(name: String?) {
-		_name.value = name
-	}
-
-	override fun getDescription(): String? = _description.value
-
-	override fun setDescription(description: String?) {
-		_description.value = description
-	}
+	override val logoImage get() = if (_logoImage.id != null) repository.documentRepository.get(id) else null
 
 }

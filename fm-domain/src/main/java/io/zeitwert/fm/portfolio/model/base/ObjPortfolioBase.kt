@@ -3,19 +3,13 @@ package io.zeitwert.fm.portfolio.model.base
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.ReferenceSetProperty
-import io.dddrive.util.Invariant.requireThis
-import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
-import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
-import java.time.OffsetDateTime
 
 abstract class ObjPortfolioBase(
 	repository: ObjPortfolioRepository,
@@ -36,97 +30,80 @@ abstract class ObjPortfolioBase(
 		}
 	}
 
-	private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
-	private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
-	private val _portfolioNr: BaseProperty<String> = this.addBaseProperty("portfolioNr", String::class.java)
-	private val _includeSet: ReferenceSetProperty<Obj> = this.addReferenceSetProperty("includeSet", Obj::class.java)
-	private val _excludeSet: ReferenceSetProperty<Obj> = this.addReferenceSetProperty("excludeSet", Obj::class.java)
-	private val _buildingSet: ReferenceSetProperty<ObjBuilding> =
-		this.addReferenceSetProperty("buildingSet", ObjBuilding::class.java)
+	private val _name = addBaseProperty("name", String::class.java)
+	private val _description = addBaseProperty("description", String::class.java)
+	private val _portfolioNr = addBaseProperty("portfolioNr", String::class.java)
+	private val _includeSet = addReferenceSetProperty("includeSet", Obj::class.java)
+	private val _excludeSet = addReferenceSetProperty("excludeSet", Obj::class.java)
+	private val _buildingSet = addReferenceSetProperty("buildingSet", ObjBuilding::class.java)
 
 	override fun aggregate(): ObjPortfolio = this
 
-	override fun taskRepository() = getRepository().taskRepository
+	override fun taskRepository() = repository.taskRepository
 
-	override fun getRepository(): ObjPortfolioRepository = super.getRepository() as ObjPortfolioRepository
+	override val repository: ObjPortfolioRepository get() = super.repository as ObjPortfolioRepository
 
-	override fun getAccount(): ObjAccount? = getRepository().accountRepository.get(accountId)
+	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
 
-	override fun getName(): String? = _name.value
+	// @Suppress("UNCHECKED_CAST")
+	// override val includeSet: Set<Any> get() = _includeSet.items.toSet()
 
-	override fun setName(name: String?) {
-		_name.value = name
-	}
+	// override fun clearIncludeSet() {
+	// 	_includeSet.clearItems()
+	// }
 
-	override fun getDescription(): String? = _description.value
+	// override fun addInclude(id: Int?) {
+	// 	require(hasValidObjType(id)) { "supported objType $id" }
+	// 	_includeSet.addItem(id)
+	// }
 
-	override fun setDescription(description: String?) {
-		_description.value = description
-	}
+	// override fun removeInclude(id: Int?) {
+	// 	_includeSet.removeItem(id)
+	// }
 
-	override fun getPortfolioNr(): String? = _portfolioNr.value
+	// @Suppress("UNCHECKED_CAST")
+	// override val excludeSet: Set<Any> get() = _excludeSet.items.toSet()
 
-	override fun setPortfolioNr(portfolioNr: String?) {
-		_portfolioNr.value = portfolioNr
-	}
+	// override fun clearExcludeSet() {
+	// 	_excludeSet.clearItems()
+	// }
 
-	@Suppress("UNCHECKED_CAST")
-	override fun getIncludeSet(): Set<Int> = _includeSet.items.map { it as Int }.toSet()
+	// override fun addExclude(id: Int?) {
+	// 	requireThis(hasValidObjType(id), "supported objType $id")
+	// 	_excludeSet.addItem(id)
+	// }
 
-	override fun clearIncludeSet() {
-		_includeSet.clearItems()
-	}
+	// override fun removeExclude(id: Int?) {
+	// 	_excludeSet.removeItem(id)
+	// }
 
-	override fun addInclude(id: Int?) {
-		requireThis(hasValidObjType(id), "supported objType $id")
-		_includeSet.addItem(id)
-	}
-
-	override fun removeInclude(id: Int?) {
-		_includeSet.removeItem(id)
-	}
-
-	@Suppress("UNCHECKED_CAST")
-	override fun getExcludeSet(): Set<Int> = _excludeSet.items.map { it as Int }.toSet()
-
-	override fun clearExcludeSet() {
-		_excludeSet.clearItems()
-	}
-
-	override fun addExclude(id: Int?) {
-		requireThis(hasValidObjType(id), "supported objType $id")
-		_excludeSet.addItem(id)
-	}
-
-	override fun removeExclude(id: Int?) {
-		_excludeSet.removeItem(id)
-	}
-
-	@Suppress("UNCHECKED_CAST")
-	override fun getBuildingSet(): Set<Int> = _buildingSet.items.map { it as Int }.toSet()
+	// @Suppress("UNCHECKED_CAST")
+	// override val buildingSet: Set<Any> = _buildingSet.items.toSet()
 
 	private fun hasValidObjType(id: Int?): Boolean {
 		if (id == null) return false
-		val obj = getRepository().get(id)
+		val obj = repository.get(id)
 		val objType = obj?.meta?.repository?.aggregateType
 		return OBJ_TYPES.contains(objType)
 	}
 
-	override fun getInflationRate(): Double {
-		val inflationRate = account?.inflationRate
-			?: (tenant as? ObjTenantFM)?.inflationRate
-		return inflationRate?.toDouble() ?: 0.0
-	}
+	override val inflationRate: Double
+		get() {
+			val inflationRate = account?.inflationRate
+				?: (tenant as? ObjTenantFM)?.inflationRate
+			return inflationRate?.toDouble() ?: 0.0
+		}
 
-	override fun getDiscountRate(): Double {
-		val discountRate = account?.discountRate
-			?: (tenant as? ObjTenantFM)?.discountRate
-		return discountRate?.toDouble() ?: 0.0
-	}
+	override val discountRate: Double
+		get() {
+			val discountRate = account?.discountRate
+				?: (tenant as? ObjTenantFM)?.discountRate
+			return discountRate?.toDouble() ?: 0.0
+		}
 
 	override fun getPortfolioValue(year: Int): Double = 0.0
 
-	override fun getCondition(year: Int): Int? = null
+	override fun getCondition(year: Int): Int = 0
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -135,7 +112,7 @@ abstract class ObjPortfolioBase(
 	}
 
 	private fun calcCaption() {
-		this.caption.value = this.name
+		this._caption.value = this.name
 	}
 
 	private fun calcBuildingSet() {
@@ -148,24 +125,22 @@ abstract class ObjPortfolioBase(
 		}
 	}
 
-	private fun getBuildingIds(id: Int): Set<Int> {
-		val objType = getRepository()
+	private fun getBuildingIds(id: Any): Set<Any> {
+		val objType = repository
 			.get(id)
-			?.meta
-			?.repository
-			?.aggregateType
-		return when (objType?.id) {
+			.meta.repository.aggregateType
+		return when (objType.id) {
 			"obj_building" -> {
 				setOf(id)
 			}
 
 			"obj_portfolio" -> {
-				val pf = getRepository().get(id)
-				pf.buildingSet ?: emptySet()
+				val pf = repository.get(id)
+				pf.buildingSet
 			}
 
 			"obj_account" -> {
-				getRepository()
+				repository
 					.buildingRepository
 					.getByForeignKey("accountId", id)
 					.map { it as Int }
@@ -185,9 +160,4 @@ abstract class ObjPortfolioBase(
 	//     this.addSearchText(this.description)
 	// }
 
-	override fun addTask(): DocTask {
-		val task = taskRepository().create(tenantId, null, OffsetDateTime.now())
-		task.setRelatedToId(id as Int)
-		return task
-	}
 }

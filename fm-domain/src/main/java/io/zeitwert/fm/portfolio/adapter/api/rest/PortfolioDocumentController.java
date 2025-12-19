@@ -1,26 +1,17 @@
-
 package io.zeitwert.fm.portfolio.adapter.api.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.aspose.words.SaveFormat;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
-import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
+import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
+import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.util.MimeType;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
@@ -29,8 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import com.aspose.words.SaveFormat;
 
 @RestController("portfolioDocumentController")
 @RequestMapping("/rest/portfolio/portfolios")
@@ -54,8 +43,7 @@ public class PortfolioDocumentController {
 	@GetMapping("/{id}/projection")
 	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer id) {
 		Set<ObjBuilding> buildings = this.portfolioRepository
-				.get(id)
-				.getBuildingSet()
+				.get(id).buildingSet
 				.stream()
 				.map((buildingId) -> this.buildingRepository.get(buildingId))
 				.collect(Collectors.toSet());
@@ -91,7 +79,7 @@ public class PortfolioDocumentController {
 		}
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 			this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
-			String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
+			String fileName = portfolio.getAccount().name + " - " + portfolio.name;
 			fileName += " - " + monthFormatter.format(OffsetDateTime.now());
 			fileName = this.getFileName(fileName, this.getSaveFormat(format));
 			// mark file for download
@@ -124,7 +112,7 @@ public class PortfolioDocumentController {
 				ObjPortfolio portfolio = this.portfolioRepository.get(Integer.parseInt(id));
 				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 					this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
-					String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
+					String fileName = portfolio.getAccount().name + " - " + portfolio.name;
 					fileName += " - " + dateTimeNow;
 					fileName = this.getFileName(fileName, this.getSaveFormat(format));
 					fileName = fileName.replace("/", " ");
@@ -154,7 +142,7 @@ public class PortfolioDocumentController {
 	}
 
 	private int getSaveFormat(String format) {
-		return format != null && "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
+		return "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
 	}
 
 }

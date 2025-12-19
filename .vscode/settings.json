@@ -2,7 +2,6 @@
 	"maven.view": "hierarchical",
 	"java.configuration.updateBuildConfiguration": "automatic",
 	"java.completion.favoriteStaticMembers": [
-		"io.dddrive.util.Invariant.*",
 		"org.junit.Assert.*",
 		"org.junit.Assume.*",
 		"org.junit.jupiter.api.Assertions.*",
@@ -34,7 +33,7 @@
 		"java",
 		"javax",
 		"org",
-		"",
+		""
 	],
 	"java.sources.organizeImports.starThreshold": 10,
 	"java.sources.organizeImports.staticStarThreshold": 10,

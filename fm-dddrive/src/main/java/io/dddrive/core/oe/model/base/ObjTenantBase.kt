@@ -3,7 +3,6 @@ package io.dddrive.core.oe.model.base
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjBase
 import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.property.model.BaseProperty
 import java.time.OffsetDateTime
 
 abstract class ObjTenantBase(
@@ -12,11 +11,9 @@ abstract class ObjTenantBase(
 ) : ObjBase(repository, isNew),
 	ObjTenant {
 
-	// @formatter:off
-	protected val _key: BaseProperty<String> = this.addBaseProperty<String>("key", String::class.java)
-	protected val _name: BaseProperty<String> = this.addBaseProperty<String>("name", String::class.java)
-	protected val _description: BaseProperty<String> = this.addBaseProperty<String>("description", String::class.java)
-	// @formatter:on
+	protected val _key = this.addBaseProperty<String>("key", String::class.java)
+	protected val _name = this.addBaseProperty<String>("name", String::class.java)
+	protected val _description = this.addBaseProperty<String>("description", String::class.java)
 
 	// 	@Override
 	// 	public void doCalcSearch() {

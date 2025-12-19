@@ -1,18 +1,5 @@
 package io.zeitwert.fm.collaboration;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
@@ -22,6 +9,20 @@ import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -53,7 +54,7 @@ public class NoteTest {
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();
 
-		assertEquals(0, testA1.getNotes().size());
+		assertEquals(0, testA1.notes.size());
 
 		// add 3 notes [1, 2, 3]
 		// remove 1 note in the middle [1, 2]
@@ -62,35 +63,35 @@ public class NoteTest {
 			ObjNote noteA1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteA1, "Subject 1", "Content 1", false);
 			this.noteRepo.store(noteA1, userId, now);
-			assertEquals(1, testA1.getNotes().size());
+			assertEquals(1, testA1.notes.size());
 
 			ObjNote noteB1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteB1, "Subject 2", "Content 2", false);
 			this.noteRepo.store(noteB1, userId, now);
-			assertEquals(2, testA1.getNotes().size());
+			assertEquals(2, testA1.notes.size());
 
 			ObjNote noteC1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteC1, "Subject 3", "Content 3", false);
 			this.noteRepo.store(noteC1, userId, now);
-			assertEquals(3, testA1.getNotes().size());
+			assertEquals(3, testA1.notes.size());
 
-			List<ObjNote> testA1_noteList = testA1.getNotes();
+			List<ObjNote> testA1_noteList = testA1.notes;
 			Set<Object> idSet = testA1_noteList.stream().map(n -> n.getId()).collect(Collectors.toSet());
 			assertEquals(Set.of(noteA1.getId(), noteB1.getId(), noteC1.getId()), idSet);
 			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
 			assertEquals(noteB1.getId(), testA1_noteList.get(1).getId());
 			assertEquals(noteC1.getId(), testA1_noteList.get(2).getId());
 			assertEquals("Subject 1,Subject 2,Subject 3",
-					String.join(",", testA1.getNotes().stream().map(n -> n.getSubject()).toList()));
-			assertEquals("Subject 2", testA1.getNotes().get(1).getSubject());
+					String.join(",", testA1.notes.stream().map(n -> n.subject).toList()));
+			assertEquals("Subject 2", testA1.notes.get(1).subject);
 
 			testA1.removeNote(noteB1.getId(), userId);
-			testA1_noteList = testA1.getNotes();
+			testA1_noteList = testA1.notes;
 			assertEquals(2, testA1_noteList.size());
 			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
-			assertEquals(noteA1.getSubject(), testA1_noteList.get(0).getSubject());
+			assertEquals(noteA1.subject, testA1_noteList.get(0).subject);
 			assertEquals(noteC1.getId(), testA1_noteList.get(1).getId());
-			assertEquals(noteC1.getSubject(), testA1_noteList.get(1).getSubject());
+			assertEquals(noteC1.subject, testA1_noteList.get(1).subject);
 
 			this.testRepo.store(testA1, userId, now);
 			testA1 = null;
@@ -102,20 +103,20 @@ public class NoteTest {
 		ObjTest testA2 = this.testRepo.load(testA_id);
 
 		{
-			List<ObjNote> testA2_noteList = testA2.getNotes();
+			List<ObjNote> testA2_noteList = testA2.notes;
 
 			assertEquals(2, testA2_noteList.size());
-			assertEquals("Subject 1,Subject 3", String.join(",", testA2_noteList.stream().map(n -> n.getSubject()).toList()));
-			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
+			assertEquals("Subject 1,Subject 3", String.join(",", testA2_noteList.stream().map(n -> n.subject).toList()));
+			assertEquals("Subject 3", testA2_noteList.get(1).subject);
 
 			ObjNote noteD1 = testA2.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteD1, "Subject 4", "Content 4", false);
 			this.noteRepo.store(noteD1, userId, now);
-			assertEquals(3, testA2.getNotes().size());
+			assertEquals(3, testA2.notes.size());
 
-			ObjNote noteC2 = testA2.getNotes().get(1);
-			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
-			noteC2.setIsPrivate(true);
+			ObjNote noteC2 = testA2.notes.get(1);
+			assertEquals("Subject 3", testA2_noteList.get(1).subject);
+			noteC2.isPrivate = true;
 			this.noteRepo.store(noteC2, userId, now);
 
 			this.testRepo.store(testA2, userId, now);
@@ -126,12 +127,12 @@ public class NoteTest {
 		ObjTest testA3 = this.testRepo.get(testA_id);
 
 		{
-			List<ObjNote> testA3_noteList = testA3.getNotes();
+			List<ObjNote> testA3_noteList = testA3.notes;
 
 			assertEquals("Subject 1,Subject 3,Subject 4",
-					String.join(",", testA3_noteList.stream().map(n -> n.getSubject()).toList()));
+					String.join(",", testA3_noteList.stream().map(n -> n.subject).toList()));
 			assertEquals(3, testA3_noteList.size());
-			assertTrue(testA3.getNotes().get(1).getIsPrivate());
+			assertTrue(testA3.notes.get(1).isPrivate);
 		}
 
 		// Test privacy
@@ -163,9 +164,9 @@ public class NoteTest {
 	}
 
 	private void initNote(ObjNote note, String subject, String content, Boolean isPrivate) {
-		note.setSubject(subject);
-		note.setContent(content);
-		note.setIsPrivate(isPrivate);
+		note.subject = subject;
+		note.content = content;
+		note.isPrivate = isPrivate;
 	}
 
 }

@@ -1,20 +1,16 @@
-
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.core.obj.model.Obj;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto.ObjPortfolioDto;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
-import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component("objPortfolioDtoAdapter")
 public class ObjPortfolioDtoAdapter
@@ -49,10 +45,10 @@ public class ObjPortfolioDtoAdapter
 			pf.getMeta().disableCalc();
 			super.toAggregate(dto, pf);
 
-			pf.setName(dto.getName());
-			pf.setDescription(dto.getDescription());
-			pf.setPortfolioNr(dto.getPortfolioNr());
-			pf.setAccountId(dto.getAccountId());
+			pf.name = dto.getName();
+			pf.description = dto.getDescription();
+			pf.portfolioNr = dto.getPortfolioNr();
+			pf.accountId = dto.getAccountId();
 			// TODO prevent calculation during insert
 			if (dto.getIncludes() != null) {
 				pf.clearIncludeSet();
@@ -84,13 +80,13 @@ public class ObjPortfolioDtoAdapter
 		this.fromAggregate(dtoBuilder, pf);
 		// @formatter:off
 		return dtoBuilder
-			.name(pf.getName())
-			.description(pf.getDescription())
-			.portfolioNr(pf.getPortfolioNr())
-			.accountId((Integer)pf.getAccountId())
-			.includes(pf.getIncludeSet().stream().map(this::getObj).collect(Collectors.toSet()))
-			.excludes(pf.getExcludeSet().stream().map(this::getObj).collect(Collectors.toSet()))
-			.buildings(pf.getBuildingSet().stream().map(this::getObj).collect(Collectors.toSet()))
+			.name(pf.name)
+			.description(pf.description)
+			.portfolioNr(pf.portfolioNr)
+			.accountId((Integer)pf.accountId)
+			.includes(pf.includeSet.stream().map(this::getObj).collect(Collectors.toSet()))
+			.excludes(pf.excludeSet.stream().map(this::getObj).collect(Collectors.toSet()))
+			.buildings(pf.buildingSet.stream().map(this::getObj).collect(Collectors.toSet()))
 			.build();
 		// @formatter:on
 	}

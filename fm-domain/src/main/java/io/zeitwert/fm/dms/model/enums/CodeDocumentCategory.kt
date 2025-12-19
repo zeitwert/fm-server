@@ -4,7 +4,7 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeDocumentCategory(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
 
@@ -14,11 +14,9 @@ enum class CodeDocumentCategory(
 	LOGO("logo", "Logo"),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	companion object Enumeration : EnumerationBase<CodeDocumentCategory>(CodeDocumentCategory::class.java) {
 		init {

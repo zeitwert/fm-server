@@ -1,22 +1,19 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import java.time.OffsetDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
-
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.core.oe.model.ObjUser;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.oe.model.enums.CodeUserRole;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
 import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.db.tables.records.ObjUserVRecord;
+import io.zeitwert.fm.oe.model.enums.CodeUserRole;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.OffsetDateTime;
 
 @Component("objUserDtoAdapter")
 public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> {
@@ -52,17 +49,17 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 	public void toAggregate(ObjUserDto dto, ObjUserFM obj) {
 		super.toAggregate(dto, obj);
 		if (dto.getId() != null && dto.getPassword() != null) {
-			obj.setPassword(dto.getPassword());
-			obj.setNeedPasswordChange(dto.getNeedPasswordChange());
+			obj.password = dto.getPassword();
+			obj.needPasswordChange = dto.getNeedPasswordChange();
 		} else {
 			obj.setEmail(dto.getEmail());
 			if (dto.getId() == null) {
-				obj.setPassword(dto.getPassword());
-				obj.setNeedPasswordChange(dto.getNeedPasswordChange());
+				obj.password = dto.getPassword();
+				obj.needPasswordChange = dto.getNeedPasswordChange();
 			}
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
-			obj.setRole(CodeUserRole.getUserRole(dto.getRole().getId()));
+			obj.role = CodeUserRole.getUserRole(dto.getRole().getId());
 			obj.clearTenantSet();
 			for (EnumeratedDto tenant : dto.getTenants()) {
 				obj.addTenant(this.getTenant(Integer.parseInt(tenant.getId())));
@@ -81,10 +78,10 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 				.email(obj.getEmail())
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.role(EnumeratedDto.of(obj.getRole()))
-				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated((Integer) t.getId())).toList())
-				.needPasswordChange(obj.getNeedPasswordChange())
-				.avatarId(obj.getAvatarImageId())
+				.role(EnumeratedDto.of(obj.role))
+				.tenants(obj.tenantSet.stream().map(t -> this.getTenantEnumerated((Integer) t.getId())).toList())
+				.needPasswordChange(obj.needPasswordChange)
+				.avatarId(obj.avatarImageId)
 				.build();
 	}
 

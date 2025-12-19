@@ -1,15 +1,12 @@
 package io.zeitwert.fm.server.config.security;
 
-import static io.dddrive.util.Invariant.requireThis;
-
-import java.io.IOException;
-import java.util.Date;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.zeitwert.fm.server.session.service.api.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +18,12 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.zeitwert.fm.server.session.service.api.JwtProvider;
+import java.io.IOException;
+import java.util.Date;
 
 public class AuthenticationJWTFilter extends OncePerRequestFilter {
 
-	private Logger logger = LoggerFactory.getLogger(AuthenticationJWTFilter.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationJWTFilter.class);
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -116,7 +112,7 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
 	}
 
 	private Claims getClaims(String token) {
-		requireThis(token != null && token.length() > 0, "valid JWT (" + token + ")");
+//		requireThis(token != null && token.length() > 0, "valid JWT (" + token + ")");
 		return Jwts.parser()
 				.verifyWith(JwtProvider.JWT_SECRET_KEY)
 				.build()

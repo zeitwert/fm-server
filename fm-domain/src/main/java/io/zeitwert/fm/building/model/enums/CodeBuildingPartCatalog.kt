@@ -4,7 +4,7 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeBuildingPartCatalog(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 	private val partList: String,
 ) : Enumerated {
@@ -141,11 +141,9 @@ enum class CodeBuildingPartCatalog(
 	),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	fun getParts(): List<Pair<CodeBuildingPart, Int>> =
 		partList.split(",").map { p ->

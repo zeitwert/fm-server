@@ -4,7 +4,7 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeContentKind(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
 
@@ -13,11 +13,9 @@ enum class CodeContentKind(
 	VIDEO("video", "Video"),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	fun getContentTypes(): List<CodeContentType> = CodeContentType.entries.filter { it.contentKind == this }
 

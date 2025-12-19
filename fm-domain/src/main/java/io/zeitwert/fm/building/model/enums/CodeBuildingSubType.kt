@@ -4,7 +4,7 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeBuildingSubType(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 	val buildingType: CodeBuildingType,
 ) : Enumerated {
@@ -141,11 +141,9 @@ enum class CodeBuildingSubType(
 	ST_15_01("ST-15-01", "01 Unterstand", CodeBuildingType.T15),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	companion object Enumeration : EnumerationBase<CodeBuildingSubType>(CodeBuildingSubType::class.java) {
 		init {

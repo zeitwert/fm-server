@@ -4,7 +4,6 @@ import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
 import io.dddrive.core.obj.model.Obj
-import io.dddrive.util.Invariant.requireThis
 import org.jooq.DSLContext
 import org.jooq.UpdatableRecord
 
@@ -42,7 +41,7 @@ abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord
 		aggregate: A,
 		id: Any,
 	) {
-		requireThis(isValidId(id)) { "valid id" }
+		require(isValidId(id)) { "valid id" }
 		dslContext().transaction { _ ->
 			val er = extnRecordMapper.loadRecord(id)
 			val br = baseRecordMapper.loadRecord(id)
@@ -53,7 +52,7 @@ abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord
 			} finally {
 				aggregate.meta.enableCalc()
 			}
-			aggregate.calcVolatile()
+			aggregate.meta.calcVolatile()
 		}
 	}
 
@@ -77,6 +76,12 @@ abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord
 	override fun getByForeignKey(
 		fkName: String,
 		targetId: Any,
-	): List<Any> = extnRecordMapper.getByForeignKey(fkName, targetId)!!
+	): List<Any> {
+		val foreignKeys = baseRecordMapper.getByForeignKey("", fkName, targetId)
+		if (foreignKeys.isNullOrEmpty()) {
+			return extnRecordMapper.getByForeignKey("", fkName, targetId)!!
+		}
+		return foreignKeys
+	}
 
 }

@@ -7,7 +7,7 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Address channel enum using the NEW dddrive framework.
  */
 enum class CodeAddressChannel(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 	val addressTypeId: String,
 ) : Enumerated {
@@ -20,17 +20,13 @@ enum class CodeAddressChannel(
 	MESSENGER("messenger", "Messenger", "chat"),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
-	val addressType: CodeAddressType?
-		get() = CodeAddressType.getAddressType(addressTypeId)
+	val addressType get() = CodeAddressType.getAddressType(addressTypeId)
 
-	val isMailAddress: Boolean
-		get() = addressTypeId == "mail"
+	val isMailAddress get() = addressTypeId == "mail"
 
 	companion object Enumeration : EnumerationBase<CodeAddressChannel>(CodeAddressChannel::class.java) {
 		init {

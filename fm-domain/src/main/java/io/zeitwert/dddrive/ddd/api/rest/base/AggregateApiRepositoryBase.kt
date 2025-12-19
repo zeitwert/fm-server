@@ -37,7 +37,7 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 				repository.idFromString(dto.getTenant()!!.id!!)
 			} else {
 				requestContext.tenantId
-			}
+			}!!
 			val aggregate = repository.create(tenantId, requestContext.userId, OffsetDateTime.now())
 			dtoAdapter.toAggregate(dto, aggregate)
 			repository.store(aggregate, requestContext.userId, OffsetDateTime.now())
@@ -49,13 +49,13 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 
 	override fun findOne(id: String): D {
 		try {
-			val aggregate = repository.load(repository.idFromString(id))
+			val aggregate = repository.load(repository.idFromString(id)!!)
 			requestContext.clearAggregates()
 			requestContext.addAggregate(aggregate.id, aggregate)
 			return dtoAdapter.fromAggregate(aggregate, DtoDetailLevel.FULL)
 		} catch (x: Exception) {
 			x.printStackTrace()
-			throw ResponseStatusException(HttpStatus.NOT_FOUND, "${repository.aggregateType.name}[$id]")
+			throw ResponseStatusException(HttpStatus.NOT_FOUND, repository.aggregateType.id)
 		}
 	}
 

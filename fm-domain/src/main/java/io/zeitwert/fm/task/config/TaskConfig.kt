@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component("taskConfig")
-class TaskConfig : EnumConfigBase(), InitializingBean {
+class TaskConfig :
+	EnumConfigBase(),
+	InitializingBean {
 
 	@Autowired
 	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
@@ -27,38 +29,27 @@ class TaskConfig : EnumConfigBase(), InitializingBean {
 	override fun afterPropertiesSet() {
 		try {
 			startConfig()
-			aggregateTypeEnum.addItem(CodeAggregateType(aggregateTypeEnum, "doc_task", "Task"))
+			aggregateTypeEnum.addItem(CodeAggregateType("doc_task", "Task"))
 			initCodeCaseDef(caseDefEnum)
 			initCodeCaseStage(caseStageEnum)
 
-			CodeTaskPriority.entries
+			CodeTaskPriority.Enumeration
 		} finally {
 			endConfig()
 		}
 	}
 
 	private fun initCodeCaseDef(e: CodeCaseDefEnum) {
-		e.addItem(CodeCaseDef(e, "task", "Task Standard Process", "doc_task"))
+		e.addItem(CodeCaseDef("task", "Task Standard Process", "doc_task"))
 	}
 
 	private fun initCodeCaseStage(e: CodeCaseStageEnum) {
-		e.addItem(CodeCaseStage(e, "task.new", "task", "initial", "New", "New", 10, null, null, null))
-		e.addItem(CodeCaseStage(e, "task.open", "task", "intermediate", "Assigned", "Assigned", 20, null, null, null))
+		e.addItem(CodeCaseStage("task.new", "task", "initial", "New", "New", 10, null, null, null))
+		e.addItem(CodeCaseStage("task.open", "task", "intermediate", "Assigned", "Assigned", 20, null, null, null))
 		e.addItem(
-			CodeCaseStage(
-				e,
-				"task.progress",
-				"task",
-				"intermediate",
-				"In Progress",
-				"In Progress",
-				30,
-				null,
-				null,
-				null
-			)
+			CodeCaseStage("task.progress", "task", "intermediate", "In Progress", "In Progress", 30, null, null, null),
 		)
-		e.addItem(CodeCaseStage(e, "task.done", "task", "terminal", "Done", "Done", 40, null, null, null))
+		e.addItem(CodeCaseStage("task.done", "task", "terminal", "Done", "Done", 40, null, null, null))
 	}
 
 }

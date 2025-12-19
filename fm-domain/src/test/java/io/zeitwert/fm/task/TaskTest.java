@@ -138,43 +138,43 @@ public class TaskTest {
 
 	private void initTask1(DocTask task, Object userId, OffsetDateTime timestamp) {
 		task.setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"), userId, timestamp);
-		task.setRelatedToId((Integer) RelatedTo.getId());
+		task.relatedToId = (Integer) RelatedTo.getId();
 		((FMDocBase) task).setAccountId((Integer) Account.getId());
-		task.setSubject("Todo");
-		task.setContent("content");
-		task.setIsPrivate(false);
-		task.setPriority(PrioNormal);
-		task.setDueAt(DueDate);
+		task.subject = "Todo";
+		task.content = "content";
+		task.isPrivate = false;
+		task.priority = PrioNormal;
+		task.dueAt = DueDate;
 	}
 
 	private void checkTask1(DocTask task) {
-		assertEquals(task.getRelatedToId(), RelatedTo.getId());
+		assertEquals(task.relatedToId, RelatedTo.getId());
 		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
-		assertEquals(Account.getId(), task.getAccount().getId(), "account id");
-		assertEquals("Todo", task.getSubject());
-		assertEquals("content", task.getContent());
-		assertEquals(false, task.getIsPrivate());
-		assertEquals(task.getPriority(), PrioNormal);
-		assertEquals(DueDate, task.getDueAt());
+		assertEquals(Account.getId(), task.account.getId(), "account id");
+		assertEquals("Todo", task.subject);
+		assertEquals("content", task.content);
+		assertEquals(false, task.isPrivate);
+		assertEquals(task.priority, PrioNormal);
+		assertEquals(DueDate, task.dueAt);
 	}
 
 	private void initTask2(DocTask task, OffsetDateTime timestamp) {
 		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
-		assertEquals(Account.getId(), task.getAccount().getId(), "account id");
-		task.setSubject("Todos");
-		task.setContent("contents");
-		task.setIsPrivate(true);
-		task.setPriority(PrioHigh);
-		task.setDueAt(DueDate.plusDays(4));
+		assertEquals(Account.getId(), task.account.getId(), "account id");
+		task.subject = "Todos";
+		task.content = "contents";
+		task.isPrivate = true;
+		task.priority = PrioHigh;
+		task.dueAt = DueDate.plusDays(4);
 		task.setCaseStage(StageProgress, null, timestamp);
 	}
 
 	private void checkTask2(DocTask task) {
-		assertEquals("Todos", task.getSubject());
-		assertEquals("contents", task.getContent());
-		assertEquals(true, task.getIsPrivate());
-		assertEquals(task.getPriority(), PrioHigh);
-		assertEquals(task.getDueAt(), DueDate.plusDays(4));
+		assertEquals("Todos", task.subject);
+		assertEquals("contents", task.content);
+		assertEquals(true, task.isPrivate);
+		assertEquals(task.priority, PrioHigh);
+		assertEquals(task.dueAt, DueDate.plusDays(4));
 		assertEquals(task.getMeta().getCaseStage(), StageProgress);
 	}
 

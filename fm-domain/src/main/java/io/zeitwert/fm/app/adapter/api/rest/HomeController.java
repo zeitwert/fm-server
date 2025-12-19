@@ -66,14 +66,14 @@ public class HomeController {
 		List<ObjPortfolio> portfolioList = portfolioRepository.getAll(tenantId).stream().map(it -> portfolioRepository.get(it)).toList();
 		List<ObjBuilding> buildingList = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
 		Integer ratingCount = (int) buildingList.stream()
-				.filter(b -> b.getCurrentRating() != null && activeRatings.contains(b.getCurrentRating().getRatingStatus().getId()))
+				.filter(b -> b.currentRating != null && activeRatings.contains(b.currentRating.getRatingStatus().getId()))
 				.count();
 		Integer insuranceValue = buildingList.stream()
-				.map(b -> b.getInsuredValue() != null ? b.getInsuredValue().intValue() : 0).reduce(0, Integer::sum);
+				.map(b -> b.insuredValue != null ? b.insuredValue.intValue() : 0).reduce(0, Integer::sum);
 		return ResponseEntity.ok(
 				HomeOverviewResponse.builder()
 						.accountId(accountId)
-						.accountName(account.getName())
+						.accountName(account.name)
 						.buildingCount(buildingList.size())
 						.portfolioCount(portfolioList.size())
 						.ratingCount(ratingCount)
@@ -90,7 +90,7 @@ public class HomeController {
 		List<ObjBuilding> buildingList = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
 		List<HomeActivityResponse> rrList = buildingList
 				.stream()
-				.filter(b -> b.getCurrentRating() != null && activeRatings.contains(b.getCurrentRating().getRatingStatus().getId()))
+				.filter(b -> b.currentRating != null && activeRatings.contains(b.currentRating.getRatingStatus().getId()))
 				.map(this::getRatingResponse)
 				.toList();
 		List<DocTask> taskList = taskRepository.getAll(tenantId).stream().map(it -> taskRepository.get(it)).toList();
@@ -106,25 +106,25 @@ public class HomeController {
 	}
 
 	private HomeActivityResponse getRatingResponse(ObjBuilding building) {
-		String address = building.getStreet() + "\n" + building.getZip() + " " + building.getCity();
-		ObjBuildingPartRating rating = building.getCurrentRating();
-		ObjUser ratingUser = rating != null ? rating.getRatingUser() : null;
+		String address = building.street + "\n" + building.zip + " " + building.city;
+		ObjBuildingPartRating rating = building.currentRating;
+		ObjUser ratingUser = rating != null ? rating.ratingUser : null;
 		EnumeratedDto ratingUserDto = EnumeratedDto.of(ratingUser);
-		LocalDate ratingDate = rating != null ? rating.getRatingDate() : null;
+		LocalDate ratingDate = rating != null ? rating.ratingDate : null;
 		return HomeActivityResponse.builder()
 				.item(EnumeratedDto.of(building))
 				.relatedTo(EnumeratedDto.of(building))
 				.owner(ratingUserDto)
 				.user(ratingUserDto)
 				.dueAt(Formatter.INSTANCE.formatIsoDate(ratingDate))
-				.subject(building.getName())
+				.subject(building.name)
 				.content(address)
 				.priority(EnumeratedDto.of(CodeTaskPriority.NORMAL))
 				.build();
 	}
 
 	private HomeActivityResponse getTaskResponse(DocTask task) {
-		Aggregate relatedTo = task.getRelatedTo();
+		Aggregate relatedTo = task.relatedTo;
 //
 //		Integer relatedToId = task.getRelatedToId();
 //		assertThis(((AggregateRepositorySPI<?>) this.taskRepository).getIdProvider().isObjId(relatedToId),
@@ -135,10 +135,10 @@ public class HomeController {
 				.relatedTo(EnumeratedDto.of(relatedTo))
 				.owner(EnumeratedDto.of(task.getOwner() != null ? task.getOwner() : null))
 				.user(EnumeratedDto.of(task.getAssignee() != null ? task.getAssignee() : null))
-				.dueAt(Formatter.INSTANCE.formatIsoDate(task.getDueAt().toLocalDate()))
-				.subject(task.getSubject())
-				.content(task.getContent())
-				.priority(EnumeratedDto.of(task.getPriority()))
+				.dueAt(Formatter.INSTANCE.formatIsoDate(task.dueAt.toLocalDate()))
+				.subject(task.subject)
+				.content(task.content)
+				.priority(EnumeratedDto.of(task.priority))
 				.build();
 	}
 

@@ -1,35 +1,23 @@
 package io.zeitwert.fm.task.model.impl
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.base.DocTaskBase
-import io.zeitwert.fm.task.persist.jooq.DocTaskPersistenceProvider
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("docTaskRepository")
-class DocTaskRepositoryImpl() : FMDocRepositoryBase<DocTask>(
-    DocTaskRepository::class.java,
-    DocTask::class.java,
-    DocTaskBase::class.java,
-    AGGREGATE_TYPE_ID
-), DocTaskRepository {
+class DocTaskRepositoryImpl :
+	FMDocRepositoryBase<DocTask>(
+		DocTaskRepository::class.java,
+		DocTask::class.java,
+		DocTaskBase::class.java,
+		AGGREGATE_TYPE_ID,
+	),
+	DocTaskRepository {
 
-    private lateinit var persistenceProvider: DocTaskPersistenceProvider
+	companion object {
 
-    @Autowired
-    @Lazy
-    fun setPersistenceProvider(persistenceProvider: DocTaskPersistenceProvider) {
-        this.persistenceProvider = persistenceProvider
-    }
-
-    override fun getPersistenceProvider(): AggregatePersistenceProvider<DocTask> = persistenceProvider
-
-    companion object {
-        private const val AGGREGATE_TYPE_ID = "doc_task"
-    }
+		private const val AGGREGATE_TYPE_ID = "doc_task"
+	}
 }
-

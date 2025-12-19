@@ -2,25 +2,20 @@ package io.zeitwert.fm.obj.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.property.model.BaseProperty
+import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
+import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import org.jooq.DSLContext
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component("objRecordMapperImpl")
-class ObjRecordMapperImpl : SqlAggregateRecordMapper<Obj, ObjRecord> {
-
-	private lateinit var dslContext: DSLContext
-
-	@Autowired
-	fun setDslContext(dslContext: DSLContext) {
-		this.dslContext = dslContext
-	}
+class ObjRecordMapperImpl(
+	val dslContext: DSLContext,
+) : SqlAggregateRecordMapper<Obj, ObjRecord> {
 
 	override fun nextId(): Any = dslContext.nextval(Sequences.OBJ_ID_SEQ).toInt()
 
@@ -39,18 +34,20 @@ class ObjRecordMapperImpl : SqlAggregateRecordMapper<Obj, ObjRecord> {
 		// obj
 		aggregate.setValueByPath("id", record.id)
 		aggregate.setValueByPath("objTypeId", record.objTypeId)
-		aggregate.setValueByPath("tenant.id", record.tenantId)
-		aggregate.setValueByPath("accountId", record.accountId)
-		aggregate.setValueByPath("owner.id", record.ownerId)
+		aggregate.setValueByPath("tenantId", record.tenantId)
+		if (aggregate is ItemWithAccount) {
+			aggregate.setValueByPath("accountId", record.accountId)
+		}
+		aggregate.setValueByPath("ownerId", record.ownerId)
 		aggregate.setValueByPath("caption", record.caption)
 		// obj_meta
 		aggregate.setValueByPath("version", record.version)
 		aggregate.setValueByPath("createdAt", record.createdAt)
-		aggregate.setValueByPath("createdByUser.id", record.createdByUserId)
+		aggregate.setValueByPath("createdByUserId", record.createdByUserId)
 		aggregate.setValueByPath("modifiedAt", record.modifiedAt)
-		aggregate.setValueByPath("modifiedByUser.id", record.modifiedByUserId)
+		aggregate.setValueByPath("modifiedByUserId", record.modifiedByUserId)
 		aggregate.setValueByPath("closedAt", record.closedAt)
-		aggregate.setValueByPath("closedByUser.id", record.closedByUserId)
+		aggregate.setValueByPath("closedByUserId", record.closedByUserId)
 	}
 
 	@Suppress("UNCHECKED_CAST")
@@ -60,13 +57,13 @@ class ObjRecordMapperImpl : SqlAggregateRecordMapper<Obj, ObjRecord> {
 		record.id = aggregate.id as Int
 		record.objTypeId = aggregate.meta.objTypeId
 		record.tenantId = aggregate.tenantId as Int
-		if (aggregate.hasProperty("accountId")) {
-			record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
+		if (aggregate is ItemWithAccount) {
+			record.accountId = aggregate.accountId as Int?
 		}
 		record.ownerId = aggregate.owner.id as Int
 		record.caption = aggregate.caption
 
-		record.version = aggregate.meta.version ?: 0
+		record.version = aggregate.meta.version
 		record.createdAt = aggregate.meta.createdAt
 		record.createdByUserId = aggregate.meta.createdByUser.id as Int
 		record.modifiedAt = aggregate.meta.modifiedAt
@@ -97,11 +94,25 @@ class ObjRecordMapperImpl : SqlAggregateRecordMapper<Obj, ObjRecord> {
 		(aggregate as Obj).setValueByPath("version", record.version)
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = emptyList()
+	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
 
 	override fun getByForeignKey(
+		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,
-	): List<Any> = emptyList()
+	): List<Any>? {
+		val field = when (fkName) {
+			"tenantId" -> Tables.OBJ.TENANT_ID
+			"accountId" -> Tables.OBJ.ACCOUNT_ID
+			"ownerId" -> Tables.OBJ.OWNER_ID
+			else -> return null
+		}
+		return dslContext
+			.select(Tables.OBJ.ID)
+			.from(Tables.OBJ)
+			.where(field.eq(targetId as Int))
+			.and(Tables.OBJ.OBJ_TYPE_ID.eq(aggregateTypeId))
+			.fetch(Tables.OBJ.ID)
+	}
 
 }

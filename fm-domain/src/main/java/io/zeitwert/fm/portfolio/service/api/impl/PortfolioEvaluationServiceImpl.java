@@ -1,30 +1,21 @@
 package io.zeitwert.fm.portfolio.service.api.impl;
 
-import java.awt.Color;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.service.api.ProjectionService;
-import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
-import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
-import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
-import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
-import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
-import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
+import io.zeitwert.fm.building.service.api.dto.*;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
 import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
+import org.springframework.stereotype.Service;
+
+import java.awt.*;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("portfolioEvaluationService")
 public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationService {
@@ -47,26 +38,26 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 	@Override
 	public PortfolioEvaluationResult getEvaluation(ObjPortfolio portfolio) {
 
-		Set<ObjBuilding> buildings = portfolio.getBuildingSet().stream().map(id -> this.buildingRepository.get(id))
+		Set<ObjBuilding> buildings = portfolio.buildingSet.stream().map(id -> this.buildingRepository.get(id))
 				.collect(Collectors.toSet());
 		ProjectionResult projectionResult = this.projectionService.getProjection(buildings,
 				ProjectionService.DefaultDuration);
 
 		List<EvaluationBuilding> buildingList = new ArrayList<>();
-		Integer maxInsuredValue = buildings.stream().map(b -> b.getInsuredValue().intValue()).reduce(0,
+		Integer maxInsuredValue = buildings.stream().map(b -> b.insuredValue.intValue()).reduce(0,
 				(max, b) -> b > max ? b : max);
 		for (ObjBuilding building : buildings) {
-			ObjBuildingPartRating rating = building.getCurrentRating();
-			Integer ratingYear = rating != null ? rating.getRatingDate().getYear() : null;
+			ObjBuildingPartRating rating = building.currentRating;
+			Integer ratingYear = rating != null ? rating.ratingDate.getYear() : null;
 			EvaluationBuilding evaluationBuilding = EvaluationBuilding.builder()
-					.id((Integer)building.getId())
-					.name(building.getName())
-					.description(building.getDescription())
-					.buildingNr(building.getBuildingNr())
-					.address(building.getStreet() + " " + building.getZip() + " " + building.getCity())
-					.insuredValue(building.getInsuredValue().intValue())
-					.relativeValue((int) (building.getInsuredValue().intValue() / maxInsuredValue.doubleValue() * 100.0))
-					.insuredValueYear(building.getInsuredValueYear())
+					.id((Integer) building.getId())
+					.name(building.name)
+					.description(building.description)
+					.buildingNr(building.buildingNr)
+					.address(building.street + " " + building.zip + " " + building.city)
+					.insuredValue(building.insuredValue.intValue())
+					.relativeValue((int) (building.insuredValue.intValue() / maxInsuredValue.doubleValue() * 100.0))
+					.insuredValueYear(building.insuredValueYear)
 					.ratingYear(ratingYear)
 					.condition(building.getCondition(2023))
 					.conditionColor(this.getConditionColor(building.getCondition(2023)))
@@ -142,8 +133,8 @@ public class PortfolioEvaluationServiceImpl implements PortfolioEvaluationServic
 			}
 		}
 
-		return PortfolioEvaluationResult.builder().id((Integer)portfolio.getId()).name(portfolio.getName())
-				.description(this.replaceEol(portfolio.getDescription())).accountName(portfolio.getAccount().getName())
+		return PortfolioEvaluationResult.builder().id((Integer) portfolio.getId()).name(portfolio.name)
+				.description(this.replaceEol(portfolio.description)).accountName(portfolio.getAccount().name)
 				.buildings(buildingList).elements(elements).startYear(projectionResult.getStartYear()).periods(periods).build();
 	}
 

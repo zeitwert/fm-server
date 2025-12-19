@@ -4,25 +4,24 @@ import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
 enum class CodeBuildingElementDescription(
-    private val id: String,
-    private val itemName: String,
-    val category: String,
+	override val id: String,
+	private val itemName: String,
+	val category: String,
 ) : Enumerated {
-    ;
 
-    override fun getId() = id
+	;
 
-    override fun getName() = itemName
+	override fun getName() = itemName
 
-    override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
-    companion object Enumeration : EnumerationBase<CodeBuildingElementDescription>(CodeBuildingElementDescription::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	companion object Enumeration :
+		EnumerationBase<CodeBuildingElementDescription>(CodeBuildingElementDescription::class.java) {
 
-        @JvmStatic
-        fun getElementDescription(itemId: String): CodeBuildingElementDescription? = getItem(itemId)
-    }
+		init {
+			entries.forEach { addItem(it) }
+		}
+
+		fun getElementDescription(itemId: String): CodeBuildingElementDescription? = getItem(itemId)
+	}
 }
-

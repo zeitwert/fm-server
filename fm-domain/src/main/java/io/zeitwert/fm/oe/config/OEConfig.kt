@@ -9,7 +9,6 @@ import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 /**
@@ -19,28 +18,30 @@ import org.springframework.stereotype.Component
  * register their aggregate types via InitializingBean.afterPropertiesSet().
  */
 @Component("oeConfig")
-class OEConfig : EnumConfigBase(), InitializingBean {
+class OEConfig :
+	EnumConfigBase(),
+	InitializingBean {
 
-    @Autowired
-    lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
+	@Autowired
+	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
 
-    override fun afterPropertiesSet() {
-        try {
-            startConfig()
-            initCodeAggregateType(aggregateTypeEnum)
+	override fun afterPropertiesSet() {
+		try {
+			startConfig()
+			initCodeAggregateType(aggregateTypeEnum)
 
-            // Trigger enum initialization
-            CodeUserRole.entries
-            CodeTenantType.entries
-            CodeCountry.entries
-            CodeLocale.entries
-        } finally {
-            endConfig()
-        }
-    }
+			// Trigger enum initialization
+			CodeUserRole.Enumeration
+			CodeTenantType.Enumeration
+			CodeCountry.Enumeration
+			CodeLocale.Enumeration
+		} finally {
+			endConfig()
+		}
+	}
 
-    private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-        e.addItem(CodeAggregateType(e, "obj_user", "User"))
-        e.addItem(CodeAggregateType(e, "obj_tenant", "Tenant"))
-    }
+	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
+		e.addItem(CodeAggregateType("obj_user", "User"))
+		e.addItem(CodeAggregateType("obj_tenant", "Tenant"))
+	}
 }

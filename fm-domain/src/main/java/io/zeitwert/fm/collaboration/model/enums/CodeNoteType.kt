@@ -2,12 +2,13 @@ package io.zeitwert.fm.collaboration.model.enums
 
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
+import io.zeitwert.fm.building.model.enums.CodeBuildingType
 
 /**
  * Note type enum using the NEW dddrive framework.
  */
 enum class CodeNoteType(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
 
@@ -16,11 +17,9 @@ enum class CodeNoteType(
 	VISIT("visit", "Visit"),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	companion object Enumeration : EnumerationBase<CodeNoteType>(CodeNoteType::class.java) {
 		init {

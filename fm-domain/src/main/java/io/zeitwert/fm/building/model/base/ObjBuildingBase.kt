@@ -1,14 +1,8 @@
 package io.zeitwert.fm.building.model.base
 
 import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
-import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
-import io.dddrive.core.property.model.ReferenceSetProperty
 import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
-import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -31,7 +25,6 @@ import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.enums.CodeCountry
-import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -44,79 +37,72 @@ abstract class ObjBuildingBase(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	private val _name: BaseProperty<String> = this.addBaseProperty("name", String::class.java)
-	private val _description: BaseProperty<String> = this.addBaseProperty("description", String::class.java)
-	private val _buildingNr: BaseProperty<String> = this.addBaseProperty("buildingNr", String::class.java)
-	private val _insuranceNr: BaseProperty<String> = this.addBaseProperty("insuranceNr", String::class.java)
-	private val _plotNr: BaseProperty<String> = this.addBaseProperty("plotNr", String::class.java)
-	private val _nationalBuildingId: BaseProperty<String> = this.addBaseProperty("nationalBuilding", String::class.java)
-	private val _historicPreservation: EnumProperty<CodeHistoricPreservation> =
-		this.addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
+	protected val _name = addBaseProperty("name", String::class.java)
+	protected val _description = addBaseProperty("description", String::class.java)
+	protected val _buildingNr = addBaseProperty("buildingNr", String::class.java)
+	protected val _insuranceNr = addBaseProperty("insuranceNr", String::class.java)
+	protected val _plotNr = addBaseProperty("plotNr", String::class.java)
+	protected val _nationalBuildingId = addBaseProperty("nationalBuilding", String::class.java)
+	protected val _historicPreservation =
+		addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
 
-	private val _street: BaseProperty<String> = this.addBaseProperty("street", String::class.java)
-	private val _zip: BaseProperty<String> = this.addBaseProperty("zip", String::class.java)
-	private val _city: BaseProperty<String> = this.addBaseProperty("city", String::class.java)
-	private val _country: EnumProperty<CodeCountry> = this.addEnumProperty("country", CodeCountry::class.java)
+	protected val _street = addBaseProperty("street", String::class.java)
+	protected val _zip = addBaseProperty("zip", String::class.java)
+	protected val _city = addBaseProperty("city", String::class.java)
+	protected val _country = addEnumProperty("country", CodeCountry::class.java)
 
-	private val _geoAddress: BaseProperty<String> = this.addBaseProperty("geoAddress", String::class.java)
-	private val _geoCoordinates: BaseProperty<String> = this.addBaseProperty("geoCoordinates", String::class.java)
-	private val _geoZoom: BaseProperty<Int> = this.addBaseProperty("geoZoom", Int::class.java)
+	protected val _geoAddress = addBaseProperty("geoAddress", String::class.java)
+	protected val _geoCoordinates = addBaseProperty("geoCoordinates", String::class.java)
+	protected val _geoZoom = addBaseProperty("geoZoom", Int::class.java)
 
-	private val _coverFoto: ReferenceProperty<ObjDocument> =
-		this.addReferenceProperty("coverFoto", ObjDocument::class.java)
+	protected val _coverFoto = addReferenceProperty("coverFoto", ObjDocument::class.java)
 
-	private val _currency: EnumProperty<CodeCurrency> = this.addEnumProperty("currency", CodeCurrency::class.java)
+	protected val _currency = addEnumProperty("currency", CodeCurrency::class.java)
 
-	private val _volume: BaseProperty<BigDecimal> = this.addBaseProperty("volume", BigDecimal::class.java)
-	private val _areaGross: BaseProperty<BigDecimal> = this.addBaseProperty("areaGross", BigDecimal::class.java)
-	private val _areaNet: BaseProperty<BigDecimal> = this.addBaseProperty("areaNet", BigDecimal::class.java)
-	private val _nrOfFloorsAboveGround: BaseProperty<Int> = this.addBaseProperty("nrOfFloorsAboveGround", Int::class.java)
-	private val _nrOfFloorsBelowGround: BaseProperty<Int> = this.addBaseProperty("nrOfFloorsBelowGround", Int::class.java)
+	protected val _volume = addBaseProperty("volume", BigDecimal::class.java)
+	protected val _areaGross = addBaseProperty("areaGross", BigDecimal::class.java)
+	protected val _areaNet = addBaseProperty("areaNet", BigDecimal::class.java)
+	protected val _nrOfFloorsAboveGround = addBaseProperty("nrOfFloorsAboveGround", Int::class.java)
+	protected val _nrOfFloorsBelowGround = addBaseProperty("nrOfFloorsBelowGround", Int::class.java)
 
-	private val _buildingType: EnumProperty<CodeBuildingType> =
-		this.addEnumProperty("buildingType", CodeBuildingType::class.java)
-	private val _buildingSubType: EnumProperty<CodeBuildingSubType> =
-		this.addEnumProperty("buildingSubType", CodeBuildingSubType::class.java)
-	private val _buildingYear: BaseProperty<Int> = this.addBaseProperty("buildingYear", Int::class.java)
+	protected val _buildingType = addEnumProperty("buildingType", CodeBuildingType::class.java)
+	protected val _buildingSubType = addEnumProperty("buildingSubType", CodeBuildingSubType::class.java)
+	protected val _buildingYear = addBaseProperty("buildingYear", Int::class.java)
 
-	private val _insuredValue: BaseProperty<BigDecimal> = this.addBaseProperty("insuredValue", BigDecimal::class.java)
-	private val _insuredValueYear: BaseProperty<Int> = this.addBaseProperty("insuredValueYear", Int::class.java)
-	private val _notInsuredValue: BaseProperty<BigDecimal> =
-		this.addBaseProperty("notInsuredValue", BigDecimal::class.java)
-	private val _notInsuredValueYear: BaseProperty<Int> = this.addBaseProperty("notInsuredValueYear", Int::class.java)
-	private val _thirdPartyValue: BaseProperty<BigDecimal> =
-		this.addBaseProperty("thirdPartyValue", BigDecimal::class.java)
-	private val _thirdPartyValueYear: BaseProperty<Int> = this.addBaseProperty("thirdPartyValueYear", Int::class.java)
+	protected val _insuredValue = addBaseProperty("insuredValue", BigDecimal::class.java)
+	protected val _insuredValueYear = addBaseProperty("insuredValueYear", Int::class.java)
+	protected val _notInsuredValue = addBaseProperty("notInsuredValue", BigDecimal::class.java)
+	protected val _notInsuredValueYear = addBaseProperty("notInsuredValueYear", Int::class.java)
+	protected val _thirdPartyValue = addBaseProperty("thirdPartyValue", BigDecimal::class.java)
+	protected val _thirdPartyValueYear = addBaseProperty("thirdPartyValueYear", Int::class.java)
 
-	private val _ratingList: PartListProperty<ObjBuildingPartRating> =
-		this.addPartListProperty("ratingList", ObjBuildingPartRating::class.java)
+	protected val _ratingList = addPartListProperty("ratingList", ObjBuildingPartRating::class.java)
 
-	private val _contactSet: ReferenceSetProperty<ObjContact> =
-		this.addReferenceSetProperty("contactSet", ObjContact::class.java)
+	protected val _contactSet = addReferenceSetProperty("contactSet", ObjContact::class.java)
 
-	override fun getRepository(): ObjBuildingRepository = super.getRepository() as ObjBuildingRepository
+	override val repository = super.repository as ObjBuildingRepository
 
-	override fun noteRepository(): ObjNoteRepository = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
+	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
 	override fun taskRepository() = repository.taskRepository
 
 	override fun aggregate(): ObjBuilding = this
 
 	override fun doAfterCreate(
-		userId: Any?,
-		timestamp: OffsetDateTime?,
+		userId: Any,
+		timestamp: OffsetDateTime,
 	) {
 		super.doAfterCreate(userId, timestamp)
 		check(this.id != null) { "id must not be null after create" }
 		this.addCoverFoto(userId, timestamp)
 	}
 
-	override fun getAccount(): ObjAccount? = repository.accountRepository.get(accountId)
+	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
 
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
-	): Part<*>? {
+	): Part<*> {
 		if (property === this._ratingList) {
 			val partRepo = directory.getPartRepository(ObjBuildingPartRating::class.java)
 			return partRepo.create(this, property, partId)
@@ -125,62 +111,65 @@ abstract class ObjBuildingBase(
 	}
 
 	override fun doBeforeStore(
-		userId: Any?,
-		timestamp: OffsetDateTime?,
+		userId: Any,
+		timestamp: OffsetDateTime,
 	) {
 		super.doBeforeStore(userId, timestamp)
-		if (getCoverFotoId() == null) {
+		if (coverFotoId == null) {
 			addCoverFoto(userId, timestamp)
 		}
 	}
 
-	override fun getInflationRate(): Double {
-		var inflationRate = account?.inflationRate
-		if (inflationRate == null) {
-			inflationRate = (tenant as? ObjTenantFM)?.inflationRate
+	override val inflationRate: Double
+		get() {
+			var inflationRate = account?.inflationRate
+			if (inflationRate == null) {
+				inflationRate = (tenant as? ObjTenantFM)?.inflationRate
+			}
+			return inflationRate?.toDouble() ?: 0.0
 		}
-		return inflationRate?.toDouble() ?: 0.0
-	}
 
-	override fun getDiscountRate(): Double {
-		var discountRate = account?.discountRate
-		if (discountRate == null) {
-			discountRate = (tenant as? ObjTenantFM)?.discountRate
+	override val discountRate: Double
+		get() {
+			var discountRate = account?.discountRate
+			if (discountRate == null) {
+				discountRate = (tenant as? ObjTenantFM)?.discountRate
+			}
+			return discountRate?.toDouble() ?: 0.0
 		}
-		return discountRate?.toDouble() ?: 0.0
-	}
 
 	override fun getBuildingValue(year: Int): Double {
-		val insuredValueYear = getInsuredValueYear()
-		val insuredValue = getInsuredValue()
+		val insuredValueYear = insuredValueYear
+		val insuredValue = insuredValue
 		if (insuredValueYear != null && insuredValue != null) {
 			return CodeBuildingPriceIndex.CH_ZRH.priceAt(
 				insuredValueYear,
 				1000.0 * insuredValue.toDouble(),
 				year,
-				getInflationRate(),
+				inflationRate,
 			)
 		}
 		return 0.0
 	}
 
-	override fun getCurrentRating(): ObjBuildingPartRating? {
-		for (i in getRatingCount() downTo 1) {
-			val rating = getRating(i - 1)
-			if (rating?.ratingStatus == null || rating.ratingStatus != CodeBuildingRatingStatus.DISCARD) {
-				return rating
+	override val currentRating: ObjBuildingPartRating?
+		get() {
+			for (i in ratingCount downTo 1) {
+				val rating = getRating(i - 1)
+				if (rating.ratingStatus == null || rating.ratingStatus != CodeBuildingRatingStatus.DISCARD) {
+					return rating
+				}
 			}
+			return null
 		}
-		return null
-	}
 
-	override fun getCondition(year: Int): Int? = getCurrentRating()?.getCondition(year)
+	override fun getCondition(year: Int): Int? = currentRating?.getCondition(year)
 
 	override fun addRating(
-		user: ObjUserFM?,
-		timestamp: OffsetDateTime?,
+		user: ObjUserFM,
+		timestamp: OffsetDateTime,
 	): ObjBuildingPartRating {
-		val oldRating = getCurrentRating()
+		val oldRating = currentRating
 		require(oldRating == null || oldRating.ratingStatus == CodeBuildingRatingStatus.DONE) { "rating done" }
 		val rating = _ratingList.addPart(null)
 		try {
@@ -196,48 +185,48 @@ abstract class ObjBuildingBase(
 			rating.ratingDate = timestamp?.toLocalDate()
 		} finally {
 			rating.meta.enableCalc()
-			rating.calcAll()
+			rating.meta.calcAll()
 		}
 		return rating
 	}
 
-	override fun removeRating(ratingId: Int?) {
+	override fun removeRating(ratingId: Int) {
 		_ratingList.removePart(ratingId)
 	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()
 		calcCaption()
-		getCurrentRating()?.calcAll()
+		currentRating?.meta?.calcAll()
 		validateElements()
 	}
 
 	override fun doCalcVolatile() {
 		super.doCalcVolatile()
 		calcCaption()
-		getCurrentRating()?.calcVolatile()
+		currentRating?.meta?.calcVolatile()
 		validateElements()
 	}
 
 	private fun calcCaption() {
-		caption.value = name
+		_caption.value = name
 	}
 
 	@Suppress("LongMethod")
 	private fun validateElements() {
-		if (getCoverFoto() == null || getCoverFoto()?.contentType == null) {
+		if (coverFoto == null || coverFoto?.contentType == null) {
 			addValidation(CodeValidationLevelEnum.WARNING, "Für den Druck muss ein Coverfoto hochgeladen werden")
 		}
-		if (getGeoCoordinates().isNullOrEmpty()) {
+		if (geoCoordinates.isNullOrEmpty()) {
 			addValidation(CodeValidationLevelEnum.WARNING, "Koordinaten der Immobilie fehlen")
 		}
-		if (getInsuredValue() == null || getInsuredValue() == BigDecimal.ZERO) {
+		if (insuredValue == null || insuredValue == BigDecimal.ZERO) {
 			addValidation(CodeValidationLevelEnum.ERROR, "Versicherungswert muss erfasst werden")
 		}
-		if (getInsuredValueYear() == null) {
+		if (insuredValueYear == null) {
 			addValidation(CodeValidationLevelEnum.ERROR, "Jahr der Bestimmung des Versicherungswerts muss erfasst werden")
 		}
-		val currentRating = getCurrentRating()
+		val currentRating = currentRating
 		if (currentRating == null) {
 			addValidation(CodeValidationLevelEnum.ERROR, "Es fehlt eine Zustandsbewertung")
 		} else {
@@ -285,8 +274,8 @@ abstract class ObjBuildingBase(
 	// }
 
 	private fun addCoverFoto(
-		userId: Any?,
-		timestamp: OffsetDateTime?,
+		userId: Any,
+		timestamp: OffsetDateTime,
 	) {
 		val documentRepo = repository.documentRepository
 		val coverFoto = documentRepo.create(tenantId, userId, timestamp)
@@ -296,214 +285,6 @@ abstract class ObjBuildingBase(
 		coverFoto.documentCategory = CodeDocumentCategory.FOTO
 		documentRepo.store(coverFoto, userId, timestamp)
 		_coverFoto.id = coverFoto.id
-	}
-
-	override fun getName(): String? = _name.value
-
-	override fun setName(name: String?) {
-		_name.value = name
-	}
-
-	override fun getDescription(): String? = _description.value
-
-	override fun setDescription(description: String?) {
-		_description.value = description
-	}
-
-	override fun getBuildingNr(): String? = _buildingNr.value
-
-	override fun setBuildingNr(buildingNr: String?) {
-		_buildingNr.value = buildingNr
-	}
-
-	override fun getInsuranceNr(): String? = _insuranceNr.value
-
-	override fun setInsuranceNr(insuranceNr: String?) {
-		_insuranceNr.value = insuranceNr
-	}
-
-	override fun getPlotNr(): String? = _plotNr.value
-
-	override fun setPlotNr(plotNr: String?) {
-		_plotNr.value = plotNr
-	}
-
-	override fun getNationalBuildingId(): String? = _nationalBuildingId.value
-
-	override fun setNationalBuildingId(nationalBuildingId: String?) {
-		_nationalBuildingId.value = nationalBuildingId
-	}
-
-	override fun getHistoricPreservation(): CodeHistoricPreservation? = _historicPreservation.value
-
-	override fun setHistoricPreservation(historicPreservation: CodeHistoricPreservation?) {
-		_historicPreservation.value = historicPreservation
-	}
-
-	override fun getStreet(): String? = _street.value
-
-	override fun setStreet(street: String?) {
-		_street.value = street
-	}
-
-	override fun getZip(): String? = _zip.value
-
-	override fun setZip(zip: String?) {
-		_zip.value = zip
-	}
-
-	override fun getCity(): String? = _city.value
-
-	override fun setCity(city: String?) {
-		_city.value = city
-	}
-
-	override fun getCountry(): CodeCountry? = _country.value
-
-	override fun setCountry(country: CodeCountry?) {
-		_country.value = country
-	}
-
-	override fun getGeoAddress(): String? = _geoAddress.value
-
-	override fun setGeoAddress(geoAddress: String?) {
-		_geoAddress.value = geoAddress
-	}
-
-	override fun getGeoCoordinates(): String? = _geoCoordinates.value
-
-	override fun setGeoCoordinates(geoCoordinates: String?) {
-		_geoCoordinates.value = geoCoordinates
-	}
-
-	override fun getGeoZoom(): Int? = _geoZoom.value
-
-	override fun setGeoZoom(geoZoom: Int?) {
-		_geoZoom.value = geoZoom
-	}
-
-	override fun getCoverFotoId(): Int? = _coverFoto.id as? Int
-
-	override fun getCoverFoto(): ObjDocument? = _coverFoto.value
-
-	override fun getCurrency(): CodeCurrency? = _currency.value
-
-	override fun setCurrency(currency: CodeCurrency?) {
-		_currency.value = currency
-	}
-
-	override fun getVolume(): BigDecimal? = _volume.value
-
-	override fun setVolume(volume: BigDecimal?) {
-		_volume.value = volume
-	}
-
-	override fun getAreaGross(): BigDecimal? = _areaGross.value
-
-	override fun setAreaGross(area: BigDecimal?) {
-		_areaGross.value = area
-	}
-
-	override fun getAreaNet(): BigDecimal? = _areaNet.value
-
-	override fun setAreaNet(area: BigDecimal?) {
-		_areaNet.value = area
-	}
-
-	override fun getNrOfFloorsAboveGround(): Int? = _nrOfFloorsAboveGround.value
-
-	override fun setNrOfFloorsAboveGround(nrOfFloors: Int?) {
-		_nrOfFloorsAboveGround.value = nrOfFloors
-	}
-
-	override fun getNrOfFloorsBelowGround(): Int? = _nrOfFloorsBelowGround.value
-
-	override fun setNrOfFloorsBelowGround(nrOfFloors: Int?) {
-		_nrOfFloorsBelowGround.value = nrOfFloors
-	}
-
-	override fun getBuildingType(): CodeBuildingType? = _buildingType.value
-
-	override fun setBuildingType(buildingType: CodeBuildingType?) {
-		_buildingType.value = buildingType
-	}
-
-	override fun getBuildingSubType(): CodeBuildingSubType? = _buildingSubType.value
-
-	override fun setBuildingSubType(buildingSubType: CodeBuildingSubType?) {
-		_buildingSubType.value = buildingSubType
-	}
-
-	override fun getBuildingYear(): Int? = _buildingYear.value
-
-	override fun setBuildingYear(buildingYear: Int?) {
-		_buildingYear.value = buildingYear
-	}
-
-	override fun getInsuredValue(): BigDecimal? = _insuredValue.value
-
-	override fun setInsuredValue(value: BigDecimal?) {
-		_insuredValue.value = value
-	}
-
-	override fun getInsuredValueYear(): Int? = _insuredValueYear.value
-
-	override fun setInsuredValueYear(year: Int?) {
-		_insuredValueYear.value = year
-	}
-
-	override fun getNotInsuredValue(): BigDecimal? = _notInsuredValue.value
-
-	override fun setNotInsuredValue(value: BigDecimal?) {
-		_notInsuredValue.value = value
-	}
-
-	override fun getNotInsuredValueYear(): Int? = _notInsuredValueYear.value
-
-	override fun setNotInsuredValueYear(year: Int?) {
-		_notInsuredValueYear.value = year
-	}
-
-	override fun getThirdPartyValue(): BigDecimal? = _thirdPartyValue.value
-
-	override fun setThirdPartyValue(value: BigDecimal?) {
-		_thirdPartyValue.value = value
-	}
-
-	override fun getThirdPartyValueYear(): Int? = _thirdPartyValueYear.value
-
-	override fun setThirdPartyValueYear(year: Int?) {
-		_thirdPartyValueYear.value = year
-	}
-
-	override fun getCurrentRatingForView(): ObjBuildingPartRating? = getCurrentRating()
-
-	override fun getRatingCount(): Int = _ratingList.partCount
-
-	override fun getRating(seqNr: Int?): ObjBuildingPartRating? = _ratingList.getPart(seqNr)
-
-	override fun getRatingList(): List<ObjBuildingPartRating> = _ratingList.parts
-
-	override fun getRatingById(ratingId: Int?): ObjBuildingPartRating? = _ratingList.parts.find { it.id == ratingId }
-
-	override fun getContactSet(): Set<Int> = _contactSet.items.mapNotNull { it as? Int }.toSet()
-
-	override fun clearContactSet() {
-		_contactSet.clearItems()
-	}
-
-	override fun addContact(contactId: Int?) {
-		_contactSet.addItem(contactId)
-	}
-
-	override fun removeContact(contactId: Int?) {
-		_contactSet.removeItem(contactId)
-	}
-
-	override fun addTask(): DocTask {
-		val task = taskRepository().create(tenantId, null, OffsetDateTime.now())
-		task.relatedToId = id as Int
-		return task
 	}
 
 }

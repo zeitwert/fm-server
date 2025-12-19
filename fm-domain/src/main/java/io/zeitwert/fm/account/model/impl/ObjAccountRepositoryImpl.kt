@@ -1,10 +1,8 @@
 package io.zeitwert.fm.account.model.impl
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.base.ObjAccountBase
-import io.zeitwert.fm.account.persist.jooq.ObjAccountPersistenceProvider
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
@@ -22,33 +20,20 @@ class ObjAccountRepositoryImpl :
 	),
 	ObjAccountRepository {
 
-	private lateinit var persistenceProvider: ObjAccountPersistenceProvider
-	private lateinit var _contactRepository: ObjContactRepository
-	private lateinit var _documentRepository: ObjDocumentRepository
-
-	@Autowired
-	@Lazy
-	fun setPersistenceProvider(persistenceProvider: ObjAccountPersistenceProvider) {
-		this.persistenceProvider = persistenceProvider
-	}
+	override lateinit var contactRepository: ObjContactRepository
+	override lateinit var documentRepository: ObjDocumentRepository
 
 	@Autowired
 	@Lazy
 	fun setContactRepository(contactRepository: ObjContactRepository) {
-		this._contactRepository = contactRepository
+		this.contactRepository = contactRepository
 	}
 
 	@Autowired
 	@Lazy
 	fun setDocumentRepository(documentRepository: ObjDocumentRepository) {
-		this._documentRepository = documentRepository
+		this.documentRepository = documentRepository
 	}
-
-	override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjAccount> = persistenceProvider
-
-	override fun getContactRepository(): ObjContactRepository = _contactRepository
-
-	override fun getDocumentRepository(): ObjDocumentRepository = _documentRepository
 
 	companion object {
 

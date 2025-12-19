@@ -5,7 +5,7 @@ import io.dddrive.core.enums.model.base.EnumerationBase
 import org.springframework.http.MediaType
 
 enum class CodeContentType(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 	val contentKind: CodeContentKind,
 	val extension: String,
@@ -48,11 +48,9 @@ enum class CodeContentType(
 	MP3("mp3", "MP3 Audio", CodeContentKind.VIDEO, "mp3", "audio/mpeg"),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	fun getMediaType(): MediaType = MediaType.parseMediaType(mimeType)
 

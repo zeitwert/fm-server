@@ -5,16 +5,10 @@ import io.dddrive.core.ddd.model.AggregateMeta
 import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.ReferenceProperty
-import io.dddrive.util.Invariant.assertThis
-import io.dddrive.util.Invariant.requireThis
+import io.dddrive.path.setValueByPath
 import org.jooq.DSLContext
 import org.jooq.UpdatableRecord
 import java.lang.reflect.InvocationTargetException
-import java.time.OffsetDateTime
 
 /**
  * Base class for jOOQ-based persistence providers implementing the AggregatePersistenceProvider interface.
@@ -51,9 +45,9 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 		aggregate: A,
 		id: Any,
 	) {
-		requireThis(isValidId(id)) { "valid id" }
+		require(isValidId(id)) { "valid id" }
 		val record = loadRecord(id as Int)
-		assertThis(record != null) { "aggregate found for id ($id)" }
+		assert(record != null) { "aggregate found for id ($id)" }
 		(aggregate as AggregateMeta).disableCalc()
 		try {
 			toAggregate(record!!, aggregate)
@@ -83,20 +77,15 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 		record: UpdatableRecord<*>,
 		aggregate: A,
 	) {
-		// Base aggregate fields - these are common to all aggregates
-		(aggregate.getProperty("id") as? BaseProperty<Any?>)?.value = getRecordField(record, "id")
-		(aggregate.getProperty("version") as? BaseProperty<Int?>)?.value = getRecordField(record, "version") as? Int
-		(aggregate.getProperty("tenant") as? ReferenceProperty<ObjTenant>)?.id = getRecordField(record, "tenantId")
-		(aggregate.getProperty("owner") as? ReferenceProperty<ObjUser>)?.id = getRecordField(record, "ownerId")
-		(aggregate.getProperty("caption") as? BaseProperty<String?>)?.value = getRecordField(record, "caption") as? String
-		(aggregate.getProperty("createdByUser") as? ReferenceProperty<ObjUser>)?.id =
-			getRecordField(record, "createdByUserId")
-		(aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value =
-			getRecordField(record, "createdAt") as? OffsetDateTime
-		(aggregate.getProperty("modifiedByUser") as? ReferenceProperty<ObjUser>)?.id =
-			getRecordField(record, "modifiedByUserId")
-		(aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value =
-			getRecordField(record, "modifiedAt") as? OffsetDateTime
+		aggregate.setValueByPath("id", record.getField("id"))
+		aggregate.setValueByPath("version", record.getField("version"))
+		aggregate.setValueByPath("tenantId", record.getField("tenantId"))
+		aggregate.setValueByPath("ownerId", record.getField("ownerId"))
+		aggregate.setValueByPath("caption", record.getField("caption"))
+		aggregate.setValueByPath("createdByUserId", record.getField("createdByUserId"))
+		aggregate.setValueByPath("createdAt", record.getField("createdAt"))
+		aggregate.setValueByPath("modifiedByUserId", record.getField("modifiedByUserId"))
+		aggregate.setValueByPath("modifiedAt", record.getField("modifiedAt"))
 	}
 
 	/**
@@ -140,14 +129,13 @@ abstract class JooqAggregatePersistenceProviderBase<A : Aggregate> : AggregatePe
 	/**
 	 * Helper to get a field value from a jOOQ record by getter name.
 	 */
-	protected fun getRecordField(
-		record: UpdatableRecord<*>,
+	protected fun UpdatableRecord<*>.getField(
 		fieldName: String,
 	): Any? {
 		val getterName = "get${fieldName.replaceFirstChar { it.uppercase() }}"
 		return try {
-			val method = record.javaClass.getMethod(getterName)
-			method.invoke(record)
+			val method = this.javaClass.getMethod(getterName)
+			method.invoke(this)
 		} catch (e: NoSuchMethodException) {
 			null
 		} catch (e: IllegalAccessException) {

@@ -3,11 +3,8 @@ package io.zeitwert.fm.oe.model.enums
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
 
-/**
- * User role enum using the NEW dddrive framework.
- */
 enum class CodeUserRole(
-	private val id: String,
+	override val id: String,
 	private val itemName: String,
 ) : Enumerated {
 
@@ -29,11 +26,9 @@ enum class CodeUserRole(
 	READ_ONLY("read_only", "Read-Only User"),
 	;
 
-	override fun getId() = id
-
 	override fun getName() = itemName
 
-	override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
 	companion object Enumeration : EnumerationBase<CodeUserRole>(CodeUserRole::class.java) {
 		init {

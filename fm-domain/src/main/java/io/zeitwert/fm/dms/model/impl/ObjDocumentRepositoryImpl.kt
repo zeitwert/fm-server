@@ -1,6 +1,5 @@
 package io.zeitwert.fm.dms.model.impl
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
@@ -21,24 +20,15 @@ class ObjDocumentRepositoryImpl : FMObjRepositoryBase<ObjDocument>(
 	AGGREGATE_TYPE_ID
 ), ObjDocumentRepository {
 
-	private lateinit var persistenceProvider: ObjDocumentPersistenceProvider
-	private lateinit var _accountRepository: ObjAccountRepository
+	private lateinit var accountRepository: ObjAccountRepository
 
-	@Autowired
-	@Lazy
-	fun setPersistenceProvider(persistenceProvider: ObjDocumentPersistenceProvider) {
-		this.persistenceProvider = persistenceProvider
-	}
+	override val persistenceProvider get() = super.persistenceProvider as ObjDocumentPersistenceProvider
 
 	@Autowired
 	@Lazy
 	fun setAccountRepository(accountRepository: ObjAccountRepository) {
-		this._accountRepository = accountRepository
+		this.accountRepository = accountRepository
 	}
-
-	override fun getPersistenceProvider(): AggregatePersistenceProvider<ObjDocument> = persistenceProvider
-
-	fun getAccountRepository(): ObjAccountRepository = _accountRepository
 
 	override fun getContent(document: ObjDocument): ByteArray? {
 		return persistenceProvider.getContent(document)
@@ -50,8 +40,8 @@ class ObjDocumentRepositoryImpl : FMObjRepositoryBase<ObjDocument>(
 
 	override fun storeContent(
 		document: ObjDocument,
-		contentType: CodeContentType?,
-		content: ByteArray?,
+		contentType: CodeContentType,
+		content: ByteArray,
 		userId: Any,
 		timestamp: OffsetDateTime
 	) {
@@ -60,6 +50,7 @@ class ObjDocumentRepositoryImpl : FMObjRepositoryBase<ObjDocument>(
 	}
 
 	companion object {
+
 		private const val AGGREGATE_TYPE_ID = "obj_document"
 	}
 

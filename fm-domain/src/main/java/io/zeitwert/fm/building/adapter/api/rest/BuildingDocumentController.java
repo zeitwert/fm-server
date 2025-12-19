@@ -1,25 +1,16 @@
-
 package io.zeitwert.fm.building.adapter.api.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.aspose.words.SaveFormat;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.service.api.DocumentGenerationService;
 import io.zeitwert.fm.building.service.api.ProjectionService;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.util.MimeType;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.time.OffsetDateTime;
@@ -27,8 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import com.aspose.words.SaveFormat;
 
 @RestController("buildingDocumentController")
 @RequestMapping("/rest/building/buildings")
@@ -51,7 +40,7 @@ public class BuildingDocumentController {
 
 	@GetMapping(value = "/{id}/coverFoto")
 	public ResponseEntity<byte[]> getCoverFoto(@PathVariable Integer id) {
-		Integer documentId = this.cache.get(id).getCoverFotoId();
+		Integer documentId = this.cache.get(id).coverFotoId;
 		if (documentId == null) {
 			return ResponseEntity.noContent().build();
 		}
@@ -92,7 +81,7 @@ public class BuildingDocumentController {
 		}
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 			this.documentGeneration.generateEvaluationReport(building, stream, this.getSaveFormat(format));
-			String fileName = building.getAccount().getName() + " - " + building.getName();
+			String fileName = building.account.getName() + " - " + building.name;
 			fileName += " - " + monthFormatter.format(OffsetDateTime.now());
 			fileName = this.getFileName(fileName, this.getSaveFormat(format));
 			// mark file for download
@@ -124,7 +113,7 @@ public class BuildingDocumentController {
 				ObjBuilding building = this.cache.get(Integer.parseInt(id));
 				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 					this.documentGeneration.generateEvaluationReport(building, stream, this.getSaveFormat(format));
-					String fileName = building.getAccount().getName() + " - " + building.getName();
+					String fileName = building.account.getName() + " - " + building.name;
 					fileName += " - " + dateTimeNow;
 					fileName = this.getFileName(fileName, this.getSaveFormat(format));
 					fileName = fileName.replace("/", " ");
@@ -154,7 +143,7 @@ public class BuildingDocumentController {
 	}
 
 	private int getSaveFormat(String format) {
-		return format != null && "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
+		return "docx".equals(format) ? SaveFormat.DOCX : SaveFormat.PDF;
 	}
 
 }

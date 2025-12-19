@@ -1,13 +1,11 @@
 package io.zeitwert.dddrive.persist
 
 import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.ReferenceProperty
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import org.jooq.UpdatableRecord
-import java.time.OffsetDateTime
 
 /**
  * Base persistence provider for Obj aggregates using jOOQ.
@@ -33,24 +31,24 @@ abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenc
 		val record = dslContext().newRecord(Tables.OBJ)
 
 		// Set base fields
-		record.id = aggregate.getProperty("id")?.let { (it as BaseProperty<Int?>).value }
+		record.id = aggregate.getValueByPath("id")
 		record.objTypeId = getAggregateTypeId()
-		record.tenantId = (aggregate.getProperty("tenant") as? ReferenceProperty<*>)?.id as? Int
-		record.version = (aggregate.getProperty("version") as? BaseProperty<Int?>)?.value ?: 0
-		record.ownerId = (aggregate.getProperty("owner") as? ReferenceProperty<*>)?.id as? Int
-		record.caption = (aggregate.getProperty("caption") as? BaseProperty<String?>)?.value
-		record.createdByUserId = (aggregate.getProperty("createdByUser") as? ReferenceProperty<*>)?.id as? Int
-		record.createdAt = (aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value
-		record.modifiedByUserId = (aggregate.getProperty("modifiedByUser") as? ReferenceProperty<*>)?.id as? Int
-		record.modifiedAt = (aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value
+		record.tenantId = aggregate.getValueByPath("tenantId")
+		record.version = aggregate.getValueByPath("version") ?: 0
+		record.ownerId = aggregate.getValueByPath("owner.id")
+		record.caption = aggregate.getValueByPath("caption")
+		record.createdByUserId = aggregate.getValueByPath("createdByUser.id")
+		record.createdAt = aggregate.getValueByPath("createdAt")
+		record.modifiedByUserId = aggregate.getValueByPath("modifiedByUser.id")
+		record.modifiedAt = aggregate.getValueByPath("modifiedAt")
 
 		// Obj-specific fields
-		record.closedByUserId = (aggregate.getProperty("closedByUser") as? ReferenceProperty<*>)?.id as? Int
-		record.closedAt = (aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value
+		record.closedByUserId = aggregate.getValueByPath("closedByUserId")
+		record.closedAt = aggregate.getValueByPath("closedAt")
 
 		// Account ID (FM-specific, may be null for some obj types)
 		if (aggregate.hasProperty("accountId")) {
-			record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
+			record.accountId = aggregate.getValueByPath("accountId")
 		}
 
 		return record
@@ -73,14 +71,12 @@ abstract class JooqObjPersistenceProviderBase<O : Obj> : JooqAggregatePersistenc
 
 		val objRecord = record as ObjRecord
 
-		// Obj-specific fields
-		(aggregate.getProperty("objTypeId") as? BaseProperty<String?>)?.value = objRecord.objTypeId
-		(aggregate.getProperty("closedByUser") as? ReferenceProperty<ObjUser>)?.id = objRecord.closedByUserId
-		(aggregate.getProperty("closedAt") as? BaseProperty<OffsetDateTime?>)?.value = objRecord.closedAt
+		aggregate.setValueByPath("objTypeId", objRecord.objTypeId)
+		aggregate.setValueByPath("closedByUserId", objRecord.closedByUserId)
+		aggregate.setValueByPath("closedAt", objRecord.closedAt)
 
-		// Account ID (FM-specific)
 		if (aggregate.hasProperty("accountId")) {
-			(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = objRecord.accountId
+			aggregate.setValueByPath("accountId", objRecord.accountId)
 		}
 
 		// Load maxPartId from some source - this may need to be tracked differently in jOOQ

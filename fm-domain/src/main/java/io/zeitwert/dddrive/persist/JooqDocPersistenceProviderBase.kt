@@ -1,18 +1,11 @@
 package io.zeitwert.dddrive.persist
 
 import io.dddrive.core.doc.model.Doc
-import io.dddrive.core.doc.model.enums.CodeCaseDef
-import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.core.doc.model.enums.CodeCaseStage
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
-import io.dddrive.core.property.model.ReferenceProperty
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.doc.model.db.Tables
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
 import org.jooq.UpdatableRecord
-import java.time.OffsetDateTime
 
 /**
  * Base persistence provider for Doc aggregates using jOOQ.
@@ -48,30 +41,26 @@ abstract class JooqDocPersistenceProviderBase<D : Doc> : JooqAggregatePersistenc
 		val record = dslContext().newRecord(Tables.DOC)
 
 		// Set base fields
-		record.id = aggregate.getProperty("id")?.let { (it as BaseProperty<Int?>).value }
+		record.id = aggregate.getValueByPath("id")
 		record.docTypeId = getAggregateTypeId()
-		record.tenantId = (aggregate.getProperty("tenant") as? ReferenceProperty<*>)?.id as? Int
-		record.version = (aggregate.getProperty("version") as? BaseProperty<Int?>)?.value ?: 0
-		record.ownerId = (aggregate.getProperty("owner") as? ReferenceProperty<*>)?.id as? Int
-		record.caption = (aggregate.getProperty("caption") as? BaseProperty<String?>)?.value
-		record.createdByUserId = (aggregate.getProperty("createdByUser") as? ReferenceProperty<*>)?.id as? Int
-		record.createdAt = (aggregate.getProperty("createdAt") as? BaseProperty<OffsetDateTime?>)?.value
-		record.modifiedByUserId = (aggregate.getProperty("modifiedByUser") as? ReferenceProperty<*>)?.id as? Int
-		record.modifiedAt = (aggregate.getProperty("modifiedAt") as? BaseProperty<OffsetDateTime?>)?.value
+		record.tenantId = aggregate.getValueByPath("tenantId")
+		record.version = aggregate.getValueByPath("version") ?: 0
+		record.ownerId = aggregate.getValueByPath("owner.id")
+		record.caption = aggregate.getValueByPath("caption")
+		record.createdByUserId = aggregate.getValueByPath("createdByUser.id")
+		record.createdAt = aggregate.getValueByPath("createdAt")
+		record.modifiedByUserId = aggregate.getValueByPath("modifiedByUser.id")
+		record.modifiedAt = aggregate.getValueByPath("modifiedAt")
 
 		// Doc-specific fields
-		val caseDef = (aggregate.getProperty("caseDef") as? EnumProperty<CodeCaseDef>)?.value
-		record.caseDefId = caseDef?.id ?: getDefaultCaseDefId()
-
-		val caseStage = (aggregate.getProperty("caseStage") as? EnumProperty<CodeCaseStage>)?.value
-		record.caseStageId = caseStage?.id ?: getDefaultCaseStageId()
-
-		record.isInWork = (aggregate.getProperty("isInWork") as? BaseProperty<Boolean?>)?.value
-		record.assigneeId = (aggregate.getProperty("assignee") as? ReferenceProperty<*>)?.id as? Int
+		record.caseDefId = aggregate.getValueByPath("caseDefId") ?: getDefaultCaseDefId()
+		record.caseStageId = aggregate.getValueByPath("caseStageId") ?: getDefaultCaseStageId()
+		record.isInWork = aggregate.getValueByPath("isInWork")
+		record.assigneeId = aggregate.getValueByPath("assigneeId")
 
 		// Account ID (FM-specific, may be null for some doc types)
 		if (aggregate.hasProperty("accountId")) {
-			record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
+			record.accountId = aggregate.getValueByPath("accountId")
 		}
 
 		return record
@@ -94,27 +83,14 @@ abstract class JooqDocPersistenceProviderBase<D : Doc> : JooqAggregatePersistenc
 
 		val docRecord = record as DocRecord
 
-		// Doc-specific fields
-		(aggregate.getProperty("docTypeId") as? BaseProperty<String?>)?.value = docRecord.docTypeId
+		aggregate.setValueByPath("docTypeId", docRecord.docTypeId)
+		aggregate.setValueByPath("caseDefId", docRecord.caseDefId)
+		aggregate.setValueByPath("caseStageId", docRecord.caseStageId)
+		aggregate.setValueByPath("isInWork", docRecord.isInWork)
+		aggregate.setValueByPath("assigneeId", docRecord.assigneeId)
 
-		// Case definition
-		docRecord.caseDefId?.let { caseDefId ->
-			val caseDef = CodeCaseDefEnum.getCaseDef(caseDefId)
-			(aggregate.getProperty("caseDef") as? EnumProperty<CodeCaseDef>)?.value = caseDef
-		}
-
-		// Case stage
-		docRecord.caseStageId?.let { caseStageId ->
-			val caseStage = CodeCaseStageEnum.getCaseStage(caseStageId)
-			(aggregate.getProperty("caseStage") as? EnumProperty<CodeCaseStage>)?.value = caseStage
-		}
-
-		(aggregate.getProperty("isInWork") as? BaseProperty<Boolean?>)?.value = docRecord.isInWork
-		(aggregate.getProperty("assignee") as? ReferenceProperty<ObjUser>)?.id = docRecord.assigneeId
-
-		// Account ID (FM-specific)
 		if (aggregate.hasProperty("accountId")) {
-			(aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value = docRecord.accountId
+			aggregate.setValueByPath("accountId", docRecord.accountId)
 		}
 
 		// Load maxPartId - this may need to be tracked differently

@@ -1,9 +1,10 @@
 package io.zeitwert.fm.test.persist
 
 import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.property.model.BaseProperty
+import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
 import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
+import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
@@ -39,9 +40,6 @@ open class ObjTestPersistenceProviderImpl(
 		aggregate: ObjTest,
 		record: ObjTestRecord,
 	) {
-		check(aggregate.id != null) { "id defined" }
-		check(aggregate.meta.objTypeId != null) { "objTypeId defined" }
-		// obj_test
 		aggregate.setValueByPath("shortText", record.shortText)
 		aggregate.setValueByPath("longText", record.longText)
 		aggregate.setValueByPath("date", record.date)
@@ -59,8 +57,8 @@ open class ObjTestPersistenceProviderImpl(
 
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
-		if (aggregate.hasProperty("accountId")) {
-			record.accountId = (aggregate.getProperty("accountId") as? BaseProperty<Int?>)?.value
+		if (aggregate is ItemWithAccount) {
+			record.accountId = aggregate.accountId as Int?
 		}
 		record.shortText = aggregate.shortText
 		record.longText = aggregate.longText
@@ -85,11 +83,28 @@ open class ObjTestPersistenceProviderImpl(
 		}
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = emptyList()
+	override fun getAll(tenantId: Any): List<Any> =
+		dslContext()
+			.select(Tables.OBJ_TEST.OBJ_ID)
+			.from(Tables.OBJ_TEST)
+			.where(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
+			.fetch(Tables.OBJ_TEST.OBJ_ID)
 
 	override fun getByForeignKey(
+		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,
-	): List<Any> = emptyList()
+	): List<Any>? {
+		val field = when (fkName) {
+			"refTestId" -> Tables.OBJ_TEST.REF_TEST_ID
+			else -> throw IllegalArgumentException("unknown foreign key name: ${Tables.OBJ_TEST}.$fkName")
+		}
+		return dslContext
+			.select(Tables.OBJ_TEST.OBJ_ID)
+			.from(Tables.OBJ_TEST)
+			.where(field.eq(targetId as Int))
+			// .and(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
+			.fetch(Tables.OBJ_TEST.OBJ_ID)
+	}
 
 }

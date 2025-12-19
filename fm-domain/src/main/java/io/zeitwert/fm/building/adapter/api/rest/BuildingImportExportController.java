@@ -1,19 +1,5 @@
 package io.zeitwert.fm.building.adapter.api.rest;
 
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.dddrive.core.ddd.model.RepositoryDirectory;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.app.model.RequestContextFM;
@@ -25,13 +11,7 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
-import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
-import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog;
-import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus;
-import io.zeitwert.fm.building.model.enums.CodeBuildingSubType;
-import io.zeitwert.fm.building.model.enums.CodeBuildingType;
-import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation;
+import io.zeitwert.fm.building.model.enums.*;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -39,6 +19,15 @@ import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import jakarta.servlet.ServletException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @RestController("buildingFileTransferController")
 @RequestMapping("/rest/building/buildings")
@@ -83,7 +72,7 @@ public class BuildingImportExportController {
 		Object userId = this.requestCtx.getUser().getId();
 		OffsetDateTime timestamp = OffsetDateTime.now();
 		ObjBuilding building = this.buildingRepo.create(this.requestCtx.getTenantId(), userId, timestamp);
-		building.setAccountId(accountId);
+		building.accountId = accountId;
 		this.fillFromDto(building, dto);
 		this.buildingRepo.store(building, userId, timestamp);
 		BuildingTransferDto export = this.getTransferDto(building);
@@ -102,7 +91,7 @@ public class BuildingImportExportController {
 						: null)
 				.modifiedAt(building.getMeta().getModifiedAt())
 				.build();
-		List<BuildingTransferElementRatingDto> elements = building.getCurrentRating().getElementList().stream().map(e -> {
+		List<BuildingTransferElementRatingDto> elements = building.currentRating.getElementList().stream().map(e -> {
 			return BuildingTransferElementRatingDto
 					.builder()
 					.buildingPart(e.getBuildingPart().getId())
@@ -116,12 +105,12 @@ public class BuildingImportExportController {
 					.measureDescription(e.getMeasureDescription())
 					.build();
 		}).toList();
-		List<NoteTransferDto> notes = building.getNotes().stream().map(note -> {
+		List<NoteTransferDto> notes = building.notes.stream().map(note -> {
 			return NoteTransferDto
 					.builder()
-					.subject(note.getSubject())
-					.content(note.getContent())
-					.isPrivate(note.getIsPrivate())
+					.subject(note.subject)
+					.content(note.content)
+					.isPrivate(note.isPrivate)
 					.createdByUser(note.getMeta().getCreatedByUser().getEmail())
 					.createdAt(note.getMeta().getCreatedAt())
 					.modifiedByUser(note.getMeta().getModifiedByUser() != null
@@ -134,47 +123,47 @@ public class BuildingImportExportController {
 				.builder()
 				.meta(meta)
 				.id((Integer) building.getId())
-				.name(building.getName())
-				.description(building.getDescription())
-				.buildingNr(building.getBuildingNr())
-				.buildingInsuranceNr(building.getInsuranceNr())
-				.plotNr(building.getPlotNr())
-				.nationalBuildingId(building.getNationalBuildingId())
-				.historicPreservation(building.getHistoricPreservation() != null
-						? building.getHistoricPreservation().getId()
+				.name(building.name)
+				.description(building.description)
+				.buildingNr(building.buildingNr)
+				.buildingInsuranceNr(building.insuranceNr)
+				.plotNr(building.plotNr)
+				.nationalBuildingId(building.nationalBuildingId)
+				.historicPreservation(building.historicPreservation != null
+						? building.historicPreservation.getId()
 						: null)
-				.street(building.getStreet())
-				.zip(building.getZip())
-				.city(building.getCity())
-				.country(building.getCountry() != null ? building.getCountry().getId() : null)
-				.geoAddress(building.getGeoAddress())
-				.geoCoordinates(building.getGeoCoordinates())
-				.geoZoom(building.getGeoZoom())
-				.currency(building.getCurrency() != null ? building.getCurrency().getId() : null)
-				.volume(building.getVolume())
-				.areaGross(building.getAreaGross())
-				.areaNet(building.getAreaNet())
-				.nrOfFloorsAboveGround(building.getNrOfFloorsAboveGround())
-				.nrOfFloorsBelowGround(building.getNrOfFloorsBelowGround())
-				.buildingType(building.getBuildingType() != null ? building.getBuildingType().getId() : null)
-				.buildingSubType(building.getBuildingSubType() != null ? building.getBuildingSubType().getId() : null)
-				.buildingYear(building.getBuildingYear())
-				.insuredValue(building.getInsuredValue())
-				.insuredValueYear(building.getInsuredValueYear())
-				.notInsuredValue(building.getNotInsuredValue())
-				.notInsuredValueYear(building.getNotInsuredValueYear())
-				.thirdPartyValue(building.getThirdPartyValue())
-				.thirdPartyValueYear(building.getThirdPartyValueYear())
-				.buildingPartCatalog(building.getCurrentRating().getPartCatalog() != null
-						? building.getCurrentRating().getPartCatalog().getId()
+				.street(building.street)
+				.zip(building.zip)
+				.city(building.city)
+				.country(building.country != null ? building.country.getId() : null)
+				.geoAddress(building.geoAddress)
+				.geoCoordinates(building.geoCoordinates)
+				.geoZoom(building.geoZoom)
+				.currency(building.currency != null ? building.currency.getId() : null)
+				.volume(building.volume)
+				.areaGross(building.areaGross)
+				.areaNet(building.areaNet)
+				.nrOfFloorsAboveGround(building.nrOfFloorsAboveGround)
+				.nrOfFloorsBelowGround(building.nrOfFloorsBelowGround)
+				.buildingType(building.buildingType != null ? building.buildingType.getId() : null)
+				.buildingSubType(building.buildingSubType != null ? building.buildingSubType.getId() : null)
+				.buildingYear(building.buildingYear)
+				.insuredValue(building.insuredValue)
+				.insuredValueYear(building.insuredValueYear)
+				.notInsuredValue(building.notInsuredValue)
+				.notInsuredValueYear(building.notInsuredValueYear)
+				.thirdPartyValue(building.thirdPartyValue)
+				.thirdPartyValueYear(building.thirdPartyValueYear)
+				.buildingPartCatalog(building.currentRating.getPartCatalog() != null
+						? building.currentRating.getPartCatalog().getId()
 						: null)
-				.buildingMaintenanceStrategy(building.getCurrentRating().getMaintenanceStrategy() != null
-						? building.getCurrentRating().getMaintenanceStrategy().getId()
+				.buildingMaintenanceStrategy(building.currentRating.getMaintenanceStrategy() != null
+						? building.currentRating.getMaintenanceStrategy().getId()
 						: null)
-				.ratingStatus(building.getCurrentRating().getRatingStatus().getId())
-				.ratingDate(building.getCurrentRating().getRatingDate())
-				.ratingUser(building.getCurrentRating().getRatingUser() != null
-						? building.getCurrentRating().getRatingUser().getEmail()
+				.ratingStatus(building.currentRating.getRatingStatus().getId())
+				.ratingDate(building.currentRating.getRatingDate())
+				.ratingUser(building.currentRating.getRatingUser() != null
+						? building.currentRating.getRatingUser().getEmail()
 						: null)
 				.elements(elements)
 				.notes(notes)
@@ -183,7 +172,7 @@ public class BuildingImportExportController {
 	}
 
 	private String getFileName(ObjBuilding building) {
-		return (building.getAccount() != null ? building.getAccount().getName() + " " : "") + building.getName() + ".zwbd";
+		return (building.account != null ? building.account.getName() + " " : "") + building.name + ".zwbd";
 	}
 
 	private void fillFromDto(ObjBuilding building, BuildingTransferDto dto) {
@@ -193,46 +182,45 @@ public class BuildingImportExportController {
 			ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
 			OffsetDateTime now = this.requestCtx.getCurrentTime();
 			building.setOwner(user);
-			building.setName(dto.getName());
-			building.setDescription(dto.getDescription());
-			building.setBuildingNr(dto.getBuildingNr());
-			building.setInsuranceNr(dto.getBuildingInsuranceNr());
-			building.setPlotNr(dto.getPlotNr());
-			building.setNationalBuildingId(dto.getNationalBuildingId());
-			building.setHistoricPreservation(CodeHistoricPreservation.getHistoricPreservation(dto.getHistoricPreservation()));
-			building.setStreet(dto.getStreet());
-			building.setZip(dto.getZip());
-			building.setCity(dto.getCity());
-			building.setCountry(CodeCountry.getCountry(dto.getCountry()));
-			building.setGeoAddress(dto.getGeoAddress());
-			building.setGeoCoordinates(dto.getGeoCoordinates());
-			building.setGeoZoom(dto.getGeoZoom());
-			building.setCurrency(CodeCurrency.getCurrency(dto.getCurrency()));
-			building.setVolume(dto.getVolume());
-			building.setAreaGross(dto.getAreaGross());
-			building.setAreaNet(dto.getAreaNet());
-			building.setNrOfFloorsAboveGround(dto.getNrOfFloorsAboveGround());
-			building.setNrOfFloorsBelowGround(dto.getNrOfFloorsBelowGround());
-			building.setBuildingType(CodeBuildingType.getBuildingType(dto.getBuildingType()));
-			building.setBuildingSubType(CodeBuildingSubType.getBuildingSubType(dto.getBuildingSubType()));
-			building.setBuildingYear(dto.getBuildingYear());
-			building.setInsuredValue(dto.getInsuredValue());
-			building.setInsuredValueYear(dto.getInsuredValueYear());
-			building.setNotInsuredValue(dto.getNotInsuredValue());
-			building.setNotInsuredValueYear(dto.getNotInsuredValueYear());
-			building.setThirdPartyValue(dto.getThirdPartyValue());
-			building.setThirdPartyValueYear(dto.getThirdPartyValueYear());
-			final ObjBuildingPartRating rating = building.getCurrentRating() != null
-					? building.getCurrentRating()
+			building.name = dto.getName();
+			building.description = dto.getDescription();
+			building.buildingNr = dto.getBuildingNr();
+			building.insuranceNr = dto.getBuildingInsuranceNr();
+			building.plotNr = dto.getPlotNr();
+			building.nationalBuildingId = dto.getNationalBuildingId();
+			building.historicPreservation = CodeHistoricPreservation.getHistoricPreservation(dto.getHistoricPreservation());
+			building.street = dto.getStreet();
+			building.zip = dto.getZip();
+			building.city = dto.getCity();
+			building.country = CodeCountry.getCountry(dto.getCountry());
+			building.geoAddress = dto.getGeoAddress();
+			building.geoCoordinates = dto.getGeoCoordinates();
+			building.geoZoom = dto.getGeoZoom();
+			building.currency = CodeCurrency.getCurrency(dto.getCurrency());
+			building.volume = dto.getVolume();
+			building.areaGross = dto.getAreaGross();
+			building.areaNet = dto.getAreaNet();
+			building.nrOfFloorsAboveGround = dto.getNrOfFloorsAboveGround();
+			building.nrOfFloorsBelowGround = dto.getNrOfFloorsBelowGround();
+			building.buildingType = CodeBuildingType.getBuildingType(dto.getBuildingType());
+			building.buildingSubType = CodeBuildingSubType.getBuildingSubType(dto.getBuildingSubType());
+			building.buildingYear = dto.getBuildingYear();
+			building.insuredValue = dto.getInsuredValue();
+			building.insuredValueYear = dto.getInsuredValueYear();
+			building.notInsuredValue = dto.getNotInsuredValue();
+			building.notInsuredValueYear = dto.getNotInsuredValueYear();
+			building.thirdPartyValue = dto.getThirdPartyValue();
+			building.thirdPartyValueYear = dto.getThirdPartyValueYear();
+			final ObjBuildingPartRating rating = building.currentRating != null
+					? building.currentRating
 					: building.addRating(user, now);
-			rating.setPartCatalog(CodeBuildingPartCatalog.getPartCatalog(dto.getBuildingPartCatalog()));
-			rating.setMaintenanceStrategy(
-					CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy()));
-			rating.setRatingStatus(CodeBuildingRatingStatus.getRatingStatus(dto.getRatingStatus()));
-			rating.setRatingDate(dto.getRatingDate());
-			rating.setRatingUser(dto.getRatingUser() != null
+			rating.partCatalog = CodeBuildingPartCatalog.getPartCatalog(dto.getBuildingPartCatalog());
+			rating.maintenanceStrategy = CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(dto.getBuildingMaintenanceStrategy());
+			rating.ratingStatus = CodeBuildingRatingStatus.getRatingStatus(dto.getRatingStatus());
+			rating.ratingDate = dto.getRatingDate();
+			rating.ratingUser = dto.getRatingUser() != null
 					? this.userRepo.getByEmail(dto.getRatingUser()).get()
-					: null);
+					: null;
 			if (dto.getElements() != null) {
 				dto.getElements().forEach((dtoElement) -> {
 					CodeBuildingPart buildingPart = directory.getEnumeration(CodeBuildingPart.class).getItem(dtoElement.getBuildingPart());
@@ -240,14 +228,14 @@ public class BuildingImportExportController {
 					if (element == null) {
 						element = rating.addElement(buildingPart);
 					}
-					element.setWeight(dtoElement.getWeight());
-					element.setCondition(dtoElement.getCondition());
+					element.weight = dtoElement.getWeight();
+					element.condition = dtoElement.getCondition();
 					// element.setRatingYear(dtoElement.getRatingYear());
-					element.setStrain(dtoElement.getStrain());
-					element.setStrength(dtoElement.getStrength());
-					element.setDescription(dtoElement.getDescription());
-					element.setConditionDescription(dtoElement.getConditionDescription());
-					element.setMeasureDescription(dtoElement.getMeasureDescription());
+					element.strain = dtoElement.getStrain();
+					element.strength = dtoElement.getStrength();
+					element.description = dtoElement.getDescription();
+					element.conditionDescription = dtoElement.getConditionDescription();
+					element.measureDescription = dtoElement.getMeasureDescription();
 				});
 			}
 			if (dto.getNotes() != null) {
@@ -256,9 +244,9 @@ public class BuildingImportExportController {
 				OffsetDateTime noteTimestamp = OffsetDateTime.now();
 				dto.getNotes().forEach((dtoNote) -> {
 					ObjNote note = building.addNote(noteType, noteUserId);
-					note.setSubject(dtoNote.getSubject());
-					note.setContent(dtoNote.getContent());
-					note.setIsPrivate(dtoNote.getIsPrivate());
+					note.subject = dtoNote.getSubject();
+					note.content = dtoNote.getContent();
+					note.isPrivate = dtoNote.getIsPrivate();
 					this.noteRepo.store(note, noteUserId, noteTimestamp);
 				});
 			}

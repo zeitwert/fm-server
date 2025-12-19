@@ -11,9 +11,11 @@ data class EnumeratedDto(
 	val id: String? = null,
 	val name: String? = null,
 ) {
+
 	override fun toString(): String = name ?: ""
 
 	companion object {
+
 		@JvmStatic
 		fun of(
 			id: String?,
@@ -21,7 +23,7 @@ data class EnumeratedDto(
 		): EnumeratedDto = EnumeratedDto(id, name)
 
 		@JvmStatic
-		fun of(e: Enumerated?): EnumeratedDto? = e?.let { EnumeratedDto(it.id, it.name) }
+		fun of(e: Enumerated?): EnumeratedDto? = e?.let { EnumeratedDto(it.id, it.getName()) }
 
 		@JvmStatic
 		fun of(a: Aggregate?): EnumeratedDto? = a?.let { EnumeratedDto(it.id.toString(), it.caption) }

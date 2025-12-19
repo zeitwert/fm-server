@@ -4,7 +4,6 @@ import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.ddd.model.enums.CodePartListType
 import io.dddrive.core.ddd.model.enums.CodePartListTypeEnum
-import io.dddrive.core.doc.model.enums.CodeCaseDef
 import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
 import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
@@ -24,7 +23,9 @@ import org.springframework.stereotype.Component
  * reference data (intentional duplication for the dual-framework approach).
  */
 @Component("testConfig")
-class TestConfig : EnumConfigBase(), InitializingBean {
+class TestConfig :
+	EnumConfigBase(),
+	InitializingBean {
 
 	@Autowired
 	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
@@ -47,15 +48,15 @@ class TestConfig : EnumConfigBase(), InitializingBean {
 			initCodeCaseStage(caseStageEnum)
 
 			// Trigger enum initialization
-			CodeTestType.entries
+			CodeTestType.Enumeration
 		} finally {
 			endConfig()
 		}
 	}
 
 	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType(e, "obj_test", "Test Object"))
-		e.addItem(CodeAggregateType(e, "doc_test", "Test Order"))
+		e.addItem(CodeAggregateType("obj_test", "Test Object"))
+		e.addItem(CodeAggregateType("doc_test", "Test Order"))
 	}
 
 	private fun initCodePartListType(e: CodePartListTypeEnum) {
@@ -64,12 +65,12 @@ class TestConfig : EnumConfigBase(), InitializingBean {
 	}
 
 	private fun initCodeCaseDef(e: CodeCaseDefEnum) {
-		e.addItem(CodeCaseDef(e, "test", "Test Process", "doc_test"))
+		e.addItem(CodeCaseDef("test", "Test Process", "doc_test"))
 	}
 
 	private fun initCodeCaseStage(e: CodeCaseStageEnum) {
-		e.addItem(CodeCaseStage(e, "test.new", "test", "initial", "New", "New", 10, null, null, null))
-		e.addItem(CodeCaseStage(e, "test.open", "test", "intermediate", "Assigned", "Assigned", 20, null, null, null))
+		e.addItem(CodeCaseStage("test.new", "test", "initial", "New", "New", 10, null, null, null))
+		e.addItem(CodeCaseStage("test.open", "test", "intermediate", "Assigned", "Assigned", 20, null, null, null))
 		e.addItem(
 			CodeCaseStage(
 				e,
@@ -81,10 +82,10 @@ class TestConfig : EnumConfigBase(), InitializingBean {
 				30,
 				null,
 				null,
-				null
-			)
+				null,
+			),
 		)
-		e.addItem(CodeCaseStage(e, "test.done", "test", "terminal", "Done", "Done", 40, null, null, null))
+		e.addItem(CodeCaseStage("test.done", "test", "terminal", "Done", "Done", 40, null, null, null))
 	}
 
 }

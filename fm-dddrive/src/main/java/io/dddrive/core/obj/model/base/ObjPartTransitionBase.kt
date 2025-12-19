@@ -20,8 +20,7 @@ abstract class ObjPartTransitionBase(
 	protected val _timestamp = this.addBaseProperty("timestamp", OffsetDateTime::class.java)
 
 	@Suppress("UNCHECKED_CAST")
-	override val repository: PartRepository<Obj, ObjPartTransition>
-		get() = super.repository as PartRepository<Obj, ObjPartTransition>
+	override val repository get() = super.repository as PartRepository<Obj, ObjPartTransition>
 
 	override fun doAfterCreate() {
 		this._tenantId.value = this.aggregate.tenantId

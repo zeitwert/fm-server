@@ -1,19 +1,18 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Component;
-
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.dddrive.core.oe.model.ObjTenant;
-import io.zeitwert.fm.dms.model.ObjDocumentRepository;
-import io.zeitwert.fm.oe.model.enums.CodeTenantType;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
+import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
+import io.zeitwert.fm.oe.model.enums.CodeTenantType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 
 @Component("objTenantDtoAdapter")
 @DependsOn("oeConfig")
@@ -45,12 +44,11 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	@Override
 	public void toAggregate(ObjTenantDto dto, ObjTenantFM obj) {
 		super.toAggregate(dto, obj);
-		obj.setTenantType(
-				dto.getTenantType() == null ? null : CodeTenantType.getTenantType(dto.getTenantType().getId()));
+		obj.tenantType = dto.getTenantType() == null ? null : CodeTenantType.getTenantType(dto.getTenantType().getId());
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
-		obj.setInflationRate(dto.getInflationRate());
-		obj.setDiscountRate(dto.getDiscountRate());
+		obj.inflationRate = dto.getInflationRate();
+		obj.discountRate = dto.getDiscountRate();
 	}
 
 	@Override
@@ -61,12 +59,12 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.tenantType(EnumeratedDto.of(obj.getTenantType()))
+				.tenantType(EnumeratedDto.of(obj.tenantType))
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.inflationRate(obj.getInflationRate())
-				.discountRate(obj.getDiscountRate())
-				.logoId(obj.getLogoImageId())
+				.inflationRate(obj.inflationRate)
+				.discountRate(obj.discountRate)
+				.logoId(obj.logoImageId)
 				.build();
 	}
 

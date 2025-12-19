@@ -3,7 +3,6 @@ package io.zeitwert.fm.obj.model.base
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjBase
-import io.dddrive.core.property.model.BaseProperty
 import io.zeitwert.fm.ddd.model.EntityWithExtn
 
 /**
@@ -18,12 +17,12 @@ import io.zeitwert.fm.ddd.model.EntityWithExtn
  */
 abstract class FMObjBase(
 	repository: ObjRepository<out Obj>,
-	val isNew: Boolean,
-) : ObjBase(repository),
+	isNew: Boolean,
+) : ObjBase(repository, isNew),
 	EntityWithExtn {
 
 	// @formatter:off
-	private val _accountId: BaseProperty<Int> = this.addBaseProperty("accountId", Int::class.java)
+	private val _accountId = addBaseProperty("accountId", Any::class.java)
 	private val _extnMap = mutableMapOf<String, Any>()
 	// @formatter:on
 
@@ -31,7 +30,7 @@ abstract class FMObjBase(
 	 * Gets/sets the account ID associated with this Obj.
 	 * Setting accountId also sets extnAccountId to the same value.
 	 */
-	var accountId: Int?
+	var accountId: Any?
 		get() = _accountId.value
 		set(value) {
 			_accountId.value = value

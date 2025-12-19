@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component
  * Collaboration domain configuration that registers aggregate types and enums in the NEW dddrive framework.
  */
 @Component("collaborationConfig")
-class CollaborationConfig : EnumConfigBase(), InitializingBean {
+class CollaborationConfig :
+	EnumConfigBase(),
+	InitializingBean {
 
 	@Autowired
 	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
@@ -23,15 +25,14 @@ class CollaborationConfig : EnumConfigBase(), InitializingBean {
 			initCodeAggregateType(aggregateTypeEnum)
 
 			// Trigger enum initialization
-			CodeNoteType.entries
+			CodeNoteType.Enumeration
 		} finally {
 			endConfig()
 		}
 	}
 
 	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType(e, "obj_note", "Note"))
+		e.addItem(CodeAggregateType("obj_note", "Note"))
 	}
 
 }
-

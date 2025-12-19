@@ -24,6 +24,7 @@ interface SqlAggregateRecordMapper<A : Aggregate, R : UpdatableRecord<R>> {
 	fun getAll(tenantId: Any): List<Any>
 
 	fun getByForeignKey(
+		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,
 	): List<Any>?

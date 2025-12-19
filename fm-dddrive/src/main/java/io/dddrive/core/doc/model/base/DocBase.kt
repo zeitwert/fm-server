@@ -28,8 +28,7 @@ abstract class DocBase protected constructor(
 
 	private var oldCaseStage: CodeCaseStage? = null
 
-	override val repository: DocRepository<*>
-		get() = super.repository as DocRepository<*>
+	override val repository get() = super.repository as DocRepository<*>
 
 	override val meta: DocMeta
 		get() = this

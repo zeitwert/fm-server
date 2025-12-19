@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component
  * Account domain configuration that registers aggregate types and enums in the NEW dddrive framework.
  */
 @Component("accountConfig")
-class AccountConfig : EnumConfigBase(), InitializingBean {
+class AccountConfig :
+	EnumConfigBase(),
+	InitializingBean {
 
 	@Autowired
 	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
@@ -25,16 +27,15 @@ class AccountConfig : EnumConfigBase(), InitializingBean {
 			initCodeAggregateType(aggregateTypeEnum)
 
 			// Trigger enum initialization
-			CodeAccountType.entries
-			CodeClientSegment.entries
-			CodeCurrency.entries
+			CodeAccountType.Enumeration
+			CodeClientSegment.Enumeration
+			CodeCurrency.Enumeration
 		} finally {
 			endConfig()
 		}
 	}
 
 	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType(e, "obj_account", "Account"))
+		e.addItem(CodeAggregateType("obj_account", "Account"))
 	}
 }
-

@@ -51,9 +51,9 @@ public class PortfolioTest {
 		// Integer pf1Id = pf1a.getId();
 		// Integer pf1aIdHash = System.identityHashCode(pf1a);
 
-		pf1a.setAccountId(account.getId());
-		pf1a.setName("Portfolio 1");
-		pf1a.setDescription("A test portfolio");
+		pf1a.accountId = account.getId();
+		pf1a.name = "Portfolio 1";
+		pf1a.description = "A test portfolio";
 
 		// TODO
 
@@ -84,7 +84,7 @@ public class PortfolioTest {
 		// assertEquals(2, pf1b.getExcludeSet().size(), "exclude set count 5");
 		// assertEquals(3, pf1b.getBuildingSet().size(), "building set count 5");
 
-		assertEquals(account.getId(), pf1a.getAccountId(), "account id");
+		assertEquals(account.getId(), pf1a.accountId, "account id");
 		assertEquals(account.getId(), pf1a.getAccount().getId(), "account id");
 	}
 

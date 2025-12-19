@@ -7,12 +7,10 @@ import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 
 /**
- * Base repository class for FM Obj entities using the NEW dddrive framework.
+ * Base repository class for FM Objects.
  *
  * This class extends the new dddrive ObjRepositoryBase and adds:
  * - DSLContext injection for jOOQ operations
- * - Persistence provider wiring
- * - ObjNoteRepository for collaboration notes
  *
  * Subclasses must implement getPersistenceProvider() to return their specific provider.
  *

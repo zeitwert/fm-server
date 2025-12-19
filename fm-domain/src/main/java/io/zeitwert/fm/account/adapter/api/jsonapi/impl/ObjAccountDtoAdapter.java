@@ -1,14 +1,8 @@
-
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
-import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
 import io.zeitwert.fm.account.model.enums.CodeClientSegment;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
@@ -22,6 +16,9 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
 import io.zeitwert.fm.oe.model.ObjTenantFM;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 @Component("objAccountDtoAdapter")
 public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccountDto> {
@@ -45,7 +42,8 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 	}
 
 	@Autowired
-	@Lazy // break contact / account circular dependency
+	@Lazy
+		// break contact / account circular dependency
 	void setContactDtoAdapter(ObjContactDtoAdapter contactDtoAdapter) {
 		this.contactDtoAdapter = contactDtoAdapter;
 	}
@@ -78,18 +76,15 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 			obj.getMeta().disableCalc();
 			super.toAggregate(dto, obj);
 
-			obj.setName(dto.getName());
-			obj.setDescription(dto.getDescription());
-			obj.setAccountType(
-					dto.getAccountType() == null ? null : CodeAccountType.getAccountType(dto.getAccountType().getId()));
-			obj.setClientSegment(
-					dto.getClientSegment() == null ? null
-							: CodeClientSegment.getClientSegment(dto.getClientSegment().getId()));
-			obj.setReferenceCurrency(
-					dto.getReferenceCurrency() == null ? null : CodeCurrency.getCurrency(dto.getReferenceCurrency().getId()));
-			obj.setInflationRate(dto.getInflationRate());
-			obj.setDiscountRate(dto.getDiscountRate());
-			obj.setMainContactId(dto.getMainContactId());
+			obj.name = dto.getName();
+			obj.description = dto.getDescription();
+			obj.accountType = dto.getAccountType() == null ? null : CodeAccountType.getAccountType(dto.getAccountType().getId());
+			obj.clientSegment = dto.getClientSegment() == null ? null
+					: CodeClientSegment.getClientSegment(dto.getClientSegment().getId());
+			obj.referenceCurrency = dto.getReferenceCurrency() == null ? null : CodeCurrency.getCurrency(dto.getReferenceCurrency().getId());
+			obj.inflationRate = dto.getInflationRate();
+			obj.discountRate = dto.getDiscountRate();
+			obj.mainContactId = dto.getMainContactId();
 
 		} finally {
 			obj.getMeta().enableCalc();
@@ -105,17 +100,17 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 		ObjAccountDto.ObjAccountDtoBuilder<?, ?> dtoBuilder = ObjAccountDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.tenantInfoId((Integer)obj.getTenantId())
-				.name(obj.getName())
-				.description(obj.getDescription())
-				.accountType(EnumeratedDto.of(obj.getAccountType()))
-				.clientSegment(EnumeratedDto.of(obj.getClientSegment()))
-				.referenceCurrency(EnumeratedDto.of(obj.getReferenceCurrency()))
-				.inflationRate(obj.getInflationRate())
-				.discountRate(obj.getDiscountRate())
-				.mainContactId(obj.getMainContactId())
-				.contactIdList(obj.getContacts().stream().map(c -> (Integer)c.getId()).toList())
-				.logoId(obj.getLogoImageId())
+				.tenantInfoId((Integer) obj.getTenantId())
+				.name(obj.name)
+				.description(obj.description)
+				.accountType(EnumeratedDto.of(obj.accountType))
+				.clientSegment(EnumeratedDto.of(obj.clientSegment))
+				.referenceCurrency(EnumeratedDto.of(obj.referenceCurrency))
+				.inflationRate(obj.inflationRate)
+				.discountRate(obj.discountRate)
+				.mainContactId(obj.mainContactId)
+				.contactIdList(obj.contacts.stream().map(c -> (Integer) c.getId()).toList())
+				.logoId(obj.logoImageId)
 				.build();
 	}
 

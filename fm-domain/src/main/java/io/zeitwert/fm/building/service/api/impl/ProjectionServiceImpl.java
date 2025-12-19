@@ -1,24 +1,18 @@
 package io.zeitwert.fm.building.service.api.impl;
 
-import static io.zeitwert.fm.util.NumericUtils.roundProgressive;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Service;
-
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart;
 import io.zeitwert.fm.building.service.api.ProjectionService;
+import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
 import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod;
 import io.zeitwert.fm.building.service.api.dto.ProjectionResult;
-import io.zeitwert.fm.building.service.api.dto.ProjectionElement;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+import static io.zeitwert.fm.util.NumericUtils.roundProgressive;
 
 @Service("projectionService")
 public class ProjectionServiceImpl implements ProjectionService {
@@ -44,16 +38,16 @@ public class ProjectionServiceImpl implements ProjectionService {
 		int startYear = this.getMinProjectionDate(buildings);
 		for (ObjBuilding building : buildings) {
 			EnumeratedDto buildingEnum = this.getAsEnumerated(building);
-			if (building.getCurrentRating() != null) {
-				for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
+			if (building.currentRating != null) {
+				for (ObjBuildingPartElementRating element : building.currentRating.getElementList()) {
 					EnumeratedDto elementEnum = this.getAsEnumerated(element);
-					EnumeratedDto buildingPartEnum = EnumeratedDto.of(element.getBuildingPart());
-					if (element.getWeight() != null && element.getRatingYear() != null) {
-						if (element.getWeight() > 0 && element.getCondition() > 0) {
-							List<ProjectionPeriod> elementPeriodList = element.getBuildingPart().getProjection(
+					EnumeratedDto buildingPartEnum = EnumeratedDto.of(element.buildingPart);
+					if (element.weight != null && element.ratingYear != null) {
+						if (element.weight > 0 && element.condition > 0) {
+							List<ProjectionPeriod> elementPeriodList = element.buildingPart.getProjection(
 									/* elementValue => */ 100.0,
-									/* ratingYear => */ element.getRatingYear(),
-									/* condition => */ element.getCondition() / 100.0,
+									/* ratingYear => */ element.ratingYear,
+									/* condition => */ element.condition / 100.0,
 									/* startYear => */ startYear,
 									/* duration => */ duration);
 							elementList.add(ProjectionElement.builder().building(buildingEnum).element(elementEnum)
@@ -87,12 +81,12 @@ public class ProjectionServiceImpl implements ProjectionService {
 	}
 
 	private int getMinProjectionDate(ObjBuilding building) {
-		int projectionYear = building.getInsuredValueYear();
-		if (building.getCurrentRating() != null) {
-			for (ObjBuildingPartElementRating element : building.getCurrentRating().getElementList()) {
-				if (element.getWeight() != null && element.getWeight() > 0) {
-					if (element.getRatingYear() != null && element.getRatingYear() > projectionYear) {
-						projectionYear = element.getRatingYear();
+		int projectionYear = building.insuredValueYear;
+		if (building.currentRating != null) {
+			for (ObjBuildingPartElementRating element : building.currentRating.getElementList()) {
+				if (element.weight != null && element.weight > 0) {
+					if (element.ratingYear != null && element.ratingYear > projectionYear) {
+						projectionYear = element.ratingYear;
 					}
 				}
 			}
@@ -102,12 +96,12 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 	private EnumeratedDto getAsEnumerated(ObjBuilding building) {
 		String id = building.getId().toString();
-		return EnumeratedDto.of(id, building.getName());
+		return EnumeratedDto.of(id, building.name);
 	}
 
 	private EnumeratedDto getAsEnumerated(ObjBuildingPartElementRating element) {
 		String id = Integer.toString(element.getId());
-		return EnumeratedDto.of(id, element.getMeta().getAggregate().getName() + ": " + element.getBuildingPart().getName());
+		return EnumeratedDto.of(id, element.getMeta().getAggregate().name + ": " + element.buildingPart.getName());
 	}
 
 	private ProjectionResult consolidateProjection(ProjectionResult projectionResult) {
@@ -116,7 +110,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 
 		double techPart = 0;
 		for (ObjBuildingPartElementRating part : projectionResult.getElementMap().values()) {
-			techPart += part.getWeight() / 100 * part.getBuildingPart().getTechRate();
+			techPart += part.weight / 100 * part.buildingPart.getTechRate();
 		}
 		double techRate = CodeBuildingPart.Enumeration.getTechRate(techPart);
 
@@ -133,7 +127,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				ProjectionPeriod elementPeriod = elementPeriods.get(year - elementPeriods.get(0).getYear());
 				ObjBuilding building = projectionResult.getBuilding(elementEnum);
 				double buildingValue = building.getBuildingValue(year);
-				double elementValue = buildingValue * element.getWeight() / 100.0;
+				double elementValue = buildingValue * element.weight / 100.0;
 				originalValue += elementValue;
 				timeValue += elementValue * elementPeriod.getTimeValue() / 100.0;
 				double elementRestorationCosts = elementValue * elementPeriod.getRestorationCosts() / 100.0;
@@ -141,7 +135,7 @@ public class ProjectionServiceImpl implements ProjectionService {
 				restorationCosts += elementRestorationCosts;
 				if (elementRestorationCosts != 0) {
 					EnumeratedDto buildingEnum = this.getAsEnumerated(building);
-					EnumeratedDto buildingPartEnum = EnumeratedDto.of(element.getBuildingPart());
+					EnumeratedDto buildingPartEnum = EnumeratedDto.of(element.buildingPart);
 					ProjectionElement restorationElement = ProjectionElement.builder()
 							.element(elementEnum)
 							.building(buildingEnum)

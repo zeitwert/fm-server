@@ -1,13 +1,19 @@
-
 package io.zeitwert.fm.building.service.api.impl;
 
-import java.awt.Color;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-
+import com.aspose.words.*;
+import com.aspose.words.Shape;
+import com.google.maps.ImageResult;
+import com.google.maps.model.Size;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.fm.building.model.ObjBuilding;
+import io.zeitwert.fm.building.service.api.BuildingEvaluationService;
+import io.zeitwert.fm.building.service.api.BuildingService;
+import io.zeitwert.fm.building.service.api.DocumentGenerationService;
+import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
+import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
+import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
+import io.zeitwert.fm.server.config.aspose.AsposeConfig;
+import io.zeitwert.fm.util.Formatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,56 +21,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import com.aspose.words.AxisBound;
-import com.aspose.words.Cell;
-import com.aspose.words.Chart;
-import com.aspose.words.Document;
-import com.aspose.words.DocumentBuilder;
-import com.aspose.words.MarkerSymbol;
-import com.aspose.words.Node;
-import com.aspose.words.NodeType;
-import com.aspose.words.PdfEncryptionDetails;
-import com.aspose.words.PdfPermissions;
-import com.aspose.words.PdfSaveOptions;
-import com.aspose.words.RelativeHorizontalPosition;
-import com.aspose.words.RelativeVerticalPosition;
-import com.aspose.words.ReportingEngine;
-import com.aspose.words.Row;
-import com.aspose.words.Run;
-import com.aspose.words.SaveFormat;
-import com.aspose.words.Shape;
-import com.aspose.words.ShapeType;
-import com.aspose.words.Table;
-import com.aspose.words.WrapType;
-import com.google.maps.ImageResult;
-import com.google.maps.model.Size;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.fm.building.model.ObjBuilding;
-import io.zeitwert.fm.building.service.api.BuildingService;
-import io.zeitwert.fm.building.service.api.DocumentGenerationService;
-import io.zeitwert.fm.building.service.api.BuildingEvaluationService;
-import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
-import io.zeitwert.fm.building.service.api.dto.EvaluationElement;
-import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
-import io.zeitwert.fm.server.config.aspose.AsposeConfig;
-import io.zeitwert.fm.util.Formatter;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 
 @Component("buildingDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
-	private Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
-
-	private static final double POINTS_PER_MM = 2.834647454889553;
-
-	private static final int CoverFotoWidth = 400;
-	private static final int CoverFotoHeight = 230;
-
-	private static final String OptimumRenovationMarker = Character.toString((char) 110);
-
 	static final String CoverfotoBookmark = "CoverFoto";
 	static final String LocationBookmark = "Location";
 	static final String OnePagerBookmark = "OnePager";
-
 	static final int BasicDataTable = 0;
 	static final int EvaluationTable = 1;
 	static final int ElementTable = 2;
@@ -73,26 +42,24 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	static final int OnePageDetailsTable = 5;
 	static final int OnePageBasicDataTable = 6;
 	static final int OnePageEvaluationTable = 7;
-
-	@Autowired
-	private AsposeConfig asposeConfig;
-
-	@Autowired
-	private BuildingService buildingService;
-
+	private static final double POINTS_PER_MM = 2.834647454889553;
+	private static final int CoverFotoWidth = 400;
+	private static final int CoverFotoHeight = 230;
+	private static final String OptimumRenovationMarker = Character.toString((char) 110);
+	private final Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
 	@Autowired
 	RequestContext requestCtx;
-
 	@Autowired
 	BuildingEvaluationService evaluationService;
-
 	@Value("classpath:templates/Building Evaluation Template.docx")
 	Resource templateFile;
-
 	@Value("classpath:templates/missing.jpg")
 	Resource missingImage;
-
 	ReportingEngine engine = new ReportingEngine();
+	@Autowired
+	private AsposeConfig asposeConfig;
+	@Autowired
+	private BuildingService buildingService;
 
 	public DocumentGenerationServiceImpl() {
 		this.engine.getKnownTypes().add(BuildingEvaluationResult.class);
@@ -144,10 +111,10 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	private void insertCoverFoto(Document doc, ObjBuilding building) throws IOException {
 
 		byte[] imageContent;
-		if (building.getCoverFoto() == null || building.getCoverFoto().getContentType() == null) {
+		if (building.coverFoto == null || building.coverFoto.contentType == null) {
 			imageContent = this.missingImage.getInputStream().readAllBytes();
 		} else {
-			imageContent = building.getCoverFoto().getContent();
+			imageContent = building.coverFoto.content;
 		}
 
 		DocumentBuilder builder = new DocumentBuilder(doc);
@@ -175,12 +142,12 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	private void insertLocationImage(Document doc, ObjBuilding building) throws IOException {
 
 		byte[] imageContent;
-		if (building.getGeoCoordinates() == null || "".equals(building.getGeoCoordinates())) {
+		if (building.geoCoordinates == null || "".equals(building.geoCoordinates)) {
 			imageContent = this.missingImage.getInputStream().readAllBytes();
 		} else {
-			String address = building.getGeoCoordinates().substring(4);
-			ImageResult ir = this.buildingService.getMap(building.getName(), address, new Size(1200, 1200),
-					building.getGeoZoom());
+			String address = building.geoCoordinates.substring(4);
+			ImageResult ir = this.buildingService.getMap(building.name, address, new Size(1200, 1200),
+					building.geoZoom);
 			if (ir == null) {
 				imageContent = this.missingImage.getInputStream().readAllBytes();
 			} else {
@@ -218,7 +185,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 				cell.getFirstParagraph().appendChild(new Run(doc, e.getName()));
 				Integer restorationYear = e.getRestorationYear();
 				if (restorationYear != null) {
-					Integer delta = (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
+					Integer delta = Math.max(0, restorationYear - evaluationResult.getStartYear());
 					cell = this.getNthNextSibling(row.getFirstCell(), delta);
 					builder.moveTo(cell.getFirstParagraph());
 					builder.write(OptimumRenovationMarker);
@@ -466,7 +433,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 			Integer restorationYear = e.getRestorationYear();
 			if (restorationYear != null) {
-				Integer delta = 15 + (int) Math.max(0, restorationYear - evaluationResult.getStartYear());
+				Integer delta = 15 + Math.max(0, restorationYear - evaluationResult.getStartYear());
 				cell = this.getNthNextSibling(row.getFirstCell(), delta);
 				builder.moveTo(cell.getFirstParagraph());
 				builder.write(OptimumRenovationMarker);

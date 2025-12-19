@@ -7,27 +7,25 @@ import io.dddrive.core.enums.model.base.EnumerationBase
  * Gender enum using the NEW dddrive framework.
  */
 enum class CodeGender(
-    private val id: String,
-    private val itemName: String,
+	override val id: String,
+	private val itemName: String,
 ) : Enumerated {
-    MALE("male", "Mann"),
-    FEMALE("female", "Frau"),
-    OTHER("other", "Andere"),
-    ;
 
-    override fun getId() = id
+	MALE("male", "Mann"),
+	FEMALE("female", "Frau"),
+	OTHER("other", "Andere"),
+	;
 
-    override fun getName() = itemName
+	override fun getName() = itemName
 
-    override fun getEnumeration() = Enumeration
+	override val enumeration get() = Enumeration
 
-    companion object Enumeration : EnumerationBase<CodeGender>(CodeGender::class.java) {
-        init {
-            entries.forEach { addItem(it) }
-        }
+	companion object Enumeration : EnumerationBase<CodeGender>(CodeGender::class.java) {
+		init {
+			entries.forEach { addItem(it) }
+		}
 
-        @JvmStatic
-        fun getGender(itemId: String): CodeGender? = getItem(itemId)
-    }
+		@JvmStatic
+		fun getGender(itemId: String): CodeGender? = getItem(itemId)
+	}
 }
-
