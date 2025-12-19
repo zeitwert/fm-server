@@ -21,19 +21,20 @@ class BuildingEvaluationServiceImpl(
 	private val projectionService: ProjectionService,
 ) : BuildingEvaluationService {
 
-	override fun getEvaluation(building: ObjBuilding): BuildingEvaluationResult? {
+	override fun getEvaluation(building: ObjBuilding): BuildingEvaluationResult {
 		require(building.currentRating != null) { "has current rating" }
 
 		val fmt = Formatter.INSTANCE
 		var value: String? = null
 
-		val projectionResult = this.projectionService.getProjection(
-			Set.of<ObjBuilding?>(building),
-			ProjectionService.DefaultDuration,
-		)
+		val projectionResult =
+			this.projectionService.getProjection(
+				Set.of<ObjBuilding>(building),
+				ProjectionService.DefaultDuration,
+			)
 
-		val facts: MutableList<EvaluationParameter?> = ArrayList<EvaluationParameter?>()
-		val onePageFacts: MutableList<EvaluationParameter?> = ArrayList<EvaluationParameter?>()
+		val facts: MutableList<EvaluationParameter> = mutableListOf()
+		val onePageFacts: MutableList<EvaluationParameter> = mutableListOf()
 
 		if (building.buildingNr != null) {
 			value = building.buildingNr
@@ -75,7 +76,7 @@ class BuildingEvaluationServiceImpl(
 		var elementCount = 0
 		var totalWeight = 0
 		var totalCondition = 0
-		val elements: MutableList<EvaluationElement?> = ArrayList<EvaluationElement?>()
+		val elements: MutableList<EvaluationElement> = mutableListOf()
 		for (element in currentRating.elementList) {
 			if (element.weight != null && element.weight!! > 0) {
 				var description = this.replaceEol(element.description)
@@ -85,16 +86,18 @@ class BuildingEvaluationServiceImpl(
 				if (!StringUtils.isEmpty(element.measureDescription)) {
 					description += "<br/><b>Massnahmen</b>: " + element.measureDescription
 				}
-				val dto = EvaluationElement
-					.builder()
-					.name(element.buildingPart!!.getName())
-					.description(description)
-					.weight(element.weight)
-					.condition(element.condition)
-					.conditionColor(this.getConditionColor(element.condition))
-					.restorationYear(this.getRestorationYear(projectionResult, element.buildingPart!!))
-					.restorationCosts(this.getRestorationCosts(projectionResult, element.buildingPart!!))
-					.build()
+				val dto =
+					EvaluationElement(
+						name = element.buildingPart!!.getName(),
+						description = description,
+						weight = element.weight,
+						condition = element.condition,
+						conditionColor = this.getConditionColor(element.condition),
+						restorationYear =
+							this.getRestorationYear(projectionResult, element.buildingPart!!),
+						restorationCosts =
+							this.getRestorationCosts(projectionResult, element.buildingPart!!),
+					)
 				elements.add(dto)
 				if (element.ratingYear!! < ratingYear) {
 					ratingYear = element.ratingYear!!
@@ -106,16 +109,16 @@ class BuildingEvaluationServiceImpl(
 		}
 
 		totalCondition = Math.round((totalCondition / elementCount).toFloat())
-		val dto = EvaluationElement
-			.builder()
-			.name("Total")
-			.weight(totalWeight)
-			.condition(totalCondition)
-			.conditionColor(this.getConditionColor(totalCondition))
-			.build()
-		elements.add(dto)
+		val totalDto =
+			EvaluationElement(
+				name = "Total",
+				weight = totalWeight,
+				condition = totalCondition,
+				conditionColor = this.getConditionColor(totalCondition),
+			)
+		elements.add(totalDto)
 
-		val params: MutableList<EvaluationParameter?> = ArrayList<EvaluationParameter?>()
+		val params: MutableList<EvaluationParameter> = mutableListOf()
 		this.addParameter(params, "Laufzeit (Zeithorizont)", "25 Jahre")
 		this.addParameter(params, "Teuerung", String.format("%.1f", building.inflationRate) + " %")
 		this.addParameter(params, "Z/N Wert", "" + totalCondition)
@@ -125,7 +128,7 @@ class BuildingEvaluationServiceImpl(
 		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration)
 		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance)
 
-		val onePageParams: MutableList<EvaluationParameter?> = ArrayList<EvaluationParameter?>()
+		val onePageParams: MutableList<EvaluationParameter> = mutableListOf()
 		this.addParameter(
 			onePageParams,
 			"Laufzeit (Zeithorizont); Teuerung",
@@ -135,65 +138,73 @@ class BuildingEvaluationServiceImpl(
 		this.addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration)
 		this.addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration)
 		this.addParameter(onePageParams, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration)
-		this.addParameter(onePageParams, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance)
+		this.addParameter(
+			onePageParams,
+			"Durchschnittliche IH Kosten (nächste 5 Jahre)",
+			averageMaintenance
+		)
 
-		val periods: MutableList<EvaluationPeriod?> = ArrayList<EvaluationPeriod?>()
+		val periods: MutableList<EvaluationPeriod> = mutableListOf()
 		var aggrCosts = 0
 		for (pp in projectionResult.periodList) {
 			val totalCosts = (pp.maintenanceCosts + pp.restorationCosts).toInt()
 			aggrCosts += totalCosts
 			var restorationElement: String? = ""
 			if (pp.restorationElements.size == 1) {
-				restorationElement = pp
-					.restorationElements
-					.get(0)
-					.buildingPart
-					.name
+				restorationElement = pp.restorationElements[0].buildingPart.name
 			}
-			val eps = EvaluationPeriod
-				.builder()
-				.year(pp.year)
-				.originalValue(pp.originalValue.toInt())
-				.timeValue(pp.timeValue.toInt())
-				.maintenanceCosts(pp.maintenanceCosts.toInt())
-				.restorationCosts(pp.restorationCosts.toInt())
-				.restorationElement(restorationElement)
-				.totalCosts(totalCosts)
-				.aggrCosts(aggrCosts)
-				.build()
+			val eps =
+				EvaluationPeriod(
+					year = pp.year,
+					originalValue = pp.originalValue.toInt(),
+					timeValue = pp.timeValue.toInt(),
+					maintenanceCosts = pp.maintenanceCosts.toInt(),
+					restorationCosts = pp.restorationCosts.toInt(),
+					restorationElement = restorationElement,
+					restorationBuilding = null,
+					totalCosts = totalCosts,
+					aggrCosts = aggrCosts,
+				)
 			periods.add(eps)
 			if (pp.restorationElements.size > 1) {
 				for (re in pp.restorationElements) {
 					restorationElement = re.buildingPart.name
-					val epd = EvaluationPeriod
-						.builder()
-						.restorationCosts(re.restorationCosts.toInt())
-						.restorationElement(restorationElement)
-						.build()
+					val epd =
+						EvaluationPeriod(
+							year = null,
+							originalValue = null,
+							timeValue = null,
+							maintenanceCosts = null,
+							restorationCosts = re.restorationCosts.toInt(),
+							restorationElement = restorationElement,
+							restorationBuilding = null,
+							totalCosts = null,
+							aggrCosts = null,
+						)
 					periods.add(epd)
 				}
 			}
 		}
 
-		return BuildingEvaluationResult
-			.builder()
-			.id(building.id as Int)
-			.name(building.name)
-			.description(this.replaceEol(building.description))
-			.address(building.street + ", " + building.zip + " " + building.city + ", " + building.country!!.getName())
-			.accountName(building.account!!.name)
-			.facts(facts)
-			.params(params)
-			.onePageFacts(onePageFacts)
-			.onePageParams(onePageParams)
-			.ratingYear(ratingYear)
-			.elements(elements)
-			.startYear(projectionResult.startYear)
-			.periods(periods)
-			.build()
+		return BuildingEvaluationResult(
+			id = building.id as Int,
+			name = building.name,
+			description = this.replaceEol(building.description),
+			address = building.street + ", " + building.zip + " " + building.city + ", " + building.country!!.getName(),
+			accountName = building.account!!.name,
+			facts = facts,
+			params = params,
+			onePageFacts = onePageFacts,
+			onePageParams = onePageParams,
+			ratingYear = ratingYear,
+			elements = elements,
+			startYear = projectionResult.startYear,
+			periods = periods,
+		)
 	}
 
-	private fun replaceEol(text: String?): String = if (text != null) text.replace("<br>", SOFT_RETURN) else ""
+	private fun replaceEol(text: String?): String =
+		if (text != null) text.replace("<br>", SOFT_RETURN) else ""
 
 	private fun getAverageMaintenanceCosts(
 		projectionResult: ProjectionResult,
@@ -256,17 +267,16 @@ class BuildingEvaluationServiceImpl(
 	}
 
 	private fun addParameter(
-		list: MutableList<EvaluationParameter?>,
-		name: String?,
+		list: MutableList<EvaluationParameter>,
+		name: String,
 		value: String?,
 	) {
 		if (value != null) {
 			list.add(
-				EvaluationParameter
-					.builder()
-					.name(name)
-					.value(value)
-					.build(),
+				EvaluationParameter(
+					name = name,
+					value = value,
+				),
 			)
 		}
 	}
@@ -293,5 +303,4 @@ class BuildingEvaluationServiceImpl(
 		val OK_CONDITION: Color = Color(120, 192, 107)
 		val GOOD_CONDITION: Color = Color(51, 135, 33)
 	}
-
 }

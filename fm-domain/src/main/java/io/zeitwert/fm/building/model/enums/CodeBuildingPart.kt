@@ -89,13 +89,12 @@ enum class CodeBuildingPart(
 			restorationCosts = (restoreCostPerc - condition) / 100
 		}
 		val duration = restorationYear - startYear
-		return ProjectionPeriod
-			.builder()
-			.year(ratingYear + duration)
-			.originalValue(elementValue)
-			.timeValue(optimalRestoreTimeValue)
-			.restorationCosts(Math.round(restorationCosts * elementValue).toDouble())
-			.build()
+		return ProjectionPeriod(
+			year = ratingYear + duration,
+			originalValue = elementValue,
+			timeValue = optimalRestoreTimeValue,
+			restorationCosts = Math.round(restorationCosts * elementValue).toDouble()
+		)
 	}
 
 	fun getTimeValue(relativeAge: Double): Double {
@@ -148,7 +147,7 @@ enum class CodeBuildingPart(
 		condition: Double,
 		startYear: Int,
 		duration: Int,
-	): MutableList<ProjectionPeriod?> {
+	): List<ProjectionPeriod> {
 		require(ratingYear <= startYear) { "valid start year (" + ratingYear + "<=" + startYear + ")" }
 		require(!(condition < 0.0 || condition > 1.0)) { "valid condition (0 <=" + condition + " <= 1)" }
 		require(duration <= 100) { "duration <= 100" }
@@ -159,7 +158,7 @@ enum class CodeBuildingPart(
 		val timeValueAfterRestoration = afterRestoreTimeValue
 		val relativeAgeAfterRestoration = getRelativeAge(timeValueAfterRestoration)
 
-		val periodList: MutableList<ProjectionPeriod?> = ArrayList<ProjectionPeriod?>()
+		val periodList: MutableList<ProjectionPeriod> = mutableListOf()
 
 		var relativeAge = getRelativeAge(condition)
 		var timeValue = condition
@@ -175,17 +174,16 @@ enum class CodeBuildingPart(
 			}
 			val maintenanceRate = getMaintenanceRate(timeValue) / 100.0
 			if (simYear >= startYear) {
-				val period = ProjectionPeriod
-					.builder()
-					.year(simYear)
-					.originalValue(elementValue)
-					.timeValue(timeValue * elementValue)
-					.restorationCosts(restorationCosts)
-					.techPart(techPart)
-					.techRate(techRate)
-					.maintenanceRate(maintenanceRate)
-					.maintenanceCosts(maintenanceRate * techRate * elementValue)
-					.build()
+				val period = ProjectionPeriod(
+					year = simYear,
+					originalValue = elementValue,
+					timeValue = timeValue * elementValue,
+					restorationCosts = restorationCosts,
+					techPart = techPart,
+					techRate = techRate,
+					maintenanceRate = maintenanceRate,
+					maintenanceCosts = maintenanceRate * techRate * elementValue
+				)
 				periodList.add(period)
 			}
 			relativeAge += 1.0
