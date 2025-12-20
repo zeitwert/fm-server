@@ -27,6 +27,6 @@ enum class CodeContentKind(
 		}
 
 		@JvmStatic
-		fun getContentKind(itemId: String): CodeContentKind? = getItem(itemId)
+		fun getContentKind(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

@@ -21,6 +21,6 @@ enum class CodeClientSegment(
 			entries.forEach { addItem(it) }
 		}
 
-		fun getClientSegment(itemId: String): CodeClientSegment? = getItem(itemId)
+		fun getClientSegment(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

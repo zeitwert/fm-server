@@ -42,9 +42,8 @@ abstract class ObjBuildingBase(
 	protected val _buildingNr = addBaseProperty("buildingNr", String::class.java)
 	protected val _insuranceNr = addBaseProperty("insuranceNr", String::class.java)
 	protected val _plotNr = addBaseProperty("plotNr", String::class.java)
-	protected val _nationalBuildingId = addBaseProperty("nationalBuilding", String::class.java)
-	protected val _historicPreservation =
-		addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
+	protected val _nationalBuildingId = addBaseProperty("nationalBuildingId", String::class.java)
+	protected val _historicPreservation = addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
 
 	protected val _street = addBaseProperty("street", String::class.java)
 	protected val _zip = addBaseProperty("zip", String::class.java)
@@ -80,7 +79,7 @@ abstract class ObjBuildingBase(
 
 	protected val _contactSet = addReferenceSetProperty("contactSet", ObjContact::class.java)
 
-	override val repository = super.repository as ObjBuildingRepository
+	override val repository get() = super.repository as ObjBuildingRepository
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 

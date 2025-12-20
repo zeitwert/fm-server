@@ -41,7 +41,7 @@ abstract class ObjPortfolioBase(
 
 	override fun taskRepository() = repository.taskRepository
 
-	override val repository: ObjPortfolioRepository get() = super.repository as ObjPortfolioRepository
+	override val repository get() = super.repository as ObjPortfolioRepository
 
 	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
 

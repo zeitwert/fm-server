@@ -39,7 +39,10 @@ abstract class EntityWithPropertiesBase :
 	override fun <T : Any> getProperty(
 		name: String,
 		type: KClass<T>,
-	): Property<T> = propertyMap[name]!! as Property<T>
+	): Property<T> {
+		require(hasProperty(name)) { "property [$name] not found in ${javaClass.simpleName}" }
+		return propertyMap[name]!! as Property<T>
+	}
 
 	override val properties: List<Property<*>>
 		get() = propertyMap.values.toList()
@@ -92,7 +95,7 @@ abstract class EntityWithPropertiesBase :
 	): AggregateReferenceProperty<A> {
 		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
 		val property: AggregateReferenceProperty<A> =
-			AggregateReferencePropertyImpl(this, name, { id: Any -> repo.get(id)!! }, aggregateType)
+			AggregateReferencePropertyImpl(this, name, { id: Any -> repo.get(id) }, aggregateType)
 		addProperty(property)
 		return property
 	}
@@ -102,7 +105,7 @@ abstract class EntityWithPropertiesBase :
 		aggregateType: Class<A>,
 	): ReferenceSetProperty<A> {
 		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, { id: Any -> repo.get(id)!! })
+		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, { id: Any -> repo.get(id) })
 		addProperty(property)
 		return property
 	}

@@ -1,11 +1,11 @@
 package io.zeitwert.fm.doc.adapter.api.jsonapi.base;
 
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.dddrive.core.doc.model.Doc;
 import io.dddrive.core.doc.model.DocMeta;
 import io.dddrive.core.doc.model.enums.CodeCaseDefEnum;
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocMetaDto;
@@ -17,10 +17,10 @@ public abstract class DocDtoAdapterBase<A extends Doc, D extends DocDtoBase<A>>
 	@Override
 	public void toAggregate(D dto, A doc) {
 		if (dto.getCaseDef() != null) {
-			doc.setCaseDef(CodeCaseDefEnum.getCaseDef(dto.getCaseDef().getId()));
+			doc.getMeta().setCaseDef(CodeCaseDefEnum.getCaseDef(dto.getCaseDef().getId()));
 		}
 		if (dto.getCaseStage() != null) {
-			doc.setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getCaseStage().getId()), null, null);
+			doc.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getCaseStage().getId()), null, null);
 		}
 		if (dto.getOwner() != null) {
 			doc.setOwner(this.getUser(Integer.parseInt(dto.getOwner().getId())));
@@ -35,7 +35,7 @@ public abstract class DocDtoAdapterBase<A extends Doc, D extends DocDtoBase<A>>
 				.adapter(this)
 				.tenant(EnumeratedDto.of(doc.getTenant()))
 				.meta(this.metaFromDoc(doc))
-				.id((Integer)doc.getId())
+				.id((Integer) doc.getId())
 				.caption(doc.getCaption())
 				.owner(EnumeratedDto.of(doc.getOwner()))
 				.assignee(EnumeratedDto.of(doc.getAssignee()));

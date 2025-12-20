@@ -60,7 +60,7 @@ enum class CodeContentType(
 		}
 
 		@JvmStatic
-		fun getContentType(itemId: String): CodeContentType? = getItem(itemId)
+		fun getContentType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 
 		@JvmStatic
 		fun getContentType(
@@ -78,12 +78,15 @@ enum class CodeContentType(
 		}
 
 		@JvmStatic
-		fun getItemByMimeType(mimeType: String): CodeContentType? = entries.find { it.mimeType.equals(mimeType, ignoreCase = true) }
+		fun getItemByMimeType(mimeType: String): CodeContentType? =
+			entries.find { it.mimeType.equals(mimeType, ignoreCase = true) }
 
 		@JvmStatic
-		fun getItemByExtension(extension: String): CodeContentType? = entries.find { it.extension.equals(extension, ignoreCase = true) }
+		fun getItemByExtension(extension: String): CodeContentType? =
+			entries.find { it.extension.equals(extension, ignoreCase = true) }
 
 		@JvmStatic
-		fun getContentTypes(contentKind: CodeContentKind): List<CodeContentType> = entries.filter { it.contentKind == contentKind }
+		fun getContentTypes(contentKind: CodeContentKind): List<CodeContentType> =
+			entries.filter { it.contentKind == contentKind }
 	}
 }

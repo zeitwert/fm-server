@@ -36,7 +36,7 @@ abstract class ObjAccountBase(
 	private val _mainContact = addReferenceProperty("mainContact", ObjContact::class.java)
 	// @formatter:on
 
-	override val repository: ObjAccountRepository = super.repository as ObjAccountRepository
+	override val repository get() = super.repository as ObjAccountRepository
 
 	override fun doAfterCreate(
 		userId: Any,

@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
 open class DocTaskPto(
 	var subject: String? = null,
 	var content: String? = null,
-	var private: Boolean? = null,
+	var isPrivate: Boolean? = null,
 	var priority: String? = null,
 	var dueAt: OffsetDateTime? = null,
 	var remindAt: OffsetDateTime? = null,

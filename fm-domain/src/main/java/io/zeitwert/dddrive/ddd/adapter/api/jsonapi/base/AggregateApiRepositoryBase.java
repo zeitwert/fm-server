@@ -1,9 +1,4 @@
-
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base;
-
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import io.crnk.core.engine.document.ErrorData;
 import io.crnk.core.engine.document.ErrorDataBuilder;
@@ -14,13 +9,14 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.dddrive.core.ddd.model.Aggregate;
 import io.dddrive.core.ddd.model.AggregateRepository;
 import io.dddrive.core.obj.model.Obj;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
@@ -115,7 +111,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			} else {
 				if (dto.getMeta().getClientVersion() == null) {
 					throw new BadRequestException("Missing version");
-				} else if (dto.getMeta().getClientVersion().intValue() != aggregate.getMeta().getVersion().intValue()) {
+				} else if (dto.getMeta().getClientVersion() != aggregate.getMeta().getVersion()) {
 					ErrorData errorData = new ErrorDataBuilder()
 							.setStatus("" + HttpStatus.CONFLICT_409)
 							.setTitle("Fehler beim Speichern")

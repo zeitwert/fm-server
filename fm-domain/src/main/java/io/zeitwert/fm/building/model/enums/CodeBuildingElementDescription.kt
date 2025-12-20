@@ -22,6 +22,7 @@ enum class CodeBuildingElementDescription(
 			entries.forEach { addItem(it) }
 		}
 
-		fun getElementDescription(itemId: String): CodeBuildingElementDescription? = getItem(itemId)
+		fun getElementDescription(itemId: String?) = if (itemId != null) getItem(itemId) else null
+
 	}
 }

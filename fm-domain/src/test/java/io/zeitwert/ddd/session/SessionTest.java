@@ -1,25 +1,22 @@
-
 package io.zeitwert.ddd.session;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.assertj.core.data.Offset;
-import org.jooq.JSON;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
 import io.zeitwert.test.TestApplication;
+import org.jooq.JSON;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
@@ -65,10 +62,10 @@ public class SessionTest {
 		assertEquals("[Short Test " + name + ", Long Test " + name + "]", test.getCaption());
 		test.setInt(42);
 		test.setNr(BigDecimal.valueOf(42));
-		test.setIsDone(false);
+		test.setDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = CodeTestType.getTestType(testTypeId);
+		CodeTestType testType = CodeTestType.Enumeration.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 

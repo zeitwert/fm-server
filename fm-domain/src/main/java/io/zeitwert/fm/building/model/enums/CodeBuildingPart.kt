@@ -211,7 +211,7 @@ enum class CodeBuildingPart(
 		val FULL_TECH_RATES = listOf("P6", "P7", "P8", "P54", "P55", "P9", "P50", "P51", "P10", "P63", "P64", "P65", "P66")
 		val HALF_TECH_RATES = listOf("P12", "P60", "P61", "P62")
 
-		fun getBuildingPart(itemId: String): CodeBuildingPart = getItem(itemId)
+		fun getBuildingPart(itemId: String?) = if (itemId != null) getItem(itemId) else null
 
 		fun getTechRate(techPart: Double): Double = getRatio(techPart, 0.09, 0.22, 0.5, 1.0)
 

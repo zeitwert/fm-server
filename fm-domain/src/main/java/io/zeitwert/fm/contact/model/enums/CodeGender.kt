@@ -26,6 +26,6 @@ enum class CodeGender(
 		}
 
 		@JvmStatic
-		fun getGender(itemId: String): CodeGender? = getItem(itemId)
+		fun getGender(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

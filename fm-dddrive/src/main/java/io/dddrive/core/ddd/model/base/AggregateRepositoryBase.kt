@@ -156,10 +156,8 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 				arrayOf(this, isNew),
 				PropertyHandler.INSTANCE,
 			) as A
-		} catch (e: ReflectiveOperationException) {
-			throw RuntimeException("Could not create aggregate " + this.baseClassName, e)
-		} catch (e: RuntimeException) {
-			throw RuntimeException("Could not create aggregate " + this.baseClassName, e)
+		} catch (e: Throwable) {
+			throw RuntimeException("Could not create aggregate $baseClassName from ${javaClass.simpleName}", e)
 		}
 	}
 

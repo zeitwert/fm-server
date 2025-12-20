@@ -8,7 +8,7 @@ interface DocTask : Doc {
 
 	var subject: String?
 	var content: String?
-	var private: Boolean?
+	var isPrivate: Boolean?
 	var priority: CodeTaskPriority?
 	var dueAt: OffsetDateTime?
 	var remindAt: OffsetDateTime?

@@ -91,26 +91,26 @@ public class DocumentTest {
 
 	private void getTestData(Object tenantId, Object userId, OffsetDateTime timestamp) throws Exception {
 		Account = accountRepo.create(tenantId, userId, timestamp);
-		Account.name = "Test HH";
-		Account.accountType = CodeAccountType.CLIENT;
+		Account.setName("Test HH");
+		Account.setAccountType(CodeAccountType.CLIENT);
 		accountRepo.store(Account, userId, timestamp);
 		assertNotNull(Account, "account");
 	}
 
 	private void initDocument(ObjDocument document) {
-		document.accountId = Account.getId();
-		document.name = "Schulhaus Isenweg";
-		document.contentKind = CodeContentKind.FOTO;
-		document.documentKind = CodeDocumentKind.STANDALONE;
-		document.documentCategory = CodeDocumentCategory.FOTO;
+		document.setAccountId(Account.getId());
+		document.setName("Schulhaus Isenweg");
+		document.setContentKind(CodeContentKind.FOTO);
+		document.setDocumentKind(CodeDocumentKind.STANDALONE);
+		document.setDocumentCategory(CodeDocumentCategory.FOTO);
 	}
 
 	private void checkDocument(ObjDocument document) {
-		assertEquals(Account.getId(), document.accountId, "account id");
-		assertEquals("Schulhaus Isenweg", document.name);
-		assertEquals(CodeContentKind.FOTO, document.contentKind);
-		assertEquals(CodeDocumentKind.STANDALONE, document.documentKind);
-		assertEquals(CodeDocumentCategory.FOTO, document.documentCategory);
+		assertEquals(Account.getId(), document.getAccountId(), "account id");
+		assertEquals("Schulhaus Isenweg", document.getName());
+		assertEquals(CodeContentKind.FOTO, document.getContentKind());
+		assertEquals(CodeDocumentKind.STANDALONE, document.getDocumentKind());
+		assertEquals(CodeDocumentCategory.FOTO, document.getDocumentCategory());
 	}
 
 }

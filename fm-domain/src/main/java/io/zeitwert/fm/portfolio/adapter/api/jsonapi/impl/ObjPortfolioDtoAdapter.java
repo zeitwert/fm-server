@@ -45,10 +45,10 @@ public class ObjPortfolioDtoAdapter
 			pf.getMeta().disableCalc();
 			super.toAggregate(dto, pf);
 
-			pf.name = dto.getName();
-			pf.description = dto.getDescription();
-			pf.portfolioNr = dto.getPortfolioNr();
-			pf.accountId = dto.getAccountId();
+			pf.setName(dto.getName());
+			pf.setDescription(dto.getDescription());
+			pf.setPortfolioNr(dto.getPortfolioNr());
+			pf.setAccountId(dto.getAccountId());
 			// TODO prevent calculation during insert
 			if (dto.getIncludes() != null) {
 				pf.clearIncludeSet();
@@ -67,7 +67,7 @@ public class ObjPortfolioDtoAdapter
 
 		} finally {
 			pf.getMeta().enableCalc();
-			pf.calcAll();
+			pf.getMeta().calcAll();
 		}
 	}
 
@@ -80,13 +80,13 @@ public class ObjPortfolioDtoAdapter
 		this.fromAggregate(dtoBuilder, pf);
 		// @formatter:off
 		return dtoBuilder
-			.name(pf.name)
-			.description(pf.description)
-			.portfolioNr(pf.portfolioNr)
-			.accountId((Integer)pf.accountId)
-			.includes(pf.includeSet.stream().map(this::getObj).collect(Collectors.toSet()))
-			.excludes(pf.excludeSet.stream().map(this::getObj).collect(Collectors.toSet()))
-			.buildings(pf.buildingSet.stream().map(this::getObj).collect(Collectors.toSet()))
+			.name(pf.getName())
+			.description(pf.getDescription())
+			.portfolioNr(pf.getPortfolioNr())
+			.accountId((Integer)pf.getAccountId())
+			.includes(pf.getIncludeSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
+			.excludes(pf.getExcludeSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
+			.buildings(pf.getBuildingSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
 			.build();
 		// @formatter:on
 	}

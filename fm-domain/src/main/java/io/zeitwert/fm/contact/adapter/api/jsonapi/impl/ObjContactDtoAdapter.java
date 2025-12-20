@@ -40,17 +40,17 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 			obj.getMeta().disableCalc();
 			super.toAggregate(dto, obj);
 
-			obj.accountId = dto.getAccountId();
-			obj.contactRole = dto.getContactRole() == null ? null : CodeContactRole.getContactRole(dto.getContactRole().getId());
-			obj.salutation = dto.getSalutation() == null ? null : CodeSalutation.getSalutation(dto.getSalutation().getId());
-			obj.title = dto.getTitle() == null ? null : CodeTitle.getTitle(dto.getTitle().getId());
-			obj.firstName = dto.getFirstName();
-			obj.lastName = dto.getLastName();
-			obj.description = dto.getDescription();
-			obj.birthDate = dto.getBirthDate();
-			obj.phone = dto.getPhone();
-			obj.mobile = dto.getMobile();
-			obj.email = dto.getEmail();
+			obj.setAccountId(dto.getAccountId());
+			obj.setContactRole(dto.getContactRole() == null ? null : CodeContactRole.getContactRole(dto.getContactRole().getId()));
+			obj.setSalutation(dto.getSalutation() == null ? null : CodeSalutation.getSalutation(dto.getSalutation().getId()));
+			obj.setTitle(dto.getTitle() == null ? null : CodeTitle.getTitle(dto.getTitle().getId()));
+			obj.setFirstName(dto.getFirstName());
+			obj.setLastName(dto.getLastName());
+			obj.setDescription(dto.getDescription());
+			obj.setBirthDate(dto.getBirthDate());
+			obj.setPhone(dto.getPhone());
+			obj.setMobile(dto.getMobile());
+			obj.setEmail(dto.getEmail());
 			if (dto.getMailAddresses() != null) {
 				for (ObjContactPartAddressDto address : dto.getMailAddresses()) {
 					if (address.getPartId() != null) {
@@ -72,7 +72,7 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 
 		} finally {
 			obj.getMeta().enableCalc();
-			obj.calcAll();
+			obj.getMeta().calcAll();
 		}
 	}
 
@@ -85,19 +85,19 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
-			.accountId((Integer)obj.accountId)
-			.contactRole(EnumeratedDto.of(obj.contactRole))
-			.salutation(EnumeratedDto.of(obj.salutation))
-			.title(EnumeratedDto.of(obj.title))
-			.firstName(obj.firstName)
-			.lastName(obj.lastName)
-			.description(obj.description)
-			.birthDate(obj.birthDate)
-			.phone(obj.phone)
-			.mobile(obj.mobile)
-			.email(obj.email)
-			.mailAddresses(obj.mailAddressList.stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
-			.electronicAddresses(obj.electronicAddressList.stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
+			.accountId((Integer)obj.getAccountId())
+			.contactRole(EnumeratedDto.of(obj.getContactRole()))
+			.salutation(EnumeratedDto.of(obj.getSalutation()))
+			.title(EnumeratedDto.of(obj.getTitle()))
+			.firstName(obj.getFirstName())
+			.lastName(obj.getLastName())
+			.description(obj.getDescription())
+			.birthDate(obj.getBirthDate())
+			.phone(obj.getPhone())
+			.mobile(obj.getMobile())
+			.email(obj.getEmail())
+			.mailAddresses(obj.getMailAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
+			.electronicAddresses(obj.getElectronicAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
 			.build();
 		// @formatter:on
 	}

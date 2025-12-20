@@ -71,7 +71,7 @@ abstract class ObjUserFMBase(
 
 	override val isAppAdmin get() = repository.isAppAdmin(this)
 
-	override val isAdmin = repository.isAdmin(this)
+	override val isAdmin get() = repository.isAdmin(this)
 
 	override fun hasRole(role: CodeUserRole) = this.role == role
 

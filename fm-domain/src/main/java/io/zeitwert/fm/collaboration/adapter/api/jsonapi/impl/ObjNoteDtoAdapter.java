@@ -13,11 +13,11 @@ public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteDto> {
 	@Override
 	public void toAggregate(ObjNoteDto dto, ObjNote note) {
 		super.toAggregate(dto, note);
-		note.relatedToId = Integer.parseInt(dto.getRelatedToId());
-		note.noteType = dto.getNoteType() == null ? null : CodeNoteType.getNoteType(dto.getNoteType().getId());
-		note.subject = dto.getSubject();
-		note.content = dto.getContent();
-		note.isPrivate = dto.getIsPrivate();
+		note.setRelatedToId(Integer.parseInt(dto.getRelatedToId()));
+		note.setNoteType(dto.getNoteType() == null ? null : CodeNoteType.getNoteType(dto.getNoteType().getId()));
+		note.setSubject(dto.getSubject());
+		note.setContent(dto.getContent());
+		note.setPrivate(dto.getIsPrivate());
 	}
 
 	@Override
@@ -29,11 +29,11 @@ public class ObjNoteDtoAdapter extends ObjDtoAdapterBase<ObjNote, ObjNoteDto> {
 		this.fromAggregate(dtoBuilder, note);
 		// @formatter:off
 		return dtoBuilder
-			.relatedToId(note.relatedToId.toString())
-			.noteType(EnumeratedDto.of(note.noteType))
-			.subject(note.subject)
-			.content(note.content)
-			.isPrivate(note.isPrivate)
+			.relatedToId(note.getRelatedToId().toString())
+			.noteType(EnumeratedDto.of(note.getNoteType()))
+			.subject(note.getSubject())
+			.content(note.getContent())
+			.isPrivate(note.isPrivate())
 			.build();
 		// @formatter:on
 	}

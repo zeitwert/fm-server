@@ -76,19 +76,18 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 			obj.getMeta().disableCalc();
 			super.toAggregate(dto, obj);
 
-			obj.name = dto.getName();
-			obj.description = dto.getDescription();
-			obj.accountType = dto.getAccountType() == null ? null : CodeAccountType.getAccountType(dto.getAccountType().getId());
-			obj.clientSegment = dto.getClientSegment() == null ? null
-					: CodeClientSegment.getClientSegment(dto.getClientSegment().getId());
-			obj.referenceCurrency = dto.getReferenceCurrency() == null ? null : CodeCurrency.getCurrency(dto.getReferenceCurrency().getId());
-			obj.inflationRate = dto.getInflationRate();
-			obj.discountRate = dto.getDiscountRate();
-			obj.mainContactId = dto.getMainContactId();
+			obj.setName(dto.getName());
+			obj.setDescription(dto.getDescription());
+			obj.setAccountType(dto.getAccountType() == null ? null : CodeAccountType.getAccountType(dto.getAccountType().getId()));
+			obj.setClientSegment(dto.getClientSegment() == null ? null : CodeClientSegment.Enumeration.getClientSegment(dto.getClientSegment().getId()));
+			obj.setReferenceCurrency(dto.getReferenceCurrency() == null ? null : CodeCurrency.Enumeration.getCurrency(dto.getReferenceCurrency().getId()));
+			obj.setInflationRate(dto.getInflationRate());
+			obj.setDiscountRate(dto.getDiscountRate());
+			obj.setMainContactId(dto.getMainContactId());
 
 		} finally {
 			obj.getMeta().enableCalc();
-			obj.calcAll();
+			obj.getMeta().calcAll();
 		}
 	}
 
@@ -101,16 +100,16 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
 				.tenantInfoId((Integer) obj.getTenantId())
-				.name(obj.name)
-				.description(obj.description)
-				.accountType(EnumeratedDto.of(obj.accountType))
-				.clientSegment(EnumeratedDto.of(obj.clientSegment))
-				.referenceCurrency(EnumeratedDto.of(obj.referenceCurrency))
-				.inflationRate(obj.inflationRate)
-				.discountRate(obj.discountRate)
-				.mainContactId(obj.mainContactId)
-				.contactIdList(obj.contacts.stream().map(c -> (Integer) c.getId()).toList())
-				.logoId(obj.logoImageId)
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.accountType(EnumeratedDto.of(obj.getAccountType()))
+				.clientSegment(EnumeratedDto.of(obj.getClientSegment()))
+				.referenceCurrency(EnumeratedDto.of(obj.getReferenceCurrency()))
+				.inflationRate(obj.getInflationRate())
+				.discountRate(obj.getDiscountRate())
+				.mainContactId(obj.getMainContactId())
+				.contactIdList(obj.getContacts().stream().map(c -> (Integer) c.getId()).toList())
+				.logoId(obj.getLogoImageId())
 				.build();
 	}
 

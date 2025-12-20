@@ -22,6 +22,6 @@ enum class CodeAccountType(
 		}
 
 		@JvmStatic
-		fun getAccountType(itemId: String): CodeAccountType? = getItem(itemId)
+		fun getAccountType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

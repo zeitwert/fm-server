@@ -22,6 +22,6 @@ enum class CodeTestType(
 			entries.forEach { addItem(it) }
 		}
 
-		fun getTestType(itemId: String): CodeTestType? = getItem(itemId)
+		fun getTestType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

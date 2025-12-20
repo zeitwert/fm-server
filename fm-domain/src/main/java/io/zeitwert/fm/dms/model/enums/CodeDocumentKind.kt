@@ -23,6 +23,6 @@ enum class CodeDocumentKind(
 		}
 
 		@JvmStatic
-		fun getDocumentKind(itemId: String): CodeDocumentKind? = getItem(itemId)
+		fun getDocumentKind(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

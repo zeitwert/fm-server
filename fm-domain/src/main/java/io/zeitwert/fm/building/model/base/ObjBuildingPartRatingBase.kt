@@ -21,7 +21,8 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 	property: Property<*>,
 	id: Int,
 ) : ObjPartBase<ObjBuilding>(obj, repository, property, id),
-	ObjBuildingPartRating, PartMeta<ObjBuilding> {
+	ObjBuildingPartRating,
+	PartMeta<ObjBuilding> {
 
 	protected val _partCatalog = addEnumProperty("partCatalog", CodeBuildingPartCatalog::class.java)
 	protected val _maintenanceStrategy =
@@ -42,7 +43,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === this.elementList) {
+		if (property === this._elementList) {
 			val partRepo: PartRepository<ObjBuilding, *> =
 				directory.getPartRepository<ObjBuilding, ObjBuildingPartElementRating>(
 					ObjBuildingPartElementRating::class.java,
@@ -56,7 +57,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 		property: Property<*>,
 		part: Part<*>?,
 	) {
-		if (property === this.elementList) {
+		if (property === this._elementList) {
 			val ratingDate = this.ratingDate
 			if (ratingDate != null) {
 				val year: Int? = ratingDate.year

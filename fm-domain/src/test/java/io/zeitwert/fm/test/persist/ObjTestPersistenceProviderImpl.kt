@@ -1,12 +1,13 @@
 package io.zeitwert.fm.test.persist
 
 import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
 import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
+import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.test.model.ObjTest
@@ -19,16 +20,15 @@ import org.springframework.stereotype.Component
 
 @Component("objTestPersistenceProvider")
 open class ObjTestPersistenceProviderImpl(
-	override val baseRecordMapper: ObjRecordMapperImpl,
-	val dslContext: DSLContext,
+	override val dslContext: DSLContext,
 ) : SqlAggregatePersistenceProviderBase<ObjTest, ObjRecord, ObjTestRecord>(ObjTest::class.java),
 	SqlAggregateRecordMapper<ObjTest, ObjTestRecord> {
 
-	override fun dslContext(): DSLContext = dslContext
+	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+
+	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
-
-	override fun nextId(): Any = dslContext.nextval(Sequences.OBJ_ID_SEQ).toInt()
 
 	override fun loadRecord(aggregateId: Any): ObjTestRecord {
 		val record = dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(aggregateId as Int))
@@ -47,7 +47,7 @@ open class ObjTestPersistenceProviderImpl(
 		aggregate.setValueByPath("isDone", record.isDone)
 		aggregate.setValueByPath("json", record.json?.toString())
 		aggregate.setValueByPath("nr", record.nr)
-		aggregate.setValueByPath("refTest.id", record.refTestId)
+		aggregate.setValueByPath("refTestId", record.refTestId)
 		aggregate.setValueByPath("testType", CodeTestType.getTestType(record.testTypeId))
 	}
 
@@ -84,7 +84,7 @@ open class ObjTestPersistenceProviderImpl(
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =
-		dslContext()
+		dslContext
 			.select(Tables.OBJ_TEST.OBJ_ID)
 			.from(Tables.OBJ_TEST)
 			.where(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
@@ -97,7 +97,7 @@ open class ObjTestPersistenceProviderImpl(
 	): List<Any>? {
 		val field = when (fkName) {
 			"refTestId" -> Tables.OBJ_TEST.REF_TEST_ID
-			else -> throw IllegalArgumentException("unknown foreign key name: ${Tables.OBJ_TEST}.$fkName")
+			else -> return null
 		}
 		return dslContext
 			.select(Tables.OBJ_TEST.OBJ_ID)

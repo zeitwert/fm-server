@@ -20,6 +20,6 @@ enum class CodeCurrency(
 			entries.forEach { addItem(it) }
 		}
 
-		fun getCurrency(itemId: String): CodeCurrency? = getItem(itemId)
+		fun getCurrency(itemId: String?): CodeCurrency? = if (itemId != null) getItem(itemId) else null
 	}
 }

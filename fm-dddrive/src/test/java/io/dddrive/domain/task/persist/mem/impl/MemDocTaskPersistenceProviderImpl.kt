@@ -33,7 +33,7 @@ class MemDocTaskPersistenceProviderImpl :
 			// Load ONLY DocTask-specific properties here
 			aggregate.subject = pto.subject
 			aggregate.content = pto.content
-			aggregate.private = pto.private
+			aggregate.isPrivate = pto.isPrivate
 			aggregate.priority = pto.priority?.let { CodeTaskPriority.Enumeration.getItem(it) }
 			aggregate.dueAt = pto.dueAt
 			aggregate.remindAt = pto.remindAt
@@ -73,7 +73,7 @@ class MemDocTaskPersistenceProviderImpl :
 			// DocTask-specific properties
 			subject = aggregate.subject,
 			content = aggregate.content,
-			private = aggregate.private,
+			isPrivate = aggregate.isPrivate,
 			priority = aggregate.priority?.id,
 			dueAt = aggregate.dueAt,
 			remindAt = aggregate.remindAt,

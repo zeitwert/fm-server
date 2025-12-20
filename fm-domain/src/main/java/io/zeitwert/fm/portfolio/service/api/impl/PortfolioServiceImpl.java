@@ -43,9 +43,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 	public ImageResult getMap(ObjPortfolio portfolio, Size size) {
 		try {
 			Markers markers = new Markers();
-			for (Integer bldgId : portfolio.buildingSet) {
+			for (Object bldgId : portfolio.getBuildingSet()) {
 				ObjBuilding bldg = this.buildingRepository.get(bldgId);
-				String coordinates = bldg.geoCoordinates;
+				String coordinates = bldg.getGeoCoordinates();
 				if (coordinates != null && coordinates.startsWith("WGS:")) {
 					markers.addLocation(coordinates.substring(4));
 				}

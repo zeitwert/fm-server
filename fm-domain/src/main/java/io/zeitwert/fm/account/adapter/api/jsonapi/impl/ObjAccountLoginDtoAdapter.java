@@ -39,12 +39,12 @@ public class ObjAccountLoginDtoAdapter
 		ObjAccountLoginDto.ObjAccountLoginDtoBuilder<?, ?> dtoBuilder = ObjAccountLoginDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.name(obj.name)
-				.description(obj.description)
-				.accountType(EnumeratedDto.of(obj.accountType))
-				.clientSegment(EnumeratedDto.of(obj.clientSegment))
-				.referenceCurrency(EnumeratedDto.of(obj.referenceCurrency))
-				.logoId(obj.logoImageId)
+				.name(obj.getName())
+				.description(obj.getDescription())
+				.accountType(EnumeratedDto.of(obj.getAccountType()))
+				.clientSegment(EnumeratedDto.of(obj.getClientSegment()))
+				.referenceCurrency(EnumeratedDto.of(obj.getReferenceCurrency()))
+				.logoId(obj.getLogoImageId())
 				.build();
 	}
 

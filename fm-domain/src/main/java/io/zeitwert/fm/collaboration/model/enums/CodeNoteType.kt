@@ -2,7 +2,6 @@ package io.zeitwert.fm.collaboration.model.enums
 
 import io.dddrive.core.enums.model.Enumerated
 import io.dddrive.core.enums.model.base.EnumerationBase
-import io.zeitwert.fm.building.model.enums.CodeBuildingType
 
 /**
  * Note type enum using the NEW dddrive framework.
@@ -27,6 +26,6 @@ enum class CodeNoteType(
 		}
 
 		@JvmStatic
-		fun getNoteType(itemId: String): CodeNoteType? = getItem(itemId)
+		fun getNoteType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

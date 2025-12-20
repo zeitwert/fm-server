@@ -97,7 +97,18 @@ class PropertyHandler : MethodHandler {
 					}
 				}
 			}
-			val property = this.getProperty(self, this.getFieldName(methodName))
+			var fieldName = this.getFieldName(methodName)
+			val property = try {
+				this.getProperty(self, fieldName)
+			} catch (_: NoSuchFieldException) {
+				try {
+					// try boolean setXyz setter
+					fieldName = "is" + fieldName.substring(0, 1).uppercase(Locale.getDefault()) + fieldName.substring(1)
+					this.getProperty(self, fieldName)
+				} catch (_: NoSuchFieldException) {
+					throw NoSuchMethodException(self.javaClass.getSimpleName() + "." + methodName)
+				}
+			}
 			if (this.isGetter(methodName, args)) {
 				return if (property is EnumProperty<*>) {
 					(property as EnumProperty<Enumerated>).value
@@ -170,6 +181,8 @@ class PropertyHandler : MethodHandler {
 	private fun getFieldName(methodName: String): String {
 		if (methodName.startsWith("get")) {
 			return this.getName(methodName.substring(3))
+		} else if (methodName.startsWith("is")) {
+			return methodName
 		} else if (methodName.startsWith("set")) {
 			return this.getName(methodName.substring(3))
 		}
@@ -246,7 +259,7 @@ class PropertyHandler : MethodHandler {
 	private fun isGetter(
 		methodName: String,
 		args: Array<Any?>,
-	): Boolean = methodName.startsWith("get") && args.isEmpty()
+	): Boolean = (methodName.startsWith("get") || methodName.startsWith("is")) && args.isEmpty()
 
 	private fun isSetter(
 		methodName: String,

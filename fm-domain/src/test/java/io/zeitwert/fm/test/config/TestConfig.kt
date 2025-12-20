@@ -4,6 +4,7 @@ import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.ddd.model.enums.CodePartListType
 import io.dddrive.core.ddd.model.enums.CodePartListTypeEnum
+import io.dddrive.core.doc.model.enums.CodeCaseDef
 import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
 import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
@@ -60,8 +61,8 @@ class TestConfig :
 	}
 
 	private fun initCodePartListType(e: CodePartListTypeEnum) {
-		e.addItem(CodePartListType(e, "test.nodeList", "TestNode List"))
-		e.addItem(CodePartListType(e, "test.testTypeSet", "Test Type Set"))
+		e.addItem(CodePartListType("test.nodeList", "TestNode List"))
+		e.addItem(CodePartListType("test.testTypeSet", "Test Type Set"))
 	}
 
 	private fun initCodeCaseDef(e: CodeCaseDefEnum) {
@@ -73,7 +74,6 @@ class TestConfig :
 		e.addItem(CodeCaseStage("test.open", "test", "intermediate", "Assigned", "Assigned", 20, null, null, null))
 		e.addItem(
 			CodeCaseStage(
-				e,
 				"test.progress",
 				"test",
 				"intermediate",

@@ -12,7 +12,7 @@ import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginResponse
-import io.zeitwert.fm.server.session.adapter.rest.dto.SessionInfoReponse
+import io.zeitwert.fm.server.session.adapter.rest.dto.SessionInfoResponse
 import io.zeitwert.fm.server.session.service.api.JwtProvider
 import io.zeitwert.fm.server.session.version.ApplicationInfo
 import org.slf4j.Logger
@@ -84,15 +84,14 @@ class SessionController {
 					.map<String> { item: GrantedAuthority? -> item!!.authority }
 					.toList()
 					.get(0)
-			val loginResponse = LoginResponse
-				.builder()
-				.token(jwt)
-				.id(userDetails.userId)
-				.username(userDetails.username)
-				.email(userDetails.username)
-				.accountId(accountId)
-				.role(of(getUserRole(role)))
-				.build()
+			val loginResponse = LoginResponse(
+				token = jwt,
+				id = userDetails.userId,
+				username = userDetails.username,
+				email = userDetails.username,
+				accountId = accountId,
+				role = of(getUserRole(role)),
+			)
 			return ResponseEntity.ok<LoginResponse?>(loginResponse)
 		} catch (ex: Exception) {
 			this.logger.error("Login failed: $ex")
@@ -106,7 +105,7 @@ class SessionController {
 	): Authentication = UsernamePasswordAuthenticationToken(email, password)
 
 	@get:GetMapping("/session")
-	val requestContext: ResponseEntity<SessionInfoReponse?>
+	val requestContext: ResponseEntity<SessionInfoResponse?>
 		get() {
 			// if (this.requestCtx == null) {
 			// 	return ResponseEntity
@@ -125,18 +124,17 @@ class SessionController {
 			} else {
 				defaultApp = "fm"
 			}
-			val response = SessionInfoReponse
-				.builder()
-				.applicationName(ApplicationInfo.getName())
-				.applicationVersion(ApplicationInfo.getVersion())
-				.user(this.userDtoAdapter.fromAggregate(this.requestCtx.getUser() as ObjUserFM?))
-				.tenant(this.tenantDtoAdapter.fromAggregate(tenant))
-				.account(this.accountDtoAdapter.fromAggregate(account))
-				.locale(this.requestCtx.getLocale().getId())
-				.applicationId(defaultApp)
-				.availableApplications(mutableListOf<String?>())
-				.build()
-			return ResponseEntity.ok<SessionInfoReponse?>(response)
+			val response = SessionInfoResponse(
+				applicationName = ApplicationInfo.getName(),
+				applicationVersion = ApplicationInfo.getVersion(),
+				user = this.userDtoAdapter.fromAggregate(this.requestCtx.getUser() as ObjUserFM?),
+				tenant = this.tenantDtoAdapter.fromAggregate(tenant),
+				account = this.accountDtoAdapter.fromAggregate(account),
+				locale = this.requestCtx.getLocale().id,
+				applicationId = defaultApp,
+				availableApplications = emptyList(),
+			)
+			return ResponseEntity.ok<SessionInfoResponse?>(response)
 		}
 
 	@PostMapping("/logout")

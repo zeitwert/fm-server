@@ -21,6 +21,6 @@ enum class CodeCountry(
 		}
 
 		@JvmStatic
-		fun getCountry(itemId: String): CodeCountry? = getItem(itemId)
+		fun getCountry(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

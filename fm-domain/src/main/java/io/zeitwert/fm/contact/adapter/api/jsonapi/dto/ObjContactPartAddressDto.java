@@ -33,25 +33,25 @@ public class ObjContactPartAddressDto extends ObjPartDtoBase<ObjContact, ObjCont
 		ObjPartDtoBase.fromPart(dtoBuilder, part);
 		// @formatter:off
 		return dtoBuilder
-			.addressChannel(EnumeratedDto.of(part.addressChannel))
-			.isMailAddress(part.isMailAddress)
-			.name(part.name)
-			.street(part.street)
-			.zip(part.zip)
-			.city(part.city)
-			.country(EnumeratedDto.of(part.country))
+			.addressChannel(EnumeratedDto.of(part.getAddressChannel()))
+			.isMailAddress(part.isMailAddress())
+			.name(part.getName())
+			.street(part.getStreet())
+			.zip(part.getZip())
+			.city(part.getCity())
+			.country(EnumeratedDto.of(part.getCountry()))
 			.build();
 		// @formatter:on
 	}
 
 	public void toPart(ObjContactPartAddress part) {
 		super.toPart(part);
-		part.addressChannel = addressChannel == null ? null : CodeAddressChannel.getAddressChannel(addressChannel.getId());
-		part.name = name;
-		part.street = street;
-		part.zip = zip;
-		part.city = city;
-		part.country = country == null ? null : CodeCountry.getCountry(country.getId());
+		part.setAddressChannel(addressChannel == null ? null : CodeAddressChannel.getAddressChannel(addressChannel.getId()));
+		part.setName(name);
+		part.setStreet(street);
+		part.setZip(zip);
+		part.setCity(city);
+		part.setCountry(country == null ? null : CodeCountry.getCountry(country.getId()));
 	}
 
 }

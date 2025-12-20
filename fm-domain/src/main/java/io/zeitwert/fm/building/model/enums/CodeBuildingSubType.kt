@@ -151,6 +151,6 @@ enum class CodeBuildingSubType(
 		}
 
 		@JvmStatic
-		fun getBuildingSubType(itemId: String): CodeBuildingSubType? = getItem(itemId)
+		fun getBuildingSubType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

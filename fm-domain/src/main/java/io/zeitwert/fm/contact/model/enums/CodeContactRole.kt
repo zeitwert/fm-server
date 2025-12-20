@@ -26,6 +26,6 @@ enum class CodeContactRole(
 		}
 
 		@JvmStatic
-		fun getContactRole(itemId: String): CodeContactRole? = getItem(itemId)
+		fun getContactRole(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

@@ -160,6 +160,6 @@ enum class CodeBuildingPartCatalog(
 		}
 
 		@JvmStatic
-		fun getPartCatalog(itemId: String): CodeBuildingPartCatalog? = getItem(itemId)
+		fun getPartCatalog(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

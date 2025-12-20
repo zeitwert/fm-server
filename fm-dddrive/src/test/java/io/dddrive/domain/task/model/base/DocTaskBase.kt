@@ -17,7 +17,7 @@ abstract class DocTaskBase(
 
 	protected val _subject = this.addBaseProperty("subject", String::class.java)
 	protected val _content = this.addBaseProperty("content", String::class.java)
-	protected val _isPrivate = this.addBaseProperty("private", Boolean::class.java)
+	protected val _isPrivate = this.addBaseProperty("isPrivate", Boolean::class.java)
 	protected val _priority = this.addEnumProperty("priority", CodeTaskPriority::class.java)
 	protected val _dueAt = this.addBaseProperty("dueAt", OffsetDateTime::class.java)
 	protected val _remindAt = this.addBaseProperty("remindAt", OffsetDateTime::class.java)

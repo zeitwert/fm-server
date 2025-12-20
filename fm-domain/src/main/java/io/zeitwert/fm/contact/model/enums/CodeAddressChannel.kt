@@ -34,6 +34,6 @@ enum class CodeAddressChannel(
 		}
 
 		@JvmStatic
-		fun getAddressChannel(itemId: String): CodeAddressChannel? = getItem(itemId)
+		fun getAddressChannel(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

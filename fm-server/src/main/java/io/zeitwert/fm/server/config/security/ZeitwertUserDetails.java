@@ -14,10 +14,9 @@ public class ZeitwertUserDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	private final ObjUserFM user;
+	private final Collection<? extends GrantedAuthority> authorities;
 	private Integer tenantId;
 	private Integer accountId;
-
-	private final Collection<? extends GrantedAuthority> authorities;
 
 	public ZeitwertUserDetails(ObjUserFM user, Collection<? extends GrantedAuthority> authorities) {
 		this.user = user;
@@ -26,7 +25,7 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	public static ZeitwertUserDetails build(ObjUserFM user) {
 		List<SimpleGrantedAuthority> authorities = List
-				.of(user.role == null ? null : new SimpleGrantedAuthority(user.role.getId()));
+				.of(user.getRole() == null ? null : new SimpleGrantedAuthority(user.getRole().getId()));
 		return new ZeitwertUserDetails(user, authorities);
 	}
 
@@ -41,7 +40,7 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return this.user.password;
+		return this.user.getPassword();
 	}
 
 	public Integer getTenantId() {
@@ -66,11 +65,11 @@ public class ZeitwertUserDetails implements UserDetails {
 	}
 
 	public boolean isAppAdmin() {
-		return this.user.isAppAdmin;
+		return this.user.isAppAdmin();
 	}
 
 	public boolean isAdmin() {
-		return this.user.isAdmin;
+		return this.user.isAdmin();
 	}
 
 	@Override

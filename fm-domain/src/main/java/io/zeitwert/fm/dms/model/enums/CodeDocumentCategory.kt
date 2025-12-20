@@ -24,6 +24,6 @@ enum class CodeDocumentCategory(
 		}
 
 		@JvmStatic
-		fun getDocumentCategory(itemId: String): CodeDocumentCategory? = getItem(itemId)
+		fun getDocumentCategory(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

@@ -1,18 +1,4 @@
-
 package io.zeitwert.fm.portfolio.service.api.impl;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 
 import com.aspose.words.*;
 import com.google.maps.ImageResult;
@@ -21,6 +7,7 @@ import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
+import io.zeitwert.fm.building.service.api.impl.BuildingEvaluationServiceImpl;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.service.api.DocumentGenerationService;
 import io.zeitwert.fm.portfolio.service.api.PortfolioEvaluationService;
@@ -28,38 +15,38 @@ import io.zeitwert.fm.portfolio.service.api.PortfolioService;
 import io.zeitwert.fm.portfolio.service.api.dto.PortfolioEvaluationResult;
 import io.zeitwert.fm.server.config.aspose.AsposeConfig;
 import io.zeitwert.fm.util.Formatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 
 @Component("portfolioDocumentGenerationService")
 public class DocumentGenerationServiceImpl implements DocumentGenerationService {
 
-	private Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
-
-	Formatter fmt = Formatter.INSTANCE;
-
-	private static final int CoverFotoWidth = 400;
-	private static final int CoverFotoHeight = 230;
-
 	static final String CoverfotoBookmark = "CoverFoto";
 	static final String BuildingStateBookmark = "BuildingState";
 	static final String LocationBookmark = "Location";
-
 	static final int BuildingTable = 0;
 	static final int CostsSummaryTable = 1;
 	static final int CostsDetailTable = 2;
-
 	static final int OptimalRenovationTable = 3;
-
 	static final int BuildingStateChart = 6;
 	static final int ValueValueChart = 7;
 	static final int ValueCostChart = 8;
 	static final int CostsAccumulatedChart = 9;
 	static final int CostsDetailChart = 10;
-
-	@Autowired
-	private AsposeConfig asposeConfig;
-
-	@Autowired
-	private PortfolioService portfolioService;
+	private static final int CoverFotoWidth = 400;
+	private static final int CoverFotoHeight = 230;
+	private final Logger logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl.class);
+	Formatter fmt = Formatter.INSTANCE;
 
 	@Autowired
 	RequestContext requestCtx;
@@ -72,8 +59,11 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 
 	@Value("classpath:templates/missing.jpg")
 	Resource missingImage;
-
 	ReportingEngine engine = new ReportingEngine();
+	@Autowired
+	private AsposeConfig asposeConfig;
+	@Autowired
+	private PortfolioService portfolioService;
 
 	public DocumentGenerationServiceImpl() {
 		this.engine.getKnownTypes().add(BuildingEvaluationResult.class);
@@ -230,9 +220,9 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 		ChartSeries goodSeries = valueChart.getSeries().add("Z/N 100", goodOriginalValues, goodTimeValues);
 		ChartSeries okSeries = valueChart.getSeries().add("Z/N 100", okOriginalValues, okTimeValues);
 		ChartSeries badSeries = valueChart.getSeries().add("Z/N 100", badOriginalValues, badTimeValues);
-		goodSeries.getFormat().getFill().setForeColor(PortfolioEvaluationServiceImpl.GOOD_CONDITION);
-		okSeries.getFormat().getFill().setForeColor(PortfolioEvaluationServiceImpl.OK_CONDITION);
-		badSeries.getFormat().getFill().setForeColor(PortfolioEvaluationServiceImpl.BAD_CONDITION);
+		goodSeries.getFormat().getFill().setForeColor(BuildingEvaluationServiceImpl.Companion.getGOOD_CONDITION());
+		okSeries.getFormat().getFill().setForeColor(BuildingEvaluationServiceImpl.Companion.getOK_CONDITION());
+		badSeries.getFormat().getFill().setForeColor(BuildingEvaluationServiceImpl.Companion.getBAD_CONDITION());
 
 		// format x-axis
 		ChartAxis xAxis = valueChart.getAxisX();
@@ -416,7 +406,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 			}
 			// restorationCosts
 			cell = (Cell) cell.getNextSibling();
-			if (ep.getRestorationCosts() != null && ep.getRestorationCosts() > 0) {
+			if (ep.getRestorationCosts() > 0) {
 				builder.moveTo(cell.getFirstParagraph());
 				builder.write(fmt.formatNumber(ep.getRestorationCosts()));
 			}

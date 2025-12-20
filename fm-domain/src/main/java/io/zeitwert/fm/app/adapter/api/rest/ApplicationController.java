@@ -65,8 +65,8 @@ public class ApplicationController {
 						.id((Integer) user.getId())
 						.email(user.getEmail())
 						.name(user.getName())
-						.role(EnumeratedDto.of(user.role))
-						.tenants(user.tenantSet.stream().map(EnumeratedDto::of).toList())
+						.role(EnumeratedDto.of(user.getRole()))
+						.tenants(user.getTenantSet().stream().map(EnumeratedDto::of).toList())
 						.build());
 	}
 
@@ -80,7 +80,7 @@ public class ApplicationController {
 		return ResponseEntity.ok(
 				TenantInfoResponse.builder()
 						.id(id)
-						.tenantType(EnumeratedDto.of(tenant.tenantType))
+						.tenantType(EnumeratedDto.of(tenant.getTenantType()))
 						.accounts(accountDtos)
 						.build());
 	}

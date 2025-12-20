@@ -5,7 +5,7 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.base.ObjDocumentBase
 import io.zeitwert.fm.dms.model.enums.CodeContentType
-import io.zeitwert.fm.dms.persist.jooq.ObjDocumentPersistenceProvider
+import io.zeitwert.fm.dms.persist.jooq.ObjDocumentPersistenceProviderImpl
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -22,7 +22,7 @@ class ObjDocumentRepositoryImpl : FMObjRepositoryBase<ObjDocument>(
 
 	private lateinit var accountRepository: ObjAccountRepository
 
-	override val persistenceProvider get() = super.persistenceProvider as ObjDocumentPersistenceProvider
+	override val persistenceProvider get() = super.persistenceProvider as ObjDocumentPersistenceProviderImpl
 
 	@Autowired
 	@Lazy

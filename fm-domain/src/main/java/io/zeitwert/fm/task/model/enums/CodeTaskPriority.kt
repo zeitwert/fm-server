@@ -23,6 +23,6 @@ enum class CodeTaskPriority(
 		}
 
 		@JvmStatic
-		fun getPriority(itemId: String): CodeTaskPriority? = getItem(itemId)
+		fun getPriority(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

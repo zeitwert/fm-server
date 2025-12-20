@@ -26,6 +26,6 @@ enum class CodeSalutation(
 		}
 
 		@JvmStatic
-		fun getSalutation(itemId: String): CodeSalutation? = getItem(itemId)
+		fun getSalutation(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

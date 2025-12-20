@@ -129,7 +129,7 @@ class TaskMemTest : PropertyChangeListener {
 		task.subject = "Implement new feature with comments"
 		task.content = "Implement the user authentication module with OAuth2 support and add comment functionality."
 		task.priority = CodeTaskPriority.HIGH
-		task.private = false
+		task.isPrivate = false
 		task.dueAt = dueDate
 		task.remindAt = remindDate
 		task.assignee = user1
@@ -142,7 +142,7 @@ class TaskMemTest : PropertyChangeListener {
 			task.content,
 		)
 		assertEquals(CodeTaskPriority.HIGH, task.priority)
-		assertEquals(false, task.private)
+		assertEquals(false, task.isPrivate)
 		assertEquals(dueDate, task.dueAt)
 		assertEquals(remindDate, task.remindAt)
 		assertEquals(user1.id, task.assignee?.id)
@@ -325,7 +325,7 @@ class TaskMemTest : PropertyChangeListener {
 		assertEquals("Minimal task, no comments", loaded.subject)
 		assertNull(loaded.content, "content should be null")
 		assertNull(loaded.priority, "priority should be null")
-		assertNull(loaded.private, "private should be null")
+		assertNull(loaded.isPrivate, "private should be null")
 		assertNull(loaded.dueAt, "dueAt should be null")
 		assertNull(loaded.remindAt, "remindAt should be null")
 		assertNull(loaded.assignee, "assignee should be null")
@@ -387,6 +387,9 @@ class TaskMemTest : PropertyChangeListener {
 		val newSubject = "Updated Subject via Path"
 		task.setValueByPath("subject", newSubject)
 		assertEquals(newSubject, task.subject)
+
+		task.setValueByPath("isPrivate", true)
+		assertEquals(true, task.isPrivate)
 
 		// Set reference property - use Id suffix for setters
 		task.setValueByPath("assigneeId", user1.id)

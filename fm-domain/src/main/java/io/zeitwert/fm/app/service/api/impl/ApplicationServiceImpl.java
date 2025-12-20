@@ -22,9 +22,9 @@ class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public List<Application> getAllApplications() {
 		ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
-		if (user.isAppAdmin) {
+		if (user.isAppAdmin()) {
 			return appConfig.AppAdminApplications;
-		} else if (user.isAdmin) {
+		} else if (user.isAdmin()) {
 			return appConfig.AdminApplications;
 		}
 		return appConfig.UserApplications;

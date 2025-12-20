@@ -1,9 +1,8 @@
 package io.zeitwert.dddrive.persist
 
-import io.dddrive.core.ddd.model.AggregateSPI
+import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
-import io.dddrive.core.obj.model.Obj
 import org.jooq.DSLContext
 import org.jooq.UpdatableRecord
 
@@ -12,17 +11,19 @@ import org.jooq.UpdatableRecord
  *
  * This class provides the foundation for persisting aggregates to PostgreSQL using jOOQ.
  * Concrete implementations should handle specific aggregate types (Obj, Doc) with their
- * respective table structures.
+ * respective table structures (base and extension tables).
  */
-abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord<BR>, ER : UpdatableRecord<ER>>(
+abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : UpdatableRecord<BR>, ER : UpdatableRecord<ER>>(
 	intfClass: Class<A>,
 ) : AggregatePersistenceProviderBase<A>(intfClass) {
 
-	abstract val baseRecordMapper: SqlAggregateRecordMapper<Obj, BR>
+	abstract val dslContext: DSLContext
+
+	abstract val idProvider: SqlIdProvider<out Aggregate>
+
+	abstract val baseRecordMapper: SqlAggregateRecordMapper<out Aggregate, BR>
 
 	abstract val extnRecordMapper: SqlAggregateRecordMapper<A, ER>
-
-	abstract fun dslContext(): DSLContext
 
 	override fun isValidId(id: Any): Boolean = id is Int
 
@@ -30,24 +31,26 @@ abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord
 
 	override fun idFromString(id: String): Any = id.toInt()
 
-	override fun nextAggregateId(): Any = baseRecordMapper.nextId()
+	override fun nextAggregateId(): Any = idProvider.nextAggregateId()
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <P : Part<A>> nextPartId(
 		aggregate: A,
 		partClass: Class<P>,
-	): Int = (aggregate as AggregateSPI).nextPartId(partClass)
+	): Int = (idProvider as SqlIdProvider<A>).nextPartId(aggregate, partClass)
 
+	@Suppress("UNCHECKED_CAST")
 	override fun doLoad(
 		aggregate: A,
 		id: Any,
 	) {
 		require(isValidId(id)) { "valid id" }
-		dslContext().transaction { _ ->
+		dslContext.transaction { _ ->
 			val er = extnRecordMapper.loadRecord(id)
 			val br = baseRecordMapper.loadRecord(id)
 			aggregate.meta.disableCalc()
 			try {
-				baseRecordMapper.mapFromRecord(aggregate, br)
+				(baseRecordMapper as SqlAggregateRecordMapper<A, BR>).mapFromRecord(aggregate, br)
 				extnRecordMapper.mapFromRecord(aggregate, er)
 			} finally {
 				aggregate.meta.enableCalc()
@@ -56,14 +59,15 @@ abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord
 		}
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun doStore(aggregate: A) {
-		dslContext().transaction { _ ->
-			val br = baseRecordMapper.mapToRecord(aggregate)
+		dslContext.transaction { _ ->
+			val br = (baseRecordMapper as SqlAggregateRecordMapper<A, BR>).mapToRecord(aggregate)
 			val er = extnRecordMapper.mapToRecord(aggregate)
 			try {
 				baseRecordMapper.storeRecord(br, aggregate)
 				extnRecordMapper.storeRecord(er, aggregate)
-				System.err.println("stored:\n$br\n$er")
+				println("stored:\n$br\n$er")
 			} catch (e: RuntimeException) {
 				System.err.println("${e.message}:\n$br\n$er")
 				throw e // Re-throw to trigger rollback
@@ -77,11 +81,12 @@ abstract class SqlAggregatePersistenceProviderBase<A : Obj, BR : UpdatableRecord
 		fkName: String,
 		targetId: Any,
 	): List<Any> {
-		val foreignKeys = baseRecordMapper.getByForeignKey("", fkName, targetId)
-		if (foreignKeys.isNullOrEmpty()) {
-			return extnRecordMapper.getByForeignKey("", fkName, targetId)!!
+		var foreignKeys = baseRecordMapper.getByForeignKey("", fkName, targetId)
+		if (foreignKeys == null) {
+			foreignKeys = extnRecordMapper.getByForeignKey("", fkName, targetId)
 		}
-		return foreignKeys
+		assert(foreignKeys != null) { "valid foreign key: $fkName" }
+		return foreignKeys!!
 	}
 
 }

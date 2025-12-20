@@ -27,6 +27,6 @@ enum class CodeLocale(
 		}
 
 		@JvmStatic
-		fun getLocale(itemId: String): CodeLocale? = getItem(itemId)
+		fun getLocale(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

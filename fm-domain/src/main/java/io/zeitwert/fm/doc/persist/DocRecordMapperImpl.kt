@@ -1,0 +1,130 @@
+package io.zeitwert.fm.doc.persist
+
+import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.core.ddd.model.AggregateSPI
+import io.dddrive.core.ddd.model.Part
+import io.dddrive.core.doc.model.Doc
+import io.dddrive.path.setValueByPath
+import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
+import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.fm.account.model.ItemWithAccount
+import io.zeitwert.fm.doc.model.base.FMDocBase
+import io.zeitwert.fm.doc.model.db.Sequences
+import io.zeitwert.fm.doc.model.db.Tables
+import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
+import org.jooq.DSLContext
+
+class DocRecordMapperImpl(
+	val dslContext: DSLContext,
+) : SqlAggregateRecordMapper<Doc, DocRecord>,
+	SqlIdProvider<Doc> {
+
+	override fun nextAggregateId(): Any = dslContext.nextval(Sequences.DOC_ID_SEQ).toInt()
+
+	override fun <P : Part<Doc>> nextPartId(
+		aggregate: Doc,
+		partClass: Class<P>,
+	): Int = (aggregate as AggregateSPI).nextPartId(partClass)
+
+	override fun loadRecord(aggregateId: Any): DocRecord {
+		val record = dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(aggregateId as Int))
+		return record ?: throw IllegalArgumentException("no DOC record found for $aggregateId")
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun mapFromRecord(
+		aggregate: Doc,
+		record: DocRecord,
+	) {
+		// doc base fields
+		aggregate.setValueByPath("id", record.id)
+		aggregate.setValueByPath("docTypeId", record.docTypeId)
+		aggregate.setValueByPath("tenantId", record.tenantId)
+		if (aggregate is ItemWithAccount) {
+			aggregate.setValueByPath("accountId", record.accountId)
+		}
+		aggregate.setValueByPath("ownerId", record.ownerId)
+		aggregate.setValueByPath("caption", record.caption)
+		// doc-specific fields
+		aggregate.setValueByPath("caseDefId", record.caseDefId)
+		aggregate.setValueByPath("caseStageId", record.caseStageId)
+		aggregate.setValueByPath("isInWork", record.isInWork)
+		aggregate.setValueByPath("assigneeId", record.assigneeId)
+		// doc_meta
+		aggregate.setValueByPath("version", record.version)
+		aggregate.setValueByPath("createdAt", record.createdAt)
+		aggregate.setValueByPath("createdByUserId", record.createdByUserId)
+		aggregate.setValueByPath("modifiedAt", record.modifiedAt)
+		aggregate.setValueByPath("modifiedByUserId", record.modifiedByUserId)
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun mapToRecord(aggregate: Doc): DocRecord {
+		val record = dslContext.newRecord(Tables.DOC)
+
+		record.id = aggregate.id as Int
+		record.docTypeId = aggregate.meta.docTypeId
+		record.tenantId = aggregate.tenantId as Int
+		if (aggregate is ItemWithAccount) {
+			record.accountId = aggregate.accountId as Int?
+		}
+		record.ownerId = aggregate.owner.id as Int
+		record.caption = aggregate.caption
+
+		record.caseDefId = aggregate.meta.caseDef?.id
+		record.caseStageId = aggregate.meta.caseStage?.id
+		record.isInWork = aggregate.meta.isInWork
+		record.assigneeId = aggregate.assignee?.id as Int?
+
+		record.version = aggregate.meta.version
+		record.createdAt = aggregate.meta.createdAt
+		record.createdByUserId = aggregate.meta.createdByUser.id as Int
+		record.modifiedAt = aggregate.meta.modifiedAt
+		record.modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int
+		return record
+	}
+
+	override fun storeRecord(
+		record: DocRecord,
+		aggregate: Aggregate,
+	) {
+		if ((aggregate as FMDocBase).isNew) {
+			record.insert()
+		} else {
+			// Mark the record as changed so JOOQ will perform an update
+			// The version field is already set to the old version from aggregate.meta.version
+			// JOOQ will automatically:
+			// - Use version in WHERE clause for optimistic locking
+			// - Increment version in SET clause
+			// - Throw DataChangedException if no rows updated
+			record.changed(true)
+			record.update()
+		}
+		// After store(), JOOQ has updated the record with the new version
+		// Refresh the version in the aggregate so it can be used for parts
+		(aggregate as Doc).setValueByPath("version", record.version)
+	}
+
+	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
+
+	override fun getByForeignKey(
+		aggregateTypeId: String,
+		fkName: String,
+		targetId: Any,
+	): List<Any>? {
+		val field = when (fkName) {
+			"tenantId" -> Tables.DOC.TENANT_ID
+			"accountId" -> Tables.DOC.ACCOUNT_ID
+			"ownerId" -> Tables.DOC.OWNER_ID
+			"assigneeId" -> Tables.DOC.ASSIGNEE_ID
+			else -> return null
+		}
+		return dslContext
+			.select(Tables.DOC.ID)
+			.from(Tables.DOC)
+			.where(field.eq(targetId as Int))
+			.and(Tables.DOC.DOC_TYPE_ID.eq(aggregateTypeId))
+			.fetch(Tables.DOC.ID)
+	}
+
+}

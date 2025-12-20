@@ -23,6 +23,6 @@ enum class CodeHistoricPreservation(
 		}
 
 		@JvmStatic
-		fun getHistoricPreservation(itemId: String): CodeHistoricPreservation? = getItem(itemId)
+		fun getHistoricPreservation(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

@@ -49,17 +49,17 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 	public void toAggregate(ObjUserDto dto, ObjUserFM obj) {
 		super.toAggregate(dto, obj);
 		if (dto.getId() != null && dto.getPassword() != null) {
-			obj.password = dto.getPassword();
-			obj.needPasswordChange = dto.getNeedPasswordChange();
+			obj.setPassword(dto.getPassword());
+			obj.setNeedPasswordChange(dto.getNeedPasswordChange());
 		} else {
 			obj.setEmail(dto.getEmail());
 			if (dto.getId() == null) {
-				obj.password = dto.getPassword();
-				obj.needPasswordChange = dto.getNeedPasswordChange();
+				obj.setPassword(dto.getPassword());
+				obj.setNeedPasswordChange(dto.getNeedPasswordChange());
 			}
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
-			obj.role = CodeUserRole.getUserRole(dto.getRole().getId());
+			obj.setRole(CodeUserRole.getUserRole(dto.getRole().getId()));
 			obj.clearTenantSet();
 			for (EnumeratedDto tenant : dto.getTenants()) {
 				obj.addTenant(this.getTenant(Integer.parseInt(tenant.getId())));
@@ -78,10 +78,10 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 				.email(obj.getEmail())
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.role(EnumeratedDto.of(obj.role))
-				.tenants(obj.tenantSet.stream().map(t -> this.getTenantEnumerated((Integer) t.getId())).toList())
-				.needPasswordChange(obj.needPasswordChange)
-				.avatarId(obj.avatarImageId)
+				.role(EnumeratedDto.of(obj.getRole()))
+				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated((Integer) t.getId())).toList())
+				.needPasswordChange(obj.getNeedPasswordChange())
+				.avatarId((Integer) obj.getAvatarImageId())
 				.build();
 	}
 

@@ -43,7 +43,7 @@ public class PortfolioDocumentController {
 	@GetMapping("/{id}/projection")
 	ResponseEntity<ProjectionResult> getPortfolioProjection(@PathVariable Integer id) {
 		Set<ObjBuilding> buildings = this.portfolioRepository
-				.get(id).buildingSet
+				.get(id).getBuildingSet()
 				.stream()
 				.map((buildingId) -> this.buildingRepository.get(buildingId))
 				.collect(Collectors.toSet());
@@ -79,7 +79,7 @@ public class PortfolioDocumentController {
 		}
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 			this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
-			String fileName = portfolio.getAccount().name + " - " + portfolio.name;
+			String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
 			fileName += " - " + monthFormatter.format(OffsetDateTime.now());
 			fileName = this.getFileName(fileName, this.getSaveFormat(format));
 			// mark file for download
@@ -112,7 +112,7 @@ public class PortfolioDocumentController {
 				ObjPortfolio portfolio = this.portfolioRepository.get(Integer.parseInt(id));
 				try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 					this.documentGeneration.generateEvaluationReport(portfolio, stream, this.getSaveFormat(format));
-					String fileName = portfolio.getAccount().name + " - " + portfolio.name;
+					String fileName = portfolio.getAccount().getName() + " - " + portfolio.getName();
 					fileName += " - " + dateTimeNow;
 					fileName = this.getFileName(fileName, this.getSaveFormat(format));
 					fileName = fileName.replace("/", " ");

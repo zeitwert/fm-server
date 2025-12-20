@@ -30,14 +30,14 @@ public class DocumentContentController {
 			return ResponseEntity.notFound().build();
 		}
 		ObjDocument document = this.documentRepository.get(documentId);
-		CodeContentType contentType = document.contentType;
+		CodeContentType contentType = document.getContentType();
 		if (contentType == null) {
 			return ResponseEntity.noContent().build();
 		}
-		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename(document.name).build();
+		ContentDisposition contentDisposition = ContentDisposition.builder("inline").filename(document.getName()).build();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDisposition(contentDisposition);
-		return ResponseEntity.ok().contentType(contentType.getMediaType()).headers(headers).body(document.content);
+		return ResponseEntity.ok().contentType(contentType.getMediaType()).headers(headers).body(document.getContent());
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.POST)

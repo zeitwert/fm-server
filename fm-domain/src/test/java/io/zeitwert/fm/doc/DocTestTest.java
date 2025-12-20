@@ -61,7 +61,7 @@ public class DocTestTest {
 		OffsetDateTime now = requestCtx.getCurrentTime();
 
 		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
-		this.initDocTest(testA1, "One", TYPE_A);
+		this.initDocTest(testA1, "One", TYPE_A, userId);
 		// Cast to FMDocCoreBase to access accountId (Kotlin property)
 		((FMDocBase) testA1).setAccountId(account.getId());
 		assertNotNull(testA1, "test not null");
@@ -77,7 +77,7 @@ public class DocTestTest {
 		assertEquals("test.new", testA1.getMeta().getCaseStage().getId(), "caseStage.id");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
 		assertEquals(account.getId(), ((FMDocBase) testA1).getAccountId(), "account id");
-		assertEquals(account.getId(), testA1.account.getId(), "account id");
+		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 
 		this.docTestRepo.store(testA1, userId, now);
 		testA1 = null;
@@ -90,7 +90,7 @@ public class DocTestTest {
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
 		assertEquals(account.getId(), ((FMDocBase) testA2).getAccountId(), "account id");
-		assertEquals(account.getId(), testA2.account.getId(), "account id");
+		assertEquals(account.getId(), testA2.getAccountId(), "account id");
 
 	}
 
@@ -101,13 +101,13 @@ public class DocTestTest {
 		Object userId = requestCtx.getUserId();
 		OffsetDateTime now = requestCtx.getCurrentTime();
 
-		CodeTestType typeA = CodeTestType.getTestType(TYPE_A);
-		CodeTestType typeB = CodeTestType.getTestType(TYPE_B);
-		CodeTestType typeC = CodeTestType.getTestType(TYPE_C);
+		CodeTestType typeA = CodeTestType.Enumeration.getTestType(TYPE_A);
+		CodeTestType typeB = CodeTestType.Enumeration.getTestType(TYPE_B);
+		CodeTestType typeC = CodeTestType.Enumeration.getTestType(TYPE_C);
 
 		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
 		Object testA_id = testA1.getId();
-		this.initDocTest(testA1, "One", TYPE_A);
+		this.initDocTest(testA1, "One", TYPE_A, userId);
 
 		assertNotNull(testA1.getMeta().getCreatedByUser(), "createdByUser not null");
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
@@ -116,9 +116,9 @@ public class DocTestTest {
 		assertEquals("Long Test One", testA1.getLongText());
 		assertEquals(42, testA1.getInt());
 		assertEquals(BigDecimal.valueOf(42), testA1.getNr());
-		assertEquals(false, testA1.getIsDone());
+		assertEquals(false, testA1.isDone());
 		assertEquals(LocalDate.of(1966, 9, 8), testA1.getDate());
-		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.json));
+		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.getJson()));
 		assertEquals(typeA, testA1.getTestType());
 
 		ObjTest refObj = this.objTestRepo.create(tenantId, userId, now);
@@ -130,7 +130,7 @@ public class DocTestTest {
 		assertEquals("[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two])", testA1.getCaption());
 
 		DocTest refDoc = this.docTestRepo.create(tenantId, userId, now);
-		this.initDocTest(refDoc, "Two", TYPE_B);
+		this.initDocTest(refDoc, "Two", TYPE_B, userId);
 		Object refDoc_id = refDoc.getId();
 		this.docTestRepo.store(refDoc, userId, now);
 
@@ -145,14 +145,14 @@ public class DocTestTest {
 		assertTrue(testA1.hasTestType(typeA));
 		testA1.addTestType(typeB);
 		assertTrue(testA1.hasTestType(typeB));
-		assertEquals(2, testA1.testTypeSet.size());
+		assertEquals(2, testA1.getTestTypeSet().size());
 		testA1.removeTestType(typeB);
 		assertTrue(testA1.hasTestType(typeA));
 		assertFalse(testA1.hasTestType(typeB));
-		assertEquals(1, testA1.testTypeSet.size());
+		assertEquals(1, testA1.getTestTypeSet().size());
 		testA1.addTestType(typeC);
 		assertTrue(testA1.hasTestType(typeC));
-		assertEquals(2, testA1.testTypeSet.size());
+		assertEquals(2, testA1.getTestTypeSet().size());
 
 		this.docTestRepo.store(testA1, userId, now);
 		testA1 = null;
@@ -165,15 +165,15 @@ public class DocTestTest {
 		assertEquals("Short Test One", testA2.getShortText());
 		assertEquals("Long Test One", testA2.getLongText());
 		assertEquals(42, testA2.getInt());
-		assertEquals(BigDecimal.valueOf(42).setScale(3), testA2.nr.setScale(3));
-		assertEquals(false, testA2.getIsDone());
+		assertEquals(BigDecimal.valueOf(42).setScale(3), testA2.getNr().setScale(3));
+		assertEquals(false, testA2.isDone());
 		assertEquals(LocalDate.of(1966, 9, 8), testA2.getDate());
-		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA2.json));
+		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA2.getJson()));
 		assertEquals(typeA, testA2.getTestType());
-		assertEquals(refObj_id, testA2.refObj.getId());
-		assertEquals(refDoc_id, testA2.refDoc.getId());
+		assertEquals(refObj_id, testA2.getRefObj().getId());
+		assertEquals(refDoc_id, testA2.getRefDoc().getId());
 
-		assertEquals(2, testA2.testTypeSet.size());
+		assertEquals(2, testA2.getTestTypeSet().size());
 		assertTrue(testA2.hasTestType(typeA));
 		assertTrue(testA2.hasTestType(typeC));
 
@@ -181,7 +181,7 @@ public class DocTestTest {
 		testA2.setLongText("another longText");
 		testA2.setInt(41);
 		testA2.setNr(BigDecimal.valueOf(41));
-		testA2.setIsDone(true);
+		testA2.setDone(true);
 		testA2.setDate(LocalDate.of(1966, 1, 5));
 		testA2.setJson(null);
 		testA2.setTestType(typeB);
@@ -195,14 +195,14 @@ public class DocTestTest {
 		assertEquals("another shortText", testA2.getShortText());
 		assertEquals("another longText", testA2.getLongText());
 		assertEquals(41, testA2.getInt());
-		assertEquals(BigDecimal.valueOf(41).setScale(3), testA2.nr.setScale(3));
-		assertEquals(true, testA2.isDone);
-		assertEquals(LocalDate.of(1966, 1, 5), testA2.date);
-		assertNull(testA2.json);
-		assertEquals(typeB, testA2.testType);
-		assertNull(testA2.refObj);
+		assertEquals(BigDecimal.valueOf(41).setScale(3), testA2.getNr().setScale(3));
+		assertEquals(true, testA2.isDone());
+		assertEquals(LocalDate.of(1966, 1, 5), testA2.getDate());
+		assertNull(testA2.getJson());
+		assertEquals(typeB, testA2.getTestType());
+		assertNull(testA2.getRefObj());
 
-		assertEquals(2, testA2.testTypeSet.size());
+		assertEquals(2, testA2.getTestTypeSet().size());
 		assertFalse(testA2.hasTestType(typeA));
 		assertTrue(testA2.hasTestType(typeB));
 		assertTrue(testA2.hasTestType(typeC));
@@ -213,8 +213,8 @@ public class DocTestTest {
 		return this.accountRepository.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0));
 	}
 
-	private void initDocTest(DocTest test, String name, String testTypeId) {
-		test.setCaseStage(CodeCaseStageEnum.getCaseStage("test.new"), null, OffsetDateTime.now());
+	private void initDocTest(DocTest test, String name, String testTypeId, Object userId) {
+		test.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage("test.new"), userId, OffsetDateTime.now());
 		assertEquals("[, ]", test.getCaption());
 		test.setShortText("Short Test " + name);
 		assertEquals("[Short Test " + name + ", ]", test.getCaption());
@@ -222,10 +222,10 @@ public class DocTestTest {
 		assertEquals("[Short Test " + name + ", Long Test " + name + "]", test.getCaption());
 		test.setInt(42);
 		test.setNr(BigDecimal.valueOf(42));
-		test.setIsDone(false);
+		test.setDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = CodeTestType.getTestType(testTypeId);
+		CodeTestType testType = CodeTestType.Enumeration.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 
@@ -237,10 +237,10 @@ public class DocTestTest {
 		assertEquals("[Short Test " + name + ", Long Test " + name + "]", test.getCaption());
 		test.setInt(42);
 		test.setNr(BigDecimal.valueOf(42));
-		test.setIsDone(false);
+		test.setDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = CodeTestType.getTestType(testTypeId);
+		CodeTestType testType = CodeTestType.Enumeration.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 

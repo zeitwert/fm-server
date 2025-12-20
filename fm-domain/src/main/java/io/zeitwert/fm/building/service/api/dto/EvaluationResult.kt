@@ -34,9 +34,9 @@ data class EvaluationElement(
 	val conditionColor: Color? = null,
 	val restorationYear: Int? = null,
 	val restorationCosts: Int? = null,
-	val shortTermCosts: Int? = null,
-	val midTermCosts: Int? = null,
-	val longTermCosts: Int? = null,
+	var shortTermCosts: Int = 0,
+	var midTermCosts: Int = 0,
+	var longTermCosts: Int = 0,
 ) {
 
 	val formattedShortTermCosts: String
@@ -51,13 +51,13 @@ data class EvaluationElement(
 }
 
 data class EvaluationPeriod(
-	val year: Int?,
-	val originalValue: Int?,
-	val timeValue: Int?,
-	val maintenanceCosts: Int?,
-	val restorationCosts: Int?,
-	val restorationElement: String?,
+	val year: Int? = null,
+	val originalValue: Int? = null,
+	val timeValue: Int? = null,
+	val maintenanceCosts: Int? = null,
+	val restorationCosts: Int,
+	val restorationElement: String,
 	val restorationBuilding: String?,
-	val totalCosts: Int?,
-	val aggrCosts: Int?,
+	val totalCosts: Int = 0,
+	val aggrCosts: Int = 0,
 )

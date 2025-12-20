@@ -36,6 +36,6 @@ enum class CodeUserRole(
 		}
 
 		@JvmStatic
-		fun getUserRole(itemId: String): CodeUserRole? = getItem(itemId)
+		fun getUserRole(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

@@ -44,11 +44,11 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	@Override
 	public void toAggregate(ObjTenantDto dto, ObjTenantFM obj) {
 		super.toAggregate(dto, obj);
-		obj.tenantType = dto.getTenantType() == null ? null : CodeTenantType.getTenantType(dto.getTenantType().getId());
+		obj.setTenantType(dto.getTenantType() == null ? null : CodeTenantType.getTenantType(dto.getTenantType().getId()));
 		obj.setName(dto.getName());
 		obj.setDescription(dto.getDescription());
-		obj.inflationRate = dto.getInflationRate();
-		obj.discountRate = dto.getDiscountRate();
+		obj.setInflationRate(dto.getInflationRate());
+		obj.setDiscountRate(dto.getDiscountRate());
 	}
 
 	@Override
@@ -59,12 +59,12 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 		ObjTenantDto.ObjTenantDtoBuilder<?, ?> dtoBuilder = ObjTenantDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		return dtoBuilder
-				.tenantType(EnumeratedDto.of(obj.tenantType))
+				.tenantType(EnumeratedDto.of(obj.getTenantType()))
 				.name(obj.getName())
 				.description(obj.getDescription())
-				.inflationRate(obj.inflationRate)
-				.discountRate(obj.discountRate)
-				.logoId(obj.logoImageId)
+				.inflationRate(obj.getInflationRate())
+				.discountRate(obj.getDiscountRate())
+				.logoId((Integer) obj.getLogoImageId())
 				.build();
 	}
 

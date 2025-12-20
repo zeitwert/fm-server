@@ -18,7 +18,7 @@ import java.util.Set
 
 @Service("buildingEvaluationService")
 class BuildingEvaluationServiceImpl(
-	private val projectionService: ProjectionService,
+	val projectionService: ProjectionService,
 ) : BuildingEvaluationService {
 
 	override fun getEvaluation(building: ObjBuilding): BuildingEvaluationResult {
@@ -92,7 +92,7 @@ class BuildingEvaluationServiceImpl(
 						description = description,
 						weight = element.weight,
 						condition = element.condition,
-						conditionColor = this.getConditionColor(element.condition),
+						conditionColor = getConditionColor(element.condition),
 						restorationYear =
 							this.getRestorationYear(projectionResult, element.buildingPart!!),
 						restorationCosts =
@@ -114,7 +114,7 @@ class BuildingEvaluationServiceImpl(
 				name = "Total",
 				weight = totalWeight,
 				condition = totalCondition,
-				conditionColor = this.getConditionColor(totalCondition),
+				conditionColor = getConditionColor(totalCondition),
 			)
 		elements.add(totalDto)
 
@@ -149,9 +149,9 @@ class BuildingEvaluationServiceImpl(
 		for (pp in projectionResult.periodList) {
 			val totalCosts = (pp.maintenanceCosts + pp.restorationCosts).toInt()
 			aggrCosts += totalCosts
-			var restorationElement: String? = ""
+			var restorationElement: String = ""
 			if (pp.restorationElements.size == 1) {
-				restorationElement = pp.restorationElements[0].buildingPart.name
+				restorationElement = pp.restorationElements[0].buildingPart.name!!
 			}
 			val eps =
 				EvaluationPeriod(
@@ -168,7 +168,7 @@ class BuildingEvaluationServiceImpl(
 			periods.add(eps)
 			if (pp.restorationElements.size > 1) {
 				for (re in pp.restorationElements) {
-					restorationElement = re.buildingPart.name
+					restorationElement = re.buildingPart.name!!
 					val epd =
 						EvaluationPeriod(
 							year = null,
@@ -178,8 +178,6 @@ class BuildingEvaluationServiceImpl(
 							restorationCosts = re.restorationCosts.toInt(),
 							restorationElement = restorationElement,
 							restorationBuilding = null,
-							totalCosts = null,
-							aggrCosts = null,
 						)
 					periods.add(epd)
 				}
@@ -281,26 +279,31 @@ class BuildingEvaluationServiceImpl(
 		}
 	}
 
-	private fun getConditionColor(condition: Int?): Color? {
-		if (condition == null) {
-			return null
-		} else if (condition < 50) {
-			return VERY_BAD_CONDITION
-		} else if (condition < 70) {
-			return BAD_CONDITION
-		} else if (condition < 85) {
-			return OK_CONDITION
-		}
-		return GOOD_CONDITION
-	}
-
 	companion object {
 
 		const val SOFT_RETURN: String = "\u000B"
 
+		@JvmStatic
 		val VERY_BAD_CONDITION: Color = Color(229, 79, 41)
 		val BAD_CONDITION: Color = Color(250, 167, 36)
 		val OK_CONDITION: Color = Color(120, 192, 107)
+
+		@JvmStatic
 		val GOOD_CONDITION: Color = Color(51, 135, 33)
+
+		fun getConditionColor(condition: Int?): Color? {
+			if (condition == null) {
+				return null
+			} else if (condition < 50) {
+				return VERY_BAD_CONDITION
+			} else if (condition < 70) {
+				return BAD_CONDITION
+			} else if (condition < 85) {
+				return OK_CONDITION
+			}
+			return GOOD_CONDITION
+		}
+
 	}
+
 }

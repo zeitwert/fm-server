@@ -5,8 +5,6 @@ import org.jooq.UpdatableRecord
 
 interface SqlAggregateRecordMapper<A : Aggregate, R : UpdatableRecord<R>> {
 
-	fun nextId(): Any
-
 	fun loadRecord(aggregateId: Any): R
 
 	fun mapFromRecord(

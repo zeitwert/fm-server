@@ -24,6 +24,6 @@ enum class CodeBuildingMaintenanceStrategy(
 			entries.forEach { addItem(it) }
 		}
 
-		fun getMaintenanceStrategy(itemId: String): CodeBuildingMaintenanceStrategy? = getItem(itemId)
+		fun getMaintenanceStrategy(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

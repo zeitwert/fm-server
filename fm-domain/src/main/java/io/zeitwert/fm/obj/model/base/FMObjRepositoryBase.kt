@@ -3,8 +3,6 @@ package io.zeitwert.fm.obj.model.base
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.obj.model.base.ObjRepositoryBase
-import org.jooq.DSLContext
-import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Base repository class for FM Objects.
@@ -21,15 +19,4 @@ abstract class FMObjRepositoryBase<O : Obj>(
 	intfClass: Class<out Obj>,
 	baseClass: Class<out Obj>,
 	aggregateTypeId: String,
-) : ObjRepositoryBase<O>(repoIntfClass, intfClass, baseClass, aggregateTypeId) {
-
-	private lateinit var _dslContext: DSLContext
-
-	@Autowired
-	fun setDslContext(dslContext: DSLContext) {
-		this._dslContext = dslContext
-	}
-
-	fun dslContext(): DSLContext = _dslContext
-
-}
+) : ObjRepositoryBase<O>(repoIntfClass, intfClass, baseClass, aggregateTypeId)

@@ -139,6 +139,7 @@ enum class CodeBuildingPriceIndex(
 			entries.forEach { addItem(it) }
 		}
 
-		fun getBuildingPriceIndex(itemId: String): CodeBuildingPriceIndex? = getItem(itemId)
+		fun getBuildingPriceIndex(itemId: String?) = if (itemId != null) getItem(itemId) else null
+
 	}
 }

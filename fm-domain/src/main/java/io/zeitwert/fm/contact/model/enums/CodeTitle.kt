@@ -25,6 +25,6 @@ enum class CodeTitle(
 		}
 
 		@JvmStatic
-		fun getTitle(itemId: String): CodeTitle? = getItem(itemId)
+		fun getTitle(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

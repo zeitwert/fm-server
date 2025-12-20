@@ -74,7 +74,7 @@ public class EnumController {
 
 	@GetMapping("/doc/codeCaseStage/{caseDef}")
 	public ResponseEntity<List<CodeCaseStage>> getCaseStageDomain(@PathVariable String caseDef) {
-		List<CodeCaseStage> itemList = CodeCaseStageEnum.getInstance().getItems().stream()
+		List<CodeCaseStage> itemList = CodeCaseStageEnum.instance.getItems().stream()
 				.filter((item) -> item.getId().startsWith(caseDef + ".") && !"abstract".equals(item.getCaseStageTypeId()))
 				.toList();
 		return ResponseEntity.ok(itemList);

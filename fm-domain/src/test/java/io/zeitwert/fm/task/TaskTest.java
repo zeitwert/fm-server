@@ -46,7 +46,7 @@ public class TaskTest {
 	private ObjUserFMRepository userRepository;
 
 	@Autowired
-	private ObjAccountRepository accountRepo;
+	private ObjAccountRepository accountRepository;
 
 	@Autowired
 	private DocTaskRepository taskRepository;
@@ -94,7 +94,7 @@ public class TaskTest {
 
 		this.checkTask1(taskA2);
 
-		this.initTask2(taskA2, now);
+		this.initTask2(taskA2, userId, now);
 		assertTrue(taskA2.getMeta().isInWork());
 
 		this.taskRepository.store(taskA2, userId, now);
@@ -108,7 +108,7 @@ public class TaskTest {
 		this.checkTask2(taskA3);
 
 		this.initTask1(taskA3, userId, now);
-		taskA3.setCaseStage(StageDone, userId, now);
+		taskA3.getMeta().setCaseStage(StageDone, userId, now);
 		assertFalse(taskA3.getMeta().isInWork());
 
 		this.taskRepository.store(taskA3, userId, now);
@@ -127,7 +127,7 @@ public class TaskTest {
 		RelatedTo = this.userRepository.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
 		Object tenantId = requestCtx.getTenantId();
-		Account = this.accountRepo.get(this.accountRepo.getAll(tenantId).get(0));
+		Account = this.accountRepository.get(this.accountRepository.getAll(tenantId).getFirst());
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");
@@ -137,44 +137,43 @@ public class TaskTest {
 	}
 
 	private void initTask1(DocTask task, Object userId, OffsetDateTime timestamp) {
-		task.setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"), userId, timestamp);
-		task.relatedToId = (Integer) RelatedTo.getId();
-		((FMDocBase) task).setAccountId((Integer) Account.getId());
-		task.subject = "Todo";
-		task.content = "content";
-		task.isPrivate = false;
-		task.priority = PrioNormal;
-		task.dueAt = DueDate;
+		task.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"), userId, timestamp);
+		task.setRelatedToId(RelatedTo.getId());
+		((FMDocBase) task).setAccountId(Account.getId());
+		task.setSubject("Todo");
+		task.setContent("content");
+		task.setPrivate(false);
+		task.setPriority(PrioNormal);
+		task.setDueAt(DueDate);
 	}
 
 	private void checkTask1(DocTask task) {
-		assertEquals(task.relatedToId, RelatedTo.getId());
+		assertEquals(task.getRelatedToId(), RelatedTo.getId());
 		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
-		assertEquals(Account.getId(), task.account.getId(), "account id");
-		assertEquals("Todo", task.subject);
-		assertEquals("content", task.content);
-		assertEquals(false, task.isPrivate);
-		assertEquals(task.priority, PrioNormal);
-		assertEquals(DueDate, task.dueAt);
+		assertEquals(Account.getId(), task.getAccountId(), "account id");
+		assertEquals("Todo", task.getSubject());
+		assertEquals("content", task.getContent());
+		assertEquals(false, task.isPrivate());
+		assertEquals(task.getPriority(), PrioNormal);
+		assertEquals(DueDate, task.getDueAt());
 	}
 
-	private void initTask2(DocTask task, OffsetDateTime timestamp) {
+	private void initTask2(DocTask task, Object userId, OffsetDateTime timestamp) {
 		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
-		assertEquals(Account.getId(), task.account.getId(), "account id");
-		task.subject = "Todos";
-		task.content = "contents";
-		task.isPrivate = true;
-		task.priority = PrioHigh;
-		task.dueAt = DueDate.plusDays(4);
-		task.setCaseStage(StageProgress, null, timestamp);
+		assertEquals(Account.getId(), task.getAccountId(), "account id");
+		task.setSubject("Todos");
+		task.setContent("contents");
+		task.setPrivate(true);
+		task.setPriority(PrioHigh);
+		task.setDueAt(DueDate.plusDays(4));
+		task.getMeta().setCaseStage(StageProgress, userId, timestamp);
 	}
 
 	private void checkTask2(DocTask task) {
-		assertEquals("Todos", task.subject);
-		assertEquals("contents", task.content);
-		assertEquals(true, task.isPrivate);
-		assertEquals(task.priority, PrioHigh);
-		assertEquals(task.dueAt, DueDate.plusDays(4));
+		assertEquals("contents", task.getContent());
+		assertEquals(true, task.isPrivate());
+		assertEquals(task.getPriority(), PrioHigh);
+		assertEquals(task.getDueAt(), DueDate.plusDays(4));
 		assertEquals(task.getMeta().getCaseStage(), StageProgress);
 	}
 

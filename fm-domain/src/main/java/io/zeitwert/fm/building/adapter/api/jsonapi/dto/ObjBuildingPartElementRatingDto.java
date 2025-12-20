@@ -54,15 +54,15 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		Integer restorationYear = null;
 		Double restorationCosts = null;
 		ObjBuilding building = part.getMeta().getAggregate();
-		if (building.insuredValue != null) {
-			if (part.weight != null && part.weight > 0
-					&& part.condition != null && part.ratingYear != null) {
-				ProjectionPeriod renovationPeriod = part.buildingPart.getNextRestoration(
+		if (building.getInsuredValue() != null) {
+			if (part.getWeight() != null && part.getWeight() > 0
+					&& part.getCondition() != null && part.getRatingYear() != null) {
+				ProjectionPeriod renovationPeriod = part.getBuildingPart().getNextRestoration(
 						1000000.0,
-						part.ratingYear,
-						part.condition);
+						part.getRatingYear(),
+						part.getCondition());
 				restorationYear = renovationPeriod.getYear();
-				double elementValue = part.weight / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
+				double elementValue = part.getWeight() / 100.0 * building.getBuildingValue(restorationYear) / 1000.0;
 				restorationCosts = (double) Math.round(renovationPeriod.getRestorationCosts() / 1000000.0 * elementValue);
 			}
 		}
@@ -76,41 +76,41 @@ public class ObjBuildingPartElementRatingDto extends ObjPartDtoBase<ObjBuilding,
 		// part.getMeasureDescriptionSet().stream()
 		// .map(a -> EnumeratedDto.of(a)).collect(Collectors.toSet());
 		return dtoBuilder
-				.buildingPart(EnumeratedDto.of(part.buildingPart))
-				.weight(part.weight)
-				.condition(part.condition)
-				.ratingYear(part.ratingYear)
-				.strain(part.strain)
-				.strength(part.strength)
-				.description(part.description)
-				.conditionDescription(part.conditionDescription)
-				.measureDescription(part.measureDescription)
+				.buildingPart(EnumeratedDto.of(part.getBuildingPart()))
+				.weight(part.getWeight())
+				.condition(part.getCondition())
+				.ratingYear(part.getRatingYear())
+				.strain(part.getStrain())
+				.strength(part.getStrength())
+				.description(part.getDescription())
+				.conditionDescription(part.getConditionDescription())
+				.measureDescription(part.getMeasureDescription())
 				// .materialDescriptions(materialDescriptions)
 				// .conditionDescriptions(conditionDescriptions)
 				// .measureDescriptions(measureDescriptions)
 				.restorationYear(restorationYear)
 				.restorationCosts(restorationCosts)
-				.lifeTime20(part.buildingPart.getLifetime(0.2))
-				.lifeTime50(part.buildingPart.getLifetime(0.5))
-				.lifeTime70(part.buildingPart.getLifetime(0.7))
-				.lifeTime85(part.buildingPart.getLifetime(0.85))
-				.lifeTime95(part.buildingPart.getLifetime(0.95))
-				.lifeTime100(part.buildingPart.getLifetime(1.0))
+				.lifeTime20(part.getBuildingPart().getLifetime(0.2))
+				.lifeTime50(part.getBuildingPart().getLifetime(0.5))
+				.lifeTime70(part.getBuildingPart().getLifetime(0.7))
+				.lifeTime85(part.getBuildingPart().getLifetime(0.85))
+				.lifeTime95(part.getBuildingPart().getLifetime(0.95))
+				.lifeTime100(part.getBuildingPart().getLifetime(1.0))
 				.build();
 	}
 
 	@Override
 	public void toPart(ObjBuildingPartElementRating part) {
 		super.toPart(part);
-		part.buildingPart = this.buildingPart == null ? null : CodeBuildingPart.Enumeration.getBuildingPart(this.buildingPart.getId());
-		part.weight = this.weight;
-		part.condition = this.condition;
-		part.ratingYear = this.ratingYear;
-		part.strain = this.strain;
-		part.strength = this.strength;
-		part.description = this.description;
-		part.conditionDescription = this.conditionDescription;
-		part.measureDescription = this.measureDescription;
+		part.setBuildingPart(this.buildingPart == null ? null : CodeBuildingPart.Enumeration.getBuildingPart(this.buildingPart.getId()));
+		part.setWeight(this.weight);
+		part.setCondition(this.condition);
+		part.setRatingYear(this.ratingYear);
+		part.setStrain(this.strain);
+		part.setStrength(this.strength);
+		part.setDescription(this.description);
+		part.setConditionDescription(this.conditionDescription);
+		part.setMeasureDescription(this.measureDescription);
 		// if (this.materialDescriptions != null) {
 		// part.clearMaterialDescriptionSet();
 		// this.materialDescriptions.forEach(description -> part.addMaterialDescription(

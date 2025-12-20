@@ -26,6 +26,6 @@ enum class CodeAddressType(
 		}
 
 		@JvmStatic
-		fun getAddressType(itemId: String): CodeAddressType? = getItem(itemId)
+		fun getAddressType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

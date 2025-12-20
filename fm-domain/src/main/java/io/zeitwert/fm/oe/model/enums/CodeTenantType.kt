@@ -29,6 +29,6 @@ enum class CodeTenantType(
 		}
 
 		@JvmStatic
-		fun getTenantType(itemId: String): CodeTenantType? = getItem(itemId)
+		fun getTenantType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

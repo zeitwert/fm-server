@@ -51,19 +51,19 @@ public class PartTest {
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();
 
-		assertEquals(0, testA1.nodeList.size());
+		assertEquals(0, testA1.getNodeList().size());
 
 		ObjTestPartNode testA1_n0 = testA1.addNode();
 		this.initObjTestPartNode(testA1_n0, "First", "type_a");
 		assertNotNull(testA1_n0.getId());
-		assertEquals(1, testA1.nodeList.size());
+		assertEquals(1, testA1.getNodeList().size());
 
 		ObjTestPartNode testA1_n1 = testA1.addNode();
 		this.initObjTestPartNode(testA1_n1, "Second", "type_b");
 		ObjTestPartNode testA1_n2 = testA1.addNode();
 		this.initObjTestPartNode(testA1_n2, "Third", "type_c");
 
-		assertEquals(3, testA1.nodeList.size());
+		assertEquals(3, testA1.getNodeList().size());
 
 		List<ObjTestPartNode> testA1_nodeList = testA1.getNodeList();
 		assertEquals(testA1_n0, testA1_nodeList.get(0));
@@ -71,20 +71,20 @@ public class PartTest {
 		assertEquals(testA1_n2, testA1_nodeList.get(2));
 		assertEquals(testA1_nodeList, List.of(testA1_n0, testA1_n1, testA1_n2));
 		assertEquals("Short Test Node First,Short Test Node Second,Short Test Node Third",
-				String.join(",", testA1.nodeList.stream().map(n -> n.getShortText()).toList()));
-		assertEquals("Short Test Node Second", testA1.nodeList.get(1).getShortText());
+				String.join(",", testA1.getNodeList().stream().map(n -> n.getShortText()).toList()));
+		assertEquals("Short Test Node Second", testA1.getNodeList().get(1).getShortText());
 
 		testA1.removeNode(testA1_n1.getId());
 		assertEquals(2, testA1.getNodeCount());
 		assertEquals(testA1_n2, testA1.getNode(1));
 		assertEquals(testA1_n2, testA1.getNodeById(testA1_n2.getId()));
-		assertEquals(2, testA1.nodeList.size());
-		assertEquals(testA1_n0.shortText, testA1.getNode(0).shortText);
-		assertEquals(testA1_n2.shortText, testA1.getNode(1).shortText);
+		assertEquals(2, testA1.getNodeList().size());
+		assertEquals(testA1_n0.getShortText(), testA1.getNode(0).getShortText());
+		assertEquals(testA1_n2.getShortText(), testA1.getNode(1).getShortText());
 
 		testA1_nodeList = testA1.getNodeList();
-		assertEquals(testA1_n0.shortText, testA1_nodeList.get(0).shortText);
-		assertEquals(testA1_n2.shortText, testA1_nodeList.get(1).shortText);
+		assertEquals(testA1_n0.getShortText(), testA1_nodeList.get(0).getShortText());
+		assertEquals(testA1_n2.getShortText(), testA1_nodeList.get(1).getShortText());
 		assertEquals(testA1_nodeList, List.of(testA1_n0, testA1_n2));
 
 		this.testRepository.store(testA1, userId, now);
@@ -92,10 +92,10 @@ public class PartTest {
 
 		ObjTest testA2 = this.testRepository.load(testA_id);
 
-		assertEquals(2, testA2.nodeList.size());
+		assertEquals(2, testA2.getNodeList().size());
 		assertEquals("Short Test Node First,Short Test Node Third",
-				String.join(",", testA2.nodeList.stream().map(n -> n.getShortText()).toList()));
-		assertEquals("Short Test Node Third", testA2.nodeList.get(1).getShortText());
+				String.join(",", testA2.getNodeList().stream().map(n -> n.getShortText()).toList()));
+		assertEquals("Short Test Node Third", testA2.getNodeList().get(1).getShortText());
 
 		ObjTestPartNode testA2_n2 = testA2.addNode();
 		this.initObjTestPartNode(testA2_n2, "Fourth", "type_b");
@@ -106,13 +106,13 @@ public class PartTest {
 
 		ObjTest testA3 = this.testRepository.load(testA_id);
 
-		assertEquals(3, testA3.nodeList.size());
+		assertEquals(3, testA3.getNodeList().size());
 		assertEquals("Short Test Node First,Short Test Node Third,Short Test Node Fourth",
-				String.join(",", testA3.nodeList.stream().map(n -> n.getShortText()).toList()));
+				String.join(",", testA3.getNodeList().stream().map(n -> n.getShortText()).toList()));
 
 		testA3.clearNodeList();
 		assertEquals(0, testA3.getNodeCount());
-		assertEquals(0, testA3.nodeList.size());
+		assertEquals(0, testA3.getNodeList().size());
 
 	}
 
@@ -124,10 +124,10 @@ public class PartTest {
 		assertEquals("[Short Test " + name + ", Long Test " + name + "]", test.getCaption());
 		test.setInt(42);
 		test.setNr(BigDecimal.valueOf(42));
-		test.setIsDone(false);
+		test.setDone(false);
 		test.setDate(LocalDate.of(1966, 9, 8));
 		test.setJson(JSON.valueOf(TEST_JSON).toString());
-		CodeTestType testType = CodeTestType.getTestType(testTypeId);
+		CodeTestType testType = CodeTestType.Enumeration.getTestType(testTypeId);
 		test.setTestType(testType);
 	}
 
@@ -135,12 +135,12 @@ public class PartTest {
 		node.setShortText("Short Test Node " + name);
 		node.setLongText("Long Test Node " + name);
 		node.setInt(42);
-		node.nr = BigDecimal.valueOf(42);
-		node.isDone = false;
-		node.date = LocalDate.of(1966, 9, 8);
-		node.json = JSON.valueOf(TEST_JSON).toString();
-		CodeTestType testType = CodeTestType.getTestType(testTypeId);
-		node.testType = testType;
+		node.setNr(BigDecimal.valueOf(42));
+		node.setDone(false);
+		node.setDate(LocalDate.of(1966, 9, 8));
+		node.setJson(JSON.valueOf(TEST_JSON).toString());
+		CodeTestType testType = CodeTestType.Enumeration.getTestType(testTypeId);
+		node.setTestType(testType);
 	}
 
 }

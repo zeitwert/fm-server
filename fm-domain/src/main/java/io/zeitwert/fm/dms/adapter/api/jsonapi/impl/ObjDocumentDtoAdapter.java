@@ -17,17 +17,17 @@ public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDoc
 		try {
 			obj.getMeta().disableCalc();
 			super.toAggregate(dto, obj);
-			obj.name = dto.getName();
-			obj.contentKind = dto.getContentKind() == null ? null
+			obj.setName(dto.getName());
+			obj.setContentKind(dto.getContentKind() == null ? null
 					: CodeContentKind.getContentKind(
-					dto.getContentKind().getId());
-			obj.documentKind = dto.getDocumentKind() == null ? null : CodeDocumentKind.getDocumentKind(dto.getDocumentKind().getId());
-			obj.documentCategory = dto.getDocumentCategory() == null ? null
+					dto.getContentKind().getId()));
+			obj.setDocumentKind(dto.getDocumentKind() == null ? null : CodeDocumentKind.getDocumentKind(dto.getDocumentKind().getId()));
+			obj.setDocumentCategory(dto.getDocumentCategory() == null ? null
 					: CodeDocumentCategory.getDocumentCategory(
-					dto.getDocumentCategory().getId());
+					dto.getDocumentCategory().getId()));
 		} finally {
 			obj.getMeta().enableCalc();
-			obj.calcAll();
+			obj.getMeta().calcAll();
 		}
 	}
 
@@ -40,12 +40,12 @@ public class ObjDocumentDtoAdapter extends ObjDtoAdapterBase<ObjDocument, ObjDoc
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
-			.name(obj.name)
-			.contentKind(EnumeratedDto.of(obj.contentKind))
-			.supportedContentTypes(obj.contentKind.getExtensions().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
-			.documentKind(EnumeratedDto.of(obj.documentKind))
-			.documentCategory(EnumeratedDto.of(obj.documentCategory))
-			.contentType(EnumeratedDto.of(obj.contentType))
+			.name(obj.getName())
+			.contentKind(EnumeratedDto.of(obj.getContentKind()))
+			.supportedContentTypes(obj.getContentKind().getExtensions().stream().reduce("", (a, b) -> a.length() > 0 ? a + "," + b : b))
+			.documentKind(EnumeratedDto.of(obj.getDocumentKind()))
+			.documentCategory(EnumeratedDto.of(obj.getDocumentCategory()))
+			.contentType(EnumeratedDto.of(obj.getContentType()))
 			.build();
 		// @formatter:on
 	}

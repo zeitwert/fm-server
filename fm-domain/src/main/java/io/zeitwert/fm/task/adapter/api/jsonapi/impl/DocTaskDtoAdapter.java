@@ -35,14 +35,14 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 	public void toAggregate(DocTaskDto dto, DocTask doc) {
 		Integer relatedToId = dto.getRelatedTo() != null ? Integer.parseInt(dto.getRelatedTo().getId()) : null;
 		super.toAggregate(dto, doc);
-		doc.accountId = dto.getAccountId();
-		doc.relatedToId = relatedToId;
-		doc.subject = dto.getSubject();
-		doc.content = dto.getContent();
-		doc.isPrivate = dto.getIsPrivate();
-		doc.priority = dto.getPriority() == null ? null : CodeTaskPriority.getPriority(dto.getPriority().getId());
-		doc.dueAt = dto.getDueAt();
-		doc.remindAt = dto.getRemindAt();
+		doc.setAccountId(dto.getAccountId());
+		doc.setRelatedToId(relatedToId);
+		doc.setSubject(dto.getSubject());
+		doc.setContent(dto.getContent());
+		doc.setPrivate(dto.getIsPrivate());
+		doc.setPriority(dto.getPriority() == null ? null : CodeTaskPriority.getPriority(dto.getPriority().getId()));
+		doc.setDueAt(dto.getDueAt());
+		doc.setRemindAt(dto.getRemindAt());
 	}
 
 	@Override
@@ -53,14 +53,14 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
-				.accountId((Integer) doc.accountId)
-				.relatedTo(this.asEnumerated(doc.relatedTo))
-				.subject(doc.subject)
-				.content(doc.content)
-				.isPrivate(doc.isPrivate)
-				.priority(EnumeratedDto.of(doc.priority))
-				.dueAt(doc.dueAt)
-				.remindAt(doc.remindAt)
+				.accountId((Integer) doc.getAccountId())
+				.relatedTo(this.asEnumerated(doc.getRelatedTo()))
+				.subject(doc.getSubject())
+				.content(doc.getContent())
+				.isPrivate(doc.isPrivate())
+				.priority(EnumeratedDto.of(doc.getPriority()))
+				.dueAt(doc.getDueAt())
+				.remindAt(doc.getRemindAt())
 				.build();
 	}
 

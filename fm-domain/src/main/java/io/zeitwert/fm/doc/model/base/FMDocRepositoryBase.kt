@@ -3,8 +3,6 @@ package io.zeitwert.fm.doc.model.base
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.core.doc.model.DocRepository
 import io.dddrive.core.doc.model.base.DocRepositoryBase
-import org.jooq.DSLContext
-import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Base repository class for FM Orders.
@@ -21,15 +19,4 @@ abstract class FMDocRepositoryBase<D : Doc>(
 	intfClass: Class<out Doc>,
 	baseClass: Class<out Doc>,
 	aggregateTypeId: String,
-) : DocRepositoryBase<D>(repoIntfClass, intfClass, baseClass, aggregateTypeId) {
-
-	private lateinit var _dslContext: DSLContext
-
-	@Autowired
-	fun setDslContext(dslContext: DSLContext) {
-		this._dslContext = dslContext
-	}
-
-	fun dslContext(): DSLContext = _dslContext
-
-}
+) : DocRepositoryBase<D>(repoIntfClass, intfClass, baseClass, aggregateTypeId)

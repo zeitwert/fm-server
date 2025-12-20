@@ -6,12 +6,13 @@ import io.zeitwert.fm.account.model.base.ObjAccountBase
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objAccountRepository")
-class ObjAccountRepositoryImpl :
+class ObjAccountRepositoryImpl(
+	override val contactRepository: ObjContactRepository,
+	override val documentRepository: ObjDocumentRepository,
+) :
 	FMObjRepositoryBase<ObjAccount>(
 		ObjAccountRepository::class.java,
 		ObjAccount::class.java,
@@ -19,21 +20,6 @@ class ObjAccountRepositoryImpl :
 		AGGREGATE_TYPE_ID,
 	),
 	ObjAccountRepository {
-
-	override lateinit var contactRepository: ObjContactRepository
-	override lateinit var documentRepository: ObjDocumentRepository
-
-	@Autowired
-	@Lazy
-	fun setContactRepository(contactRepository: ObjContactRepository) {
-		this.contactRepository = contactRepository
-	}
-
-	@Autowired
-	@Lazy
-	fun setDocumentRepository(documentRepository: ObjDocumentRepository) {
-		this.documentRepository = documentRepository
-	}
 
 	companion object {
 

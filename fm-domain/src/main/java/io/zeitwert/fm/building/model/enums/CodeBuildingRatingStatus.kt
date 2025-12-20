@@ -24,6 +24,6 @@ enum class CodeBuildingRatingStatus(
 		}
 
 		@JvmStatic
-		fun getRatingStatus(itemId: String): CodeBuildingRatingStatus? = getItem(itemId)
+		fun getRatingStatus(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

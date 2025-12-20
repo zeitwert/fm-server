@@ -27,13 +27,13 @@ public class UserDocumentController {
 	@RequestMapping(value = "/{id}/avatar", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getAvatar(@PathVariable Integer id) {
 		ObjUserFM user = this.userRepository.get(id);
-		Integer documentId = user.avatarImageId;
+		Object documentId = user.getAvatarImageId();
 		if (documentId == null) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Location", "/default-user.png");
 			return new ResponseEntity<byte[]>(headers, HttpStatus.FOUND);
 		}
-		return this.documentController.getContent(documentId);
+		return this.documentController.getContent((Integer) documentId);
 	}
 
 }

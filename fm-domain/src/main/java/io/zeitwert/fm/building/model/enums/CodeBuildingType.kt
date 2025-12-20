@@ -35,6 +35,6 @@ enum class CodeBuildingType(
 		}
 
 		@JvmStatic
-		fun getBuildingType(itemId: String): CodeBuildingType? = getItem(itemId)
+		fun getBuildingType(itemId: String?) = if (itemId != null) getItem(itemId) else null
 	}
 }

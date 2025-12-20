@@ -6,8 +6,8 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.base.ObjUserFMBase
-import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
+import io.zeitwert.fm.oe.persist.jooq.ObjUserFMPersistenceProviderImpl
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
@@ -30,13 +30,7 @@ class ObjUserFMRepositoryImpl(
 	override fun isAdmin(user: ObjUserFM): Boolean = user.hasRole(CodeUserRole.ADMIN)
 
 	override fun getByEmail(email: String): Optional<ObjUserFM> {
-		val userId = dslContext()
-			.select(Tables.OBJ_USER_V.ID)
-			.from(Tables.OBJ_USER_V)
-			.where(Tables.OBJ_USER_V.EMAIL.eq(email))
-			.fetchOne(Tables.OBJ_USER_V.ID)
-			?: return Optional.empty()
-
+		val userId = (persistenceProvider as ObjUserFMPersistenceProviderImpl).getByEmail(email).get()
 		return Optional.ofNullable(get(userId))
 	}
 
