@@ -64,16 +64,12 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 	override fun doLoadParts(aggregate: ObjUser) {
 		super.doLoadParts(aggregate)
 		val tenantSet = aggregate.getProperty("tenantSet", ObjTenant::class) as ReferenceSetProperty<ObjTenant>
-		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginLoad()
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("user.tenantList").forEach {
-				println("user.tenantList item.1: $it")
 				it.toIntOrNull()?.let { tenantId ->
-					println("user.tenantList item.2: $it")
 					tenantSet.addItem(tenantId)
 				}
 			}
-			endLoad()
 		}
 	}
 
@@ -81,10 +77,8 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 	override fun doStoreParts(aggregate: ObjUser) {
 		super.doStoreParts(aggregate)
 		val tenantSet = aggregate.getProperty("tenantSet", ObjTenant::class) as ReferenceSetProperty<ObjTenant>
-		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginStore()
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			addItems("user.tenantList", tenantSet.items.map { it.toString() })
-			endStore()
 		}
 	}
 

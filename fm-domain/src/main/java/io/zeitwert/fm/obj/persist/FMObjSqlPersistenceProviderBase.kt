@@ -1,8 +1,6 @@
 package io.zeitwert.fm.obj.persist
 
 import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.obj.model.ObjPartTransition
-import io.dddrive.core.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 
 abstract class FMObjSqlPersistenceProviderBase<O : Obj>(
@@ -10,27 +8,14 @@ abstract class FMObjSqlPersistenceProviderBase<O : Obj>(
 ) : AggregateSqlPersistenceProviderBase<O>(intfClass) {
 
 	override fun doLoadParts(aggregate: O) {
-		ObjPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginLoad()
-			loadParts(
-				aggregate.getProperty(
-					"transitionList",
-					ObjPartTransition::class,
-				) as PartListProperty<ObjPartTransition>,
-				"obj.transitionList",
-			)
-			endLoad()
+		ObjPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
+			loadPartList(aggregate, "transitionList", "obj.transitionList")
 		}
 	}
 
 	override fun doStoreParts(aggregate: O) {
-		ObjPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginStore()
-			addParts(
-				aggregate.getProperty("transitionList", ObjPartTransition::class) as PartListProperty<ObjPartTransition>,
-				"obj.transitionList",
-			)
-			endStore()
+		ObjPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
+			storePartList(aggregate, "transitionList", "obj.transitionList")
 		}
 	}
 

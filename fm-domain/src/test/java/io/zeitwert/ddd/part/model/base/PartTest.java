@@ -44,9 +44,6 @@ public class PartTest {
 		Object userId = requestCtx.getUserId();
 		OffsetDateTime now = requestCtx.getCurrentTime();
 
-//		ObjTestPartNodeRepository testNodeRepository = testRepository.getNodeRepository();
-//		assertTrue(testNodeRepository != null, "testNodeRepository not null");
-
 		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();

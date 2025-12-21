@@ -68,11 +68,15 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 
 	override fun doAfterSet(property: Property<*>) {
 		if (property === this._partCatalog) {
-			this._elementList.clearParts()
-			val partCatalog = this.partCatalog
-			if (partCatalog != null) {
-				for (part in partCatalog.getParts()) {
-					this.addElement(part.first).weight = part.second
+			// Skip auto-populating elements when loading from persistence
+			// (elements will be loaded from DB). Only populate on create/update.
+			if (!this.meta.isInLoad) {
+				this._elementList.clearParts()
+				val partCatalog = this.partCatalog
+				if (partCatalog != null) {
+					for (part in partCatalog.getParts()) {
+						this.addElement(part.first).weight = part.second
+					}
 				}
 			}
 		} else if (property === this._ratingDate) {

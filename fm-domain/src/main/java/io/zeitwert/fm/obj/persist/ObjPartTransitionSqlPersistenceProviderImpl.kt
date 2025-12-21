@@ -30,7 +30,7 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 			}
 	}
 
-	override fun loadParts(
+	override fun loadPartList(
 		partList: PartListProperty<ObjPartTransition>,
 		partListTypeId: String,
 	) {
@@ -65,7 +65,7 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 		partsToUpdate.clear()
 	}
 
-	override fun addParts(
+	override fun storePartList(
 		partList: PartListProperty<ObjPartTransition>,
 		partListTypeId: String,
 	) {

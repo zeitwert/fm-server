@@ -20,6 +20,18 @@ class ObjPartItemSqlPersistenceProviderImpl(
 	private val partsToInsert = mutableListOf<ObjPartItemRecord>()
 	private val partsToUpdate = mutableListOf<ObjPartItemRecord>()
 
+	/**
+	 * Load all parts within a load sequence.
+	 */
+	fun doLoadParts(block: ObjPartItemSqlPersistenceProviderImpl.() -> Unit) {
+		beginLoad()
+		return try {
+			block()
+		} finally {
+			endLoad()
+		}
+	}
+
 	fun beginLoad() {
 		partsLoaded.clear()
 		dslContext
@@ -49,6 +61,15 @@ class ObjPartItemSqlPersistenceProviderImpl(
 
 	fun endLoad() {
 		partsLoaded.clear()
+	}
+
+	fun doStoreParts(block: ObjPartItemSqlPersistenceProviderImpl.() -> Unit) {
+		beginStore()
+		return try {
+			block()
+		} finally {
+			endStore()
+		}
 	}
 
 	fun beginStore() {

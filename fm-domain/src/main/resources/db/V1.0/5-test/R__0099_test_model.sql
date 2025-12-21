@@ -31,7 +31,7 @@ create table obj_test (
 create table obj_test_part_node (
 	id																		integer							not null,
 	obj_id																integer							not null references obj(id) deferrable initially deferred,
-	parent_part_id												integer,						-- optional reference to parent obj-part
+	parent_part_id												integer							not null,
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
 	seq_nr																integer,
 	aver																	integer							not null default 0,
@@ -77,7 +77,7 @@ create table doc_test (
 create table doc_test_part_node (
 	id																		integer							not null,
 	doc_id																integer							not null references doc(id) deferrable initially deferred,
-	parent_part_id												integer,						-- optional reference to parent doc-part
+	parent_part_id												integer							not null,
 	part_list_type_id											varchar(40)					not null references code_part_list_type(id),
 	seq_nr																integer,
 	aver																	integer							not null default 0,

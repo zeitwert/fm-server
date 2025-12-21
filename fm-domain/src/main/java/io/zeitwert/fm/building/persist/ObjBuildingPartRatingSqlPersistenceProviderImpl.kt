@@ -1,37 +1,40 @@
-package io.zeitwert.fm.doc.persist
+package io.zeitwert.fm.building.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.doc.model.DocPartTransition
 import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
-import io.zeitwert.fm.doc.model.db.Tables
-import io.zeitwert.fm.doc.model.db.tables.records.DocPartTransitionRecord
+import io.zeitwert.fm.building.model.ObjBuildingPartRating
+import io.zeitwert.fm.building.model.db.Tables
+import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingRecord
+import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
+import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
+import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
 import org.jooq.DSLContext
 
-class DocPartTransitionSqlPersistenceProviderImpl(
+class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<DocPartTransition> {
+) : PartSqlPersistenceProvider<ObjBuildingPartRating> {
 
-	private val partsLoaded = mutableListOf<DocPartTransitionRecord>()
-	private val partsToInsert = mutableListOf<DocPartTransitionRecord>()
-	private val partsToUpdate = mutableListOf<DocPartTransitionRecord>()
+	private val partsLoaded = mutableListOf<ObjBuildingPartRatingRecord>()
+	private val partsToInsert = mutableListOf<ObjBuildingPartRatingRecord>()
+	private val partsToUpdate = mutableListOf<ObjBuildingPartRatingRecord>()
 
 	override fun beginLoad() {
 		partsLoaded.clear()
 		dslContext
 			.fetch(
-				Tables.DOC_PART_TRANSITION,
-				Tables.DOC_PART_TRANSITION.DOC_ID.eq(aggregate.id as Int),
+				Tables.OBJ_BUILDING_PART_RATING,
+				Tables.OBJ_BUILDING_PART_RATING.OBJ_ID.eq(aggregate.id as Int),
 			).forEach {
 				partsLoaded.add(it)
 			}
 	}
 
 	override fun loadPartList(
-		partList: PartListProperty<DocPartTransition>,
+		partList: PartListProperty<ObjBuildingPartRating>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -53,13 +56,14 @@ class DocPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	fun mapFromRecord(
-		part: DocPartTransition,
-		record: DocPartTransitionRecord,
+		part: ObjBuildingPartRating,
+		record: ObjBuildingPartRatingRecord,
 	) {
-		part.setValueByPath("userId", record.userId)
-		part.setValueByPath("timestamp", record.timestamp)
-		part.setValueByPath("oldCaseStageId", record.oldCaseStageId)
-		part.setValueByPath("newCaseStageId", record.newCaseStageId)
+		part.partCatalog = CodeBuildingPartCatalog.getPartCatalog(record.partCatalogId)
+		part.maintenanceStrategy = CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(record.maintenanceStrategyId)
+		part.ratingStatus = CodeBuildingRatingStatus.getRatingStatus(record.ratingStatusId)
+		part.ratingDate = record.ratingDate
+		part.setValueByPath("ratingUserId", record.ratingUserId)
 	}
 
 	override fun beginStore() {
@@ -68,7 +72,7 @@ class DocPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	override fun storePartList(
-		partList: PartListProperty<DocPartTransition>,
+		partList: PartListProperty<ObjBuildingPartRating>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id
@@ -94,9 +98,9 @@ class DocPartTransitionSqlPersistenceProviderImpl(
 		}
 		// Delete removed i.e. non-updated parts
 		dslContext
-			.deleteFrom(Tables.DOC_PART_TRANSITION)
-			.where(Tables.DOC_PART_TRANSITION.DOC_ID.eq(aggregate.id as Int))
-			.and(Tables.DOC_PART_TRANSITION.AVER.lt(aggregate.meta.version))
+			.deleteFrom(Tables.OBJ_BUILDING_PART_RATING)
+			.where(Tables.OBJ_BUILDING_PART_RATING.OBJ_ID.eq(aggregate.id as Int))
+			.and(Tables.OBJ_BUILDING_PART_RATING.AVER.lt(aggregate.meta.version))
 			.execute()
 		// Insert new parts
 		partsToInsert.forEach { record ->
@@ -106,25 +110,26 @@ class DocPartTransitionSqlPersistenceProviderImpl(
 		partsToUpdate.clear()
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	fun mapToRecord(
-		part: DocPartTransition,
+		part: ObjBuildingPartRating,
 		parentPartId: Int?,
 		partListTypeId: String,
 		seqNr: Int,
-	): DocPartTransitionRecord {
-		val record = dslContext.newRecord(Tables.DOC_PART_TRANSITION)
+	): ObjBuildingPartRatingRecord {
+		val record = dslContext.newRecord(Tables.OBJ_BUILDING_PART_RATING)
 
 		record.id = part.id
-		record.tenantId = part.meta.aggregate.tenantId as Int
-		record.docId = part.meta.aggregate.id as Int
+		record.objId = part.meta.aggregate.id as Int
 		record.parentPartId = parentPartId ?: 0
 		record.partListTypeId = partListTypeId
 		record.seqNr = seqNr
 
-		record.userId = part.user.id as Int?
-		record.timestamp = part.timestamp
-		record.oldCaseStageId = part.oldCaseStage?.id
-		record.newCaseStageId = part.newCaseStage.id
+		record.partCatalogId = part.partCatalog?.id
+		record.maintenanceStrategyId = part.maintenanceStrategy?.id
+		record.ratingStatusId = part.ratingStatus?.id
+		record.ratingDate = part.ratingDate
+		record.ratingUserId = part.ratingUser?.id as? Int
 
 		record.aver = aggregate.meta.version
 

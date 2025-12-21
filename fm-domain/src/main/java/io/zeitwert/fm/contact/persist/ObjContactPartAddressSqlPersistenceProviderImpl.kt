@@ -31,7 +31,7 @@ class ObjContactPartAddressSqlPersistenceProviderImpl(
 			}
 	}
 
-	override fun loadParts(
+	override fun loadPartList(
 		partList: PartListProperty<ObjContactPartAddress>,
 		partListTypeId: String,
 	) {
@@ -70,7 +70,7 @@ class ObjContactPartAddressSqlPersistenceProviderImpl(
 		partsToUpdate.clear()
 	}
 
-	override fun addParts(
+	override fun storePartList(
 		partList: PartListProperty<ObjContactPartAddress>,
 		partListTypeId: String,
 	) {
@@ -136,4 +136,3 @@ class ObjContactPartAddressSqlPersistenceProviderImpl(
 	}
 
 }
-

@@ -30,7 +30,7 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 			}
 	}
 
-	override fun loadParts(
+	override fun loadPartList(
 		partList: PartListProperty<ObjTestPartNode>,
 		partListTypeId: String,
 	) {
@@ -72,7 +72,7 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 		partsToUpdate.clear()
 	}
 
-	override fun addParts(
+	override fun storePartList(
 		partList: PartListProperty<ObjTestPartNode>,
 		partListTypeId: String,
 	) {
@@ -119,7 +119,7 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 
 		record.id = part.id
 		record.objId = part.meta.aggregate.id as Int
-		record.parentPartId = parentPartId
+		record.parentPartId = parentPartId ?: 0
 		record.partListTypeId = partListTypeId
 
 		record.shortText = part.shortText

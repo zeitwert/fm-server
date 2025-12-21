@@ -56,7 +56,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 		super.doLoadParts(aggregate)
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
-			loadParts(
+			loadPartList(
 				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>,
 				"test.nodeList",
 			)
@@ -105,7 +105,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 		super.doStoreParts(aggregate)
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginStore()
-			addParts(
+			storePartList(
 				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>,
 				"test.nodeList",
 			)

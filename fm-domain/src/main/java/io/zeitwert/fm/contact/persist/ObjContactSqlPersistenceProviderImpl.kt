@@ -1,10 +1,8 @@
 package io.zeitwert.fm.contact.persist
 
-import io.dddrive.core.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.contact.model.ObjContact
-import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
@@ -65,26 +63,16 @@ open class ObjContactSqlPersistenceProviderImpl(
 	@Suppress("UNCHECKED_CAST")
 	override fun doLoadParts(aggregate: ObjContact) {
 		super.doLoadParts(aggregate)
-		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginLoad()
-			loadParts(
-				aggregate.getProperty("addressList", ObjContactPartAddress::class) as PartListProperty<ObjContactPartAddress>,
-				"contact.addressList",
-			)
-			endLoad()
+		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
+			loadPartList(aggregate, "addressList", "contact.addressList")
 		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun doStoreParts(aggregate: ObjContact) {
 		super.doStoreParts(aggregate)
-		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginStore()
-			addParts(
-				aggregate.getProperty("addressList", ObjContactPartAddress::class) as PartListProperty<ObjContactPartAddress>,
-				"contact.addressList",
-			)
-			endStore()
+		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
+			storePartList(aggregate, "addressList", "contact.addressList")
 		}
 	}
 

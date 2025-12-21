@@ -3,7 +3,6 @@ package io.zeitwert.fm.building.persist
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.db.Tables
@@ -12,6 +11,8 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import org.jooq.DSLContext
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component("objBuildingPersistenceProvider")
 open class ObjBuildingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjBuilding>(ObjBuilding::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjBuilding>(ObjBuilding::class.java),
 	SqlRecordMapper<ObjBuilding> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
@@ -79,6 +80,46 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 			record.insert()
 		} else {
 			record.update()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doLoadParts(aggregate: ObjBuilding) {
+		super.doLoadParts(aggregate)
+		// Load ratings
+		ObjBuildingPartRatingSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
+			loadPartList(aggregate, "ratingList", "building.ratingList")
+		}
+		// Load element ratings for each rating
+		ObjBuildingPartElementRatingSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
+			aggregate.ratingList.forEach { rating ->
+				loadPartList(rating, "elementList", "building.elementRatingList")
+			}
+		}
+		// Load contact set
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
+			items("building.contactSet").forEach {
+				aggregate.addContact(it.toInt())
+			}
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doStoreParts(aggregate: ObjBuilding) {
+		super.doStoreParts(aggregate)
+		// Store ratings
+		ObjBuildingPartRatingSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
+			storePartList(aggregate, "ratingList", "building.ratingList")
+		}
+		// Store element ratings for each rating
+		ObjBuildingPartElementRatingSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
+			aggregate.ratingList.forEach { rating ->
+				storePartList(rating, "elementList", "building.elementRatingList")
+			}
+		}
+		// Store contact set
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
+			addItems("building.contactSet", aggregate.contactSet.map { it.toString() })
 		}
 	}
 

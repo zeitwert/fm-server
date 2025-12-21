@@ -57,15 +57,13 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		super.doLoadParts(aggregate)
 		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
 		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
-		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginLoad()
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("portfolio.includeList").forEach {
 				it.toIntOrNull()?.let { objId -> includeSet.addItem(objId) }
 			}
 			items("portfolio.excludeList").forEach {
 				it.toIntOrNull()?.let { objId -> excludeSet.addItem(objId) }
 			}
-			endLoad()
 		}
 	}
 
@@ -74,11 +72,9 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		super.doStoreParts(aggregate)
 		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
 		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
-		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginStore()
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			addItems("portfolio.includeList", includeSet.items.map { it.toString() })
 			addItems("portfolio.excludeList", excludeSet.items.map { it.toString() })
-			endStore()
 		}
 	}
 
