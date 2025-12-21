@@ -164,6 +164,20 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
         return (Integer) get(9);
     }
 
+    /**
+     * Setter for <code>public.obj_building_part_rating.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_part_rating.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(10);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -187,7 +201,7 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
     /**
      * Create a detached, initialised ObjBuildingPartRatingRecord
      */
-    public ObjBuildingPartRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String partCatalogId, String maintenanceStrategyId, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId) {
+    public ObjBuildingPartRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String partCatalogId, String maintenanceStrategyId, String ratingStatusId, LocalDate ratingDate, Integer ratingUserId, Integer aver) {
         super(ObjBuildingPartRating.OBJ_BUILDING_PART_RATING);
 
         setId(id);
@@ -200,6 +214,7 @@ public class ObjBuildingPartRatingRecord extends UpdatableRecordImpl<ObjBuilding
         setRatingStatusId(ratingStatusId);
         setRatingDate(ratingDate);
         setRatingUserId(ratingUserId);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

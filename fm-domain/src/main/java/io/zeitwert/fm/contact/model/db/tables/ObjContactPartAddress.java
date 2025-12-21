@@ -116,6 +116,11 @@ public class ObjContactPartAddress extends TableImpl<ObjContactPartAddressRecord
      */
     public final TableField<ObjContactPartAddressRecord, String> COUNTRY_ID = createField(DSL.name("country_id"), SQLDataType.VARCHAR(40), this, "");
 
+    /**
+     * The column <code>public.obj_contact_part_address.aver</code>.
+     */
+    public final TableField<ObjContactPartAddressRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private ObjContactPartAddress(Name alias, Table<ObjContactPartAddressRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

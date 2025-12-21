@@ -88,6 +88,20 @@ public class ObjPartItemRecord extends UpdatableRecordImpl<ObjPartItemRecord> {
         return (String) get(4);
     }
 
+    /**
+     * Setter for <code>public.obj_part_item.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_part_item.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(5);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -111,7 +125,7 @@ public class ObjPartItemRecord extends UpdatableRecordImpl<ObjPartItemRecord> {
     /**
      * Create a detached, initialised ObjPartItemRecord
      */
-    public ObjPartItemRecord(Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String itemId) {
+    public ObjPartItemRecord(Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String itemId, Integer aver) {
         super(ObjPartItem.OBJ_PART_ITEM);
 
         setObjId(objId);
@@ -119,6 +133,7 @@ public class ObjPartItemRecord extends UpdatableRecordImpl<ObjPartItemRecord> {
         setPartListTypeId(partListTypeId);
         setSeqNr(seqNr);
         setItemId(itemId);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

@@ -230,6 +230,20 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
         return (String) get(13);
     }
 
+    /**
+     * Setter for <code>public.obj_building_part_element_rating.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_building_part_element_rating.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(14);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -253,7 +267,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
     /**
      * Create a detached, initialised ObjBuildingPartElementRatingRecord
      */
-    public ObjBuildingPartElementRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String buildingPartId, Integer weight, Integer condition, Integer conditionYear, Integer strain, Integer strength, String description, String conditionDescription, String measureDescription) {
+    public ObjBuildingPartElementRatingRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String buildingPartId, Integer weight, Integer condition, Integer conditionYear, Integer strain, Integer strength, String description, String conditionDescription, String measureDescription, Integer aver) {
         super(ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING);
 
         setId(id);
@@ -270,6 +284,7 @@ public class ObjBuildingPartElementRatingRecord extends UpdatableRecordImpl<ObjB
         setDescription(description);
         setConditionDescription(conditionDescription);
         setMeasureDescription(measureDescription);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

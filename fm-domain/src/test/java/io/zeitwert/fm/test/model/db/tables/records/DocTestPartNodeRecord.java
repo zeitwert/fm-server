@@ -93,143 +93,157 @@ public class DocTestPartNodeRecord extends UpdatableRecordImpl<DocTestPartNodeRe
     }
 
     /**
+     * Setter for <code>public.doc_test_part_node.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_test_part_node.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(5);
+    }
+
+    /**
      * Setter for <code>public.doc_test_part_node.short_text</code>.
      */
     public void setShortText(String value) {
-        set(5, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.short_text</code>.
      */
     public String getShortText() {
-        return (String) get(5);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.long_text</code>.
      */
     public void setLongText(String value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.long_text</code>.
      */
     public String getLongText() {
-        return (String) get(6);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.date</code>.
      */
     public void setDate(LocalDate value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.date</code>.
      */
     public LocalDate getDate() {
-        return (LocalDate) get(7);
+        return (LocalDate) get(8);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.int</code>.
      */
     public void setInt(Integer value) {
-        set(8, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.int</code>.
      */
     public Integer getInt() {
-        return (Integer) get(8);
+        return (Integer) get(9);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.is_done</code>.
      */
     public void setIsDone(Boolean value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.is_done</code>.
      */
     public Boolean getIsDone() {
-        return (Boolean) get(9);
+        return (Boolean) get(10);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.json</code>.
      */
     public void setJson(JSON value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.json</code>.
      */
     public JSON getJson() {
-        return (JSON) get(10);
+        return (JSON) get(11);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.nr</code>.
      */
     public void setNr(BigDecimal value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.nr</code>.
      */
     public BigDecimal getNr() {
-        return (BigDecimal) get(11);
+        return (BigDecimal) get(12);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.test_type_id</code>.
      */
     public void setTestTypeId(String value) {
-        set(12, value);
+        set(13, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.test_type_id</code>.
      */
     public String getTestTypeId() {
-        return (String) get(12);
+        return (String) get(13);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.ref_obj_id</code>.
      */
     public void setRefObjId(Integer value) {
-        set(13, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.ref_obj_id</code>.
      */
     public Integer getRefObjId() {
-        return (Integer) get(13);
+        return (Integer) get(14);
     }
 
     /**
      * Setter for <code>public.doc_test_part_node.ref_doc_id</code>.
      */
     public void setRefDocId(Integer value) {
-        set(14, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.doc_test_part_node.ref_doc_id</code>.
      */
     public Integer getRefDocId() {
-        return (Integer) get(14);
+        return (Integer) get(15);
     }
 
     // -------------------------------------------------------------------------
@@ -255,7 +269,7 @@ public class DocTestPartNodeRecord extends UpdatableRecordImpl<DocTestPartNodeRe
     /**
      * Create a detached, initialised DocTestPartNodeRecord
      */
-    public DocTestPartNodeRecord(Integer id, Integer docId, Integer parentPartId, String partListTypeId, Integer seqNr, String shortText, String longText, LocalDate date, Integer int_, Boolean isDone, JSON json, BigDecimal nr, String testTypeId, Integer refObjId, Integer refDocId) {
+    public DocTestPartNodeRecord(Integer id, Integer docId, Integer parentPartId, String partListTypeId, Integer seqNr, Integer aver, String shortText, String longText, LocalDate date, Integer int_, Boolean isDone, JSON json, BigDecimal nr, String testTypeId, Integer refObjId, Integer refDocId) {
         super(DocTestPartNode.DOC_TEST_PART_NODE);
 
         setId(id);
@@ -263,6 +277,7 @@ public class DocTestPartNodeRecord extends UpdatableRecordImpl<DocTestPartNodeRe
         setParentPartId(parentPartId);
         setPartListTypeId(partListTypeId);
         setSeqNr(seqNr);
+        setAver(aver);
         setShortText(shortText);
         setLongText(longText);
         setDate(date);

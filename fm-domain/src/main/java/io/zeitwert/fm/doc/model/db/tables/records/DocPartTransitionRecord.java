@@ -175,6 +175,20 @@ public class DocPartTransitionRecord extends UpdatableRecordImpl<DocPartTransiti
         return (JSON) get(10);
     }
 
+    /**
+     * Setter for <code>public.doc_part_transition.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_part_transition.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(11);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -198,7 +212,7 @@ public class DocPartTransitionRecord extends UpdatableRecordImpl<DocPartTransiti
     /**
      * Create a detached, initialised DocPartTransitionRecord
      */
-    public DocPartTransitionRecord(Integer id, Integer tenantId, Integer docId, Integer parentPartId, String partListTypeId, Integer seqNr, Integer userId, OffsetDateTime timestamp, String oldCaseStageId, String newCaseStageId, JSON changes) {
+    public DocPartTransitionRecord(Integer id, Integer tenantId, Integer docId, Integer parentPartId, String partListTypeId, Integer seqNr, Integer userId, OffsetDateTime timestamp, String oldCaseStageId, String newCaseStageId, JSON changes, Integer aver) {
         super(DocPartTransition.DOC_PART_TRANSITION);
 
         setId(id);
@@ -212,6 +226,7 @@ public class DocPartTransitionRecord extends UpdatableRecordImpl<DocPartTransiti
         setOldCaseStageId(oldCaseStageId);
         setNewCaseStageId(newCaseStageId);
         setChanges(changes);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

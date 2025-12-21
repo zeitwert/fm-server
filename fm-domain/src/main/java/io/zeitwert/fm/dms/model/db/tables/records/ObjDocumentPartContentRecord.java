@@ -106,6 +106,20 @@ public class ObjDocumentPartContentRecord extends UpdatableRecordImpl<ObjDocumen
         return (OffsetDateTime) get(5);
     }
 
+    /**
+     * Setter for <code>public.obj_document_part_content.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_document_part_content.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(6);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -129,7 +143,7 @@ public class ObjDocumentPartContentRecord extends UpdatableRecordImpl<ObjDocumen
     /**
      * Create a detached, initialised ObjDocumentPartContentRecord
      */
-    public ObjDocumentPartContentRecord(Integer objId, Integer versionNr, String contentTypeId, byte[] content, Integer createdByUserId, OffsetDateTime createdAt) {
+    public ObjDocumentPartContentRecord(Integer objId, Integer versionNr, String contentTypeId, byte[] content, Integer createdByUserId, OffsetDateTime createdAt, Integer aver) {
         super(ObjDocumentPartContent.OBJ_DOCUMENT_PART_CONTENT);
 
         setObjId(objId);
@@ -138,6 +152,7 @@ public class ObjDocumentPartContentRecord extends UpdatableRecordImpl<ObjDocumen
         setContent(content);
         setCreatedByUserId(createdByUserId);
         setCreatedAt(createdAt);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

@@ -138,6 +138,11 @@ public class ObjBuildingPartElementRating extends TableImpl<ObjBuildingPartEleme
      */
     public final TableField<ObjBuildingPartElementRatingRecord, String> MEASURE_DESCRIPTION = createField(DSL.name("measure_description"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>public.obj_building_part_element_rating.aver</code>.
+     */
+    public final TableField<ObjBuildingPartElementRatingRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private ObjBuildingPartElementRating(Name alias, Table<ObjBuildingPartElementRatingRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

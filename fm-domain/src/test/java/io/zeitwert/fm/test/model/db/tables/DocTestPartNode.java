@@ -86,6 +86,11 @@ public class DocTestPartNode extends TableImpl<DocTestPartNodeRecord> {
     public final TableField<DocTestPartNodeRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.doc_test_part_node.aver</code>.
+     */
+    public final TableField<DocTestPartNodeRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
+
+    /**
      * The column <code>public.doc_test_part_node.short_text</code>.
      */
     public final TableField<DocTestPartNodeRecord, String> SHORT_TEXT = createField(DSL.name("short_text"), SQLDataType.VARCHAR(200), this, "");

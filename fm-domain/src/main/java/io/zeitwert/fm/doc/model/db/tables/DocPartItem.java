@@ -81,6 +81,11 @@ public class DocPartItem extends TableImpl<DocPartItemRecord> {
      */
     public final TableField<DocPartItemRecord, String> ITEM_ID = createField(DSL.name("item_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
+    /**
+     * The column <code>public.doc_part_item.aver</code>.
+     */
+    public final TableField<DocPartItemRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private DocPartItem(Name alias, Table<DocPartItemRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

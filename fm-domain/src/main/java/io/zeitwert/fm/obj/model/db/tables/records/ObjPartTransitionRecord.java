@@ -147,6 +147,20 @@ public class ObjPartTransitionRecord extends UpdatableRecordImpl<ObjPartTransiti
         return (JSON) get(8);
     }
 
+    /**
+     * Setter for <code>public.obj_part_transition.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_part_transition.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(9);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -170,7 +184,7 @@ public class ObjPartTransitionRecord extends UpdatableRecordImpl<ObjPartTransiti
     /**
      * Create a detached, initialised ObjPartTransitionRecord
      */
-    public ObjPartTransitionRecord(Integer id, Integer tenantId, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, Integer userId, OffsetDateTime timestamp, JSON changes) {
+    public ObjPartTransitionRecord(Integer id, Integer tenantId, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, Integer userId, OffsetDateTime timestamp, JSON changes, Integer aver) {
         super(ObjPartTransition.OBJ_PART_TRANSITION);
 
         setId(id);
@@ -182,6 +196,7 @@ public class ObjPartTransitionRecord extends UpdatableRecordImpl<ObjPartTransiti
         setUserId(userId);
         setTimestamp(timestamp);
         setChanges(changes);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

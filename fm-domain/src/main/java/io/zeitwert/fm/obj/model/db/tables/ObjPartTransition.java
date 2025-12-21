@@ -105,6 +105,11 @@ public class ObjPartTransition extends TableImpl<ObjPartTransitionRecord> {
      */
     public final TableField<ObjPartTransitionRecord, JSON> CHANGES = createField(DSL.name("changes"), SQLDataType.JSON, this, "");
 
+    /**
+     * The column <code>public.obj_part_transition.aver</code>.
+     */
+    public final TableField<ObjPartTransitionRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private ObjPartTransition(Name alias, Table<ObjPartTransitionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

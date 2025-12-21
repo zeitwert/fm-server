@@ -85,6 +85,11 @@ public class ObjTestPartNode extends TableImpl<ObjTestPartNodeRecord> {
     public final TableField<ObjTestPartNodeRecord, Integer> SEQ_NR = createField(DSL.name("seq_nr"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.obj_test_part_node.aver</code>.
+     */
+    public final TableField<ObjTestPartNodeRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
+
+    /**
      * The column <code>public.obj_test_part_node.short_text</code>.
      */
     public final TableField<ObjTestPartNodeRecord, String> SHORT_TEXT = createField(DSL.name("short_text"), SQLDataType.VARCHAR(200), this, "");

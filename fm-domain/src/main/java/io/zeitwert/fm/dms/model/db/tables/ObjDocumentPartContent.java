@@ -89,6 +89,11 @@ public class ObjDocumentPartContent extends TableImpl<ObjDocumentPartContentReco
      */
     public final TableField<ObjDocumentPartContentRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).defaultValue(DSL.field(DSL.raw("(now())::timestamp without time zone"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
+    /**
+     * The column <code>public.obj_document_part_content.aver</code>.
+     */
+    public final TableField<ObjDocumentPartContentRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private ObjDocumentPartContent(Name alias, Table<ObjDocumentPartContentRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

@@ -116,6 +116,11 @@ public class DocPartTransition extends TableImpl<DocPartTransitionRecord> {
      */
     public final TableField<DocPartTransitionRecord, JSON> CHANGES = createField(DSL.name("changes"), SQLDataType.JSON, this, "");
 
+    /**
+     * The column <code>public.doc_part_transition.aver</code>.
+     */
+    public final TableField<DocPartTransitionRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private DocPartTransition(Name alias, Table<DocPartTransitionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

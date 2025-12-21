@@ -176,6 +176,20 @@ public class ObjContactPartAddressRecord extends UpdatableRecordImpl<ObjContactP
         return (String) get(10);
     }
 
+    /**
+     * Setter for <code>public.obj_contact_part_address.aver</code>.
+     */
+    public void setAver(Integer value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_part_address.aver</code>.
+     */
+    public Integer getAver() {
+        return (Integer) get(11);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -199,7 +213,7 @@ public class ObjContactPartAddressRecord extends UpdatableRecordImpl<ObjContactP
     /**
      * Create a detached, initialised ObjContactPartAddressRecord
      */
-    public ObjContactPartAddressRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String addressChannelId, String name, String street, String zip, String city, String countryId) {
+    public ObjContactPartAddressRecord(Integer id, Integer objId, Integer parentPartId, String partListTypeId, Integer seqNr, String addressChannelId, String name, String street, String zip, String city, String countryId, Integer aver) {
         super(ObjContactPartAddress.OBJ_CONTACT_PART_ADDRESS);
 
         setId(id);
@@ -213,6 +227,7 @@ public class ObjContactPartAddressRecord extends UpdatableRecordImpl<ObjContactP
         setZip(zip);
         setCity(city);
         setCountryId(countryId);
+        setAver(aver);
         resetChangedOnNotNull();
     }
 }

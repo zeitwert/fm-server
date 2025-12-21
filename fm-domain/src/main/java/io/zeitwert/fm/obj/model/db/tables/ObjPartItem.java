@@ -81,6 +81,11 @@ public class ObjPartItem extends TableImpl<ObjPartItemRecord> {
      */
     public final TableField<ObjPartItemRecord, String> ITEM_ID = createField(DSL.name("item_id"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
+    /**
+     * The column <code>public.obj_part_item.aver</code>.
+     */
+    public final TableField<ObjPartItemRecord, Integer> AVER = createField(DSL.name("aver"), SQLDataType.INTEGER, this, "");
+
     private ObjPartItem(Name alias, Table<ObjPartItemRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
