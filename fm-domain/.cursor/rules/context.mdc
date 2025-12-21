@@ -8,6 +8,10 @@ This is an ERP application for real estate management, written in mixed Java/Kot
 It is part of a multi-module Maven project, and has a dependency to the dddrive application development framework.
 Via the local maven repo this module can be compiled and tested standalone (without the parent pom).
 
+# Coding
+
+Any new code must be written in Kotlin.
+
 # Persistence
 
 The application uses a PostgreSQL database for persistence, accessed via the jOOQ library.

@@ -1,37 +1,38 @@
-package io.zeitwert.fm.obj.persist
+package io.zeitwert.fm.contact.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.obj.model.ObjPartTransition
 import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
-import io.zeitwert.fm.obj.model.db.Tables
-import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord
+import io.zeitwert.fm.contact.model.ObjContactPartAddress
+import io.zeitwert.fm.contact.model.db.Tables
+import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord
+import io.zeitwert.fm.contact.model.enums.CodeAddressChannel
+import io.zeitwert.fm.oe.model.enums.CodeCountry
 import org.jooq.DSLContext
 
-class ObjPartTransitionSqlPersistenceProviderImpl(
+class ObjContactPartAddressSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<ObjPartTransition> {
+) : PartSqlPersistenceProvider<ObjContactPartAddress> {
 
-	private val partsLoaded = mutableListOf<ObjPartTransitionRecord>()
-	private val partsToInsert = mutableListOf<ObjPartTransitionRecord>()
-	private val partsToUpdate = mutableListOf<ObjPartTransitionRecord>()
+	private val partsLoaded = mutableListOf<ObjContactPartAddressRecord>()
+	private val partsToInsert = mutableListOf<ObjContactPartAddressRecord>()
+	private val partsToUpdate = mutableListOf<ObjContactPartAddressRecord>()
 
 	override fun beginLoad() {
 		partsLoaded.clear()
 		dslContext
 			.fetch(
-				Tables.OBJ_PART_TRANSITION,
-				Tables.OBJ_PART_TRANSITION.OBJ_ID.eq(aggregate.id as Int),
+				Tables.OBJ_CONTACT_PART_ADDRESS,
+				Tables.OBJ_CONTACT_PART_ADDRESS.OBJ_ID.eq(aggregate.id as Int),
 			).forEach {
 				partsLoaded.add(it)
 			}
 	}
 
 	override fun loadParts(
-		partList: PartListProperty<ObjPartTransition>,
+		partList: PartListProperty<ObjContactPartAddress>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -53,11 +54,15 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	fun mapFromRecord(
-		part: ObjPartTransition,
-		record: ObjPartTransitionRecord,
+		part: ObjContactPartAddress,
+		record: ObjContactPartAddressRecord,
 	) {
-		part.setValueByPath("userId", record.userId)
-		part.setValueByPath("timestamp", record.timestamp)
+		part.addressChannel = CodeAddressChannel.getAddressChannel(record.addressChannelId)
+		part.name = record.name
+		part.street = record.street
+		part.zip = record.zip
+		part.city = record.city
+		part.country = CodeCountry.getCountry(record.countryId)
 	}
 
 	override fun beginStore() {
@@ -66,7 +71,7 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	override fun addParts(
-		partList: PartListProperty<ObjPartTransition>,
+		partList: PartListProperty<ObjContactPartAddress>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id
@@ -92,9 +97,9 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 		}
 		// Delete removed i.e. non-updated parts
 		dslContext
-			.deleteFrom(Tables.OBJ_PART_TRANSITION)
-			.where(Tables.OBJ_PART_TRANSITION.OBJ_ID.eq(aggregate.id as Int))
-			.and(Tables.OBJ_PART_TRANSITION.AVER.lt(aggregate.meta.version))
+			.deleteFrom(Tables.OBJ_CONTACT_PART_ADDRESS)
+			.where(Tables.OBJ_CONTACT_PART_ADDRESS.OBJ_ID.eq(aggregate.id as Int))
+			.and(Tables.OBJ_CONTACT_PART_ADDRESS.AVER.lt(aggregate.meta.version))
 			.execute()
 		// Insert new parts
 		partsToInsert.forEach { record ->
@@ -105,22 +110,25 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	fun mapToRecord(
-		part: ObjPartTransition,
+		part: ObjContactPartAddress,
 		parentPartId: Int?,
 		partListTypeId: String,
 		seqNr: Int,
-	): ObjPartTransitionRecord {
-		val record = dslContext.newRecord(Tables.OBJ_PART_TRANSITION)
+	): ObjContactPartAddressRecord {
+		val record = dslContext.newRecord(Tables.OBJ_CONTACT_PART_ADDRESS)
 
 		record.id = part.id
-		record.tenantId = part.meta.aggregate.tenantId as Int
 		record.objId = part.meta.aggregate.id as Int
 		record.parentPartId = parentPartId ?: 0
 		record.partListTypeId = partListTypeId
 		record.seqNr = seqNr
 
-		record.userId = part.user.id as Int?
-		record.timestamp = part.timestamp
+		record.addressChannelId = part.addressChannel?.id
+		record.name = part.name
+		record.street = part.street
+		record.zip = part.zip
+		record.city = part.city
+		record.countryId = part.country?.id
 
 		record.aver = aggregate.meta.version
 
@@ -128,3 +136,4 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 	}
 
 }
+

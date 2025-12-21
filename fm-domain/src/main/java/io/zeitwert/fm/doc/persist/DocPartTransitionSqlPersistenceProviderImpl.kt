@@ -38,7 +38,7 @@ class DocPartTransitionSqlPersistenceProviderImpl(
 			val parentPartId = (partList.entity as Part<*>).id
 			partsLoaded.filter { (it.parentPartId == parentPartId) && (it.partListTypeId == partListTypeId) }
 		} else {
-			partsLoaded.filter { (it.parentPartId == null || it.parentPartId == 0) && (it.partListTypeId == partListTypeId) }
+			partsLoaded.filter { (it.parentPartId == 0) && (it.partListTypeId == partListTypeId) }
 		}.forEach {
 			val part = partList.addPart(it.id)
 			mapFromRecord(

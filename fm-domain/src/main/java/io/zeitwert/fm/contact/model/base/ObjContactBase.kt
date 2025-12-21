@@ -1,6 +1,8 @@
 package io.zeitwert.fm.contact.model.base
 
+import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.property.model.PartListProperty
+import io.dddrive.core.property.model.Property
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.contact.model.ObjContact
@@ -43,7 +45,7 @@ abstract class ObjContactBase(
 		_addressList = addPartListProperty("addressList", ObjContactPartAddress::class.java)
 	}
 
-	override val mailAddressList = _addressList.parts.filter { it.isMailAddress == true }
+	override val mailAddressList get() = _addressList.parts.filter { it.isMailAddress == true }
 
 	override fun getMailAddress(addressId: Int) = Optional.ofNullable(_addressList.parts.find { it.id == addressId && it.isMailAddress == true })
 
@@ -53,7 +55,7 @@ abstract class ObjContactBase(
 
 	override fun removeMailAddress(addressId: Int) = _addressList.removePart(addressId)
 
-	override val electronicAddressList = _addressList.parts.filter { it.isMailAddress == false }
+	override val electronicAddressList get() = _addressList.parts.filter { it.isMailAddress == false }
 
 	override fun getElectronicAddress(addressId: Int) = Optional.ofNullable(_addressList.parts.find { it.id == addressId && it.isMailAddress == false })
 
@@ -62,6 +64,16 @@ abstract class ObjContactBase(
 	override fun addElectronicAddress() = _addressList.addPart(null)
 
 	override fun removeElectronicAddress(addressId: Int) = _addressList.removePart(addressId)
+
+	override fun doAddPart(
+		property: Property<*>,
+		partId: Int?,
+	): Part<*> {
+		if (property === this._addressList) {
+			return directory.getPartRepository(ObjContactPartAddress::class.java).create(this, property, partId)
+		}
+		return super.doAddPart(property, partId)
+	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()

@@ -1,15 +1,17 @@
 package io.zeitwert.fm.contact.persist
 
+import io.dddrive.core.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.contact.model.ObjContact
+import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Component
 @Component("objContactPersistenceProvider")
 open class ObjContactSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
 	SqlRecordMapper<ObjContact> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
@@ -57,6 +59,32 @@ open class ObjContactSqlPersistenceProviderImpl(
 			record.insert()
 		} else {
 			record.update()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doLoadParts(aggregate: ObjContact) {
+		super.doLoadParts(aggregate)
+		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginLoad()
+			loadParts(
+				aggregate.getProperty("addressList", ObjContactPartAddress::class) as PartListProperty<ObjContactPartAddress>,
+				"contact.addressList",
+			)
+			endLoad()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doStoreParts(aggregate: ObjContact) {
+		super.doStoreParts(aggregate)
+		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addParts(
+				aggregate.getProperty("addressList", ObjContactPartAddress::class) as PartListProperty<ObjContactPartAddress>,
+				"contact.addressList",
+			)
+			endStore()
 		}
 	}
 
