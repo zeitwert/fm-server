@@ -95,7 +95,7 @@ abstract class EntityWithPropertiesBase :
 	): AggregateReferenceProperty<A> {
 		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
 		val property: AggregateReferenceProperty<A> =
-			AggregateReferencePropertyImpl(this, name, { id: Any -> repo.get(id) }, aggregateType)
+			AggregateReferencePropertyImpl(this, name, repo, aggregateType)
 		addProperty(property)
 		return property
 	}
@@ -105,7 +105,7 @@ abstract class EntityWithPropertiesBase :
 		aggregateType: Class<A>,
 	): ReferenceSetProperty<A> {
 		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, { id: Any -> repo.get(id) })
+		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
 		addProperty(property)
 		return property
 	}

@@ -2,7 +2,7 @@ package io.zeitwert.fm.collaboration.persist
 
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 @Component("objNotePersistenceProvider")
 open class ObjNoteSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
 	SqlRecordMapper<ObjNote> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper

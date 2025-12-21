@@ -3,7 +3,7 @@ package io.zeitwert.fm.account.persist
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.db.Tables
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 @Component("objAccountPersistenceProvider")
 open class ObjAccountSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjAccount>(ObjAccount::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjAccount>(ObjAccount::class.java),
 	SqlRecordMapper<ObjAccount> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper

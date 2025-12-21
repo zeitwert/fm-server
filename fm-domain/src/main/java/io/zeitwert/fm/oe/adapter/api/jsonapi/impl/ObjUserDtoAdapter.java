@@ -62,7 +62,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 			obj.setRole(CodeUserRole.getUserRole(dto.getRole().getId()));
 			obj.clearTenantSet();
 			for (EnumeratedDto tenant : dto.getTenants()) {
-				obj.addTenant(this.getTenant(Integer.parseInt(tenant.getId())));
+				obj.addTenant(Integer.parseInt(tenant.getId()));
 			}
 		}
 	}
@@ -79,7 +79,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 				.name(obj.getName())
 				.description(obj.getDescription())
 				.role(EnumeratedDto.of(obj.getRole()))
-				.tenants(obj.getTenantSet().stream().map(t -> this.getTenantEnumerated((Integer) t.getId())).toList())
+				.tenants(obj.getTenantSet().stream().map(id -> this.getTenantEnumerated((Integer) id)).toList())
 				.needPasswordChange(obj.getNeedPasswordChange())
 				.avatarId((Integer) obj.getAvatarImageId())
 				.build();

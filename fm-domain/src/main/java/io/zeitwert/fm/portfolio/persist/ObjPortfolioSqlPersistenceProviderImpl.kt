@@ -1,9 +1,12 @@
 package io.zeitwert.fm.portfolio.persist
 
+import io.dddrive.core.obj.model.Obj
+import io.dddrive.core.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.db.Tables
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Component
 @Component("objPortfolioPersistenceProvider")
 open class ObjPortfolioSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjPortfolio>(ObjPortfolio::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjPortfolio>(ObjPortfolio::class.java),
 	SqlRecordMapper<ObjPortfolio> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
@@ -46,6 +49,36 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 			record.insert()
 		} else {
 			record.update()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doLoadParts(aggregate: ObjPortfolio) {
+		super.doLoadParts(aggregate)
+		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
+		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginLoad()
+			items("portfolio.includeList").forEach {
+				it.toIntOrNull()?.let { objId -> includeSet.addItem(objId) }
+			}
+			items("portfolio.excludeList").forEach {
+				it.toIntOrNull()?.let { objId -> excludeSet.addItem(objId) }
+			}
+			endLoad()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doStoreParts(aggregate: ObjPortfolio) {
+		super.doStoreParts(aggregate)
+		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
+		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addItems("portfolio.includeList", includeSet.items.map { it.toString() })
+			addItems("portfolio.excludeList", excludeSet.items.map { it.toString() })
+			endStore()
 		}
 	}
 

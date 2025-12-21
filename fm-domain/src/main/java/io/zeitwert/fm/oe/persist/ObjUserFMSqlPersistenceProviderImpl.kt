@@ -1,11 +1,14 @@
 package io.zeitwert.fm.oe.persist
 
+import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.ReferenceSetProperty
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.db.Tables
@@ -18,7 +21,7 @@ import java.util.*
 @Component("objUserFMPersistenceProvider")
 open class ObjUserFMSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
 	SqlRecordMapper<ObjUser> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
@@ -54,6 +57,34 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 			record.insert()
 		} else {
 			record.update()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doLoadParts(aggregate: ObjUser) {
+		super.doLoadParts(aggregate)
+		val tenantSet = aggregate.getProperty("tenantSet", ObjTenant::class) as ReferenceSetProperty<ObjTenant>
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginLoad()
+			items("user.tenantList").forEach {
+				println("user.tenantList item.1: $it")
+				it.toIntOrNull()?.let { tenantId ->
+					println("user.tenantList item.2: $it")
+					tenantSet.addItem(tenantId)
+				}
+			}
+			endLoad()
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun doStoreParts(aggregate: ObjUser) {
+		super.doStoreParts(aggregate)
+		val tenantSet = aggregate.getProperty("tenantSet", ObjTenant::class) as ReferenceSetProperty<ObjTenant>
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addItems("user.tenantList", tenantSet.items.map { it.toString() })
+			endStore()
 		}
 	}
 

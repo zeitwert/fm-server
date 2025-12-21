@@ -66,7 +66,7 @@ public class ApplicationController {
 						.email(user.getEmail())
 						.name(user.getName())
 						.role(EnumeratedDto.of(user.getRole()))
-						.tenants(user.getTenantSet().stream().map(EnumeratedDto::of).toList())
+						.tenants(user.getTenantSet().stream().map(id -> EnumeratedDto.of(userRepository.get(id))).toList())
 						.build());
 	}
 

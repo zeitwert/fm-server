@@ -4,11 +4,17 @@ import io.dddrive.core.ddd.model.Aggregate
 import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartItemRecord
 import org.jooq.DSLContext
+import org.slf4j.LoggerFactory
 
 class ObjPartItemSqlPersistenceProviderImpl(
 	val dslContext: DSLContext,
 	val aggregate: Aggregate,
 ) {
+
+	companion object {
+
+		val logger = LoggerFactory.getLogger(ObjPartItemSqlPersistenceProviderImpl::class.java)!!
+	}
 
 	private val partsLoaded = mutableListOf<ObjPartItemRecord>()
 	private val partsToInsert = mutableListOf<ObjPartItemRecord>()
@@ -23,6 +29,7 @@ class ObjPartItemSqlPersistenceProviderImpl(
 			).forEach {
 				partsLoaded.add(it)
 			}
+		logger.debug("objPartItemPP.beginLoad({}): {} items", aggregate.id, partsLoaded.size)
 	}
 
 	fun items(
@@ -32,16 +39,20 @@ class ObjPartItemSqlPersistenceProviderImpl(
 	fun items(
 		parentPartId: Int,
 		partListTypeId: String,
-	): List<String> =
-		partsLoaded
+	): List<String> {
+		val items = partsLoaded
 			.filter { (it.parentPartId == parentPartId) && (it.partListTypeId == partListTypeId) }
 			.map { it.itemId }
+		logger.debug("objPartItemPP.items({}, {}, {}): {} items", aggregate.id, parentPartId, partListTypeId, items.size)
+		return items
+	}
 
 	fun endLoad() {
 		partsLoaded.clear()
 	}
 
 	fun beginStore() {
+		logger.debug("beginStore({})", aggregate.id)
 		partsToInsert.clear()
 		partsToUpdate.clear()
 	}
@@ -67,6 +78,13 @@ class ObjPartItemSqlPersistenceProviderImpl(
 		partListTypeId: String,
 		items: List<String>,
 	) {
+		logger.debug(
+			"addItems({}, {}, {}, {} items)",
+			aggregate.id,
+			parentPartId,
+			partListTypeId,
+			items.size,
+		)
 		items.forEachIndexed { idx, it ->
 			val record = mapToRecord(
 				itemId = it,
@@ -79,6 +97,12 @@ class ObjPartItemSqlPersistenceProviderImpl(
 	}
 
 	fun endStore() {
+		logger.debug(
+			"endStore({}): {} to insert, {} to update",
+			aggregate.id,
+			partsToInsert.size,
+			partsToUpdate.size,
+		)
 		// Update existing parts
 		partsToUpdate.forEach { record ->
 			record.update()

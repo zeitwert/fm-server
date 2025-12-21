@@ -4,7 +4,7 @@ import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
+import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
 import io.zeitwert.fm.task.model.DocTask
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 @Component("docTaskPersistenceProvider")
 open class DocTaskSqlPersistenceProvider(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<DocTask>(DocTask::class.java),
+) : FMDocSqlPersistenceProviderBase<DocTask>(DocTask::class.java),
 	SqlRecordMapper<DocTask> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper

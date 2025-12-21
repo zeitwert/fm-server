@@ -17,10 +17,10 @@ abstract class ReferencePropertyBase<T : Any, ID : Any>(
 	override var id: ID? = null
 		set(id) {
 			require(this.isWritable) { "not frozen" }
+			require(isValidId(id)) { "valid id [$id]" }
 			if (field == id) {
 				return
 			}
-			require(isValidId(id)) { "valid id [$id]" }
 			val entity = this.entity as EntityWithPropertiesSPI
 			entity.doBeforeSet(this, id, field)
 			entity.fireFieldSetChange(this, id, field)

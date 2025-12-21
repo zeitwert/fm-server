@@ -4,7 +4,7 @@ import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.ObjTenantFM
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 @Component("objTenantFMPersistenceProvider")
 open class ObjTenantFMSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	SqlRecordMapper<ObjTenant> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
