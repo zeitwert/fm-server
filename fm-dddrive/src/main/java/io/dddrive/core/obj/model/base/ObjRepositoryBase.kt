@@ -26,7 +26,7 @@ abstract class ObjRepositoryBase<O : Obj>(
 		this.addPart<Obj>(Obj::class.java, ObjPartTransition::class.java, ObjPartTransitionBase::class.java)
 	}
 
-	override fun delete(
+	override fun close(
 		obj: O,
 		userId: Any,
 		timestamp: OffsetDateTime,
@@ -36,6 +36,7 @@ abstract class ObjRepositoryBase<O : Obj>(
 	}
 
 	companion object {
+
 		private val NotLoggedProperties =
 			mutableSetOf<String?>("objTypeId", "closedByUser", "closedAt", "transitionList")
 	}

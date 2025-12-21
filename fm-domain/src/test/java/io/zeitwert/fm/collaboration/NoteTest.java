@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -74,18 +75,18 @@ public class NoteTest {
 			this.noteRepo.store(noteC1, userId, now);
 			assertEquals(3, testA1.getNotes().size());
 
-			List<ObjNote> testA1_noteList = testA1.getNotes();
-			Set<Object> idSet = testA1_noteList.stream().map(n -> n.getId()).collect(Collectors.toSet());
+			Set<Object> idSet = new HashSet<>(testA1.getNotes());
+			List<ObjNote> testA1_noteList = idSet.stream().map(id -> noteRepo.get(id)).toList();
 			assertEquals(Set.of(noteA1.getId(), noteB1.getId(), noteC1.getId()), idSet);
 			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
 			assertEquals(noteB1.getId(), testA1_noteList.get(1).getId());
 			assertEquals(noteC1.getId(), testA1_noteList.get(2).getId());
 			assertEquals("Subject 1,Subject 2,Subject 3",
-					String.join(",", testA1.getNotes().stream().map(n -> n.getSubject()).toList()));
-			assertEquals("Subject 2", testA1.getNotes().get(1).getSubject());
+					String.join(",", testA1.getNotes().stream().map(id -> noteRepo.get(id)).map(n -> n.getSubject()).toList()));
+			assertEquals("Subject 2", testA1.getNotes().stream().map(id -> noteRepo.get(id)).toList().get(1).getSubject());
 
 			testA1.removeNote(noteB1.getId(), userId);
-			testA1_noteList = testA1.getNotes();
+			testA1_noteList = testA1.getNotes().stream().map(id -> noteRepo.get(id)).toList();
 			assertEquals(2, testA1_noteList.size());
 			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
 			assertEquals(noteA1.getSubject(), testA1_noteList.get(0).getSubject());
@@ -101,8 +102,10 @@ public class NoteTest {
 		// change middle note to private [1, 3private, 4]
 		ObjTest testA2 = this.testRepo.load(testA_id);
 
+		Object noteC2Id = null;
+
 		{
-			List<ObjNote> testA2_noteList = testA2.getNotes();
+			List<ObjNote> testA2_noteList = testA2.getNotes().stream().map(id -> noteRepo.get(id)).toList();
 
 			assertEquals(2, testA2_noteList.size());
 			assertEquals("Subject 1,Subject 3", String.join(",", testA2_noteList.stream().map(n -> n.getSubject()).toList()));
@@ -113,7 +116,8 @@ public class NoteTest {
 			this.noteRepo.store(noteD1, userId, now);
 			assertEquals(3, testA2.getNotes().size());
 
-			ObjNote noteC2 = testA2.getNotes().get(1);
+			noteC2Id = testA2.getNotes().get(1);
+			ObjNote noteC2 = noteRepo.load(noteC2Id);
 			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
 			noteC2.setPrivate(true);
 			this.noteRepo.store(noteC2, userId, now);
@@ -126,12 +130,12 @@ public class NoteTest {
 		ObjTest testA3 = this.testRepo.get(testA_id);
 
 		{
-			List<ObjNote> testA3_noteList = testA3.getNotes();
+			List<ObjNote> testA3_noteList = testA3.getNotes().stream().map(id -> noteRepo.get(id)).toList();
 
-			assertEquals("Subject 1,Subject 3,Subject 4",
-					String.join(",", testA3_noteList.stream().map(n -> n.getSubject()).toList()));
+			assertEquals(Set.of("Subject 1", "Subject 3", "Subject 4"), testA3_noteList.stream().map(n -> n.getSubject()).collect(Collectors.toSet()));
 			assertEquals(3, testA3_noteList.size());
-			assertTrue(testA3.getNotes().get(1).isPrivate());
+			Object finalNoteC2Id = noteC2Id;
+			assertTrue(testA3_noteList.stream().filter(n -> finalNoteC2Id.equals(n.getId())).findFirst().get().isPrivate());
 		}
 
 		// Test privacy

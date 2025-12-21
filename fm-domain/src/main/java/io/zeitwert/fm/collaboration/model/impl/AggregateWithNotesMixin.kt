@@ -13,13 +13,10 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 
 	fun noteRepository(): ObjNoteRepository
 
-	override val notes: List<ObjNote>
+	override val notes: List<Any>
 		get() =
 			noteRepository()
 				.getByForeignKey("relatedToId", aggregate().id)
-				.stream()
-				.map { it: Any -> noteRepository().get(it) }
-				.toList()
 
 	override fun addNote(
 		noteType: CodeNoteType,
@@ -37,7 +34,7 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 	) {
 		val note = noteRepository().load(noteId)
 		require(aggregate().id.equals(note.relatedToId)) { "note is related to this item." }
-		noteRepository().delete(note, userId, OffsetDateTime.now())
+		noteRepository().close(note, userId, OffsetDateTime.now())
 	}
 
 }

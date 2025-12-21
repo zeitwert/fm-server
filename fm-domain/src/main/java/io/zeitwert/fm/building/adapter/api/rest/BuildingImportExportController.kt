@@ -18,7 +18,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus.Enumeration.
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType.Enumeration.getBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType.Enumeration.getBuildingType
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation.Enumeration.getHistoricPreservation
-import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType.Enumeration.getNoteType
 import io.zeitwert.fm.oe.model.ObjUserFM
@@ -60,7 +59,9 @@ class BuildingImportExportController {
 
 	@GetMapping("/{id}")
 	@Throws(ServletException::class, IOException::class)
-	fun exportBuilding(@PathVariable("id") id: Int): ResponseEntity<BuildingTransferDto?> {
+	fun exportBuilding(
+		@PathVariable("id") id: Int,
+	): ResponseEntity<BuildingTransferDto?> {
 		val building = this.buildingRepo!!.get(id)
 		val export = this.getTransferDto(building)
 		val fileName = this.getFileName(building)
@@ -72,7 +73,9 @@ class BuildingImportExportController {
 
 	@PostMapping
 	@Throws(ServletException::class, IOException::class)
-	fun importBuilding(@RequestBody dto: BuildingTransferDto): ResponseEntity<BuildingTransferDto?> {
+	fun importBuilding(
+		@RequestBody dto: BuildingTransferDto,
+	): ResponseEntity<BuildingTransferDto?> {
 		val accountId = this.requestCtx!!.getAccountId()
 		if (accountId == null) {
 			return ResponseEntity.badRequest().build<BuildingTransferDto?>()
@@ -100,7 +103,9 @@ class BuildingImportExportController {
 			modifiedByUser = building.meta.modifiedByUser?.email,
 			modifiedAt = building.meta.modifiedAt,
 		)
-		val elements = building.currentRating!!.elementList.stream()
+		val elements = building.currentRating!!
+			.elementList
+			.stream()
 			.map { e: ObjBuildingPartElementRating ->
 				BuildingTransferElementRatingDto(
 					buildingPart = e.buildingPart!!.id,
@@ -114,17 +119,20 @@ class BuildingImportExportController {
 					measureDescription = e.measureDescription,
 				)
 			}.toList()
-		val notes = building.notes.stream().map { note: ObjNote ->
-			NoteTransferDto(
-				subject = note.subject,
-				content = note.content,
-				isPrivate = note.isPrivate,
-				createdByUser = note.meta.createdByUser.email,
-				createdAt = note.meta.createdAt,
-				modifiedByUser = note.meta.modifiedByUser?.email,
-				modifiedAt = note.meta.modifiedAt,
-			)
-		}.toList()
+		val notes = building.notes
+			.stream()
+			.map { noteId ->
+				val note = this.noteRepo!!.load(noteId)
+				NoteTransferDto(
+					subject = note.subject,
+					content = note.content,
+					isPrivate = note.isPrivate,
+					createdByUser = note.meta.createdByUser.email,
+					createdAt = note.meta.createdAt,
+					modifiedByUser = note.meta.modifiedByUser?.email,
+					modifiedAt = note.meta.modifiedAt,
+				)
+			}.toList()
 		val currentRating = building.currentRating!!
 		val export = BuildingTransferDto(
 			meta = meta,
@@ -169,11 +177,12 @@ class BuildingImportExportController {
 		return export
 	}
 
-	private fun getFileName(building: ObjBuilding): String {
-		return (if (building.account != null) building.account!!.name + " " else "") + building.name + ".zwbd"
-	}
+	private fun getFileName(building: ObjBuilding): String = (if (building.account != null) building.account!!.name + " " else "") + building.name + ".zwbd"
 
-	private fun fillFromDto(building: ObjBuilding, dto: BuildingTransferDto) {
+	private fun fillFromDto(
+		building: ObjBuilding,
+		dto: BuildingTransferDto,
+	) {
 		try {
 			building.meta.disableCalc()
 
@@ -209,49 +218,58 @@ class BuildingImportExportController {
 			building.notInsuredValueYear = dto.notInsuredValueYear
 			building.thirdPartyValue = dto.thirdPartyValue
 			building.thirdPartyValueYear = dto.thirdPartyValueYear
-			val rating: ObjBuildingPartRating = (if (building.currentRating != null)
-				building.currentRating
-			else
-				building.addRating(user, now))!!
+			val rating: ObjBuildingPartRating = (
+				if (building.currentRating != null) {
+					building.currentRating
+				} else {
+					building.addRating(user, now)
+				}
+			)!!
 			rating.partCatalog = getPartCatalog(dto.buildingPartCatalog)
 			rating.maintenanceStrategy =
 				CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(dto.buildingMaintenanceStrategy)
 			rating.ratingStatus = getRatingStatus(dto.ratingStatus)
 			rating.ratingDate = dto.ratingDate
-			rating.ratingUser = if (dto.ratingUser != null)
+			rating.ratingUser = if (dto.ratingUser != null) {
 				this.userRepo!!.getByEmail(dto.ratingUser).get()
-			else
+			} else {
 				null
+			}
 			if (dto.elements != null) {
-				dto.elements.forEach(Consumer { dtoElement: BuildingTransferElementRatingDto? ->
-					val buildingPart = directory!!.getEnumeration<CodeBuildingPart>(
-						CodeBuildingPart::class.java
-					).getItem(dtoElement!!.buildingPart)
-					var element = rating.getElement(buildingPart)
-					if (element == null) {
-						element = rating.addElement(buildingPart)
-					}
-					element.weight = dtoElement.weight
-					element.condition = dtoElement.condition
-					// element.setRatingYear(dtoElement.getRatingYear());
-					element.strain = dtoElement.strain
-					element.strength = dtoElement.strength
-					element.description = dtoElement.description
-					element.conditionDescription = dtoElement.conditionDescription
-					element.measureDescription = dtoElement.measureDescription
-				})
+				dto.elements.forEach(
+					Consumer { dtoElement: BuildingTransferElementRatingDto? ->
+						val buildingPart = directory!!
+							.getEnumeration<CodeBuildingPart>(
+								CodeBuildingPart::class.java,
+							).getItem(dtoElement!!.buildingPart)
+						var element = rating.getElement(buildingPart)
+						if (element == null) {
+							element = rating.addElement(buildingPart)
+						}
+						element.weight = dtoElement.weight
+						element.condition = dtoElement.condition
+						// element.setRatingYear(dtoElement.getRatingYear());
+						element.strain = dtoElement.strain
+						element.strength = dtoElement.strength
+						element.description = dtoElement.description
+						element.conditionDescription = dtoElement.conditionDescription
+						element.measureDescription = dtoElement.measureDescription
+					},
+				)
 			}
 			if (dto.notes != null) {
 				val noteType = getNoteType("note")
 				val noteUserId = this.requestCtx!!.getUser().id
 				val noteTimestamp = OffsetDateTime.now()
-				dto.notes.forEach(Consumer { dtoNote: NoteTransferDto? ->
-					val note = building.addNote(noteType!!, noteUserId)
-					note.subject = dtoNote!!.subject
-					note.content = dtoNote.content
-					note.isPrivate = dtoNote.isPrivate
-					this.noteRepo!!.store(note, noteUserId, noteTimestamp)
-				})
+				dto.notes.forEach(
+					Consumer { dtoNote: NoteTransferDto? ->
+						val note = building.addNote(noteType!!, noteUserId)
+						note.subject = dtoNote!!.subject
+						note.content = dtoNote.content
+						note.isPrivate = dtoNote.isPrivate
+						this.noteRepo!!.store(note, noteUserId, noteTimestamp)
+					},
+				)
 			}
 		} finally {
 			building.meta.enableCalc()

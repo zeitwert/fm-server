@@ -2,15 +2,16 @@ package io.zeitwert.fm.collaboration.persist
 
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
+import io.zeitwert.fm.obj.model.db.Tables as ObjTables
 
 /** Persistence provider for ObjNote aggregates. */
 @Component("objNotePersistenceProvider")
@@ -87,7 +88,10 @@ open class ObjNoteSqlPersistenceProviderImpl(
 		return dslContext
 			.select(Tables.OBJ_NOTE.OBJ_ID)
 			.from(Tables.OBJ_NOTE)
+			.join(ObjTables.OBJ)
+			.on(ObjTables.OBJ.ID.eq(Tables.OBJ_NOTE.OBJ_ID))
 			.where(field.eq(targetId as Int))
+			.and(ObjTables.OBJ.CLOSED_AT.isNull)
 			.fetch(Tables.OBJ_NOTE.OBJ_ID)
 	}
 

@@ -4,10 +4,16 @@ import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 
 interface ItemWithNotes {
 
-	val notes: List<ObjNote>
+	val notes: List<Any>
 
-	fun addNote(noteType: CodeNoteType, userId: Any): ObjNote
+	fun addNote(
+		noteType: CodeNoteType,
+		userId: Any,
+	): ObjNote
 
-	fun removeNote(noteId: Any, userId: Any)
+	fun removeNote(
+		noteId: Any,
+		userId: Any,
+	)
 
 }

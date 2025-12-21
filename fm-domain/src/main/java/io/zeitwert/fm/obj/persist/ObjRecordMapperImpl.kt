@@ -113,6 +113,7 @@ class ObjRecordMapperImpl(
 			.from(Tables.OBJ)
 			.where(field.eq(targetId as Int))
 			.and(Tables.OBJ.OBJ_TYPE_ID.eq(aggregateTypeId))
+			.and(Tables.OBJ.CLOSED_AT.isNull)
 			.fetch(Tables.OBJ.ID)
 	}
 
