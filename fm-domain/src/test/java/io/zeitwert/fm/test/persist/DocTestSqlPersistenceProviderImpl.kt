@@ -3,9 +3,10 @@ package io.zeitwert.fm.test.persist
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.doc.model.base.FMDocBase
+import io.zeitwert.fm.doc.persist.DocPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
+import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
 import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
+) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
@@ -53,6 +54,17 @@ open class DocTestSqlPersistenceProviderImpl(
 		aggregate.testType = CodeTestType.Enumeration.getTestType(record.testTypeId)
 	}
 
+	override fun doLoadParts(aggregate: DocTest) {
+		super.doLoadParts(aggregate)
+		DocPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginLoad()
+			items("test.testTypeSet").forEach {
+				aggregate.addTestType(CodeTestType.getTestType(it)!!)
+			}
+			endLoad()
+		}
+	}
+
 	override fun storeRecord(aggregate: DocTest) {
 		val record = mapToRecord(aggregate)
 		if ((aggregate as FMDocBase).isNew) {
@@ -81,6 +93,15 @@ open class DocTestSqlPersistenceProviderImpl(
 		record.refDocId = aggregate.refDocId
 
 		return record
+	}
+
+	override fun doStoreParts(aggregate: DocTest) {
+		super.doStoreParts(aggregate)
+		DocPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addItems("test.testTypeSet", aggregate.testTypeSet.map { it.id })
+			endStore()
+		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

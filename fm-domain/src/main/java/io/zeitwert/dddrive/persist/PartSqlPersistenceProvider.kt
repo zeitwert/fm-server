@@ -24,6 +24,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 	 */
 	fun loadParts(
 		partList: PartListProperty<P>,
+		partListTypeId: String,
 	)
 
 	/**
@@ -41,6 +42,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 	 */
 	fun addParts(
 		partList: PartListProperty<P>,
+		partListTypeId: String,
 	)
 
 	/**

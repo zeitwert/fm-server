@@ -1,37 +1,37 @@
-package io.zeitwert.fm.test.persist
+package io.zeitwert.fm.obj.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
+import io.dddrive.core.obj.model.ObjPartTransition
 import io.dddrive.core.property.model.PartListProperty
+import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
-import io.zeitwert.fm.test.model.ObjTestPartNode
-import io.zeitwert.fm.test.model.db.Tables
-import io.zeitwert.fm.test.model.db.tables.records.ObjTestPartNodeRecord
-import io.zeitwert.fm.test.model.enums.CodeTestType
+import io.zeitwert.fm.obj.model.db.Tables
+import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord
 import org.jooq.DSLContext
 
-class ObjTestPartNodeSqlPersistenceProviderImpl(
+class ObjPartTransitionSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<ObjTestPartNode> {
+) : PartSqlPersistenceProvider<ObjPartTransition> {
 
-	private val partsLoaded = mutableListOf<ObjTestPartNodeRecord>()
-	private val partsToInsert = mutableListOf<ObjTestPartNodeRecord>()
-	private val partsToUpdate = mutableListOf<ObjTestPartNodeRecord>()
+	private val partsLoaded = mutableListOf<ObjPartTransitionRecord>()
+	private val partsToInsert = mutableListOf<ObjPartTransitionRecord>()
+	private val partsToUpdate = mutableListOf<ObjPartTransitionRecord>()
 
 	override fun beginLoad() {
 		partsLoaded.clear()
 		dslContext
 			.fetch(
-				Tables.OBJ_TEST_PART_NODE,
-				Tables.OBJ_TEST_PART_NODE.OBJ_ID.eq(aggregate.id as Int),
+				Tables.OBJ_PART_TRANSITION,
+				Tables.OBJ_PART_TRANSITION.OBJ_ID.eq(aggregate.id as Int),
 			).forEach {
 				partsLoaded.add(it)
 			}
 	}
 
 	override fun loadParts(
-		partList: PartListProperty<ObjTestPartNode>,
+		partList: PartListProperty<ObjPartTransition>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -53,18 +53,11 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 	}
 
 	fun mapFromRecord(
-		part: ObjTestPartNode,
-		record: ObjTestPartNodeRecord,
+		part: ObjPartTransition,
+		record: ObjPartTransitionRecord,
 	) {
-		part.shortText = record.shortText
-		part.longText = record.longText
-		part.date = record.date
-		part.int = record.int
-		part.isDone = record.isDone
-		part.json = record.json?.toString()
-		part.nr = record.nr
-		part.testType = CodeTestType.getTestType(record.testTypeId)
-		part.refObjId = record.refObjId
+		part.setValueByPath("userId", record.userId)
+		part.setValueByPath("timestamp", record.timestamp)
 	}
 
 	override fun beginStore() {
@@ -73,15 +66,16 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 	}
 
 	override fun addParts(
-		partList: PartListProperty<ObjTestPartNode>,
+		partList: PartListProperty<ObjPartTransition>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id
-		partList.parts.forEach {
+		partList.parts.forEachIndexed { idx, it ->
 			val record = mapToRecord(
 				part = it,
 				parentPartId = parentPartId,
 				partListTypeId = partListTypeId,
+				seqNr = idx + 1,
 			)
 			if (it.meta.isNew) {
 				partsToInsert.add(record)
@@ -98,9 +92,9 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 		}
 		// Delete removed i.e. non-updated parts
 		dslContext
-			.deleteFrom(Tables.OBJ_TEST_PART_NODE)
-			.where(Tables.OBJ_TEST_PART_NODE.OBJ_ID.eq(aggregate.id as Int))
-			.and(Tables.OBJ_TEST_PART_NODE.AVER.lt(aggregate.meta.version))
+			.deleteFrom(Tables.OBJ_PART_TRANSITION)
+			.where(Tables.OBJ_PART_TRANSITION.OBJ_ID.eq(aggregate.id as Int))
+			.and(Tables.OBJ_PART_TRANSITION.AVER.lt(aggregate.meta.version))
 			.execute()
 		// Insert new parts
 		partsToInsert.forEach { record ->
@@ -111,26 +105,22 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 	}
 
 	fun mapToRecord(
-		part: ObjTestPartNode,
+		part: ObjPartTransition,
 		parentPartId: Int?,
 		partListTypeId: String,
-	): ObjTestPartNodeRecord {
-		val record = dslContext.newRecord(Tables.OBJ_TEST_PART_NODE)
+		seqNr: Int,
+	): ObjPartTransitionRecord {
+		val record = dslContext.newRecord(Tables.OBJ_PART_TRANSITION)
 
 		record.id = part.id
+		record.tenantId = part.meta.aggregate.tenantId as Int
 		record.objId = part.meta.aggregate.id as Int
-		record.parentPartId = parentPartId
+		record.parentPartId = parentPartId ?: 0
 		record.partListTypeId = partListTypeId
+		record.seqNr = seqNr
 
-		record.shortText = part.shortText
-		record.longText = part.longText
-		record.date = part.date
-		record.int = part.int
-		record.isDone = part.isDone
-		record.json = part.json?.let { org.jooq.JSON.valueOf(it) }
-		record.nr = part.nr
-		record.testTypeId = part.testType?.id
-		record.refObjId = part.refObjId as Int?
+		record.userId = part.user.id as Int?
+		record.timestamp = part.timestamp
 
 		record.aver = aggregate.meta.version
 

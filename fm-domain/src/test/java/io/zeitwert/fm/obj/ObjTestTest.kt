@@ -160,24 +160,27 @@ class ObjTestTest {
 
 		assertFalse(testA1.hasTestType(CodeTestType.TYPE_A))
 		testA1.addTestType(CodeTestType.TYPE_A)
+		assertEquals(1, testA1.testTypeSet.size)
 		assertTrue(testA1.hasTestType(CodeTestType.TYPE_A))
+
 		testA1.addTestType(CodeTestType.TYPE_B)
 		assertTrue(testA1.hasTestType(CodeTestType.TYPE_B))
 		assertEquals(2, testA1.testTypeSet.size)
+
 		testA1.removeTestType(CodeTestType.TYPE_B)
 		assertTrue(testA1.hasTestType(CodeTestType.TYPE_A))
 		assertFalse(testA1.hasTestType(CodeTestType.TYPE_B))
 		assertEquals(1, testA1.testTypeSet.size)
+
 		testA1.addTestType(CodeTestType.TYPE_C)
 		assertTrue(testA1.hasTestType(CodeTestType.TYPE_C))
 		assertEquals(2, testA1.testTypeSet.size)
 
 		assertEquals(1, testA1.meta.transitionList.size)
-
 		this.testRepository.store(testA1, userId, now)
+		assertEquals(2, testA1.meta.transitionList.size)
 
 		val testA2: ObjTest = this.testRepository.load(testAId)
-
 		assertEquals(2, testA2.meta.transitionList.size)
 
 		assertEquals(2, testA2.testTypeSet.size)
@@ -203,7 +206,8 @@ class ObjTestTest {
 
 		{
 			val testA1 = this.testRepository.create(tenantId, userId, now)
-			requireNotNull(testA1)
+			assertEquals(0, testA1.meta.version)
+			assertEquals(1, testA1.meta.transitionList.size)
 
 			initObjTest(testA1, "One", TYPE_A)
 			assertEquals(0, testA1.nodeCount)
@@ -224,10 +228,14 @@ class ObjTestTest {
 			assertEquals(3, testA1.nodeCount)
 
 			this.testRepository.store(testA1, userId, now)
+			assertEquals(1, testA1.meta.version)
+			assertEquals(2, testA1.meta.transitionList.size)
 		}
 
 		{
 			val testA2 = this.testRepository.load(testAId)
+			assertEquals(1, testA2.meta.version)
+			assertEquals(2, testA2.meta.transitionList.size)
 			assertEquals(3, testA2.nodeCount)
 
 			assertTrue(testA2.nodeList.any { n -> "A" == n.shortText })
@@ -242,10 +250,14 @@ class ObjTestTest {
 			assertEquals(3, testA2.nodeCount)
 
 			this.testRepository.store(testA2, userId, now)
+			assertEquals(2, testA2.meta.version)
+			assertEquals(3, testA2.meta.transitionList.size)
 		}
 
 		{
 			val testA3 = this.testRepository.load(testAId)
+			assertEquals(2, testA3.meta.version)
+			assertEquals(3, testA3.meta.transitionList.size)
 			assertEquals(3, testA3.nodeCount)
 
 			assertTrue(testA3.nodeList.any { n -> "A" == n.shortText })

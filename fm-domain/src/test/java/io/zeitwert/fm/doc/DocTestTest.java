@@ -60,6 +60,7 @@ public class DocTestTest {
 		OffsetDateTime now = requestCtx.getCurrentTime();
 
 		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
+		assertEquals(0, testA1.getMeta().getVersion());
 		this.initDocTest(testA1, "One", TYPE_A, userId);
 		// Cast to FMDocCoreBase to access accountId (Kotlin property)
 		testA1.setAccountId(account.getId());
@@ -79,10 +80,13 @@ public class DocTestTest {
 		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 
 		this.docTestRepo.store(testA1, userId, now);
+		assertEquals(1, testA1.getMeta().getVersion());
+		assertEquals(2, testA1.getMeta().getTransitionList().size());
 		testA1 = null;
 
 		DocTest testA2 = this.docTestRepo.get(testA_id);
 		Integer testA2_idHash = System.identityHashCode(testA2);
+		assertEquals(1, testA2.getMeta().getVersion());
 		assertNotEquals(testA1_idHash, testA2_idHash);
 
 		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");

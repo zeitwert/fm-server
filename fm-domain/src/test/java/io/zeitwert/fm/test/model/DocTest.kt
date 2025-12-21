@@ -36,14 +36,14 @@ interface DocTest :
 
 	val refDoc: DocTest?
 
-	fun hasTestType(testType: CodeTestType?): Boolean
+	fun hasTestType(testType: CodeTestType): Boolean
 
-	val testTypeSet: MutableSet<CodeTestType?>?
+	val testTypeSet: MutableSet<CodeTestType>
 
 	fun clearTestTypeSet()
 
-	fun addTestType(testType: CodeTestType?)
+	fun addTestType(testType: CodeTestType)
 
-	fun removeTestType(testType: CodeTestType?)
+	fun removeTestType(testType: CodeTestType)
 
 }

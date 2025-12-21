@@ -4,9 +4,10 @@ import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component("objTestPersistenceProvider")
 open class ObjTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : AggregateSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
+) : FMObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
 	SqlRecordMapper<ObjTest> {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
@@ -52,11 +53,22 @@ open class ObjTestSqlPersistenceProviderImpl(
 	}
 
 	override fun doLoadParts(aggregate: ObjTest) {
-		val nodePP = ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+		super.doLoadParts(aggregate)
+		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
-			loadParts(aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>)
+			loadParts(
+				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>,
+				"test.nodeList",
+			)
+			endLoad()
 		}
-		nodePP.endLoad()
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginLoad()
+			items("test.testTypeSet").forEach {
+				aggregate.addTestType(CodeTestType.getTestType(it)!!)
+			}
+			endLoad()
+		}
 	}
 
 	override fun storeRecord(aggregate: ObjTest) {
@@ -65,14 +77,6 @@ open class ObjTestSqlPersistenceProviderImpl(
 			record.insert()
 		} else {
 			record.update()
-		}
-	}
-
-	override fun doStoreParts(aggregate: ObjTest) {
-		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
-			beginStore()
-			addParts(aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>)
-			endStore()
 		}
 	}
 
@@ -95,6 +99,23 @@ open class ObjTestSqlPersistenceProviderImpl(
 		record.refTestId = aggregate.refObjId as? Int
 		record.testTypeId = aggregate.testType?.id
 		return record
+	}
+
+	override fun doStoreParts(aggregate: ObjTest) {
+		super.doStoreParts(aggregate)
+		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addParts(
+				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>,
+				"test.nodeList",
+			)
+			endStore()
+		}
+		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addItems("test.testTypeSet", aggregate.testTypeSet.map { it.id })
+			endStore()
+		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =
