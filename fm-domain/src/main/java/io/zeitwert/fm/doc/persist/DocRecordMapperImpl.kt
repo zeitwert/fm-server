@@ -1,12 +1,11 @@
 package io.zeitwert.fm.doc.persist
 
 import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordLoader
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.model.db.Sequences
@@ -14,26 +13,27 @@ import io.zeitwert.fm.doc.model.db.Tables
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
 import org.jooq.DSLContext
 
-class DocRecordMapperImpl(
+class DocRecordLoaderImpl(
 	val dslContext: DSLContext,
-) : SqlAggregateRecordMapper<Doc, DocRecord>,
-	SqlIdProvider<Doc> {
+) : SqlRecordLoader<Aggregate, DocRecord>,
+	SqlIdProvider {
 
 	override fun nextAggregateId(): Any = dslContext.nextval(Sequences.DOC_ID_SEQ).toInt()
 
-	override fun <P : Part<Doc>> nextPartId(
-		aggregate: Doc,
+	override fun <P : Part<*>> nextPartId(
+		aggregate: Aggregate,
 		partClass: Class<P>,
-	): Int = (aggregate as AggregateSPI).nextPartId(partClass)
+	): Int = dslContext.nextval(Sequences.DOC_PART_ID_SEQ).toInt()
+	// (aggregate as AggregateSPI).nextPartId(partClass)
 
-	override fun loadRecord(aggregateId: Any): DocRecord {
-		val record = dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no DOC record found for $aggregateId")
+	override fun loadRecord(aggregate: Aggregate): DocRecord {
+		val record = dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(aggregate.id as Int))
+		return record ?: throw IllegalArgumentException("no DOC record found for ${aggregate.id}")
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun mapFromRecord(
-		aggregate: Doc,
+		aggregate: Aggregate,
 		record: DocRecord,
 	) {
 		// doc base fields
@@ -59,8 +59,9 @@ class DocRecordMapperImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: Doc): DocRecord {
+	override fun mapToRecord(aggregate: Aggregate): DocRecord {
 		val record = dslContext.newRecord(Tables.DOC)
+		aggregate as Doc
 
 		record.id = aggregate.id as Int
 		record.docTypeId = aggregate.meta.docTypeId

@@ -1,11 +1,11 @@
-package io.zeitwert.fm.contact.persist.jooq
+package io.zeitwert.fm.contact.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component
 open class ObjContactPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 ) : SqlAggregatePersistenceProviderBase<ObjContact, ObjRecord, ObjContactRecord>(ObjContact::class.java),
-	SqlAggregateRecordMapper<ObjContact, ObjContactRecord> {
+	SqlRecordMapper<ObjContact, ObjContactRecord> {
 
 	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
 
@@ -42,9 +42,9 @@ open class ObjContactPersistenceProviderImpl(
 		record: ObjContactRecord,
 	) {
 		aggregate.setValueByPath("accountId", record.accountId)
-		aggregate.setValueByPath("contactRole", CodeContactRole.getContactRole(record.contactRoleId))
-		aggregate.setValueByPath("salutation", CodeSalutation.getSalutation(record.salutationId))
-		aggregate.setValueByPath("title", CodeTitle.getTitle(record.titleId))
+		aggregate.setValueByPath("contactRole", CodeContactRole.Enumeration.getContactRole(record.contactRoleId))
+		aggregate.setValueByPath("salutation", CodeSalutation.Enumeration.getSalutation(record.salutationId))
+		aggregate.setValueByPath("title", CodeTitle.Enumeration.getTitle(record.titleId))
 		aggregate.setValueByPath("firstName", record.firstName)
 		aggregate.setValueByPath("lastName", record.lastName)
 		aggregate.setValueByPath("birthDate", record.birthDate)
@@ -115,4 +115,3 @@ open class ObjContactPersistenceProviderImpl(
 	}
 
 }
-

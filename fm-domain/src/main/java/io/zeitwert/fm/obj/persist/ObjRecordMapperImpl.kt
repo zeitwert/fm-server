@@ -1,12 +1,11 @@
 package io.zeitwert.fm.obj.persist
 
 import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordLoader
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.model.db.Sequences
@@ -14,26 +13,27 @@ import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import org.jooq.DSLContext
 
-class ObjRecordMapperImpl(
+class ObjRecordLoaderImpl(
 	val dslContext: DSLContext,
-) : SqlAggregateRecordMapper<Obj, ObjRecord>,
-	SqlIdProvider<Obj> {
+) : SqlRecordLoader<Aggregate, ObjRecord>,
+	SqlIdProvider {
 
 	override fun nextAggregateId(): Any = dslContext.nextval(Sequences.OBJ_ID_SEQ).toInt()
 
-	override fun <P : Part<Obj>> nextPartId(
-		aggregate: Obj,
+	override fun <P : Part<*>> nextPartId(
+		aggregate: Aggregate,
 		partClass: Class<P>,
-	): Int = (aggregate as AggregateSPI).nextPartId(partClass)
+	): Int = dslContext.nextval(Sequences.OBJ_PART_ID_SEQ).toInt()
+	// (aggregate as AggregateSPI).nextPartId(partClass)
 
-	override fun loadRecord(aggregateId: Any): ObjRecord {
-		val record = dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ record found for $aggregateId")
+	override fun loadRecord(aggregate: Aggregate): ObjRecord {
+		val record = dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(aggregate.id as Int))
+		return record ?: throw IllegalArgumentException("no OBJ record found for ${aggregate.id}")
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun mapFromRecord(
-		aggregate: Obj,
+		aggregate: Aggregate,
 		record: ObjRecord,
 	) {
 		// check(aggregate.id != null) { "id defined" }
@@ -58,8 +58,9 @@ class ObjRecordMapperImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: Obj): ObjRecord {
+	override fun mapToRecord(aggregate: Aggregate): ObjRecord {
 		val record = dslContext.newRecord(Tables.OBJ)
+		aggregate as Obj
 
 		record.id = aggregate.id as Int
 		record.objTypeId = aggregate.meta.objTypeId

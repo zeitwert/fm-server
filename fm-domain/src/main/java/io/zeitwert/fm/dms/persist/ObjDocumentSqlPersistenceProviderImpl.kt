@@ -1,11 +1,11 @@
-package io.zeitwert.fm.dms.persist.jooq
+package io.zeitwert.fm.dms.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.db.Tables
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component
 open class ObjDocumentPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 ) : SqlAggregatePersistenceProviderBase<ObjDocument, ObjRecord, ObjDocumentRecord>(ObjDocument::class.java),
-	SqlAggregateRecordMapper<ObjDocument, ObjDocumentRecord> {
+	SqlRecordMapper<ObjDocument, ObjDocumentRecord> {
 
 	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
 
@@ -44,10 +44,13 @@ open class ObjDocumentPersistenceProviderImpl(
 	) {
 		aggregate.setValueByPath("accountId", record.accountId)
 		aggregate.setValueByPath("name", record.name)
-		aggregate.setValueByPath("documentKind", CodeDocumentKind.getDocumentKind(record.documentKindId))
-		aggregate.setValueByPath("documentCategory", CodeDocumentCategory.getDocumentCategory(record.documentCategoryId))
+		aggregate.setValueByPath("documentKind", CodeDocumentKind.Enumeration.getDocumentKind(record.documentKindId))
+		aggregate.setValueByPath(
+			"documentCategory",
+			CodeDocumentCategory.Enumeration.getDocumentCategory(record.documentCategoryId)
+		)
 		aggregate.setValueByPath("templateDocumentId", record.templateDocumentId)
-		aggregate.setValueByPath("contentKind", CodeContentKind.getContentKind(record.contentKindId))
+		aggregate.setValueByPath("contentKind", CodeContentKind.Enumeration.getContentKind(record.contentKindId))
 	}
 
 	@Suppress("UNCHECKED_CAST")
@@ -110,7 +113,7 @@ open class ObjDocumentPersistenceProviderImpl(
 
 		val query = getContentWithMaxVersionQuery(document)
 		val contentTypeId = dslContext.fetchOne(query)?.contentTypeId ?: return null
-		return CodeContentType.getContentType(contentTypeId)
+		return CodeContentType.Enumeration.getContentType(contentTypeId)
 	}
 
 	fun getContent(document: ObjDocument): ByteArray? {

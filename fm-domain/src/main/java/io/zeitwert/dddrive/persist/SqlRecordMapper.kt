@@ -3,9 +3,9 @@ package io.zeitwert.dddrive.persist
 import io.dddrive.core.ddd.model.Aggregate
 import org.jooq.UpdatableRecord
 
-interface SqlAggregateRecordMapper<A : Aggregate, R : UpdatableRecord<R>> {
+interface SqlRecordLoader<A : Aggregate, R : UpdatableRecord<R>> {
 
-	fun loadRecord(aggregateId: Any): R
+	fun loadRecord(aggregate: A): R
 
 	fun mapFromRecord(
 		aggregate: A,
@@ -16,7 +16,7 @@ interface SqlAggregateRecordMapper<A : Aggregate, R : UpdatableRecord<R>> {
 
 	fun storeRecord(
 		record: R,
-		aggregate: Aggregate,
+		aggregate: A,
 	)
 
 	fun getAll(tenantId: Any): List<Any>

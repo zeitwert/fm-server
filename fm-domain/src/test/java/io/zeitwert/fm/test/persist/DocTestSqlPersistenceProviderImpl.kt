@@ -1,11 +1,11 @@
-package io.zeitwert.fm.test.persist.jooq
+package io.zeitwert.fm.test.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
@@ -21,10 +21,10 @@ import org.springframework.stereotype.Component
  * jOOQ-based persistence provider for DocTest aggregates.
  */
 @Component("docTestPersistenceProvider")
-open class DocTestPersistenceProvider(
+open class DocTestPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 ) : SqlAggregatePersistenceProviderBase<DocTest, DocRecord, DocTestRecord>(DocTest::class.java),
-	SqlAggregateRecordMapper<DocTest, DocTestRecord> {
+	SqlRecordMapper<DocTest, DocTestRecord> {
 
 	override val idProvider: SqlIdProvider<Doc> get() = baseRecordMapper
 
@@ -53,7 +53,7 @@ open class DocTestPersistenceProvider(
 		aggregate.setValueByPath("refObjId", record.refObjId)
 		aggregate.setValueByPath("refDocId", record.refDocId)
 		record.testTypeId?.let { testTypeId ->
-			aggregate.setValueByPath("testType", CodeTestType.getTestType(testTypeId))
+			aggregate.setValueByPath("testType", CodeTestType.Enumeration.getTestType(testTypeId))
 		}
 	}
 

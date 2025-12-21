@@ -1,12 +1,12 @@
-package io.zeitwert.fm.task.persist.jooq
+package io.zeitwert.fm.task.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 open class DocTaskPersistenceProvider(
 	override val dslContext: DSLContext,
 ) : SqlAggregatePersistenceProviderBase<DocTask, DocRecord, DocTaskRecord>(DocTask::class.java),
-	SqlAggregateRecordMapper<DocTask, DocTaskRecord> {
+	SqlRecordMapper<DocTask, DocTaskRecord> {
 
 	override val idProvider: SqlIdProvider<Doc> get() = baseRecordMapper
 
@@ -48,7 +48,7 @@ open class DocTaskPersistenceProvider(
 		aggregate.setValueByPath("dueAt", record.dueAt)
 		aggregate.setValueByPath("remindAt", record.remindAt)
 		record.priorityId?.let { priorityId ->
-			aggregate.setValueByPath("priority", CodeTaskPriority.getPriority(priorityId))
+			aggregate.setValueByPath("priority", CodeTaskPriority.Enumeration.getPriority(priorityId))
 		}
 	}
 

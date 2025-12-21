@@ -1,11 +1,11 @@
-package io.zeitwert.fm.collaboration.persist.jooq
+package io.zeitwert.fm.collaboration.persist
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
-import io.zeitwert.dddrive.persist.SqlAggregatePersistenceProviderBase
-import io.zeitwert.dddrive.persist.SqlAggregateRecordMapper
 import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 open class ObjNotePersistenceProviderImpl(
 	override val dslContext: DSLContext,
 ) : SqlAggregatePersistenceProviderBase<ObjNote, ObjRecord, ObjNoteRecord>(ObjNote::class.java),
-	SqlAggregateRecordMapper<ObjNote, ObjNoteRecord> {
+	SqlRecordMapper<ObjNote, ObjNoteRecord> {
 
 	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
 
@@ -40,7 +40,7 @@ open class ObjNotePersistenceProviderImpl(
 		record: ObjNoteRecord,
 	) {
 		aggregate.setValueByPath("relatedToId", record.relatedToId)
-		aggregate.setValueByPath("noteType", CodeNoteType.getNoteType(record.noteTypeId))
+		aggregate.setValueByPath("noteType", CodeNoteType.Enumeration.getNoteType(record.noteTypeId))
 		aggregate.setValueByPath("subject", record.subject)
 		aggregate.setValueByPath("content", record.content)
 		aggregate.setValueByPath("isPrivate", record.isPrivate)
@@ -97,4 +97,3 @@ open class ObjNotePersistenceProviderImpl(
 	}
 
 }
-

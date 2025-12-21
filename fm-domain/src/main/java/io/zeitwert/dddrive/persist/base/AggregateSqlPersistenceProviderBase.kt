@@ -1,8 +1,10 @@
-package io.zeitwert.dddrive.persist
+package io.zeitwert.dddrive.persist.base
 
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.SqlIdProvider
+import io.zeitwert.dddrive.persist.SqlRecordMapper
 import org.jooq.DSLContext
 import org.jooq.UpdatableRecord
 
@@ -21,9 +23,9 @@ abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : Updatable
 
 	abstract val idProvider: SqlIdProvider<out Aggregate>
 
-	abstract val baseRecordMapper: SqlAggregateRecordMapper<out Aggregate, BR>
+	abstract val baseRecordMapper: SqlRecordMapper<out Aggregate, BR>
 
-	abstract val extnRecordMapper: SqlAggregateRecordMapper<A, ER>
+	abstract val extnRecordMapper: SqlRecordMapper<A, ER>
 
 	override fun isValidId(id: Any): Boolean = id is Int
 
@@ -50,7 +52,7 @@ abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : Updatable
 			val br = baseRecordMapper.loadRecord(id)
 			aggregate.meta.disableCalc()
 			try {
-				(baseRecordMapper as SqlAggregateRecordMapper<A, BR>).mapFromRecord(aggregate, br)
+				(baseRecordMapper as SqlRecordMapper<A, BR>).mapFromRecord(aggregate, br)
 				extnRecordMapper.mapFromRecord(aggregate, er)
 			} finally {
 				aggregate.meta.enableCalc()
@@ -62,7 +64,7 @@ abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : Updatable
 	@Suppress("UNCHECKED_CAST")
 	override fun doStore(aggregate: A) {
 		dslContext.transaction { _ ->
-			val br = (baseRecordMapper as SqlAggregateRecordMapper<A, BR>).mapToRecord(aggregate)
+			val br = (baseRecordMapper as SqlRecordMapper<A, BR>).mapToRecord(aggregate)
 			val er = extnRecordMapper.mapToRecord(aggregate)
 			try {
 				baseRecordMapper.storeRecord(br, aggregate)

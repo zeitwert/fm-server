@@ -1,10 +1,15 @@
 package io.zeitwert.dddrive.persist
 
-import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.enums.CodePartListType
+import org.jooq.DSLContext
 
-interface SqlPartPersistenceProvider<A : Aggregate, P : Part<A>> {
+interface SqlPartPersistenceProvider<P : Part<*>> {
+
+	fun init(
+		aggregateId: Any,
+		dslContext: DSLContext,
+	)
 
 	/**
 	 * Begin a load sequence.
@@ -12,13 +17,12 @@ interface SqlPartPersistenceProvider<A : Aggregate, P : Part<A>> {
 	 *
 	 * @param aggregateId        aggregate id
 	 */
-	fun beginLoad(aggregateId: Any)
+	fun beginLoad()
 
 	/**
 	 * Get the parts for a given aggregate-level part-list.
 	 */
 	fun getParts(
-		aggregateId: Any,
 		partListType: CodePartListType,
 	): List<P>
 
@@ -26,7 +30,6 @@ interface SqlPartPersistenceProvider<A : Aggregate, P : Part<A>> {
 	 * Get the parts of a given part-level part-list.
 	 */
 	fun getParts(
-		aggregateId: Any,
 		parentPartId: Int,
 		partListType: CodePartListType,
 	): List<P>
@@ -34,15 +37,15 @@ interface SqlPartPersistenceProvider<A : Aggregate, P : Part<A>> {
 	/**
 	 * Close the load sequence (free data structures).
 	 */
-	fun endLoad(aggregateId: Any)
+	fun endLoad()
 
 	/**
 	 * Begin a store sequence.
 	 */
-	fun beginStore(aggregateId: Any)
+	fun beginStore()
 
 	/**
-	 * Add a part to the aggregates list.
+	 * Add a part to the list.
 	 */
 	fun addPart(
 		aggregateId: Any,
@@ -50,8 +53,8 @@ interface SqlPartPersistenceProvider<A : Aggregate, P : Part<A>> {
 	)
 
 	/**
-	 * Store all the parts and close the store sequence (free data structures).
+	 * Store all the parts (and close the store sequence).
 	 */
-	fun endStore(aggregateId: Any)
+	fun endStore()
 
 }
