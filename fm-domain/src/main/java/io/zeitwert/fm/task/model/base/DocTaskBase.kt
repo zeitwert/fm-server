@@ -1,5 +1,6 @@
 package io.zeitwert.fm.task.model.base
 
+import io.dddrive.core.property.model.BaseProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -12,22 +13,14 @@ import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
 
 abstract class DocTaskBase(
-	repository: DocTaskRepository,
+	override val repository: DocTaskRepository,
 	isNew: Boolean,
 ) : FMDocBase(repository, isNew),
 	DocTask,
 	AggregateWithNotesMixin {
 
-	private val _relatedObjId = addBaseProperty("relatedObjId", Any::class.java)
-	private val _relatedDocId = addBaseProperty("relatedDocId", Any::class.java)
-	private val _subject = addBaseProperty("subject", String::class.java)
-	private val _content = addBaseProperty("content", String::class.java)
-	private val _isPrivate = addBaseProperty("isPrivate", Boolean::class.java)
-	private val _priority = addEnumProperty("priority", CodeTaskPriority::class.java)
-	private val _dueAt = addBaseProperty("dueAt", OffsetDateTime::class.java)
-	private val _remindAt = addBaseProperty("remindAt", OffsetDateTime::class.java)
-
-	override val repository get() = super.repository as DocTaskRepository
+	private lateinit var _relatedObjId: BaseProperty<Any>
+	private lateinit var _relatedDocId: BaseProperty<Any>
 
 	fun accountRepository() = directory.getRepository(ObjAccount::class.java) as ObjAccountRepository
 
@@ -35,13 +28,25 @@ abstract class DocTaskBase(
 
 	override fun aggregate(): DocTask = this
 
+	override fun doInit() {
+		super.doInit()
+		_relatedObjId = addBaseProperty("relatedObjId", Any::class.java)
+		_relatedDocId = addBaseProperty("relatedDocId", Any::class.java)
+		addBaseProperty("subject", String::class.java)
+		addBaseProperty("content", String::class.java)
+		addBaseProperty("isPrivate", Boolean::class.java)
+		addEnumProperty("priority", CodeTaskPriority::class.java)
+		addBaseProperty("dueAt", OffsetDateTime::class.java)
+		addBaseProperty("remindAt", OffsetDateTime::class.java)
+	}
+
 	override fun doCalcAll() {
 		super.doCalcAll()
 		this.calcCaption()
 	}
 
 	private fun calcCaption() {
-		this._caption.value = subject
+		setCaption(subject ?: "Aufgabe")
 	}
 
 	override val account get() = if (accountId != null) accountRepository().get(accountId!!) else null
@@ -52,7 +57,7 @@ abstract class DocTaskBase(
 			if (id == null) {
 				_relatedObjId.value = null
 				_relatedDocId.value = null
-			} else {
+			} else { // TODO determine type of id
 				_relatedObjId.value = id
 				_relatedDocId.value = null
 			}

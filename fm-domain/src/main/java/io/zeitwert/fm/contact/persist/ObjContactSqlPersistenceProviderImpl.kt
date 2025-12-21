@@ -1,11 +1,8 @@
 package io.zeitwert.fm.contact.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
@@ -13,51 +10,58 @@ import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 /** Persistence provider for ObjContact aggregates. */
 @Component("objContactPersistenceProvider")
-open class ObjContactPersistenceProviderImpl(
+open class ObjContactSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjContact, ObjRecord, ObjContactRecord>(ObjContact::class.java),
-	SqlRecordMapper<ObjContact, ObjContactRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
+	SqlRecordMapper<ObjContact> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjContactRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_CONTACT, Tables.OBJ_CONTACT.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_CONTACT record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjContact) {
+		val record = dslContext.fetchOne(Tables.OBJ_CONTACT, Tables.OBJ_CONTACT.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_CONTACT record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjContact,
 		record: ObjContactRecord,
 	) {
-		aggregate.setValueByPath("accountId", record.accountId)
-		aggregate.setValueByPath("contactRole", CodeContactRole.Enumeration.getContactRole(record.contactRoleId))
-		aggregate.setValueByPath("salutation", CodeSalutation.Enumeration.getSalutation(record.salutationId))
-		aggregate.setValueByPath("title", CodeTitle.Enumeration.getTitle(record.titleId))
-		aggregate.setValueByPath("firstName", record.firstName)
-		aggregate.setValueByPath("lastName", record.lastName)
-		aggregate.setValueByPath("birthDate", record.birthDate)
-		aggregate.setValueByPath("phone", record.phone)
-		aggregate.setValueByPath("mobile", record.mobile)
-		aggregate.setValueByPath("email", record.email)
-		aggregate.setValueByPath("description", record.description)
+		aggregate.accountId = record.accountId
+		aggregate.contactRole = CodeContactRole.Enumeration.getContactRole(record.contactRoleId)
+		aggregate.salutation = CodeSalutation.Enumeration.getSalutation(record.salutationId)
+		aggregate.title = CodeTitle.Enumeration.getTitle(record.titleId)
+		aggregate.firstName = record.firstName
+		aggregate.lastName = record.lastName
+		aggregate.birthDate = record.birthDate
+		aggregate.phone = record.phone
+		aggregate.mobile = record.mobile
+		aggregate.email = record.email
+		aggregate.description = record.description
+	}
 
-		// TODO: Load address parts - to be implemented later
+	override fun storeRecord(aggregate: ObjContact) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: ObjContact): ObjContactRecord {
+	private fun mapToRecord(aggregate: ObjContact): ObjContactRecord {
 		val record = dslContext.newRecord(Tables.OBJ_CONTACT)
 
 		record.objId = aggregate.id as Int
@@ -75,19 +79,6 @@ open class ObjContactPersistenceProviderImpl(
 		record.description = aggregate.description
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjContactRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
-
-		// TODO: Store address parts - to be implemented later
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

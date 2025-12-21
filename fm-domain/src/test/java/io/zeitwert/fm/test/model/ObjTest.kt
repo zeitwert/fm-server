@@ -26,32 +26,32 @@ interface ObjTest :
 
 	var testType: CodeTestType?
 
-	var refTestId: Int?
+	var refObjId: Any?
 
-	val refTest: ObjTest?
+	val refObj: ObjTest?
 
-	fun hasTestType(testType: CodeTestType?): Boolean
+	fun hasTestType(testType: CodeTestType): Boolean
 
-	val testTypeSet: MutableSet<CodeTestType?>?
+	val testTypeSet: Set<CodeTestType>
 
 	fun clearTestTypeSet()
 
-	fun addTestType(testType: CodeTestType?)
+	fun addTestType(testType: CodeTestType)
 
-	fun removeTestType(testType: CodeTestType?)
+	fun removeTestType(testType: CodeTestType)
 
-	val nodeCount: Int?
+	val nodeCount: Int
 
-	fun getNode(seqNr: Int?): ObjTestPartNode?
+	fun getNode(seqNr: Int): ObjTestPartNode
 
-	val nodeList: MutableList<ObjTestPartNode?>?
+	val nodeList: List<ObjTestPartNode>
 
-	fun getNodeById(nodeId: Int?): ObjTestPartNode?
+	fun getNodeById(nodeId: Int): ObjTestPartNode
 
 	fun clearNodeList()
 
-	fun addNode(): ObjTestPartNode?
+	fun addNode(): ObjTestPartNode
 
-	fun removeNode(nodeId: Int?)
+	fun removeNode(nodeId: Int)
 
 }

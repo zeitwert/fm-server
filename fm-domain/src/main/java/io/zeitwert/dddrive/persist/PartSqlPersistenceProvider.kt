@@ -1,38 +1,30 @@
 package io.zeitwert.dddrive.persist
 
+import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.ddd.model.enums.CodePartListType
+import io.dddrive.core.property.model.PartListProperty
 import org.jooq.DSLContext
 
-interface SqlPartPersistenceProvider<P : Part<*>> {
+interface PartSqlPersistenceProvider<P : Part<*>> {
 
-	fun init(
-		aggregateId: Any,
-		dslContext: DSLContext,
-	)
+	val dslContext: DSLContext
+
+	val aggregate: Aggregate
 
 	/**
 	 * Begin a load sequence.
-	 * This actually loads all the parts for the given aggregateId from the database.
+	 * This actually loads all the parts for the given aggregate from the database.
 	 *
-	 * @param aggregateId        aggregate id
+	 * @param aggregate          aggregate
 	 */
 	fun beginLoad()
 
 	/**
-	 * Get the parts for a given aggregate-level part-list.
+	 * Load the parts into a given part-list.
 	 */
-	fun getParts(
-		partListType: CodePartListType,
-	): List<P>
-
-	/**
-	 * Get the parts of a given part-level part-list.
-	 */
-	fun getParts(
-		parentPartId: Int,
-		partListType: CodePartListType,
-	): List<P>
+	fun loadParts(
+		partList: PartListProperty<P>,
+	)
 
 	/**
 	 * Close the load sequence (free data structures).
@@ -45,11 +37,10 @@ interface SqlPartPersistenceProvider<P : Part<*>> {
 	fun beginStore()
 
 	/**
-	 * Add a part to the list.
+	 * Add the parts from a part-list.
 	 */
-	fun addPart(
-		aggregateId: Any,
-		part: P,
+	fun addParts(
+		partList: PartListProperty<P>,
 	)
 
 	/**

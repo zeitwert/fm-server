@@ -21,7 +21,7 @@ import java.time.LocalDate
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
-class ObjTestTest2 {
+class ObjTestTest {
 
 	companion object {
 
@@ -199,44 +199,62 @@ class ObjTestTest2 {
 		val userId = requestCtx.userId
 		val now = requestCtx.currentTime
 
-		val testA1 = this.testRepository.create(tenantId, userId, now)
-		requireNotNull(testA1)
+		lateinit var testAId: Any
 
-		val testAId = testA1.id
-		initObjTest(testA1, "One", TYPE_A)
-		assertEquals(0, testA1.nodeCount)
+		{
+			val testA1 = this.testRepository.create(tenantId, userId, now)
+			requireNotNull(testA1)
 
-		val nodeA1 = testA1.addNode()
-		requireNotNull(nodeA1)
-		nodeA1.shortText = "A"
-		assertEquals(1, testA1.nodeCount)
+			initObjTest(testA1, "One", TYPE_A)
+			assertEquals(0, testA1.nodeCount)
 
-		val nodeB1 = testA1.addNode()
-		requireNotNull(nodeB1)
-		nodeB1.shortText = "B"
-		assertEquals(2, testA1.nodeCount)
+			testA1.addNode().apply { shortText = "A" }
+			assertEquals(1, testA1.nodeCount)
 
-		val nodeC1 = testA1.addNode()
-		requireNotNull(nodeC1)
-		nodeC1.shortText = "C"
-		assertEquals(3, testA1.nodeCount)
+			val nodeB1 = testA1.addNode().apply { shortText = "B" }
+			assertEquals(2, testA1.nodeCount)
 
-		testA1.removeNode(nodeB1.id)
-		assertEquals(2, testA1.nodeCount)
+			testA1.addNode().apply { shortText = "C" }
+			assertEquals(3, testA1.nodeCount)
 
-		val nodeD1 = testA1.addNode()
-		nodeD1.shortText = "D"
-		assertEquals(3, testA1.nodeCount)
+			testA1.removeNode(nodeB1.id)
+			assertEquals(2, testA1.nodeCount)
 
-		this.testRepository.store(testA1, userId, now)
+			testA1.addNode().apply { shortText = "D" }
+			assertEquals(3, testA1.nodeCount)
 
-		val testA2 = this.testRepository.load(testAId)
-		assertEquals(3, testA2.nodeCount)
+			this.testRepository.store(testA1, userId, now)
+		}
 
-		assertTrue(testA2.nodeList.stream().anyMatch { n -> "A" == n.shortText })
-		assertTrue(testA2.nodeList.stream().noneMatch { n -> "B" == n.shortText })
-		assertTrue(testA2.nodeList.stream().anyMatch { n -> "C" == n.shortText })
-		assertTrue(testA2.nodeList.stream().anyMatch { n -> "D" == n.shortText })
+		{
+			val testA2 = this.testRepository.load(testAId)
+			assertEquals(3, testA2.nodeCount)
+
+			assertTrue(testA2.nodeList.any { n -> "A" == n.shortText })
+			assertTrue(testA2.nodeList.none { n -> "B" == n.shortText })
+			assertTrue(testA2.nodeList.any { n -> "C" == n.shortText })
+			assertTrue(testA2.nodeList.any { n -> "D" == n.shortText })
+
+			testA2.removeNode(testA2.nodeList.first { n -> "C" == n.shortText }.id)
+			assertEquals(2, testA2.nodeCount)
+
+			testA2.addNode().apply { shortText = "E" }
+			assertEquals(3, testA2.nodeCount)
+
+			this.testRepository.store(testA2, userId, now)
+		}
+
+		{
+			val testA3 = this.testRepository.load(testAId)
+			assertEquals(3, testA3.nodeCount)
+
+			assertTrue(testA3.nodeList.any { n -> "A" == n.shortText })
+			assertTrue(testA3.nodeList.none { n -> "B" == n.shortText })
+			assertTrue(testA3.nodeList.none { n -> "C" == n.shortText })
+			assertTrue(testA3.nodeList.any { n -> "D" == n.shortText })
+			assertTrue(testA3.nodeList.any { n -> "E" == n.shortText })
+		}
+
 	}
 
 	private fun initObjTest(

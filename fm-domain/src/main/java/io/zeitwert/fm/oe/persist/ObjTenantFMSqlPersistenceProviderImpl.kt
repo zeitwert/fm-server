@@ -1,14 +1,11 @@
 package io.zeitwert.fm.oe.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
 import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.db.Tables
@@ -18,37 +15,48 @@ import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objTenantFMPersistenceProvider")
-open class ObjTenantFMPersistenceProviderImpl(
+open class ObjTenantFMSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjTenant, ObjRecord, ObjTenantRecord>(ObjTenant::class.java),
-	SqlRecordMapper<ObjTenant, ObjTenantRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
+	SqlRecordMapper<ObjTenant> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjTenantRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_TENANT record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjTenant) {
+		val record = dslContext.fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_TENANT record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjTenant,
 		record: ObjTenantRecord,
 	) {
-		aggregate.setValueByPath("tenantType", CodeTenantType.getTenantType(record.tenantTypeId))
-		aggregate.setValueByPath("name", record.name)
-		aggregate.setValueByPath("description", record.description)
-		aggregate.setValueByPath("inflationRate", record.inflationRate)
-		aggregate.setValueByPath("discountRate", record.discountRate)
+		aggregate as ObjTenantFM
+		aggregate.tenantType = CodeTenantType.getTenantType(record.tenantTypeId)
+		aggregate.name = record.name
+		aggregate.description = record.description
+		aggregate.inflationRate = record.inflationRate
+		aggregate.discountRate = record.discountRate
 		aggregate.setValueByPath("logoImageId", record.logoImgId)
 	}
 
+	override fun storeRecord(aggregate: ObjTenant) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
+	}
+
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: ObjTenant): ObjTenantRecord {
+	private fun mapToRecord(aggregate: ObjTenant): ObjTenantRecord {
 		val record = dslContext.newRecord(Tables.OBJ_TENANT)
 		aggregate as ObjTenantFM
 
@@ -61,17 +69,6 @@ open class ObjTenantFMPersistenceProviderImpl(
 		record.logoImgId = aggregate.logoImageId as? Int
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjTenantRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

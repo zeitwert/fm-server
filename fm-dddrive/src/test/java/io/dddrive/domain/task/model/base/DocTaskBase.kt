@@ -2,6 +2,7 @@ package io.dddrive.domain.task.model.base
 
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.doc.model.base.DocBase
+import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
 import io.dddrive.domain.task.model.DocTask
 import io.dddrive.domain.task.model.DocTaskPartComment
@@ -10,18 +11,23 @@ import io.dddrive.domain.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
 
 abstract class DocTaskBase(
-	repository: DocTaskRepository,
+	override val repository: DocTaskRepository,
 	isNew: Boolean,
 ) : DocBase(repository, isNew),
 	DocTask {
 
-	protected val _subject = this.addBaseProperty("subject", String::class.java)
-	protected val _content = this.addBaseProperty("content", String::class.java)
-	protected val _isPrivate = this.addBaseProperty("isPrivate", Boolean::class.java)
-	protected val _priority = this.addEnumProperty("priority", CodeTaskPriority::class.java)
-	protected val _dueAt = this.addBaseProperty("dueAt", OffsetDateTime::class.java)
-	protected val _remindAt = this.addBaseProperty("remindAt", OffsetDateTime::class.java)
-	protected val _commentList = this.addPartListProperty("commentList", DocTaskPartComment::class.java)
+	private lateinit var _commentList: PartListProperty<DocTaskPartComment>
+
+	override fun doInit() {
+		super.doInit()
+		this.addBaseProperty("subject", String::class.java)
+		this.addBaseProperty("content", String::class.java)
+		this.addBaseProperty("isPrivate", Boolean::class.java)
+		this.addEnumProperty("priority", CodeTaskPriority::class.java)
+		this.addBaseProperty("dueAt", OffsetDateTime::class.java)
+		this.addBaseProperty("remindAt", OffsetDateTime::class.java)
+		_commentList = this.addPartListProperty("commentList", DocTaskPartComment::class.java)
+	}
 
 	override fun doAddPart(
 		property: Property<*>,

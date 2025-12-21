@@ -4,7 +4,6 @@ import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -63,7 +62,7 @@ public class DocTestTest {
 		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
 		this.initDocTest(testA1, "One", TYPE_A, userId);
 		// Cast to FMDocCoreBase to access accountId (Kotlin property)
-		((FMDocBase) testA1).setAccountId(account.getId());
+		testA1.setAccountId(account.getId());
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
 		assertNotNull(testA1.getTenantId(), "tenant not null");
@@ -76,7 +75,7 @@ public class DocTestTest {
 		assertNotNull(testA1.getMeta().getCaseStage(), "caseStage not null");
 		assertEquals("test.new", testA1.getMeta().getCaseStage().getId(), "caseStage.id");
 		assertEquals(1, testA1.getMeta().getTransitionList().size());
-		assertEquals(account.getId(), ((FMDocBase) testA1).getAccountId(), "account id");
+		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 
 		this.docTestRepo.store(testA1, userId, now);
@@ -89,7 +88,7 @@ public class DocTestTest {
 		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
-		assertEquals(account.getId(), ((FMDocBase) testA2).getAccountId(), "account id");
+		assertEquals(account.getId(), testA2.getAccountId(), "account id");
 		assertEquals(account.getId(), testA2.getAccountId(), "account id");
 
 	}

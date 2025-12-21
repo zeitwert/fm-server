@@ -26,6 +26,6 @@ abstract class ObjTestPartNodeBase(
 	private val _json = addBaseProperty("json", JSON::class.java)
 	private val _nr = addBaseProperty("nr", BigDecimal::class.java)
 	private val _testType = addEnumProperty("testType", CodeTestType::class.java)
-	private val _refTest = addReferenceProperty("refTest", ObjTest::class.java)
+	private val _refObj = addReferenceProperty("refObj", ObjTest::class.java)
 
 }

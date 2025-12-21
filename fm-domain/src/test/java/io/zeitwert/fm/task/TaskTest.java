@@ -6,7 +6,6 @@ import io.dddrive.core.oe.model.ObjUser;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.doc.model.base.FMDocBase;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
@@ -139,7 +138,7 @@ public class TaskTest {
 	private void initTask1(DocTask task, Object userId, OffsetDateTime timestamp) {
 		task.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"), userId, timestamp);
 		task.setRelatedToId(RelatedTo.getId());
-		((FMDocBase) task).setAccountId(Account.getId());
+		task.setAccountId(Account.getId());
 		task.setSubject("Todo");
 		task.setContent("content");
 		task.setPrivate(false);
@@ -149,7 +148,7 @@ public class TaskTest {
 
 	private void checkTask1(DocTask task) {
 		assertEquals(task.getRelatedToId(), RelatedTo.getId());
-		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
+		assertEquals(Account.getId(), task.getAccountId(), "account id");
 		assertEquals(Account.getId(), task.getAccountId(), "account id");
 		assertEquals("Todo", task.getSubject());
 		assertEquals("content", task.getContent());
@@ -159,7 +158,7 @@ public class TaskTest {
 	}
 
 	private void initTask2(DocTask task, Object userId, OffsetDateTime timestamp) {
-		assertEquals(Account.getId(), ((FMDocBase) task).getAccountId(), "account id");
+		assertEquals(Account.getId(), task.getAccountId(), "account id");
 		assertEquals(Account.getId(), task.getAccountId(), "account id");
 		task.setSubject("Todos");
 		task.setContent("contents");

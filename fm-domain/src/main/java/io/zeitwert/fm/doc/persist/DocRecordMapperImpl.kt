@@ -5,7 +5,7 @@ import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.doc.model.Doc
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.dddrive.persist.SqlRecordLoader
+import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.model.db.Sequences
@@ -13,9 +13,9 @@ import io.zeitwert.fm.doc.model.db.Tables
 import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
 import org.jooq.DSLContext
 
-class DocRecordLoaderImpl(
+class DocRecordMapperImpl(
 	val dslContext: DSLContext,
-) : SqlRecordLoader<Aggregate, DocRecord>,
+) : SqlRecordMapper<Aggregate>,
 	SqlIdProvider {
 
 	override fun nextAggregateId(): Any = dslContext.nextval(Sequences.DOC_ID_SEQ).toInt()
@@ -26,13 +26,14 @@ class DocRecordLoaderImpl(
 	): Int = dslContext.nextval(Sequences.DOC_PART_ID_SEQ).toInt()
 	// (aggregate as AggregateSPI).nextPartId(partClass)
 
-	override fun loadRecord(aggregate: Aggregate): DocRecord {
+	override fun loadRecord(aggregate: Aggregate) {
 		val record = dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(aggregate.id as Int))
-		return record ?: throw IllegalArgumentException("no DOC record found for ${aggregate.id}")
+		record ?: throw IllegalArgumentException("no DOC record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: Aggregate,
 		record: DocRecord,
 	) {
@@ -41,14 +42,13 @@ class DocRecordLoaderImpl(
 		aggregate.setValueByPath("docTypeId", record.docTypeId)
 		aggregate.setValueByPath("tenantId", record.tenantId)
 		if (aggregate is ItemWithAccount) {
-			aggregate.setValueByPath("accountId", record.accountId)
+			aggregate.accountId = record.accountId
 		}
 		aggregate.setValueByPath("ownerId", record.ownerId)
 		aggregate.setValueByPath("caption", record.caption)
 		// doc-specific fields
 		aggregate.setValueByPath("caseDefId", record.caseDefId)
 		aggregate.setValueByPath("caseStageId", record.caseStageId)
-		aggregate.setValueByPath("isInWork", record.isInWork)
 		aggregate.setValueByPath("assigneeId", record.assigneeId)
 		// doc_meta
 		aggregate.setValueByPath("version", record.version)
@@ -58,8 +58,21 @@ class DocRecordLoaderImpl(
 		aggregate.setValueByPath("modifiedByUserId", record.modifiedByUserId)
 	}
 
+	override fun storeRecord(aggregate: Aggregate) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMDocBase).isNew) {
+			record.insert()
+		} else {
+			record.changed(true)
+			record.update()
+		}
+		// After store(), JOOQ has updated the record with the new version
+		// Refresh the version in the aggregate so it can be used for parts
+		(aggregate as Doc).setValueByPath("version", record.version)
+	}
+
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: Aggregate): DocRecord {
+	private fun mapToRecord(aggregate: Aggregate): DocRecord {
 		val record = dslContext.newRecord(Tables.DOC)
 		aggregate as Doc
 
@@ -83,27 +96,6 @@ class DocRecordLoaderImpl(
 		record.modifiedAt = aggregate.meta.modifiedAt
 		record.modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int
 		return record
-	}
-
-	override fun storeRecord(
-		record: DocRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMDocBase).isNew) {
-			record.insert()
-		} else {
-			// Mark the record as changed so JOOQ will perform an update
-			// The version field is already set to the old version from aggregate.meta.version
-			// JOOQ will automatically:
-			// - Use version in WHERE clause for optimistic locking
-			// - Increment version in SET clause
-			// - Throw DataChangedException if no rows updated
-			record.changed(true)
-			record.update()
-		}
-		// After store(), JOOQ has updated the record with the new version
-		// Refresh the version in the aggregate so it can be used for parts
-		(aggregate as Doc).setValueByPath("version", record.version)
 	}
 
 	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()

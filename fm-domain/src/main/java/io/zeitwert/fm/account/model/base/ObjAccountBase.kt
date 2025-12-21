@@ -1,5 +1,7 @@
 package io.zeitwert.fm.account.model.base
 
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
@@ -16,7 +18,7 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 abstract class ObjAccountBase(
-	repository: ObjAccountRepository,
+	override val repository: ObjAccountRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjAccount,
@@ -24,28 +26,27 @@ abstract class ObjAccountBase(
 
 	override fun aggregate(): ObjAccount = this
 
-	// @formatter:off
-	private val _name = addBaseProperty("name", String::class.java)
-	private val _description = addBaseProperty("description", String::class.java)
-	private val _accountType = addEnumProperty("accountType", CodeAccountType::class.java)
-	private val _clientSegment = addEnumProperty("clientSegment", CodeClientSegment::class.java)
-	private val _referenceCurrency = addEnumProperty("referenceCurrency", CodeCurrency::class.java)
-	private val _inflationRate = addBaseProperty("inflationRate", BigDecimal::class.java)
-	private val _discountRate = addBaseProperty("discountRate", BigDecimal::class.java)
-	private val _logoImage = addReferenceProperty("logoImage", ObjDocument::class.java)
-	private val _mainContact = addReferenceProperty("mainContact", ObjContact::class.java)
-	// @formatter:on
-
-	override val repository get() = super.repository as ObjAccountRepository
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("name", String::class.java)
+		addBaseProperty("description", String::class.java)
+		addEnumProperty("accountType", CodeAccountType::class.java)
+		addEnumProperty("clientSegment", CodeClientSegment::class.java)
+		addEnumProperty("referenceCurrency", CodeCurrency::class.java)
+		addBaseProperty("inflationRate", BigDecimal::class.java)
+		addBaseProperty("discountRate", BigDecimal::class.java)
+		addReferenceProperty("logoImage", ObjDocument::class.java)
+		addReferenceProperty("mainContact", ObjContact::class.java)
+	}
 
 	override fun doAfterCreate(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
 		super.doAfterCreate(userId, timestamp)
-		check(this._id.value != null) { "id must not be null after create" }
-		this.accountId = this._id.value as Int
-		this.addLogoImage(userId, timestamp)
+		check(getValueByPath<Any>("id") != null) { "id must not be null after create" }
+		setValueByPath("accountId", id)
+		addLogoImage(userId, timestamp)
 	}
 
 	override fun doBeforeStore(
@@ -53,39 +54,39 @@ abstract class ObjAccountBase(
 		timestamp: OffsetDateTime,
 	) {
 		super.doBeforeStore(userId, timestamp)
-		if (this.logoImageId == null) {
-			this.addLogoImage(userId, timestamp)
+		if (logoImageId == null) {
+			addLogoImage(userId, timestamp)
 		}
+	}
+
+	override fun doCalcAll() {
+		super.doCalcAll()
+		calcCaption()
+	}
+
+	private fun calcCaption() {
+		setCaption(name)
 	}
 
 	// override fun doCalcSearch() {
 	//     super.doCalcSearch()
-	//     this.addSearchText(this.name)
-	//     this.addSearchText(this.description)
+	//     addSearchText(name)
+	//     addSearchText(description)
 	// }
-
-	override fun doCalcAll() {
-		super.doCalcAll()
-		this.calcCaption()
-	}
-
-	private fun calcCaption() {
-		this._caption.value = this.name
-	}
 
 	private fun addLogoImage(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		val documentRepo = this.repository.documentRepository
-		val image = documentRepo.create(this.tenantId, userId, timestamp)
-// 		image.accountId = this.id.value
+		val documentRepo = repository.documentRepository
+		val image = documentRepo.create(tenantId, userId, timestamp)
+// 		image.accountId = id.value
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.FOTO
 		image.documentKind = CodeDocumentKind.STANDALONE
 		image.documentCategory = CodeDocumentCategory.LOGO
 		documentRepo.store(image, userId, timestamp)
-		_logoImage.id = image.id
+		setValueByPath("logoImageId", image.id)
 	}
 
 }

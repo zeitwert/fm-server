@@ -1,5 +1,6 @@
 package io.zeitwert.fm.oe.model.base
 
+import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
@@ -13,20 +14,21 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 abstract class ObjTenantFMBase(
-	repository: ObjTenantFMRepository,
+	override val repository: ObjTenantFMRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjTenantFM {
 
-	private val _tenantType = addEnumProperty("tenantType", CodeTenantType::class.java)
-	private val _inflationRate = addBaseProperty("inflationRate", BigDecimal::class.java)
-	private val _discountRate = addBaseProperty("discountRate", BigDecimal::class.java)
-	private val _logoImage = addReferenceProperty("logoImage", ObjDocument::class.java)
-	private val _key = addBaseProperty("key", String::class.java)
-	private val _name = addBaseProperty("name", String::class.java)
-	private val _description = addBaseProperty("description", String::class.java)
-
-	override val repository get() = super.repository as ObjTenantFMRepository
+	override fun doInit() {
+		super.doInit()
+		addEnumProperty("tenantType", CodeTenantType::class.java)
+		addBaseProperty("inflationRate", BigDecimal::class.java)
+		addBaseProperty("discountRate", BigDecimal::class.java)
+		addReferenceProperty("logoImage", ObjDocument::class.java)
+		addBaseProperty("key", String::class.java)
+		addBaseProperty("name", String::class.java)
+		addBaseProperty("description", String::class.java)
+	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -34,7 +36,7 @@ abstract class ObjTenantFMBase(
 	}
 
 	private fun calcCaption() {
-		this._caption.value = _name.value ?: "Tenant"
+		setCaption(name ?: "Tenant")
 	}
 
 	override fun doAfterCreate(
@@ -66,16 +68,12 @@ abstract class ObjTenantFMBase(
 		image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
 		image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
 		documentRepo.store(image, userId, timestamp)
-		_logoImage.id = image.id
+		setValueByPath("logoImageId", image.id)
 	}
 
 	override val users: List<ObjUserFM>
 		get() = repository.userRepository
 			.getByForeignKey("tenantId", this.id)
 			.map { repository.userRepository.get(it) }
-
-	override val logoImageId get() = _logoImage.id
-
-	override val logoImage get() = if (_logoImage.id != null) repository.documentRepository.get(id) else null
 
 }

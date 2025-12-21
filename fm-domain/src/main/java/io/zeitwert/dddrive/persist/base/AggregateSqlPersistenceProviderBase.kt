@@ -3,10 +3,10 @@ package io.zeitwert.dddrive.persist.base
 import io.dddrive.core.ddd.model.Aggregate
 import io.dddrive.core.ddd.model.Part
 import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
+import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import org.jooq.DSLContext
-import org.jooq.UpdatableRecord
 
 /**
  * Base class for jOOQ-based persistence providers implementing the AggregatePersistenceProvider interface.
@@ -15,17 +15,17 @@ import org.jooq.UpdatableRecord
  * Concrete implementations should handle specific aggregate types (Obj, Doc) with their
  * respective table structures (base and extension tables).
  */
-abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : UpdatableRecord<BR>, ER : UpdatableRecord<ER>>(
+abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	intfClass: Class<A>,
 ) : AggregatePersistenceProviderBase<A>(intfClass) {
 
 	abstract val dslContext: DSLContext
 
-	abstract val idProvider: SqlIdProvider<out Aggregate>
+	abstract val idProvider: SqlIdProvider
 
-	abstract val baseRecordMapper: SqlRecordMapper<out Aggregate, BR>
+	abstract val baseRecordMapper: SqlRecordMapper<Aggregate>
 
-	abstract val extnRecordMapper: SqlRecordMapper<A, ER>
+	abstract val extnRecordMapper: SqlRecordMapper<A>
 
 	override fun isValidId(id: Any): Boolean = id is Int
 
@@ -39,7 +39,7 @@ abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : Updatable
 	override fun <P : Part<A>> nextPartId(
 		aggregate: A,
 		partClass: Class<P>,
-	): Int = (idProvider as SqlIdProvider<A>).nextPartId(aggregate, partClass)
+	): Int = idProvider.nextPartId(aggregate, partClass)
 
 	@Suppress("UNCHECKED_CAST")
 	override fun doLoad(
@@ -47,34 +47,33 @@ abstract class SqlAggregatePersistenceProviderBase<A : Aggregate, BR : Updatable
 		id: Any,
 	) {
 		require(isValidId(id)) { "valid id" }
+		aggregate.setValueByPath("id", id)
 		dslContext.transaction { _ ->
-			val er = extnRecordMapper.loadRecord(id)
-			val br = baseRecordMapper.loadRecord(id)
 			aggregate.meta.disableCalc()
 			try {
-				(baseRecordMapper as SqlRecordMapper<A, BR>).mapFromRecord(aggregate, br)
-				extnRecordMapper.mapFromRecord(aggregate, er)
+				baseRecordMapper.loadRecord(aggregate)
+				extnRecordMapper.loadRecord(aggregate)
 			} finally {
 				aggregate.meta.enableCalc()
 			}
+			doLoadParts(aggregate)
 			aggregate.meta.calcVolatile()
 		}
+	}
+
+	protected open fun doLoadParts(aggregate: A) {
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun doStore(aggregate: A) {
 		dslContext.transaction { _ ->
-			val br = (baseRecordMapper as SqlRecordMapper<A, BR>).mapToRecord(aggregate)
-			val er = extnRecordMapper.mapToRecord(aggregate)
-			try {
-				baseRecordMapper.storeRecord(br, aggregate)
-				extnRecordMapper.storeRecord(er, aggregate)
-				println("stored:\n$br\n$er")
-			} catch (e: RuntimeException) {
-				System.err.println("${e.message}:\n$br\n$er")
-				throw e // Re-throw to trigger rollback
-			}
+			baseRecordMapper.storeRecord(aggregate)
+			extnRecordMapper.storeRecord(aggregate)
+			doStoreParts(aggregate)
 		}
+	}
+
+	protected open fun doStoreParts(aggregate: A) {
 	}
 
 	override fun getAll(tenantId: Any): List<Any> = extnRecordMapper.getAll(tenantId)

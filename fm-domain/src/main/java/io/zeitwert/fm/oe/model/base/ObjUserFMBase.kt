@@ -1,6 +1,7 @@
 package io.zeitwert.fm.oe.model.base
 
 import io.dddrive.core.oe.model.ObjTenant
+import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
@@ -12,21 +13,22 @@ import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import java.time.OffsetDateTime
 
 abstract class ObjUserFMBase(
-	repository: ObjUserFMRepository,
+	override val repository: ObjUserFMRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjUserFM {
 
-	private val _avatarImage = addReferenceProperty("avatarImage", ObjDocument::class.java)
-	private val _role = addEnumProperty("role", CodeUserRole::class.java)
-	private val _tenantSet = addReferenceSetProperty("tenantSet", ObjTenant::class.java)
-	private val _needPasswordChange = addBaseProperty("needPasswordChange", Boolean::class.java)
-	private val _password = addBaseProperty("password", String::class.java)
-	private val _email = addBaseProperty("email", String::class.java)
-	private val _name = addBaseProperty("name", String::class.java)
-	private val _description = addBaseProperty("description", String::class.java)
-
-	override val repository get() = super.repository as ObjUserFMRepository
+	override fun doInit() {
+		super.doInit()
+		addReferenceProperty("avatarImage", ObjDocument::class.java)
+		addEnumProperty("role", CodeUserRole::class.java)
+		addReferenceSetProperty("tenantSet", ObjTenant::class.java)
+		addBaseProperty("needPasswordChange", Boolean::class.java)
+		addBaseProperty("password", String::class.java)
+		addBaseProperty("email", String::class.java)
+		addBaseProperty("name", String::class.java)
+		addBaseProperty("description", String::class.java)
+	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -34,7 +36,7 @@ abstract class ObjUserFMBase(
 	}
 
 	private fun calcCaption() {
-		this._caption.value = _name.value ?: "User"
+		setCaption(name ?: "User")
 	}
 
 	override fun doAfterCreate(
@@ -66,7 +68,7 @@ abstract class ObjUserFMBase(
 		image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
 		image.documentCategory = CodeDocumentCategory.getDocumentCategory("avatar")
 		documentRepo.store(image, userId, timestamp)
-		_avatarImage.id = image.id
+		setValueByPath("avatarImageId", image.id)
 	}
 
 	override val isAppAdmin get() = repository.isAppAdmin(this)

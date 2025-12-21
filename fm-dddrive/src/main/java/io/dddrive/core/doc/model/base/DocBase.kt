@@ -9,29 +9,33 @@ import io.dddrive.core.doc.model.DocRepository
 import io.dddrive.core.doc.model.enums.CodeCaseDef
 import io.dddrive.core.doc.model.enums.CodeCaseStage
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
+import io.dddrive.path.setValueByPath
 import java.time.OffsetDateTime
 
-abstract class DocBase protected constructor(
-	repository: DocRepository<out Doc>,
+abstract class DocBase(
+	override val repository: DocRepository<out Doc>,
 	isNew: Boolean,
 ) : AggregateBase(repository, isNew),
 	Doc,
 	DocMeta {
 
-	protected val _docTypeId = this.addBaseProperty("docTypeId", String::class.java)
-	protected val _caseDef = this.addEnumProperty("caseDef", CodeCaseDef::class.java)
-	protected val _caseStage = this.addEnumProperty("caseStage", CodeCaseStage::class.java)
-	protected val _isInWork = this.addBaseProperty("isInWork", Boolean::class.java)
-	protected val _assignee = this.addReferenceProperty("assignee", ObjUser::class.java)
-	private val _transitionList = this.addPartListProperty("transitionList", DocPartTransition::class.java)
-
 	private var oldCaseStage: CodeCaseStage? = null
-
-	override val repository get() = super.repository as DocRepository<*>
 
 	override val meta: DocMeta
 		get() = this
+
+	private lateinit var _transitionList: PartListProperty<DocPartTransition>
+
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("docTypeId", String::class.java)
+		addEnumProperty("caseDef", CodeCaseDef::class.java)
+		addEnumProperty("caseStage", CodeCaseStage::class.java)
+		addReferenceProperty("assignee", ObjUser::class.java)
+		_transitionList = addPartListProperty("transitionList", DocPartTransition::class.java)
+	}
 
 	override fun doCreate(
 		aggregateId: Any,
@@ -40,11 +44,11 @@ abstract class DocBase protected constructor(
 		timestamp: OffsetDateTime,
 	) {
 		try {
-			this.disableCalc()
+			disableCalc()
 			super.doCreate(aggregateId, tenantId, userId, timestamp)
-			this._docTypeId.value = this.repository.aggregateType.id
+			setValueByPath("docTypeId", repository.aggregateType.id)
 		} finally {
-			this.enableCalc()
+			enableCalc()
 		}
 	}
 
@@ -54,28 +58,28 @@ abstract class DocBase protected constructor(
 	) {
 		super.doAfterCreate(userId, timestamp)
 		try {
-			this.disableCalc()
-			this._owner.id = userId
-			this._version.value = 0
-			this._createdByUser.id = userId
-			this._createdAt.value = timestamp
+			disableCalc()
+			setValueByPath("ownerId", userId)
+			setValueByPath("version", 0)
+			setValueByPath("createdByUserId", userId)
+			setValueByPath("createdAt", timestamp)
 		} finally {
-			this.enableCalc()
+			enableCalc()
 		}
 		// freeze until caseDef is set
-		this.freeze() // TODO reconsider
+		freeze() // TODO reconsider
 	}
 
 	override fun doAfterLoad() {
 		super.doAfterLoad()
-		this.oldCaseStage = this.caseStage
+		oldCaseStage = caseStage
 	}
 
 	// 	@Override
 	// 	public void doAssignParts() {
 	// 		super.doAssignParts();
-	// 		DocPartItemRepository itemRepository = this.getRepository().getItemRepository();
-	// 		for (Property<?> property : this.getProperties()) {
+	// 		DocPartItemRepository itemRepository = getRepository().getItemRepository();
+	// 		for (Property<?> property : getProperties()) {
 	// 			if (property instanceof EnumSetProperty<?> enumSet) {
 	// 				List<DocPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
 	// 				enumSet.loadEnums(partList);
@@ -90,53 +94,52 @@ abstract class DocBase protected constructor(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		this._transitionList.addPart(null).init(userId, timestamp, oldCaseStage, caseStage!!)
+		_transitionList.addPart(null).init(userId, timestamp, oldCaseStage, caseStage!!)
 		super.doBeforeStore(userId, timestamp)
 		try {
-			this.disableCalc()
-			this._version.value = this._version.value!! + 1
-			this._modifiedByUser.id = userId
-			this._modifiedAt.value = timestamp
+			disableCalc()
+			setValueByPath("version", meta.version + 1)
+			setValueByPath("modifiedByUserId", userId)
+			setValueByPath("modifiedAt", timestamp)
 		} finally {
-			this.enableCalc()
+			enableCalc()
 		}
 	}
 
-	override val isInWork: Boolean get() = this._isInWork.value!!
+	override val isInWork: Boolean get() = caseStage?.isInWork ?: true
 
 	override fun setCaseDef(caseDef: CodeCaseDef) {
-		require(this.meta.caseDef == null) { "caseDef empty" }
-		this.unfreeze()
-		this._caseDef.value = caseDef
+		require(meta.caseDef == null) { "caseDef empty" }
+		unfreeze()
+		setValueByPath("caseDef", caseDef)
 	}
 
 	override fun setCaseStage(
-		caseStage: CodeCaseStage,
+		newCaseStage: CodeCaseStage,
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		require(!caseStage.isAbstract) { "valid caseStage (i)" }
-		require(this.caseDef == null || caseStage.caseDef === this.caseDef) { "valid caseStage (ii)" }
-		if (this.caseDef == null) {
-			this.setCaseDef(caseStage.caseDef)
+		require(!newCaseStage.isAbstract) { "valid caseStage (i)" }
+		require(caseDef == null || newCaseStage.caseDef === caseDef) { "valid caseStage (ii)" }
+		if (caseDef == null) {
+			setCaseDef(newCaseStage.caseDef)
 		}
-		if (this.caseStage == null) { // initial transition
-			this._transitionList.addPart(null).init(userId, timestamp, this.caseStage, caseStage)
-			this.oldCaseStage = caseStage
+		if (caseStage == null) { // initial transition
+			_transitionList.addPart(null).init(userId, timestamp, caseStage, newCaseStage)
+			oldCaseStage = newCaseStage
 		}
-		this._caseStage.value = caseStage
-		this._isInWork.value = caseStage.isInWork
+		setValueByPath("caseStage", newCaseStage)
 	}
 
 	override val caseStages: List<CodeCaseStage>
-		get() = this.caseDef?.getCaseStages() ?: emptyList()
+		get() = caseDef?.getCaseStages() ?: emptyList()
 
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === this._transitionList) {
-			return this.directory
+		if (property === _transitionList) {
+			return directory
 				.getPartRepository(DocPartTransition::class.java)
 				.create(this, property, partId)
 		}
@@ -144,14 +147,14 @@ abstract class DocBase protected constructor(
 	}
 
 	protected fun setCaption(caption: String?) {
-		this._caption.value = caption
+		setValueByPath("caption", caption)
 	}
 
 	// 	@Override
 	// 	public void doCalcSearch() {
 	// 		super.doCalcSearch();
-	// 		//Integer orderNr = ((AggregateRepositorySPI<?>) this.getRepository()).getIdProvider().getOrderNr(this.getId());
-	// 		//this.addSearchToken(orderNr + "");
+	// 		//Integer orderNr = ((AggregateRepositorySPI<?>) getRepository()).getIdProvider().getOrderNr(getId());
+	// 		//addSearchToken(orderNr + "");
 	// 	}
 
 }

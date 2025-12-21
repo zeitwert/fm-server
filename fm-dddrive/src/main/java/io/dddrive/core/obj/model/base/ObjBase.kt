@@ -7,26 +7,30 @@ import io.dddrive.core.obj.model.ObjMeta
 import io.dddrive.core.obj.model.ObjPartTransition
 import io.dddrive.core.obj.model.ObjRepository
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
+import io.dddrive.path.setValueByPath
 import java.time.OffsetDateTime
 
 abstract class ObjBase(
-	repository: ObjRepository<out Obj>,
+	override val repository: ObjRepository<out Obj>,
 	isNew: Boolean,
 ) : AggregateBase(repository, isNew),
 	Obj,
 	ObjMeta {
 
-	protected val _objTypeId = this.addBaseProperty("objTypeId", String::class.java)
-	protected val _closedByUser = this.addReferenceProperty("closedByUser", ObjUser::class.java)
-	protected val _closedAt = this.addBaseProperty("closedAt", OffsetDateTime::class.java)
-	protected val _transitionList = this.addPartListProperty("transitionList", ObjPartTransition::class.java)
-
-	override val repository: ObjRepository<*>
-		get() = super.repository as ObjRepository<*>
+	private lateinit var _transitionList: PartListProperty<ObjPartTransition>
 
 	override val meta: ObjMeta
 		get() = this
+
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("objTypeId", String::class.java)
+		addReferenceProperty("closedByUser", ObjUser::class.java)
+		addBaseProperty("closedAt", OffsetDateTime::class.java)
+		_transitionList = addPartListProperty("transitionList", ObjPartTransition::class.java)
+	}
 
 	override fun doCreate(
 		aggregateId: Any,
@@ -35,11 +39,11 @@ abstract class ObjBase(
 		timestamp: OffsetDateTime,
 	) {
 		try {
-			this.disableCalc()
+			disableCalc()
 			super.doCreate(aggregateId, tenantId, userId, timestamp)
-			this._objTypeId.value = this.repository.aggregateType.id
+			setValueByPath("objTypeId", repository.aggregateType.id)
 		} finally {
-			this.enableCalc()
+			enableCalc()
 		}
 	}
 
@@ -49,22 +53,22 @@ abstract class ObjBase(
 	) {
 		super.doAfterCreate(userId, timestamp)
 		try {
-			this.disableCalc()
-			this._owner.id = userId
-			this._version.value = 0
-			this._createdByUser.id = userId
-			this._createdAt.value = timestamp
-			this._transitionList.addPart(null).init(userId, timestamp)
+			disableCalc()
+			setValueByPath("ownerId", userId)
+			setValueByPath("version", 0)
+			setValueByPath("createdByUserId", userId)
+			setValueByPath("createdAt", timestamp)
+			_transitionList.addPart(null).init(userId, timestamp)
 		} finally {
-			this.enableCalc()
+			enableCalc()
 		}
 	}
 
 	// 	@Override
 	// 	public void doAssignParts() {
 	// 		super.doAssignParts();
-	// 		ObjPartItemRepository itemRepository = this.getRepository().getItemRepository();
-	// 		for (Property<?> property : this.getProperties()) {
+	// 		ObjPartItemRepository itemRepository = getRepository().getItemRepository();
+	// 		for (Property<?> property : getProperties()) {
 	// 			if (property instanceof EnumSetProperty<?> enumSet) {
 	// 				List<ObjPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
 	// 				enumSet.loadEnums(partList);
@@ -78,17 +82,17 @@ abstract class ObjBase(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		this._transitionList.addPart(null).init(userId, timestamp)
+		_transitionList.addPart(null).init(userId, timestamp)
 
 		super.doBeforeStore(userId, timestamp)
 
 		try {
-			this.disableCalc()
-			this._version.value = this._version.value!! + 1
-			this._modifiedByUser.id = userId
-			this._modifiedAt.value = timestamp
+			disableCalc()
+			setValueByPath("version", meta.version + 1)
+			setValueByPath("modifiedByUserId", userId)
+			setValueByPath("modifiedAt", timestamp)
 		} finally {
-			this.enableCalc()
+			enableCalc()
 		}
 	}
 
@@ -96,16 +100,16 @@ abstract class ObjBase(
 		userId: Any?,
 		timestamp: OffsetDateTime?,
 	) {
-		this._closedByUser.id = userId
-		this._closedAt.value = timestamp
+		setValueByPath("closedByUserId", userId)
+		setValueByPath("closedAt", timestamp)
 	}
 
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === this._transitionList) {
-			return this.directory
+		if (property === _transitionList) {
+			return directory
 				.getPartRepository(ObjPartTransition::class.java)
 				.create(this, property, partId)
 		}
@@ -113,7 +117,7 @@ abstract class ObjBase(
 	}
 
 	protected fun setCaption(caption: String?) {
-		this._caption.value = caption
+		setValueByPath("caption", caption)
 	}
 
 }

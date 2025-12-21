@@ -1,14 +1,11 @@
 package io.zeitwert.fm.task.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.doc.model.Doc
 import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.doc.model.base.FMDocBase
-import io.zeitwert.fm.doc.model.db.tables.records.DocRecord
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
@@ -18,42 +15,52 @@ import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("docTaskPersistenceProvider")
-open class DocTaskPersistenceProvider(
+open class DocTaskSqlPersistenceProvider(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<DocTask, DocRecord, DocTaskRecord>(DocTask::class.java),
-	SqlRecordMapper<DocTask, DocTaskRecord> {
+) : AggregateSqlPersistenceProviderBase<DocTask>(DocTask::class.java),
+	SqlRecordMapper<DocTask> {
 
-	override val idProvider: SqlIdProvider<Doc> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = DocRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): DocTaskRecord {
-		val record = dslContext.fetchOne(Tables.DOC_TASK, Tables.DOC_TASK.DOC_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no DOC_TASK record found for $aggregateId")
+	override fun loadRecord(aggregate: DocTask) {
+		val record = dslContext.fetchOne(Tables.DOC_TASK, Tables.DOC_TASK.DOC_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no DOC_TASK record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: DocTask,
 		record: DocTaskRecord,
 	) {
-		aggregate.setValueByPath("accountId", record.accountId)
+		aggregate.accountId = record.accountId
 		aggregate.setValueByPath("relatedObjId", record.relatedObjId)
 		aggregate.setValueByPath("relatedDocId", record.relatedDocId)
-		aggregate.setValueByPath("subject", record.subject)
-		aggregate.setValueByPath("content", record.content)
-		aggregate.setValueByPath("isPrivate", record.isPrivate)
-		aggregate.setValueByPath("dueAt", record.dueAt)
-		aggregate.setValueByPath("remindAt", record.remindAt)
+		aggregate.subject = record.subject
+		aggregate.content = record.content
+		aggregate.isPrivate = record.isPrivate
+		aggregate.dueAt = record.dueAt
+		aggregate.remindAt = record.remindAt
 		record.priorityId?.let { priorityId ->
 			aggregate.setValueByPath("priority", CodeTaskPriority.Enumeration.getPriority(priorityId))
 		}
 	}
 
+	override fun storeRecord(aggregate: DocTask) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMDocBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
+	}
+
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: DocTask): DocTaskRecord {
+	private fun mapToRecord(aggregate: DocTask): DocTaskRecord {
 		val record = dslContext.newRecord(Tables.DOC_TASK)
 
 		record.docId = aggregate.id as Int
@@ -69,17 +76,6 @@ open class DocTaskPersistenceProvider(
 		record.remindAt = aggregate.remindAt
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: DocTaskRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMDocBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

@@ -1,16 +1,15 @@
 package io.zeitwert.fm.test.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
+import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.test.model.ObjTest
+import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.fm.test.model.enums.CodeTestType
@@ -19,40 +18,66 @@ import org.jooq.JSON
 import org.springframework.stereotype.Component
 
 @Component("objTestPersistenceProvider")
-open class ObjTestPersistenceProviderImpl(
+open class ObjTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjTest, ObjRecord, ObjTestRecord>(ObjTest::class.java),
-	SqlRecordMapper<ObjTest, ObjTestRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
+	SqlRecordMapper<ObjTest> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjTestRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_TEST record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjTest) {
+		val record = dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_TEST record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjTest,
 		record: ObjTestRecord,
 	) {
-		aggregate.setValueByPath("shortText", record.shortText)
-		aggregate.setValueByPath("longText", record.longText)
-		aggregate.setValueByPath("date", record.date)
-		aggregate.setValueByPath("int", record.int)
-		aggregate.setValueByPath("isDone", record.isDone)
-		aggregate.setValueByPath("json", record.json?.toString())
-		aggregate.setValueByPath("nr", record.nr)
-		aggregate.setValueByPath("refTestId", record.refTestId)
-		aggregate.setValueByPath("testType", CodeTestType.getTestType(record.testTypeId))
+		aggregate.shortText = record.shortText
+		aggregate.longText = record.longText
+		aggregate.date = record.date
+		aggregate.int = record.int
+		aggregate.isDone = record.isDone
+		aggregate.json = record.json?.toString()
+		aggregate.nr = record.nr
+		aggregate.setValueByPath("refObjId", record.refTestId)
+		aggregate.testType = CodeTestType.getTestType(record.testTypeId)
+	}
+
+	override fun doLoadParts(aggregate: ObjTest) {
+		val nodePP = ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginLoad()
+			loadParts(aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>)
+		}
+		nodePP.endLoad()
+	}
+
+	override fun storeRecord(aggregate: ObjTest) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
+	}
+
+	override fun doStoreParts(aggregate: ObjTest) {
+		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
+			beginStore()
+			addParts(aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>)
+			endStore()
+		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: ObjTest): ObjTestRecord {
+	private fun mapToRecord(aggregate: ObjTest): ObjTestRecord {
 		val record = dslContext.newRecord(Tables.OBJ_TEST)
 
 		record.objId = aggregate.id as Int
@@ -67,20 +92,9 @@ open class ObjTestPersistenceProviderImpl(
 		record.isDone = aggregate.isDone
 		record.json = JSON.valueOf(aggregate.json)
 		record.nr = aggregate.nr
-		record.refTestId = aggregate.refTest?.id as? Int
+		record.refTestId = aggregate.refObjId as? Int
 		record.testTypeId = aggregate.testType?.id
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjTestRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

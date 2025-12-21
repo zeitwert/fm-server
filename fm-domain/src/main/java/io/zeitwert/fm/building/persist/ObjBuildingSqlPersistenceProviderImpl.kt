@@ -1,77 +1,89 @@
 package io.zeitwert.fm.building.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
+import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.db.Tables
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord
+import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
+import io.zeitwert.fm.building.model.enums.CodeBuildingType
+import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.fm.oe.model.enums.CodeCountry
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objBuildingPersistenceProvider")
-open class ObjBuildingPersistenceProviderImpl(
+open class ObjBuildingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjBuilding, ObjRecord, ObjBuildingRecord>(ObjBuilding::class.java),
-	SqlRecordMapper<ObjBuilding, ObjBuildingRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjBuilding>(ObjBuilding::class.java),
+	SqlRecordMapper<ObjBuilding> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjBuildingRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_BUILDING, Tables.OBJ_BUILDING.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_BUILDING record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjBuilding) {
+		val record = dslContext.fetchOne(Tables.OBJ_BUILDING, Tables.OBJ_BUILDING.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_BUILDING record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST", "LongMethod")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjBuilding,
 		record: ObjBuildingRecord,
 	) {
 		aggregate.setValueByPath("accountId", record.accountId)
-		aggregate.setValueByPath("name", record.name)
-		aggregate.setValueByPath("description", record.description)
-		aggregate.setValueByPath("buildingNr", record.buildingNr)
-		aggregate.setValueByPath("insuranceNr", record.insuranceNr)
-		aggregate.setValueByPath("plotNr", record.plotNr)
-		aggregate.setValueByPath("nationalBuildingId", record.nationalBuildingId)
-		aggregate.setValueByPath("historicPreservationId", record.historicPreservationId)
-		aggregate.setValueByPath("street", record.street)
-		aggregate.setValueByPath("zip", record.zip)
-		aggregate.setValueByPath("city", record.city)
-		aggregate.setValueByPath("countryId", record.countryId)
-		aggregate.setValueByPath("geoAddress", record.geoAddress)
-		aggregate.setValueByPath("geoCoordinates", record.geoCoordinates)
-		aggregate.setValueByPath("geoZoom", record.geoZoom)
+		aggregate.name = record.name
+		aggregate.description = record.description
+		aggregate.buildingNr = record.buildingNr
+		aggregate.insuranceNr = record.insuranceNr
+		aggregate.plotNr = record.plotNr
+		aggregate.nationalBuildingId = record.nationalBuildingId
+		aggregate.historicPreservation = CodeHistoricPreservation.getHistoricPreservation(record.historicPreservationId)
+		aggregate.street = record.street
+		aggregate.zip = record.zip
+		aggregate.city = record.city
+		aggregate.country = CodeCountry.getCountry(record.countryId)
+		aggregate.geoAddress = record.geoAddress
+		aggregate.geoCoordinates = record.geoCoordinates
+		aggregate.geoZoom = record.geoZoom
 		aggregate.setValueByPath("coverFotoId", record.coverFotoId)
-		aggregate.setValueByPath("currencyId", record.currencyId)
-		aggregate.setValueByPath("volume", record.volume)
-		aggregate.setValueByPath("areaGross", record.areaGross)
-		aggregate.setValueByPath("areaNet", record.areaNet)
-		aggregate.setValueByPath("nrOfFloorsAboveGround", record.nrOfFloorsAboveGround)
-		aggregate.setValueByPath("nrOfFloorsBelowGround", record.nrOfFloorsBelowGround)
-		aggregate.setValueByPath("buildingTypeId", record.buildingTypeId)
-		aggregate.setValueByPath("buildingSubTypeId", record.buildingSubTypeId)
-		aggregate.setValueByPath("buildingYear", record.buildingYear)
-		aggregate.setValueByPath("insuredValue", record.insuredValue)
-		aggregate.setValueByPath("insuredValueYear", record.insuredValueYear)
-		aggregate.setValueByPath("notInsuredValue", record.notInsuredValue)
-		aggregate.setValueByPath("notInsuredValueYear", record.notInsuredValueYear)
-		aggregate.setValueByPath("thirdPartyValue", record.thirdPartyValue)
-		aggregate.setValueByPath("thirdPartyValueYear", record.thirdPartyValueYear)
+		aggregate.currency = CodeCurrency.getCurrency(record.currencyId)
+		aggregate.volume = record.volume
+		aggregate.areaGross = record.areaGross
+		aggregate.areaNet = record.areaNet
+		aggregate.nrOfFloorsAboveGround = record.nrOfFloorsAboveGround
+		aggregate.nrOfFloorsBelowGround = record.nrOfFloorsBelowGround
+		aggregate.buildingType = CodeBuildingType.getBuildingType(record.buildingTypeId)
+		aggregate.buildingSubType = CodeBuildingSubType.getBuildingSubType(record.buildingSubTypeId)
+		aggregate.buildingYear = record.buildingYear
+		aggregate.insuredValue = record.insuredValue
+		aggregate.insuredValueYear = record.insuredValueYear
+		aggregate.notInsuredValue = record.notInsuredValue
+		aggregate.notInsuredValueYear = record.notInsuredValueYear
+		aggregate.thirdPartyValue = record.thirdPartyValue
+		aggregate.thirdPartyValueYear = record.thirdPartyValueYear
+	}
+
+	override fun storeRecord(aggregate: ObjBuilding) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
 	}
 
 	@Suppress("UNCHECKED_CAST", "LongMethod")
-	override fun mapToRecord(aggregate: ObjBuilding): ObjBuildingRecord {
+	private fun mapToRecord(aggregate: ObjBuilding): ObjBuildingRecord {
 		val record = dslContext.newRecord(Tables.OBJ_BUILDING)
 
 		record.objId = aggregate.id as Int
@@ -109,17 +121,6 @@ open class ObjBuildingPersistenceProviderImpl(
 		record.thirdPartyValueYear = aggregate.thirdPartyValueYear
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjBuildingRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

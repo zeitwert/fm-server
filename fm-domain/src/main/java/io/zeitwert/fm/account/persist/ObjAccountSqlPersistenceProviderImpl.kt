@@ -1,57 +1,66 @@
 package io.zeitwert.fm.account.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.db.Tables
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
+import io.zeitwert.fm.account.model.enums.CodeAccountType
+import io.zeitwert.fm.account.model.enums.CodeClientSegment
+import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objAccountPersistenceProvider")
-open class ObjAccountPersistenceProviderImpl(
+open class ObjAccountSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjAccount, ObjRecord, ObjAccountRecord>(ObjAccount::class.java),
-	SqlRecordMapper<ObjAccount, ObjAccountRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjAccount>(ObjAccount::class.java),
+	SqlRecordMapper<ObjAccount> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjAccountRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_ACCOUNT, Tables.OBJ_ACCOUNT.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_ACCOUNT record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjAccount) {
+		val record = dslContext.fetchOne(Tables.OBJ_ACCOUNT, Tables.OBJ_ACCOUNT.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_ACCOUNT record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjAccount,
 		record: ObjAccountRecord,
 	) {
 		aggregate.setValueByPath("accountId", record.accountId)
-
-		aggregate.setValueByPath("name", record.name)
-		aggregate.setValueByPath("description", record.description)
-		aggregate.setValueByPath("accountTypeId", record.accountTypeId)
-		aggregate.setValueByPath("clientSegmentId", record.clientSegmentId)
-		aggregate.setValueByPath("referenceCurrencyId", record.referenceCurrencyId)
-		aggregate.setValueByPath("inflationRate", record.inflationRate)
-		aggregate.setValueByPath("discountRate", record.discountRate)
+		aggregate.name = record.name
+		aggregate.description = record.description
+		aggregate.accountType = CodeAccountType.getAccountType(record.accountTypeId)
+		aggregate.clientSegment = CodeClientSegment.getClientSegment(record.clientSegmentId)
+		aggregate.referenceCurrency = CodeCurrency.getCurrency(record.referenceCurrencyId)
+		aggregate.inflationRate = record.inflationRate
+		aggregate.discountRate = record.discountRate
 		aggregate.setValueByPath("logoImageId", record.logoImgId)
 		aggregate.setValueByPath("mainContactId", record.mainContactId)
 	}
 
+	override fun storeRecord(aggregate: ObjAccount) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
+	}
+
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: ObjAccount): ObjAccountRecord {
+	private fun mapToRecord(aggregate: ObjAccount): ObjAccountRecord {
 		val record = dslContext.newRecord(Tables.OBJ_ACCOUNT)
 
 		record.objId = aggregate.id as Int
@@ -69,17 +78,6 @@ open class ObjAccountPersistenceProviderImpl(
 		record.mainContactId = aggregate.mainContactId
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjAccountRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

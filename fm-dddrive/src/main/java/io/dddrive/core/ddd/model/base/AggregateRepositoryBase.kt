@@ -15,6 +15,7 @@ import io.dddrive.core.ddd.model.RepositoryDirectorySPI
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.ddd.model.impl.PartRepositoryImpl
+import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.impl.PropertyFilter
 import io.dddrive.core.property.model.impl.PropertyHandler
 import javassist.util.proxy.ProxyFactory
@@ -95,6 +96,10 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		val aggregateId = persistenceProvider.nextAggregateId()
 		val aggregate = this.createAggregate(true)
 
+		val doInitSeqNr = (aggregate as AggregateBase).doInitSeqNr
+		(aggregate as EntityWithPropertiesSPI).doInit()
+		check(aggregate.doInitSeqNr > doInitSeqNr) { this.getBaseClassName(aggregate) + ": doInit was propagated" }
+
 		val doCreateSeqNr = (aggregate as AggregateBase).doCreateSeqNr
 		(aggregate as AggregateSPI).doCreate(aggregateId, tenantId, userId, timestamp)
 		check(aggregate.doCreateSeqNr > doCreateSeqNr) { this.getBaseClassName(aggregate) + ": doCreate was propagated" }
@@ -131,6 +136,10 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		check(persistenceProvider.isValidId(id)) { "valid id " + id + " (" + id.javaClass.getSimpleName() + ")" }
 
 		val aggregate = this.createAggregate(false)
+		val doInitSeqNr = (aggregate as AggregateBase).doInitSeqNr
+		(aggregate as EntityWithPropertiesSPI).doInit()
+		check(aggregate.doInitSeqNr > doInitSeqNr) { this.getBaseClassName(aggregate) + ": doInit was propagated" }
+
 		(aggregate as AggregateMeta).beginLoad()
 		persistenceProvider.doLoad(aggregate, id)
 		(aggregate as AggregateMeta).endLoad()

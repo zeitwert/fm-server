@@ -14,31 +14,32 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 abstract class DocTestBase(
-	repository: DocTestRepository,
+	override val repository: DocTestRepository,
 	isNew: Boolean,
 ) : FMDocBase(repository, isNew),
 	DocTest,
 	AggregateWithNotesMixin {
-
-	private val _shortText = addBaseProperty("shortText", String::class.java)
-	private val _longText = addBaseProperty("longText", String::class.java)
-	private val _date = addBaseProperty("date", LocalDate::class.java)
-	private val _int = addBaseProperty("int", Int::class.java)
-	private val _isDone = addBaseProperty("isDone", Boolean::class.java)
-	private val _json = addBaseProperty("json", JSON::class.java)
-	private val _nr = addBaseProperty("nr", BigDecimal::class.java)
-	private val _testType = addEnumProperty("testType", CodeTestType::class.java)
-	private val _refObj = addReferenceProperty("refObj", ObjTest::class.java)
-	private val _refDoc = addReferenceProperty("refDoc", DocTest::class.java)
-	private val _testTypeSet = addEnumSetProperty("testTypeSet", CodeTestType::class.java)
-
-	override val repository get() = super.repository as DocTestRepository
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
 	fun accountRepository() = directory.getRepository(ObjAccount::class.java)
 
 	override fun aggregate(): DocTest = this
+
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("shortText", String::class.java)
+		addBaseProperty("longText", String::class.java)
+		addBaseProperty("date", LocalDate::class.java)
+		addBaseProperty("int", Int::class.java)
+		addBaseProperty("isDone", Boolean::class.java)
+		addBaseProperty("json", JSON::class.java)
+		addBaseProperty("nr", BigDecimal::class.java)
+		addEnumProperty("testType", CodeTestType::class.java)
+		addReferenceProperty("refObj", ObjTest::class.java)
+		addReferenceProperty("refDoc", DocTest::class.java)
+		addEnumSetProperty("testTypeSet", CodeTestType::class.java)
+	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -50,7 +51,7 @@ abstract class DocTestBase(
 		val longTextStr = longText ?: ""
 		val refObjSuffix = if (refObjId == null) "" else " (RefObj:${refObj!!.caption})"
 		val refDocSuffix = if (refDocId == null) "" else " (RefDoc:${refDoc!!.caption})"
-		this._caption.value = "[$shortTextStr, $longTextStr]$refObjSuffix$refDocSuffix"
+		setCaption("[$shortTextStr, $longTextStr]$refObjSuffix$refDocSuffix")
 	}
 
 	override val account get() = if (accountId != null) accountRepository().get(accountId!!) else null

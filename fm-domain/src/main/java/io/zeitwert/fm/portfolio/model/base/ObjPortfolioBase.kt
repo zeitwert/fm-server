@@ -3,6 +3,7 @@ package io.zeitwert.fm.portfolio.model.base
 import io.dddrive.core.ddd.model.enums.CodeAggregateType
 import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.core.obj.model.Obj
+import io.dddrive.core.property.model.ReferenceSetProperty
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.obj.model.base.FMObjBase
@@ -12,7 +13,7 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 
 abstract class ObjPortfolioBase(
-	repository: ObjPortfolioRepository,
+	override val repository: ObjPortfolioRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjPortfolio,
@@ -30,18 +31,23 @@ abstract class ObjPortfolioBase(
 		}
 	}
 
-	private val _name = addBaseProperty("name", String::class.java)
-	private val _description = addBaseProperty("description", String::class.java)
-	private val _portfolioNr = addBaseProperty("portfolioNr", String::class.java)
-	private val _includeSet = addReferenceSetProperty("includeSet", Obj::class.java)
-	private val _excludeSet = addReferenceSetProperty("excludeSet", Obj::class.java)
-	private val _buildingSet = addReferenceSetProperty("buildingSet", ObjBuilding::class.java)
+	private lateinit var _includeSet: ReferenceSetProperty<Obj>
+	private lateinit var _excludeSet: ReferenceSetProperty<Obj>
+	private lateinit var _buildingSet: ReferenceSetProperty<ObjBuilding>
+
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("name", String::class.java)
+		addBaseProperty("description", String::class.java)
+		addBaseProperty("portfolioNr", String::class.java)
+		_includeSet = addReferenceSetProperty("includeSet", Obj::class.java)
+		_excludeSet = addReferenceSetProperty("excludeSet", Obj::class.java)
+		_buildingSet = addReferenceSetProperty("buildingSet", ObjBuilding::class.java)
+	}
 
 	override fun aggregate(): ObjPortfolio = this
 
 	override fun taskRepository() = repository.taskRepository
-
-	override val repository get() = super.repository as ObjPortfolioRepository
 
 	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
 
@@ -112,7 +118,7 @@ abstract class ObjPortfolioBase(
 	}
 
 	private fun calcCaption() {
-		this._caption.value = this.name
+		setCaption(name)
 	}
 
 	private fun calcBuildingSet() {

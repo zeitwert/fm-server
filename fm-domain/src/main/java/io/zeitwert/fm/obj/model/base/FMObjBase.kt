@@ -16,25 +16,17 @@ import io.zeitwert.fm.ddd.model.EntityWithExtn
  * @param repository The repository for managing this Obj
  */
 abstract class FMObjBase(
-	repository: ObjRepository<out Obj>,
+	override val repository: ObjRepository<out Obj>,
 	isNew: Boolean,
 ) : ObjBase(repository, isNew),
 	EntityWithExtn {
 
-	// @formatter:off
-	private val _accountId = addBaseProperty("accountId", Any::class.java)
 	private val _extnMap = mutableMapOf<String, Any>()
-	// @formatter:on
 
-	/**
-	 * Gets/sets the account ID associated with this Obj.
-	 * Setting accountId also sets extnAccountId to the same value.
-	 */
-	var accountId: Any?
-		get() = _accountId.value
-		set(value) {
-			_accountId.value = value
-		}
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("accountId", Any::class.java)
+	}
 
 	// EntityWithExtn implementation
 	override val extnMap: Map<String, Any> = _extnMap

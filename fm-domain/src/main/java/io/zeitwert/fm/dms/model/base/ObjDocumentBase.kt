@@ -13,24 +13,26 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.time.OffsetDateTime
 
 abstract class ObjDocumentBase(
-	repository: ObjDocumentRepository,
+	override val repository: ObjDocumentRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjDocument,
-	AggregateWithNotesMixin, AggregateWithTasksMixin {
+	AggregateWithNotesMixin,
+	AggregateWithTasksMixin {
 
 	override fun aggregate(): ObjDocument = this
 
-	private val _name = addBaseProperty("name", String::class.java)
-	private val _documentKind = addEnumProperty("documentKind", CodeDocumentKind::class.java)
-	private val _documentCategory = addEnumProperty("documentCategory", CodeDocumentCategory::class.java)
-	private val _templateDocument = addReferenceProperty("templateDocument", ObjDocument::class.java)
-	private val _contentKind = addEnumProperty("contentKind", CodeContentKind::class.java)
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("name", String::class.java)
+		addEnumProperty("documentKind", CodeDocumentKind::class.java)
+		addEnumProperty("documentCategory", CodeDocumentCategory::class.java)
+		addReferenceProperty("templateDocument", ObjDocument::class.java)
+		addEnumProperty("contentKind", CodeContentKind::class.java)
+	}
 
 	private var _contentType: CodeContentType? = null
 	private var _content: ByteArray? = null
-
-	override val repository get() = super.repository as ObjDocumentRepository
 
 	override fun doAfterLoad() {
 		super.doAfterLoad()
@@ -56,11 +58,6 @@ abstract class ObjDocumentBase(
 		this.calcAll()
 	}
 
-	// override fun doCalcSearch() {
-	//     super.doCalcSearch()
-	//     this.addSearchText(this.name)
-	// }
-
 	override fun doAfterStore() {
 		super.doAfterStore()
 		this.loadContent()
@@ -79,7 +76,12 @@ abstract class ObjDocumentBase(
 	}
 
 	private fun calcCaption() {
-		this._caption.value = this.name
+		setCaption(name)
 	}
+
+	// override fun doCalcSearch() {
+	//     super.doCalcSearch()
+	//     this.addSearchText(this.name)
+	// }
 
 }

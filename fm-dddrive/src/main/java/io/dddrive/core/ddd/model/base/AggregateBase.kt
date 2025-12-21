@@ -5,57 +5,48 @@ import io.dddrive.core.ddd.model.AggregateMeta
 import io.dddrive.core.ddd.model.AggregateRepository
 import io.dddrive.core.ddd.model.AggregateSPI
 import io.dddrive.core.ddd.model.Part
+import io.dddrive.core.ddd.model.RepositoryDirectory
 import io.dddrive.core.oe.model.ObjTenant
 import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.core.property.model.BaseProperty
 import io.dddrive.core.property.model.EntityWithPropertiesSPI
 import io.dddrive.core.property.model.Property
 import io.dddrive.core.property.model.PropertyChangeListener
+import io.dddrive.core.property.model.base.EntityWithPropertiesBase
 import io.dddrive.core.validation.model.AggregatePartValidation
 import io.dddrive.core.validation.model.enums.CodeValidationLevel
 import io.dddrive.core.validation.model.impl.AggregatePartValidationImpl
+import io.dddrive.path.setValueByPath
 import java.time.OffsetDateTime
 import java.util.function.Consumer
 
 /** A DDD Aggregate */
 abstract class AggregateBase(
-	repository: AggregateRepository<out Aggregate>,
+	override val repository: AggregateRepository<out Aggregate>,
 	override val isNew: Boolean,
-) : AggregateWithRepositoryBase(repository),
+) : EntityWithPropertiesBase(),
 	Aggregate,
 	AggregateMeta,
 	AggregateSPI {
 
-	protected val _id = addBaseProperty("id", Any::class.java)
-	protected val _maxPartId = addBaseProperty("maxPartId", Int::class.java)
-	protected val _version = addBaseProperty("version", Int::class.java)
-	protected val _tenant = addReferenceProperty("tenant", ObjTenant::class.java)
-	protected val _owner = addReferenceProperty("owner", ObjUser::class.java)
-	protected val _caption = addBaseProperty("caption", String::class.java)
-	protected val _createdByUser = addReferenceProperty("createdByUser", ObjUser::class.java)
-	protected val _createdAt = addBaseProperty("createdAt", OffsetDateTime::class.java)
-	protected val _modifiedByUser = addReferenceProperty("modifiedByUser", ObjUser::class.java)
-	protected val _modifiedAt = addBaseProperty("modifiedAt", OffsetDateTime::class.java)
-
 	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
 	private val _validations: MutableList<AggregatePartValidation> = mutableListOf()
 
-	var doCreateSeqNr: Int = 0
-
-	var doAfterCreateSeqNr: Int = 0
-
-	var doAfterLoadSeqNr: Int = 0
-
-	var doBeforeStoreSeqNr: Int = 0
-
-	var doAfterStoreSeqNr: Int = 0
 	private var _isFrozen = false
 	private var _isInLoad = false
 	private var isCalcDisabled = 0
 	private var _isInCalc = false
+
+	var doInitSeqNr: Int = 0
+	var doCreateSeqNr: Int = 0
+	var doAfterCreateSeqNr: Int = 0
+	var doAfterLoadSeqNr: Int = 0
+	var doBeforeStoreSeqNr: Int = 0
+	var doAfterStoreSeqNr: Int = 0
 	private var didCalcAll = false
 	private var didCalcVolatile = false
 
-	override fun toString(): String = caption
+	override val directory: RepositoryDirectory get() = repository.directory
 
 	override val meta: AggregateMeta
 		get() = this
@@ -91,11 +82,25 @@ abstract class AggregateBase(
 	override fun doLogChange(propertyName: String): Boolean = repository.doLogChange(propertyName)
 
 	override fun <P : Part<*>> nextPartId(partClass: Class<P>): Int {
-		synchronized(_maxPartId) {
-			val maxPartId = _maxPartId.value
-			_maxPartId.value = (maxPartId ?: 0) + 1
-			return _maxPartId.value!!
+		val maxPartId = getProperty("maxPartId", Int::class) as BaseProperty<Int>
+		synchronized(maxPartId) {
+			maxPartId.value = (maxPartId.value ?: 0) + 1
+			return maxPartId.value!!
 		}
+	}
+
+	override fun doInit() {
+		addBaseProperty("id", Any::class.java)
+		addBaseProperty("maxPartId", Int::class.java)
+		addBaseProperty("version", Int::class.java)
+		addReferenceProperty("tenant", ObjTenant::class.java)
+		addReferenceProperty("owner", ObjUser::class.java)
+		addBaseProperty("caption", String::class.java)
+		addReferenceProperty("createdByUser", ObjUser::class.java)
+		addBaseProperty("createdAt", OffsetDateTime::class.java)
+		addReferenceProperty("modifiedByUser", ObjUser::class.java)
+		addBaseProperty("modifiedAt", OffsetDateTime::class.java)
+		doInitSeqNr += 1
 	}
 
 	override fun doCreate(
@@ -105,10 +110,10 @@ abstract class AggregateBase(
 		timestamp: OffsetDateTime,
 	) {
 		fireEntityAddedChange(aggregateId)
-		_id.value = aggregateId
-		_tenant.id = tenantId
-		_createdByUser.id = userId
-		_createdAt.value = timestamp
+		setValueByPath("id", aggregateId)
+		setValueByPath("tenantId", tenantId)
+		setValueByPath("createdByUserId", userId)
+		setValueByPath("createdAt", timestamp)
 		doCreateSeqNr += 1
 	}
 
@@ -285,4 +290,7 @@ abstract class AggregateBase(
 
 	private val className: String
 		get() = javaClass.getSuperclass().getSimpleName()
+
+	override fun toString(): String = caption
+
 }

@@ -1,8 +1,10 @@
 package io.zeitwert.fm.building.model.base
 
 import io.dddrive.core.ddd.model.Part
+import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.core.property.model.Property
 import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
+import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -30,56 +32,59 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 abstract class ObjBuildingBase(
-	repository: ObjBuildingRepository,
+	override val repository: ObjBuildingRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjBuilding,
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	protected val _name = addBaseProperty("name", String::class.java)
-	protected val _description = addBaseProperty("description", String::class.java)
-	protected val _buildingNr = addBaseProperty("buildingNr", String::class.java)
-	protected val _insuranceNr = addBaseProperty("insuranceNr", String::class.java)
-	protected val _plotNr = addBaseProperty("plotNr", String::class.java)
-	protected val _nationalBuildingId = addBaseProperty("nationalBuildingId", String::class.java)
-	protected val _historicPreservation = addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
+	private lateinit var _ratingList: PartListProperty<ObjBuildingPartRating>
 
-	protected val _street = addBaseProperty("street", String::class.java)
-	protected val _zip = addBaseProperty("zip", String::class.java)
-	protected val _city = addBaseProperty("city", String::class.java)
-	protected val _country = addEnumProperty("country", CodeCountry::class.java)
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("name", String::class.java)
+		addBaseProperty("description", String::class.java)
+		addBaseProperty("buildingNr", String::class.java)
+		addBaseProperty("insuranceNr", String::class.java)
+		addBaseProperty("plotNr", String::class.java)
+		addBaseProperty("nationalBuildingId", String::class.java)
+		addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
 
-	protected val _geoAddress = addBaseProperty("geoAddress", String::class.java)
-	protected val _geoCoordinates = addBaseProperty("geoCoordinates", String::class.java)
-	protected val _geoZoom = addBaseProperty("geoZoom", Int::class.java)
+		addBaseProperty("street", String::class.java)
+		addBaseProperty("zip", String::class.java)
+		addBaseProperty("city", String::class.java)
+		addEnumProperty("country", CodeCountry::class.java)
 
-	protected val _coverFoto = addReferenceProperty("coverFoto", ObjDocument::class.java)
+		addBaseProperty("geoAddress", String::class.java)
+		addBaseProperty("geoCoordinates", String::class.java)
+		addBaseProperty("geoZoom", Int::class.java)
 
-	protected val _currency = addEnumProperty("currency", CodeCurrency::class.java)
+		addReferenceProperty("coverFoto", ObjDocument::class.java)
 
-	protected val _volume = addBaseProperty("volume", BigDecimal::class.java)
-	protected val _areaGross = addBaseProperty("areaGross", BigDecimal::class.java)
-	protected val _areaNet = addBaseProperty("areaNet", BigDecimal::class.java)
-	protected val _nrOfFloorsAboveGround = addBaseProperty("nrOfFloorsAboveGround", Int::class.java)
-	protected val _nrOfFloorsBelowGround = addBaseProperty("nrOfFloorsBelowGround", Int::class.java)
+		addEnumProperty("currency", CodeCurrency::class.java)
 
-	protected val _buildingType = addEnumProperty("buildingType", CodeBuildingType::class.java)
-	protected val _buildingSubType = addEnumProperty("buildingSubType", CodeBuildingSubType::class.java)
-	protected val _buildingYear = addBaseProperty("buildingYear", Int::class.java)
+		addBaseProperty("volume", BigDecimal::class.java)
+		addBaseProperty("areaGross", BigDecimal::class.java)
+		addBaseProperty("areaNet", BigDecimal::class.java)
+		addBaseProperty("nrOfFloorsAboveGround", Int::class.java)
+		addBaseProperty("nrOfFloorsBelowGround", Int::class.java)
 
-	protected val _insuredValue = addBaseProperty("insuredValue", BigDecimal::class.java)
-	protected val _insuredValueYear = addBaseProperty("insuredValueYear", Int::class.java)
-	protected val _notInsuredValue = addBaseProperty("notInsuredValue", BigDecimal::class.java)
-	protected val _notInsuredValueYear = addBaseProperty("notInsuredValueYear", Int::class.java)
-	protected val _thirdPartyValue = addBaseProperty("thirdPartyValue", BigDecimal::class.java)
-	protected val _thirdPartyValueYear = addBaseProperty("thirdPartyValueYear", Int::class.java)
+		addEnumProperty("buildingType", CodeBuildingType::class.java)
+		addEnumProperty("buildingSubType", CodeBuildingSubType::class.java)
+		addBaseProperty("buildingYear", Int::class.java)
 
-	protected val _ratingList = addPartListProperty("ratingList", ObjBuildingPartRating::class.java)
+		addBaseProperty("insuredValue", BigDecimal::class.java)
+		addBaseProperty("insuredValueYear", Int::class.java)
+		addBaseProperty("notInsuredValue", BigDecimal::class.java)
+		addBaseProperty("notInsuredValueYear", Int::class.java)
+		addBaseProperty("thirdPartyValue", BigDecimal::class.java)
+		addBaseProperty("thirdPartyValueYear", Int::class.java)
 
-	protected val _contactSet = addReferenceSetProperty("contactSet", ObjContact::class.java)
+		_ratingList = addPartListProperty("ratingList", ObjBuildingPartRating::class.java)
 
-	override val repository get() = super.repository as ObjBuildingRepository
+		addReferenceSetProperty("contactSet", ObjContact::class.java)
+	}
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
@@ -208,7 +213,7 @@ abstract class ObjBuildingBase(
 	}
 
 	private fun calcCaption() {
-		_caption.value = name
+		setCaption(name)
 	}
 
 	@Suppress("LongMethod")
@@ -283,7 +288,7 @@ abstract class ObjBuildingBase(
 		coverFoto.documentKind = CodeDocumentKind.STANDALONE
 		coverFoto.documentCategory = CodeDocumentCategory.FOTO
 		documentRepo.store(coverFoto, userId, timestamp)
-		_coverFoto.id = coverFoto.id
+		setValueByPath("coverFotoId", coverFoto.id)
 	}
 
 }

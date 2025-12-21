@@ -23,8 +23,8 @@ interface ObjTestPartNode : ObjPart<ObjTest> {
 
 	var testType: CodeTestType?
 
-	var refTestId: Int?
+	var refObjId: Any?
 
-	val refTest: ObjTest?
+	val refObj: ObjTest?
 
 }

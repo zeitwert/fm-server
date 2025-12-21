@@ -57,13 +57,7 @@ Trigger manual migration `mvnw flyway:migrate`
 Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/db` (according to
 definition in jooq XML config files).
 
-Sources can be generated (after database has been set up through flyway) with:
-
-```bash
-mvnw -Dskip.jooq.generation=false generate-sources -pl !fm-ui
-```
-
-To also generate test table sources (configured in `fm-domain/src/test/java/io/zeitwert/fm/test/jooq-config.xml`):
+Sources (including test) can be generated (after database has been set up through flyway) with:
 
 ```bash
 mvnw -Dskip.jooq.generation=false generate-sources generate-test-sources -pl !fm-ui
@@ -76,7 +70,8 @@ mvnw -Dskip.jooq.generation=false jooq-codegen:generate@jooq-codegen-fm-account
 ```
 
 **Enumeration Loading** (TODO)
-When loading enum domains from DB in the `@PostConstruct` method, it must be guaranteed that flyway migrations have done their work. This can be achieved by specifying a corresponding dependency:
+When loading enum domains from DB in the `@PostConstruct` method, it must be guaranteed that flyway migrations have done
+their work. This can be achieved by specifying a corresponding dependency:
 `@DependsOn({ "flyway", "flywayInitializer" })`.
 
 ### Crank (io.crnk)
@@ -101,7 +96,6 @@ mvnw clean test-compile -pl !fm-ui
 
 mvnw -pl :fm-domain surefire:test -Dtest=ObjTestTest
 
-
 ## Deployment
 
 We cannot use the vanilla maven release tool, since it is not properly integrated with heroku.
@@ -116,7 +110,8 @@ A build without running tests and without building the UI can be initiated like 
 
 ### Deployment to Heroku (zeitwert-staging)
 
-We cannot use the maven resource plugin for the whole procedure, since we cannot deploy the build artifacts but need to push the sources to heroku.
+We cannot use the maven resource plugin for the whole procedure, since we cannot deploy the build artifacts but need to
+push the sources to heroku.
 The prepare step can be done with maven release plugin, but the push step needs to be done with a custom script.
 
 1. Prepare release with `deploy_prep` (all done through maven release plugin):
@@ -138,7 +133,8 @@ if successful:
 
 - locally roll back the last commit, so pom.xml is back to non-snapshot version, and stash the changes
 - push main branch to heroku (whose last commit is the non-snapshot version)
-- once done, we pop the stash, so we are back to snapshot version (there is no easy way to roll git forward, since there could be multiple commits after the current one, so we pop the stash and create a new commit)
+- once done, we pop the stash, so we are back to snapshot version (there is no easy way to roll git forward, since there
+	could be multiple commits after the current one, so we pop the stash and create a new commit)
 - we create a new local commit with the snapshot version
 - script does not push the commit, so it is easier to fix if something goes wrong
 

@@ -7,18 +7,19 @@ import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.fm.obj.model.base.FMObjBase
 
 abstract class ObjNoteBase(
-	repository: ObjNoteRepository,
+	override val repository: ObjNoteRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjNote {
 
-	private val _relatedToId = addBaseProperty("relatedToId", Any::class.java)
-	private val _noteType = addEnumProperty("noteType", CodeNoteType::class.java)
-	private val _subject = addBaseProperty("subject", String::class.java)
-	private val _content = addBaseProperty("content", String::class.java)
-	private val _isPrivate = addBaseProperty("isPrivate", Boolean::class.java)
-
-	override val repository get() = super.repository as ObjNoteRepository
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("relatedToId", Any::class.java)
+		addEnumProperty("noteType", CodeNoteType::class.java)
+		addBaseProperty("subject", String::class.java)
+		addBaseProperty("content", String::class.java)
+		addBaseProperty("isPrivate", Boolean::class.java)
+	}
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -26,7 +27,7 @@ abstract class ObjNoteBase(
 	}
 
 	private fun calcCaption() {
-		this._caption.value = "Notiz"
+		setCaption("Notiz: " + (subject ?: "Ohne Betreff"))
 	}
 
 	// ObjNote interface implementation

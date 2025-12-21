@@ -1,11 +1,9 @@
 package io.zeitwert.fm.dms.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.db.Tables
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord
@@ -14,47 +12,53 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
 
 @Component("objDocumentPersistenceProvider")
-open class ObjDocumentPersistenceProviderImpl(
+open class ObjDocumentSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjDocument, ObjRecord, ObjDocumentRecord>(ObjDocument::class.java),
-	SqlRecordMapper<ObjDocument, ObjDocumentRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjDocument>(ObjDocument::class.java),
+	SqlRecordMapper<ObjDocument> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjDocumentRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_DOCUMENT, Tables.OBJ_DOCUMENT.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_DOCUMENT record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjDocument) {
+		val record = dslContext.fetchOne(Tables.OBJ_DOCUMENT, Tables.OBJ_DOCUMENT.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_DOCUMENT record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjDocument,
 		record: ObjDocumentRecord,
 	) {
-		aggregate.setValueByPath("accountId", record.accountId)
-		aggregate.setValueByPath("name", record.name)
-		aggregate.setValueByPath("documentKind", CodeDocumentKind.Enumeration.getDocumentKind(record.documentKindId))
-		aggregate.setValueByPath(
-			"documentCategory",
-			CodeDocumentCategory.Enumeration.getDocumentCategory(record.documentCategoryId)
-		)
+		aggregate.accountId = record.accountId
+		aggregate.name = record.name
+		aggregate.documentKind = CodeDocumentKind.Enumeration.getDocumentKind(record.documentKindId)
+		aggregate.documentCategory = CodeDocumentCategory.Enumeration.getDocumentCategory(record.documentCategoryId)
 		aggregate.setValueByPath("templateDocumentId", record.templateDocumentId)
-		aggregate.setValueByPath("contentKind", CodeContentKind.Enumeration.getContentKind(record.contentKindId))
+		aggregate.contentKind = CodeContentKind.Enumeration.getContentKind(record.contentKindId)
+	}
+
+	override fun storeRecord(aggregate: ObjDocument) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: ObjDocument): ObjDocumentRecord {
+	private fun mapToRecord(aggregate: ObjDocument): ObjDocumentRecord {
 		val record = dslContext.newRecord(Tables.OBJ_DOCUMENT)
 
 		record.objId = aggregate.id as Int
@@ -67,17 +71,6 @@ open class ObjDocumentPersistenceProviderImpl(
 		record.contentKindId = aggregate.contentKind?.id
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjDocumentRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =

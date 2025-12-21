@@ -1,53 +1,59 @@
 package io.zeitwert.fm.collaboration.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.obj.model.Obj
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.dddrive.persist.base.SqlAggregatePersistenceProviderBase
+import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 /** Persistence provider for ObjNote aggregates. */
 @Component("objNotePersistenceProvider")
-open class ObjNotePersistenceProviderImpl(
+open class ObjNoteSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-) : SqlAggregatePersistenceProviderBase<ObjNote, ObjRecord, ObjNoteRecord>(ObjNote::class.java),
-	SqlRecordMapper<ObjNote, ObjNoteRecord> {
+) : AggregateSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
+	SqlRecordMapper<ObjNote> {
 
-	override val idProvider: SqlIdProvider<Obj> get() = baseRecordMapper
+	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
 
-	override fun loadRecord(aggregateId: Any): ObjNoteRecord {
-		val record = dslContext.fetchOne(Tables.OBJ_NOTE, Tables.OBJ_NOTE.OBJ_ID.eq(aggregateId as Int))
-		return record ?: throw IllegalArgumentException("no OBJ_NOTE record found for $aggregateId")
+	override fun loadRecord(aggregate: ObjNote) {
+		val record = dslContext.fetchOne(Tables.OBJ_NOTE, Tables.OBJ_NOTE.OBJ_ID.eq(aggregate.id as Int))
+		record ?: throw IllegalArgumentException("no OBJ_NOTE record found for ${aggregate.id}")
+		mapFromRecord(aggregate, record)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapFromRecord(
+	private fun mapFromRecord(
 		aggregate: ObjNote,
 		record: ObjNoteRecord,
 	) {
-		aggregate.setValueByPath("relatedToId", record.relatedToId)
-		aggregate.setValueByPath("noteType", CodeNoteType.Enumeration.getNoteType(record.noteTypeId))
-		aggregate.setValueByPath("subject", record.subject)
-		aggregate.setValueByPath("content", record.content)
-		aggregate.setValueByPath("isPrivate", record.isPrivate)
+		aggregate.relatedToId = record.relatedToId
+		aggregate.noteType = CodeNoteType.Enumeration.getNoteType(record.noteTypeId)
+		aggregate.subject = record.subject
+		aggregate.content = record.content
+		aggregate.isPrivate = record.isPrivate
+	}
+
+	override fun storeRecord(aggregate: ObjNote) {
+		val record = mapToRecord(aggregate)
+		if ((aggregate as FMObjBase).isNew) {
+			record.insert()
+		} else {
+			record.update()
+		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun mapToRecord(aggregate: ObjNote): ObjNoteRecord {
+	private fun mapToRecord(aggregate: ObjNote): ObjNoteRecord {
 		val record = dslContext.newRecord(Tables.OBJ_NOTE)
 
 		record.objId = aggregate.id as Int
@@ -59,17 +65,6 @@ open class ObjNotePersistenceProviderImpl(
 		record.isPrivate = aggregate.isPrivate
 
 		return record
-	}
-
-	override fun storeRecord(
-		record: ObjNoteRecord,
-		aggregate: Aggregate,
-	) {
-		if ((aggregate as FMObjBase).isNew) {
-			record.insert()
-		} else {
-			record.update()
-		}
 	}
 
 	override fun getAll(tenantId: Any): List<Any> =
