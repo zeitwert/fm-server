@@ -44,3 +44,5 @@ data class BuildingTransferDto(
 	val notes: List<NoteTransferDto>? = null,
 )
 
+
+

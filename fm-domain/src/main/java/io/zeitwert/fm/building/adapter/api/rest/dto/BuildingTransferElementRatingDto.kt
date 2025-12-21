@@ -12,3 +12,5 @@ data class BuildingTransferElementRatingDto(
 	var measureDescription: String? = null,
 )
 
+
+

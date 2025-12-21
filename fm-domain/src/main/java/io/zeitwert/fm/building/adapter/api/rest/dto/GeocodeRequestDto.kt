@@ -8,3 +8,5 @@ data class GeocodeRequestDto(
     var geoAddress: String? = null,
 )
 
+
+

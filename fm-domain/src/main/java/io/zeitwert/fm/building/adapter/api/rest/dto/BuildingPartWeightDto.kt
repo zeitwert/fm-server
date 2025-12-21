@@ -13,3 +13,5 @@ data class BuildingPartWeightDto(
     var lifeTime100: Int? = null,
 )
 
+
+

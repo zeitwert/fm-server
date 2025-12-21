@@ -5,3 +5,5 @@ data class GeocodeResponseDto(
     var geoZoom: Int? = null,
 )
 
+
+

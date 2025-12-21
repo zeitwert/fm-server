@@ -12,3 +12,5 @@ data class NoteTransferDto(
     var modifiedAt: OffsetDateTime? = null,
 )
 
+
+
