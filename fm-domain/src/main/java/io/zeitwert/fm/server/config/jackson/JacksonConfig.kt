@@ -1,4 +1,4 @@
-package io.zeitwert.config.jackson
+package io.zeitwert.fm.server.config.jackson
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -15,9 +15,10 @@ import org.springframework.context.annotation.Primary
 
 @Configuration
 open class JacksonConfig {
+
 	/**
-	 * Standard ObjectMapper
-	 * This mapper typically does not have any special type discriminators or modules.
+	 * Standard ObjectMapper This mapper typically does not have any special type discriminators or
+	 * modules.
 	 */
 	@Bean
 	@Primary
@@ -27,14 +28,14 @@ open class JacksonConfig {
 	): ObjectMapper =
 		jacksonObjectMapper().apply {
 			registerModule(JavaTimeModule())
-			dateFormat = StdDateFormat()
+			setDateFormat(StdDateFormat())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			modules.forEach { registerModule(it) }
 		}
 
 	/**
-	 * Standard ObjectMapper that excludes null values during serialization
-	 * This mapper is identical to stdObjectMapper but excludes null values from JSON output
+	 * Standard ObjectMapper that excludes null values during serialization This mapper is identical
+	 * to stdObjectMapper but excludes null values from JSON output
 	 */
 	@Bean
 	@Qualifier("stdNonNull")
@@ -43,15 +44,15 @@ open class JacksonConfig {
 	): ObjectMapper =
 		jacksonObjectMapper().apply {
 			registerModule(JavaTimeModule())
-			dateFormat = StdDateFormat()
+			setDateFormat(StdDateFormat())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			setSerializationInclusion(JsonInclude.Include.NON_NULL)
 			modules.forEach { registerModule(it) }
 		}
 
 	/**
-	 * UI ObjectMapper
-	 * This mapper typically has a type field to distinguish between different types of objects.
+	 * UI ObjectMapper This mapper typically has a type field to distinguish between different types
+	 * of objects.
 	 */
 	@Bean
 	@Qualifier("ui")
@@ -60,16 +61,15 @@ open class JacksonConfig {
 	): ObjectMapper =
 		jacksonObjectMapper().apply {
 			registerModule(JavaTimeModule())
-			dateFormat = StdDateFormat()
+			setDateFormat(StdDateFormat())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			modules.forEach { registerModule(it) }
 		}
 
 	/**
-	 * Config ObjectMapper
-	 * This mapper typically uses custom algorithms to discriminate between different types of objects.
-	 * For example, by detecting the presence of certain fields.
-	 * This in order to make the JSON more editor friendly.
+	 * Config ObjectMapper This mapper typically uses custom algorithms to discriminate between
+	 * different types of objects. For example, by detecting the presence of certain fields. This in
+	 * order to make the JSON more editor friendly.
 	 */
 	@Bean
 	@Qualifier("config")
@@ -78,16 +78,13 @@ open class JacksonConfig {
 	): ObjectMapper =
 		jacksonObjectMapper().apply {
 			registerModule(JavaTimeModule())
-			dateFormat = StdDateFormat()
+			setDateFormat(StdDateFormat())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
 			modules.forEach { registerModule(it) }
 		}
 
-	/**
-	 * Database ObjectMapper
-	 * This mapper typically does not use special type discriminators.
-	 */
+	/** Database ObjectMapper This mapper typically does not use special type discriminators. */
 	@Bean
 	@Qualifier("db")
 	open fun dbObjectMapper(
@@ -95,9 +92,9 @@ open class JacksonConfig {
 	): ObjectMapper =
 		jacksonObjectMapper().apply {
 			registerModule(JavaTimeModule())
-			dateFormat = StdDateFormat()
+			setDateFormat(StdDateFormat())
 			disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			modules.forEach { registerModule(it) }
 		}
-}
 
+}

@@ -15,7 +15,7 @@
               <option value="package" />
               <option value="-DskipTests" />
               <option value="-pl" />
-              <option value="fm-common,fm-dddrive,fm-domain" />
+              <option value="fm-dddrive,fm-domain" />
               <option value="-am" />
             </list>
           </option>

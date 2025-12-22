@@ -24,10 +24,6 @@
 		<!-- FM Internal modules -->
 		<dependency>
 			<groupId>io.zeitwert</groupId>
-			<artifactId>fm-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeitwert</groupId>
 			<artifactId>fm-domain</artifactId>
 		</dependency>
 
@@ -115,12 +111,6 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.zeitwert</groupId>
-			<artifactId>fm-common</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>

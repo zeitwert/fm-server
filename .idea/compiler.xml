@@ -17,16 +17,16 @@
         </processorPath>
         <module name="zeitwert-server" />
         <module name="fm-dddrive" />
-        <module name="fm-common" />
         <module name="fm-domain" />
         <module name="fm-server" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="21">
+      <module name="fm-common" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="fm-common" options="-parameters" />
       <module name="fm-dddrive" options="-parameters" />
       <module name="fm-domain" options="-parameters" />
       <module name="fm-server" options="-parameters" />

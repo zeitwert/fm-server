@@ -12,10 +12,12 @@ import org.springframework.scheduling.annotation.EnableAsync
 @ComponentScan("io.zeitwert")
 @Profile("test", "ci")
 open class TestApplication {
-  companion object {
-    @JvmStatic
-    fun main(args: Array<String>) {
-      SpringApplication.run(TestApplication::class.java, *args)
-    }
-  }
+
+	companion object {
+
+		@JvmStatic
+		fun main(args: Array<String>) {
+			SpringApplication.run(TestApplication::class.java, *args)
+		}
+	}
 }

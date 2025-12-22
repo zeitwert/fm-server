@@ -45,7 +45,7 @@ Create a run configuration:
 3. Configure:
    - **Name**: Build All JARs
    - **Working directory**: `$PROJECT_DIR$`
-   - **Command line**: `clean install -DskipTests -pl fm-common,fm-dddrive,fm-domain -am`
+   - **Command line**: `clean install -DskipTests -pl fm-dddrive,fm-domain -am`
      - `-pl` specifies which modules to build
      - `-am` builds dependencies too
 4. Save and use `Shift+F10` to run
