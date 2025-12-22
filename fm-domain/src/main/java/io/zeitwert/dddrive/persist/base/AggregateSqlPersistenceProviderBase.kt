@@ -25,7 +25,7 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 
 	abstract val baseRecordMapper: SqlRecordMapper<Aggregate>
 
-	abstract val extnRecordMapper: SqlRecordMapper<A>
+	abstract val extnRecordMapper: SqlRecordMapper<A>?
 
 	override fun isValidId(id: Any): Boolean = id is Int
 
@@ -52,7 +52,7 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 			aggregate.meta.disableCalc()
 			try {
 				baseRecordMapper.loadRecord(aggregate)
-				extnRecordMapper.loadRecord(aggregate)
+				extnRecordMapper?.loadRecord(aggregate)
 			} finally {
 				aggregate.meta.enableCalc()
 			}
@@ -68,7 +68,7 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	override fun doStore(aggregate: A) {
 		dslContext.transaction { _ ->
 			baseRecordMapper.storeRecord(aggregate)
-			extnRecordMapper.storeRecord(aggregate)
+			extnRecordMapper?.storeRecord(aggregate)
 			doStoreParts(aggregate)
 		}
 	}
@@ -76,15 +76,15 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	protected open fun doStoreParts(aggregate: A) {
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = extnRecordMapper.getAll(tenantId)
+	override fun getAll(tenantId: Any): List<Any> = extnRecordMapper?.getAll(tenantId) ?: emptyList()
 
 	override fun getByForeignKey(
 		fkName: String,
 		targetId: Any,
 	): List<Any> {
 		var foreignKeys = baseRecordMapper.getByForeignKey("", fkName, targetId)
-		if (foreignKeys == null) {
-			foreignKeys = extnRecordMapper.getByForeignKey("", fkName, targetId)
+		if (foreignKeys == null && extnRecordMapper != null) {
+			foreignKeys = extnRecordMapper!!.getByForeignKey("", fkName, targetId)
 		}
 		assert(foreignKeys != null) { "valid foreign key: $fkName" }
 		return foreignKeys!!

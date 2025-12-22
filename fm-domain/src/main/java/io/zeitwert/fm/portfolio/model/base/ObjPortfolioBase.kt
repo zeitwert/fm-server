@@ -51,40 +51,15 @@ abstract class ObjPortfolioBase(
 
 	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
 
-	// @Suppress("UNCHECKED_CAST")
-	// override val includeSet: Set<Any> get() = _includeSet.items.toSet()
-
-	// override fun clearIncludeSet() {
-	// 	_includeSet.clearItems()
-	// }
-
 	// override fun addInclude(id: Int?) {
 	// 	require(hasValidObjType(id)) { "supported objType $id" }
 	// 	_includeSet.addItem(id)
-	// }
-
-	// override fun removeInclude(id: Int?) {
-	// 	_includeSet.removeItem(id)
-	// }
-
-	// @Suppress("UNCHECKED_CAST")
-	// override val excludeSet: Set<Any> get() = _excludeSet.items.toSet()
-
-	// override fun clearExcludeSet() {
-	// 	_excludeSet.clearItems()
 	// }
 
 	// override fun addExclude(id: Int?) {
 	// 	requireThis(hasValidObjType(id), "supported objType $id")
 	// 	_excludeSet.addItem(id)
 	// }
-
-	// override fun removeExclude(id: Int?) {
-	// 	_excludeSet.removeItem(id)
-	// }
-
-	// @Suppress("UNCHECKED_CAST")
-	// override val buildingSet: Set<Any> = _buildingSet.items.toSet()
 
 	private fun hasValidObjType(id: Int?): Boolean {
 		if (id == null) return false

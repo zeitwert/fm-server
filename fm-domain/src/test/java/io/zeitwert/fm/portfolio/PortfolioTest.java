@@ -7,7 +7,6 @@ import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.test.TestApplication;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
-@Disabled
 public class PortfolioTest {
 
 	@Autowired
