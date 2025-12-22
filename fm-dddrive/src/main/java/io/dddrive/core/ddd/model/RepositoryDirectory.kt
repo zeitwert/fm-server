@@ -23,8 +23,21 @@ interface RepositoryDirectory {
 
 	companion object {
 
+		private var _instance: RepositoryDirectory = RepositoryDirectoryImpl()
+
 		@JvmStatic
-		val instance: RepositoryDirectory = RepositoryDirectoryImpl()
+		val instance: RepositoryDirectory
+			get() = _instance
+
+		@JvmStatic
+		fun setInstance(directory: RepositoryDirectory) {
+			_instance = directory
+		}
+
+		@JvmStatic
+		fun reset() {
+			_instance = RepositoryDirectoryImpl()
+		}
 	}
 
 }

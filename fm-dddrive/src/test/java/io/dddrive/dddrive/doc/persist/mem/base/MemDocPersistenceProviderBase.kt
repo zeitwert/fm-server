@@ -41,7 +41,6 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 			aggregate.setValueByPath("caseStage", caseStage)
 		}
 
-		aggregate.setValueByPath("isInWork", docMetaPto?.isInWork)
 		aggregate.setValueByPath("assigneeId", docMetaPto?.assigneeId)
 
 		// Load transitions

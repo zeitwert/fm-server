@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -50,7 +50,6 @@
 		<lombok.version>1.18.34</lombok.version>
 		<aspose-words.version>22.12</aspose-words.version>
 		<google-maps.version>2.1.2</google-maps.version>
-		<caffeine.version>3.2.1</caffeine.version>
 		<jackson.version>2.19.1</jackson.version>
 		<!-- Frontend -->
 		<frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
@@ -133,13 +132,6 @@
 				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-jsr310</artifactId>
 				<version>${jackson.version}</version>
-			</dependency>
-
-			<!-- Runtime -->
-			<dependency>
-				<groupId>com.github.ben-manes.caffeine</groupId>
-				<artifactId>caffeine</artifactId>
-				<version>${caffeine.version}</version>
 			</dependency>
 
 			<!-- Crnk JSON:API -->
@@ -229,7 +221,7 @@
 				Mixed Java/Kotlin compilation order:
 				1. Kotlin compiles first (compile phase) - can see Java classes
 				2. Java compiles second (compile phase) - can see Kotlin classes, Lombok processes annotations
-				
+
 				IMPORTANT: kotlin-maven-plugin must be declared BEFORE maven-compiler-plugin
 				so that in the 'compile' phase, Kotlin runs first, then Java.
 			-->
@@ -344,28 +336,28 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>${maven.dependency.version}</version>
 				</plugin>
-			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-					<url>jdbc:postgresql://localhost:9999/zeitwert</url>
-					<user>zeitwert</user>
-					<password>zeitwert</password>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.flywaydb</groupId>
-						<artifactId>flyway-database-postgresql</artifactId>
-						<version>${flyway.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.postgresql</groupId>
-						<artifactId>postgresql</artifactId>
-						<version>${postgresql.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+				<plugin>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+						<url>jdbc:postgresql://localhost:9999/zeitwert</url>
+						<user>zeitwert</user>
+						<password>zeitwert</password>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.flywaydb</groupId>
+							<artifactId>flyway-database-postgresql</artifactId>
+							<version>${flyway.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<version>${postgresql.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 				<plugin>
 					<groupId>org.jooq</groupId>
 					<artifactId>jooq-codegen-maven</artifactId>

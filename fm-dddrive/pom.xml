@@ -19,7 +19,8 @@
 	</description>
 
 	<properties>
-		<javassist.version>3.29.2-GA</javassist.version>
+		<caffeine.version>3.2.3</caffeine.version>
+		<javassist.version>3.30.2-GA</javassist.version>
 	</properties>
 
 	<dependencies>
@@ -39,20 +40,15 @@
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Runtime, Provided -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${caffeine.version}</version>
 		</dependency>
 
 		<!-- Test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -99,6 +95,39 @@
 					<execution>
 						<id>java-test-compile-after-kotlin</id>
 						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Enforce no Spring imports in main sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.4.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>de.skuzzle.enforcer</groupId>
+						<artifactId>restrict-imports-enforcer-rule</artifactId>
+						<version>2.6.0</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>check-no-spring-in-main</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<RestrictImports>
+									<reason>Spring dependencies are not allowed in main sources - this library must remain
+										Spring-agnostic
+									</reason>
+									<bannedImport>org.springframework.**</bannedImport>
+									<includeTestCode>false</includeTestCode>
+								</RestrictImports>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
