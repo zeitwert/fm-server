@@ -1,12 +1,13 @@
 package io.dddrive.ddd.model
 
+import io.dddrive.property.model.EntityWithPropertiesSPI
 import java.time.OffsetDateTime
 
 /**
  * This interface defines the internal callbacks for an Aggregate
  * implementation.
  */
-interface AggregateSPI {
+interface AggregateSPI : EntityWithPropertiesSPI {
 
 	/**
 	 * Generate new part id.

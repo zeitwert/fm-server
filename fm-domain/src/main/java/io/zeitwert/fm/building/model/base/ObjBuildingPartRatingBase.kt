@@ -5,6 +5,9 @@ import io.dddrive.ddd.model.PartMeta
 import io.dddrive.ddd.model.PartRepository
 import io.dddrive.obj.model.base.ObjPartBase
 import io.dddrive.oe.model.ObjUser
+import io.dddrive.property.model.BaseProperty
+import io.dddrive.property.model.EnumProperty
+import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
@@ -17,20 +20,26 @@ import java.time.LocalDate
 
 abstract class ObjBuildingPartRatingBase protected constructor(
 	obj: ObjBuilding,
-	repository: PartRepository<ObjBuilding, out Part<ObjBuilding>>,
+	override val repository: PartRepository<ObjBuilding, out Part<ObjBuilding>>,
 	property: Property<*>,
 	id: Int,
 ) : ObjPartBase<ObjBuilding>(obj, repository, property, id),
 	ObjBuildingPartRating,
 	PartMeta<ObjBuilding> {
 
-	protected val _partCatalog = addEnumProperty("partCatalog", CodeBuildingPartCatalog::class.java)
-	protected val _maintenanceStrategy =
+	private lateinit var _partCatalog: EnumProperty<CodeBuildingPartCatalog>
+	private lateinit var _ratingDate: BaseProperty<LocalDate>
+	private lateinit var _elementList: PartListProperty<ObjBuildingPartElementRating>
+
+	override fun doInit() {
+		super.doInit()
+		_partCatalog = addEnumProperty("partCatalog", CodeBuildingPartCatalog::class.java)
 		addEnumProperty("maintenanceStrategy", CodeBuildingMaintenanceStrategy::class.java)
-	protected val _ratingStatus = addEnumProperty("ratingStatus", CodeBuildingRatingStatus::class.java)
-	protected val _ratingDate = addBaseProperty("ratingDate", LocalDate::class.java)
-	protected val _ratingUser = addReferenceProperty("ratingUser", ObjUser::class.java)
-	protected val _elementList = addPartListProperty("elementList", ObjBuildingPartElementRating::class.java)
+		addEnumProperty("ratingStatus", CodeBuildingRatingStatus::class.java)
+		_ratingDate = addBaseProperty("ratingDate", LocalDate::class.java)
+		addReferenceProperty("ratingUser", ObjUser::class.java)
+		_elementList = addPartListProperty("elementList", ObjBuildingPartElementRating::class.java)
+	}
 
 	override var elementWeights: Int = 0
 

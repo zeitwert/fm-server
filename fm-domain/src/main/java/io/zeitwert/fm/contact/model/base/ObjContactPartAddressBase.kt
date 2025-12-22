@@ -19,15 +19,18 @@ abstract class ObjContactPartAddressBase(
 ) : ObjPartBase<ObjContact>(obj, repository, property, id),
 	ObjContactPartAddress {
 
-	private val _addressChannel = addEnumProperty("addressChannel", CodeAddressChannel::class.java)
-	private val _name = addBaseProperty("name", String::class.java)
-	private val _street = addBaseProperty("street", String::class.java)
-	private val _zip = addBaseProperty("zip", String::class.java)
-	private val _city = addBaseProperty("city", String::class.java)
-	private val _country = addEnumProperty("country", CodeCountry::class.java)
+	override fun doInit() {
+		super.doInit()
+		addEnumProperty("addressChannel", CodeAddressChannel::class.java)
+		addBaseProperty("name", String::class.java)
+		addBaseProperty("street", String::class.java)
+		addBaseProperty("zip", String::class.java)
+		addBaseProperty("city", String::class.java)
+		addEnumProperty("country", CodeCountry::class.java)
+	}
 
-	override val addressType get() = _addressChannel.value?.addressType
+	override val addressType get() = addressChannel?.addressType
 
-	override val isMailAddress get() = _addressChannel.value?.isMailAddress
+	override val isMailAddress get() = addressChannel?.isMailAddress
 
 }

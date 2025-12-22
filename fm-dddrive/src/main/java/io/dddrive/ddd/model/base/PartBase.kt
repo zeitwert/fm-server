@@ -15,31 +15,24 @@ abstract class PartBase<A : Aggregate>(
 	override val aggregate: A,
 	override val repository: PartRepository<A, out Part<A>>,
 	override val parentProperty: Property<*>,
-	id: Int,
+	override val id: Int,
 ) : EntityWithPropertiesBase(),
 	Part<A>,
 	PartMeta<A>,
 	PartSPI<A> {
 
-	protected val _id = this.addBaseProperty("id", Int::class.java)
-
 	override val isNew: Boolean = !aggregate.meta.isInLoad
+
 	private var isCalcDisabled = 0
 	private var _isInCalc = false
+
+	var doInitSeqNr: Int = 0
+	var doAfterCreateSeqNr: Int = 0
 	private var didCalcAll = false
 	private var didCalcVolatile = false
 
-	init {
-		this._id.value = id
-	}
-
 	override val directory: RepositoryDirectory
 		get() = this.aggregate.meta.repository.directory
-
-	override val id: Int
-		get() {
-			return this._id.value!!
-		}
 
 	override val meta: PartMeta<A>
 		get() = this
@@ -73,6 +66,14 @@ abstract class PartBase<A : Aggregate>(
 			val parentPath = parentProp.path
 			return buildPath(parentPath)
 		}
+
+	override fun doInit() {
+		doInitSeqNr += 1
+	}
+
+	override fun doAfterCreate() {
+		doAfterCreateSeqNr += 1
+	}
 
 	override fun fireFieldChange(
 		op: String,

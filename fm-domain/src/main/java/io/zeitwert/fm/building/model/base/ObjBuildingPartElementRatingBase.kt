@@ -16,15 +16,18 @@ abstract class ObjBuildingPartElementRatingBase(
 ) : ObjPartBase<ObjBuilding>(obj, repository, property, id),
 	ObjBuildingPartElementRating {
 
-	protected val _buildingPart = addEnumProperty("buildingPart", CodeBuildingPart::class.java)
-	protected val _weight = addBaseProperty("weight", Int::class.java)
-	protected val _condition = addBaseProperty("condition", Int::class.java)
-	protected val _ratingYear = addBaseProperty("ratingYear", Int::class.java)
-	protected val _strain = addBaseProperty("strain", Int::class.java)
-	protected val _strength = addBaseProperty("strength", Int::class.java)
-	protected val _description = addBaseProperty("description", String::class.java)
-	protected val _conditionDescription = addBaseProperty("conditionDescription", String::class.java)
-	protected val _measureDescription = addBaseProperty("measureDescription", String::class.java)
+	override fun doInit() {
+		super.doInit()
+		addEnumProperty("buildingPart", CodeBuildingPart::class.java)
+		addBaseProperty("weight", Int::class.java)
+		addBaseProperty("condition", Int::class.java)
+		addBaseProperty("ratingYear", Int::class.java)
+		addBaseProperty("strain", Int::class.java)
+		addBaseProperty("strength", Int::class.java)
+		addBaseProperty("description", String::class.java)
+		addBaseProperty("conditionDescription", String::class.java)
+		addBaseProperty("measureDescription", String::class.java)
+	}
 
 	// protected final EnumSetProperty<CodeBuildingElementDescription> materialDescriptionSet;
 	// protected final EnumSetProperty<CodeBuildingElementDescription> conditionDescriptionSet;

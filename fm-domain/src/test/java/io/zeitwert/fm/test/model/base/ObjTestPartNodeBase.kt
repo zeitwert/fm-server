@@ -18,14 +18,17 @@ abstract class ObjTestPartNodeBase(
 ) : ObjPartBase<ObjTest>(obj, repository, property, id),
 	ObjTestPartNode {
 
-	private val _shortText = addBaseProperty("shortText", String::class.java)
-	private val _longText = addBaseProperty("longText", String::class.java)
-	private val _date = addBaseProperty("date", LocalDate::class.java)
-	private val _int = addBaseProperty("int", Int::class.java)
-	private val _isDone = addBaseProperty("isDone", Boolean::class.java)
-	private val _json = addBaseProperty("json", JSON::class.java)
-	private val _nr = addBaseProperty("nr", BigDecimal::class.java)
-	private val _testType = addEnumProperty("testType", CodeTestType::class.java)
-	private val _refObj = addReferenceProperty("refObj", ObjTest::class.java)
+	override fun doInit() {
+		super.doInit()
+		addBaseProperty("shortText", String::class.java)
+		addBaseProperty("longText", String::class.java)
+		addBaseProperty("date", LocalDate::class.java)
+		addBaseProperty("int", Int::class.java)
+		addBaseProperty("isDone", Boolean::class.java)
+		addBaseProperty("json", JSON::class.java)
+		addBaseProperty("nr", BigDecimal::class.java)
+		addEnumProperty("testType", CodeTestType::class.java)
+		addReferenceProperty("refObj", ObjTest::class.java)
+	}
 
 }
