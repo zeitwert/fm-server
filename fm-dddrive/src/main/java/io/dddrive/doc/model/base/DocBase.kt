@@ -26,30 +26,16 @@ abstract class DocBase(
 	override val meta: DocMeta
 		get() = this
 
+	override val docTypeId get() = repository.aggregateType.id
+
 	private lateinit var _transitionList: PartListProperty<DocPartTransition>
 
 	override fun doInit() {
 		super.doInit()
-		addBaseProperty("docTypeId", String::class.java)
 		addEnumProperty("caseDef", CodeCaseDef::class.java)
 		addEnumProperty("caseStage", CodeCaseStage::class.java)
 		addReferenceProperty("assignee", ObjUser::class.java)
 		_transitionList = addPartListProperty("transitionList", DocPartTransition::class.java)
-	}
-
-	override fun doCreate(
-		aggregateId: Any,
-		tenantId: Any,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		try {
-			disableCalc()
-			super.doCreate(aggregateId, tenantId, userId, timestamp)
-			setValueByPath("docTypeId", repository.aggregateType.id)
-		} finally {
-			enableCalc()
-		}
 	}
 
 	override fun doAfterCreate(
@@ -57,15 +43,6 @@ abstract class DocBase(
 		timestamp: OffsetDateTime,
 	) {
 		super.doAfterCreate(userId, timestamp)
-		try {
-			disableCalc()
-			setValueByPath("ownerId", userId)
-			setValueByPath("version", 0)
-			setValueByPath("createdByUserId", userId)
-			setValueByPath("createdAt", timestamp)
-		} finally {
-			enableCalc()
-		}
 		// freeze until caseDef is set
 		freeze() // TODO reconsider
 	}

@@ -24,27 +24,13 @@ abstract class ObjBase(
 	override val meta: ObjMeta
 		get() = this
 
+	override val objTypeId get() = repository.aggregateType.id
+
 	override fun doInit() {
 		super.doInit()
-		addBaseProperty("objTypeId", String::class.java)
 		addReferenceProperty("closedByUser", ObjUser::class.java)
 		addBaseProperty("closedAt", OffsetDateTime::class.java)
 		_transitionList = addPartListProperty("transitionList", ObjPartTransition::class.java)
-	}
-
-	override fun doCreate(
-		aggregateId: Any,
-		tenantId: Any,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		try {
-			disableCalc()
-			super.doCreate(aggregateId, tenantId, userId, timestamp)
-			setValueByPath("objTypeId", repository.aggregateType.id)
-		} finally {
-			enableCalc()
-		}
 	}
 
 	override fun doAfterCreate(
@@ -54,10 +40,6 @@ abstract class ObjBase(
 		super.doAfterCreate(userId, timestamp)
 		try {
 			disableCalc()
-			setValueByPath("ownerId", userId)
-			setValueByPath("version", 0)
-			setValueByPath("createdByUserId", userId)
-			setValueByPath("createdAt", timestamp)
 			_transitionList.addPart(null).init(userId, timestamp)
 		} finally {
 			enableCalc()

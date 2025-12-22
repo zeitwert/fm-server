@@ -26,7 +26,8 @@ abstract class DocRepositoryBase<D : Doc>(
 	}
 
 	companion object {
-		private val NotLoggedProperties = mutableSetOf<String?>("docTypeId", "caseDef", "isInWork", "transitionList")
+
+		private val NotLoggedProperties = mutableSetOf<String?>("caseDef", "isInWork", "transitionList")
 	}
 
 }

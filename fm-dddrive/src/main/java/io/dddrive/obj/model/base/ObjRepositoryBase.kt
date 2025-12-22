@@ -38,7 +38,7 @@ abstract class ObjRepositoryBase<O : Obj>(
 	companion object {
 
 		private val NotLoggedProperties =
-			mutableSetOf<String?>("objTypeId", "closedByUser", "closedAt", "transitionList")
+			mutableSetOf<String?>("closedByUser", "closedAt", "transitionList")
 	}
 
 }

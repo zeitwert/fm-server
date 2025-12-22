@@ -41,7 +41,6 @@ class ObjRecordMapperImpl(
 		// check(aggregate.meta.objTypeId != null) { "objTypeId defined" }
 		// obj
 		aggregate.setValueByPath("id", record.id)
-		aggregate.setValueByPath("objTypeId", record.objTypeId)
 		aggregate.setValueByPath("tenantId", record.tenantId)
 		if (aggregate is ItemWithAccount) {
 			aggregate.accountId = record.accountId

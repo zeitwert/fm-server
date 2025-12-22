@@ -28,8 +28,6 @@ interface AggregateSPI : EntityWithPropertiesSPI {
 	fun doCreate(
 		aggregateId: Any,
 		tenantId: Any,
-		userId: Any,
-		timestamp: OffsetDateTime,
 	)
 
 	/**

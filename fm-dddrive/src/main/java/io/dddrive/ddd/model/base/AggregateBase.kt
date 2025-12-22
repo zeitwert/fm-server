@@ -103,17 +103,12 @@ abstract class AggregateBase(
 		doInitSeqNr += 1
 	}
 
-	override fun doCreate(
+	final override fun doCreate(
 		aggregateId: Any,
 		tenantId: Any,
-		userId: Any,
-		timestamp: OffsetDateTime,
 	) {
-		fireEntityAddedChange(aggregateId)
 		setValueByPath("id", aggregateId)
 		setValueByPath("tenantId", tenantId)
-		setValueByPath("createdByUserId", userId)
-		setValueByPath("createdAt", timestamp)
 		doCreateSeqNr += 1
 	}
 
@@ -121,7 +116,12 @@ abstract class AggregateBase(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
+		setValueByPath("ownerId", userId)
+		setValueByPath("version", 0)
+		setValueByPath("createdByUserId", userId)
+		setValueByPath("createdAt", timestamp)
 		doAfterCreateSeqNr += 1
+		fireEntityAddedChange(id)
 	}
 
 	override fun doAfterLoad() {

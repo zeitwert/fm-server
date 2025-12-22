@@ -39,7 +39,6 @@ class DocRecordMapperImpl(
 	) {
 		// doc base fields
 		aggregate.setValueByPath("id", record.id)
-		aggregate.setValueByPath("docTypeId", record.docTypeId)
 		aggregate.setValueByPath("tenantId", record.tenantId)
 		if (aggregate is ItemWithAccount) {
 			aggregate.accountId = record.accountId

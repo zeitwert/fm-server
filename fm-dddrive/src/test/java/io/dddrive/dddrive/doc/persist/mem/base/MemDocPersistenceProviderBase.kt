@@ -1,16 +1,16 @@
 package io.dddrive.dddrive.doc.persist.mem.base
 
+import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
+import io.dddrive.dddrive.doc.persist.mem.pto.DocPartTransitionPto
+import io.dddrive.dddrive.doc.persist.mem.pto.DocPto
 import io.dddrive.doc.model.Doc
 import io.dddrive.doc.model.DocPartTransition
 import io.dddrive.doc.model.enums.CodeCaseDefEnum
 import io.dddrive.doc.model.enums.CodeCaseStageEnum
+import io.dddrive.domain.doc.persist.mem.pto.DocMetaPto
 import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
 import io.dddrive.property.model.PartListProperty
-import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
-import io.dddrive.dddrive.doc.persist.mem.pto.DocPartTransitionPto
-import io.dddrive.dddrive.doc.persist.mem.pto.DocPto
-import io.dddrive.domain.doc.persist.mem.pto.DocMetaPto
 
 abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 	intfClass: Class<D>,
@@ -27,9 +27,6 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 		// Now, handle Doc-specific and DocMeta-specific properties
 		val docMetaPto = pto.meta // This is DocMetaPto
 		aggregate.meta // This is DocMeta from the domain object
-
-		// Load Doc-specific properties from pto.meta into the doc aggregate
-		aggregate.setValueByPath("docTypeId", docMetaPto?.docTypeId)
 
 		docMetaPto?.caseDefId?.let { caseDefId ->
 			val caseDef = CodeCaseDefEnum.getCaseDef(caseDefId)

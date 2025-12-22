@@ -100,14 +100,24 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		(aggregate as EntityWithPropertiesSPI).doInit()
 		check(aggregate.doInitSeqNr > doInitSeqNr) { this.getBaseClassName(aggregate) + ": doInit was propagated" }
 
-		val doCreateSeqNr = (aggregate as AggregateBase).doCreateSeqNr
-		(aggregate as AggregateSPI).doCreate(aggregateId, tenantId, userId, timestamp)
-		check(aggregate.doCreateSeqNr > doCreateSeqNr) { this.getBaseClassName(aggregate) + ": doCreate was propagated" }
+		try {
+			aggregate.disableCalc()
+			val doCreateSeqNr = (aggregate as AggregateBase).doCreateSeqNr
+			aggregate.doCreate(aggregateId, tenantId)
+			// aggregate.setValueByPath("id", aggregateId)
+			// aggregate.setValueByPath("tenantId", tenantId)
+			check(aggregate.doCreateSeqNr > doCreateSeqNr) { this.getBaseClassName(aggregate) + ": doCreate was propagated" }
+		} finally {
+			aggregate.enableCalc()
+		}
 
-		aggregate.meta.calcAll()
+		aggregate.meta.calcAll() // TODO reconsider, currently must be here because docs are frozen in doAfterCreate
 
 		this.didAfterCreate = false
 		this.doAfterCreate(aggregate, userId, timestamp)
+		// aggregate.setValueByPath("createdByUserId", userId)
+		// aggregate.setValueByPath("createdAt", timestamp)
+		// aggregate.fireEntityAddedChange(aggregateId)
 		check(this.didAfterCreate) { this.baseClassName + ": doAfterCreate was propagated" }
 
 		return aggregate
