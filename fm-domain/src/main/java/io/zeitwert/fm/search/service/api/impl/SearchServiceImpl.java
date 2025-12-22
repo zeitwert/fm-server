@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 
 import io.crnk.core.queryspec.FilterSpec;
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.enums.CodeAggregateType;
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.ddd.model.SearchResult;
 import io.zeitwert.fm.ddd.service.api.SearchService;

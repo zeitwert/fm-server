@@ -1,7 +1,7 @@
 package io.zeitwert.fm.oe.model.enums
 
-import io.dddrive.core.enums.model.Enumerated
-import io.dddrive.core.enums.model.base.EnumerationBase
+import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeTenantType(
 	override val id: String,

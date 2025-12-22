@@ -1,7 +1,7 @@
 package io.zeitwert.fm.portfolio.persist
 
-import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.property.model.ReferenceSetProperty
+import io.dddrive.obj.model.Obj
+import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.obj.model.base.FMObjBase

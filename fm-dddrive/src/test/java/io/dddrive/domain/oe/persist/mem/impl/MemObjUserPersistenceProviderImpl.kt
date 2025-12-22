@@ -1,7 +1,7 @@
 package io.dddrive.domain.oe.persist.mem.impl
 
-import io.dddrive.core.ddd.model.AggregateMeta
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.ddd.model.AggregateMeta
+import io.dddrive.oe.model.ObjUser
 import io.dddrive.dddrive.obj.persist.mem.base.MemObjPersistenceProviderBase
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjMetaPto
 import io.dddrive.domain.oe.model.ObjUserRepository

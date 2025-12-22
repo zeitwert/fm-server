@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.adapter.api.rest
 
-import io.dddrive.core.ddd.model.RepositoryDirectory
+import io.dddrive.ddd.model.RepositoryDirectory
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto

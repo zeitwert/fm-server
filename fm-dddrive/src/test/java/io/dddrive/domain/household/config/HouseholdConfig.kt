@@ -1,8 +1,8 @@
 package io.dddrive.domain.household.config
 
-import io.dddrive.core.ddd.model.enums.CodeAggregateType
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.core.enums.model.base.EnumConfigBase
+import io.dddrive.ddd.model.enums.CodeAggregateType
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.dddrive.enums.model.base.EnumConfigBase
 import io.dddrive.domain.household.model.enums.CodeLabel
 import io.dddrive.domain.household.model.enums.CodeSalutation
 import org.springframework.beans.factory.InitializingBean

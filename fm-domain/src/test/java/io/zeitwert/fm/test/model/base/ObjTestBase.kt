@@ -1,8 +1,8 @@
 package io.zeitwert.fm.test.model.base
 
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.Part
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.Property
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin

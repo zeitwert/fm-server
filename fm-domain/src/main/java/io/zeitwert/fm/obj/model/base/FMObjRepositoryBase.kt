@@ -1,8 +1,8 @@
 package io.zeitwert.fm.obj.model.base
 
-import io.dddrive.core.obj.model.Obj
-import io.dddrive.core.obj.model.ObjRepository
-import io.dddrive.core.obj.model.base.ObjRepositoryBase
+import io.dddrive.obj.model.Obj
+import io.dddrive.obj.model.ObjRepository
+import io.dddrive.obj.model.base.ObjRepositoryBase
 
 /**
  * Base repository class for FM Objects.

@@ -1,9 +1,9 @@
 package io.zeitwert.dddrive.ddd.api.rest.base
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.AggregateRepository
-import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.ddd.model.Aggregate
+import io.dddrive.ddd.model.AggregateRepository
+import io.dddrive.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjUser
 import io.zeitwert.dddrive.ddd.api.rest.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.api.rest.DtoDetailLevel
 import io.zeitwert.dddrive.ddd.api.rest.DtoUtils

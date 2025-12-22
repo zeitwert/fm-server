@@ -1,8 +1,8 @@
 
 package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
 
-import io.dddrive.core.obj.model.Obj;
-import io.dddrive.core.obj.model.ObjMeta;
+import io.dddrive.obj.model.Obj;
+import io.dddrive.obj.model.ObjMeta;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;

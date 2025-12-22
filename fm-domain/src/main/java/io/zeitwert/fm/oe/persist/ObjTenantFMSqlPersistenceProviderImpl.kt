@@ -1,11 +1,11 @@
 package io.zeitwert.fm.oe.persist
 
-import io.dddrive.core.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjTenant
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.db.Tables

@@ -1,16 +1,16 @@
 package io.dddrive.dddrive.doc.persist.mem.base
 
-import io.dddrive.core.doc.model.Doc
-import io.dddrive.core.doc.model.DocPartTransition
-import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.core.property.model.PartListProperty
+import io.dddrive.doc.model.Doc
+import io.dddrive.doc.model.DocPartTransition
+import io.dddrive.doc.model.enums.CodeCaseDefEnum
+import io.dddrive.doc.model.enums.CodeCaseStageEnum
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
+import io.dddrive.property.model.PartListProperty
 import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import io.dddrive.dddrive.doc.persist.mem.pto.DocPartTransitionPto
 import io.dddrive.dddrive.doc.persist.mem.pto.DocPto
 import io.dddrive.domain.doc.persist.mem.pto.DocMetaPto
-import io.dddrive.path.getValueByPath
-import io.dddrive.path.setValueByPath
 
 abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 	intfClass: Class<D>,

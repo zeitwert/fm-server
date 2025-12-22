@@ -1,13 +1,13 @@
 package io.dddrive.dddrive.config
 
-import io.dddrive.core.ddd.model.RepositoryDirectory
-import io.dddrive.core.ddd.model.enums.CodeAggregateType
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.core.ddd.model.enums.CodePartListTypeEnum
-import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.core.enums.model.base.EnumConfigBase
-import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
+import io.dddrive.ddd.model.RepositoryDirectory
+import io.dddrive.ddd.model.enums.CodeAggregateType
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.dddrive.ddd.model.enums.CodePartListTypeEnum
+import io.dddrive.doc.model.enums.CodeCaseDefEnum
+import io.dddrive.doc.model.enums.CodeCaseStageEnum
+import io.dddrive.enums.model.base.EnumConfigBase
+import io.dddrive.validation.model.enums.CodeValidationLevelEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

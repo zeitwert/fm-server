@@ -1,6 +1,6 @@
 package io.zeitwert.ddd.session;
 
-import io.dddrive.core.oe.model.ObjUser;
+import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;

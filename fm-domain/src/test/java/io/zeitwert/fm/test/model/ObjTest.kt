@@ -1,6 +1,6 @@
 package io.zeitwert.fm.test.model
 
-import io.dddrive.core.obj.model.Obj
+import io.dddrive.obj.model.Obj
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.test.model.enums.CodeTestType
 import java.math.BigDecimal

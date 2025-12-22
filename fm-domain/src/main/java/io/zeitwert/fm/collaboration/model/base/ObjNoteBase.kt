@@ -1,6 +1,6 @@
 package io.zeitwert.fm.collaboration.model.base
 
-import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.ddd.model.Aggregate
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType

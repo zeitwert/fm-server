@@ -3,7 +3,6 @@ package io.zeitwert.fm.account.persist
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.db.Tables
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
@@ -11,6 +10,7 @@ import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component

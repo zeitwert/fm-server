@@ -1,0 +1,44 @@
+package io.dddrive.doc.model.base
+
+import io.dddrive.ddd.model.Part
+import io.dddrive.ddd.model.PartRepository
+import io.dddrive.ddd.model.base.PartBase
+import io.dddrive.doc.model.Doc
+import io.dddrive.doc.model.DocPart
+import io.dddrive.property.model.Property
+
+abstract class DocPartBase<D : Doc>(
+	doc: D,
+	repository: PartRepository<D, out Part<D>>,
+	property: Property<*>,
+	id: Int,
+) : PartBase<D>(doc, repository, property, id),
+	DocPart<D>
+
+// 	@SuppressWarnings("unchecked")
+// 	protected DocRepository<D> getDocRepository() {
+// 		return (DocRepository<D>) this.getAggregate().getMeta().getRepository();
+// 	}
+// 	@Override
+// 	public void doAssignParts() {
+// 		super.doAssignParts();
+// 		DocPartItemRepository itemRepository = this.getDocRepository().getItemRepository();
+// 		for (Property<?> property : this.getProperties()) {
+// 			if (property instanceof EnumSetProperty<?> enumSet) {
+// 				List<DocPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
+// 				enumSet.loadEnums(partList);
+// 			} else if (property instanceof ReferenceSetProperty<?> referenceSet) {
+// 				List<DocPartItem> partList = itemRepository.getParts(this, referenceSet.getPartListType());
+// 				referenceSet.loadReferences(partList);
+// 			}
+// 		}
+// 	}
+// 	@Override
+// 	public Part<?> doAddPart(Property<?> property) {
+// 		if (property instanceof EnumSetProperty<?>) {
+// 			return this.getDocRepository().getItemRepository().create(this);
+// 		} else if (property instanceof ReferenceSetProperty<?>) {
+// 			return this.getDocRepository().getItemRepository().create(this);
+// 		}
+// 		return super.doAddPart(property);
+// 	}

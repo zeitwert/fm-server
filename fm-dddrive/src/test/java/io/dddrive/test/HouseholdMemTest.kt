@@ -1,8 +1,8 @@
 package io.dddrive.test
 
-import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.PropertyChangeListener
+import io.dddrive.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjUser
+import io.dddrive.property.model.PropertyChangeListener
 import io.dddrive.domain.household.model.ObjHouseholdRepository
 import io.dddrive.domain.household.model.enums.CodeLabel
 import io.dddrive.domain.household.model.enums.CodeSalutation

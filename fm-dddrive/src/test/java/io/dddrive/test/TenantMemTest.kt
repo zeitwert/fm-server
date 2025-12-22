@@ -1,7 +1,7 @@
 package io.dddrive.test
 
-import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjUser
 import io.dddrive.domain.oe.model.ObjTenantRepository
 import io.dddrive.domain.oe.model.ObjUserRepository
 import io.dddrive.test.server.test.TestApplication

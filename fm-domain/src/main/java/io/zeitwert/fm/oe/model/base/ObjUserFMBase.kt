@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.model.base
 
-import io.dddrive.core.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjTenant
 import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind

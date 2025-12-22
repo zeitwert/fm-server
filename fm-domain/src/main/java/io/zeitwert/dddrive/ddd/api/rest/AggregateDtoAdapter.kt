@@ -1,7 +1,7 @@
 package io.zeitwert.dddrive.ddd.api.rest
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregateDto
-import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.ddd.model.Aggregate
 
 interface AggregateDtoAdapter<A : Aggregate, D : AggregateDto<A>> {
 	fun toAggregate(

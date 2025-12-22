@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe
 
-import io.dddrive.core.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjTenant
 import io.zeitwert.dddrive.app.model.RequestContext
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFM

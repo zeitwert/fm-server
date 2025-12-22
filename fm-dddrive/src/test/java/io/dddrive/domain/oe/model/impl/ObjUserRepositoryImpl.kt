@@ -1,7 +1,7 @@
 package io.dddrive.domain.oe.model.impl
 
-import io.dddrive.core.obj.model.base.ObjRepositoryBase
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.obj.model.base.ObjRepositoryBase
+import io.dddrive.oe.model.ObjUser
 import io.dddrive.domain.oe.model.ObjUserRepository
 import io.dddrive.domain.oe.model.base.ObjUserTestBase
 import io.dddrive.domain.oe.persist.ObjUserPersistenceProvider

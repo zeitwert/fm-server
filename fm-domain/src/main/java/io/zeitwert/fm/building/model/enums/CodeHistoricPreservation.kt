@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.model.enums
 
-import io.dddrive.core.enums.model.Enumerated
-import io.dddrive.core.enums.model.base.EnumerationBase
+import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeHistoricPreservation(
 	override val id: String,

@@ -1,9 +1,9 @@
 package io.zeitwert.dddrive.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.property.model.EntityWithProperties
-import io.dddrive.core.property.model.PartListProperty
+import io.dddrive.ddd.model.Aggregate
+import io.dddrive.ddd.model.Part
+import io.dddrive.property.model.EntityWithProperties
+import io.dddrive.property.model.PartListProperty
 import org.jooq.DSLContext
 
 interface PartSqlPersistenceProvider<P : Part<*>> {

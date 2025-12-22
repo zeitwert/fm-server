@@ -1,6 +1,6 @@
 package io.zeitwert.fm.task.model.base
 
-import io.dddrive.core.property.model.BaseProperty
+import io.dddrive.property.model.BaseProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote

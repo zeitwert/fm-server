@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.model
 
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.oe.model.ObjUser
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 

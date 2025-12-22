@@ -1,6 +1,6 @@
 package io.dddrive.domain.task.model.impl
 
-import io.dddrive.core.doc.model.base.DocRepositoryBase
+import io.dddrive.doc.model.base.DocRepositoryBase
 import io.dddrive.domain.task.model.DocTask
 import io.dddrive.domain.task.model.DocTaskPartComment
 import io.dddrive.domain.task.model.DocTaskRepository

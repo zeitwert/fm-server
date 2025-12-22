@@ -1,12 +1,12 @@
 package io.dddrive.dddrive.obj.persist.mem.base
 
-import io.dddrive.core.obj.model.Obj
+import io.dddrive.obj.model.Obj
+import io.dddrive.path.getValueByPath
+import io.dddrive.path.setValueByPath
 import io.dddrive.dddrive.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjMetaPto
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjPartTransitionPto
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjPto
-import io.dddrive.path.getValueByPath
-import io.dddrive.path.setValueByPath
 
 abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 	intfClass: Class<O>,

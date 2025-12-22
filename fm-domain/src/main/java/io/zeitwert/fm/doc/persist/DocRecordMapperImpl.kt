@@ -1,8 +1,8 @@
 package io.zeitwert.fm.doc.persist
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.doc.model.Doc
+import io.dddrive.ddd.model.Aggregate
+import io.dddrive.ddd.model.Part
+import io.dddrive.doc.model.Doc
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper

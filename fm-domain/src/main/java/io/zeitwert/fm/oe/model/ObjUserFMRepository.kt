@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.model
 
-import io.dddrive.core.obj.model.ObjRepository
+import io.dddrive.obj.model.ObjRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*

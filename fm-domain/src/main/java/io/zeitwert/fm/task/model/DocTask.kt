@@ -1,7 +1,7 @@
 package io.zeitwert.fm.task.model
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.doc.model.Doc
+import io.dddrive.ddd.model.Aggregate
+import io.dddrive.doc.model.Doc
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority

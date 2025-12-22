@@ -1,6 +1,6 @@
 package io.dddrive.domain.household.model
 
-import io.dddrive.core.obj.model.ObjPart
+import io.dddrive.obj.model.ObjPart
 import io.dddrive.domain.household.model.enums.CodeSalutation
 
 interface ObjHouseholdPartMember : ObjPart<ObjHousehold> {

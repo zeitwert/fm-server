@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.annotation.RequestScope;
 
-import io.dddrive.core.ddd.model.enums.CodePartListType;
-import io.dddrive.core.oe.model.ObjUser;
+import io.dddrive.ddd.model.enums.CodePartListType;
+import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 import io.zeitwert.fm.app.model.RequestContextFM;

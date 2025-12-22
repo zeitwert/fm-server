@@ -1,11 +1,11 @@
 package io.dddrive.domain.household.model.base
 
-import io.dddrive.core.ddd.model.PartRepository
-import io.dddrive.core.obj.model.base.ObjPartBase
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EnumProperty
-import io.dddrive.core.property.model.PartReferenceProperty
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.PartRepository
+import io.dddrive.obj.model.base.ObjPartBase
+import io.dddrive.property.model.BaseProperty
+import io.dddrive.property.model.EnumProperty
+import io.dddrive.property.model.PartReferenceProperty
+import io.dddrive.property.model.Property
 import io.dddrive.domain.household.model.ObjHousehold
 import io.dddrive.domain.household.model.ObjHouseholdPartMember
 import io.dddrive.domain.household.model.enums.CodeSalutation

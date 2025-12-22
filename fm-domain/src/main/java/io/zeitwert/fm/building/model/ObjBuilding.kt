@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.model
 
-import io.dddrive.core.obj.model.Obj
+import io.dddrive.obj.model.Obj
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType

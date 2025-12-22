@@ -1,6 +1,6 @@
 package io.zeitwert.fm.test.model
 
-import io.dddrive.core.doc.model.Doc
+import io.dddrive.doc.model.Doc
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.test.model.enums.CodeTestType

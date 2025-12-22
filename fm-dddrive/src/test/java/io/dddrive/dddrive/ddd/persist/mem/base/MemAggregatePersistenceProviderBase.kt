@@ -1,11 +1,11 @@
 package io.dddrive.dddrive.ddd.persist.mem.base
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.AggregateMeta
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
-import io.dddrive.dddrive.ddd.persist.mem.pto.AggregatePto
+import io.dddrive.ddd.model.Aggregate
+import io.dddrive.ddd.model.AggregateMeta
+import io.dddrive.ddd.model.Part
+import io.dddrive.ddd.model.base.AggregatePersistenceProviderBase
 import io.dddrive.path.setValueByPath
+import io.dddrive.dddrive.ddd.persist.mem.pto.AggregatePto
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType

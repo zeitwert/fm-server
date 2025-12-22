@@ -14,7 +14,7 @@ The new dddrive has **pluggable persistence** via providers (not baked into base
 
 | Aspect | Old dddrive | New dddrive |
 |--------|-------------|-------------|
-| Package | `io.dddrive.*` | `io.dddrive.core.*` |
+| Package | `io.dddrive.*` | `io.dddrive.*` |
 | Persistence | Built into base classes | Pluggable via `AggregatePersistenceProvider` |
 | Source | External dependency | Embedded module |
 
@@ -24,7 +24,7 @@ Since packages differ, both can coexist on classpath during migration:
 
 ```
 Old: io.dddrive.property.model.Property
-New: io.dddrive.core.property.model.Property
+New: io.dddrive.property.model.Property
 ```
 
 This enables gradual, domain-by-domain migration.
@@ -59,7 +59,7 @@ Create jOOQ-based persistence provider implementing the interface from new dddri
 
 **Interface to implement:**
 ```kotlin
-// From io.dddrive.core.ddd.model
+// From io.dddrive.ddd.model
 interface AggregatePersistenceProvider<A : Aggregate> {
     fun findById(id: String): A?
     fun findAll(): List<A>
@@ -94,7 +94,7 @@ interface AggregatePersistenceProvider<A : Aggregate> {
 ### 6. Verify Setup
 
 - [ ] All modules compile
-- [ ] New dddrive classes accessible via `io.dddrive.core.*`
+- [ ] New dddrive classes accessible via `io.dddrive.*`
 - [ ] Old dddrive classes still accessible via `io.dddrive.*`
 - [ ] No runtime conflicts between old and new
 
@@ -123,7 +123,7 @@ fm-domain/
 ## Completion Criteria
 
 - [ ] `fm-dddrive` module compiles with new dddrive code
-- [ ] Both old (`io.dddrive.*`) and new (`io.dddrive.core.*`) packages accessible
+- [ ] Both old (`io.dddrive.*`) and new (`io.dddrive.*`) packages accessible
 - [ ] Basic persistence provider tests pass
 - [ ] No changes to existing domain code yet
 

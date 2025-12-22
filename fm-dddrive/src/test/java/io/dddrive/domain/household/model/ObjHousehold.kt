@@ -1,6 +1,6 @@
 package io.dddrive.domain.household.model
 
-import io.dddrive.core.obj.model.Obj
+import io.dddrive.obj.model.Obj
 import io.dddrive.domain.household.model.enums.CodeLabel
 
 interface ObjHousehold : Obj {

@@ -1,10 +1,10 @@
 package io.dddrive.path
 
-import io.dddrive.core.property.model.BaseProperty
-import io.dddrive.core.property.model.EntityWithProperties
-import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.Property
-import io.dddrive.core.property.model.ReferenceProperty
+import io.dddrive.property.model.BaseProperty
+import io.dddrive.property.model.EntityWithProperties
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.Property
+import io.dddrive.property.model.ReferenceProperty
 
 /**
  * Resolves a property by path.

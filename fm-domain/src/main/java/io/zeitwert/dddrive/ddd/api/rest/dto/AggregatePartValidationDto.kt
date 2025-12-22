@@ -1,6 +1,6 @@
 package io.zeitwert.dddrive.ddd.api.rest.dto
 
-import io.dddrive.core.validation.model.AggregatePartValidation
+import io.dddrive.validation.model.AggregatePartValidation
 
 data class AggregatePartValidationDto(
 	val seqNr: Int?,

@@ -1,8 +1,8 @@
 package io.zeitwert.fm.building.config
 
-import io.dddrive.core.ddd.model.enums.CodeAggregateType
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.core.enums.model.base.EnumConfigBase
+import io.dddrive.ddd.model.enums.CodeAggregateType
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.dddrive.enums.model.base.EnumConfigBase
 import io.zeitwert.fm.building.model.enums.CodeBuildingElementDescription
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart

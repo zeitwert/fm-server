@@ -1,7 +1,7 @@
 package io.zeitwert.fm.test.persist
 
-import io.dddrive.core.property.model.PartListProperty
 import io.dddrive.path.setValueByPath
+import io.dddrive.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount

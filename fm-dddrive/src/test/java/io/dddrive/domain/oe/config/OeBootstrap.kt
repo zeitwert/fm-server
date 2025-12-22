@@ -1,6 +1,6 @@
 package io.dddrive.domain.oe.config
 
-import io.dddrive.core.ddd.model.AggregateRepositorySPI
+import io.dddrive.ddd.model.AggregateRepositorySPI
 import io.dddrive.domain.oe.model.ObjTenantRepository
 import io.dddrive.domain.oe.model.ObjUserRepository
 import io.dddrive.domain.oe.persist.ObjTenantPersistenceProvider

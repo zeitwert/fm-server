@@ -4,8 +4,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.crnk.core.resource.meta.MetaInformation;
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.AggregateMeta;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.AggregateMeta;
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregatePartValidationDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;

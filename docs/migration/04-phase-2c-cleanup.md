@@ -29,7 +29,7 @@ grep -r "import io.dddrive\." --include="*.java" --include="*.kt" fm-server/
 grep -r "import io.dddrive\." --include="*.java" --include="*.kt" fm-common/
 ```
 
-**Expected:** No matches (all should be `io.dddrive.core.*`)
+**Expected:** No matches (all should be `io.dddrive.*`)
 
 - [ ] No old imports found in `fm-domain`
 - [ ] No old imports found in `fm-server`
@@ -92,11 +92,11 @@ Create a verification script to ensure cleanup is complete:
 # verify-dddrive-cleanup.sh
 
 echo "Checking for old dddrive imports..."
-OLD_IMPORTS=$(grep -r "import io.dddrive\." --include="*.java" --include="*.kt" . | grep -v "io.dddrive.core" | wc -l)
+OLD_IMPORTS=$(grep -r "import io.dddrive\." --include="*.java" --include="*.kt" . | grep -v "io.dddrive" | wc -l)
 
 if [ "$OLD_IMPORTS" -gt 0 ]; then
     echo "ERROR: Found $OLD_IMPORTS old dddrive imports:"
-    grep -r "import io.dddrive\." --include="*.java" --include="*.kt" . | grep -v "io.dddrive.core"
+    grep -r "import io.dddrive\." --include="*.java" --include="*.kt" . | grep -v "io.dddrive"
     exit 1
 fi
 

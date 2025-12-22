@@ -22,7 +22,7 @@
 			<groupId>io.zeitwert</groupId>
 			<artifactId>fm-common</artifactId>
 		</dependency>
-		<!-- New embedded DDDrive (io.dddrive.core.*) -->
+		<!-- New embedded DDDrive (io.dddrive.*) -->
 		<dependency>
 			<groupId>io.zeitwert</groupId>
 			<artifactId>fm-dddrive</artifactId>

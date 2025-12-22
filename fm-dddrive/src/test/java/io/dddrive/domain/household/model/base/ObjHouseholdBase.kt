@@ -1,9 +1,9 @@
 package io.dddrive.domain.household.model.base
 
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.obj.model.base.ObjBase
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.Part
+import io.dddrive.obj.model.base.ObjBase
+import io.dddrive.oe.model.ObjUser
+import io.dddrive.property.model.Property
 import io.dddrive.domain.household.model.ObjHousehold
 import io.dddrive.domain.household.model.ObjHouseholdPartMember
 import io.dddrive.domain.household.model.ObjHouseholdRepository

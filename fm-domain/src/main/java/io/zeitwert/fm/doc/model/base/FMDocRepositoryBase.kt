@@ -1,8 +1,8 @@
 package io.zeitwert.fm.doc.model.base
 
-import io.dddrive.core.doc.model.Doc
-import io.dddrive.core.doc.model.DocRepository
-import io.dddrive.core.doc.model.base.DocRepositoryBase
+import io.dddrive.doc.model.Doc
+import io.dddrive.doc.model.DocRepository
+import io.dddrive.doc.model.base.DocRepositoryBase
 
 /**
  * Base repository class for FM Orders.

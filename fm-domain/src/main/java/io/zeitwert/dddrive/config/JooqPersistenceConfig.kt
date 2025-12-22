@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
  * Spring configuration for the jOOQ persistence layer supporting the new dddrive framework.
  *
  * This configuration enables jOOQ-based persistence for aggregates using the new dddrive
- * (io.dddrive.core.*) framework. It coexists with the existing persistence infrastructure (which
+ * (io.dddrive.*) framework. It coexists with the existing persistence infrastructure (which
  * uses the old io.dddrive.* packages) to allow gradual migration.
  *
  * The persistence providers themselves are registered as Spring components via

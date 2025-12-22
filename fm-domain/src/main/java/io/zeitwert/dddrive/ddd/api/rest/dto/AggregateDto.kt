@@ -1,6 +1,6 @@
 package io.zeitwert.dddrive.ddd.api.rest.dto
 
-import io.dddrive.core.ddd.model.Aggregate
+import io.dddrive.ddd.model.Aggregate
 
 interface AggregateDto<A : Aggregate> {
 

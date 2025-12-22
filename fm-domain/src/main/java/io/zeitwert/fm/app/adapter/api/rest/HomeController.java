@@ -1,11 +1,11 @@
 package io.zeitwert.fm.app.adapter.api.rest;
 
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.enums.CodeAggregateType;
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.core.doc.model.enums.CodeCaseStage;
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum;
-import io.dddrive.core.oe.model.ObjUser;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.dddrive.doc.model.enums.CodeCaseStage;
+import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.model.ObjAccount;

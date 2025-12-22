@@ -1,8 +1,8 @@
 package io.zeitwert.fm.contact.model.base
 
-import io.dddrive.core.ddd.model.PartRepository
-import io.dddrive.core.obj.model.base.ObjPartBase
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.PartRepository
+import io.dddrive.obj.model.base.ObjPartBase
+import io.dddrive.property.model.Property
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel

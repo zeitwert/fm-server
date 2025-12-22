@@ -1,7 +1,7 @@
 package io.dddrive.domain.oe.persist
 
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.ddd.model.AggregatePersistenceProvider
+import io.dddrive.oe.model.ObjUser
 import java.util.*
 
 interface ObjUserPersistenceProvider : AggregatePersistenceProvider<ObjUser> {

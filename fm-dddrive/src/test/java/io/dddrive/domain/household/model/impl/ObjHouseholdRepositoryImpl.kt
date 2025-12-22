@@ -1,6 +1,6 @@
 package io.dddrive.domain.household.model.impl
 
-import io.dddrive.core.obj.model.base.ObjRepositoryBase
+import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.dddrive.domain.household.model.ObjHousehold
 import io.dddrive.domain.household.model.ObjHouseholdPartMember
 import io.dddrive.domain.household.model.ObjHouseholdRepository

@@ -1,6 +1,6 @@
 package io.dddrive.domain.oe.model.base
 
-import io.dddrive.core.oe.model.base.ObjTenantBase
+import io.dddrive.oe.model.base.ObjTenantBase
 import io.dddrive.domain.oe.model.ObjTenantRepository
 
 abstract class ObjTenantTestBase(

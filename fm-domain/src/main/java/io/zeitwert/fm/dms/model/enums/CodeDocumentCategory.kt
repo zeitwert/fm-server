@@ -1,7 +1,7 @@
 package io.zeitwert.fm.dms.model.enums
 
-import io.dddrive.core.enums.model.Enumerated
-import io.dddrive.core.enums.model.base.EnumerationBase
+import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeDocumentCategory(
 	override val id: String,

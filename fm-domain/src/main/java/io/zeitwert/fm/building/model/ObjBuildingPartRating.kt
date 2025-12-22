@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.model
 
-import io.dddrive.core.obj.model.ObjPart
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.obj.model.ObjPart
+import io.dddrive.oe.model.ObjUser
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog

@@ -11,13 +11,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.app.service.api.AppContext;
 import io.zeitwert.dddrive.app.service.api.AppContextSPI;
-import io.dddrive.core.ddd.model.Aggregate;
-import io.dddrive.core.ddd.model.AggregatePersistenceProvider;
-import io.dddrive.core.ddd.model.AggregateRepository;
-import io.dddrive.core.ddd.model.Part;
-import io.dddrive.core.ddd.model.PartRepository;
-import io.dddrive.core.enums.model.Enumerated;
-import io.dddrive.core.enums.model.Enumeration;
+import io.dddrive.ddd.model.Aggregate;
+import io.dddrive.ddd.model.AggregatePersistenceProvider;
+import io.dddrive.ddd.model.AggregateRepository;
+import io.dddrive.ddd.model.Part;
+import io.dddrive.ddd.model.PartRepository;
+import io.dddrive.enums.model.Enumerated;
+import io.dddrive.enums.model.Enumeration;
 
 public abstract class AppContextBase implements AppContext, AppContextSPI {
 

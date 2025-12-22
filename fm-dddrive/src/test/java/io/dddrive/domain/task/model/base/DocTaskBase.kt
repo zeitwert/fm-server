@@ -1,9 +1,9 @@
 package io.dddrive.domain.task.model.base
 
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.doc.model.base.DocBase
-import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.Part
+import io.dddrive.doc.model.base.DocBase
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.Property
 import io.dddrive.domain.task.model.DocTask
 import io.dddrive.domain.task.model.DocTaskPartComment
 import io.dddrive.domain.task.model.DocTaskRepository

@@ -1,10 +1,10 @@
 package io.zeitwert.fm.building.model.base
 
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.Property
-import io.dddrive.core.validation.model.enums.CodeValidationLevelEnum
+import io.dddrive.ddd.model.Part
 import io.dddrive.path.setValueByPath
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.Property
+import io.dddrive.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating

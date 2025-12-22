@@ -1,7 +1,7 @@
 package io.dddrive.domain.oe.model
 
-import io.dddrive.core.obj.model.ObjRepository
-import io.dddrive.core.oe.model.ObjUser
+import io.dddrive.obj.model.ObjRepository
+import io.dddrive.oe.model.ObjUser
 import java.util.*
 
 interface ObjUserRepository : ObjRepository<ObjUser> {

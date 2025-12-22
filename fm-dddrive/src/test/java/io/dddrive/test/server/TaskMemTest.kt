@@ -1,17 +1,17 @@
 package io.dddrive.test.server
 
-import io.dddrive.core.doc.model.enums.CodeCaseDef
-import io.dddrive.core.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.core.doc.model.enums.CodeCaseStage
-import io.dddrive.core.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.core.oe.model.ObjTenant
-import io.dddrive.core.oe.model.ObjUser
-import io.dddrive.core.property.model.PropertyChangeListener
+import io.dddrive.doc.model.enums.CodeCaseDef
+import io.dddrive.doc.model.enums.CodeCaseDefEnum
+import io.dddrive.doc.model.enums.CodeCaseStage
+import io.dddrive.doc.model.enums.CodeCaseStageEnum
+import io.dddrive.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjUser
+import io.dddrive.path.setValueByPath
+import io.dddrive.property.model.PropertyChangeListener
 import io.dddrive.domain.oe.model.ObjTenantRepository
 import io.dddrive.domain.oe.model.ObjUserRepository
 import io.dddrive.domain.task.model.DocTaskRepository
 import io.dddrive.domain.task.model.enums.CodeTaskPriority
-import io.dddrive.path.setValueByPath
 import io.dddrive.test.server.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse

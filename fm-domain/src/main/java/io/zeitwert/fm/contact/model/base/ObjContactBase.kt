@@ -1,8 +1,8 @@
 package io.zeitwert.fm.contact.model.base
 
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.property.model.PartListProperty
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.Part
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.Property
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.contact.model.ObjContact

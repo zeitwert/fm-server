@@ -1,7 +1,7 @@
 package io.zeitwert.fm.dms.model.enums
 
-import io.dddrive.core.enums.model.Enumerated
-import io.dddrive.core.enums.model.base.EnumerationBase
+import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.base.EnumerationBase
 import org.springframework.http.MediaType
 
 enum class CodeContentType(

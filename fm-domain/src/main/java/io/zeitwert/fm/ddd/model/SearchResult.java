@@ -3,7 +3,7 @@ package io.zeitwert.fm.ddd.model;
 
 import java.math.BigDecimal;
 
-import io.dddrive.core.ddd.model.enums.CodeAggregateType;
+import io.dddrive.ddd.model.enums.CodeAggregateType;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package io.dddrive.domain.task.model
 
-import io.dddrive.core.doc.model.Doc
+import io.dddrive.doc.model.Doc
 import io.dddrive.domain.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
 

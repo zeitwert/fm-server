@@ -1,6 +1,6 @@
 package io.zeitwert.fm.doc.persist
 
-import io.dddrive.core.doc.model.Doc
+import io.dddrive.doc.model.Doc
 import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 
 abstract class FMDocSqlPersistenceProviderBase<D : Doc>(

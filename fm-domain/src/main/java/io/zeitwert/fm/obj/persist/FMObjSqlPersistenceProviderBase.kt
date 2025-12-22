@@ -1,6 +1,6 @@
 package io.zeitwert.fm.obj.persist
 
-import io.dddrive.core.obj.model.Obj
+import io.dddrive.obj.model.Obj
 import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 
 abstract class FMObjSqlPersistenceProviderBase<O : Obj>(

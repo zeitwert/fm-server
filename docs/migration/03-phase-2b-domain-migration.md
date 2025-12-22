@@ -14,8 +14,8 @@ For each domain, migrate as a vertical slice:
 
 1. **Domain Config** → create `{Domain}Config.kt` to register code tables (see below)
 2. **Enums** → Kotlin `enum class` implementing `Enumerated` with companion `Enumeration` (see below)
-3. **Interface** → extend `io.dddrive.core.obj.model.Obj` (or `.doc.model.Doc`)
-4. **Repository Interface** → extend `io.dddrive.core.obj.model.ObjRepository` (or `DocRepository`)
+3. **Interface** → extend `io.dddrive.obj.model.Obj` (or `.doc.model.Doc`)
+4. **Repository Interface** → extend `io.dddrive.obj.model.ObjRepository` (or `DocRepository`)
 5. **Base Class** → Kotlin, extend `FMObjCoreBase` (or `FMDocCoreBase`)
 6. **Repository Impl** → Kotlin, extend `FMObjCoreRepositoryBase` (or `FMDocCoreRepositoryBase`)
 7. **Persistence Provider** → create in `persist/jooq/`
@@ -28,16 +28,16 @@ Each domain needs a config class that:
 - Registers **CodeAggregateType** for the domain's aggregate(s)
 - Triggers initialization of **domain-specific enums** by accessing their `.entries`
 
-The NEW framework (`io.dddrive.core.*`) does not load code tables from the database — values are hardcoded in Kotlin enum classes. The DML scripts remain for database reference data (intentional duplication).
+The NEW framework (`io.dddrive.*`) does not load code tables from the database — values are hardcoded in Kotlin enum classes. The DML scripts remain for database reference data (intentional duplication).
 
 **Pattern:** Implement `InitializingBean` and register items in `afterPropertiesSet()`:
 
 ```kotlin
 package io.zeitwert.fm.{domain}.config
 
-import io.dddrive.core.ddd.model.enums.CodeAggregateType
-import io.dddrive.core.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.core.enums.model.base.EnumConfigBase
+import io.dddrive.ddd.model.enums.CodeAggregateType
+import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.dddrive.enums.model.base.EnumConfigBase
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -104,19 +104,19 @@ See `fm-domain/src/main/java/io/zeitwert/fm/oe/config/OEConfig.kt`
 
 | Old | New |
 |-----|-----|
-| `io.dddrive.obj.model.Obj` | `io.dddrive.core.obj.model.Obj` |
-| `io.dddrive.obj.model.ObjRepository` | `io.dddrive.core.obj.model.ObjRepository` |
-| `io.dddrive.obj.model.base.ObjExtnBase` | `io.dddrive.core.obj.model.base.ObjBase` |
-| `io.dddrive.obj.model.ObjPart` | `io.dddrive.core.obj.model.ObjPart` |
-| `io.dddrive.obj.model.base.ObjPartBase` | `io.dddrive.core.obj.model.base.ObjPartBase` |
-| `io.dddrive.obj.model.ObjPartRepository` | `io.dddrive.core.ddd.model.PartRepository` |
-| `io.dddrive.doc.model.Doc` | `io.dddrive.core.doc.model.Doc` |
-| `io.dddrive.doc.model.DocRepository` | `io.dddrive.core.doc.model.DocRepository` |
-| `io.dddrive.doc.model.base.DocExtnBase` | `io.dddrive.core.doc.model.base.DocBase` |
-| `io.dddrive.enums.model.base.EnumeratedBase` | Kotlin enum implementing `io.dddrive.core.enums.model.Enumerated` |
-| `io.dddrive.jooq.enums.JooqEnumerationBase` | Companion object extending `io.dddrive.core.enums.model.base.EnumerationBase` |
-| `io.dddrive.property.model.*` | `io.dddrive.core.property.model.*` |
-| `io.dddrive.ddd.model.*` | `io.dddrive.core.ddd.model.*` |
+| `io.dddrive.obj.model.Obj` | `io.dddrive.obj.model.Obj` |
+| `io.dddrive.obj.model.ObjRepository` | `io.dddrive.obj.model.ObjRepository` |
+| `io.dddrive.obj.model.base.ObjExtnBase` | `io.dddrive.obj.model.base.ObjBase` |
+| `io.dddrive.obj.model.ObjPart` | `io.dddrive.obj.model.ObjPart` |
+| `io.dddrive.obj.model.base.ObjPartBase` | `io.dddrive.obj.model.base.ObjPartBase` |
+| `io.dddrive.obj.model.ObjPartRepository` | `io.dddrive.ddd.model.PartRepository` |
+| `io.dddrive.doc.model.Doc` | `io.dddrive.doc.model.Doc` |
+| `io.dddrive.doc.model.DocRepository` | `io.dddrive.doc.model.DocRepository` |
+| `io.dddrive.doc.model.base.DocExtnBase` | `io.dddrive.doc.model.base.DocBase` |
+| `io.dddrive.enums.model.base.EnumeratedBase` | Kotlin enum implementing `io.dddrive.enums.model.Enumerated` |
+| `io.dddrive.jooq.enums.JooqEnumerationBase` | Companion object extending `io.dddrive.enums.model.base.EnumerationBase` |
+| `io.dddrive.property.model.*` | `io.dddrive.property.model.*` |
+| `io.dddrive.ddd.model.*` | `io.dddrive.ddd.model.*` |
 | `io.zeitwert.fm.obj.model.base.FMObjBase` | `io.zeitwert.fm.obj.model.base.FMObjCoreBase` |
 | `io.zeitwert.fm.obj.model.base.FMObjRepositoryBase` | `io.zeitwert.fm.obj.model.base.FMObjCoreRepositoryBase` |
 | `io.zeitwert.fm.doc.model.base.FMDocBase` | `io.zeitwert.fm.doc.model.base.FMDocCoreBase` |

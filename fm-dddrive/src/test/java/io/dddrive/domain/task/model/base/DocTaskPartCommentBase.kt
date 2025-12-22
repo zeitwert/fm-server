@@ -1,8 +1,8 @@
 package io.dddrive.domain.task.model.base // Correct package
 
-import io.dddrive.core.ddd.model.PartRepository
-import io.dddrive.core.doc.model.base.DocPartBase
-import io.dddrive.core.property.model.Property
+import io.dddrive.ddd.model.PartRepository
+import io.dddrive.doc.model.base.DocPartBase
+import io.dddrive.property.model.Property
 import io.dddrive.domain.task.model.DocTask
 import io.dddrive.domain.task.model.DocTaskPartComment
 import java.time.OffsetDateTime

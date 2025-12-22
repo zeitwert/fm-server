@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.model
 
-import io.dddrive.core.obj.model.ObjPart
+import io.dddrive.obj.model.ObjPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 
 interface ObjBuildingPartElementRating : ObjPart<ObjBuilding> {

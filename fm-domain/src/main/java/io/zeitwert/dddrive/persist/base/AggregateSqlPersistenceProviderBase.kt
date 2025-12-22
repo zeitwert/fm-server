@@ -1,8 +1,8 @@
 package io.zeitwert.dddrive.persist.base
 
-import io.dddrive.core.ddd.model.Aggregate
-import io.dddrive.core.ddd.model.Part
-import io.dddrive.core.ddd.model.base.AggregatePersistenceProviderBase
+import io.dddrive.ddd.model.Aggregate
+import io.dddrive.ddd.model.Part
+import io.dddrive.ddd.model.base.AggregatePersistenceProviderBase
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper

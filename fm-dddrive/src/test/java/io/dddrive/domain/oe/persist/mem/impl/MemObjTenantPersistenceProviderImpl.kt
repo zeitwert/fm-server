@@ -1,6 +1,6 @@
 package io.dddrive.domain.oe.persist.mem.impl
 
-import io.dddrive.core.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjTenant
 import io.dddrive.dddrive.obj.persist.mem.base.MemObjPersistenceProviderBase
 import io.dddrive.dddrive.obj.persist.mem.pto.ObjMetaPto
 import io.dddrive.domain.oe.model.ObjTenantRepository

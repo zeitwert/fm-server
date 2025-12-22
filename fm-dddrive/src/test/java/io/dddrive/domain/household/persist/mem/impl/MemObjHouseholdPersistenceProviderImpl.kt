@@ -1,6 +1,7 @@
 package io.dddrive.domain.household.persist.mem.impl
 
-import io.dddrive.core.property.model.PartListProperty
+import io.dddrive.path.getPropertyByPath
+import io.dddrive.property.model.PartListProperty
 import io.dddrive.dddrive.obj.persist.mem.base.MemObjPersistenceProviderBase
 import io.dddrive.domain.household.model.ObjHousehold
 import io.dddrive.domain.household.model.ObjHouseholdPartMember
@@ -9,8 +10,6 @@ import io.dddrive.domain.household.model.enums.CodeSalutation
 import io.dddrive.domain.household.persist.ObjHouseholdPersistenceProvider
 import io.dddrive.domain.household.persist.mem.pto.ObjHouseholdPartMemberPto
 import io.dddrive.domain.household.persist.mem.pto.ObjHouseholdPto
-import io.dddrive.domain.task.model.DocTaskPartComment
-import io.dddrive.path.getPropertyByPath
 import org.springframework.stereotype.Component
 
 @Component("objHouseholdPersistenceProvider")

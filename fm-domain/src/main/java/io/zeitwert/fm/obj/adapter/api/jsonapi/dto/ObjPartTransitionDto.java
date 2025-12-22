@@ -2,7 +2,7 @@
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.dddrive.core.obj.model.ObjPartTransition;
+import io.dddrive.obj.model.ObjPartTransition;
 import lombok.Builder;
 import lombok.Data;
 
