@@ -18,6 +18,8 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
@@ -77,16 +79,16 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Override
 	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
-//		try {
+		try {
 //			this.userRepository.touch(this.requestCtx.getUser().getId());
-//			List<V> itemList = this.repository.find(querySpec);
-//			ResourceList<D> list = new DefaultResourceList<>();
-//			list.addAll(itemList.stream().map(item -> this.dtoAdapter.fromRecord(item)).toList());
-//			return list;
-//		} catch (Exception x) {
-//			throw new RuntimeException("crashed on findAll", x);
-//		}
-		return new DefaultResourceList<>();
+			List<Object> itemList = this.repository.getAll(requestCtx.getTenantId());
+//			List<A> itemList = this.repository.find(querySpec);
+			ResourceList<D> list = new DefaultResourceList<>();
+			list.addAll(itemList.stream().map(repository::get).map(this.dtoAdapter::fromAggregate).toList());
+			return list;
+		} catch (Exception x) {
+			throw new RuntimeException("crashed on findAll", x);
+		}
 	}
 
 	@Override

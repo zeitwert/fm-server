@@ -56,7 +56,7 @@ public class ApplicationController {
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
 		Optional<ObjUserFM> maybeUser = this.userRepository.getByEmail(email);
-		if (!maybeUser.isPresent()) {
+		if (maybeUser.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		ObjUserFM user = maybeUser.get();
@@ -66,7 +66,7 @@ public class ApplicationController {
 						.email(user.getEmail())
 						.name(user.getName())
 						.role(EnumeratedDto.of(user.getRole()))
-						.tenants(user.getTenantSet().stream().map(id -> EnumeratedDto.of(userRepository.get(id))).toList())
+						.tenants(user.getTenantSet().stream().map(id -> EnumeratedDto.of(tenantRepository.get(id))).toList())
 						.build());
 	}
 

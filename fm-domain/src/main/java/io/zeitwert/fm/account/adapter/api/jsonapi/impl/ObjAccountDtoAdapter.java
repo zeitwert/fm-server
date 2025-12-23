@@ -108,7 +108,7 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 				.inflationRate(obj.getInflationRate())
 				.discountRate(obj.getDiscountRate())
 				.mainContactId(obj.getMainContactId())
-				.contactIdList(obj.getContacts().stream().map(c -> (Integer) c.getId()).toList())
+				.contactIdList(obj.getContactList().stream().map(id -> (Integer) id).toList())
 				.logoId(obj.getLogoImageId())
 				.build();
 	}

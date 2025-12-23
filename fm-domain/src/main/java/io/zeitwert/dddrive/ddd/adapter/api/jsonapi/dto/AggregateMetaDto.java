@@ -1,8 +1,5 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import io.crnk.core.resource.meta.MetaInformation;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.AggregateMeta;
@@ -11,6 +8,9 @@ import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -31,14 +31,10 @@ public class AggregateMetaDto implements MetaInformation {
 	private Integer clientVersion;
 	private List<String> operations;
 
-	public boolean hasOperation(String operation) {
-		return this.operations != null && this.operations.contains(operation);
-	}
-
 	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate) {
 		AggregateMeta meta = aggregate.getMeta();
 		// @formatter:off
-		builder()
+		builder
 			.itemType(EnumeratedDto.of(meta.getRepository().getAggregateType()))
 			.owner(EnumeratedDto.of(aggregate.getOwner()))
 			.version(meta.getVersion())
@@ -46,9 +42,12 @@ public class AggregateMetaDto implements MetaInformation {
 			.createdAt(meta.getCreatedAt())
 			.modifiedByUser(EnumeratedDto.of(meta.getModifiedByUser()))
 			.modifiedAt(meta.getModifiedAt())
-			.validations(meta.getValidations().stream().map(AggregatePartValidationDto::fromValidation).toList())
-			.build();
+			.validations(meta.getValidations().stream().map(AggregatePartValidationDto::fromValidation).toList());
 		// @formatter:on
+	}
+
+	public boolean hasOperation(String operation) {
+		return this.operations != null && this.operations.contains(operation);
 	}
 
 }

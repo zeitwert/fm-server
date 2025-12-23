@@ -59,6 +59,11 @@ abstract class ObjAccountBase(
 		}
 	}
 
+	override val contactList: List<Any>
+		get() {
+			return directory.getRepository(ObjContact::class.java).getByForeignKey("accountId", id)
+		}
+
 	override fun doCalcAll() {
 		super.doCalcAll()
 		calcCaption()
