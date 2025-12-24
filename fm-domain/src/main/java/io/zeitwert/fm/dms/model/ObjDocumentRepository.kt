@@ -1,10 +1,10 @@
 package io.zeitwert.fm.dms.model
 
-import io.dddrive.obj.model.ObjRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType
+import io.zeitwert.fm.obj.model.FMObjRepository
 import java.time.OffsetDateTime
 
-interface ObjDocumentRepository : ObjRepository<ObjDocument> {
+interface ObjDocumentRepository : FMObjRepository<ObjDocument> {
 
 	fun getContent(document: ObjDocument): ByteArray?
 
@@ -15,7 +15,7 @@ interface ObjDocumentRepository : ObjRepository<ObjDocument> {
 		contentType: CodeContentType,
 		content: ByteArray,
 		userId: Any,
-		timestamp: OffsetDateTime
+		timestamp: OffsetDateTime,
 	)
 
 }

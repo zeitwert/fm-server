@@ -1,11 +1,11 @@
 package io.zeitwert.fm.oe.model.base
 
+import io.dddrive.obj.model.base.ObjBase
 import io.dddrive.path.setValueByPath
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFM
@@ -16,7 +16,7 @@ import java.time.OffsetDateTime
 abstract class ObjTenantFMBase(
 	override val repository: ObjTenantFMRepository,
 	isNew: Boolean,
-) : FMObjBase(repository, isNew),
+) : ObjBase(repository, isNew),
 	ObjTenantFM {
 
 	override fun doInit() {

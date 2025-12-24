@@ -2,20 +2,20 @@ package io.zeitwert.fm.obj.model.impl
 
 import io.dddrive.obj.model.Obj
 import io.dddrive.obj.model.base.ObjBase
-import io.dddrive.obj.model.base.ObjRepositoryBase
-import io.zeitwert.fm.obj.model.FMObjRepository
+import io.zeitwert.fm.obj.model.FMObjVRepository
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 
 @Component("objRepository")
-class FMObjRepositoryImpl :
-	ObjRepositoryBase<Obj>(
-		FMObjRepository::class.java,
+class FMObjVRepositoryImpl :
+	FMObjRepositoryBase<Obj>(
+		FMObjVRepository::class.java,
 		Obj::class.java,
 		ObjBase::class.java,
 		AGGREGATE_TYPE_ID,
 	),
-	FMObjRepository {
+	FMObjVRepository {
 
 	override fun create(
 		tenantId: Any,
@@ -35,4 +35,5 @@ class FMObjRepositoryImpl :
 
 		private const val AGGREGATE_TYPE_ID = "obj"
 	}
+
 }

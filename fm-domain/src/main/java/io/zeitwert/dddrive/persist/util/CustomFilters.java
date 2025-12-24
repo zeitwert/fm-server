@@ -1,5 +1,4 @@
-
-package io.zeitwert.fm.util;
+package io.zeitwert.dddrive.persist.util;
 
 import io.crnk.core.queryspec.FilterOperator;
 

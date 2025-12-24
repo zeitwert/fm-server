@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component
 class ObjAccountRepositoryImpl(
 	override val contactRepository: ObjContactRepository,
 	override val documentRepository: ObjDocumentRepository,
-) :
-	FMObjRepositoryBase<ObjAccount>(
+) : FMObjRepositoryBase<ObjAccount>(
 		ObjAccountRepository::class.java,
 		ObjAccount::class.java,
 		ObjAccountBase::class.java,

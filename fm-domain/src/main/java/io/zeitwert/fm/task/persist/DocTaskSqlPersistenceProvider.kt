@@ -1,5 +1,6 @@
 package io.zeitwert.fm.task.persist
 
+import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
@@ -77,6 +78,8 @@ open class DocTaskSqlPersistenceProvider(
 
 		return record
 	}
+
+	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, query)
 
 	override fun getAll(tenantId: Any): List<Any> =
 		dslContext

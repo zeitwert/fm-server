@@ -1,8 +1,12 @@
 package io.zeitwert.fm.doc.model.base
 
+import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.doc.model.Doc
 import io.dddrive.doc.model.DocRepository
 import io.dddrive.doc.model.base.DocRepositoryBase
+import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
+import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.doc.model.FMDocRepository
 
 /**
  * Base repository class for FM Orders.
@@ -19,4 +23,17 @@ abstract class FMDocRepositoryBase<D : Doc>(
 	intfClass: Class<out Doc>,
 	baseClass: Class<out Doc>,
 	aggregateTypeId: String,
-) : DocRepositoryBase<D>(repoIntfClass, intfClass, baseClass, aggregateTypeId)
+) : DocRepositoryBase<D>(repoIntfClass, intfClass, baseClass, aggregateTypeId),
+	FMDocRepository<D> {
+
+	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<D>
+
+	override fun find(
+		query: QuerySpec?,
+		requestContext: RequestContextFM,
+	): List<Any> {
+		val querySpec = persistenceProvider.queryWithFilter(query, requestContext)
+		return persistenceProvider.doFind(querySpec)
+	}
+
+}

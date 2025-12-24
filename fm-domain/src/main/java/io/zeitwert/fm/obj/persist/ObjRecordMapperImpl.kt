@@ -7,7 +7,6 @@ import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.model.db.Sequences
 import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjRecord
@@ -59,7 +58,7 @@ class ObjRecordMapperImpl(
 
 	override fun storeRecord(aggregate: Aggregate) {
 		val record = mapToRecord(aggregate)
-		if ((aggregate as FMObjBase).isNew) {
+		if (aggregate.meta.isNew) {
 			record.insert()
 		} else {
 			record.changed(true)

@@ -1,5 +1,6 @@
 package io.zeitwert.fm.test.persist
 
+import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.path.setValueByPath
 import io.dddrive.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
@@ -117,6 +118,8 @@ open class ObjTestSqlPersistenceProviderImpl(
 			endStore()
 		}
 	}
+
+	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, query)
 
 	override fun getAll(tenantId: Any): List<Any> =
 		dslContext

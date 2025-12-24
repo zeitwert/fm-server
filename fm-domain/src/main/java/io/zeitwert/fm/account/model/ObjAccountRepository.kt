@@ -1,10 +1,10 @@
 package io.zeitwert.fm.account.model
 
-import io.dddrive.obj.model.ObjRepository
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
+import io.zeitwert.fm.obj.model.FMObjRepository
 
-interface ObjAccountRepository : ObjRepository<ObjAccount> {
+interface ObjAccountRepository : FMObjRepository<ObjAccount> {
 
 	val contactRepository: ObjContactRepository
 

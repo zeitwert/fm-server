@@ -1,5 +1,6 @@
 package io.zeitwert.fm.oe.persist
 
+import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
 import io.dddrive.path.setValueByPath
@@ -99,6 +100,8 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 
 		return record
 	}
+
+	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, query)
 
 	override fun getAll(tenantId: Any): List<Any> =
 		dslContext

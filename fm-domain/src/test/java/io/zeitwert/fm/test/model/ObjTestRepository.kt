@@ -1,5 +1,5 @@
 package io.zeitwert.fm.test.model
 
-import io.dddrive.obj.model.ObjRepository
+import io.zeitwert.fm.obj.model.FMObjRepository
 
-interface ObjTestRepository : ObjRepository<ObjTest>
+interface ObjTestRepository : FMObjRepository<ObjTest>

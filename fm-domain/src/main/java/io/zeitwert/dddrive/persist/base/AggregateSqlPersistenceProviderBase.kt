@@ -4,6 +4,7 @@ import io.dddrive.ddd.model.Aggregate
 import io.dddrive.ddd.model.Part
 import io.dddrive.ddd.model.base.AggregatePersistenceProviderBase
 import io.dddrive.path.setValueByPath
+import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import org.jooq.DSLContext
@@ -17,9 +18,11 @@ import org.jooq.DSLContext
  */
 abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	intfClass: Class<A>,
-) : AggregatePersistenceProviderBase<A>(intfClass) {
+) : AggregatePersistenceProviderBase<A>(intfClass),
+	AggregateSqlPersistenceProvider<A>,
+	AggregateFindMixin {
 
-	abstract val dslContext: DSLContext
+	abstract override val dslContext: DSLContext
 
 	abstract val idProvider: SqlIdProvider
 

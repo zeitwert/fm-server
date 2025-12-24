@@ -1,5 +1,6 @@
 package io.zeitwert.fm.contact.persist
 
+import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.contact.model.ObjContact
@@ -96,6 +97,8 @@ open class ObjContactSqlPersistenceProviderImpl(
 
 		return record
 	}
+
+	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_CONTACT_V, Tables.OBJ_CONTACT_V.ID, query)
 
 	override fun getAll(tenantId: Any): List<Any> =
 		dslContext

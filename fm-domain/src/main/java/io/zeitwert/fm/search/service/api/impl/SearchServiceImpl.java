@@ -1,25 +1,11 @@
-
 package io.zeitwert.fm.search.service.api.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectWithTiesAfterOffsetStep;
-import org.jooq.impl.DSL;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Service;
-
 import io.crnk.core.queryspec.FilterSpec;
-import io.zeitwert.dddrive.app.model.RequestContext;
 import io.dddrive.ddd.model.Aggregate;
 import io.dddrive.ddd.model.enums.CodeAggregateType;
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.persist.util.SqlUtils;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.ddd.model.SearchResult;
 import io.zeitwert.fm.ddd.service.api.SearchService;
@@ -27,7 +13,13 @@ import io.zeitwert.fm.obj.model.db.tables.Obj;
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
 import io.zeitwert.fm.search.model.db.Tables;
 import io.zeitwert.fm.search.model.db.tables.ItemSearch;
-import io.zeitwert.fm.util.SqlUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("searchService")
 public class SearchServiceImpl implements SearchService, SqlUtils.SearchConditionProvider {
@@ -85,7 +77,7 @@ public class SearchServiceImpl implements SearchService, SqlUtils.SearchConditio
 
 	@Override
 	public List<SearchResult> find(RequestContext requestCtx, List<String> itemTypes, String searchToken,
-			int maxResultSize) {
+																 int maxResultSize) {
 
 		Integer tenantId = (Integer) requestCtx.getTenantId();
 		Integer accountId = ((RequestContextFM) requestCtx).getAccountId();

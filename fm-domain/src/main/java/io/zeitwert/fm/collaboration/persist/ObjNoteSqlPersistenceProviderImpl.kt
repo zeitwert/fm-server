@@ -1,5 +1,6 @@
 package io.zeitwert.fm.collaboration.persist
 
+import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -67,6 +68,8 @@ open class ObjNoteSqlPersistenceProviderImpl(
 
 		return record
 	}
+
+	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_NOTE_V, Tables.OBJ_NOTE_V.ID, query)
 
 	override fun getAll(tenantId: Any): List<Any> =
 		dslContext

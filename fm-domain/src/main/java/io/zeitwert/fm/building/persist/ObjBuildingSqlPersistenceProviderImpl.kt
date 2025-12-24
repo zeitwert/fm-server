@@ -1,5 +1,6 @@
 package io.zeitwert.fm.building.persist
 
+import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
@@ -163,6 +164,8 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 
 		return record
 	}
+
+	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, query)
 
 	override fun getAll(tenantId: Any): List<Any> =
 		dslContext

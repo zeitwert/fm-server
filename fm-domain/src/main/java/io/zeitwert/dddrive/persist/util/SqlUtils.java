@@ -1,4 +1,4 @@
-package io.zeitwert.fm.util;
+package io.zeitwert.dddrive.persist.util;
 
 import io.crnk.core.queryspec.Direction;
 import io.crnk.core.queryspec.FilterOperator;
@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 public class SqlUtils {
 
 	private final SearchConditionProvider searchConditionProvider;
+
+	public SqlUtils() {
+		this.searchConditionProvider = null;
+	}
 
 	public SqlUtils(SearchConditionProvider searchConditionProvider) {
 		this.searchConditionProvider = searchConditionProvider;
@@ -220,10 +224,10 @@ public class SqlUtils {
 	@SuppressWarnings("unchecked")
 	private Condition filter(Table<?> table, Field<Integer> idField, FilterSpec filter) {
 		String fieldName = StringUtils.toSnakeCase(CrnkUtils.getPath(filter));
-		if ("search_text".equals(fieldName)) {
-			return this.searchConditionProvider.apply(idField, filter);
-		} else if ("is_closed".equals(fieldName)) {
+		if ("is_closed".equals(fieldName)) {
 			return this.closedFilter(table, filter);
+		} else if ("search_text".equals(fieldName)) {
+			return this.searchConditionProvider.apply(idField, filter);
 		}
 		Field<?> field = table.field(fieldName);
 		//		TODO assertThis(field != null, "known field " + fieldName);
