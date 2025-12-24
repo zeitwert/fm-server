@@ -31,9 +31,6 @@ abstract class FMDocRepositoryBase<D : Doc>(
 	override fun find(
 		query: QuerySpec?,
 		requestContext: RequestContextFM,
-	): List<Any> {
-		val querySpec = persistenceProvider.queryWithFilter(query, requestContext)
-		return persistenceProvider.doFind(querySpec)
-	}
+	): List<Any> = persistenceProvider.doFind(query, requestContext)
 
 }

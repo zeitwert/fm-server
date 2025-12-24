@@ -7,10 +7,10 @@ import io.zeitwert.fm.app.model.RequestContextFM
 
 interface AggregateSqlPersistenceProvider<A : Aggregate> : AggregatePersistenceProvider<A> {
 
-	fun queryWithFilter(
-		querySpec: QuerySpec?,
+	fun doFind(
+		query: QuerySpec?,
 		requestCtx: RequestContextFM,
-	): QuerySpec
+	): List<Any>
 
 	fun doFind(query: QuerySpec): List<Any>
 

@@ -1,13 +1,10 @@
 package io.zeitwert.fm.obj.model.base
 
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.obj.model.Obj
 import io.dddrive.obj.model.ObjRepository
 import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
-import io.zeitwert.dddrive.persist.util.CrnkUtils
 import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.FMObjRepository
 
@@ -34,12 +31,6 @@ abstract class FMObjRepositoryBase<O : Obj>(
 	override fun find(
 		query: QuerySpec?,
 		requestContext: RequestContextFM,
-	): List<Any> {
-		val querySpec = persistenceProvider.queryWithFilter(query, requestContext)
-		if (!CrnkUtils.hasFilterFor(querySpec, "isClosed")) {
-			querySpec.addFilter(PathSpec.of("closed_at").filter(FilterOperator.EQ, null))
-		}
-		return persistenceProvider.doFind(querySpec)
-	}
+	): List<Any> = persistenceProvider.doFind(query, requestContext)
 
 }

@@ -8,7 +8,7 @@ import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objPersistenceProvider")
-open class FMObjSqlPersistenceProviderImpl<O : Obj>(
+open class FMObjVSqlPersistenceProviderImpl<O : Obj>(
 	override val dslContext: DSLContext,
 ) : FMObjSqlPersistenceProviderBase<Obj>(Obj::class.java) {
 
