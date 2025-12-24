@@ -54,14 +54,6 @@ interface AggregatePersistenceProvider<A : Aggregate?> {
 	fun doStore(aggregate: A)
 
 	/**
-	 * Get all aggregate Ids for the given tenant.
-	 *
-	 * @param tenantId tenant id
-	 * @return all aggregates
-	 */
-	fun getAll(tenantId: Any): List<Any>
-
-	/**
 	 * Get a list of Aggregate Ids with the given foreign key pointing to targetId
 	 */
 	fun getByForeignKey(

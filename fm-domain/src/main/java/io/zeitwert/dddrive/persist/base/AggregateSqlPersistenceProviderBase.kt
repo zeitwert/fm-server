@@ -79,8 +79,6 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	protected open fun doStoreParts(aggregate: A) {
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = extnRecordMapper?.getAll(tenantId) ?: emptyList()
-
 	override fun getByForeignKey(
 		fkName: String,
 		targetId: Any,

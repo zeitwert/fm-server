@@ -1,8 +1,8 @@
 package io.zeitwert.fm.oe.model.impl
 
-import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.dddrive.oe.model.ObjUser
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
+import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.base.ObjUserFMBase
@@ -17,7 +17,7 @@ import java.util.*
 class ObjUserFMRepositoryImpl(
 	@param:Lazy override val passwordEncoder: PasswordEncoder,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,
-) : ObjRepositoryBase<ObjUserFM>(
+) : FMObjRepositoryBase<ObjUserFM>(
 		ObjUserFMRepository::class.java,
 		ObjUser::class.java,
 		ObjUserFMBase::class.java,

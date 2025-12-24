@@ -1,8 +1,8 @@
 package io.zeitwert.fm.portfolio;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class PortfolioTest {
 
 	@Autowired
-	private RequestContext requestCtx;
+	private RequestContextFM requestCtx;
 
 	@Autowired
 	private ObjAccountRepository accountRepository;
@@ -84,8 +84,8 @@ public class PortfolioTest {
 		assertEquals(account.getId(), pf1a.getAccountId(), "account id");
 	}
 
-	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return accountRepository.get(accountRepository.getAll(requestCtx.getTenantId()).getFirst());
+	private ObjAccount getTestAccount(RequestContextFM requestCtx) {
+		return accountRepository.get(accountRepository.find(null, requestCtx).getFirst());
 	}
 
 }

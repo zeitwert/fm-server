@@ -1,9 +1,9 @@
 package io.zeitwert.fm.oe.model
 
-import io.dddrive.obj.model.ObjRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
+import io.zeitwert.fm.obj.model.FMObjRepository
 
-interface ObjTenantFMRepository : ObjRepository<ObjTenantFM> {
+interface ObjTenantFMRepository : FMObjRepository<ObjTenantFM> {
 
 	val userRepository: ObjUserFMRepository
 

@@ -15,6 +15,8 @@ import io.dddrive.obj.model.Obj;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
+import io.zeitwert.dddrive.model.FMAggregateRepository;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.oe.model.ObjUserFMRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,7 @@ import java.util.List;
 public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
-	private final RequestContext requestCtx;
+	private final RequestContextFM requestCtx;
 	private final ObjUserFMRepository userRepository;
 	private final AggregateRepository<A> repository;
 	private final AggregateDtoAdapterBase<A, D> dtoAdapter;
@@ -35,7 +37,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			AggregateRepository<A> repository,
 			AggregateDtoAdapterBase<A, D> dtoAdapter) {
 		super(dtoClass);
-		this.requestCtx = requestCtx;
+		this.requestCtx = (RequestContextFM) requestCtx;
 		this.userRepository = userRepository;
 		this.repository = repository;
 		this.dtoAdapter = dtoAdapter;
@@ -49,7 +51,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
 		}
 		try {
-//			this.userRepository.touch(this.requestCtx.getUser().getId());
+			// this.userRepository.touch(this.requestCtx.getUser().getId());
 			Integer tenantId = dto.getTenant() != null
 					? Integer.parseInt(dto.getTenant().getId())
 					: (Integer) this.requestCtx.getTenantId();
@@ -66,7 +68,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	public D findOne(Integer objId, QuerySpec querySpec) {
 		try {
-//			this.userRepository.touch(this.requestCtx.getUser().getId());
+			// this.userRepository.touch(this.requestCtx.getUser().getId());
 			A aggregate = this.repository.load(objId);
 			this.requestCtx.addAggregate(objId, aggregate);
 			return this.dtoAdapter.fromAggregate(aggregate);
@@ -80,9 +82,9 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
 		try {
-//			this.userRepository.touch(this.requestCtx.getUser().getId());
-			List<Object> itemList = this.repository.getAll(requestCtx.getTenantId());
-//			List<A> itemList = this.repository.find(querySpec);
+			// this.userRepository.touch(this.requestCtx.getUser().getId());
+			List<Object> itemList = ((FMAggregateRepository) this.repository).find(null, requestCtx);
+			// List<A> itemList = this.repository.find(querySpec);
 			ResourceList<D> list = new DefaultResourceList<>();
 			list.addAll(itemList.stream().map(repository::get).map(this.dtoAdapter::fromAggregate).toList());
 			return list;
@@ -95,7 +97,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public <S extends D> S save(S dto) {
-//		this.userRepository.touch(this.requestCtx.getUser().getId());
+		// this.userRepository.touch(this.requestCtx.getUser().getId());
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		} else if (dto.getMeta() == null) {
@@ -138,7 +140,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public void delete(Integer id) {
-//		this.userRepository.touch(this.requestCtx.getUser().getId());
+		// this.userRepository.touch(this.requestCtx.getUser().getId());
 		if (id == null) {
 			throw new ResourceNotFoundException("Can only delete existing object (missing id)");
 		}

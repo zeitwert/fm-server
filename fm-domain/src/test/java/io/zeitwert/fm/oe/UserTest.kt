@@ -1,7 +1,7 @@
 package io.zeitwert.fm.oe
 
 import io.dddrive.oe.model.ObjTenant
-import io.zeitwert.dddrive.app.model.RequestContext
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
@@ -23,7 +23,7 @@ import java.util.*
 class UserTest {
 
 	@Autowired
-	private lateinit var requestCtx: RequestContext
+	private lateinit var requestCtx: RequestContextFM
 
 	@Autowired
 	private lateinit var userRepository: ObjUserFMRepository
@@ -276,8 +276,8 @@ class UserTest {
 	}
 
 	private fun getExistingTenants(): List<ObjTenant> {
-		val tenantId = requestCtx.tenantId
-		val tenantIds = tenantRepository.getAll(tenantId)
+		requestCtx.tenantId
+		val tenantIds = tenantRepository.find(null, requestCtx)
 		return tenantIds.mapNotNull { id ->
 			try {
 				tenantRepository.get(id)

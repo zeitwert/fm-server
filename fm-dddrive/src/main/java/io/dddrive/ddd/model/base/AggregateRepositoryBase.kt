@@ -226,8 +226,6 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		this.handleAggregateStored(aggregate.id)
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = this.persistenceProvider.getAll(tenantId)
-
 	override fun getByForeignKey(
 		fkName: String,
 		targetId: Any,

@@ -1,9 +1,9 @@
 package io.zeitwert.fm.doc;
 
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
-import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
+import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.test.model.DocTest;
 import io.zeitwert.fm.test.model.DocTestRepository;
 import io.zeitwert.fm.test.model.ObjTest;
@@ -32,7 +32,7 @@ public class DocTestTest {
 	private static final String TYPE_C = "type_c";
 
 	@Autowired
-	private RequestContext requestCtx;
+	private RequestContextFM requestCtx;
 
 	@Autowired
 	private DocTestRepository docTestRepo;
@@ -212,8 +212,8 @@ public class DocTestTest {
 
 	}
 
-	private ObjAccount getTestAccount(RequestContext requestCtx) {
-		return this.accountRepository.get(this.accountRepo.getAll(requestCtx.getTenantId()).get(0));
+	private ObjAccount getTestAccount(RequestContextFM requestCtx) {
+		return this.accountRepository.get(this.accountRepo.find(null, requestCtx).getFirst());
 	}
 
 	private void initDocTest(DocTest test, String name, String testTypeId, Object userId) {

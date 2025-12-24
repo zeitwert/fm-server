@@ -1,8 +1,8 @@
 package io.zeitwert.fm.contact
 
-import io.zeitwert.dddrive.app.model.RequestContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel
@@ -23,7 +23,7 @@ import java.time.LocalDate
 class ContactTest {
 
 	@Autowired
-	lateinit var requestCtx: RequestContext
+	lateinit var requestCtx: RequestContextFM
 
 	@Autowired
 	lateinit var accountRepo: ObjAccountRepository
@@ -128,7 +128,7 @@ class ContactTest {
 		Assertions.assertTrue(contactA3.getMailAddress(mailAddr1Id).isEmpty, "deleted mail address should be gone")
 	}
 
-	private fun getTestAccount(requestCtx: RequestContext): ObjAccount = this.accountRepo.get(this.accountRepo.getAll(requestCtx.getTenantId())[0])
+	private fun getTestAccount(requestCtx: RequestContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null, requestCtx)[0])
 
 	private fun initContact(contact: ObjContact) {
 		contact.contactRole = CodeContactRole.CARETAKER

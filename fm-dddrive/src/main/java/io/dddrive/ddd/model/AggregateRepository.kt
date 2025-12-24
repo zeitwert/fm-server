@@ -72,11 +72,6 @@ interface AggregateRepository<A : Aggregate> {
 	)
 
 	/**
-	 * Get all Aggregates (read-only) in the given tenant
-	 */
-	fun getAll(tenantId: Any): List<Any>
-
-	/**
 	 * Get a list of Aggregates with the given foreign key pointing to targetId
 	 */
 	fun getByForeignKey(

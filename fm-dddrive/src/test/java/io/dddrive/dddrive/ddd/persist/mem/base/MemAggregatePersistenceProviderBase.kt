@@ -4,8 +4,8 @@ import io.dddrive.ddd.model.Aggregate
 import io.dddrive.ddd.model.AggregateMeta
 import io.dddrive.ddd.model.Part
 import io.dddrive.ddd.model.base.AggregatePersistenceProviderBase
-import io.dddrive.path.setValueByPath
 import io.dddrive.dddrive.ddd.persist.mem.pto.AggregatePto
+import io.dddrive.path.setValueByPath
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
@@ -92,11 +92,6 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate, Pto : Aggregat
 	protected open fun store(pto: Pto) {
 		pto.id?.let { aggregates[it] = pto }
 	}
-
-	override fun getAll(tenantId: Any): List<Any> =
-		this.aggregates.values
-			.mapNotNull { pto -> pto.id }
-			.toList()
 
 	override fun getByForeignKey(
 		fkName: String,
