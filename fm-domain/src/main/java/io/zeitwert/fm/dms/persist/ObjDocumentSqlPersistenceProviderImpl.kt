@@ -14,6 +14,7 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component
 @Component("objDocumentPersistenceProvider")
 open class ObjDocumentSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjDocument>(ObjDocument::class.java),
 	SqlRecordMapper<ObjDocument> {
 

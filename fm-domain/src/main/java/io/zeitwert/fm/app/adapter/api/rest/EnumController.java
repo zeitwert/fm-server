@@ -56,7 +56,7 @@ public class EnumController {
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		Object tenantId = requestContext.getTenantId();
-		List<ObjUserFM> users = userRepo.find(null, requestContext).stream().map(it -> userRepo.get(it)).toList();
+		List<ObjUserFM> users = userRepo.find(null).stream().map(it -> userRepo.get(it)).toList();
 		return ResponseEntity.ok(users.stream().map(u -> EnumeratedDto.of(u.getId().toString(), u.getCaption())).toList());
 	}
 

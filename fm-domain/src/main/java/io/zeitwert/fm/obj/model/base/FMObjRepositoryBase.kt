@@ -5,7 +5,6 @@ import io.dddrive.obj.model.Obj
 import io.dddrive.obj.model.ObjRepository
 import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
-import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.FMObjRepository
 
 /**
@@ -28,9 +27,6 @@ abstract class FMObjRepositoryBase<O : Obj>(
 
 	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<O>
 
-	override fun find(
-		query: QuerySpec?,
-		requestContext: RequestContextFM,
-	): List<Any> = persistenceProvider.doFind(query, requestContext)
+	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
 
 }

@@ -7,7 +7,6 @@ import io.dddrive.obj.model.Obj
 import io.zeitwert.dddrive.persist.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.dddrive.persist.util.CrnkUtils
 import io.zeitwert.dddrive.persist.util.SqlUtils
-import io.zeitwert.fm.app.model.RequestContextFM
 
 abstract class FMObjSqlPersistenceProviderBase<O : Obj>(
 	intfClass: Class<O>,
@@ -17,11 +16,8 @@ abstract class FMObjSqlPersistenceProviderBase<O : Obj>(
 
 	override val sqlUtils = SqlUtils()
 
-	override fun doFind(
-		query: QuerySpec?,
-		requestCtx: RequestContextFM,
-	): List<Any> {
-		val querySpec = queryWithFilter(query, requestCtx)
+	override fun find(query: QuerySpec?): List<Any> {
+		val querySpec = queryWithFilter(query)
 		if (!CrnkUtils.hasFilterFor(querySpec, "isClosed")) {
 			querySpec.addFilter(PathSpec.of("closed_at").filter(FilterOperator.EQ, null))
 		}

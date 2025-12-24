@@ -15,6 +15,7 @@ import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.fm.test.model.enums.CodeTestType
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.stereotype.Component
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component
 @Component("objTestPersistenceProvider")
 open class ObjTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
 	SqlRecordMapper<ObjTest> {
 

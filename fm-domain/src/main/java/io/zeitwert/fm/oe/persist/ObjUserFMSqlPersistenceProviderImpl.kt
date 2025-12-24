@@ -7,7 +7,7 @@ import io.dddrive.path.setValueByPath
 import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
@@ -22,6 +22,7 @@ import java.util.*
 @Component("objUserFMPersistenceProvider")
 open class ObjUserFMSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
 	SqlRecordMapper<ObjUser> {
 
@@ -54,7 +55,7 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 
 	override fun storeRecord(aggregate: ObjUser) {
 		val record = mapToRecord(aggregate)
-		if ((aggregate as FMObjBase).isNew) {
+		if (aggregate.meta.isNew) {
 			record.insert()
 		} else {
 			record.update()

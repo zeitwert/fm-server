@@ -128,7 +128,7 @@ class ContactTest {
 		Assertions.assertTrue(contactA3.getMailAddress(mailAddr1Id).isEmpty, "deleted mail address should be gone")
 	}
 
-	private fun getTestAccount(requestCtx: RequestContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null, requestCtx)[0])
+	private fun getTestAccount(requestCtx: RequestContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null)[0])
 
 	private fun initContact(contact: ObjContact) {
 		contact.contactRole = CodeContactRole.CARETAKER

@@ -83,7 +83,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	public ResourceList<D> findAll(QuerySpec querySpec) {
 		try {
 			// this.userRepository.touch(this.requestCtx.getUser().getId());
-			List<Object> itemList = ((FMAggregateRepository) this.repository).find(null, requestCtx);
+			List<Object> itemList = ((FMAggregateRepository) this.repository).find(null);
 			// List<A> itemList = this.repository.find(querySpec);
 			ResourceList<D> list = new DefaultResourceList<>();
 			list.addAll(itemList.stream().map(repository::get).map(this.dtoAdapter::fromAggregate).toList());

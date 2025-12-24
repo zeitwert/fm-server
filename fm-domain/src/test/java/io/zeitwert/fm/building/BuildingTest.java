@@ -140,7 +140,7 @@ public class BuildingTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContextFM requestCtx) {
-		return this.accountRepo.get(this.accountRepo.find(null, requestCtx).getFirst());
+		return this.accountRepo.get(this.accountRepo.find(null).getFirst());
 	}
 
 	private void initBuilding(ObjBuilding building) {

@@ -12,12 +12,14 @@ import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objTenantFMPersistenceProvider")
 open class ObjTenantFMSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	SqlRecordMapper<ObjTenant> {
 

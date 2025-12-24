@@ -62,7 +62,7 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 
 	override fun findAll(): List<D> {
 		try {
-			val itemList = (repository as FMAggregateRepository).find(null, requestContext)
+			val itemList = (repository as FMAggregateRepository).find(null)
 			return itemList.map { id -> dtoAdapter.fromAggregate(repository.get(id), DtoDetailLevel.REPORT) }
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on findAll", x)

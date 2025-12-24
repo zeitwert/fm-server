@@ -277,7 +277,7 @@ class UserTest {
 
 	private fun getExistingTenants(): List<ObjTenant> {
 		requestCtx.tenantId
-		val tenantIds = tenantRepository.find(null, requestCtx)
+		val tenantIds = tenantRepository.find(null)
 		return tenantIds.mapNotNull { id ->
 			try {
 				tenantRepository.get(id)

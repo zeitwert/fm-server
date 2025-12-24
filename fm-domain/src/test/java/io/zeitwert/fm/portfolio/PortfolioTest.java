@@ -85,7 +85,7 @@ public class PortfolioTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContextFM requestCtx) {
-		return accountRepository.get(accountRepository.find(null, requestCtx).getFirst());
+		return accountRepository.get(accountRepository.find(null).getFirst());
 	}
 
 }

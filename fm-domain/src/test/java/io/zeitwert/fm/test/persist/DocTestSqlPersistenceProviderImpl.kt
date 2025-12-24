@@ -12,6 +12,7 @@ import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord
 import io.zeitwert.fm.test.model.enums.CodeTestType
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.stereotype.Component
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
 

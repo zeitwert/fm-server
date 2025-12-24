@@ -16,12 +16,14 @@ import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.enums.CodeCountry
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objBuildingPersistenceProvider")
 open class ObjBuildingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjBuilding>(ObjBuilding::class.java),
 	SqlRecordMapper<ObjBuilding> {
 

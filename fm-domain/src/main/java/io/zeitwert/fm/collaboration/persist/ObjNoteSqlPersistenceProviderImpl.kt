@@ -10,6 +10,7 @@ import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 import io.zeitwert.fm.obj.model.db.Tables as ObjTables
@@ -18,6 +19,7 @@ import io.zeitwert.fm.obj.model.db.Tables as ObjTables
 @Component("objNotePersistenceProvider")
 open class ObjNoteSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
 	SqlRecordMapper<ObjNote> {
 

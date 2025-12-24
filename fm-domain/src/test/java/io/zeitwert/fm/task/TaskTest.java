@@ -126,7 +126,7 @@ public class TaskTest {
 		RelatedTo = this.userRepository.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
 		Object tenantId = requestCtx.getTenantId();
-		Account = this.accountRepository.get(this.accountRepository.find(null, requestCtx).getFirst());
+		Account = this.accountRepository.get(this.accountRepository.find(null).getFirst());
 		assertNotNull(Account, "account");
 		StageNew = CodeCaseStageEnum.getCaseStage("task.new");
 		StageProgress = CodeCaseStageEnum.getCaseStage("task.progress");

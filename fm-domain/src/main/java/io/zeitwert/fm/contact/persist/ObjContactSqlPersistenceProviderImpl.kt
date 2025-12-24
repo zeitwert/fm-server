@@ -12,6 +12,7 @@ import io.zeitwert.fm.contact.model.enums.CodeTitle
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component
 @Component("objContactPersistenceProvider")
 open class ObjContactSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
 	SqlRecordMapper<ObjContact> {
 

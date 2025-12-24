@@ -22,10 +22,9 @@ interface AggregateFindMixin {
 
 	val sqlUtils: SqlUtils
 
-	fun queryWithFilter(
-		querySpec: QuerySpec?,
-		requestCtx: RequestContextFM,
-	): QuerySpec {
+	val requestCtx: RequestContextFM
+
+	fun queryWithFilter(querySpec: QuerySpec?): QuerySpec {
 		var querySpec = querySpec
 		if (querySpec == null) {
 			querySpec = QuerySpec(Aggregate::class.java)

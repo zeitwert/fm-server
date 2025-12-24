@@ -12,12 +12,14 @@ import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.db.Tables
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objPortfolioPersistenceProvider")
 open class ObjPortfolioSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjPortfolio>(ObjPortfolio::class.java),
 	SqlRecordMapper<ObjPortfolio> {
 

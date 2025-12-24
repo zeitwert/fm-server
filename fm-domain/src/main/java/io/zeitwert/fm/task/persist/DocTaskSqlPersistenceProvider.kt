@@ -12,12 +12,14 @@ import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("docTaskPersistenceProvider")
 open class DocTaskSqlPersistenceProvider(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMDocSqlPersistenceProviderBase<DocTask>(DocTask::class.java),
 	SqlRecordMapper<DocTask> {
 

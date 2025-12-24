@@ -13,12 +13,14 @@ import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("objAccountPersistenceProvider")
 open class ObjAccountSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
+	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjAccount>(ObjAccount::class.java),
 	SqlRecordMapper<ObjAccount> {
 

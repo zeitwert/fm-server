@@ -59,8 +59,8 @@ public class HomeController {
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
 		ObjAccount account = accountRepository.get(accountId);
 		Object tenantId = requestContext.getTenantId();
-		Integer portfolioCount = portfolioRepository.find(null, requestContext).size();
-		Integer buildingCount = buildingRepository.find(null, requestContext).size();
+		Integer portfolioCount = portfolioRepository.find(null).size();
+		Integer buildingCount = buildingRepository.find(null).size();
 //		List<ObjBuilding> buildings = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
 		Integer ratingCount = 0;
 		Integer insuranceValue = 0;

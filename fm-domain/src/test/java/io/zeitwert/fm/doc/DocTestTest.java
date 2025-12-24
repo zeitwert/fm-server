@@ -213,7 +213,7 @@ public class DocTestTest {
 	}
 
 	private ObjAccount getTestAccount(RequestContextFM requestCtx) {
-		return this.accountRepository.get(this.accountRepo.find(null, requestCtx).getFirst());
+		return this.accountRepository.get(this.accountRepo.find(null).getFirst());
 	}
 
 	private void initDocTest(DocTest test, String name, String testTypeId, Object userId) {
