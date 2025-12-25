@@ -1,43 +1,28 @@
 package io.dddrive.domain.household.model
 
-import io.dddrive.obj.model.Obj
 import io.dddrive.domain.household.model.enums.CodeLabel
+import io.dddrive.obj.model.Obj
+import io.dddrive.oe.model.ObjUser
+import io.dddrive.property.model.EnumSetProperty
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.ReferenceSetProperty
 
 interface ObjHousehold : Obj {
 
 	var name: String?
 
-	val labelSet: Set<CodeLabel>
+	val labelSet: EnumSetProperty<CodeLabel>
 
-	fun hasLabel(label: CodeLabel): Boolean
+	val userSet: ReferenceSetProperty<ObjUser>
 
-	fun clearLabelSet()
+	// Single aggregate reference properties
+	var responsibleUserId: Any?
 
-	fun addLabel(label: CodeLabel)
-
-	fun removeLabel(label: CodeLabel)
-
-	val userSet: Set<Any>
-
-	fun hasUser(userId: Any): Boolean
-
-	fun clearUserSet()
-
-	fun addUser(userId: Any)
-
-	fun removeUser(userId: Any)
+	var responsibleUser: ObjUser?
 
 	var mainMemberId: Int?
 
 	var mainMember: ObjHouseholdPartMember?
 
-	val memberList: List<ObjHouseholdPartMember>
-
-	fun getMember(seqNr: Int?): ObjHouseholdPartMember?
-
-	fun getMemberById(memberId: Int?): ObjHouseholdPartMember?
-
-	fun addMember(): ObjHouseholdPartMember
-
-	fun removeMember(memberId: Int?)
+	val memberList: PartListProperty<ObjHouseholdPartMember>
 }

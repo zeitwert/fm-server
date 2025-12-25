@@ -5,6 +5,7 @@ import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
 import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
@@ -12,7 +13,6 @@ import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -68,7 +68,8 @@ open class DocTaskSqlPersistenceProvider(
 
 		record.docId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
-		record.accountId = aggregate.accountId as? Int
+		record.accountId = aggregate.accountId as Int
+
 		record.relatedObjId = aggregate.getValueByPath("relatedObjId") as Int?
 		record.relatedDocId = aggregate.getValueByPath("relatedDocId") as Int?
 		record.subject = aggregate.subject

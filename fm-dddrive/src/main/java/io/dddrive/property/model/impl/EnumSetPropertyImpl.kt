@@ -15,46 +15,53 @@ class EnumSetPropertyImpl<E : Enumerated>(
 ) : PropertyBase<E>(entity, name),
 	EnumSetProperty<E> {
 
-	private val itemSet: MutableSet<E> = mutableSetOf()
+	private val items: MutableSet<E> = mutableSetOf()
 
-	override fun clearItems() {
-		require(this.isWritable) { "writable" }
-		this.itemSet.forEach(Consumer { item: E -> this.removeItem(item) })
-		this.itemSet.clear()
-		(this.entity as EntityWithPropertiesSPI).doAfterClear(this)
+	override fun clear() {
+		require(isWritable) { "writable" }
+		items.forEach(Consumer { item: E -> remove(item) })
+		items.clear()
+		(entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
-	override fun addItem(item: E) {
-		require(this.isWritable) { "writable" }
-		require(this.isValidEnum(item)) { "valid enumeration item for " + this.enumeration.id + " (" + item.id + ")" }
-		if (!this.hasItem(item)) {
-			val entity = this.entity as EntityWithPropertiesSPI
+	override fun add(item: E) {
+		require(isWritable) { "writable" }
+		require(isValidEnum(item)) { "valid enumeration item for " + enumeration.id + " (" + item.id + ")" }
+		if (!has(item)) {
+			val entity = entity as EntityWithPropertiesSPI
 			entity.fireValueAddedChange(this, item.id)
-			this.itemSet.add(item)
+			items.add(item)
 			entity.doAfterAdd(this, null)
 		}
 	}
 
-	override val items: Set<E>
-		get() = this.itemSet.toSet()
+	override fun has(item: E): Boolean = items.contains(item)
 
-	override fun hasItem(item: E): Boolean = this.itemSet.contains(item)
-
-	override fun removeItem(item: E) {
-		require(this.isWritable) { "writable" }
-		if (this.hasItem(item)) {
-			val entity = this.entity as EntityWithPropertiesSPI
+	override fun remove(item: E) {
+		require(isWritable) { "writable" }
+		if (has(item)) {
+			val entity = entity as EntityWithPropertiesSPI
 			entity.fireValueRemovedChange(this, item.id)
-			this.itemSet.remove(item)
+			items.remove(item)
 			entity.doAfterRemove(this)
 		}
 	}
 
 	private fun isValidEnum(value: E): Boolean {
-		if (value.enumeration != this.enumeration) {
+		if (value.enumeration != enumeration) {
 			return false
 		}
-		return value == this.enumeration.getItem(value.id)
+		return value == enumeration.getItem(value.id)
 	}
+
+	override val size: Int get() = items.size
+
+	override fun isEmpty(): Boolean = items.isEmpty()
+
+	override fun iterator(): Iterator<E> = items.iterator()
+
+	override fun containsAll(elements: Collection<E>): Boolean = items.containsAll(elements)
+
+	override fun contains(element: E): Boolean = items.contains(element)
 
 }

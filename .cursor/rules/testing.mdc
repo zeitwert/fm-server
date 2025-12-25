@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+
+# Run Tests
+
+After any change, you run the tests to ensure the changes are working as expected.
+The tests can be run via `mvn` on the windows command shell.
+
+## run all tests (before completing the task)
+
+`mvn clean test -pl !fm-ui`
+
+## run a selection or specific test file (WITH code generation)
+
+`mvn clean test -Dtest=[test-name-pattern] -pl !fm-ui`
+
+example:
+
+`mvn clean test -Dtest=BuildingTest -pl !fm-ui`
+
+## run a selection or specific test file (WITHOUT code generation when you already did it before)
+
+`mvn surefire:test -Dtest=[test-name-pattern] -pl !fm-ui`
+
+example:
+
+`mvn surefire:test -Dtest=BuildingTest -pl !fm-ui`
+
+# Run Build
+
+Before terminating your task, check that the builds are still correctly done.
+
+`mvn clean compile test-compile -DskipTests -pl !fm-ui`

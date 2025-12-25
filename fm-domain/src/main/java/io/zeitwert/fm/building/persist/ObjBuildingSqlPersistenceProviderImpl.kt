@@ -5,6 +5,7 @@ import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.db.Tables
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord
@@ -16,7 +17,6 @@ import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.enums.CodeCountry
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -132,7 +132,8 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
-		record.accountId = aggregate.accountId as? Int
+		record.accountId = aggregate.accountId as Int
+
 		record.name = aggregate.name
 		record.description = aggregate.description
 		record.buildingNr = aggregate.buildingNr

@@ -4,6 +4,7 @@ import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.persist.DocPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
@@ -12,7 +13,6 @@ import io.zeitwert.fm.test.model.DocTest
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.DocTestRecord
 import io.zeitwert.fm.test.model.enums.CodeTestType
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.stereotype.Component
@@ -83,7 +83,8 @@ open class DocTestSqlPersistenceProviderImpl(
 
 		record.docId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
-		record.accountId = aggregate.accountId as? Int
+		record.accountId = aggregate.accountId as Int
+
 		record.shortText = aggregate.shortText
 		record.longText = aggregate.longText
 		record.date = aggregate.date

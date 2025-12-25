@@ -43,9 +43,9 @@ abstract class PartBase<A : Aggregate>(
 	private fun buildPath(basePath: String): String {
 		val parentProp = this.parentProperty
 		if (parentProp is PartListProperty<*>) {
-			var index = parentProp.getIndexOfPart(this)
+			var index = parentProp.indexOf(this)
 			if (index == -1) {
-				index = parentProp.partCount
+				index = parentProp.size
 			}
 			return "$basePath[$index]"
 		} else {

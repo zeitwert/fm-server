@@ -2,16 +2,23 @@ package io.dddrive.property.model
 
 import io.dddrive.ddd.model.Aggregate
 
-interface ReferenceSetProperty<A : Aggregate> : Property<A> {
+/**
+ * Property that holds a set of aggregate references (by ID).
+ *
+ * Implements [Set] interface so it can be used directly as a set in consumer code.
+ * Note: The set contains IDs, not the aggregates themselves.
+ */
+interface ReferenceSetProperty<A : Aggregate> :
+	Property<A>,
+	Iterable<Any>,
+	Collection<Any> {
 
-	val items: Set<Any>
+	fun has(aggregateId: Any): Boolean
 
-	fun hasItem(aggregateId: Any): Boolean
+	fun clear()
 
-	fun clearItems()
+	fun add(aggregateId: Any)
 
-	fun addItem(aggregateId: Any)
-
-	fun removeItem(aggregateId: Any)
+	fun remove(aggregateId: Any)
 
 }

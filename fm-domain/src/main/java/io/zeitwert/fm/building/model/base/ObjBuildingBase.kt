@@ -175,7 +175,7 @@ abstract class ObjBuildingBase(
 	): ObjBuildingPartRating {
 		val oldRating = currentRating
 		require(oldRating == null || oldRating.ratingStatus == CodeBuildingRatingStatus.DONE) { "rating done" }
-		val rating = _ratingList.addPart(null)
+		val rating = _ratingList.add(null)
 		try {
 			rating.meta.disableCalc()
 			rating.ratingStatus = CodeBuildingRatingStatus.OPEN
@@ -195,7 +195,7 @@ abstract class ObjBuildingBase(
 	}
 
 	override fun removeRating(ratingId: Int) {
-		_ratingList.removePart(ratingId)
+		_ratingList.remove(ratingId)
 	}
 
 	override fun doCalcAll() {

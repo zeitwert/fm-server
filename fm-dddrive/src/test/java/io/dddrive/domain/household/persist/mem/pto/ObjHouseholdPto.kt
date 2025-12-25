@@ -9,6 +9,7 @@ open class ObjHouseholdPto(
 	var users: Set<Int>? = null,
 	var members: List<ObjHouseholdPartMemberPto>? = null,
 	var mainMemberId: Int? = null,
+	var responsibleUserId: Int? = null,
 	// Properties from parent
 	id: Int? = null,
 	tenantId: Int? = null,

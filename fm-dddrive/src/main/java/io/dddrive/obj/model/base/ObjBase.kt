@@ -40,7 +40,7 @@ abstract class ObjBase(
 		super.doAfterCreate(userId, timestamp)
 		try {
 			disableCalc()
-			_transitionList.addPart(null).init(userId, timestamp)
+			_transitionList.add(null).init(userId, timestamp)
 		} finally {
 			enableCalc()
 		}
@@ -64,7 +64,7 @@ abstract class ObjBase(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		_transitionList.addPart(null).init(userId, timestamp)
+		_transitionList.add(null).init(userId, timestamp)
 
 		super.doBeforeStore(userId, timestamp)
 

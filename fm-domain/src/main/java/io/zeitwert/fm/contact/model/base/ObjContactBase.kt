@@ -45,25 +45,25 @@ abstract class ObjContactBase(
 		_addressList = addPartListProperty("addressList", ObjContactPartAddress::class.java)
 	}
 
-	override val mailAddressList get() = _addressList.parts.filter { it.isMailAddress == true }
+	override val mailAddressList get() = _addressList.filter { it.isMailAddress == true }
 
-	override fun getMailAddress(addressId: Int) = Optional.ofNullable(_addressList.parts.find { it.id == addressId && it.isMailAddress == true })
+	override fun getMailAddress(addressId: Int) = Optional.ofNullable(_addressList.find { it.id == addressId && it.isMailAddress == true })
 
-	override fun clearMailAddressList() = mailAddressList.forEach { _addressList.removePart(it.id) }
+	override fun clearMailAddressList() = mailAddressList.forEach { _addressList.remove(it.id) }
 
-	override fun addMailAddress() = _addressList.addPart(null)
+	override fun addMailAddress() = _addressList.add(null)
 
-	override fun removeMailAddress(addressId: Int) = _addressList.removePart(addressId)
+	override fun removeMailAddress(addressId: Int) = _addressList.remove(addressId)
 
-	override val electronicAddressList get() = _addressList.parts.filter { it.isMailAddress == false }
+	override val electronicAddressList get() = _addressList.filter { it.isMailAddress == false }
 
-	override fun getElectronicAddress(addressId: Int) = Optional.ofNullable(_addressList.parts.find { it.id == addressId && it.isMailAddress == false })
+	override fun getElectronicAddress(addressId: Int) = Optional.ofNullable(_addressList.find { it.id == addressId && it.isMailAddress == false })
 
-	override fun clearElectronicAddressList() = electronicAddressList.forEach { _addressList.removePart(it.id) }
+	override fun clearElectronicAddressList() = electronicAddressList.forEach { _addressList.remove(it.id) }
 
-	override fun addElectronicAddress() = _addressList.addPart(null)
+	override fun addElectronicAddress() = _addressList.add(null)
 
-	override fun removeElectronicAddress(addressId: Int) = _addressList.removePart(addressId)
+	override fun removeElectronicAddress(addressId: Int) = _addressList.remove(addressId)
 
 	override fun doAddPart(
 		property: Property<*>,

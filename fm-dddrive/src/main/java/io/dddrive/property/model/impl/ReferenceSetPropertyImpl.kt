@@ -15,47 +15,54 @@ class ReferenceSetPropertyImpl<A : Aggregate>(
 ) : PropertyBase<A>(entity, name),
 	ReferenceSetProperty<A> {
 
-	private val itemSet: MutableSet<Any> = mutableSetOf()
+	private val items: MutableSet<Any> = mutableSetOf()
 
-	override fun clearItems() {
+	override fun clear() {
 		require(isWritable) { "writable" }
-		items.forEach { removeItem(it) }
-		check(itemSet.isEmpty()) { "all items removed" }
-		itemSet.clear()
+		items.toSet().forEach { remove(it) }
+		check(items.isEmpty()) { "all items removed" }
+		items.clear()
 		(entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
-	override fun addItem(aggregateId: Any) {
+	override fun add(aggregateId: Any) {
 		require(isWritable) { "writable" }
 		require(isValidAggregateId(aggregateId)) { "valid aggregate id [$aggregateId]" }
-		if (hasItem(aggregateId)) {
+		if (has(aggregateId)) {
 			return
 		}
-		if (!hasItem(aggregateId)) {
+		if (!has(aggregateId)) {
 			val entity = entity as EntityWithPropertiesSPI
 			entity.fireValueAddedChange(this, aggregateId)
-			itemSet.add(aggregateId)
+			items.add(aggregateId)
 			entity.doAfterAdd(this, null)
 		}
 	}
 
-	override val items: Set<Any>
-		get() = itemSet.toSet()
+	override fun has(aggregateId: Any): Boolean = items.contains(aggregateId)
 
-	override fun hasItem(aggregateId: Any): Boolean = itemSet.contains(aggregateId)
-
-	override fun removeItem(aggregateId: Any) {
+	override fun remove(aggregateId: Any) {
 		require(isWritable) { "writable" }
 		require(isValidAggregateId(aggregateId)) { "valid aggregate id [$aggregateId]" }
-		if (hasItem(aggregateId)) {
+		if (has(aggregateId)) {
 			val entity = entity as EntityWithPropertiesSPI
 			entity.fireValueRemovedChange(this, aggregateId)
-			itemSet.remove(aggregateId)
+			items.remove(aggregateId)
 			entity.doAfterRemove(this)
 		}
 	}
 
 	// TODO too expensive?
 	private fun isValidAggregateId(id: Any): Boolean = (repo as AggregateRepositorySPI<*>).persistenceProvider.isValidId(id)
+
+	override val size: Int get() = items.size
+
+	override fun isEmpty(): Boolean = items.isEmpty()
+
+	override fun iterator(): Iterator<Any> = items.iterator()
+
+	override fun containsAll(elements: Collection<Any>): Boolean = items.containsAll(elements)
+
+	override fun contains(element: Any): Boolean = items.contains(element)
 
 }

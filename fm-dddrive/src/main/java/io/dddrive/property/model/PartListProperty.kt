@@ -2,25 +2,35 @@ package io.dddrive.property.model
 
 import io.dddrive.ddd.model.Part
 
-interface PartListProperty<P : Part<*>> : Property<P> {
+/**
+ * Property that holds a list of parts.
+ *
+ * Implements [Iterable] and [Collection] interfaces so it can be used directly as a list in consumer code.
+ */
+interface PartListProperty<P : Part<*>> :
+	Property<P>,
+	Iterable<P>,
+	Collection<P> {
 
 	val partType: Class<P>
 
-	val partCount: Int
+	override val size: Int
 
-	fun getPart(seqNr: Int): P
+	operator fun get(seqNr: Int): P
 
-	fun getPartById(partId: Int): P
+	fun getById(partId: Int): P
 
-	val parts: List<P>
+	/**
+	 * Removes all parts from this list.
+	 * Alias for [clear].
+	 */
+	fun clear()
 
-	fun clearParts()
+	fun add(partId: Int? = null): P
 
-	fun addPart(partId: Int?): P
+	fun remove(partId: Int)
 
-	fun removePart(partId: Int)
-
-	fun removePart(part: P)
+	fun remove(part: P)
 
 	/**
 	 * Returns the index of the specified part within this list.
@@ -28,6 +38,6 @@ interface PartListProperty<P : Part<*>> : Property<P> {
 	 * @param part the part to find
 	 * @return the index of the part, or -1 if the part is not in this list.
 	 */
-	fun getIndexOfPart(part: Part<*>): Int
+	fun indexOf(part: P): Int
 
 }

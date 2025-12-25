@@ -56,13 +56,12 @@ public class DocTestTest {
 
 		Object tenantId = requestCtx.getTenantId();
 		Object userId = requestCtx.getUserId();
-		ObjAccount account = this.getTestAccount(this.requestCtx);
 		OffsetDateTime now = requestCtx.getCurrentTime();
+		ObjAccount account = this.getTestAccount(this.requestCtx);
 
 		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
 		assertEquals(0, testA1.getMeta().getVersion());
 		this.initDocTest(testA1, "One", TYPE_A, userId);
-		// Cast to FMDocCoreBase to access accountId (Kotlin property)
 		testA1.setAccountId(account.getId());
 		assertNotNull(testA1, "test not null");
 		assertNotNull(testA1.getId(), "id not null");
@@ -103,6 +102,7 @@ public class DocTestTest {
 		Object tenantId = requestCtx.getTenantId();
 		Object userId = requestCtx.getUserId();
 		OffsetDateTime now = requestCtx.getCurrentTime();
+		ObjAccount account = this.getTestAccount(this.requestCtx);
 
 		CodeTestType typeA = CodeTestType.Enumeration.getTestType(TYPE_A);
 		CodeTestType typeB = CodeTestType.Enumeration.getTestType(TYPE_B);
@@ -111,6 +111,7 @@ public class DocTestTest {
 		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
 		Object testA_id = testA1.getId();
 		this.initDocTest(testA1, "One", TYPE_A, userId);
+		testA1.setAccountId(account.getId());
 
 		assertNotNull(testA1.getMeta().getCreatedByUser(), "createdByUser not null");
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
@@ -134,6 +135,7 @@ public class DocTestTest {
 
 		DocTest refDoc = this.docTestRepo.create(tenantId, userId, now);
 		this.initDocTest(refDoc, "Two", TYPE_B, userId);
+		refDoc.setAccountId(account.getId());
 		Object refDoc_id = refDoc.getId();
 		this.docTestRepo.store(refDoc, userId, now);
 

@@ -97,11 +97,11 @@ private fun <T : Any> EntityWithProperties.resolveProperty(
 				require(property is PartListProperty<*>) { "$segment is not a list" }
 				val idx = nextSegment.toInt()
 				if (forSetter) {
-					while (property.partCount <= idx) property.addPart(null)
-				} else if (idx >= property.partCount) {
+					while (property.size <= idx) property.add(null)
+				} else if (idx >= property.size) {
 					return null
 				}
-				entity = property.getPart(idx)
+				entity = property.get(idx)
 				i += 2
 				continue
 			}

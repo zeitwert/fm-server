@@ -14,54 +14,59 @@ open class PartListPropertyImpl<P : Part<*>>(
 ) : PropertyBase<P>(entity, name),
 	PartListProperty<P> {
 
-	private val partList: MutableList<P> = mutableListOf()
+	private val parts: MutableList<P> = mutableListOf()
 
-	override fun clearParts() {
-		require(this.isWritable) { "writable" }
-		for (part in this.partList) {
+	override fun clear() {
+		require(isWritable) { "writable" }
+		for (part in parts) {
 			(part as PartSPI<*>).delete()
 		}
-		this.partList.clear()
-		(this.entity as EntityWithPropertiesSPI).doAfterClear(this)
+		parts.clear()
+		(entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun addPart(partId: Int?): P {
-		require(this.isWritable) { "writable" }
-		val entity = this.entity as EntityWithPropertiesSPI
+	override fun add(partId: Int?): P {
+		require(isWritable) { "writable" }
+		val entity = entity as EntityWithPropertiesSPI
 		val part = entity.doAddPart(this, partId) as P
-		this.partList.add(part)
+		parts.add(part)
 		(part as EntityWithPropertiesSPI).fireEntityAddedChange(part.id)
 		entity.doAfterAdd(this, part)
 		return part
 	}
 
-	override val partCount: Int
-		get() = this.partList.size
+	override val size: Int
+		get() = parts.size
 
-	override fun getPart(seqNr: Int): P {
-		require(0 <= seqNr && seqNr < this.partCount) { "valid seqNr (0 <= $seqNr < ${this.partCount})" }
-		return this.partList.get(seqNr)
+	override fun get(seqNr: Int): P {
+		require(0 <= seqNr && seqNr < size) { "valid seqNr (0 <= $seqNr < $size)" }
+		return parts.get(seqNr)
 	}
 
-	override fun getPartById(partId: Int): P = this.partList.first { it.id == partId }
+	override fun getById(partId: Int): P = parts.first { it.id == partId }
 
-	override val parts: List<P>
-		get() = this.partList.toList()
-
-	override fun removePart(partId: Int) {
-		require(this.isWritable) { "writable" }
-		this.removePart(this.getPartById(partId))
+	override fun remove(partId: Int) {
+		require(isWritable) { "writable" }
+		remove(getById(partId))
 	}
 
-	override fun removePart(part: P) {
-		require(this.isWritable) { "writable" }
+	override fun remove(part: P) {
+		require(isWritable) { "writable" }
 		(part as EntityWithPropertiesSPI).fireEntityRemovedChange()
 		(part as PartSPI<*>).delete()
-		this.partList.remove(part)
-		(this.entity as EntityWithPropertiesSPI).doAfterRemove(this)
+		parts.remove(part)
+		(entity as EntityWithPropertiesSPI).doAfterRemove(this)
 	}
 
-	override fun getIndexOfPart(part: Part<*>): Int = this.partList.indexOf(part)
+	override fun indexOf(part: P): Int = parts.indexOf(part)
+
+	override fun isEmpty(): Boolean = parts.isEmpty()
+
+	override fun contains(element: P): Boolean = parts.contains(element)
+
+	override fun containsAll(elements: Collection<P>): Boolean = parts.containsAll(elements)
+
+	override fun iterator(): Iterator<P> = parts.iterator()
 
 }

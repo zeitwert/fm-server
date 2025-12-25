@@ -43,7 +43,7 @@ class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 		} else {
 			partsLoaded.filter { (it.parentPartId == 0) && (it.partListTypeId == partListTypeId) }
 		}.forEach {
-			val part = partList.addPart(it.id)
+			val part = partList.add(it.id)
 			mapFromRecord(
 				part = part,
 				record = it,
@@ -76,7 +76,7 @@ class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id
-		partList.parts.forEachIndexed { idx, it ->
+		partList.forEachIndexed { idx, it ->
 			val record = mapToRecord(
 				part = it,
 				parentPartId = parentPartId,

@@ -5,25 +5,32 @@ import io.dddrive.domain.household.model.ObjHousehold
 import io.dddrive.domain.household.model.ObjHouseholdPartMember
 import io.dddrive.domain.household.model.enums.CodeSalutation
 import io.dddrive.obj.model.base.ObjPartBase
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.partReferenceIdProperty
+import io.dddrive.property.delegate.partReferenceProperty
 import io.dddrive.property.model.Property
 
-@Suppress("ktlint")
-abstract class ObjHouseholdPartMemberBase(
+open class ObjHouseholdPartMemberBase(
 	obj: ObjHousehold,
 	override val repository: PartRepository<ObjHousehold, ObjHouseholdPartMember>,
 	property: Property<*>,
-	id: Int
-) : ObjPartBase<ObjHousehold>(obj, repository, property, id), ObjHouseholdPartMember {
+	id: Int,
+) : ObjPartBase<ObjHousehold>(obj, repository, property, id),
+	ObjHouseholdPartMember {
 
-	override fun doInit() {
-		super.doInit()
-		addEnumProperty("salutation", CodeSalutation::class.java)
-		addBaseProperty("name", String::class.java)
-		addPartReferenceProperty("spouse", ObjHouseholdPartMember::class.java)
-	}
+	override val household: ObjHousehold = aggregate
+
+	// Enum property
+	override var salutation: CodeSalutation? by enumProperty()
+
+	// Base property
+	override var name: String? by baseProperty()
+
+	// Part reference properties
+	override var spouseId: Int? by partReferenceIdProperty<ObjHouseholdPartMember>()
+	override var spouse: ObjHouseholdPartMember? by partReferenceProperty()
 
 	override fun delete() {}
-
-	override val household: ObjHousehold = this.aggregate
 
 }

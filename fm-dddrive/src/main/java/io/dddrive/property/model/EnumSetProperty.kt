@@ -2,16 +2,22 @@ package io.dddrive.property.model
 
 import io.dddrive.enums.model.Enumerated
 
-interface EnumSetProperty<E : Enumerated> : Property<E> {
+/**
+ * Property that holds a set of enum values.
+ *
+ * Implements [Iterable] and [Collection] interfaces so it can be used directly as a set in consumer code.
+ */
+interface EnumSetProperty<E : Enumerated> :
+	Property<E>,
+	Iterable<E>,
+	Collection<E> {
 
-	val items: Set<E>
+	fun has(item: E): Boolean
 
-	fun hasItem(item: E): Boolean
+	fun clear()
 
-	fun clearItems()
+	fun add(item: E)
 
-	fun addItem(item: E)
-
-	fun removeItem(item: E)
+	fun remove(item: E)
 
 }

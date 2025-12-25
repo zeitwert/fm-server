@@ -134,6 +134,138 @@ abstract class EntityWithPropertiesBase :
 		return property
 	}
 
+	// ============================================================================
+	// getOrAdd* methods for property delegates
+	// These methods return existing properties or create new ones on first access.
+	// ============================================================================
+
+	/**
+	 * Gets an existing base property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <T : Any> getOrAddBaseProperty(
+		name: String,
+		type: Class<T>,
+	): BaseProperty<T> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as BaseProperty<T>
+		}
+		return addBaseProperty(name, type)
+	}
+
+	/**
+	 * Gets an existing enum property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <E : Enumerated> getOrAddEnumProperty(
+		name: String,
+		enumType: Class<E>,
+	): EnumProperty<E> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as EnumProperty<E>
+		}
+		val enumeration: Enumeration<E> = directory.getEnumeration(enumType)
+		val property: EnumProperty<E> = EnumPropertyImpl(this, name, enumeration, enumType)
+		addProperty(property)
+		return property
+	}
+
+	/**
+	 * Gets an existing enum set property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <E : Enumerated> getOrAddEnumSetProperty(
+		name: String,
+		enumType: Class<E>,
+	): EnumSetProperty<E> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as EnumSetProperty<E>
+		}
+		val enumeration: Enumeration<E> = directory.getEnumeration(enumType)
+		val property: EnumSetProperty<E> = EnumSetPropertyImpl(this, name, enumeration)
+		addProperty(property)
+		return property
+	}
+
+	/**
+	 * Gets an existing aggregate reference property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <A : Aggregate> getOrAddReferenceProperty(
+		name: String,
+		aggregateType: Class<A>,
+	): AggregateReferenceProperty<A> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as AggregateReferenceProperty<A>
+		}
+		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
+		val property: AggregateReferenceProperty<A> =
+			AggregateReferencePropertyImpl(this, name, repo, aggregateType)
+		addProperty(property)
+		return property
+	}
+
+	/**
+	 * Gets an existing reference set property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <A : Aggregate> getOrAddReferenceSetProperty(
+		name: String,
+		aggregateType: Class<A>,
+	): ReferenceSetProperty<A> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as ReferenceSetProperty<A>
+		}
+		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
+		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
+		addProperty(property)
+		return property
+	}
+
+	/**
+	 * Gets an existing part list property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <P : Part<*>> getOrAddPartListProperty(
+		name: String,
+		partType: Class<P>,
+	): PartListProperty<P> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as PartListProperty<P>
+		}
+		val property: PartListProperty<P> = PartListPropertyImpl(this, name, partType)
+		addProperty(property)
+		return property
+	}
+
+	/**
+	 * Gets an existing part reference property or creates a new one if it doesn't exist.
+	 * Used by property delegates for lazy property registration.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun <P : Part<*>> getOrAddPartReferenceProperty(
+		name: String,
+		partType: Class<P>,
+	): PartReferenceProperty<P> {
+		if (hasProperty(name)) {
+			return propertyMap[name] as PartReferenceProperty<P>
+		}
+		val property: PartReferenceProperty<P> = PartReferencePropertyImpl(
+			this,
+			name,
+			{ id: Int -> getPart(id) as P },
+			partType,
+		)
+		addProperty(property)
+		return property
+	}
+
 	override val parentProperty: Property<*>?
 		get() = null
 

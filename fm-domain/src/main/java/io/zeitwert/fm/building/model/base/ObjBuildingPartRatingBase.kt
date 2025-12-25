@@ -80,7 +80,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 			// Skip auto-populating elements when loading from persistence
 			// (elements will be loaded from DB). Only populate on create/update.
 			if (!this.meta.isInLoad) {
-				this._elementList.clearParts()
+				this._elementList.clear()
 				val partCatalog = this.partCatalog
 				if (partCatalog != null) {
 					for (part in partCatalog.getParts()) {
@@ -102,16 +102,11 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 	override val ratingYear: Int?
 		get() = if (this.ratingDate != null) this.ratingDate!!.year else null
 
-	override fun getElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating =
-		this._elementList.parts
-			.stream()
-			.filter { p: ObjBuildingPartElementRating? -> p!!.buildingPart === buildingPart }
-			.findFirst()
-			.orElse(null)
+	override fun getElement(buildingPart: CodeBuildingPart) = this._elementList.first { p: ObjBuildingPartElementRating? -> p!!.buildingPart === buildingPart }
 
 	override fun addElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating {
 // 		requireThis(this.getElement(buildingPart) == null, "unique element for buildingPart [" + buildingPart.getId() + "]");
-		val e: ObjBuildingPartElementRating = this._elementList.addPart(null)
+		val e: ObjBuildingPartElementRating = this._elementList.add(null)
 		e.buildingPart = buildingPart
 		return e
 	}

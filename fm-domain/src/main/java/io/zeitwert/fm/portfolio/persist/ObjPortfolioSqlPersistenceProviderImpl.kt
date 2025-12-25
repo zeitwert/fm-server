@@ -5,6 +5,7 @@ import io.dddrive.obj.model.Obj
 import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
@@ -12,7 +13,6 @@ import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.db.Tables
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -62,10 +62,10 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("portfolio.includeList").forEach {
-				it.toIntOrNull()?.let { objId -> includeSet.addItem(objId) }
+				it.toIntOrNull()?.let { objId -> includeSet.add(objId) }
 			}
 			items("portfolio.excludeList").forEach {
-				it.toIntOrNull()?.let { objId -> excludeSet.addItem(objId) }
+				it.toIntOrNull()?.let { objId -> excludeSet.add(objId) }
 			}
 		}
 	}
@@ -76,8 +76,8 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
 		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
-			addItems("portfolio.includeList", includeSet.items.map { it.toString() })
-			addItems("portfolio.excludeList", excludeSet.items.map { it.toString() })
+			addItems("portfolio.includeList", includeSet.map { it.toString() })
+			addItems("portfolio.excludeList", excludeSet.map { it.toString() })
 		}
 	}
 
@@ -87,7 +87,8 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
-		record.accountId = aggregate.accountId as? Int
+		record.accountId = aggregate.accountId as Int
+
 		record.name = aggregate.name
 		record.description = aggregate.description
 		record.portfolioNr = aggregate.portfolioNr

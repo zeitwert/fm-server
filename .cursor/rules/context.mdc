@@ -1,0 +1,25 @@
+---
+alwaysApply: true
+---
+
+# Context
+
+This is an ERP application for real estate management, written in mixed Java/Kotlin targeting a Spring Boot deployment.
+It is a multi-module Maven project, and includes the dddrive application development framework.
+
+# Coding
+
+Any new code must be written in Kotlin.
+
+# Persistence
+
+The application uses a PostgreSQL database for persistence, accessed via the jOOQ library.
+The database schema is generated and maintained via flyway through the scripts in the src/main/resources/db directory.
+
+# Environment
+
+The linting inside the cursor IDE is not reliable, so you need to run the compilation with `mvn compile -DskipTests` on the windows command shell to ensure the code is correct.
+
+Since in most cases you will only work on the server, you can skip expensive compilation of the ui with `mvn compile -DskipTests -pl !fm-ui`.
+
+We are on a Windows machine and you should be using the command shell.

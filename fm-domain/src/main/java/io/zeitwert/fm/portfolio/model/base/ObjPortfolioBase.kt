@@ -97,12 +97,12 @@ abstract class ObjPortfolioBase(
 	}
 
 	private fun calcBuildingSet() {
-		_buildingSet.clearItems()
-		for (objId in _includeSet.items) {
-			getBuildingIds(objId as Int).forEach { _buildingSet.addItem(it) }
+		_buildingSet.clear()
+		for (objId in _includeSet) {
+			getBuildingIds(objId as Int).forEach { _buildingSet.add(it) }
 		}
-		for (objId in _excludeSet.items) {
-			getBuildingIds(objId as Int).forEach { _buildingSet.removeItem(it) }
+		for (objId in _excludeSet) {
+			getBuildingIds(objId as Int).forEach { _buildingSet.remove(it) }
 		}
 	}
 

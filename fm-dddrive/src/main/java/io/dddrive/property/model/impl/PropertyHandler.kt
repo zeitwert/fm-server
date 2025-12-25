@@ -34,64 +34,64 @@ class PropertyHandler : MethodHandler {
 				if (property is PartListProperty<*>) {
 					if (args.isEmpty()) {
 						if (methodName.startsWith("get") && methodName.endsWith("Count")) {
-							return property.partCount
+							return property.size
 						} else if (methodName.startsWith("get") && methodName.endsWith("List")) {
-							return property.parts
+							return property.toList()
 						} else if (methodName.startsWith("clear") && methodName.endsWith("List")) {
-							property.clearParts()
+							property.clear()
 							return null
 						} else if (methodName.startsWith("add")) {
-							return property.addPart(null)
+							return property.add(null)
 						}
 					} else if (args.size == 1) {
 						if (methodName.startsWith("get") && methodName.endsWith("ById")) {
-							return property.getPartById((args[0] as Int?)!!)
+							return property.getById((args[0] as Int?)!!)
 						} else if (methodName.startsWith("get")) {
-							return property.getPart((args[0] as Int?)!!)
+							return property.get((args[0] as Int?)!!)
 						} else if (methodName.startsWith("remove")) {
-							property.removePart((args[0] as Int?)!!)
+							property.remove((args[0] as Int?)!!)
 							return null
 						}
 					}
 				} else if (property is EnumSetProperty<*>) {
 					if (args.isEmpty()) {
 						if (methodName.startsWith("get") && methodName.endsWith("Count")) {
-							return property.items.size
+							return property.size
 						} else if (methodName.startsWith("get") && methodName.endsWith("Set")) {
-							return property.items
+							return property.toSet()
 						} else if (methodName.startsWith("clear") && methodName.endsWith("Set")) {
-							property.clearItems()
+							property.clear()
 							return null
 						}
 					} else if (args.size == 1) {
 						if (methodName.startsWith("has")) {
-							return (property as EnumSetProperty<Enumerated>).hasItem((args[0] as Enumerated?)!!)
+							return (property as EnumSetProperty<Enumerated>).has((args[0] as Enumerated?)!!)
 						} else if (methodName.startsWith("add")) {
-							(property as EnumSetProperty<Enumerated>).addItem((args[0] as Enumerated?)!!)
+							(property as EnumSetProperty<Enumerated>).add((args[0] as Enumerated?)!!)
 							return null
 						} else if (methodName.startsWith("remove")) {
-							(property as EnumSetProperty<Enumerated>).removeItem((args[0] as Enumerated?)!!)
+							(property as EnumSetProperty<Enumerated>).remove((args[0] as Enumerated?)!!)
 							return null
 						}
 					}
 				} else if (property is ReferenceSetProperty<*>) {
 					if (args.isEmpty()) {
 						if (methodName.startsWith("get") && methodName.endsWith("Count")) {
-							return property.items.size
+							return property.size
 						} else if (methodName.startsWith("get") && methodName.endsWith("Set")) {
-							return property.items
+							return property.toSet()
 						} else if (methodName.startsWith("clear") && methodName.endsWith("Set")) {
-							property.clearItems()
+							property.clear()
 							return null
 						}
 					} else if (args.size == 1) {
 						if (methodName.startsWith("has")) {
-							return property.hasItem(args[0]!!)
+							return property.has(args[0]!!)
 						} else if (methodName.startsWith("add")) {
-							property.addItem(args[0]!!)
+							property.add(args[0]!!)
 							return null
 						} else if (methodName.startsWith("remove")) {
-							property.removeItem(args[0]!!)
+							property.remove(args[0]!!)
 							return null
 						}
 					}

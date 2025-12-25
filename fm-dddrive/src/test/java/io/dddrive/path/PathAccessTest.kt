@@ -8,9 +8,6 @@ import io.dddrive.enums.model.Enumerated
 import io.dddrive.enums.model.Enumeration
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.getPropertyByPath
-import io.dddrive.path.getValueByPath
-import io.dddrive.path.setValueByPath
 import io.dddrive.property.model.AggregateReferenceProperty
 import io.dddrive.property.model.BaseProperty
 import io.dddrive.property.model.EntityWithProperties
@@ -407,19 +404,23 @@ class PathAccessTest {
 			private var nextId = 1
 
 			override val partType: Class<TestPart> = TestPart::class.java
-			override val partCount: Int get() = _parts.size
+			override val size: Int get() = _parts.size
 
-			override fun getPart(seqNr: Int): TestPart = _parts[seqNr]
+			override fun isEmpty() = _parts.isEmpty()
 
-			override fun getPartById(partId: Int): TestPart = _parts.find { it.id == partId }!!
+			override fun contains(element: TestPart) = _parts.contains(element)
 
-			override val parts: List<TestPart> get() = _parts.toList()
+			override fun containsAll(elements: Collection<TestPart>) = _parts.containsAll(elements)
 
-			override fun clearParts() {
+			override fun get(seqNr: Int): TestPart = _parts[seqNr]
+
+			override fun getById(partId: Int): TestPart = _parts.find { it.id == partId }!!
+
+			override fun clear() {
 				_parts.clear()
 			}
 
-			override fun addPart(partId: Int?): TestPart {
+			override fun add(partId: Int?): TestPart {
 				val id = partId ?: nextId++
 				val newPart = TestPart(id)
 				newPart.addProperty("name", createBaseProperty(String::class.java, "Part$id"))
@@ -429,21 +430,25 @@ class PathAccessTest {
 				return newPart
 			}
 
-			override fun removePart(partId: Int) {
+			override fun remove(partId: Int) {
 				_parts.removeIf { it.id == partId }
 			}
 
-			override fun removePart(part: TestPart) {
+			override fun remove(part: TestPart) {
 				_parts.remove(part)
 			}
 
-			override fun getIndexOfPart(part: Part<*>): Int = _parts.indexOfFirst { it.id == part.id }
+			override fun indexOf(part: TestPart): Int = _parts.indexOfFirst { it.id == part.id }
 
 			override val entity: EntityWithProperties get() = rootEntity
 			override val relativePath: String = "test"
 			override val path: String = "test"
 			override val name: String = "test"
 			override val isWritable: Boolean = true
+
+			override fun iterator(): Iterator<TestPart> {
+				TODO("Not yet implemented")
+			}
 		}
 
 	private fun createReferenceProperty(initialValue: TestAggregate? = null): AggregateReferenceProperty<TestAggregate> =

@@ -71,7 +71,7 @@ abstract class DocBase(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		_transitionList.addPart(null).init(userId, timestamp, oldCaseStage, caseStage!!)
+		_transitionList.add(null).init(userId, timestamp, oldCaseStage, caseStage!!)
 		super.doBeforeStore(userId, timestamp)
 		try {
 			disableCalc()
@@ -102,7 +102,7 @@ abstract class DocBase(
 			setCaseDef(newCaseStage.caseDef)
 		}
 		if (caseStage == null) { // initial transition
-			_transitionList.addPart(null).init(userId, timestamp, caseStage, newCaseStage)
+			_transitionList.add(null).init(userId, timestamp, caseStage, newCaseStage)
 			oldCaseStage = newCaseStage
 		}
 		setValueByPath("caseStage", newCaseStage)

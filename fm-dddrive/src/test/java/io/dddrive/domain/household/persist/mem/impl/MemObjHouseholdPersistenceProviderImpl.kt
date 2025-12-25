@@ -1,10 +1,7 @@
 package io.dddrive.domain.household.persist.mem.impl
 
-import io.dddrive.path.getPropertyByPath
-import io.dddrive.property.model.PartListProperty
 import io.dddrive.dddrive.obj.persist.mem.base.MemObjPersistenceProviderBase
 import io.dddrive.domain.household.model.ObjHousehold
-import io.dddrive.domain.household.model.ObjHouseholdPartMember
 import io.dddrive.domain.household.model.enums.CodeLabel
 import io.dddrive.domain.household.model.enums.CodeSalutation
 import io.dddrive.domain.household.persist.ObjHouseholdPersistenceProvider
@@ -17,7 +14,6 @@ class MemObjHouseholdPersistenceProviderImpl :
 	MemObjPersistenceProviderBase<ObjHousehold, ObjHouseholdPto>(ObjHousehold::class.java),
 	ObjHouseholdPersistenceProvider {
 
-	@Suppress("UNCHECKED_CAST")
 	override fun toAggregate(
 		pto: ObjHouseholdPto,
 		aggregate: ObjHousehold,
@@ -31,28 +27,29 @@ class MemObjHouseholdPersistenceProviderImpl :
 
 			aggregate.name = pto.name
 
-			aggregate.clearLabelSet()
+			// Using new collection API
+			aggregate.labelSet.clear()
 			pto.labels?.forEach { labelId ->
 				val codeLabel = CodeLabel.Enumeration.getItem(labelId)
-				aggregate.addLabel(codeLabel)
+				aggregate.labelSet.add(codeLabel)
 			}
 
-			aggregate.clearUserSet()
-			pto.users?.forEach(aggregate::addUser)
+			aggregate.userSet.clear()
+			pto.users?.forEach { aggregate.userSet.add(it) }
 
-			val memberListProperty = aggregate.getPropertyByPath<ObjHouseholdPartMember>("memberList") as? PartListProperty<ObjHouseholdPartMember>
 			pto.members?.forEach { memberPto ->
-				val member = memberListProperty?.addPart(memberPto.id)
-				member?.salutation = memberPto.salutation?.let { CodeSalutation.Enumeration.getItem(it) }
-				member?.name = memberPto.name
+				val member = aggregate.memberList.add(memberPto.id)
+				member.salutation = memberPto.salutation?.let { CodeSalutation.Enumeration.getItem(it) }
+				member.name = memberPto.name
 			}
 
 			aggregate.mainMemberId = pto.mainMemberId
+			aggregate.responsibleUserId = pto.responsibleUserId
 
 			pto.members?.forEach { memberPto ->
 				memberPto.id?.let { currentMemberId ->
-					val member = aggregate.getMemberById(currentMemberId)
-					member?.spouseId = memberPto.spouseId
+					val member = aggregate.memberList.getById(currentMemberId)
+					member.spouseId = memberPto.spouseId
 				}
 			}
 		} finally {
@@ -63,7 +60,8 @@ class MemObjHouseholdPersistenceProviderImpl :
 
 	override fun fromAggregate(aggregate: ObjHousehold): ObjHouseholdPto {
 		val members =
-			aggregate.memberList
+			aggregate
+				.memberList
 				.map { member ->
 					ObjHouseholdPartMemberPto(
 						id = member.id,
@@ -83,6 +81,7 @@ class MemObjHouseholdPersistenceProviderImpl :
 			users = aggregate.userSet.mapNotNull { it as? Int }.toSet(),
 			members = members,
 			mainMemberId = aggregate.mainMemberId,
+			responsibleUserId = aggregate.responsibleUserId as? Int,
 		)
 	}
 }
