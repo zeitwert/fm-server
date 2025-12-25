@@ -3,8 +3,6 @@ package io.zeitwert.fm.oe.persist
 import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.setValueByPath
-import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.app.model.RequestContextFM
@@ -38,7 +36,6 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 		mapFromRecord(aggregate, record)
 	}
 
-	@Suppress("UNCHECKED_CAST")
 	private fun mapFromRecord(
 		aggregate: ObjUser,
 		record: ObjUserRecord,
@@ -50,7 +47,7 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 		aggregate.role = CodeUserRole.getUserRole(record.roleList)
 		aggregate.password = record.password
 		aggregate.needPasswordChange = record.needPasswordChange
-		aggregate.setValueByPath("avatarImageId", record.avatarImgId)
+		aggregate.avatarImageId = record.avatarImgId
 	}
 
 	override fun storeRecord(aggregate: ObjUser) {
@@ -62,25 +59,23 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 		}
 	}
 
-	@Suppress("UNCHECKED_CAST")
 	override fun doLoadParts(aggregate: ObjUser) {
 		super.doLoadParts(aggregate)
-		val tenantSet = aggregate.getProperty("tenantSet", ObjTenant::class) as ReferenceSetProperty<ObjTenant>
+		aggregate as ObjUserFM
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("user.tenantList").forEach {
 				it.toIntOrNull()?.let { tenantId ->
-					tenantSet.add(tenantId)
+					aggregate.tenantSet.add(tenantId)
 				}
 			}
 		}
 	}
 
-	@Suppress("UNCHECKED_CAST")
 	override fun doStoreParts(aggregate: ObjUser) {
 		super.doStoreParts(aggregate)
-		val tenantSet = aggregate.getProperty("tenantSet", ObjTenant::class) as ReferenceSetProperty<ObjTenant>
+		aggregate as ObjUserFM
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
-			addItems("user.tenantList", tenantSet.map { it.toString() })
+			addItems("user.tenantList", aggregate.tenantSet.map { it.toString() })
 		}
 	}
 

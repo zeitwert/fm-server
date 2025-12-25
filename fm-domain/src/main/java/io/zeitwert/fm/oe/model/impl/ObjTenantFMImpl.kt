@@ -1,11 +1,15 @@
-package io.zeitwert.fm.oe.model.base
+package io.zeitwert.fm.oe.model.impl
 
-import io.dddrive.obj.model.base.ObjBase
 import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFM
@@ -13,22 +17,30 @@ import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-abstract class ObjTenantFMBase(
+open class ObjTenantFMImpl(
 	override val repository: ObjTenantFMRepository,
 	isNew: Boolean,
-) : ObjBase(repository, isNew),
+) : FMObjBase(repository, isNew),
 	ObjTenantFM {
 
-	override fun doInit() {
-		super.doInit()
-		addEnumProperty("tenantType", CodeTenantType::class.java)
-		addBaseProperty("inflationRate", BigDecimal::class.java)
-		addBaseProperty("discountRate", BigDecimal::class.java)
-		addReferenceProperty("logoImage", ObjDocument::class.java)
-		addBaseProperty("key", String::class.java)
-		addBaseProperty("name", String::class.java)
-		addBaseProperty("description", String::class.java)
-	}
+	// Properties from ObjTenant interface
+	override var key: String? by baseProperty()
+	override var name: String? by baseProperty()
+	override var description: String? by baseProperty()
+
+	// Properties from ObjTenantFM interface
+	override var tenantType: CodeTenantType? by enumProperty()
+	override var inflationRate: BigDecimal? by baseProperty()
+	override var discountRate: BigDecimal? by baseProperty()
+
+	// Reference properties for logo image
+	override var logoImageId: Any? by referenceIdProperty<ObjDocument>()
+	override val logoImage: ObjDocument? by referenceProperty()
+
+	override val users: List<ObjUserFM>
+		get() = repository.userRepository
+			.getByForeignKey("tenantId", this.id)
+			.map { repository.userRepository.get(it) }
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -44,6 +56,7 @@ abstract class ObjTenantFMBase(
 		timestamp: OffsetDateTime,
 	) {
 		super.doAfterCreate(userId, timestamp)
+		setValueByPath("tenantId", id)
 		this.addLogoImage(userId, timestamp)
 	}
 
@@ -68,12 +81,8 @@ abstract class ObjTenantFMBase(
 		image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
 		image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
 		documentRepo.store(image, userId, timestamp)
-		setValueByPath("logoImageId", image.id)
+		logoImageId = image.id
 	}
 
-	override val users: List<ObjUserFM>
-		get() = repository.userRepository
-			.getByForeignKey("tenantId", this.id)
-			.map { repository.userRepository.get(it) }
-
 }
+

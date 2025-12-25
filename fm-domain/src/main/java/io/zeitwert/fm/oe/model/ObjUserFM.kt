@@ -1,6 +1,8 @@
 package io.zeitwert.fm.oe.model
 
+import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
+import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 
@@ -14,7 +16,7 @@ interface ObjUserFM : ObjUser {
 
 	override var password: String?
 
-	val avatarImageId: Any?
+	var avatarImageId: Any?
 
 	val avatarImage: ObjDocument?
 
@@ -22,12 +24,6 @@ interface ObjUserFM : ObjUser {
 
 	fun hasRole(role: CodeUserRole): Boolean
 
-	val tenantSet: Set<Any>
-
-	fun clearTenantSet()
-
-	fun addTenant(tenantId: Any)
-
-	fun removeTenant(tenantId: Any)
+	val tenantSet: ReferenceSetProperty<ObjTenant>
 
 }

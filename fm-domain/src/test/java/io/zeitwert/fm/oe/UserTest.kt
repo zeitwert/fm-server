@@ -148,19 +148,19 @@ class UserTest {
 		assertEquals(0, user1.tenantSet.size)
 
 		// Add tenants
-		user1.addTenant(tenantA.id)
+		user1.tenantSet.add(tenantA.id)
 		assertEquals(1, user1.tenantSet.size)
 		assertTrue(user1.tenantSet.any { it == tenantA.id })
 
-		user1.addTenant(tenantB.id)
+		user1.tenantSet.add(tenantB.id)
 		assertEquals(2, user1.tenantSet.size)
 		assertTrue(user1.tenantSet.any { it == tenantB.id })
 
-		user1.addTenant(tenantC.id)
+		user1.tenantSet.add(tenantC.id)
 		assertEquals(3, user1.tenantSet.size)
 
 		// Remove one tenant
-		user1.removeTenant(tenantB.id)
+		user1.tenantSet.remove(tenantB.id)
 		assertEquals(2, user1.tenantSet.size)
 		assertFalse(user1.tenantSet.any { it == tenantB.id })
 
@@ -178,8 +178,8 @@ class UserTest {
 		assertTrue(user2.tenantSet.any { it == tenantC.id })
 
 		// Modify the set
-		user2.removeTenant(tenantA.id)
-		user2.addTenant(tenantB.id)
+		user2.tenantSet.remove(tenantA.id)
+		user2.tenantSet.add(tenantB.id)
 
 		assertEquals(2, user2.tenantSet.size)
 		assertFalse(user2.tenantSet.any { it == tenantA.id })
@@ -221,8 +221,8 @@ class UserTest {
 		val user1Id = user1.id
 		initUser(user1, uniqueEmail("clear-test"), "Clear Test User", CodeUserRole.USER)
 
-		user1.addTenant(tenantA.id)
-		user1.addTenant(tenantB.id)
+		user1.tenantSet.add(tenantA.id)
+		user1.tenantSet.add(tenantB.id)
 		assertEquals(2, user1.tenantSet.size)
 
 		userRepository.store(user1, userId, now)
@@ -231,7 +231,7 @@ class UserTest {
 		val user2 = userRepository.load(user1Id)
 		assertEquals(2, user2.tenantSet.size)
 
-		user2.clearTenantSet()
+		user2.tenantSet.clear()
 		assertEquals(0, user2.tenantSet.size)
 
 		userRepository.store(user2, userId, now)

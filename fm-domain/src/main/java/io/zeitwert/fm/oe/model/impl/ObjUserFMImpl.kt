@@ -1,34 +1,52 @@
-package io.zeitwert.fm.oe.model.base
+package io.zeitwert.fm.oe.model.impl
 
-import io.dddrive.obj.model.base.ObjBase
 import io.dddrive.oe.model.ObjTenant
-import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
+import io.dddrive.property.delegate.referenceSetProperty
+import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
+import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import java.time.OffsetDateTime
 
-abstract class ObjUserFMBase(
+open class ObjUserFMImpl(
 	override val repository: ObjUserFMRepository,
 	isNew: Boolean,
-) : ObjBase(repository, isNew),
+) : FMObjBase(repository, isNew),
 	ObjUserFM {
 
-	override fun doInit() {
-		super.doInit()
-		addReferenceProperty("avatarImage", ObjDocument::class.java)
-		addEnumProperty("role", CodeUserRole::class.java)
-		addReferenceSetProperty("tenantSet", ObjTenant::class.java)
-		addBaseProperty("needPasswordChange", Boolean::class.java)
-		addBaseProperty("password", String::class.java)
-		addBaseProperty("email", String::class.java)
-		addBaseProperty("name", String::class.java)
-		addBaseProperty("description", String::class.java)
-	}
+	// Properties from ObjUser interface
+	override var email: String? by baseProperty()
+	override var name: String? by baseProperty()
+	override var description: String? by baseProperty()
+	override var password: String? by baseProperty()
+
+	// Properties from ObjUserFM interface
+	override var needPasswordChange: Boolean? by baseProperty()
+
+	// Enum property
+	override var role: CodeUserRole? by enumProperty()
+
+	// Reference properties for avatar image
+	override var avatarImageId: Any? by referenceIdProperty<ObjDocument>()
+	override val avatarImage: ObjDocument? by referenceProperty()
+
+	// Reference set property for tenants
+	override val tenantSet: ReferenceSetProperty<ObjTenant> by referenceSetProperty()
+
+	override val isAppAdmin get() = repository.isAppAdmin(this)
+
+	override val isAdmin get() = repository.isAdmin(this)
+
+	override fun hasRole(role: CodeUserRole) = this.role == role
 
 	override fun doCalcAll() {
 		super.doCalcAll()
@@ -68,13 +86,8 @@ abstract class ObjUserFMBase(
 		image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
 		image.documentCategory = CodeDocumentCategory.getDocumentCategory("avatar")
 		documentRepo.store(image, userId, timestamp)
-		setValueByPath("avatarImageId", image.id)
+		avatarImageId = image.id
 	}
 
-	override val isAppAdmin get() = repository.isAppAdmin(this)
-
-	override val isAdmin get() = repository.isAdmin(this)
-
-	override fun hasRole(role: CodeUserRole) = this.role == role
-
 }
+

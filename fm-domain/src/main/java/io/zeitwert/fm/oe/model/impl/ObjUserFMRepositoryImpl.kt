@@ -5,7 +5,6 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
-import io.zeitwert.fm.oe.model.base.ObjUserFMBase
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.fm.oe.persist.ObjUserFMSqlPersistenceProviderImpl
 import org.springframework.context.annotation.Lazy
@@ -20,7 +19,7 @@ class ObjUserFMRepositoryImpl(
 ) : FMObjRepositoryBase<ObjUserFM>(
 		ObjUserFMRepository::class.java,
 		ObjUser::class.java,
-		ObjUserFMBase::class.java,
+		ObjUserFMImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjUserFMRepository {

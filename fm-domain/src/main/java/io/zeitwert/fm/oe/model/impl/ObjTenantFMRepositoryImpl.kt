@@ -6,7 +6,6 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository
 import io.zeitwert.fm.oe.model.ObjUserFMRepository
-import io.zeitwert.fm.oe.model.base.ObjTenantFMBase
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
@@ -17,7 +16,7 @@ class ObjTenantFMRepositoryImpl(
 ) : FMObjRepositoryBase<ObjTenantFM>(
 		ObjTenantFMRepository::class.java,
 		ObjTenant::class.java,
-		ObjTenantFMBase::class.java,
+		ObjTenantFMImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjTenantFMRepository {

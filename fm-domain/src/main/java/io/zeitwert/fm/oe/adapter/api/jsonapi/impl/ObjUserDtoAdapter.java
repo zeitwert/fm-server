@@ -60,9 +60,9 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
 			obj.setRole(CodeUserRole.getUserRole(dto.getRole().getId()));
-			obj.clearTenantSet();
+			obj.getTenantSet().clear();
 			for (EnumeratedDto tenant : dto.getTenants()) {
-				obj.addTenant(Integer.parseInt(tenant.getId()));
+				obj.getTenantSet().add(Integer.parseInt(tenant.getId()));
 			}
 		}
 	}

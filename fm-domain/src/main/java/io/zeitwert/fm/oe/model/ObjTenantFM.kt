@@ -7,16 +7,15 @@ import java.math.BigDecimal
 
 interface ObjTenantFM : ObjTenant {
 
-	var tenantType: CodeTenantType?
+  var tenantType: CodeTenantType?
 
-	var inflationRate: BigDecimal?
+  var inflationRate: BigDecimal?
 
-	var discountRate: BigDecimal?
+  var discountRate: BigDecimal?
 
-	val users: List<ObjUserFM>
+  val users: List<ObjUserFM>
 
-	val logoImageId: Any?
+  var logoImageId: Any?
 
-	val logoImage: ObjDocument?
-
+  val logoImage: ObjDocument?
 }

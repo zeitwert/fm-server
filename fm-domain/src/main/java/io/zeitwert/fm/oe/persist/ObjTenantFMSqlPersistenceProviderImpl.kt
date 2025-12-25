@@ -2,7 +2,6 @@ package io.zeitwert.fm.oe.persist
 
 import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.oe.model.ObjTenant
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.obj.model.base.FMObjBase
@@ -35,7 +34,6 @@ open class ObjTenantFMSqlPersistenceProviderImpl(
 		mapFromRecord(aggregate, record)
 	}
 
-	@Suppress("UNCHECKED_CAST")
 	private fun mapFromRecord(
 		aggregate: ObjTenant,
 		record: ObjTenantRecord,
@@ -46,7 +44,7 @@ open class ObjTenantFMSqlPersistenceProviderImpl(
 		aggregate.description = record.description
 		aggregate.inflationRate = record.inflationRate
 		aggregate.discountRate = record.discountRate
-		aggregate.setValueByPath("logoImageId", record.logoImgId)
+		aggregate.logoImageId = record.logoImgId
 	}
 
 	override fun storeRecord(aggregate: ObjTenant) {
