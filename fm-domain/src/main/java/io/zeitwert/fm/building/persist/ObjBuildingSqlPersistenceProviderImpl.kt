@@ -59,7 +59,7 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 		aggregate.geoAddress = record.geoAddress
 		aggregate.geoCoordinates = record.geoCoordinates
 		aggregate.geoZoom = record.geoZoom
-		aggregate.setValueByPath("coverFotoId", record.coverFotoId)
+		aggregate.coverFotoId = record.coverFotoId
 		aggregate.currency = CodeCurrency.getCurrency(record.currencyId)
 		aggregate.volume = record.volume
 		aggregate.areaGross = record.areaGross
@@ -91,18 +91,18 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 		super.doLoadParts(aggregate)
 		// Load ratings
 		ObjBuildingPartRatingSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
-			loadPartList(aggregate, "ratingList", "building.ratingList")
+			loadPartList(aggregate.ratingList, "building.ratingList")
 		}
 		// Load element ratings for each rating
 		ObjBuildingPartElementRatingSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			aggregate.ratingList.forEach { rating ->
-				loadPartList(rating, "elementList", "building.elementRatingList")
+				loadPartList(rating.elementList, "building.elementRatingList")
 			}
 		}
 		// Load contact set
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("building.contactSet").forEach {
-				aggregate.addContact(it.toInt())
+				aggregate.contactSet.add(it.toInt())
 			}
 		}
 	}
@@ -112,12 +112,12 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 		super.doStoreParts(aggregate)
 		// Store ratings
 		ObjBuildingPartRatingSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
-			storePartList(aggregate, "ratingList", "building.ratingList")
+			storePartList(aggregate.ratingList, "building.ratingList")
 		}
 		// Store element ratings for each rating
 		ObjBuildingPartElementRatingSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			aggregate.ratingList.forEach { rating ->
-				storePartList(rating, "elementList", "building.elementRatingList")
+				storePartList(rating.elementList, "building.elementRatingList")
 			}
 		}
 		// Store contact set
@@ -148,7 +148,7 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 		record.geoAddress = aggregate.geoAddress
 		record.geoCoordinates = aggregate.geoCoordinates
 		record.geoZoom = aggregate.geoZoom
-		record.coverFotoId = aggregate.coverFotoId
+		record.coverFotoId = aggregate.coverFotoId as? Int
 		record.currencyId = aggregate.currency?.id
 		record.volume = aggregate.volume
 		record.areaGross = aggregate.areaGross

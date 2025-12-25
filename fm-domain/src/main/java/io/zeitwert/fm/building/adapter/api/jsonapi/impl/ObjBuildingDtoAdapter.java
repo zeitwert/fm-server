@@ -128,8 +128,8 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			obj.setThirdPartyValueYear(dto.getThirdPartyValueYear());
 
 			if (dto.getContactIds() != null) {
-				obj.clearContactSet();
-				dto.getContactIds().forEach(obj::addContact);
+				obj.getContactSet().clear();
+				dto.getContactIds().forEach(id -> obj.getContactSet().add(id));
 			}
 
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
@@ -155,7 +155,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 //							TODO assertThis(rating.getElement(buildingPart) != null, "valid rating buildingPart");
 							element = rating.getElement(buildingPart);
 						} else {
-							element = rating.getElementById(elementDto.getPartId());
+							element = rating.getElementList().getById(elementDto.getPartId());
 						}
 						elementDto.toPart(element);
 						if (element.getRatingYear() == null && rating.getRatingDate() != null) {
@@ -198,7 +198,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 				.geoAddress(obj.getGeoAddress())
 				.geoCoordinates(obj.getGeoCoordinates())
 				.geoZoom(obj.getGeoZoom())
-				.coverFotoId(obj.getCoverFotoId())
+				.coverFotoId((Integer) obj.getCoverFotoId())
 				.currency(EnumeratedDto.of(obj.getCurrency()))
 				.volume(obj.getVolume())
 				.areaGross(obj.getAreaGross())
@@ -211,7 +211,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 				.notInsuredValueYear(obj.getNotInsuredValueYear())
 				.thirdPartyValue(obj.getThirdPartyValue())
 				.thirdPartyValueYear(obj.getThirdPartyValueYear())
-				.contactIds(obj.getContactSet());
+				.contactIds(obj.getContactSet().stream().map(id -> (Integer) id).collect(java.util.stream.Collectors.toSet()));
 		if (obj.getCurrentRating() != null) {
 			ObjBuildingPartRating rating = obj.getCurrentRating();
 //			boolean isNew = ((PartSPI<?>) rating).getPersistenceStatus() == PartPersistenceStatus.CREATED;

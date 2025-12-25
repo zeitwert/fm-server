@@ -33,22 +33,26 @@ class BuildingDocumentController(
 ) {
 
 	@GetMapping(value = ["/{id}/coverFoto"])
-	fun getCoverFoto(@PathVariable id: Int): ResponseEntity<ByteArray?>? {
+	fun getCoverFoto(
+		@PathVariable id: Int,
+	): ResponseEntity<ByteArray?>? {
 		val documentId = this.buildingRepo.get(id).coverFotoId
 		if (documentId == null) {
 			return ResponseEntity.noContent().build<ByteArray?>()
 		}
-		return this.documentController.getContent(documentId)
+		return this.documentController.getContent(documentId as Int)
 	}
 
 	@GetMapping("/{id}/projection")
-	fun getBuildingProjection(@PathVariable id: Int): ResponseEntity<ProjectionResult?> {
+	fun getBuildingProjection(
+		@PathVariable id: Int,
+	): ResponseEntity<ProjectionResult?> {
 		val buildings = setOf(this.buildingRepo.get(id))
 		return ResponseEntity.ok<ProjectionResult?>(
 			this.projectionService.getProjection(
 				buildings,
-				ProjectionService.DefaultDuration
-			)
+				ProjectionService.DefaultDuration,
+			),
 		)
 	}
 
@@ -56,16 +60,14 @@ class BuildingDocumentController(
 	fun getBuildingEvaluationWithTitle(
 		@PathVariable("ids") ids: String,
 		@RequestParam(required = false, name = "format") format: String?,
-		@RequestParam(required = false, name = "inline") isInline: Boolean?
-	): ResponseEntity<ByteArray?> {
-		return this.getBuildingEvaluation(ids, format, isInline)
-	}
+		@RequestParam(required = false, name = "inline") isInline: Boolean?,
+	): ResponseEntity<ByteArray?> = this.getBuildingEvaluation(ids, format, isInline)
 
 	@GetMapping("/{ids}/evaluation")
 	fun getBuildingEvaluation(
 		@PathVariable("ids") ids: String,
 		@RequestParam(required = false, name = "format") format: String?,
-		@RequestParam(required = false, name = "inline") isInline: Boolean?
+		@RequestParam(required = false, name = "inline") isInline: Boolean?,
 	): ResponseEntity<ByteArray?> {
 		val idList = ids.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 		if (idList.size == 1) {
@@ -75,7 +77,11 @@ class BuildingDocumentController(
 		}
 	}
 
-	private fun getBuildingEvaluation(id: Int, format: String?, isInline: Boolean?): ResponseEntity<ByteArray?> {
+	private fun getBuildingEvaluation(
+		id: Int,
+		format: String?,
+		isInline: Boolean?,
+	): ResponseEntity<ByteArray?> {
 		val building = this.buildingRepo.get(id)
 		try {
 			ByteArrayOutputStream().use { stream ->
@@ -90,7 +96,10 @@ class BuildingDocumentController(
 				} else {
 					headers.contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build()
 				}
-				return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).headers(headers)
+				return ResponseEntity
+					.ok()
+					.contentType(MediaType.APPLICATION_PDF)
+					.headers(headers)
 					.body<ByteArray?>(stream.toByteArray())
 			}
 		} catch (e: Exception) {
@@ -98,7 +107,10 @@ class BuildingDocumentController(
 		}
 	}
 
-	private fun getBuildingEvaluation(ids: Array<String>, format: String?): ResponseEntity<ByteArray?> {
+	private fun getBuildingEvaluation(
+		ids: Array<String>,
+		format: String?,
+	): ResponseEntity<ByteArray?> {
 		for (id in ids) {
 			this.buildingRepo.get(id.toInt())
 		}
@@ -130,7 +142,10 @@ class BuildingDocumentController(
 					val zipFileName = "Gebäudeauswertungen - " + dateTimeNow + ".zip"
 					val headers = HttpHeaders()
 					headers.contentDisposition = ContentDisposition.builder("attachment").filename(zipFileName).build()
-					return ResponseEntity.ok().contentType(ZIP_CONTENT).headers(headers)
+					return ResponseEntity
+						.ok()
+						.contentType(ZIP_CONTENT)
+						.headers(headers)
 						.body<ByteArray?>(baos.toByteArray())
 				}
 			}
@@ -139,13 +154,12 @@ class BuildingDocumentController(
 		}
 	}
 
-	private fun getFileName(fileName: String?, format: Int): String {
-		return fileName + (if (format == SaveFormat.DOCX) ".docx" else ".pdf")
-	}
+	private fun getFileName(
+		fileName: String?,
+		format: Int,
+	): String = fileName + (if (format == SaveFormat.DOCX) ".docx" else ".pdf")
 
-	private fun getSaveFormat(format: String?): Int {
-		return if ("docx" == format) SaveFormat.DOCX else SaveFormat.PDF
-	}
+	private fun getSaveFormat(format: String?): Int = if ("docx" == format) SaveFormat.DOCX else SaveFormat.PDF
 
 	companion object {
 

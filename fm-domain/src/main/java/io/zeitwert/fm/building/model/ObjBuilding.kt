@@ -1,12 +1,15 @@
 package io.zeitwert.fm.building.model
 
 import io.dddrive.obj.model.Obj
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
+import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.oe.model.ObjUserFM
 import io.zeitwert.fm.oe.model.enums.CodeCountry
@@ -48,7 +51,7 @@ interface ObjBuilding :
 
 	var geoZoom: Int?
 
-	val coverFotoId: Int?
+	var coverFotoId: Any?
 
 	val coverFoto: ObjDocument?
 
@@ -86,20 +89,12 @@ interface ObjBuilding :
 
 	val currentRatingForView: ObjBuildingPartRating?
 
-	val ratingCount: Int
-
-	fun getRating(seqNr: Int): ObjBuildingPartRating
-
-	val ratingList: List<ObjBuildingPartRating>
-
-	fun getRatingById(ratingId: Int): ObjBuildingPartRating
+	val ratingList: PartListProperty<ObjBuildingPartRating>
 
 	fun addRating(
 		user: ObjUserFM,
 		timestamp: OffsetDateTime,
 	): ObjBuildingPartRating
-
-	fun removeRating(ratingId: Int)
 
 	val inflationRate: Double
 
@@ -109,12 +104,5 @@ interface ObjBuilding :
 
 	fun getBuildingValue(year: Int): Double
 
-	val contactSet: Set<Int>
-
-	fun clearContactSet()
-
-	fun addContact(contactId: Int)
-
-	fun removeContact(contactId: Int)
-
+	val contactSet: ReferenceSetProperty<ObjContact>
 }

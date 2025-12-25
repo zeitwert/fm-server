@@ -1,9 +1,15 @@
-package io.zeitwert.fm.building.model.base
+package io.zeitwert.fm.building.model.impl
 
 import io.dddrive.ddd.model.Part
-import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.partListProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
+import io.dddrive.property.delegate.referenceSetProperty
 import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
+import io.dddrive.property.model.ReferenceSetProperty
 import io.dddrive.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -31,7 +37,7 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-abstract class ObjBuildingBase(
+open class ObjBuildingImpl(
 	override val repository: ObjBuildingRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
@@ -39,52 +45,48 @@ abstract class ObjBuildingBase(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	private lateinit var _ratingList: PartListProperty<ObjBuildingPartRating>
+	// Base properties
+	override var name: String? by baseProperty()
+	override var description: String? by baseProperty()
+	override var buildingNr: String? by baseProperty()
+	override var insuranceNr: String? by baseProperty()
+	override var plotNr: String? by baseProperty()
+	override var nationalBuildingId: String? by baseProperty()
+	override var street: String? by baseProperty()
+	override var zip: String? by baseProperty()
+	override var city: String? by baseProperty()
+	override var geoAddress: String? by baseProperty()
+	override var geoCoordinates: String? by baseProperty()
+	override var geoZoom: Int? by baseProperty()
+	override var volume: BigDecimal? by baseProperty()
+	override var areaGross: BigDecimal? by baseProperty()
+	override var areaNet: BigDecimal? by baseProperty()
+	override var nrOfFloorsAboveGround: Int? by baseProperty()
+	override var nrOfFloorsBelowGround: Int? by baseProperty()
+	override var buildingYear: Int? by baseProperty()
+	override var insuredValue: BigDecimal? by baseProperty()
+	override var insuredValueYear: Int? by baseProperty()
+	override var notInsuredValue: BigDecimal? by baseProperty()
+	override var notInsuredValueYear: Int? by baseProperty()
+	override var thirdPartyValue: BigDecimal? by baseProperty()
+	override var thirdPartyValueYear: Int? by baseProperty()
 
-	override fun doInit() {
-		super.doInit()
-		addBaseProperty("name", String::class.java)
-		addBaseProperty("description", String::class.java)
-		addBaseProperty("buildingNr", String::class.java)
-		addBaseProperty("insuranceNr", String::class.java)
-		addBaseProperty("plotNr", String::class.java)
-		addBaseProperty("nationalBuildingId", String::class.java)
-		addEnumProperty("historicPreservation", CodeHistoricPreservation::class.java)
+	// Enum properties
+	override var historicPreservation: CodeHistoricPreservation? by enumProperty()
+	override var country: CodeCountry? by enumProperty()
+	override var currency: CodeCurrency? by enumProperty()
+	override var buildingType: CodeBuildingType? by enumProperty()
+	override var buildingSubType: CodeBuildingSubType? by enumProperty()
 
-		addBaseProperty("street", String::class.java)
-		addBaseProperty("zip", String::class.java)
-		addBaseProperty("city", String::class.java)
-		addEnumProperty("country", CodeCountry::class.java)
+	// Reference properties (coverFoto)
+	override var coverFotoId: Any? by referenceIdProperty<ObjDocument>()
+	override var coverFoto: ObjDocument? by referenceProperty()
 
-		addBaseProperty("geoAddress", String::class.java)
-		addBaseProperty("geoCoordinates", String::class.java)
-		addBaseProperty("geoZoom", Int::class.java)
+	// Part list property
+	override val ratingList: PartListProperty<ObjBuildingPartRating> by partListProperty()
 
-		addReferenceProperty("coverFoto", ObjDocument::class.java)
-
-		addEnumProperty("currency", CodeCurrency::class.java)
-
-		addBaseProperty("volume", BigDecimal::class.java)
-		addBaseProperty("areaGross", BigDecimal::class.java)
-		addBaseProperty("areaNet", BigDecimal::class.java)
-		addBaseProperty("nrOfFloorsAboveGround", Int::class.java)
-		addBaseProperty("nrOfFloorsBelowGround", Int::class.java)
-
-		addEnumProperty("buildingType", CodeBuildingType::class.java)
-		addEnumProperty("buildingSubType", CodeBuildingSubType::class.java)
-		addBaseProperty("buildingYear", Int::class.java)
-
-		addBaseProperty("insuredValue", BigDecimal::class.java)
-		addBaseProperty("insuredValueYear", Int::class.java)
-		addBaseProperty("notInsuredValue", BigDecimal::class.java)
-		addBaseProperty("notInsuredValueYear", Int::class.java)
-		addBaseProperty("thirdPartyValue", BigDecimal::class.java)
-		addBaseProperty("thirdPartyValueYear", Int::class.java)
-
-		_ratingList = addPartListProperty("ratingList", ObjBuildingPartRating::class.java)
-
-		addReferenceSetProperty("contactSet", ObjContact::class.java)
-	}
+	// Reference set property
+	override val contactSet: ReferenceSetProperty<ObjContact> by referenceSetProperty()
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
@@ -107,7 +109,7 @@ abstract class ObjBuildingBase(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === this._ratingList) {
+		if (property === this.ratingList) {
 			val partRepo = directory.getPartRepository(ObjBuildingPartRating::class.java)
 			return partRepo.create(this, property, partId)
 		}
@@ -158,14 +160,17 @@ abstract class ObjBuildingBase(
 
 	override val currentRating: ObjBuildingPartRating?
 		get() {
-			for (i in ratingCount downTo 1) {
-				val rating = getRating(i - 1)
+			for (i in ratingList.size downTo 1) {
+				val rating = ratingList.get(i - 1)
 				if (rating.ratingStatus == null || rating.ratingStatus != CodeBuildingRatingStatus.DISCARD) {
 					return rating
 				}
 			}
 			return null
 		}
+
+	override val currentRatingForView: ObjBuildingPartRating?
+		get() = currentRating
 
 	override fun getCondition(year: Int): Int? = currentRating?.getCondition(year)
 
@@ -175,7 +180,7 @@ abstract class ObjBuildingBase(
 	): ObjBuildingPartRating {
 		val oldRating = currentRating
 		require(oldRating == null || oldRating.ratingStatus == CodeBuildingRatingStatus.DONE) { "rating done" }
-		val rating = _ratingList.add(null)
+		val rating = ratingList.add(null)
 		try {
 			rating.meta.disableCalc()
 			rating.ratingStatus = CodeBuildingRatingStatus.OPEN
@@ -192,10 +197,6 @@ abstract class ObjBuildingBase(
 			rating.meta.calcAll()
 		}
 		return rating
-	}
-
-	override fun removeRating(ratingId: Int) {
-		_ratingList.remove(ratingId)
 	}
 
 	override fun doCalcAll() {
@@ -261,22 +262,6 @@ abstract class ObjBuildingBase(
 		}
 	}
 
-	// override fun doCalcSearch() {
-	//     super.doCalcSearch()
-	//     addSearchText(getZip())
-	//     addSearchText(getBuildingNr())
-	//     addSearchText(getInsuranceNr())
-	//     addSearchText(getPlotNr())
-	//     addSearchText(getNationalBuildingId())
-	//     addSearchText(getName())
-	//     addSearchText(getStreet())
-	//     addSearchText(getCity())
-	//     addSearchText(getBuildingType()?.name)
-	//     addSearchText(getBuildingSubType()?.name)
-	//     addSearchText(getCurrentRating()?.partCatalog?.name)
-	//     addSearchText(getDescription())
-	// }
-
 	private fun addCoverFoto(
 		userId: Any,
 		timestamp: OffsetDateTime,
@@ -288,7 +273,7 @@ abstract class ObjBuildingBase(
 		coverFoto.documentKind = CodeDocumentKind.STANDALONE
 		coverFoto.documentCategory = CodeDocumentCategory.FOTO
 		documentRepo.store(coverFoto, userId, timestamp)
-		setValueByPath("coverFotoId", coverFoto.id)
+		this.coverFotoId = coverFoto.id
 	}
 
 }

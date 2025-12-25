@@ -1,12 +1,15 @@
-package io.zeitwert.fm.building.model.base
+package io.zeitwert.fm.building.model.impl
 
 import io.dddrive.ddd.model.Part
 import io.dddrive.ddd.model.PartMeta
 import io.dddrive.ddd.model.PartRepository
 import io.dddrive.obj.model.base.ObjPartBase
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.property.model.BaseProperty
-import io.dddrive.property.model.EnumProperty
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.partListProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -18,7 +21,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
 import java.time.LocalDate
 
-abstract class ObjBuildingPartRatingBase protected constructor(
+open class ObjBuildingPartRatingImpl(
 	obj: ObjBuilding,
 	override val repository: PartRepository<ObjBuilding, out Part<ObjBuilding>>,
 	property: Property<*>,
@@ -27,19 +30,20 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 	ObjBuildingPartRating,
 	PartMeta<ObjBuilding> {
 
-	private lateinit var _partCatalog: EnumProperty<CodeBuildingPartCatalog>
-	private lateinit var _ratingDate: BaseProperty<LocalDate>
-	private lateinit var _elementList: PartListProperty<ObjBuildingPartElementRating>
+	// Enum properties
+	override var partCatalog: CodeBuildingPartCatalog? by enumProperty()
+	override var maintenanceStrategy: CodeBuildingMaintenanceStrategy? by enumProperty()
+	override var ratingStatus: CodeBuildingRatingStatus? by enumProperty()
 
-	override fun doInit() {
-		super.doInit()
-		_partCatalog = addEnumProperty("partCatalog", CodeBuildingPartCatalog::class.java)
-		addEnumProperty("maintenanceStrategy", CodeBuildingMaintenanceStrategy::class.java)
-		addEnumProperty("ratingStatus", CodeBuildingRatingStatus::class.java)
-		_ratingDate = addBaseProperty("ratingDate", LocalDate::class.java)
-		addReferenceProperty("ratingUser", ObjUser::class.java)
-		_elementList = addPartListProperty("elementList", ObjBuildingPartElementRating::class.java)
-	}
+	// Base properties
+	override var ratingDate: LocalDate? by baseProperty()
+
+	// Reference properties
+	override var ratingUserId: Any? by referenceIdProperty<ObjUser>()
+	override var ratingUser: ObjUser? by referenceProperty()
+
+	// Part list property
+	override val elementList: PartListProperty<ObjBuildingPartElementRating> by partListProperty()
 
 	override var elementWeights: Int = 0
 
@@ -52,7 +56,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === this._elementList) {
+		if (property === this.elementList) {
 			val partRepo: PartRepository<ObjBuilding, *> =
 				directory.getPartRepository<ObjBuilding, ObjBuildingPartElementRating>(
 					ObjBuildingPartElementRating::class.java,
@@ -66,21 +70,21 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 		property: Property<*>,
 		part: Part<*>?,
 	) {
-		if (property === this._elementList) {
+		if (property === this.elementList) {
 			val ratingDate = this.ratingDate
 			if (ratingDate != null) {
 				val year: Int? = ratingDate.year
-				this.getElement(this.elementCount - 1).ratingYear = year
+				this.elementList.get(this.elementList.size - 1).ratingYear = year
 			}
 		}
 	}
 
 	override fun doAfterSet(property: Property<*>) {
-		if (property === this._partCatalog) {
+		if (property.name == "partCatalog") {
 			// Skip auto-populating elements when loading from persistence
 			// (elements will be loaded from DB). Only populate on create/update.
 			if (!this.meta.isInLoad) {
-				this._elementList.clear()
+				this.elementList.clear()
 				val partCatalog = this.partCatalog
 				if (partCatalog != null) {
 					for (part in partCatalog.getParts()) {
@@ -88,7 +92,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 					}
 				}
 			}
-		} else if (property === this._ratingDate) {
+		} else if (property.name == "ratingDate") {
 			val ratingDate = this.ratingDate
 			if (ratingDate != null) {
 				val year: Int? = ratingDate.year
@@ -102,11 +106,10 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 	override val ratingYear: Int?
 		get() = if (this.ratingDate != null) this.ratingDate!!.year else null
 
-	override fun getElement(buildingPart: CodeBuildingPart) = this._elementList.first { p: ObjBuildingPartElementRating? -> p!!.buildingPart === buildingPart }
+	override fun getElement(buildingPart: CodeBuildingPart) = this.elementList.first { p: ObjBuildingPartElementRating? -> p!!.buildingPart === buildingPart }
 
 	override fun addElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating {
-// 		requireThis(this.getElement(buildingPart) == null, "unique element for buildingPart [" + buildingPart.getId() + "]");
-		val e: ObjBuildingPartElementRating = this._elementList.add(null)
+		val e: ObjBuildingPartElementRating = this.elementList.add(null)
 		e.buildingPart = buildingPart
 		return e
 	}
@@ -122,7 +125,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 					condition += element.weight!! * element.condition!!
 				}
 			}
-			return condition / this.elementWeights!!
+			return condition / this.elementWeights
 		}
 
 	override fun getCondition(year: Int): Int? {
@@ -135,7 +138,7 @@ abstract class ObjBuildingPartRatingBase protected constructor(
 				condition += element.weight!! * element.getCondition(year)
 			}
 		}
-		return condition / this.elementWeights!!
+		return condition / this.elementWeights
 	}
 
 	override fun doCalcAll() {

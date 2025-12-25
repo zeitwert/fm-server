@@ -57,8 +57,8 @@ public class BuildingTest {
 		assertEquals(account.getId(), buildingA1.getAccountId(), "account id");
 		assertEquals(account.getId(), buildingA1.getAccount().getId(), "account id");
 
-		assertEquals(22, buildingA1.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(22, buildingA1.getCurrentRating().getElementList().size(), "element count 22");
+		assertEquals(22, buildingA1.getCurrentRating().getElementList().size(), "element list size 22");
 		assertEquals(100, buildingA1.getCurrentRating().getElementWeights(), "element contributions 100");
 
 		CodeBuildingPart bp1 = CodeBuildingPart.P2;
@@ -68,9 +68,9 @@ public class BuildingTest {
 		e1.setWeight(50);
 		Integer e1id = e1.getId();
 
-		assertEquals(22, buildingA1.getCurrentRating().getElementCount(), "element count 22");
 		assertEquals(22, buildingA1.getCurrentRating().getElementList().size(), "element count 22");
-		assertEquals(e1, buildingA1.getCurrentRating().getElementById(e1id), "e1 by id");
+		assertEquals(22, buildingA1.getCurrentRating().getElementList().size(), "element list size 22");
+		assertEquals(e1, buildingA1.getCurrentRating().getElementList().getById(e1id), "e1 by id");
 		assertEquals(e1, buildingA1.getCurrentRating().getElement(bp1), "e1 by buildingPart");
 		// assertEquals(50, building1a.getCurrentRating().getElementContributions(), 50,
 		// "element contributions 50");
@@ -83,8 +83,8 @@ public class BuildingTest {
 		Integer e2id = e2.getId();
 
 		this.checkBuilding(buildingA1);
-		assertEquals(e1, buildingA1.getCurrentRating().getElementById(e1id), "e1 by id");
-		assertEquals(e2, buildingA1.getCurrentRating().getElementById(e2id), "e2 by id");
+		assertEquals(e1, buildingA1.getCurrentRating().getElementList().getById(e1id), "e1 by id");
+		assertEquals(e2, buildingA1.getCurrentRating().getElementList().getById(e2id), "e2 by id");
 		assertEquals(e1, buildingA1.getCurrentRating().getElement(bp1), "e1 by buildingPart");
 		assertEquals(e2, buildingA1.getCurrentRating().getElement(bp2), "e2 by buildingPart");
 
@@ -100,8 +100,8 @@ public class BuildingTest {
 		assertEquals(account.getId(), buildingA2.getAccount().getId(), "account id");
 
 		this.checkBuilding(buildingA2);
-		assertEquals(bp1, buildingA2.getCurrentRating().getElementById(e1id).getBuildingPart(), "e1 by id");
-		assertEquals(bp2, buildingA2.getCurrentRating().getElementById(e2id).getBuildingPart(), "e2 by id");
+		assertEquals(bp1, buildingA2.getCurrentRating().getElementList().getById(e1id).getBuildingPart(), "e1 by id");
+		assertEquals(bp2, buildingA2.getCurrentRating().getElementList().getById(e2id).getBuildingPart(), "e2 by id");
 		assertEquals(bp1, buildingA2.getCurrentRating().getElement(bp1).getBuildingPart(), "e1 by buildingPart");
 		assertEquals(bp2, buildingA2.getCurrentRating().getElement(bp2).getBuildingPart(), "e2 by buildingPart");
 
@@ -112,14 +112,14 @@ public class BuildingTest {
 		e3.setWeight(50);
 		Integer e3id = e3.getId();
 
-		buildingA2.getCurrentRating().removeElement(e2id);
+		buildingA2.getCurrentRating().getElementList().remove((int) e2id);
 
-		assertEquals(21, buildingA2.getCurrentRating().getElementCount(), "element count 22");
-		assertEquals(21, buildingA2.getCurrentRating().getElementList().size(), "element count 22");
+		assertEquals(21, buildingA2.getCurrentRating().getElementList().size(), "element count 21");
+		assertEquals(21, buildingA2.getCurrentRating().getElementList().size(), "element list size 21");
 		// assertEquals(building1b.getCurrentRating().getElementContributions(), 100,
 		// "element contributions 100");
-		assertEquals(bp1, buildingA2.getCurrentRating().getElementById(e1id).getBuildingPart(), "e1 by id");
-		assertEquals(bp3, buildingA2.getCurrentRating().getElementById(e3id).getBuildingPart(), "e3 by id");
+		assertEquals(bp1, buildingA2.getCurrentRating().getElementList().getById(e1id).getBuildingPart(), "e1 by id");
+		assertEquals(bp3, buildingA2.getCurrentRating().getElementList().getById(e3id).getBuildingPart(), "e3 by id");
 		assertEquals(bp1, buildingA2.getCurrentRating().getElement(bp1).getBuildingPart(), "e1 by buildingPart");
 		assertEquals(bp3, buildingA2.getCurrentRating().getElement(bp3).getBuildingPart(), "e3 by buildingPart");
 
@@ -128,12 +128,12 @@ public class BuildingTest {
 
 		ObjBuilding buildingA3 = this.buildingRepository.get(buildingA_id);
 
-		assertEquals(21, buildingA3.getCurrentRating().getElementCount(), "element count 22");
-		assertEquals(21, buildingA3.getCurrentRating().getElementList().size(), "element count 22");
+		assertEquals(21, buildingA3.getCurrentRating().getElementList().size(), "element count 21");
+		assertEquals(21, buildingA3.getCurrentRating().getElementList().size(), "element list size 21");
 		// assertEquals(building1c.getCurrentRating().getElementContributions(), 100,
 		// "element contributions 100");
-		assertEquals(bp1, buildingA3.getCurrentRating().getElementById(e1id).getBuildingPart(), "e1 by id");
-		assertEquals(bp3, buildingA3.getCurrentRating().getElementById(e3id).getBuildingPart(), "e3 by id");
+		assertEquals(bp1, buildingA3.getCurrentRating().getElementList().getById(e1id).getBuildingPart(), "e1 by id");
+		assertEquals(bp3, buildingA3.getCurrentRating().getElementList().getById(e3id).getBuildingPart(), "e3 by id");
 		assertEquals(bp1, buildingA3.getCurrentRating().getElement(bp1).getBuildingPart(), "e1 by buildingPart");
 		assertEquals(bp3, buildingA3.getCurrentRating().getElement(bp3).getBuildingPart(), "e3 by buildingPart");
 
@@ -211,7 +211,7 @@ public class BuildingTest {
 		assertEquals(CodeBuildingMaintenanceStrategy.N, building.getCurrentRating().getMaintenanceStrategy());
 		assertEquals(CodeBuildingPartCatalog.C6, building.getCurrentRating().getPartCatalog());
 
-		assertEquals(22, building.getCurrentRating().getElementCount(), "element count 22");
+		assertEquals(22, building.getCurrentRating().getElementList().size(), "element count 22");
 		assertEquals(22, building.getCurrentRating().getElementList().size(), "element count 22");
 		// assertEquals(100, building.getCurrentRating().getElementContributions(),
 		// "element contributions 100");

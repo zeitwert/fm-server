@@ -2,6 +2,7 @@ package io.zeitwert.fm.building.model
 
 import io.dddrive.obj.model.ObjPart
 import io.dddrive.oe.model.ObjUser
+import io.dddrive.property.model.PartListProperty
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
@@ -16,27 +17,19 @@ interface ObjBuildingPartRating : ObjPart<ObjBuilding> {
 
 	val ratingYear: Int?
 
+	var ratingUserId: Any?
+
 	var ratingUser: ObjUser?
 
 	var partCatalog: CodeBuildingPartCatalog?
 
 	var maintenanceStrategy: CodeBuildingMaintenanceStrategy?
 
-	val elementCount: Int
-
-	fun getElement(seqNr: Int): ObjBuildingPartElementRating
-
-	val elementList: List<ObjBuildingPartElementRating>
-
-	fun getElementById(elementId: Int): ObjBuildingPartElementRating
+	val elementList: PartListProperty<ObjBuildingPartElementRating>
 
 	fun getElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating
 
-	fun clearElementList()
-
 	fun addElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating
-
-	fun removeElement(elementId: Int)
 
 	val elementWeights: Int
 

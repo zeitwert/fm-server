@@ -2,7 +2,6 @@ package io.zeitwert.fm.building.persist
 
 import io.dddrive.ddd.model.Aggregate
 import io.dddrive.ddd.model.Part
-import io.dddrive.path.setValueByPath
 import io.dddrive.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -63,7 +62,7 @@ class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 		part.maintenanceStrategy = CodeBuildingMaintenanceStrategy.getMaintenanceStrategy(record.maintenanceStrategyId)
 		part.ratingStatus = CodeBuildingRatingStatus.getRatingStatus(record.ratingStatusId)
 		part.ratingDate = record.ratingDate
-		part.setValueByPath("ratingUserId", record.ratingUserId)
+		part.ratingUserId = record.ratingUserId
 	}
 
 	override fun beginStore() {
@@ -129,7 +128,7 @@ class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 		record.maintenanceStrategyId = part.maintenanceStrategy?.id
 		record.ratingStatusId = part.ratingStatus?.id
 		record.ratingDate = part.ratingDate
-		record.ratingUserId = part.ratingUser?.id as? Int
+		record.ratingUserId = part.ratingUserId as? Int
 
 		record.aver = aggregate.meta.version
 
