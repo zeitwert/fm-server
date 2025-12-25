@@ -3,7 +3,6 @@ package io.zeitwert.fm.task.model.impl
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
-import io.zeitwert.fm.task.model.base.DocTaskBase
 import org.springframework.stereotype.Component
 
 @Component("docTaskRepository")
@@ -11,7 +10,7 @@ class DocTaskRepositoryImpl :
 	FMDocRepositoryBase<DocTask>(
 		DocTaskRepository::class.java,
 		DocTask::class.java,
-		DocTaskBase::class.java,
+		DocTaskImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	DocTaskRepository {
@@ -20,4 +19,5 @@ class DocTaskRepositoryImpl :
 
 		private const val AGGREGATE_TYPE_ID = "doc_task"
 	}
+
 }

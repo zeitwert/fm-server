@@ -1,7 +1,9 @@
 package io.zeitwert.fm.portfolio.model
 
 import io.dddrive.obj.model.Obj
+import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
+import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.task.model.ItemWithTasks
 
@@ -17,23 +19,11 @@ interface ObjPortfolio :
 
 	var portfolioNr: String?
 
-	val buildingSet: Set<Any>
+	val buildingSet: ReferenceSetProperty<ObjBuilding>
 
-	val includeSet: Set<Any>
+	val includeSet: ReferenceSetProperty<Obj>
 
-	fun clearIncludeSet()
-
-	fun addInclude(id: Any)
-
-	fun removeInclude(id: Any)
-
-	val excludeSet: Set<Any>
-
-	fun clearExcludeSet()
-
-	fun addExclude(id: Any)
-
-	fun removeExclude(id: Any)
+	val excludeSet: ReferenceSetProperty<Obj>
 
 	val inflationRate: Double
 
@@ -42,5 +32,4 @@ interface ObjPortfolio :
 	fun getCondition(year: Int): Int
 
 	fun getPortfolioValue(year: Int): Double
-
 }

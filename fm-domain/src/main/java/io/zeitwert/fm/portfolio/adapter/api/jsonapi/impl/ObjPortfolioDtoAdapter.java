@@ -51,17 +51,17 @@ public class ObjPortfolioDtoAdapter
 			pf.setAccountId(dto.getAccountId());
 			// TODO prevent calculation during insert
 			if (dto.getIncludes() != null) {
-				pf.clearIncludeSet();
+				pf.getIncludeSet().clear();
 				dto.getIncludes().forEach(item -> {
 					Integer id = Integer.parseInt(item.getId());
-					pf.addInclude(id);
+					pf.getIncludeSet().add(id);
 				});
 			}
 			if (dto.getExcludes() != null) {
-				pf.clearExcludeSet();
+				pf.getExcludeSet().clear();
 				dto.getExcludes().forEach(item -> {
 					Integer id = Integer.parseInt(item.getId());
-					pf.addExclude(id);
+					pf.getExcludeSet().add(id);
 				});
 			}
 

@@ -1,8 +1,6 @@
 package io.zeitwert.fm.portfolio.persist
 
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.obj.model.Obj
-import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.app.model.RequestContextFM
@@ -55,29 +53,23 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		}
 	}
 
-	@Suppress("UNCHECKED_CAST")
 	override fun doLoadParts(aggregate: ObjPortfolio) {
 		super.doLoadParts(aggregate)
-		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
-		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("portfolio.includeList").forEach {
-				it.toIntOrNull()?.let { objId -> includeSet.add(objId) }
+				it.toIntOrNull()?.let { objId -> aggregate.includeSet.add(objId) }
 			}
 			items("portfolio.excludeList").forEach {
-				it.toIntOrNull()?.let { objId -> excludeSet.add(objId) }
+				it.toIntOrNull()?.let { objId -> aggregate.excludeSet.add(objId) }
 			}
 		}
 	}
 
-	@Suppress("UNCHECKED_CAST")
 	override fun doStoreParts(aggregate: ObjPortfolio) {
 		super.doStoreParts(aggregate)
-		val includeSet = aggregate.getProperty("includeSet", Obj::class) as ReferenceSetProperty<Obj>
-		val excludeSet = aggregate.getProperty("excludeSet", Obj::class) as ReferenceSetProperty<Obj>
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
-			addItems("portfolio.includeList", includeSet.map { it.toString() })
-			addItems("portfolio.excludeList", excludeSet.map { it.toString() })
+			addItems("portfolio.includeList", aggregate.includeSet.map { it.toString() })
+			addItems("portfolio.excludeList", aggregate.excludeSet.map { it.toString() })
 		}
 	}
 

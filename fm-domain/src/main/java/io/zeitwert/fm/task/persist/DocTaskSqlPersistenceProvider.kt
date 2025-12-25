@@ -1,8 +1,6 @@
 package io.zeitwert.fm.task.persist
 
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.path.getValueByPath
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.app.model.RequestContextFM
@@ -13,6 +11,7 @@ import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
+import io.zeitwert.fm.task.model.impl.DocTaskImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -40,16 +39,16 @@ open class DocTaskSqlPersistenceProvider(
 		aggregate: DocTask,
 		record: DocTaskRecord,
 	) {
+		val impl = aggregate as DocTaskImpl
 		aggregate.accountId = record.accountId
-		aggregate.setValueByPath("relatedObjId", record.relatedObjId)
-		aggregate.setValueByPath("relatedDocId", record.relatedDocId)
+		impl.setRelatedIds(record.relatedObjId, record.relatedDocId)
 		aggregate.subject = record.subject
 		aggregate.content = record.content
 		aggregate.isPrivate = record.isPrivate
 		aggregate.dueAt = record.dueAt
 		aggregate.remindAt = record.remindAt
 		record.priorityId?.let { priorityId ->
-			aggregate.setValueByPath("priority", CodeTaskPriority.Enumeration.getPriority(priorityId))
+			aggregate.priority = CodeTaskPriority.Enumeration.getPriority(priorityId)
 		}
 	}
 
@@ -65,13 +64,15 @@ open class DocTaskSqlPersistenceProvider(
 	@Suppress("UNCHECKED_CAST")
 	private fun mapToRecord(aggregate: DocTask): DocTaskRecord {
 		val record = dslContext.newRecord(Tables.DOC_TASK)
+		val impl = aggregate as DocTaskImpl
 
 		record.docId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
 		record.accountId = aggregate.accountId as Int
 
-		record.relatedObjId = aggregate.getValueByPath("relatedObjId") as Int?
-		record.relatedDocId = aggregate.getValueByPath("relatedDocId") as Int?
+		val (relatedObjId, relatedDocId) = impl.getRelatedIds()
+		record.relatedObjId = relatedObjId
+		record.relatedDocId = relatedDocId
 		record.subject = aggregate.subject
 		record.content = aggregate.content
 		record.isPrivate = aggregate.isPrivate

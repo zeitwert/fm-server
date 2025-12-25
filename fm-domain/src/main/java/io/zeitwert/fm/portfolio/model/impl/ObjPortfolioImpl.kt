@@ -1,10 +1,14 @@
-package io.zeitwert.fm.portfolio.model.base
+package io.zeitwert.fm.portfolio.model.impl
 
 import io.dddrive.ddd.model.enums.CodeAggregateType
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.obj.model.Obj
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.referenceSetProperty
 import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.building.model.ObjBuilding
+import io.zeitwert.fm.collaboration.model.ObjNote
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenantFM
@@ -12,7 +16,7 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 
-abstract class ObjPortfolioBase(
+open class ObjPortfolioImpl(
 	override val repository: ObjPortfolioRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
@@ -31,35 +35,23 @@ abstract class ObjPortfolioBase(
 		}
 	}
 
-	private lateinit var _includeSet: ReferenceSetProperty<Obj>
-	private lateinit var _excludeSet: ReferenceSetProperty<Obj>
-	private lateinit var _buildingSet: ReferenceSetProperty<ObjBuilding>
+	// Base properties
+	override var name: String? by baseProperty()
+	override var description: String? by baseProperty()
+	override var portfolioNr: String? by baseProperty()
 
-	override fun doInit() {
-		super.doInit()
-		addBaseProperty("name", String::class.java)
-		addBaseProperty("description", String::class.java)
-		addBaseProperty("portfolioNr", String::class.java)
-		_includeSet = addReferenceSetProperty("includeSet", Obj::class.java)
-		_excludeSet = addReferenceSetProperty("excludeSet", Obj::class.java)
-		_buildingSet = addReferenceSetProperty("buildingSet", ObjBuilding::class.java)
-	}
+	// Reference set properties
+	override val includeSet: ReferenceSetProperty<Obj> by referenceSetProperty()
+	override val excludeSet: ReferenceSetProperty<Obj> by referenceSetProperty()
+	override val buildingSet: ReferenceSetProperty<ObjBuilding> by referenceSetProperty()
 
 	override fun aggregate(): ObjPortfolio = this
+
+	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
 	override fun taskRepository() = repository.taskRepository
 
 	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
-
-	// override fun addInclude(id: Int?) {
-	// 	require(hasValidObjType(id)) { "supported objType $id" }
-	// 	_includeSet.addItem(id)
-	// }
-
-	// override fun addExclude(id: Int?) {
-	// 	requireThis(hasValidObjType(id), "supported objType $id")
-	// 	_excludeSet.addItem(id)
-	// }
 
 	private fun hasValidObjType(id: Int?): Boolean {
 		if (id == null) return false
@@ -97,12 +89,12 @@ abstract class ObjPortfolioBase(
 	}
 
 	private fun calcBuildingSet() {
-		_buildingSet.clear()
-		for (objId in _includeSet) {
-			getBuildingIds(objId as Int).forEach { _buildingSet.add(it) }
+		buildingSet.clear()
+		for (objId in includeSet) {
+			getBuildingIds(objId as Int).forEach { buildingSet.add(it) }
 		}
-		for (objId in _excludeSet) {
-			getBuildingIds(objId as Int).forEach { _buildingSet.remove(it) }
+		for (objId in excludeSet) {
+			getBuildingIds(objId as Int).forEach { buildingSet.remove(it) }
 		}
 	}
 
@@ -117,7 +109,7 @@ abstract class ObjPortfolioBase(
 
 			"obj_portfolio" -> {
 				val pf = repository.get(id)
-				pf.buildingSet
+				pf.buildingSet.toSet()
 			}
 
 			"obj_account" -> {
@@ -133,12 +125,5 @@ abstract class ObjPortfolioBase(
 			}
 		}
 	}
-
-	// override fun doCalcSearch() {
-	//     super.doCalcSearch()
-	//     this.addSearchToken(this.portfolioNr)
-	//     this.addSearchText(this.name)
-	//     this.addSearchText(this.description)
-	// }
 
 }

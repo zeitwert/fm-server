@@ -5,7 +5,6 @@ import io.zeitwert.fm.building.model.ObjBuildingRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
-import io.zeitwert.fm.portfolio.model.base.ObjPortfolioBase
 import io.zeitwert.fm.task.model.DocTaskRepository
 import org.springframework.stereotype.Component
 
@@ -15,15 +14,16 @@ class ObjPortfolioRepositoryImpl(
 	override val buildingRepository: ObjBuildingRepository,
 	override val taskRepository: DocTaskRepository,
 ) : FMObjRepositoryBase<ObjPortfolio>(
-	ObjPortfolioRepository::class.java,
-	ObjPortfolio::class.java,
-	ObjPortfolioBase::class.java,
-	AGGREGATE_TYPE_ID,
-),
+		ObjPortfolioRepository::class.java,
+		ObjPortfolio::class.java,
+		ObjPortfolioImpl::class.java,
+		AGGREGATE_TYPE_ID,
+	),
 	ObjPortfolioRepository {
 
 	companion object {
 
 		private const val AGGREGATE_TYPE_ID = "obj_portfolio"
 	}
+
 }
