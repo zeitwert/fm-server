@@ -7,7 +7,9 @@ do nothing;
 
 insert into code_part_list_type(id, name)
 values
-('contact.addressList', 'Address')
+('contact.addressList', 'Address'),
+('contact.mailAddressList', 'Mail Address'),
+('contact.electronicAddressList', 'Electronic Address')
 on conflict(id)
 do nothing;
 

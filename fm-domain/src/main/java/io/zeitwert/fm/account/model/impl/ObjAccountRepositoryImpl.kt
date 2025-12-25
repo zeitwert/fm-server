@@ -2,16 +2,12 @@ package io.zeitwert.fm.account.model.impl
 
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.contact.model.ObjContactRepository
-import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 
 @Component("objAccountRepository")
-class ObjAccountRepositoryImpl(
-	override val contactRepository: ObjContactRepository,
-	override val documentRepository: ObjDocumentRepository,
-) : FMObjRepositoryBase<ObjAccount>(
+class ObjAccountRepositoryImpl :
+	FMObjRepositoryBase<ObjAccount>(
 		ObjAccountRepository::class.java,
 		ObjAccount::class.java,
 		ObjAccountImpl::class.java,

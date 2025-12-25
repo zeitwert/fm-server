@@ -61,10 +61,10 @@ class ContactTest {
 		Assertions.assertEquals(2, contactA1.mailAddressList.size, "mail address count 2")
 		Assertions.assertEquals(1, contactA1.electronicAddressList.size, "electronic address count 1")
 
-		val mailAddr1 = contactA1.mailAddressList.get(0)
+		val mailAddr1 = contactA1.mailAddressList[0]
 		val mailAddr1Id = mailAddr1.id
 
-		val emailAddr1 = contactA1.electronicAddressList.get(0)
+		val emailAddr1 = contactA1.electronicAddressList[0]
 		val emailAddr1Id = emailAddr1.id
 
 		this.checkContact(contactA1)
@@ -85,7 +85,8 @@ class ContactTest {
 		Assertions.assertEquals(1, contactA2.electronicAddressList.size, "electronic address count 1 after reload")
 
 		// Find the mail address we created
-		val loadedMailAddr1 = contactA2.getMailAddress(mailAddr1Id).orElseThrow()
+		val loadedMailAddr1 = contactA2.mailAddressList.getById(mailAddr1Id)
+		Assertions.assertNotNull(loadedMailAddr1, "mail address should exist")
 		Assertions.assertEquals("Home", loadedMailAddr1.name, "mail address name")
 		Assertions.assertEquals("Teststrasse 10", loadedMailAddr1.street, "mail address street")
 		Assertions.assertEquals("1111", loadedMailAddr1.zip, "mail address zip")
@@ -93,12 +94,13 @@ class ContactTest {
 		Assertions.assertEquals(CodeCountry.CH, loadedMailAddr1.country, "mail address country")
 
 		// Find the email address we created
-		val loadedEmailAddr1 = contactA2.getElectronicAddress(emailAddr1Id).orElseThrow()
+		val loadedEmailAddr1 = contactA2.electronicAddressList.getById(emailAddr1Id)
+		Assertions.assertNotNull(loadedEmailAddr1, "email address should exist")
 		Assertions.assertEquals("Work Email", loadedEmailAddr1.name, "email address name")
 		Assertions.assertEquals(CodeAddressChannel.EMAIL, loadedEmailAddr1.addressChannel, "email address channel")
 
 		// Add another mail address
-		val mailAddr3 = contactA2.addMailAddress()
+		val mailAddr3 = contactA2.mailAddressList.add(null)
 		mailAddr3.addressChannel = CodeAddressChannel.MAIL
 		mailAddr3.name = "Office"
 		mailAddr3.street = "Büroweg 5"
@@ -108,7 +110,7 @@ class ContactTest {
 		val mailAddr3Id = mailAddr3.id
 
 		// Remove first mail address
-		contactA2.removeMailAddress(mailAddr1Id)
+		contactA2.mailAddressList.remove(mailAddr1Id)
 
 		Assertions.assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after add/remove")
 
@@ -120,12 +122,19 @@ class ContactTest {
 		Assertions.assertEquals(1, contactA3.electronicAddressList.size, "electronic address count 1 after reload")
 
 		// Verify the new address exists
-		val loadedMailAddr3 = contactA3.getMailAddress(mailAddr3Id).orElseThrow()
+		val loadedMailAddr3 = contactA3.mailAddressList.getById(mailAddr3Id)
+		Assertions.assertNotNull(loadedMailAddr3, "new mail address should exist")
 		Assertions.assertEquals("Office", loadedMailAddr3.name, "new mail address name")
 		Assertions.assertEquals("Büroweg 5", loadedMailAddr3.street, "new mail address street")
 
 		// Verify the deleted address is gone
-		Assertions.assertTrue(contactA3.getMailAddress(mailAddr1Id).isEmpty, "deleted mail address should be gone")
+		val hasException = try {
+			contactA3.mailAddressList.getById(mailAddr1Id)
+			false
+		} catch (e: RuntimeException) {
+			true
+		}
+		Assertions.assertTrue(hasException, "deleted mail address should not exist")
 	}
 
 	private fun getTestAccount(requestCtx: RequestContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null)[0])
@@ -143,7 +152,7 @@ class ContactTest {
 		contact.description = "Test contact description"
 
 		// Add mail addresses
-		val mailAddr1 = contact.addMailAddress()
+		val mailAddr1 = contact.mailAddressList.add(null)
 		mailAddr1.addressChannel = CodeAddressChannel.MAIL
 		mailAddr1.name = "Home"
 		mailAddr1.street = "Teststrasse 10"
@@ -151,7 +160,7 @@ class ContactTest {
 		mailAddr1.city = "Testingen"
 		mailAddr1.country = CodeCountry.CH
 
-		val mailAddr2 = contact.addMailAddress()
+		val mailAddr2 = contact.mailAddressList.add(null)
 		mailAddr2.addressChannel = CodeAddressChannel.MAIL
 		mailAddr2.name = "Work"
 		mailAddr2.street = "Arbeitsweg 20"
@@ -160,7 +169,7 @@ class ContactTest {
 		mailAddr2.country = CodeCountry.CH
 
 		// Add electronic address
-		val emailAddr = contact.addElectronicAddress()
+		val emailAddr = contact.electronicAddressList.add(null)
 		emailAddr.addressChannel = CodeAddressChannel.EMAIL
 		emailAddr.name = "Work Email"
 	}

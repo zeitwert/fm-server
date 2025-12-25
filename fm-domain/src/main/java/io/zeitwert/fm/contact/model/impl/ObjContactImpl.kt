@@ -1,0 +1,82 @@
+package io.zeitwert.fm.contact.model.impl
+
+import io.dddrive.ddd.model.Part
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.partListProperty
+import io.dddrive.property.model.PartListProperty
+import io.dddrive.property.model.Property
+import io.zeitwert.fm.account.model.ObjAccount
+import io.zeitwert.fm.collaboration.model.ObjNote
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository
+import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
+import io.zeitwert.fm.contact.model.ObjContact
+import io.zeitwert.fm.contact.model.ObjContactPartAddress
+import io.zeitwert.fm.contact.model.ObjContactRepository
+import io.zeitwert.fm.contact.model.enums.CodeContactRole
+import io.zeitwert.fm.contact.model.enums.CodeSalutation
+import io.zeitwert.fm.contact.model.enums.CodeTitle
+import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.task.model.DocTask
+import io.zeitwert.fm.task.model.DocTaskRepository
+import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
+import java.time.LocalDate
+
+/** Implementation class for ObjContact using delegation-based property framework. */
+open class ObjContactImpl(
+	override val repository: ObjContactRepository,
+	isNew: Boolean,
+) : FMObjBase(repository, isNew),
+	ObjContact,
+	AggregateWithNotesMixin,
+	AggregateWithTasksMixin {
+
+	// Enum properties
+	override var contactRole: CodeContactRole? by enumProperty()
+	override var salutation: CodeSalutation? by enumProperty()
+	override var title: CodeTitle? by enumProperty()
+
+	// Base properties
+	override var firstName: String? by baseProperty()
+	override var lastName: String? by baseProperty()
+	override var birthDate: LocalDate? by baseProperty()
+	override var phone: String? by baseProperty()
+	override var mobile: String? by baseProperty()
+	override var email: String? by baseProperty()
+	override var description: String? by baseProperty()
+
+	// Two separate part list properties for mail and electronic addresses
+	override val mailAddressList: PartListProperty<ObjContactPartAddress> by partListProperty()
+	override val electronicAddressList: PartListProperty<ObjContactPartAddress> by partListProperty()
+
+	// ItemWithAccount implementation
+	override val account
+		get() = if (accountId != null) directory.getRepository(ObjAccount::class.java).get(accountId!!) else null
+
+	override fun aggregate(): ObjContact = this
+
+	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
+
+	override fun taskRepository() = directory.getRepository(DocTask::class.java) as DocTaskRepository
+
+	override fun doAddPart(
+		property: Property<*>,
+		partId: Int?,
+	): Part<*> {
+		if (property === mailAddressList || property === electronicAddressList) {
+			return directory
+				.getPartRepository(ObjContactPartAddress::class.java)
+				.create(this, property, partId)
+		}
+		return super.doAddPart(property, partId)
+	}
+
+	override fun doCalcAll() {
+		super.doCalcAll()
+		calcCaption()
+	}
+
+	private fun calcCaption() {
+		setCaption("${firstName ?: ""} ${lastName ?: ""}".trim())
+	}
+}

@@ -45,7 +45,7 @@ Create a run configuration:
 3. Configure:
    - **Name**: Build All JARs
    - **Working directory**: `$PROJECT_DIR$`
-   - **Command line**: `clean install -DskipTests -pl fm-dddrive,fm-domain -am`
+   - **Command line**: `clean install -DskipTests -pl fm-dddrive,fm-domain -nsu -am`
      - `-pl` specifies which modules to build
      - `-am` builds dependencies too
 4. Save and use `Shift+F10` to run
@@ -59,7 +59,7 @@ In IntelliJ's terminal:
 
 Or for specific modules:
 ```powershell
-.\mvnw.cmd clean install -pl fm-dddrive -am
+.\mvnw.cmd clean install -pl fm-dddrive -nsu -am
 ```
 
 ## Troubleshooting

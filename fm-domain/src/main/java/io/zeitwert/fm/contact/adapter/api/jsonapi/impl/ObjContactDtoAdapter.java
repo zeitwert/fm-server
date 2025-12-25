@@ -7,12 +7,15 @@ import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto;
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactPartAddressDto;
 import io.zeitwert.fm.contact.model.ObjContact;
+import io.zeitwert.fm.contact.model.ObjContactPartAddress;
 import io.zeitwert.fm.contact.model.enums.CodeContactRole;
 import io.zeitwert.fm.contact.model.enums.CodeSalutation;
 import io.zeitwert.fm.contact.model.enums.CodeTitle;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.StreamSupport;
 
 @Component("objContactDtoAdapter")
 public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjContactDto> {
@@ -54,18 +57,24 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 			if (dto.getMailAddresses() != null) {
 				for (ObjContactPartAddressDto address : dto.getMailAddresses()) {
 					if (address.getPartId() != null) {
-						address.toPart(obj.getMailAddress(address.getPartId()).get());
+						ObjContactPartAddress part = obj.getMailAddressList().getById(address.getPartId());
+						if (part != null) {
+							address.toPart(part);
+						}
 					} else {
-						address.toPart(obj.addMailAddress());
+						address.toPart(obj.getMailAddressList().add((Integer) null));
 					}
 				}
 			}
 			if (dto.getElectronicAddresses() != null) {
 				for (ObjContactPartAddressDto address : dto.getElectronicAddresses()) {
 					if (address.getPartId() != null) {
-						address.toPart(obj.getElectronicAddress(address.getPartId()).get());
+						ObjContactPartAddress part = obj.getElectronicAddressList().getById(address.getPartId());
+						if (part != null) {
+							address.toPart(part);
+						}
 					} else {
-						address.toPart(obj.addElectronicAddress());
+						address.toPart(obj.getElectronicAddressList().add((Integer) null));
 					}
 				}
 			}
@@ -96,36 +105,14 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 			.phone(obj.getPhone())
 			.mobile(obj.getMobile())
 			.email(obj.getEmail())
-			.mailAddresses(obj.getMailAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
-			.electronicAddresses(obj.getElectronicAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
+			.mailAddresses(StreamSupport.stream(obj.getMailAddressList().spliterator(), false)
+				.map(ObjContactPartAddressDto::fromPart)
+				.toList())
+			.electronicAddresses(StreamSupport.stream(obj.getElectronicAddressList().spliterator(), false)
+				.map(ObjContactPartAddressDto::fromPart)
+				.toList())
 			.build();
 		// @formatter:on
 	}
-
-//	@Override
-//	public ObjContactDto fromRecord(ObjContactVRecord obj) {
-//		if (obj == null) {
-//			return null;
-//		}
-//		ObjContactDto.ObjContactDtoBuilder<?, ?> dtoBuilder = ObjContactDto.builder();
-//		this.fromRecord(dtoBuilder, obj);
-//		// @formatter:off
-//		return dtoBuilder
-//			.accountId(obj.getAccountId())
-//			.contactRole(EnumeratedDto.of(CodeContactRoleEnum.getContactRole(obj.getContactRoleId())))
-//			.salutation(EnumeratedDto.of(CodeSalutationEnum.getSalutation(obj.getSalutationId())))
-//			.title(EnumeratedDto.of(CodeTitleEnum.getTitle(obj.getTitleId())))
-//			.firstName(obj.getFirstName())
-//			.lastName(obj.getLastName())
-//			.description(obj.getDescription())
-//			.birthDate(obj.getBirthDate())
-//			.phone(obj.getPhone())
-//			.mobile(obj.getMobile())
-//			.email(obj.getEmail())
-//			//.mailAddresses(obj.getMailAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
-//			//.electronicAddresses(obj.getElectronicAddressList().stream().map(a -> ObjContactPartAddressDto.fromPart(a)).toList())
-//			.build();
-//		// @formatter:on
-//	}
 
 }

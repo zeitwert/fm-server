@@ -60,7 +60,7 @@ definition in jooq XML config files).
 Sources (including test) can be generated (after database has been set up through flyway) with:
 
 ```bash
-mvnw -Dskip.jooq.generation=false generate-sources generate-test-sources -pl !fm-ui
+mvnw -Dskip.jooq.generation=false generate-sources generate-test-sources -pl !fm-ui -nsu
 ```
 
 Generating sources for only a single component can be done like this:
@@ -92,9 +92,9 @@ Displays newer versions of dependencies.
 
 `mvnw surefire:test`
 
-mvnw clean test-compile -pl !fm-ui
+`mvnw clean test-compile -pl !fm-ui -nsu`
 
-mvnw -pl :fm-domain surefire:test -Dtest=ObjTestTest
+`mvnw -pl :fm-domain surefire:test -Dtest=ObjTestTest -nsu`
 
 ## Deployment
 
@@ -106,7 +106,7 @@ So we use custom deployment scripts, deploy_prep and deploy_push.
 A heroku-like build can be initiated like this: `mvnw -DskipTests clean dependency:list install`
 
 A build without running tests and without building the UI can be initiated like this:
-`mvnw -DskipTests clean compile -pl !fm-ui`
+`mvnw -DskipTests clean compile -pl !fm-ui -nsu`
 
 ### Deployment to Heroku (zeitwert-staging)
 

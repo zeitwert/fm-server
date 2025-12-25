@@ -9,34 +9,34 @@ The tests can be run via `mvn` on the windows command shell.
 
 ## run all tests (before completing the task)
 
-`mvn clean test -pl !fm-ui`
+`mvn clean test -pl !fm-ui -nsu`
 
 ## run a selection or specific test file (WITH code generation)
 
-`mvn clean test -Dtest=[test-name-pattern] -pl [module-name]`
+`mvn clean test -Dtest=[test-name-pattern] -pl [module-name] -nsu`
 
 example:
 
-`mvn clean test -Dtest=HouseholdMemTest -pl fm-dddrive`
+`mvn clean test -Dtest=HouseholdMemTest -pl fm-dddrive -nsu`
 
 ## run a selection or specific test file (WITHOUT code generation when you already did it before)
 
-`mvn surefire:test -Dtest=[test-name-pattern] -pl [module-name]`
+`mvn surefire:test -Dtest=[test-name-pattern] -pl [module-name] -nsu`
 
 example:
 
-`mvn surefire:test -Dtest=BuildingTest -pl fm-domain`
+`mvn surefire:test -Dtest=BuildingTest -pl fm-domain -nsu`
 
 ## be smart
 
 If you just did a full compile, you don't need to clean before doing the tests, just execute the tests.
 
-`mvn test -pl !fm-ui`
+`mvn test -pl !fm-ui -nsu`
 
-`mvn test -Dtest=HouseholdMemTest -pl fm-dddrive`
+`mvn test -Dtest=HouseholdMemTest -pl fm-dddrive -nsu`
 
 # Run Build
 
 Before terminating your task, check that the builds are still correctly done (this is not necessary if you just ran all tests).
 
-`mvn clean compile test-compile -DskipTests -pl !fm-ui`
+`mvn clean compile test-compile -DskipTests -pl !fm-ui -nsu`

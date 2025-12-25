@@ -258,8 +258,8 @@ After migration is complete and tests pass, delete:
 
 Run the build to ensure everything compiles and tests pass:
 ```bash
-mvn clean compile test-compile -DskipTests -pl !fm-ui
-mvn test -Dtest=YourTestClass -pl your-module -am -Dsurefire.failIfNoSpecifiedTests=false
+mvn clean compile test-compile -DskipTests -pl !fm-ui -nsu
+mvn test -Dtest=YourTestClass -pl your-module -nsu -am -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
 ---

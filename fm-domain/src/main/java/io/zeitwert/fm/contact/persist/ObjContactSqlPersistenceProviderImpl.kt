@@ -3,6 +3,7 @@ package io.zeitwert.fm.contact.persist
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
@@ -12,7 +13,6 @@ import io.zeitwert.fm.contact.model.enums.CodeTitle
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -24,14 +24,20 @@ open class ObjContactSqlPersistenceProviderImpl(
 ) : FMObjSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
 	SqlRecordMapper<ObjContact> {
 
-	override val idProvider: SqlIdProvider get() = baseRecordMapper
+	override val idProvider: SqlIdProvider
+		get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
 
-	override val extnRecordMapper get() = this
+	override val extnRecordMapper
+		get() = this
 
 	override fun loadRecord(aggregate: ObjContact) {
-		val record = dslContext.fetchOne(Tables.OBJ_CONTACT, Tables.OBJ_CONTACT.OBJ_ID.eq(aggregate.id as Int))
+		val record =
+			dslContext.fetchOne(
+				Tables.OBJ_CONTACT,
+				Tables.OBJ_CONTACT.OBJ_ID.eq(aggregate.id as Int),
+			)
 		record ?: throw IllegalArgumentException("no OBJ_CONTACT record found for ${aggregate.id}")
 		mapFromRecord(aggregate, record)
 	}
@@ -67,7 +73,9 @@ open class ObjContactSqlPersistenceProviderImpl(
 	override fun doLoadParts(aggregate: ObjContact) {
 		super.doLoadParts(aggregate)
 		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
-			loadPartList(aggregate, "addressList", "contact.addressList")
+			// Load mail addresses and electronic addresses as separate part lists
+			loadPartList(aggregate.mailAddressList, "contact.mailAddressList")
+			loadPartList(aggregate.electronicAddressList, "contact.electronicAddressList")
 		}
 	}
 
@@ -75,7 +83,9 @@ open class ObjContactSqlPersistenceProviderImpl(
 	override fun doStoreParts(aggregate: ObjContact) {
 		super.doStoreParts(aggregate)
 		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
-			storePartList(aggregate, "addressList", "contact.addressList")
+			// Store mail addresses and electronic addresses as separate part lists
+			storePartList(aggregate.mailAddressList, "contact.mailAddressList")
+			storePartList(aggregate.electronicAddressList, "contact.electronicAddressList")
 		}
 	}
 

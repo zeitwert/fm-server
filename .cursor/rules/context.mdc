@@ -20,6 +20,6 @@ The database schema is generated and maintained via flyway through the scripts i
 
 The linting inside the cursor IDE is not reliable, so you need to run the compilation with `mvn compile -DskipTests` on the windows command shell to ensure the code is correct.
 
-Since in most cases you will only work on the server, you can skip expensive compilation of the ui with `mvn compile -DskipTests -pl !fm-ui`.
+Since in most cases you will only work on the server, you can skip expensive compilation of the ui with `mvn compile -DskipTests -pl !fm-ui -nsu`.
 
 We are on a Windows machine and you should be using the command shell.

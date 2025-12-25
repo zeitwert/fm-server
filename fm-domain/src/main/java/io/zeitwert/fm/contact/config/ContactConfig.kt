@@ -52,7 +52,8 @@ class ContactConfig :
 	}
 
 	private fun initCodePartListType(e: CodePartListTypeEnum) {
-		e.addItem(CodePartListType( "contact.addressList", "Address"))
+		e.addItem(CodePartListType("contact.mailAddressList", "Address"))
+		e.addItem(CodePartListType("contact.electronicAddressList", "Electronic Address"))
 	}
 
 }

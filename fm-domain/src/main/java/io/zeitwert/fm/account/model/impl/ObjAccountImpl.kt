@@ -91,7 +91,7 @@ open class ObjAccountImpl(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		val documentRepo = repository.documentRepository
+		val documentRepo = directory.getRepository(ObjDocument::class.java)
 		val image = documentRepo.create(tenantId, userId, timestamp)
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.FOTO
