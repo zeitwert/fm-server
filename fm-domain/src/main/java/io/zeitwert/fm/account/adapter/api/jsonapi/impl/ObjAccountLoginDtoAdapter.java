@@ -44,7 +44,7 @@ public class ObjAccountLoginDtoAdapter
 				.accountType(EnumeratedDto.of(obj.getAccountType()))
 				.clientSegment(EnumeratedDto.of(obj.getClientSegment()))
 				.referenceCurrency(EnumeratedDto.of(obj.getReferenceCurrency()))
-				.logoId(obj.getLogoImageId())
+				.logoId((Integer) obj.getLogoImageId())
 				.build();
 	}
 

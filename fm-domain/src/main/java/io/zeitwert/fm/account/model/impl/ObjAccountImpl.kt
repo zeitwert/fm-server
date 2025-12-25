@@ -1,12 +1,18 @@
-package io.zeitwert.fm.account.model.base
+package io.zeitwert.fm.account.model.impl
 
 import io.dddrive.path.getValueByPath
 import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.fm.collaboration.model.ObjNote
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
@@ -17,27 +23,35 @@ import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-abstract class ObjAccountBase(
+open class ObjAccountImpl(
 	override val repository: ObjAccountRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjAccount,
 	AggregateWithNotesMixin {
 
+	// Base properties
+	override var name: String? by baseProperty()
+	override var description: String? by baseProperty()
+	override var inflationRate: BigDecimal? by baseProperty()
+	override var discountRate: BigDecimal? by baseProperty()
+
+	// Enum properties
+	override var accountType: CodeAccountType? by enumProperty()
+	override var clientSegment: CodeClientSegment? by enumProperty()
+	override var referenceCurrency: CodeCurrency? by enumProperty()
+
+	// Reference properties - logoImage
+	override var logoImageId: Any? by referenceIdProperty<ObjDocument>()
+	override val logoImage: ObjDocument? by referenceProperty()
+
+	// Reference properties - mainContact
+	override var mainContactId: Any? by referenceIdProperty<ObjContact>()
+	override val mainContact: ObjContact? by referenceProperty()
+
 	override fun aggregate(): ObjAccount = this
 
-	override fun doInit() {
-		super.doInit()
-		addBaseProperty("name", String::class.java)
-		addBaseProperty("description", String::class.java)
-		addEnumProperty("accountType", CodeAccountType::class.java)
-		addEnumProperty("clientSegment", CodeClientSegment::class.java)
-		addEnumProperty("referenceCurrency", CodeCurrency::class.java)
-		addBaseProperty("inflationRate", BigDecimal::class.java)
-		addBaseProperty("discountRate", BigDecimal::class.java)
-		addReferenceProperty("logoImage", ObjDocument::class.java)
-		addReferenceProperty("mainContact", ObjContact::class.java)
-	}
+	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
 	override fun doAfterCreate(
 		userId: Any,
@@ -73,25 +87,18 @@ abstract class ObjAccountBase(
 		setCaption(name)
 	}
 
-	// override fun doCalcSearch() {
-	//     super.doCalcSearch()
-	//     addSearchText(name)
-	//     addSearchText(description)
-	// }
-
 	private fun addLogoImage(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
 		val documentRepo = repository.documentRepository
 		val image = documentRepo.create(tenantId, userId, timestamp)
-// 		image.accountId = id.value
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.FOTO
 		image.documentKind = CodeDocumentKind.STANDALONE
 		image.documentCategory = CodeDocumentCategory.LOGO
 		documentRepo.store(image, userId, timestamp)
-		setValueByPath("logoImageId", image.id)
+		logoImageId = image.id
 	}
 
 }

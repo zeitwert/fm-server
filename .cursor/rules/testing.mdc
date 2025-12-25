@@ -37,6 +37,6 @@ If you just did a full compile, you don't need to clean before doing the tests, 
 
 # Run Build
 
-Before terminating your task, check that the builds are still correctly done.
+Before terminating your task, check that the builds are still correctly done (this is not necessary if you just ran all tests).
 
 `mvn clean compile test-compile -DskipTests -pl !fm-ui`

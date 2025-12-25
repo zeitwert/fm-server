@@ -10,10 +10,10 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
@@ -49,8 +49,8 @@ open class ObjAccountSqlPersistenceProviderImpl(
 		aggregate.referenceCurrency = CodeCurrency.getCurrency(record.referenceCurrencyId)
 		aggregate.inflationRate = record.inflationRate
 		aggregate.discountRate = record.discountRate
-		aggregate.setValueByPath("logoImageId", record.logoImgId)
-		aggregate.setValueByPath("mainContactId", record.mainContactId)
+		aggregate.logoImageId = record.logoImgId
+		aggregate.mainContactId = record.mainContactId
 	}
 
 	override fun storeRecord(aggregate: ObjAccount) {
@@ -77,8 +77,8 @@ open class ObjAccountSqlPersistenceProviderImpl(
 		record.referenceCurrencyId = aggregate.referenceCurrency?.id
 		record.inflationRate = aggregate.inflationRate
 		record.discountRate = aggregate.discountRate
-		record.logoImgId = aggregate.logoImageId
-		record.mainContactId = aggregate.mainContactId
+		record.logoImgId = aggregate.logoImageId as? Int
+		record.mainContactId = aggregate.mainContactId as? Int
 
 		return record
 	}

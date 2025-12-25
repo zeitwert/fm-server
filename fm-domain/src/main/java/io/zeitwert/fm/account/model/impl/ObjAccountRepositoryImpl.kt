@@ -2,7 +2,6 @@ package io.zeitwert.fm.account.model.impl
 
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.account.model.base.ObjAccountBase
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
@@ -15,7 +14,7 @@ class ObjAccountRepositoryImpl(
 ) : FMObjRepositoryBase<ObjAccount>(
 		ObjAccountRepository::class.java,
 		ObjAccount::class.java,
-		ObjAccountBase::class.java,
+		ObjAccountImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjAccountRepository {

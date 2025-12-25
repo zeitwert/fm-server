@@ -9,32 +9,29 @@ import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
 import java.math.BigDecimal
 
-interface ObjAccount :
-	Obj,
-	ItemWithNotes {
+interface ObjAccount : Obj, ItemWithNotes {
 
-	var name: String?
+  var name: String?
 
-	var description: String?
+  var description: String?
 
-	var accountType: CodeAccountType?
+  var accountType: CodeAccountType?
 
-	var clientSegment: CodeClientSegment?
+  var clientSegment: CodeClientSegment?
 
-	var referenceCurrency: CodeCurrency?
+  var referenceCurrency: CodeCurrency?
 
-	var inflationRate: BigDecimal?
+  var inflationRate: BigDecimal?
 
-	var discountRate: BigDecimal?
+  var discountRate: BigDecimal?
 
-	val logoImageId: Int?
+  var logoImageId: Any?
 
-	val logoImage: ObjDocument?
+  val logoImage: ObjDocument?
 
-	var mainContactId: Int?
+  var mainContactId: Any?
 
-	val mainContact: ObjContact?
+  val mainContact: ObjContact?
 
-	val contactList: List<Any>
-
+  val contactList: List<Any>
 }

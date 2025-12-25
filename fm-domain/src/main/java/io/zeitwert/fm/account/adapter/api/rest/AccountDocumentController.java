@@ -25,7 +25,7 @@ public class AccountDocumentController {
 	@RequestMapping(value = "/{id}/logo", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
 		ObjAccount account = this.accountRepository.get(id);
-		Integer documentId = account.getLogoImageId();
+		Integer documentId = (Integer) account.getLogoImageId();
 		if (documentId == null) {
 			return ResponseEntity.noContent().build();
 		}
