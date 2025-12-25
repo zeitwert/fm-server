@@ -4,8 +4,6 @@ import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.ObjTestRepository
-import io.zeitwert.fm.test.model.base.ObjTestBase
-import io.zeitwert.fm.test.model.base.ObjTestPartNodeBase
 import org.springframework.stereotype.Component
 
 @Component("objTestRepository")
@@ -13,13 +11,13 @@ class ObjTestRepositoryImpl :
 	FMObjRepositoryBase<ObjTest>(
 		ObjTestRepository::class.java,
 		ObjTest::class.java,
-		ObjTestBase::class.java,
+		ObjTestImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjTestRepository {
 
 	override fun registerParts() {
-		this.addPart(ObjTest::class.java, ObjTestPartNode::class.java, ObjTestPartNodeBase::class.java)
+		this.addPart(ObjTest::class.java, ObjTestPartNode::class.java, ObjTestPartNodeImpl::class.java)
 	}
 
 	companion object {

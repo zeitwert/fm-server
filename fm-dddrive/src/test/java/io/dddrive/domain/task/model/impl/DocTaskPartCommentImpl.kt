@@ -8,7 +8,7 @@ import io.dddrive.property.delegate.baseProperty
 import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
 
-class DocTaskPartCommentImpl(
+open class DocTaskPartCommentImpl(
 	task: DocTask,
 	override val repository: PartRepository<DocTask, DocTaskPartComment>,
 	property: Property<*>,

@@ -9,7 +9,6 @@ import io.dddrive.ddd.model.Part
  */
 interface PartListProperty<P : Part<*>> :
 	Property<P>,
-	Iterable<P>,
 	Collection<P> {
 
 	val partType: Class<P>
@@ -20,10 +19,6 @@ interface PartListProperty<P : Part<*>> :
 
 	fun getById(partId: Int): P
 
-	/**
-	 * Removes all parts from this list.
-	 * Alias for [clear].
-	 */
 	fun clear()
 
 	fun add(partId: Int? = null): P
@@ -32,12 +27,6 @@ interface PartListProperty<P : Part<*>> :
 
 	fun remove(part: P)
 
-	/**
-	 * Returns the index of the specified part within this list.
-	 *
-	 * @param part the part to find
-	 * @return the index of the part, or -1 if the part is not in this list.
-	 */
 	fun indexOf(part: P): Int
 
 }

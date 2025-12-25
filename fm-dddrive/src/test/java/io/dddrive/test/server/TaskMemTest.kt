@@ -62,8 +62,6 @@ class TaskMemTest : PropertyChangeListener {
 		oldValue: String?,
 		isInCalc: Boolean,
 	) {
-		// Simple println for now, can be expanded if specific change logging is needed for debugging
-		// tests
 		// println("PropertyChange { op: $op, path: $path, value: $value, oldValue: $oldValue, isInCalc:
 		// $isInCalc }")
 	}
@@ -137,7 +135,6 @@ class TaskMemTest : PropertyChangeListener {
 		task.dueAt = dueDate
 		task.remindAt = remindDate
 		task.assignee = user1
-		println("docTask.assignee.1: ${task.assignee?.id}")
 
 		// Verify properties
 		assertEquals("Implement new feature with comments", task.subject)
@@ -197,7 +194,6 @@ class TaskMemTest : PropertyChangeListener {
 		assertEquals(2, task.commentList.size, "Task should have 2 comments")
 
 		// Store the task
-		println("docTask.assignee.2: ${task.assignee?.id}")
 		taskRepo.store(task, user.id, now.plusMinutes(1))
 
 		// Load and verify

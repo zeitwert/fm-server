@@ -13,7 +13,7 @@ import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
 
-class DocTaskImpl(
+open class DocTaskImpl(
 	override val repository: DocTaskRepository,
 	isNew: Boolean,
 ) : DocBase(repository, isNew),

@@ -1,6 +1,13 @@
-package io.zeitwert.fm.test.model.base
+package io.zeitwert.fm.test.model.impl
 
 import io.dddrive.ddd.model.Part
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.enumSetProperty
+import io.dddrive.property.delegate.partListProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
+import io.dddrive.property.model.EnumSetProperty
 import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -15,29 +22,39 @@ import org.jooq.JSON
 import java.math.BigDecimal
 import java.time.LocalDate
 
-abstract class ObjTestBase(
+open class ObjTestImpl(
 	repository: ObjTestRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjTest,
 	AggregateWithNotesMixin {
 
-	private lateinit var _nodeList: PartListProperty<ObjTestPartNode>
+	// Simple base properties
+	override var shortText: String? by baseProperty()
+	override var longText: String? by baseProperty()
+	override var date: LocalDate? by baseProperty()
+	override var int: Int? by baseProperty()
+	override var isDone: Boolean? by baseProperty()
+	private var _json: JSON? by baseProperty()
+	override var json: String?
+		get() = _json?.data()
+		set(value) {
+			_json = if (value != null) JSON.json(value) else null
+		}
+	override var nr: BigDecimal? by baseProperty()
 
-	override fun doInit() {
-		super.doInit()
-		addBaseProperty("shortText", String::class.java)
-		addBaseProperty("longText", String::class.java)
-		addBaseProperty("date", LocalDate::class.java)
-		addBaseProperty("int", Int::class.java)
-		addBaseProperty("isDone", Boolean::class.java)
-		addBaseProperty("json", JSON::class.java)
-		addBaseProperty("nr", BigDecimal::class.java)
-		addEnumProperty("testType", CodeTestType::class.java)
-		addReferenceProperty("refObj", ObjTest::class.java)
-		addEnumSetProperty("testTypeSet", CodeTestType::class.java)
-		_nodeList = addPartListProperty("nodeList", ObjTestPartNode::class.java)
-	}
+	// Enum property
+	override var testType: CodeTestType? by enumProperty()
+
+	// Reference properties
+	override var refObjId: Any? by referenceIdProperty<ObjTest>()
+	override var refObj: ObjTest? by referenceProperty()
+
+	// Enum set property
+	override val testTypeSet: EnumSetProperty<CodeTestType> by enumSetProperty()
+
+	// Part list property
+	override val nodeList: PartListProperty<ObjTestPartNode> by partListProperty()
 
 	override val repository get() = super.repository as ObjTestRepository
 
@@ -49,7 +66,7 @@ abstract class ObjTestBase(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === this._nodeList) {
+		if (property === nodeList) {
 			return directory.getPartRepository(ObjTestPartNode::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)

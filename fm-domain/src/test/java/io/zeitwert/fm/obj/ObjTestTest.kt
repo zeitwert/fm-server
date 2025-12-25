@@ -158,22 +158,22 @@ class ObjTestTest {
 		val testAId = testA1.id
 		initObjTest(testA1, "One", TYPE_A)
 
-		assertFalse(testA1.hasTestType(CodeTestType.TYPE_A))
-		testA1.addTestType(CodeTestType.TYPE_A)
+		assertFalse(testA1.testTypeSet.contains(CodeTestType.TYPE_A))
+		testA1.testTypeSet.add(CodeTestType.TYPE_A)
 		assertEquals(1, testA1.testTypeSet.size)
-		assertTrue(testA1.hasTestType(CodeTestType.TYPE_A))
+		assertTrue(testA1.testTypeSet.contains(CodeTestType.TYPE_A))
 
-		testA1.addTestType(CodeTestType.TYPE_B)
-		assertTrue(testA1.hasTestType(CodeTestType.TYPE_B))
+		testA1.testTypeSet.add(CodeTestType.TYPE_B)
+		assertTrue(testA1.testTypeSet.contains(CodeTestType.TYPE_B))
 		assertEquals(2, testA1.testTypeSet.size)
 
-		testA1.removeTestType(CodeTestType.TYPE_B)
-		assertTrue(testA1.hasTestType(CodeTestType.TYPE_A))
-		assertFalse(testA1.hasTestType(CodeTestType.TYPE_B))
+		testA1.testTypeSet.remove(CodeTestType.TYPE_B)
+		assertTrue(testA1.testTypeSet.contains(CodeTestType.TYPE_A))
+		assertFalse(testA1.testTypeSet.contains(CodeTestType.TYPE_B))
 		assertEquals(1, testA1.testTypeSet.size)
 
-		testA1.addTestType(CodeTestType.TYPE_C)
-		assertTrue(testA1.hasTestType(CodeTestType.TYPE_C))
+		testA1.testTypeSet.add(CodeTestType.TYPE_C)
+		assertTrue(testA1.testTypeSet.contains(CodeTestType.TYPE_C))
 		assertEquals(2, testA1.testTypeSet.size)
 
 		assertEquals(1, testA1.meta.transitionList.size)
@@ -184,16 +184,16 @@ class ObjTestTest {
 		assertEquals(2, testA2.meta.transitionList.size)
 
 		assertEquals(2, testA2.testTypeSet.size)
-		assertTrue(testA2.hasTestType(CodeTestType.TYPE_A))
-		assertTrue(testA2.hasTestType(CodeTestType.TYPE_C))
+		assertTrue(testA2.testTypeSet.contains(CodeTestType.TYPE_A))
+		assertTrue(testA2.testTypeSet.contains(CodeTestType.TYPE_C))
 
-		testA2.removeTestType(CodeTestType.TYPE_A)
-		testA2.addTestType(CodeTestType.TYPE_B)
+		testA2.testTypeSet.remove(CodeTestType.TYPE_A)
+		testA2.testTypeSet.add(CodeTestType.TYPE_B)
 
 		assertEquals(2, testA2.testTypeSet.size)
-		assertFalse(testA2.hasTestType(CodeTestType.TYPE_A))
-		assertTrue(testA2.hasTestType(CodeTestType.TYPE_B))
-		assertTrue(testA2.hasTestType(CodeTestType.TYPE_C))
+		assertFalse(testA2.testTypeSet.contains(CodeTestType.TYPE_A))
+		assertTrue(testA2.testTypeSet.contains(CodeTestType.TYPE_B))
+		assertTrue(testA2.testTypeSet.contains(CodeTestType.TYPE_C))
 	}
 
 	@Test
@@ -204,61 +204,62 @@ class ObjTestTest {
 
 		lateinit var testAId: Any
 
-		{
+		run {
 			val testA1 = this.testRepository.create(tenantId, userId, now)
 			assertEquals(0, testA1.meta.version)
 			assertEquals(1, testA1.meta.transitionList.size)
 
 			initObjTest(testA1, "One", TYPE_A)
-			assertEquals(0, testA1.nodeCount)
+			assertEquals(0, testA1.nodeList.size)
 
-			testA1.addNode().apply { shortText = "A" }
-			assertEquals(1, testA1.nodeCount)
+			testA1.nodeList.add(null).apply { shortText = "A" }
+			assertEquals(1, testA1.nodeList.size)
 
-			val nodeB1 = testA1.addNode().apply { shortText = "B" }
-			assertEquals(2, testA1.nodeCount)
+			val nodeB1 = testA1.nodeList.add(null).apply { shortText = "B" }
+			assertEquals(2, testA1.nodeList.size)
 
-			testA1.addNode().apply { shortText = "C" }
-			assertEquals(3, testA1.nodeCount)
+			testA1.nodeList.add(null).apply { shortText = "C" }
+			assertEquals(3, testA1.nodeList.size)
 
-			testA1.removeNode(nodeB1.id)
-			assertEquals(2, testA1.nodeCount)
+			testA1.nodeList.remove(nodeB1.id)
+			assertEquals(2, testA1.nodeList.size)
 
-			testA1.addNode().apply { shortText = "D" }
-			assertEquals(3, testA1.nodeCount)
+			testA1.nodeList.add(null).apply { shortText = "D" }
+			assertEquals(3, testA1.nodeList.size)
 
+			testAId = testA1.id
 			this.testRepository.store(testA1, userId, now)
 			assertEquals(1, testA1.meta.version)
 			assertEquals(2, testA1.meta.transitionList.size)
 		}
 
-		{
+		run {
 			val testA2 = this.testRepository.load(testAId)
 			assertEquals(1, testA2.meta.version)
 			assertEquals(2, testA2.meta.transitionList.size)
-			assertEquals(3, testA2.nodeCount)
+			assertEquals(3, testA2.nodeList.size)
 
 			assertTrue(testA2.nodeList.any { n -> "A" == n.shortText })
 			assertTrue(testA2.nodeList.none { n -> "B" == n.shortText })
 			assertTrue(testA2.nodeList.any { n -> "C" == n.shortText })
 			assertTrue(testA2.nodeList.any { n -> "D" == n.shortText })
 
-			testA2.removeNode(testA2.nodeList.first { n -> "C" == n.shortText }.id)
-			assertEquals(2, testA2.nodeCount)
+			testA2.nodeList.remove(testA2.nodeList.first { n -> "C" == n.shortText }.id)
+			assertEquals(2, testA2.nodeList.size)
 
-			testA2.addNode().apply { shortText = "E" }
-			assertEquals(3, testA2.nodeCount)
+			testA2.nodeList.add(null).apply { shortText = "E" }
+			assertEquals(3, testA2.nodeList.size)
 
 			this.testRepository.store(testA2, userId, now)
 			assertEquals(2, testA2.meta.version)
 			assertEquals(3, testA2.meta.transitionList.size)
 		}
 
-		{
+		run {
 			val testA3 = this.testRepository.load(testAId)
 			assertEquals(2, testA3.meta.version)
 			assertEquals(3, testA3.meta.transitionList.size)
-			assertEquals(3, testA3.nodeCount)
+			assertEquals(3, testA3.nodeList.size)
 
 			assertTrue(testA3.nodeList.any { n -> "A" == n.shortText })
 			assertTrue(testA3.nodeList.none { n -> "B" == n.shortText })

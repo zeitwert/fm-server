@@ -9,7 +9,6 @@ import io.dddrive.enums.model.Enumerated
  */
 interface EnumSetProperty<E : Enumerated> :
 	Property<E>,
-	Iterable<E>,
 	Collection<E> {
 
 	fun has(item: E): Boolean

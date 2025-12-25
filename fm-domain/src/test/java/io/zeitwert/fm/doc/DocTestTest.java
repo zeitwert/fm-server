@@ -130,7 +130,7 @@ public class DocTestTest {
 		Object refObj_id = refObj.getId();
 		this.objTestRepo.store(refObj, userId, now);
 
-		testA1.setRefObjId((Integer) refObj_id);
+		testA1.setRefObjId(refObj_id);
 		assertEquals("[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two])", testA1.getCaption());
 
 		DocTest refDoc = this.docTestRepo.create(tenantId, userId, now);
@@ -139,24 +139,24 @@ public class DocTestTest {
 		Object refDoc_id = refDoc.getId();
 		this.docTestRepo.store(refDoc, userId, now);
 
-		testA1.setRefDocId((Integer) refDoc_id);
+		testA1.setRefDocId(refDoc_id);
 		assertEquals(
 				"[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two]) (RefDoc:[Short Test Two, Long Test Two])",
 				testA1.getCaption());
 
 		// Test EnumSet operations with TestType
-		assertFalse(testA1.hasTestType(typeA));
-		testA1.addTestType(typeA);
-		assertTrue(testA1.hasTestType(typeA));
-		testA1.addTestType(typeB);
-		assertTrue(testA1.hasTestType(typeB));
+		assertFalse(testA1.getTestTypeSet().contains(typeA));
+		testA1.getTestTypeSet().add(typeA);
+		assertTrue(testA1.getTestTypeSet().contains(typeA));
+		testA1.getTestTypeSet().add(typeB);
+		assertTrue(testA1.getTestTypeSet().contains(typeB));
 		assertEquals(2, testA1.getTestTypeSet().size());
-		testA1.removeTestType(typeB);
-		assertTrue(testA1.hasTestType(typeA));
-		assertFalse(testA1.hasTestType(typeB));
+		testA1.getTestTypeSet().remove(typeB);
+		assertTrue(testA1.getTestTypeSet().contains(typeA));
+		assertFalse(testA1.getTestTypeSet().contains(typeB));
 		assertEquals(1, testA1.getTestTypeSet().size());
-		testA1.addTestType(typeC);
-		assertTrue(testA1.hasTestType(typeC));
+		testA1.getTestTypeSet().add(typeC);
+		assertTrue(testA1.getTestTypeSet().contains(typeC));
 		assertEquals(2, testA1.getTestTypeSet().size());
 
 		this.docTestRepo.store(testA1, userId, now);
@@ -179,8 +179,8 @@ public class DocTestTest {
 		assertEquals(refDoc_id, testA2.getRefDoc().getId());
 
 		assertEquals(2, testA2.getTestTypeSet().size());
-		assertTrue(testA2.hasTestType(typeA));
-		assertTrue(testA2.hasTestType(typeC));
+		assertTrue(testA2.getTestTypeSet().contains(typeA));
+		assertTrue(testA2.getTestTypeSet().contains(typeC));
 
 		testA2.setShortText("another shortText");
 		testA2.setLongText("another longText");
@@ -193,8 +193,8 @@ public class DocTestTest {
 		testA2.setRefObjId(null);
 		testA2.setRefDocId(null);
 
-		testA2.removeTestType(typeA);
-		testA2.addTestType(typeB);
+		testA2.getTestTypeSet().remove(typeA);
+		testA2.getTestTypeSet().add(typeB);
 
 		assertEquals("[another shortText, another longText]", testA2.getCaption());
 		assertEquals("another shortText", testA2.getShortText());
@@ -208,9 +208,9 @@ public class DocTestTest {
 		assertNull(testA2.getRefObj());
 
 		assertEquals(2, testA2.getTestTypeSet().size());
-		assertFalse(testA2.hasTestType(typeA));
-		assertTrue(testA2.hasTestType(typeB));
-		assertTrue(testA2.hasTestType(typeC));
+		assertFalse(testA2.getTestTypeSet().contains(typeA));
+		assertTrue(testA2.getTestTypeSet().contains(typeB));
+		assertTrue(testA2.getTestTypeSet().contains(typeC));
 
 	}
 

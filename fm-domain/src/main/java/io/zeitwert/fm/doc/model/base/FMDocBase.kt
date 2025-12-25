@@ -3,6 +3,7 @@ package io.zeitwert.fm.doc.model.base
 import io.dddrive.doc.model.Doc
 import io.dddrive.doc.model.DocRepository
 import io.dddrive.doc.model.base.DocBase
+import io.dddrive.property.delegate.baseProperty
 import io.zeitwert.fm.ddd.model.EntityWithExtn
 
 /**
@@ -22,9 +23,13 @@ abstract class FMDocBase(
 
 	private val _extnMap = mutableMapOf<String, Any>()
 
+	// Delegated property for account association
+	open var accountId: Any? by baseProperty()
+
+	@Suppress("UNUSED_EXPRESSION")
 	override fun doInit() {
 		super.doInit()
-		addBaseProperty("accountId", Any::class.java)
+		accountId // trigger delegate initialization
 	}
 
 	// EntityWithExtn implementation

@@ -10,7 +10,6 @@ import io.dddrive.ddd.model.Aggregate
  */
 interface ReferenceSetProperty<A : Aggregate> :
 	Property<A>,
-	Iterable<Any>,
 	Collection<Any> {
 
 	fun has(aggregateId: Any): Boolean

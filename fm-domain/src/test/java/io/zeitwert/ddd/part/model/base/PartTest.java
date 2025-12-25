@@ -50,39 +50,38 @@ public class PartTest {
 
 		assertEquals(0, testA1.getNodeList().size());
 
-		ObjTestPartNode testA1_n0 = testA1.addNode();
+		ObjTestPartNode testA1_n0 = testA1.getNodeList().add((Integer) null);
 		this.initObjTestPartNode(testA1_n0, "First", "type_a");
-		assertNotNull(testA1_n0.getId());
 		assertEquals(1, testA1.getNodeList().size());
 
-		ObjTestPartNode testA1_n1 = testA1.addNode();
+		ObjTestPartNode testA1_n1 = testA1.getNodeList().add((Integer) null);
 		this.initObjTestPartNode(testA1_n1, "Second", "type_b");
-		ObjTestPartNode testA1_n2 = testA1.addNode();
+		ObjTestPartNode testA1_n2 = testA1.getNodeList().add((Integer) null);
 		this.initObjTestPartNode(testA1_n2, "Third", "type_c");
 
 		assertEquals(3, testA1.getNodeList().size());
 
-		List<ObjTestPartNode> testA1_nodeList = testA1.getNodeList();
+		var testA1_nodeList = testA1.getNodeList();
 		assertEquals(testA1_n0, testA1_nodeList.get(0));
 		assertEquals(testA1_n1, testA1_nodeList.get(1));
 		assertEquals(testA1_n2, testA1_nodeList.get(2));
-		assertEquals(testA1_nodeList, List.of(testA1_n0, testA1_n1, testA1_n2));
+		assertEquals(testA1_nodeList.stream().toList(), List.of(testA1_n0, testA1_n1, testA1_n2));
 		assertEquals("Short Test Node First,Short Test Node Second,Short Test Node Third",
-				String.join(",", testA1.getNodeList().stream().map(n -> n.getShortText()).toList()));
+				String.join(",", testA1.getNodeList().stream().map(ObjTestPartNode::getShortText).toList()));
 		assertEquals("Short Test Node Second", testA1.getNodeList().get(1).getShortText());
 
-		testA1.removeNode(testA1_n1.getId());
-		assertEquals(2, testA1.getNodeCount());
-		assertEquals(testA1_n2, testA1.getNode(1));
-		assertEquals(testA1_n2, testA1.getNodeById(testA1_n2.getId()));
+		testA1.getNodeList().remove(testA1_n1.getId());
 		assertEquals(2, testA1.getNodeList().size());
-		assertEquals(testA1_n0.getShortText(), testA1.getNode(0).getShortText());
-		assertEquals(testA1_n2.getShortText(), testA1.getNode(1).getShortText());
+		assertEquals(testA1_n2, testA1.getNodeList().get(1));
+		assertEquals(testA1_n2, testA1.getNodeList().getById(testA1_n2.getId()));
+		assertEquals(2, testA1.getNodeList().size());
+		assertEquals(testA1_n0.getShortText(), testA1.getNodeList().get(0).getShortText());
+		assertEquals(testA1_n2.getShortText(), testA1.getNodeList().get(1).getShortText());
 
 		testA1_nodeList = testA1.getNodeList();
 		assertEquals(testA1_n0.getShortText(), testA1_nodeList.get(0).getShortText());
 		assertEquals(testA1_n2.getShortText(), testA1_nodeList.get(1).getShortText());
-		assertEquals(testA1_nodeList, List.of(testA1_n0, testA1_n2));
+		assertEquals(testA1_nodeList.stream().toList(), List.of(testA1_n0, testA1_n2));
 
 		this.testRepository.store(testA1, userId, now);
 		testA1 = null;
@@ -91,12 +90,12 @@ public class PartTest {
 
 		assertEquals(2, testA2.getNodeList().size());
 		assertEquals("Short Test Node First,Short Test Node Third",
-				String.join(",", testA2.getNodeList().stream().map(n -> n.getShortText()).toList()));
+				String.join(",", testA2.getNodeList().stream().map(ObjTestPartNode::getShortText).toList()));
 		assertEquals("Short Test Node Third", testA2.getNodeList().get(1).getShortText());
 
-		ObjTestPartNode testA2_n2 = testA2.addNode();
+		ObjTestPartNode testA2_n2 = testA2.getNodeList().add((Integer) null);
 		this.initObjTestPartNode(testA2_n2, "Fourth", "type_b");
-		testA2.getNode(1).setInt(43);
+		testA2.getNodeList().get(1).setInt(43);
 
 		this.testRepository.store(testA2, userId, now);
 		testA2 = null;
@@ -105,10 +104,10 @@ public class PartTest {
 
 		assertEquals(3, testA3.getNodeList().size());
 		assertEquals("Short Test Node First,Short Test Node Third,Short Test Node Fourth",
-				String.join(",", testA3.getNodeList().stream().map(n -> n.getShortText()).toList()));
+				String.join(",", testA3.getNodeList().stream().map(ObjTestPartNode::getShortText).toList()));
 
-		testA3.clearNodeList();
-		assertEquals(0, testA3.getNodeCount());
+		testA3.getNodeList().clear();
+		assertEquals(0, testA3.getNodeList().size());
 		assertEquals(0, testA3.getNodeList().size());
 
 	}

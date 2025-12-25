@@ -1,6 +1,8 @@
 package io.zeitwert.fm.test.model
 
 import io.dddrive.obj.model.Obj
+import io.dddrive.property.model.EnumSetProperty
+import io.dddrive.property.model.PartListProperty
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.test.model.enums.CodeTestType
 import java.math.BigDecimal
@@ -30,28 +32,7 @@ interface ObjTest :
 
 	val refObj: ObjTest?
 
-	fun hasTestType(testType: CodeTestType): Boolean
+	val testTypeSet: EnumSetProperty<CodeTestType>
 
-	val testTypeSet: Set<CodeTestType>
-
-	fun clearTestTypeSet()
-
-	fun addTestType(testType: CodeTestType)
-
-	fun removeTestType(testType: CodeTestType)
-
-	val nodeCount: Int
-
-	fun getNode(seqNr: Int): ObjTestPartNode
-
-	val nodeList: List<ObjTestPartNode>
-
-	fun getNodeById(nodeId: Int): ObjTestPartNode
-
-	fun clearNodeList()
-
-	fun addNode(): ObjTestPartNode
-
-	fun removeNode(nodeId: Int)
-
+	val nodeList: PartListProperty<ObjTestPartNode>
 }

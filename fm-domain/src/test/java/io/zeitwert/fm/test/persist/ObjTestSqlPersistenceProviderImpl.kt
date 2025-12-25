@@ -6,6 +6,7 @@ import io.dddrive.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
@@ -15,7 +16,6 @@ import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.fm.test.model.enums.CodeTestType
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.stereotype.Component
@@ -68,7 +68,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
 			items("test.testTypeSet").forEach {
-				aggregate.addTestType(CodeTestType.getTestType(it)!!)
+				aggregate.testTypeSet.add(CodeTestType.getTestType(it)!!)
 			}
 			endLoad()
 		}

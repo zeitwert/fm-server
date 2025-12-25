@@ -27,8 +27,6 @@ class MemDocTaskPersistenceProviderImpl :
 		try {
 			aggregateMeta.disableCalc()
 			super.toAggregate(pto, aggregate)
-			println("docTask.load.metaPto: ${pto.meta?.assigneeId}")
-			println("docTask.load.meta.assignee: ${aggregate.assignee}")
 
 			// Load ONLY DocTask-specific properties here
 			aggregate.subject = pto.subject
@@ -57,7 +55,6 @@ class MemDocTaskPersistenceProviderImpl :
 
 	override fun fromAggregate(aggregate: DocTask): DocTaskPto {
 		val metaPto = this.getMeta(aggregate)
-		println("docTask.metaPto: ${metaPto.assigneeId}")
 		val commentPtos =
 			aggregate.commentList
 				.map { domainComment ->

@@ -1,6 +1,7 @@
 package io.zeitwert.fm.test.model
 
 import io.dddrive.doc.model.Doc
+import io.dddrive.property.model.EnumSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.test.model.enums.CodeTestType
@@ -28,22 +29,14 @@ interface DocTest :
 
 	var testType: CodeTestType?
 
-	var refObjId: Int?
+	var refObjId: Any?
 
 	val refObj: ObjTest?
 
-	var refDocId: Int?
+	var refDocId: Any?
 
 	val refDoc: DocTest?
 
-	fun hasTestType(testType: CodeTestType): Boolean
-
-	val testTypeSet: MutableSet<CodeTestType>
-
-	fun clearTestTypeSet()
-
-	fun addTestType(testType: CodeTestType)
-
-	fun removeTestType(testType: CodeTestType)
+	val testTypeSet: EnumSetProperty<CodeTestType>
 
 }

@@ -17,9 +17,7 @@ import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.stereotype.Component
 
-/**
- * jOOQ-based persistence provider for DocTest aggregates.
- */
+/** jOOQ-based persistence provider for DocTest aggregates. */
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
@@ -27,14 +25,17 @@ open class DocTestSqlPersistenceProviderImpl(
 ) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
 
-	override val idProvider: SqlIdProvider get() = baseRecordMapper
+	override val idProvider: SqlIdProvider
+		get() = baseRecordMapper
 
 	override val baseRecordMapper = DocRecordMapperImpl(dslContext)
 
-	override val extnRecordMapper get() = this
+	override val extnRecordMapper
+		get() = this
 
 	override fun loadRecord(aggregate: DocTest) {
-		val record = dslContext.fetchOne(Tables.DOC_TEST, Tables.DOC_TEST.DOC_ID.eq(aggregate.id as Int))
+		val record =
+			dslContext.fetchOne(Tables.DOC_TEST, Tables.DOC_TEST.DOC_ID.eq(aggregate.id as Int))
 		record ?: throw IllegalArgumentException("no DOC_TEST record found for ${aggregate.id}")
 		mapFromRecord(aggregate, record)
 	}
@@ -62,7 +63,7 @@ open class DocTestSqlPersistenceProviderImpl(
 		DocPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
 			items("test.testTypeSet").forEach {
-				aggregate.addTestType(CodeTestType.getTestType(it)!!)
+				aggregate.testTypeSet.add(CodeTestType.getTestType(it)!!)
 			}
 			endLoad()
 		}
@@ -93,8 +94,8 @@ open class DocTestSqlPersistenceProviderImpl(
 		record.json = aggregate.json?.let { JSON.valueOf(it) }
 		record.nr = aggregate.nr
 		record.testTypeId = aggregate.testType?.id
-		record.refObjId = aggregate.refObjId
-		record.refDocId = aggregate.refDocId
+		record.refObjId = aggregate.refObjId as? Int
+		record.refDocId = aggregate.refDocId as? Int
 
 		return record
 	}
@@ -122,18 +123,18 @@ open class DocTestSqlPersistenceProviderImpl(
 		fkName: String,
 		targetId: Any,
 	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.DOC_TEST.TENANT_ID
-			"accountId" -> Tables.DOC_TEST.ACCOUNT_ID
-			"refObjId" -> Tables.DOC_TEST.REF_OBJ_ID
-			"refDocId" -> Tables.DOC_TEST.REF_DOC_ID
-			else -> return null
-		}
+		val field =
+			when (fkName) {
+				"tenantId" -> Tables.DOC_TEST.TENANT_ID
+				"accountId" -> Tables.DOC_TEST.ACCOUNT_ID
+				"refObjId" -> Tables.DOC_TEST.REF_OBJ_ID
+				"refDocId" -> Tables.DOC_TEST.REF_DOC_ID
+				else -> return null
+			}
 		return dslContext
 			.select(Tables.DOC_TEST.DOC_ID)
 			.from(Tables.DOC_TEST)
 			.where(field.eq(targetId as Int))
 			.fetch(Tables.DOC_TEST.DOC_ID)
 	}
-
 }
