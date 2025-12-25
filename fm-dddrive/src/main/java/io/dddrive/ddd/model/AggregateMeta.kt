@@ -1,7 +1,6 @@
 package io.dddrive.ddd.model
 
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.property.model.PropertyChangeListener
 import io.dddrive.validation.model.AggregatePartValidation
 import java.time.OffsetDateTime
 
@@ -11,14 +10,6 @@ import java.time.OffsetDateTime
 interface AggregateMeta : EntityMeta {
 
 	val repository: AggregateRepository<*>
-
-	fun beginLoad()
-
-	fun endLoad()
-
-	fun addPropertyChangeListener(listener: PropertyChangeListener)
-
-	fun removePropertyChangeListener(listener: PropertyChangeListener)
 
 	val version: Int
 

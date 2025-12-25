@@ -15,7 +15,7 @@ interface Aggregate : EntityWithProperties {
 
 	val tenant: ObjTenant
 
-	var owner: ObjUser
+	var owner: ObjUser?
 
 	val caption: String
 

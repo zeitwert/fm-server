@@ -7,8 +7,6 @@ import io.dddrive.property.model.EntityWithProperties
  */
 interface Part<A : Aggregate> : EntityWithProperties {
 
-	val aggregate: A
-
 	val id: Int
 
 	val meta: PartMeta<A>

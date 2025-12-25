@@ -31,17 +31,27 @@ abstract class EntityWithPropertiesBase :
 	private val propertyMap: MutableMap<String, Property<*>> = mutableMapOf()
 	private val partMap: MutableMap<Int, Part<*>> = mutableMapOf()
 
-	override fun hasProperty(name: String): Boolean = propertyMap.containsKey(name)
+	override fun hasProperty(name: String): Boolean = 
+		propertyMap.containsKey(name) || propertyMap.containsKey("_$name")
 
-	// override fun getProperty(name: String): Property<*> = propertyMap[name]!!
+	/**
+	 * Resolves the actual property name, trying underscore-prefix fallback.
+	 * Returns the name that exists in the map, or the original name if neither exists.
+	 */
+	private fun resolvePropertyName(name: String): String = when {
+		propertyMap.containsKey(name) -> name
+		propertyMap.containsKey("_$name") -> "_$name"
+		else -> name // Let it fail with the original name
+	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T : Any> getProperty(
 		name: String,
 		type: KClass<T>,
 	): Property<T> {
-		require(hasProperty(name)) { "property [$name] not found in ${javaClass.simpleName}" }
-		return propertyMap[name]!! as Property<T>
+		val resolvedName = resolvePropertyName(name)
+		require(propertyMap.containsKey(resolvedName)) { "property [$name] not found in ${javaClass.simpleName}" }
+		return propertyMap[resolvedName]!! as Property<T>
 	}
 
 	override val properties: List<Property<*>>

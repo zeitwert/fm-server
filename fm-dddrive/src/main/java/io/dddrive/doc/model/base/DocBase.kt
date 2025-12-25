@@ -9,7 +9,9 @@ import io.dddrive.doc.model.DocRepository
 import io.dddrive.doc.model.enums.CodeCaseDef
 import io.dddrive.doc.model.enums.CodeCaseStage
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.partListProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
@@ -21,6 +23,23 @@ abstract class DocBase(
 	Doc,
 	DocMeta {
 
+	// ============================================================================
+	// Delegated properties (DocMeta interface)
+	// ============================================================================
+
+	private var _caseDef: CodeCaseDef? by enumProperty()
+	override val caseDef: CodeCaseDef? get() = _caseDef
+
+	private var _caseStage: CodeCaseStage? by enumProperty()
+	override val caseStage: CodeCaseStage? get() = _caseStage
+
+	override var assignee: ObjUser? by referenceProperty()
+
+	private val _transitionList: PartListProperty<DocPartTransition> by partListProperty()
+	override val transitionList: List<DocPartTransition> get() = _transitionList.toList()
+
+	// ============================================================================
+
 	private var oldCaseStage: CodeCaseStage? = null
 
 	override val meta: DocMeta
@@ -28,14 +47,14 @@ abstract class DocBase(
 
 	override val docTypeId get() = repository.aggregateType.id
 
-	private lateinit var _transitionList: PartListProperty<DocPartTransition>
-
+	// Trigger delegate initialization to register properties before persistence layer access.
+	@Suppress("UNUSED_EXPRESSION")
 	override fun doInit() {
 		super.doInit()
-		addEnumProperty("caseDef", CodeCaseDef::class.java)
-		addEnumProperty("caseStage", CodeCaseStage::class.java)
-		addReferenceProperty("assignee", ObjUser::class.java)
-		_transitionList = addPartListProperty("transitionList", DocPartTransition::class.java)
+		_caseDef
+		_caseStage
+		assignee
+		_transitionList
 	}
 
 	override fun doAfterCreate(
@@ -75,9 +94,9 @@ abstract class DocBase(
 		super.doBeforeStore(userId, timestamp)
 		try {
 			disableCalc()
-			setValueByPath("version", meta.version + 1)
-			setValueByPath("modifiedByUserId", userId)
-			setValueByPath("modifiedAt", timestamp)
+			_version = version + 1
+			modifiedByUserId = userId
+			modifiedAt = timestamp
 		} finally {
 			enableCalc()
 		}
@@ -88,7 +107,7 @@ abstract class DocBase(
 	override fun setCaseDef(caseDef: CodeCaseDef) {
 		require(meta.caseDef == null) { "caseDef empty" }
 		unfreeze()
-		setValueByPath("caseDef", caseDef)
+		_caseDef = caseDef
 	}
 
 	override fun setCaseStage(
@@ -105,7 +124,7 @@ abstract class DocBase(
 			_transitionList.add(null).init(userId, timestamp, caseStage, newCaseStage)
 			oldCaseStage = newCaseStage
 		}
-		setValueByPath("caseStage", newCaseStage)
+		_caseStage = newCaseStage
 	}
 
 	override val caseStages: List<CodeCaseStage>
@@ -124,7 +143,7 @@ abstract class DocBase(
 	}
 
 	protected fun setCaption(caption: String?) {
-		setValueByPath("caption", caption)
+		_caption = caption
 	}
 
 	// 	@Override

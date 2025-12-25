@@ -80,12 +80,12 @@ class ObjRecordMapperImpl(
 		if (aggregate is ItemWithAccount) {
 			record.accountId = aggregate.accountId as Int?
 		}
-		record.ownerId = aggregate.owner.id as Int
+		record.ownerId = aggregate.owner?.id as Int?
 		record.caption = aggregate.caption
 
 		record.version = aggregate.meta.version
 		record.createdAt = aggregate.meta.createdAt
-		record.createdByUserId = aggregate.meta.createdByUser.id as Int
+		record.createdByUserId = aggregate.meta.createdByUser?.id as Int?
 		record.modifiedAt = aggregate.meta.modifiedAt
 		record.modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int
 		record.closedAt = aggregate.meta.closedAt

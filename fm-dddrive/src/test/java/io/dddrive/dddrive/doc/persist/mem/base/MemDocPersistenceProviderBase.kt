@@ -88,10 +88,10 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 			transitions = transitions,
 			// Properties inherited from AggregateMetaPto
 			maxPartId = maxPartId,
-			ownerId = aggregate.owner.id as? Int,
+			ownerId = aggregate.owner?.id as? Int,
 			version = aggregate.meta.version,
 			createdAt = aggregate.meta.createdAt,
-			createdByUserId = aggregate.meta.createdByUser.id as? Int,
+			createdByUserId = aggregate.meta.createdByUser?.id as? Int,
 			modifiedAt = aggregate.meta.modifiedAt,
 			modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int,
 		)

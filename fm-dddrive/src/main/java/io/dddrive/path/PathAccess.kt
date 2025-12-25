@@ -66,19 +66,32 @@ private fun <T : Any> EntityWithProperties.resolveProperty(
 		val isLast = (i == segments.size - 1)
 		val nextSegment = segments.getOrNull(i + 1)
 
-		// Check for "propId" suffix (e.g., "referenceId")
+		// Check for "propId" suffix (e.g., "referenceId" or "_tenantId")
 		// Only if no literal "somethingId" property exists
-		if (isLast && segment.endsWith("Id") && segment.length > 2 && !entity.hasProperty(segment)) {
+		if (isLast && segment.endsWith("Id") && segment.length > 2 && !entity.hasProperty(segment) && !entity.hasProperty("_$segment")) {
 			val baseName = segment.removeSuffix("Id")
-			if (entity.hasProperty(baseName)) {
-				val baseProperty = entity.getProperty(baseName, Any::class)
+			// Try baseName directly, then with underscore prefix
+			val refPropertyName = when {
+				entity.hasProperty(baseName) -> baseName
+				entity.hasProperty("_$baseName") -> "_$baseName"
+				else -> null
+			}
+			if (refPropertyName != null) {
+				val baseProperty = entity.getProperty(refPropertyName, Any::class)
 				if (baseProperty is ReferenceProperty<*, *>) {
 					return baseProperty.idProperty as Property<T>
 				}
 			}
 		}
 
-		val property = entity.getProperty(segment, Any::class)
+		// Try the segment name directly, then fall back to underscore-prefixed (Kotlin style)
+		val property = if (entity.hasProperty(segment)) {
+			entity.getProperty(segment, Any::class)
+		} else if (entity.hasProperty("_$segment")) {
+			entity.getProperty("_$segment", Any::class)
+		} else {
+			entity.getProperty(segment, Any::class) // Let it throw with original name
+		}
 
 		when {
 			isLast -> {

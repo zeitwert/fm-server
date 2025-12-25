@@ -7,7 +7,10 @@ import io.dddrive.obj.model.ObjMeta
 import io.dddrive.obj.model.ObjPartTransition
 import io.dddrive.obj.model.ObjRepository
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.partListProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
@@ -19,18 +22,33 @@ abstract class ObjBase(
 	Obj,
 	ObjMeta {
 
-	private lateinit var _transitionList: PartListProperty<ObjPartTransition>
+	// ============================================================================
+	// Delegated properties (ObjMeta interface)
+	// ============================================================================
+
+	var closedByUserId: Any? by referenceIdProperty<ObjUser>()
+	override var closedByUser: ObjUser? by referenceProperty()
+
+	override var closedAt: OffsetDateTime? by baseProperty()
+
+	private val _transitionList: PartListProperty<ObjPartTransition> by partListProperty()
+	override val transitionList: List<ObjPartTransition> get() = _transitionList.toList()
+
+	// ============================================================================
 
 	override val meta: ObjMeta
 		get() = this
 
 	override val objTypeId get() = repository.aggregateType.id
 
+	// Trigger delegate initialization to register properties before persistence layer access.
+	@Suppress("UNUSED_EXPRESSION")
 	override fun doInit() {
 		super.doInit()
-		addReferenceProperty("closedByUser", ObjUser::class.java)
-		addBaseProperty("closedAt", OffsetDateTime::class.java)
-		_transitionList = addPartListProperty("transitionList", ObjPartTransition::class.java)
+		closedByUserId
+		closedByUser
+		closedAt
+		_transitionList
 	}
 
 	override fun doAfterCreate(
@@ -46,20 +64,6 @@ abstract class ObjBase(
 		}
 	}
 
-	// 	@Override
-	// 	public void doAssignParts() {
-	// 		super.doAssignParts();
-	// 		ObjPartItemRepository itemRepository = getRepository().getItemRepository();
-	// 		for (Property<?> property : getProperties()) {
-	// 			if (property instanceof EnumSetProperty<?> enumSet) {
-	// 				List<ObjPartItem> partList = itemRepository.getParts(this, enumSet.getPartListType());
-	// 				enumSet.loadEnums(partList);
-	// 			} else if (property instanceof ReferenceSetProperty<?> referenceSet) {
-	// 				List<ObjPartItem> partList = itemRepository.getParts(this, referenceSet.getPartListType());
-	// 				referenceSet.loadReferences(partList);
-	// 			}
-	// 		}
-	// 	}
 	override fun doBeforeStore(
 		userId: Any,
 		timestamp: OffsetDateTime,
@@ -70,9 +74,9 @@ abstract class ObjBase(
 
 		try {
 			disableCalc()
-			setValueByPath("version", meta.version + 1)
-			setValueByPath("modifiedByUserId", userId)
-			setValueByPath("modifiedAt", timestamp)
+			_version = version + 1
+			modifiedByUserId = userId
+			modifiedAt = timestamp
 		} finally {
 			enableCalc()
 		}
@@ -82,8 +86,8 @@ abstract class ObjBase(
 		userId: Any?,
 		timestamp: OffsetDateTime?,
 	) {
-		setValueByPath("closedByUserId", userId)
-		setValueByPath("closedAt", timestamp)
+		closedByUserId = userId
+		closedAt = timestamp
 	}
 
 	override fun doAddPart(
@@ -99,7 +103,7 @@ abstract class ObjBase(
 	}
 
 	protected fun setCaption(caption: String?) {
-		setValueByPath("caption", caption)
+		_caption = caption
 	}
 
 }

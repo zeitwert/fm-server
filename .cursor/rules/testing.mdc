@@ -13,19 +13,19 @@ The tests can be run via `mvn` on the windows command shell.
 
 ## run a selection or specific test file (WITH code generation)
 
-`mvn clean test -Dtest=[test-name-pattern] -pl !fm-ui`
+`mvn clean test -Dtest=[test-name-pattern] -pl [module-name]`
 
 example:
 
-`mvn clean test -Dtest=BuildingTest -pl !fm-ui`
+`mvn clean test -Dtest=HouseholdMemTest -pl fm-dddrive`
 
 ## run a selection or specific test file (WITHOUT code generation when you already did it before)
 
-`mvn surefire:test -Dtest=[test-name-pattern] -pl !fm-ui`
+`mvn surefire:test -Dtest=[test-name-pattern] -pl [module-name]`
 
 example:
 
-`mvn surefire:test -Dtest=BuildingTest -pl !fm-ui`
+`mvn surefire:test -Dtest=BuildingTest -pl fm-domain`
 
 # Run Build
 

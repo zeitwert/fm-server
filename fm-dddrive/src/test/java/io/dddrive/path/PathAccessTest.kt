@@ -601,7 +601,7 @@ class TestAggregate(
 
 	override val tenantId: Any get() = 1
 	override val tenant: ObjTenant get() = throw NotImplementedError()
-	override var owner: ObjUser
+	override var owner: ObjUser?
 		get() = throw NotImplementedError()
 		set(value) {}
 	override val caption: String = "TestAggregate"
@@ -628,7 +628,6 @@ class TestPart(
 ) : Part<TestAggregate> {
 
 	private val _properties = mutableMapOf<String, Property<*>>()
-	override val aggregate = TestAggregate(1)
 
 	fun addProperty(
 		name: String,

@@ -2,7 +2,6 @@ package io.dddrive.ddd.model.base
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.AggregateMeta
 import io.dddrive.ddd.model.AggregatePersistenceProvider
 import io.dddrive.ddd.model.AggregateRepository
 import io.dddrive.ddd.model.AggregateRepositorySPI
@@ -150,9 +149,9 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		(aggregate as EntityWithPropertiesSPI).doInit()
 		check(aggregate.doInitSeqNr > doInitSeqNr) { this.getBaseClassName(aggregate) + ": doInit was propagated" }
 
-		(aggregate as AggregateMeta).beginLoad()
+		(aggregate as AggregateSPI).beginLoad()
 		persistenceProvider.doLoad(aggregate, id)
-		(aggregate as AggregateMeta).endLoad()
+		aggregate.endLoad()
 
 		aggregate.meta.calcVolatile()
 

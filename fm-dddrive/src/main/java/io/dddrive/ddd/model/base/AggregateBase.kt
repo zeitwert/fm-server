@@ -8,8 +8,9 @@ import io.dddrive.ddd.model.Part
 import io.dddrive.ddd.model.RepositoryDirectory
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.setValueByPath
-import io.dddrive.property.model.BaseProperty
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.dddrive.property.model.EntityWithPropertiesSPI
 import io.dddrive.property.model.Property
 import io.dddrive.property.model.PropertyChangeListener
@@ -28,6 +29,83 @@ abstract class AggregateBase(
 	Aggregate,
 	AggregateMeta,
 	AggregateSPI {
+
+	// ============================================================================
+	// Delegated properties (Aggregate interface)
+	// ============================================================================
+
+	private var _id: Any? by baseProperty()
+	override val id: Any get() = _id!!
+
+	private var _maxPartId: Int? by baseProperty()
+
+	protected var _version: Int? by baseProperty()
+	override val version: Int get() = _version ?: 0
+
+	// tenant reference - use explicit property access
+	// Both tenantId and tenant access the same "tenant" reference property
+	private val tenantProperty by lazy { getOrAddReferenceProperty("tenant", ObjTenant::class.java) }
+	override val tenantId: Any get() = tenantProperty.id!!
+	override val tenant: ObjTenant get() = tenantProperty.value!!
+
+	// owner reference - use explicit property access
+	// Both ownerId and owner access the same "owner" reference property
+	private val ownerProperty by lazy { getOrAddReferenceProperty("owner", ObjUser::class.java) }
+	var ownerId: Any?
+		get() = ownerProperty.id
+		set(value) {
+			ownerProperty.id = value
+		}
+	override var owner: ObjUser?
+		get() = ownerProperty.value
+		set(value) {
+			ownerProperty.value = value
+		}
+
+	protected var _caption: String? by baseProperty()
+	override val caption: String get() = _caption ?: ""
+
+	// ============================================================================
+	// Delegated properties (AggregateMeta interface)
+	// ============================================================================
+
+	// createdByUser reference - use explicit property access
+	private val createdByUserProperty by lazy { getOrAddReferenceProperty("createdByUser", ObjUser::class.java) }
+	var createdByUserId: Any?
+		get() = createdByUserProperty.id
+		set(value) {
+			createdByUserProperty.id = value
+		}
+	override val createdByUser: ObjUser get() = createdByUserProperty.value!!
+
+	private val createdAtProperty by lazy { getOrAddBaseProperty("createdAt", OffsetDateTime::class.java) }
+	var _createdAt: OffsetDateTime?
+		get() = createdAtProperty.value
+		set(value) {
+			createdAtProperty.value = value
+		}
+	override val createdAt: OffsetDateTime get() = createdAtProperty.value!!
+
+	// modifiedByUser reference - use explicit property access
+	override var modifiedByUser: ObjUser? by referenceProperty()
+	protected var modifiedByUserId: Any? by referenceIdProperty<ObjUser>()
+	// private val modifiedByUserProperty by lazy { getOrAddReferenceProperty("modifiedByUser", ObjUser::class.java) }
+	// var modifiedByUserId: Any?
+	// 	get() = modifiedByUserProperty.id
+	// 	set(value) {
+	// 		modifiedByUserProperty.id = value
+	// 	}
+	// override var modifiedByUser: ObjUser?
+	// 	get() = modifiedByUserProperty.value
+	// 	set(value) {
+	// 		modifiedByUserProperty.value = value
+	// 	}
+
+	override var modifiedAt: OffsetDateTime? by baseProperty()
+
+	// ============================================================================
+	// Internal state
+	// ============================================================================
 
 	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
 	private val _validations: MutableList<AggregatePartValidation> = mutableListOf()
@@ -82,24 +160,28 @@ abstract class AggregateBase(
 	override fun doLogChange(propertyName: String): Boolean = repository.doLogChange(propertyName)
 
 	override fun <P : Part<*>> nextPartId(partClass: Class<P>): Int {
-		val maxPartId = getProperty("maxPartId", Int::class) as BaseProperty<Int>
-		synchronized(maxPartId) {
-			maxPartId.value = (maxPartId.value ?: 0) + 1
-			return maxPartId.value!!
+		synchronized(this) {
+			_maxPartId = (_maxPartId ?: 0) + 1
+			return _maxPartId!!
 		}
 	}
 
+	// Trigger property initialization before persistence layer access through setValueByPath.
+	// Delegated properties register on first access.
+	// Lazy properties are accessed to trigger initialization.
+	@Suppress("UNUSED_EXPRESSION")
 	override fun doInit() {
-		addBaseProperty("id", Any::class.java)
-		addBaseProperty("maxPartId", Int::class.java)
-		addBaseProperty("version", Int::class.java)
-		addReferenceProperty("tenant", ObjTenant::class.java)
-		addReferenceProperty("owner", ObjUser::class.java)
-		addBaseProperty("caption", String::class.java)
-		addReferenceProperty("createdByUser", ObjUser::class.java)
-		addBaseProperty("createdAt", OffsetDateTime::class.java)
-		addReferenceProperty("modifiedByUser", ObjUser::class.java)
-		addBaseProperty("modifiedAt", OffsetDateTime::class.java)
+		_id
+		_maxPartId
+		_version
+		tenantProperty
+		ownerProperty
+		_caption
+		createdByUserProperty
+		_createdAt
+		modifiedByUser
+		modifiedByUserId
+		modifiedAt
 		doInitSeqNr += 1
 	}
 
@@ -107,8 +189,8 @@ abstract class AggregateBase(
 		aggregateId: Any,
 		tenantId: Any,
 	) {
-		setValueByPath("id", aggregateId)
-		setValueByPath("tenantId", tenantId)
+		_id = aggregateId
+		tenantProperty.id = tenantId
 		doCreateSeqNr += 1
 	}
 
@@ -116,10 +198,10 @@ abstract class AggregateBase(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		setValueByPath("ownerId", userId)
-		setValueByPath("version", 0)
-		setValueByPath("createdByUserId", userId)
-		setValueByPath("createdAt", timestamp)
+		ownerId = userId
+		_version = 0
+		createdByUserId = userId
+		_createdAt = timestamp
 		doAfterCreateSeqNr += 1
 		fireEntityAddedChange(id)
 	}

@@ -1,6 +1,7 @@
 package io.dddrive.ddd.model
 
 import io.dddrive.property.model.EntityWithPropertiesSPI
+import io.dddrive.property.model.PropertyChangeListener
 import java.time.OffsetDateTime
 
 /**
@@ -38,10 +39,18 @@ interface AggregateSPI : EntityWithPropertiesSPI {
 		timestamp: OffsetDateTime,
 	)
 
+	fun beginLoad()
+
+	fun endLoad()
+
 	/**
 	 * Do some work after load.
 	 */
 	fun doAfterLoad()
+
+	fun addPropertyChangeListener(listener: PropertyChangeListener)
+
+	fun removePropertyChangeListener(listener: PropertyChangeListener)
 
 	/**
 	 * Prepare for storage, f.ex. assign seqNr to parts.

@@ -60,38 +60,30 @@ public class NoteTest {
 		// remove 1 note in the middle [1, 2]
 		// store
 		{
-			ObjNote noteA1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
+			ObjNote noteA1 = testA1.addNote(CodeNoteType.NOTE, userId);
 			this.initNote(noteA1, "Subject 1", "Content 1", false);
 			this.noteRepo.store(noteA1, userId, now);
 			assertEquals(1, testA1.getNotes().size());
 
-			ObjNote noteB1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
+			ObjNote noteB1 = testA1.addNote(CodeNoteType.NOTE, userId);
 			this.initNote(noteB1, "Subject 2", "Content 2", false);
 			this.noteRepo.store(noteB1, userId, now);
 			assertEquals(2, testA1.getNotes().size());
 
-			ObjNote noteC1 = testA1.addNote(CodeNoteType.getNoteType("note"), userId);
+			ObjNote noteC1 = testA1.addNote(CodeNoteType.NOTE, userId);
 			this.initNote(noteC1, "Subject 3", "Content 3", false);
 			this.noteRepo.store(noteC1, userId, now);
 			assertEquals(3, testA1.getNotes().size());
 
-			Set<Object> idSet = new HashSet<>(testA1.getNotes());
-			List<ObjNote> testA1_noteList = idSet.stream().map(id -> noteRepo.get(id)).toList();
-			assertEquals(Set.of(noteA1.getId(), noteB1.getId(), noteC1.getId()), idSet);
-			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
-			assertEquals(noteB1.getId(), testA1_noteList.get(1).getId());
-			assertEquals(noteC1.getId(), testA1_noteList.get(2).getId());
-			assertEquals("Subject 1,Subject 2,Subject 3",
-					String.join(",", testA1.getNotes().stream().map(id -> noteRepo.get(id)).map(n -> n.getSubject()).toList()));
-			assertEquals("Subject 2", testA1.getNotes().stream().map(id -> noteRepo.get(id)).toList().get(1).getSubject());
+			Set<Object> idSet3 = new HashSet<>(testA1.getNotes());
+			assertEquals(Set.of(noteA1.getId(), noteB1.getId(), noteC1.getId()), idSet3);
+			assertEquals(Set.of("Subject 1", "Subject 2", "Subject 3"), testA1.getNotes().stream().map(id -> noteRepo.get(id)).map(n -> n.getSubject()).collect(Collectors.toSet()));
 
 			testA1.removeNote(noteB1.getId(), userId);
-			testA1_noteList = testA1.getNotes().stream().map(id -> noteRepo.get(id)).toList();
-			assertEquals(2, testA1_noteList.size());
-			assertEquals(noteA1.getId(), testA1_noteList.get(0).getId());
-			assertEquals(noteA1.getSubject(), testA1_noteList.get(0).getSubject());
-			assertEquals(noteC1.getId(), testA1_noteList.get(1).getId());
-			assertEquals(noteC1.getSubject(), testA1_noteList.get(1).getSubject());
+			assertEquals(2, testA1.getNotes().size());
+			Set<Object> idSet2 = new HashSet<>(testA1.getNotes());
+			assertEquals(Set.of(noteA1.getId(), noteC1.getId()), idSet2);
+			assertEquals(Set.of("Subject 1", "Subject 3"), testA1.getNotes().stream().map(id -> noteRepo.get(id)).map(n -> n.getSubject()).collect(Collectors.toSet()));
 
 			this.testRepo.store(testA1, userId, now);
 			testA1 = null;

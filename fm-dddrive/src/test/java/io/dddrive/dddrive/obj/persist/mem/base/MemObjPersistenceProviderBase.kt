@@ -49,7 +49,7 @@ abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 			transitions = transitions,
 			// Properties inherited from AggregateMetaPto, passed to ObjMetaPto's constructor
 			maxPartId = maxPartId,
-			ownerId = aggregate.owner.id as? Int,
+			ownerId = aggregate.owner?.id as? Int,
 			version = aggregate.meta.version,
 			createdAt = aggregate.meta.createdAt,
 			createdByUserId = aggregate.meta.createdByUser?.id as? Int,

@@ -98,7 +98,7 @@ class BuildingImportExportController {
 		val meta = TransferMetaDto(
 			aggregate = AGGREGATE,
 			version = VERSION,
-			createdByUser = building.meta.createdByUser.email,
+			createdByUser = building.meta.createdByUser?.email,
 			createdAt = building.meta.createdAt,
 			modifiedByUser = building.meta.modifiedByUser?.email,
 			modifiedAt = building.meta.modifiedAt,
@@ -127,7 +127,7 @@ class BuildingImportExportController {
 					subject = note.subject,
 					content = note.content,
 					isPrivate = note.isPrivate,
-					createdByUser = note.meta.createdByUser.email,
+					createdByUser = note.meta.createdByUser?.email,
 					createdAt = note.meta.createdAt,
 					modifiedByUser = note.meta.modifiedByUser?.email,
 					modifiedAt = note.meta.modifiedAt,

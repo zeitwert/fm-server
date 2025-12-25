@@ -1,5 +1,6 @@
 package io.dddrive.test
 
+import io.dddrive.ddd.model.AggregateSPI
 import io.dddrive.domain.household.model.ObjHouseholdRepository
 import io.dddrive.domain.household.model.enums.CodeLabel
 import io.dddrive.domain.household.model.enums.CodeSalutation
@@ -85,7 +86,7 @@ class HouseholdMemTest : PropertyChangeListener {
 		assertEquals(0, hhRepo.getByForeignKey("objTypeId", "obj_household").size, "0 hh")
 
 		val hhA1 = hhRepo.create(tenant.id, user.id, OffsetDateTime.now())
-		hhA1.meta.addPropertyChangeListener(this)
+		(hhA1 as AggregateSPI).addPropertyChangeListener(this)
 		val hhA1Id = hhA1.id
 		hhA1.name = "HHA"
 		assertEquals(tenant, hhA1.tenant, "tenant")
