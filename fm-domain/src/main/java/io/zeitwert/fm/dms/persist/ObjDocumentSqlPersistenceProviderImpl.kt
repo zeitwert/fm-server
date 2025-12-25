@@ -1,9 +1,9 @@
 package io.zeitwert.fm.dms.persist
 
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.db.Tables
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord
@@ -14,7 +14,6 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Component
@@ -47,7 +46,7 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 		aggregate.name = record.name
 		aggregate.documentKind = CodeDocumentKind.Enumeration.getDocumentKind(record.documentKindId)
 		aggregate.documentCategory = CodeDocumentCategory.Enumeration.getDocumentCategory(record.documentCategoryId)
-		aggregate.setValueByPath("templateDocumentId", record.templateDocumentId)
+		aggregate.templateDocumentId = record.templateDocumentId
 		aggregate.contentKind = CodeContentKind.Enumeration.getContentKind(record.contentKindId)
 	}
 
@@ -70,7 +69,7 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 		record.name = aggregate.name
 		record.documentKindId = aggregate.documentKind?.id
 		record.documentCategoryId = aggregate.documentCategory?.id
-		record.templateDocumentId = aggregate.templateDocumentId
+		record.templateDocumentId = aggregate.templateDocumentId as? Int
 		record.contentKindId = aggregate.contentKind?.id
 
 		return record

@@ -1,6 +1,12 @@
-package io.zeitwert.fm.dms.model.base
+package io.zeitwert.fm.dms.model.impl
 
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.zeitwert.fm.account.model.ObjAccount
+import io.zeitwert.fm.collaboration.model.ObjNote
+import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
@@ -9,10 +15,12 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
+import io.zeitwert.fm.task.model.DocTask
+import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.time.OffsetDateTime
 
-abstract class ObjDocumentBase(
+open class ObjDocumentImpl(
 	override val repository: ObjDocumentRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
@@ -20,27 +28,21 @@ abstract class ObjDocumentBase(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	override fun aggregate(): ObjDocument = this
+	// Base properties
+	override var name: String? by baseProperty()
 
-	override fun doInit() {
-		super.doInit()
-		addBaseProperty("name", String::class.java)
-		addEnumProperty("documentKind", CodeDocumentKind::class.java)
-		addEnumProperty("documentCategory", CodeDocumentCategory::class.java)
-		addReferenceProperty("templateDocument", ObjDocument::class.java)
-		addEnumProperty("contentKind", CodeContentKind::class.java)
-	}
+	// Enum properties
+	override var contentKind: CodeContentKind? by enumProperty()
+	override var documentKind: CodeDocumentKind? by enumProperty()
+	override var documentCategory: CodeDocumentCategory? by enumProperty()
 
+	// Reference properties (templateDocument)
+	override var templateDocumentId: Any? by referenceIdProperty<ObjDocument>()
+	override val templateDocument: ObjDocument? by referenceProperty()
+
+	// Content properties (managed specially by repository)
 	private var _contentType: CodeContentType? = null
 	private var _content: ByteArray? = null
-
-	override fun doAfterLoad() {
-		super.doAfterLoad()
-		this.loadContent()
-	}
-
-	override val account
-		get() = if (accountId != null) directory.getRepository(ObjAccount::class.java).get(this.accountId!!) else null
 
 	override val contentType get() = _contentType
 
@@ -56,6 +58,21 @@ abstract class ObjDocumentBase(
 		this._contentType = contentType
 		this._content = content
 		this.calcAll()
+	}
+
+	// ItemWithAccount implementation
+	override val account
+		get() = if (accountId != null) directory.getRepository(ObjAccount::class.java).get(accountId!!) else null
+
+	override fun aggregate(): ObjDocument = this
+
+	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
+
+	override fun taskRepository() = directory.getRepository(DocTask::class.java) as DocTaskRepository
+
+	override fun doAfterLoad() {
+		super.doAfterLoad()
+		this.loadContent()
 	}
 
 	override fun doAfterStore() {
@@ -78,10 +95,4 @@ abstract class ObjDocumentBase(
 	private fun calcCaption() {
 		setCaption(name)
 	}
-
-	// override fun doCalcSearch() {
-	//     super.doCalcSearch()
-	//     this.addSearchText(this.name)
-	// }
-
 }

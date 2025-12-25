@@ -24,7 +24,7 @@ interface ObjDocument :
 
 	var documentCategory: CodeDocumentCategory?
 
-	var templateDocumentId: Int?
+	var templateDocumentId: Any?
 
 	val templateDocument: ObjDocument?
 
