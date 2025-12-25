@@ -1,11 +1,9 @@
 package io.dddrive.domain.household.model.impl
 
-import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.dddrive.domain.household.model.ObjHousehold
 import io.dddrive.domain.household.model.ObjHouseholdPartMember
 import io.dddrive.domain.household.model.ObjHouseholdRepository
-import io.dddrive.domain.household.model.base.ObjHouseholdBase
-import io.dddrive.domain.household.model.base.ObjHouseholdPartMemberBase
+import io.dddrive.obj.model.base.ObjRepositoryBase
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
 
@@ -15,7 +13,7 @@ class ObjHouseholdRepositoryImpl :
 	ObjRepositoryBase<ObjHousehold>(
 		ObjHouseholdRepository::class.java,
 		ObjHousehold::class.java,
-		ObjHouseholdBase::class.java,
+		ObjHouseholdImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjHouseholdRepository {
@@ -32,7 +30,7 @@ class ObjHouseholdRepositoryImpl :
 		this.addPart(
 			ObjHousehold::class.java,
 			ObjHouseholdPartMember::class.java,
-			ObjHouseholdPartMemberBase::class.java,
+			ObjHouseholdPartMemberImpl::class.java,
 		)
 	}
 

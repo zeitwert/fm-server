@@ -1,10 +1,9 @@
 package io.dddrive.domain.oe.model.impl
 
+import io.dddrive.domain.oe.model.ObjTenantRepository
+import io.dddrive.domain.oe.persist.ObjTenantPersistenceProvider
 import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.dddrive.oe.model.ObjTenant
-import io.dddrive.domain.oe.model.ObjTenantRepository
-import io.dddrive.domain.oe.model.base.ObjTenantTestBase
-import io.dddrive.domain.oe.persist.ObjTenantPersistenceProvider
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
 import java.util.*
@@ -15,7 +14,7 @@ class ObjTenantRepositoryImpl :
 	ObjRepositoryBase<ObjTenant>(
 		ObjTenantRepository::class.java,
 		ObjTenant::class.java,
-		ObjTenantTestBase::class.java,
+		ObjTenantTestImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjTenantRepository {

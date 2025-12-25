@@ -27,6 +27,14 @@ example:
 
 `mvn surefire:test -Dtest=BuildingTest -pl fm-domain`
 
+## be smart
+
+If you just did a full compile, you don't need to clean before doing the tests, just execute the tests.
+
+`mvn test -pl !fm-ui`
+
+`mvn test -Dtest=HouseholdMemTest -pl fm-dddrive`
+
 # Run Build
 
 Before terminating your task, check that the builds are still correctly done.

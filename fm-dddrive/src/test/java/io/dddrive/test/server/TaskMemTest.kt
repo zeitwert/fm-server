@@ -167,7 +167,7 @@ class TaskMemTest : PropertyChangeListener {
 		// Add first comment
 		val commentText1 = "This is the first comment on the task."
 		val comment1TimeBefore = OffsetDateTime.now()
-		val comment1 = task.addComment()
+		val comment1 = task.commentList.add()
 		comment1.text = commentText1
 		val comment1TimeAfter = OffsetDateTime.now()
 
@@ -184,7 +184,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		val commentText2 = "User1 adds a follow-up comment."
 		val comment2TimeBefore = OffsetDateTime.now()
-		val comment2 = task.addComment()
+		val comment2 = task.commentList.add()
 		comment2.text = commentText2
 		val comment2TimeAfter = OffsetDateTime.now()
 
@@ -238,7 +238,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Add a comment after stage change
 		val commentText3 = "Task is now in progress."
-		val comment3 = mutableTask.addComment()
+		val comment3 = mutableTask.commentList.add()
 		comment3.text = commentText3
 		assertEquals(
 			3,
@@ -275,7 +275,7 @@ class TaskMemTest : PropertyChangeListener {
 			taskToEditComments.commentList.find { it.id == comment1.id },
 			"Comment 1 should exist before removal",
 		)
-		taskToEditComments.removeComment(comment1.id)
+		taskToEditComments.commentList.remove(comment1.id)
 		assertEquals(
 			2,
 			taskToEditComments.commentList.size,
@@ -364,7 +364,7 @@ class TaskMemTest : PropertyChangeListener {
 		task1.meta.setCaseStage(taskNewStage, user.id as Int, now)
 		task1.subject = "Task 1"
 		task1.priority = CodeTaskPriority.LOW
-		val comment = task1.addComment()
+		val comment = task1.commentList.add()
 		comment.text = "Comment for Task 1"
 		taskRepo.store(task1, user.id, now)
 
@@ -374,9 +374,9 @@ class TaskMemTest : PropertyChangeListener {
 		task2.subject = "Task 2"
 		task2.priority = CodeTaskPriority.URGENT
 		task2.assignee = user1
-		val comment1 = task2.addComment()
+		val comment1 = task2.commentList.add()
 		comment1.text = "First comment for Task 2"
-		val comment2 = task2.addComment()
+		val comment2 = task2.commentList.add()
 		comment2.text = "Second comment for Task 2"
 		taskRepo.store(task2, user.id, now.plusMinutes(1))
 
@@ -409,6 +409,8 @@ class TaskMemTest : PropertyChangeListener {
 		task.setValueByPath("subject", newSubject)
 		assertEquals(newSubject, task.subject)
 
+		// Access isPrivate first to register the delegate property
+		assertNull(task.isPrivate)
 		task.setValueByPath("isPrivate", true)
 		assertEquals(true, task.isPrivate)
 
@@ -417,9 +419,11 @@ class TaskMemTest : PropertyChangeListener {
 		assertEquals(user1.id, task.assignee?.id)
 
 		// Set property on a part in a list
-		val comment = task.addComment()
+		val comment = task.commentList.add()
 		val commentIndex = task.commentList.indexOf(comment)
 		val newCommentText = "Updated comment text via path"
+		// Access text first to register the delegate property
+		assertNull(comment.text)
 		task.setValueByPath("commentList[$commentIndex].text", newCommentText)
 		assertEquals(newCommentText, comment.text)
 	}

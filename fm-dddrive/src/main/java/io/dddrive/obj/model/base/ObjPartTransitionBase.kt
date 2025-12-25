@@ -4,7 +4,9 @@ import io.dddrive.ddd.model.PartRepository
 import io.dddrive.obj.model.Obj
 import io.dddrive.obj.model.ObjPartTransition
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
 
@@ -16,24 +18,38 @@ abstract class ObjPartTransitionBase(
 ) : ObjPartBase<Obj>(obj, repository, property, id),
 	ObjPartTransition {
 
+	// Private mutable backing for read-only interface properties
+	private var _tenantId: Any? by baseProperty()
+
+	private var _user: ObjUser? by referenceProperty()
+	override val user: ObjUser get() = _user!!
+
+	private var _userId: Any? by referenceIdProperty<ObjUser>()
+
+	private var _timestamp: OffsetDateTime? by baseProperty()
+	override val timestamp: OffsetDateTime get() = _timestamp!!
+
+	// Register properties for setValueByPath access (interface has val properties)
+	@Suppress("UNUSED_EXPRESSION")
 	override fun doInit() {
 		super.doInit()
-		addBaseProperty("tenantId", Any::class.java)
-		addReferenceProperty("user", ObjUser::class.java)
-		addBaseProperty("timestamp", OffsetDateTime::class.java)
+		_tenantId
+		_user
+		_userId
+		_timestamp
 	}
 
 	override fun doAfterCreate() {
 		super.doAfterCreate()
-		setValueByPath("tenantId", aggregate.tenantId)
+		_tenantId = aggregate.tenantId
 	}
 
 	override fun init(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		setValueByPath("userId", userId)
-		setValueByPath("timestamp", timestamp)
+		_userId = userId
+		_timestamp = timestamp
 	}
 
 }

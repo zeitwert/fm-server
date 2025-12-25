@@ -2,6 +2,7 @@ package io.dddrive.domain.task.model
 
 import io.dddrive.doc.model.Doc
 import io.dddrive.domain.task.model.enums.CodeTaskPriority
+import io.dddrive.property.model.PartListProperty
 import java.time.OffsetDateTime
 
 interface DocTask : Doc {
@@ -13,10 +14,6 @@ interface DocTask : Doc {
 	var dueAt: OffsetDateTime?
 	var remindAt: OffsetDateTime?
 
-	val commentList: List<DocTaskPartComment>
-
-	fun addComment(): DocTaskPartComment
-
-	fun removeComment(commentId: Int)
+	val commentList: PartListProperty<DocTaskPartComment>
 
 }

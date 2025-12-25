@@ -5,7 +5,10 @@ import io.dddrive.doc.model.Doc
 import io.dddrive.doc.model.DocPartTransition
 import io.dddrive.doc.model.enums.CodeCaseStage
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
+import io.dddrive.property.delegate.enumProperty
+import io.dddrive.property.delegate.referenceIdProperty
+import io.dddrive.property.delegate.referenceProperty
 import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
 
@@ -17,18 +20,41 @@ abstract class DocPartTransitionBase(
 ) : DocPartBase<Doc>(doc, repository, property, id),
 	DocPartTransition {
 
+	// seqNr is the part id
+	override val seqNr: Int get() = id
+
+	// Private mutable backing for read-only interface properties
+	private var _tenantId: Any? by baseProperty()
+
+	private var _user: ObjUser? by referenceProperty()
+	override val user: ObjUser get() = _user!!
+
+	private var _userId: Any? by referenceIdProperty<ObjUser>()
+
+	private var _timestamp: OffsetDateTime? by baseProperty()
+	override val timestamp: OffsetDateTime get() = _timestamp!!
+
+	private var _oldCaseStage: CodeCaseStage? by enumProperty()
+	override val oldCaseStage: CodeCaseStage? get() = _oldCaseStage
+
+	private var _newCaseStage: CodeCaseStage? by enumProperty()
+	override val newCaseStage: CodeCaseStage get() = _newCaseStage!!
+
+	// Register properties for setValueByPath access (interface has val properties)
+	@Suppress("UNUSED_EXPRESSION")
 	override fun doInit() {
 		super.doInit()
-		addBaseProperty("tenantId", Any::class.java)
-		addReferenceProperty("user", ObjUser::class.java)
-		addBaseProperty("timestamp", OffsetDateTime::class.java)
-		addEnumProperty("oldCaseStage", CodeCaseStage::class.java)
-		addEnumProperty("newCaseStage", CodeCaseStage::class.java)
+		_tenantId
+		_user
+		_userId
+		_timestamp
+		_oldCaseStage
+		_newCaseStage
 	}
 
 	override fun doAfterCreate() {
 		super.doAfterCreate()
-		setValueByPath("tenantId", aggregate.tenantId)
+		_tenantId = aggregate.tenantId
 	}
 
 	override fun init(
@@ -37,10 +63,10 @@ abstract class DocPartTransitionBase(
 		oldCaseStage: CodeCaseStage?,
 		caseStage: CodeCaseStage,
 	) {
-		setValueByPath("userId", userId)
-		setValueByPath("timestamp", timestamp)
-		setValueByPath("oldCaseStage", oldCaseStage)
-		setValueByPath("newCaseStage", caseStage)
+		_userId = userId
+		_timestamp = timestamp
+		_oldCaseStage = oldCaseStage
+		_newCaseStage = caseStage
 	}
 
 }

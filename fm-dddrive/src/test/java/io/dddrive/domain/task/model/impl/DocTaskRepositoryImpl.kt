@@ -4,8 +4,6 @@ import io.dddrive.doc.model.base.DocRepositoryBase
 import io.dddrive.domain.task.model.DocTask
 import io.dddrive.domain.task.model.DocTaskPartComment
 import io.dddrive.domain.task.model.DocTaskRepository
-import io.dddrive.domain.task.model.base.DocTaskBase
-import io.dddrive.domain.task.model.base.DocTaskPartCommentBase
 import io.dddrive.domain.task.persist.DocTaskPersistenceProvider
 import org.springframework.stereotype.Component
 
@@ -14,7 +12,7 @@ class DocTaskRepositoryImpl :
 	DocRepositoryBase<DocTask>(
 		DocTaskRepository::class.java,
 		DocTask::class.java,
-		DocTaskBase::class.java,
+		DocTaskImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	DocTaskRepository {
@@ -23,7 +21,7 @@ class DocTaskRepositoryImpl :
 
 	override fun registerParts() {
 		super.registerParts()
-		this.addPart(DocTask::class.java, DocTaskPartComment::class.java, DocTaskPartCommentBase::class.java)
+		this.addPart(DocTask::class.java, DocTaskPartComment::class.java, DocTaskPartCommentImpl::class.java)
 	}
 
 	companion object {

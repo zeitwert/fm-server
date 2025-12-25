@@ -1,4 +1,4 @@
-package io.dddrive.domain.household.model.base
+package io.dddrive.domain.household.model.impl
 
 import io.dddrive.ddd.model.Part
 import io.dddrive.domain.household.model.ObjHousehold
@@ -20,7 +20,7 @@ import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import io.dddrive.property.model.ReferenceSetProperty
 
-open class ObjHouseholdBase(
+open class ObjHouseholdImpl(
 	repository: ObjHouseholdRepository,
 	isNew: Boolean,
 ) : ObjBase(repository, isNew),

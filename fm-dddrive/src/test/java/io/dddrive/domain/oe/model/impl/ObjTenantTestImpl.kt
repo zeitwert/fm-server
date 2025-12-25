@@ -1,9 +1,9 @@
-package io.dddrive.domain.oe.model.base
+package io.dddrive.domain.oe.model.impl
 
-import io.dddrive.oe.model.base.ObjTenantBase
 import io.dddrive.domain.oe.model.ObjTenantRepository
+import io.dddrive.oe.model.base.ObjTenantBase
 
-abstract class ObjTenantTestBase(
+class ObjTenantTestImpl(
 	override val repository: ObjTenantRepository,
 	isNew: Boolean,
 ) : ObjTenantBase(repository, isNew)

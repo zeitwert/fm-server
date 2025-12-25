@@ -4,6 +4,7 @@ import io.dddrive.obj.model.ObjRepository
 import io.dddrive.obj.model.base.ObjBase
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.path.setValueByPath
+import io.dddrive.property.delegate.baseProperty
 import java.time.OffsetDateTime
 
 abstract class ObjTenantBase(
@@ -12,12 +13,9 @@ abstract class ObjTenantBase(
 ) : ObjBase(repository, isNew),
 	ObjTenant {
 
-	override fun doInit() {
-		super.doInit()
-		addBaseProperty<String>("key", String::class.java)
-		addBaseProperty<String>("name", String::class.java)
-		addBaseProperty<String>("description", String::class.java)
-	}
+	override var key: String? by baseProperty()
+	override var name: String? by baseProperty()
+	override var description: String? by baseProperty()
 
 	override fun doAfterCreate(
 		userId: Any,

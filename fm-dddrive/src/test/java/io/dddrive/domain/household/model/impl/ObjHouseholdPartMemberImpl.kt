@@ -1,4 +1,4 @@
-package io.dddrive.domain.household.model.base
+package io.dddrive.domain.household.model.impl
 
 import io.dddrive.ddd.model.PartRepository
 import io.dddrive.domain.household.model.ObjHousehold
@@ -11,7 +11,7 @@ import io.dddrive.property.delegate.partReferenceIdProperty
 import io.dddrive.property.delegate.partReferenceProperty
 import io.dddrive.property.model.Property
 
-open class ObjHouseholdPartMemberBase(
+class ObjHouseholdPartMemberImpl(
 	obj: ObjHousehold,
 	override val repository: PartRepository<ObjHousehold, ObjHouseholdPartMember>,
 	property: Property<*>,
