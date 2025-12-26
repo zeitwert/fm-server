@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component
 @Component("objAccountRepository")
 class ObjAccountRepositoryImpl :
 	FMObjRepositoryBase<ObjAccount>(
-		ObjAccountRepository::class.java,
 		ObjAccount::class.java,
-		ObjAccountImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjAccountRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjAccount = ObjAccountImpl(this, isNew)
 
 	companion object {
 

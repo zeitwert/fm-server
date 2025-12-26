@@ -37,7 +37,7 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-open class ObjBuildingImpl(
+class ObjBuildingImpl(
 	override val repository: ObjBuildingRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

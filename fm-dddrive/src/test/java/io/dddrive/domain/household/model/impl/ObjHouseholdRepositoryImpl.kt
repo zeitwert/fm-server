@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component
 @DependsOn("objHouseholdPersistenceProvider")
 class ObjHouseholdRepositoryImpl :
 	ObjRepositoryBase<ObjHousehold>(
-		ObjHouseholdRepository::class.java,
 		ObjHousehold::class.java,
-		ObjHouseholdImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjHouseholdRepository {
@@ -23,15 +21,13 @@ class ObjHouseholdRepositoryImpl :
 		private const val AGGREGATE_TYPE = "objHousehold"
 	}
 
+	override fun createAggregate(isNew: Boolean): ObjHousehold = ObjHouseholdImpl(this, isNew)
+
 	override val persistenceProvider get() = directory.getPersistenceProvider(ObjHousehold::class.java)
 
 	override fun registerParts() {
 		super.registerParts()
-		this.addPart(
-			ObjHousehold::class.java,
-			ObjHouseholdPartMember::class.java,
-			ObjHouseholdPartMemberImpl::class.java,
-		)
+		this.addPart(ObjHouseholdPartMember::class.java, ::ObjHouseholdPartMemberImpl)
 	}
 
 }

@@ -19,7 +19,7 @@ import org.jooq.JSON
 import java.math.BigDecimal
 import java.time.LocalDate
 
-open class DocTestImpl(
+class DocTestImpl(
 	override val repository: DocTestRepository,
 	isNew: Boolean,
 ) : FMDocBase(repository, isNew),

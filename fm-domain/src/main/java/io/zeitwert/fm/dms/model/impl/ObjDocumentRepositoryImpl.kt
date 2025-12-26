@@ -14,14 +14,14 @@ import java.time.OffsetDateTime
 @Component("objDocumentRepository")
 class ObjDocumentRepositoryImpl :
 	FMObjRepositoryBase<ObjDocument>(
-		ObjDocumentRepository::class.java,
 		ObjDocument::class.java,
-		ObjDocumentImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjDocumentRepository {
 
 	private lateinit var accountRepository: ObjAccountRepository
+
+	override fun createAggregate(isNew: Boolean): ObjDocument = ObjDocumentImpl(this, isNew)
 
 	override val persistenceProvider get() = super.persistenceProvider as ObjDocumentSqlPersistenceProviderImpl
 

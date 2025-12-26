@@ -23,7 +23,7 @@ import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-open class ObjAccountImpl(
+class ObjAccountImpl(
 	override val repository: ObjAccountRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

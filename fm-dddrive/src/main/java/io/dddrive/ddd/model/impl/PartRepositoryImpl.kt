@@ -7,25 +7,11 @@ import io.dddrive.ddd.model.PartRepository
 import io.dddrive.ddd.model.PartSPI
 import io.dddrive.ddd.model.base.PartBase
 import io.dddrive.property.model.Property
-import io.dddrive.property.model.impl.PropertyFilter
-import io.dddrive.property.model.impl.PropertyHandler
-import javassist.util.proxy.ProxyFactory
 
 class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
-	aggregateIntfClass: Class<out A>,
 	private val intfClass: Class<out P>,
-	private val baseClass: Class<out P>,
+	private val factory: (A, PartRepository<A, P>, Property<*>, Int) -> P,
 ) : PartRepository<A, P> {
-
-	private val partProxyFactory: ProxyFactory = ProxyFactory()
-	private val partProxyFactoryParamTypeList: Array<Class<*>>
-
-	init {
-		this.partProxyFactory.setSuperclass(baseClass)
-		this.partProxyFactory.setFilter(PropertyFilter.INSTANCE)
-		this.partProxyFactoryParamTypeList =
-			arrayOf<Class<*>>(aggregateIntfClass, PartRepository::class.java, Property::class.java, Int::class.java)
-	}
 
 	override fun doLogChange(property: String): Boolean = !NotLoggedProperties.contains(property)
 
@@ -40,28 +26,15 @@ class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
 		require(isInLoad || partId == null) { "partId == null on create" }
 		val repo = aggregate.meta.repository as AggregateRepositorySPI<A>
 		val id: Int = (if (isInLoad) partId else repo.persistenceProvider.nextPartId(aggregate, this.intfClass))!!
-		try {
-			val part = this.partProxyFactory.create(
-				this.partProxyFactoryParamTypeList,
-				arrayOf<Any?>(aggregate, this, property, id),
-				PropertyHandler.INSTANCE,
-			) as P
-			check(isInLoad || part.meta.isNew) { "load or part.isNew" }
-			check(!isInLoad || !part.meta.isNew) { "outside load or !part.isNew" }
-			if (!isInLoad) {
-				val doAfterCreateSeqNr = (part as PartBase<*>).doAfterCreateSeqNr
-				(part as PartSPI<A>).doAfterCreate()
-				check(part.doAfterCreateSeqNr > doAfterCreateSeqNr) { part.javaClass.simpleName + ": doAfterCreate was propagated" }
-			}
-			return part
-		} catch (e: ReflectiveOperationException) {
-			throw RuntimeException(
-				"Could not create part " + this.baseClass.getSimpleName(),
-				e,
-			) // Adjusted error message
-		} catch (e: RuntimeException) {
-			throw RuntimeException("Could not create part " + this.baseClass.getSimpleName(), e)
+		val part = this.factory(aggregate, this, property, id)
+		check(isInLoad || part.meta.isNew) { "load or part.isNew" }
+		check(!isInLoad || !part.meta.isNew) { "outside load or !part.isNew" }
+		if (!isInLoad) {
+			val doAfterCreateSeqNr = (part as PartBase<*>).doAfterCreateSeqNr
+			(part as PartSPI<A>).doAfterCreate()
+			check(part.doAfterCreateSeqNr > doAfterCreateSeqNr) { part.javaClass.simpleName + ": doAfterCreate was propagated" }
 		}
+		return part
 	}
 
 	companion object {

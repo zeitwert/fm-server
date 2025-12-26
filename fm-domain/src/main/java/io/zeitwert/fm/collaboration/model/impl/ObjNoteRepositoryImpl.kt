@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component
 @Component("objNoteRepository")
 class ObjNoteRepositoryImpl :
 	FMObjRepositoryBase<ObjNote>(
-		ObjNoteRepository::class.java,
 		ObjNote::class.java,
-		ObjNoteImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjNoteRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjNote = ObjNoteImpl(this, isNew)
 
 	companion object {
 

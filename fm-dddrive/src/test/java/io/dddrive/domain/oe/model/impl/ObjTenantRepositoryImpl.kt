@@ -12,12 +12,12 @@ import java.util.*
 @DependsOn("objTenantPersistenceProvider")
 class ObjTenantRepositoryImpl :
 	ObjRepositoryBase<ObjTenant>(
-		ObjTenantRepository::class.java,
 		ObjTenant::class.java,
-		ObjTenantTestImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjTenantRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjTenant = ObjTenantTestImpl(this, isNew)
 
 	override val persistenceProvider get() = directory.getPersistenceProvider(ObjTenant::class.java) as ObjTenantPersistenceProvider
 

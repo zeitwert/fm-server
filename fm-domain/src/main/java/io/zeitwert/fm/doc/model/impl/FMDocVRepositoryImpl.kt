@@ -1,7 +1,6 @@
 package io.zeitwert.fm.doc.model.impl
 
 import io.dddrive.doc.model.Doc
-import io.dddrive.doc.model.base.DocBase
 import io.zeitwert.fm.doc.model.FMDocVRepository
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import org.springframework.stereotype.Component
@@ -10,12 +9,12 @@ import java.time.OffsetDateTime
 @Component("docRepository")
 class FMDocVRepositoryImpl :
 	FMDocRepositoryBase<Doc>(
-		FMDocVRepository::class.java,
 		Doc::class.java,
-		DocBase::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	FMDocVRepository {
+
+	override fun createAggregate(isNew: Boolean): Doc = throw UnsupportedOperationException("this is a readonly repository")
 
 	override fun create(
 		tenantId: Any,

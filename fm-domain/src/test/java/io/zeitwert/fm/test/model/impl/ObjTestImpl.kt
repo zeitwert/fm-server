@@ -22,7 +22,7 @@ import org.jooq.JSON
 import java.math.BigDecimal
 import java.time.LocalDate
 
-open class ObjTestImpl(
+class ObjTestImpl(
 	repository: ObjTestRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

@@ -14,7 +14,7 @@ import org.jooq.JSON
 import java.math.BigDecimal
 import java.time.LocalDate
 
-open class ObjTestPartNodeImpl(
+class ObjTestPartNodeImpl(
 	obj: ObjTest,
 	repository: PartRepository<ObjTest, ObjTestPartNode>,
 	property: Property<*>,

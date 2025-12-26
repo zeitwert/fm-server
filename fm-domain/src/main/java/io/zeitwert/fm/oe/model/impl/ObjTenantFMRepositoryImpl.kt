@@ -14,12 +14,12 @@ class ObjTenantFMRepositoryImpl(
 	@param:Lazy override val userRepository: ObjUserFMRepository,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,
 ) : FMObjRepositoryBase<ObjTenantFM>(
-		ObjTenantFMRepository::class.java,
 		ObjTenant::class.java,
-		ObjTenantFMImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjTenantFMRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjTenantFM = ObjTenantFMImpl(this, isNew)
 
 	companion object {
 

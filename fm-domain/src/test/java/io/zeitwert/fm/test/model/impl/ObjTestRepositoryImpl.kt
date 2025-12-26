@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component
 @Component("objTestRepository")
 class ObjTestRepositoryImpl :
 	FMObjRepositoryBase<ObjTest>(
-		ObjTestRepository::class.java,
 		ObjTest::class.java,
-		ObjTestImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjTestRepository {
 
+	override fun createAggregate(isNew: Boolean): ObjTest = ObjTestImpl(this, isNew)
+
 	override fun registerParts() {
-		this.addPart(ObjTest::class.java, ObjTestPartNode::class.java, ObjTestPartNodeImpl::class.java)
+		this.addPart(ObjTestPartNode::class.java, ::ObjTestPartNodeImpl)
 	}
 
 	companion object {

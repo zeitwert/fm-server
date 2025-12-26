@@ -17,12 +17,12 @@ class ObjUserFMRepositoryImpl(
 	@param:Lazy override val passwordEncoder: PasswordEncoder,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,
 ) : FMObjRepositoryBase<ObjUserFM>(
-		ObjUserFMRepository::class.java,
 		ObjUser::class.java,
-		ObjUserFMImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjUserFMRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjUserFM = ObjUserFMImpl(this, isNew)
 
 	override fun isAppAdmin(user: ObjUserFM): Boolean = user.hasRole(CodeUserRole.APP_ADMIN)
 

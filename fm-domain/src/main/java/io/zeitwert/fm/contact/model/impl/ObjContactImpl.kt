@@ -23,7 +23,7 @@ import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.time.LocalDate
 
 /** Implementation class for ObjContact using delegation-based property framework. */
-open class ObjContactImpl(
+class ObjContactImpl(
 	override val repository: ObjContactRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

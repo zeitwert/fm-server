@@ -20,7 +20,7 @@ import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.time.OffsetDateTime
 
-open class ObjDocumentImpl(
+class ObjDocumentImpl(
 	override val repository: ObjDocumentRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

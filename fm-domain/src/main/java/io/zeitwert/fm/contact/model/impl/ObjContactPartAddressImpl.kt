@@ -13,7 +13,7 @@ import io.zeitwert.fm.oe.model.enums.CodeCountry
 /**
  * Implementation class for ObjContactPartAddress using delegation-based property framework.
  */
-open class ObjContactPartAddressImpl(
+class ObjContactPartAddressImpl(
 	obj: ObjContact,
 	repository: PartRepository<ObjContact, ObjContactPartAddress>,
 	property: Property<*>,

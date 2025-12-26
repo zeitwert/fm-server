@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component
 @Component("docTaskRepository")
 class DocTaskRepositoryImpl :
 	DocRepositoryBase<DocTask>(
-		DocTaskRepository::class.java,
 		DocTask::class.java,
-		DocTaskImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	DocTaskRepository {
+
+	override fun createAggregate(isNew: Boolean): DocTask = DocTaskImpl(this, isNew)
 
 	override val persistenceProvider get() = directory.getPersistenceProvider(DocTask::class.java) as DocTaskPersistenceProvider
 
 	override fun registerParts() {
 		super.registerParts()
-		this.addPart(DocTask::class.java, DocTaskPartComment::class.java, DocTaskPartCommentImpl::class.java)
+		this.addPart(DocTaskPartComment::class.java, ::DocTaskPartCommentImpl)
 	}
 
 	companion object {

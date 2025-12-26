@@ -21,7 +21,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
 import java.time.LocalDate
 
-open class ObjBuildingPartRatingImpl(
+class ObjBuildingPartRatingImpl(
 	obj: ObjBuilding,
 	override val repository: PartRepository<ObjBuilding, out Part<ObjBuilding>>,
 	property: Property<*>,

@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component
 @Component("objContactRepository")
 class ObjContactRepositoryImpl :
 	FMObjRepositoryBase<ObjContact>(
-		ObjContactRepository::class.java,
 		ObjContact::class.java,
-		ObjContactImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjContactRepository {
 
+	override fun createAggregate(isNew: Boolean): ObjContact = ObjContactImpl(this, isNew)
+
 	override fun registerParts() {
 		super.registerParts()
-		this.addPart(ObjContact::class.java, ObjContactPartAddress::class.java, ObjContactPartAddressImpl::class.java)
+		this.addPart(ObjContactPartAddress::class.java, ::ObjContactPartAddressImpl)
 	}
 
 	companion object {

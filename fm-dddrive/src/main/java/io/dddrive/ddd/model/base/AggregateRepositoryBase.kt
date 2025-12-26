@@ -14,22 +14,16 @@ import io.dddrive.ddd.model.RepositoryDirectorySPI
 import io.dddrive.ddd.model.enums.CodeAggregateType
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.ddd.model.impl.PartRepositoryImpl
-import io.dddrive.property.model.impl.PropertyFilter
-import io.dddrive.property.model.impl.PropertyHandler
-import javassist.util.proxy.ProxyFactory
+import io.dddrive.property.model.Property
 import java.time.OffsetDateTime
 import java.util.function.Function
 
 abstract class AggregateRepositoryBase<A : Aggregate>(
-	repoIntfClass: Class<out AggregateRepository<A>>,
 	private val intfClass: Class<out Aggregate>,
-	private val baseClass: Class<out Aggregate>,
 	private val aggregateTypeId: String,
 ) : AggregateRepository<A>,
 	AggregateRepositorySPI<A> {
 
-	private val aggregateProxyFactory: ProxyFactory = ProxyFactory()
-	private val aggregateProxyFactoryParamTypeList: Array<Class<*>>
 	private val objCache = Caffeine
 		.newBuilder()
 		.maximumSize(200)
@@ -43,9 +37,6 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 	private var didAfterStore = false
 
 	init {
-		this.aggregateProxyFactory.setSuperclass(baseClass)
-		this.aggregateProxyFactory.setFilter(PropertyFilter.INSTANCE)
-		this.aggregateProxyFactoryParamTypeList = arrayOf<Class<*>>(repoIntfClass, java.lang.Boolean.TYPE)
 		(this.directory as RepositoryDirectorySPI).addRepository(intfClass, this)
 		this.registerParts()
 	}
@@ -72,16 +63,11 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 	override fun doLogChange(property: String): Boolean = !NotLoggedProperties.contains(property)
 
-	protected fun <AA : Aggregate> addPart(
-		aggregateIntfClass: Class<AA>,
-		partIntfClass: Class<out Part<AA>>,
-		partBaseClass: Class<out Part<AA>>,
+	protected fun <AA : Aggregate, PP : Part<AA>> addPart(
+		partIntfClass: Class<out PP>,
+		factory: (AA, PartRepository<AA, PP>, Property<*>, Int) -> PP,
 	) {
-		val partRepository: PartRepository<AA, out Part<AA>> = PartRepositoryImpl(
-			aggregateIntfClass,
-			partIntfClass,
-			partBaseClass,
-		)
+		val partRepository: PartRepository<AA, PP> = PartRepositoryImpl(partIntfClass, factory)
 		(this.directory as RepositoryDirectorySPI).addPartRepository(partIntfClass, partRepository)
 	}
 
@@ -98,9 +84,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 			aggregate.meta.disableCalc()
 			val doCreateSeqNr = (aggregate as AggregateBase).doCreateSeqNr
 			aggregate.doCreate(aggregateId, tenantId)
-			// aggregate.setValueByPath("id", aggregateId)
-			// aggregate.setValueByPath("tenantId", tenantId)
-			check(aggregate.doCreateSeqNr > doCreateSeqNr) { this.getBaseClassName(aggregate) + ": doCreate was propagated" }
+			check(aggregate.doCreateSeqNr > doCreateSeqNr) { intfClass.simpleName + ": doCreate was propagated" }
 		} finally {
 			aggregate.meta.enableCalc()
 		}
@@ -109,10 +93,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 		this.didAfterCreate = false
 		this.doAfterCreate(aggregate, userId, timestamp)
-		// aggregate.setValueByPath("createdByUserId", userId)
-		// aggregate.setValueByPath("createdAt", timestamp)
-		// aggregate.fireEntityAddedChange(aggregateId)
-		check(this.didAfterCreate) { this.baseClassName + ": doAfterCreate was propagated" }
+		check(this.didAfterCreate) { intfClass.simpleName + ": doAfterCreate was propagated" }
 
 		return aggregate
 	}
@@ -125,7 +106,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		this.didAfterCreate = true
 		val doAfterCreateSeqNr = (aggregate as AggregateBase).doAfterCreateSeqNr
 		(aggregate as AggregateSPI).doAfterCreate(userId, timestamp)
-		check(aggregate.doAfterCreateSeqNr > doAfterCreateSeqNr) { this.getBaseClassName(aggregate) + ": doAfterCreate was propagated" }
+		check(aggregate.doAfterCreateSeqNr > doAfterCreateSeqNr) { intfClass.simpleName + ": doAfterCreate was propagated" }
 	}
 
 	override fun get(id: Any): A = this.objCache.get(id, Function { aggrId: Any? -> this.get(aggrId!!, true) })
@@ -153,29 +134,22 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 		this.didAfterLoad = false
 		this.doAfterLoad(aggregate)
-		check(this.didAfterLoad) { this.baseClassName + ": doAfterLoad was propagated" }
+		check(this.didAfterLoad) { intfClass.simpleName + ": doAfterLoad was propagated" }
 
 		return aggregate
 	}
 
-	@Suppress("UNCHECKED_CAST")
-	private fun createAggregate(isNew: Boolean): A {
-		try {
-			return this.aggregateProxyFactory.create(
-				this.aggregateProxyFactoryParamTypeList,
-				arrayOf(this, isNew),
-				PropertyHandler.INSTANCE,
-			) as A
-		} catch (e: Throwable) {
-			throw RuntimeException("Could not create aggregate $baseClassName from ${javaClass.simpleName}", e)
-		}
-	}
+	/**
+	 * Create a new aggregate instance. Concrete repositories must override this to directly
+	 * instantiate their Impl class.
+	 */
+	protected abstract fun createAggregate(isNew: Boolean): A
 
 	override fun doAfterLoad(aggregate: A) {
 		this.didAfterLoad = true
 		val doAfterLoadSeqNr = (aggregate as AggregateBase).doAfterLoadSeqNr
 		(aggregate as AggregateSPI).doAfterLoad()
-		check(aggregate.doAfterLoadSeqNr > doAfterLoadSeqNr) { this.getBaseClassName(aggregate) + ": doAfterLoad was propagated" }
+		check(aggregate.doAfterLoadSeqNr > doAfterLoadSeqNr) { intfClass.simpleName + ": doAfterLoad was propagated" }
 	}
 
 	override fun store(
@@ -186,15 +160,15 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		try {
 			this.didBeforeStore = false
 			this.doBeforeStore(aggregate, userId, timestamp)
-			check(this.didBeforeStore) { this.baseClassName + ": doBeforeStore was propagated" }
+			check(this.didBeforeStore) { intfClass.simpleName + ": doBeforeStore was propagated" }
 
 			this.persistenceProvider.doStore(aggregate)
 
 			this.didAfterStore = false
 			this.doAfterStore(aggregate)
-			check(this.didAfterStore) { this.baseClassName + ": doAfterStore was propagated" }
+			check(this.didAfterStore) { intfClass.simpleName + ": doAfterStore was propagated" }
 		} catch (e: Exception) {
-			throw RuntimeException("$baseClassName: could not store aggregate (${e.message})", e)
+			throw RuntimeException("${intfClass.simpleName}: could not store aggregate (${e.message})", e)
 		}
 	}
 
@@ -206,14 +180,14 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		this.didBeforeStore = true
 		val doBeforeStoreSeqNr = (aggregate as AggregateBase).doBeforeStoreSeqNr
 		(aggregate as AggregateSPI).doBeforeStore(userId, timestamp)
-		check(aggregate.doBeforeStoreSeqNr > doBeforeStoreSeqNr) { this.getBaseClassName(aggregate) + ": doBeforeStore was propagated" }
+		check(aggregate.doBeforeStoreSeqNr > doBeforeStoreSeqNr) { intfClass.simpleName + ": doBeforeStore was propagated" }
 	}
 
 	override fun doAfterStore(aggregate: A) {
 		this.didAfterStore = true
 		val doAfterStoreSeqNr = (aggregate as AggregateBase).doAfterStoreSeqNr
 		(aggregate as AggregateSPI).doAfterStore()
-		check(aggregate.doAfterStoreSeqNr > doAfterStoreSeqNr) { this.getBaseClassName(aggregate) + ": doAfterStore was propagated" }
+		check(aggregate.doAfterStoreSeqNr > doAfterStoreSeqNr) { intfClass.simpleName + ": doAfterStore was propagated" }
 		this.handleAggregateStored(aggregate.id)
 	}
 
@@ -221,11 +195,6 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		fkName: String,
 		targetId: Any,
 	): List<Any> = this.persistenceProvider.getByForeignKey(fkName, targetId)
-
-	protected val baseClassName: String
-		get() = this.baseClass.getSimpleName()
-
-	protected fun getBaseClassName(aggregate: A?): String = aggregate!!.javaClass.getSuperclass().getSimpleName()
 
 	fun handleAggregateStored(id: Any) {
 		if (this.objCache.getIfPresent(id) != null) {
@@ -235,7 +204,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 
 	companion object {
 
-		private val NotLoggedProperties = mutableSetOf<String?>(
+		private val NotLoggedProperties = setOf(
 			"id",
 			"maxPartId",
 			"version",

@@ -14,7 +14,7 @@ import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
 
-open class DocTaskImpl(
+class DocTaskImpl(
 	override val repository: DocTaskRepository,
 	isNew: Boolean,
 ) : FMDocBase(repository, isNew),

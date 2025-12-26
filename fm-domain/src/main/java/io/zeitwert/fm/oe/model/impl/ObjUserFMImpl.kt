@@ -17,7 +17,7 @@ import io.zeitwert.fm.oe.model.ObjUserFMRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import java.time.OffsetDateTime
 
-open class ObjUserFMImpl(
+class ObjUserFMImpl(
 	override val repository: ObjUserFMRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

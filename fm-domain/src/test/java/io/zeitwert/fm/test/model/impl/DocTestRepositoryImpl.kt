@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component
 @Component("docTestRepository")
 class DocTestRepositoryImpl :
 	FMDocRepositoryBase<DocTest>(
-		DocTestRepository::class.java,
 		DocTest::class.java,
-		DocTestImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	DocTestRepository {
+
+	override fun createAggregate(isNew: Boolean): DocTest = DocTestImpl(this, isNew)
 
 	companion object {
 

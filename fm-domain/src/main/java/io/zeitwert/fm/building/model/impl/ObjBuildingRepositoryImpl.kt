@@ -18,20 +18,16 @@ class ObjBuildingRepositoryImpl(
 	override val documentRepository: ObjDocumentRepository,
 	override val taskRepository: DocTaskRepository,
 ) : FMObjRepositoryBase<ObjBuilding>(
-		ObjBuildingRepository::class.java,
 		ObjBuilding::class.java,
-		ObjBuildingImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjBuildingRepository {
 
+	override fun createAggregate(isNew: Boolean): ObjBuilding = ObjBuildingImpl(this, isNew)
+
 	override fun registerParts() {
-		this.addPart(ObjBuilding::class.java, ObjBuildingPartRating::class.java, ObjBuildingPartRatingImpl::class.java)
-		this.addPart(
-			ObjBuilding::class.java,
-			ObjBuildingPartElementRating::class.java,
-			ObjBuildingPartElementRatingImpl::class.java,
-		)
+		this.addPart(ObjBuildingPartRating::class.java, ::ObjBuildingPartRatingImpl)
+		this.addPart(ObjBuildingPartElementRating::class.java, ::ObjBuildingPartElementRatingImpl)
 	}
 
 	companion object {

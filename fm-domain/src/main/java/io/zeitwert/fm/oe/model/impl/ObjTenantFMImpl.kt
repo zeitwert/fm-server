@@ -17,7 +17,7 @@ import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-open class ObjTenantFMImpl(
+class ObjTenantFMImpl(
 	override val repository: ObjTenantFMRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

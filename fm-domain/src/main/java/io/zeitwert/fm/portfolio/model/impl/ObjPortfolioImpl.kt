@@ -16,7 +16,7 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 
-open class ObjPortfolioImpl(
+class ObjPortfolioImpl(
 	override val repository: ObjPortfolioRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

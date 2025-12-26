@@ -2,7 +2,6 @@ package io.zeitwert.fm.doc.model.base
 
 import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.doc.model.Doc
-import io.dddrive.doc.model.DocRepository
 import io.dddrive.doc.model.base.DocRepositoryBase
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
 import io.zeitwert.fm.doc.model.FMDocRepository
@@ -18,11 +17,9 @@ import io.zeitwert.fm.doc.model.FMDocRepository
  * @param D The Doc entity type
  */
 abstract class FMDocRepositoryBase<D : Doc>(
-	repoIntfClass: Class<out DocRepository<D>>,
 	intfClass: Class<out Doc>,
-	baseClass: Class<out Doc>,
 	aggregateTypeId: String,
-) : DocRepositoryBase<D>(repoIntfClass, intfClass, baseClass, aggregateTypeId),
+) : DocRepositoryBase<D>(intfClass, aggregateTypeId),
 	FMDocRepository<D> {
 
 	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<D>

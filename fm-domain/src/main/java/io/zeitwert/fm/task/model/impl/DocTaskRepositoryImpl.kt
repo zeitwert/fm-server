@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component
 @Component("docTaskRepository")
 class DocTaskRepositoryImpl :
 	FMDocRepositoryBase<DocTask>(
-		DocTaskRepository::class.java,
 		DocTask::class.java,
-		DocTaskImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	DocTaskRepository {
+
+	override fun createAggregate(isNew: Boolean): DocTask = DocTaskImpl(this, isNew)
 
 	companion object {
 

@@ -1,17 +1,15 @@
 package io.dddrive.doc.model.base
 
-import io.dddrive.ddd.model.AggregateRepository
 import io.dddrive.ddd.model.base.AggregateRepositoryBase
 import io.dddrive.doc.model.Doc
 import io.dddrive.doc.model.DocPartTransition
 import io.dddrive.doc.model.DocRepository
+import io.dddrive.doc.model.impl.DocPartTransitionImpl
 
 abstract class DocRepositoryBase<D : Doc>(
-	repoIntfClass: Class<out AggregateRepository<D>>,
 	intfClass: Class<out Doc>,
-	baseClass: Class<out Doc>,
 	aggregateTypeId: String,
-) : AggregateRepositoryBase<D>(repoIntfClass, intfClass, baseClass, aggregateTypeId),
+) : AggregateRepositoryBase<D>(intfClass, aggregateTypeId),
 	DocRepository<D> {
 
 	override fun doLogChange(property: String): Boolean {
@@ -22,12 +20,12 @@ abstract class DocRepositoryBase<D : Doc>(
 	}
 
 	override fun registerParts() {
-		this.addPart<Doc>(Doc::class.java, DocPartTransition::class.java, DocPartTransitionBase::class.java)
+		this.addPart(DocPartTransition::class.java, ::DocPartTransitionImpl)
 	}
 
 	companion object {
 
-		private val NotLoggedProperties = mutableSetOf<String?>("caseDef", "isInWork", "transitionList")
+		private val NotLoggedProperties = setOf("caseDef", "isInWork", "transitionList")
 	}
 
 }

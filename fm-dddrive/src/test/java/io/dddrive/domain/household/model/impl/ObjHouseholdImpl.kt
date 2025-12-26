@@ -22,7 +22,7 @@ import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.Property
 import io.dddrive.property.model.ReferenceSetProperty
 
-open class ObjHouseholdImpl(
+class ObjHouseholdImpl(
 	repository: ObjHouseholdRepository,
 	isNew: Boolean,
 ) : ObjBase(repository, isNew),

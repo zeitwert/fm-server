@@ -10,7 +10,7 @@ import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 
-open class ObjBuildingPartElementRatingImpl(
+class ObjBuildingPartElementRatingImpl(
 	obj: ObjBuilding,
 	repository: PartRepository<ObjBuilding, out Part<ObjBuilding>>,
 	property: Property<*>,

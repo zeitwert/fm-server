@@ -12,12 +12,12 @@ import java.util.*
 @DependsOn("objUserPersistenceProvider")
 class ObjUserRepositoryImpl :
 	ObjRepositoryBase<ObjUser>(
-		ObjUserRepository::class.java,
 		ObjUser::class.java,
-		ObjUserTestImpl::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjUserRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjUser = ObjUserTestImpl(this, isNew)
 
 	override val persistenceProvider get() = directory.getPersistenceProvider(ObjUser::class.java) as ObjUserPersistenceProvider
 

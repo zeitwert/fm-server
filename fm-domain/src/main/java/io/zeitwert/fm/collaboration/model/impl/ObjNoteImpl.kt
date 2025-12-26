@@ -8,7 +8,7 @@ import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.fm.obj.model.base.FMObjBase
 
-open class ObjNoteImpl(
+class ObjNoteImpl(
 	override val repository: ObjNoteRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),

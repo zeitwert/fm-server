@@ -11,7 +11,7 @@ import io.dddrive.property.delegate.partReferenceIdProperty
 import io.dddrive.property.delegate.partReferenceProperty
 import io.dddrive.property.model.Property
 
-open class ObjHouseholdPartMemberImpl(
+class ObjHouseholdPartMemberImpl(
 	obj: ObjHousehold,
 	override val repository: PartRepository<ObjHousehold, ObjHouseholdPartMember>,
 	property: Property<*>,

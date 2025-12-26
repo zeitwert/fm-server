@@ -14,12 +14,12 @@ class ObjPortfolioRepositoryImpl(
 	override val buildingRepository: ObjBuildingRepository,
 	override val taskRepository: DocTaskRepository,
 ) : FMObjRepositoryBase<ObjPortfolio>(
-		ObjPortfolioRepository::class.java,
 		ObjPortfolio::class.java,
-		ObjPortfolioImpl::class.java,
 		AGGREGATE_TYPE_ID,
 	),
 	ObjPortfolioRepository {
+
+	override fun createAggregate(isNew: Boolean): ObjPortfolio = ObjPortfolioImpl(this, isNew)
 
 	companion object {
 

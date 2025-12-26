@@ -2,7 +2,6 @@ package io.zeitwert.fm.obj.model.base
 
 import io.crnk.core.queryspec.QuerySpec
 import io.dddrive.obj.model.Obj
-import io.dddrive.obj.model.ObjRepository
 import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
 import io.zeitwert.fm.obj.model.FMObjRepository
@@ -18,11 +17,9 @@ import io.zeitwert.fm.obj.model.FMObjRepository
  * @param O The Obj entity type
  */
 abstract class FMObjRepositoryBase<O : Obj>(
-	repoIntfClass: Class<out ObjRepository<O>>,
 	intfClass: Class<out Obj>,
-	baseClass: Class<out Obj>,
 	aggregateTypeId: String,
-) : ObjRepositoryBase<O>(repoIntfClass, intfClass, baseClass, aggregateTypeId),
+) : ObjRepositoryBase<O>(intfClass, aggregateTypeId),
 	FMObjRepository<O> {
 
 	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<O>
