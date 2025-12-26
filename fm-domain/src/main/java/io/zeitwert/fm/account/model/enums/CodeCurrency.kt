@@ -1,17 +1,14 @@
 package io.zeitwert.fm.account.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeCurrency(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	CHF("chf", "CHF"),
+	CHF("CHF"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

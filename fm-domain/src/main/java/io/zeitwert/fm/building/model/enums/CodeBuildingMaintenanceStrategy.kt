@@ -4,18 +4,17 @@ import io.dddrive.enums.model.Enumerated
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeBuildingMaintenanceStrategy(
-	override val id: String,
-	private val itemName: String,
+	override val defaultName: String,
 ) : Enumerated {
 
-	M("M", "Minimal"),
-	N("N", "Normal"),
-	NW("NW", "Normal Wohlen"),
+	M("Minimal"),
+	N("Normal"),
+	NW("Normal Wohlen"),
 	;
 
-	override fun getName() = itemName
-
 	override val enumeration get() = Enumeration
+
+	override val id = name
 
 	companion object Enumeration :
 		EnumerationBase<CodeBuildingMaintenanceStrategy>(CodeBuildingMaintenanceStrategy::class.java) {

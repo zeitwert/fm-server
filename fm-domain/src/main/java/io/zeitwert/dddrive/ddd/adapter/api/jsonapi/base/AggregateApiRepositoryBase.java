@@ -74,7 +74,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			return this.dtoAdapter.fromAggregate(aggregate);
 		} catch (Exception x) {
 			x.printStackTrace();
-			throw new ResourceNotFoundException(this.repository.getAggregateType().getName() + "[" + objId + "]");
+			throw new ResourceNotFoundException(this.repository.getAggregateType().getDefaultName() + "[" + objId + "]");
 		}
 	}
 

@@ -16,9 +16,10 @@ import org.springframework.stereotype.Service
 @Service("projectionService")
 class ProjectionServiceImpl : ProjectionService {
 
-	fun getProjection(building: ObjBuilding, duration: Int): ProjectionResult {
-		return this.getProjection(setOf(building), duration)
-	}
+	fun getProjection(
+		building: ObjBuilding,
+		duration: Int,
+	): ProjectionResult = this.getProjection(setOf(building), duration)
 
 	/**
 	 * - get startYear (max(building.element.ratingYear))
@@ -29,7 +30,10 @@ class ProjectionServiceImpl : ProjectionService {
 	 * @param duration
 	 * @return
 	 */
-	override fun getProjection(buildings: Set<ObjBuilding>, duration: Int): ProjectionResult {
+	override fun getProjection(
+		buildings: Set<ObjBuilding>,
+		duration: Int,
+	): ProjectionResult {
 		val elementList: MutableList<ProjectionElement> = mutableListOf()
 		val elementMap: MutableMap<EnumeratedDto, ObjBuildingPartElementRating> = mutableMapOf()
 		val elementResultMap: MutableMap<String, List<ProjectionPeriod>> = mutableMapOf()
@@ -44,12 +48,11 @@ class ProjectionServiceImpl : ProjectionService {
 						if (element.weight!! > 0 && element.condition!! > 0) {
 							val elementPeriodList =
 								element.buildingPart!!.getProjection(
-									/* elementValue => */
-									100.0, /* ratingYear => */
-									element.ratingYear!!, /* condition => */
-									element.condition!! / 100.0, /* startYear => */
-									startYear, /* duration => */
-									duration
+									elementValue = 100.0,
+									ratingYear = element.ratingYear!!,
+									condition = element.condition!! / 100.0,
+									startYear = startYear,
+									duration = duration,
 								)
 							elementList.add(
 								ProjectionElement(
@@ -108,7 +111,7 @@ class ProjectionServiceImpl : ProjectionService {
 
 	private fun getAsEnumerated(element: ObjBuildingPartElementRating): EnumeratedDto {
 		val id = element.id.toString()
-		return of(id, element.meta.aggregate.name + ": " + element.buildingPart!!.getName())
+		return of(id, element.meta.aggregate.name + ": " + element.buildingPart!!.defaultName)
 	}
 
 	private fun consolidateProjection(projectionResult: ProjectionResult): ProjectionResult {

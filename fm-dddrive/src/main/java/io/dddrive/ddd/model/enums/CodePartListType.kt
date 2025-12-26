@@ -4,12 +4,10 @@ import io.dddrive.enums.model.Enumerated
 
 class CodePartListType(
 	override val id: String,
-	private val name: String,
+	override val defaultName: String,
 ) : Enumerated {
 
 	override val enumeration: CodePartListTypeEnum
 		get() = CodePartListTypeEnum.instance
-
-	override fun getName(): String = name
 
 }

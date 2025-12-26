@@ -1,18 +1,15 @@
 package io.zeitwert.fm.account.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeAccountType(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	PROSPECT("prospect", "Prospekt / Pilot"),
-	CLIENT("client", "Kunde"),
+	PROSPECT("Prospekt / Pilot"),
+	CLIENT("Kunde"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

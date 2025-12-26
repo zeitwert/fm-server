@@ -1,19 +1,16 @@
 package io.zeitwert.fm.dms.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeContentKind(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	DOCUMENT("document", "Document"),
-	FOTO("foto", "Foto"),
-	VIDEO("video", "Video"),
+	DOCUMENT("Document"),
+	FOTO("Foto"),
+	VIDEO("Video"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

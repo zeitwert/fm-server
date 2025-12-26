@@ -43,7 +43,7 @@ class BuildingEvaluationServiceImpl(
 		}
 		val currentRating = building.currentRating!!
 		if (currentRating.partCatalog != null) {
-			value = currentRating.partCatalog!!.getName()
+			value = currentRating.partCatalog!!.defaultName
 			this.addParameter(facts, "Gebäudekategorie", value)
 			this.addParameter(onePageFacts, "Gebäudekategorie", value)
 		}
@@ -88,7 +88,7 @@ class BuildingEvaluationServiceImpl(
 				}
 				val dto =
 					EvaluationElement(
-						name = element.buildingPart!!.getName(),
+						name = element.buildingPart!!.defaultName,
 						description = description,
 						weight = element.weight,
 						condition = element.condition,
@@ -141,7 +141,7 @@ class BuildingEvaluationServiceImpl(
 		this.addParameter(
 			onePageParams,
 			"Durchschnittliche IH Kosten (nächste 5 Jahre)",
-			averageMaintenance
+			averageMaintenance,
 		)
 
 		val periods: MutableList<EvaluationPeriod> = mutableListOf()
@@ -188,7 +188,7 @@ class BuildingEvaluationServiceImpl(
 			id = building.id as Int,
 			name = building.name,
 			description = this.replaceEol(building.description),
-			address = building.street + ", " + building.zip + " " + building.city + ", " + building.country!!.getName(),
+			address = building.street + ", " + building.zip + " " + building.city + ", " + building.country!!.defaultName,
 			accountName = building.account!!.name,
 			facts = facts,
 			params = params,
@@ -201,8 +201,7 @@ class BuildingEvaluationServiceImpl(
 		)
 	}
 
-	private fun replaceEol(text: String?): String =
-		if (text != null) text.replace("<br>", SOFT_RETURN) else ""
+	private fun replaceEol(text: String?): String = if (text != null) text.replace("<br>", SOFT_RETURN) else ""
 
 	private fun getAverageMaintenanceCosts(
 		projectionResult: ProjectionResult,

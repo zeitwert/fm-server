@@ -1,23 +1,22 @@
 package io.zeitwert.fm.building.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeHistoricPreservation(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	NONE("none", "Kein Denkmalschutz"),
-	PARTIAL("partial", "Teilweise geschützt"),
-	FULL("full", "Vollständig geschützt"),
+	NONE("Kein Denkmalschutz"),
+	PARTIAL("Teilweise geschützt"),
+	FULL("Vollständig geschützt"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 
-	companion object Enumeration : EnumerationBase<CodeHistoricPreservation>(CodeHistoricPreservation::class.java) {
+	companion object Enumeration :
+		EnumerationBase<CodeHistoricPreservation>(CodeHistoricPreservation::class.java) {
+
 		init {
 			entries.forEach { addItem(it) }
 		}

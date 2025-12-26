@@ -70,22 +70,62 @@ class TestConfig :
 	}
 
 	private fun initCodeCaseStage(e: CodeCaseStageEnum) {
-		e.addItem(CodeCaseStage("test.new", "test", "initial", "New", "New", 10, null, null, null))
-		e.addItem(CodeCaseStage("test.open", "test", "intermediate", "Assigned", "Assigned", 20, null, null, null))
 		e.addItem(
 			CodeCaseStage(
-				"test.progress",
-				"test",
-				"intermediate",
-				"In Progress",
-				"In Progress",
-				30,
-				null,
-				null,
-				null,
+				id = "test.new",
+				defaultName = "New",
+				caseDefId = "test",
+				caseStageTypeId = "initial",
+				name = "New",
+				description = null,
+				seqNr = 10,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
 			),
 		)
-		e.addItem(CodeCaseStage("test.done", "test", "terminal", "Done", "Done", 40, null, null, null))
+		e.addItem(
+			CodeCaseStage(
+				id = "test.open",
+				defaultName = "Assigned",
+				caseDefId = "test",
+				caseStageTypeId = "intermediate",
+				name = "Assigned",
+				description = null,
+				seqNr = 20,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
+		)
+		e.addItem(
+			CodeCaseStage(
+				id = "test.progress",
+				defaultName = "In Progress",
+				caseDefId = "test",
+				caseStageTypeId = "intermediate",
+				name = "In Progress",
+				description = null,
+				seqNr = 30,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
+		)
+		e.addItem(
+			CodeCaseStage(
+				id = "test.done",
+				defaultName = "Done",
+				caseDefId = "test",
+				caseStageTypeId = "terminal",
+				name = "Done",
+				description = null,
+				seqNr = 40,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
+		)
 	}
 
 }

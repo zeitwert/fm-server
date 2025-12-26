@@ -1,21 +1,18 @@
 package io.dddrive.domain.household.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeLabel(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	A("a", "Label A"),
-	B("b", "Label B"),
-	C("c", "Label C"),
+	A("Label A"),
+	B("Label B"),
+	C("Label C"),
 	;
 
 	override val enumeration get() = Enumeration
-
-	override fun getName() = itemName
 
 	companion object Enumeration : EnumerationBase<CodeLabel>(CodeLabel::class.java) {
 		init {

@@ -44,12 +44,62 @@ class TaskConfig :
 	}
 
 	private fun initCodeCaseStage(e: CodeCaseStageEnum) {
-		e.addItem(CodeCaseStage("task.new", "task", "initial", "New", "New", 10, null, null, null))
-		e.addItem(CodeCaseStage("task.open", "task", "intermediate", "Assigned", "Assigned", 20, null, null, null))
 		e.addItem(
-			CodeCaseStage("task.progress", "task", "intermediate", "In Progress", "In Progress", 30, null, null, null),
+			CodeCaseStage(
+				id = "task.new",
+				defaultName = "New",
+				caseDefId = "task",
+				caseStageTypeId = "initial",
+				name = "New",
+				description = null,
+				seqNr = 10,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
 		)
-		e.addItem(CodeCaseStage("task.done", "task", "terminal", "Done", "Done", 40, null, null, null))
+		e.addItem(
+			CodeCaseStage(
+				id = "task.open",
+				defaultName = "Assigned",
+				caseDefId = "task",
+				caseStageTypeId = "intermediate",
+				name = "Assigned",
+				description = null,
+				seqNr = 20,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
+		)
+		e.addItem(
+			CodeCaseStage(
+				id = "task.progress",
+				defaultName = "In Progress",
+				caseDefId = "task",
+				caseStageTypeId = "intermediate",
+				name = "In Progress",
+				description = null,
+				seqNr = 30,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
+		)
+		e.addItem(
+			CodeCaseStage(
+				id = "task.done",
+				defaultName = "Done",
+				caseDefId = "task",
+				caseStageTypeId = "terminal",
+				name = "Done",
+				description = null,
+				seqNr = 40,
+				abstractCaseStageId = null,
+				action = null,
+				availableActions = null,
+			),
+		)
 	}
 
 }

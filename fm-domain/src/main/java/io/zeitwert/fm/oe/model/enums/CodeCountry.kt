@@ -1,17 +1,14 @@
 package io.zeitwert.fm.oe.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeCountry(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	CH("ch", "Schweiz"),
+	CH("Schweiz"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

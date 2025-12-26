@@ -1,22 +1,17 @@
 package io.zeitwert.fm.contact.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
-/**
- * Salutation enum using the NEW dddrive framework.
- */
+/** Salutation enum using the NEW dddrive framework. */
 enum class CodeSalutation(
-	override val id: String,
-	private val itemName: String,
+	override val defaultName: String,
 	val genderId: String,
-) : Enumerated {
+) : EnumeratedEnum {
 
-	MR("mr", "Herr", "male"),
-	MRS("mrs", "Frau", "female"),
+	MR("Herr", "male"),
+	MRS("Frau", "female"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

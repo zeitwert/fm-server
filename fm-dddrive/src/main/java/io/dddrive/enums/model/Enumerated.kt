@@ -1,11 +1,14 @@
 package io.dddrive.enums.model
 
+/**
+ * An interface for enumerated types.
+ */
 interface Enumerated {
 
 	val enumeration: Enumeration<out Enumerated>
 
 	val id: String
 
-	fun getName(): String
+	val defaultName: String
 
 }

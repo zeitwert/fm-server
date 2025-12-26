@@ -1,22 +1,17 @@
 package io.zeitwert.fm.contact.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
-/**
- * Address type enum using the NEW dddrive framework.
- */
+/** Address type enum using the NEW dddrive framework. */
 enum class CodeAddressType(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	MAIL("mail", "Mail Address"),
-	EMAIL("email", "Email"),
-	CHAT("chat", "Chat"),
+	MAIL("Mail Address"),
+	EMAIL("Email"),
+	CHAT("Chat"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

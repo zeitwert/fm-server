@@ -6,7 +6,7 @@ import kotlin.math.pow
 
 enum class CodeBuildingPriceIndex(
 	override val id: String,
-	private val itemName: String,
+	override val defaultName: String,
 	val minIndexYear: Int,
 	val maxIndexYear: Int,
 	val indexPerYear: Map<Int, Double>,
@@ -102,11 +102,12 @@ enum class CodeBuildingPriceIndex(
 			2020 to 1045.6,
 			2021 to 1057.68,
 			2022 to 1128.6,
+			2023 to 1190.8,
+			2024 to 1197.2,
+			2025 to 1210.4,
 		),
 	),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 
@@ -134,12 +135,13 @@ enum class CodeBuildingPriceIndex(
 		return targetPrice
 	}
 
-	companion object Enumeration : EnumerationBase<CodeBuildingPriceIndex>(CodeBuildingPriceIndex::class.java) {
+	companion object Enumeration :
+		EnumerationBase<CodeBuildingPriceIndex>(CodeBuildingPriceIndex::class.java) {
+
 		init {
 			entries.forEach { addItem(it) }
 		}
 
 		fun getBuildingPriceIndex(itemId: String?) = if (itemId != null) getItem(itemId) else null
-
 	}
 }

@@ -1,24 +1,23 @@
 package io.zeitwert.fm.dms.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeDocumentCategory(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	AVATAR("avatar", "Avatar"),
-	BANNER("banner", "Banner"),
-	FOTO("foto", "Foto"),
-	LOGO("logo", "Logo"),
+	AVATAR("Avatar"),
+	BANNER("Banner"),
+	FOTO("Foto"),
+	LOGO("Logo"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 
-	companion object Enumeration : EnumerationBase<CodeDocumentCategory>(CodeDocumentCategory::class.java) {
+	companion object Enumeration :
+		EnumerationBase<CodeDocumentCategory>(CodeDocumentCategory::class.java) {
+
 		init {
 			entries.forEach { addItem(it) }
 		}

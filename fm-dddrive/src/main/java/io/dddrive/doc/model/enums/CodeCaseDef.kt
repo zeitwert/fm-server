@@ -6,7 +6,7 @@ import io.dddrive.enums.model.Enumerated
 
 class CodeCaseDef(
 	override val id: String,
-	private val name: String,
+	override val defaultName: String,
 	private val docTypeId: String,
 ) : Enumerated {
 
@@ -15,8 +15,6 @@ class CodeCaseDef(
 
 	override val enumeration: CodeCaseDefEnum
 		get() = CodeCaseDefEnum.instance
-
-	override fun getName(): String = name
 
 	fun addCaseStage(stage: CodeCaseStage) = _caseStages.add(stage)
 

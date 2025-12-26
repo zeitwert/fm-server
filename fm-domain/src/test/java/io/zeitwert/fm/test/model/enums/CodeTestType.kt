@@ -1,19 +1,16 @@
 package io.zeitwert.fm.test.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeTestType(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	TYPE_A("type_a", "Type A"),
-	TYPE_B("type_b", "Type B"),
-	TYPE_C("type_c", "Type C"),
+	TYPE_A("Type A"),
+	TYPE_B("Type B"),
+	TYPE_C("Type C"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

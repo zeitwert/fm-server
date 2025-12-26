@@ -5,6 +5,7 @@ import io.dddrive.enums.model.Enumerated
 
 class CodeCaseStage(
 	override val id: String,
+	override val defaultName: String,
 	private val caseDefId: String,
 	val caseStageTypeId: String?,
 	private val name: String,
@@ -18,8 +19,6 @@ class CodeCaseStage(
 	override val enumeration: CodeCaseStageEnum
 		get() = CodeCaseStageEnum.instance
 
-	override fun getName(): String = name
-
 	val caseDef: CodeCaseDef
 		get() = getCaseDef(this.caseDefId)
 
@@ -30,6 +29,11 @@ class CodeCaseStage(
 		get() = "abstract" == this.caseStageTypeId
 
 	val abstractCaseStage: CodeCaseStage?
-		get() = if (this.abstractCaseStageId != null) CodeCaseStageEnum.getCaseStage(this.abstractCaseStageId) else null
+		get() =
+			if (this.abstractCaseStageId != null) {
+				CodeCaseStageEnum.getCaseStage(this.abstractCaseStageId)
+			} else {
+				null
+			}
 
 }

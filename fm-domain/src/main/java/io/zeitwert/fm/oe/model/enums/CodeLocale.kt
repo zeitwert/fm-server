@@ -5,7 +5,7 @@ import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeLocale(
 	override val id: String,
-	private val itemName: String,
+	override val defaultName: String,
 ) : Enumerated {
 
 	EN_US("en-US", "English US"),
@@ -16,8 +16,6 @@ enum class CodeLocale(
 	FR_FR("fr-FR", "French FR"),
 	ES_ES("es-ES", "Spanish ES"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

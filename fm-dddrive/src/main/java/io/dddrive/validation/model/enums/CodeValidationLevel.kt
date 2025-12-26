@@ -4,12 +4,10 @@ import io.dddrive.enums.model.Enumerated
 
 class CodeValidationLevel(
 	override val id: String,
-	private val name: String,
+	override val defaultName: String,
 ) : Enumerated {
 
 	override val enumeration: CodeValidationLevelEnum
 		get() = CodeValidationLevelEnum.Companion.instance
-
-	override fun getName(): String = name
 
 }

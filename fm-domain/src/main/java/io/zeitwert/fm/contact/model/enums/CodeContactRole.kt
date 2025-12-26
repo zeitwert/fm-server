@@ -1,22 +1,17 @@
 package io.zeitwert.fm.contact.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
-/**
- * Contact role enum using the NEW dddrive framework.
- */
+/** Contact role enum using the NEW dddrive framework. */
 enum class CodeContactRole(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	COUNCILOR("councilor", "Gemeinderat"),
-	CARETAKER("caretaker", "Hauswart"),
-	OTHER("other", "Anderes"),
+	COUNCILOR("Gemeinderat"),
+	CARETAKER("Hauswart"),
+	OTHER("Anderes"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

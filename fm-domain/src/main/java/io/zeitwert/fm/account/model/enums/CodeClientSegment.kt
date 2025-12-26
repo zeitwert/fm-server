@@ -1,18 +1,15 @@
 package io.zeitwert.fm.account.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeClientSegment(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	COMMUNITY("community", "Gemeinde"),
-	FAMILY("family", "Family Office"),
+	COMMUNITY("Gemeinde"),
+	FAMILY("Family Office"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

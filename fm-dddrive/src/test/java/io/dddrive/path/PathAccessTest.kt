@@ -532,7 +532,7 @@ class PathAccessTest {
 
 data class TestEnum(
 	override val id: String,
-	private val itemName: String,
+	override val defaultName: String,
 ) : Enumerated {
 
 	override val enumeration: Enumeration<out Enumerated>
@@ -545,8 +545,6 @@ data class TestEnum(
 
 			override fun getItem(id: String): TestEnum = TestEnum(id, id)
 		}
-
-	override fun getName(): String = itemName
 }
 
 class TestEntity : EntityWithProperties {

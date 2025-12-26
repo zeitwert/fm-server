@@ -1,26 +1,21 @@
 package io.zeitwert.fm.contact.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
-/**
- * Address channel enum using the NEW dddrive framework.
- */
+/** Address channel enum using the NEW dddrive framework. */
 enum class CodeAddressChannel(
-	override val id: String,
-	private val itemName: String,
+	override val defaultName: String,
 	val addressTypeId: String,
-) : Enumerated {
+) : EnumeratedEnum {
 
-	MAIL("mail", "Mail Address", "mail"),
-	EMAIL("email", "Email Address", "email"),
-	WHATSAPP("whatsapp", "Whatsapp", "chat"),
-	SIGNAL("signal", "Signal", "chat"),
-	VIBER("viber", "Viber", "chat"),
-	MESSENGER("messenger", "Messenger", "chat"),
+	MAIL("Mail Address", "mail"),
+	EMAIL("Email Address", "email"),
+	WHATSAPP("Whatsapp", "chat"),
+	SIGNAL("Signal", "chat"),
+	VIBER("Viber", "chat"),
+	MESSENGER("Messenger", "chat"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 
@@ -29,6 +24,7 @@ enum class CodeAddressChannel(
 	val isMailAddress get() = addressTypeId == "mail"
 
 	companion object Enumeration : EnumerationBase<CodeAddressChannel>(CodeAddressChannel::class.java) {
+
 		init {
 			entries.forEach { addItem(it) }
 		}

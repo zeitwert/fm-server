@@ -1,22 +1,17 @@
 package io.zeitwert.fm.contact.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
-/**
- * Gender enum using the NEW dddrive framework.
- */
+/** Gender enum using the NEW dddrive framework. */
 enum class CodeGender(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	MALE("male", "Mann"),
-	FEMALE("female", "Frau"),
-	OTHER("other", "Andere"),
+	MALE("Mann"),
+	FEMALE("Frau"),
+	OTHER("Andere"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

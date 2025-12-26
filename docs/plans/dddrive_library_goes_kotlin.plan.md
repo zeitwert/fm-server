@@ -2,28 +2,31 @@
 name: DDDrive Library Review
 overview: A comprehensive critical review of the dddrive library - a domain-driven design framework migrated from Java to Kotlin - analyzing its architecture, abstractions, and identifying opportunities for more idiomatic Kotlin implementations.
 todos:
-  - id: phase-1-reified
-    content: Add reified type parameters to property creation methods
-    status: pending
-  - id: phase-2-spi-lifecycle
-    content: Remove SPI interfaces and refactor lifecycle callbacks with hook registry
-    status: pending
-  - id: phase-3-delegates
-    content: Introduce Kotlin delegated properties as proxy alternative
-    status: pending
-  - id: phase-4-typesafe
-    content: Create type-safe property reference DSL
-    status: pending
-  - id: phase-5-enums
-    content: Simplify enum pattern to idiomatic Kotlin
-    status: pending
+	- id: phase-1-reified
+		content: Add reified type parameters to property creation methods
+		status: pending
+	- id: phase-2-spi-lifecycle
+		content: Remove SPI interfaces and refactor lifecycle callbacks with hook registry
+		status: pending
+	- id: phase-3-delegates
+		content: Introduce Kotlin delegated properties as proxy alternative
+		status: pending
+	- id: phase-4-typesafe
+		content: Create type-safe property reference DSL
+		status: pending
+	- id: phase-5-enums
+		content: Simplify enum pattern to idiomatic Kotlin
+		status: pending
 ---
 
 # DDDrive Framework Critical Review
 
 ## Executive Summary
 
-The dddrive library is a sophisticated Domain-Driven Design (DDD) framework that provides a property-based approach to aggregate modeling with automatic change tracking, validation, and persistence abstraction. While the code has been converted to Kotlin syntax, it still heavily relies on Java patterns and paradigms. This review identifies architectural strengths, weaknesses, and opportunities for Kotlin-idiomatic improvements.
+The dddrive library is a sophisticated Domain-Driven Design (DDD) framework that provides a property-based approach to
+aggregate modeling with automatic change tracking, validation, and persistence abstraction. While the code has been
+converted to Kotlin syntax, it still heavily relies on Java patterns and paradigms. This review identifies architectural
+strengths, weaknesses, and opportunities for Kotlin-idiomatic improvements.
 
 ---
 
@@ -37,7 +40,7 @@ graph TB
         AggregateRepo[AggregateRepository]
         PartRepo[PartRepository]
     end
-    
+
     subgraph PropertySystem [Property System]
         Property[Property]
         BaseProperty[BaseProperty]
@@ -45,20 +48,20 @@ graph TB
         PartListProp[PartListProperty]
         EnumProp[EnumProperty]
     end
-    
+
     subgraph Persistence [Persistence Layer]
         PersistProvider[AggregatePersistenceProvider]
         PartPersist[PartPersistenceProvider]
         RepoDirectory[RepositoryDirectory]
     end
-    
+
     subgraph Specializations [Domain Specializations]
         Doc[Doc]
         Obj[Obj]
         ObjTenant[ObjTenant]
         ObjUser[ObjUser]
     end
-    
+
     Aggregate --> Property
     Part --> Property
     Aggregate --> AggregateRepo
@@ -79,7 +82,8 @@ graph TB
 
 **Current Implementation:**
 
-The framework uses Javassist proxies to intercept getter/setter calls on aggregates and route them through a centralized `PropertyHandler`:
+The framework uses Javassist proxies to intercept getter/setter calls on aggregates and route them through a centralized
+`PropertyHandler`:
 
 ```53:71:fm-dddrive/src/main/java/io/dddrive/property/model/impl/PropertyHandler.kt
 // Method interception translates interface calls to property operations
@@ -101,13 +105,15 @@ override fun invoke(self: Any, m: Method, proceed: Method?, args: Array<Any?>): 
 ```kotlin
 // Idiomatic Kotlin approach
 class HouseholdAggregate : AggregateBase() {
-    var name: String? by property()
-    val memberList: PartList<HouseholdMember> by partList()
-    var mainMember: HouseholdMember? by partReference()
+	var name: String? by property()
+	val memberList: PartList<HouseholdMember> by partList()
+	var mainMember: HouseholdMember? by partReference()
 }
 ```
 
-**Note:** Delegated properties only delegate get/set - collection operations like `addMember()`, `getMember(index)` would need to go through the property accessor (e.g., `household.memberList.add()` instead of `household.addMember()`). This changes the external API but is arguably more Kotlin-idiomatic.
+**Note:** Delegated properties only delegate get/set - collection operations like `addMember()`, `getMember(index)`
+would need to go through the property accessor (e.g., `household.memberList.add()` instead of `household.addMember()`).
+This changes the external API but is arguably more Kotlin-idiomatic.
 
 ---
 
@@ -129,7 +135,10 @@ The codebase uses Service Provider Interface (SPI) pattern with parallel interfa
 
 | `Part` | `PartSPI` |
 
-The lifecycle callbacks (`doInit`, `doAfterCreate`, `doBeforeStore`, etc.) use sequence counters to verify that `super.xxx()` was called at each inheritance level. This exists because forgetting `super.doBeforeStore()` causes subtle bugs (missing version increment, missing transitions) that are hard to debug - not immediate exceptions but weird data inconsistencies.
+The lifecycle callbacks (`doInit`, `doAfterCreate`, `doBeforeStore`, etc.) use sequence counters to verify that
+`super.xxx()` was called at each inheritance level. This exists because forgetting `super.doBeforeStore()` causes subtle
+bugs (missing version increment, missing transitions) that are hard to debug - not immediate exceptions but weird data
+inconsistencies.
 
 **Issues:**
 
@@ -146,38 +155,38 @@ Hooks are registered by each inheritance level in `init` blocks and collected in
 
 ```kotlin
 abstract class AggregateBase {
-    private val afterCreateHooks = mutableListOf<(Any, OffsetDateTime) -> Unit>()
-    
-    protected fun onAfterCreate(hook: (userId: Any, timestamp: OffsetDateTime) -> Unit) {
-        afterCreateHooks.add(hook)
-    }
-    
-    // Framework method - final, runs all hooks automatically
-    internal fun afterCreate(userId: Any, timestamp: OffsetDateTime) {
-        // Framework work always runs
-        setValueByPath("ownerId", userId)
-        setValueByPath("version", 0)
-        // ...
-        
-        // All registered hooks run - no super calls needed
-        afterCreateHooks.forEach { it(userId, timestamp) }
-    }
+	private val afterCreateHooks = mutableListOf<(Any, OffsetDateTime) -> Unit>()
+
+	protected fun onAfterCreate(hook: (userId: Any, timestamp: OffsetDateTime) -> Unit) {
+		afterCreateHooks.add(hook)
+	}
+
+	// Framework method - final, runs all hooks automatically
+	internal fun afterCreate(userId: Any, timestamp: OffsetDateTime) {
+		// Framework work always runs
+		setValueByPath("ownerId", userId)
+		setValueByPath("version", 0)
+		// ...
+
+		// All registered hooks run - no super calls needed
+		afterCreateHooks.forEach { it(userId, timestamp) }
+	}
 }
 
 abstract class ObjBase : AggregateBase() {
-    init {
-        onAfterCreate { userId, timestamp ->
-            _transitionList.addPart(null).init(userId, timestamp)
-        }
-    }
+	init {
+		onAfterCreate { userId, timestamp ->
+			_transitionList.addPart(null).init(userId, timestamp)
+		}
+	}
 }
 
 abstract class ObjHouseholdBase : ObjBase() {
-    init {
-        onAfterCreate { userId, timestamp ->
-            // Household-specific post-create logic
-        }
-    }
+	init {
+		onAfterCreate { userId, timestamp ->
+			// Household-specific post-create logic
+		}
+	}
 }
 ```
 
@@ -194,35 +203,36 @@ abstract class ObjHouseholdBase : ObjBase() {
 
 #### Option B: Hook Registry on AggregateRepository
 
-Hooks are registered once per repository type, not per instance. The aggregate provides internal methods that hooks call:
+Hooks are registered once per repository type, not per instance. The aggregate provides internal methods that hooks
+call:
 
 ```kotlin
 abstract class AggregateRepositoryBase<A : Aggregate> {
-    private val afterCreateHooks = mutableListOf<(A, Any, OffsetDateTime) -> Unit>()
-    
-    protected fun onAfterCreate(hook: (A, Any, OffsetDateTime) -> Unit) {
-        afterCreateHooks.add(hook)
-    }
-    
-    internal fun afterCreate(aggregate: A, userId: Any, timestamp: OffsetDateTime) {
-        // Framework work + all registered hooks
-        afterCreateHooks.forEach { it(aggregate, userId, timestamp) }
-    }
+	private val afterCreateHooks = mutableListOf<(A, Any, OffsetDateTime) -> Unit>()
+
+	protected fun onAfterCreate(hook: (A, Any, OffsetDateTime) -> Unit) {
+		afterCreateHooks.add(hook)
+	}
+
+	internal fun afterCreate(aggregate: A, userId: Any, timestamp: OffsetDateTime) {
+		// Framework work + all registered hooks
+		afterCreateHooks.forEach { it(aggregate, userId, timestamp) }
+	}
 }
 
 abstract class ObjRepositoryBase<A : Obj> : AggregateRepositoryBase<A>() {
-    init {
-        onAfterCreate { obj, userId, timestamp ->
-            obj.addTransitionAfterCreate(userId, timestamp)
-        }
-    }
+	init {
+		onAfterCreate { obj, userId, timestamp ->
+			obj.addTransitionAfterCreate(userId, timestamp)
+		}
+	}
 }
 
 // Aggregate just provides methods that encapsulate internal state access
 abstract class ObjBase : AggregateBase() {
-    internal fun addTransitionAfterCreate(userId: Any, timestamp: OffsetDateTime) {
-        _transitionList.addPart(null).init(userId, timestamp)
-    }
+	internal fun addTransitionAfterCreate(userId: Any, timestamp: OffsetDateTime) {
+		_transitionList.addPart(null).init(userId, timestamp)
+	}
 }
 ```
 
@@ -239,9 +249,13 @@ abstract class ObjBase : AggregateBase() {
 
 #### Option C: Keep Counters, Remove SPI Only
 
-Keep the current `super.doXxx()` pattern with sequence counter verification, but remove the SPI interfaces by using `internal` visibility. This preserves the natural OO programming model for consumers while cleaning up framework internals.
+Keep the current `super.doXxx()` pattern with sequence counter verification, but remove the SPI interfaces by using
+`internal` visibility. This preserves the natural OO programming model for consumers while cleaning up framework
+internals.
 
-**Rationale:** The hook patterns (Options A & B) trade framework-internal boilerplate for consumer-visible boilerplate. The counter pattern keeps technical concerns invisible to domain developers - they just write natural `override` methods with `super` calls.
+**Rationale:** The hook patterns (Options A & B) trade framework-internal boilerplate for consumer-visible boilerplate.
+The counter pattern keeps technical concerns invisible to domain developers - they just write natural `override` methods
+with `super` calls.
 
 **Framework internals (before):**
 
@@ -258,8 +272,8 @@ check(aggregate.doAfterCreateSeqNr > doAfterCreateSeqNr) { ... }
 // Direct call via internal visibility, counter check stays
 val seqNr = aggregate.doAfterCreateSeqNr
 aggregate.doAfterCreate(userId, timestamp)  // internal, no cast needed
-check(aggregate.doAfterCreateSeqNr > seqNr) { 
-    "${aggregate.className}: super.doAfterCreate() was not called" 
+check(aggregate.doAfterCreateSeqNr > seqNr) {
+	"${aggregate.className}: super.doAfterCreate() was not called"
 }
 ```
 
@@ -267,10 +281,10 @@ check(aggregate.doAfterCreateSeqNr > seqNr) {
 
 ```kotlin
 abstract class ObjHouseholdBase : ObjBase() {
-    override fun doAfterCreate(userId: Any, timestamp: OffsetDateTime) {
-        super.doAfterCreate(userId, timestamp)
-        // Household-specific post-create logic - natural OO style
-    }
+	override fun doAfterCreate(userId: Any, timestamp: OffsetDateTime) {
+		super.doAfterCreate(userId, timestamp)
+		// Household-specific post-create logic - natural OO style
+	}
 }
 ```
 
@@ -344,7 +358,7 @@ Enums use a custom `Enumerated` interface with companion object initialization:
 ```1:26:fm-dddrive/src/test/java/io/dddrive/domain/household/model/enums/CodeLabel.kt
 enum class CodeLabel(
     override val id: String,
-    private val itemName: String,
+    override val defaultName: String,
 ) : Enumerated {
     A("a", "Label A"),
     B("b", "Label B"),
@@ -371,9 +385,9 @@ enum class CodeLabel(
 
 ```kotlin
 enum class CodeLabel(val displayName: String) {
-    A("Label A"),
-    B("Label B"),
-    C("Label C")
+	A("Label A"),
+	B("Label B"),
+	C("Label C")
 }
 
 // Extension for serialization if needed
@@ -403,13 +417,13 @@ fun <T : Any> addBaseProperty(
 
 ```kotlin
 inline fun <reified T : Any> addBaseProperty(name: String): BaseProperty<T> {
-    return BasePropertyImpl(this, name, T::class.java).also { addProperty(it) }
+	return BasePropertyImpl(this, name, T::class.java).also { addProperty(it) }
 }
 
 // Usage becomes cleaner:
 override fun doInit() {
-    addBaseProperty<String>("name")
-    addEnumProperty<CodeLabel>("labelSet")
+	addBaseProperty<String>("name")
+	addEnumProperty<CodeLabel>("labelSet")
 }
 ```
 
@@ -442,13 +456,13 @@ override fun doInit() {
 
 ```kotlin
 class ObjHouseholdBase : ObjBase() {
-    override val schema = aggregateSchema {
-        property<String>("name")
-        enumSet<CodeLabel>("labelSet")
-        referenceSet<ObjUser>("userSet")
-        partReference<ObjHouseholdPartMember>("mainMember")
-        partList<ObjHouseholdPartMember>("memberList")
-    }
+	override val schema = aggregateSchema {
+		property<String>("name")
+		enumSet<CodeLabel>("labelSet")
+		referenceSet<ObjUser>("userSet")
+		partReference<ObjHouseholdPartMember>("mainMember")
+		partList<ObjHouseholdPartMember>("memberList")
+	}
 }
 ```
 
@@ -487,8 +501,8 @@ companion object {
 ```kotlin
 // Remove singleton, inject everywhere needed
 class AggregateRepositoryBase<A : Aggregate>(
-    private val directory: RepositoryDirectory,
-    // ...
+	private val directory: RepositoryDirectory,
+	// ...
 )
 ```
 
@@ -505,7 +519,7 @@ fun <T : Any> EntityWithProperties.setValueByPath(
     path: String,
     value: T?,
 ) {
-    val property = resolveProperty<T>(path, forSetter = true) 
+    val property = resolveProperty<T>(path, forSetter = true)
         ?: error("Could not resolve path: $path")
     (property as BaseProperty<T>).value = value
 }
@@ -554,16 +568,17 @@ fun freeze() {
 ```kotlin
 // Immutable view for read operations
 data class AggregateSnapshot(
-    val id: Any,
-    val name: String?,
-    val members: List<MemberSnapshot>
+	val id: Any,
+	val name: String?,
+	val members: List<MemberSnapshot>
 )
 
 // Mutable draft for modifications
 class AggregateDraft(private val snapshot: AggregateSnapshot) {
-    var name: String? = snapshot.name
-    // ... changes tracked
-    fun commit(): AggregateSnapshot = ...
+	var name: String? = snapshot.name
+
+	// ... changes tracked
+	fun commit(): AggregateSnapshot = ...
 }
 ```
 
@@ -632,9 +647,9 @@ If you want to proceed with improvements, I recommend an incremental approach:
 1. **Phase 1:** Add reified generics to `addProperty` methods (backwards compatible)
 2. **Phase 2:** Remove SPI interfaces + refactor lifecycle callbacks with hook registry
 
-   - Choose Option A (hooks on AggregateBase) or Option B (hooks on Repository)
-   - Replace `internal` visibility for framework methods
-   - Remove sequence counters
+	- Choose Option A (hooks on AggregateBase) or Option B (hooks on Repository)
+	- Replace `internal` visibility for framework methods
+	- Remove sequence counters
 
 3. **Phase 3:** Introduce delegated properties as alternative to proxy pattern
 4. **Phase 4:** Create type-safe property reference DSL

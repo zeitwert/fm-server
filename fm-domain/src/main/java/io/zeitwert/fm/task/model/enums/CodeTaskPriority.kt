@@ -1,19 +1,16 @@
 package io.zeitwert.fm.task.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeTaskPriority(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
-	LOW("low", "Tief"),
-	NORMAL("normal", "Normal"),
-	HIGH("high", "Hoch"),
+	LOW("Tief"),
+	NORMAL("Normal"),
+	HIGH("Hoch"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

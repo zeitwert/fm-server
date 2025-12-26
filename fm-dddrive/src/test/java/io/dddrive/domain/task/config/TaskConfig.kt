@@ -51,43 +51,46 @@ open class TaskConfig :
 
 		// Define stages for simple task workflow
 		val newStage = CodeCaseStage(
-			"task.new",
-			"simpleTask",
-			"initial",
-			"New",
-			"Task is newly created",
-			1,
-			null,
-			"CREATE",
-			listOf("START", "DONE"),
+			id = "task.new",
+			defaultName = "New",
+			caseDefId = "simpleTask",
+			caseStageTypeId = "initial",
+			name = "New",
+			description = "Task is newly created",
+			seqNr = 1,
+			abstractCaseStageId = null,
+			action = "CREATE",
+			availableActions = listOf("START", "DONE"),
 		)
 		stageEnum.addItem(newStage)
 		simpleTaskDef.addCaseStage(newStage)
 
 		val inProgressStage = CodeCaseStage(
-			"task.inProgress",
-			"simpleTask",
-			"active",
-			"In Progress",
-			"Task is being worked on",
-			2,
-			null,
-			"START",
-			listOf("DONE"),
+			id = "task.inProgress",
+			defaultName = "In Progress",
+			caseDefId = "simpleTask",
+			caseStageTypeId = "active",
+			name = "In Progress",
+			description = "Task is being worked on",
+			seqNr = 2,
+			abstractCaseStageId = null,
+			action = "START",
+			availableActions = listOf("DONE"),
 		)
 		stageEnum.addItem(inProgressStage)
 		simpleTaskDef.addCaseStage(inProgressStage)
 
 		val doneStage = CodeCaseStage(
-			"task.done",
-			"simpleTask",
-			"terminal",
-			"Done",
-			"Task has been completed",
-			3,
-			null,
-			"DONE",
-			listOf(),
+			id = "task.done",
+			defaultName = "Done",
+			caseDefId = "simpleTask",
+			caseStageTypeId = "terminal",
+			name = "Done",
+			description = "Task has been completed",
+			seqNr = 3,
+			abstractCaseStageId = null,
+			action = "DONE",
+			availableActions = listOf(),
 		)
 		stageEnum.addItem(doneStage)
 		simpleTaskDef.addCaseStage(doneStage)

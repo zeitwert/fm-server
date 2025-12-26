@@ -1,25 +1,22 @@
 package io.zeitwert.fm.oe.model.enums
 
-import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.EnumeratedEnum
 import io.dddrive.enums.model.base.EnumerationBase
 
 enum class CodeTenantType(
-	override val id: String,
-	private val itemName: String,
-) : Enumerated {
+	override val defaultName: String,
+) : EnumeratedEnum {
 
 	// Kernel Tenant (Nr 1)
 	// placeholder to do application administration (tenants, users)
-	KERNEL("kernel", "Kernel"),
+	KERNEL("Kernel"),
 
 	// Container for 1 dedicated Account
-	COMMUNITY("community", "Gemeinde"),
+	COMMUNITY("Gemeinde"),
 
 	// An Advisor Tenant may contain multiple Accounts
-	ADVISOR("advisor", "Berater"),
+	ADVISOR("Berater"),
 	;
-
-	override fun getName() = itemName
 
 	override val enumeration get() = Enumeration
 

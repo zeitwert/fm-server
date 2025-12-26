@@ -23,7 +23,7 @@ data class EnumeratedDto(
 		): EnumeratedDto = EnumeratedDto(id, name)
 
 		@JvmStatic
-		fun of(e: Enumerated?): EnumeratedDto? = e?.let { EnumeratedDto(it.id, it.getName()) }
+		fun of(e: Enumerated?): EnumeratedDto? = e?.let { EnumeratedDto(it.id, it.defaultName) }
 
 		@JvmStatic
 		fun of(a: Aggregate?): EnumeratedDto? = a?.let { EnumeratedDto(it.id.toString(), it.caption) }
