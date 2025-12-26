@@ -26,7 +26,7 @@ abstract class ObjBase(
 	override var closedByUser: ObjUser? by referenceProperty(this, "closedByUser")
 	override var closedAt: OffsetDateTime? by baseProperty(this, "closedAt")
 
-	private val _transitionList: PartListProperty<ObjPartTransition> by partListProperty(this, "transitionList")
+	private val _transitionList: PartListProperty<ObjPartTransition> = partListProperty(this, "transitionList")
 	override val transitionList: List<ObjPartTransition> get() = _transitionList.toList()
 
 	override val meta: ObjMeta

@@ -36,7 +36,7 @@ class ObjBuildingPartRatingImpl(
 	override var ratingDate: LocalDate? by baseProperty(this, "ratingDate")
 	override var ratingUserId: Any? by referenceIdProperty<ObjUser>(this, "ratingUser")
 	override var ratingUser: ObjUser? by referenceProperty(this, "ratingUser")
-	override val elementList: PartListProperty<ObjBuildingPartElementRating> by partListProperty(this, "elementList")
+	override val elementList: PartListProperty<ObjBuildingPartElementRating> = partListProperty(this, "elementList")
 
 	override var elementWeights: Int = 0
 

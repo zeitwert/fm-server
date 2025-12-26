@@ -41,8 +41,8 @@ class ObjContactImpl(
 	override var mobile: String? by baseProperty(this, "mobile")
 	override var email: String? by baseProperty(this, "email")
 	override var description: String? by baseProperty(this, "description")
-	override val mailAddressList: PartListProperty<ObjContactPartAddress> by partListProperty(this, "mailAddressList")
-	override val electronicAddressList: PartListProperty<ObjContactPartAddress> by partListProperty(
+	override val mailAddressList: PartListProperty<ObjContactPartAddress> = partListProperty(this, "mailAddressList")
+	override val electronicAddressList: PartListProperty<ObjContactPartAddress> = partListProperty(
 		this,
 		"electronicAddressList",
 	)

@@ -43,7 +43,7 @@ class DocTestImpl(
 	override var refObj: ObjTest? by referenceProperty(this, "refObj")
 	override var refDocId: Any? by referenceIdProperty<DocTest>(this, "refDoc")
 	override var refDoc: DocTest? by referenceProperty(this, "refDoc")
-	override val testTypeSet: EnumSetProperty<CodeTestType> by enumSetProperty(this, "testTypeSet")
+	override val testTypeSet: EnumSetProperty<CodeTestType> = enumSetProperty(this, "testTypeSet")
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 

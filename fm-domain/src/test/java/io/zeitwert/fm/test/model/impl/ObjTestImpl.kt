@@ -44,8 +44,8 @@ class ObjTestImpl(
 	override var testType: CodeTestType? by enumProperty(this, "testType")
 	override var refObjId: Any? by referenceIdProperty<ObjTest>(this, "refObj")
 	override var refObj: ObjTest? by referenceProperty(this, "refObj")
-	override val testTypeSet: EnumSetProperty<CodeTestType> by enumSetProperty(this, "testTypeSet")
-	override val nodeList: PartListProperty<ObjTestPartNode> by partListProperty(this, "nodeList")
+	override val testTypeSet: EnumSetProperty<CodeTestType> = enumSetProperty(this, "testTypeSet")
+	override val nodeList: PartListProperty<ObjTestPartNode> = partListProperty(this, "nodeList")
 
 	override val repository get() = super.repository as ObjTestRepository
 

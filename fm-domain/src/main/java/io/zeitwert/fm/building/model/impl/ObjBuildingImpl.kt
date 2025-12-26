@@ -83,10 +83,10 @@ class ObjBuildingImpl(
 	override var coverFoto: ObjDocument? by referenceProperty(this, "coverFoto")
 
 	// Part list property
-	override val ratingList: PartListProperty<ObjBuildingPartRating> by partListProperty(this, "ratingList")
+	override val ratingList: PartListProperty<ObjBuildingPartRating> = partListProperty(this, "ratingList")
 
 	// Reference set property
-	override val contactSet: ReferenceSetProperty<ObjContact> by referenceSetProperty(this, "contactSet")
+	override val contactSet: ReferenceSetProperty<ObjContact> = referenceSetProperty(this, "contactSet")
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 

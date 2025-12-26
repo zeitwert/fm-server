@@ -27,7 +27,7 @@ abstract class DocBase(
 	override var caseStage: CodeCaseStage? by enumProperty(this, "caseStage")
 	override var assignee: ObjUser? by referenceProperty(this, "assignee")
 
-	private val _transitionList: PartListProperty<DocPartTransition> by partListProperty(this, "transitionList")
+	private val _transitionList: PartListProperty<DocPartTransition> = partListProperty(this, "transitionList")
 	override val transitionList: List<DocPartTransition> get() = _transitionList.toList()
 
 	private var oldCaseStage: CodeCaseStage? = null

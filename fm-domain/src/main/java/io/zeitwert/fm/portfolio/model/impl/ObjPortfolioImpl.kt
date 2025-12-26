@@ -38,9 +38,9 @@ class ObjPortfolioImpl(
 	override var name: String? by baseProperty(this, "name")
 	override var description: String? by baseProperty(this, "description")
 	override var portfolioNr: String? by baseProperty(this, "portfolioNr")
-	override val includeSet: ReferenceSetProperty<Obj> by referenceSetProperty(this, "includeSet")
-	override val excludeSet: ReferenceSetProperty<Obj> by referenceSetProperty(this, "excludeSet")
-	override val buildingSet: ReferenceSetProperty<ObjBuilding> by referenceSetProperty(this, "buildingSet")
+	override val includeSet: ReferenceSetProperty<Obj> = referenceSetProperty(this, "includeSet")
+	override val excludeSet: ReferenceSetProperty<Obj> = referenceSetProperty(this, "excludeSet")
+	override val buildingSet: ReferenceSetProperty<ObjBuilding> = referenceSetProperty(this, "buildingSet")
 
 	override fun aggregate(): ObjPortfolio = this
 

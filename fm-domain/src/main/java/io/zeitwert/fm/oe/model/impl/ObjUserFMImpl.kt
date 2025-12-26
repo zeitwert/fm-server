@@ -32,7 +32,7 @@ class ObjUserFMImpl(
 	override var role: CodeUserRole? by enumProperty(this, "role")
 	override var avatarImageId: Any? by referenceIdProperty<ObjDocument>(this, "avatarImage")
 	override val avatarImage: ObjDocument? by referenceProperty(this, "avatarImage")
-	override val tenantSet: ReferenceSetProperty<ObjTenant> by referenceSetProperty(this, "tenantSet")
+	override val tenantSet: ReferenceSetProperty<ObjTenant> = referenceSetProperty(this, "tenantSet")
 
 	override val isAppAdmin get() = repository.isAppAdmin(this)
 
