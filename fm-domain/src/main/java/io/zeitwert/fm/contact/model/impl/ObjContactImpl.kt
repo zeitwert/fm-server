@@ -31,23 +31,21 @@ open class ObjContactImpl(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	// Enum properties
-	override var contactRole: CodeContactRole? by enumProperty()
-	override var salutation: CodeSalutation? by enumProperty()
-	override var title: CodeTitle? by enumProperty()
-
-	// Base properties
-	override var firstName: String? by baseProperty()
-	override var lastName: String? by baseProperty()
-	override var birthDate: LocalDate? by baseProperty()
-	override var phone: String? by baseProperty()
-	override var mobile: String? by baseProperty()
-	override var email: String? by baseProperty()
-	override var description: String? by baseProperty()
-
-	// Two separate part list properties for mail and electronic addresses
-	override val mailAddressList: PartListProperty<ObjContactPartAddress> by partListProperty()
-	override val electronicAddressList: PartListProperty<ObjContactPartAddress> by partListProperty()
+	override var contactRole: CodeContactRole? by enumProperty(this, "contactRole")
+	override var salutation: CodeSalutation? by enumProperty(this, "salutation")
+	override var title: CodeTitle? by enumProperty(this, "title")
+	override var firstName: String? by baseProperty(this, "firstName")
+	override var lastName: String? by baseProperty(this, "lastName")
+	override var birthDate: LocalDate? by baseProperty(this, "birthDate")
+	override var phone: String? by baseProperty(this, "phone")
+	override var mobile: String? by baseProperty(this, "mobile")
+	override var email: String? by baseProperty(this, "email")
+	override var description: String? by baseProperty(this, "description")
+	override val mailAddressList: PartListProperty<ObjContactPartAddress> by partListProperty(this, "mailAddressList")
+	override val electronicAddressList: PartListProperty<ObjContactPartAddress> by partListProperty(
+		this,
+		"electronicAddressList",
+	)
 
 	// ItemWithAccount implementation
 	override val account
@@ -64,9 +62,7 @@ open class ObjContactImpl(
 		partId: Int?,
 	): Part<*> {
 		if (property === mailAddressList || property === electronicAddressList) {
-			return directory
-				.getPartRepository(ObjContactPartAddress::class.java)
-				.create(this, property, partId)
+			return directory.getPartRepository(ObjContactPartAddress::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)
 	}

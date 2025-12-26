@@ -23,24 +23,16 @@ open class ObjUserFMImpl(
 ) : FMObjBase(repository, isNew),
 	ObjUserFM {
 
-	// Properties from ObjUser interface
-	override var email: String? by baseProperty()
-	override var name: String? by baseProperty()
-	override var description: String? by baseProperty()
-	override var password: String? by baseProperty()
+	override var email: String? by baseProperty(this, "email")
+	override var name: String? by baseProperty(this, "name")
+	override var description: String? by baseProperty(this, "description")
+	override var password: String? by baseProperty(this, "password")
 
-	// Properties from ObjUserFM interface
-	override var needPasswordChange: Boolean? by baseProperty()
-
-	// Enum property
-	override var role: CodeUserRole? by enumProperty()
-
-	// Reference properties for avatar image
-	override var avatarImageId: Any? by referenceIdProperty<ObjDocument>()
-	override val avatarImage: ObjDocument? by referenceProperty()
-
-	// Reference set property for tenants
-	override val tenantSet: ReferenceSetProperty<ObjTenant> by referenceSetProperty()
+	override var needPasswordChange: Boolean? by baseProperty(this, "needPasswordChange")
+	override var role: CodeUserRole? by enumProperty(this, "role")
+	override var avatarImageId: Any? by referenceIdProperty<ObjDocument>(this, "avatarImage")
+	override val avatarImage: ObjDocument? by referenceProperty(this, "avatarImage")
+	override val tenantSet: ReferenceSetProperty<ObjTenant> by referenceSetProperty(this, "tenantSet")
 
 	override val isAppAdmin get() = repository.isAppAdmin(this)
 
@@ -90,4 +82,3 @@ open class ObjUserFMImpl(
 	}
 
 }
-

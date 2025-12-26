@@ -7,8 +7,6 @@ interface EntityWithPropertiesSPI {
 
 	val directory: RepositoryDirectory
 
-	fun doInit()
-
 	val isInLoad: Boolean
 
 	fun isInCalc(): Boolean

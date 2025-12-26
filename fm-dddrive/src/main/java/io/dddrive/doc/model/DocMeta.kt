@@ -13,8 +13,6 @@ interface DocMeta : AggregateMeta {
 
 	val caseStages: List<CodeCaseStage>
 
-	fun setCaseDef(caseDef: CodeCaseDef)
-
 	val caseStage: CodeCaseStage?
 
 	fun setCaseStage(

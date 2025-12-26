@@ -23,39 +23,20 @@ abstract class DocBase(
 	Doc,
 	DocMeta {
 
-	// ============================================================================
-	// Delegated properties (DocMeta interface)
-	// ============================================================================
+	override var caseDef: CodeCaseDef? by enumProperty(this, "caseDef")
+	override var caseStage: CodeCaseStage? by enumProperty(this, "caseStage")
+	override var assignee: ObjUser? by referenceProperty(this, "assignee")
 
-	private var _caseDef: CodeCaseDef? by enumProperty()
-	override val caseDef: CodeCaseDef? get() = _caseDef
-
-	private var _caseStage: CodeCaseStage? by enumProperty()
-	override val caseStage: CodeCaseStage? get() = _caseStage
-
-	override var assignee: ObjUser? by referenceProperty()
-
-	private val _transitionList: PartListProperty<DocPartTransition> by partListProperty()
+	private val _transitionList: PartListProperty<DocPartTransition> by partListProperty(this, "transitionList")
 	override val transitionList: List<DocPartTransition> get() = _transitionList.toList()
-
-	// ============================================================================
 
 	private var oldCaseStage: CodeCaseStage? = null
 
 	override val meta: DocMeta
 		get() = this
 
-	override val docTypeId get() = repository.aggregateType.id
-
-	// Trigger delegate initialization to register properties before persistence layer access.
-	@Suppress("UNUSED_EXPRESSION")
-	override fun doInit() {
-		super.doInit()
-		_caseDef
-		_caseStage
-		assignee
-		_transitionList
-	}
+	override val docTypeId
+		get() = repository.aggregateType.id
 
 	override fun doAfterCreate(
 		userId: Any,
@@ -102,29 +83,25 @@ abstract class DocBase(
 		}
 	}
 
-	override val isInWork: Boolean get() = caseStage?.isInWork ?: true
-
-	override fun setCaseDef(caseDef: CodeCaseDef) {
-		require(meta.caseDef == null) { "caseDef empty" }
-		unfreeze()
-		_caseDef = caseDef
-	}
+	override val isInWork: Boolean
+		get() = caseStage?.isInWork ?: true
 
 	override fun setCaseStage(
-		newCaseStage: CodeCaseStage,
+		caseStage: CodeCaseStage,
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		require(!newCaseStage.isAbstract) { "valid caseStage (i)" }
-		require(caseDef == null || newCaseStage.caseDef === caseDef) { "valid caseStage (ii)" }
-		if (caseDef == null) {
-			setCaseDef(newCaseStage.caseDef)
+		require(!caseStage.isAbstract) { "valid caseStage (i)" }
+		require(this.caseDef == null || caseStage.caseDef === caseDef) { "valid caseStage (ii)" }
+		if (this.caseDef == null) {
+			unfreeze()
+			this.caseDef = caseStage.caseDef
 		}
-		if (caseStage == null) { // initial transition
-			_transitionList.add(null).init(userId, timestamp, caseStage, newCaseStage)
-			oldCaseStage = newCaseStage
+		if (this.caseStage == null) { // initial transition
+			_transitionList.add(null).init(userId, timestamp, this.caseStage, caseStage)
+			oldCaseStage = caseStage
 		}
-		_caseStage = newCaseStage
+		this.caseStage = caseStage
 	}
 
 	override val caseStages: List<CodeCaseStage>
@@ -135,9 +112,7 @@ abstract class DocBase(
 		partId: Int?,
 	): Part<*> {
 		if (property === _transitionList) {
-			return directory
-				.getPartRepository(DocPartTransition::class.java)
-				.create(this, property, partId)
+			return directory.getPartRepository(DocPartTransition::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)
 	}
@@ -149,7 +124,8 @@ abstract class DocBase(
 	// 	@Override
 	// 	public void doCalcSearch() {
 	// 		super.doCalcSearch();
-	// 		//Integer orderNr = ((AggregateRepositorySPI<?>) getRepository()).getIdProvider().getOrderNr(getId());
+	// 		//Integer orderNr = ((AggregateRepositorySPI<?>)
+	// getRepository()).getIdProvider().getOrderNr(getId());
 	// 		//addSearchToken(orderNr + "");
 	// 	}
 

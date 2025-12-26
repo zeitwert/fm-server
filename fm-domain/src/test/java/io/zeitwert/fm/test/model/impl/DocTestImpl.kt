@@ -26,31 +26,24 @@ open class DocTestImpl(
 	DocTest,
 	AggregateWithNotesMixin {
 
-	// Simple base properties
-	override var shortText: String? by baseProperty()
-	override var longText: String? by baseProperty()
-	override var date: LocalDate? by baseProperty()
-	override var int: Int? by baseProperty()
-	override var isDone: Boolean? by baseProperty()
-	private var _json: JSON? by baseProperty()
+	override var shortText: String? by baseProperty(this, "shortText")
+	override var longText: String? by baseProperty(this, "longText")
+	override var date: LocalDate? by baseProperty(this, "date")
+	override var int: Int? by baseProperty(this, "integer")
+	override var isDone: Boolean? by baseProperty(this, "isDone")
+	private var _json: JSON? by baseProperty(this, "json")
 	override var json: String?
 		get() = _json?.data()
 		set(value) {
 			_json = if (value != null) JSON.json(value) else null
 		}
-	override var nr: BigDecimal? by baseProperty()
-
-	// Enum property
-	override var testType: CodeTestType? by enumProperty()
-
-	// Reference properties
-	override var refObjId: Any? by referenceIdProperty<ObjTest>()
-	override var refObj: ObjTest? by referenceProperty()
-	override var refDocId: Any? by referenceIdProperty<DocTest>()
-	override var refDoc: DocTest? by referenceProperty()
-
-	// Enum set property
-	override val testTypeSet: EnumSetProperty<CodeTestType> by enumSetProperty()
+	override var nr: BigDecimal? by baseProperty(this, "nr")
+	override var testType: CodeTestType? by enumProperty(this, "testType")
+	override var refObjId: Any? by referenceIdProperty<ObjTest>(this, "refObj")
+	override var refObj: ObjTest? by referenceProperty(this, "refObj")
+	override var refDocId: Any? by referenceIdProperty<DocTest>(this, "refDoc")
+	override var refDoc: DocTest? by referenceProperty(this, "refDoc")
+	override val testTypeSet: EnumSetProperty<CodeTestType> by enumSetProperty(this, "testTypeSet")
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 

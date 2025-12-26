@@ -24,33 +24,17 @@ abstract class DocPartTransitionBase(
 	override val seqNr: Int get() = id
 
 	// Private mutable backing for read-only interface properties
-	private var _tenantId: Any? by baseProperty()
+	private var _tenantId: Any? by baseProperty(this, "tenantId")
+	private var _user: ObjUser? by referenceProperty(this, "user")
+	private var _userId: Any? by referenceIdProperty<ObjUser>(this, "user")
+	private var _timestamp: OffsetDateTime? by baseProperty(this, "timestamp")
+	private var _oldCaseStage: CodeCaseStage? by enumProperty(this, "oldCaseStage")
+	private var _newCaseStage: CodeCaseStage? by enumProperty(this, "newCaseStage")
 
-	private var _user: ObjUser? by referenceProperty()
 	override val user: ObjUser get() = _user!!
-
-	private var _userId: Any? by referenceIdProperty<ObjUser>()
-
-	private var _timestamp: OffsetDateTime? by baseProperty()
 	override val timestamp: OffsetDateTime get() = _timestamp!!
-
-	private var _oldCaseStage: CodeCaseStage? by enumProperty()
 	override val oldCaseStage: CodeCaseStage? get() = _oldCaseStage
-
-	private var _newCaseStage: CodeCaseStage? by enumProperty()
 	override val newCaseStage: CodeCaseStage get() = _newCaseStage!!
-
-	// Register properties for setValueByPath access (interface has val properties)
-	@Suppress("UNUSED_EXPRESSION")
-	override fun doInit() {
-		super.doInit()
-		_tenantId
-		_user
-		_userId
-		_timestamp
-		_oldCaseStage
-		_newCaseStage
-	}
 
 	override fun doAfterCreate() {
 		super.doAfterCreate()

@@ -11,10 +11,10 @@ abstract class ObjUserBase(
 ) : ObjBase(repository, isNew),
 	ObjUser {
 
-	override var email: String? by baseProperty()
-	override var password: String? by baseProperty()
-	override var name: String? by baseProperty()
-	override var description: String? by baseProperty()
+	override var email: String? by baseProperty(this, "email")
+	override var password: String? by baseProperty(this, "password")
+	override var name: String? by baseProperty(this, "name")
+	override var description: String? by baseProperty(this, "description")
 
 	override fun doCalcAll() {
 		super.doCalcAll()

@@ -1,27 +1,9 @@
 package io.dddrive.property.model.base
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.AggregateRepository
 import io.dddrive.ddd.model.Part
-import io.dddrive.enums.model.Enumerated
-import io.dddrive.enums.model.Enumeration
-import io.dddrive.property.model.AggregateReferenceProperty
-import io.dddrive.property.model.BaseProperty
 import io.dddrive.property.model.EntityWithProperties
 import io.dddrive.property.model.EntityWithPropertiesSPI
-import io.dddrive.property.model.EnumProperty
-import io.dddrive.property.model.EnumSetProperty
-import io.dddrive.property.model.PartListProperty
-import io.dddrive.property.model.PartReferenceProperty
 import io.dddrive.property.model.Property
-import io.dddrive.property.model.ReferenceSetProperty
-import io.dddrive.property.model.impl.AggregateReferencePropertyImpl
-import io.dddrive.property.model.impl.BasePropertyImpl
-import io.dddrive.property.model.impl.EnumPropertyImpl
-import io.dddrive.property.model.impl.EnumSetPropertyImpl
-import io.dddrive.property.model.impl.PartListPropertyImpl
-import io.dddrive.property.model.impl.PartReferencePropertyImpl
-import io.dddrive.property.model.impl.ReferenceSetPropertyImpl
 import kotlin.reflect.KClass
 
 abstract class EntityWithPropertiesBase :
@@ -31,18 +13,18 @@ abstract class EntityWithPropertiesBase :
 	private val propertyMap: MutableMap<String, Property<*>> = mutableMapOf()
 	private val partMap: MutableMap<Int, Part<*>> = mutableMapOf()
 
-	override fun hasProperty(name: String): Boolean = 
-		propertyMap.containsKey(name) || propertyMap.containsKey("_$name")
+	override fun hasProperty(name: String): Boolean = propertyMap.containsKey(name) || propertyMap.containsKey("_$name")
 
 	/**
 	 * Resolves the actual property name, trying underscore-prefix fallback.
 	 * Returns the name that exists in the map, or the original name if neither exists.
 	 */
-	private fun resolvePropertyName(name: String): String = when {
-		propertyMap.containsKey(name) -> name
-		propertyMap.containsKey("_$name") -> "_$name"
-		else -> name // Let it fail with the original name
-	}
+	private fun resolvePropertyName(name: String): String =
+		when {
+			propertyMap.containsKey(name) -> name
+			propertyMap.containsKey("_$name") -> "_$name"
+			else -> name // Let it fail with the original name
+		}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T : Any> getProperty(
@@ -68,212 +50,6 @@ abstract class EntityWithPropertiesBase :
 	fun addProperty(property: Property<*>) {
 		require(!hasProperty(property.name)) { "property [" + property.name + "] is unique" }
 		propertyMap.put(property.name, property)
-	}
-
-	fun <T : Any> addBaseProperty(
-		name: String,
-		type: Class<T>,
-	): BaseProperty<T> {
-		val property: BaseProperty<T> = BasePropertyImpl(this, name, type)
-		addProperty(property)
-		return property
-	}
-
-	protected fun <E : Enumerated> addEnumProperty(
-		name: String,
-		enumType: Class<E>,
-	): EnumProperty<E> {
-		val enumeration: Enumeration<E> = directory.getEnumeration(enumType)
-		val property: EnumProperty<E> = EnumPropertyImpl(this, name, enumeration, enumType)
-		addProperty(property)
-		return property
-	}
-
-	protected fun <E : Enumerated> addEnumSetProperty(
-		name: String,
-		enumType: Class<E>,
-	): EnumSetProperty<E> {
-		val enumeration: Enumeration<E> = directory.getEnumeration(enumType)
-		val property: EnumSetProperty<E> = EnumSetPropertyImpl(this, name, enumeration)
-		addProperty(property)
-		return property
-	}
-
-	fun <A : Aggregate> addReferenceProperty(
-		name: String,
-		aggregateType: Class<A>,
-	): AggregateReferenceProperty<A> {
-		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: AggregateReferenceProperty<A> =
-			AggregateReferencePropertyImpl(this, name, repo, aggregateType)
-		addProperty(property)
-		return property
-	}
-
-	protected fun <A : Aggregate> addReferenceSetProperty(
-		name: String,
-		aggregateType: Class<A>,
-	): ReferenceSetProperty<A> {
-		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
-		addProperty(property)
-		return property
-	}
-
-	fun <P : Part<*>> addPartListProperty(
-		name: String,
-		partType: Class<P>,
-	): PartListProperty<P> {
-		val property: PartListProperty<P> = PartListPropertyImpl(this, name, partType)
-		addProperty(property)
-		return property
-	}
-
-	@Suppress("UNCHECKED_CAST")
-	protected fun <A : Aggregate, P : Part<A>> addPartReferenceProperty(
-		name: String,
-		partType: Class<P>,
-	): PartReferenceProperty<P> {
-		val property: PartReferenceProperty<P> = PartReferencePropertyImpl(
-			this,
-			name,
-			{ id: Int -> getPart(id) as P },
-			partType,
-		)
-		addProperty(property)
-		return property
-	}
-
-	// ============================================================================
-	// getOrAdd* methods for property delegates
-	// These methods return existing properties or create new ones on first access.
-	// ============================================================================
-
-	/**
-	 * Gets an existing base property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <T : Any> getOrAddBaseProperty(
-		name: String,
-		type: Class<T>,
-	): BaseProperty<T> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as BaseProperty<T>
-		}
-		return addBaseProperty(name, type)
-	}
-
-	/**
-	 * Gets an existing enum property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <E : Enumerated> getOrAddEnumProperty(
-		name: String,
-		enumType: Class<E>,
-	): EnumProperty<E> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as EnumProperty<E>
-		}
-		val enumeration: Enumeration<E> = directory.getEnumeration(enumType)
-		val property: EnumProperty<E> = EnumPropertyImpl(this, name, enumeration, enumType)
-		addProperty(property)
-		return property
-	}
-
-	/**
-	 * Gets an existing enum set property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <E : Enumerated> getOrAddEnumSetProperty(
-		name: String,
-		enumType: Class<E>,
-	): EnumSetProperty<E> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as EnumSetProperty<E>
-		}
-		val enumeration: Enumeration<E> = directory.getEnumeration(enumType)
-		val property: EnumSetProperty<E> = EnumSetPropertyImpl(this, name, enumeration)
-		addProperty(property)
-		return property
-	}
-
-	/**
-	 * Gets an existing aggregate reference property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <A : Aggregate> getOrAddReferenceProperty(
-		name: String,
-		aggregateType: Class<A>,
-	): AggregateReferenceProperty<A> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as AggregateReferenceProperty<A>
-		}
-		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: AggregateReferenceProperty<A> =
-			AggregateReferencePropertyImpl(this, name, repo, aggregateType)
-		addProperty(property)
-		return property
-	}
-
-	/**
-	 * Gets an existing reference set property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <A : Aggregate> getOrAddReferenceSetProperty(
-		name: String,
-		aggregateType: Class<A>,
-	): ReferenceSetProperty<A> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as ReferenceSetProperty<A>
-		}
-		val repo: AggregateRepository<A> = directory.getRepository(aggregateType)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
-		addProperty(property)
-		return property
-	}
-
-	/**
-	 * Gets an existing part list property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <P : Part<*>> getOrAddPartListProperty(
-		name: String,
-		partType: Class<P>,
-	): PartListProperty<P> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as PartListProperty<P>
-		}
-		val property: PartListProperty<P> = PartListPropertyImpl(this, name, partType)
-		addProperty(property)
-		return property
-	}
-
-	/**
-	 * Gets an existing part reference property or creates a new one if it doesn't exist.
-	 * Used by property delegates for lazy property registration.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	fun <P : Part<*>> getOrAddPartReferenceProperty(
-		name: String,
-		partType: Class<P>,
-	): PartReferenceProperty<P> {
-		if (hasProperty(name)) {
-			return propertyMap[name] as PartReferenceProperty<P>
-		}
-		val property: PartReferenceProperty<P> = PartReferencePropertyImpl(
-			this,
-			name,
-			{ id: Int -> getPart(id) as P },
-			partType,
-		)
-		addProperty(property)
-		return property
 	}
 
 	override val parentProperty: Property<*>?

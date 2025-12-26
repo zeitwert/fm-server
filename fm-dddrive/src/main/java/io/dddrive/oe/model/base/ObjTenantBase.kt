@@ -13,9 +13,9 @@ abstract class ObjTenantBase(
 ) : ObjBase(repository, isNew),
 	ObjTenant {
 
-	override var key: String? by baseProperty()
-	override var name: String? by baseProperty()
-	override var description: String? by baseProperty()
+	override var key: String? by baseProperty(this, "key")
+	override var name: String? by baseProperty(this, "name")
+	override var description: String? by baseProperty(this, "description")
 
 	override fun doAfterCreate(
 		userId: Any,

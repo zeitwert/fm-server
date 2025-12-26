@@ -28,24 +28,17 @@ open class ObjDocumentImpl(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	// Base properties
-	override var name: String? by baseProperty()
+	override var name: String? by baseProperty(this, "name")
+	override var contentKind: CodeContentKind? by enumProperty(this, "contentKind")
+	override var documentKind: CodeDocumentKind? by enumProperty(this, "documentKind")
+	override var documentCategory: CodeDocumentCategory? by enumProperty(this, "documentCategory")
+	override var templateDocumentId: Any? by referenceIdProperty<ObjDocument>(this, "templateDocument")
+	override val templateDocument: ObjDocument? by referenceProperty(this, "templateDocument")
 
-	// Enum properties
-	override var contentKind: CodeContentKind? by enumProperty()
-	override var documentKind: CodeDocumentKind? by enumProperty()
-	override var documentCategory: CodeDocumentCategory? by enumProperty()
-
-	// Reference properties (templateDocument)
-	override var templateDocumentId: Any? by referenceIdProperty<ObjDocument>()
-	override val templateDocument: ObjDocument? by referenceProperty()
-
-	// Content properties (managed specially by repository)
 	private var _contentType: CodeContentType? = null
 	private var _content: ByteArray? = null
 
 	override val contentType get() = _contentType
-
 	override val content get() = _content
 
 	override fun storeContent(
@@ -95,4 +88,5 @@ open class ObjDocumentImpl(
 	private fun calcCaption() {
 		setCaption(name)
 	}
+
 }

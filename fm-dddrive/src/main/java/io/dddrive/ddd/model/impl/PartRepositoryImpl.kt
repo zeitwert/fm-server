@@ -48,9 +48,6 @@ class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
 			) as P
 			check(isInLoad || part.meta.isNew) { "load or part.isNew" }
 			check(!isInLoad || !part.meta.isNew) { "outside load or !part.isNew" }
-			val doInitSeqNr = (part as PartBase<*>).doInitSeqNr
-			(part as PartSPI<A>).doInit()
-			check(part.doInitSeqNr > doInitSeqNr) { part.javaClass.simpleName + ": doInit was propagated" }
 			if (!isInLoad) {
 				val doAfterCreateSeqNr = (part as PartBase<*>).doAfterCreateSeqNr
 				(part as PartSPI<A>).doAfterCreate()

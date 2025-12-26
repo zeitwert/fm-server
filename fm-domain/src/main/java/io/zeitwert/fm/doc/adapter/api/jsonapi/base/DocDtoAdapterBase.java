@@ -2,7 +2,6 @@ package io.zeitwert.fm.doc.adapter.api.jsonapi.base;
 
 import io.dddrive.doc.model.Doc;
 import io.dddrive.doc.model.DocMeta;
-import io.dddrive.doc.model.enums.CodeCaseDefEnum;
 import io.dddrive.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
@@ -16,9 +15,6 @@ public abstract class DocDtoAdapterBase<A extends Doc, D extends DocDtoBase<A>>
 
 	@Override
 	public void toAggregate(D dto, A doc) {
-		if (dto.getCaseDef() != null) {
-			doc.getMeta().setCaseDef(CodeCaseDefEnum.getCaseDef(dto.getCaseDef().getId()));
-		}
 		if (dto.getCaseStage() != null) {
 			doc.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getCaseStage().getId()), null, null);
 		}

@@ -16,18 +16,9 @@ open class DocTaskPartCommentImpl(
 ) : DocPartBase<DocTask>(task, repository, property, id),
 	DocTaskPartComment {
 
-	override var text: String? by baseProperty()
-
-	// Private mutable backing for read-only interface property
-	private var _createdAt: OffsetDateTime? by baseProperty()
+	override var text: String? by baseProperty(this, "text")
+	private var _createdAt: OffsetDateTime? by baseProperty(this, "createdAt")
 	override val createdAt: OffsetDateTime? get() = _createdAt
-
-	// Register createdAt for setValueByPath access (interface has val)
-	@Suppress("UNUSED_EXPRESSION")
-	override fun doInit() {
-		super.doInit()
-		_createdAt
-	}
 
 	override fun doAfterCreate() {
 		super.doAfterCreate()

@@ -22,34 +22,17 @@ abstract class ObjBase(
 	Obj,
 	ObjMeta {
 
-	// ============================================================================
-	// Delegated properties (ObjMeta interface)
-	// ============================================================================
+	var closedByUserId: Any? by referenceIdProperty<ObjUser>(this, "closedByUser")
+	override var closedByUser: ObjUser? by referenceProperty(this, "closedByUser")
+	override var closedAt: OffsetDateTime? by baseProperty(this, "closedAt")
 
-	var closedByUserId: Any? by referenceIdProperty<ObjUser>()
-	override var closedByUser: ObjUser? by referenceProperty()
-
-	override var closedAt: OffsetDateTime? by baseProperty()
-
-	private val _transitionList: PartListProperty<ObjPartTransition> by partListProperty()
+	private val _transitionList: PartListProperty<ObjPartTransition> by partListProperty(this, "transitionList")
 	override val transitionList: List<ObjPartTransition> get() = _transitionList.toList()
-
-	// ============================================================================
 
 	override val meta: ObjMeta
 		get() = this
 
 	override val objTypeId get() = repository.aggregateType.id
-
-	// Trigger delegate initialization to register properties before persistence layer access.
-	@Suppress("UNUSED_EXPRESSION")
-	override fun doInit() {
-		super.doInit()
-		closedByUserId
-		closedByUser
-		closedAt
-		_transitionList
-	}
 
 	override fun doAfterCreate(
 		userId: Any,
@@ -95,9 +78,7 @@ abstract class ObjBase(
 		partId: Int?,
 	): Part<*> {
 		if (property === _transitionList) {
-			return directory
-				.getPartRepository(ObjPartTransition::class.java)
-				.create(this, property, partId)
+			return directory.getPartRepository(ObjPartTransition::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)
 	}

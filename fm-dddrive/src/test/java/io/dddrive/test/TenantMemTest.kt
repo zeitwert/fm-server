@@ -1,10 +1,9 @@
 package io.dddrive.test
 
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
 import io.dddrive.domain.oe.model.ObjTenantRepository
 import io.dddrive.domain.oe.model.ObjUserRepository
-import io.dddrive.test.server.test.TestApplication
+import io.dddrive.oe.model.ObjTenant
+import io.dddrive.oe.model.ObjUser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNotSame

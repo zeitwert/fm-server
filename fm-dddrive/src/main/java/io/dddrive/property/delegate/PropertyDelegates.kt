@@ -9,57 +9,49 @@ import io.dddrive.property.model.EntityWithProperties
 import io.dddrive.property.model.EnumProperty
 import io.dddrive.property.model.PartReferenceProperty
 import io.dddrive.property.model.base.EntityWithPropertiesBase
+import io.dddrive.property.model.impl.AggregateReferencePropertyImpl
+import io.dddrive.property.model.impl.BasePropertyImpl
+import io.dddrive.property.model.impl.EnumPropertyImpl
+import io.dddrive.property.model.impl.PartReferencePropertyImpl
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-/**
- * Kotlin property delegate for simple base properties (String, Int, BigDecimal, etc.).
- *
- * Usage:
- * ```
- * class MyAggregate : AggregateBase(...) {
- *     var name: String? by baseProperty()
- *     var count: Int? by baseProperty()
- * }
- * ```
- */
 class BasePropertyDelegate<T : Any>(
-	private val type: Class<T>,
+	entity: EntityWithProperties,
+	type: Class<T>,
+	name: String,
 ) : ReadWriteProperty<EntityWithProperties, T?> {
 
 	@Volatile
-	private var property: BaseProperty<T>? = null
+	private var property: BaseProperty<T> = getOrAddProperty(entity, name, type)
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): T? = getOrCreateProperty(thisRef, property).value
+	): T? = this.property.value
 
 	override fun setValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
 		value: T?,
 	) {
-		getOrCreateProperty(thisRef, property).value = value
+		this.property.value = value
 	}
 
-	private fun getOrCreateProperty(
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
 		entity: EntityWithProperties,
-		prop: KProperty<*>,
-	): BaseProperty<T> {
-		// Double-checked locking for thread safety during initialization
-		var p = property
-		if (p == null) {
-			synchronized(this) {
-				p = property
-				if (p == null) {
-					p = (entity as EntityWithPropertiesBase).getOrAddBaseProperty(prop.name, type)
-					property = p
-				}
+		name: String,
+		type: Class<T>,
+	): BaseProperty<T> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as BaseProperty<T>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddBaseProperty(name, type)
 			}
 		}
-		return p!!
-	}
+
 }
 
 /**
@@ -73,41 +65,41 @@ class BasePropertyDelegate<T : Any>(
  * ```
  */
 class EnumPropertyDelegate<E : Enumerated>(
-	private val enumType: Class<E>,
+	entity: EntityWithProperties,
+	enumType: Class<E>,
+	name: String,
 ) : ReadWriteProperty<EntityWithProperties, E?> {
 
 	@Volatile
-	private var property: EnumProperty<E>? = null
+	private var property: EnumProperty<E> = getOrAddProperty(entity, name, enumType)
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): E? = getOrCreateProperty(thisRef, property).value
+	): E? = this.property.value
 
 	override fun setValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
 		value: E?,
 	) {
-		getOrCreateProperty(thisRef, property).value = value
+		this.property.value = value
 	}
 
-	private fun getOrCreateProperty(
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
 		entity: EntityWithProperties,
-		prop: KProperty<*>,
-	): EnumProperty<E> {
-		var p = property
-		if (p == null) {
-			synchronized(this) {
-				p = property
-				if (p == null) {
-					p = (entity as EntityWithPropertiesBase).getOrAddEnumProperty(prop.name, enumType)
-					property = p
-				}
+		name: String,
+		enumType: Class<E>,
+	): EnumProperty<E> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as EnumProperty<E>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddEnumProperty(name, enumType)
 			}
 		}
-		return p!!
-	}
+
 }
 
 /**
@@ -121,45 +113,41 @@ class EnumPropertyDelegate<E : Enumerated>(
  * ```
  */
 class ReferencePropertyDelegate<A : Aggregate>(
-	private val aggregateType: Class<A>,
+	entity: EntityWithProperties,
+	aggregateType: Class<A>,
+	name: String,
 ) : ReadWriteProperty<EntityWithProperties, A?> {
 
 	@Volatile
-	private var property: AggregateReferenceProperty<A>? = null
+	private var property: AggregateReferenceProperty<A> = getOrAddProperty(entity, name, aggregateType)
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): A? = getOrCreateProperty(thisRef, property).value
+	): A? = this.property.value
 
 	override fun setValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
 		value: A?,
 	) {
-		getOrCreateProperty(thisRef, property).value = value
+		this.property.value = value
 	}
 
-	private fun getOrCreateProperty(
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
 		entity: EntityWithProperties,
-		prop: KProperty<*>,
-	): AggregateReferenceProperty<A> {
-		var p = property
-		if (p == null) {
-			synchronized(this) {
-				p = property
-				if (p == null) {
-					p =
-						(entity as EntityWithPropertiesBase).getOrAddReferenceProperty(
-							prop.name,
-							aggregateType,
-						)
-					property = p
-				}
+		name: String,
+		aggregateType: Class<A>,
+	): AggregateReferenceProperty<A> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as AggregateReferenceProperty<A>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddReferenceProperty(name, aggregateType)
 			}
 		}
-		return p!!
-	}
+
 }
 
 /**
@@ -176,47 +164,41 @@ class ReferencePropertyDelegate<A : Aggregate>(
  * ```
  */
 class ReferenceIdPropertyDelegate<A : Aggregate>(
-	private val aggregateType: Class<A>,
+	entity: EntityWithProperties,
+	aggregateType: Class<A>,
+	name: String,
 ) : ReadWriteProperty<EntityWithProperties, Any?> {
 
 	@Volatile
-	private var property: AggregateReferenceProperty<A>? = null
+	private var property: AggregateReferenceProperty<A> = getOrAddProperty(entity, name, aggregateType)
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): Any? = getOrCreateProperty(thisRef, property).id
+	): Any? = this.property.id
 
 	override fun setValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
 		value: Any?,
 	) {
-		getOrCreateProperty(thisRef, property).id = value
+		this.property.id = value
 	}
 
-	private fun getOrCreateProperty(
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
 		entity: EntityWithProperties,
-		prop: KProperty<*>,
-	): AggregateReferenceProperty<A> {
-		var p = property
-		if (p == null) {
-			synchronized(this) {
-				p = property
-				if (p == null) {
-					// Remove "Id" suffix to get base property name
-					val baseName = prop.name.removeSuffix("Id")
-					p =
-						(entity as EntityWithPropertiesBase).getOrAddReferenceProperty(
-							baseName,
-							aggregateType,
-						)
-					property = p
-				}
+		name: String,
+		aggregateType: Class<A>,
+	): AggregateReferenceProperty<A> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as AggregateReferenceProperty<A>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddReferenceProperty(name, aggregateType)
 			}
 		}
-		return p!!
-	}
+
 }
 
 /**
@@ -230,45 +212,41 @@ class ReferenceIdPropertyDelegate<A : Aggregate>(
  * ```
  */
 class PartReferencePropertyDelegate<P : Part<*>>(
-	private val partType: Class<P>,
+	entity: EntityWithProperties,
+	partType: Class<P>,
+	name: String,
 ) : ReadWriteProperty<EntityWithProperties, P?> {
 
 	@Volatile
-	private var property: PartReferenceProperty<P>? = null
+	private var property: PartReferenceProperty<P> = getOrAddProperty(entity, partType, name)
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): P? = getOrCreateProperty(thisRef, property).value
+	): P? = this.property.value
 
 	override fun setValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
 		value: P?,
 	) {
-		getOrCreateProperty(thisRef, property).value = value
+		this.property.value = value
 	}
 
-	private fun getOrCreateProperty(
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
 		entity: EntityWithProperties,
-		prop: KProperty<*>,
-	): PartReferenceProperty<P> {
-		var p = property
-		if (p == null) {
-			synchronized(this) {
-				p = property
-				if (p == null) {
-					p =
-						(entity as EntityWithPropertiesBase).getOrAddPartReferenceProperty(
-							prop.name,
-							partType,
-						)
-					property = p
-				}
+		partType: Class<P>,
+		name: String,
+	): PartReferenceProperty<P> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as PartReferenceProperty<P>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddPartReferenceProperty(name, partType)
 			}
 		}
-		return p!!
-	}
+
 }
 
 /**
@@ -285,43 +263,41 @@ class PartReferencePropertyDelegate<P : Part<*>>(
  * ```
  */
 class PartReferenceIdPropertyDelegate<P : Part<*>>(
-	private val partType: Class<P>,
+	entity: EntityWithProperties,
+	partType: Class<P>,
+	name: String,
 ) : ReadWriteProperty<EntityWithProperties, Int?> {
 
 	@Volatile
-	private var property: PartReferenceProperty<P>? = null
+	private var property: PartReferenceProperty<P> = getOrAddProperty(entity, partType, name)
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): Int? = getOrCreateProperty(thisRef, property).id
+	): Int? = this.property.id
 
 	override fun setValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
 		value: Int?,
 	) {
-		getOrCreateProperty(thisRef, property).id = value
+		this.property.id = value
 	}
 
-	private fun getOrCreateProperty(
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
 		entity: EntityWithProperties,
-		prop: KProperty<*>,
-	): PartReferenceProperty<P> {
-		var p = property
-		if (p == null) {
-			synchronized(this) {
-				p = property
-				if (p == null) {
-					// Remove "Id" suffix to get base property name
-					val baseName = prop.name.removeSuffix("Id")
-					p = (entity as EntityWithPropertiesBase).getOrAddPartReferenceProperty(baseName, partType)
-					property = p
-				}
+		partType: Class<P>,
+		name: String,
+	): PartReferenceProperty<P> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as PartReferenceProperty<P>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddPartReferenceProperty(name, partType)
 			}
 		}
-		return p!!
-	}
+
 }
 
 // ============================================================================
@@ -333,39 +309,130 @@ class PartReferenceIdPropertyDelegate<P : Part<*>>(
  *
  * Usage: `var name: String? by baseProperty()`
  */
-inline fun <reified T : Any> baseProperty(): BasePropertyDelegate<T> = BasePropertyDelegate(T::class.java)
+inline fun <reified T : Any> baseProperty(
+	entity: EntityWithProperties,
+	name: String,
+): BasePropertyDelegate<T> = BasePropertyDelegate(entity, T::class.java, name)
 
 /**
  * Creates a property delegate for enum properties.
  *
  * Usage: `var status: CodeStatus? by enumProperty()`
  */
-inline fun <reified E : Enumerated> enumProperty(): EnumPropertyDelegate<E> = EnumPropertyDelegate(E::class.java)
+inline fun <reified E : Enumerated> enumProperty(
+	entity: EntityWithProperties,
+	name: String,
+): EnumPropertyDelegate<E> = EnumPropertyDelegate(entity, E::class.java, name)
 
 /**
  * Creates a property delegate for aggregate reference properties.
  *
  * Usage: `var owner: ObjUser? by referenceProperty()`
  */
-inline fun <reified A : Aggregate> referenceProperty(): ReferencePropertyDelegate<A> = ReferencePropertyDelegate(A::class.java)
+inline fun <reified A : Aggregate> referenceProperty(
+	entity: EntityWithProperties,
+	name: String,
+): ReferencePropertyDelegate<A> = ReferencePropertyDelegate(entity, A::class.java, name)
 
 /**
  * Creates a property delegate for aggregate reference ID properties.
  *
  * Usage: `var ownerId: Any? by referenceIdProperty<ObjUser>()`
  */
-inline fun <reified A : Aggregate> referenceIdProperty(): ReferenceIdPropertyDelegate<A> = ReferenceIdPropertyDelegate(A::class.java)
+inline fun <reified A : Aggregate> referenceIdProperty(
+	entity: EntityWithProperties,
+	name: String,
+): ReferenceIdPropertyDelegate<A> = ReferenceIdPropertyDelegate(entity, A::class.java, name)
 
 /**
  * Creates a property delegate for part reference properties.
  *
  * Usage: `var mainMember: ObjHouseholdPartMember? by partReferenceProperty()`
  */
-inline fun <reified P : Part<*>> partReferenceProperty(): PartReferencePropertyDelegate<P> = PartReferencePropertyDelegate(P::class.java)
+inline fun <reified P : Part<*>> partReferenceProperty(
+	entity: EntityWithProperties,
+	name: String,
+): PartReferencePropertyDelegate<P> = PartReferencePropertyDelegate(entity, P::class.java, name)
 
 /**
  * Creates a property delegate for part reference ID properties.
  *
  * Usage: `var mainMemberId: Int? by partReferenceIdProperty<ObjHouseholdPartMember>()`
  */
-inline fun <reified P : Part<*>> partReferenceIdProperty(): PartReferenceIdPropertyDelegate<P> = PartReferenceIdPropertyDelegate(P::class.java)
+inline fun <reified P : Part<*>> partReferenceIdProperty(
+	entity: EntityWithProperties,
+	name: String,
+): PartReferenceIdPropertyDelegate<P> = PartReferenceIdPropertyDelegate(entity, P::class.java, name)
+
+/**
+ * Gets an existing base property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <T : Any> EntityWithProperties.getOrAddBaseProperty(
+	name: String,
+	type: Class<T>,
+): BaseProperty<T> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as BaseProperty<T>
+	}
+	val property: BaseProperty<T> = BasePropertyImpl(this, name, type)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}
+
+/**
+ * Gets an existing enum property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <E : Enumerated> EntityWithProperties.getOrAddEnumProperty(
+	name: String,
+	enumType: Class<E>,
+): EnumProperty<E> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as EnumProperty<E>
+	}
+	val property: EnumProperty<E> = EnumPropertyImpl(this, name, enumType)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}
+
+/**
+ * Gets an existing aggregate reference property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <A : Aggregate> EntityWithProperties.getOrAddReferenceProperty(
+	name: String,
+	aggregateType: Class<A>,
+): AggregateReferenceProperty<A> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as AggregateReferenceProperty<A>
+	}
+	val property: AggregateReferenceProperty<A> = AggregateReferencePropertyImpl(this, name, aggregateType)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}
+
+/**
+ * Gets an existing part reference property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <P : Part<*>> EntityWithProperties.getOrAddPartReferenceProperty(
+	name: String,
+	partType: Class<P>,
+): PartReferenceProperty<P> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as PartReferenceProperty<P>
+	}
+	val property: PartReferenceProperty<P> = PartReferencePropertyImpl(
+		this,
+		name,
+		{ id: Int -> getPart(id) as P },
+		partType,
+	)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}

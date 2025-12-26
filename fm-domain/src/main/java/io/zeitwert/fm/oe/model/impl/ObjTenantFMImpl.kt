@@ -23,19 +23,15 @@ open class ObjTenantFMImpl(
 ) : FMObjBase(repository, isNew),
 	ObjTenantFM {
 
-	// Properties from ObjTenant interface
-	override var key: String? by baseProperty()
-	override var name: String? by baseProperty()
-	override var description: String? by baseProperty()
+	override var key: String? by baseProperty(this, "key")
+	override var name: String? by baseProperty(this, "name")
+	override var description: String? by baseProperty(this, "description")
 
-	// Properties from ObjTenantFM interface
-	override var tenantType: CodeTenantType? by enumProperty()
-	override var inflationRate: BigDecimal? by baseProperty()
-	override var discountRate: BigDecimal? by baseProperty()
-
-	// Reference properties for logo image
-	override var logoImageId: Any? by referenceIdProperty<ObjDocument>()
-	override val logoImage: ObjDocument? by referenceProperty()
+	override var tenantType: CodeTenantType? by enumProperty(this, "tenantType")
+	override var inflationRate: BigDecimal? by baseProperty(this, "inflationRate")
+	override var discountRate: BigDecimal? by baseProperty(this, "discountRate")
+	override var logoImageId: Any? by referenceIdProperty<ObjDocument>(this, "logoImage")
+	override val logoImage: ObjDocument? by referenceProperty(this, "logoImage")
 
 	override val users: List<ObjUserFM>
 		get() = repository.userRepository
@@ -85,4 +81,3 @@ open class ObjTenantFMImpl(
 	}
 
 }
-

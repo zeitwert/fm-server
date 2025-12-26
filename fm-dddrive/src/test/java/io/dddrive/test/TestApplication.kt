@@ -1,4 +1,4 @@
-package io.dddrive.test.server.test
+package io.dddrive.test
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.web.servlet.ServletComponentScan

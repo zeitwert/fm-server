@@ -22,16 +22,9 @@ abstract class FMObjBase(
 ) : ObjBase(repository, isNew),
 	EntityWithExtn {
 
+	var accountId: Any? by baseProperty(this, "accountId")
+
 	private val _extnMap = mutableMapOf<String, Any>()
-
-	// Delegated property for account association
-	open var accountId: Any? by baseProperty()
-
-	@Suppress("UNUSED_EXPRESSION")
-	override fun doInit() {
-		super.doInit()
-		accountId // trigger delegate initialization
-	}
 
 	// EntityWithExtn implementation
 	override val extnMap: Map<String, Any> = _extnMap

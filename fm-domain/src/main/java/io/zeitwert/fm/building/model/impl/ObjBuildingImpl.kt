@@ -46,47 +46,47 @@ open class ObjBuildingImpl(
 	AggregateWithTasksMixin {
 
 	// Base properties
-	override var name: String? by baseProperty()
-	override var description: String? by baseProperty()
-	override var buildingNr: String? by baseProperty()
-	override var insuranceNr: String? by baseProperty()
-	override var plotNr: String? by baseProperty()
-	override var nationalBuildingId: String? by baseProperty()
-	override var street: String? by baseProperty()
-	override var zip: String? by baseProperty()
-	override var city: String? by baseProperty()
-	override var geoAddress: String? by baseProperty()
-	override var geoCoordinates: String? by baseProperty()
-	override var geoZoom: Int? by baseProperty()
-	override var volume: BigDecimal? by baseProperty()
-	override var areaGross: BigDecimal? by baseProperty()
-	override var areaNet: BigDecimal? by baseProperty()
-	override var nrOfFloorsAboveGround: Int? by baseProperty()
-	override var nrOfFloorsBelowGround: Int? by baseProperty()
-	override var buildingYear: Int? by baseProperty()
-	override var insuredValue: BigDecimal? by baseProperty()
-	override var insuredValueYear: Int? by baseProperty()
-	override var notInsuredValue: BigDecimal? by baseProperty()
-	override var notInsuredValueYear: Int? by baseProperty()
-	override var thirdPartyValue: BigDecimal? by baseProperty()
-	override var thirdPartyValueYear: Int? by baseProperty()
+	override var name: String? by baseProperty(this, "name")
+	override var description: String? by baseProperty(this, "description")
+	override var buildingNr: String? by baseProperty(this, "buildingNr")
+	override var insuranceNr: String? by baseProperty(this, "insuranceNr")
+	override var plotNr: String? by baseProperty(this, "plotNr")
+	override var nationalBuildingId: String? by baseProperty(this, "nationalBuildingId")
+	override var street: String? by baseProperty(this, "street")
+	override var zip: String? by baseProperty(this, "zip")
+	override var city: String? by baseProperty(this, "city")
+	override var geoAddress: String? by baseProperty(this, "geoAddress")
+	override var geoCoordinates: String? by baseProperty(this, "geoCoordinates")
+	override var geoZoom: Int? by baseProperty(this, "geoZoom")
+	override var volume: BigDecimal? by baseProperty(this, "volume")
+	override var areaGross: BigDecimal? by baseProperty(this, "areaGross")
+	override var areaNet: BigDecimal? by baseProperty(this, "areaNet")
+	override var nrOfFloorsAboveGround: Int? by baseProperty(this, "nrOfFloorsAboveGround")
+	override var nrOfFloorsBelowGround: Int? by baseProperty(this, "nrOfFloorsBelowGround")
+	override var buildingYear: Int? by baseProperty(this, "buildingYear")
+	override var insuredValue: BigDecimal? by baseProperty(this, "insuredValue")
+	override var insuredValueYear: Int? by baseProperty(this, "insuredValueYear")
+	override var notInsuredValue: BigDecimal? by baseProperty(this, "notInsuredValue")
+	override var notInsuredValueYear: Int? by baseProperty(this, "notInsuredValueYear")
+	override var thirdPartyValue: BigDecimal? by baseProperty(this, "thirdPartyValue")
+	override var thirdPartyValueYear: Int? by baseProperty(this, "thirdPartyValueYear")
 
 	// Enum properties
-	override var historicPreservation: CodeHistoricPreservation? by enumProperty()
-	override var country: CodeCountry? by enumProperty()
-	override var currency: CodeCurrency? by enumProperty()
-	override var buildingType: CodeBuildingType? by enumProperty()
-	override var buildingSubType: CodeBuildingSubType? by enumProperty()
+	override var historicPreservation: CodeHistoricPreservation? by enumProperty(this, "historicPreservation")
+	override var country: CodeCountry? by enumProperty(this, "country")
+	override var currency: CodeCurrency? by enumProperty(this, "currency")
+	override var buildingType: CodeBuildingType? by enumProperty(this, "buildingType")
+	override var buildingSubType: CodeBuildingSubType? by enumProperty(this, "buildingSubType")
 
 	// Reference properties (coverFoto)
-	override var coverFotoId: Any? by referenceIdProperty<ObjDocument>()
-	override var coverFoto: ObjDocument? by referenceProperty()
+	override var coverFotoId: Any? by referenceIdProperty<ObjDocument>(this, "coverFotoId")
+	override var coverFoto: ObjDocument? by referenceProperty(this, "coverFoto")
 
 	// Part list property
-	override val ratingList: PartListProperty<ObjBuildingPartRating> by partListProperty()
+	override val ratingList: PartListProperty<ObjBuildingPartRating> by partListProperty(this, "ratingList")
 
 	// Reference set property
-	override val contactSet: ReferenceSetProperty<ObjContact> by referenceSetProperty()
+	override val contactSet: ReferenceSetProperty<ObjContact> by referenceSetProperty(this, "contactSet")
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
@@ -99,7 +99,6 @@ open class ObjBuildingImpl(
 		timestamp: OffsetDateTime,
 	) {
 		super.doAfterCreate(userId, timestamp)
-		check(this.id != null) { "id must not be null after create" }
 		this.addCoverFoto(userId, timestamp)
 	}
 
@@ -110,8 +109,7 @@ open class ObjBuildingImpl(
 		partId: Int?,
 	): Part<*> {
 		if (property === this.ratingList) {
-			val partRepo = directory.getPartRepository(ObjBuildingPartRating::class.java)
-			return partRepo.create(this, property, partId)
+			return directory.getPartRepository(ObjBuildingPartRating::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)
 	}
@@ -191,7 +189,7 @@ open class ObjBuildingImpl(
 				rating.maintenanceStrategy = CodeBuildingMaintenanceStrategy.N
 			}
 			rating.ratingUser = user
-			rating.ratingDate = timestamp?.toLocalDate()
+			rating.ratingDate = timestamp.toLocalDate()
 		} finally {
 			rating.meta.enableCalc()
 			rating.meta.calcAll()

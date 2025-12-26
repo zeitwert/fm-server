@@ -26,7 +26,6 @@ abstract class PartBase<A : Aggregate>(
 	private var isCalcDisabled = 0
 	private var _isInCalc = false
 
-	var doInitSeqNr: Int = 0
 	var doAfterCreateSeqNr: Int = 0
 	private var didCalcAll = false
 	private var didCalcVolatile = false
@@ -66,10 +65,6 @@ abstract class PartBase<A : Aggregate>(
 			val parentPath = parentProp.path
 			return buildPath(parentPath)
 		}
-
-	override fun doInit() {
-		doInitSeqNr += 1
-	}
 
 	override fun doAfterCreate() {
 		doAfterCreateSeqNr += 1

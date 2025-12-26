@@ -19,24 +19,21 @@ open class DocTaskImpl(
 ) : DocBase(repository, isNew),
 	DocTask {
 
-	override var subject: String? by baseProperty()
-	override var content: String? by baseProperty()
-	override var isPrivate: Boolean? by baseProperty()
-	override var priority: CodeTaskPriority? by enumProperty()
-	override var dueAt: OffsetDateTime? by baseProperty()
-	override var remindAt: OffsetDateTime? by baseProperty()
+	override var subject: String? by baseProperty(this, "subject")
+	override var content: String? by baseProperty(this, "content")
+	override var isPrivate: Boolean? by baseProperty(this, "isPrivate")
+	override var priority: CodeTaskPriority? by enumProperty(this, "priority")
+	override var dueAt: OffsetDateTime? by baseProperty(this, "dueAt")
+	override var remindAt: OffsetDateTime? by baseProperty(this, "remindAt")
 
-	override val commentList: PartListProperty<DocTaskPartComment> by partListProperty()
+	override val commentList: PartListProperty<DocTaskPartComment> by partListProperty(this, "commentList")
 
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
 		if (property === commentList) {
-			return directory
-				.getPartRepository(DocTaskPartComment::class.java)
-				.create(this, property, partId) as
-				Part<*>
+			return directory.getPartRepository(DocTaskPartComment::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)
 	}

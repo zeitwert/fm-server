@@ -8,8 +8,8 @@ import io.dddrive.domain.oe.model.ObjTenantRepository
 import io.dddrive.domain.oe.model.ObjUserRepository
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
+import io.dddrive.path.setValueByPath
 import io.dddrive.property.model.PropertyChangeListener
-import io.dddrive.test.server.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -271,4 +271,20 @@ class HouseholdMemTest : PropertyChangeListener {
 
 		assertEquals(1, hhRepo.getByForeignKey("objTypeId", "objHousehold").size, "1 hh")
 	}
+
+	@Test
+	fun testSetValueByPathy() {
+		val hhB1 = hhRepo.create(tenant.id, user.id, OffsetDateTime.now())
+
+		hhB1.setValueByPath("salutation", CodeSalutation.MR)
+		assertEquals(CodeSalutation.MR, hhB1.salutation, "salutation by path")
+
+		val name = "HHB"
+		hhB1.setValueByPath("name", name)
+		assertEquals(name, hhB1.name, "name by path")
+
+		hhB1.setValueByPath("responsibleUserId", user2.id)
+		assertEquals(user2.id, hhB1.responsibleUserId, "responsible user by path")
+	}
+
 }

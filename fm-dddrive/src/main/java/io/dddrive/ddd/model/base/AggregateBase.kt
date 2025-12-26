@@ -21,7 +21,9 @@ import io.dddrive.validation.model.impl.AggregatePartValidationImpl
 import java.time.OffsetDateTime
 import java.util.function.Consumer
 
-/** A DDD Aggregate */
+/**
+ * A DDD Aggregate
+ */
 abstract class AggregateBase(
 	override val repository: AggregateRepository<out Aggregate>,
 	override val isNew: Boolean,
@@ -30,83 +32,31 @@ abstract class AggregateBase(
 	AggregateMeta,
 	AggregateSPI {
 
-	// ============================================================================
-	// Delegated properties (Aggregate interface)
-	// ============================================================================
+	protected var _id: Any? by baseProperty(this, "id")
+	protected var _version: Int? by baseProperty(this, "version")
+	protected var _tenantId: Any? by referenceIdProperty<ObjTenant>(this, "tenant")
+	protected var _tenant: ObjTenant? by referenceProperty(this, "tenant")
+	protected var _createdByUserId: Any? by referenceIdProperty<ObjUser>(this, "createdByUser")
+	protected var _createdByUser: ObjUser? by referenceProperty(this, "createdByUser")
+	protected var _createdAt: OffsetDateTime? by baseProperty(this, "createdAt")
+	protected var _caption: String? by baseProperty(this, "caption")
 
-	private var _id: Any? by baseProperty()
 	override val id: Any get() = _id!!
-
-	private var _maxPartId: Int? by baseProperty()
-
-	protected var _version: Int? by baseProperty()
-	override val version: Int get() = _version ?: 0
-
-	// tenant reference - use explicit property access
-	// Both tenantId and tenant access the same "tenant" reference property
-	private val tenantProperty by lazy { getOrAddReferenceProperty("tenant", ObjTenant::class.java) }
-	override val tenantId: Any get() = tenantProperty.id!!
-	override val tenant: ObjTenant get() = tenantProperty.value!!
-
-	// owner reference - use explicit property access
-	// Both ownerId and owner access the same "owner" reference property
-	private val ownerProperty by lazy { getOrAddReferenceProperty("owner", ObjUser::class.java) }
-	var ownerId: Any?
-		get() = ownerProperty.id
-		set(value) {
-			ownerProperty.id = value
-		}
-	override var owner: ObjUser?
-		get() = ownerProperty.value
-		set(value) {
-			ownerProperty.value = value
-		}
-
-	protected var _caption: String? by baseProperty()
+	override val version: Int get() = _version!!
+	override val tenantId: Any get() = _tenantId!!
+	override val tenant: ObjTenant get() = _tenant!!
+	override val createdByUser: ObjUser get() = _createdByUser!!
+	override val createdAt: OffsetDateTime get() = _createdAt!!
 	override val caption: String get() = _caption ?: ""
 
-	// ============================================================================
-	// Delegated properties (AggregateMeta interface)
-	// ============================================================================
+	protected var ownerId: Any? by referenceIdProperty<ObjUser>(this, "owner")
+	override var owner: ObjUser? by referenceProperty(this, "owner")
 
-	// createdByUser reference - use explicit property access
-	private val createdByUserProperty by lazy { getOrAddReferenceProperty("createdByUser", ObjUser::class.java) }
-	var createdByUserId: Any?
-		get() = createdByUserProperty.id
-		set(value) {
-			createdByUserProperty.id = value
-		}
-	override val createdByUser: ObjUser get() = createdByUserProperty.value!!
+	protected var modifiedByUserId: Any? by referenceIdProperty<ObjUser>(this, "modifiedByUser")
+	override var modifiedByUser: ObjUser? by referenceProperty(this, "modifiedByUser")
+	override var modifiedAt: OffsetDateTime? by baseProperty(this, "modifiedAt")
 
-	private val createdAtProperty by lazy { getOrAddBaseProperty("createdAt", OffsetDateTime::class.java) }
-	var _createdAt: OffsetDateTime?
-		get() = createdAtProperty.value
-		set(value) {
-			createdAtProperty.value = value
-		}
-	override val createdAt: OffsetDateTime get() = createdAtProperty.value!!
-
-	// modifiedByUser reference - use explicit property access
-	override var modifiedByUser: ObjUser? by referenceProperty()
-	protected var modifiedByUserId: Any? by referenceIdProperty<ObjUser>()
-	// private val modifiedByUserProperty by lazy { getOrAddReferenceProperty("modifiedByUser", ObjUser::class.java) }
-	// var modifiedByUserId: Any?
-	// 	get() = modifiedByUserProperty.id
-	// 	set(value) {
-	// 		modifiedByUserProperty.id = value
-	// 	}
-	// override var modifiedByUser: ObjUser?
-	// 	get() = modifiedByUserProperty.value
-	// 	set(value) {
-	// 		modifiedByUserProperty.value = value
-	// 	}
-
-	override var modifiedAt: OffsetDateTime? by baseProperty()
-
-	// ============================================================================
-	// Internal state
-	// ============================================================================
-
+	private var _maxPartId: Int? by baseProperty(this, "maxPartId")
 	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
 	private val _validations: MutableList<AggregatePartValidation> = mutableListOf()
 
@@ -115,7 +65,6 @@ abstract class AggregateBase(
 	private var isCalcDisabled = 0
 	private var _isInCalc = false
 
-	var doInitSeqNr: Int = 0
 	var doCreateSeqNr: Int = 0
 	var doAfterCreateSeqNr: Int = 0
 	var doAfterLoadSeqNr: Int = 0
@@ -166,31 +115,12 @@ abstract class AggregateBase(
 		}
 	}
 
-	// Trigger property initialization before persistence layer access through setValueByPath.
-	// Delegated properties register on first access.
-	// Lazy properties are accessed to trigger initialization.
-	@Suppress("UNUSED_EXPRESSION")
-	override fun doInit() {
-		_id
-		_maxPartId
-		_version
-		tenantProperty
-		ownerProperty
-		_caption
-		createdByUserProperty
-		_createdAt
-		modifiedByUser
-		modifiedByUserId
-		modifiedAt
-		doInitSeqNr += 1
-	}
-
 	final override fun doCreate(
 		aggregateId: Any,
 		tenantId: Any,
 	) {
 		_id = aggregateId
-		tenantProperty.id = tenantId
+		_tenantId = tenantId
 		doCreateSeqNr += 1
 	}
 
@@ -200,7 +130,7 @@ abstract class AggregateBase(
 	) {
 		ownerId = userId
 		_version = 0
-		createdByUserId = userId
+		_createdByUserId = userId
 		_createdAt = timestamp
 		doAfterCreateSeqNr += 1
 		fireEntityAddedChange(id)

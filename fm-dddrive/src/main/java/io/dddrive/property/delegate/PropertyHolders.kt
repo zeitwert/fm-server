@@ -1,13 +1,19 @@
 package io.dddrive.property.delegate
 
 import io.dddrive.ddd.model.Aggregate
+import io.dddrive.ddd.model.AggregateRepository
 import io.dddrive.ddd.model.Part
 import io.dddrive.enums.model.Enumerated
+import io.dddrive.enums.model.Enumeration
 import io.dddrive.property.model.EntityWithProperties
+import io.dddrive.property.model.EntityWithPropertiesSPI
 import io.dddrive.property.model.EnumSetProperty
 import io.dddrive.property.model.PartListProperty
 import io.dddrive.property.model.ReferenceSetProperty
 import io.dddrive.property.model.base.EntityWithPropertiesBase
+import io.dddrive.property.model.impl.EnumSetPropertyImpl
+import io.dddrive.property.model.impl.PartListPropertyImpl
+import io.dddrive.property.model.impl.ReferenceSetPropertyImpl
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -23,28 +29,33 @@ import kotlin.reflect.KProperty
  * ```
  */
 class EnumSetPropertyHolder<E : Enumerated>(
-	private val enumType: Class<E>,
+	entity: EntityWithProperties,
+	enumType: Class<E>,
+	name: String,
 ) : ReadOnlyProperty<EntityWithProperties, EnumSetProperty<E>> {
 
 	@Volatile
-	private var property: EnumSetProperty<E>? = null
+	private var property: EnumSetProperty<E> = getOrAddProperty(entity, name, enumType)
+
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
+		entity: EntityWithProperties,
+		name: String,
+		enumType: Class<E>,
+	): EnumSetProperty<E> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as EnumSetProperty<E>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddEnumSetProperty(name, enumType)
+			}
+		}
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): EnumSetProperty<E> {
-		var p = this.property
-		if (p == null) {
-			synchronized(this) {
-				p = this.property
-				if (p == null) {
-					p = (thisRef as EntityWithPropertiesBase).getOrAddEnumSetProperty(property.name, enumType)
-					this.property = p
-				}
-			}
-		}
-		return p!!
-	}
+	): EnumSetProperty<E> = this.property
+
 }
 
 /**
@@ -59,32 +70,33 @@ class EnumSetPropertyHolder<E : Enumerated>(
  * ```
  */
 class ReferenceSetPropertyHolder<A : Aggregate>(
-	private val aggregateType: Class<A>,
+	entity: EntityWithProperties,
+	aggregateType: Class<A>,
+	name: String,
 ) : ReadOnlyProperty<EntityWithProperties, ReferenceSetProperty<A>> {
 
 	@Volatile
-	private var property: ReferenceSetProperty<A>? = null
+	private var property: ReferenceSetProperty<A> = getOrAddProperty(entity, name, aggregateType)
+
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
+		entity: EntityWithProperties,
+		name: String,
+		aggregateType: Class<A>,
+	): ReferenceSetProperty<A> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as ReferenceSetProperty<A>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddReferenceSetProperty(name, aggregateType)
+			}
+		}
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): ReferenceSetProperty<A> {
-		var p = this.property
-		if (p == null) {
-			synchronized(this) {
-				p = this.property
-				if (p == null) {
-					p =
-						(thisRef as EntityWithPropertiesBase).getOrAddReferenceSetProperty(
-							property.name,
-							aggregateType,
-						)
-					this.property = p
-				}
-			}
-		}
-		return p!!
-	}
+	): ReferenceSetProperty<A> = this.property
+
 }
 
 /**
@@ -99,32 +111,33 @@ class ReferenceSetPropertyHolder<A : Aggregate>(
  * ```
  */
 class PartListPropertyHolder<P : Part<*>>(
-	private val partType: Class<P>,
+	entity: EntityWithProperties,
+	partType: Class<P>,
+	name: String,
 ) : ReadOnlyProperty<EntityWithProperties, PartListProperty<P>> {
 
 	@Volatile
-	private var property: PartListProperty<P>? = null
+	private var property: PartListProperty<P> = getOrAddProperty(entity, partType, name)
+
+	@Suppress("UNCHECKED_CAST")
+	private fun getOrAddProperty(
+		entity: EntityWithProperties,
+		partType: Class<P>,
+		name: String,
+	): PartListProperty<P> =
+		synchronized(entity) {
+			if (entity.hasProperty(name)) {
+				entity.getProperty(name, Any::class) as PartListProperty<P>
+			} else {
+				(entity as EntityWithPropertiesBase).getOrAddPartListProperty(name, partType)
+			}
+		}
 
 	override fun getValue(
 		thisRef: EntityWithProperties,
 		property: KProperty<*>,
-	): PartListProperty<P> {
-		var p = this.property
-		if (p == null) {
-			synchronized(this) {
-				p = this.property
-				if (p == null) {
-					p =
-						(thisRef as EntityWithPropertiesBase).getOrAddPartListProperty(
-							property.name,
-							partType,
-						)
-					this.property = p
-				}
-			}
-		}
-		return p!!
-	}
+	): PartListProperty<P> = this.property
+
 }
 
 // ============================================================================
@@ -136,18 +149,80 @@ class PartListPropertyHolder<P : Part<*>>(
  *
  * Usage: `val labelSet: EnumSetProperty<CodeLabel> by enumSetProperty()`
  */
-inline fun <reified E : Enumerated> enumSetProperty(): EnumSetPropertyHolder<E> = EnumSetPropertyHolder(E::class.java)
+inline fun <reified E : Enumerated> enumSetProperty(
+	entity: EntityWithProperties,
+	name: String,
+): EnumSetPropertyHolder<E> = EnumSetPropertyHolder(entity, E::class.java, name)
 
 /**
  * Creates a property holder for aggregate reference set properties.
  *
  * Usage: `val userSet: ReferenceSetProperty<ObjUser> by referenceSetProperty()`
  */
-inline fun <reified A : Aggregate> referenceSetProperty(): ReferenceSetPropertyHolder<A> = ReferenceSetPropertyHolder(A::class.java)
+inline fun <reified A : Aggregate> referenceSetProperty(
+	entity: EntityWithProperties,
+	name: String,
+): ReferenceSetPropertyHolder<A> = ReferenceSetPropertyHolder(entity, A::class.java, name)
 
 /**
  * Creates a property holder for part list properties.
  *
  * Usage: `val memberList: PartListProperty<ObjHouseholdPartMember> by partListProperty()`
  */
-inline fun <reified P : Part<*>> partListProperty(): PartListPropertyHolder<P> = PartListPropertyHolder(P::class.java)
+inline fun <reified P : Part<*>> partListProperty(
+	entity: EntityWithProperties,
+	name: String,
+): PartListPropertyHolder<P> = PartListPropertyHolder(entity, P::class.java, name)
+
+/**
+ * Gets an existing enum set property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <E : Enumerated> EntityWithProperties.getOrAddEnumSetProperty(
+	name: String,
+	enumType: Class<E>,
+): EnumSetProperty<E> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as EnumSetProperty<E>
+	}
+	val enumeration: Enumeration<E> = (this as EntityWithPropertiesSPI).directory.getEnumeration(enumType)
+	val property: EnumSetProperty<E> = EnumSetPropertyImpl(this, name, enumeration)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}
+
+/**
+ * Gets an existing reference set property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <A : Aggregate> EntityWithProperties.getOrAddReferenceSetProperty(
+	name: String,
+	aggregateType: Class<A>,
+): ReferenceSetProperty<A> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as ReferenceSetProperty<A>
+	}
+	val repo: AggregateRepository<A> = (this as EntityWithPropertiesSPI).directory.getRepository(aggregateType)
+	val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}
+
+/**
+ * Gets an existing part list property or creates a new one if it doesn't exist.
+ * Used by property delegates for lazy property registration.
+ */
+@Suppress("UNCHECKED_CAST")
+private fun <P : Part<*>> EntityWithProperties.getOrAddPartListProperty(
+	name: String,
+	partType: Class<P>,
+): PartListProperty<P> {
+	if (hasProperty(name)) {
+		return getProperty(name, Any::class) as PartListProperty<P>
+	}
+	val property: PartListProperty<P> = PartListPropertyImpl(this, name, partType)
+	(this as EntityWithPropertiesBase).addProperty(property)
+	return property
+}

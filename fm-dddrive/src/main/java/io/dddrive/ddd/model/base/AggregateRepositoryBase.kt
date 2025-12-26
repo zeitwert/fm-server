@@ -14,7 +14,6 @@ import io.dddrive.ddd.model.RepositoryDirectorySPI
 import io.dddrive.ddd.model.enums.CodeAggregateType
 import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.dddrive.ddd.model.impl.PartRepositoryImpl
-import io.dddrive.property.model.EntityWithPropertiesSPI
 import io.dddrive.property.model.impl.PropertyFilter
 import io.dddrive.property.model.impl.PropertyHandler
 import javassist.util.proxy.ProxyFactory
@@ -95,19 +94,15 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		val aggregateId = persistenceProvider.nextAggregateId()
 		val aggregate = this.createAggregate(true)
 
-		val doInitSeqNr = (aggregate as AggregateBase).doInitSeqNr
-		(aggregate as EntityWithPropertiesSPI).doInit()
-		check(aggregate.doInitSeqNr > doInitSeqNr) { this.getBaseClassName(aggregate) + ": doInit was propagated" }
-
 		try {
-			aggregate.disableCalc()
+			aggregate.meta.disableCalc()
 			val doCreateSeqNr = (aggregate as AggregateBase).doCreateSeqNr
 			aggregate.doCreate(aggregateId, tenantId)
 			// aggregate.setValueByPath("id", aggregateId)
 			// aggregate.setValueByPath("tenantId", tenantId)
 			check(aggregate.doCreateSeqNr > doCreateSeqNr) { this.getBaseClassName(aggregate) + ": doCreate was propagated" }
 		} finally {
-			aggregate.enableCalc()
+			aggregate.meta.enableCalc()
 		}
 
 		aggregate.meta.calcAll() // TODO reconsider, currently must be here because docs are frozen in doAfterCreate
@@ -145,9 +140,6 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		check(persistenceProvider.isValidId(id)) { "valid id " + id + " (" + id.javaClass.getSimpleName() + ")" }
 
 		val aggregate = this.createAggregate(false)
-		val doInitSeqNr = (aggregate as AggregateBase).doInitSeqNr
-		(aggregate as EntityWithPropertiesSPI).doInit()
-		check(aggregate.doInitSeqNr > doInitSeqNr) { this.getBaseClassName(aggregate) + ": doInit was propagated" }
 
 		(aggregate as AggregateSPI).beginLoad()
 		persistenceProvider.doLoad(aggregate, id)

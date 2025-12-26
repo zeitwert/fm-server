@@ -30,20 +30,13 @@ open class ObjBuildingPartRatingImpl(
 	ObjBuildingPartRating,
 	PartMeta<ObjBuilding> {
 
-	// Enum properties
-	override var partCatalog: CodeBuildingPartCatalog? by enumProperty()
-	override var maintenanceStrategy: CodeBuildingMaintenanceStrategy? by enumProperty()
-	override var ratingStatus: CodeBuildingRatingStatus? by enumProperty()
-
-	// Base properties
-	override var ratingDate: LocalDate? by baseProperty()
-
-	// Reference properties
-	override var ratingUserId: Any? by referenceIdProperty<ObjUser>()
-	override var ratingUser: ObjUser? by referenceProperty()
-
-	// Part list property
-	override val elementList: PartListProperty<ObjBuildingPartElementRating> by partListProperty()
+	override var partCatalog: CodeBuildingPartCatalog? by enumProperty(this, "partCatalog")
+	override var maintenanceStrategy: CodeBuildingMaintenanceStrategy? by enumProperty(this, "maintenanceStrategy")
+	override var ratingStatus: CodeBuildingRatingStatus? by enumProperty(this, "ratingStatus")
+	override var ratingDate: LocalDate? by baseProperty(this, "ratingDate")
+	override var ratingUserId: Any? by referenceIdProperty<ObjUser>(this, "ratingUser")
+	override var ratingUser: ObjUser? by referenceProperty(this, "ratingUser")
+	override val elementList: PartListProperty<ObjBuildingPartElementRating> by partListProperty(this, "elementList")
 
 	override var elementWeights: Int = 0
 
@@ -57,11 +50,7 @@ open class ObjBuildingPartRatingImpl(
 		partId: Int?,
 	): Part<*> {
 		if (property === this.elementList) {
-			val partRepo: PartRepository<ObjBuilding, *> =
-				directory.getPartRepository<ObjBuilding, ObjBuildingPartElementRating>(
-					ObjBuildingPartElementRating::class.java,
-				)
-			return partRepo.create(aggregate, property, partId)
+			return directory.getPartRepository(ObjBuildingPartElementRating::class.java).create(aggregate, property, partId)
 		}
 		return super.doAddPart(property, partId)
 	}
