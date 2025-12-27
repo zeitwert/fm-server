@@ -1,10 +1,10 @@
 package io.zeitwert.dddrive.app.model;
 
+import dddrive.ddd.core.model.Aggregate;
+import io.zeitwert.fm.oe.model.ObjUser;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-
-import dddrive.ddd.core.model.Aggregate;
-import io.dddrive.oe.model.ObjUser;
 
 public interface RequestContext {
 

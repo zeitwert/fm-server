@@ -1,21 +1,20 @@
-package io.dddrive.oe.model.base
+package dddrive.domain.oe.model.impl
 
-import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjBase
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.delegate.baseProperty
-import dddrive.path.setValueByPath
-import io.dddrive.oe.model.ObjTenant
+import dddrive.domain.oe.model.ObjTenant
+import dddrive.domain.oe.model.ObjTenantRepository
 import java.time.OffsetDateTime
 
-abstract class ObjTenantBase(
-	override val repository: ObjRepository<ObjTenant>,
+class ObjTenantImpl(
+	override val repository: ObjTenantRepository,
 	isNew: Boolean,
 ) : ObjBase(repository, isNew),
 	ObjTenant {
 
 	override var key: String? by baseProperty(this, "key")
 	override var name: String? by baseProperty(this, "name")
-	override var description: String? by baseProperty(this, "description")
 
 	override fun doAfterCreate(
 		userId: Any,

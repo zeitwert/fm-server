@@ -7,16 +7,13 @@ import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.ddd.core.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.model.Property
-import io.dddrive.oe.model.ObjUser
 import java.time.OffsetDateTime
 
 class DocPartTransitionImpl(
 	doc: Doc,
-	override val repository: dddrive.ddd.core.model.PartRepository<Doc, DocPartTransition>,
-	property: dddrive.ddd.property.model.Property<*>,
+	override val repository: PartRepository<Doc, DocPartTransition>,
+	property: Property<*>,
 	id: Int,
 ) : DocPartBase<Doc>(doc, repository, property, id),
 	DocPartTransition {
@@ -24,31 +21,17 @@ class DocPartTransitionImpl(
 	// seqNr is the part id
 	override val seqNr: Int get() = id
 
-	// Private mutable backing for read-only interface properties
-	private var _tenantId: Any? by _root_ide_package_.dddrive.ddd.property.delegate
-		.baseProperty(this, "tenantId")
-	private var _user: ObjUser? by _root_ide_package_.dddrive.ddd.property.delegate
-		.referenceProperty(this, "user")
-	private var _userId: Any? by _root_ide_package_.dddrive.ddd.property.delegate.referenceIdProperty<ObjUser>(
-		this,
-		"user",
-	)
-	private var _timestamp: OffsetDateTime? by _root_ide_package_.dddrive.ddd.property.delegate.baseProperty(
-		this,
-		"timestamp",
-	)
-	private var _oldCaseStage: CodeCaseStage? by _root_ide_package_.dddrive.ddd.property.delegate.enumProperty(
-		this,
-		"oldCaseStage",
-	)
-	private var _newCaseStage: CodeCaseStage? by _root_ide_package_.dddrive.ddd.property.delegate.enumProperty(
-		this,
-		"newCaseStage",
-	)
+	private var _tenantId: Any? by baseProperty(this, "tenantId")
+	private var _userId: Any? by baseProperty(this, "userId")
+	override val userId: Any get() = _userId!!
 
-	override val user: ObjUser get() = _user!!
+	private var _timestamp: OffsetDateTime? by baseProperty(this, "timestamp")
 	override val timestamp: OffsetDateTime get() = _timestamp!!
+
+	private var _oldCaseStage: CodeCaseStage? by enumProperty(this, "oldCaseStage")
 	override val oldCaseStage: CodeCaseStage? get() = _oldCaseStage
+
+	private var _newCaseStage: CodeCaseStage? by enumProperty(this, "newCaseStage")
 	override val newCaseStage: CodeCaseStage get() = _newCaseStage!!
 
 	override fun doAfterCreate() {

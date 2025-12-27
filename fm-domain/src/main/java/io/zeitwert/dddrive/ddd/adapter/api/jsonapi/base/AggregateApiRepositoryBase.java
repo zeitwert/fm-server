@@ -1,5 +1,9 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base;
 
+import dddrive.app.doc.model.Doc;
+import dddrive.app.obj.model.Obj;
+import dddrive.ddd.core.model.Aggregate;
+import dddrive.ddd.core.model.AggregateRepository;
 import io.crnk.core.engine.document.ErrorData;
 import io.crnk.core.engine.document.ErrorDataBuilder;
 import io.crnk.core.engine.http.HttpStatus;
@@ -9,15 +13,12 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
-import dddrive.ddd.core.model.Aggregate;
-import dddrive.ddd.core.model.AggregateRepository;
-import dddrive.app.obj.model.Obj;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.dddrive.model.FMAggregateRepository;
 import io.zeitwert.fm.app.model.RequestContextFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,14 +27,14 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 		extends ResourceRepositoryBase<D, Integer> {
 
 	private final RequestContextFM requestCtx;
-	private final ObjUserFMRepository userRepository;
+	private final ObjUserRepository userRepository;
 	private final AggregateRepository<A> repository;
 	private final AggregateDtoAdapterBase<A, D> dtoAdapter;
 
 	public AggregateApiRepositoryBase(
 			Class<D> dtoClass,
 			RequestContext requestCtx,
-			ObjUserFMRepository userRepository,
+			ObjUserRepository userRepository,
 			AggregateRepository<A> repository,
 			AggregateDtoAdapterBase<A, D> dtoAdapter) {
 		super(dtoClass);
@@ -116,11 +117,17 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 				if (dto.getMeta().getClientVersion() == null) {
 					throw new BadRequestException("Missing version");
 				} else if (dto.getMeta().getClientVersion() != aggregate.getMeta().getVersion()) {
+					Object userId = null;
+					if (aggregate instanceof Obj) {
+						userId = userRepository.get(((Obj) aggregate).getMeta().getModifiedByUserId()).getCaption();
+					} else {
+						userId = userRepository.get(((Doc) aggregate).getMeta().getModifiedByUserId()).getCaption();
+					}
 					ErrorData errorData = new ErrorDataBuilder()
 							.setStatus("" + HttpStatus.CONFLICT_409)
 							.setTitle("Fehler beim Speichern")
 							.setDetail("Sie versuchten eine veraltete Version zu speichern."
-									+ " Benutzer " + aggregate.getMeta().getModifiedByUser().getCaption()
+									+ " Benutzer " + userRepository.get(userId).getCaption()
 									+ " hat das Objekt in der Zwischenzeit bereits geändert."
 									+ " Ihre Änderungen wurden verworfen und die aktuelle Version geladen.")
 							.build();

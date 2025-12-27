@@ -15,28 +15,28 @@ public abstract class ObjDtoAdapterBase<O extends Obj, D extends ObjDtoBase<O>>
 	@Override
 	public void toAggregate(D dto, O obj) {
 		if (dto.getOwner() != null) {
-			obj.setOwner(this.getUser(Integer.parseInt(dto.getOwner().getId())));
+			obj.setOwnerId(dto.getOwner().getId());
 		}
 	}
 
 	protected void fromAggregate(ObjDtoBase.ObjDtoBaseBuilder<?, ?, ?> dtoBuilder, O obj) {
 		dtoBuilder
 				.adapter(this)
-				.tenant(EnumeratedDto.of(obj.getTenant()))
+				.tenant(EnumeratedDto.of(getTenant((Integer) obj.getTenantId())))
 				.meta(this.metaFromObj(obj))
 				.id((Integer) obj.getId())
 				.caption(obj.getCaption())
-				.owner(EnumeratedDto.of(obj.getOwner()));
+				.owner(EnumeratedDto.of(obj.getOwnerId() != null ? getUser((Integer) obj.getOwnerId()) : null));
 	}
 
 	private ObjMetaDto metaFromObj(Obj obj) {
 		ObjMeta meta = obj.getMeta();
 		ObjMetaDto.ObjMetaDtoBuilder<?, ?> builder = ObjMetaDto.builder();
-		AggregateMetaDto.fromAggregate(builder, obj);
+		AggregateMetaDto.fromObj(builder, obj, getUserRepository());
 		return builder
-				.closedByUser(EnumeratedDto.of(meta.getClosedByUser()))
+				.closedByUser(EnumeratedDto.of(meta.getClosedByUserId() != null ? getUser((Integer) meta.getClosedByUserId()) : null))
 				.closedAt(meta.getClosedAt())
-				.transitions(meta.getTransitionList().stream().map(ObjPartTransitionDto::fromPart).toList())
+				.transitions(meta.getTransitionList().stream().map(id -> ObjPartTransitionDto.fromPart(id, getUserRepository())).toList())
 				.build();
 	}
 

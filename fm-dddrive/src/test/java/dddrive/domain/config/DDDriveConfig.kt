@@ -2,12 +2,12 @@ package dddrive.domain.config
 
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
+import dddrive.app.validation.model.enums.CodeValidationLevelEnum
 import dddrive.ddd.core.model.RepositoryDirectory
 import dddrive.ddd.core.model.enums.CodeAggregateType
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
 import dddrive.ddd.core.model.enums.CodePartListTypeEnum
 import dddrive.ddd.enums.model.base.EnumConfigBase
-import dddrive.ddd.validation.model.enums.CodeValidationLevelEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

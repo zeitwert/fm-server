@@ -1,11 +1,11 @@
 package io.zeitwert.fm.account.model.impl
 
+import dddrive.ddd.path.getValueByPath
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
-import dddrive.path.getValueByPath
-import dddrive.path.setValueByPath
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType

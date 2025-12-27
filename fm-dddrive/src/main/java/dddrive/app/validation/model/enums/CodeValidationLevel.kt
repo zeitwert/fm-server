@@ -1,4 +1,4 @@
-package dddrive.ddd.validation.model.enums
+package dddrive.app.validation.model.enums
 
 import dddrive.ddd.enums.model.Enumerated
 

@@ -5,7 +5,7 @@ import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationArea;
 import io.zeitwert.fm.app.model.ApplicationInfo;
-import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	public List<Application> getAllApplications() {
-		ObjUserFM user = (ObjUserFM) this.requestCtx.getUser();
+		ObjUser user = (ObjUser) this.requestCtx.getUser();
 		if (user.isAppAdmin()) {
 			return appConfig.AppAdminApplications;
 		} else if (user.isAdmin()) {

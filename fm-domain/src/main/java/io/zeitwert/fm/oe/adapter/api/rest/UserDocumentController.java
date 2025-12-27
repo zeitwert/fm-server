@@ -2,8 +2,8 @@ package io.zeitwert.fm.oe.adapter.api.rest;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,13 +20,13 @@ public class UserDocumentController {
 	@Autowired
 	RequestContext requestCtx;
 	@Autowired
-	private ObjUserFMRepository userRepository;
+	private ObjUserRepository userRepository;
 	@Autowired
 	private DocumentContentController documentController;
 
 	@RequestMapping(value = "/{id}/avatar", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getAvatar(@PathVariable Integer id) {
-		ObjUserFM user = this.userRepository.get(id);
+		ObjUser user = this.userRepository.get(id);
 		Object documentId = user.getAvatarImageId();
 		if (documentId == null) {
 			HttpHeaders headers = new HttpHeaders();

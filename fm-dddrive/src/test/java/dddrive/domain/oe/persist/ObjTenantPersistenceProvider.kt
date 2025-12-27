@@ -1,7 +1,7 @@
 package dddrive.domain.oe.persist
 
 import dddrive.ddd.core.model.AggregatePersistenceProvider
-import io.dddrive.oe.model.ObjTenant
+import dddrive.domain.oe.model.ObjTenant
 import java.util.*
 
 interface ObjTenantPersistenceProvider : AggregatePersistenceProvider<ObjTenant> {

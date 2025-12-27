@@ -1,27 +1,27 @@
 package io.zeitwert.fm.oe.model.impl
 
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
-import dddrive.path.setValueByPath
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.oe.model.ObjTenantFM
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository
-import io.zeitwert.fm.oe.model.ObjUserFM
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-class ObjTenantFMImpl(
-	override val repository: ObjTenantFMRepository,
+class ObjTenantImpl(
+	override val repository: ObjTenantRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
-	ObjTenantFM {
+	ObjTenant {
 
 	override var key: String? by baseProperty(this, "key")
 	override var name: String? by baseProperty(this, "name")
@@ -33,7 +33,7 @@ class ObjTenantFMImpl(
 	override var logoImageId: Any? by referenceIdProperty<ObjDocument>(this, "logoImage")
 	override val logoImage: ObjDocument? by referenceProperty(this, "logoImage")
 
-	override val users: List<ObjUserFM>
+	override val users: List<ObjUser>
 		get() = repository.userRepository
 			.getByForeignKey("tenantId", this.id)
 			.map { repository.userRepository.get(it) }

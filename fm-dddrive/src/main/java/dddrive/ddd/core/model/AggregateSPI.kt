@@ -22,9 +22,6 @@ interface AggregateSPI : EntityWithPropertiesSPI {
 	 * Initialise aggregate with some basic fields after creation.
 	 *
 	 * @param aggregateId aggregate id
-	 * @param tenantId    tenant id
-	 * @param userId      user id
-	 * @param timestamp   timestamp
 	 */
 	fun doCreate(
 		aggregateId: Any,

@@ -6,22 +6,22 @@ import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
 import dddrive.ddd.property.model.ReferenceSetProperty
-import io.dddrive.oe.model.ObjTenant
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.oe.model.ObjUserFM
-import io.zeitwert.fm.oe.model.ObjUserFMRepository
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjUser
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import java.time.OffsetDateTime
 
-class ObjUserFMImpl(
-	override val repository: ObjUserFMRepository,
+class ObjUserImpl(
+	override val repository: ObjUserRepository,
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
-	ObjUserFM {
+	ObjUser {
 
 	override var email: String? by baseProperty(this, "email")
 	override var name: String? by baseProperty(this, "name")

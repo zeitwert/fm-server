@@ -1,7 +1,4 @@
-
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
-
-import org.springframework.stereotype.Controller;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
@@ -9,7 +6,8 @@ import io.zeitwert.fm.account.adapter.api.jsonapi.ObjAccountApiRepository;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
+import org.springframework.stereotype.Controller;
 
 @Controller("objAccountApiRepository")
 public class ObjAccountApiRepositoryImpl
@@ -19,7 +17,7 @@ public class ObjAccountApiRepositoryImpl
 	public ObjAccountApiRepositoryImpl(
 			ObjAccountRepository repository,
 			RequestContext requestCtx,
-			ObjUserFMRepository userRepository,
+			ObjUserRepository userRepository,
 			ObjAccountDtoAdapter dtoAdapter) {
 		super(ObjAccountDto.class, requestCtx, userRepository, repository, dtoAdapter);
 	}

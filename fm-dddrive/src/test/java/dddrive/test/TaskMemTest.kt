@@ -5,14 +5,14 @@ import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import dddrive.ddd.core.model.AggregateSPI
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
+import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
+import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
 import dddrive.domain.task.model.DocTaskRepository
 import dddrive.domain.task.model.enums.CodeTaskPriority
-import dddrive.path.setValueByPath
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -125,7 +125,7 @@ class TaskMemTest : PropertyChangeListener {
 		task.isPrivate = false
 		task.dueAt = dueDate
 		task.remindAt = remindDate
-		task.assignee = user1
+		task.assigneeId = user1.id
 
 		// Verify properties
 		Assertions.assertEquals("Implement new feature with comments", task.subject)
@@ -137,7 +137,7 @@ class TaskMemTest : PropertyChangeListener {
 		Assertions.assertEquals(false, task.isPrivate)
 		Assertions.assertEquals(dueDate, task.dueAt)
 		Assertions.assertEquals(remindDate, task.remindAt)
-		Assertions.assertEquals(user1.id, task.assignee?.id)
+		Assertions.assertEquals(user1.id, task.assigneeId)
 		Assertions.assertEquals(
 			"Implement new feature with comments",
 			task.caption,
@@ -149,7 +149,7 @@ class TaskMemTest : PropertyChangeListener {
 		val initialTransition = task.meta.transitionList.first()
 		Assertions.assertNull(initialTransition.oldCaseStage, "Initial transition old stage should be null")
 		Assertions.assertEquals(taskNewStage, initialTransition.newCaseStage)
-		Assertions.assertEquals(user.id, initialTransition.user.id) // Compare IDs for user objects
+		Assertions.assertEquals(user.id, initialTransition.userId) // Compare IDs for user objects
 		Assertions.assertEquals(0, task.commentList.size, "Initially, task should have no comments")
 
 		// Add first comment
@@ -197,7 +197,7 @@ class TaskMemTest : PropertyChangeListener {
 		Assertions.assertEquals(CodeTaskPriority.HIGH, loadedTask.priority)
 		Assertions.assertEquals(simpleTaskDef, loadedTask.meta.caseDef)
 		Assertions.assertEquals(taskNewStage, loadedTask.meta.caseStage)
-		Assertions.assertEquals(user1.id, loadedTask.assignee?.id)
+		Assertions.assertEquals(user1.id, loadedTask.assigneeId)
 
 		// Verify comments persisted
 		Assertions.assertEquals(2, loadedTask.commentList.size, "Loaded task should have 2 comments")
@@ -254,7 +254,7 @@ class TaskMemTest : PropertyChangeListener {
 			taskAfterProgress.meta.transitionList[taskAfterProgress.meta.transitionList.size - 1]
 		Assertions.assertEquals(taskNewStage, stageChangeTransition.oldCaseStage)
 		Assertions.assertEquals(taskInProgressStage, stageChangeTransition.newCaseStage)
-		Assertions.assertEquals(user1.id, stageChangeTransition.user.id)
+		Assertions.assertEquals(user1.id, stageChangeTransition.userId)
 
 		// Test removing a comment
 		val taskToEditComments = taskRepo.load(taskId)
@@ -335,8 +335,8 @@ class TaskMemTest : PropertyChangeListener {
 		Assertions.assertNull(loaded.isPrivate, "private should be null")
 		Assertions.assertNull(loaded.dueAt, "dueAt should be null")
 		Assertions.assertNull(loaded.remindAt, "remindAt should be null")
-		Assertions.assertNull(loaded.assignee, "assignee should be null")
-		Assertions.assertEquals(user.id, loaded.owner?.id, "Owner should be creator")
+		Assertions.assertNull(loaded.assigneeId, "assignee should be null")
+		Assertions.assertEquals(user.id, loaded.ownerId, "Owner should be creator")
 		Assertions.assertEquals(0, loaded.commentList.size, "Loaded minimal task should have 0 comments")
 	}
 
@@ -357,7 +357,7 @@ class TaskMemTest : PropertyChangeListener {
 		task2.meta.setCaseStage(taskInProgressStage, user.id as Int, now.plusMinutes(1))
 		task2.subject = "Task 2"
 		task2.priority = CodeTaskPriority.URGENT
-		task2.assignee = user1
+		task2.assigneeId = user1.id
 		val comment1 = task2.commentList.add()
 		comment1.text = "First comment for Task 2"
 		val comment2 = task2.commentList.add()
@@ -406,7 +406,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Set reference property - use Id suffix for setters
 		task.setValueByPath("assigneeId", user1.id)
-		Assertions.assertEquals(user1.id, task.assignee?.id)
+		Assertions.assertEquals(user1.id, task.assigneeId)
 
 		// Set property on a part in a list
 		val comment = task.commentList.add()

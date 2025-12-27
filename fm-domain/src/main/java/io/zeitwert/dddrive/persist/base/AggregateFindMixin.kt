@@ -6,7 +6,7 @@ import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.util.SqlUtils
 import io.zeitwert.fm.app.model.RequestContextFM
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository
+import io.zeitwert.fm.oe.model.ObjTenantRepository
 import org.jooq.DSLContext
 import org.jooq.Field
 import org.jooq.Record
@@ -32,7 +32,7 @@ interface AggregateFindMixin {
 		// String tenantField = AggregateFields.TENANT_ID.getName();
 		val tenantField = "tenant_id"
 		val tenantId = requestCtx.getTenantId() as Int
-		if (tenantId != ObjTenantFMRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
+		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId))
 		}
 		if (hasAccount && requestCtx.hasAccount()) {

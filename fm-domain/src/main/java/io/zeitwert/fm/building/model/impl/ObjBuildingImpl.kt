@@ -1,5 +1,6 @@
 package io.zeitwert.fm.building.model.impl
 
+import dddrive.app.validation.model.enums.CodeValidationLevelEnum
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
@@ -10,7 +11,6 @@ import dddrive.ddd.property.delegate.referenceSetProperty
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.ReferenceSetProperty
-import dddrive.ddd.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -30,8 +30,8 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.oe.model.ObjTenantFM
-import io.zeitwert.fm.oe.model.ObjUserFM
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.math.BigDecimal
@@ -92,6 +92,8 @@ class ObjBuildingImpl(
 
 	override fun taskRepository() = repository.taskRepository
 
+	val tenantRepo = directory.getRepository(ObjTenant::class.java)
+
 	override fun aggregate(): ObjBuilding = this
 
 	override fun doAfterCreate(
@@ -128,7 +130,7 @@ class ObjBuildingImpl(
 		get() {
 			var inflationRate = account?.inflationRate
 			if (inflationRate == null) {
-				inflationRate = (tenant as? ObjTenantFM)?.inflationRate
+				inflationRate = tenantRepo.get(tenantId).inflationRate
 			}
 			return inflationRate?.toDouble() ?: 0.0
 		}
@@ -137,7 +139,7 @@ class ObjBuildingImpl(
 		get() {
 			var discountRate = account?.discountRate
 			if (discountRate == null) {
-				discountRate = (tenant as? ObjTenantFM)?.discountRate
+				discountRate = tenantRepo.get(tenantId).discountRate
 			}
 			return discountRate?.toDouble() ?: 0.0
 		}
@@ -173,7 +175,7 @@ class ObjBuildingImpl(
 	override fun getCondition(year: Int): Int? = currentRating?.getCondition(year)
 
 	override fun addRating(
-		user: ObjUserFM,
+		user: ObjUser,
 		timestamp: OffsetDateTime,
 	): ObjBuildingPartRating {
 		val oldRating = currentRating

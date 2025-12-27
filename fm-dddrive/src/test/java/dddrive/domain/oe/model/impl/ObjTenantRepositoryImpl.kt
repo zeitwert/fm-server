@@ -1,9 +1,9 @@
 package dddrive.domain.oe.model.impl
 
 import dddrive.app.obj.model.base.ObjRepositoryBase
+import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.persist.ObjTenantPersistenceProvider
-import io.dddrive.oe.model.ObjTenant
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
 import java.util.*
@@ -17,7 +17,7 @@ class ObjTenantRepositoryImpl :
 	),
 	ObjTenantRepository {
 
-	override fun createAggregate(isNew: Boolean): ObjTenant = ObjTenantTestImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean): ObjTenant = ObjTenantImpl(this, isNew)
 
 	override val persistenceProvider get() = directory.getPersistenceProvider(ObjTenant::class.java) as ObjTenantPersistenceProvider
 

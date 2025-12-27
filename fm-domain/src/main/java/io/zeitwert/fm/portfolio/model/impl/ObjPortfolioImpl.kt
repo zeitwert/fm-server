@@ -11,7 +11,7 @@ import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
 import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.oe.model.ObjTenantFM
+import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
@@ -48,6 +48,8 @@ class ObjPortfolioImpl(
 
 	override fun taskRepository() = repository.taskRepository
 
+	val tenantRepo = directory.getRepository(ObjTenant::class.java)
+
 	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
 
 	private fun hasValidObjType(id: Int?): Boolean {
@@ -59,15 +61,13 @@ class ObjPortfolioImpl(
 
 	override val inflationRate: Double
 		get() {
-			val inflationRate = account?.inflationRate
-				?: (tenant as? ObjTenantFM)?.inflationRate
+			val inflationRate = account?.inflationRate ?: tenantRepo.get(tenantId).inflationRate
 			return inflationRate?.toDouble() ?: 0.0
 		}
 
 	override val discountRate: Double
 		get() {
-			val discountRate = account?.discountRate
-				?: (tenant as? ObjTenantFM)?.discountRate
+			val discountRate = account?.discountRate ?: tenantRepo.get(tenantId).discountRate
 			return discountRate?.toDouble() ?: 0.0
 		}
 

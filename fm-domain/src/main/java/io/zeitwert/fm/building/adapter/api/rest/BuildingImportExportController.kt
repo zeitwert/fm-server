@@ -20,8 +20,8 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingType.Enumeration.getBuild
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation.Enumeration.getHistoricPreservation
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType.Enumeration.getNoteType
-import io.zeitwert.fm.oe.model.ObjUserFM
-import io.zeitwert.fm.oe.model.ObjUserFMRepository
+import io.zeitwert.fm.oe.model.ObjUser
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry.Enumeration.getCountry
 import jakarta.servlet.ServletException
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,26 +43,26 @@ import java.util.function.Consumer
 class BuildingImportExportController {
 
 	@Autowired
-	var requestCtx: RequestContextFM? = null
+	lateinit var requestCtx: RequestContextFM
 
 	@Autowired
-	private val directory: RepositoryDirectory? = null
+	lateinit var directory: RepositoryDirectory
 
 	@Autowired
-	private val buildingRepo: ObjBuildingRepository? = null
+	lateinit var buildingRepo: ObjBuildingRepository
 
 	@Autowired
-	private val userRepo: ObjUserFMRepository? = null
+	lateinit var userRepo: ObjUserRepository
 
 	@Autowired
-	private val noteRepo: ObjNoteRepository? = null
+	lateinit var noteRepo: ObjNoteRepository
 
 	@GetMapping("/{id}")
 	@Throws(ServletException::class, IOException::class)
 	fun exportBuilding(
 		@PathVariable("id") id: Int,
 	): ResponseEntity<BuildingTransferDto?> {
-		val building = this.buildingRepo!!.get(id)
+		val building = this.buildingRepo.get(id)
 		val export = this.getTransferDto(building)
 		val fileName = this.getFileName(building)
 		val contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build()
@@ -76,7 +76,7 @@ class BuildingImportExportController {
 	fun importBuilding(
 		@RequestBody dto: BuildingTransferDto,
 	): ResponseEntity<BuildingTransferDto?> {
-		val accountId = this.requestCtx!!.getAccountId()
+		val accountId = this.requestCtx.getAccountId()
 		if (accountId == null) {
 			return ResponseEntity.badRequest().build<BuildingTransferDto?>()
 		} else if (AGGREGATE != dto.meta?.aggregate) {
@@ -84,9 +84,9 @@ class BuildingImportExportController {
 		} else if (VERSION != dto.meta?.version) {
 			return ResponseEntity.unprocessableEntity().build<BuildingTransferDto?>()
 		}
-		val userId = this.requestCtx!!.getUser().id
+		val userId = this.requestCtx.getUser().id
 		val timestamp = OffsetDateTime.now()
-		val building = this.buildingRepo!!.create(this.requestCtx!!.getTenantId(), userId, timestamp)
+		val building = this.buildingRepo.create(this.requestCtx.getTenantId(), userId, timestamp)
 		building.accountId = accountId
 		this.fillFromDto(building, dto)
 		this.buildingRepo.store(building, userId, timestamp)
@@ -98,9 +98,9 @@ class BuildingImportExportController {
 		val meta = TransferMetaDto(
 			aggregate = AGGREGATE,
 			version = VERSION,
-			createdByUser = building.meta.createdByUser?.email,
+			createdByUser = userRepo.get(building.meta.createdByUserId).email,
 			createdAt = building.meta.createdAt,
-			modifiedByUser = building.meta.modifiedByUser?.email,
+			modifiedByUser = if (building.meta.modifiedByUserId != null) userRepo.get(building.meta.modifiedByUserId!!).email else null,
 			modifiedAt = building.meta.modifiedAt,
 		)
 		val elements = building.currentRating!!
@@ -122,14 +122,14 @@ class BuildingImportExportController {
 		val notes = building.notes
 			.stream()
 			.map { noteId ->
-				val note = this.noteRepo!!.load(noteId)
+				val note = this.noteRepo.load(noteId)
 				NoteTransferDto(
 					subject = note.subject,
 					content = note.content,
 					isPrivate = note.isPrivate,
-					createdByUser = note.meta.createdByUser?.email,
+					createdByUser = userRepo.get(note.meta.createdByUserId).email,
 					createdAt = note.meta.createdAt,
-					modifiedByUser = note.meta.modifiedByUser?.email,
+					modifiedByUser = if (note.meta.modifiedByUserId != null) userRepo.get(note.meta.modifiedByUserId!!).email else null,
 					modifiedAt = note.meta.modifiedAt,
 				)
 			}.toList()
@@ -186,9 +186,9 @@ class BuildingImportExportController {
 		try {
 			building.meta.disableCalc()
 
-			val user = this.requestCtx!!.getUser() as ObjUserFM
-			val now = this.requestCtx!!.getCurrentTime()
-			building.owner = user
+			val user = this.requestCtx.getUser() as ObjUser
+			val now = this.requestCtx.getCurrentTime()
+			building.ownerId = user.id
 			building.name = dto.name
 			building.description = dto.description
 			building.buildingNr = dto.buildingNr
@@ -231,7 +231,7 @@ class BuildingImportExportController {
 			rating.ratingStatus = getRatingStatus(dto.ratingStatus)
 			rating.ratingDate = dto.ratingDate
 			rating.ratingUser = if (dto.ratingUser != null) {
-				this.userRepo!!.getByEmail(dto.ratingUser).get()
+				this.userRepo.getByEmail(dto.ratingUser).get()
 			} else {
 				null
 			}
@@ -259,7 +259,7 @@ class BuildingImportExportController {
 			}
 			if (dto.notes != null) {
 				val noteType = getNoteType("note")
-				val noteUserId = this.requestCtx!!.getUser().id
+				val noteUserId = this.requestCtx.getUser().id
 				val noteTimestamp = OffsetDateTime.now()
 				dto.notes.forEach(
 					Consumer { dtoNote: NoteTransferDto? ->
@@ -267,7 +267,7 @@ class BuildingImportExportController {
 						note.subject = dtoNote!!.subject
 						note.content = dtoNote.content
 						note.isPrivate = dtoNote.isPrivate
-						this.noteRepo!!.store(note, noteUserId, noteTimestamp)
+						this.noteRepo.store(note, noteUserId, noteTimestamp)
 					},
 				)
 			}

@@ -1,17 +1,16 @@
 package io.zeitwert.dddrive.app.model.base;
 
+import dddrive.ddd.core.model.Aggregate;
+import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.fm.oe.model.ObjUser;
+import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import dddrive.ddd.core.model.Aggregate;
-import io.dddrive.oe.model.ObjUser;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
 @Data()
 @SuperBuilder

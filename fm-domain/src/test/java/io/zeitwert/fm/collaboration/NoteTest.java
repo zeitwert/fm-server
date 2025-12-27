@@ -4,7 +4,7 @@ import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
@@ -32,7 +32,7 @@ public class NoteTest {
 	private RequestContext requestCtx;
 
 	@Autowired
-	private ObjUserFMRepository userRepo;
+	private ObjUserRepository userRepo;
 
 	@Autowired
 	private ObjTestRepository testRepo;

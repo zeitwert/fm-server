@@ -1,5 +1,6 @@
 package io.zeitwert.fm.task.model.impl
 
+import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import io.zeitwert.fm.task.model.DocTask
@@ -17,15 +18,17 @@ interface AggregateWithTasksMixin : ItemWithTasks {
 		get() {
 			val id = this.aggregate().id
 			val fkName = if (this is Obj) "relatedObjId" else "relatedDocId"
-			return this.taskRepository().getByForeignKey(fkName, id).map { it -> taskRepository().get(it) }
+			return this.taskRepository().getByForeignKey(fkName, id).map { taskRepository().get(it) }
 		}
 
 	override fun addTask(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	): DocTask {
-		val task = this.taskRepository().create(this.aggregate().tenantId, userId, timestamp)
-		task.relatedToId = this.aggregate().id
+		val aggregate = aggregate()
+		val tenantId = if (aggregate is Obj) aggregate.tenantId else (aggregate as Doc).tenantId
+		val task = this.taskRepository().create(tenantId, userId, timestamp)
+		task.relatedToId = aggregate.id
 		return task
 	}
 

@@ -1,25 +1,24 @@
 package io.zeitwert.fm.oe.model.impl
 
-import io.dddrive.oe.model.ObjTenant
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
-import io.zeitwert.fm.oe.model.ObjTenantFM
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository
-import io.zeitwert.fm.oe.model.ObjUserFMRepository
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 @Component("objTenantRepository")
-class ObjTenantFMRepositoryImpl(
-	@param:Lazy override val userRepository: ObjUserFMRepository,
+class ObjTenantRepositoryImpl(
+	@param:Lazy override val userRepository: ObjUserRepository,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,
-) : FMObjRepositoryBase<ObjTenantFM>(
+) : FMObjRepositoryBase<ObjTenant>(
 		ObjTenant::class.java,
 		AGGREGATE_TYPE_ID,
 	),
-	ObjTenantFMRepository {
+	ObjTenantRepository {
 
-	override fun createAggregate(isNew: Boolean): ObjTenantFM = ObjTenantFMImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean): ObjTenant = ObjTenantImpl(this, isNew)
 
 	companion object {
 

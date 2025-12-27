@@ -11,7 +11,6 @@ import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
-import io.dddrive.oe.model.ObjUser
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -19,6 +18,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
+import io.zeitwert.fm.oe.model.ObjUser
 import java.time.LocalDate
 
 class ObjBuildingPartRatingImpl(

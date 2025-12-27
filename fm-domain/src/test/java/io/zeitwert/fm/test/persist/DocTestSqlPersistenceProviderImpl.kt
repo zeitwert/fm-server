@@ -1,6 +1,6 @@
 package io.zeitwert.fm.test.persist
 
-import dddrive.path.setValueByPath
+import dddrive.ddd.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper

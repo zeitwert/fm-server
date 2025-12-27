@@ -1,9 +1,9 @@
 package dddrive.domain.oe.model.impl
 
 import dddrive.app.obj.model.base.ObjRepositoryBase
+import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
 import dddrive.domain.oe.persist.ObjUserPersistenceProvider
-import io.dddrive.oe.model.ObjUser
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
 import java.util.*
@@ -17,7 +17,7 @@ class ObjUserRepositoryImpl :
 	),
 	ObjUserRepository {
 
-	override fun createAggregate(isNew: Boolean): ObjUser = ObjUserTestImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean): ObjUser = ObjUserImpl(this, isNew)
 
 	override val persistenceProvider get() = directory.getPersistenceProvider(ObjUser::class.java) as ObjUserPersistenceProvider
 

@@ -1,34 +1,30 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import dddrive.app.doc.model.Doc;
+import dddrive.app.obj.model.Obj;
+import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
-import dddrive.ddd.core.model.Aggregate;
-import io.dddrive.oe.model.ObjTenant;
-import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.ObjTenantRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends AggregateDto<A>>
 		implements AggregateDtoAdapter<A, D> {
 
-	private ObjTenantFMRepository tenantRepository = null;
-	private ObjUserFMRepository userRepository = null;
+	private ObjTenantRepository tenantRepository = null;
+	private ObjUserRepository userRepository = null;
 
-	@Autowired
-	void setTenantRepository(ObjTenantFMRepository tenantRepository) {
-		this.tenantRepository = tenantRepository;
-	}
-
-	@Autowired
-	void setUserRepository(ObjUserFMRepository userRepository) {
-		this.userRepository = userRepository;
-	}
-
-	protected ObjTenantFMRepository getTenantRepository() {
+	protected ObjTenantRepository getTenantRepository() {
 		return this.tenantRepository;
+	}
+
+	@Autowired
+	void setTenantRepository(ObjTenantRepository tenantRepository) {
+		this.tenantRepository = tenantRepository;
 	}
 
 	protected ObjTenant getTenant(Integer tenantId) {
@@ -39,8 +35,13 @@ public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends Agg
 		return tenantId != null ? EnumeratedDto.of(tenantRepository.get(tenantId)) : null;
 	}
 
-	protected ObjUserFMRepository getUserRepository() {
+	protected ObjUserRepository getUserRepository() {
 		return this.userRepository;
+	}
+
+	@Autowired
+	void setUserRepository(ObjUserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
 	protected ObjUser getUser(Integer userId) {
@@ -52,7 +53,19 @@ public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends Agg
 	}
 
 	protected EnumeratedDto asEnumerated(Aggregate a) {
-		return EnumeratedDto.of(a.getId().toString(), a.getCaption());
+		if (a instanceof Obj) {
+			return asEnumerated((Obj) a);
+		} else {
+			return asEnumerated((Doc) a);
+		}
+	}
+
+	protected EnumeratedDto asEnumerated(Obj o) {
+		return EnumeratedDto.of(o.getId().toString(), o.getCaption());
+	}
+
+	protected EnumeratedDto asEnumerated(Doc d) {
+		return EnumeratedDto.of(d.getId().toString(), d.getCaption());
 	}
 
 }

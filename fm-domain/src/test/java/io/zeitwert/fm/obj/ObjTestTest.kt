@@ -57,7 +57,7 @@ class ObjTestTest {
 		val testA1IdHash = System.identityHashCode(testA1)
 
 		assertFalse(testA1.meta.isFrozen, "not frozen")
-		assertNotNull(testA1.meta.createdByUser, "createdByUser not null")
+		assertNotNull(testA1.meta.createdByUserId, "createdByUser not null")
 		assertNotNull(testA1.meta.createdAt, "createdAt not null")
 		assertEquals(1, testA1.meta.transitionList.size)
 
@@ -70,7 +70,7 @@ class ObjTestTest {
 		assertNotEquals(testA1IdHash, testA2IdHash)
 
 		assertTrue(testA2.meta.isFrozen, "frozen")
-		assertNotNull(testA2.meta.modifiedByUser, "modifiedByUser not null")
+		assertNotNull(testA2.meta.modifiedByUserId, "modifiedByUser not null")
 		assertNotNull(testA2.meta.modifiedAt, "modifiedAt not null")
 	}
 
@@ -86,7 +86,7 @@ class ObjTestTest {
 		val testAId = testA1.id
 		initObjTest(testA1, "One", TYPE_A)
 
-		assertNotNull(testA1.meta.createdByUser, "createdByUser not null")
+		assertNotNull(testA1.meta.createdByUserId, "createdByUser not null")
 		assertNotNull(testA1.meta.createdAt, "createdAt not null")
 		assertEquals("[Short Test One, Long Test One]", testA1.caption)
 		assertEquals("Short Test One", testA1.shortText)
@@ -100,7 +100,7 @@ class ObjTestTest {
 
 		val testB1: ObjTest = this.testRepository.create(tenantId, userId, now)
 		initObjTest(testB1, "Two", TYPE_B)
-		val testBId: Any? = testB1.id
+		val testBId: Any = testB1.id
 		this.testRepository.store(testB1, userId, now)
 
 		testA1.refObjId = testBId
@@ -285,7 +285,7 @@ class ObjTestTest {
 		test.isDone = false
 		test.date = LocalDate.of(1966, 9, 8)
 		test.json = JSON.valueOf(TEST_JSON).toString()
-		val testType: CodeTestType = CodeTestType.Enumeration.getTestType(testTypeId)!!
+		val testType: CodeTestType = CodeTestType.getTestType(testTypeId)!!
 		test.testType = testType
 	}
 

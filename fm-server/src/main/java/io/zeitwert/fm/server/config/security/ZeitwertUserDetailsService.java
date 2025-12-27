@@ -1,24 +1,22 @@
-
 package io.zeitwert.fm.server.config.security;
 
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
-
 @Service
 public class ZeitwertUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	ObjUserFMRepository userRepository;
+	ObjUserRepository userRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		ObjUserFM user = (ObjUserFM) this.userRepository.getByEmail(email)
+		ObjUser user = this.userRepository.getByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 		return ZeitwertUserDetails.build(user);
 	}

@@ -1,7 +1,8 @@
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import dddrive.app.obj.model.ObjPartTransition;
+import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,10 +18,10 @@ public class ObjPartTransitionDto {
 
 	private OffsetDateTime timestamp;
 
-	public static ObjPartTransitionDto fromPart(ObjPartTransition transition) {
+	public static ObjPartTransitionDto fromPart(ObjPartTransition transition, ObjUserRepository userRepo) {
 		return ObjPartTransitionDto.builder()
 //				.seqNr(transition.getSeqNr()) TODO-MIGRATION
-				.user(EnumeratedDto.of(transition.getUser()))
+				.user(EnumeratedDto.of(userRepo.get(transition.getUserId())))
 				.timestamp(transition.getTimestamp())
 				.build();
 	}

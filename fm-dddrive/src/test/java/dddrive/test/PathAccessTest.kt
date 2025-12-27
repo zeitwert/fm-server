@@ -13,11 +13,9 @@ import dddrive.ddd.property.model.EnumProperty
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartReferenceProperty
 import dddrive.ddd.property.model.Property
-import dddrive.path.getPropertyByPath
-import dddrive.path.getValueByPath
-import dddrive.path.setValueByPath
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
+import dddrive.ddd.path.getPropertyByPath
+import dddrive.ddd.path.getValueByPath
+import dddrive.ddd.path.setValueByPath
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -600,12 +598,6 @@ class TestAggregate(
 		_properties[name] = property
 	}
 
-	override val tenantId: Any get() = 1
-	override val tenant: ObjTenant get() = throw NotImplementedError()
-	override var owner: ObjUser?
-		get() = throw NotImplementedError()
-		set(value) {}
-	override val caption: String = "TestAggregate"
 	override val meta: AggregateMeta get() = throw NotImplementedError()
 	override val isFrozen: Boolean = false
 

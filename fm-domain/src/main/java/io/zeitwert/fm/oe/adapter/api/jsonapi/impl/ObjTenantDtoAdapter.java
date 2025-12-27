@@ -1,14 +1,13 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.oe.model.ObjTenant;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
-import io.zeitwert.fm.oe.model.ObjTenantFM;
+import io.zeitwert.fm.oe.model.ObjTenant;
 import io.zeitwert.fm.oe.model.enums.CodeTenantType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component("objTenantDtoAdapter")
 @DependsOn("oeConfig")
-public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenantDto> {
+public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, ObjTenantDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 
@@ -42,7 +41,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	}
 
 	@Override
-	public void toAggregate(ObjTenantDto dto, ObjTenantFM obj) {
+	public void toAggregate(ObjTenantDto dto, ObjTenant obj) {
 		super.toAggregate(dto, obj);
 		obj.setTenantType(dto.getTenantType() == null ? null : CodeTenantType.getTenantType(dto.getTenantType().getId()));
 		obj.setName(dto.getName());
@@ -52,7 +51,7 @@ public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenantFM, ObjTenan
 	}
 
 	@Override
-	public ObjTenantDto fromAggregate(ObjTenantFM obj) {
+	public ObjTenantDto fromAggregate(ObjTenant obj) {
 		if (obj == null) {
 			return null;
 		}

@@ -54,12 +54,12 @@ public class DocumentTest {
 
 		assertNotNull(documentA1, "test not null");
 		assertNotNull(documentA1.getId(), "id not null");
-		assertNotNull(documentA1.getTenant(), "tenant not null");
+		assertNotNull(documentA1.getTenantId(), "tenant not null");
 
 		Object documentA_id = documentA1.getId();
 		Integer documentA_idHash = System.identityHashCode(documentA1);
 
-		assertNotNull(documentA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(documentA1.getMeta().getCreatedByUserId(), "createdByUser not null");
 		assertNotNull(documentA1.getMeta().getCreatedAt(), "createdAt not null");
 
 		this.initDocument(documentA1);
@@ -76,7 +76,7 @@ public class DocumentTest {
 		Integer document1bIdHash = System.identityHashCode(documentA2);
 
 		assertNotEquals(documentA_idHash, document1bIdHash);
-		assertNotNull(documentA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
+		assertNotNull(documentA2.getMeta().getModifiedByUserId(), "modifiedByUser not null");
 		assertNotNull(documentA2.getMeta().getModifiedAt(), "modifiedAt not null");
 
 		assertEquals(CodeContentType.PNG, this.documentRepository.getContentType(documentA2));

@@ -3,7 +3,7 @@ package io.zeitwert.fm.obj.persist
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
-import dddrive.path.setValueByPath
+import dddrive.ddd.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount
@@ -80,16 +80,16 @@ class ObjRecordMapperImpl(
 		if (aggregate is ItemWithAccount) {
 			record.accountId = aggregate.accountId as Int?
 		}
-		record.ownerId = aggregate.owner?.id as Int?
+		record.ownerId = aggregate.ownerId as Int?
 		record.caption = aggregate.caption
 
 		record.version = aggregate.meta.version
 		record.createdAt = aggregate.meta.createdAt
-		record.createdByUserId = aggregate.meta.createdByUser?.id as Int?
+		record.createdByUserId = aggregate.meta.createdByUserId as Int
 		record.modifiedAt = aggregate.meta.modifiedAt
-		record.modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int
+		record.modifiedByUserId = aggregate.meta.modifiedByUserId as Int?
 		record.closedAt = aggregate.meta.closedAt
-		record.closedByUserId = aggregate.meta.closedByUser?.id as? Int
+		record.closedByUserId = aggregate.meta.closedByUserId as Int?
 		return record
 	}
 

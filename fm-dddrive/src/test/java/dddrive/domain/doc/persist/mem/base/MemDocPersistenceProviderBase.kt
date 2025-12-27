@@ -4,12 +4,12 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocPartTransition
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
+import dddrive.ddd.path.getValueByPath
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.domain.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import dddrive.domain.doc.persist.mem.pto.DocPartTransitionPto
 import dddrive.domain.doc.persist.mem.pto.DocPto
-import dddrive.path.getValueByPath
-import dddrive.path.setValueByPath
 import io.dddrive.domain.doc.persist.mem.pto.DocMetaPto
 
 abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
@@ -68,32 +68,29 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 		val maxPartId = aggregate.getValueByPath("maxPartId") as? Int?
 		val transitions =
 			aggregate.meta.transitionList
-				.map { domainTransition ->
+				.map { t ->
 					DocPartTransitionPto(
-						id = domainTransition.id,
-						userId = domainTransition.user.id,
-						timestamp = domainTransition.timestamp,
-						oldCaseStageId = domainTransition.oldCaseStage?.id,
-						newCaseStageId = domainTransition.newCaseStage.id,
+						id = t.id,
+						userId = t.userId,
+						timestamp = t.timestamp,
+						oldCaseStageId = t.oldCaseStage?.id,
+						newCaseStageId = t.newCaseStage.id,
 					)
 				}.toList()
-
 		val meta = DocMetaPto(
-			// Doc specific meta fields
 			docTypeId = aggregate.meta.docTypeId,
+			version = aggregate.meta.version,
+			maxPartId = maxPartId,
+			ownerId = aggregate.ownerId as? Int,
+			createdAt = aggregate.meta.createdAt,
+			createdByUserId = aggregate.meta.createdByUserId as Int,
+			modifiedAt = aggregate.meta.modifiedAt,
+			modifiedByUserId = aggregate.meta.modifiedByUserId as? Int,
 			caseDefId = aggregate.meta.caseDef?.id,
 			caseStageId = aggregate.meta.caseStage?.id,
 			isInWork = aggregate.meta.isInWork,
-			assigneeId = aggregate.assignee?.id,
+			assigneeId = aggregate.assigneeId,
 			transitions = transitions,
-			// Properties inherited from AggregateMetaPto
-			maxPartId = maxPartId,
-			ownerId = aggregate.owner?.id as? Int,
-			version = aggregate.meta.version,
-			createdAt = aggregate.meta.createdAt,
-			createdByUserId = aggregate.meta.createdByUser?.id as? Int,
-			modifiedAt = aggregate.meta.modifiedAt,
-			modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int,
 		)
 		return meta
 	}

@@ -1,12 +1,12 @@
 package dddrive.domain.obj.persist.mem.base
 
 import dddrive.app.obj.model.Obj
+import dddrive.ddd.path.getValueByPath
+import dddrive.ddd.path.setValueByPath
 import dddrive.domain.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
 import dddrive.domain.obj.persist.mem.pto.ObjMetaPto
 import dddrive.domain.obj.persist.mem.pto.ObjPartTransitionPto
 import dddrive.domain.obj.persist.mem.pto.ObjPto
-import dddrive.path.getValueByPath
-import dddrive.path.setValueByPath
 
 abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 	intfClass: Class<O>,
@@ -27,34 +27,21 @@ abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
 	@Suppress("UNCHECKED_CAST")
 	protected fun getMeta(aggregate: O): ObjMetaPto {
 		val maxPartId = aggregate.getValueByPath("maxPartId") as? Int?
-
-		// Map transitions from the domain model (ObjPartTransition) to PTO (ObjPartTransitionPto)
-		val transitions =
-			aggregate.meta.transitionList
-				.map { domainTransition ->
-					ObjPartTransitionPto(
-						id = domainTransition.id,
-						userId = domainTransition.user.id,
-						timestamp = domainTransition.timestamp,
-					)
-				}.toList()
-
+		val transitions = aggregate.meta.transitionList
+			.map { t -> ObjPartTransitionPto(id = t.id, userId = t.userId, timestamp = t.timestamp) }
+			.toList()
 		return ObjMetaPto(
-			// Properties specific to ObjMetaPto
-			objTypeId = aggregate.meta.repository
-				?.aggregateType
-				?.id,
-			closedAt = aggregate.meta.closedAt,
-			closedByUserId = aggregate.meta.closedByUser?.id as? Int,
-			transitions = transitions,
-			// Properties inherited from AggregateMetaPto, passed to ObjMetaPto's constructor
-			maxPartId = maxPartId,
-			ownerId = aggregate.owner?.id as? Int,
+			objTypeId = aggregate.meta.repository.aggregateType.id,
 			version = aggregate.meta.version,
+			maxPartId = maxPartId,
+			ownerId = aggregate.ownerId as? Int,
 			createdAt = aggregate.meta.createdAt,
-			createdByUserId = aggregate.meta.createdByUser?.id as? Int,
+			createdByUserId = aggregate.meta.createdByUserId as Int,
 			modifiedAt = aggregate.meta.modifiedAt,
-			modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int,
+			modifiedByUserId = aggregate.meta.modifiedByUserId as? Int,
+			closedAt = aggregate.meta.closedAt,
+			closedByUserId = aggregate.meta.closedByUserId as? Int,
+			transitions = transitions,
 		)
 	}
 }

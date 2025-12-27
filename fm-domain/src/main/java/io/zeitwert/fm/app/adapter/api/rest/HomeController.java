@@ -2,10 +2,9 @@ package io.zeitwert.fm.app.adapter.api.rest;
 
 import dddrive.app.doc.model.enums.CodeCaseStage;
 import dddrive.app.doc.model.enums.CodeCaseStageEnum;
+import dddrive.app.obj.model.Obj;
 import dddrive.ddd.core.model.enums.CodeAggregateType;
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
-import dddrive.ddd.core.model.Aggregate;
-import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -17,7 +16,9 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.collaboration.model.db.tables.records.ActivityVRecord;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.obj.model.FMObjVRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
@@ -43,7 +44,9 @@ public class HomeController {
 	@Autowired
 	DSLContext dslContext;
 	@Autowired
-	ObjUserFMRepository userRepository;
+	FMObjVRepository objRepository;
+	@Autowired
+	ObjUserRepository userRepository;
 	@Autowired
 	ObjAccountRepository accountRepository;
 	@Autowired
@@ -124,17 +127,13 @@ public class HomeController {
 	}
 
 	private HomeActivityResponse getTaskResponse(DocTask task) {
-		Aggregate relatedTo = task.getRelatedTo();
-//
-//		Integer relatedToId = task.getRelatedToId();
-//		assertThis(((AggregateRepositorySPI<?>) this.taskRepository).getIdProvider().isObjId(relatedToId),
-//				"only obj supported yet");
-//		Obj relatedTo = this.objCache.get(relatedToId);
+		Integer relatedToId = (Integer) task.getRelatedToId();
+		Obj relatedTo = this.objRepository.get(relatedToId);
 		return HomeActivityResponse.builder()
 				.item(EnumeratedDto.of(task))
 				.relatedTo(EnumeratedDto.of(relatedTo))
-				.owner(EnumeratedDto.of(task.getOwner() != null ? task.getOwner() : null))
-				.user(EnumeratedDto.of(task.getAssignee() != null ? task.getAssignee() : null))
+				.owner(EnumeratedDto.of(task.getOwnerId() != null ? userRepository.get(task.getOwnerId()) : null))
+				.user(EnumeratedDto.of(task.getAssigneeId() != null ? userRepository.get(task.getAssigneeId()) : null))
 				.dueAt(Formatter.INSTANCE.formatIsoDate(task.getDueAt().toLocalDate()))
 				.subject(task.getSubject())
 				.content(task.getContent())

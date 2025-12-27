@@ -1,20 +1,18 @@
-package io.dddrive.oe.model.base
+package dddrive.domain.oe.model.impl
 
-import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjBase
 import dddrive.ddd.property.delegate.baseProperty
-import io.dddrive.oe.model.ObjUser
+import dddrive.domain.oe.model.ObjUser
+import dddrive.domain.oe.model.ObjUserRepository
 
-abstract class ObjUserBase(
-	override val repository: ObjRepository<ObjUser>,
+class ObjUserImpl(
+	override val repository: ObjUserRepository,
 	isNew: Boolean,
 ) : ObjBase(repository, isNew),
 	ObjUser {
 
 	override var email: String? by baseProperty(this, "email")
-	override var password: String? by baseProperty(this, "password")
 	override var name: String? by baseProperty(this, "name")
-	override var description: String? by baseProperty(this, "description")
 
 	override fun doCalcAll() {
 		super.doCalcAll()

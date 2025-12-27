@@ -3,8 +3,8 @@ package io.zeitwert.fm.obj.persist
 import dddrive.app.obj.model.ObjPartTransition
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PartListProperty
-import dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
 import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord
@@ -119,7 +119,7 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 		record.partListTypeId = partListTypeId
 		record.seqNr = seqNr
 
-		record.userId = part.user.id as Int?
+		record.userId = part.userId as Int
 		record.timestamp = part.timestamp
 
 		record.aver = aggregate.meta.version

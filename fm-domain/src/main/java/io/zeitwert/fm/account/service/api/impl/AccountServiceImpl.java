@@ -1,14 +1,13 @@
 package io.zeitwert.fm.account.service.api.impl;
 
-import java.util.List;
-
-import org.jooq.DSLContext;
-import org.springframework.stereotype.Service;
-
-import io.dddrive.oe.model.ObjTenant;
 import io.zeitwert.fm.account.model.db.Tables;
 import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord;
 import io.zeitwert.fm.account.service.api.AccountService;
+import io.zeitwert.fm.oe.model.ObjTenant;
+import org.jooq.DSLContext;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {

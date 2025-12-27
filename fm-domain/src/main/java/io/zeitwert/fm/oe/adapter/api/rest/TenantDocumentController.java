@@ -2,8 +2,8 @@ package io.zeitwert.fm.oe.adapter.api.rest;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
-import io.zeitwert.fm.oe.model.ObjTenantFM;
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.ObjTenantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,13 +18,13 @@ public class TenantDocumentController {
 	@Autowired
 	RequestContext requestCtx;
 	@Autowired
-	private ObjTenantFMRepository tenantRepository;
+	private ObjTenantRepository tenantRepository;
 	@Autowired
 	private DocumentContentController documentController;
 
 	@RequestMapping(value = "/{id}/logo", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getImage(@PathVariable Integer id) {
-		ObjTenantFM tenant = this.tenantRepository.get(id);
+		ObjTenant tenant = this.tenantRepository.get(id);
 		Integer documentId = (Integer) tenant.getLogoImageId();
 		if (documentId == null) {
 			return ResponseEntity.noContent().build();

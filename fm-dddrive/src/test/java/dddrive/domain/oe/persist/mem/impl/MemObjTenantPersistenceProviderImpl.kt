@@ -2,10 +2,10 @@ package dddrive.domain.oe.persist.mem.impl
 
 import dddrive.domain.obj.persist.mem.base.MemObjPersistenceProviderBase
 import dddrive.domain.obj.persist.mem.pto.ObjMetaPto
+import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.persist.ObjTenantPersistenceProvider
 import dddrive.domain.oe.persist.mem.pto.ObjTenantPto
-import io.dddrive.oe.model.ObjTenant
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.util.*
@@ -50,12 +50,9 @@ class MemObjTenantPersistenceProviderImpl :
 		val aggregateMeta = aggregate.meta
 		try {
 			aggregateMeta.disableCalc()
-
 			super.toAggregate(pto, aggregate)
-
-			aggregate.name = pto.name
-			aggregate.description = pto.description
 			aggregate.key = pto.key
+			aggregate.name = pto.name
 		} finally {
 			aggregateMeta.enableCalc()
 			aggregate.meta.calcAll()
@@ -70,9 +67,8 @@ class MemObjTenantPersistenceProviderImpl :
 			meta = this.getMeta(aggregate),
 			caption = aggregate.caption,
 			// Properties specific to ObjTenantPto
-			name = aggregate.name,
-			description = aggregate.description,
 			key = aggregate.key,
+			name = aggregate.name,
 		)
 
 	fun getAllPtos(): List<ObjTenantPto> =

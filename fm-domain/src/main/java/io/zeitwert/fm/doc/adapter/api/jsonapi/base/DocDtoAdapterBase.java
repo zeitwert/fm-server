@@ -19,35 +19,35 @@ public abstract class DocDtoAdapterBase<A extends Doc, D extends DocDtoBase<A>>
 			doc.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage(dto.getCaseStage().getId()), null, null);
 		}
 		if (dto.getOwner() != null) {
-			doc.setOwner(this.getUser(Integer.parseInt(dto.getOwner().getId())));
+			doc.setOwnerId(dto.getOwner().getId());
 		}
 		if (dto.getAssignee() != null) {
-			doc.setAssignee(this.getUser(Integer.parseInt(dto.getAssignee().getId())));
+			doc.setAssigneeId(dto.getAssignee().getId());
 		}
 	}
 
 	protected void fromAggregate(DocDtoBase.DocDtoBaseBuilder<?, ?, ?> dtoBuilder, A doc) {
 		dtoBuilder
 				.adapter(this)
-				.tenant(EnumeratedDto.of(doc.getTenant()))
+				.tenant(EnumeratedDto.of(getTenant((Integer) doc.getTenantId())))
 				.meta(this.metaFromDoc(doc))
 				.id((Integer) doc.getId())
 				.caption(doc.getCaption())
-				.owner(EnumeratedDto.of(doc.getOwner()))
-				.assignee(EnumeratedDto.of(doc.getAssignee()));
+				.owner(EnumeratedDto.of(doc.getOwnerId() != null ? getUser((Integer) doc.getOwnerId()) : null))
+				.assignee(EnumeratedDto.of(doc.getAssigneeId() != null ? getUser((Integer) doc.getAssigneeId()) : null));
 	}
 
 	private DocMetaDto metaFromDoc(Doc doc) {
 		DocMeta meta = doc.getMeta();
 		DocMetaDto.DocMetaDtoBuilder<?, ?> builder = DocMetaDto.builder();
-		AggregateMetaDto.fromAggregate(builder, doc);
+		AggregateMetaDto.fromDoc(builder, doc, getUserRepository());
 		return builder
 				.caseDef(EnumeratedDto.of(doc.getMeta().getCaseDef()))
 				.caseStage(EnumeratedDto.of(doc.getMeta().getCaseStage()))
 				.isInWork(doc.getMeta().getCaseStage().isInWork())
-				.assignee(EnumeratedDto.of(doc.getAssignee()))
+				.assignee(EnumeratedDto.of(doc.getAssigneeId() != null ? getUser((Integer) doc.getAssigneeId()) : null))
 				.caseStages(doc.getMeta().getCaseStages().stream().map(EnumeratedDto::of).toList())
-				.transitions(meta.getTransitionList().stream().map(DocPartTransitionDto::fromPart).toList())
+				.transitions(meta.getTransitionList().stream().map(id -> DocPartTransitionDto.fromPart(id, getUserRepository())).toList())
 				.build();
 	}
 

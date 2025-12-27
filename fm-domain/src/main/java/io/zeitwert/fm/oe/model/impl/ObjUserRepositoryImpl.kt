@@ -1,35 +1,34 @@
 package io.zeitwert.fm.oe.model.impl
 
-import io.dddrive.oe.model.ObjUser
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
-import io.zeitwert.fm.oe.model.ObjUserFM
-import io.zeitwert.fm.oe.model.ObjUserFMRepository
+import io.zeitwert.fm.oe.model.ObjUser
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
-import io.zeitwert.fm.oe.persist.ObjUserFMSqlPersistenceProviderImpl
+import io.zeitwert.fm.oe.persist.ObjUserSqlPersistenceProviderImpl
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objUserRepository")
-class ObjUserFMRepositoryImpl(
+class ObjUserRepositoryImpl(
 	@param:Lazy override val passwordEncoder: PasswordEncoder,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,
-) : FMObjRepositoryBase<ObjUserFM>(
+) : FMObjRepositoryBase<ObjUser>(
 		ObjUser::class.java,
 		AGGREGATE_TYPE_ID,
 	),
-	ObjUserFMRepository {
+	ObjUserRepository {
 
-	override fun createAggregate(isNew: Boolean): ObjUserFM = ObjUserFMImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean): ObjUser = ObjUserImpl(this, isNew)
 
-	override fun isAppAdmin(user: ObjUserFM): Boolean = user.hasRole(CodeUserRole.APP_ADMIN)
+	override fun isAppAdmin(user: ObjUser): Boolean = user.hasRole(CodeUserRole.APP_ADMIN)
 
-	override fun isAdmin(user: ObjUserFM): Boolean = user.hasRole(CodeUserRole.ADMIN)
+	override fun isAdmin(user: ObjUser): Boolean = user.hasRole(CodeUserRole.ADMIN)
 
-	override fun getByEmail(email: String): Optional<ObjUserFM> {
-		val userId = (persistenceProvider as ObjUserFMSqlPersistenceProviderImpl).getByEmail(email).get()
+	override fun getByEmail(email: String): Optional<ObjUser> {
+		val userId = (persistenceProvider as ObjUserSqlPersistenceProviderImpl).getByEmail(email).get()
 		return Optional.ofNullable(get(userId))
 	}
 

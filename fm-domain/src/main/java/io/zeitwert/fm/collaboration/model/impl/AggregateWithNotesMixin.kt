@@ -1,5 +1,7 @@
 package io.zeitwert.fm.collaboration.model.impl
 
+import dddrive.app.doc.model.Doc
+import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -22,9 +24,11 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 		noteType: CodeNoteType,
 		userId: Any,
 	): ObjNote {
-		val note = noteRepository().create(aggregate().tenantId, userId, OffsetDateTime.now())
+		val aggregate = aggregate()
+		val tenantId = if (aggregate is Obj) aggregate.tenantId else (aggregate as Doc).tenantId
+		val note = noteRepository().create(tenantId, userId, OffsetDateTime.now())
 		note.noteType = noteType
-		note.relatedToId = aggregate().id
+		note.relatedToId = aggregate.id
 		return note
 	}
 
@@ -33,7 +37,7 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 		userId: Any,
 	) {
 		val note = noteRepository().load(noteId)
-		require(aggregate().id.equals(note.relatedToId)) { "note is related to this item." }
+		require(aggregate().id == note.relatedToId) { "note is related to this item." }
 		noteRepository().close(note, userId, OffsetDateTime.now())
 	}
 

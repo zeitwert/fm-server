@@ -6,8 +6,8 @@ import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository
-import io.zeitwert.fm.oe.model.ObjUserFM
+import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
@@ -44,7 +44,7 @@ class SessionController {
 	lateinit var authenticationManager: AuthenticationManager
 
 	@Autowired
-	lateinit var tenantRepository: ObjTenantFMRepository
+	lateinit var tenantRepository: ObjTenantRepository
 
 	@Autowired
 	lateinit var accountRepository: ObjAccountRepository
@@ -115,7 +115,7 @@ class SessionController {
 			val tenant = this.tenantRepository.get(this.requestCtx.getTenantId())
 			val account =
 				if (this.requestCtx.hasAccount()) this.accountRepository.get(this.requestCtx.getAccountId()) else null
-			val user = this.requestCtx.getUser() as ObjUserFM
+			val user = this.requestCtx.getUser() as ObjUser
 			var defaultApp: String? = null
 			if (user.isAppAdmin) {
 				defaultApp = "appAdmin"
@@ -127,7 +127,7 @@ class SessionController {
 			val response = SessionInfoResponse(
 				applicationName = ApplicationInfo.getName(),
 				applicationVersion = ApplicationInfo.getVersion(),
-				user = this.userDtoAdapter.fromAggregate(this.requestCtx.getUser() as ObjUserFM?),
+				user = this.userDtoAdapter.fromAggregate(this.requestCtx.getUser() as ObjUser?),
 				tenant = this.tenantDtoAdapter.fromAggregate(tenant),
 				account = this.accountDtoAdapter.fromAggregate(account),
 				locale = this.requestCtx.getLocale().id,

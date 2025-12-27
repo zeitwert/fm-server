@@ -1,4 +1,4 @@
-package dddrive.path
+package dddrive.ddd.path
 
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties

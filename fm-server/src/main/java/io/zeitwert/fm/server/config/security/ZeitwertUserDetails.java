@@ -1,6 +1,6 @@
 package io.zeitwert.fm.server.config.security;
 
-import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,17 +13,17 @@ public class ZeitwertUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ObjUserFM user;
+	private final ObjUser user;
 	private final Collection<? extends GrantedAuthority> authorities;
 	private Integer tenantId;
 	private Integer accountId;
 
-	public ZeitwertUserDetails(ObjUserFM user, Collection<? extends GrantedAuthority> authorities) {
+	public ZeitwertUserDetails(ObjUser user, Collection<? extends GrantedAuthority> authorities) {
 		this.user = user;
 		this.authorities = authorities;
 	}
 
-	public static ZeitwertUserDetails build(ObjUserFM user) {
+	public static ZeitwertUserDetails build(ObjUser user) {
 		List<SimpleGrantedAuthority> authorities = List
 				.of(user.getRole() == null ? null : new SimpleGrantedAuthority(user.getRole().getId()));
 		return new ZeitwertUserDetails(user, authorities);

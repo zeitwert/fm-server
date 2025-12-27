@@ -70,7 +70,7 @@ public class DocTestTest {
 		Object testA_id = testA1.getId();
 		Integer testA1_idHash = System.identityHashCode(testA1);
 
-		assertNotNull(testA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(testA1.getMeta().getCreatedByUserId(), "createdByUser not null");
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
 		assertNotNull(testA1.getMeta().getCaseStage(), "caseStage not null");
 		assertEquals("test.new", testA1.getMeta().getCaseStage().getId(), "caseStage.id");
@@ -88,7 +88,7 @@ public class DocTestTest {
 		assertEquals(1, testA2.getMeta().getVersion());
 		assertNotEquals(testA1_idHash, testA2_idHash);
 
-		assertNotNull(testA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
+		assertNotNull(testA2.getMeta().getModifiedByUserId(), "modifiedByUser not null");
 		assertNotNull(testA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(2, testA2.getMeta().getTransitionList().size());
 		assertEquals(account.getId(), testA2.getAccountId(), "account id");
@@ -113,7 +113,7 @@ public class DocTestTest {
 		this.initDocTest(testA1, "One", TYPE_A, userId);
 		testA1.setAccountId(account.getId());
 
-		assertNotNull(testA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(testA1.getMeta().getCreatedByUserId(), "createdByUser not null");
 		assertNotNull(testA1.getMeta().getCreatedAt(), "createdAt not null");
 		assertEquals("[Short Test One, Long Test One]", testA1.getCaption());
 		assertEquals("Short Test One", testA1.getShortText());

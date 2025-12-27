@@ -20,7 +20,7 @@ import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
-import io.dddrive.oe.model.ObjUser
+import dddrive.domain.oe.model.ObjUser
 
 class ObjHouseholdImpl(
 	repository: ObjHouseholdRepository,

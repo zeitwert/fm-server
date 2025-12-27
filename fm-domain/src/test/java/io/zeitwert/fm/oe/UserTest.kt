@@ -1,10 +1,10 @@
 package io.zeitwert.fm.oe
 
-import io.dddrive.oe.model.ObjTenant
 import io.zeitwert.fm.app.model.RequestContextFM
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository
-import io.zeitwert.fm.oe.model.ObjUserFM
-import io.zeitwert.fm.oe.model.ObjUserFMRepository
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUser
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,10 +26,10 @@ class UserTest {
 	private lateinit var requestCtx: RequestContextFM
 
 	@Autowired
-	private lateinit var userRepository: ObjUserFMRepository
+	private lateinit var userRepository: ObjUserRepository
 
 	@Autowired
-	private lateinit var tenantRepository: ObjTenantFMRepository
+	private lateinit var tenantRepository: ObjTenantRepository
 
 	@Test
 	fun testUserBase() {
@@ -52,7 +52,7 @@ class UserTest {
 		val user1IdHash = System.identityHashCode(user1)
 
 		assertFalse(user1.meta.isFrozen, "not frozen")
-		assertNotNull(user1.meta.createdByUser, "createdByUser not null")
+		assertNotNull(user1.meta.createdByUserId, "createdByUser not null")
 		assertNotNull(user1.meta.createdAt, "createdAt not null")
 		assertEquals(1, user1.meta.transitionList.size)
 
@@ -63,7 +63,7 @@ class UserTest {
 		assertNotEquals(user1IdHash, user2IdHash)
 
 		assertTrue(user2.meta.isFrozen, "frozen")
-		assertNotNull(user2.meta.modifiedByUser, "modifiedByUser not null")
+		assertNotNull(user2.meta.modifiedByUserId, "modifiedByUser not null")
 		assertNotNull(user2.meta.modifiedAt, "modifiedAt not null")
 	}
 
@@ -293,7 +293,7 @@ class UserTest {
 	}
 
 	private fun initUser(
-		user: ObjUserFM,
+		user: ObjUser,
 		email: String,
 		name: String,
 		role: CodeUserRole,

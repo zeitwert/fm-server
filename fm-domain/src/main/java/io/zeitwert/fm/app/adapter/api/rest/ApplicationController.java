@@ -8,10 +8,10 @@ import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationInfo;
-import io.zeitwert.fm.oe.model.ObjTenantFM;
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.ObjTenantRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +28,10 @@ import java.util.Optional;
 public class ApplicationController {
 
 	@Autowired
-	private ObjTenantFMRepository tenantRepository;
+	private ObjTenantRepository tenantRepository;
 
 	@Autowired
-	private ObjUserFMRepository userRepository;
+	private ObjUserRepository userRepository;
 
 	@Autowired
 	private AccountService accountService;
@@ -55,11 +55,11 @@ public class ApplicationController {
 
 	@GetMapping("/userInfo/{email}")
 	public ResponseEntity<UserInfoResponse> userInfo(@PathVariable("email") String email) {
-		Optional<ObjUserFM> maybeUser = this.userRepository.getByEmail(email);
+		Optional<ObjUser> maybeUser = this.userRepository.getByEmail(email);
 		if (maybeUser.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		ObjUserFM user = maybeUser.get();
+		ObjUser user = maybeUser.get();
 		return ResponseEntity.ok(
 				UserInfoResponse.builder()
 						.id((Integer) user.getId())
@@ -72,7 +72,7 @@ public class ApplicationController {
 
 	@GetMapping("/tenantInfo/{id}")
 	public ResponseEntity<TenantInfoResponse> tenantInfo(@PathVariable("id") Integer id) {
-		ObjTenantFM tenant = this.tenantRepository.get(id);
+		ObjTenant tenant = this.tenantRepository.get(id);
 		List<ObjAccountVRecord> accounts = this.accountService.getAccounts(tenant);
 		List<EnumeratedDto> accountDtos = accounts.stream()
 				.map(account -> EnumeratedDto.of(account.getId().toString(), account.getName()))

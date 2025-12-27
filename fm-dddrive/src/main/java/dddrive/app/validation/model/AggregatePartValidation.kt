@@ -1,6 +1,6 @@
-package dddrive.ddd.validation.model
+package dddrive.app.validation.model
 
-import dddrive.ddd.validation.model.enums.CodeValidationLevel
+import dddrive.app.validation.model.enums.CodeValidationLevel
 
 interface AggregatePartValidation {
 

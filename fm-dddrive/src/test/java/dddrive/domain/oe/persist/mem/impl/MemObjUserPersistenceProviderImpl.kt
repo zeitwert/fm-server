@@ -2,10 +2,10 @@ package dddrive.domain.oe.persist.mem.impl
 
 import dddrive.domain.obj.persist.mem.base.MemObjPersistenceProviderBase
 import dddrive.domain.obj.persist.mem.pto.ObjMetaPto
+import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
 import dddrive.domain.oe.persist.ObjUserPersistenceProvider
 import dddrive.domain.oe.persist.mem.pto.ObjUserPto
-import io.dddrive.oe.model.ObjUser
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
@@ -54,7 +54,6 @@ class MemObjUserPersistenceProviderImpl :
 			super.toAggregate(pto, aggregate)
 			aggregate.email = pto.email
 			aggregate.name = pto.name
-			aggregate.description = pto.description
 		} finally {
 			aggregate.meta.enableCalc()
 			aggregate.meta.calcAll()
@@ -71,7 +70,6 @@ class MemObjUserPersistenceProviderImpl :
 			// Properties specific to ObjUserPto
 			email = aggregate.email,
 			name = aggregate.name,
-			description = aggregate.description,
 		)
 
 	fun getAllPtos(): List<ObjUserPto> =

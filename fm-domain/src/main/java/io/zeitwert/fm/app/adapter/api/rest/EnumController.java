@@ -5,13 +5,12 @@ import dddrive.app.doc.model.enums.CodeCaseStageEnum;
 import dddrive.ddd.core.model.RepositoryDirectory;
 import dddrive.ddd.enums.model.Enumerated;
 import dddrive.ddd.enums.model.Enumeration;
-import io.dddrive.oe.model.ObjTenant;
-import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.app.model.RequestContextFM;
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
-import io.zeitwert.fm.oe.model.ObjUserFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjTenant;
+import io.zeitwert.fm.oe.model.ObjTenantRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +29,10 @@ public class EnumController {
 	RepositoryDirectory directory;
 
 	@Autowired
-	ObjTenantFMRepository tenantRepo;
+	ObjTenantRepository tenantRepo;
 
 	@Autowired
-	ObjUserFMRepository userRepo;
+	ObjUserRepository userRepo;
 
 //	@GetMapping("/oe/objTenant")
 //	public ResponseEntity<List<EnumeratedDto>> getTenants() {
@@ -56,13 +55,13 @@ public class EnumController {
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
 		Object tenantId = requestContext.getTenantId();
-		List<ObjUserFM> users = userRepo.find(null).stream().map(it -> userRepo.get(it)).toList();
+		List<ObjUser> users = userRepo.find(null).stream().map(it -> userRepo.get(it)).toList();
 		return ResponseEntity.ok(users.stream().map(u -> EnumeratedDto.of(u.getId().toString(), u.getCaption())).toList());
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	public ResponseEntity<ObjUser> getUser(@PathVariable String idOrEmail) {
-		Optional<ObjUserFM> user = this.userRepo.getByEmail(idOrEmail);
+		Optional<ObjUser> user = this.userRepo.getByEmail(idOrEmail);
 		if (user.isEmpty()) {
 			user = Optional.of(this.userRepo.get(Integer.valueOf(idOrEmail)));
 		}

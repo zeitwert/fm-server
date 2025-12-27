@@ -15,7 +15,7 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter;
-import io.zeitwert.fm.oe.model.ObjTenantFM;
+import io.zeitwert.fm.oe.model.ObjTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -59,7 +59,7 @@ public class ObjAccountDtoAdapter extends ObjDtoAdapterBase<ObjAccount, ObjAccou
 	}
 
 	public ObjTenantDto getTenantDto(Integer id) {
-		return id != null ? this.tenantDtoAdapter.fromAggregate((ObjTenantFM) this.getTenant(id)) : null;
+		return id != null ? this.tenantDtoAdapter.fromAggregate((ObjTenant) this.getTenant(id)) : null;
 	}
 
 	public ObjContactDto getContactDto(Integer id) {

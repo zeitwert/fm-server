@@ -1,22 +1,21 @@
 package io.zeitwert.fm.oe.persist
 
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.oe.model.ObjTenant
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
-import io.zeitwert.fm.oe.model.ObjTenantFM
+import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
-@Component("objTenantFMPersistenceProvider")
-open class ObjTenantFMSqlPersistenceProviderImpl(
+@Component("objTenantPersistenceProvider")
+open class ObjTenantSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
@@ -38,7 +37,7 @@ open class ObjTenantFMSqlPersistenceProviderImpl(
 		aggregate: ObjTenant,
 		record: ObjTenantRecord,
 	) {
-		aggregate as ObjTenantFM
+		aggregate as ObjTenant
 		aggregate.tenantType = CodeTenantType.getTenantType(record.tenantTypeId)
 		aggregate.name = record.name
 		aggregate.description = record.description
@@ -59,7 +58,7 @@ open class ObjTenantFMSqlPersistenceProviderImpl(
 	@Suppress("UNCHECKED_CAST")
 	private fun mapToRecord(aggregate: ObjTenant): ObjTenantRecord {
 		val record = dslContext.newRecord(Tables.OBJ_TENANT)
-		aggregate as ObjTenantFM
+		aggregate as ObjTenant
 
 		record.objId = aggregate.id as Int
 		record.tenantTypeId = aggregate.tenantType?.id

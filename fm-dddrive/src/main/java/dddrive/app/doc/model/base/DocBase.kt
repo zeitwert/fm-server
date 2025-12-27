@@ -6,14 +6,15 @@ import dddrive.app.doc.model.DocPartTransition
 import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseStage
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.core.model.base.AggregateBase
+import dddrive.app.validation.model.AggregatePartValidation
+import dddrive.app.validation.model.enums.CodeValidationLevel
+import dddrive.app.validation.model.impl.AggregatePartValidationImpl
+import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.delegate.referenceProperty
+import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
-import io.dddrive.oe.model.ObjUser
 import java.time.OffsetDateTime
 
 abstract class DocBase(
@@ -23,21 +24,32 @@ abstract class DocBase(
 	Doc,
 	DocMeta {
 
-	override var caseDef: CodeCaseDef? by _root_ide_package_.dddrive.ddd.property.delegate
-		.enumProperty(this, "caseDef")
-	override var caseStage: CodeCaseStage? by _root_ide_package_.dddrive.ddd.property.delegate.enumProperty(
-		this,
-		"caseStage",
-	)
-	override var assignee: ObjUser? by _root_ide_package_.dddrive.ddd.property.delegate.referenceProperty(
-		this,
-		"assignee",
-	)
+	protected var _tenantId: Any? by baseProperty(this, "tenantId")
+	override val tenantId: Any get() = _tenantId!!
 
-	private val _transitionList: dddrive.ddd.property.model.PartListProperty<DocPartTransition> =
-		_root_ide_package_.dddrive.ddd.property.delegate
-			.partListProperty(this, "transitionList")
+	override var ownerId: Any? by baseProperty(this, "ownerId")
+
+	protected var _createdByUserId: Any? by baseProperty<Any>(this, "createdByUserId")
+	override val createdByUserId: Any get() = _createdByUserId!!
+
+	protected var _createdAt: OffsetDateTime? by baseProperty(this, "createdAt")
+	override val createdAt: OffsetDateTime get() = _createdAt!!
+
+	override var modifiedByUserId: Any? by baseProperty(this, "modifiedByUserId")
+	override var modifiedAt: OffsetDateTime? by baseProperty(this, "modifiedAt")
+
+	protected var _caption: String? by baseProperty(this, "caption")
+	override val caption: String get() = _caption ?: ""
+
+	override var caseDef: CodeCaseDef? by enumProperty(this, "caseDef")
+	override var caseStage: CodeCaseStage? by enumProperty(this, "caseStage")
+
+	override var assigneeId: Any? by baseProperty(this, "assigneeId")
+
+	private val _transitionList: PartListProperty<DocPartTransition> = partListProperty(this, "transitionList")
 	override val transitionList: List<DocPartTransition> get() = _transitionList.toList()
+
+	override val validationList: MutableList<AggregatePartValidation> = mutableListOf()
 
 	private var oldCaseStage: CodeCaseStage? = null
 
@@ -47,10 +59,21 @@ abstract class DocBase(
 	override val docTypeId
 		get() = repository.aggregateType.id
 
+	override fun doCreate(
+		aggregateId: Any,
+		tenantId: Any,
+	) {
+		super.doCreate(aggregateId, tenantId)
+		_tenantId = tenantId
+	}
+
 	override fun doAfterCreate(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
+		ownerId = userId
+		_createdByUserId = userId
+		_createdAt = timestamp
 		super.doAfterCreate(userId, timestamp)
 		// freeze until caseDef is set
 		freeze() // TODO reconsider
@@ -117,7 +140,7 @@ abstract class DocBase(
 		get() = caseDef?.getCaseStages() ?: emptyList()
 
 	override fun doAddPart(
-		property: dddrive.ddd.property.model.Property<*>,
+		property: Property<*>,
 		partId: Int?,
 	): dddrive.ddd.core.model.Part<*> {
 		if (property === _transitionList) {
@@ -137,5 +160,40 @@ abstract class DocBase(
 	// getRepository()).getIdProvider().getOrderNr(getId());
 	// 		//addSearchToken(orderNr + "");
 	// 	}
+
+	override fun beginCalc() {
+		super.beginCalc()
+		clearValidationList()
+	}
+
+	private fun clearValidationList() {
+		validationList.clear()
+	}
+
+	fun addValidation(
+		validationLevel: CodeValidationLevel,
+		validation: String,
+		entity: EntityWithPropertiesSPI,
+	) {
+		addValidation(validationLevel, validation, entity.relativePath)
+	}
+
+	fun addValidation(
+		validationLevel: CodeValidationLevel,
+		validation: String,
+		property: Property<*>,
+	) {
+		addValidation(validationLevel, validation, property.relativePath)
+	}
+
+	fun addValidation(
+		validationLevel: CodeValidationLevel,
+		validation: String,
+		path: String? = null,
+	) {
+		validationList.add(AggregatePartValidationImpl(validationList.size, validationLevel, validation, path))
+	}
+
+	override fun toString(): String = caption
 
 }

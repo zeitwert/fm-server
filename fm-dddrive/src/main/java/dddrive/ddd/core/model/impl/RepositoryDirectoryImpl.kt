@@ -27,10 +27,20 @@ class RepositoryDirectoryImpl :
 	override fun getEnumeration(
 		module: String,
 		enumName: String,
-	): Enumeration<out Enumerated> = this.enumsById[module + "." + enumName + "Enum"]!!
+	): Enumeration<out Enumerated> =
+		try {
+			this.enumsById[module + "." + enumName + "Enum"]!!
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Enumeration not found: $module.$enumName", e)
+		}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <E : Enumerated> getEnumeration(enumClass: Class<E>): Enumeration<E> = this.enumsByEnumeratedClass[enumClass] as Enumeration<E>
+	override fun <E : Enumerated> getEnumeration(enumClass: Class<E>): Enumeration<E> =
+		try {
+			this.enumsByEnumeratedClass[enumClass] as Enumeration<E>
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Enumeration for class not found: $enumClass", e)
+		}
 
 	// 	@Override
 	// 	public <E extends Enumerated> E getEnumerated(Class<E> enumClass, String itemId) {
@@ -46,7 +56,12 @@ class RepositoryDirectoryImpl :
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <A : Aggregate> getRepository(intfClass: Class<A>): AggregateRepository<A> = this.repoByIntf[intfClass] as AggregateRepository<A>
+	override fun <A : Aggregate> getRepository(intfClass: Class<A>): AggregateRepository<A> =
+		try {
+			this.repoByIntf[intfClass] as AggregateRepository<A>
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Repository not found for class: $intfClass", e)
+		}
 
 	override fun addRepository(
 		intfClass: Class<out Aggregate>,
@@ -57,7 +72,12 @@ class RepositoryDirectoryImpl :
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <A : Aggregate, P : Part<A>> getPartRepository(intfClass: Class<P>): PartRepository<A, P> = this.partRepoByIntf[intfClass] as PartRepository<A, P>
+	override fun <A : Aggregate, P : Part<A>> getPartRepository(intfClass: Class<P>): PartRepository<A, P> =
+		try {
+			this.partRepoByIntf[intfClass] as PartRepository<A, P>
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Part repository not found for class: $intfClass", e)
+		}
 
 	override fun <A : Aggregate> addPartRepository(
 		intfClass: Class<out Part<A>>,
@@ -68,7 +88,12 @@ class RepositoryDirectoryImpl :
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <A : Aggregate> getPersistenceProvider(intfClass: Class<A>): AggregatePersistenceProvider<A> = appByIntf[intfClass] as AggregatePersistenceProvider<A>
+	override fun <A : Aggregate> getPersistenceProvider(intfClass: Class<A>): AggregatePersistenceProvider<A> =
+		try {
+			appByIntf[intfClass] as AggregatePersistenceProvider<A>
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Persistence provider not found for class: $intfClass", e)
+		}
 
 	override fun addPersistenceProvider(
 		intfClass: Class<out Aggregate>,
@@ -79,7 +104,12 @@ class RepositoryDirectoryImpl :
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <P : Part<*>> getPartPersistenceProvider(intfClass: Class<P>): PartPersistenceProvider<P> = this.pppByIntf[intfClass] as PartPersistenceProvider<P>
+	override fun <P : Part<*>> getPartPersistenceProvider(intfClass: Class<P>): PartPersistenceProvider<P> =
+		try {
+			this.pppByIntf[intfClass] as PartPersistenceProvider<P>
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Part persistence provider not found for class: $intfClass", e)
+		}
 
 	override fun <P : Part<*>> addPartPersistenceProvider(
 		intfClass: Class<P>,

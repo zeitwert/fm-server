@@ -4,7 +4,6 @@ import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.AggregateRepository
-import io.dddrive.oe.model.ObjUser
 import io.zeitwert.dddrive.ddd.api.rest.AggregateApiRepository
 import io.zeitwert.dddrive.ddd.api.rest.AggregateApiRepository.Companion.CalculationOnlyOperation
 import io.zeitwert.dddrive.ddd.api.rest.AggregateDtoAdapter
@@ -12,6 +11,7 @@ import io.zeitwert.dddrive.ddd.api.rest.DtoDetailLevel
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregateDto
 import io.zeitwert.dddrive.model.FMAggregateRepository
 import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.oe.model.ObjUser
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 import java.time.OffsetDateTime

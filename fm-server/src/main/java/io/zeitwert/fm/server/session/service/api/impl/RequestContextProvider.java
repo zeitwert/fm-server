@@ -1,9 +1,9 @@
 package io.zeitwert.fm.server.session.service.api.impl;
 
-import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ public class RequestContextProvider {
 	@Bean
 	@RequestScope
 	// cannot use SessionScope, because tenant or account might be switched
-	public RequestContextFM getRequestContext(ObjUserFMRepository userRepository) {
+	public RequestContextFM getRequestContext(ObjUserRepository userRepository) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if ("anonymousUser".equals(auth.getPrincipal())) {

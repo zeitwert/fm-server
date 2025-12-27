@@ -1,5 +1,7 @@
 package dddrive.domain.task.persist.mem.impl
 
+import dddrive.ddd.path.getPropertyByPath
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.domain.doc.persist.mem.base.MemDocPersistenceProviderBase
 import dddrive.domain.task.model.DocTask
@@ -8,8 +10,6 @@ import dddrive.domain.task.model.enums.CodeTaskPriority
 import dddrive.domain.task.persist.DocTaskPersistenceProvider
 import dddrive.domain.task.persist.mem.pto.DocTaskPartCommentPto
 import dddrive.domain.task.persist.mem.pto.DocTaskPto
-import dddrive.path.getPropertyByPath
-import dddrive.path.setValueByPath
 import org.springframework.stereotype.Component
 
 @Component("docTaskPersistenceProvider")

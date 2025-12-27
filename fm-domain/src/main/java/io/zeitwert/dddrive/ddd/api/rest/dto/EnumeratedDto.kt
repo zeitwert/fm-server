@@ -1,7 +1,8 @@
 package io.zeitwert.dddrive.ddd.api.rest.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import dddrive.ddd.core.model.Aggregate
+import dddrive.app.doc.model.Doc
+import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.enums.model.Enumerated
 import io.zeitwert.dddrive.ddd.api.rest.impl.EnumeratedDeserializer
@@ -26,7 +27,10 @@ data class EnumeratedDto(
 		fun of(e: Enumerated?): EnumeratedDto? = e?.let { EnumeratedDto(it.id, it.defaultName) }
 
 		@JvmStatic
-		fun of(a: Aggregate?): EnumeratedDto? = a?.let { EnumeratedDto(it.id.toString(), it.caption) }
+		fun of(a: Obj?): EnumeratedDto? = a?.let { EnumeratedDto(it.id.toString(), it.caption) }
+
+		@JvmStatic
+		fun of(a: Doc?): EnumeratedDto? = a?.let { EnumeratedDto(it.id.toString(), it.caption) }
 
 		@JvmStatic
 		fun of(
@@ -34,4 +38,5 @@ data class EnumeratedDto(
 			name: String?,
 		): EnumeratedDto? = p?.let { EnumeratedDto(it.id.toString(), name) }
 	}
+
 }

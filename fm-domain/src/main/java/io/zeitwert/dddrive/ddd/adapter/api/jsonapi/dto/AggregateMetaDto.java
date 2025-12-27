@@ -1,10 +1,13 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto;
 
+import dddrive.app.doc.model.Doc;
+import dddrive.app.doc.model.DocMeta;
+import dddrive.app.obj.model.Obj;
+import dddrive.app.obj.model.ObjMeta;
 import io.crnk.core.resource.meta.MetaInformation;
-import dddrive.ddd.core.model.Aggregate;
-import dddrive.ddd.core.model.AggregateMeta;
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregatePartValidationDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -31,18 +34,33 @@ public class AggregateMetaDto implements MetaInformation {
 	private Integer clientVersion;
 	private List<String> operations;
 
-	public static void fromAggregate(AggregateMetaDtoBuilder<?, ?> builder, Aggregate aggregate) {
-		AggregateMeta meta = aggregate.getMeta();
+	public static void fromObj(AggregateMetaDtoBuilder<?, ?> builder, Obj obj, ObjUserRepository userRepo) {
+		ObjMeta meta = obj.getMeta();
 		// @formatter:off
 		builder
-			.itemType(EnumeratedDto.of(meta.getRepository().getAggregateType()))
-			.owner(EnumeratedDto.of(aggregate.getOwner()))
-			.version(meta.getVersion())
-			.createdByUser(EnumeratedDto.of(meta.getCreatedByUser()))
-			.createdAt(meta.getCreatedAt())
-			.modifiedByUser(EnumeratedDto.of(meta.getModifiedByUser()))
-			.modifiedAt(meta.getModifiedAt())
-			.validations(meta.getValidations().stream().map(AggregatePartValidationDto::fromValidation).toList());
+				.itemType(EnumeratedDto.of(meta.getRepository().getAggregateType()))
+				.owner(EnumeratedDto.of(obj.getOwnerId() != null ? userRepo.get(obj.getOwnerId()) : null))
+				.version(meta.getVersion())
+				.createdByUser(EnumeratedDto.of(userRepo.get(meta.getCreatedByUserId())))
+				.createdAt(meta.getCreatedAt())
+				.modifiedByUser(EnumeratedDto.of(meta.getModifiedByUserId() != null ? userRepo.get(meta.getModifiedByUserId()) : null))
+				.modifiedAt(meta.getModifiedAt())
+				.validations(meta.getValidationList().stream().map(AggregatePartValidationDto::fromValidation).toList());
+		// @formatter:on
+	}
+
+	public static void fromDoc(AggregateMetaDtoBuilder<?, ?> builder, Doc doc, ObjUserRepository userRepo) {
+		DocMeta meta = doc.getMeta();
+		// @formatter:off
+		builder
+				.itemType(EnumeratedDto.of(meta.getRepository().getAggregateType()))
+				.owner(EnumeratedDto.of(doc.getOwnerId() != null ? userRepo.get(doc.getOwnerId()) : null))
+				.version(meta.getVersion())
+				.createdByUser(EnumeratedDto.of(userRepo.get(meta.getCreatedByUserId())))
+				.createdAt(meta.getCreatedAt())
+				.modifiedByUser(EnumeratedDto.of(meta.getModifiedByUserId() != null ? userRepo.get(meta.getModifiedByUserId()) : null))
+				.modifiedAt(meta.getModifiedAt())
+				.validations(meta.getValidationList().stream().map(AggregatePartValidationDto::fromValidation).toList());
 		// @formatter:on
 	}
 

@@ -1,16 +1,16 @@
 package io.zeitwert.fm.search.service.api.impl;
 
+import dddrive.ddd.core.model.Aggregate;
 import dddrive.ddd.core.model.enums.CodeAggregateType;
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.crnk.core.queryspec.FilterSpec;
-import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.persist.util.SqlUtils;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.ddd.model.SearchResult;
 import io.zeitwert.fm.ddd.service.api.SearchService;
 import io.zeitwert.fm.obj.model.db.tables.Obj;
-import io.zeitwert.fm.oe.model.ObjTenantFMRepository;
+import io.zeitwert.fm.oe.model.ObjTenantRepository;
 import io.zeitwert.fm.search.model.db.Tables;
 import io.zeitwert.fm.search.model.db.tables.ItemSearch;
 import org.jooq.*;
@@ -82,9 +82,9 @@ public class SearchServiceImpl implements SearchService, SqlUtils.SearchConditio
 		Integer tenantId = (Integer) requestCtx.getTenantId();
 		Integer accountId = ((RequestContextFM) requestCtx).getAccountId();
 
-		Condition tenantCondition = tenantId == ObjTenantFMRepository.KERNEL_TENANT_ID
+		Condition tenantCondition = tenantId == ObjTenantRepository.KERNEL_TENANT_ID
 				? DSL.trueCondition()
-				: OBJ.TENANT_ID.eq(tenantId).or(OBJ.TENANT_ID.eq(ObjTenantFMRepository.KERNEL_TENANT_ID));
+				: OBJ.TENANT_ID.eq(tenantId).or(OBJ.TENANT_ID.eq(ObjTenantRepository.KERNEL_TENANT_ID));
 		Condition accountCondition = accountId == null
 				? DSL.trueCondition()
 				: OBJ.ACCOUNT_ID.isNull().or(OBJ.ACCOUNT_ID.eq(accountId));

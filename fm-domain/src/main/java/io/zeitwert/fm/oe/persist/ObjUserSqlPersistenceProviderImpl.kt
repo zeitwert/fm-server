@@ -1,15 +1,13 @@
 package io.zeitwert.fm.oe.persist
 
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
-import io.zeitwert.fm.oe.model.ObjUserFM
+import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
@@ -17,8 +15,8 @@ import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 import java.util.*
 
-@Component("objUserFMPersistenceProvider")
-open class ObjUserFMSqlPersistenceProviderImpl(
+@Component("objUserPersistenceProvider")
+open class ObjUserSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val requestCtx: RequestContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
@@ -40,7 +38,7 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 		aggregate: ObjUser,
 		record: ObjUserRecord,
 	) {
-		aggregate as ObjUserFM
+		aggregate as ObjUser
 		aggregate.email = record.email
 		aggregate.name = record.name
 		aggregate.description = record.description
@@ -61,7 +59,7 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 
 	override fun doLoadParts(aggregate: ObjUser) {
 		super.doLoadParts(aggregate)
-		aggregate as ObjUserFM
+		aggregate as ObjUser
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("user.tenantList").forEach {
 				it.toIntOrNull()?.let { tenantId ->
@@ -73,7 +71,7 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 
 	override fun doStoreParts(aggregate: ObjUser) {
 		super.doStoreParts(aggregate)
-		aggregate as ObjUserFM
+		aggregate as ObjUser
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			addItems("user.tenantList", aggregate.tenantSet.map { it.toString() })
 		}
@@ -82,7 +80,7 @@ open class ObjUserFMSqlPersistenceProviderImpl(
 	@Suppress("UNCHECKED_CAST")
 	private fun mapToRecord(aggregate: ObjUser): ObjUserRecord {
 		val record = dslContext.newRecord(Tables.OBJ_USER)
-		aggregate as ObjUserFM
+		aggregate as ObjUser
 
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int

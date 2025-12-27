@@ -8,7 +8,6 @@ import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.building.model.enums.*;
-import io.zeitwert.fm.oe.model.ObjUserFM;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import io.zeitwert.test.TestApplication;
 import org.junit.jupiter.api.Test;
@@ -44,12 +43,12 @@ public class BuildingTest {
 
 		assertNotNull(buildingA1, "test not null");
 		assertNotNull(buildingA1.getId(), "id not null");
-		assertNotNull(buildingA1.getTenant(), "tenant not null");
+		assertNotNull(buildingA1.getTenantId(), "tenant not null");
 
 		Integer buildingA_id = (Integer) buildingA1.getId();
 		Integer buildingA_idHash = System.identityHashCode(buildingA1);
 
-		assertNotNull(buildingA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(buildingA1.getMeta().getCreatedByUserId(), "createdByUser not null");
 		assertNotNull(buildingA1.getMeta().getCreatedAt(), "createdAt not null");
 
 		buildingA1.setAccountId(account.getId());
@@ -94,7 +93,7 @@ public class BuildingTest {
 		ObjBuilding buildingA2 = this.buildingRepository.load(buildingA_id);
 		Integer buildingA2_idHash = System.identityHashCode(buildingA2);
 		assertNotEquals(buildingA_idHash, buildingA2_idHash);
-		assertNotNull(buildingA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
+		assertNotNull(buildingA2.getMeta().getModifiedByUserId(), "modifiedByUser not null");
 		assertNotNull(buildingA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(account.getId(), buildingA2.getAccountId(), "account id");
 		assertEquals(account.getId(), buildingA2.getAccount().getId(), "account id");
@@ -173,7 +172,7 @@ public class BuildingTest {
 		building.setThirdPartyValue(BigDecimal.valueOf(0.0));
 		building.setThirdPartyValueYear(2000);
 
-		building.addRating((ObjUserFM) requestCtx.getUser(), requestCtx.getCurrentTime());
+		building.addRating(requestCtx.getUser(), requestCtx.getCurrentTime());
 		building.getCurrentRating().setPartCatalog(CodeBuildingPartCatalog.C6);
 		building.getCurrentRating().setMaintenanceStrategy(CodeBuildingMaintenanceStrategy.N);
 

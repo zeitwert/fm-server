@@ -11,12 +11,15 @@ import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.test.TestApplication
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
@@ -34,7 +37,7 @@ class ContactTest {
 	@Test
 	@Throws(Exception::class)
 	fun testContact() {
-		Assertions.assertEquals("obj_contact", this.contactRepository.aggregateType.id)
+		assertEquals("obj_contact", this.contactRepository.aggregateType.id)
 
 		val account = this.getTestAccount(requestCtx)
 		val contactA1 = this.contactRepository.create(
@@ -43,23 +46,23 @@ class ContactTest {
 			requestCtx.getCurrentTime(),
 		)
 
-		Assertions.assertNotNull(contactA1, "contact not null")
-		Assertions.assertNotNull(contactA1.id, "id not null")
-		Assertions.assertNotNull(contactA1.tenant, "tenant not null")
+		assertNotNull(contactA1, "contact not null")
+		assertNotNull(contactA1.id, "id not null")
+		assertNotNull(contactA1.tenantId, "tenant not null")
 
 		val contactA_id = contactA1.id as Int
 		val contactA_idHash = System.identityHashCode(contactA1)
 
-		Assertions.assertNotNull(contactA1.meta.createdByUser, "createdByUser not null")
-		Assertions.assertNotNull(contactA1.meta.createdAt, "createdAt not null")
+		assertNotNull(contactA1.meta.createdByUserId, "createdByUser not null")
+		assertNotNull(contactA1.meta.createdAt, "createdAt not null")
 
 		contactA1.accountId = account.id
 		this.initContact(contactA1)
-		Assertions.assertEquals(account.id, contactA1.accountId, "account id")
+		assertEquals(account.id, contactA1.accountId, "account id")
 
 		// Check initial addresses
-		Assertions.assertEquals(2, contactA1.mailAddressList.size, "mail address count 2")
-		Assertions.assertEquals(1, contactA1.electronicAddressList.size, "electronic address count 1")
+		assertEquals(2, contactA1.mailAddressList.size, "mail address count 2")
+		assertEquals(1, contactA1.electronicAddressList.size, "electronic address count 1")
 
 		val mailAddr1 = contactA1.mailAddressList[0]
 		val mailAddr1Id = mailAddr1.id
@@ -73,31 +76,31 @@ class ContactTest {
 
 		val contactA2 = this.contactRepository.load(contactA_id)
 		val contactA2_idHash = System.identityHashCode(contactA2)
-		Assertions.assertNotEquals(contactA_idHash, contactA2_idHash)
-		Assertions.assertNotNull(contactA2.meta.modifiedByUser, "modifiedByUser not null")
-		Assertions.assertNotNull(contactA2.meta.modifiedAt, "modifiedAt not null")
-		Assertions.assertEquals(account.id, contactA2.accountId, "account id")
+		assertNotEquals(contactA_idHash, contactA2_idHash)
+		assertNotNull(contactA2.meta.modifiedByUserId, "modifiedByUser not null")
+		assertNotNull(contactA2.meta.modifiedAt, "modifiedAt not null")
+		assertEquals(account.id, contactA2.accountId, "account id")
 
 		this.checkContact(contactA2)
 
 		// Verify addresses persisted
-		Assertions.assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after reload")
-		Assertions.assertEquals(1, contactA2.electronicAddressList.size, "electronic address count 1 after reload")
+		assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after reload")
+		assertEquals(1, contactA2.electronicAddressList.size, "electronic address count 1 after reload")
 
 		// Find the mail address we created
 		val loadedMailAddr1 = contactA2.mailAddressList.getById(mailAddr1Id)
-		Assertions.assertNotNull(loadedMailAddr1, "mail address should exist")
-		Assertions.assertEquals("Home", loadedMailAddr1.name, "mail address name")
-		Assertions.assertEquals("Teststrasse 10", loadedMailAddr1.street, "mail address street")
-		Assertions.assertEquals("1111", loadedMailAddr1.zip, "mail address zip")
-		Assertions.assertEquals("Testingen", loadedMailAddr1.city, "mail address city")
-		Assertions.assertEquals(CodeCountry.CH, loadedMailAddr1.country, "mail address country")
+		assertNotNull(loadedMailAddr1, "mail address should exist")
+		assertEquals("Home", loadedMailAddr1.name, "mail address name")
+		assertEquals("Teststrasse 10", loadedMailAddr1.street, "mail address street")
+		assertEquals("1111", loadedMailAddr1.zip, "mail address zip")
+		assertEquals("Testingen", loadedMailAddr1.city, "mail address city")
+		assertEquals(CodeCountry.CH, loadedMailAddr1.country, "mail address country")
 
 		// Find the email address we created
 		val loadedEmailAddr1 = contactA2.electronicAddressList.getById(emailAddr1Id)
-		Assertions.assertNotNull(loadedEmailAddr1, "email address should exist")
-		Assertions.assertEquals("Work Email", loadedEmailAddr1.name, "email address name")
-		Assertions.assertEquals(CodeAddressChannel.EMAIL, loadedEmailAddr1.addressChannel, "email address channel")
+		assertNotNull(loadedEmailAddr1, "email address should exist")
+		assertEquals("Work Email", loadedEmailAddr1.name, "email address name")
+		assertEquals(CodeAddressChannel.EMAIL, loadedEmailAddr1.addressChannel, "email address channel")
 
 		// Add another mail address
 		val mailAddr3 = contactA2.mailAddressList.add(null)
@@ -112,20 +115,20 @@ class ContactTest {
 		// Remove first mail address
 		contactA2.mailAddressList.remove(mailAddr1Id)
 
-		Assertions.assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after add/remove")
+		assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after add/remove")
 
 		this.contactRepository.store(contactA2, requestCtx.getUserId(), requestCtx.getCurrentTime())
 
 		val contactA3 = this.contactRepository.get(contactA_id)
 
-		Assertions.assertEquals(2, contactA3.mailAddressList.size, "mail address count 2 after reload")
-		Assertions.assertEquals(1, contactA3.electronicAddressList.size, "electronic address count 1 after reload")
+		assertEquals(2, contactA3.mailAddressList.size, "mail address count 2 after reload")
+		assertEquals(1, contactA3.electronicAddressList.size, "electronic address count 1 after reload")
 
 		// Verify the new address exists
 		val loadedMailAddr3 = contactA3.mailAddressList.getById(mailAddr3Id)
-		Assertions.assertNotNull(loadedMailAddr3, "new mail address should exist")
-		Assertions.assertEquals("Office", loadedMailAddr3.name, "new mail address name")
-		Assertions.assertEquals("Büroweg 5", loadedMailAddr3.street, "new mail address street")
+		assertNotNull(loadedMailAddr3, "new mail address should exist")
+		assertEquals("Office", loadedMailAddr3.name, "new mail address name")
+		assertEquals("Büroweg 5", loadedMailAddr3.street, "new mail address street")
 
 		// Verify the deleted address is gone
 		val hasException = try {
@@ -134,7 +137,7 @@ class ContactTest {
 		} catch (e: RuntimeException) {
 			true
 		}
-		Assertions.assertTrue(hasException, "deleted mail address should not exist")
+		assertTrue(hasException, "deleted mail address should not exist")
 	}
 
 	private fun getTestAccount(requestCtx: RequestContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null)[0])
@@ -175,16 +178,16 @@ class ContactTest {
 	}
 
 	private fun checkContact(contact: ObjContact) {
-		Assertions.assertEquals(CodeContactRole.CARETAKER, contact.contactRole)
-		Assertions.assertEquals(CodeSalutation.MR, contact.salutation)
-		Assertions.assertEquals(CodeTitle.DR, contact.title)
-		Assertions.assertEquals("Max", contact.firstName)
-		Assertions.assertEquals("Mustermann", contact.lastName)
-		Assertions.assertEquals(LocalDate.of(1980, 5, 15), contact.birthDate)
-		Assertions.assertEquals("+41 44 123 45 67", contact.phone)
-		Assertions.assertEquals("+41 79 123 45 67", contact.mobile)
-		Assertions.assertEquals("max.mustermann@example.com", contact.email)
-		Assertions.assertEquals("Test contact description", contact.description)
+		assertEquals(CodeContactRole.CARETAKER, contact.contactRole)
+		assertEquals(CodeSalutation.MR, contact.salutation)
+		assertEquals(CodeTitle.DR, contact.title)
+		assertEquals("Max", contact.firstName)
+		assertEquals("Mustermann", contact.lastName)
+		assertEquals(LocalDate.of(1980, 5, 15), contact.birthDate)
+		assertEquals("+41 44 123 45 67", contact.phone)
+		assertEquals("+41 79 123 45 67", contact.mobile)
+		assertEquals("max.mustermann@example.com", contact.email)
+		assertEquals("Test contact description", contact.description)
 	}
 
 }

@@ -20,7 +20,7 @@ import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -133,12 +133,12 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			}
 
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
-				obj.addRating((ObjUserFM) requestContext.getUser(), requestContext.getCurrentTime());
+				obj.addRating((ObjUser) requestContext.getUser(), requestContext.getCurrentTime());
 			} else if (dto.getRatingSeqNr() != null && dto.getRatingSeqNr() >= 0) {
 				final ObjBuildingPartRating rating =
 					obj.getCurrentRating() == null ||
 					dto.getRatingSeqNr() >= obj.getRatingList().size()
-						? obj.addRating((ObjUserFM) requestContext.getUser(), requestContext.getCurrentTime())
+						? obj.addRating((ObjUser) requestContext.getUser(), requestContext.getCurrentTime())
 						: obj.getCurrentRating();
 				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalog.getPartCatalog(dto.getPartCatalog().getId()));
 				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategy.Enumeration.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));

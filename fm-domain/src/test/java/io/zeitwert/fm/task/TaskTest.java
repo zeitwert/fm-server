@@ -2,11 +2,11 @@ package io.zeitwert.fm.task;
 
 import dddrive.app.doc.model.enums.CodeCaseStage;
 import dddrive.app.doc.model.enums.CodeCaseStageEnum;
-import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.app.model.RequestContextFM;
-import io.zeitwert.fm.oe.model.ObjUserFMRepository;
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.task.model.DocTask;
 import io.zeitwert.fm.task.model.DocTaskRepository;
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority;
@@ -42,7 +42,7 @@ public class TaskTest {
 	private RequestContextFM requestCtx;
 
 	@Autowired
-	private ObjUserFMRepository userRepository;
+	private ObjUserRepository userRepository;
 
 	@Autowired
 	private ObjAccountRepository accountRepository;
@@ -71,7 +71,7 @@ public class TaskTest {
 		Object taskA_id = taskA1.getId();
 		Integer taskA_idHash = System.identityHashCode(taskA1);
 
-		assertNotNull(taskA1.getMeta().getCreatedByUser(), "createdByUser not null");
+		assertNotNull(taskA1.getMeta().getCreatedByUserId(), "createdByUser not null");
 		assertNotNull(taskA1.getMeta().getCreatedAt(), "createdAt not null");
 
 		this.initTask1(taskA1, userId, now);
@@ -86,7 +86,7 @@ public class TaskTest {
 		Integer taskA2_idHash = System.identityHashCode(taskA2);
 
 		assertNotEquals(taskA_idHash, taskA2_idHash);
-		assertNotNull(taskA2.getMeta().getModifiedByUser(), "modifiedByUser not null");
+		assertNotNull(taskA2.getMeta().getModifiedByUserId(), "modifiedByUser not null");
 		assertNotNull(taskA2.getMeta().getModifiedAt(), "modifiedAt not null");
 		assertEquals(taskA2.getMeta().getCaseStage(), StageNew);
 		assertTrue(taskA2.getMeta().isInWork());

@@ -2,11 +2,11 @@ package io.zeitwert.fm.building.model
 
 import dddrive.app.obj.model.ObjPart
 import dddrive.ddd.property.model.PartListProperty
-import io.dddrive.oe.model.ObjUser
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
+import io.zeitwert.fm.oe.model.ObjUser
 import java.time.LocalDate
 
 interface ObjBuildingPartRating : ObjPart<ObjBuilding> {

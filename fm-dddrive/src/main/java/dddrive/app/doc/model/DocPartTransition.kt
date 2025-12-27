@@ -1,14 +1,15 @@
 package dddrive.app.doc.model
 
 import dddrive.app.doc.model.enums.CodeCaseStage
-import io.dddrive.oe.model.ObjUser
 import java.time.OffsetDateTime
 
 interface DocPartTransition : DocPart<Doc> {
 
 	val seqNr: Int
 
-	val user: ObjUser
+	val userId: Any
+
+	// val user: ObjUser
 
 	val timestamp: OffsetDateTime
 

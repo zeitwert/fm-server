@@ -92,8 +92,8 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 			aggregate.meta.enableCalc()
 		}
 
-		aggregate.meta.calcAll() // TODO reconsider, currently must be here because docs are frozen in
-		// doAfterCreate
+		// TODO reconsider, currently must be here because docs are frozen in doAfterCreate
+		aggregate.meta.calcAll()
 
 		this.didAfterCreate = false
 		this.doAfterCreate(aggregate, userId, timestamp)

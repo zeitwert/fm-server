@@ -1,7 +1,7 @@
-package dddrive.ddd.validation.model.impl
+package dddrive.app.validation.model.impl
 
-import dddrive.ddd.validation.model.AggregatePartValidation
-import dddrive.ddd.validation.model.enums.CodeValidationLevel
+import dddrive.app.validation.model.AggregatePartValidation
+import dddrive.app.validation.model.enums.CodeValidationLevel
 
 class AggregatePartValidationImpl(
 	override val seqNr: Int,

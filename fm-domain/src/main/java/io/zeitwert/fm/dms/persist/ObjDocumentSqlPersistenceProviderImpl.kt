@@ -44,10 +44,10 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 	) {
 		aggregate.accountId = record.accountId
 		aggregate.name = record.name
-		aggregate.documentKind = CodeDocumentKind.Enumeration.getDocumentKind(record.documentKindId)
-		aggregate.documentCategory = CodeDocumentCategory.Enumeration.getDocumentCategory(record.documentCategoryId)
+		aggregate.documentKind = CodeDocumentKind.getDocumentKind(record.documentKindId)
+		aggregate.documentCategory = CodeDocumentCategory.getDocumentCategory(record.documentCategoryId)
 		aggregate.templateDocumentId = record.templateDocumentId
-		aggregate.contentKind = CodeContentKind.Enumeration.getContentKind(record.contentKindId)
+		aggregate.contentKind = CodeContentKind.getContentKind(record.contentKindId)
 	}
 
 	override fun storeRecord(aggregate: ObjDocument) {
@@ -110,7 +110,7 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 
 		val query = getContentWithMaxVersionQuery(document)
 		val contentTypeId = dslContext.fetchOne(query)?.contentTypeId ?: return null
-		return CodeContentType.Enumeration.getContentType(contentTypeId)
+		return CodeContentType.getContentType(contentTypeId)
 	}
 
 	fun getContent(document: ObjDocument): ByteArray? {
@@ -141,7 +141,7 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 				versionNr,
 				contentType.id,
 				content,
-				document.meta.createdByUser?.id as Int,
+				document.meta.createdByUserId as Int,
 			).execute()
 	}
 

@@ -6,7 +6,7 @@ import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.ReferenceSetProperty
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
-import io.dddrive.oe.model.ObjUser
+import dddrive.domain.oe.model.ObjUser
 
 interface ObjHousehold : Obj {
 

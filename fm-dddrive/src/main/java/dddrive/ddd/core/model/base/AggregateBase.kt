@@ -7,16 +7,8 @@ import dddrive.ddd.core.model.AggregateSPI
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.RepositoryDirectory
 import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.delegate.referenceProperty
-import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.PropertyChangeListener
-import dddrive.ddd.validation.model.AggregatePartValidation
-import dddrive.ddd.validation.model.enums.CodeValidationLevel
-import dddrive.ddd.validation.model.impl.AggregatePartValidationImpl
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
 import java.time.OffsetDateTime
 import java.util.function.Consumer
 
@@ -32,32 +24,13 @@ abstract class AggregateBase(
 	AggregateSPI {
 
 	protected var _id: Any? by baseProperty(this, "id")
-	protected var _version: Int? by baseProperty(this, "version")
-	protected var _tenantId: Any? by referenceIdProperty<ObjTenant>(this, "tenant")
-	protected var _tenant: ObjTenant? by referenceProperty(this, "tenant")
-	protected var _createdByUserId: Any? by referenceIdProperty<ObjUser>(this, "createdByUser")
-	protected var _createdByUser: ObjUser? by referenceProperty(this, "createdByUser")
-	protected var _createdAt: OffsetDateTime? by baseProperty(this, "createdAt")
-	protected var _caption: String? by baseProperty(this, "caption")
-
 	override val id: Any get() = _id!!
+
+	protected var _version: Int? by baseProperty(this, "version")
 	override val version: Int get() = _version!!
-	override val tenantId: Any get() = _tenantId!!
-	override val tenant: ObjTenant get() = _tenant!!
-	override val createdByUser: ObjUser get() = _createdByUser!!
-	override val createdAt: OffsetDateTime get() = _createdAt!!
-	override val caption: String get() = _caption ?: ""
-
-	protected var ownerId: Any? by referenceIdProperty<ObjUser>(this, "owner")
-	override var owner: ObjUser? by referenceProperty(this, "owner")
-
-	protected var modifiedByUserId: Any? by referenceIdProperty<ObjUser>(this, "modifiedByUser")
-	override var modifiedByUser: ObjUser? by referenceProperty(this, "modifiedByUser")
-	override var modifiedAt: OffsetDateTime? by baseProperty(this, "modifiedAt")
 
 	private var _maxPartId: Int? by baseProperty(this, "maxPartId")
 	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
-	private val _validations: MutableList<AggregatePartValidation> = mutableListOf()
 
 	private var _isFrozen = false
 	private var _isInLoad = false
@@ -114,12 +87,11 @@ abstract class AggregateBase(
 		}
 	}
 
-	final override fun doCreate(
+	override fun doCreate(
 		aggregateId: Any,
 		tenantId: Any,
 	) {
 		_id = aggregateId
-		_tenantId = tenantId
 		doCreateSeqNr += 1
 	}
 
@@ -127,10 +99,7 @@ abstract class AggregateBase(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		ownerId = userId
 		_version = 0
-		_createdByUserId = userId
-		_createdAt = timestamp
 		doAfterCreateSeqNr += 1
 		fireEntityAddedChange(id)
 	}
@@ -198,39 +167,6 @@ abstract class AggregateBase(
 		calcAll()
 	}
 
-	private fun clearValidationList() {
-		_validations.clear()
-	}
-
-	override val validations: List<AggregatePartValidation>
-		get() = _validations.toList()
-
-	fun addValidation(
-		validationLevel: CodeValidationLevel,
-		validation: String,
-		entity: EntityWithPropertiesSPI,
-	) {
-		addValidation(validationLevel, validation, entity.relativePath)
-	}
-
-	fun addValidation(
-		validationLevel: CodeValidationLevel,
-		validation: String,
-		property: Property<*>,
-	) {
-		addValidation(validationLevel, validation, property.relativePath)
-	}
-
-	fun addValidation(
-		validationLevel: CodeValidationLevel,
-		validation: String,
-		path: String? = null,
-	) {
-		_validations.add(
-			AggregatePartValidationImpl(validations.size, validationLevel, validation, path),
-		)
-	}
-
 	override val isInLoad: Boolean
 		get() = _isInLoad
 
@@ -254,7 +190,7 @@ abstract class AggregateBase(
 
 	override fun isInCalc(): Boolean = _isInCalc
 
-	protected fun beginCalc() {
+	protected open fun beginCalc() {
 		_isInCalc = true
 		didCalcAll = false
 		didCalcVolatile = false
@@ -270,7 +206,6 @@ abstract class AggregateBase(
 		}
 		try {
 			beginCalc()
-			clearValidationList()
 			doCalcAll()
 			check(didCalcAll) { "$className: doCalcAll was propagated" }
 		} finally {
@@ -301,7 +236,5 @@ abstract class AggregateBase(
 
 	private val className: String
 		get() = javaClass.getSuperclass().getSimpleName()
-
-	override fun toString(): String = caption
 
 }

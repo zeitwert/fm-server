@@ -2,12 +2,12 @@ package io.zeitwert.dddrive.ddd.api.rest.base
 
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.AggregateRepository
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
 import io.zeitwert.dddrive.ddd.api.rest.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.api.rest.DtoDetailLevel
 import io.zeitwert.dddrive.ddd.api.rest.DtoUtils
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregateDto
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjUser
 import org.springframework.beans.factory.annotation.Autowired
 
 abstract class AggregateDtoAdapterBase<A : Aggregate, D : AggregateDto<A>>(
@@ -39,6 +39,6 @@ abstract class AggregateDtoAdapterBase<A : Aggregate, D : AggregateDto<A>>(
 		this.userRepo = userRepo
 	}
 
-	protected fun getUser(userId: Any): ObjUser? = userRepo.get(userId)
+	protected fun getUser(userId: Any): ObjUser = userRepo.get(userId)
 
 }

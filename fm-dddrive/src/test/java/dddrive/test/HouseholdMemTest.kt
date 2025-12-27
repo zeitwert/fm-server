@@ -1,15 +1,15 @@
 package dddrive.test
 
 import dddrive.ddd.core.model.AggregateSPI
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
+import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
+import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
-import dddrive.path.setValueByPath
-import io.dddrive.oe.model.ObjTenant
-import io.dddrive.oe.model.ObjUser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -89,8 +89,8 @@ class HouseholdMemTest : PropertyChangeListener {
 		(hhA1 as AggregateSPI).addPropertyChangeListener(this)
 		val hhA1Id = hhA1.id
 		hhA1.name = "HHA"
-		assertEquals(tenant, hhA1.tenant, "tenant")
-		assertEquals(user, hhA1.meta.createdByUser, "createUser")
+		assertEquals(tenant.id, hhA1.tenantId, "tenant")
+		assertEquals(user.id, hhA1.meta.createdByUserId, "createUser")
 
 		// Labels - using new collection API
 		assertEquals(0, hhA1.labelSet.size, "labelSet.1a")

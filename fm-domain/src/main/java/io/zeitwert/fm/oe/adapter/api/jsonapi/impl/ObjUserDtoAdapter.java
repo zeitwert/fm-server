@@ -1,14 +1,13 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
-import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto;
-import io.zeitwert.fm.oe.model.ObjUserFM;
+import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.enums.CodeUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.time.OffsetDateTime;
 
 @Component("objUserDtoAdapter")
-public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> {
+public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, ObjUserDto> {
 
 	private static EnumeratedDto AGGREGATE_TYPE;
 
@@ -46,7 +45,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 	}
 
 	@Override
-	public void toAggregate(ObjUserDto dto, ObjUserFM obj) {
+	public void toAggregate(ObjUserDto dto, ObjUser obj) {
 		super.toAggregate(dto, obj);
 		if (dto.getId() != null && dto.getPassword() != null) {
 			obj.setPassword(dto.getPassword());
@@ -68,7 +67,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUserFM, ObjUserDto> 
 	}
 
 	@Override
-	public ObjUserDto fromAggregate(ObjUserFM obj) {
+	public ObjUserDto fromAggregate(ObjUser obj) {
 		if (obj == null) {
 			return null;
 		}
