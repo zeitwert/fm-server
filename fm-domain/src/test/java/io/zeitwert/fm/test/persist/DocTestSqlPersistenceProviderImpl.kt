@@ -1,7 +1,7 @@
 package io.zeitwert.fm.test.persist
 
+import dddrive.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.app.model.RequestContextFM
@@ -55,7 +55,7 @@ open class DocTestSqlPersistenceProviderImpl(
 		aggregate.nr = record.nr
 		aggregate.setValueByPath("refObjId", record.refObjId)
 		aggregate.setValueByPath("refDocId", record.refDocId)
-		aggregate.testType = CodeTestType.Enumeration.getTestType(record.testTypeId)
+		aggregate.testType = CodeTestType.getTestType(record.testTypeId)
 	}
 
 	override fun doLoadParts(aggregate: DocTest) {

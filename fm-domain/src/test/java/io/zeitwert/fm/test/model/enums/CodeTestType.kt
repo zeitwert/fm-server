@@ -1,7 +1,7 @@
 package io.zeitwert.fm.test.model.enums
 
-import io.dddrive.enums.model.EnumeratedEnum
-import io.dddrive.enums.model.base.EnumerationBase
+import dddrive.ddd.enums.model.EnumeratedEnum
+import dddrive.ddd.enums.model.base.EnumerationBase
 
 enum class CodeTestType(
 	override val defaultName: String,

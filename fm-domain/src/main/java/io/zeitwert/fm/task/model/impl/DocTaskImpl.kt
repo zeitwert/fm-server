@@ -1,8 +1,8 @@
 package io.zeitwert.fm.task.model.impl
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote

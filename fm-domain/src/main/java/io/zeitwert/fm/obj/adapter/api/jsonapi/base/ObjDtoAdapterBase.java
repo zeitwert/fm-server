@@ -1,8 +1,7 @@
-
 package io.zeitwert.fm.obj.adapter.api.jsonapi.base;
 
-import io.dddrive.obj.model.Obj;
-import io.dddrive.obj.model.ObjMeta;
+import dddrive.app.obj.model.Obj;
+import dddrive.app.obj.model.ObjMeta;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
@@ -25,7 +24,7 @@ public abstract class ObjDtoAdapterBase<O extends Obj, D extends ObjDtoBase<O>>
 				.adapter(this)
 				.tenant(EnumeratedDto.of(obj.getTenant()))
 				.meta(this.metaFromObj(obj))
-				.id((Integer)obj.getId())
+				.id((Integer) obj.getId())
 				.caption(obj.getCaption())
 				.owner(EnumeratedDto.of(obj.getOwner()));
 	}

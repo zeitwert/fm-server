@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.model.enums
 
-import io.dddrive.enums.model.Enumerated
-import io.dddrive.enums.model.base.EnumerationBase
+import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.enums.model.base.EnumerationBase
 
 enum class CodeBuildingSubType(
 	override val defaultName: String,

@@ -1,10 +1,10 @@
 package io.zeitwert.fm.app.adapter.api.rest;
 
-import io.dddrive.ddd.model.RepositoryDirectory;
-import io.dddrive.doc.model.enums.CodeCaseStage;
-import io.dddrive.doc.model.enums.CodeCaseStageEnum;
-import io.dddrive.enums.model.Enumerated;
-import io.dddrive.enums.model.Enumeration;
+import dddrive.app.doc.model.enums.CodeCaseStage;
+import dddrive.app.doc.model.enums.CodeCaseStageEnum;
+import dddrive.ddd.core.model.RepositoryDirectory;
+import dddrive.ddd.enums.model.Enumerated;
+import dddrive.ddd.enums.model.Enumeration;
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;

@@ -1,4 +1,3 @@
-
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,7 +6,7 @@ import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
-import io.dddrive.ddd.model.Aggregate;
+import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +21,13 @@ public abstract class AggregateDtoBase<A extends Aggregate> implements Aggregate
 
 	@JsonIgnore
 	private AggregateDtoAdapter<?, ?> adapter;
+	@JsonApiId
+	private Integer id;
+	private String caption;
+	// Read: for orderbooks, write: for creation
+	private EnumeratedDto tenant;
+	// Read: for orderbooks, write: for updates
+	private EnumeratedDto owner;
 
 	@Override
 	public AggregateDtoAdapter<?, ?> getAdapter() {
@@ -29,9 +35,6 @@ public abstract class AggregateDtoBase<A extends Aggregate> implements Aggregate
 	}
 
 	public abstract AggregateMetaDto getMeta();
-
-	@JsonApiId
-	private Integer id;
 
 	// For explicit filtering in SaaS session
 	@JsonApiField(readable = false, filterable = true)
@@ -43,13 +46,5 @@ public abstract class AggregateDtoBase<A extends Aggregate> implements Aggregate
 	public String getSearchText() {
 		return null;
 	}
-
-	private String caption;
-
-	// Read: for orderbooks, write: for creation
-	private EnumeratedDto tenant;
-
-	// Read: for orderbooks, write: for updates
-	private EnumeratedDto owner;
 
 }

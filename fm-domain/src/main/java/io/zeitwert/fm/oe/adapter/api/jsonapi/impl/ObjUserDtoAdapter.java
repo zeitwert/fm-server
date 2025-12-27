@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;

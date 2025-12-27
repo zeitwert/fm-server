@@ -1,8 +1,8 @@
 package io.zeitwert.fm.building.model
 
-import io.dddrive.obj.model.Obj
-import io.dddrive.property.model.PartListProperty
-import io.dddrive.property.model.ReferenceSetProperty
+import dddrive.app.obj.model.Obj
+import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.ReferenceSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType

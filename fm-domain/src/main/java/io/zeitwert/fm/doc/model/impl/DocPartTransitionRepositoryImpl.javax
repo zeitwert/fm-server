@@ -6,10 +6,10 @@ import java.util.List;
 import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
-import io.dddrive.doc.model.Doc;
-import io.dddrive.doc.model.DocPartTransition;
-import io.dddrive.doc.model.DocPartTransitionRepository;
-import io.dddrive.doc.model.base.DocPartTransitionBase;
+import dddrive.app.doc.model.Doc;
+import dddrive.app.doc.model.DocPartTransition;
+import dddrive.app.doc.model.DocPartTransitionRepository;
+import dddrive.app.doc.model.base.DocPartTransitionBase;
 import io.dddrive.jooq.ddd.PartState;
 import io.zeitwert.fm.doc.model.base.FMDocPartRepositoryBase;
 import io.zeitwert.fm.doc.model.db.Tables;

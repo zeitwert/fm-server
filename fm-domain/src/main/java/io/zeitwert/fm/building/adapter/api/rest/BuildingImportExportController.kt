@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.adapter.api.rest
 
-import io.dddrive.ddd.model.RepositoryDirectory
+import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto
@@ -94,7 +94,7 @@ class BuildingImportExportController {
 		return ResponseEntity.ok().body<BuildingTransferDto?>(export)
 	}
 
-	private fun getTransferDto(building: ObjBuilding): BuildingTransferDto? {
+	private fun getTransferDto(building: ObjBuilding): BuildingTransferDto {
 		val meta = TransferMetaDto(
 			aggregate = AGGREGATE,
 			version = VERSION,

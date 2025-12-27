@@ -1,10 +1,9 @@
-
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
 import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiMetaInformation;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
-import io.dddrive.obj.model.Obj;
+import dddrive.app.obj.model.Obj;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

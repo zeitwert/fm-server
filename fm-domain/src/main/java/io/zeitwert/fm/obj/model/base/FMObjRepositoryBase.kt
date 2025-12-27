@@ -1,8 +1,8 @@
 package io.zeitwert.fm.obj.model.base
 
+import dddrive.app.obj.model.Obj
+import dddrive.app.obj.model.base.ObjRepositoryBase
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.obj.model.Obj
-import io.dddrive.obj.model.base.ObjRepositoryBase
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
 import io.zeitwert.fm.obj.model.FMObjRepository
 

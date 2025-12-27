@@ -1,17 +1,17 @@
 package io.zeitwert.fm.building.model.impl
 
-import io.dddrive.ddd.model.Part
-import io.dddrive.ddd.model.PartMeta
-import io.dddrive.ddd.model.PartRepository
-import io.dddrive.obj.model.base.ObjPartBase
+import dddrive.app.obj.model.base.ObjPartBase
+import dddrive.ddd.core.model.Part
+import dddrive.ddd.core.model.PartMeta
+import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.partListProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
+import dddrive.ddd.property.delegate.referenceProperty
+import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.Property
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
-import io.dddrive.property.delegate.partListProperty
-import io.dddrive.property.delegate.referenceIdProperty
-import io.dddrive.property.delegate.referenceProperty
-import io.dddrive.property.model.PartListProperty
-import io.dddrive.property.model.Property
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -62,7 +62,7 @@ class ObjBuildingPartRatingImpl(
 		if (property === this.elementList) {
 			val ratingDate = this.ratingDate
 			if (ratingDate != null) {
-				val year: Int? = ratingDate.year
+				val year: Int = ratingDate.year
 				this.elementList.get(this.elementList.size - 1).ratingYear = year
 			}
 		}
@@ -84,7 +84,7 @@ class ObjBuildingPartRatingImpl(
 		} else if (property.name == "ratingDate") {
 			val ratingDate = this.ratingDate
 			if (ratingDate != null) {
-				val year: Int? = ratingDate.year
+				val year: Int = ratingDate.year
 				for (element in this.elementList) {
 					element.ratingYear = year
 				}

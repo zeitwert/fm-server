@@ -1,7 +1,7 @@
 package io.zeitwert.fm.contact.model
 
-import io.dddrive.obj.model.Obj
-import io.dddrive.property.model.PartListProperty
+import dddrive.app.obj.model.Obj
+import dddrive.ddd.property.model.PartListProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.contact.model.enums.CodeContactRole

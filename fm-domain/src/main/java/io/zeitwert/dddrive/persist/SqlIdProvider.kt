@@ -1,7 +1,7 @@
 package io.zeitwert.dddrive.persist
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.Part
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Part
 
 interface SqlIdProvider {
 

@@ -1,8 +1,8 @@
 package io.zeitwert.dddrive.persist
 
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.AggregatePersistenceProvider
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.AggregatePersistenceProvider
 
 interface AggregateSqlPersistenceProvider<A : Aggregate> : AggregatePersistenceProvider<A> {
 

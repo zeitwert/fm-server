@@ -1,7 +1,7 @@
 package io.zeitwert.fm.test.model
 
-import io.dddrive.doc.model.Doc
-import io.dddrive.property.model.EnumSetProperty
+import dddrive.app.doc.model.Doc
+import dddrive.ddd.property.model.EnumSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.test.model.enums.CodeTestType

@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.persist
 
+import dddrive.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.enums.CodeCurrency

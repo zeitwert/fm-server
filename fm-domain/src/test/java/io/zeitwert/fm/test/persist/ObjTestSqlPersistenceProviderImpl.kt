@@ -1,8 +1,8 @@
 package io.zeitwert.fm.test.persist
 
+import dddrive.ddd.property.model.PartListProperty
+import dddrive.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.path.setValueByPath
-import io.dddrive.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount

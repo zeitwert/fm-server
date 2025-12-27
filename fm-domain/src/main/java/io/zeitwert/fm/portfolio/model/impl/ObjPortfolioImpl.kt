@@ -1,11 +1,11 @@
 package io.zeitwert.fm.portfolio.model.impl
 
-import io.dddrive.ddd.model.enums.CodeAggregateType
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.obj.model.Obj
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.referenceSetProperty
-import io.dddrive.property.model.ReferenceSetProperty
+import dddrive.app.obj.model.Obj
+import dddrive.ddd.core.model.enums.CodeAggregateType
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.referenceSetProperty
+import dddrive.ddd.property.model.ReferenceSetProperty
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository

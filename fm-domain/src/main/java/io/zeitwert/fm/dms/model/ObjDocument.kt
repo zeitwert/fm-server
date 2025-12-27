@@ -1,6 +1,6 @@
 package io.zeitwert.fm.dms.model
 
-import io.dddrive.obj.model.Obj
+import dddrive.app.obj.model.Obj
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.dms.model.enums.CodeContentKind

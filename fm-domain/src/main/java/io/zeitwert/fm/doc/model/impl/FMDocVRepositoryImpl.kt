@@ -1,6 +1,6 @@
 package io.zeitwert.fm.doc.model.impl
 
-import io.dddrive.doc.model.Doc
+import dddrive.app.doc.model.Doc
 import io.zeitwert.fm.doc.model.FMDocVRepository
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import org.springframework.stereotype.Component

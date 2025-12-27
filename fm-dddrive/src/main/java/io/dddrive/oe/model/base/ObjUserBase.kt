@@ -1,9 +1,9 @@
 package io.dddrive.oe.model.base
 
-import io.dddrive.obj.model.ObjRepository
-import io.dddrive.obj.model.base.ObjBase
+import dddrive.app.obj.model.ObjRepository
+import dddrive.app.obj.model.base.ObjBase
+import dddrive.ddd.property.delegate.baseProperty
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.property.delegate.baseProperty
 
 abstract class ObjUserBase(
 	override val repository: ObjRepository<ObjUser>,

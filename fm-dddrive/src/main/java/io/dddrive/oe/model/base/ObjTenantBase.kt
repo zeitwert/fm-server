@@ -1,10 +1,10 @@
 package io.dddrive.oe.model.base
 
-import io.dddrive.obj.model.ObjRepository
-import io.dddrive.obj.model.base.ObjBase
+import dddrive.app.obj.model.ObjRepository
+import dddrive.app.obj.model.base.ObjBase
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.path.setValueByPath
 import io.dddrive.oe.model.ObjTenant
-import io.dddrive.path.setValueByPath
-import io.dddrive.property.delegate.baseProperty
 import java.time.OffsetDateTime
 
 abstract class ObjTenantBase(

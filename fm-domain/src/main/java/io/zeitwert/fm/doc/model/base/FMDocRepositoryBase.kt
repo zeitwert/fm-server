@@ -1,8 +1,8 @@
 package io.zeitwert.fm.doc.model.base
 
+import dddrive.app.doc.model.Doc
+import dddrive.app.doc.model.base.DocRepositoryBase
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.doc.model.Doc
-import io.dddrive.doc.model.base.DocRepositoryBase
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
 import io.zeitwert.fm.doc.model.FMDocRepository
 

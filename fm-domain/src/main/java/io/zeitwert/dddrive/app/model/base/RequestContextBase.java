@@ -1,11 +1,11 @@
-
 package io.zeitwert.dddrive.app.model.base;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import io.dddrive.ddd.model.Aggregate;
+
+import dddrive.ddd.core.model.Aggregate;
 import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import lombok.Data;

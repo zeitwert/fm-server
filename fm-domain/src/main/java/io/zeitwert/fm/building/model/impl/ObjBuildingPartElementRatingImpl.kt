@@ -1,11 +1,11 @@
 package io.zeitwert.fm.building.model.impl
 
-import io.dddrive.ddd.model.Part
-import io.dddrive.ddd.model.PartRepository
-import io.dddrive.obj.model.base.ObjPartBase
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
-import io.dddrive.property.model.Property
+import dddrive.app.obj.model.base.ObjPartBase
+import dddrive.ddd.core.model.Part
+import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart

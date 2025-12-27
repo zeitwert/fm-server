@@ -1,8 +1,7 @@
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
-import io.dddrive.ddd.model.PartSPI;
-import io.dddrive.obj.model.Obj;
-import io.dddrive.obj.model.ObjPart;
+import dddrive.app.obj.model.Obj;
+import dddrive.app.obj.model.ObjPart;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -24,6 +23,13 @@ public abstract class ObjPartDtoBase<O extends Obj, P extends ObjPart<O>> {
 	@Setter(value = AccessLevel.NONE)
 	private String id;
 
+	public static void fromPart(ObjPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, ObjPart<?> part) {
+		// TODO-MIGRATION
+//		boolean isNew = ((PartSPI<?>) part).getPersistenceStatus() == PartPersistenceStatus.CREATED;
+//		dtoBuilder.id(isNew ? ServerNewIdPrefix + part.getId() : String.valueOf(part.getId()));
+		dtoBuilder.id(String.valueOf(part.getId()));
+	}
+
 	@JsonProperty("id")
 	public String getDtoId() {
 		return this.id;
@@ -43,13 +49,6 @@ public abstract class ObjPartDtoBase<O extends Obj, P extends ObjPart<O>> {
 	}
 
 	public void toPart(P part) {
-	}
-
-	public static void fromPart(ObjPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, ObjPart<?> part) {
-		// TODO-MIGRATION
-//		boolean isNew = ((PartSPI<?>) part).getPersistenceStatus() == PartPersistenceStatus.CREATED;
-//		dtoBuilder.id(isNew ? ServerNewIdPrefix + part.getId() : String.valueOf(part.getId()));
-		dtoBuilder.id(String.valueOf(part.getId()));
 	}
 
 }

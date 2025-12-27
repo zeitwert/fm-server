@@ -1,8 +1,8 @@
 package io.zeitwert.fm.contact.persist
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.Part
-import io.dddrive.property.model.PartListProperty
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Part
+import dddrive.ddd.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.db.Tables

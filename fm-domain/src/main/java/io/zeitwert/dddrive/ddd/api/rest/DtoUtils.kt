@@ -1,6 +1,6 @@
 package io.zeitwert.dddrive.ddd.api.rest
 
-import io.dddrive.ddd.model.RepositoryDirectory
+import dddrive.ddd.core.model.RepositoryDirectory
 import io.dddrive.oe.model.ObjTenant
 
 object DtoUtils {

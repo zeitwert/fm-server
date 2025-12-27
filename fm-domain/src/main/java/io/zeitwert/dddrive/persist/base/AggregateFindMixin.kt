@@ -1,9 +1,9 @@
 package io.zeitwert.dddrive.persist.base
 
+import dddrive.ddd.core.model.Aggregate
 import io.crnk.core.queryspec.FilterOperator
 import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.ddd.model.Aggregate
 import io.zeitwert.dddrive.persist.util.SqlUtils
 import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.oe.model.ObjTenantFMRepository

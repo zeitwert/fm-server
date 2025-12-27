@@ -1,13 +1,13 @@
 package io.zeitwert.dddrive.config
 
-import io.dddrive.ddd.model.RepositoryDirectory
-import io.dddrive.ddd.model.enums.CodeAggregateType
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.ddd.model.enums.CodePartListTypeEnum
-import io.dddrive.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.enums.model.base.EnumConfigBase
-import io.dddrive.validation.model.enums.CodeValidationLevelEnum
+import dddrive.app.doc.model.enums.CodeCaseDefEnum
+import dddrive.app.doc.model.enums.CodeCaseStageEnum
+import dddrive.ddd.core.model.RepositoryDirectory
+import dddrive.ddd.core.model.enums.CodeAggregateType
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.core.model.enums.CodePartListTypeEnum
+import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.validation.model.enums.CodeValidationLevelEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

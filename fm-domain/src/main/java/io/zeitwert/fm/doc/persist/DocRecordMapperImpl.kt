@@ -1,9 +1,9 @@
 package io.zeitwert.fm.doc.persist
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.Part
-import io.dddrive.doc.model.Doc
-import io.dddrive.path.setValueByPath
+import dddrive.app.doc.model.Doc
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Part
+import dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ItemWithAccount
@@ -120,4 +120,3 @@ class DocRecordMapperImpl(
 	}
 
 }
-

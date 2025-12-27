@@ -1,14 +1,14 @@
 package io.zeitwert.fm.test.config
 
-import io.dddrive.ddd.model.enums.CodeAggregateType
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.ddd.model.enums.CodePartListType
-import io.dddrive.ddd.model.enums.CodePartListTypeEnum
-import io.dddrive.doc.model.enums.CodeCaseDef
-import io.dddrive.doc.model.enums.CodeCaseDefEnum
-import io.dddrive.doc.model.enums.CodeCaseStage
-import io.dddrive.doc.model.enums.CodeCaseStageEnum
-import io.dddrive.enums.model.base.EnumConfigBase
+import dddrive.app.doc.model.enums.CodeCaseDef
+import dddrive.app.doc.model.enums.CodeCaseDefEnum
+import dddrive.app.doc.model.enums.CodeCaseStage
+import dddrive.app.doc.model.enums.CodeCaseStageEnum
+import dddrive.ddd.core.model.enums.CodeAggregateType
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.core.model.enums.CodePartListType
+import dddrive.ddd.core.model.enums.CodePartListTypeEnum
+import dddrive.ddd.enums.model.base.EnumConfigBase
 import io.zeitwert.fm.test.model.enums.CodeTestType
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired

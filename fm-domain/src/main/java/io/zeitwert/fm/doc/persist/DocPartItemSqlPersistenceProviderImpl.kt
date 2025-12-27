@@ -1,6 +1,6 @@
 package io.zeitwert.fm.doc.persist
 
-import io.dddrive.ddd.model.Aggregate
+import dddrive.ddd.core.model.Aggregate
 import io.zeitwert.fm.doc.model.db.Tables
 import io.zeitwert.fm.doc.model.db.tables.records.DocPartItemRecord
 import org.jooq.DSLContext

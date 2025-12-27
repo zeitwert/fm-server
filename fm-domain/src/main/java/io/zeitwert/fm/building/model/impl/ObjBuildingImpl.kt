@@ -1,16 +1,16 @@
 package io.zeitwert.fm.building.model.impl
 
-import io.dddrive.ddd.model.Part
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
-import io.dddrive.property.delegate.partListProperty
-import io.dddrive.property.delegate.referenceIdProperty
-import io.dddrive.property.delegate.referenceProperty
-import io.dddrive.property.delegate.referenceSetProperty
-import io.dddrive.property.model.PartListProperty
-import io.dddrive.property.model.Property
-import io.dddrive.property.model.ReferenceSetProperty
-import io.dddrive.validation.model.enums.CodeValidationLevelEnum
+import dddrive.ddd.core.model.Part
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.partListProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
+import dddrive.ddd.property.delegate.referenceProperty
+import dddrive.ddd.property.delegate.referenceSetProperty
+import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.Property
+import dddrive.ddd.property.model.ReferenceSetProperty
+import dddrive.ddd.validation.model.enums.CodeValidationLevelEnum
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating

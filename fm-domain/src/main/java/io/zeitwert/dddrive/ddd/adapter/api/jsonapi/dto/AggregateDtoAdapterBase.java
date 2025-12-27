@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
-import io.dddrive.ddd.model.Aggregate;
+import dddrive.ddd.core.model.Aggregate;
 import io.dddrive.oe.model.ObjTenant;
 import io.dddrive.oe.model.ObjUser;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;

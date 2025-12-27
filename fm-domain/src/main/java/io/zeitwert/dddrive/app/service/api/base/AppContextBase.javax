@@ -11,11 +11,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.app.service.api.AppContext;
 import io.zeitwert.dddrive.app.service.api.AppContextSPI;
-import io.dddrive.ddd.model.Aggregate;
-import io.dddrive.ddd.model.AggregatePersistenceProvider;
-import io.dddrive.ddd.model.AggregateRepository;
-import io.dddrive.ddd.model.Part;
-import io.dddrive.ddd.model.PartRepository;
+import dddrive.ddd.core.model.Aggregate;
+import dddrive.ddd.core.model.AggregatePersistenceProvider;
+import dddrive.ddd.core.model.AggregateRepository;
+import dddrive.ddd.core.model.Part;
+import dddrive.ddd.core.model.PartRepository;
 import io.dddrive.enums.model.Enumerated;
 import io.dddrive.enums.model.Enumeration;
 

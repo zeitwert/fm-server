@@ -1,11 +1,10 @@
-
 package io.zeitwert.fm.ddd.model;
 
-import java.math.BigDecimal;
-
-import io.dddrive.ddd.model.enums.CodeAggregateType;
+import dddrive.ddd.core.model.enums.CodeAggregateType;
 import lombok.Builder;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder

@@ -1,0 +1,60 @@
+package dddrive.domain.obj.persist.mem.base
+
+import dddrive.app.obj.model.Obj
+import dddrive.domain.ddd.persist.mem.base.MemAggregatePersistenceProviderBase
+import dddrive.domain.obj.persist.mem.pto.ObjMetaPto
+import dddrive.domain.obj.persist.mem.pto.ObjPartTransitionPto
+import dddrive.domain.obj.persist.mem.pto.ObjPto
+import dddrive.path.getValueByPath
+import dddrive.path.setValueByPath
+
+abstract class MemObjPersistenceProviderBase<O : Obj, Pto : ObjPto>(
+	intfClass: Class<O>,
+) : MemAggregatePersistenceProviderBase<O, Pto>(intfClass) {
+
+	@Suppress("UNCHECKED_CAST")
+	override fun toAggregate(
+		pto: Pto,
+		aggregate: O,
+	) {
+		super.toAggregate(pto, aggregate)
+		val objMetaPto = pto.meta
+		aggregate.setValueByPath("closedByUserId", objMetaPto?.closedByUserId)
+		aggregate.setValueByPath("closedAt", objMetaPto?.closedAt)
+		// TODO transitions
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	protected fun getMeta(aggregate: O): ObjMetaPto {
+		val maxPartId = aggregate.getValueByPath("maxPartId") as? Int?
+
+		// Map transitions from the domain model (ObjPartTransition) to PTO (ObjPartTransitionPto)
+		val transitions =
+			aggregate.meta.transitionList
+				.map { domainTransition ->
+					ObjPartTransitionPto(
+						id = domainTransition.id,
+						userId = domainTransition.user.id,
+						timestamp = domainTransition.timestamp,
+					)
+				}.toList()
+
+		return ObjMetaPto(
+			// Properties specific to ObjMetaPto
+			objTypeId = aggregate.meta.repository
+				?.aggregateType
+				?.id,
+			closedAt = aggregate.meta.closedAt,
+			closedByUserId = aggregate.meta.closedByUser?.id as? Int,
+			transitions = transitions,
+			// Properties inherited from AggregateMetaPto, passed to ObjMetaPto's constructor
+			maxPartId = maxPartId,
+			ownerId = aggregate.owner?.id as? Int,
+			version = aggregate.meta.version,
+			createdAt = aggregate.meta.createdAt,
+			createdByUserId = aggregate.meta.createdByUser?.id as? Int,
+			modifiedAt = aggregate.meta.modifiedAt,
+			modifiedByUserId = aggregate.meta.modifiedByUser?.id as? Int,
+		)
+	}
+}

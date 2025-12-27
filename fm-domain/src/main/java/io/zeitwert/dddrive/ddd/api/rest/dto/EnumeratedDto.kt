@@ -1,9 +1,9 @@
 package io.zeitwert.dddrive.ddd.api.rest.dto
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.Part
-import io.dddrive.enums.model.Enumerated
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Part
+import dddrive.ddd.enums.model.Enumerated
 import io.zeitwert.dddrive.ddd.api.rest.impl.EnumeratedDeserializer
 
 @JsonDeserialize(using = EnumeratedDeserializer::class)

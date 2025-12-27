@@ -1,7 +1,7 @@
 package io.zeitwert.fm.collaboration.model
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.obj.model.Obj
+import dddrive.app.obj.model.Obj
+import dddrive.ddd.core.model.Aggregate
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 
 interface ObjNote : Obj {

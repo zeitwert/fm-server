@@ -1,6 +1,6 @@
 package io.zeitwert.fm.test.model
 
-import io.dddrive.obj.model.ObjPart
+import dddrive.app.obj.model.ObjPart
 import io.zeitwert.fm.test.model.enums.CodeTestType
 import java.math.BigDecimal
 import java.time.LocalDate

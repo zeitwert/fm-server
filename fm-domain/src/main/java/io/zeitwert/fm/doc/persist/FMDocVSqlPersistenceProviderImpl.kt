@@ -1,10 +1,10 @@
 package io.zeitwert.fm.doc.persist
 
+import dddrive.app.doc.model.Doc
 import io.crnk.core.queryspec.QuerySpec
-import io.dddrive.doc.model.Doc
 import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.fm.doc.model.db.Tables
 import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.doc.model.db.Tables
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 

@@ -1,10 +1,10 @@
 package io.zeitwert.fm.obj.persist
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.Part
-import io.dddrive.obj.model.ObjPartTransition
-import io.dddrive.path.setValueByPath
-import io.dddrive.property.model.PartListProperty
+import dddrive.app.obj.model.ObjPartTransition
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Part
+import dddrive.ddd.property.model.PartListProperty
+import dddrive.path.setValueByPath
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
 import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartTransitionRecord

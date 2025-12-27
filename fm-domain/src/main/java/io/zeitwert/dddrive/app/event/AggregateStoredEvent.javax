@@ -2,7 +2,7 @@ package io.zeitwert.dddrive.app.event;
 
 import org.springframework.context.ApplicationEvent;
 
-import io.dddrive.ddd.model.Aggregate;
+import dddrive.ddd.core.model.Aggregate;
 
 public class AggregateStoredEvent extends ApplicationEvent {
 

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.account.model
 
-import io.dddrive.obj.model.Obj
+import dddrive.app.obj.model.Obj
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
@@ -9,29 +9,31 @@ import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
 import java.math.BigDecimal
 
-interface ObjAccount : Obj, ItemWithNotes {
+interface ObjAccount :
+	Obj,
+	ItemWithNotes {
 
-  var name: String?
+	var name: String?
 
-  var description: String?
+	var description: String?
 
-  var accountType: CodeAccountType?
+	var accountType: CodeAccountType?
 
-  var clientSegment: CodeClientSegment?
+	var clientSegment: CodeClientSegment?
 
-  var referenceCurrency: CodeCurrency?
+	var referenceCurrency: CodeCurrency?
 
-  var inflationRate: BigDecimal?
+	var inflationRate: BigDecimal?
 
-  var discountRate: BigDecimal?
+	var discountRate: BigDecimal?
 
-  var logoImageId: Any?
+	var logoImageId: Any?
 
-  val logoImage: ObjDocument?
+	val logoImage: ObjDocument?
 
-  var mainContactId: Any?
+	var mainContactId: Any?
 
-  val mainContact: ObjContact?
+	val mainContact: ObjContact?
 
-  val contactList: List<Any>
+	val contactList: List<Any>
 }

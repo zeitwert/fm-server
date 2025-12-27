@@ -1,6 +1,6 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi;
 
-import io.dddrive.ddd.model.Aggregate;
+import dddrive.ddd.core.model.Aggregate;
 
 public interface AggregateDtoAdapter<A extends Aggregate, D extends AggregateDto<A>> {
 

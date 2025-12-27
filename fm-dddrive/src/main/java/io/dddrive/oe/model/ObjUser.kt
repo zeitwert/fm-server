@@ -1,6 +1,6 @@
 package io.dddrive.oe.model
 
-import io.dddrive.obj.model.Obj
+import dddrive.app.obj.model.Obj
 
 interface ObjUser : Obj {
 

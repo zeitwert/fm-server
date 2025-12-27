@@ -1,12 +1,12 @@
 package io.zeitwert.fm.test.model.impl
 
-import io.dddrive.ddd.model.PartRepository
-import io.dddrive.obj.model.base.ObjPartBase
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
-import io.dddrive.property.delegate.referenceIdProperty
-import io.dddrive.property.delegate.referenceProperty
-import io.dddrive.property.model.Property
+import dddrive.app.obj.model.base.ObjPartBase
+import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
+import dddrive.ddd.property.delegate.referenceProperty
+import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.enums.CodeTestType

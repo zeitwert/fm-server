@@ -1,12 +1,12 @@
 package io.zeitwert.fm.oe.model.impl
 
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
+import dddrive.ddd.property.delegate.referenceProperty
+import dddrive.ddd.property.delegate.referenceSetProperty
+import dddrive.ddd.property.model.ReferenceSetProperty
 import io.dddrive.oe.model.ObjTenant
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
-import io.dddrive.property.delegate.referenceIdProperty
-import io.dddrive.property.delegate.referenceProperty
-import io.dddrive.property.delegate.referenceSetProperty
-import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory

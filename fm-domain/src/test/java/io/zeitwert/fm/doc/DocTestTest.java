@@ -1,6 +1,6 @@
 package io.zeitwert.fm.doc;
 
-import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import dddrive.app.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.app.model.RequestContextFM;

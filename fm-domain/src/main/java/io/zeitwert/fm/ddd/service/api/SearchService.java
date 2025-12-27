@@ -1,10 +1,9 @@
-
 package io.zeitwert.fm.ddd.service.api;
 
 import java.util.List;
 
 import io.zeitwert.dddrive.app.model.RequestContext;
-import io.dddrive.ddd.model.Aggregate;
+import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.fm.ddd.model.SearchResult;
 
 public interface SearchService {

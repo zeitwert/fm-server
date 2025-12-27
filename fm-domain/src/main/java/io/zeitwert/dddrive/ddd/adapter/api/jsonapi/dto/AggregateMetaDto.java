@@ -1,8 +1,8 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto;
 
 import io.crnk.core.resource.meta.MetaInformation;
-import io.dddrive.ddd.model.Aggregate;
-import io.dddrive.ddd.model.AggregateMeta;
+import dddrive.ddd.core.model.Aggregate;
+import dddrive.ddd.core.model.AggregateMeta;
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregatePartValidationDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;

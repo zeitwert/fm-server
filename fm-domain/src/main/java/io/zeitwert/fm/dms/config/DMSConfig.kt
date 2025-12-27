@@ -1,8 +1,8 @@
 package io.zeitwert.fm.dms.config
 
-import io.dddrive.ddd.model.enums.CodeAggregateType
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum
-import io.dddrive.enums.model.base.EnumConfigBase
+import dddrive.ddd.core.model.enums.CodeAggregateType
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.enums.model.base.EnumConfigBase
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory

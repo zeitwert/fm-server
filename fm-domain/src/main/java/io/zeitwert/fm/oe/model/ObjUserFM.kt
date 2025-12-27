@@ -1,8 +1,8 @@
 package io.zeitwert.fm.oe.model
 
+import dddrive.ddd.property.model.ReferenceSetProperty
 import io.dddrive.oe.model.ObjTenant
 import io.dddrive.oe.model.ObjUser
-import io.dddrive.property.model.ReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 

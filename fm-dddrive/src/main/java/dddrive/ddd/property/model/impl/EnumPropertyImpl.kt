@@ -1,0 +1,28 @@
+package dddrive.ddd.property.model.impl
+
+import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.property.model.EntityWithProperties
+import dddrive.ddd.property.model.EntityWithPropertiesSPI
+import dddrive.ddd.property.model.EnumProperty
+import dddrive.ddd.property.model.base.ReferencePropertyBase
+
+class EnumPropertyImpl<E : Enumerated>(
+	entity: EntityWithProperties,
+	name: String,
+	override val type: Class<E>,
+) : ReferencePropertyBase<E, String>(entity, name, String::class.java),
+	EnumProperty<E> {
+
+	override val enumeration: Enumeration<E>
+		get() = (entity as EntityWithPropertiesSPI).directory.getEnumeration(type)
+
+	override var value: E?
+		get() = if (id == null) null else this.enumeration.getItem(id!!)
+		set(value) {
+			id = value?.id
+		}
+
+	override fun isValidId(id: String?): Boolean = id == null || this.enumeration.getItem(id) != null
+
+}

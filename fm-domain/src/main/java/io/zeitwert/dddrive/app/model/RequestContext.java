@@ -1,9 +1,9 @@
-
 package io.zeitwert.dddrive.app.model;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import io.dddrive.ddd.model.Aggregate;
+
+import dddrive.ddd.core.model.Aggregate;
 import io.dddrive.oe.model.ObjUser;
 
 public interface RequestContext {

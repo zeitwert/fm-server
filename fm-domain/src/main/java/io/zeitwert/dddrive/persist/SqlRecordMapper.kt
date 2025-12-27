@@ -1,6 +1,6 @@
 package io.zeitwert.dddrive.persist
 
-import io.dddrive.ddd.model.Aggregate
+import dddrive.ddd.core.model.Aggregate
 
 interface SqlRecordMapper<A : Aggregate> {
 

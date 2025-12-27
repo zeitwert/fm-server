@@ -1,9 +1,9 @@
 package io.zeitwert.dddrive.ddd.api.rest.base
 
-import io.dddrive.ddd.model.Aggregate
-import io.dddrive.ddd.model.AggregateRepository
-import io.dddrive.obj.model.Obj
-import io.dddrive.obj.model.ObjRepository
+import dddrive.app.obj.model.Obj
+import dddrive.app.obj.model.ObjRepository
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.AggregateRepository
 import io.dddrive.oe.model.ObjUser
 import io.zeitwert.dddrive.ddd.api.rest.AggregateApiRepository
 import io.zeitwert.dddrive.ddd.api.rest.AggregateApiRepository.Companion.CalculationOnlyOperation

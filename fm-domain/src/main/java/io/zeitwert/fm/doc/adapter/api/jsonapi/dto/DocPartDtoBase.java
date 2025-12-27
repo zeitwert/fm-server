@@ -8,8 +8,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.dddrive.doc.model.Doc;
-import io.dddrive.doc.model.DocPart;
+import dddrive.app.doc.model.Doc;
+import dddrive.app.doc.model.DocPart;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +19,10 @@ public abstract class DocPartDtoBase<D extends Doc, P extends DocPart<D>> {
 	@Getter(value = AccessLevel.NONE)
 	@Setter(value = AccessLevel.NONE)
 	private String id;
+
+	public static void fromPart(DocPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, DocPart<?> part) {
+		dtoBuilder.id(String.valueOf(part.getId()));
+	}
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	public Integer getId() {
@@ -34,10 +38,6 @@ public abstract class DocPartDtoBase<D extends Doc, P extends DocPart<D>> {
 	}
 
 	public void toPart(P part) {
-	}
-
-	public static void fromPart(DocPartDtoBaseBuilder<?, ?, ?, ?> dtoBuilder, DocPart<?> part) {
-		dtoBuilder.id(String.valueOf(part.getId()));
 	}
 
 }

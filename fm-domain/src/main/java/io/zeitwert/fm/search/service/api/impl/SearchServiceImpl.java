@@ -1,9 +1,9 @@
 package io.zeitwert.fm.search.service.api.impl;
 
+import dddrive.ddd.core.model.enums.CodeAggregateType;
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.crnk.core.queryspec.FilterSpec;
-import io.dddrive.ddd.model.Aggregate;
-import io.dddrive.ddd.model.enums.CodeAggregateType;
-import io.dddrive.ddd.model.enums.CodeAggregateTypeEnum;
+import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.dddrive.persist.util.SqlUtils;
 import io.zeitwert.fm.app.model.RequestContextFM;

@@ -1,9 +1,9 @@
 package io.zeitwert.fm.doc.model.base
 
-import io.dddrive.doc.model.Doc
-import io.dddrive.doc.model.DocRepository
-import io.dddrive.doc.model.base.DocBase
-import io.dddrive.property.delegate.baseProperty
+import dddrive.app.doc.model.Doc
+import dddrive.app.doc.model.DocRepository
+import dddrive.app.doc.model.base.DocBase
+import dddrive.ddd.property.delegate.baseProperty
 import io.zeitwert.fm.ddd.model.EntityWithExtn
 
 /**

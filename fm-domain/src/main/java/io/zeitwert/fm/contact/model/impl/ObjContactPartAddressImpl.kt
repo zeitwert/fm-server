@@ -1,10 +1,10 @@
 package io.zeitwert.fm.contact.model.impl
 
-import io.dddrive.ddd.model.PartRepository
-import io.dddrive.obj.model.base.ObjPartBase
-import io.dddrive.property.delegate.baseProperty
-import io.dddrive.property.delegate.enumProperty
-import io.dddrive.property.model.Property
+import dddrive.app.obj.model.base.ObjPartBase
+import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel

@@ -1,8 +1,8 @@
 package io.zeitwert.fm.doc.adapter.api.jsonapi.base;
 
-import io.dddrive.doc.model.Doc;
-import io.dddrive.doc.model.DocMeta;
-import io.dddrive.doc.model.enums.CodeCaseStageEnum;
+import dddrive.app.doc.model.Doc;
+import dddrive.app.doc.model.DocMeta;
+import dddrive.app.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;

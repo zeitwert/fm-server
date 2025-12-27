@@ -6,10 +6,10 @@ import org.jooq.Result;
 import org.springframework.stereotype.Component;
 
 import io.dddrive.jooq.ddd.PartState;
-import io.dddrive.obj.model.Obj;
-import io.dddrive.obj.model.ObjPartItem;
-import io.dddrive.obj.model.ObjPartItemRepository;
-import io.dddrive.obj.model.base.ObjPartItemBase;
+import dddrive.app.obj.model.Obj;
+import dddrive.app.obj.model.ObjPartItem;
+import dddrive.app.obj.model.ObjPartItemRepository;
+import dddrive.app.obj.model.base.ObjPartItemBase;
 import io.zeitwert.fm.obj.model.base.FMObjPartRepositoryBase;
 import io.zeitwert.fm.obj.model.db.Tables;
 import io.zeitwert.fm.obj.model.db.tables.records.ObjPartItemRecord;
