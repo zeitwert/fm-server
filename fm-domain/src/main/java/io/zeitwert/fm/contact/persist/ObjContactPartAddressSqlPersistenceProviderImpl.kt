@@ -4,6 +4,7 @@ import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
+import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord
@@ -14,7 +15,7 @@ import org.jooq.DSLContext
 class ObjContactPartAddressSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<ObjContactPartAddress> {
+) : PartSqlPersistenceProvider<ObjContact, ObjContactPartAddress> {
 
 	private val partsLoaded = mutableListOf<ObjContactPartAddressRecord>()
 	private val partsToInsert = mutableListOf<ObjContactPartAddressRecord>()
@@ -32,7 +33,7 @@ class ObjContactPartAddressSqlPersistenceProviderImpl(
 	}
 
 	override fun loadPartList(
-		partList: PartListProperty<ObjContactPartAddress>,
+		partList: PartListProperty<ObjContact, ObjContactPartAddress>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -71,7 +72,7 @@ class ObjContactPartAddressSqlPersistenceProviderImpl(
 	}
 
 	override fun storePartList(
-		partList: PartListProperty<ObjContactPartAddress>,
+		partList: PartListProperty<ObjContact, ObjContactPartAddress>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id

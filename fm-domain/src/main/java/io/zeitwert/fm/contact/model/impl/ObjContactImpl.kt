@@ -41,8 +41,9 @@ class ObjContactImpl(
 	override var mobile: String? by baseProperty(this, "mobile")
 	override var email: String? by baseProperty(this, "email")
 	override var description: String? by baseProperty(this, "description")
-	override val mailAddressList: PartListProperty<ObjContactPartAddress> = partListProperty(this, "mailAddressList")
-	override val electronicAddressList: PartListProperty<ObjContactPartAddress> = partListProperty(
+	override val mailAddressList: PartListProperty<ObjContact, ObjContactPartAddress> =
+		partListProperty(this, "mailAddressList")
+	override val electronicAddressList: PartListProperty<ObjContact, ObjContactPartAddress> = partListProperty(
 		this,
 		"electronicAddressList",
 	)
@@ -75,4 +76,5 @@ class ObjContactImpl(
 	private fun calcCaption() {
 		setCaption("${firstName ?: ""} ${lastName ?: ""}".trim())
 	}
+
 }

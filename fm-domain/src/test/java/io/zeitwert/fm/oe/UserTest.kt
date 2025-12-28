@@ -5,6 +5,7 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
+import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,16 +33,46 @@ class UserTest {
 	@Autowired
 	private lateinit var tenantRepository: ObjTenantRepository
 
+	private lateinit var t1: ObjTenant
+	private lateinit var t2: ObjTenant
+	private lateinit var t3: ObjTenant
+
+	@BeforeEach
+	fun setUp() {
+		t1 = tenantRepository.getByKey("tt1").orElseGet {
+			tenantRepository.create().apply {
+				key = "tt1"
+				name = "tt1"
+				tenantType = CodeTenantType.COMMUNITY
+				assertNotNull(id, "tenant t1.id not null")
+				assertNotNull(tenantId, "tenant t1.tenantId not null")
+				tenantRepository.store(this)
+			}
+		}
+		t2 = tenantRepository.getByKey("tt2").orElseGet {
+			tenantRepository.create().apply {
+				key = "tt2"
+				name = "tt2"
+				tenantType = CodeTenantType.COMMUNITY
+				tenantRepository.store(this)
+			}
+		}
+		t3 = tenantRepository.getByKey("tt3").orElseGet {
+			tenantRepository.create().apply {
+				key = "tt3"
+				name = "tt3"
+				tenantType = CodeTenantType.COMMUNITY
+				tenantRepository.store(this)
+			}
+		}
+	}
+
 	@Test
 	fun testUserBase() {
 		assertNotNull(userRepository, "userRepository not null")
 		assertEquals("obj_user", userRepository.aggregateType.id)
 
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
-
-		val user1 = userRepository.create(tenantId, userId, now)
+		val user1 = userRepository.create()
 		assertNotNull(user1, "user not null")
 		requireNotNull(user1)
 
@@ -56,7 +88,7 @@ class UserTest {
 		assertNotNull(user1.meta.createdAt, "createdAt not null")
 		assertEquals(1, user1.meta.transitionList.size)
 
-		userRepository.store(user1, userId, now)
+		userRepository.store(user1)
 
 		val user2 = userRepository.get(user1Id)
 		val user2IdHash = System.identityHashCode(user2)
@@ -69,11 +101,7 @@ class UserTest {
 
 	@Test
 	fun testUserProperties() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
-
-		val user1 = userRepository.create(tenantId, userId, now)
+		val user1 = userRepository.create()
 		requireNotNull(user1)
 
 		val user1Id = user1.id
@@ -87,7 +115,7 @@ class UserTest {
 		assertTrue(user1.hasRole(CodeUserRole.ADMIN))
 		assertFalse(user1.hasRole(CodeUserRole.USER))
 
-		userRepository.store(user1, userId, now)
+		userRepository.store(user1)
 
 		val user2 = userRepository.load(user1Id)
 
@@ -108,7 +136,7 @@ class UserTest {
 		assertEquals("Updated description", user2.description)
 		assertEquals(CodeUserRole.SUPER_USER, user2.role)
 
-		userRepository.store(user2, userId, now)
+		userRepository.store(user2)
 
 		val user3 = userRepository.load(user1Id)
 
@@ -120,25 +148,7 @@ class UserTest {
 
 	@Test
 	fun testUserTenantSet() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
-
-		// Get existing tenants from the system
-		val existingTenants = getExistingTenants()
-
-		// Skip test if not enough tenants exist
-		if (existingTenants.size < 3) {
-			println("Skipping testUserTenantSet: requires at least 3 existing tenants, found ${existingTenants.size}")
-			return
-		}
-
-		val tenantA = existingTenants[0]
-		val tenantB = existingTenants[1]
-		val tenantC = existingTenants[2]
-
-		// Create a user
-		val user1 = userRepository.create(tenantId, userId, now)
+		val user1 = userRepository.create()
 		requireNotNull(user1)
 
 		val user1Id = user1.id
@@ -148,24 +158,24 @@ class UserTest {
 		assertEquals(0, user1.tenantSet.size)
 
 		// Add tenants
-		user1.tenantSet.add(tenantA.id)
+		user1.tenantSet.add(t1.id)
 		assertEquals(1, user1.tenantSet.size)
-		assertTrue(user1.tenantSet.any { it == tenantA.id })
+		assertTrue(user1.tenantSet.any { it == t1.id })
 
-		user1.tenantSet.add(tenantB.id)
+		user1.tenantSet.add(t2.id)
 		assertEquals(2, user1.tenantSet.size)
-		assertTrue(user1.tenantSet.any { it == tenantB.id })
+		assertTrue(user1.tenantSet.any { it == t2.id })
 
-		user1.tenantSet.add(tenantC.id)
+		user1.tenantSet.add(t3.id)
 		assertEquals(3, user1.tenantSet.size)
 
 		// Remove one tenant
-		user1.tenantSet.remove(tenantB.id)
+		user1.tenantSet.remove(t2.id)
 		assertEquals(2, user1.tenantSet.size)
-		assertFalse(user1.tenantSet.any { it == tenantB.id })
+		assertFalse(user1.tenantSet.any { it == t2.id })
 
 		assertEquals(1, user1.meta.transitionList.size)
-		userRepository.store(user1, userId, now)
+		userRepository.store(user1)
 		assertEquals(2, user1.meta.transitionList.size)
 
 		// Load and verify persistence
@@ -173,59 +183,42 @@ class UserTest {
 		assertEquals(2, user2.meta.transitionList.size)
 
 		assertEquals(2, user2.tenantSet.size)
-		assertTrue(user2.tenantSet.any { it == tenantA.id })
-		assertFalse(user2.tenantSet.any { it == tenantB.id })
-		assertTrue(user2.tenantSet.any { it == tenantC.id })
+		assertTrue(user2.tenantSet.any { it == t1.id })
+		assertFalse(user2.tenantSet.any { it == t2.id })
+		assertTrue(user2.tenantSet.any { it == t3.id })
 
 		// Modify the set
-		user2.tenantSet.remove(tenantA.id)
-		user2.tenantSet.add(tenantB.id)
+		user2.tenantSet.remove(t1.id)
+		user2.tenantSet.add(t2.id)
 
 		assertEquals(2, user2.tenantSet.size)
-		assertFalse(user2.tenantSet.any { it == tenantA.id })
-		assertTrue(user2.tenantSet.any { it == tenantB.id })
-		assertTrue(user2.tenantSet.any { it == tenantC.id })
+		assertFalse(user2.tenantSet.any { it == t1.id })
+		assertTrue(user2.tenantSet.any { it == t2.id })
+		assertTrue(user2.tenantSet.any { it == t3.id })
 
-		userRepository.store(user2, userId, now)
+		userRepository.store(user2)
 
 		// Verify final state
 		val user3 = userRepository.load(user1Id)
 		assertEquals(2, user3.tenantSet.size)
-		assertFalse(user3.tenantSet.any { it == tenantA.id })
-		assertTrue(user3.tenantSet.any { it == tenantB.id })
-		assertTrue(user3.tenantSet.any { it == tenantC.id })
+		assertFalse(user3.tenantSet.any { it == t1.id })
+		assertTrue(user3.tenantSet.any { it == t2.id })
+		assertTrue(user3.tenantSet.any { it == t3.id })
 	}
 
 	@Test
 	fun testUserClearTenantSet() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
-
-		// Get existing tenants from the system
-		val existingTenants = getExistingTenants()
-
-		// Skip test if not enough tenants exist
-		if (existingTenants.size < 2) {
-			println("Skipping testUserClearTenantSet: requires at least 2 existing tenants, found ${existingTenants.size}")
-			return
-		}
-
-		val tenantA = existingTenants[0]
-		val tenantB = existingTenants[1]
-
-		// Create user with tenants
-		val user1 = userRepository.create(tenantId, userId, now)
+		val user1 = userRepository.create()
 		requireNotNull(user1)
 
 		val user1Id = user1.id
 		initUser(user1, uniqueEmail("clear-test"), "Clear Test User", CodeUserRole.USER)
 
-		user1.tenantSet.add(tenantA.id)
-		user1.tenantSet.add(tenantB.id)
+		user1.tenantSet.add(t1.id)
+		user1.tenantSet.add(t2.id)
 		assertEquals(2, user1.tenantSet.size)
 
-		userRepository.store(user1, userId, now)
+		userRepository.store(user1)
 
 		// Load and clear
 		val user2 = userRepository.load(user1Id)
@@ -234,7 +227,7 @@ class UserTest {
 		user2.tenantSet.clear()
 		assertEquals(0, user2.tenantSet.size)
 
-		userRepository.store(user2, userId, now)
+		userRepository.store(user2)
 
 		// Verify cleared
 		val user3 = userRepository.load(user1Id)
@@ -243,11 +236,7 @@ class UserTest {
 
 	@Test
 	fun testUserTransitionList() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
-
-		val user1 = userRepository.create(tenantId, userId, now)
+		val user1 = userRepository.create()
 		requireNotNull(user1)
 
 		val user1Id = user1.id
@@ -256,7 +245,7 @@ class UserTest {
 		// First transition is from creation
 		assertEquals(1, user1.meta.transitionList.size)
 
-		userRepository.store(user1, userId, now)
+		userRepository.store(user1)
 
 		// Second transition after first store
 		assertEquals(2, user1.meta.transitionList.size)
@@ -265,7 +254,7 @@ class UserTest {
 		assertEquals(2, user2.meta.transitionList.size)
 
 		user2.name = "Updated Name"
-		userRepository.store(user2, userId, now)
+		userRepository.store(user2)
 
 		// Third transition after update
 		assertEquals(3, user2.meta.transitionList.size)
@@ -273,18 +262,6 @@ class UserTest {
 		val user3 = userRepository.load(user1Id)
 		assertEquals(3, user3.meta.transitionList.size)
 		assertEquals("Updated Name", user3.name)
-	}
-
-	private fun getExistingTenants(): List<ObjTenant> {
-		requestCtx.tenantId
-		val tenantIds = tenantRepository.find(null)
-		return tenantIds.mapNotNull { id ->
-			try {
-				tenantRepository.get(id)
-			} catch (e: Exception) {
-				null
-			}
-		}
 	}
 
 	private fun uniqueEmail(prefix: String): String {

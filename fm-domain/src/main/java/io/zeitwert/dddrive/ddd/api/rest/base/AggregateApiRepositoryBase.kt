@@ -34,14 +34,9 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 			throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot specify id on creation (${dto.getId()})")
 		}
 		try {
-			val tenantId = if (dto.getTenant() != null) {
-				repository.idFromString(dto.getTenant()!!.id!!)
-			} else {
-				requestContext.tenantId
-			}!!
-			val aggregate = repository.create(tenantId, requestContext.userId, OffsetDateTime.now())
+			val aggregate = repository.create()
 			dtoAdapter.toAggregate(dto, aggregate)
-			repository.store(aggregate, requestContext.userId, OffsetDateTime.now())
+			repository.store(aggregate)
 			return dtoAdapter.fromAggregate(aggregate, DtoDetailLevel.FULL) as S
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on create", x)
@@ -100,7 +95,7 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 				}
 
 				dtoAdapter.toAggregate(dto, aggregate)
-				repository.store(aggregate, requestContext.userId, OffsetDateTime.now())
+				repository.store(aggregate)
 				return dtoAdapter.fromAggregate(repository.get(id), DtoDetailLevel.FULL) as S
 			}
 
@@ -129,7 +124,7 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 			}
 
 			aggregate.delete(requestContext.userId, OffsetDateTime.now())
-			repository.store(aggregate, requestContext.userId, OffsetDateTime.now())
+			repository.store(aggregate)
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on delete", x)
 		}

@@ -6,7 +6,7 @@ interface SessionContext {
 
 	val tenantId: Any
 
-	val accountId: Any
+	val accountId: Any?
 
 	val userId: Any
 

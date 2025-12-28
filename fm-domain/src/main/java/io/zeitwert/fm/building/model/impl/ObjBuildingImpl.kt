@@ -1,5 +1,6 @@
 package io.zeitwert.fm.building.model.impl
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.app.validation.model.enums.CodeValidationLevelEnum
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.delegate.baseProperty
@@ -83,7 +84,7 @@ class ObjBuildingImpl(
 	override var coverFoto: ObjDocument? by referenceProperty(this, "coverFoto")
 
 	// Part list property
-	override val ratingList: PartListProperty<ObjBuildingPartRating> = partListProperty(this, "ratingList")
+	override val ratingList: PartListProperty<ObjBuilding, ObjBuildingPartRating> = partListProperty(this, "ratingList")
 
 	// Reference set property
 	override val contactSet: ReferenceSetProperty<ObjContact> = referenceSetProperty(this, "contactSet")
@@ -96,12 +97,9 @@ class ObjBuildingImpl(
 
 	override fun aggregate(): ObjBuilding = this
 
-	override fun doAfterCreate(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doAfterCreate(userId, timestamp)
-		this.addCoverFoto(userId, timestamp)
+	override fun doAfterCreate(sessionContext: SessionContext) {
+		super.doAfterCreate(sessionContext)
+		this.addCoverFoto()
 	}
 
 	override val account get() = if (accountId != null) repository.accountRepository.get(accountId!!) else null
@@ -116,13 +114,10 @@ class ObjBuildingImpl(
 		return super.doAddPart(property, partId)
 	}
 
-	override fun doBeforeStore(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doBeforeStore(userId, timestamp)
+	override fun doBeforeStore(sessionContext: SessionContext) {
+		super.doBeforeStore(sessionContext)
 		if (coverFotoId == null) {
-			addCoverFoto(userId, timestamp)
+			addCoverFoto()
 		}
 	}
 
@@ -262,17 +257,14 @@ class ObjBuildingImpl(
 		}
 	}
 
-	private fun addCoverFoto(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
+	private fun addCoverFoto() {
 		val documentRepo = repository.documentRepository
-		val coverFoto = documentRepo.create(tenantId, userId, timestamp)
+		val coverFoto = documentRepo.create()
 		coverFoto.name = "CoverFoto"
 		coverFoto.contentKind = CodeContentKind.FOTO
 		coverFoto.documentKind = CodeDocumentKind.STANDALONE
 		coverFoto.documentCategory = CodeDocumentCategory.FOTO
-		documentRepo.store(coverFoto, userId, timestamp)
+		documentRepo.store(coverFoto)
 		this.coverFotoId = coverFoto.id
 	}
 

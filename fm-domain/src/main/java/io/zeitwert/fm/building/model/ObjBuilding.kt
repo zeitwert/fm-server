@@ -89,7 +89,7 @@ interface ObjBuilding :
 
 	val currentRatingForView: ObjBuildingPartRating?
 
-	val ratingList: PartListProperty<ObjBuildingPartRating>
+	val ratingList: PartListProperty<ObjBuilding, ObjBuildingPartRating>
 
 	fun addRating(
 		user: ObjUser,

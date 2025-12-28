@@ -1,5 +1,6 @@
 package io.zeitwert.fm.contact.model.impl
 
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Component
  * Repository implementation for ObjContact using the delegation-based framework.
  */
 @Component("objContactRepository")
-class ObjContactRepositoryImpl :
-	FMObjRepositoryBase<ObjContact>(
+class ObjContactRepositoryImpl(
+	override val requestCtx: RequestContextFM,
+) : FMObjRepositoryBase<ObjContact>(
 		ObjContact::class.java,
 		AGGREGATE_TYPE_ID,
 	),

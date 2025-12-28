@@ -50,7 +50,7 @@ public class DocumentTest {
 		assertNotNull(this.documentRepository, "documentRepository not null");
 		assertEquals("obj_document", this.documentRepository.getAggregateType().getId());
 
-		ObjDocument documentA1 = this.documentRepository.create(tenantId, userId, timestamp);
+		ObjDocument documentA1 = this.documentRepository.create();
 
 		assertNotNull(documentA1, "test not null");
 		assertNotNull(documentA1.getId(), "id not null");
@@ -65,7 +65,7 @@ public class DocumentTest {
 		this.initDocument(documentA1);
 		this.checkDocument(documentA1);
 
-		this.documentRepository.store(documentA1, userId, timestamp);
+		this.documentRepository.store(documentA1);
 		this.documentRepository.storeContent(documentA1, CodeContentType.PNG, TEST_PNG_CONTENT.getBytes(StandardCharsets.UTF_8), userId, timestamp);
 		assertEquals(CodeContentType.PNG, this.documentRepository.getContentType(documentA1));
 		assertEquals(TEST_PNG_CONTENT, new String(this.documentRepository.getContent(documentA1), StandardCharsets.UTF_8));
@@ -90,10 +90,10 @@ public class DocumentTest {
 	}
 
 	private void getTestData(Object tenantId, Object userId, OffsetDateTime timestamp) throws Exception {
-		Account = accountRepo.create(tenantId, userId, timestamp);
+		Account = accountRepo.create();
 		Account.setName("Test HH");
 		Account.setAccountType(CodeAccountType.CLIENT);
-		accountRepo.store(Account, userId, timestamp);
+		accountRepo.store(Account);
 		assertNotNull(Account, "account");
 	}
 

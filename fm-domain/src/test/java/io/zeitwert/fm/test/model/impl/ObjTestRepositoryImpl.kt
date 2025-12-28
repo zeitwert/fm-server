@@ -1,5 +1,6 @@
 package io.zeitwert.fm.test.model.impl
 
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
@@ -7,8 +8,9 @@ import io.zeitwert.fm.test.model.ObjTestRepository
 import org.springframework.stereotype.Component
 
 @Component("objTestRepository")
-class ObjTestRepositoryImpl :
-	FMObjRepositoryBase<ObjTest>(
+class ObjTestRepositoryImpl(
+	override val requestCtx: RequestContextFM,
+) : FMObjRepositoryBase<ObjTest>(
 		ObjTest::class.java,
 		AGGREGATE_TYPE_ID,
 	),

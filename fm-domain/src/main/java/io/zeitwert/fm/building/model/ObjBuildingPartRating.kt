@@ -25,7 +25,7 @@ interface ObjBuildingPartRating : ObjPart<ObjBuilding> {
 
 	var maintenanceStrategy: CodeBuildingMaintenanceStrategy?
 
-	val elementList: PartListProperty<ObjBuildingPartElementRating>
+	val elementList: PartListProperty<ObjBuilding, ObjBuildingPartElementRating>
 
 	fun getElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating
 

@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.io.IOException
-import java.time.OffsetDateTime
 import java.util.function.Consumer
 
 @RestController("buildingFileTransferController")
@@ -81,15 +80,13 @@ class BuildingImportExportController {
 			return ResponseEntity.badRequest().build<BuildingTransferDto?>()
 		} else if (AGGREGATE != dto.meta?.aggregate) {
 			return ResponseEntity.unprocessableEntity().build<BuildingTransferDto?>()
-		} else if (VERSION != dto.meta?.version) {
+		} else if (VERSION != dto.meta.version) {
 			return ResponseEntity.unprocessableEntity().build<BuildingTransferDto?>()
 		}
-		val userId = this.requestCtx.getUser().id
-		val timestamp = OffsetDateTime.now()
-		val building = this.buildingRepo.create(this.requestCtx.getTenantId(), userId, timestamp)
+		val building = this.buildingRepo.create()
 		building.accountId = accountId
 		this.fillFromDto(building, dto)
-		this.buildingRepo.store(building, userId, timestamp)
+		this.buildingRepo.store(building)
 		val export = this.getTransferDto(building)
 		return ResponseEntity.ok().body<BuildingTransferDto?>(export)
 	}
@@ -260,14 +257,13 @@ class BuildingImportExportController {
 			if (dto.notes != null) {
 				val noteType = getNoteType("note")
 				val noteUserId = this.requestCtx.getUser().id
-				val noteTimestamp = OffsetDateTime.now()
 				dto.notes.forEach(
 					Consumer { dtoNote: NoteTransferDto? ->
 						val note = building.addNote(noteType!!, noteUserId)
 						note.subject = dtoNote!!.subject
 						note.content = dtoNote.content
 						note.isPrivate = dtoNote.isPrivate
-						this.noteRepo.store(note, noteUserId, noteTimestamp)
+						this.noteRepo.store(note)
 					},
 				)
 			}

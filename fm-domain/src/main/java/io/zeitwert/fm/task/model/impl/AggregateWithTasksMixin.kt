@@ -26,8 +26,8 @@ interface AggregateWithTasksMixin : ItemWithTasks {
 		timestamp: OffsetDateTime,
 	): DocTask {
 		val aggregate = aggregate()
-		val tenantId = if (aggregate is Obj) aggregate.tenantId else (aggregate as Doc).tenantId
-		val task = this.taskRepository().create(tenantId, userId, timestamp)
+		if (aggregate is Obj) aggregate.tenantId else (aggregate as Doc).tenantId
+		val task = this.taskRepository().create()
 		task.relatedToId = aggregate.id
 		return task
 	}

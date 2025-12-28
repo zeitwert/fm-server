@@ -1,5 +1,6 @@
 package io.zeitwert.fm.oe.model.impl
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
@@ -15,7 +16,6 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
-import java.time.OffsetDateTime
 
 class ObjUserImpl(
 	override val repository: ObjUserRepository,
@@ -49,35 +49,26 @@ class ObjUserImpl(
 		setCaption(name ?: "User")
 	}
 
-	override fun doAfterCreate(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doAfterCreate(userId, timestamp)
-		this.addAvatarImage(userId, timestamp)
+	override fun doAfterCreate(sessionContext: SessionContext) {
+		super.doAfterCreate(sessionContext)
+		this.addAvatarImage()
 	}
 
-	override fun doBeforeStore(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doBeforeStore(userId, timestamp)
+	override fun doBeforeStore(sessionContext: SessionContext) {
+		super.doBeforeStore(sessionContext)
 		if (avatarImageId == null) {
-			this.addAvatarImage(userId, timestamp)
+			this.addAvatarImage()
 		}
 	}
 
-	private fun addAvatarImage(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
+	private fun addAvatarImage() {
 		val documentRepo = repository.documentRepository
-		val image = documentRepo.create(this.tenantId, userId, timestamp)
+		val image = documentRepo.create()
 		image.name = "Avatar"
 		image.contentKind = CodeContentKind.getContentKind("foto")
 		image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
 		image.documentCategory = CodeDocumentCategory.getDocumentCategory("avatar")
-		documentRepo.store(image, userId, timestamp)
+		documentRepo.store(image)
 		avatarImageId = image.id
 	}
 

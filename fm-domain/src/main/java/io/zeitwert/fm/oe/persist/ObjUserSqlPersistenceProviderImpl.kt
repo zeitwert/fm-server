@@ -126,7 +126,6 @@ open class ObjUserSqlPersistenceProviderImpl(
 			.from(Tables.OBJ_USER)
 			.where(Tables.OBJ_USER.EMAIL.eq(email))
 			.fetchOne(Tables.OBJ_USER.OBJ_ID)
-			?: return Optional.empty()
 		return Optional.ofNullable(userId)
 	}
 

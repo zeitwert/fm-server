@@ -62,7 +62,7 @@ public class TaskTest {
 		assertNotNull(this.taskRepository, "taskRepository not null");
 		assertEquals("doc_task", this.taskRepository.getAggregateType().getId());
 
-		DocTask taskA1 = this.taskRepository.create(tenantId, userId, now);
+		DocTask taskA1 = this.taskRepository.create();
 
 		assertNotNull(taskA1, "task not null");
 		assertNotNull(taskA1.getId(), "id not null");
@@ -79,7 +79,7 @@ public class TaskTest {
 		assertTrue(taskA1.getMeta().isInWork());
 		this.checkTask1(taskA1);
 
-		this.taskRepository.store(taskA1, userId, now);
+		this.taskRepository.store(taskA1);
 		taskA1 = null;
 
 		DocTask taskA2 = this.taskRepository.load(taskA_id);
@@ -96,7 +96,7 @@ public class TaskTest {
 		this.initTask2(taskA2, userId, now);
 		assertTrue(taskA2.getMeta().isInWork());
 
-		this.taskRepository.store(taskA2, userId, now);
+		this.taskRepository.store(taskA2);
 		taskA2 = null;
 
 		DocTask taskA3 = this.taskRepository.load(taskA_id);
@@ -110,7 +110,7 @@ public class TaskTest {
 		taskA3.getMeta().setCaseStage(StageDone, userId, now);
 		assertFalse(taskA3.getMeta().isInWork());
 
-		this.taskRepository.store(taskA3, userId, now);
+		this.taskRepository.store(taskA3);
 		taskA3 = null;
 
 		DocTask taskA4 = this.taskRepository.get(taskA_id);

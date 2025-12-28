@@ -1,5 +1,6 @@
 package io.zeitwert.fm.obj.persist
 
+import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjPartTransition
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
@@ -13,7 +14,7 @@ import org.jooq.DSLContext
 class ObjPartTransitionSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<ObjPartTransition> {
+) : PartSqlPersistenceProvider<Obj, ObjPartTransition> {
 
 	private val partsLoaded = mutableListOf<ObjPartTransitionRecord>()
 	private val partsToInsert = mutableListOf<ObjPartTransitionRecord>()
@@ -31,7 +32,7 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	override fun loadPartList(
-		partList: PartListProperty<ObjPartTransition>,
+		partList: PartListProperty<Obj, ObjPartTransition>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -66,7 +67,7 @@ class ObjPartTransitionSqlPersistenceProviderImpl(
 	}
 
 	override fun storePartList(
-		partList: PartListProperty<ObjPartTransition>,
+		partList: PartListProperty<Obj, ObjPartTransition>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id

@@ -55,12 +55,13 @@ open class ObjTestSqlPersistenceProviderImpl(
 		aggregate.testType = CodeTestType.getTestType(record.testTypeId)
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun doLoadParts(aggregate: ObjTest) {
 		super.doLoadParts(aggregate)
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
 			loadPartList(
-				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>,
+				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endLoad()
@@ -104,12 +105,13 @@ open class ObjTestSqlPersistenceProviderImpl(
 		return record
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun doStoreParts(aggregate: ObjTest) {
 		super.doStoreParts(aggregate)
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginStore()
 			storePartList(
-				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTestPartNode>,
+				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endStore()

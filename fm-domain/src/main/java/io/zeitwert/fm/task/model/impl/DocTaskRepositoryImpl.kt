@@ -1,13 +1,15 @@
 package io.zeitwert.fm.task.model.impl
 
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import org.springframework.stereotype.Component
 
 @Component("docTaskRepository")
-class DocTaskRepositoryImpl :
-	FMDocRepositoryBase<DocTask>(
+class DocTaskRepositoryImpl(
+	override val requestCtx: RequestContextFM,
+) : FMDocRepositoryBase<DocTask>(
 		DocTask::class.java,
 		AGGREGATE_TYPE_ID,
 	),

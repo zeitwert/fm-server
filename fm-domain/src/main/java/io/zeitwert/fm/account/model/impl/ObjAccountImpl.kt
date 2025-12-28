@@ -1,6 +1,6 @@
 package io.zeitwert.fm.account.model.impl
 
-import dddrive.ddd.path.getValueByPath
+import dddrive.app.ddd.model.SessionContext
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
@@ -21,7 +21,6 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.math.BigDecimal
-import java.time.OffsetDateTime
 
 class ObjAccountImpl(
 	override val repository: ObjAccountRepository,
@@ -53,23 +52,16 @@ class ObjAccountImpl(
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
 
-	override fun doAfterCreate(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doAfterCreate(userId, timestamp)
-		check(getValueByPath<Any>("id") != null) { "id must not be null after create" }
+	override fun doAfterCreate(sessionContext: SessionContext) {
+		super.doAfterCreate(sessionContext)
 		setValueByPath("accountId", id)
-		addLogoImage(userId, timestamp)
+		addLogoImage()
 	}
 
-	override fun doBeforeStore(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doBeforeStore(userId, timestamp)
+	override fun doBeforeStore(sessionContext: SessionContext) {
+		super.doBeforeStore(sessionContext)
 		if (logoImageId == null) {
-			addLogoImage(userId, timestamp)
+			addLogoImage()
 		}
 	}
 
@@ -87,17 +79,14 @@ class ObjAccountImpl(
 		setCaption(name)
 	}
 
-	private fun addLogoImage(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
+	private fun addLogoImage() {
 		val documentRepo = directory.getRepository(ObjDocument::class.java)
-		val image = documentRepo.create(tenantId, userId, timestamp)
+		val image = documentRepo.create()
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.FOTO
 		image.documentKind = CodeDocumentKind.STANDALONE
 		image.documentCategory = CodeDocumentCategory.LOGO
-		documentRepo.store(image, userId, timestamp)
+		documentRepo.store(image)
 		logoImageId = image.id
 	}
 

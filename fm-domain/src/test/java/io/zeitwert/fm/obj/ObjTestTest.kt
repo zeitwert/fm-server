@@ -41,11 +41,11 @@ class ObjTestTest {
 		assertNotNull(this.testRepository, "objTestRepository not null")
 		assertEquals("obj_test", this.testRepository.aggregateType.id)
 
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
+		requestCtx.tenantId
+		requestCtx.userId
+		requestCtx.currentTime
 
-		val testA1 = this.testRepository.create(tenantId, userId, now)
+		val testA1 = this.testRepository.create()
 		assertNotNull(testA1, "test not null")
 		requireNotNull(testA1)
 
@@ -63,7 +63,7 @@ class ObjTestTest {
 
 		assertEquals(1, testA1.meta.transitionList.size)
 
-		this.testRepository.store(testA1, userId, now)
+		this.testRepository.store(testA1)
 
 		val testA2 = this.testRepository.get(testAId)
 		val testA2IdHash = System.identityHashCode(testA2)
@@ -76,11 +76,11 @@ class ObjTestTest {
 
 	@Test
 	fun testProperties() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
+		requestCtx.tenantId
+		requestCtx.userId
+		requestCtx.currentTime
 
-		val testA1 = this.testRepository.create(tenantId, userId, now)
+		val testA1 = this.testRepository.create()
 		requireNotNull(testA1)
 
 		val testAId = testA1.id
@@ -98,10 +98,10 @@ class ObjTestTest {
 		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.json))
 		assertEquals(CodeTestType.TYPE_A, testA1.testType)
 
-		val testB1: ObjTest = this.testRepository.create(tenantId, userId, now)
+		val testB1: ObjTest = this.testRepository.create()
 		initObjTest(testB1, "Two", TYPE_B)
 		val testBId: Any = testB1.id
-		this.testRepository.store(testB1, userId, now)
+		this.testRepository.store(testB1)
 
 		testA1.refObjId = testBId
 		assertEquals(
@@ -109,7 +109,7 @@ class ObjTestTest {
 			testA1.caption,
 		)
 
-		this.testRepository.store(testA1, userId, now)
+		this.testRepository.store(testA1)
 
 		val testA2 = this.testRepository.load(testAId)
 
@@ -148,11 +148,11 @@ class ObjTestTest {
 
 	@Test
 	fun testEnumSet() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
+		requestCtx.tenantId
+		requestCtx.userId
+		requestCtx.currentTime
 
-		val testA1 = this.testRepository.create(tenantId, userId, now)
+		val testA1 = this.testRepository.create()
 		requireNotNull(testA1)
 
 		val testAId = testA1.id
@@ -177,7 +177,7 @@ class ObjTestTest {
 		assertEquals(2, testA1.testTypeSet.size)
 
 		assertEquals(1, testA1.meta.transitionList.size)
-		this.testRepository.store(testA1, userId, now)
+		this.testRepository.store(testA1)
 		assertEquals(2, testA1.meta.transitionList.size)
 
 		val testA2: ObjTest = this.testRepository.load(testAId)
@@ -198,14 +198,14 @@ class ObjTestTest {
 
 	@Test
 	fun testPartList() {
-		val tenantId = requestCtx.tenantId
-		val userId = requestCtx.userId
-		val now = requestCtx.currentTime
+		requestCtx.tenantId
+		requestCtx.userId
+		requestCtx.currentTime
 
 		lateinit var testAId: Any
 
 		run {
-			val testA1 = this.testRepository.create(tenantId, userId, now)
+			val testA1 = this.testRepository.create()
 			assertEquals(0, testA1.meta.version)
 			assertEquals(1, testA1.meta.transitionList.size)
 
@@ -228,7 +228,7 @@ class ObjTestTest {
 			assertEquals(3, testA1.nodeList.size)
 
 			testAId = testA1.id
-			this.testRepository.store(testA1, userId, now)
+			this.testRepository.store(testA1)
 			assertEquals(1, testA1.meta.version)
 			assertEquals(2, testA1.meta.transitionList.size)
 		}
@@ -250,7 +250,7 @@ class ObjTestTest {
 			testA2.nodeList.add(null).apply { shortText = "E" }
 			assertEquals(3, testA2.nodeList.size)
 
-			this.testRepository.store(testA2, userId, now)
+			this.testRepository.store(testA2)
 			assertEquals(2, testA2.meta.version)
 			assertEquals(3, testA2.meta.transitionList.size)
 		}

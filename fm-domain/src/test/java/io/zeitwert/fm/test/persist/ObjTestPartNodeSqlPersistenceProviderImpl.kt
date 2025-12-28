@@ -4,6 +4,7 @@ import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
+import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestPartNode
 import io.zeitwert.fm.test.model.db.Tables
 import io.zeitwert.fm.test.model.db.tables.records.ObjTestPartNodeRecord
@@ -13,7 +14,7 @@ import org.jooq.DSLContext
 class ObjTestPartNodeSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<ObjTestPartNode> {
+) : PartSqlPersistenceProvider<ObjTest, ObjTestPartNode> {
 
 	private val partsLoaded = mutableListOf<ObjTestPartNodeRecord>()
 	private val partsToInsert = mutableListOf<ObjTestPartNodeRecord>()
@@ -31,7 +32,7 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 	}
 
 	override fun loadPartList(
-		partList: PartListProperty<ObjTestPartNode>,
+		partList: PartListProperty<ObjTest, ObjTestPartNode>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -73,7 +74,7 @@ class ObjTestPartNodeSqlPersistenceProviderImpl(
 	}
 
 	override fun storePartList(
-		partList: PartListProperty<ObjTestPartNode>,
+		partList: PartListProperty<ObjTest, ObjTestPartNode>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id

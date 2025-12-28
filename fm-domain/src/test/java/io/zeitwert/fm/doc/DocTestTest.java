@@ -59,7 +59,7 @@ public class DocTestTest {
 		OffsetDateTime now = requestCtx.getCurrentTime();
 		ObjAccount account = this.getTestAccount(this.requestCtx);
 
-		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
+		DocTest testA1 = this.docTestRepo.create();
 		assertEquals(0, testA1.getMeta().getVersion());
 		this.initDocTest(testA1, "One", TYPE_A, userId);
 		testA1.setAccountId(account.getId());
@@ -78,7 +78,7 @@ public class DocTestTest {
 		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 		assertEquals(account.getId(), testA1.getAccountId(), "account id");
 
-		this.docTestRepo.store(testA1, userId, now);
+		this.docTestRepo.store(testA1);
 		assertEquals(1, testA1.getMeta().getVersion());
 		assertEquals(2, testA1.getMeta().getTransitionList().size());
 		testA1 = null;
@@ -108,7 +108,7 @@ public class DocTestTest {
 		CodeTestType typeB = CodeTestType.Enumeration.getTestType(TYPE_B);
 		CodeTestType typeC = CodeTestType.Enumeration.getTestType(TYPE_C);
 
-		DocTest testA1 = this.docTestRepo.create(tenantId, userId, now);
+		DocTest testA1 = this.docTestRepo.create();
 		Object testA_id = testA1.getId();
 		this.initDocTest(testA1, "One", TYPE_A, userId);
 		testA1.setAccountId(account.getId());
@@ -125,19 +125,19 @@ public class DocTestTest {
 		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.getJson()));
 		assertEquals(typeA, testA1.getTestType());
 
-		ObjTest refObj = this.objTestRepo.create(tenantId, userId, now);
+		ObjTest refObj = this.objTestRepo.create();
 		this.initObjTest(refObj, "Two", TYPE_B);
 		Object refObj_id = refObj.getId();
-		this.objTestRepo.store(refObj, userId, now);
+		this.objTestRepo.store(refObj);
 
 		testA1.setRefObjId(refObj_id);
 		assertEquals("[Short Test One, Long Test One] (RefObj:[Short Test Two, Long Test Two])", testA1.getCaption());
 
-		DocTest refDoc = this.docTestRepo.create(tenantId, userId, now);
+		DocTest refDoc = this.docTestRepo.create();
 		this.initDocTest(refDoc, "Two", TYPE_B, userId);
 		refDoc.setAccountId(account.getId());
 		Object refDoc_id = refDoc.getId();
-		this.docTestRepo.store(refDoc, userId, now);
+		this.docTestRepo.store(refDoc);
 
 		testA1.setRefDocId(refDoc_id);
 		assertEquals(
@@ -159,7 +159,7 @@ public class DocTestTest {
 		assertTrue(testA1.getTestTypeSet().contains(typeC));
 		assertEquals(2, testA1.getTestTypeSet().size());
 
-		this.docTestRepo.store(testA1, userId, now);
+		this.docTestRepo.store(testA1);
 		testA1 = null;
 
 		DocTest testA2 = this.docTestRepo.load(testA_id);

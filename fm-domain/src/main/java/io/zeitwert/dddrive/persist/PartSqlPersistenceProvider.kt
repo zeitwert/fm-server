@@ -6,7 +6,7 @@ import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
 import org.jooq.DSLContext
 
-interface PartSqlPersistenceProvider<P : Part<*>> {
+interface PartSqlPersistenceProvider<A : Aggregate, P : Part<A>> {
 
 	val dslContext: DSLContext
 
@@ -15,7 +15,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 	/**
 	 * Load all parts within a load sequence.
 	 */
-	fun doLoadParts(block: PartSqlPersistenceProvider<P>.() -> Unit) {
+	fun doLoadParts(block: PartSqlPersistenceProvider<A, P>.() -> Unit) {
 		beginLoad()
 		return try {
 			block()
@@ -36,7 +36,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 	 * Load the parts into a given part-list.
 	 */
 	fun loadPartList(
-		partList: PartListProperty<P>,
+		partList: PartListProperty<A, P>,
 		partListTypeId: String,
 	)
 
@@ -50,7 +50,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 		partListTypeId: String,
 	) {
 		loadPartList(
-			partList = entity.getProperty(partListId, Any::class) as PartListProperty<P>,
+			partList = entity.getProperty(partListId, Any::class) as PartListProperty<A, P>,
 			partListTypeId = partListTypeId,
 		)
 	}
@@ -63,7 +63,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 	/**
 	 * Store all parts within a load sequence.
 	 */
-	fun doStoreParts(block: PartSqlPersistenceProvider<P>.() -> Unit) {
+	fun doStoreParts(block: PartSqlPersistenceProvider<A, P>.() -> Unit) {
 		beginStore()
 		return try {
 			block()
@@ -81,7 +81,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 	 * Add the parts from a part-list.
 	 */
 	fun storePartList(
-		partList: PartListProperty<P>,
+		partList: PartListProperty<A, P>,
 		partListTypeId: String,
 	)
 
@@ -95,7 +95,7 @@ interface PartSqlPersistenceProvider<P : Part<*>> {
 		partListTypeId: String,
 	) {
 		storePartList(
-			partList = entity.getProperty(partListId, Any::class) as PartListProperty<P>,
+			partList = entity.getProperty(partListId, Any::class) as PartListProperty<A, P>,
 			partListTypeId = partListTypeId,
 		)
 	}

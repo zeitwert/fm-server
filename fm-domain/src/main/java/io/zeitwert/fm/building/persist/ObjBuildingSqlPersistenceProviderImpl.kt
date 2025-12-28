@@ -1,6 +1,5 @@
 package io.zeitwert.fm.building.persist
 
-import dddrive.ddd.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
@@ -44,7 +43,7 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 		aggregate: ObjBuilding,
 		record: ObjBuildingRecord,
 	) {
-		aggregate.setValueByPath("accountId", record.accountId)
+		aggregate.accountId = record.accountId
 		aggregate.name = record.name
 		aggregate.description = record.description
 		aggregate.buildingNr = record.buildingNr

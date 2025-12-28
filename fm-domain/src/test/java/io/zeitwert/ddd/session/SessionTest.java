@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -35,15 +34,11 @@ public class SessionTest {
 	@Test
 	public void testSessionHandling() throws Exception {
 
-		Object tenantId = requestCtx.getTenantId();
-		Object userId = requestCtx.getUserId();
-		OffsetDateTime now = requestCtx.getCurrentTime();
-
-		ObjTest testA1 = this.testRepo.create(tenantId, userId, now);
+		ObjTest testA1 = this.testRepo.create();
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA1_id = testA1.getId();
 		Integer testA1_idHash = System.identityHashCode(testA1);
-		this.testRepo.store(testA1, userId, now);
+		this.testRepo.store(testA1);
 		testA1 = null;
 
 		ObjTest testA2 = this.testRepo.get(testA1_id);

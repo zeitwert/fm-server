@@ -40,11 +40,7 @@ class ContactTest {
 		assertEquals("obj_contact", this.contactRepository.aggregateType.id)
 
 		val account = this.getTestAccount(requestCtx)
-		val contactA1 = this.contactRepository.create(
-			requestCtx.getTenantId(),
-			requestCtx.getUserId(),
-			requestCtx.getCurrentTime(),
-		)
+		val contactA1 = this.contactRepository.create()
 
 		assertNotNull(contactA1, "contact not null")
 		assertNotNull(contactA1.id, "id not null")
@@ -72,7 +68,7 @@ class ContactTest {
 
 		this.checkContact(contactA1)
 
-		this.contactRepository.store(contactA1, requestCtx.getUserId(), requestCtx.getCurrentTime())
+		this.contactRepository.store(contactA1)
 
 		val contactA2 = this.contactRepository.load(contactA_id)
 		val contactA2_idHash = System.identityHashCode(contactA2)
@@ -117,7 +113,7 @@ class ContactTest {
 
 		assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after add/remove")
 
-		this.contactRepository.store(contactA2, requestCtx.getUserId(), requestCtx.getCurrentTime())
+		this.contactRepository.store(contactA2)
 
 		val contactA3 = this.contactRepository.get(contactA_id)
 

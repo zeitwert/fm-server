@@ -13,6 +13,7 @@ import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component("objTenantPersistenceProvider")
 open class ObjTenantSqlPersistenceProviderImpl(
@@ -37,7 +38,6 @@ open class ObjTenantSqlPersistenceProviderImpl(
 		aggregate: ObjTenant,
 		record: ObjTenantRecord,
 	) {
-		aggregate as ObjTenant
 		aggregate.tenantType = CodeTenantType.getTenantType(record.tenantTypeId)
 		aggregate.name = record.name
 		aggregate.description = record.description
@@ -61,6 +61,7 @@ open class ObjTenantSqlPersistenceProviderImpl(
 		aggregate as ObjTenant
 
 		record.objId = aggregate.id as Int
+		record.tenantId = aggregate.id as Int
 		record.tenantTypeId = aggregate.tenantType?.id
 		record.name = aggregate.name
 		record.description = aggregate.description
@@ -86,6 +87,15 @@ open class ObjTenantSqlPersistenceProviderImpl(
 	): List<Any>? {
 		// ObjTenant typically doesn't have foreign keys to other entities
 		return null
+	}
+
+	fun getByKey(key: String): Optional<Any> {
+		val tenantId = dslContext
+			.select(Tables.OBJ_TENANT.OBJ_ID)
+			.from(Tables.OBJ_TENANT)
+			.where(Tables.OBJ_TENANT.NAME.eq(key))
+			.fetchOne(Tables.OBJ_TENANT.OBJ_ID)
+		return Optional.ofNullable(tenantId)
 	}
 
 }

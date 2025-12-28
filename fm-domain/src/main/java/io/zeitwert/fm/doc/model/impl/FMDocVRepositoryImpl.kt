@@ -1,14 +1,15 @@
 package io.zeitwert.fm.doc.model.impl
 
 import dddrive.app.doc.model.Doc
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.doc.model.FMDocVRepository
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
 import org.springframework.stereotype.Component
-import java.time.OffsetDateTime
 
 @Component("docRepository")
-class FMDocVRepositoryImpl :
-	FMDocRepositoryBase<Doc>(
+class FMDocVRepositoryImpl(
+	override val requestCtx: RequestContextFM,
+) : FMDocRepositoryBase<Doc>(
 		Doc::class.java,
 		AGGREGATE_TYPE_ID,
 	),
@@ -16,19 +17,11 @@ class FMDocVRepositoryImpl :
 
 	override fun createAggregate(isNew: Boolean): Doc = throw UnsupportedOperationException("this is a readonly repository")
 
-	override fun create(
-		tenantId: Any,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	): Doc = throw UnsupportedOperationException("this is a readonly repository")
+	override fun create(): Doc = throw UnsupportedOperationException("this is a readonly repository")
 
 	override fun load(id: Any): Doc = throw UnsupportedOperationException("this is a readonly repository")
 
-	override fun store(
-		aggregate: Doc,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) = throw UnsupportedOperationException("this is a readonly repository")
+	override fun store(aggregate: Doc) = throw UnsupportedOperationException("this is a readonly repository")
 
 	companion object {
 

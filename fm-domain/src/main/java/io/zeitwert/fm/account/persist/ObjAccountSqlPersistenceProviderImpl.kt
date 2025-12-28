@@ -16,6 +16,7 @@ import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component("objAccountPersistenceProvider")
 open class ObjAccountSqlPersistenceProviderImpl(
@@ -107,6 +108,15 @@ open class ObjAccountSqlPersistenceProviderImpl(
 			.where(field.eq(targetId as Int))
 			// .and(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_ACCOUNT.OBJ_ID)
+	}
+
+	fun getByKey(key: String): Optional<Any> {
+		val accountId = dslContext
+			.select(Tables.OBJ_ACCOUNT.OBJ_ID)
+			.from(Tables.OBJ_ACCOUNT)
+			.where(Tables.OBJ_ACCOUNT.NAME.eq(key))
+			.fetchOne(Tables.OBJ_ACCOUNT.OBJ_ID)
+		return Optional.ofNullable(accountId)
 	}
 
 }

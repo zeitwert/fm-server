@@ -1,4 +1,4 @@
-package dddrive.domain.ddd.model.impl
+package io.zeitwert.dddrive.model
 
 import dddrive.app.ddd.model.SessionContext
 import java.time.OffsetDateTime

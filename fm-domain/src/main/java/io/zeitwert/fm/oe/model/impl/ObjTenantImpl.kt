@@ -1,5 +1,6 @@
 package io.zeitwert.fm.oe.model.impl
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
@@ -15,7 +16,6 @@ import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import java.math.BigDecimal
-import java.time.OffsetDateTime
 
 class ObjTenantImpl(
 	override val repository: ObjTenantRepository,
@@ -47,36 +47,28 @@ class ObjTenantImpl(
 		setCaption(name ?: "Tenant")
 	}
 
-	override fun doAfterCreate(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doAfterCreate(userId, timestamp)
+	override fun doAfterCreate(sessionContext: SessionContext) {
+		super.doAfterCreate(sessionContext)
 		setValueByPath("tenantId", id)
-		this.addLogoImage(userId, timestamp)
+		println("ObjTenantImpl.doAfterCreate: id=$id, tenantId=$tenantId")
+		this.addLogoImage()
 	}
 
-	override fun doBeforeStore(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		super.doBeforeStore(userId, timestamp)
-		if (this.logoImageId == null) {
-			this.addLogoImage(userId, timestamp)
+	override fun doBeforeStore(sessionContext: SessionContext) {
+		super.doBeforeStore(sessionContext)
+		if (logoImageId == null) {
+			this.addLogoImage()
 		}
 	}
 
-	private fun addLogoImage(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
+	private fun addLogoImage() {
 		val documentRepo = this.repository.documentRepository
-		val image = documentRepo.create(this.tenantId, userId, timestamp)
+		val image = documentRepo.create()
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.getContentKind("foto")
 		image.documentKind = CodeDocumentKind.getDocumentKind("standalone")
 		image.documentCategory = CodeDocumentCategory.getDocumentCategory("logo")
-		documentRepo.store(image, userId, timestamp)
+		documentRepo.store(image)
 		logoImageId = image.id
 	}
 

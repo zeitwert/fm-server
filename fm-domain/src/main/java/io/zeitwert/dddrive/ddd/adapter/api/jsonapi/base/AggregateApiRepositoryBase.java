@@ -53,12 +53,9 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 		}
 		try {
 			// this.userRepository.touch(this.requestCtx.getUser().getId());
-			Integer tenantId = dto.getTenant() != null
-					? Integer.parseInt(dto.getTenant().getId())
-					: (Integer) this.requestCtx.getTenantId();
-			A aggregate = this.repository.create(tenantId, requestCtx.getUserId(), requestCtx.getCurrentTime());
+			A aggregate = this.repository.create();
 			this.dtoAdapter.toAggregate(dto, aggregate);
-			this.repository.store(aggregate, requestCtx.getUserId(), requestCtx.getCurrentTime());
+			this.repository.store(aggregate);
 			return (S) this.dtoAdapter.fromAggregate(aggregate);
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on create", x);
@@ -134,7 +131,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 					throw new BadRequestException(HttpStatus.CONFLICT_409, errorData);
 				}
 				this.dtoAdapter.toAggregate(dto, aggregate);
-				this.repository.store(aggregate, requestCtx.getUserId(), requestCtx.getCurrentTime());
+				this.repository.store(aggregate);
 				aggregate = this.repository.get(dto.getId());
 			}
 			return (S) this.dtoAdapter.fromAggregate(aggregate);
@@ -159,7 +156,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 				throw new BadRequestException("Can only delete an Object");
 			}
 			((Obj) aggregate).delete(requestCtx.getUserId(), requestCtx.getCurrentTime());
-			this.repository.store(aggregate, requestCtx.getUserId(), requestCtx.getCurrentTime());
+			this.repository.store(aggregate);
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on delete", x);
 		}

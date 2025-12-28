@@ -7,7 +7,6 @@ import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
-import java.time.OffsetDateTime
 
 interface AggregateWithNotesMixin : ItemWithNotes {
 
@@ -25,8 +24,8 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 		userId: Any,
 	): ObjNote {
 		val aggregate = aggregate()
-		val tenantId = if (aggregate is Obj) aggregate.tenantId else (aggregate as Doc).tenantId
-		val note = noteRepository().create(tenantId, userId, OffsetDateTime.now())
+		if (aggregate is Obj) aggregate.tenantId else (aggregate as Doc).tenantId
+		val note = noteRepository().create()
 		note.noteType = noteType
 		note.relatedToId = aggregate.id
 		return note
@@ -38,7 +37,7 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 	) {
 		val note = noteRepository().load(noteId)
 		require(aggregate().id == note.relatedToId) { "note is related to this item." }
-		noteRepository().close(note, userId, OffsetDateTime.now())
+		noteRepository().close(note)
 	}
 
 }

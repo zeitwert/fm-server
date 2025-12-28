@@ -50,7 +50,7 @@ public class NoteTest {
 		Object userId = requestCtx.getUserId();
 		OffsetDateTime now = requestCtx.getCurrentTime();
 
-		ObjTest testA1 = this.testRepo.create(tenantId, userId, now);
+		ObjTest testA1 = this.testRepo.create();
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();
 
@@ -62,17 +62,17 @@ public class NoteTest {
 		{
 			ObjNote noteA1 = testA1.addNote(CodeNoteType.NOTE, userId);
 			this.initNote(noteA1, "Subject 1", "Content 1", false);
-			this.noteRepo.store(noteA1, userId, now);
+			this.noteRepo.store(noteA1);
 			assertEquals(1, testA1.getNotes().size());
 
 			ObjNote noteB1 = testA1.addNote(CodeNoteType.NOTE, userId);
 			this.initNote(noteB1, "Subject 2", "Content 2", false);
-			this.noteRepo.store(noteB1, userId, now);
+			this.noteRepo.store(noteB1);
 			assertEquals(2, testA1.getNotes().size());
 
 			ObjNote noteC1 = testA1.addNote(CodeNoteType.NOTE, userId);
 			this.initNote(noteC1, "Subject 3", "Content 3", false);
-			this.noteRepo.store(noteC1, userId, now);
+			this.noteRepo.store(noteC1);
 			assertEquals(3, testA1.getNotes().size());
 
 			Set<Object> idSet3 = new HashSet<>(testA1.getNotes());
@@ -85,7 +85,7 @@ public class NoteTest {
 			assertEquals(Set.of(noteA1.getId(), noteC1.getId()), idSet2);
 			assertEquals(Set.of("Subject 1", "Subject 3"), testA1.getNotes().stream().map(id -> noteRepo.get(id)).map(n -> n.getSubject()).collect(Collectors.toSet()));
 
-			this.testRepo.store(testA1, userId, now);
+			this.testRepo.store(testA1);
 			testA1 = null;
 		}
 
@@ -105,16 +105,16 @@ public class NoteTest {
 
 			ObjNote noteD1 = testA2.addNote(CodeNoteType.getNoteType("note"), userId);
 			this.initNote(noteD1, "Subject 4", "Content 4", false);
-			this.noteRepo.store(noteD1, userId, now);
+			this.noteRepo.store(noteD1);
 			assertEquals(3, testA2.getNotes().size());
 
 			noteC2Id = testA2.getNotes().get(1);
 			ObjNote noteC2 = noteRepo.load(noteC2Id);
 			assertEquals("Subject 3", testA2_noteList.get(1).getSubject());
 			noteC2.setPrivate(true);
-			this.noteRepo.store(noteC2, userId, now);
+			this.noteRepo.store(noteC2);
 
-			this.testRepo.store(testA2, userId, now);
+			this.testRepo.store(testA2);
 			testA2 = null;
 		}
 

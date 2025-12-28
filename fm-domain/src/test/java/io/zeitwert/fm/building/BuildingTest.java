@@ -39,7 +39,7 @@ public class BuildingTest {
 		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
 		ObjAccount account = this.getTestAccount(requestCtx);
-		ObjBuilding buildingA1 = this.buildingRepository.create(requestCtx.getTenantId(), requestCtx.getUserId(), requestCtx.getCurrentTime());
+		ObjBuilding buildingA1 = this.buildingRepository.create();
 
 		assertNotNull(buildingA1, "test not null");
 		assertNotNull(buildingA1.getId(), "id not null");
@@ -87,7 +87,7 @@ public class BuildingTest {
 		assertEquals(e1, buildingA1.getCurrentRating().getElement(bp1), "e1 by buildingPart");
 		assertEquals(e2, buildingA1.getCurrentRating().getElement(bp2), "e2 by buildingPart");
 
-		this.buildingRepository.store(buildingA1, requestCtx.getUserId(), requestCtx.getCurrentTime());
+		this.buildingRepository.store(buildingA1);
 		buildingA1 = null;
 
 		ObjBuilding buildingA2 = this.buildingRepository.load(buildingA_id);
@@ -122,7 +122,7 @@ public class BuildingTest {
 		assertEquals(bp1, buildingA2.getCurrentRating().getElement(bp1).getBuildingPart(), "e1 by buildingPart");
 		assertEquals(bp3, buildingA2.getCurrentRating().getElement(bp3).getBuildingPart(), "e3 by buildingPart");
 
-		this.buildingRepository.store(buildingA2, requestCtx.getUserId(), requestCtx.getCurrentTime());
+		this.buildingRepository.store(buildingA2);
 		buildingA2 = null;
 
 		ObjBuilding buildingA3 = this.buildingRepository.get(buildingA_id);

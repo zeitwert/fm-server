@@ -36,7 +36,7 @@ interface ObjContact :
 
 	var description: String?
 
-	val mailAddressList: PartListProperty<ObjContactPartAddress>
+	val mailAddressList: PartListProperty<ObjContact, ObjContactPartAddress>
 
-	val electronicAddressList: PartListProperty<ObjContactPartAddress>
+	val electronicAddressList: PartListProperty<ObjContact, ObjContactPartAddress>
 }

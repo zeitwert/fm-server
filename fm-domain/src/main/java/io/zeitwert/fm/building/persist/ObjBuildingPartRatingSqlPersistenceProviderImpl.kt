@@ -4,6 +4,7 @@ import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.model.PartListProperty
 import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
+import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
 import io.zeitwert.fm.building.model.db.Tables
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingRecord
@@ -15,7 +16,7 @@ import org.jooq.DSLContext
 class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val aggregate: Aggregate,
-) : PartSqlPersistenceProvider<ObjBuildingPartRating> {
+) : PartSqlPersistenceProvider<ObjBuilding, ObjBuildingPartRating> {
 
 	private val partsLoaded = mutableListOf<ObjBuildingPartRatingRecord>()
 	private val partsToInsert = mutableListOf<ObjBuildingPartRatingRecord>()
@@ -33,7 +34,7 @@ class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 	}
 
 	override fun loadPartList(
-		partList: PartListProperty<ObjBuildingPartRating>,
+		partList: PartListProperty<ObjBuilding, ObjBuildingPartRating>,
 		partListTypeId: String,
 	) {
 		if ((partList.entity as? Part<*>) != null) {
@@ -71,7 +72,7 @@ class ObjBuildingPartRatingSqlPersistenceProviderImpl(
 	}
 
 	override fun storePartList(
-		partList: PartListProperty<ObjBuildingPartRating>,
+		partList: PartListProperty<ObjBuilding, ObjBuildingPartRating>,
 		partListTypeId: String,
 	) {
 		val parentPartId = (partList.entity as? Part<*>)?.id

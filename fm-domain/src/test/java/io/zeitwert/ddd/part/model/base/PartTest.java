@@ -14,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,11 +39,7 @@ public class PartTest {
 		assertNotNull(this.testRepository, "testRepository not null");
 		assertEquals("obj_test", this.testRepository.getAggregateType().getId());
 
-		Object tenantId = requestCtx.getTenantId();
-		Object userId = requestCtx.getUserId();
-		OffsetDateTime now = requestCtx.getCurrentTime();
-
-		ObjTest testA1 = this.testRepository.create(tenantId, userId, now);
+		ObjTest testA1 = this.testRepository.create();
 		this.initObjTest(testA1, "One", "type_a");
 		Object testA_id = testA1.getId();
 
@@ -83,7 +78,7 @@ public class PartTest {
 		assertEquals(testA1_n2.getShortText(), testA1_nodeList.get(1).getShortText());
 		assertEquals(testA1_nodeList.stream().toList(), List.of(testA1_n0, testA1_n2));
 
-		this.testRepository.store(testA1, userId, now);
+		this.testRepository.store(testA1);
 		testA1 = null;
 
 		ObjTest testA2 = this.testRepository.load(testA_id);
@@ -97,7 +92,7 @@ public class PartTest {
 		this.initObjTestPartNode(testA2_n2, "Fourth", "type_b");
 		testA2.getNodeList().get(1).setInt(43);
 
-		this.testRepository.store(testA2, userId, now);
+		this.testRepository.store(testA2);
 		testA2 = null;
 
 		ObjTest testA3 = this.testRepository.load(testA_id);

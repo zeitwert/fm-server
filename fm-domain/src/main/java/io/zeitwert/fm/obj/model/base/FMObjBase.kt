@@ -1,9 +1,11 @@
 package io.zeitwert.fm.obj.model.base
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjBase
 import dddrive.ddd.property.delegate.baseProperty
+import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.ddd.model.EntityWithExtn
 
 /**
@@ -25,6 +27,13 @@ abstract class FMObjBase(
 	var accountId: Any? by baseProperty(this, "accountId")
 
 	private val _extnMap = mutableMapOf<String, Any>()
+
+	override fun doAfterCreate(sessionContext: SessionContext) {
+		super.doAfterCreate(sessionContext)
+		if (this is ItemWithAccount) {
+			this.accountId = sessionContext.accountId!!
+		}
+	}
 
 	// EntityWithExtn implementation
 	override val extnMap: Map<String, Any> = _extnMap

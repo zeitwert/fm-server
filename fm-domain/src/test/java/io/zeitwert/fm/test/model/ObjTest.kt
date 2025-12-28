@@ -34,5 +34,5 @@ interface ObjTest :
 
 	val testTypeSet: EnumSetProperty<CodeTestType>
 
-	val nodeList: PartListProperty<ObjTestPartNode>
+	val nodeList: PartListProperty<ObjTest, ObjTestPartNode>
 }
