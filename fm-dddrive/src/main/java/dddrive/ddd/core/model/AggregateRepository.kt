@@ -1,7 +1,6 @@
 package dddrive.ddd.core.model
 
 import dddrive.ddd.core.model.enums.CodeAggregateType
-import java.time.OffsetDateTime
 
 /**
  * A DDD Aggregate Repository
@@ -35,16 +34,8 @@ interface AggregateRepository<A : Aggregate> {
 
 	/**
 	 * Create a new Aggregate instance
-	 *
-	 * @param tenantId  the tenant in which to create the instance (could be different from session tenant, e.g. when opening a new Tenant in Kernel-Admin-Session)
-	 * @param userId    the user that creates the instance
-	 * @param timestamp the timestamp of creation
 	 */
-	fun create(
-		tenantId: Any,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	): A
+	fun create(): A
 
 	/**
 	 * Get a read-only Aggregate with given id
@@ -65,11 +56,7 @@ interface AggregateRepository<A : Aggregate> {
 	/**
 	 * Store the Aggregate
 	 */
-	fun store(
-		aggregate: A,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	)
+	fun store(aggregate: A)
 
 	/**
 	 * Get a list of Aggregates with the given foreign key pointing to targetId

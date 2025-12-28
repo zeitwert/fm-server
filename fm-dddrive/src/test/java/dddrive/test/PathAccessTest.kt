@@ -6,6 +6,10 @@ import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.PartMeta
 import dddrive.ddd.enums.model.Enumerated
 import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.path.getPropertyByPath
+import dddrive.ddd.path.getValueByPath
+import dddrive.ddd.path.relativePath
+import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.AggregateReferenceProperty
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
@@ -13,9 +17,7 @@ import dddrive.ddd.property.model.EnumProperty
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartReferenceProperty
 import dddrive.ddd.property.model.Property
-import dddrive.ddd.path.getPropertyByPath
-import dddrive.ddd.path.getValueByPath
-import dddrive.ddd.path.setValueByPath
+import dddrive.ddd.property.model.base.IdProperty
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -144,6 +146,12 @@ class PathAccessTest {
 	inner class ReferencePropertyAccess {
 
 		@Test
+		fun `reference id path`() {
+			val p = rootEntity.getPropertyByPath<Any>("reference.id")!!
+			assertEquals("reference.id", p.relativePath())
+		}
+
+		@Test
 		fun `getValueByPath navigates through reference`() {
 			val result: String? = rootEntity.getValueByPath("reference.name")
 			assertEquals("ReferencedEntity", result)
@@ -249,7 +257,7 @@ class PathAccessTest {
 		@Test
 		fun `literal somethingId property takes precedence over Id suffix`() {
 			// Add a literal property named "literalId"
-			rootEntity.addProperty("literalId", createBaseProperty(String::class.java, "literal-value"))
+			rootEntity.addProperty("literalId", createBaseProperty("literalId", String::class.java, "literal-value"))
 
 			val result: String? = rootEntity.getValueByPath("literalId")
 			assertEquals("literal-value", result)
@@ -287,40 +295,40 @@ class PathAccessTest {
 		val entity = TestEntity()
 
 		// Add basic properties
-		entity.addProperty("name", createBaseProperty(String::class.java, "TestEntity"))
-		entity.addProperty("age", createBaseProperty(Int::class.java, 25))
+		entity.addProperty("name", createBaseProperty("name", String::class.java, "TestEntity"))
+		entity.addProperty("age", createBaseProperty("age", Int::class.java, 25))
 
 		// Add enum property
 		val enumeration = createMockEnumeration()
-		entity.addProperty("status", createEnumProperty(enumeration, enumeration.getItem("active")))
+		entity.addProperty("status", createEnumProperty("status", enumeration, enumeration.getItem("active")))
 
 		// Add list property
-		entity.addProperty("children", createPartListProperty())
+		entity.addProperty("children", createPartListProperty("children"))
 
 		// Add reference property
 		val referencedEntity = createReferencedEntity()
-		entity.addProperty("reference", createReferenceProperty(referencedEntity))
+		entity.addProperty("reference", createReferenceProperty("reference", referencedEntity))
 
 		// Add part reference property
 		val partEntity = createPartEntity()
-		entity.addProperty("part", createPartReferenceProperty(partEntity))
+		entity.addProperty("part", createPartReferenceProperty("part", partEntity))
 
 		return entity
 	}
 
 	private fun createReferencedEntity(): TestAggregate {
 		val entity = TestAggregate()
-		entity.addProperty("name", createBaseProperty(String::class.java, "ReferencedEntity"))
-		entity.addProperty("children", createPartListProperty())
+		entity.addProperty("name", createBaseProperty("name", String::class.java, "ReferencedEntity"))
+		entity.addProperty("children", createPartListProperty("children"))
 		return entity
 	}
 
 	private fun createPartEntity(): TestPart {
 		val part = TestPart()
-		part.addProperty("name", createBaseProperty(String::class.java, "PartEntity"))
+		part.addProperty("name", createBaseProperty("name", String::class.java, "PartEntity"))
 
 		val enumeration = createMockEnumeration()
-		part.addProperty("status", createEnumProperty(enumeration, enumeration.getItem("active")))
+		part.addProperty("status", createEnumProperty("status", enumeration, enumeration.getItem("active")))
 
 		return part
 	}
@@ -343,6 +351,7 @@ class PathAccessTest {
 		}
 
 	private fun <T : Any> createBaseProperty(
+		name: String,
 		type: Class<T>,
 		initialValue: T? = null,
 	): BaseProperty<T> =
@@ -350,32 +359,19 @@ class PathAccessTest {
 			override var value: T? = initialValue
 			override val type: Class<T> = type
 			override val entity: EntityWithProperties get() = rootEntity
-			override val relativePath: String = "test"
-			override val path: String = "test"
-			override val name: String = "test"
+			override val name: String = name
 			override val isWritable: Boolean = true
 		}
 
 	private fun createEnumProperty(
+		name: String,
 		enumeration: Enumeration<TestEnum>,
 		initialValue: TestEnum? = null,
 	): EnumProperty<TestEnum> =
 		object : EnumProperty<TestEnum> {
 			private var _value: TestEnum? = initialValue
 			private var _id: String? = initialValue?.id
-			private val _idProperty = object : BaseProperty<String> {
-				override var value: String?
-					get() = _id
-					set(v) {
-						_id = v
-					}
-				override val type: Class<String> = String::class.java
-				override val entity: EntityWithProperties get() = rootEntity
-				override val relativePath: String = "test.id"
-				override val path: String = "test.id"
-				override val name: String = "id"
-				override val isWritable: Boolean = true
-			}
+			private val _idProperty = IdProperty(this, String::class.java)
 
 			override var value: TestEnum?
 				get() = _value
@@ -393,14 +389,14 @@ class PathAccessTest {
 			override val enumeration: Enumeration<TestEnum> = enumeration
 			override val type: Class<TestEnum> = TestEnum::class.java
 			override val entity: EntityWithProperties get() = rootEntity
-			override val relativePath: String = "test"
-			override val path: String = "test"
-			override val name: String = "test"
+			override val name: String = name
 			override val isWritable: Boolean = true
 		}
 
-	private fun createPartListProperty(): PartListProperty<TestPart> =
-		object : PartListProperty<TestPart> {
+	private fun createPartListProperty(
+		name: String,
+	): PartListProperty<TestAggregate, TestPart> =
+		object : PartListProperty<TestAggregate, TestPart> {
 			private val _parts = mutableListOf<TestPart>()
 			private var nextId = 1
 
@@ -424,9 +420,9 @@ class PathAccessTest {
 			override fun add(partId: Int?): TestPart {
 				val id = partId ?: nextId++
 				val newPart = TestPart(id)
-				newPart.addProperty("name", createBaseProperty(String::class.java, "Part$id"))
+				newPart.addProperty("name", createBaseProperty("name", String::class.java, "Part$id"))
 				val enumeration = createMockEnumeration()
-				newPart.addProperty("status", createEnumProperty(enumeration, enumeration.getItem("active")))
+				newPart.addProperty("status", createEnumProperty("status", enumeration, enumeration.getItem("active")))
 				_parts.add(newPart)
 				return newPart
 			}
@@ -442,9 +438,7 @@ class PathAccessTest {
 			override fun indexOf(part: TestPart): Int = _parts.indexOfFirst { it.id == part.id }
 
 			override val entity: EntityWithProperties get() = rootEntity
-			override val relativePath: String = "test"
-			override val path: String = "test"
-			override val name: String = "test"
+			override val name: String = name
 			override val isWritable: Boolean = true
 
 			override fun iterator(): Iterator<TestPart> {
@@ -452,23 +446,14 @@ class PathAccessTest {
 			}
 		}
 
-	private fun createReferenceProperty(initialValue: TestAggregate? = null): AggregateReferenceProperty<TestAggregate> =
+	private fun createReferenceProperty(
+		name: String,
+		initialValue: TestAggregate? = null,
+	): AggregateReferenceProperty<TestAggregate> =
 		object : AggregateReferenceProperty<TestAggregate> {
 			private var _value: TestAggregate? = initialValue
 			private var _id: Any? = initialValue?.id
-			private val _idProperty = object : BaseProperty<Any> {
-				override var value: Any?
-					get() = _id
-					set(v) {
-						_id = v
-					}
-				override val type: Class<Any> = Any::class.java
-				override val entity: EntityWithProperties get() = rootEntity
-				override val relativePath: String = "test.id"
-				override val path: String = "test.id"
-				override val name: String = "id"
-				override val isWritable: Boolean = true
-			}
+			private val _idProperty = IdProperty(this, Any::class.java)
 
 			override var value: TestAggregate?
 				get() = _value
@@ -484,14 +469,15 @@ class PathAccessTest {
 			override val idProperty: BaseProperty<Any> = _idProperty
 			override val type: Class<TestAggregate> = TestAggregate::class.java
 			override val entity: EntityWithProperties get() = rootEntity
-			override val relativePath: String = "test"
-			override val path: String = "test"
-			override val name: String = "test"
+			override val name: String = name
 			override val isWritable: Boolean = true
 		}
 
-	private fun createPartReferenceProperty(initialValue: TestPart? = null): PartReferenceProperty<TestPart> =
-		object : PartReferenceProperty<TestPart> {
+	private fun createPartReferenceProperty(
+		name: String,
+		initialValue: TestPart? = null,
+	): PartReferenceProperty<TestAggregate, TestPart> =
+		object : PartReferenceProperty<TestAggregate, TestPart> {
 			private var _value: TestPart? = initialValue
 			private var _id: Int? = initialValue?.id
 			private val _idProperty = object : BaseProperty<Int> {
@@ -502,8 +488,6 @@ class PathAccessTest {
 					}
 				override val type: Class<Int> = Int::class.java
 				override val entity: EntityWithProperties get() = rootEntity
-				override val relativePath: String = "test.id"
-				override val path: String = "test.id"
 				override val name: String = "id"
 				override val isWritable: Boolean = true
 			}
@@ -522,9 +506,7 @@ class PathAccessTest {
 			override val idProperty: BaseProperty<Int> = _idProperty
 			override val type: Class<TestPart> = TestPart::class.java
 			override val entity: EntityWithProperties get() = rootEntity
-			override val relativePath: String = "test"
-			override val path: String = "test"
-			override val name: String = "test"
+			override val name: String = name
 			override val isWritable: Boolean = true
 		}
 }

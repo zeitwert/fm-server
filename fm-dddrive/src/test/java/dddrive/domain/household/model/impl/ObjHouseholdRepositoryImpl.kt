@@ -1,6 +1,8 @@
 package dddrive.domain.household.model.impl
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjRepositoryBase
+import dddrive.domain.ddd.model.impl.SessionContextImpl
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
@@ -16,18 +18,32 @@ class ObjHouseholdRepositoryImpl :
 	),
 	ObjHouseholdRepository {
 
-	companion object {
+	override val persistenceProvider get() = directory.getPersistenceProvider(ObjHousehold::class.java)
 
-		private const val AGGREGATE_TYPE = "objHousehold"
+	override lateinit var sessionContext: SessionContext
+
+	fun initSessionContext(
+		tenantId: Any,
+		accountId: Any,
+		userId: Any,
+	) {
+		sessionContext = SessionContextImpl(
+			tenantId = tenantId,
+			accountId = accountId,
+			userId = userId,
+		)
 	}
 
 	override fun createAggregate(isNew: Boolean): ObjHousehold = ObjHouseholdImpl(this, isNew)
 
-	override val persistenceProvider get() = directory.getPersistenceProvider(ObjHousehold::class.java)
-
 	override fun registerParts() {
 		super.registerParts()
 		this.addPart(ObjHouseholdPartMember::class.java, ::ObjHouseholdPartMemberImpl)
+	}
+
+	companion object {
+
+		private const val AGGREGATE_TYPE = "objHousehold"
 	}
 
 }

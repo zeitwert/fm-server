@@ -32,11 +32,11 @@ class ObjHouseholdImpl(
 	override var name: String? by baseProperty(this, "name")
 	override var responsibleUserId: Any? by referenceIdProperty<ObjUser>(this, "responsibleUser")
 	override var responsibleUser: ObjUser? by referenceProperty(this, "responsibleUser")
-	override var mainMemberId: Int? by partReferenceIdProperty<ObjHouseholdPartMember>(this, "mainMember")
+	override var mainMemberId: Int? by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>(this, "mainMember")
 	override var mainMember: ObjHouseholdPartMember? by partReferenceProperty(this, "mainMember")
 	override val labelSet: EnumSetProperty<CodeLabel> = enumSetProperty(this, "labelSet")
 	override val userSet: ReferenceSetProperty<ObjUser> = referenceSetProperty(this, "userSet")
-	override val memberList: PartListProperty<ObjHouseholdPartMember> = partListProperty(this, "memberList")
+	override val memberList: PartListProperty<ObjHousehold, ObjHouseholdPartMember> = partListProperty(this, "memberList")
 
 	override fun doAddPart(
 		property: Property<*>,

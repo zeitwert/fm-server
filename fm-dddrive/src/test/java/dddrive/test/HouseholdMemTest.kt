@@ -6,10 +6,13 @@ import dddrive.ddd.property.model.PropertyChangeListener
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
+import dddrive.domain.household.model.impl.ObjHouseholdRepositoryImpl
 import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
+import dddrive.domain.oe.model.impl.ObjTenantRepositoryImpl
+import dddrive.domain.oe.model.impl.ObjUserRepositoryImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -21,7 +24,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.time.OffsetDateTime
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("domain", "mem")
@@ -59,24 +61,26 @@ class HouseholdMemTest : PropertyChangeListener {
 		user = userRepo.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL).orElse(null)
 		assertNotNull(user, "kUser")
 
-		user1 =
-			userRepo.getByEmail("user1@dfp.ch").orElseGet {
-				val newUser = userRepo.create(tenant.id, user.id, OffsetDateTime.now())
-				newUser.name = "user1"
-				newUser.email = "user1@dfp.ch"
-				userRepo.store(newUser, user.id, OffsetDateTime.now())
-				newUser
-			}
+		(tenantRepo as ObjTenantRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
+		(userRepo as ObjUserRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
+		(hhRepo as ObjHouseholdRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
+
+		user1 = userRepo.getByEmail("user1@dfp.ch").orElseGet {
+			val newUser = userRepo.create()
+			newUser.name = "user1"
+			newUser.email = "user1@dfp.ch"
+			userRepo.store(newUser)
+			newUser
+		}
 		assertNotNull(user1, "user1")
 
-		user2 =
-			userRepo.getByEmail("user2@dfp.ch").orElseGet {
-				val newUser = userRepo.create(tenant.id, user.id, OffsetDateTime.now())
-				newUser.name = "user2"
-				newUser.email = "user2@dfp.ch"
-				userRepo.store(newUser, user.id, OffsetDateTime.now())
-				newUser
-			}
+		user2 = userRepo.getByEmail("user2@dfp.ch").orElseGet {
+			val newUser = userRepo.create()
+			newUser.name = "user2"
+			newUser.email = "user2@dfp.ch"
+			userRepo.store(newUser)
+			newUser
+		}
 		assertNotNull(user2, "user2")
 	}
 
@@ -85,7 +89,7 @@ class HouseholdMemTest : PropertyChangeListener {
 		assertEquals("objHousehold", hhRepo.aggregateType.id)
 		assertEquals(0, hhRepo.getByForeignKey("objTypeId", "obj_household").size, "0 hh")
 
-		val hhA1 = hhRepo.create(tenant.id, user.id, OffsetDateTime.now())
+		val hhA1 = hhRepo.create()
 		(hhA1 as AggregateSPI).addPropertyChangeListener(this)
 		val hhA1Id = hhA1.id
 		hhA1.name = "HHA"
@@ -229,7 +233,7 @@ class HouseholdMemTest : PropertyChangeListener {
 		hhA1.mainMemberId = p1.id
 		assertEquals(p1, hhA1.mainMember, "hh.mainMember")
 
-		hhRepo.store(hhA1, user.id, OffsetDateTime.now())
+		hhRepo.store(hhA1)
 
 		val hhA2 = hhRepo.get(hhA1Id)
 		assertNotNull(hhA2)
@@ -274,7 +278,7 @@ class HouseholdMemTest : PropertyChangeListener {
 
 	@Test
 	fun testSetValueByPathy() {
-		val hhB1 = hhRepo.create(tenant.id, user.id, OffsetDateTime.now())
+		val hhB1 = hhRepo.create()
 
 		hhB1.setValueByPath("salutation", CodeSalutation.MR)
 		assertEquals(CodeSalutation.MR, hhB1.salutation, "salutation by path")

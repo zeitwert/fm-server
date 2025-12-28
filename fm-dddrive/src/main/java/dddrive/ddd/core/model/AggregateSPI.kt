@@ -2,7 +2,6 @@ package dddrive.ddd.core.model
 
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.PropertyChangeListener
-import java.time.OffsetDateTime
 
 /**
  * This interface defines the internal callbacks for an Aggregate
@@ -18,48 +17,20 @@ interface AggregateSPI : EntityWithPropertiesSPI {
 	 */
 	fun <P : Part<*>> nextPartId(partClass: Class<P>): Int
 
-	/**
-	 * Initialise aggregate with some basic fields after creation.
-	 *
-	 * @param aggregateId aggregate id
-	 */
-	fun doCreate(
-		aggregateId: Any,
-		tenantId: Any,
-	)
-
-	/**
-	 * Do some work after create, f.ex. fire events, add transition etc.
-	 */
-	fun doAfterCreate(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	)
+	fun doAfterCreate()
 
 	fun beginLoad()
 
 	fun endLoad()
 
-	/**
-	 * Do some work after load.
-	 */
 	fun doAfterLoad()
 
 	fun addPropertyChangeListener(listener: PropertyChangeListener)
 
 	fun removePropertyChangeListener(listener: PropertyChangeListener)
 
-	/**
-	 * Prepare for storage, f.ex. assign seqNr to parts.
-	 */
-	fun doBeforeStore(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	)
+	fun doBeforeStore()
 
-	/**
-	 * Do some work after store.
-	 */
 	fun doAfterStore()
 
 }

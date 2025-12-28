@@ -60,15 +60,15 @@ inline fun <reified A : Aggregate> referenceSetProperty(
  * Usage: `val memberList: PartListProperty<ObjHouseholdPartMember> = partListProperty()`
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified P : Part<*>> partListProperty(
+inline fun <reified A : Aggregate, reified P : Part<A>> partListProperty(
 	entity: EntityWithProperties,
 	name: String,
-): PartListProperty<P> =
+): PartListProperty<A, P> =
 	synchronized(entity) {
 		if (entity.hasProperty(name)) {
-			entity.getProperty(name, Any::class) as PartListProperty<P>
+			entity.getProperty(name, Any::class) as PartListProperty<A, P>
 		}
-		val property: PartListProperty<P> = PartListPropertyImpl(entity, name, P::class.java)
+		val property: PartListProperty<A, P> = PartListPropertyImpl(entity, name, A::class.java, P::class.java)
 		(entity as EntityWithPropertiesSPI).addProperty(property)
 		return property
 	}

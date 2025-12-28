@@ -107,7 +107,7 @@ private fun <T : Any> EntityWithProperties.resolveProperty(
 
 			// Numeric - list index
 			nextSegment?.toIntOrNull() != null -> {
-				require(property is PartListProperty<*>) { "$segment is not a list" }
+				require(property is PartListProperty<*, *>) { "$segment is not a list" }
 				val idx = nextSegment.toInt()
 				if (forSetter) {
 					while (property.size <= idx) property.add(null)

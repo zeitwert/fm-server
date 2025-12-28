@@ -9,10 +9,10 @@ import dddrive.ddd.property.model.Property
 
 abstract class ObjPartBase<O : Obj>(
 	obj: O,
-	repository: dddrive.ddd.core.model.PartRepository<O, out dddrive.ddd.core.model.Part<O>>,
-	property: dddrive.ddd.property.model.Property<*>,
+	repository: PartRepository<O, out Part<O>>,
+	property: Property<*>,
 	id: Int,
-) : dddrive.ddd.core.model.base.PartBase<O>(obj, repository, property, id),
+) : PartBase<O>(obj, repository, property, id),
 	ObjPart<O>
 
 // 	@SuppressWarnings("unchecked")

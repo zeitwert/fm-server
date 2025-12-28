@@ -8,9 +8,9 @@ interface EntityMeta {
 
 	val isInLoad: Boolean
 
-	fun isInCalc(): Boolean
+	val isInCalc: Boolean
 
-	fun isCalcEnabled(): Boolean
+	val isCalcEnabled: Boolean
 
 	fun disableCalc()
 

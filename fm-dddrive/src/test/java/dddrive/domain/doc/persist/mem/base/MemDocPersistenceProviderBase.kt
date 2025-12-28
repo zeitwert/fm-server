@@ -42,7 +42,7 @@ abstract class MemDocPersistenceProviderBase<D : Doc, Pto : DocPto>(
 
 		// Load transitions
 		val transitionListProperty =
-			aggregate.getProperty("transitionList", DocPartTransition::class) as? PartListProperty<DocPartTransition>
+			aggregate.getProperty("transitionList", DocPartTransition::class) as? PartListProperty<Doc, DocPartTransition>
 		transitionListProperty?.clear()
 		docMetaPto?.transitions?.forEach { transitionPto ->
 			// When adding a part from PTO, if transitionPto.id is null, a new ID will be generated.

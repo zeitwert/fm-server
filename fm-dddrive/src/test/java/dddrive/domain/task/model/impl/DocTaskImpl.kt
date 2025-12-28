@@ -26,7 +26,7 @@ class DocTaskImpl(
 	override var dueAt: OffsetDateTime? by baseProperty(this, "dueAt")
 	override var remindAt: OffsetDateTime? by baseProperty(this, "remindAt")
 
-	override val commentList: PartListProperty<DocTaskPartComment> = partListProperty(this, "commentList")
+	override val commentList: PartListProperty<DocTask, DocTaskPartComment> = partListProperty(this, "commentList")
 
 	override fun doAddPart(
 		property: Property<*>,

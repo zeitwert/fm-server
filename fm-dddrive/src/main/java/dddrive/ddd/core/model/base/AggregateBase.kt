@@ -9,7 +9,7 @@ import dddrive.ddd.core.model.RepositoryDirectory
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.PropertyChangeListener
-import java.time.OffsetDateTime
+import dddrive.ddd.property.model.base.EntityWithPropertiesBase
 import java.util.function.Consumer
 
 /**
@@ -18,7 +18,7 @@ import java.util.function.Consumer
 abstract class AggregateBase(
 	override val repository: AggregateRepository<out Aggregate>,
 	override val isNew: Boolean,
-) : dddrive.ddd.property.model.base.EntityWithPropertiesBase(),
+) : EntityWithPropertiesBase(),
 	Aggregate,
 	AggregateMeta,
 	AggregateSPI {
@@ -29,15 +29,14 @@ abstract class AggregateBase(
 	protected var _version: Int? by baseProperty(this, "version")
 	override val version: Int get() = _version!!
 
-	private var _maxPartId: Int? by baseProperty(this, "maxPartId")
-	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
+	var maxPartId: Int? by baseProperty(this, "maxPartId")
 
-	private var _isFrozen = false
-	private var _isInLoad = false
+	override var isFrozen = false
+	override var isInLoad = false
+	override var isInCalc = false
+
 	private var isCalcDisabled = 0
-	private var _isInCalc = false
 
-	var doCreateSeqNr: Int = 0
 	var doAfterCreateSeqNr: Int = 0
 	var doAfterLoadSeqNr: Int = 0
 	var doBeforeStoreSeqNr: Int = 0
@@ -45,16 +44,12 @@ abstract class AggregateBase(
 	private var didCalcAll = false
 	private var didCalcVolatile = false
 
+	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
+
 	override val directory: RepositoryDirectory get() = repository.directory
 
 	override val meta: AggregateMeta
 		get() = this
-
-	override val relativePath: String
-		get() = ""
-
-	override val path: String
-		get() = repository.aggregateType.id + "(" + id + ")"
 
 	override fun addPropertyChangeListener(listener: PropertyChangeListener) {
 		_propertyChangeListeners.add(listener)
@@ -82,25 +77,14 @@ abstract class AggregateBase(
 
 	override fun <P : Part<*>> nextPartId(partClass: Class<P>): Int {
 		synchronized(this) {
-			_maxPartId = (_maxPartId ?: 0) + 1
-			return _maxPartId!!
+			maxPartId = (maxPartId ?: 0) + 1
+			return maxPartId!!
 		}
 	}
 
-	override fun doCreate(
-		aggregateId: Any,
-		tenantId: Any,
-	) {
-		_id = aggregateId
-		doCreateSeqNr += 1
-	}
-
-	override fun doAfterCreate(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
-		_version = 0
+	override fun doAfterCreate() {
 		doAfterCreateSeqNr += 1
+		_version = 0
 		fireEntityAddedChange(id)
 	}
 
@@ -108,10 +92,7 @@ abstract class AggregateBase(
 		doAfterLoadSeqNr += 1
 	}
 
-	override fun doBeforeStore(
-		userId: Any,
-		timestamp: OffsetDateTime,
-	) {
+	override fun doBeforeStore() {
 		doBeforeStoreSeqNr += 1
 	}
 
@@ -119,15 +100,12 @@ abstract class AggregateBase(
 		doAfterStoreSeqNr += 1
 	}
 
-	override val isFrozen: Boolean
-		get() = _isFrozen
-
 	protected fun unfreeze() {
-		_isFrozen = false
+		isFrozen = false
 	}
 
 	fun freeze() {
-		_isFrozen = true
+		isFrozen = true
 	}
 
 	override fun doAddPart(
@@ -167,18 +145,15 @@ abstract class AggregateBase(
 		calcAll()
 	}
 
-	override val isInLoad: Boolean
-		get() = _isInLoad
-
 	override fun beginLoad() {
-		_isInLoad = true
+		isInLoad = true
 	}
 
 	override fun endLoad() {
-		_isInLoad = false
+		isInLoad = false
 	}
 
-	override fun isCalcEnabled(): Boolean = isCalcDisabled == 0
+	override val isCalcEnabled get() = isCalcDisabled == 0
 
 	override fun disableCalc() {
 		isCalcDisabled += 1
@@ -188,20 +163,18 @@ abstract class AggregateBase(
 		isCalcDisabled -= 1
 	}
 
-	override fun isInCalc(): Boolean = _isInCalc
-
 	protected open fun beginCalc() {
-		_isInCalc = true
+		isInCalc = true
 		didCalcAll = false
 		didCalcVolatile = false
 	}
 
 	protected fun endCalc() {
-		_isInCalc = false
+		isInCalc = false
 	}
 
 	override fun calcAll() {
-		if (!isCalcEnabled() || isInCalc()) {
+		if (!isCalcEnabled || isInCalc) {
 			return
 		}
 		try {
@@ -218,7 +191,7 @@ abstract class AggregateBase(
 	}
 
 	override fun calcVolatile() {
-		if (!isCalcEnabled() || isInCalc()) {
+		if (!isCalcEnabled || isInCalc) {
 			return
 		}
 		try {

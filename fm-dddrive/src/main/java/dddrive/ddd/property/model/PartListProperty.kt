@@ -1,5 +1,6 @@
 package dddrive.ddd.property.model
 
+import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 
 /**
@@ -7,7 +8,7 @@ import dddrive.ddd.core.model.Part
  *
  * Implements [Iterable] and [Collection] interfaces so it can be used directly as a list in consumer code.
  */
-interface PartListProperty<P : Part<*>> :
+interface PartListProperty<A : Aggregate, P : Part<A>> :
 	Property<P>,
 	Collection<P> {
 

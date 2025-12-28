@@ -8,11 +8,11 @@ import dddrive.ddd.property.model.ReferenceProperty
 abstract class ReferencePropertyBase<T : Any, ID : Any>(
 	entity: EntityWithProperties,
 	name: String,
-	private val idType: Class<ID>,
+	idType: Class<ID>,
 ) : PropertyBase<T>(entity, name),
 	ReferenceProperty<T, ID> {
 
-	override val idProperty: BaseProperty<ID> = IdProperty()
+	override val idProperty = IdProperty<T, ID>(this, idType)
 
 	override var id: ID? = null
 		set(id) {
@@ -30,35 +30,30 @@ abstract class ReferencePropertyBase<T : Any, ID : Any>(
 
 	protected abstract fun isValidId(id: ID?): Boolean
 
-	private inner class IdProperty : BaseProperty<ID> {
+}
 
-		override val entity: EntityWithProperties
-			get() = this@ReferencePropertyBase.entity
+class IdProperty<T : Any, ID : Any>(
+	val baseProperty: ReferenceProperty<T, ID>,
+	val idType: Class<ID>,
+) : BaseProperty<ID> {
 
-		override val relativePath: String
-			get() {
-				val relativePath = this@ReferencePropertyBase.relativePath
-				return if (relativePath.isEmpty()) ID_PROPERTY_NAME else "$relativePath.$ID_PROPERTY_NAME"
-			}
+	override val entity: EntityWithProperties
+		get() = baseProperty.entity
 
-		override val path: String
-			get() = this@ReferencePropertyBase.path + "." + ID_PROPERTY_NAME
+	override val name: String
+		get() = ID_PROPERTY_NAME
 
-		override val name: String
-			get() = ID_PROPERTY_NAME
+	override val isWritable: Boolean
+		get() = baseProperty.isWritable
 
-		override val isWritable: Boolean
-			get() = this@ReferencePropertyBase.isWritable
+	override var value: ID?
+		get() = baseProperty.id
+		set(value) {
+			baseProperty.id = value
+		}
 
-		override var value: ID?
-			get() = this@ReferencePropertyBase.id
-			set(value) {
-				this@ReferencePropertyBase.id = value
-			}
-
-		override val type: Class<ID>
-			get() = idType
-	}
+	override val type: Class<ID>
+		get() = idType
 
 	companion object {
 

@@ -1,6 +1,8 @@
 package dddrive.ddd.property.model.base
 
+import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
+import dddrive.ddd.path.path
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.Property
@@ -32,16 +34,13 @@ abstract class EntityWithPropertiesBase :
 	override fun getPart(partId: Int): Part<*> = partMap[partId]!!
 
 	protected fun addPart(part: Part<*>) {
-		partMap.put(part.id, part)
+		partMap[part.id] = part
 	}
 
 	override fun addProperty(property: Property<*>) {
 		require(!hasProperty(property.name)) { "property [" + property.name + "] is unique" }
 		propertyMap.put(property.name, property)
 	}
-
-	override val parentProperty: Property<*>?
-		get() = null
 
 	override fun fireFieldChange(
 		op: String,
@@ -53,18 +52,18 @@ abstract class EntityWithPropertiesBase :
 	}
 
 	override fun fireEntityAddedChange(id: Any) {
-		if (!isInLoad && doLogChange(this)) {
-			var path = path
+		if (!isInLoad && doLogChange()) {
+			var path = path()
 			val partEndIndex = path.lastIndexOf(".")
 			val aggregateEndIndex = path.lastIndexOf("(")
 			path = path.substring(0, Integer.max(partEndIndex, aggregateEndIndex))
-			fireFieldChange("add", path, id.toString(), null, isInCalc())
+			fireFieldChange("add", path, id.toString(), null, isInCalc)
 		}
 	}
 
 	override fun fireEntityRemovedChange() {
-		if (!isInLoad && doLogChange(this)) {
-			fireFieldChange("remove", path, null, null, isInCalc())
+		if (!isInLoad && doLogChange()) {
+			fireFieldChange("remove", path(), null, null, isInCalc)
 		}
 	}
 
@@ -72,8 +71,8 @@ abstract class EntityWithPropertiesBase :
 		property: Property<*>,
 		value: Any,
 	) {
-		if (!isInLoad && doLogChange(this)) {
-			fireFieldChange("add", property.path, value.toString(), null, isInCalc())
+		if (!isInLoad && doLogChange()) {
+			fireFieldChange("add", property.path(), value.toString(), null, isInCalc)
 		}
 	}
 
@@ -81,8 +80,8 @@ abstract class EntityWithPropertiesBase :
 		property: Property<*>,
 		value: Any,
 	) {
-		if (!isInLoad && doLogChange(this)) {
-			fireFieldChange("remove", property.path, value.toString(), null, isInCalc())
+		if (!isInLoad && doLogChange()) {
+			fireFieldChange("remove", property.path(), value.toString(), null, isInCalc)
 		}
 	}
 
@@ -93,7 +92,7 @@ abstract class EntityWithPropertiesBase :
 	) {
 		if (!isInLoad && doLogChange(property)) {
 			val op = if (oldValue == null) "add" else "replace"
-			fireFieldChange(op, property.path, value?.toString(), oldValue.toString(), isInCalc())
+			fireFieldChange(op, property.path(), value?.toString(), oldValue.toString(), isInCalc)
 		}
 	}
 
@@ -121,14 +120,16 @@ abstract class EntityWithPropertiesBase :
 
 	override fun doAfterRemove(property: Property<*>) {}
 
-	protected fun doLogChange(entity: EntityWithProperties): Boolean {
-		val parentProperty = (entity as EntityWithPropertiesBase).parentProperty
-		return parentProperty == null || doLogChange(parentProperty)
-	}
+	protected fun doLogChange(): Boolean =
+		if (this is Aggregate) {
+			true
+		} else {
+			doLogChange((this as Part<*>).meta.parentProperty)
+		}
 
 	protected fun doLogChange(property: Property<*>): Boolean {
 		val entity = (property.entity as EntityWithPropertiesBase)
-		if (!doLogChange(entity)) {
+		if (!entity.doLogChange()) {
 			return false
 		}
 		return entity.doLogChange(property.name)

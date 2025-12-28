@@ -29,7 +29,7 @@ class RepositoryDirectoryImpl :
 		enumName: String,
 	): Enumeration<out Enumerated> =
 		try {
-			this.enumsById[module + "." + enumName + "Enum"]!!
+			enumsById[module + "." + enumName + "Enum"]!!
 		} catch (e: Exception) {
 			throw IllegalArgumentException("Enumeration not found: $module.$enumName", e)
 		}
@@ -37,28 +37,28 @@ class RepositoryDirectoryImpl :
 	@Suppress("UNCHECKED_CAST")
 	override fun <E : Enumerated> getEnumeration(enumClass: Class<E>): Enumeration<E> =
 		try {
-			this.enumsByEnumeratedClass[enumClass] as Enumeration<E>
+			enumsByEnumeratedClass[enumClass] as Enumeration<E>
 		} catch (e: Exception) {
 			throw IllegalArgumentException("Enumeration for class not found: $enumClass", e)
 		}
 
 	// 	@Override
 	// 	public <E extends Enumerated> E getEnumerated(Class<E> enumClass, String itemId) {
-	// 		return this.getEnumeration(enumClass).getItem(itemId);
+	// 		return getEnumeration(enumClass).getItem(itemId);
 	// 	}
 
 	override fun <E : Enumerated> addEnumeration(
 		enumClass: Class<E>,
 		enumeration: Enumeration<E>,
 	) {
-		this.enumsById.put(enumeration.module + "." + enumeration.id, enumeration)
-		this.enumsByEnumeratedClass.put(enumClass, enumeration)
+		enumsById.put(enumeration.module + "." + enumeration.id, enumeration)
+		enumsByEnumeratedClass.put(enumClass, enumeration)
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <A : Aggregate> getRepository(intfClass: Class<A>): AggregateRepository<A> =
 		try {
-			this.repoByIntf[intfClass] as AggregateRepository<A>
+			repoByIntf[intfClass] as AggregateRepository<A>
 		} catch (e: Exception) {
 			throw IllegalArgumentException("Repository not found for class: $intfClass", e)
 		}
@@ -67,14 +67,14 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Aggregate>,
 		repo: AggregateRepository<out Aggregate>,
 	) {
-		require(this.repoByIntf[intfClass] == null) { "unique repo for class $intfClass" }
-		this.repoByIntf.put(intfClass, repo)
+		require(repoByIntf[intfClass] == null) { "unique repo for class $intfClass" }
+		repoByIntf.put(intfClass, repo)
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <A : Aggregate, P : Part<A>> getPartRepository(intfClass: Class<P>): PartRepository<A, P> =
 		try {
-			this.partRepoByIntf[intfClass] as PartRepository<A, P>
+			partRepoByIntf[intfClass] as PartRepository<A, P>
 		} catch (e: Exception) {
 			throw IllegalArgumentException("Part repository not found for class: $intfClass", e)
 		}
@@ -83,8 +83,8 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Part<A>>,
 		repo: PartRepository<A, out Part<A>>,
 	) {
-		// assertThis(this.getPartRepository(intfClass) == null, "unique repo for class " + intfClass);
-		this.partRepoByIntf.put(intfClass, repo)
+		// assertThis(getPartRepository(intfClass) == null, "unique repo for class " + intfClass);
+		partRepoByIntf.put(intfClass, repo)
 	}
 
 	@Suppress("UNCHECKED_CAST")
@@ -99,14 +99,14 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<out Aggregate>,
 		app: AggregatePersistenceProvider<out Aggregate>,
 	) {
-		require(this.appByIntf[intfClass] == null) { "unique persistence provider for class $intfClass" }
-		this.appByIntf.put(intfClass, app)
+		require(appByIntf[intfClass] == null) { "unique persistence provider for class $intfClass" }
+		appByIntf.put(intfClass, app)
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <P : Part<*>> getPartPersistenceProvider(intfClass: Class<P>): PartPersistenceProvider<P> =
 		try {
-			this.pppByIntf[intfClass] as PartPersistenceProvider<P>
+			pppByIntf[intfClass] as PartPersistenceProvider<P>
 		} catch (e: Exception) {
 			throw IllegalArgumentException("Part persistence provider not found for class: $intfClass", e)
 		}
@@ -115,8 +115,8 @@ class RepositoryDirectoryImpl :
 		intfClass: Class<P>,
 		ppp: PartPersistenceProvider<P>,
 	) {
-		require(this.pppByIntf[intfClass] == null) { "unique persistence provider for class $intfClass" }
-		this.pppByIntf.put(intfClass, ppp)
+		require(pppByIntf[intfClass] == null) { "unique persistence provider for class $intfClass" }
+		pppByIntf.put(intfClass, ppp)
 	}
 
 }

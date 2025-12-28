@@ -41,7 +41,7 @@ class MemDocTaskPersistenceProviderImpl :
 
 			// Load comments
 			val commentListProperty =
-				aggregate.getPropertyByPath<DocTaskPartComment>("commentList") as? PartListProperty<DocTaskPartComment>
+				aggregate.getPropertyByPath<DocTaskPartComment>("commentList") as? PartListProperty<DocTask, DocTaskPartComment>
 			commentListProperty?.clear()
 			pto.comments?.forEach { commentPto ->
 				val comment = commentListProperty?.add(commentPto.id)

@@ -7,7 +7,6 @@ import dddrive.ddd.core.model.PartRepository
 import dddrive.ddd.core.model.PartSPI
 import dddrive.ddd.core.model.RepositoryDirectory
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.base.EntityWithPropertiesBase
 
@@ -24,47 +23,20 @@ abstract class PartBase<A : Aggregate>(
 	override val isNew: Boolean = !aggregate.meta.isInLoad
 
 	private var isCalcDisabled = 0
-	private var _isInCalc = false
+	override var isInCalc = false
 
 	var doAfterCreateSeqNr: Int = 0
 	private var didCalcAll = false
 	private var didCalcVolatile = false
 
 	override val directory: RepositoryDirectory
-		get() = this.aggregate.meta.repository.directory
+		get() = aggregate.meta.repository.directory
 
 	override val meta: PartMeta<A>
 		get() = this
 
 	override val isInLoad: Boolean
-		get() = this.aggregate.meta.isInLoad
-
-	private fun buildPath(basePath: String): String {
-		val parentProp = this.parentProperty
-		if (parentProp is PartListProperty<*>) {
-			var index = parentProp.indexOf(this)
-			if (index == -1) {
-				index = parentProp.size
-			}
-			return "$basePath[$index]"
-		} else {
-			return basePath + "." + this.id
-		}
-	}
-
-	override val relativePath: String
-		get() {
-			val parentProp = this.parentProperty
-			val parentRelativePath = parentProp.relativePath
-			return buildPath(parentRelativePath)
-		}
-
-	override val path: String
-		get() {
-			val parentProp = this.parentProperty
-			val parentPath = parentProp.path
-			return buildPath(parentPath)
-		}
+		get() = aggregate.meta.isInLoad
 
 	override fun doAfterCreate() {
 		doAfterCreateSeqNr += 1
@@ -77,22 +49,22 @@ abstract class PartBase<A : Aggregate>(
 		oldValue: String?,
 		isInCalc: Boolean,
 	) {
-		(this.aggregate as EntityWithPropertiesSPI).fireFieldChange(op, path, value, oldValue, isInCalc)
+		(aggregate as EntityWithPropertiesSPI).fireFieldChange(op, path, value, oldValue, isInCalc)
 	}
 
-	override fun doLogChange(propertyName: String): Boolean = this.repository.doLogChange(propertyName)
+	override fun doLogChange(propertyName: String): Boolean = repository.doLogChange(propertyName)
 
-	override fun hasPart(partId: Int): Boolean = this.aggregate.hasPart(partId)
+	override fun hasPart(partId: Int): Boolean = aggregate.hasPart(partId)
 
-	override fun getPart(partId: Int): Part<*> = this.aggregate.getPart(partId)
+	override fun getPart(partId: Int): Part<*> = aggregate.getPart(partId)
 
 	override val isFrozen: Boolean
-		get() = this.aggregate.isFrozen
+		get() = aggregate.isFrozen
 
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
-	): Part<*> = throw RuntimeException("did not instantiate part for property " + this.className + "." + property.name)
+	): Part<*> = throw RuntimeException("did not instantiate part for property " + className + "." + property.name)
 
 	override fun doBeforeSet(
 		property: Property<*>,
@@ -102,7 +74,7 @@ abstract class PartBase<A : Aggregate>(
 	}
 
 	override fun doAfterSet(property: Property<*>) {
-		this.calcAll()
+		calcAll()
 	}
 
 	override fun doAfterAdd(
@@ -110,80 +82,78 @@ abstract class PartBase<A : Aggregate>(
 		part: Part<*>?,
 	) {
 		if (part != null) {
-			(this.aggregate as EntityWithPropertiesSPI).doAfterAdd(property, part)
+			(aggregate as EntityWithPropertiesSPI).doAfterAdd(property, part)
 		}
-		this.calcAll()
+		calcAll()
 	}
 
 	override fun delete() {
 	}
 
 	override fun doAfterRemove(property: Property<*>) {
-		this.calcAll()
+		calcAll()
 	}
 
 	override fun doAfterClear(property: Property<*>) {
-		this.calcAll()
+		calcAll()
 	}
 
-	override fun isCalcEnabled(): Boolean = this.isCalcDisabled == 0 && this.aggregate.meta.isCalcEnabled()
+	override val isCalcEnabled get() = isCalcDisabled == 0 && aggregate.meta.isCalcEnabled
 
 	override fun disableCalc() {
-		this.isCalcDisabled += 1
+		isCalcDisabled += 1
 	}
 
 	override fun enableCalc() {
-		this.isCalcDisabled -= 1
+		isCalcDisabled -= 1
 	}
 
-	override fun isInCalc(): Boolean = this._isInCalc
-
 	protected fun beginCalc() {
-		this._isInCalc = true
-		this.didCalcAll = false
-		this.didCalcVolatile = false
+		isInCalc = true
+		didCalcAll = false
+		didCalcVolatile = false
 	}
 
 	protected fun endCalc() {
-		this._isInCalc = false
+		isInCalc = false
 	}
 
 	override fun calcAll() {
-		if (!this.isCalcEnabled() || this.isInCalc()) {
+		if (!isCalcEnabled || isInCalc) {
 			return
 		}
 		try {
-			this.beginCalc()
-			this.doCalcAll()
-			this.aggregate.meta.calcAll()
-			check(this.didCalcAll) { this.className + ": doCalcAll was propagated" }
+			beginCalc()
+			doCalcAll()
+			aggregate.meta.calcAll()
+			check(didCalcAll) { className + ": doCalcAll was propagated" }
 		} finally {
-			this.endCalc()
+			endCalc()
 		}
 	}
 
 	protected open fun doCalcAll() {
-		this.didCalcAll = true
+		didCalcAll = true
 	}
 
 	override fun calcVolatile() {
-		if (!this.isCalcEnabled() || this.isInCalc()) {
+		if (!isCalcEnabled || isInCalc) {
 			return
 		}
 		try {
-			this.beginCalc()
-			this.doCalcVolatile()
-			check(this.didCalcVolatile) { this.className + ": doCalcAll was propagated" }
+			beginCalc()
+			doCalcVolatile()
+			check(didCalcVolatile) { className + ": doCalcAll was propagated" }
 		} finally {
-			this.endCalc()
+			endCalc()
 		}
 	}
 
 	protected open fun doCalcVolatile() {
-		this.didCalcVolatile = true
+		didCalcVolatile = true
 	}
 
 	private val className: String
-		get() = this.javaClass.getSuperclass().getSimpleName()
+		get() = javaClass.getSuperclass().getSimpleName()
 
 }

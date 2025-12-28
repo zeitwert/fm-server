@@ -1,7 +1,5 @@
 package dddrive.ddd.core.model
 
-import java.time.OffsetDateTime
-
 /**
  * This class defines the internal callbacks for an AggregateRepository
  * implementation.
@@ -21,15 +19,17 @@ interface AggregateRepositorySPI<A : Aggregate> {
 	val persistenceProvider: AggregatePersistenceProvider<A>
 
 	/**
+	 * Create a new aggregate instance. Concrete repositories must override this to directly
+	 * instantiate their Impl class.
+	 */
+	fun createAggregate(isNew: Boolean): A
+
+	/**
 	 * Do some work after create, f.ex. fire events
 	 *
 	 * @param aggregate aggregate
 	 */
-	fun doAfterCreate(
-		aggregate: A,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	)
+	fun doAfterCreate(aggregate: A)
 
 	/**
 	 * Do some work after load, f.ex. fire events
@@ -43,11 +43,7 @@ interface AggregateRepositorySPI<A : Aggregate> {
 	 *
 	 * @param aggregate aggregate
 	 */
-	fun doBeforeStore(
-		aggregate: A,
-		userId: Any,
-		timestamp: OffsetDateTime,
-	)
+	fun doBeforeStore(aggregate: A)
 
 	/**
 	 * Do some work after store, f.ex. fire events

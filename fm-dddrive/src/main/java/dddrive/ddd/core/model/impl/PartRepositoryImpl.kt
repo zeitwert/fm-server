@@ -25,15 +25,8 @@ class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
 		require(!isInLoad || partId != null) { "partId != null on load" }
 		require(isInLoad || partId == null) { "partId == null on create" }
 		val repo = aggregate.meta.repository as AggregateRepositorySPI<A>
-		val id: Int =
-			(
-				if (isInLoad) {
-					partId
-				} else {
-					repo.persistenceProvider.nextPartId(aggregate, this.intfClass)
-				}
-			)!!
-		val part = this.factory(aggregate, this, property, id)
+		val id = partId ?: repo.persistenceProvider.nextPartId(aggregate, intfClass)
+		val part = factory(aggregate, this, property, id)
 		check(isInLoad || part.meta.isNew) { "load or part.isNew" }
 		check(!isInLoad || !part.meta.isNew) { "outside load or !part.isNew" }
 		if (!isInLoad) {

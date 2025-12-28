@@ -9,13 +9,7 @@ interface EntityWithPropertiesSPI {
 
 	val isInLoad: Boolean
 
-	fun isInCalc(): Boolean
-
-	val parentProperty: Property<*>?
-
-	val relativePath: String
-
-	val path: String
+	val isInCalc: Boolean
 
 	fun addProperty(property: Property<*>)
 

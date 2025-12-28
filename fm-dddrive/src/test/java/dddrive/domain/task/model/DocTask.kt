@@ -14,6 +14,6 @@ interface DocTask : Doc {
 	var dueAt: OffsetDateTime?
 	var remindAt: OffsetDateTime?
 
-	val commentList: PartListProperty<DocTaskPartComment>
+	val commentList: PartListProperty<DocTask, DocTaskPartComment>
 
 }

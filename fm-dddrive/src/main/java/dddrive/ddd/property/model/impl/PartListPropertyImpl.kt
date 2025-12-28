@@ -1,5 +1,6 @@
 package dddrive.ddd.property.model.impl
 
+import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.PartSPI
 import dddrive.ddd.property.model.EntityWithProperties
@@ -7,12 +8,13 @@ import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.base.PropertyBase
 
-open class PartListPropertyImpl<P : Part<*>>(
+open class PartListPropertyImpl<A : Aggregate, P : Part<A>>(
 	entity: EntityWithProperties,
 	name: String,
+	aggrType: Class<A>,
 	override val partType: Class<P>,
 ) : PropertyBase<P>(entity, name),
-	PartListProperty<P> {
+	PartListProperty<A, P> {
 
 	private val parts: MutableList<P> = mutableListOf()
 
@@ -40,8 +42,8 @@ open class PartListPropertyImpl<P : Part<*>>(
 		get() = parts.size
 
 	override fun get(seqNr: Int): P {
-		require(0 <= seqNr && seqNr < size) { "valid seqNr (0 <= $seqNr < $size)" }
-		return parts.get(seqNr)
+		require(seqNr in 0..<size) { "valid seqNr (0 <= $seqNr < $size)" }
+		return parts[seqNr]
 	}
 
 	override fun getById(partId: Int): P = parts.first { it.id == partId }

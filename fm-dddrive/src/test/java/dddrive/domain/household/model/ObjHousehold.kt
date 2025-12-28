@@ -18,7 +18,7 @@ interface ObjHousehold : Obj {
 
 	var responsibleUser: ObjUser?
 
-	val memberList: PartListProperty<ObjHouseholdPartMember>
+	val memberList: PartListProperty<ObjHousehold, ObjHouseholdPartMember>
 
 	var mainMemberId: Int?
 

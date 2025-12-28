@@ -9,10 +9,10 @@ import dddrive.ddd.property.model.Property
 
 abstract class DocPartBase<D : Doc>(
 	doc: D,
-	repository: dddrive.ddd.core.model.PartRepository<D, out dddrive.ddd.core.model.Part<D>>,
-	property: dddrive.ddd.property.model.Property<*>,
+	repository: PartRepository<D, out Part<D>>,
+	property: Property<*>,
 	id: Int,
-) : dddrive.ddd.core.model.base.PartBase<D>(doc, repository, property, id),
+) : PartBase<D>(doc, repository, property, id),
 	DocPart<D>
 
 // 	@SuppressWarnings("unchecked")
