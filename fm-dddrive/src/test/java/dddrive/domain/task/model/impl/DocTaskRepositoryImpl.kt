@@ -3,10 +3,10 @@ package dddrive.domain.task.model.impl
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.doc.model.base.DocRepositoryBase
 import dddrive.domain.ddd.model.impl.SessionContextImpl
+import dddrive.domain.doc.persist.base.MapDocPersistenceProviderBase
 import dddrive.domain.task.model.DocTask
 import dddrive.domain.task.model.DocTaskPartComment
 import dddrive.domain.task.model.DocTaskRepository
-import dddrive.domain.task.persist.DocTaskPersistenceProvider
 import org.springframework.stereotype.Component
 
 @Component("docTaskRepository")
@@ -17,7 +17,7 @@ class DocTaskRepositoryImpl :
 	),
 	DocTaskRepository {
 
-	override val persistenceProvider get() = directory.getPersistenceProvider(DocTask::class.java) as DocTaskPersistenceProvider
+	override val persistenceProvider = object : MapDocPersistenceProviderBase<DocTask>(DocTask::class.java) {}
 
 	override lateinit var sessionContext: SessionContext
 
@@ -26,11 +26,12 @@ class DocTaskRepositoryImpl :
 		accountId: Any,
 		userId: Any,
 	) {
-		sessionContext = SessionContextImpl(
-			tenantId = tenantId,
-			accountId = accountId,
-			userId = userId,
-		)
+		sessionContext =
+			SessionContextImpl(
+				tenantId = tenantId,
+				accountId = accountId,
+				userId = userId,
+			)
 	}
 
 	override fun createAggregate(isNew: Boolean): DocTask = DocTaskImpl(this, isNew)
@@ -44,5 +45,4 @@ class DocTaskRepositoryImpl :
 
 		const val AGGREGATE_TYPE = "docTask"
 	}
-
 }

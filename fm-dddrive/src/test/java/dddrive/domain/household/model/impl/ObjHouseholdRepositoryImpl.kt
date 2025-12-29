@@ -6,11 +6,10 @@ import dddrive.domain.ddd.model.impl.SessionContextImpl
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
-import org.springframework.context.annotation.DependsOn
+import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
 import org.springframework.stereotype.Component
 
 @Component("objHouseholdRepository")
-@DependsOn("objHouseholdPersistenceProvider")
 class ObjHouseholdRepositoryImpl :
 	ObjRepositoryBase<ObjHousehold>(
 		ObjHousehold::class.java,
@@ -18,7 +17,7 @@ class ObjHouseholdRepositoryImpl :
 	),
 	ObjHouseholdRepository {
 
-	override val persistenceProvider get() = directory.getPersistenceProvider(ObjHousehold::class.java)
+	override val persistenceProvider = object : MapObjPersistenceProviderBase<ObjHousehold>(ObjHousehold::class.java) {}
 
 	override lateinit var sessionContext: SessionContext
 
@@ -27,11 +26,12 @@ class ObjHouseholdRepositoryImpl :
 		accountId: Any,
 		userId: Any,
 	) {
-		sessionContext = SessionContextImpl(
-			tenantId = tenantId,
-			accountId = accountId,
-			userId = userId,
-		)
+		sessionContext =
+			SessionContextImpl(
+				tenantId = tenantId,
+				accountId = accountId,
+				userId = userId,
+			)
 	}
 
 	override fun createAggregate(isNew: Boolean): ObjHousehold = ObjHouseholdImpl(this, isNew)
