@@ -12,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -32,8 +32,8 @@ public class WebSecurityConfiguration {
 	}
 
 	@Bean
-	public AuthenticationJWTFilter authenticationJwtTokenFilter() {
-		return new AuthenticationJWTFilter();
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
 	}
 
 	@Bean
@@ -44,7 +44,10 @@ public class WebSecurityConfiguration {
 			.cors(cors -> cors.configure(http))
 			.csrf(csrf -> csrf.disable())
 			.exceptionHandling(ex -> ex.authenticationEntryPoint(this.unauthorizedHandler))
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.sessionManagement(session -> session
+				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+				.maximumSessions(1)
+				.maxSessionsPreventsLogin(false))
 			.authorizeHttpRequests(auth -> auth
 				// monitoring
 				// .requestMatchers("/actuator/**").permitAll()
@@ -58,7 +61,7 @@ public class WebSecurityConfiguration {
 				.requestMatchers(HttpMethod.GET, "/static/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/assets/**").permitAll()
 				.requestMatchers(HttpMethod.GET, "/images/**").permitAll()
-				// ui paths (necessary for hyperlinks, since JWT is not propagated)
+				// ui paths (necessary for hyperlinks)
 				.requestMatchers(HttpMethod.GET, "/home/*").permitAll()
 				.requestMatchers(HttpMethod.GET, "/tenant/*").permitAll()
 				.requestMatchers(HttpMethod.GET, "/user/*").permitAll()
@@ -82,10 +85,9 @@ public class WebSecurityConfiguration {
 				.requestMatchers(HttpMethod.GET, "/rest/test/**").authenticated()
 				.anyRequest().authenticated()
 			);
-		
-		http.addFilterBefore(this.authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
-		
+
 		return http.build();
 	}
 

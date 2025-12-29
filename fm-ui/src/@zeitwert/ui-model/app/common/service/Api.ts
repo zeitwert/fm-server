@@ -1,6 +1,6 @@
 import Axios, { AxiosError, AxiosHeaders, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios";
 import Logger from "loglevel";
-import { AUTH_HEADER_ITEM, SESSION_INFO_ITEM, SESSION_STATE_ITEM } from "../config/Constants";
+import { SESSION_INFO_ITEM, SESSION_STATE_ITEM } from "../config/Constants";
 
 export const JSON_CONTENT_TYPE = "application/json";
 export const API_CONTENT_TYPE = "application/vnd.api+json";
@@ -12,9 +12,6 @@ export const API_HEADERS = {
 function getHeaders(configHeaders: any): AxiosHeaders {
 	const header = new AxiosHeaders(configHeaders ?? {});
 	header.setAccept(JSON_CONTENT_TYPE + "," + API_CONTENT_TYPE);
-	if (sessionStorage.getItem(AUTH_HEADER_ITEM)) {
-		header.set("Authorization", sessionStorage.getItem(AUTH_HEADER_ITEM));
-	}
 	return header;
 }
 
@@ -22,7 +19,7 @@ function getConfig(config?: AxiosRequestConfig): AxiosRequestConfig {
 	const headers = getHeaders(config?.headers);
 	delete config?.headers;
 	return {
-		withCredentials: true, // allow server to set cookies
+		withCredentials: true, // allow server to set cookies (session authentication)
 		...config,
 		headers: headers
 	};
@@ -49,7 +46,6 @@ Axios.interceptors.response.use(
 			if (401 === error.response.status) {
 				sessionStorage.removeItem(SESSION_STATE_ITEM);
 				sessionStorage.removeItem(SESSION_INFO_ITEM);
-				sessionStorage.removeItem(AUTH_HEADER_ITEM);
 				window.location.replace("/");
 			} else if (
 				error.response.data &&

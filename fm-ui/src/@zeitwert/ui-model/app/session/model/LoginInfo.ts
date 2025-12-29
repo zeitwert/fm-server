@@ -19,7 +19,6 @@ export interface LoginInfo {
 	email: string;
 	username: string;
 	accountId: number;
-	tokenType: string;
-	token: string;
+	sessionId: string;
 	role: string;
 }

@@ -13,8 +13,10 @@ import io.zeitwert.fm.server.config.security.ZeitwertUserDetails
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginResponse
 import io.zeitwert.fm.server.session.adapter.rest.dto.SessionInfoResponse
-import io.zeitwert.fm.server.session.service.api.JwtProvider
 import io.zeitwert.fm.server.session.version.ApplicationInfo
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,11 +27,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
@@ -50,9 +52,6 @@ class SessionController {
 	lateinit var accountRepository: ObjAccountRepository
 
 	@Autowired
-	lateinit var jwtProvider: JwtProvider
-
-	@Autowired
 	lateinit var requestCtx: RequestContextFM
 
 	@Autowired
@@ -67,16 +66,36 @@ class SessionController {
 	@PostMapping("/login")
 	fun login(
 		@RequestBody loginRequest: LoginRequest,
+		request: HttpServletRequest,
 	): ResponseEntity<LoginResponse?> {
 		try {
 			val authToken = this.getAuthToken(loginRequest.email, loginRequest.password)
 			val authentication = this.authenticationManager.authenticate(authToken)
-			SecurityContextHolder.getContext().authentication = authentication
+
+			// Get user details and set tenantId/accountId
+			val userDetails = authentication.principal as ZeitwertUserDetails
 			val tenantId = loginRequest.tenantId
 			require(tenantId != null) { "tenantId not null" }
-			val accountId = loginRequest.accountId
-			val jwt = this.jwtProvider.createJwt(authentication, tenantId, accountId)
-			val userDetails = authentication.principal as ZeitwertUserDetails
+			userDetails.tenantId = tenantId
+			userDetails.accountId = loginRequest.accountId
+
+			// Create authentication with updated user details
+			val updatedAuthentication = UsernamePasswordAuthenticationToken(
+				userDetails,
+				null,
+				userDetails.authorities
+			)
+			updatedAuthentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+			// Set security context
+			val securityContext = SecurityContextHolder.createEmptyContext()
+			securityContext.authentication = updatedAuthentication
+			SecurityContextHolder.setContext(securityContext)
+
+			// Create session and store security context
+			val session = request.getSession(true)
+			session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
+
 			val role =
 				userDetails
 					.authorities
@@ -85,11 +104,11 @@ class SessionController {
 					.toList()
 					.get(0)
 			val loginResponse = LoginResponse(
-				token = jwt,
+				sessionId = session.id,
 				id = userDetails.userId,
 				username = userDetails.username,
 				email = userDetails.username,
-				accountId = accountId,
+				accountId = loginRequest.accountId,
 				role = of(getUserRole(role)),
 			)
 			return ResponseEntity.ok<LoginResponse?>(loginResponse)
@@ -107,11 +126,6 @@ class SessionController {
 	@get:GetMapping("/session")
 	val requestContext: ResponseEntity<SessionInfoResponse?>
 		get() {
-			// if (this.requestCtx == null) {
-			// 	return ResponseEntity
-			// 		.status(HttpStatus.UNAUTHORIZED)
-			// 		.build<SessionInfoReponse?>()
-			// }
 			val tenant = this.tenantRepository.get(this.requestCtx.getTenantId())
 			val account =
 				if (this.requestCtx.hasAccount()) this.accountRepository.get(this.requestCtx.getAccountId()) else null
@@ -139,12 +153,23 @@ class SessionController {
 
 	@PostMapping("/logout")
 	fun logout(
-		@RequestHeader("Authorization") authHeader: String?,
+		request: HttpServletRequest,
+		response: HttpServletResponse,
 	): ResponseEntity<String?> {
-		if (authHeader == null || !authHeader.startsWith(AUTH_HEADER_PREFIX)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build<String?>()
-		}
-		// TODO logout
+		// Invalidate session
+		val session = request.getSession(false)
+		session?.invalidate()
+
+		// Delete JSESSIONID cookie
+		val cookie = Cookie("JSESSIONID", null)
+		cookie.path = "/"
+		cookie.maxAge = 0
+		cookie.isHttpOnly = true
+		response.addCookie(cookie)
+
+		// Clear security context
+		SecurityContextHolder.clearContext()
+
 		return ResponseEntity.ok().build<String?>()
 	}
 
@@ -153,11 +178,6 @@ class SessionController {
 	fun handleException(e: Exception): ResponseEntity<Any?> {
 		e.printStackTrace()
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body<Any?>(e.message)
-	}
-
-	companion object {
-
-		const val AUTH_HEADER_PREFIX: String = "Bearer "
 	}
 
 }

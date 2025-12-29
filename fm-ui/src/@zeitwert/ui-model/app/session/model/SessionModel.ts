@@ -6,7 +6,7 @@ import Logger from "loglevel";
 import { observable, reaction, transaction } from "mobx";
 import { addDisposer, applySnapshot, flow, getSnapshot, Instance, SnapshotIn, types } from "mobx-state-tree";
 import { Config } from "../../common/config/Config";
-import { AUTH_HEADER_ITEM, SESSION_INFO_ITEM, SESSION_STATE_ITEM } from "../../common/config/Constants";
+import { SESSION_INFO_ITEM, SESSION_STATE_ITEM } from "../../common/config/Constants";
 import { Formatter } from "../../common/i18n/Formatter";
 import { FormatterImpl } from "../../common/i18n/impl/FormatterImpl";
 import { TranslatorImpl } from "../../common/i18n/impl/TranslatorImpl";
@@ -69,7 +69,6 @@ const MstSessionModel = types
 			self.state = state;
 			if (self.state === SessionState.close) {
 				sessionStorage.removeItem(SESSION_INFO_ITEM);
-				sessionStorage.removeItem(AUTH_HEADER_ITEM);
 			}
 		}
 	}))
@@ -159,7 +158,7 @@ const MstSessionModel = types
 		}
 	}))
 	.extend((self) => {
-		const isAuthenticated = observable.box(!!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM));
+		const isAuthenticated = observable.box(!!sessionStorage.getItem(SESSION_INFO_ITEM));
 		const isAuthAfterGlow = observable.box(false);
 		return {
 			views: {
@@ -223,9 +222,9 @@ const MstSessionModel = types
 								}
 							);
 							if (loginResponse.status === 200) {
-								sessionStorage.setItem(AUTH_HEADER_ITEM, loginResponse.data.tokenType + " " + loginResponse.data.token);
+								// Session cookie is automatically handled by the browser
 								yield self.init();
-								const isAuth = !!sessionStorage.getItem(SESSION_INFO_ITEM) && !!sessionStorage.getItem(AUTH_HEADER_ITEM);
+								const isAuth = !!sessionStorage.getItem(SESSION_INFO_ITEM);
 								isAuthAfterGlow.set(isAuth);
 								isAuthenticated.set(isAuth);
 								isAuth && setTimeout(() => isAuthAfterGlow.set(false), 2000);
