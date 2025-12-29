@@ -1,5 +1,6 @@
 package dddrive.test
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStage
@@ -7,15 +8,11 @@ import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import dddrive.ddd.core.model.AggregateSPI
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
-import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
-import dddrive.domain.oe.model.impl.ObjTenantRepositoryImpl
-import dddrive.domain.oe.model.impl.ObjUserRepositoryImpl
 import dddrive.domain.task.model.DocTaskRepository
 import dddrive.domain.task.model.enums.CodeTaskPriority
-import dddrive.domain.task.model.impl.DocTaskRepositoryImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,8 +23,11 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 @SpringBootTest(classes = [TestApplication::class])
-@ActiveProfiles("domain", "mem")
+@ActiveProfiles("test")
 class TaskMemTest : PropertyChangeListener {
+
+	@Autowired
+	private lateinit var sessionContext: SessionContext
 
 	@Autowired
 	private lateinit var tenantRepo: ObjTenantRepository
@@ -44,8 +44,6 @@ class TaskMemTest : PropertyChangeListener {
 	@Autowired
 	private lateinit var caseStageEnum: CodeCaseStageEnum
 
-	private lateinit var tenant: ObjTenant
-	private lateinit var user: ObjUser
 	private lateinit var user1: ObjUser
 
 	private lateinit var simpleTaskDef: CodeCaseDef
@@ -66,17 +64,6 @@ class TaskMemTest : PropertyChangeListener {
 
 	@BeforeEach
 	fun setUp() {
-		// Get tenant and users
-		tenant = tenantRepo.getByKey(ObjTenantRepository.KERNEL_TENANT_KEY).orElse(null)
-		Assertions.assertNotNull(tenant, "Kernel tenant should exist")
-
-		user = userRepo.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL).orElse(null)
-		Assertions.assertNotNull(user, "Kernel user should exist")
-
-		(tenantRepo as ObjTenantRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
-		(userRepo as ObjUserRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
-		(taskRepo as DocTaskRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
-
 		user1 = userRepo.getByEmail("user1@example.com").orElseGet {
 			val newUser = userRepo.create()
 			newUser.name = "Test User 1"
@@ -118,7 +105,7 @@ class TaskMemTest : PropertyChangeListener {
 		// Assertions.assertTrue(task.isFrozen, "Task should be frozen initially")
 
 		// Set initial case stage - this will unfreeze the task
-		task.meta.setCaseStage(taskNewStage, user.id as Int, now)
+		task.meta.setCaseStage(taskNewStage, sessionContext.userId as Int, now)
 		Assertions.assertFalse(task.isFrozen, "Task unfrozen after setting caseDef")
 		Assertions.assertEquals(simpleTaskDef, task.meta.caseDef, "CaseDef set")
 		Assertions.assertEquals(taskNewStage, task.meta.caseStage, "CaseStage 'New'")
@@ -155,7 +142,7 @@ class TaskMemTest : PropertyChangeListener {
 		val initialTransition = task.meta.transitionList.first()
 		Assertions.assertNull(initialTransition.oldCaseStage, "Initial transition old stage should be null")
 		Assertions.assertEquals(taskNewStage, initialTransition.newCaseStage)
-		Assertions.assertEquals(user.id, initialTransition.userId) // Compare IDs for user objects
+		Assertions.assertEquals(sessionContext.userId, initialTransition.userId) // Compare IDs for user objects
 		Assertions.assertEquals(0, task.commentList.size, "Initially, task should have no comments")
 
 		// Add first comment
@@ -240,7 +227,6 @@ class TaskMemTest : PropertyChangeListener {
 		)
 
 		// Store after stage change
-		(taskRepo as DocTaskRepositoryImpl).initSessionContext(tenant.id, 1, user1.id)
 		taskRepo.store(mutableTask)
 
 		// Verify stage change and new comment
@@ -257,11 +243,10 @@ class TaskMemTest : PropertyChangeListener {
 		Assertions.assertEquals(commentText3, loadedComment3!!.text)
 
 		// Check the stage change transition
-		val stageChangeTransition =
-			taskAfterProgress.meta.transitionList[taskAfterProgress.meta.transitionList.size - 1]
+		val stageChangeTransition = taskAfterProgress.meta.transitionList[taskAfterProgress.meta.transitionList.size - 1]
 		Assertions.assertEquals(taskNewStage, stageChangeTransition.oldCaseStage)
 		Assertions.assertEquals(taskInProgressStage, stageChangeTransition.newCaseStage)
-		Assertions.assertEquals(user1.id, stageChangeTransition.userId)
+		Assertions.assertEquals(sessionContext.userId, stageChangeTransition.userId)
 
 		// Test removing a comment
 		val taskToEditComments = taskRepo.load(taskId)
@@ -325,7 +310,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Create task with minimal data
 		val task = taskRepo.create()
-		task.meta.setCaseStage(taskNewStage, user.id as Int, now)
+		task.meta.setCaseStage(taskNewStage, sessionContext.userId as Int, now)
 		task.subject = "Minimal task, no comments"
 		// Not setting: content, priority, isPrivate, dueAt, remindAt, assignee
 
@@ -343,7 +328,7 @@ class TaskMemTest : PropertyChangeListener {
 		Assertions.assertNull(loaded.dueAt, "dueAt should be null")
 		Assertions.assertNull(loaded.remindAt, "remindAt should be null")
 		Assertions.assertNull(loaded.assigneeId, "assignee should be null")
-		Assertions.assertEquals(user.id, loaded.ownerId, "Owner should be creator")
+		Assertions.assertEquals(sessionContext.userId, loaded.ownerId, "Owner should be creator")
 		Assertions.assertEquals(0, loaded.commentList.size, "Loaded minimal task should have 0 comments")
 	}
 
@@ -353,7 +338,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Create multiple tasks
 		val task1 = taskRepo.create()
-		task1.meta.setCaseStage(taskNewStage, user.id as Int, now)
+		task1.meta.setCaseStage(taskNewStage, sessionContext.userId as Int, now)
 		task1.subject = "Task 1"
 		task1.priority = CodeTaskPriority.LOW
 		val comment = task1.commentList.add()
@@ -361,7 +346,7 @@ class TaskMemTest : PropertyChangeListener {
 		taskRepo.store(task1)
 
 		val task2 = taskRepo.create()
-		task2.meta.setCaseStage(taskInProgressStage, user.id as Int, now.plusMinutes(1))
+		task2.meta.setCaseStage(taskInProgressStage, sessionContext.userId as Int, now.plusMinutes(1))
 		task2.subject = "Task 2"
 		task2.priority = CodeTaskPriority.URGENT
 		task2.assigneeId = user1.id
@@ -394,7 +379,7 @@ class TaskMemTest : PropertyChangeListener {
 	fun testSetValueByPath() {
 		val now = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 		val task = taskRepo.create()
-		task.meta.setCaseStage(taskNewStage, user.id as Int, now)
+		task.meta.setCaseStage(taskNewStage, sessionContext.userId as Int, now)
 
 		// Set simple property
 		val content = "Updated Subject via Path"

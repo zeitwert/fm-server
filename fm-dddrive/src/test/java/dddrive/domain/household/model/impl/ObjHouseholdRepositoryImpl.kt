@@ -2,37 +2,25 @@ package dddrive.domain.household.model.impl
 
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjRepositoryBase
-import dddrive.domain.ddd.model.impl.SessionContextImpl
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 
 @Component("objHouseholdRepository")
-class ObjHouseholdRepositoryImpl :
-	ObjRepositoryBase<ObjHousehold>(
+class ObjHouseholdRepositoryImpl(
+	private val sessionContextProvider: ObjectProvider<SessionContext>,
+) : ObjRepositoryBase<ObjHousehold>(
 		ObjHousehold::class.java,
 		AGGREGATE_TYPE,
 	),
 	ObjHouseholdRepository {
 
+	override val sessionContext: SessionContext get() = sessionContextProvider.getObject()
+
 	override val persistenceProvider = object : MapObjPersistenceProviderBase<ObjHousehold>(ObjHousehold::class.java) {}
-
-	override lateinit var sessionContext: SessionContext
-
-	fun initSessionContext(
-		tenantId: Any,
-		accountId: Any,
-		userId: Any,
-	) {
-		sessionContext =
-			SessionContextImpl(
-				tenantId = tenantId,
-				accountId = accountId,
-				userId = userId,
-			)
-	}
 
 	override fun createAggregate(isNew: Boolean): ObjHousehold = ObjHouseholdImpl(this, isNew)
 

@@ -1,11 +1,7 @@
 package dddrive.test
 
-import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
-import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
-import dddrive.domain.oe.model.impl.ObjTenantRepositoryImpl
-import dddrive.domain.oe.model.impl.ObjUserRepositoryImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNotSame
@@ -15,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(classes = [TestApplication::class])
-@ActiveProfiles("domain", "mem")
+@ActiveProfiles("test")
 class TenantMemTest {
 
 	@Autowired
@@ -27,17 +23,6 @@ class TenantMemTest {
 	@Test
 	fun testTenantRepository() {
 		assertEquals("objTenant", tenantRepo.aggregateType.id)
-
-		val kTenant: ObjTenant =
-			tenantRepo.getByKey(ObjTenantRepository.KERNEL_TENANT_KEY).orElse(null)
-		assertNotNull(kTenant, "kTenant")
-
-		val kUser: ObjUser =
-			userRepo.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL).orElse(null)
-		assertNotNull(kUser, "kUser")
-
-		(tenantRepo as ObjTenantRepositoryImpl).initSessionContext(kTenant.id, 1, kUser.id)
-		(userRepo as ObjUserRepositoryImpl).initSessionContext(kTenant.id, 1, kUser.id)
 
 		val tA1 = tenantRepo.create()
 		val tA1Id = tA1.id

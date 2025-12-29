@@ -1,18 +1,15 @@
 package dddrive.test
 
+import dddrive.app.ddd.model.SessionContext
 import dddrive.ddd.core.model.AggregateSPI
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
-import dddrive.domain.household.model.impl.ObjHouseholdRepositoryImpl
-import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
-import dddrive.domain.oe.model.impl.ObjTenantRepositoryImpl
-import dddrive.domain.oe.model.impl.ObjUserRepositoryImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -26,8 +23,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(classes = [TestApplication::class])
-@ActiveProfiles("domain", "mem")
+@ActiveProfiles("test")
 class HouseholdMemTest : PropertyChangeListener {
+
+	@Autowired
+	private lateinit var sessionContext: SessionContext
 
 	@Autowired
 	private lateinit var tenantRepo: ObjTenantRepository
@@ -38,8 +38,6 @@ class HouseholdMemTest : PropertyChangeListener {
 	@Autowired
 	private lateinit var hhRepo: ObjHouseholdRepository
 
-	private lateinit var tenant: ObjTenant
-	private lateinit var user: ObjUser
 	private lateinit var user1: ObjUser
 	private lateinit var user2: ObjUser
 
@@ -55,16 +53,6 @@ class HouseholdMemTest : PropertyChangeListener {
 
 	@BeforeEach
 	fun setUp() {
-		tenant = tenantRepo.getByKey(ObjTenantRepository.KERNEL_TENANT_KEY).orElse(null)
-		assertNotNull(tenant, "kTenant")
-
-		user = userRepo.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL).orElse(null)
-		assertNotNull(user, "kUser")
-
-		(tenantRepo as ObjTenantRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
-		(userRepo as ObjUserRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
-		(hhRepo as ObjHouseholdRepositoryImpl).initSessionContext(tenant.id, 1, user.id)
-
 		user1 = userRepo.getByEmail("user1@dfp.ch").orElseGet {
 			val newUser = userRepo.create()
 			newUser.name = "user1"
@@ -93,8 +81,8 @@ class HouseholdMemTest : PropertyChangeListener {
 		(hhA1 as AggregateSPI).addPropertyChangeListener(this)
 		val hhA1Id = hhA1.id
 		hhA1.name = "HHA"
-		assertEquals(tenant.id, hhA1.tenantId, "tenant")
-		assertEquals(user.id, hhA1.meta.createdByUserId, "createUser")
+		assertEquals(sessionContext.tenantId, hhA1.tenantId, "tenant")
+		assertEquals(sessionContext.userId, hhA1.meta.createdByUserId, "createUser")
 
 		// Labels - using new collection API
 		assertEquals(0, hhA1.labelSet.size, "labelSet.1a")

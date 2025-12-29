@@ -25,6 +25,4 @@ class ObjHouseholdPartMemberImpl(
 	override var spouseId: Int? by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>(this, "spouse")
 	override var spouse: ObjHouseholdPartMember? by partReferenceProperty(this, "spouse")
 
-	override fun delete() {}
-
 }
