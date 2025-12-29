@@ -2,6 +2,7 @@ package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base;
 
 import dddrive.app.doc.model.Doc;
 import dddrive.app.obj.model.Obj;
+import dddrive.app.obj.model.ObjRepository;
 import dddrive.ddd.core.model.Aggregate;
 import dddrive.ddd.core.model.AggregateRepository;
 import io.crnk.core.engine.document.ErrorData;
@@ -155,7 +156,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			if (!(aggregate instanceof Obj)) {
 				throw new BadRequestException("Can only delete an Object");
 			}
-			((Obj) aggregate).delete(requestCtx.getUserId(), requestCtx.getCurrentTime());
+			((ObjRepository<Obj>) this.repository).close((Obj) aggregate);
 			this.repository.store(aggregate);
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on delete", x);

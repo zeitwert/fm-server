@@ -1,6 +1,8 @@
 package dddrive.app.ddd.model
 
-interface AggregateSPI {
+import dddrive.ddd.core.model.AggregateSPI
+
+interface AggregateSPI : AggregateSPI {
 
 	/**
 	 * Initialize aggregate with some basic fields after creation.

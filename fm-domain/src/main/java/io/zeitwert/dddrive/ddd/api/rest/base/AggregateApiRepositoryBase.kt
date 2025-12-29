@@ -14,7 +14,6 @@ import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.oe.model.ObjUser
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
-import java.time.OffsetDateTime
 
 abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 	private val dtoClass: Class<D>,
@@ -123,7 +122,7 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 				throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Can only delete an Object")
 			}
 
-			aggregate.delete(requestContext.userId, OffsetDateTime.now())
+			(this.repository as ObjRepository<Obj>).close(aggregate)
 			repository.store(aggregate)
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on delete", x)
