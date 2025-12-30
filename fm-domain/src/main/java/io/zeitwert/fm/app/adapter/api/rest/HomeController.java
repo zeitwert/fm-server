@@ -11,7 +11,7 @@ import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -56,12 +56,12 @@ public class HomeController {
 	@Autowired
 	DocTaskRepository taskRepository;
 	@Autowired
-	private RequestContextFM requestContext;
+	private SessionContextFM sessionContext;
 
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {
 		ObjAccount account = accountRepository.get(accountId);
-		Object tenantId = requestContext.getTenantId();
+		Object tenantId = sessionContext.getTenantId();
 		Integer portfolioCount = portfolioRepository.find(null).size();
 		Integer buildingCount = buildingRepository.find(null).size();
 //		List<ObjBuilding> buildings = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
@@ -89,7 +89,7 @@ public class HomeController {
 	@GetMapping("/openActivities/{accountId}")
 	public ResponseEntity<List<HomeActivityResponse>> getOpenActivities(@PathVariable("accountId") Integer accountId) {
 		return ResponseEntity.ok(List.of());
-//		Object tenantId = requestContext.getTenantId();
+//		Object tenantId = sessionContext.getTenantId();
 //		List<ObjBuilding> buildingList = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
 //		List<HomeActivityResponse> rrList = buildingList
 //				.stream()

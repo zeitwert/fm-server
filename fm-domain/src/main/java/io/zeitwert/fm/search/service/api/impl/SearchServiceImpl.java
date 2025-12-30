@@ -4,9 +4,9 @@ import dddrive.ddd.core.model.Aggregate;
 import dddrive.ddd.core.model.enums.CodeAggregateType;
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.crnk.core.queryspec.FilterSpec;
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.persist.util.SqlUtils;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.ddd.model.SearchResult;
 import io.zeitwert.fm.ddd.service.api.SearchService;
 import io.zeitwert.fm.obj.model.db.tables.Obj;
@@ -65,22 +65,22 @@ public class SearchServiceImpl implements SearchService, SqlUtils.SearchConditio
 	}
 
 	@Override
-	public SearchResult findOne(RequestContext requestCtx, String itemType, String searchText) {
+	public SearchResult findOne(SessionContext requestCtx, String itemType, String searchText) {
 		List<SearchResult> results = this.find(requestCtx, List.of(itemType), searchText, 1);
 		return results.size() > 0 && results.get(0).getRank().doubleValue() > 0.5 ? results.get(0) : null;
 	}
 
 	@Override
-	public List<SearchResult> find(RequestContext requestCtx, String searchText, int maxResultSize) {
+	public List<SearchResult> find(SessionContext requestCtx, String searchText, int maxResultSize) {
 		return this.find(requestCtx, List.of(), searchText, maxResultSize);
 	}
 
 	@Override
-	public List<SearchResult> find(RequestContext requestCtx, List<String> itemTypes, String searchToken,
+	public List<SearchResult> find(SessionContext requestCtx, List<String> itemTypes, String searchToken,
 																 int maxResultSize) {
 
 		Integer tenantId = (Integer) requestCtx.getTenantId();
-		Integer accountId = ((RequestContextFM) requestCtx).getAccountId();
+		Integer accountId = ((SessionContextFM) requestCtx).getAccountId();
 
 		Condition tenantCondition = tenantId == ObjTenantRepository.KERNEL_TENANT_ID
 				? DSL.trueCondition()

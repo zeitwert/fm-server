@@ -14,11 +14,11 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.dddrive.model.FMAggregateRepository;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +27,19 @@ import java.util.List;
 public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
-	private final RequestContextFM requestCtx;
+	private final SessionContextFM requestCtx;
 	private final ObjUserRepository userRepository;
 	private final AggregateRepository<A> repository;
 	private final AggregateDtoAdapterBase<A, D> dtoAdapter;
 
 	public AggregateApiRepositoryBase(
 			Class<D> dtoClass,
-			RequestContext requestCtx,
+			SessionContext requestCtx,
 			ObjUserRepository userRepository,
 			AggregateRepository<A> repository,
 			AggregateDtoAdapterBase<A, D> dtoAdapter) {
 		super(dtoClass);
-		this.requestCtx = (RequestContextFM) requestCtx;
+		this.requestCtx = (SessionContextFM) requestCtx;
 		this.userRepository = userRepository;
 		this.repository = repository;
 		this.dtoAdapter = dtoAdapter;

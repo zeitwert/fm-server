@@ -1,6 +1,6 @@
 package io.zeitwert.fm.collaboration.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.ObjNoteApiRepository;
 import io.zeitwert.fm.collaboration.adapter.api.jsonapi.dto.ObjNoteDto;
@@ -15,7 +15,7 @@ public class ObjNoteApiRepositoryImpl extends AggregateApiRepositoryBase<ObjNote
 
 	public ObjNoteApiRepositoryImpl(
 			ObjNoteRepository repository,
-			RequestContext requestCtx,
+			SessionContext requestCtx,
 			ObjUserRepository userRepository,
 			ObjNoteDtoAdapter dtoAdapter) {
 		super(ObjNoteDto.class, requestCtx, userRepository, repository, dtoAdapter);

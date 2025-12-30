@@ -1,14 +1,14 @@
 package io.zeitwert.fm.obj.model.impl
 
 import dddrive.app.obj.model.Obj
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.FMObjVRepository
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 
 @Component("objRepository")
 class FMObjVRepositoryImpl(
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMObjRepositoryBase<Obj>(
 		Obj::class.java,
 		AGGREGATE_TYPE_ID,

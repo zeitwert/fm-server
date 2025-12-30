@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import io.zeitwert.fm.oe.model.ObjUser;
-import io.zeitwert.dddrive.app.model.RequestContext;
-import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
+import io.zeitwert.dddrive.app.model.SessionContext;
+import io.zeitwert.fm.app.model.impl.SessionContextFMImpl;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 
 @Service("appContext")
@@ -16,25 +16,25 @@ public class AppContextImpl extends AppContextBase {
 
 	private static final String K_ZEITWERT_IO = "k@zeitwert.io";
 
-	private RequestContext kernelRequestContext;
+	private SessionContext kernelSessionContext;
 
 	protected AppContextImpl(ApplicationEventPublisher applicationEventPublisher, BeanFactory beanFactory) {
 		super(applicationEventPublisher, beanFactory);
 	}
 
 	@Override
-	public RequestContext getRequestContext() {
-		if (this.kernelRequestContext != null) {
-			return this.kernelRequestContext;
+	public SessionContext getSessionContext() {
+		if (this.kernelSessionContext != null) {
+			return this.kernelSessionContext;
 		}
-		return super.getRequestContext();
+		return super.getSessionContext();
 	}
 
 	@Override
 	public void beginKernelSession(String userEmail) {
 		String email = userEmail != null ? userEmail : K_ZEITWERT_IO;
 		ObjUser user = ((ObjUserCache) this.getCache(ObjUser.class)).getByEmail(email).get();
-		this.kernelRequestContext = RequestContextFMImpl.builder()
+		this.kernelSessionContext = SessionContextFMImpl.builder()
 				.tenantId(user.getTenantId())
 				.user(user)
 				.locale(CodeLocale.EN_US)
@@ -44,7 +44,7 @@ public class AppContextImpl extends AppContextBase {
 
 	@Override
 	public void endKernelSession() {
-		this.kernelRequestContext = null;
+		this.kernelSessionContext = null;
 	}
 
 }

@@ -3,7 +3,7 @@ package io.zeitwert.fm.server.session.adapter.rest
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto.Companion.of
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
 import io.zeitwert.fm.oe.model.ObjTenantRepository
@@ -52,7 +52,7 @@ class SessionController {
 	lateinit var accountRepository: ObjAccountRepository
 
 	@Autowired
-	lateinit var requestCtx: RequestContextFM
+	lateinit var requestCtx: SessionContextFM
 
 	@Autowired
 	lateinit var tenantDtoAdapter: ObjTenantDtoAdapter
@@ -83,7 +83,7 @@ class SessionController {
 			val updatedAuthentication = UsernamePasswordAuthenticationToken(
 				userDetails,
 				null,
-				userDetails.authorities
+				userDetails.authorities,
 			)
 			updatedAuthentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 
@@ -124,7 +124,7 @@ class SessionController {
 	): Authentication = UsernamePasswordAuthenticationToken(email, password)
 
 	@get:GetMapping("/session")
-	val requestContext: ResponseEntity<SessionInfoResponse?>
+	val sessionContext: ResponseEntity<SessionInfoResponse?>
 		get() {
 			val tenant = this.tenantRepository.get(this.requestCtx.getTenantId())
 			val account =

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.obj
 
-import io.zeitwert.dddrive.app.model.RequestContext
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.test.model.ObjTest
 import io.zeitwert.fm.test.model.ObjTestRepository
 import io.zeitwert.fm.test.model.enums.CodeTestType
@@ -31,7 +31,7 @@ class ObjTestTest {
 	}
 
 	@Autowired
-	private lateinit var requestCtx: RequestContext
+	private lateinit var requestCtx: SessionContext
 
 	@Autowired
 	private lateinit var testRepository: ObjTestRepository

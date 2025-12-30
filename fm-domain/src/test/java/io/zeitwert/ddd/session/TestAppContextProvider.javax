@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.dddrive.app.service.api.AppContextSPI;
 import io.dddrive.app.service.api.base.AppContextBase;
 
@@ -18,8 +18,8 @@ public class TestAppContextProvider {
 	public AppContextSPI appContext(
 			ApplicationEventPublisher applicationEventPublisher,
 			BeanFactory beanFactory,
-			RequestContext requestContext) {
-		return new TestAppContextImpl(applicationEventPublisher, beanFactory, requestContext);
+			RequestContext sessionContext) {
+		return new TestAppContextImpl(applicationEventPublisher, beanFactory, sessionContext);
 	}
 
 	/**
@@ -28,19 +28,19 @@ public class TestAppContextProvider {
 	 */
 	private static class TestAppContextImpl extends AppContextBase {
 
-		private final RequestContext requestContext;
+		private final RequestContext sessionContext;
 
 		protected TestAppContextImpl(
 				ApplicationEventPublisher applicationEventPublisher,
 				BeanFactory beanFactory,
-				RequestContext requestContext) {
+				RequestContext sessionContext) {
 			super(applicationEventPublisher, beanFactory);
-			this.requestContext = requestContext;
+			this.sessionContext = sessionContext;
 		}
 
 		@Override
 		public RequestContext getRequestContext() {
-			return this.requestContext;
+			return this.sessionContext;
 		}
 
 		@Override

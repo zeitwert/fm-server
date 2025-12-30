@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.adapter.api.rest;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.dms.adapter.api.rest.DocumentContentController;
 import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserDocumentController {
 
 	@Autowired
-	RequestContext requestCtx;
+	SessionContext requestCtx;
 	@Autowired
 	private ObjUserRepository userRepository;
 	@Autowired

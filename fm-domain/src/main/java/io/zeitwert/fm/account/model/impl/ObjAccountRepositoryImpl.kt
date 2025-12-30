@@ -3,14 +3,14 @@ package io.zeitwert.fm.account.model.impl
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.persist.ObjAccountSqlPersistenceProviderImpl
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objAccountRepository")
 class ObjAccountRepositoryImpl(
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMObjRepositoryBase<ObjAccount>(
 		ObjAccount::class.java,
 		AGGREGATE_TYPE_ID,

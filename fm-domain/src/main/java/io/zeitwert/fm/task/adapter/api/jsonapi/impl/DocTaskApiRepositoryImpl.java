@@ -1,6 +1,6 @@
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.task.adapter.api.jsonapi.DocTaskApiRepository;
@@ -16,7 +16,7 @@ public class DocTaskApiRepositoryImpl
 
 	public DocTaskApiRepositoryImpl(
 			DocTaskRepository repository,
-			RequestContext requestCtx,
+			SessionContext requestCtx,
 			ObjUserRepository userRepository,
 			DocTaskDtoAdapter dtoAdapter) {
 		super(DocTaskDto.class, requestCtx, userRepository, repository, dtoAdapter);

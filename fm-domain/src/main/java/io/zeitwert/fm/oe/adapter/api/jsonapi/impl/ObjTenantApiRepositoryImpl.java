@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.ObjTenantApiRepository;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto;
@@ -16,7 +16,7 @@ public class ObjTenantApiRepositoryImpl
 
 	public ObjTenantApiRepositoryImpl(
 			ObjTenantRepository repository,
-			RequestContext requestCtx,
+			SessionContext requestCtx,
 			ObjUserRepository userRepository,
 			ObjTenantDtoAdapter dtoAdapter) {
 		super(ObjTenantDto.class, requestCtx, userRepository, repository, dtoAdapter);

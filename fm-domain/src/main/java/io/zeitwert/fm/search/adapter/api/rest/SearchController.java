@@ -1,9 +1,9 @@
-
 package io.zeitwert.fm.search.adapter.api.rest;
 
 import java.util.Collections;
 import java.util.List;
 
+import io.zeitwert.dddrive.app.model.SessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
 import io.zeitwert.fm.ddd.model.SearchResult;
 import io.zeitwert.fm.ddd.service.api.SearchService;
 import io.zeitwert.fm.search.adapter.api.rest.dto.SearchResultDto;
@@ -26,7 +25,7 @@ public class SearchController {
 	SearchService searchService;
 
 	@Autowired
-	RequestContext requestCtx;
+	SessionContext requestCtx;
 
 	@GetMapping()
 	public ResponseEntity<List<SearchResultDto>> find(

@@ -2,7 +2,7 @@ package io.zeitwert.fm.contact
 
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel
@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
 class ContactTest {
 
 	@Autowired
-	lateinit var requestCtx: RequestContextFM
+	lateinit var requestCtx: SessionContextFM
 
 	@Autowired
 	lateinit var accountRepo: ObjAccountRepository
@@ -136,7 +136,7 @@ class ContactTest {
 		assertTrue(hasException, "deleted mail address should not exist")
 	}
 
-	private fun getTestAccount(requestCtx: RequestContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null)[0])
+	private fun getTestAccount(requestCtx: SessionContextFM): ObjAccount = this.accountRepo.get(this.accountRepo.find(null)[0])
 
 	private fun initContact(contact: ObjContact) {
 		contact.contactRole = CodeContactRole.CARETAKER

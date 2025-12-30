@@ -4,7 +4,7 @@ import dddrive.app.doc.model.enums.CodeCaseStage;
 import dddrive.app.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.task.model.DocTask;
@@ -39,7 +39,7 @@ public class TaskTest {
 	static CodeTaskPriority PrioHigh;
 
 	@Autowired
-	private RequestContextFM requestCtx;
+	private SessionContextFM requestCtx;
 
 	@Autowired
 	private ObjUserRepository userRepository;
@@ -122,7 +122,7 @@ public class TaskTest {
 
 	}
 
-	private void getTestData(RequestContextFM requestCtx) {
+	private void getTestData(SessionContextFM requestCtx) {
 		RelatedTo = this.userRepository.getByEmail(USER_EMAIL).get();
 		assertNotNull(RelatedTo, "relatedTo");
 		Object tenantId = requestCtx.getTenantId();

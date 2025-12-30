@@ -3,7 +3,7 @@ package io.zeitwert.fm.contact.persist
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 @Component("objContactPersistenceProvider")
 open class ObjContactSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
 	SqlRecordMapper<ObjContact> {
 

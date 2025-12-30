@@ -1,7 +1,7 @@
 package io.zeitwert.dddrive.app.model.base;
 
 import dddrive.ddd.core.model.Aggregate;
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.oe.model.ObjUser;
 import lombok.Data;
 import lombok.ToString;
@@ -15,13 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data()
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-public abstract class RequestContextBase implements RequestContext {
+public abstract class SessionContextBase implements SessionContext {
 
 	private final ObjUser user;
 	private final Object tenantId;
 	private final Map<Object, Aggregate> aggregates = new ConcurrentHashMap<>();
 
-	public RequestContextBase(ObjUser user, Object tenantId) {
+	public SessionContextBase(ObjUser user, Object tenantId) {
 		this.user = user;
 		this.tenantId = tenantId;
 	}

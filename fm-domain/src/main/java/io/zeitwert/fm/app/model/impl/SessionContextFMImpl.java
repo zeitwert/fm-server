@@ -1,7 +1,7 @@
 package io.zeitwert.fm.app.model.impl;
 
-import io.zeitwert.dddrive.app.model.base.RequestContextBase;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.dddrive.app.model.base.SessionContextBase;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @ToString(callSuper = true, includeFieldNames = true)
-public class RequestContextFMImpl extends RequestContextBase implements RequestContextFM {
+public class SessionContextFMImpl extends SessionContextBase implements SessionContextFM {
 
 	private final CodeLocale locale;
 	private final Integer accountId;

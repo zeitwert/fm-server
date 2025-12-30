@@ -5,7 +5,7 @@ import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingDto> {
 
 	private final ObjUserDtoAdapter userDtoAdapter;
-	private RequestContextFM requestContext;
+	private SessionContextFM sessionContext;
 	private ObjAccountRepository accountRepository = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 	private ObjContactRepository contactRepository = null;
@@ -42,8 +42,8 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 	}
 
 	@Autowired
-	public void setRequestContext(RequestContextFM requestContext) {
-		this.requestContext = requestContext;
+	public void setRequestContext(SessionContextFM sessionContext) {
+		this.sessionContext = sessionContext;
 	}
 
 	@Autowired
@@ -133,12 +133,12 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			}
 
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
-				obj.addRating((ObjUser) requestContext.getUser(), requestContext.getCurrentTime());
+				obj.addRating(sessionContext.getUser(), sessionContext.getCurrentTime());
 			} else if (dto.getRatingSeqNr() != null && dto.getRatingSeqNr() >= 0) {
 				final ObjBuildingPartRating rating =
 					obj.getCurrentRating() == null ||
 					dto.getRatingSeqNr() >= obj.getRatingList().size()
-						? obj.addRating((ObjUser) requestContext.getUser(), requestContext.getCurrentTime())
+						? obj.addRating(sessionContext.getUser(), sessionContext.getCurrentTime())
 						: obj.getCurrentRating();
 				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalog.getPartCatalog(dto.getPartCatalog().getId()));
 				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategy.Enumeration.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));

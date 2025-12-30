@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe
 
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -25,7 +25,7 @@ import java.util.*
 class UserTest {
 
 	@Autowired
-	private lateinit var requestCtx: RequestContextFM
+	private lateinit var requestCtx: SessionContextFM
 
 	@Autowired
 	private lateinit var userRepository: ObjUserRepository

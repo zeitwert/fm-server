@@ -3,7 +3,7 @@ package io.zeitwert.fm.building;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BuildingTest {
 
 	@Autowired
-	private RequestContextFM requestCtx;
+	private SessionContextFM requestCtx;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
@@ -138,7 +138,7 @@ public class BuildingTest {
 
 	}
 
-	private ObjAccount getTestAccount(RequestContextFM requestCtx) {
+	private ObjAccount getTestAccount(SessionContextFM requestCtx) {
 		return this.accountRepo.get(this.accountRepo.find(null).getFirst());
 	}
 

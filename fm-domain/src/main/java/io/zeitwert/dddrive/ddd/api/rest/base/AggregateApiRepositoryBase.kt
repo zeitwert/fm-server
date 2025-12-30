@@ -10,14 +10,14 @@ import io.zeitwert.dddrive.ddd.api.rest.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.api.rest.DtoDetailLevel
 import io.zeitwert.dddrive.ddd.api.rest.dto.AggregateDto
 import io.zeitwert.dddrive.model.FMAggregateRepository
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.model.ObjUser
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
 abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 	private val dtoClass: Class<D>,
-	private val requestContext: RequestContextFM,
+	private val sessionContext: SessionContextFM,
 	private val userRepo: ObjRepository<ObjUser>,
 	private val repository: AggregateRepository<A>,
 	private val dtoAdapter: AggregateDtoAdapter<A, D>,
@@ -45,8 +45,8 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 	override fun findOne(id: String): D {
 		try {
 			val aggregate = repository.load(repository.idFromString(id)!!)
-			requestContext.clearAggregates()
-			requestContext.addAggregate(aggregate.id, aggregate)
+			sessionContext.clearAggregates()
+			sessionContext.addAggregate(aggregate.id, aggregate)
 			return dtoAdapter.fromAggregate(aggregate, DtoDetailLevel.FULL)
 		} catch (x: Exception) {
 			x.printStackTrace()
@@ -77,8 +77,8 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 		}
 
 		try {
-			val aggregate = if (requestContext.hasAggregate(id)) {
-				requestContext.getAggregate(id) as A
+			val aggregate = if (sessionContext.hasAggregate(id)) {
+				sessionContext.getAggregate(id) as A
 			} else {
 				repository.load(id)
 			}
@@ -112,8 +112,8 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, D : AggregateDto<A>>(
 		}
 
 		try {
-			val aggregate = if (requestContext.hasAggregate(objId)) {
-				requestContext.getAggregate(objId) as A
+			val aggregate = if (sessionContext.hasAggregate(objId)) {
+				sessionContext.getAggregate(objId) as A
 			} else {
 				repository.load(objId)
 			}

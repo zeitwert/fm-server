@@ -1,6 +1,6 @@
 package io.zeitwert.ddd.session;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestRepository;
 import io.zeitwert.fm.test.model.enums.CodeTestType;
@@ -24,7 +24,7 @@ public class SessionTest {
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
-	private RequestContext requestCtx;
+	private SessionContext requestCtx;
 
 	@Autowired
 	private ObjTestRepository testRepo;

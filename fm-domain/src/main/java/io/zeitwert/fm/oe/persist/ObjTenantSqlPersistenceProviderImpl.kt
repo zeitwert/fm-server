@@ -3,7 +3,7 @@ package io.zeitwert.fm.oe.persist
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
@@ -18,7 +18,7 @@ import java.util.*
 @Component("objTenantPersistenceProvider")
 open class ObjTenantSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	SqlRecordMapper<ObjTenant> {
 

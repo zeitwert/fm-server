@@ -6,7 +6,7 @@ import dddrive.ddd.core.model.RepositoryDirectory;
 import dddrive.ddd.enums.model.Enumerated;
 import dddrive.ddd.enums.model.Enumeration;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
-import io.zeitwert.fm.app.model.RequestContextFM;
+import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.oe.model.ObjTenant;
 import io.zeitwert.fm.oe.model.ObjTenantRepository;
 import io.zeitwert.fm.oe.model.ObjUser;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class EnumController {
 
 	@Autowired
-	RequestContextFM requestContext;
+	SessionContextFM sessionContext;
 
 	@Autowired
 	RepositoryDirectory directory;
@@ -54,7 +54,7 @@ public class EnumController {
 
 	@GetMapping("/oe/objUser")
 	public ResponseEntity<List<EnumeratedDto>> getUsers() {
-		Object tenantId = requestContext.getTenantId();
+		Object tenantId = sessionContext.getTenantId();
 		List<ObjUser> users = userRepo.find(null).stream().map(it -> userRepo.get(it)).toList();
 		return ResponseEntity.ok(users.stream().map(u -> EnumeratedDto.of(u.getId().toString(), u.getCaption())).toList());
 	}

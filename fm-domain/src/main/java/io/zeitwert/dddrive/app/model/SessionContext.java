@@ -6,7 +6,7 @@ import io.zeitwert.fm.oe.model.ObjUser;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-public interface RequestContext {
+public interface SessionContext {
 
 	Object getUserId();
 

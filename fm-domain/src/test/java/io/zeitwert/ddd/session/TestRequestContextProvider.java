@@ -2,8 +2,8 @@ package io.zeitwert.ddd.session;
 
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.app.model.RequestContextFM;
-import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
+import io.zeitwert.fm.app.model.SessionContextFM;
+import io.zeitwert.fm.app.model.impl.SessionContextFMImpl;
 import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
@@ -23,7 +23,7 @@ public class TestRequestContextProvider {
 
 	@Bean
 	@SessionScope
-	public RequestContextFM getRequestContext(ObjUserRepository userRepository, ObjAccountRepository accountRepository) {
+	public SessionContextFM getRequestContext(ObjUserRepository userRepository, ObjAccountRepository accountRepository) {
 		Optional<ObjUser> maybeUser = userRepository.getByEmail(userEmail);
 		if (maybeUser.isEmpty()) {
 			throw new RuntimeException("Authentication error (unknown user " + userEmail + ")");
@@ -34,7 +34,7 @@ public class TestRequestContextProvider {
 			throw new RuntimeException("Authentication error (unknown account " + accountKey + ")");
 		}
 		ObjAccount account = maybeAccount.get();
-		return RequestContextFMImpl.builder()
+		return SessionContextFMImpl.builder()
 				.tenantId(user.getTenantId())
 				.user(user)
 				.accountId((Integer) account.getId())

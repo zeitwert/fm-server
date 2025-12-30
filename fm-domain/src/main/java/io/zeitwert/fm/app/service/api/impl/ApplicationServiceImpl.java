@@ -1,6 +1,6 @@
 package io.zeitwert.fm.app.service.api.impl;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.app.ApplicationService;
 import io.zeitwert.fm.app.model.Application;
 import io.zeitwert.fm.app.model.ApplicationArea;
@@ -17,7 +17,7 @@ class ApplicationServiceImpl implements ApplicationService {
 	private static final ApplicationConfig appConfig = new ApplicationConfig();
 
 	@Autowired
-	private RequestContext requestCtx;
+	private SessionContext requestCtx;
 
 	@Override
 	public List<Application> getAllApplications() {

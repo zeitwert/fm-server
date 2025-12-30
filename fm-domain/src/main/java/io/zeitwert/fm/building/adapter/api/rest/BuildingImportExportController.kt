@@ -2,7 +2,7 @@ package io.zeitwert.fm.building.adapter.api.rest
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.fm.account.model.enums.CodeCurrency
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto
 import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto
@@ -42,7 +42,7 @@ import java.util.function.Consumer
 class BuildingImportExportController {
 
 	@Autowired
-	lateinit var requestCtx: RequestContextFM
+	lateinit var requestCtx: SessionContextFM
 
 	@Autowired
 	lateinit var directory: RepositoryDirectory

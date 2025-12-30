@@ -1,6 +1,6 @@
 package io.zeitwert.fm.dms;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeAccountType;
@@ -30,7 +30,7 @@ public class DocumentTest {
 	static String TEST_JPG_CONTENT = "JPEG-JPEG-JPEG";
 
 	@Autowired
-	private RequestContext requestCtx;
+	private SessionContext requestCtx;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;

@@ -3,7 +3,7 @@ package io.zeitwert.fm.collaboration.persist
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
@@ -19,7 +19,7 @@ import io.zeitwert.fm.obj.model.db.Tables as ObjTables
 @Component("objNotePersistenceProvider")
 open class ObjNoteSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMObjSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
 	SqlRecordMapper<ObjNote> {
 

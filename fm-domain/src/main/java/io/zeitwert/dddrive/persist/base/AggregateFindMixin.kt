@@ -5,7 +5,7 @@ import io.crnk.core.queryspec.FilterOperator
 import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.util.SqlUtils
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import org.jooq.DSLContext
 import org.jooq.Field
@@ -22,7 +22,7 @@ interface AggregateFindMixin {
 
 	val sqlUtils: SqlUtils
 
-	val requestCtx: RequestContextFM
+	val requestCtx: SessionContextFM
 
 	fun queryWithFilter(querySpec: QuerySpec?): QuerySpec {
 		var querySpec = querySpec

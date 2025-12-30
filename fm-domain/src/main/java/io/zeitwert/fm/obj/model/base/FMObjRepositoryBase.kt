@@ -5,7 +5,7 @@ import dddrive.app.obj.model.base.ObjRepositoryBase
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.model.SessionContextImpl
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.FMObjRepository
 
 /**
@@ -24,7 +24,7 @@ abstract class FMObjRepositoryBase<O : Obj>(
 ) : ObjRepositoryBase<O>(intfClass, aggregateTypeId),
 	FMObjRepository<O> {
 
-	abstract val requestCtx: RequestContextFM
+	abstract val requestCtx: SessionContextFM
 
 	override val sessionContext
 		get() = SessionContextImpl(

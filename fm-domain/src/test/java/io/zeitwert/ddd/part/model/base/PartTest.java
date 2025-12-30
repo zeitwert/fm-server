@@ -1,6 +1,6 @@
 package io.zeitwert.ddd.part.model.base;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.test.model.ObjTest;
 import io.zeitwert.fm.test.model.ObjTestPartNode;
 import io.zeitwert.fm.test.model.ObjTestRepository;
@@ -26,7 +26,7 @@ public class PartTest {
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
-	private RequestContext requestCtx;
+	private SessionContext requestCtx;
 
 	// CodeTestType is now a Kotlin enum with companion object Enumeration
 

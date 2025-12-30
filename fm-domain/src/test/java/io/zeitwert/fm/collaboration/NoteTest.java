@@ -1,6 +1,6 @@
 package io.zeitwert.fm.collaboration;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.collaboration.model.ObjNote;
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository;
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NoteTest {
 
 	@Autowired
-	private RequestContext requestCtx;
+	private SessionContext requestCtx;
 
 	@Autowired
 	private ObjUserRepository userRepo;

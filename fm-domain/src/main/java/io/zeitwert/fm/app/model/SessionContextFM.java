@@ -1,9 +1,9 @@
 package io.zeitwert.fm.app.model;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 
-public interface RequestContextFM extends RequestContext {
+public interface SessionContextFM extends SessionContext {
 
 	CodeLocale getLocale();
 

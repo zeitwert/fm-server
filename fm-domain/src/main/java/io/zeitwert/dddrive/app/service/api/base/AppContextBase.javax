@@ -8,7 +8,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.app.service.api.AppContext;
 import io.zeitwert.dddrive.app.service.api.AppContextSPI;
 import dddrive.ddd.core.model.Aggregate;

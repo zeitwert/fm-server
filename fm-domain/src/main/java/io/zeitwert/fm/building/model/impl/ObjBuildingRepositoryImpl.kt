@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.model.impl
 
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -18,7 +18,7 @@ class ObjBuildingRepositoryImpl(
 	override val contactRepository: ObjContactRepository,
 	override val documentRepository: ObjDocumentRepository,
 	override val taskRepository: DocTaskRepository,
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMObjRepositoryBase<ObjBuilding>(
 		ObjBuilding::class.java,
 		AGGREGATE_TYPE_ID,

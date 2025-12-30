@@ -3,7 +3,7 @@ package io.zeitwert.fm.portfolio.service.api.impl;
 import com.aspose.words.*;
 import com.google.maps.ImageResult;
 import com.google.maps.model.Size;
-import io.zeitwert.dddrive.app.model.RequestContext;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult;
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding;
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod;
@@ -49,7 +49,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	Formatter fmt = Formatter.INSTANCE;
 
 	@Autowired
-	RequestContext requestCtx;
+	SessionContext requestCtx;
 
 	@Autowired
 	PortfolioEvaluationService evaluationService;

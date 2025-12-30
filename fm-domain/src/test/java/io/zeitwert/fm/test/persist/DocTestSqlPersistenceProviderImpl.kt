@@ -4,7 +4,7 @@ import dddrive.ddd.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.app.model.RequestContextFM
+import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.persist.DocPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: RequestContextFM,
+	override val requestCtx: SessionContextFM,
 ) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
 
