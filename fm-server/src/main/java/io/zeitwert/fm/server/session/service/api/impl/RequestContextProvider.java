@@ -1,5 +1,7 @@
 package io.zeitwert.fm.server.session.service.api.impl;
 
+import io.zeitwert.fm.oe.model.ObjUser;
+import io.zeitwert.fm.oe.model.enums.CodeLocale;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -10,8 +12,6 @@ import org.springframework.web.context.annotation.SessionScope;
 import io.zeitwert.fm.app.model.RequestContextFM;
 import io.zeitwert.fm.app.model.impl.RequestContextFMImpl;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
-import io.zeitwert.fm.oe.model.db.tables.CodeLocale;
-import io.zeitwert.fm.oe.model.db.tables.ObjUser;
 import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
 
 @Configuration
