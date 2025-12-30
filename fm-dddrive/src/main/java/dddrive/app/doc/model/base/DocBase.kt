@@ -24,6 +24,9 @@ abstract class DocBase(
 	Doc,
 	DocMeta {
 
+	private var _docTypeId: String? by baseProperty(this, "docTypeId")
+	override val docTypeId get() = _docTypeId!!
+
 	override var caseDef: CodeCaseDef? by enumProperty(this, "caseDef")
 	override var caseStage: CodeCaseStage? by enumProperty(this, "caseStage")
 
@@ -37,8 +40,15 @@ abstract class DocBase(
 	override val meta: DocMeta
 		get() = this
 
-	override val docTypeId
-		get() = repository.aggregateType.id
+	override fun doAfterCreate(sessionContext: SessionContext) {
+		super.doAfterCreate(sessionContext)
+		try {
+			disableCalc()
+			_docTypeId = repository.aggregateType.id
+		} finally {
+			enableCalc()
+		}
+	}
 
 	override fun doAfterLoad() {
 		super.doAfterLoad()

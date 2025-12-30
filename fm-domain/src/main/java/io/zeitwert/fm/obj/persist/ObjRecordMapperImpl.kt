@@ -36,9 +36,7 @@ class ObjRecordMapperImpl(
 		aggregate: Aggregate,
 		record: ObjRecord,
 	) {
-		// check(aggregate.id != null) { "id defined" }
-		// check(aggregate.meta.objTypeId != null) { "objTypeId defined" }
-		// obj
+		// aggregate fields
 		aggregate.setValueByPath("id", record.id)
 		aggregate.setValueByPath("tenantId", record.tenantId)
 		if (aggregate is ItemWithAccount) {
@@ -46,8 +44,10 @@ class ObjRecordMapperImpl(
 		}
 		aggregate.setValueByPath("ownerId", record.ownerId)
 		aggregate.setValueByPath("caption", record.caption)
-		// obj_meta
 		aggregate.setValueByPath("version", record.version)
+		// obj-specific fields
+		aggregate.setValueByPath("objTypeId", record.objTypeId)
+		// obj_meta
 		aggregate.setValueByPath("createdAt", record.createdAt)
 		aggregate.setValueByPath("createdByUserId", record.createdByUserId)
 		aggregate.setValueByPath("modifiedAt", record.modifiedAt)
@@ -95,7 +95,7 @@ class ObjRecordMapperImpl(
 
 	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

@@ -48,7 +48,7 @@ open class DocTaskSqlPersistenceProvider(
 		aggregate.dueAt = record.dueAt
 		aggregate.remindAt = record.remindAt
 		record.priorityId?.let { priorityId ->
-			aggregate.priority = CodeTaskPriority.Enumeration.getPriority(priorityId)
+			aggregate.priority = CodeTaskPriority.getPriority(priorityId)
 		}
 	}
 
@@ -92,7 +92,7 @@ open class DocTaskSqlPersistenceProvider(
 			.where(Tables.DOC_TASK.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.DOC_TASK.DOC_ID)
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

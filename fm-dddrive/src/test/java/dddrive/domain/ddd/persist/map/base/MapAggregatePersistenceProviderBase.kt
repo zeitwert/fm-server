@@ -93,6 +93,7 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 	}
 
 	override fun getByForeignKey(
+		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,
 	): List<Any> {

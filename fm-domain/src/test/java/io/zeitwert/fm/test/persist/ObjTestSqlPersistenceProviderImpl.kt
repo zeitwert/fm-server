@@ -132,7 +132,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 			.where(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_TEST.OBJ_ID)
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

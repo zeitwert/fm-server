@@ -197,7 +197,7 @@ abstract class AggregateBase(
 		try {
 			beginCalc()
 			doCalcVolatile()
-			check(didCalcVolatile) { "$className: doCalcAll was propagated" }
+			check(didCalcVolatile) { "$className: doCalcVolatile was propagated" }
 		} finally {
 			endCalc()
 		}

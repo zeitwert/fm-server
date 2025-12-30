@@ -10,7 +10,7 @@ interface SqlRecordMapper<A : Aggregate> {
 
 	fun getAll(tenantId: Any): List<Any>
 
-	fun getByForeignKey(
+	fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

@@ -48,9 +48,9 @@ open class ObjContactSqlPersistenceProviderImpl(
 		record: ObjContactRecord,
 	) {
 		aggregate.accountId = record.accountId
-		aggregate.contactRole = CodeContactRole.Enumeration.getContactRole(record.contactRoleId)
-		aggregate.salutation = CodeSalutation.Enumeration.getSalutation(record.salutationId)
-		aggregate.title = CodeTitle.Enumeration.getTitle(record.titleId)
+		aggregate.contactRole = CodeContactRole.getContactRole(record.contactRoleId)
+		aggregate.salutation = CodeSalutation.getSalutation(record.salutationId)
+		aggregate.title = CodeTitle.getTitle(record.titleId)
 		aggregate.firstName = record.firstName
 		aggregate.lastName = record.lastName
 		aggregate.birthDate = record.birthDate
@@ -119,7 +119,7 @@ open class ObjContactSqlPersistenceProviderImpl(
 			.where(Tables.OBJ_CONTACT.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_CONTACT.OBJ_ID)
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

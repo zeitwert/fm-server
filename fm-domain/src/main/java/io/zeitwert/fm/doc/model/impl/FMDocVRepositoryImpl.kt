@@ -15,7 +15,7 @@ class FMDocVRepositoryImpl(
 	),
 	FMDocVRepository {
 
-	override fun createAggregate(isNew: Boolean): Doc = throw UnsupportedOperationException("this is a readonly repository")
+	override fun createAggregate(isNew: Boolean) = DocVImpl(this, isNew)
 
 	override fun create(): Doc = throw UnsupportedOperationException("this is a readonly repository")
 

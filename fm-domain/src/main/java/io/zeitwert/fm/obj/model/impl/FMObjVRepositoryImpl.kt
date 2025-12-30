@@ -15,7 +15,7 @@ class FMObjVRepositoryImpl(
 	),
 	FMObjVRepository {
 
-	override fun createAggregate(isNew: Boolean): Obj = throw UnsupportedOperationException("this is a readonly repository")
+	override fun createAggregate(isNew: Boolean) = ObjVImpl(this, isNew)
 
 	override fun create(): Obj = throw UnsupportedOperationException("this is a readonly repository")
 

@@ -3,6 +3,7 @@ package io.zeitwert.fm.collaboration.persist
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.fm.app.model.RequestContextFM
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
@@ -10,7 +11,6 @@ import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
-import io.zeitwert.fm.app.model.RequestContextFM
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 import io.zeitwert.fm.obj.model.db.Tables as ObjTables
@@ -41,7 +41,7 @@ open class ObjNoteSqlPersistenceProviderImpl(
 		record: ObjNoteRecord,
 	) {
 		aggregate.relatedToId = record.relatedToId
-		aggregate.noteType = CodeNoteType.Enumeration.getNoteType(record.noteTypeId)
+		aggregate.noteType = CodeNoteType.getNoteType(record.noteTypeId)
 		aggregate.subject = record.subject
 		aggregate.content = record.content
 		aggregate.isPrivate = record.isPrivate
@@ -80,7 +80,7 @@ open class ObjNoteSqlPersistenceProviderImpl(
 			.where(Tables.OBJ_NOTE.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_NOTE.OBJ_ID)
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

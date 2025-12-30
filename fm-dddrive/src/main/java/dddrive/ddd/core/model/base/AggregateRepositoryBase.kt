@@ -155,7 +155,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 	override fun getByForeignKey(
 		fkName: String,
 		targetId: Any,
-	): List<Any> = persistenceProvider.getByForeignKey(fkName, targetId)
+	): List<Any> = persistenceProvider.getByForeignKey(aggregateTypeId, fkName, targetId)
 
 	fun handleAggregateStored(id: Any) {
 		if (objCache.getIfPresent(id) != null) {

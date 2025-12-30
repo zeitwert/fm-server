@@ -15,7 +15,7 @@ public abstract class ObjDtoAdapterBase<O extends Obj, D extends ObjDtoBase<O>>
 	@Override
 	public void toAggregate(D dto, O obj) {
 		if (dto.getOwner() != null) {
-			obj.setOwnerId(dto.getOwner().getId());
+			obj.setOwnerId(getUserRepository().idFromString(dto.getOwner().getId()));
 		}
 	}
 

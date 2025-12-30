@@ -21,6 +21,9 @@ abstract class ObjBase(
 	Obj,
 	ObjMeta {
 
+	private var _objTypeId: String? by baseProperty(this, "objTypeId")
+	override val objTypeId get() = _objTypeId!!
+
 	override var closedByUserId: Any? by baseProperty(this, "closedByUserId")
 	override var closedAt: OffsetDateTime? by baseProperty(this, "closedAt")
 
@@ -30,8 +33,6 @@ abstract class ObjBase(
 	override val meta: ObjMeta
 		get() = this
 
-	override val objTypeId get() = repository.aggregateType.id
-
 	var doBeforeCloseSeqNr: Int = 0
 	var doCloseSeqNr: Int = 0
 	var doAfterCloseSeqNr: Int = 0
@@ -40,6 +41,7 @@ abstract class ObjBase(
 		super.doAfterCreate(sessionContext)
 		try {
 			disableCalc()
+			_objTypeId = repository.aggregateType.id
 			_transitionList.add(null).init(sessionContext.userId, sessionContext.timestamp)
 		} finally {
 			enableCalc()

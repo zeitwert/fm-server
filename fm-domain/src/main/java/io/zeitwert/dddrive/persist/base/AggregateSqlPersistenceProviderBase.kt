@@ -50,16 +50,16 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 		id: Any,
 	) {
 		require(isValidId(id)) { "valid id" }
-		aggregate.setValueByPath("id", id)
 		dslContext.transaction { _ ->
 			aggregate.meta.disableCalc()
 			try {
+				aggregate.setValueByPath("id", id)
 				baseRecordMapper.loadRecord(aggregate)
 				extnRecordMapper?.loadRecord(aggregate)
+				doLoadParts(aggregate)
 			} finally {
 				aggregate.meta.enableCalc()
 			}
-			doLoadParts(aggregate)
 			aggregate.meta.calcVolatile()
 		}
 	}
@@ -79,13 +79,14 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	protected open fun doStoreParts(aggregate: A) {
 	}
 
-	override fun getByForeignKey(
+	final override fun getByForeignKey(
+		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,
 	): List<Any> {
-		var foreignKeys = baseRecordMapper.getByForeignKey("", fkName, targetId)
+		var foreignKeys = baseRecordMapper.getIdsByForeignKey(aggregateTypeId, fkName, targetId)
 		if (foreignKeys == null && extnRecordMapper != null) {
-			foreignKeys = extnRecordMapper!!.getByForeignKey("", fkName, targetId)
+			foreignKeys = extnRecordMapper!!.getIdsByForeignKey(aggregateTypeId, fkName, targetId)
 		}
 		assert(foreignKeys != null) { "valid foreign key: $fkName" }
 		return foreignKeys!!

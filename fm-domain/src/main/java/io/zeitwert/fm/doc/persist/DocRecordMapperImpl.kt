@@ -37,7 +37,7 @@ class DocRecordMapperImpl(
 		aggregate: Aggregate,
 		record: DocRecord,
 	) {
-		// doc base fields
+		// aggregate fields
 		aggregate.setValueByPath("id", record.id)
 		aggregate.setValueByPath("tenantId", record.tenantId)
 		if (aggregate is ItemWithAccount) {
@@ -45,12 +45,13 @@ class DocRecordMapperImpl(
 		}
 		aggregate.setValueByPath("ownerId", record.ownerId)
 		aggregate.setValueByPath("caption", record.caption)
+		aggregate.setValueByPath("version", record.version)
 		// doc-specific fields
+		aggregate.setValueByPath("docTypeId", record.docTypeId)
 		aggregate.setValueByPath("caseDefId", record.caseDefId)
 		aggregate.setValueByPath("caseStageId", record.caseStageId)
 		aggregate.setValueByPath("assigneeId", record.assigneeId)
 		// doc_meta
-		aggregate.setValueByPath("version", record.version)
 		aggregate.setValueByPath("createdAt", record.createdAt)
 		aggregate.setValueByPath("createdByUserId", record.createdByUserId)
 		aggregate.setValueByPath("modifiedAt", record.modifiedAt)
@@ -99,7 +100,7 @@ class DocRecordMapperImpl(
 
 	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

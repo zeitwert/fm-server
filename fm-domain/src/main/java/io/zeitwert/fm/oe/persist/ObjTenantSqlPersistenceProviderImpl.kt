@@ -80,7 +80,7 @@ open class ObjTenantSqlPersistenceProviderImpl(
 			.from(Tables.OBJ_TENANT)
 			.fetch(Tables.OBJ_TENANT.OBJ_ID)
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

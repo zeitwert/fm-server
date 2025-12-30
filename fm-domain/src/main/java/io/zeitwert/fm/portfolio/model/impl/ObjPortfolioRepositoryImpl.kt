@@ -21,7 +21,7 @@ class ObjPortfolioRepositoryImpl(
 	),
 	ObjPortfolioRepository {
 
-	override fun createAggregate(isNew: Boolean): ObjPortfolio = ObjPortfolioImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean) = ObjPortfolioImpl(this, isNew)
 
 	companion object {
 

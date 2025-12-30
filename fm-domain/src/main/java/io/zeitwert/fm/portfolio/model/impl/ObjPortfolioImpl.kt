@@ -81,25 +81,34 @@ class ObjPortfolioImpl(
 		calcBuildingSet()
 	}
 
+	override fun doCalcVolatile() {
+		super.doCalcVolatile()
+		calcBuildingSet()
+	}
+
 	private fun calcCaption() {
 		setCaption(name)
 	}
 
 	private fun calcBuildingSet() {
+		println("calcBuildingSet: include=${includeSet.toSet()} exclude=${excludeSet.toSet()}")
 		buildingSet.clear()
 		for (objId in includeSet) {
-			getBuildingIds(objId as Int).forEach { buildingSet.add(it) }
+			getBuildingIds(objId).forEach { buildingSet.add(it) }
 		}
 		for (objId in excludeSet) {
-			getBuildingIds(objId as Int).forEach { buildingSet.remove(it) }
+			getBuildingIds(objId).forEach { buildingSet.remove(it) }
 		}
 	}
 
 	private fun getBuildingIds(id: Any): Set<Any> {
-		val objType = repository
+		println("getBuildingIds.1($id)")
+		val objTypeId = directory
+			.getRepository(Obj::class.java)
 			.get(id)
-			.meta.repository.aggregateType
-		return when (objType.id) {
+			.meta.objTypeId
+		println("getBuildingIds.2($id): $objTypeId")
+		val bldgIds = when (objTypeId) {
 			"obj_building" -> {
 				setOf(id)
 			}
@@ -110,17 +119,20 @@ class ObjPortfolioImpl(
 			}
 
 			"obj_account" -> {
-				repository
+				val bldgIds = repository
 					.buildingRepository
 					.getByForeignKey("accountId", id)
-					.map { it as Int }
 					.toSet()
+				println("account($id).buildings: $bldgIds")
+				bldgIds
 			}
 
 			else -> {
 				emptySet()
 			}
 		}
+		println("getBuildingIds.2($id): $bldgIds")
+		return bldgIds
 	}
 
 }

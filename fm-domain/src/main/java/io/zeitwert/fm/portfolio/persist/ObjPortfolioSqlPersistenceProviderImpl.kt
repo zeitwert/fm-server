@@ -97,7 +97,7 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 			.where(Tables.OBJ_PORTFOLIO.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_PORTFOLIO.OBJ_ID)
 
-	override fun getByForeignKey(
+	override fun getIdsByForeignKey(
 		aggregateTypeId: String,
 		fkName: String,
 		targetId: Any,

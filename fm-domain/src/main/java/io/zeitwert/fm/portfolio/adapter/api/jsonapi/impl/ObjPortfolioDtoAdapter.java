@@ -1,10 +1,12 @@
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 
+import dddrive.app.obj.model.Obj;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
+import io.zeitwert.fm.obj.model.FMObjVRepository;
 import io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto.ObjPortfolioDto;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,15 @@ import java.util.stream.Collectors;
 public class ObjPortfolioDtoAdapter
 		extends ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioDto> {
 
+	private FMObjVRepository objRepository = null;
+
 	private ObjAccountRepository accountRepository = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 
-// private final ObjVCache objCache;
-
-//	protected ObjPortfolioDtoAdapter(ObjVCache objCache) {
-//		this.objCache = objCache;
-//	}
+	@Autowired
+	void setObjRepository(FMObjVRepository objRepository) {
+		this.objRepository = objRepository;
+	}
 
 	@Autowired
 	void setAccountRepository(ObjAccountRepository accountRepository) {
@@ -91,34 +94,9 @@ public class ObjPortfolioDtoAdapter
 		// @formatter:on
 	}
 
-//	@Override
-//	public ObjPortfolioDto fromRecord(ObjPortfolioVRecord obj) {
-//		if (obj == null) {
-//			return null;
-//		}
-//		ObjPortfolioDto.ObjPortfolioDtoBuilder<?, ?> dtoBuilder = ObjPortfolioDto.builder();
-//		this.fromRecord(dtoBuilder, obj);
-//		// @formatter:off
-//		return dtoBuilder
-//			.name(obj.getName())
-//			.description(obj.getDescription())
-//			.portfolioNr(obj.getPortfolioNr())
-//			.accountId(obj.getAccountId())
-//			.build();
-//		// @formatter:on
-//	}
-
 	private EnumeratedDto getObj(Integer id) {
-		return EnumeratedDto.of(id.toString(), id.toString());
-//		Obj obj = this.objCache.get(id);
-//		return EnumeratedDto.of(obj.getId().toString(), obj.getCaption());
-		// @formatter:off
-//		return EnumeratedDto.builder()
-//			.id(obj.getId().toString())
-//			.name(obj.getCaption())
-//			.itemType(EnumeratedDto.of(obj.getMeta().getAggregateType()))
-//			.build();
-		// @formatter:on
+		Obj obj = this.objRepository.get(id);
+		return EnumeratedDto.of(obj.getId().toString(), obj.getCaption());
 	}
 
 }
