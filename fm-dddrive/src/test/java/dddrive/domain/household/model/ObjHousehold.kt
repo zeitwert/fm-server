@@ -28,4 +28,6 @@ interface ObjHousehold : Obj {
 
 	val userSet: ReferenceSetProperty<ObjUser>
 
+	var literalId: String?
+
 }

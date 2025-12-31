@@ -23,7 +23,7 @@ abstract class FMDocBase(
 ) : DocBase(repository, isNew),
 	EntityWithExtn {
 
-	var accountId: Any? by baseProperty(this, "accountId")
+	var accountId by baseProperty<Any>("accountId")
 
 	private val _extnMap = mutableMapOf<String, Any>()
 

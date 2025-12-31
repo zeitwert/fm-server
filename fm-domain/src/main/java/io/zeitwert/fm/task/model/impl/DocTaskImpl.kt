@@ -21,15 +21,15 @@ class DocTaskImpl(
 	DocTask,
 	AggregateWithNotesMixin {
 
-	private var relatedObjId: Any? by baseProperty(this, "relatedObjId")
-	private var relatedDocId: Any? by baseProperty(this, "relatedDocId")
+	private var relatedObjId by baseProperty<Any>("relatedObjId")
+	private var relatedDocId by baseProperty<Any>("relatedDocId")
 
-	override var subject: String? by baseProperty(this, "subject")
-	override var content: String? by baseProperty(this, "content")
-	override var isPrivate: Boolean? by baseProperty(this, "isPrivate")
-	override var dueAt: OffsetDateTime? by baseProperty(this, "dueAt")
-	override var remindAt: OffsetDateTime? by baseProperty(this, "remindAt")
-	override var priority: CodeTaskPriority? by enumProperty(this, "priority")
+	override var subject by baseProperty<String>("subject")
+	override var content by baseProperty<String>("content")
+	override var isPrivate by baseProperty<Boolean>("isPrivate")
+	override var dueAt by baseProperty<OffsetDateTime>("dueAt")
+	override var remindAt by baseProperty<OffsetDateTime>("remindAt")
+	override var priority by enumProperty<CodeTaskPriority>("priority")
 
 	fun accountRepository() = directory.getRepository(ObjAccount::class.java) as ObjAccountRepository
 

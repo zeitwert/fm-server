@@ -1,6 +1,7 @@
 package io.zeitwert.dddrive.persist
 
 import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Entity
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
@@ -45,12 +46,12 @@ interface PartSqlPersistenceProvider<A : Aggregate, P : Part<A>> {
 	 */
 	@Suppress("UNCHECKED_CAST")
 	fun loadPartList(
-		entity: EntityWithProperties,
+		entity: Entity<*>,
 		partListId: String,
 		partListTypeId: String,
 	) {
 		loadPartList(
-			partList = entity.getProperty(partListId, Any::class) as PartListProperty<A, P>,
+			partList = (entity as EntityWithProperties).getProperty(partListId, Any::class) as PartListProperty<A, P>,
 			partListTypeId = partListTypeId,
 		)
 	}
@@ -90,12 +91,12 @@ interface PartSqlPersistenceProvider<A : Aggregate, P : Part<A>> {
 	 */
 	@Suppress("UNCHECKED_CAST")
 	fun storePartList(
-		entity: EntityWithProperties,
+		entity: Entity<*>,
 		partListId: String,
 		partListTypeId: String,
 	) {
 		storePartList(
-			partList = entity.getProperty(partListId, Any::class) as PartListProperty<A, P>,
+			partList = (entity as EntityWithProperties).getProperty(partListId, Any::class) as PartListProperty<A, P>,
 			partListTypeId = partListTypeId,
 		)
 	}

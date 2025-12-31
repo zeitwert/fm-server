@@ -9,7 +9,6 @@ import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
@@ -30,14 +29,13 @@ class ObjBuildingPartRatingImpl(
 	ObjBuildingPartRating,
 	PartMeta<ObjBuilding> {
 
-	override var partCatalog: CodeBuildingPartCatalog? by enumProperty(this, "partCatalog")
-	override var maintenanceStrategy: CodeBuildingMaintenanceStrategy? by enumProperty(this, "maintenanceStrategy")
-	override var ratingStatus: CodeBuildingRatingStatus? by enumProperty(this, "ratingStatus")
-	override var ratingDate: LocalDate? by baseProperty(this, "ratingDate")
-	override var ratingUserId: Any? by referenceIdProperty<ObjUser>(this, "ratingUser")
-	override var ratingUser: ObjUser? by referenceProperty(this, "ratingUser")
-	override val elementList: PartListProperty<ObjBuilding, ObjBuildingPartElementRating> =
-		partListProperty(this, "elementList")
+	override var partCatalog by enumProperty<CodeBuildingPartCatalog>("partCatalog")
+	override var maintenanceStrategy by enumProperty<CodeBuildingMaintenanceStrategy>("maintenanceStrategy")
+	override var ratingStatus by enumProperty<CodeBuildingRatingStatus>("ratingStatus")
+	override var ratingDate by baseProperty<LocalDate>("ratingDate")
+	override var ratingUserId by referenceIdProperty<ObjUser>("ratingUser")
+	override var ratingUser by referenceProperty<ObjUser>("ratingUser")
+	override val elementList = partListProperty<ObjBuilding, ObjBuildingPartElementRating>("elementList")
 
 	override var elementWeights: Int = 0
 
@@ -69,7 +67,11 @@ class ObjBuildingPartRatingImpl(
 		}
 	}
 
-	override fun doAfterSet(property: Property<*>) {
+	override fun doAfterSet(
+		property: Property<*>,
+		value: Any?,
+		oldValue: Any?,
+	) {
 		if (property.name == "partCatalog") {
 			// Skip auto-populating elements when loading from persistence
 			// (elements will be loaded from DB). Only populate on create/update.

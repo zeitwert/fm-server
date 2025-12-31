@@ -3,6 +3,7 @@ package dddrive.domain.ddd.persist.map.base
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.base.AggregatePersistenceProviderBase
+import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.domain.ddd.persist.map.fromMap
 import dddrive.domain.ddd.persist.map.toMap
 import java.util.concurrent.atomic.AtomicReference
@@ -78,14 +79,14 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 		map: Map<String, Any?>,
 		aggregate: A,
 	) {
-		aggregate.fromMap(map)
+		(aggregate as EntityWithProperties).fromMap(map)
 	}
 
 	/**
 	 * Serializes an aggregate to a map.
 	 * Override to add custom handling if needed.
 	 */
-	protected open fun fromAggregate(aggregate: A): Map<String, Any?> = aggregate.toMap()
+	protected open fun fromAggregate(aggregate: A): Map<String, Any?> = (aggregate as EntityWithProperties).toMap()
 
 	protected open fun store(map: Map<String, Any?>) {
 		val id = map["id"] as? Int

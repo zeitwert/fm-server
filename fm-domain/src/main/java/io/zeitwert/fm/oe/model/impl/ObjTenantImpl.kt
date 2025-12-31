@@ -23,15 +23,15 @@ class ObjTenantImpl(
 ) : FMObjBase(repository, isNew),
 	ObjTenant {
 
-	override var key: String? by baseProperty(this, "key")
-	override var name: String? by baseProperty(this, "name")
-	override var description: String? by baseProperty(this, "description")
+	override var key by baseProperty<String>("key")
+	override var name by baseProperty<String>("name")
+	override var description by baseProperty<String>("description")
 
-	override var tenantType: CodeTenantType? by enumProperty(this, "tenantType")
-	override var inflationRate: BigDecimal? by baseProperty(this, "inflationRate")
-	override var discountRate: BigDecimal? by baseProperty(this, "discountRate")
-	override var logoImageId: Any? by referenceIdProperty<ObjDocument>(this, "logoImage")
-	override val logoImage: ObjDocument? by referenceProperty(this, "logoImage")
+	override var tenantType by enumProperty<CodeTenantType>("tenantType")
+	override var inflationRate by baseProperty<BigDecimal>("inflationRate")
+	override var discountRate by baseProperty<BigDecimal>("discountRate")
+	override var logoImageId by referenceIdProperty<ObjDocument>("logoImage")
+	override val logoImage by referenceProperty<ObjDocument>("logoImage")
 
 	override val users: List<ObjUser>
 		get() = repository.userRepository

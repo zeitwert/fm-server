@@ -1,13 +1,12 @@
 package dddrive.ddd.core.model
 
-import dddrive.ddd.property.model.EntityWithProperties
-
 /**
- * A Part is an Entity that belongs to an Aggregate (but might be attached to another part as parent).
+ * A Part is an Entity that belongs to an Aggregate (but might be attached to another part as
+ * parent).
  */
-interface Part<A : Aggregate> : EntityWithProperties {
+interface Part<A : Aggregate> : Entity<Int> {
 
-	val id: Int
+	override val id: Int
 
 	val meta: PartMeta<A>
 

@@ -20,9 +20,10 @@ class ObjHouseholdPartMemberImpl(
 	ObjHouseholdPartMember {
 
 	override val household: ObjHousehold = aggregate
-	override var salutation: CodeSalutation? by enumProperty(this, "salutation")
-	override var name: String? by baseProperty(this, "name")
-	override var spouseId: Int? by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>(this, "spouse")
-	override var spouse: ObjHouseholdPartMember? by partReferenceProperty(this, "spouse")
+
+	override var salutation by enumProperty<CodeSalutation>("salutation")
+	override var name by baseProperty<String>("name")
+	override var spouseId by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>("spouse")
+	override var spouse by partReferenceProperty<ObjHousehold, ObjHouseholdPartMember>("spouse")
 
 }

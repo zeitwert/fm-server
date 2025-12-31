@@ -6,7 +6,6 @@ import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
-import dddrive.ddd.property.model.ReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
@@ -23,16 +22,16 @@ class ObjUserImpl(
 ) : FMObjBase(repository, isNew),
 	ObjUser {
 
-	override var email: String? by baseProperty(this, "email")
-	override var name: String? by baseProperty(this, "name")
-	override var description: String? by baseProperty(this, "description")
-	override var password: String? by baseProperty(this, "password")
+	override var email by baseProperty<String>("email")
+	override var name by baseProperty<String>("name")
+	override var description by baseProperty<String>("description")
+	override var password by baseProperty<String>("password")
 
-	override var needPasswordChange: Boolean? by baseProperty(this, "needPasswordChange")
-	override var role: CodeUserRole? by enumProperty(this, "role")
-	override var avatarImageId: Any? by referenceIdProperty<ObjDocument>(this, "avatarImage")
-	override val avatarImage: ObjDocument? by referenceProperty(this, "avatarImage")
-	override val tenantSet: ReferenceSetProperty<ObjTenant> = referenceSetProperty(this, "tenantSet")
+	override var needPasswordChange by baseProperty<Boolean>("needPasswordChange")
+	override var role by enumProperty<CodeUserRole>("role")
+	override var avatarImageId by referenceIdProperty<ObjDocument>("avatarImage")
+	override val avatarImage by referenceProperty<ObjDocument>("avatarImage")
+	override val tenantSet = referenceSetProperty<ObjTenant>("tenantSet")
 
 	override val isAppAdmin get() = repository.isAppAdmin(this)
 

@@ -20,16 +20,13 @@ class BasePropertyImpl<T : Any>(
 			}
 			val entity = this.entity as EntityWithPropertiesSPI
 			val oldValue = field
-			// TODO separate handling of setting id needs to be reviewed
-			if (this.name == "id") {
-				// id field needs to be set before fireFieldSetChange, to get the correct path
-				field = value
-			} else {
+			// cannot fire doBeforeSet before setting id, as path depends on id
+			if (this.name != "id") {
 				entity.doBeforeSet(this, value, oldValue)
-				field = value
 			}
-			entity.fireFieldSetChange(this, value, oldValue)
-			entity.doAfterSet(this)
+			field = value
+			fireFieldSetChange(value, oldValue)
+			entity.doAfterSet(this, value, oldValue)
 		}
 
 }

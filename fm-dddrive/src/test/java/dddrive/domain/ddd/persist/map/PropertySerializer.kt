@@ -24,7 +24,7 @@ fun EntityWithProperties.toMap(): Map<String, Any?> {
 	for (property in properties) {
 		when (property) {
 			is PartListProperty<*, *> -> {
-				result[property.name] = property.map { part -> part.toMap() }
+				result[property.name] = property.map { part -> (part as EntityWithProperties).toMap() }
 			}
 
 			is EnumSetProperty<*> -> {
@@ -86,7 +86,7 @@ private fun EntityWithProperties.createPartsFromMap(map: Map<String, Any?>) {
 				val partId = partMap["id"] as? Int
 				val part = property.add(partId)
 				// Recursively create nested parts
-				part.createPartsFromMap(partMap)
+				(part as EntityWithProperties).createPartsFromMap(partMap)
 			}
 		}
 	}
@@ -103,7 +103,7 @@ private fun EntityWithProperties.setValuesFromMap(map: Map<String, Any?>) {
 			is PartListProperty<*, *> -> {
 				// Recurse into parts to set their values
 				val partMaps = map[property.name] as? List<Map<String, Any?>> ?: continue
-				partMaps.forEachIndexed { idx, partMap -> property.get(idx).setValuesFromMap(partMap) }
+				partMaps.forEachIndexed { idx, partMap -> (property[idx] as EntityWithProperties).setValuesFromMap(partMap) }
 			}
 
 			is EnumSetProperty<*> -> {

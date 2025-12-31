@@ -9,7 +9,6 @@ import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.ObjSPI
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -21,14 +20,14 @@ abstract class ObjBase(
 	Obj,
 	ObjMeta {
 
-	private var _objTypeId: String? by baseProperty(this, "objTypeId")
+	private var _objTypeId by baseProperty<String>("objTypeId")
 	override val objTypeId get() = _objTypeId!!
 
-	override var closedByUserId: Any? by baseProperty(this, "closedByUserId")
-	override var closedAt: OffsetDateTime? by baseProperty(this, "closedAt")
+	override var closedByUserId by baseProperty<Any>("closedByUserId")
+	override var closedAt by baseProperty<OffsetDateTime>("closedAt")
 
-	private val _transitionList: PartListProperty<Obj, ObjPartTransition> = partListProperty(this, "transitionList")
-	override val transitionList: List<ObjPartTransition> get() = _transitionList.toList()
+	private val _transitionList = partListProperty<Obj, ObjPartTransition>("transitionList")
+	override val transitionList get() = _transitionList.toList()
 
 	override val meta: ObjMeta
 		get() = this

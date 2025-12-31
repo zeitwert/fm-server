@@ -30,23 +30,23 @@ class ObjAccountImpl(
 	AggregateWithNotesMixin {
 
 	// Base properties
-	override var name: String? by baseProperty(this, "name")
-	override var description: String? by baseProperty(this, "description")
-	override var inflationRate: BigDecimal? by baseProperty(this, "inflationRate")
-	override var discountRate: BigDecimal? by baseProperty(this, "discountRate")
+	override var name by baseProperty<String>("name")
+	override var description by baseProperty<String>("description")
+	override var inflationRate by baseProperty<BigDecimal>("inflationRate")
+	override var discountRate by baseProperty<BigDecimal>("discountRate")
 
 	// Enum properties
-	override var accountType: CodeAccountType? by enumProperty(this, "accountType")
-	override var clientSegment: CodeClientSegment? by enumProperty(this, "clientSegment")
-	override var referenceCurrency: CodeCurrency? by enumProperty(this, "referenceCurrency")
+	override var accountType by enumProperty<CodeAccountType>("accountType")
+	override var clientSegment by enumProperty<CodeClientSegment>("clientSegment")
+	override var referenceCurrency by enumProperty<CodeCurrency>("referenceCurrency")
 
 	// Reference properties - logoImage
-	override var logoImageId: Any? by referenceIdProperty<ObjDocument>(this, "logoImage")
-	override val logoImage: ObjDocument? by referenceProperty(this, "logoImage")
+	override var logoImageId by referenceIdProperty<ObjDocument>("logoImage")
+	override val logoImage by referenceProperty<ObjDocument>("logoImage")
 
 	// Reference properties - mainContact
-	override var mainContactId: Any? by referenceIdProperty<ObjContact>(this, "mainContact")
-	override val mainContact: ObjContact? by referenceProperty(this, "mainContact")
+	override var mainContactId by referenceIdProperty<ObjContact>("mainContact")
+	override val mainContact by referenceProperty<ObjContact>("mainContact")
 
 	override fun aggregate(): ObjAccount = this
 

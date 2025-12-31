@@ -20,17 +20,16 @@ import dddrive.ddd.property.model.impl.ReferenceSetPropertyImpl
  * Usage: `val labelSet: EnumSetProperty<CodeLabel> = enumSetProperty()`
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified E : Enumerated> enumSetProperty(
-	entity: EntityWithProperties,
+inline fun <reified E : Enumerated> EntityWithProperties.enumSetProperty(
 	name: String,
 ): EnumSetProperty<E> =
-	synchronized(entity) {
-		if (entity.hasProperty(name)) {
-			entity.getProperty(name, Any::class) as EnumSetProperty<E>
+	synchronized(this) {
+		if (hasProperty(name)) {
+			getProperty(name, Any::class) as EnumSetProperty<E>
 		}
-		val enumeration: Enumeration<E> = (entity as EntityWithPropertiesSPI).directory.getEnumeration(E::class.java)
-		val property: EnumSetProperty<E> = EnumSetPropertyImpl(entity, name, enumeration)
-		entity.addProperty(property)
+		val enumeration: Enumeration<E> = (this as EntityWithPropertiesSPI).directory.getEnumeration(E::class.java)
+		val property: EnumSetProperty<E> = EnumSetPropertyImpl(this, name, enumeration)
+		addProperty(property)
 		return property
 	}
 
@@ -40,17 +39,16 @@ inline fun <reified E : Enumerated> enumSetProperty(
  * Usage: `val userSet: ReferenceSetProperty<ObjUser> = referenceSetProperty()`
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified A : Aggregate> referenceSetProperty(
-	entity: EntityWithProperties,
+inline fun <reified A : Aggregate> EntityWithProperties.referenceSetProperty(
 	name: String,
 ): ReferenceSetProperty<A> =
-	synchronized(entity) {
-		if (entity.hasProperty(name)) {
-			entity.getProperty(name, Any::class) as ReferenceSetProperty<A>
+	synchronized(this) {
+		if (hasProperty(name)) {
+			getProperty(name, Any::class) as ReferenceSetProperty<A>
 		}
-		val repo: AggregateRepository<A> = (entity as EntityWithPropertiesSPI).directory.getRepository(A::class.java)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(entity, name, repo)
-		entity.addProperty(property)
+		val repo: AggregateRepository<A> = (this as EntityWithPropertiesSPI).directory.getRepository(A::class.java)
+		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
+		addProperty(property)
 		property
 	}
 
@@ -60,15 +58,14 @@ inline fun <reified A : Aggregate> referenceSetProperty(
  * Usage: `val memberList: PartListProperty<ObjHouseholdPartMember> = partListProperty()`
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <reified A : Aggregate, reified P : Part<A>> partListProperty(
-	entity: EntityWithProperties,
+inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.partListProperty(
 	name: String,
 ): PartListProperty<A, P> =
-	synchronized(entity) {
-		if (entity.hasProperty(name)) {
-			entity.getProperty(name, Any::class) as PartListProperty<A, P>
+	synchronized(this) {
+		if (hasProperty(name)) {
+			getProperty(name, Any::class) as PartListProperty<A, P>
 		}
-		val property: PartListProperty<A, P> = PartListPropertyImpl(entity, name, A::class.java, P::class.java)
-		(entity as EntityWithPropertiesSPI).addProperty(property)
+		val property: PartListProperty<A, P> = PartListPropertyImpl(this, name, P::class.java)
+		addProperty(property)
 		return property
 	}

@@ -5,7 +5,6 @@ import dddrive.ddd.core.model.enums.CodeAggregateType
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
-import dddrive.ddd.property.model.ReferenceSetProperty
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
@@ -35,12 +34,12 @@ class ObjPortfolioImpl(
 		}
 	}
 
-	override var name: String? by baseProperty(this, "name")
-	override var description: String? by baseProperty(this, "description")
-	override var portfolioNr: String? by baseProperty(this, "portfolioNr")
-	override val includeSet: ReferenceSetProperty<Obj> = referenceSetProperty(this, "includeSet")
-	override val excludeSet: ReferenceSetProperty<Obj> = referenceSetProperty(this, "excludeSet")
-	override val buildingSet: ReferenceSetProperty<ObjBuilding> = referenceSetProperty(this, "buildingSet")
+	override var name by baseProperty<String>("name")
+	override var description by baseProperty<String>("description")
+	override var portfolioNr by baseProperty<String>("portfolioNr")
+	override val includeSet = referenceSetProperty<Obj>("includeSet")
+	override val excludeSet = referenceSetProperty<Obj>("excludeSet")
+	override val buildingSet = referenceSetProperty<ObjBuilding>("buildingSet")
 
 	override fun aggregate(): ObjPortfolio = this
 
@@ -91,7 +90,6 @@ class ObjPortfolioImpl(
 	}
 
 	private fun calcBuildingSet() {
-		println("calcBuildingSet: include=${includeSet.toSet()} exclude=${excludeSet.toSet()}")
 		buildingSet.clear()
 		for (objId in includeSet) {
 			getBuildingIds(objId).forEach { buildingSet.add(it) }
@@ -102,37 +100,30 @@ class ObjPortfolioImpl(
 	}
 
 	private fun getBuildingIds(id: Any): Set<Any> {
-		println("getBuildingIds.1($id)")
 		val objTypeId = directory
 			.getRepository(Obj::class.java)
 			.get(id)
 			.meta.objTypeId
-		println("getBuildingIds.2($id): $objTypeId")
-		val bldgIds = when (objTypeId) {
+		return when (objTypeId) {
 			"obj_building" -> {
 				setOf(id)
 			}
 
 			"obj_portfolio" -> {
-				val pf = repository.get(id)
-				pf.buildingSet.toSet()
+				repository.get(id).buildingSet.toSet()
 			}
 
 			"obj_account" -> {
-				val bldgIds = repository
+				repository
 					.buildingRepository
 					.getByForeignKey("accountId", id)
 					.toSet()
-				println("account($id).buildings: $bldgIds")
-				bldgIds
 			}
 
 			else -> {
 				emptySet()
 			}
 		}
-		println("getBuildingIds.2($id): $bldgIds")
-		return bldgIds
 	}
 
 }

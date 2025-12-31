@@ -5,8 +5,8 @@ interface PropertyChangeListener {
 	fun propertyChange(
 		op: String,
 		path: String,
-		value: String?,
-		oldValue: String?,
+		value: Any?,
+		oldValue: Any?,
 		isInCalc: Boolean,
 	)
 

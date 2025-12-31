@@ -3,6 +3,7 @@ package dddrive.ddd.property.model.impl
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.model.EntityWithProperties
+import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.PartReferenceProperty
 import dddrive.ddd.property.model.base.ReferencePropertyBase
 
@@ -15,11 +16,11 @@ class PartReferencePropertyImpl<A : Aggregate, P : Part<A>>(
 
 	@Suppress("UNCHECKED_CAST")
 	override var value: P?
-		get() = if (this.id == null) null else entity.getPart(this.id!!) as P
+		get() = if (this.id == null) null else (entity as EntityWithPropertiesSPI).getPart(this.id!!) as P
 		set(value) {
 			this.id = value?.id
 		}
 
-	override fun isValidId(id: Int?): Boolean = id == null || entity.getPart(id) != null
+	override fun isValidId(id: Int?): Boolean = id == null || (entity as EntityWithPropertiesSPI).getPart(id) != null
 
 }

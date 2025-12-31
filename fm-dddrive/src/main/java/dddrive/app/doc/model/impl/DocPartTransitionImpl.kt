@@ -21,18 +21,18 @@ class DocPartTransitionImpl(
 	// seqNr is the part id
 	override val seqNr: Int get() = id
 
-	private var _tenantId: Any? by baseProperty(this, "tenantId")
-	private var _userId: Any? by baseProperty(this, "userId")
-	override val userId: Any get() = _userId!!
+	private var _tenantId by baseProperty<Any>("tenantId")
+	private var _userId by baseProperty<Any>("userId")
+	override val userId get() = _userId!!
 
-	private var _timestamp: OffsetDateTime? by baseProperty(this, "timestamp")
-	override val timestamp: OffsetDateTime get() = _timestamp!!
+	private var _timestamp by baseProperty<OffsetDateTime>("timestamp")
+	override val timestamp get() = _timestamp!!
 
-	private var _oldCaseStage: CodeCaseStage? by enumProperty(this, "oldCaseStage")
-	override val oldCaseStage: CodeCaseStage? get() = _oldCaseStage
+	private var _oldCaseStage by enumProperty<CodeCaseStage>("oldCaseStage")
+	override val oldCaseStage get() = _oldCaseStage
 
-	private var _newCaseStage: CodeCaseStage? by enumProperty(this, "newCaseStage")
-	override val newCaseStage: CodeCaseStage get() = _newCaseStage!!
+	private var _newCaseStage by enumProperty<CodeCaseStage>("newCaseStage")
+	override val newCaseStage get() = _newCaseStage!!
 
 	override fun doAfterCreate() {
 		super.doAfterCreate()

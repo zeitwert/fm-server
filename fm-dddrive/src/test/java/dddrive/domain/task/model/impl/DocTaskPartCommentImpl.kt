@@ -16,9 +16,9 @@ class DocTaskPartCommentImpl(
 ) : DocPartBase<DocTask>(task, repository, property, id),
 	DocTaskPartComment {
 
-	override var text: String? by baseProperty(this, "text")
-	private var _createdAt: OffsetDateTime? by baseProperty(this, "createdAt")
-	override val createdAt: OffsetDateTime? get() = _createdAt
+	override var text by baseProperty<String>("text")
+	private var _createdAt by baseProperty<OffsetDateTime>("createdAt")
+	override val createdAt get() = _createdAt
 
 	override fun doAfterCreate() {
 		super.doAfterCreate()

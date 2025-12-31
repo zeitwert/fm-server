@@ -12,7 +12,6 @@ import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -24,16 +23,16 @@ abstract class DocBase(
 	Doc,
 	DocMeta {
 
-	private var _docTypeId: String? by baseProperty(this, "docTypeId")
+	private var _docTypeId by baseProperty<String>("docTypeId")
 	override val docTypeId get() = _docTypeId!!
 
-	override var caseDef: CodeCaseDef? by enumProperty(this, "caseDef")
-	override var caseStage: CodeCaseStage? by enumProperty(this, "caseStage")
+	override var caseDef by enumProperty<CodeCaseDef>("caseDef")
+	override var caseStage by enumProperty<CodeCaseStage>("caseStage")
 
-	override var assigneeId: Any? by baseProperty(this, "assigneeId")
+	override var assigneeId by baseProperty<Any>("assigneeId")
 
-	private val _transitionList: PartListProperty<Doc, DocPartTransition> = partListProperty(this, "transitionList")
-	override val transitionList: List<DocPartTransition> get() = _transitionList.toList()
+	private val _transitionList = partListProperty<Doc, DocPartTransition>("transitionList")
+	override val transitionList get() = _transitionList.toList()
 
 	private var oldCaseStage: CodeCaseStage? = null
 

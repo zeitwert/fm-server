@@ -4,7 +4,6 @@ import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -31,22 +30,18 @@ class ObjContactImpl(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	override var contactRole: CodeContactRole? by enumProperty(this, "contactRole")
-	override var salutation: CodeSalutation? by enumProperty(this, "salutation")
-	override var title: CodeTitle? by enumProperty(this, "title")
-	override var firstName: String? by baseProperty(this, "firstName")
-	override var lastName: String? by baseProperty(this, "lastName")
-	override var birthDate: LocalDate? by baseProperty(this, "birthDate")
-	override var phone: String? by baseProperty(this, "phone")
-	override var mobile: String? by baseProperty(this, "mobile")
-	override var email: String? by baseProperty(this, "email")
-	override var description: String? by baseProperty(this, "description")
-	override val mailAddressList: PartListProperty<ObjContact, ObjContactPartAddress> =
-		partListProperty(this, "mailAddressList")
-	override val electronicAddressList: PartListProperty<ObjContact, ObjContactPartAddress> = partListProperty(
-		this,
-		"electronicAddressList",
-	)
+	override var contactRole by enumProperty<CodeContactRole>("contactRole")
+	override var salutation by enumProperty<CodeSalutation>("salutation")
+	override var title by enumProperty<CodeTitle>("title")
+	override var firstName by baseProperty<String>("firstName")
+	override var lastName by baseProperty<String>("lastName")
+	override var birthDate by baseProperty<LocalDate>("birthDate")
+	override var phone by baseProperty<String>("phone")
+	override var mobile by baseProperty<String>("mobile")
+	override var email by baseProperty<String>("email")
+	override var description by baseProperty<String>("description")
+	override val mailAddressList = partListProperty<ObjContact, ObjContactPartAddress>("mailAddressList")
+	override val electronicAddressList = partListProperty<ObjContact, ObjContactPartAddress>("electronicAddressList")
 
 	// ItemWithAccount implementation
 	override val account

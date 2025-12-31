@@ -5,9 +5,7 @@ import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
-import dddrive.ddd.core.model.AggregateSPI
 import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.model.PropertyChangeListener
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
@@ -24,7 +22,7 @@ import java.time.temporal.ChronoUnit
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
-class TaskMemTest : PropertyChangeListener {
+class TaskMemTest {
 
 	@Autowired
 	private lateinit var sessionContext: SessionContext
@@ -50,17 +48,6 @@ class TaskMemTest : PropertyChangeListener {
 	private lateinit var taskNewStage: CodeCaseStage
 	private lateinit var taskInProgressStage: CodeCaseStage
 	private lateinit var taskDoneStage: CodeCaseStage
-
-	override fun propertyChange(
-		op: String,
-		path: String,
-		value: String?,
-		oldValue: String?,
-		isInCalc: Boolean,
-	) {
-		// println("PropertyChange { op: $op, path: $path, value: $value, oldValue: $oldValue, isInCalc:
-		// $isInCalc }")
-	}
 
 	@BeforeEach
 	fun setUp() {
@@ -97,7 +84,6 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Create a new task
 		val task = taskRepo.create()
-		(task as AggregateSPI).addPropertyChangeListener(this)
 		val taskId = task.id
 		Assertions.assertNotNull(taskId, "Task ID should not be null")
 
@@ -106,7 +92,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Set initial case stage - this will unfreeze the task
 		task.meta.setCaseStage(taskNewStage, sessionContext.userId as Int, now)
-		Assertions.assertFalse(task.isFrozen, "Task unfrozen after setting caseDef")
+		Assertions.assertFalse(task.meta.isFrozen, "Task unfrozen after setting caseDef")
 		Assertions.assertEquals(simpleTaskDef, task.meta.caseDef, "CaseDef set")
 		Assertions.assertEquals(taskNewStage, task.meta.caseStage, "CaseStage 'New'")
 		Assertions.assertTrue(task.meta.isInWork, "Task is in work (not terminal)")
@@ -183,7 +169,7 @@ class TaskMemTest : PropertyChangeListener {
 		// Load and verify
 		val loadedTask = taskRepo.get(taskId)
 		Assertions.assertNotNull(loadedTask)
-		Assertions.assertTrue(loadedTask.isFrozen, "Loaded task should be frozen (read-only)")
+		Assertions.assertTrue(loadedTask.meta.isFrozen, "Loaded task should be frozen (read-only)")
 
 		// Verify all properties persisted correctly
 		Assertions.assertEquals("Implement new feature with comments", loadedTask.subject)
@@ -209,7 +195,7 @@ class TaskMemTest : PropertyChangeListener {
 
 		// Test workflow progression
 		val mutableTask = taskRepo.load(taskId) // load for editing
-		Assertions.assertFalse(mutableTask.isFrozen, "Loaded for edit task should not be frozen")
+		Assertions.assertFalse(mutableTask.meta.isFrozen, "Loaded for edit task should not be frozen")
 
 		// Move task to "In Progress"
 		val progressTime = now.plusMinutes(10)

@@ -12,3 +12,4 @@ interface ObjSPI : AggregateSPI {
 	fun doAfterClose(sessionContext: SessionContext)
 
 }
+

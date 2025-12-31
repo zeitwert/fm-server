@@ -13,8 +13,8 @@ class ObjTenantImpl(
 ) : ObjBase(repository, isNew),
 	ObjTenant {
 
-	override var key: String? by baseProperty(this, "key")
-	override var name: String? by baseProperty(this, "name")
+	override var key by baseProperty<String>("key")
+	override var name by baseProperty<String>("name")
 
 	override fun doAfterCreate(sessionContext: SessionContext) {
 		super.doAfterCreate(sessionContext)

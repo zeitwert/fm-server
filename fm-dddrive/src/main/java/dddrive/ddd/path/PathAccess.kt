@@ -1,5 +1,6 @@
 package dddrive.ddd.path
 
+import dddrive.ddd.core.model.Entity
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
@@ -23,7 +24,7 @@ import dddrive.ddd.property.model.ReferenceProperty
  * @param path The property path (e.g., "children[0].status.id")
  * @return The resolved property, or null if the path navigates through null reference
  */
-fun <T : Any> EntityWithProperties.getPropertyByPath(path: String): Property<T>? = resolveProperty<T>(path, forSetter = false)
+fun <T : Any> Entity<*>.getPropertyByPath(path: String): Property<T>? = resolveProperty<T>(path, forSetter = false)
 
 /**
  * Gets a value by path.
@@ -31,7 +32,7 @@ fun <T : Any> EntityWithProperties.getPropertyByPath(path: String): Property<T>?
  * @param path The property path (e.g., "children[0].name")
  * @return The value, or null if the path navigates through null reference or missing list index
  */
-fun <T : Any> EntityWithProperties.getValueByPath(path: String): T? = (resolveProperty<T>(path, forSetter = false) as? BaseProperty<T>)?.value
+fun <T : Any> Entity<*>.getValueByPath(path: String): T? = (resolveProperty<T>(path, forSetter = false) as? BaseProperty<T>)?.value
 
 /**
  * Sets a value by path.
@@ -42,7 +43,7 @@ fun <T : Any> EntityWithProperties.getValueByPath(path: String): T? = (resolvePr
  * @param path The property path (e.g., "children[0].name")
  * @param value The value to set
  */
-fun <T : Any> EntityWithProperties.setValueByPath(
+fun <T : Any> Entity<*>.setValueByPath(
 	path: String,
 	value: T?,
 ) {
@@ -52,12 +53,12 @@ fun <T : Any> EntityWithProperties.setValueByPath(
 }
 
 @Suppress("UNCHECKED_CAST")
-private fun <T : Any> EntityWithProperties.resolveProperty(
+private fun <T : Any> Entity<*>.resolveProperty(
 	path: String,
 	index: Int = 0,
 	forSetter: Boolean = false,
 ): Property<T>? {
-	var entity: EntityWithProperties = this
+	var entity: EntityWithProperties = this as EntityWithProperties
 	var i = index
 
 	val segments = path.replace("[", ".").replace("]", "").split(".")
@@ -66,20 +67,14 @@ private fun <T : Any> EntityWithProperties.resolveProperty(
 		val isLast = (i == segments.size - 1)
 		val nextSegment = segments.getOrNull(i + 1)
 
-		// Check for "propId" suffix (e.g., "referenceId" or "_tenantId")
+		// Check for "propId" suffix (e.g., "referenceId")
 		// Only if no literal "somethingId" property exists
-		if (isLast && segment.endsWith("Id") && segment.length > 2 && !entity.hasProperty(segment) && !entity.hasProperty("_$segment")) {
+		if (isLast && segment.endsWith("Id") && segment.length > 2 && !entity.hasProperty(segment)) {
 			val baseName = segment.removeSuffix("Id")
-			// Try baseName directly, then with underscore prefix
-			val refPropertyName = when {
-				entity.hasProperty(baseName) -> baseName
-				entity.hasProperty("_$baseName") -> "_$baseName"
-				else -> null
-			}
-			if (refPropertyName != null) {
-				val baseProperty = entity.getProperty(refPropertyName, Any::class)
-				if (baseProperty is ReferenceProperty<*, *>) {
-					return baseProperty.idProperty as Property<T>
+			if (entity.hasProperty(baseName)) {
+				val property = entity.getProperty(baseName, Any::class)
+				if (property is ReferenceProperty<*, *>) {
+					return property.idProperty as Property<T>
 				}
 			}
 		}
@@ -87,8 +82,6 @@ private fun <T : Any> EntityWithProperties.resolveProperty(
 		// Try the segment name directly, then fall back to underscore-prefixed (Kotlin style)
 		val property = if (entity.hasProperty(segment)) {
 			entity.getProperty(segment, Any::class)
-		} else if (entity.hasProperty("_$segment")) {
-			entity.getProperty("_$segment", Any::class)
 		} else {
 			entity.getProperty(segment, Any::class) // Let it throw with original name
 		}
@@ -114,7 +107,7 @@ private fun <T : Any> EntityWithProperties.resolveProperty(
 				} else if (idx >= property.size) {
 					return null
 				}
-				entity = property.get(idx)
+				entity = property.get(idx) as EntityWithProperties
 				i += 2
 				continue
 			}

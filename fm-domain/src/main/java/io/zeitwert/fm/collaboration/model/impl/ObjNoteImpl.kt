@@ -14,11 +14,11 @@ class ObjNoteImpl(
 ) : FMObjBase(repository, isNew),
 	ObjNote {
 
-	override var relatedToId: Any? by baseProperty(this, "relatedToId")
-	override var noteType: CodeNoteType? by enumProperty(this, "noteType")
-	override var subject: String? by baseProperty(this, "subject")
-	override var content: String? by baseProperty(this, "content")
-	override var isPrivate: Boolean? by baseProperty(this, "isPrivate")
+	override var relatedToId by baseProperty<Any>("relatedToId")
+	override var noteType by enumProperty<CodeNoteType>("noteType")
+	override var subject by baseProperty<String>("subject")
+	override var content by baseProperty<String>("content")
+	override var isPrivate by baseProperty<Boolean>("isPrivate")
 
 	override fun doCalcAll() {
 		super.doCalcAll()

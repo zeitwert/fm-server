@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Configuration
 @Profile("test")
-public class TestRequestContextProvider {
+public class TestSessionContextProvider {
 
 	static final String userEmail = "tt@zeitwert.io";
 	static final String accountKey = "Testlingen";

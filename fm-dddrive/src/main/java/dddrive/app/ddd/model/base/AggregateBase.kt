@@ -8,10 +8,10 @@ import dddrive.app.validation.model.AggregatePartValidation
 import dddrive.app.validation.model.enums.CodeValidationLevel
 import dddrive.app.validation.model.impl.AggregatePartValidationImpl
 import dddrive.ddd.core.model.AggregateRepository
+import dddrive.ddd.core.model.Entity
 import dddrive.ddd.core.model.base.AggregateBase
 import dddrive.ddd.path.relativePath
 import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -23,21 +23,21 @@ abstract class AggregateBase(
 	Aggregate,
 	AggregateMeta {
 
-	protected var _tenantId: Any? by baseProperty(this, "tenantId")
-	override val tenantId: Any get() = _tenantId!!
+	protected var _tenantId by baseProperty<Any>("tenantId")
+	override val tenantId get() = _tenantId!!
 
-	override var ownerId: Any? by baseProperty(this, "ownerId")
+	override var ownerId by baseProperty<Any>("ownerId")
 
-	protected var _caption: String? by baseProperty(this, "caption")
-	override val caption: String get() = _caption ?: ""
+	protected var _caption by baseProperty<String>("caption")
+	override val caption get() = _caption ?: ""
 
-	protected var _createdByUserId: Any? by baseProperty(this, "createdByUserId")
-	override val createdByUserId: Any get() = _createdByUserId!!
-	protected var _createdAt: OffsetDateTime? by baseProperty(this, "createdAt")
-	override val createdAt: OffsetDateTime get() = _createdAt!!
+	protected var _createdByUserId by baseProperty<Any>("createdByUserId")
+	override val createdByUserId get() = _createdByUserId!!
+	protected var _createdAt by baseProperty<OffsetDateTime>("createdAt")
+	override val createdAt get() = _createdAt!!
 
-	override var modifiedByUserId: Any? by baseProperty(this, "modifiedByUserId")
-	override var modifiedAt: OffsetDateTime? by baseProperty(this, "modifiedAt")
+	override var modifiedByUserId by baseProperty<Any>("modifiedByUserId")
+	override var modifiedAt by baseProperty<OffsetDateTime>("modifiedAt")
 
 	override val validationList: MutableList<AggregatePartValidation> = mutableListOf()
 
@@ -75,7 +75,7 @@ abstract class AggregateBase(
 	fun addValidation(
 		validationLevel: CodeValidationLevel,
 		validation: String,
-		entity: EntityWithProperties,
+		entity: Entity<*>,
 	) {
 		addValidation(validationLevel, validation, entity.relativePath())
 	}

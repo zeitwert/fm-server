@@ -1,13 +1,13 @@
 package dddrive.ddd.path
 
 import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.Entity
 import dddrive.ddd.core.model.Part
-import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.base.IdProperty
 
-fun EntityWithProperties.path(): String =
+fun Entity<*>.path(): String =
 	if (this is Part<*>) {
 		buildPath(meta.parentProperty.path())
 	} else {
@@ -15,7 +15,7 @@ fun EntityWithProperties.path(): String =
 			.meta.repository.aggregateType.id + "(" + id + ")"
 	}
 
-fun EntityWithProperties.relativePath(): String =
+fun Entity<*>.relativePath(): String =
 	if (this is Part<*>) {
 		buildPath(meta.parentProperty.relativePath())
 	} else {
@@ -39,7 +39,7 @@ fun Property<*>.relativePath(): String =
 	if (this is IdProperty<*, *>) {
 		"${baseProperty.relativePath()}.$name"
 	} else {
-		val relativePath = entity.relativePath()
+		val relativePath = (entity as Entity<*>).relativePath()
 		if (relativePath.isEmpty()) name else "$relativePath.$name"
 	}
 
@@ -47,5 +47,5 @@ fun Property<*>.path(): String =
 	if (this is IdProperty<*, *>) {
 		"${baseProperty.path()}.$name"
 	} else {
-		"${entity.path()}.$name"
+		"${(entity as Entity<*>).path()}.$name"
 	}

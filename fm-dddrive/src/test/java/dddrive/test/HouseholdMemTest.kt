@@ -5,6 +5,7 @@ import dddrive.app.obj.model.base.ObjBase
 import dddrive.ddd.core.model.AggregateSPI
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
+import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
@@ -25,304 +26,695 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
-class HouseholdMemTest : PropertyChangeListener {
+class HouseholdMemTest {
 
-  @Autowired private lateinit var sessionContext: SessionContext
+	@Autowired
+	private lateinit var sessionContext: SessionContext
 
-  @Autowired private lateinit var tenantRepo: ObjTenantRepository
+	@Autowired
+	private lateinit var tenantRepo: ObjTenantRepository
 
-  @Autowired private lateinit var userRepo: ObjUserRepository
+	@Autowired
+	private lateinit var userRepo: ObjUserRepository
 
-  @Autowired private lateinit var hhRepo: ObjHouseholdRepository
+	@Autowired
+	private lateinit var hhRepo: ObjHouseholdRepository
 
-  private lateinit var user1: ObjUser
-  private lateinit var user2: ObjUser
+	private lateinit var user1: ObjUser
+	private lateinit var user2: ObjUser
 
-  override fun propertyChange(
-          op: String,
-          path: String,
-          value: String?,
-          oldValue: String?,
-          isInCalc: Boolean,
-  ) {
-    println("{ op: $op, path: $path, value: $value, oldValue: $oldValue, isInCalc: $isInCalc }")
-  }
+	data class PropertyChangeEvent(
+		val op: String,
+		val path: String,
+		val value: Any?,
+		val oldValue: Any?,
+		val isInCalc: Boolean,
+	)
 
-  @BeforeEach
-  fun setUp() {
-    user1 =
-            userRepo.getByEmail("user1@dfp.ch").orElseGet {
-              val newUser = userRepo.create()
-              newUser.name = "user1"
-              newUser.email = "user1@dfp.ch"
-              userRepo.store(newUser)
-              newUser
-            }
-    assertNotNull(user1, "user1")
+	class PropertyChangeCollector : PropertyChangeListener {
 
-    user2 =
-            userRepo.getByEmail("user2@dfp.ch").orElseGet {
-              val newUser = userRepo.create()
-              newUser.name = "user2"
-              newUser.email = "user2@dfp.ch"
-              userRepo.store(newUser)
-              newUser
-            }
-    assertNotNull(user2, "user2")
-  }
+		private val _events: MutableList<PropertyChangeEvent> = mutableListOf()
 
-  @Test
-  fun testHouseholdRepository() {
-    assertEquals("objHousehold", hhRepo.aggregateType.id)
-    assertEquals(0, hhRepo.getByForeignKey("objTypeId", "obj_household").size, "0 hh")
+		val events: List<PropertyChangeEvent> get() = _events.toList()
 
-    val hhA1 = hhRepo.create()
-    (hhA1 as AggregateSPI).addPropertyChangeListener(this)
-    val hhA1Id = hhA1.id
-    hhA1.name = "HHA"
-    assertEquals(sessionContext.tenantId, hhA1.tenantId, "tenant")
-    assertEquals(sessionContext.userId, hhA1.meta.createdByUserId, "createUser")
+		override fun propertyChange(
+			op: String,
+			path: String,
+			value: Any?,
+			oldValue: Any?,
+			isInCalc: Boolean,
+		) {
+			println("{ op: $op, path: $path, value: $value, oldValue: $oldValue, isInCalc: $isInCalc }")
+			_events.add(PropertyChangeEvent(op, path, value, oldValue, isInCalc))
+		}
 
-    // Labels - using new collection API
-    assertEquals(0, hhA1.labelSet.size, "labelSet.1a")
-    assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.1b")
-    assertFalse(hhA1.labelSet.has(CodeLabel.B), "labelSet.1c")
+		fun clear() {
+			_events.clear()
+		}
 
-    hhA1.labelSet.add(CodeLabel.A)
-    assertEquals(1, hhA1.labelSet.size, "labelSet.2a")
-    assertTrue(hhA1.labelSet.has(CodeLabel.A), "labelSet.2b")
-    assertFalse(hhA1.labelSet.has(CodeLabel.B), "labelSet.2c")
+		fun assertEvent(
+			index: Int,
+			op: String,
+			pathSuffix: String,
+			value: Any?,
+			oldValue: Any?,
+			isInCalc: Boolean = false,
+		) {
+			assertTrue(index < _events.size) { "Expected event at index $index but only ${_events.size} events" }
+			val event = _events[index]
+			assertEquals(op, event.op, "event[$index].op")
+			assertTrue(event.path.endsWith(pathSuffix)) { "event[$index].path expected to end with '$pathSuffix' but was '${event.path}'" }
+			assertEquals(value, event.value, "event[$index].value")
+			assertEquals(oldValue, event.oldValue, "event[$index].oldValue")
+			assertEquals(isInCalc, event.isInCalc, "event[$index].isInCalc")
+		}
 
-    hhA1.labelSet.add(CodeLabel.B)
-    assertEquals(2, hhA1.labelSet.size, "labelSet.3a")
-    assertTrue(hhA1.labelSet.has(CodeLabel.A), "labelSet.3b")
-    assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.3c")
+		fun assertEventCount(expected: Int) {
+			assertEquals(expected, _events.size, "event count")
+		}
 
-    hhA1.labelSet.add(CodeLabel.A) // Adding duplicate
-    assertEquals(2, hhA1.labelSet.size, "labelSet.4a")
-    assertTrue(hhA1.labelSet.has(CodeLabel.A), "labelSet.4b")
-    assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.4c")
+		fun assertLastEvent(
+			op: String,
+			pathSuffix: String,
+			value: Any?,
+			oldValue: Any?,
+			isInCalc: Boolean = false,
+		) {
+			assertEvent(_events.size - 1, op, pathSuffix, value, oldValue, isInCalc)
+		}
+	}
 
-    hhA1.labelSet.remove(CodeLabel.A)
-    assertEquals(1, hhA1.labelSet.size, "labelSet.5a")
-    assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.5b")
-    assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.5c")
+	private fun createHouseholdWithCollector(): Pair<ObjHousehold, PropertyChangeCollector> {
+		val hh = hhRepo.create()
+		val collector = PropertyChangeCollector()
+		(hh as AggregateSPI).addPropertyChangeListener(collector)
+		collector.clear() // Clear creation events
+		return Pair(hh, collector)
+	}
 
-    hhA1.labelSet.clear()
-    assertEquals(0, hhA1.labelSet.size, "labelSet.6a")
-    assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.6b")
-    assertFalse(hhA1.labelSet.has(CodeLabel.B), "labelSet.6c")
+	@BeforeEach
+	fun setUp() {
+		user1 =
+			userRepo.getByEmail("user1@dfp.ch").orElseGet {
+				val newUser = userRepo.create()
+				newUser.name = "user1"
+				newUser.email = "user1@dfp.ch"
+				userRepo.store(newUser)
+				newUser
+			}
+		assertNotNull(user1, "user1")
 
-    hhA1.labelSet.add(CodeLabel.B)
-    assertEquals(1, hhA1.labelSet.size, "labelSet.7a")
-    assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.7b")
-    assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.7c")
+		user2 =
+			userRepo.getByEmail("user2@dfp.ch").orElseGet {
+				val newUser = userRepo.create()
+				newUser.name = "user2"
+				newUser.email = "user2@dfp.ch"
+				userRepo.store(newUser)
+				newUser
+			}
+		assertNotNull(user2, "user2")
+	}
 
-    // Users - using new collection API
-    assertEquals(0, hhA1.userSet.size, "userSet.1a")
-    assertFalse(hhA1.userSet.has(user1.id), "userSet.1b")
-    assertFalse(hhA1.userSet.has(user2.id), "userSet.1c")
+	@Test
+	fun testHouseholdRepository() {
+		assertEquals("objHousehold", hhRepo.aggregateType.id)
+		assertEquals(0, hhRepo.getByForeignKey("objTypeId", "obj_household").size, "0 hh")
 
-    hhA1.userSet.add(user1.id)
-    assertEquals(1, hhA1.userSet.size, "userSet.2a")
-    assertTrue(hhA1.userSet.has(user1.id), "userSet.2b")
-    assertFalse(hhA1.userSet.has(user2.id), "userSet.2c")
+		val hhA1 = hhRepo.create()
+		val collector = PropertyChangeCollector()
+		(hhA1 as AggregateSPI).addPropertyChangeListener(collector)
+		val hhA1Id = hhA1.id
+		hhA1.name = "HHA"
+		assertEquals(sessionContext.tenantId, hhA1.tenantId, "tenant")
+		assertEquals(sessionContext.userId, hhA1.meta.createdByUserId, "createUser")
 
-    hhA1.userSet.add(user2.id)
-    assertEquals(2, hhA1.userSet.size, "userSet.3a")
-    assertTrue(hhA1.userSet.has(user1.id), "userSet.3b")
-    assertTrue(hhA1.userSet.has(user2.id), "userSet.3c")
+		// Labels - using new collection API
+		assertEquals(0, hhA1.labelSet.size, "labelSet.1a")
+		assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.1b")
+		assertFalse(hhA1.labelSet.has(CodeLabel.B), "labelSet.1c")
 
-    hhA1.userSet.add(user1.id) // Adding duplicate
-    assertEquals(2, hhA1.userSet.size, "userSet.4a")
-    assertTrue(hhA1.userSet.has(user1.id), "userSet.4b")
-    assertTrue(hhA1.userSet.has(user2.id), "userSet.4c")
+		hhA1.labelSet.add(CodeLabel.A)
+		assertEquals(1, hhA1.labelSet.size, "labelSet.2a")
+		assertTrue(hhA1.labelSet.has(CodeLabel.A), "labelSet.2b")
+		assertFalse(hhA1.labelSet.has(CodeLabel.B), "labelSet.2c")
 
-    hhA1.userSet.remove(user1.id)
-    assertEquals(1, hhA1.userSet.size, "userSet.5a")
-    assertFalse(hhA1.userSet.has(user1.id), "userSet.5b")
-    assertTrue(hhA1.userSet.has(user2.id), "userSet.5c")
+		hhA1.labelSet.add(CodeLabel.B)
+		assertEquals(2, hhA1.labelSet.size, "labelSet.3a")
+		assertTrue(hhA1.labelSet.has(CodeLabel.A), "labelSet.3b")
+		assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.3c")
 
-    hhA1.userSet.clear()
-    assertEquals(0, hhA1.userSet.size, "userSet.6a")
-    assertFalse(hhA1.userSet.has(user1.id), "userSet.6b")
-    assertFalse(hhA1.userSet.has(user2.id), "userSet.6c")
+		hhA1.labelSet.add(CodeLabel.A) // Adding duplicate
+		assertEquals(2, hhA1.labelSet.size, "labelSet.4a")
+		assertTrue(hhA1.labelSet.has(CodeLabel.A), "labelSet.4b")
+		assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.4c")
 
-    hhA1.userSet.add(user2.id)
-    assertEquals(1, hhA1.userSet.size, "userSet.7a")
-    assertFalse(hhA1.userSet.has(user1.id), "userSet.7b")
-    assertTrue(hhA1.userSet.has(user2.id), "userSet.7c")
+		hhA1.labelSet.remove(CodeLabel.A)
+		assertEquals(1, hhA1.labelSet.size, "labelSet.5a")
+		assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.5b")
+		assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.5c")
 
-    // Responsible user - single aggregate reference property
-    assertNull(hhA1.responsibleUser, "responsibleUser.1a")
-    assertNull(hhA1.responsibleUserId, "responsibleUser.1b")
+		hhA1.labelSet.clear()
+		assertEquals(0, hhA1.labelSet.size, "labelSet.6a")
+		assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.6b")
+		assertFalse(hhA1.labelSet.has(CodeLabel.B), "labelSet.6c")
 
-    // Set by ID, read by value
-    hhA1.responsibleUserId = user1.id
-    assertEquals(user1.id, hhA1.responsibleUserId, "responsibleUser.2a")
-    assertEquals(user1.id, hhA1.responsibleUser?.id, "responsibleUser.2b")
+		hhA1.labelSet.add(CodeLabel.B)
+		assertEquals(1, hhA1.labelSet.size, "labelSet.7a")
+		assertFalse(hhA1.labelSet.has(CodeLabel.A), "labelSet.7b")
+		assertTrue(hhA1.labelSet.has(CodeLabel.B), "labelSet.7c")
 
-    // Set by value, read by ID
-    hhA1.responsibleUser = user2
-    assertEquals(user2.id, hhA1.responsibleUserId, "responsibleUser.3a")
-    assertEquals(user2.id, hhA1.responsibleUser?.id, "responsibleUser.3b")
+		// Users - using new collection API
+		assertEquals(0, hhA1.userSet.size, "userSet.1a")
+		assertFalse(hhA1.userSet.has(user1.id), "userSet.1b")
+		assertFalse(hhA1.userSet.has(user2.id), "userSet.1c")
 
-    // Change reference
-    hhA1.responsibleUserId = user1.id
-    assertEquals(user1.id, hhA1.responsibleUserId, "responsibleUser.4a")
-    assertEquals(user1.id, hhA1.responsibleUser?.id, "responsibleUser.4b")
+		hhA1.userSet.add(user1.id)
+		assertEquals(1, hhA1.userSet.size, "userSet.2a")
+		assertTrue(hhA1.userSet.has(user1.id), "userSet.2b")
+		assertFalse(hhA1.userSet.has(user2.id), "userSet.2c")
 
-    // Clear reference by setting to null (by value)
-    hhA1.responsibleUser = null
-    assertNull(hhA1.responsibleUser, "responsibleUser.5a")
-    assertNull(hhA1.responsibleUserId, "responsibleUser.5b")
+		hhA1.userSet.add(user2.id)
+		assertEquals(2, hhA1.userSet.size, "userSet.3a")
+		assertTrue(hhA1.userSet.has(user1.id), "userSet.3b")
+		assertTrue(hhA1.userSet.has(user2.id), "userSet.3c")
 
-    // Set again for persistence test
-    hhA1.responsibleUser = user1
-    assertEquals(user1.id, hhA1.responsibleUser?.id, "responsibleUser.6a")
+		hhA1.userSet.add(user1.id) // Adding duplicate
+		assertEquals(2, hhA1.userSet.size, "userSet.4a")
+		assertTrue(hhA1.userSet.has(user1.id), "userSet.4b")
+		assertTrue(hhA1.userSet.has(user2.id), "userSet.4c")
 
-    // Members - using new collection API
-    val p1 = hhA1.memberList.add()
-    p1.salutation = CodeSalutation.MR
-    p1.name = "Martin"
-    assertEquals(CodeSalutation.MR, p1.salutation, "p1.salutation")
-    assertEquals("Martin", p1.name, "p1.name")
-    val p1Id = p1.id
+		hhA1.userSet.remove(user1.id)
+		assertEquals(1, hhA1.userSet.size, "userSet.5a")
+		assertFalse(hhA1.userSet.has(user1.id), "userSet.5b")
+		assertTrue(hhA1.userSet.has(user2.id), "userSet.5c")
 
-    val p2 = hhA1.memberList.add()
-    p2.salutation = CodeSalutation.MRS
-    p2.name = "Elena"
-    assertEquals(CodeSalutation.MRS, p2.salutation, "p2.salutation")
-    assertEquals("Elena", p2.name, "p2.name")
-    val p2Id = p2.id
+		hhA1.userSet.clear()
+		assertEquals(0, hhA1.userSet.size, "userSet.6a")
+		assertFalse(hhA1.userSet.has(user1.id), "userSet.6b")
+		assertFalse(hhA1.userSet.has(user2.id), "userSet.6c")
 
-    p1.name = null
-    assertNull(p1.name, "p1.name")
-    p1.name = "Martin"
-    assertEquals("Martin", p1.name, "p1.name")
+		hhA1.userSet.add(user2.id)
+		assertEquals(1, hhA1.userSet.size, "userSet.7a")
+		assertFalse(hhA1.userSet.has(user1.id), "userSet.7b")
+		assertTrue(hhA1.userSet.has(user2.id), "userSet.7c")
 
-    p2.salutation = null
-    assertNull(p2.salutation, "p2.salutation")
-    p2.salutation = CodeSalutation.MRS
-    assertEquals(CodeSalutation.MRS, p2.salutation, "p2.salutation")
+		// Responsible user - single aggregate reference property
+		assertNull(hhA1.responsibleUser, "responsibleUser.1a")
+		assertNull(hhA1.responsibleUserId, "responsibleUser.1b")
 
-    assertEquals(2, hhA1.memberList.size, "members")
-    assertEquals(p1, hhA1.memberList[0], "p1 by seqNr")
-    assertEquals(p2, hhA1.memberList[1], "p2 by seqNr")
-    assertEquals(p1, hhA1.memberList.getById(p1Id), "p1 by id")
-    assertEquals(p2, hhA1.memberList.getById(p2Id), "p2 by id")
+		// Set by ID, read by value
+		hhA1.responsibleUserId = user1.id
+		assertEquals(user1.id, hhA1.responsibleUserId, "responsibleUser.2a")
+		assertEquals(user1.id, hhA1.responsibleUser?.id, "responsibleUser.2b")
 
-    p1.spouse = p2
-    p2.spouseId = p1.id
-    assertEquals(p2, p1.spouse, "p1.spouse")
-    assertEquals(p1, p2.spouse, "p2.spouse")
+		// Set by value, read by ID
+		hhA1.responsibleUser = user2
+		assertEquals(user2.id, hhA1.responsibleUserId, "responsibleUser.3a")
+		assertEquals(user2.id, hhA1.responsibleUser?.id, "responsibleUser.3b")
 
-    hhA1.mainMemberId = p1.id
-    assertEquals(p1, hhA1.mainMember, "hh.mainMember")
+		// Change reference
+		hhA1.responsibleUserId = user1.id
+		assertEquals(user1.id, hhA1.responsibleUserId, "responsibleUser.4a")
+		assertEquals(user1.id, hhA1.responsibleUser?.id, "responsibleUser.4b")
 
-    hhRepo.store(hhA1)
+		// Clear reference by setting to null (by value)
+		hhA1.responsibleUser = null
+		assertNull(hhA1.responsibleUser, "responsibleUser.5a")
+		assertNull(hhA1.responsibleUserId, "responsibleUser.5b")
 
-    val hhA2 = hhRepo.get(hhA1Id)
-    assertNotNull(hhA2)
-    assertNotSame(hhA1, hhA2, "different objs after load")
-    assertEquals("HHA", hhA2.name, "name")
+		// Set again for persistence test
+		hhA1.responsibleUser = user1
+		assertEquals(user1.id, hhA1.responsibleUser?.id, "responsibleUser.6a")
 
-    assertEquals(1, hhA2.labelSet.size, "labelSet.a")
-    assertFalse(hhA2.labelSet.has(CodeLabel.A), "labelSet.b")
-    assertTrue(hhA2.labelSet.has(CodeLabel.B), "labelSet.c")
+		// Members - using new collection API
+		val p1 = hhA1.memberList.add()
+		p1.salutation = CodeSalutation.MR
+		p1.name = "Martin"
+		assertEquals(CodeSalutation.MR, p1.salutation, "p1.salutation")
+		assertEquals("Martin", p1.name, "p1.name")
+		val p1Id = p1.id
 
-    assertEquals(1, hhA2.userSet.size, "userSet.a")
-    assertFalse(hhA2.userSet.has(user1.id), "userSet.b")
-    assertTrue(hhA2.userSet.has(user2.id), "userSet.c")
+		val p2 = hhA1.memberList.add()
+		p2.salutation = CodeSalutation.MRS
+		p2.name = "Elena"
+		assertEquals(CodeSalutation.MRS, p2.salutation, "p2.salutation")
+		assertEquals("Elena", p2.name, "p2.name")
+		val p2Id = p2.id
 
-    assertEquals(2, hhA2.memberList.size, "members")
+		p1.name = null
+		assertNull(p1.name, "p1.name")
+		p1.name = "Martin"
+		assertEquals("Martin", p1.name, "p1.name")
 
-    val p12 = hhA2.memberList[0]
-    assertNotNull(p12)
-    assertEquals(CodeSalutation.MR, p12.salutation, "p1.salutation")
-    assertEquals("Martin", p12.name, "p1.name")
+		p2.salutation = null
+		assertNull(p2.salutation, "p2.salutation")
+		p2.salutation = CodeSalutation.MRS
+		assertEquals(CodeSalutation.MRS, p2.salutation, "p2.salutation")
 
-    val p22 = hhA2.memberList[1]
-    assertNotNull(p22)
-    assertEquals(CodeSalutation.MRS, p22.salutation, "p2.salutation")
-    assertEquals("Elena", p22.name, "p2.name")
+		assertEquals(2, hhA1.memberList.size, "members")
+		assertEquals(p1, hhA1.memberList[0], "p1 by seqNr")
+		assertEquals(p2, hhA1.memberList[1], "p2 by seqNr")
+		assertEquals(p1, hhA1.memberList.getById(p1Id), "p1 by id")
+		assertEquals(p2, hhA1.memberList.getById(p2Id), "p2 by id")
 
-    assertEquals(p12, hhA2.memberList[0], "p1 by seqNr")
-    assertEquals(p22, hhA2.memberList[1], "p2 by seqNr")
-    assertEquals(p12, hhA2.memberList.getById(p1Id), "p1 by id")
-    assertEquals(p22, hhA2.memberList.getById(p2Id), "p2 by id")
+		p1.spouse = p2
+		p2.spouseId = p1.id
+		assertEquals(p2, p1.spouse, "p1.spouse")
+		assertEquals(p1, p2.spouse, "p2.spouse")
 
-    assertEquals(p22, p12.spouse, "p1.spouse")
-    assertEquals(p12, p22.spouse, "p2.spouse")
-    assertEquals(p12, hhA2.mainMember, "hh.mainMember")
+		hhA1.mainMemberId = p1.id
+		assertEquals(p1, hhA1.mainMember, "hh.mainMember")
 
-    // Verify responsibleUser persisted correctly
-    assertEquals(user1.id, hhA2.responsibleUserId, "responsibleUser persisted by id")
-    assertEquals(user1.id, hhA2.responsibleUser?.id, "responsibleUser persisted by value")
+		hhRepo.store(hhA1)
 
-    assertEquals(1, hhRepo.getByForeignKey("objTypeId", "objHousehold").size, "1 hh")
-  }
+		val hhA2 = hhRepo.get(hhA1Id)
+		assertNotNull(hhA2)
+		assertNotSame(hhA1, hhA2, "different objs after load")
+		assertEquals("HHA", hhA2.name, "name")
 
-  @Test
-  fun testSetValueByPathy() {
-    val hhB1 = hhRepo.create()
+		assertEquals(1, hhA2.labelSet.size, "labelSet.a")
+		assertFalse(hhA2.labelSet.has(CodeLabel.A), "labelSet.b")
+		assertTrue(hhA2.labelSet.has(CodeLabel.B), "labelSet.c")
 
-    hhB1.setValueByPath("salutation", CodeSalutation.MR)
-    assertEquals(CodeSalutation.MR, hhB1.salutation, "salutation by path")
+		assertEquals(1, hhA2.userSet.size, "userSet.a")
+		assertFalse(hhA2.userSet.has(user1.id), "userSet.b")
+		assertTrue(hhA2.userSet.has(user2.id), "userSet.c")
 
-    val name = "HHB"
-    hhB1.setValueByPath("name", name)
-    assertEquals(name, hhB1.name, "name by path")
+		assertEquals(2, hhA2.memberList.size, "members")
 
-    hhB1.setValueByPath("responsibleUserId", user2.id)
-    assertEquals(user2.id, hhB1.responsibleUserId, "responsible user by path")
-  }
+		val p12 = hhA2.memberList[0]
+		assertNotNull(p12)
+		assertEquals(CodeSalutation.MR, p12.salutation, "p1.salutation")
+		assertEquals("Martin", p12.name, "p1.name")
 
-  @Test
-  fun testCloseLifecycle() {
-    // Create and store a household
-    val hh = hhRepo.create()
-    hh.name = "TestCloseHousehold"
-    hhRepo.store(hh)
-    val hhId = hh.id
+		val p22 = hhA2.memberList[1]
+		assertNotNull(p22)
+		assertEquals(CodeSalutation.MRS, p22.salutation, "p2.salutation")
+		assertEquals("Elena", p22.name, "p2.name")
 
-    // Verify not closed initially
-    assertNull(hh.meta.closedByUserId, "closedByUserId should be null before close")
-    assertNull(hh.meta.closedAt, "closedAt should be null before close")
+		assertEquals(p12, hhA2.memberList[0], "p1 by seqNr")
+		assertEquals(p22, hhA2.memberList[1], "p2 by seqNr")
+		assertEquals(p12, hhA2.memberList.getById(p1Id), "p1 by id")
+		assertEquals(p22, hhA2.memberList.getById(p2Id), "p2 by id")
 
-    // Load a fresh copy for closing (to get a non-frozen instance)
-    val hhToClose = hhRepo.load(hhId)
+		assertEquals(p22, p12.spouse, "p1.spouse")
+		assertEquals(p12, p22.spouse, "p2.spouse")
+		assertEquals(p12, hhA2.mainMember, "hh.mainMember")
 
-    // Capture sequence numbers before close
-    val hhBase = hhToClose as ObjBase
-    val beforeCloseSeqNrBefore = hhBase.doBeforeCloseSeqNr
-    val closeSeqNrBefore = hhBase.doCloseSeqNr
-    val afterCloseSeqNrBefore = hhBase.doAfterCloseSeqNr
+		// Verify responsibleUser persisted correctly
+		assertEquals(user1.id, hhA2.responsibleUserId, "responsibleUser persisted by id")
+		assertEquals(user1.id, hhA2.responsibleUser?.id, "responsibleUser persisted by value")
 
-    // Close the household
-    hhRepo.close(hhToClose)
+		assertEquals(1, hhRepo.getByForeignKey("objTypeId", "objHousehold").size, "1 hh")
+	}
 
-    // Verify all lifecycle callbacks were executed (sequence numbers incremented)
-    assertEquals(beforeCloseSeqNrBefore + 1, hhBase.doBeforeCloseSeqNr, "doBeforeClose was called")
-    assertEquals(closeSeqNrBefore + 1, hhBase.doCloseSeqNr, "doClose was called")
-    assertEquals(afterCloseSeqNrBefore + 1, hhBase.doAfterCloseSeqNr, "doAfterClose was called")
+	@Test
+	fun testSetValueByPath() {
+		val hhB1 = hhRepo.create()
 
-    // Verify callbacks were executed in the correct order
-    // Since each callback increments its counter by 1, and they run sequentially,
-    // we verify the state after close reflects all three were called
-    assertTrue(hhBase.doBeforeCloseSeqNr > beforeCloseSeqNrBefore, "doBeforeClose executed")
-    assertTrue(hhBase.doCloseSeqNr > closeSeqNrBefore, "doClose executed")
-    assertTrue(hhBase.doAfterCloseSeqNr > afterCloseSeqNrBefore, "doAfterClose executed")
+		hhB1.setValueByPath("salutation", CodeSalutation.MR)
+		assertEquals(CodeSalutation.MR, hhB1.salutation, "salutation by path")
 
-    // Verify close state was set on the object
-    assertEquals(sessionContext.userId, hhToClose.meta.closedByUserId, "closedByUserId set")
-    assertNotNull(hhToClose.meta.closedAt, "closedAt set")
+		val name = "HHB"
+		hhB1.setValueByPath("name", name)
+		assertEquals(name, hhB1.name, "name by path")
 
-    // Objects are not physically deleted - reload and verify close state persisted
-    val hhReloaded = hhRepo.get(hhId)
-    assertNotNull(hhReloaded, "closed object can still be loaded")
-    assertEquals("TestCloseHousehold", hhReloaded.name, "name persisted")
-    assertEquals(sessionContext.userId, hhReloaded.meta.closedByUserId, "closedByUserId persisted")
-    assertNotNull(hhReloaded.meta.closedAt, "closedAt persisted")
-  }
+		hhB1.setValueByPath("responsibleUserId", user2.id)
+		assertEquals(user2.id, hhB1.responsibleUserId, "responsible user by path")
+	}
+
+	@Test
+	fun testCloseLifecycle() {
+		// Create and store a household
+		val hh = hhRepo.create()
+		hh.name = "TestCloseHousehold"
+		hhRepo.store(hh)
+		val hhId = hh.id
+
+		// Verify not closed initially
+		assertNull(hh.meta.closedByUserId, "closedByUserId should be null before close")
+		assertNull(hh.meta.closedAt, "closedAt should be null before close")
+
+		// Load a fresh copy for closing (to get a non-frozen instance)
+		val hhToClose = hhRepo.load(hhId)
+
+		// Capture sequence numbers before close
+		val hhBase = hhToClose as ObjBase
+		val beforeCloseSeqNrBefore = hhBase.doBeforeCloseSeqNr
+		val closeSeqNrBefore = hhBase.doCloseSeqNr
+		val afterCloseSeqNrBefore = hhBase.doAfterCloseSeqNr
+
+		// Close the household
+		hhRepo.close(hhToClose)
+
+		// Verify all lifecycle callbacks were executed (sequence numbers incremented)
+		assertEquals(beforeCloseSeqNrBefore + 1, hhBase.doBeforeCloseSeqNr, "doBeforeClose was called")
+		assertEquals(closeSeqNrBefore + 1, hhBase.doCloseSeqNr, "doClose was called")
+		assertEquals(afterCloseSeqNrBefore + 1, hhBase.doAfterCloseSeqNr, "doAfterClose was called")
+
+		// Verify callbacks were executed in the correct order
+		// Since each callback increments its counter by 1, and they run sequentially,
+		// we verify the state after close reflects all three were called
+		assertTrue(hhBase.doBeforeCloseSeqNr > beforeCloseSeqNrBefore, "doBeforeClose executed")
+		assertTrue(hhBase.doCloseSeqNr > closeSeqNrBefore, "doClose executed")
+		assertTrue(hhBase.doAfterCloseSeqNr > afterCloseSeqNrBefore, "doAfterClose executed")
+
+		// Verify close state was set on the object
+		assertEquals(sessionContext.userId, hhToClose.meta.closedByUserId, "closedByUserId set")
+		assertNotNull(hhToClose.meta.closedAt, "closedAt set")
+
+		// Objects are not physically deleted - reload and verify close state persisted
+		val hhReloaded = hhRepo.get(hhId)
+		assertNotNull(hhReloaded, "closed object can still be loaded")
+		assertEquals("TestCloseHousehold", hhReloaded.name, "name persisted")
+		assertEquals(sessionContext.userId, hhReloaded.meta.closedByUserId, "closedByUserId persisted")
+		assertNotNull(hhReloaded.meta.closedAt, "closedAt persisted")
+	}
+
+	@Test
+	fun testAggregateIdPropertyEvents() {
+		// Aggregate creation fires an "add" event with the aggregate path
+		val collector = PropertyChangeCollector()
+		val hh = hhRepo.create()
+		(hh as AggregateSPI).addPropertyChangeListener(collector)
+
+		// The creation event was already fired before we attached the listener,
+		// so let's verify the ID is set and the aggregate is functional
+		assertNotNull(hh.id, "aggregate id is set")
+
+		// Verify no events were captured (listener attached after create)
+		collector.assertEventCount(0)
+
+		// Now test that we can capture events on a fresh aggregate
+		val collector2 = PropertyChangeCollector()
+		val hh2 = hhRepo.create()
+		// Note: The "add" event for the aggregate is fired in doAfterCreate before we can attach a listener
+		// This is by design - the ID property skips doBeforeSet because the path depends on the ID
+		(hh2 as AggregateSPI).addPropertyChangeListener(collector2)
+		collector2.assertEventCount(0)
+	}
+
+	@Test
+	fun testReferenceIdVariantsEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Setting by ID fires an event
+		hh.responsibleUserId = user1.id
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".responsibleUser", user1.id, null)
+
+		collector.clear()
+
+		// Setting by value fires an equivalent event
+		hh.responsibleUser = user2
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".responsibleUser", user2.id, user1.id)
+
+		collector.clear()
+
+		// Setting by ID again with replace
+		hh.responsibleUserId = user1.id
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".responsibleUser", user1.id, user2.id)
+
+		collector.clear()
+
+		// Same applies for PartReferenceProperty - test with mainMember
+		val p1 = hh.memberList.add()
+		val p2 = hh.memberList.add()
+		collector.clear()
+
+		// Set by ID
+		hh.mainMemberId = p1.id
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".mainMember", p1.id, null)
+
+		collector.clear()
+
+		// Set by value
+		hh.mainMember = p2
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".mainMember", p2.id, p1.id)
+	}
+
+	@Test
+	fun testBasePropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Set a new value (add)
+		hh.name = "TestName"
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".name", "TestName", null)
+
+		collector.clear()
+
+		// Replace value
+		hh.name = "NewName"
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".name", "NewName", "TestName")
+
+		collector.clear()
+
+		// Set to null (this is still a "replace" because there was an old value)
+		hh.name = null
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".name", null, "NewName")
+
+		collector.clear()
+
+		// Setting same value should not fire event
+		hh.name = null
+		collector.assertEventCount(0)
+
+		// Test literalId property as well
+		hh.literalId = "LIT-001"
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".literalId", "LIT-001", null)
+
+		collector.clear()
+
+		hh.literalId = "LIT-002"
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".literalId", "LIT-002", "LIT-001")
+	}
+
+	@Test
+	fun testEnumPropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Set enum value (add) - enum IDs are lowercase
+		hh.salutation = CodeSalutation.MR
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".salutation", "mr", null)
+
+		collector.clear()
+
+		// Replace enum value
+		hh.salutation = CodeSalutation.MRS
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".salutation", "mrs", "mr")
+
+		collector.clear()
+
+		// Set to null
+		hh.salutation = null
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".salutation", null, "mrs")
+
+		collector.clear()
+
+		// Setting same null value should not fire event
+		hh.salutation = null
+		collector.assertEventCount(0)
+
+		// Note: Part properties do NOT fire events through the listener
+		// (PartBase.doAfterSet doesn't call fireFieldSetChange)
+		// This test only covers aggregate-level enum properties
+	}
+
+	@Test
+	fun testAggregateReferencePropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Add reference
+		hh.responsibleUserId = user1.id
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".responsibleUser", user1.id, null)
+
+		collector.clear()
+
+		// Replace reference
+		hh.responsibleUserId = user2.id
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".responsibleUser", user2.id, user1.id)
+
+		collector.clear()
+
+		// Clear reference by setting to null
+		hh.responsibleUser = null
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".responsibleUser", null, user2.id)
+
+		collector.clear()
+
+		// Setting same null should not fire event
+		hh.responsibleUser = null
+		collector.assertEventCount(0)
+	}
+
+	@Test
+	fun testPartReferencePropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Create some members first
+		val p1 = hh.memberList.add()
+		val p2 = hh.memberList.add()
+		collector.clear()
+
+		// Set mainMember (add)
+		hh.mainMemberId = p1.id
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".mainMember", p1.id, null)
+
+		collector.clear()
+
+		// Replace mainMember
+		hh.mainMember = p2
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".mainMember", p2.id, p1.id)
+
+		collector.clear()
+
+		// Clear mainMember
+		hh.mainMember = null
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "replace", ".mainMember", null, p2.id)
+	}
+
+	@Test
+	fun testEnumSetPropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Add first item - enum IDs are lowercase
+		hh.labelSet.add(CodeLabel.A)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".labelSet", "a", null)
+
+		collector.clear()
+
+		// Add second item
+		hh.labelSet.add(CodeLabel.B)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".labelSet", "b", null)
+
+		collector.clear()
+
+		// Adding duplicate should not fire event
+		hh.labelSet.add(CodeLabel.A)
+		collector.assertEventCount(0)
+
+		// Remove item
+		hh.labelSet.remove(CodeLabel.A)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "remove", ".labelSet", "a", null)
+
+		collector.clear()
+
+		// Remove non-existent item should not fire event
+		hh.labelSet.remove(CodeLabel.A)
+		collector.assertEventCount(0)
+
+		hh.labelSet.add(CodeLabel.A)
+		hh.labelSet.add(CodeLabel.B)
+		hh.labelSet.add(CodeLabel.C)
+
+		collector.clear()
+		hh.labelSet.clear()
+		collector.assertEventCount(3)
+
+		// Note: EnumSetPropertyImpl.clear() has a ConcurrentModificationException bug
+		// when iterating and removing - skipping clear() test until fixed
+	}
+
+	@Test
+	fun testReferenceSetPropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Add first reference
+		hh.userSet.add(user1.id)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".userSet", user1.id, null)
+
+		collector.clear()
+
+		// Add second reference
+		hh.userSet.add(user2.id)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".userSet", user2.id, null)
+
+		collector.clear()
+
+		// Adding duplicate should not fire event
+		hh.userSet.add(user1.id)
+		collector.assertEventCount(0)
+
+		// Remove reference
+		hh.userSet.remove(user1.id)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "remove", ".userSet", user1.id, null)
+
+		collector.clear()
+
+		// Remove non-existent should not fire event
+		hh.userSet.remove(user1.id)
+		collector.assertEventCount(0)
+
+		// Clear fires remove events
+		hh.userSet.clear()
+		collector.assertEventCount(1) // Only user2 was left
+		collector.assertEvent(0, "remove", ".userSet", user2.id, null)
+	}
+
+	@Test
+	fun testPartListPropertyEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Add part - fireEntityAddedChange uses truncated path (aggregate path)
+		val p1 = hh.memberList.add()
+		collector.assertEventCount(1)
+		// The path is truncated to the aggregate path (ends with ')'), value is the part ID
+		collector.assertEvent(0, "add", ".memberList[0]", p1.id, null)
+
+		collector.clear()
+
+		// Add second part
+		val p2 = hh.memberList.add()
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".memberList[1]", p2.id, null)
+
+		collector.clear()
+
+		p1.name = "Martin"
+		collector.assertEventCount(1) // No event for part property change
+		collector.assertEvent(0, "add", ".memberList[0].name", "Martin", null)
+
+		collector.clear()
+		hh.memberList.remove(p1.id)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "remove", ".memberList[0]", null, p1.id)
+
+		collector.clear()
+		hh.memberList.remove(p2.id)
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "remove", ".memberList[0]", null, p2.id)
+
+		val p3 = hh.memberList.add()
+		val p4 = hh.memberList.add()
+		collector.clear()
+		hh.memberList.clear()
+		collector.assertEventCount(2)
+		collector.assertEvent(0, "remove", ".memberList[0]", null, p3.id)
+		collector.assertEvent(1, "remove", ".memberList[0]", null, p4.id)
+	}
+
 }

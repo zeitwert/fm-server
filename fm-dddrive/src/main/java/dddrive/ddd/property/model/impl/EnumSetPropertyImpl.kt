@@ -6,7 +6,6 @@ import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumSetProperty
 import dddrive.ddd.property.model.base.PropertyBase
-import java.util.function.Consumer
 
 class EnumSetPropertyImpl<E : Enumerated>(
 	entity: EntityWithProperties,
@@ -19,8 +18,8 @@ class EnumSetPropertyImpl<E : Enumerated>(
 
 	override fun clear() {
 		require(isWritable) { "writable" }
-		items.forEach(Consumer { item: E -> remove(item) })
-		items.clear()
+		items.toList().forEach { remove(it) }
+		check(items.isEmpty()) { "items empty" }
 		(entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
@@ -29,7 +28,7 @@ class EnumSetPropertyImpl<E : Enumerated>(
 		require(isValidEnum(item)) { "valid enumeration item for " + enumeration.id + " (" + item.id + ")" }
 		if (!has(item)) {
 			val entity = entity as EntityWithPropertiesSPI
-			entity.fireValueAddedChange(this, item.id)
+			fireValueAddedChange(item.id)
 			items.add(item)
 			entity.doAfterAdd(this, null)
 		}
@@ -41,7 +40,7 @@ class EnumSetPropertyImpl<E : Enumerated>(
 		require(isWritable) { "writable" }
 		if (has(item)) {
 			val entity = entity as EntityWithPropertiesSPI
-			entity.fireValueRemovedChange(this, item.id)
+			fireValueRemovedChange(item.id)
 			items.remove(item)
 			entity.doAfterRemove(this)
 		}

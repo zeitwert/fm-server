@@ -28,12 +28,12 @@ class ObjDocumentImpl(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
-	override var name: String? by baseProperty(this, "name")
-	override var contentKind: CodeContentKind? by enumProperty(this, "contentKind")
-	override var documentKind: CodeDocumentKind? by enumProperty(this, "documentKind")
-	override var documentCategory: CodeDocumentCategory? by enumProperty(this, "documentCategory")
-	override var templateDocumentId: Any? by referenceIdProperty<ObjDocument>(this, "templateDocument")
-	override val templateDocument: ObjDocument? by referenceProperty(this, "templateDocument")
+	override var name by baseProperty<String>("name")
+	override var contentKind by enumProperty<CodeContentKind>("contentKind")
+	override var documentKind by enumProperty<CodeDocumentKind>("documentKind")
+	override var documentCategory by enumProperty<CodeDocumentCategory>("documentCategory")
+	override var templateDocumentId by referenceIdProperty<ObjDocument>("templateDocument")
+	override val templateDocument by referenceProperty<ObjDocument>("templateDocument")
 
 	private var _contentType: CodeContentType? = null
 	private var _content: ByteArray? = null

@@ -11,8 +11,8 @@ class ObjUserImpl(
 ) : ObjBase(repository, isNew),
 	ObjUser {
 
-	override var email: String? by baseProperty(this, "email")
-	override var name: String? by baseProperty(this, "name")
+	override var email by baseProperty<String>("email")
+	override var name by baseProperty<String>("name")
 
 	override fun doCalcAll() {
 		super.doCalcAll()

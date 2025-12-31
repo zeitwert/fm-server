@@ -23,13 +23,13 @@ abstract class AggregateBase(
 	AggregateMeta,
 	AggregateSPI {
 
-	protected var _id: Any? by baseProperty(this, "id")
-	override val id: Any get() = _id!!
+	protected var _id by baseProperty<Any>("id")
+	override val id get() = _id!!
 
-	protected var _version: Int? by baseProperty(this, "version")
-	override val version: Int get() = _version!!
+	protected var _version by baseProperty<Int>("version")
+	override val version get() = _version!!
 
-	var maxPartId: Int? by baseProperty(this, "maxPartId")
+	var maxPartId by baseProperty<Int>("maxPartId")
 
 	override var isFrozen = false
 	override var isInLoad = false
@@ -62,8 +62,8 @@ abstract class AggregateBase(
 	override fun fireFieldChange(
 		op: String,
 		path: String,
-		value: String?,
-		oldValue: String?,
+		value: Any?,
+		oldValue: Any?,
 		isInCalc: Boolean,
 	) {
 		_propertyChangeListeners.forEach(
@@ -85,7 +85,6 @@ abstract class AggregateBase(
 	override fun doAfterCreate() {
 		doAfterCreateSeqNr += 1
 		_version = 0
-		fireEntityAddedChange(id)
 	}
 
 	override fun doAfterLoad() {
@@ -123,7 +122,11 @@ abstract class AggregateBase(
 	) {
 	}
 
-	override fun doAfterSet(property: Property<*>) {
+	override fun doAfterSet(
+		property: Property<*>,
+		value: Any?,
+		oldValue: Any?,
+	) {
 		calcAll()
 	}
 

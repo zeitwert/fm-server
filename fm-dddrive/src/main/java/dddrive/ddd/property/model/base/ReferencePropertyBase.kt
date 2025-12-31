@@ -22,10 +22,11 @@ abstract class ReferencePropertyBase<T : Any, ID : Any>(
 				return
 			}
 			val entity = this.entity as EntityWithPropertiesSPI
-			entity.doBeforeSet(this, id, field)
-			entity.fireFieldSetChange(this, id, field)
+			val oldId = field
+			entity.doBeforeSet(this, id, oldId)
 			field = id
-			entity.doAfterSet(this)
+			fireFieldSetChange(id, oldId)
+			entity.doAfterSet(this, id, oldId)
 		}
 
 	protected abstract fun isValidId(id: ID?): Boolean

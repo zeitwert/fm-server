@@ -11,10 +11,7 @@ import dddrive.ddd.property.delegate.partReferenceProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
-import dddrive.ddd.property.model.EnumSetProperty
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
-import dddrive.ddd.property.model.ReferenceSetProperty
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
@@ -28,15 +25,16 @@ class ObjHouseholdImpl(
 ) : ObjBase(repository, isNew),
 	ObjHousehold {
 
-	override var salutation: CodeSalutation? by enumProperty(this, "salutation")
-	override var name: String? by baseProperty(this, "name")
-	override var responsibleUserId: Any? by referenceIdProperty<ObjUser>(this, "responsibleUser")
-	override var responsibleUser: ObjUser? by referenceProperty(this, "responsibleUser")
-	override var mainMemberId: Int? by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>(this, "mainMember")
-	override var mainMember: ObjHouseholdPartMember? by partReferenceProperty(this, "mainMember")
-	override val labelSet: EnumSetProperty<CodeLabel> = enumSetProperty(this, "labelSet")
-	override val userSet: ReferenceSetProperty<ObjUser> = referenceSetProperty(this, "userSet")
-	override val memberList: PartListProperty<ObjHousehold, ObjHouseholdPartMember> = partListProperty(this, "memberList")
+	override var salutation by enumProperty<CodeSalutation>("salutation")
+	override var name by baseProperty<String>("name")
+	override var responsibleUserId by referenceIdProperty<ObjUser>("responsibleUser")
+	override var responsibleUser by referenceProperty<ObjUser>("responsibleUser")
+	override var mainMemberId by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>("mainMember")
+	override var mainMember by partReferenceProperty<ObjHousehold, ObjHouseholdPartMember>("mainMember")
+	override val labelSet = enumSetProperty<CodeLabel>("labelSet")
+	override val userSet = referenceSetProperty<ObjUser>("userSet")
+	override val memberList = partListProperty<ObjHousehold, ObjHouseholdPartMember>("memberList")
+	override var literalId by baseProperty<String>("literalId")
 
 	override fun doAddPart(
 		property: Property<*>,

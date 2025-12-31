@@ -21,12 +21,12 @@ class ObjContactPartAddressImpl(
 ) : ObjPartBase<ObjContact>(obj, repository, property, id),
 	ObjContactPartAddress {
 
-	override var addressChannel: CodeAddressChannel? by enumProperty(this, "addressChannel")
-	override var name: String? by baseProperty(this, "name")
-	override var street: String? by baseProperty(this, "street")
-	override var zip: String? by baseProperty(this, "zip")
-	override var city: String? by baseProperty(this, "city")
-	override var country: CodeCountry? by enumProperty(this, "country")
+	override var addressChannel by enumProperty<CodeAddressChannel>("addressChannel")
+	override var name by baseProperty<String>("name")
+	override var street by baseProperty<String>("street")
+	override var zip by baseProperty<String>("zip")
+	override var city by baseProperty<String>("city")
+	override var country by enumProperty<CodeCountry>("country")
 
 	override val addressType get() = addressChannel?.addressType
 

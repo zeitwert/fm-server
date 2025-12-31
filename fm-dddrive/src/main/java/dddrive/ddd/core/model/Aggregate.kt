@@ -1,13 +1,11 @@
 package dddrive.ddd.core.model
 
-import dddrive.ddd.property.model.EntityWithProperties
-
 /**
  * A DDD Aggregate Root.
  */
-interface Aggregate : EntityWithProperties {
+interface Aggregate : Entity<Any> {
 
-	val id: Any
+	override val id: Any
 
 	val meta: AggregateMeta
 

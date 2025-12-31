@@ -19,9 +19,9 @@ class ReferenceSetPropertyImpl<A : Aggregate>(
 
 	override fun clear() {
 		require(isWritable) { "writable" }
-		items.toSet().forEach { remove(it) }
+		items.toList().forEach { remove(it) }
 		check(items.isEmpty()) { "all items removed" }
-		items.clear()
+		check(items.isEmpty()) { "items empty" }
 		(entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
@@ -33,7 +33,7 @@ class ReferenceSetPropertyImpl<A : Aggregate>(
 		}
 		if (!has(aggregateId)) {
 			val entity = entity as EntityWithPropertiesSPI
-			entity.fireValueAddedChange(this, aggregateId)
+			fireValueAddedChange(aggregateId)
 			items.add(aggregateId)
 			entity.doAfterAdd(this, null)
 		}
@@ -46,7 +46,7 @@ class ReferenceSetPropertyImpl<A : Aggregate>(
 		require(isValidAggregateId(aggregateId)) { "valid aggregate id [$aggregateId]" }
 		if (has(aggregateId)) {
 			val entity = entity as EntityWithPropertiesSPI
-			entity.fireValueRemovedChange(this, aggregateId)
+			fireValueRemovedChange(aggregateId)
 			items.remove(aggregateId)
 			entity.doAfterRemove(this)
 		}

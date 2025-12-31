@@ -1,13 +1,12 @@
 package dddrive.ddd.core.model
 
-import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.PropertyChangeListener
 
 /**
  * This interface defines the internal callbacks for an Aggregate
  * implementation.
  */
-interface AggregateSPI : EntityWithPropertiesSPI {
+interface AggregateSPI {
 
 	/**
 	 * Generate new part id.
@@ -32,5 +31,13 @@ interface AggregateSPI : EntityWithPropertiesSPI {
 	fun doBeforeStore()
 
 	fun doAfterStore()
+
+	fun fireFieldChange(
+		op: String,
+		path: String,
+		value: Any?,
+		oldValue: Any?,
+		isInCalc: Boolean,
+	)
 
 }

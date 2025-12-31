@@ -1,6 +1,7 @@
 package io.zeitwert.fm.test.persist
 
 import dddrive.ddd.path.setValueByPath
+import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.persist.SqlIdProvider
@@ -61,7 +62,10 @@ open class ObjTestSqlPersistenceProviderImpl(
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
 			loadPartList(
-				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTest, ObjTestPartNode>,
+				(aggregate as EntityWithProperties).getProperty(
+					"nodeList",
+					ObjTestPartNode::class,
+				) as PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endLoad()
@@ -111,7 +115,10 @@ open class ObjTestSqlPersistenceProviderImpl(
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginStore()
 			storePartList(
-				aggregate.getProperty("nodeList", ObjTestPartNode::class) as PartListProperty<ObjTest, ObjTestPartNode>,
+				(aggregate as EntityWithProperties).getProperty(
+					"nodeList",
+					ObjTestPartNode::class,
+				) as PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endStore()

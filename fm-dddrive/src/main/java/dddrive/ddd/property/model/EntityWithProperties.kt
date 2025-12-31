@@ -1,11 +1,16 @@
 package dddrive.ddd.property.model
 
-import dddrive.ddd.core.model.Part
 import kotlin.reflect.KClass
 
 interface EntityWithProperties {
 
 	val isFrozen: Boolean
+
+	val isInLoad: Boolean
+
+	val isInCalc: Boolean
+
+	val properties: List<Property<*>>
 
 	fun hasProperty(name: String): Boolean
 
@@ -14,10 +19,6 @@ interface EntityWithProperties {
 		type: KClass<T>,
 	): Property<T>
 
-	val properties: List<Property<*>>
-
-	fun hasPart(partId: Int): Boolean
-
-	fun getPart(partId: Int): Part<*>
+	fun addProperty(property: Property<*>)
 
 }

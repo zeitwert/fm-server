@@ -5,7 +5,6 @@ import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.Property
 import dddrive.domain.task.model.DocTask
 import dddrive.domain.task.model.DocTaskPartComment
@@ -19,14 +18,14 @@ class DocTaskImpl(
 ) : DocBase(repository, isNew),
 	DocTask {
 
-	override var subject: String? by baseProperty(this, "subject")
-	override var content: String? by baseProperty(this, "content")
-	override var isPrivate: Boolean? by baseProperty(this, "isPrivate")
-	override var priority: CodeTaskPriority? by enumProperty(this, "priority")
-	override var dueAt: OffsetDateTime? by baseProperty(this, "dueAt")
-	override var remindAt: OffsetDateTime? by baseProperty(this, "remindAt")
+	override var subject by baseProperty<String>("subject")
+	override var content by baseProperty<String>("content")
+	override var isPrivate by baseProperty<Boolean>("isPrivate")
+	override var priority by enumProperty<CodeTaskPriority>("priority")
+	override var dueAt by baseProperty<OffsetDateTime>("dueAt")
+	override var remindAt by baseProperty<OffsetDateTime>("remindAt")
 
-	override val commentList: PartListProperty<DocTask, DocTaskPartComment> = partListProperty(this, "commentList")
+	override val commentList = partListProperty<DocTask, DocTaskPartComment>("commentList")
 
 	override fun doAddPart(
 		property: Property<*>,

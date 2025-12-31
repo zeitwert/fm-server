@@ -18,15 +18,15 @@ class ObjBuildingPartElementRatingImpl(
 ) : ObjPartBase<ObjBuilding>(obj, repository, property, id),
 	ObjBuildingPartElementRating {
 
-	override var buildingPart: CodeBuildingPart? by enumProperty(this, "buildingPart")
-	override var weight: Int? by baseProperty(this, "weight")
-	override var condition: Int? by baseProperty(this, "condition")
-	override var ratingYear: Int? by baseProperty(this, "ratingYear")
-	override var strain: Int? by baseProperty(this, "strain")
-	override var strength: Int? by baseProperty(this, "strength")
-	override var description: String? by baseProperty(this, "description")
-	override var conditionDescription: String? by baseProperty(this, "conditionDescription")
-	override var measureDescription: String? by baseProperty(this, "measureDescription")
+	override var buildingPart by enumProperty<CodeBuildingPart>("buildingPart")
+	override var weight by baseProperty<Int>("weight")
+	override var condition by baseProperty<Int>("condition")
+	override var ratingYear by baseProperty<Int>("ratingYear")
+	override var strain by baseProperty<Int>("strain")
+	override var strength by baseProperty<Int>("strength")
+	override var description by baseProperty<String>("description")
+	override var conditionDescription by baseProperty<String>("conditionDescription")
+	override var measureDescription by baseProperty<String>("measureDescription")
 
 	override fun getCondition(year: Int): Int {
 		val buildingPart = this.buildingPart!!

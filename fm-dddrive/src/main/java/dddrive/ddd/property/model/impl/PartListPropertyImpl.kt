@@ -11,7 +11,6 @@ import dddrive.ddd.property.model.base.PropertyBase
 open class PartListPropertyImpl<A : Aggregate, P : Part<A>>(
 	entity: EntityWithProperties,
 	name: String,
-	aggrType: Class<A>,
 	override val partType: Class<P>,
 ) : PropertyBase<P>(entity, name),
 	PartListProperty<A, P> {
@@ -20,20 +19,19 @@ open class PartListPropertyImpl<A : Aggregate, P : Part<A>>(
 
 	override fun clear() {
 		require(isWritable) { "writable" }
-		for (part in parts) {
-			(part as PartSPI<*>).delete()
+		while (parts.isNotEmpty()) {
+			remove(parts[0].id)
 		}
-		parts.clear()
+		check(parts.isEmpty()) { "parts empty" }
 		(entity as EntityWithPropertiesSPI).doAfterClear(this)
 	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun add(partId: Int?): P {
 		require(isWritable) { "writable" }
-		val entity = entity as EntityWithPropertiesSPI
-		val part = entity.doAddPart(this, partId) as P
+		val part = (entity as EntityWithPropertiesSPI).doAddPart(this, partId) as P
 		parts.add(part)
-		(part as EntityWithPropertiesSPI).fireEntityAddedChange(part.id)
+		firePartAddedChange(part as EntityWithPropertiesSPI)
 		entity.doAfterAdd(this, part)
 		return part
 	}
@@ -55,7 +53,7 @@ open class PartListPropertyImpl<A : Aggregate, P : Part<A>>(
 
 	override fun remove(part: P) {
 		require(isWritable) { "writable" }
-		(part as EntityWithPropertiesSPI).fireEntityRemovedChange()
+		firePartRemovedChange(part as EntityWithPropertiesSPI)
 		(part as PartSPI<*>).delete()
 		parts.remove(part)
 		(entity as EntityWithPropertiesSPI).doAfterRemove(this)

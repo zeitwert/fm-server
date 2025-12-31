@@ -1,11 +1,9 @@
 package dddrive.ddd.core.model
 
-import dddrive.ddd.property.model.EntityWithPropertiesSPI
-
 /**
  * This interface defines the internal callbacks for a Part implementation.
  */
-interface PartSPI<A : Aggregate> : EntityWithPropertiesSPI {
+interface PartSPI<A : Aggregate> {
 
 	/**
 	 * Initialise a Part after creation (external, functional callback).

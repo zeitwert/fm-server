@@ -7,38 +7,20 @@ interface EntityWithPropertiesSPI {
 
 	val directory: RepositoryDirectory
 
-	val isInLoad: Boolean
+	fun hasPart(partId: Int): Boolean
 
-	val isInCalc: Boolean
+	fun getPart(partId: Int): Part<*>
 
-	fun addProperty(property: Property<*>)
+	fun doLogChange(): Boolean
+
+	fun doLogChange(property: Property<*>): Boolean
 
 	fun fireFieldChange(
 		op: String,
 		path: String,
-		value: String?,
-		oldValue: String?,
-		isInCalc: Boolean,
-	)
-
-	fun fireEntityAddedChange(id: Any)
-
-	fun fireEntityRemovedChange()
-
-	fun fireValueAddedChange(
-		property: Property<*>,
-		value: Any,
-	)
-
-	fun fireValueRemovedChange(
-		property: Property<*>,
-		value: Any,
-	)
-
-	fun fireFieldSetChange(
-		property: Property<*>,
 		value: Any?,
 		oldValue: Any?,
+		isInCalc: Boolean,
 	)
 
 	fun doAddPart(
@@ -52,7 +34,11 @@ interface EntityWithPropertiesSPI {
 		oldValue: Any?,
 	)
 
-	fun doAfterSet(property: Property<*>)
+	fun doAfterSet(
+		property: Property<*>,
+		value: Any?,
+		oldValue: Any?,
+	)
 
 	fun doAfterClear(property: Property<*>)
 

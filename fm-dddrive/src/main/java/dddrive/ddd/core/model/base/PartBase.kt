@@ -1,11 +1,13 @@
 package dddrive.ddd.core.model.base
 
 import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.AggregateSPI
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.PartMeta
 import dddrive.ddd.core.model.PartRepository
 import dddrive.ddd.core.model.PartSPI
 import dddrive.ddd.core.model.RepositoryDirectory
+import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.base.EntityWithPropertiesBase
@@ -45,21 +47,21 @@ abstract class PartBase<A : Aggregate>(
 	override fun fireFieldChange(
 		op: String,
 		path: String,
-		value: String?,
-		oldValue: String?,
+		value: Any?,
+		oldValue: Any?,
 		isInCalc: Boolean,
 	) {
-		(aggregate as EntityWithPropertiesSPI).fireFieldChange(op, path, value, oldValue, isInCalc)
+		(aggregate as AggregateSPI).fireFieldChange(op, path, value, oldValue, isInCalc)
 	}
 
 	override fun doLogChange(propertyName: String): Boolean = repository.doLogChange(propertyName)
 
-	override fun hasPart(partId: Int): Boolean = aggregate.hasPart(partId)
+	override fun hasPart(partId: Int): Boolean = (aggregate as EntityWithPropertiesSPI).hasPart(partId)
 
-	override fun getPart(partId: Int): Part<*> = aggregate.getPart(partId)
+	override fun getPart(partId: Int): Part<*> = (aggregate as EntityWithPropertiesSPI).getPart(partId)
 
 	override val isFrozen: Boolean
-		get() = aggregate.isFrozen
+		get() = (aggregate as EntityWithProperties).isFrozen
 
 	override fun doAddPart(
 		property: Property<*>,
@@ -73,7 +75,11 @@ abstract class PartBase<A : Aggregate>(
 	) {
 	}
 
-	override fun doAfterSet(property: Property<*>) {
+	override fun doAfterSet(
+		property: Property<*>,
+		value: Any?,
+		oldValue: Any?,
+	) {
 		calcAll()
 	}
 

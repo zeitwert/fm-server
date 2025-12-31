@@ -6,7 +6,6 @@ import dddrive.ddd.enums.model.Enumerated
 import dddrive.ddd.property.model.AggregateReferenceProperty
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumProperty
 import dddrive.ddd.property.model.PartReferenceProperty
 import dddrive.ddd.property.model.impl.AggregateReferencePropertyImpl
@@ -19,62 +18,56 @@ import kotlin.reflect.KProperty
 /**
  * Creates a property delegate for simple base properties.
  *
- * Usage: `var name: String? by baseProperty()`
+ * Usage: `var name by baseProperty<String>()`
  */
-inline fun <reified T : Any> baseProperty(
-	entity: EntityWithProperties,
+inline fun <reified T : Any> EntityWithProperties.baseProperty(
 	name: String,
-): BasePropertyDelegate<T> = BasePropertyDelegate(entity, T::class.java, name)
+): BasePropertyDelegate<T> = BasePropertyDelegate(this, T::class.java, name)
 
 /**
  * Creates a property delegate for enum properties.
  *
  * Usage: `var status: CodeStatus? by enumProperty()`
  */
-inline fun <reified E : Enumerated> enumProperty(
-	entity: EntityWithProperties,
+inline fun <reified E : Enumerated> EntityWithProperties.enumProperty(
 	name: String,
-): EnumPropertyDelegate<E> = EnumPropertyDelegate(entity, E::class.java, name)
+): EnumPropertyDelegate<E> = EnumPropertyDelegate(this, E::class.java, name)
 
 /**
  * Creates a property delegate for aggregate reference properties.
  *
  * Usage: `var owner: ObjUser? by referenceProperty()`
  */
-inline fun <reified A : Aggregate> referenceProperty(
-	entity: EntityWithProperties,
+inline fun <reified A : Aggregate> EntityWithProperties.referenceProperty(
 	name: String,
-): ReferencePropertyDelegate<A> = ReferencePropertyDelegate(entity, A::class.java, name)
+): ReferencePropertyDelegate<A> = ReferencePropertyDelegate(this, A::class.java, name)
 
 /**
  * Creates a property delegate for aggregate reference ID properties.
  *
- * Usage: `var ownerId: Any? by referenceIdProperty<ObjUser>()`
+ * Usage: `var ownerId   by referenceIdProperty<ObjUser>()`
  */
-inline fun <reified A : Aggregate> referenceIdProperty(
-	entity: EntityWithProperties,
+inline fun <reified A : Aggregate> EntityWithProperties.referenceIdProperty(
 	name: String,
-): ReferenceIdPropertyDelegate<A> = ReferenceIdPropertyDelegate(entity, A::class.java, name)
+): ReferenceIdPropertyDelegate<A> = ReferenceIdPropertyDelegate(this, A::class.java, name)
 
 /**
  * Creates a property delegate for part reference properties.
  *
  * Usage: `var mainMember: ObjHouseholdPartMember? by partReferenceProperty()`
  */
-inline fun <reified A : Aggregate, reified P : Part<A>> partReferenceProperty(
-	entity: EntityWithProperties,
+inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.partReferenceProperty(
 	name: String,
-): PartReferencePropertyDelegate<A, P> = PartReferencePropertyDelegate(entity, A::class.java, P::class.java, name)
+): PartReferencePropertyDelegate<A, P> = PartReferencePropertyDelegate(this, A::class.java, P::class.java, name)
 
 /**
  * Creates a property delegate for part reference ID properties.
  *
  * Usage: `var mainMemberId: Int? by partReferenceIdProperty<ObjHouseholdPartMember>()`
  */
-inline fun <reified A : Aggregate, reified P : Part<A>> partReferenceIdProperty(
-	entity: EntityWithProperties,
+inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.partReferenceIdProperty(
 	name: String,
-): PartReferenceIdPropertyDelegate<A, P> = PartReferenceIdPropertyDelegate(entity, A::class.java, P::class.java, name)
+): PartReferenceIdPropertyDelegate<A, P> = PartReferenceIdPropertyDelegate(this, A::class.java, P::class.java, name)
 
 class BasePropertyDelegate<T : Any>(
 	entity: EntityWithProperties,
@@ -318,8 +311,8 @@ private fun <T : Any> EntityWithProperties.getOrAddBaseProperty(
 	if (hasProperty(name)) {
 		return getProperty(name, Any::class) as BaseProperty<T>
 	}
-	val property: BaseProperty<T> = BasePropertyImpl(this, name, type)
-	(this as EntityWithPropertiesSPI).addProperty(property)
+	val property = BasePropertyImpl(this, name, type)
+	addProperty(property)
 	return property
 }
 
@@ -335,8 +328,8 @@ private fun <E : Enumerated> EntityWithProperties.getOrAddEnumProperty(
 	if (hasProperty(name)) {
 		return getProperty(name, Any::class) as EnumProperty<E>
 	}
-	val property: EnumProperty<E> = EnumPropertyImpl(this, name, enumType)
-	(this as EntityWithPropertiesSPI).addProperty(property)
+	val property = EnumPropertyImpl(this, name, enumType)
+	addProperty(property)
 	return property
 }
 
@@ -352,8 +345,8 @@ private fun <A : Aggregate> EntityWithProperties.getOrAddReferenceProperty(
 	if (hasProperty(name)) {
 		return getProperty(name, Any::class) as AggregateReferenceProperty<A>
 	}
-	val property: AggregateReferenceProperty<A> = AggregateReferencePropertyImpl(this, name, aggregateType)
-	(this as EntityWithPropertiesSPI).addProperty(property)
+	val property = AggregateReferencePropertyImpl(this, name, aggregateType)
+	addProperty(property)
 	return property
 }
 
@@ -369,7 +362,7 @@ private fun <A : Aggregate, P : Part<A>> EntityWithProperties.getOrAddPartRefere
 	if (hasProperty(name)) {
 		return getProperty(name, Any::class) as PartReferenceProperty<A, P>
 	}
-	val property: PartReferenceProperty<A, P> = PartReferencePropertyImpl(this, name, partType)
-	(this as EntityWithPropertiesSPI).addProperty(property)
+	val property = PartReferencePropertyImpl(this, name, partType)
+	addProperty(property)
 	return property
 }
