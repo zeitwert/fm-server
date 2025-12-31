@@ -1,10 +1,12 @@
-package dddrive.domain.ddd.persist.map
+package dddrive.domain.ddd.persist.map.impl
 
 import dddrive.ddd.core.model.Part
+import dddrive.ddd.enums.model.Enumerated
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EnumSetProperty
 import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.ReferenceProperty
 import dddrive.ddd.property.model.ReferenceSetProperty
 
@@ -17,6 +19,7 @@ import dddrive.ddd.property.model.ReferenceSetProperty
  * - EnumSetProperty<E> → Set<String> of enum IDs
  * - ReferenceSetProperty<A> → Set<Any> of aggregate IDs
  * - PartListProperty<A, P> → List<Map<String, Any?>> (recursive)
+ * - PartMapProperty<A, P> → Map<String, Map<String, Any?>> (recursive, key is map key)
  */
 fun EntityWithProperties.toMap(): Map<String, Any?> {
 	val result = mutableMapOf<String, Any?>()
@@ -25,6 +28,12 @@ fun EntityWithProperties.toMap(): Map<String, Any?> {
 		when (property) {
 			is PartListProperty<*, *> -> {
 				result[property.name] = property.map { part -> (part as EntityWithProperties).toMap() }
+			}
+
+			is PartMapProperty<*, *> -> {
+				result[property.name] = property.entries.associate { (key, part) ->
+					key to (part as EntityWithProperties).toMap()
+				}
 			}
 
 			is EnumSetProperty<*> -> {
@@ -74,19 +83,33 @@ fun EntityWithProperties.fromMap(map: Map<String, Any?>) {
 }
 
 /**
- * Pass 1: Recursively creates all parts from the map. Only handles PartListProperty - creates parts
- * with their IDs but doesn't set any values.
+ * Pass 1: Recursively creates all parts from the map. Handles PartListProperty and PartMapProperty -
+ * creates parts with their IDs but doesn't set any values.
  */
+@Suppress("UNCHECKED_CAST")
 private fun EntityWithProperties.createPartsFromMap(map: Map<String, Any?>) {
 	for (property in properties) {
-		if (property is PartListProperty<*, *>) {
-			property.clear()
-			val partMaps = map[property.name] as? List<Map<String, Any?>> ?: continue
-			for (partMap in partMaps) {
-				val partId = partMap["id"] as? Int
-				val part = property.add(partId)
-				// Recursively create nested parts
-				(part as EntityWithProperties).createPartsFromMap(partMap)
+		when (property) {
+			is PartListProperty<*, *> -> {
+				property.clear()
+				val partMaps = map[property.name] as? List<Map<String, Any?>> ?: continue
+				for (partMap in partMaps) {
+					val partId = partMap["id"] as? Int
+					val part = property.add(partId)
+					// Recursively create nested parts
+					(part as EntityWithProperties).createPartsFromMap(partMap)
+				}
+			}
+
+			is PartMapProperty<*, *> -> {
+				property.clear()
+				val partMaps = map[property.name] as? Map<String, Map<String, Any?>> ?: continue
+				for ((key, partMap) in partMaps) {
+					val partId = partMap["id"] as? Int
+					val part = property.add(key, partId)
+					// Recursively create nested parts
+					(part as EntityWithProperties).createPartsFromMap(partMap)
+				}
 			}
 		}
 	}
@@ -106,14 +129,22 @@ private fun EntityWithProperties.setValuesFromMap(map: Map<String, Any?>) {
 				partMaps.forEachIndexed { idx, partMap -> (property[idx] as EntityWithProperties).setValuesFromMap(partMap) }
 			}
 
+			is PartMapProperty<*, *> -> {
+				// Recurse into parts to set their values
+				val partMaps = map[property.name] as? Map<String, Map<String, Any?>> ?: continue
+				for ((key, partMap) in partMaps) {
+					(property[key] as EntityWithProperties).setValuesFromMap(partMap)
+				}
+			}
+
 			is EnumSetProperty<*> -> {
 				property.clear()
 				val enumItems = map[property.name] as? Set<*> ?: continue
 				for (item in enumItems) {
 					if (item != null) {
 						@Suppress("UNCHECKED_CAST")
-						(property as EnumSetProperty<dddrive.ddd.enums.model.Enumerated>).add(
-							item as dddrive.ddd.enums.model.Enumerated,
+						(property as EnumSetProperty<Enumerated>).add(
+							item as Enumerated,
 						)
 					}
 				}

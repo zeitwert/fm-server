@@ -3,6 +3,7 @@ package dddrive.domain.household.model
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.property.model.EnumSetProperty
 import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.ReferenceSetProperty
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
@@ -19,6 +20,8 @@ interface ObjHousehold : Obj {
 	var responsibleUser: ObjUser?
 
 	val memberList: PartListProperty<ObjHousehold, ObjHouseholdPartMember>
+
+	val membersByRole: PartMapProperty<ObjHousehold, ObjHouseholdPartMember>
 
 	var mainMemberId: Int?
 

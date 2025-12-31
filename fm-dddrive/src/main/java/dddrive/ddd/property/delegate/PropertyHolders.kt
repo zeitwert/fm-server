@@ -9,9 +9,11 @@ import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumSetProperty
 import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.ReferenceSetProperty
 import dddrive.ddd.property.model.impl.EnumSetPropertyImpl
 import dddrive.ddd.property.model.impl.PartListPropertyImpl
+import dddrive.ddd.property.model.impl.PartMapPropertyImpl
 import dddrive.ddd.property.model.impl.ReferenceSetPropertyImpl
 
 /**
@@ -66,6 +68,24 @@ inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.par
 			getProperty(name, Any::class) as PartListProperty<A, P>
 		}
 		val property: PartListProperty<A, P> = PartListPropertyImpl(this, name, P::class.java)
+		addProperty(property)
+		return property
+	}
+
+/**
+ * Creates a PartMapProperty.
+ *
+ * Usage: `val attributeMap: PartMapProperty<ObjHousehold, ObjHouseholdPartMember> = partMapProperty()`
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.partMapProperty(
+	name: String,
+): PartMapProperty<A, P> =
+	synchronized(this) {
+		if (hasProperty(name)) {
+			getProperty(name, Any::class) as PartMapProperty<A, P>
+		}
+		val property: PartMapProperty<A, P> = PartMapPropertyImpl(this, name, P::class.java)
 		addProperty(property)
 		return property
 	}

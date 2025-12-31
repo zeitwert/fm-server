@@ -3,6 +3,7 @@ package dddrive.test
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjBase
 import dddrive.ddd.core.model.AggregateSPI
+import dddrive.ddd.path.getValueByPath
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
 import dddrive.domain.household.model.ObjHousehold
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNotSame
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -715,6 +717,234 @@ class HouseholdMemTest {
 		collector.assertEventCount(2)
 		collector.assertEvent(0, "remove", ".memberList[0]", null, p3.id)
 		collector.assertEvent(1, "remove", ".memberList[0]", null, p4.id)
+	}
+
+	// Members by Role Tests
+
+	@Test
+	fun testMembersByRoleCRUD() {
+		val hh = hhRepo.create()
+
+		// Initially no members assigned to roles
+		assertEquals(0, hh.membersByRole.size, "no roles assigned initially")
+		assertTrue(hh.membersByRole.isEmpty(), "membersByRole is empty")
+		assertFalse(hh.membersByRole.containsKey("husband"), "husband role not assigned")
+
+		// Assign husband role
+		val husband = hh.membersByRole.add("husband")
+		husband.salutation = CodeSalutation.MR
+		husband.name = "Martin"
+		assertEquals(1, hh.membersByRole.size, "one role assigned")
+		assertFalse(hh.membersByRole.isEmpty(), "membersByRole not empty")
+		assertTrue(hh.membersByRole.containsKey("husband"), "husband role exists")
+		assertEquals(husband, hh.membersByRole["husband"], "can retrieve husband by role")
+
+		// Assign wife role
+		val wife = hh.membersByRole.add("wife")
+		wife.salutation = CodeSalutation.MRS
+		wife.name = "Elena"
+		assertEquals(2, hh.membersByRole.size, "two roles assigned")
+		assertTrue(hh.membersByRole.containsKey("wife"), "wife role exists")
+		assertEquals(wife, hh.membersByRole["wife"], "can retrieve wife by role")
+
+		// roleOf returns the role for the member
+		assertEquals("husband", hh.membersByRole.keyOf(husband), "husband has correct role")
+		assertEquals("wife", hh.membersByRole.keyOf(wife), "wife has correct role")
+
+		// Check member presence
+		assertTrue(hh.membersByRole.contains(husband), "household contains husband")
+		assertTrue(hh.membersByRole.containsValue(husband), "containsValue finds husband")
+		assertTrue(hh.membersByRole.contains(wife), "household contains wife")
+
+		// Access all roles and members
+		assertTrue(hh.membersByRole.keys.contains("husband"), "roles include husband")
+		assertTrue(hh.membersByRole.keys.contains("wife"), "roles include wife")
+		assertTrue(hh.membersByRole.values.contains(husband), "members include husband")
+		assertTrue(hh.membersByRole.values.contains(wife), "members include wife")
+
+		// Remove husband role
+		hh.membersByRole.remove("husband")
+		assertEquals(1, hh.membersByRole.size, "one role remaining")
+		assertFalse(hh.membersByRole.containsKey("husband"), "husband role removed")
+		assertTrue(hh.membersByRole.containsKey("wife"), "wife role still exists")
+
+		// Remove wife by member reference
+		hh.membersByRole.remove(wife)
+		assertEquals(0, hh.membersByRole.size, "no roles remaining")
+		assertTrue(hh.membersByRole.isEmpty(), "membersByRole is empty again")
+
+		// Add advisory roles and test clear
+		hh.membersByRole.add("councillor")
+		hh.membersByRole.add("advisor")
+		assertEquals(2, hh.membersByRole.size, "advisory roles assigned")
+
+		hh.membersByRole.clear()
+		assertEquals(0, hh.membersByRole.size, "all roles cleared")
+		assertTrue(hh.membersByRole.isEmpty(), "membersByRole empty after clear")
+	}
+
+	@Test
+	fun testMembersByRoleRejectsDuplicateRole() {
+		val hh = hhRepo.create()
+
+		hh.membersByRole.add("husband")
+
+		// Cannot assign same role twice
+		assertThrows(IllegalArgumentException::class.java) {
+			hh.membersByRole.add("husband")
+		}
+	}
+
+	@Test
+	fun testMembersByRoleRejectsUnknownRole() {
+		val hh = hhRepo.create()
+
+		// Accessing unassigned role throws
+		assertThrows(IllegalArgumentException::class.java) {
+			hh.membersByRole["guardian"]
+		}
+
+		// Removing unassigned role throws
+		assertThrows(IllegalArgumentException::class.java) {
+			hh.membersByRole.remove("guardian")
+		}
+	}
+
+	@Test
+	fun testMembersByRolePathAccessGet() {
+		val hh = hhRepo.create()
+
+		val husband = hh.membersByRole.add("husband")
+		husband.name = "Martin"
+		husband.salutation = CodeSalutation.MR
+
+		// Access member property by path with bracket syntax
+		val name: String? = hh.getValueByPath("membersByRole[\"husband\"].name")
+		assertEquals("Martin", name, "husband name via bracket path")
+
+		// Access member property by path with dot syntax
+		val salutationId: String? = hh.getValueByPath("membersByRole.husband.salutationId")
+		assertEquals("mr", salutationId, "husband salutation via dot path")
+	}
+
+	@Test
+	fun testMembersByRolePathAccessRejectsUnknownRole() {
+		val hh = hhRepo.create()
+
+		// Accessing unassigned role via path throws
+		assertThrows(IllegalArgumentException::class.java) {
+			hh.getValueByPath<String>("membersByRole[\"guardian\"].name")
+		}
+	}
+
+	@Test
+	fun testMembersByRolePathAccessSetExisting() {
+		val hh = hhRepo.create()
+
+		val wife = hh.membersByRole.add("wife")
+
+		// Update member property by path
+		hh.setValueByPath("membersByRole[\"wife\"].name", "Elena")
+		assertEquals("Elena", wife.name, "wife name updated via path")
+
+		hh.setValueByPath("membersByRole.wife.salutationId", "mrs")
+		assertEquals(CodeSalutation.MRS, wife.salutation, "wife salutation updated via path")
+	}
+
+	@Test
+	fun testMembersByRolePathAccessAutoCreates() {
+		val hh = hhRepo.create()
+
+		assertEquals(0, hh.membersByRole.size, "no roles before")
+
+		// Setting property via path auto-creates the role
+		hh.setValueByPath("membersByRole[\"councillor\"].name", "Hans")
+
+		assertEquals(1, hh.membersByRole.size, "councillor role created")
+		assertTrue(hh.membersByRole.containsKey("councillor"), "councillor role exists")
+		assertEquals("Hans", hh.membersByRole["councillor"].name, "councillor name set")
+	}
+
+	@Test
+	fun testMembersByRoleEvents() {
+		val (hh, collector) = createHouseholdWithCollector()
+
+		// Adding member to role fires add event
+		val husband = hh.membersByRole.add("husband")
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".membersByRole[\"husband\"]", husband.id, null)
+
+		collector.clear()
+
+		// Adding wife
+		val wife = hh.membersByRole.add("wife")
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".membersByRole[\"wife\"]", wife.id, null)
+
+		collector.clear()
+
+		// Updating member property fires event with full path
+		husband.name = "Martin"
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "add", ".membersByRole[\"husband\"].name", "Martin", null)
+
+		collector.clear()
+
+		// Removing member from role fires remove event
+		hh.membersByRole.remove("husband")
+		collector.assertEventCount(1)
+		collector.assertEvent(0, "remove", ".membersByRole[\"husband\"]", null, husband.id)
+
+		collector.clear()
+
+		// Clear fires remove events for each role
+		val advisor = hh.membersByRole.add("advisor")
+		collector.clear()
+		hh.membersByRole.clear()
+		collector.assertEventCount(2)
+		collector.assertEvent(0, "remove", ".membersByRole[\"wife\"]", null, wife.id)
+		collector.assertEvent(1, "remove", ".membersByRole[\"advisor\"]", null, advisor.id)
+	}
+
+	@Test
+	fun testMembersByRolePersistence() {
+		// Create household with members in roles
+		val hh1 = hhRepo.create()
+		hh1.name = "Smith Family"
+
+		val husband = hh1.membersByRole.add("husband")
+		husband.salutation = CodeSalutation.MR
+		husband.name = "John"
+		val husbandId = husband.id
+
+		val wife = hh1.membersByRole.add("wife")
+		wife.salutation = CodeSalutation.MRS
+		wife.name = "Jane"
+		val wifeId = wife.id
+
+		hhRepo.store(hh1)
+		val hhId = hh1.id
+
+		// Load and verify persistence
+		val hh2 = hhRepo.get(hhId)
+		assertNotNull(hh2)
+		assertNotSame(hh1, hh2, "different instance after load")
+		assertEquals("Smith Family", hh2.name, "household name persisted")
+
+		// Verify members by role persisted correctly
+		assertEquals(2, hh2.membersByRole.size, "both roles persisted")
+		assertTrue(hh2.membersByRole.containsKey("husband"), "husband role persisted")
+		assertTrue(hh2.membersByRole.containsKey("wife"), "wife role persisted")
+
+		val husbandLoaded = hh2.membersByRole["husband"]
+		assertEquals(husbandId, husbandLoaded.id, "husband id matches")
+		assertEquals(CodeSalutation.MR, husbandLoaded.salutation, "husband salutation persisted")
+		assertEquals("John", husbandLoaded.name, "husband name persisted")
+
+		val wifeLoaded = hh2.membersByRole["wife"]
+		assertEquals(wifeId, wifeLoaded.id, "wife id matches")
+		assertEquals(CodeSalutation.MRS, wifeLoaded.salutation, "wife salutation persisted")
+		assertEquals("Jane", wifeLoaded.name, "wife name persisted")
 	}
 
 }

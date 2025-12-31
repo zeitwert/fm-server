@@ -6,6 +6,7 @@ import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.enumSetProperty
 import dddrive.ddd.property.delegate.partListProperty
+import dddrive.ddd.property.delegate.partMapProperty
 import dddrive.ddd.property.delegate.partReferenceIdProperty
 import dddrive.ddd.property.delegate.partReferenceProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
@@ -34,13 +35,14 @@ class ObjHouseholdImpl(
 	override val labelSet = enumSetProperty<CodeLabel>("labelSet")
 	override val userSet = referenceSetProperty<ObjUser>("userSet")
 	override val memberList = partListProperty<ObjHousehold, ObjHouseholdPartMember>("memberList")
+	override val membersByRole = partMapProperty<ObjHousehold, ObjHouseholdPartMember>("membersByRole")
 	override var literalId by baseProperty<String>("literalId")
 
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
 	): Part<*> {
-		if (property === memberList) {
+		if (property === memberList || property === membersByRole) {
 			return directory.getPartRepository(ObjHouseholdPartMember::class.java).create(this, property, partId)
 		}
 		return super.doAddPart(property, partId)

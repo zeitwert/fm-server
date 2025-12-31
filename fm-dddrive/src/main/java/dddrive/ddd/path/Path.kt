@@ -4,6 +4,7 @@ import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Entity
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.base.IdProperty
 
@@ -30,6 +31,9 @@ private fun Part<*>.buildPath(basePath: String): String {
 			index = parentProperty.size
 		}
 		return "$basePath[$index]"
+	} else if (parentProperty is PartMapProperty<*, *>) {
+		val key = parentProperty.keyOf(this as Part<*>)
+		return "$basePath[\"$key\"]"
 	} else {
 		return "$basePath.$id"
 	}

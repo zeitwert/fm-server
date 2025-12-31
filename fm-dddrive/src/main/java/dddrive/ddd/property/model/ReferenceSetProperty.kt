@@ -5,7 +5,7 @@ import dddrive.ddd.core.model.Aggregate
 /**
  * Property that holds a set of aggregate references (by ID).
  *
- * Implements [Set] interface so it can be used directly as a set in consumer code.
+ * Implements [Collection] interface so it can be used directly as a set in consumer code.
  * Note: The set contains IDs, not the aggregates themselves.
  */
 interface ReferenceSetProperty<A : Aggregate> :

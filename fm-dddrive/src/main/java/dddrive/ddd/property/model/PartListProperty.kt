@@ -6,7 +6,7 @@ import dddrive.ddd.core.model.Part
 /**
  * Property that holds a list of parts.
  *
- * Implements [Iterable] and [Collection] interfaces so it can be used directly as a list in consumer code.
+ * Implements [Collection] interface so it can be used directly as a list in consumer code.
  */
 interface PartListProperty<A : Aggregate, P : Part<A>> :
 	Property<P>,

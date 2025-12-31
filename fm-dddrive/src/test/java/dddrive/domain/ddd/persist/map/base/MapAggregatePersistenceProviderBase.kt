@@ -4,8 +4,8 @@ import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.base.AggregatePersistenceProviderBase
 import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.domain.ddd.persist.map.fromMap
-import dddrive.domain.ddd.persist.map.toMap
+import dddrive.domain.ddd.persist.map.impl.fromMap
+import dddrive.domain.ddd.persist.map.impl.toMap
 import java.util.concurrent.atomic.AtomicReference
 
 /**

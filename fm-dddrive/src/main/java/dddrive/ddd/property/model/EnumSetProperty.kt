@@ -5,7 +5,7 @@ import dddrive.ddd.enums.model.Enumerated
 /**
  * Property that holds a set of enum values.
  *
- * Implements [Iterable] and [Collection] interfaces so it can be used directly as a set in consumer code.
+ * Implements [Collection] interface so it can be used directly as a set in consumer code.
  */
 interface EnumSetProperty<E : Enumerated> :
 	Property<E>,

@@ -4,6 +4,7 @@ import dddrive.ddd.core.model.Entity
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
+import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.Property
 import dddrive.ddd.property.model.ReferenceProperty
 
@@ -14,12 +15,15 @@ import dddrive.ddd.property.model.ReferenceProperty
  * - Simple property: "name"
  * - Nested via reference: "reference.name"
  * - List access: "children[0].name" or "children.0.name"
+ * - Map access: "attributes["key"].name" or "attributes.key.name"
  * - Reference ID: "referenceId" (for both get/set) or "reference.id" (get only)
  *
  * Null handling:
  * - Getter: Returns null when navigating through null reference (?. semantics)
  * - Setter: Crashes when navigating through null reference
  * - List expansion: Setter auto-expands lists to accommodate index
+ * - Map auto-create: Setter creates new part for missing map key
+ * - Map missing key: Getter throws error for missing map key
  *
  * @param path The property path (e.g., "children[0].status.id")
  * @return The resolved property, or null if the path navigates through null reference
@@ -108,6 +112,24 @@ private fun <T : Any> Entity<*>.resolveProperty(
 					return null
 				}
 				entity = property.get(idx) as EntityWithProperties
+				i += 2
+				continue
+			}
+
+			// Map key access - string key for PartMapProperty
+			property is PartMapProperty<*, *> && nextSegment != null -> {
+				// Strip quotes if present (e.g., "key" -> key)
+				val key = nextSegment.removeSurrounding("\"")
+				if (forSetter) {
+					// Auto-create part if key doesn't exist
+					if (!property.containsKey(key)) {
+						property.add(key, null)
+					}
+				} else {
+					// Getter: error if key not found
+					require(property.containsKey(key)) { "Map key '$key' not found in $segment" }
+				}
+				entity = property.get(key) as EntityWithProperties
 				i += 2
 				continue
 			}
