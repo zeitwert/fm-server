@@ -9,7 +9,7 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole
-import io.zeitwert.fm.server.config.security.ZeitwertUserDetails
+import io.zeitwert.fm.server.config.security.AppUserDetails
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginResponse
 import io.zeitwert.fm.server.session.adapter.rest.dto.SessionInfoResponse
@@ -25,7 +25,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -73,7 +72,7 @@ class SessionController {
 			val authentication = this.authenticationManager.authenticate(authToken)
 
 			// Get user details and set tenantId/accountId
-			val userDetails = authentication.principal as ZeitwertUserDetails
+			val userDetails = authentication.principal as AppUserDetails
 			val tenantId = loginRequest.tenantId
 			require(tenantId != null) { "tenantId not null" }
 			userDetails.tenantId = tenantId
@@ -96,13 +95,7 @@ class SessionController {
 			val session = request.getSession(true)
 			session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
 
-			val role =
-				userDetails
-					.authorities
-					.stream()
-					.map<String> { item: GrantedAuthority? -> item!!.authority }
-					.toList()
-					.get(0)
+			val role = userDetails.authorities.map { it.authority }[0]
 			val loginResponse = LoginResponse(
 				sessionId = session.id,
 				id = userDetails.userId,

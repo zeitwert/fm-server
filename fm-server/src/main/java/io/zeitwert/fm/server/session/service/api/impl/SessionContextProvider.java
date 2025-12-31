@@ -5,7 +5,7 @@ import io.zeitwert.fm.app.model.impl.SessionContextFMImpl;
 import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
-import io.zeitwert.fm.server.config.security.ZeitwertUserDetails;
+import io.zeitwert.fm.server.config.security.AppUserDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,10 +26,10 @@ public class SessionContextProvider {
 			throw new IllegalStateException("Anonymous user is not allowed to access this resource");
 		}
 
-		ZeitwertUserDetails userDetails = (ZeitwertUserDetails) auth.getPrincipal();
+		AppUserDetails userDetails = (AppUserDetails) auth.getPrincipal();
 		ObjUser user = userRepository.get(userDetails.getUserId());
-		Integer tenantId = userDetails.getTenantId();
-		Integer accountId = userDetails.getAccountId();
+		Integer tenantId = userDetails.tenantId;
+		Integer accountId = userDetails.accountId;
 
 		return SessionContextFMImpl.builder()
 				.tenantId(tenantId)
