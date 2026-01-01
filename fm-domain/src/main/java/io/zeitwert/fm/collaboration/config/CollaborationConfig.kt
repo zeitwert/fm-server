@@ -22,17 +22,11 @@ class CollaborationConfig :
 	override fun afterPropertiesSet() {
 		try {
 			startConfig()
-			initCodeAggregateType(aggregateTypeEnum)
-
-			// Trigger enum initialization
-			CodeNoteType.Enumeration
+			aggregateTypeEnum.addItem(CodeAggregateType("obj_note", "Note"))
+			CodeNoteType.entries
 		} finally {
 			endConfig()
 		}
-	}
-
-	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType("obj_note", "Note"))
 	}
 
 }

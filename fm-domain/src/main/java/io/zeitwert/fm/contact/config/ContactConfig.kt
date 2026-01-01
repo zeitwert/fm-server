@@ -34,14 +34,12 @@ class ContactConfig :
 			startConfig()
 			initCodeAggregateType(aggregateTypeEnum)
 			initCodePartListType(partListTypeEnum)
-
-			// Trigger enum initialization
-			CodeContactRole.Enumeration
-			CodeSalutation.Enumeration
-			CodeTitle.Enumeration
-			CodeGender.Enumeration
-			CodeAddressType.Enumeration
-			CodeAddressChannel.Enumeration
+			CodeContactRole.entries
+			CodeSalutation.entries
+			CodeTitle.entries
+			CodeGender.entries
+			CodeAddressType.entries
+			CodeAddressChannel.entries
 		} finally {
 			endConfig()
 		}

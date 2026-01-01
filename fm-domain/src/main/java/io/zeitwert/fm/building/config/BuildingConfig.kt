@@ -27,24 +27,19 @@ class BuildingConfig :
 	override fun afterPropertiesSet() {
 		try {
 			startConfig()
-			initCodeAggregateType(aggregateTypeEnum)
-
-			CodeBuildingType.Enumeration
-			CodeBuildingSubType.Enumeration
-			CodeHistoricPreservation.Enumeration
-			CodeBuildingRatingStatus.Enumeration
-			CodeBuildingMaintenanceStrategy.Enumeration
-			CodeBuildingPart.Enumeration
-			CodeBuildingPartCatalog.Enumeration
-			CodeBuildingPriceIndex.Enumeration
-			CodeBuildingElementDescription.Enumeration
+			aggregateTypeEnum.addItem(CodeAggregateType("obj_building", "Building"))
+			CodeBuildingType.entries
+			CodeBuildingSubType.entries
+			CodeHistoricPreservation.entries
+			CodeBuildingRatingStatus.entries
+			CodeBuildingMaintenanceStrategy.entries
+			CodeBuildingPart.entries
+			CodeBuildingPartCatalog.entries
+			CodeBuildingPriceIndex.entries
+			CodeBuildingElementDescription.entries
 		} finally {
 			endConfig()
 		}
-	}
-
-	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType("obj_building", "Building"))
 	}
 
 }

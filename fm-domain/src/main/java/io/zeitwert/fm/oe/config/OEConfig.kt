@@ -29,12 +29,10 @@ class OEConfig :
 		try {
 			startConfig()
 			initCodeAggregateType(aggregateTypeEnum)
-
-			// Trigger enum initialization
-			CodeUserRole.Enumeration
-			CodeTenantType.Enumeration
-			CodeCountry.Enumeration
-			CodeLocale.Enumeration
+			CodeUserRole.entries
+			CodeTenantType.entries
+			CodeCountry.entries
+			CodeLocale.entries
 		} finally {
 			endConfig()
 		}
@@ -44,4 +42,5 @@ class OEConfig :
 		e.addItem(CodeAggregateType("obj_user", "User"))
 		e.addItem(CodeAggregateType("obj_tenant", "Tenant"))
 	}
+
 }

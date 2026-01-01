@@ -1,10 +1,10 @@
 package io.zeitwert.ddd.part.model.base
 
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.fm.test.model.ObjTest
-import io.zeitwert.fm.test.model.ObjTestPartNode
-import io.zeitwert.fm.test.model.ObjTestRepository
-import io.zeitwert.fm.test.model.enums.CodeTestType.Enumeration.getTestType
+import io.zeitwert.domain.test.model.ObjTest
+import io.zeitwert.domain.test.model.ObjTestPartNode
+import io.zeitwert.domain.test.model.ObjTestRepository
+import io.zeitwert.domain.test.model.enums.CodeTestType.Enumeration.getTestType
 import io.zeitwert.test.TestApplication
 import org.jooq.JSON
 import org.junit.jupiter.api.Assertions

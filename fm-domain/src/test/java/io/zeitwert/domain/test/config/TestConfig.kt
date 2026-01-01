@@ -1,4 +1,4 @@
-package io.zeitwert.fm.task.config
+package io.zeitwert.domain.test.config
 
 import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
@@ -6,19 +6,33 @@ import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import dddrive.ddd.core.model.enums.CodeAggregateType
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.core.model.enums.CodePartListType
+import dddrive.ddd.core.model.enums.CodePartListTypeEnum
 import dddrive.ddd.enums.model.base.EnumConfigBase
-import io.zeitwert.fm.task.model.enums.CodeTaskPriority
+import io.zeitwert.domain.test.model.enums.CodeTestType
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-@Component("taskConfig")
-class TaskConfig :
+/**
+ * Test configuration that registers test aggregate types in the NEW dddrive framework.
+ *
+ * This follows the dfp-app-server pattern where domain-specific config classes
+ * register their aggregate types via InitializingBean.afterPropertiesSet().
+ *
+ * The test aggregate types are also defined in R__1099_test_config.sql for database
+ * reference data (intentional duplication for the dual-framework approach).
+ */
+@Component("testConfig")
+class TestConfig :
 	EnumConfigBase(),
 	InitializingBean {
 
 	@Autowired
 	lateinit var aggregateTypeEnum: CodeAggregateTypeEnum
+
+	@Autowired
+	lateinit var partListTypeEnum: CodePartListTypeEnum
 
 	@Autowired
 	lateinit var caseDefEnum: CodeCaseDefEnum
@@ -29,25 +43,36 @@ class TaskConfig :
 	override fun afterPropertiesSet() {
 		try {
 			startConfig()
-			aggregateTypeEnum.addItem(CodeAggregateType("doc_task", "Task"))
+			initCodeAggregateType(aggregateTypeEnum)
+			initCodePartListType(partListTypeEnum)
 			initCodeCaseDef(caseDefEnum)
 			initCodeCaseStage(caseStageEnum)
-			CodeTaskPriority.entries
+			CodeTestType.entries
 		} finally {
 			endConfig()
 		}
 	}
 
+	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
+		e.addItem(CodeAggregateType("obj_test", "Test Object"))
+		e.addItem(CodeAggregateType("doc_test", "Test Order"))
+	}
+
+	private fun initCodePartListType(e: CodePartListTypeEnum) {
+		e.addItem(CodePartListType("test.nodeList", "TestNode List"))
+		e.addItem(CodePartListType("test.testTypeSet", "Test Type Set"))
+	}
+
 	private fun initCodeCaseDef(e: CodeCaseDefEnum) {
-		e.addItem(CodeCaseDef("task", "Task Standard Process", "doc_task"))
+		e.addItem(CodeCaseDef("test", "Test Process", "doc_test"))
 	}
 
 	private fun initCodeCaseStage(e: CodeCaseStageEnum) {
 		e.addItem(
 			CodeCaseStage(
-				id = "task.new",
+				id = "test.new",
 				defaultName = "New",
-				caseDefId = "task",
+				caseDefId = "test",
 				caseStageTypeId = "initial",
 				name = "New",
 				description = null,
@@ -59,9 +84,9 @@ class TaskConfig :
 		)
 		e.addItem(
 			CodeCaseStage(
-				id = "task.open",
+				id = "test.open",
 				defaultName = "Assigned",
-				caseDefId = "task",
+				caseDefId = "test",
 				caseStageTypeId = "intermediate",
 				name = "Assigned",
 				description = null,
@@ -73,9 +98,9 @@ class TaskConfig :
 		)
 		e.addItem(
 			CodeCaseStage(
-				id = "task.progress",
+				id = "test.progress",
 				defaultName = "In Progress",
-				caseDefId = "task",
+				caseDefId = "test",
 				caseStageTypeId = "intermediate",
 				name = "In Progress",
 				description = null,
@@ -87,9 +112,9 @@ class TaskConfig :
 		)
 		e.addItem(
 			CodeCaseStage(
-				id = "task.done",
+				id = "test.done",
 				defaultName = "Done",
-				caseDefId = "task",
+				caseDefId = "test",
 				caseStageTypeId = "terminal",
 				name = "Done",
 				description = null,

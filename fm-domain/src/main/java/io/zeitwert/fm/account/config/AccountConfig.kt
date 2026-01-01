@@ -24,18 +24,13 @@ class AccountConfig :
 	override fun afterPropertiesSet() {
 		try {
 			startConfig()
-			initCodeAggregateType(aggregateTypeEnum)
-
-			// Trigger enum initialization
-			CodeAccountType.Enumeration
-			CodeClientSegment.Enumeration
-			CodeCurrency.Enumeration
+			aggregateTypeEnum.addItem(CodeAggregateType("obj_account", "Account"))
+			CodeAccountType.entries
+			CodeClientSegment.entries
+			CodeCurrency.entries
 		} finally {
 			endConfig()
 		}
 	}
 
-	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType("obj_account", "Account"))
-	}
 }

@@ -22,18 +22,14 @@ class DMSConfig :
 	override fun afterPropertiesSet() {
 		try {
 			startConfig()
-			initCodeAggregateType(aggregateTypeEnum)
-
-			CodeContentKind.Enumeration
-			CodeContentType.Enumeration
-			CodeDocumentCategory.Enumeration
-			CodeDocumentKind.Enumeration
+			aggregateTypeEnum.addItem(CodeAggregateType("obj_document", "Document"))
+			CodeContentKind.entries
+			CodeContentType.entries
+			CodeDocumentCategory.entries
+			CodeDocumentKind.entries
 		} finally {
 			endConfig()
 		}
 	}
 
-	private fun initCodeAggregateType(e: CodeAggregateTypeEnum) {
-		e.addItem(CodeAggregateType("obj_document", "Document"))
-	}
 }
