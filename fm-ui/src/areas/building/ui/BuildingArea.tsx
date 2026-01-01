@@ -159,5 +159,4 @@ const initBuilding = (building: Building, account: Enumerated | undefined) => {
 	building.setField("account", account?.id);
 	building.setField("country", { id: "ch", name: "Switzerland" });
 	building.setField("currency", { id: "chf", name: "CHF" });
-	building.setField("ratingStatus", { id: "open", name: "Open" });
 }

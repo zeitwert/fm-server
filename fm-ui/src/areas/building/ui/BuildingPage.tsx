@@ -73,7 +73,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 
 	@computed
 	get hasActiveRating(): boolean {
-		return ["open", "review"].indexOf(this.buildingStore.building?.ratingStatus?.id || "") >= 0;
+		return ["open", "review"].indexOf(this.buildingStore.building?.currentRating?.ratingStatus?.id || "") >= 0;
 	}
 
 	constructor(props: RouteComponentProps) {
@@ -106,8 +106,8 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 
 		const isFullWidth = [LEFT_TABS.RATING, LEFT_TABS.EVALUATION].indexOf(this.activeLeftTabId) >= 0;
-		const allowEditStaticData = !building.ratingStatus || building.ratingStatus.id !== "review";
-		const allowEditRating = !!building.ratingStatus && building.ratingStatus.id === "open";
+		const allowEditStaticData = !building.currentRating?.ratingStatus || building.currentRating.ratingStatus.id !== "review";
+		const allowEditRating = !!building.currentRating?.ratingStatus && building.currentRating.ratingStatus.id === "open";
 		const isActive = !building.meta?.closedAt;
 		const allowEdit = (allowEditStaticData && [LEFT_TABS.MAIN, LEFT_TABS.LOCATION].indexOf(this.activeLeftTabId) >= 0) || (allowEditRating && [LEFT_TABS.RATING].indexOf(this.activeLeftTabId) >= 0);
 
@@ -279,7 +279,7 @@ class BuildingPage extends React.Component<RouteComponentProps> {
 		}
 		const isNew = this.buildingStore.isNew;
 		const isInTrx = this.buildingStore.isInTrx;
-		const ratingStatus = building?.ratingStatus;
+		const ratingStatus = building?.currentRating?.ratingStatus;
 		if ([LEFT_TABS.MAIN].indexOf(this.activeLeftTabId) >= 0 && !isInTrx) {
 			return (
 				<>

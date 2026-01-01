@@ -3,6 +3,7 @@ export * from "./account/model/AccountStore";
 export * from "./account/service/AccountApi";
 export * from "./building/model/BuildingElementModel";
 export * from "./building/model/BuildingModel";
+export * from "./building/model/BuildingRatingModel";
 export * from "./building/model/BuildingStore";
 export * from "./building/service/BuildingApi";
 export * from "./collaboration/model/NoteModel";

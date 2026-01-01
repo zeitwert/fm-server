@@ -108,7 +108,7 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 									<p className="slds-popover_panel__label slds-truncate">Gebäudekategorie</p>
 								</dt>
 								<dd>
-									<p className="slds-truncate">{building.partCatalog?.name}</p>
+									<p className="slds-truncate">{building.currentRating?.partCatalog?.name}</p>
 								</dd>
 							</dl>
 						</div>
@@ -118,7 +118,7 @@ export default class BuildingPreview extends React.Component<BuildingPreviewProp
 									<p className="slds-popover_panel__label slds-truncate">Unterhaltsplan</p>
 								</dt>
 								<dd>
-									<p className="slds-truncate">{building.maintenanceStrategy?.name}</p>
+									<p className="slds-truncate">{building.currentRating?.maintenanceStrategy?.name}</p>
 								</dd>
 							</dl>
 						</div>

@@ -4,7 +4,6 @@ import { AxiosResponse } from "axios";
 import Logger from "loglevel";
 import { reaction, transaction } from "mobx";
 import { addDisposer, flow, getRoot, Instance, SnapshotIn, types } from "mobx-state-tree";
-import { faTypes } from "../../../app/common";
 import { Config } from "../../../app/common/config/Config";
 import { API } from "../../../app/common/service/Api";
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
@@ -12,7 +11,8 @@ import { ObjModel } from "../../../ddd/obj/model/ObjModel";
 import { AccountModel } from "../../account/model/AccountModel";
 import { Contact, ContactModel } from "../../contact/model/ContactModel";
 import { DocumentModel } from "../../dms/model/DocumentModel";
-import { BuildingElement, BuildingElementModel } from "./BuildingElementModel";
+import { BuildingElement } from "./BuildingElementModel";
+import { BuildingRatingModel } from "./BuildingRatingModel";
 import { BuildingStore } from "./BuildingStore";
 import { GeocodeRequest, GeocodeResponse } from "./GeocodeDto";
 
@@ -57,24 +57,10 @@ const MstBuildingModel = ObjModel.named("Building")
 		thirdPartyValue: types.maybe(types.number),
 		thirdPartyValueYear: types.maybe(types.number),
 		//
-		partCatalog: types.maybe(types.frozen<Enumerated>()),
-		maintenanceStrategy: types.maybe(types.frozen<Enumerated>()),
-		//
-		ratingId: types.maybe(types.string),
-		ratingSeqNr: types.maybe(types.number),
-		ratingStatus: types.maybe(types.frozen<Enumerated>()),
-		ratingDate: types.maybe(faTypes.date),
-		ratingUser: types.maybe(types.frozen<Enumerated>()),
-		//
-		elements: types.optional(types.array(BuildingElementModel), []),
+		currentRating: types.maybe(BuildingRatingModel),
 		//
 		contacts: types.optional(types.array(types.reference(ContactModel)), []),
 	})
-	.actions((self) => ({
-		addElement(element: BuildingElement) {
-			self.elements.push(element);
-		},
-	}))
 	.actions((self) => {
 		const superSetField = self.setField;
 		async function setAccount(id: string) {
@@ -82,10 +68,8 @@ const MstBuildingModel = ObjModel.named("Building")
 			return superSetField("account", id);
 		}
 		async function setPartCatalog(catalog: Enumerated | undefined) {
-			superSetField("partCatalog", catalog);
-			self.elements.clear();
-			if (!!catalog) {
-				await self.calcOnServer();
+			if (self.currentRating) {
+				await self.currentRating.setPartCatalog(catalog);
 			}
 		}
 		async function addContact(id: string) {
@@ -109,9 +93,6 @@ const MstBuildingModel = ObjModel.named("Building")
 				case "account": {
 					return setAccount(value);
 				}
-				case "partCatalog": {
-					return setPartCatalog(value);
-				}
 				default: {
 					return superSetField(field, value);
 				}
@@ -127,10 +108,10 @@ const MstBuildingModel = ObjModel.named("Building")
 	})
 	.views((self) => ({
 		getElementById(id: string): BuildingElement | undefined {
-			return !id ? undefined : self.elements.filter(e => e.id === id)?.[0];
+			return !id ? undefined : self.currentRating?.elements.filter(e => e.id === id)?.[0];
 		},
 		get weightSum() {
-			return self.elements.reduce((sum, element) => { return sum + (element.weight || 0.0); }, 0.0);
+			return self.currentRating?.elements.reduce((sum, element) => { return sum + (element.weight || 0.0); }, 0.0) ?? 0;
 		}
 	}))
 	.views((self) => ({
@@ -148,9 +129,6 @@ const MstBuildingModel = ObjModel.named("Building")
 				return Config.getRestUrl("building", "buildings/" + self.id + "/location");
 			}
 			return "/missing.jpg";
-		},
-		get weightSum() {
-			return self.elements.reduce((sum, element) => { return sum + (element.weight || 0.0); }, 0.0);
 		}
 	}))
 	.views((self) => ({
@@ -214,7 +192,9 @@ const MstBuildingModel = ObjModel.named("Building")
 		},
 		moveRatingStatus(ratingStatusId: string) {
 			(getRoot(self) as AggregateStore).startTrx();
-			self.setField("ratingStatus", { id: ratingStatusId, name: "" });
+			if (self.currentRating) {
+				self.currentRating.setField("ratingStatus", { id: ratingStatusId, name: "" });
+			}
 			return (getRoot(self) as AggregateStore).store();
 		}
 	}))
@@ -240,12 +220,12 @@ const MstBuildingModel = ObjModel.named("Building")
 				));
 				addDisposer(self, reaction(
 					() => {
-						return { input: self.ratingDate, inTrx: (getRoot(self) as AggregateStore).isInTrx };
+						return { input: self.currentRating?.ratingDate, inTrx: (getRoot(self) as AggregateStore).isInTrx };
 					},
 					() => {
-						if ((getRoot(self) as AggregateStore).isInTrx) {
-							const year = self.ratingDate?.getFullYear();
-							self.elements.forEach(e => {
+						if ((getRoot(self) as AggregateStore).isInTrx && self.currentRating) {
+							const year = self.currentRating.ratingDate?.getFullYear();
+							self.currentRating.elements.forEach(e => {
 								e.setField("conditionYear", year);
 							});
 						}

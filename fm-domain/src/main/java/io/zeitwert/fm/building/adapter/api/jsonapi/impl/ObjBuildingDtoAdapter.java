@@ -7,7 +7,7 @@ import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
 import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
-import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartElementRatingDto;
+import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartRatingDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
@@ -20,7 +20,6 @@ import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase;
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter;
-import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.fm.oe.model.enums.CodeCountry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -133,21 +132,19 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			}
 
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
-				obj.addRating(sessionContext.getUser(), sessionContext.getCurrentTime());
-			} else if (dto.getRatingSeqNr() != null && dto.getRatingSeqNr() >= 0) {
+				obj.addRating(this.sessionContext.getUser(), this.sessionContext.getCurrentTime());
+			} else if (dto.getCurrentRating() != null && dto.getCurrentRating().getSeqNr() != null && dto.getCurrentRating().getSeqNr() >= 0) {
+				ObjBuildingPartRatingDto ratingDto = dto.getCurrentRating();
 				final ObjBuildingPartRating rating =
 					obj.getCurrentRating() == null ||
-					dto.getRatingSeqNr() >= obj.getRatingList().size()
-						? obj.addRating(sessionContext.getUser(), sessionContext.getCurrentTime())
+					ratingDto.getSeqNr() >= obj.getRatingList().size()
+						? obj.addRating(this.sessionContext.getUser(), this.sessionContext.getCurrentTime())
 						: obj.getCurrentRating();
-				rating.setPartCatalog(dto.getPartCatalog() == null ? null : CodeBuildingPartCatalog.getPartCatalog(dto.getPartCatalog().getId()));
-				rating.setMaintenanceStrategy(dto.getMaintenanceStrategy() == null ? null : CodeBuildingMaintenanceStrategy.Enumeration.getMaintenanceStrategy(dto.getMaintenanceStrategy().getId()));
-				rating.setRatingStatus(dto.getRatingStatus() == null ? null : CodeBuildingRatingStatus.getRatingStatus(dto.getRatingStatus().getId()));
-				rating.setRatingDate(dto.getRatingDate());
-				Integer userId = dto.getRatingUser() == null ? null : Integer.parseInt(dto.getRatingUser().getId());
+				ratingDto.toPart(rating);
+				Integer userId = ratingDto.getRatingUser() == null ? null : Integer.parseInt(ratingDto.getRatingUser().getId());
 				rating.setRatingUser(userId == null ? null : this.getUser(userId));
-				if (dto.getElements() != null) {
-					dto.getElements().forEach(elementDto -> {
+				if (ratingDto.getElements() != null) {
+					ratingDto.getElements().forEach(elementDto -> {
 						ObjBuildingPartElementRating element = null;
 						if (elementDto.getPartId() == null) {
 //							TODO assertThis(elementDto.getBuildingPart() != null, "valid dto buildingPart");
@@ -213,19 +210,8 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 				.thirdPartyValueYear(obj.getThirdPartyValueYear())
 				.contactIds(obj.getContactSet().stream().map(id -> (Integer) id).collect(java.util.stream.Collectors.toSet()));
 		if (obj.getCurrentRating() != null) {
-			ObjBuildingPartRating rating = obj.getCurrentRating();
-//			boolean isNew = ((PartSPI<?>) rating).getPersistenceStatus() == PartPersistenceStatus.CREATED;
-			dtoBuilder
-//					.ratingId(isNew ? ObjPartDtoBase.ServerNewIdPrefix + rating.getId() : String.valueOf(rating.getId()))
-					.ratingId(String.valueOf(rating.getId()))
-					.ratingSeqNr((int) obj.getRatingList().stream().filter(this::isActiveRating).count() - 1)
-					.partCatalog(EnumeratedDto.of(rating.getPartCatalog()))
-					.maintenanceStrategy(EnumeratedDto.of(rating.getMaintenanceStrategy()))
-					.ratingStatus(EnumeratedDto.of(rating.getRatingStatus()))
-					.ratingDate(rating.getRatingDate())
-					.ratingUser(userDtoAdapter.asEnumerated(rating.getRatingUser()))
-					.elements(obj.getCurrentRating().getElementList().stream()
-							.map(ObjBuildingPartElementRatingDto::fromPart).toList());
+			int seqNr = (int) obj.getRatingList().stream().filter(this::isActiveRating).count() - 1;
+			dtoBuilder.currentRating(ObjBuildingPartRatingDto.fromPart(obj.getCurrentRating(), this.userDtoAdapter, seqNr));
 		}
 		return dtoBuilder.build();
 	}

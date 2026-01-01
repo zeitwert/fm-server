@@ -39,8 +39,9 @@ const MstBuildingElementModel = ObjPartModel.named("BuildingElement")
 	})
 	.views((self) => ({
 		get isValidBuilding(): boolean {
-			const building = getParent(self, 2) as any; // getParentOfType results in recursive type error
-			return !!building.insuredValue && !!building.insuredValueYear && !!building.partCatalog && !!building.maintenanceStrategy;
+			const rating = getParent(self, 2) as any; // parent: elements array -> currentRating
+			const building = getParent(self, 3) as any; // parent: elements array -> currentRating -> building
+			return !!building.insuredValue && !!building.insuredValueYear && !!rating.partCatalog && !!rating.maintenanceStrategy;
 		},
 	}))
 	.views((self) => ({

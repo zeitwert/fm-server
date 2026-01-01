@@ -2,7 +2,7 @@
 import { DateField, EnumeratedField, IdField, IntField, NumberField, TextField } from "@zeitwert/ui-forms";
 import { API, BuildingModel, BuildingModelType, Config, Enumerated } from "@zeitwert/ui-model";
 import { isAlive } from "mobx-state-tree";
-import { Form, FormDefinition, Query, RepeatingForm } from "mstform";
+import { Form, FormDefinition, Query, RepeatingForm, SubForm } from "mstform";
 import BuildingElementFormDef from "./BuildingElementFormDef";
 
 const loadBuildingSubTypes = async (q?: Query): Promise<Enumerated[]> => {
@@ -59,14 +59,14 @@ export const BuildingFormDef: FormDefinition<BuildingModelType> = {
 		}
 	}),
 	//
-	partCatalog: new EnumeratedField({ required: true, source: "building/codeBuildingPartCatalog" }),
-	maintenanceStrategy: new EnumeratedField({ required: true, source: "building/codeBuildingMaintenanceStrategy" }),
-	//
-	ratingStatus: new EnumeratedField({ source: "building/codeBuildingRatingStatus" }),
-	ratingDate: new DateField({ required: true }),
-	ratingUser: new EnumeratedField({ source: "oe/objUser" }),
-	//
-	elements: new RepeatingForm(BuildingElementFormDef)
+	currentRating: new SubForm({
+		partCatalog: new EnumeratedField({ required: true, source: "building/codeBuildingPartCatalog" }),
+		maintenanceStrategy: new EnumeratedField({ required: true, source: "building/codeBuildingMaintenanceStrategy" }),
+		ratingStatus: new EnumeratedField({ source: "building/codeBuildingRatingStatus" }),
+		ratingDate: new DateField({ required: true }),
+		ratingUser: new EnumeratedField({ source: "oe/objUser" }),
+		elements: new RepeatingForm(BuildingElementFormDef)
+	})
 };
 
 const BuildingForm = new Form(BuildingModel, BuildingFormDef);

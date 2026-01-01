@@ -55,9 +55,7 @@ class HouseholdMemTest {
 
 	class PropertyChangeCollector : PropertyChangeListener {
 
-		private val _events: MutableList<PropertyChangeEvent> = mutableListOf()
-
-		val events: List<PropertyChangeEvent> get() = _events.toList()
+		private val events: MutableList<PropertyChangeEvent> = mutableListOf()
 
 		override fun propertyChange(
 			op: String,
@@ -66,12 +64,15 @@ class HouseholdMemTest {
 			oldValue: Any?,
 			isInCalc: Boolean,
 		) {
-			println("{ op: $op, path: $path, value: $value, oldValue: $oldValue, isInCalc: $isInCalc }")
-			_events.add(PropertyChangeEvent(op, path, value, oldValue, isInCalc))
+			events.add(PropertyChangeEvent(op, path, value, oldValue, isInCalc))
 		}
 
 		fun clear() {
-			_events.clear()
+			events.clear()
+		}
+
+		fun assertEventCount(expected: Int) {
+			assertEquals(expected, events.size, "event count")
 		}
 
 		fun assertEvent(
@@ -82,17 +83,13 @@ class HouseholdMemTest {
 			oldValue: Any?,
 			isInCalc: Boolean = false,
 		) {
-			assertTrue(index < _events.size) { "Expected event at index $index but only ${_events.size} events" }
-			val event = _events[index]
+			assertTrue(index < events.size) { "Expected event at index $index but only ${events.size} events" }
+			val event = events[index]
 			assertEquals(op, event.op, "event[$index].op")
 			assertTrue(event.path.endsWith(pathSuffix)) { "event[$index].path expected to end with '$pathSuffix' but was '${event.path}'" }
 			assertEquals(value, event.value, "event[$index].value")
 			assertEquals(oldValue, event.oldValue, "event[$index].oldValue")
 			assertEquals(isInCalc, event.isInCalc, "event[$index].isInCalc")
-		}
-
-		fun assertEventCount(expected: Int) {
-			assertEquals(expected, _events.size, "event count")
 		}
 
 		fun assertLastEvent(
@@ -102,7 +99,7 @@ class HouseholdMemTest {
 			oldValue: Any?,
 			isInCalc: Boolean = false,
 		) {
-			assertEvent(_events.size - 1, op, pathSuffix, value, oldValue, isInCalc)
+			assertEvent(events.size - 1, op, pathSuffix, value, oldValue, isInCalc)
 		}
 	}
 

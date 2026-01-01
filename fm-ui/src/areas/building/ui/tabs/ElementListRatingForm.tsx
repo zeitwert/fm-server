@@ -1,13 +1,11 @@
 
 import { FieldGroup, FieldRow, Input, SldsSubForm, Static } from "@zeitwert/ui-forms";
-import { Building, BuildingElement, BuildingModelType } from "@zeitwert/ui-model";
+import { Building, BuildingElement } from "@zeitwert/ui-model";
 import { observer } from "mobx-react";
-import { FormDefinition } from "mstform";
-import { RepeatingFormAccess } from "mstform/dist/src/accessor";
 import React from "react";
 import { ElementAccessor } from "./ElementRatingForm";
 
-export type ElementsAccessor = RepeatingFormAccess<FormDefinition<BuildingModelType>, "elements", BuildingModelType>;
+export type ElementsAccessor = any;
 
 export interface ElementListRatingFormProps {
 	building: Building;
@@ -22,10 +20,11 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 
 	render() {
 		const { building, elementForms, showAllElements, currentElementId, onSelectElement } = this.props;
-		const rowCount = showAllElements ? building.elements.length : building.elements.filter(e => e.weight).length;
+		const elements = building.currentRating?.elements ?? [];
+		const rowCount = showAllElements ? elements.length : elements.filter(e => e.weight).length;
 		let rows: JSX.Element[] = [];
 		let row = 0, index = 0;
-		for (const element of building.elements) {
+		for (const element of elements) {
 			const elementForm = elementForms.index(index);
 			if (showAllElements || !!element.weight) {
 				rows.push(
@@ -45,7 +44,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 			}
 			index++;
 		}
-		const isWeight100 = building.weightSum === 100;
+		const isWeight100 = (building.currentRating?.weightSum ?? 0) === 100;
 		return (
 			<div className="slds-form" role="list">
 				<div className="fm-rating-body">
@@ -55,7 +54,7 @@ export default class ElementListRatingForm extends React.Component<ElementListRa
 					<FieldGroup>
 						<FieldRow>
 							<Static value="" size={2} readOnlyLook="plain" />
-							<Static value={building.weightSum.toString()} size={1} align="right" readOnlyLook="plain" error={!isWeight100 ? "muss 100% sein" : ""} />
+							<Static value={(building.currentRating?.weightSum ?? 0).toString()} size={1} align="right" readOnlyLook="plain" error={!isWeight100 ? "muss 100% sein" : ""} />
 							<Static value="" size={9} readOnlyLook="plain" />
 						</FieldRow>
 					</FieldGroup>
