@@ -380,6 +380,21 @@ public class ClassUtils {
 		return type == boolean.class || isInt || isDecimal;
 	}
 
+	/**
+	 * Check if a class is a GenericResourceBase subclass (uses dynamic attributes).
+	 * Uses class name comparison to avoid class loader issues.
+	 */
+	public static boolean isGenericResource(Class<?> clazz) {
+		Class<?> current = clazz;
+		while (current != null && current != Object.class) {
+			if ("io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericResourceBase".equals(current.getName())) {
+				return true;
+			}
+			current = current.getSuperclass();
+		}
+		return false;
+	}
+
 	public static Type getElementType(Type genericType) {
 		Class<?> rawtype = getRawType(genericType);
 		if (Iterable.class.isAssignableFrom(rawtype) && genericType instanceof Class) {
