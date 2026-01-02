@@ -1,0 +1,180 @@
+package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base
+
+import dddrive.app.doc.model.Doc
+import dddrive.app.obj.model.Obj
+import dddrive.app.obj.model.ObjRepository
+import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.core.model.AggregateRepository
+import dddrive.ddd.core.model.RepositoryDirectory
+import io.crnk.core.engine.document.ErrorData
+import io.crnk.core.engine.document.ErrorDataBuilder
+import io.crnk.core.engine.http.HttpStatus
+import io.crnk.core.exception.BadRequestException
+import io.crnk.core.exception.ResourceNotFoundException
+import io.crnk.core.queryspec.QuerySpec
+import io.crnk.core.repository.ResourceRepositoryBase
+import io.crnk.core.resource.list.DefaultResourceList
+import io.crnk.core.resource.list.ResourceList
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase
+import io.zeitwert.dddrive.model.FMAggregateRepository
+import io.zeitwert.fm.app.model.SessionContextFM
+import io.zeitwert.fm.oe.model.ObjUser
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ * Generic API repository for aggregates using the GenericAggregateDtoAdapter.
+ *
+ * This replaces the need for custom repository implementations per aggregate type.
+ * Each aggregate type only needs a concrete subclass that provides the adapter configuration.
+ *
+ * @param A The aggregate type
+ * @param R The resource type (must extend GenericResourceBase)
+ * @param resourceClass The class of the resource for crnk
+ * @param adapter The configured adapter for this aggregate type
+ * @param directory The repository directory
+ * @param repository The aggregate repository
+ * @param sessionCtx The session context
+ */
+abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggregateDto<A>>(
+	resourceClass: Class<R>,
+	private val directory: RepositoryDirectory,
+	private val repository: AggregateRepository<A>,
+	private val adapter: GenericAggregateDtoAdapterBase<A, R>,
+	private val sessionCtx: SessionContextFM,
+) : ResourceRepositoryBase<R, String>(resourceClass) {
+
+	@Transactional
+	override fun <S : R> create(dto: S): S {
+		if (dto["id"] != null) {
+			throw BadRequestException("Cannot specify id on creation (${dto["id"]})")
+		}
+		try {
+			val aggregate = repository.create()
+			toAggregate(dto, aggregate)
+			repository.store(aggregate)
+			@Suppress("UNCHECKED_CAST")
+			return adapter.fromAggregate(aggregate) as S
+		} catch (x: Exception) {
+			throw RuntimeException("crashed on create", x)
+		}
+	}
+
+	@Transactional
+	override fun findOne(
+		dtoId: String,
+		querySpec: QuerySpec,
+	): R {
+		try {
+			val id = dtoId.toInt()
+			val aggregate = repository.load(id)
+			sessionCtx.addAggregate(id, aggregate)
+			return adapter.fromAggregate(aggregate)
+		} catch (x: Exception) {
+			x.printStackTrace()
+			throw ResourceNotFoundException("${repository.aggregateType.defaultName}[$dtoId]")
+		}
+	}
+
+	@Transactional
+	override fun findAll(querySpec: QuerySpec): ResourceList<R> {
+		try {
+			val itemList = (repository as FMAggregateRepository).find(null)
+			val list = DefaultResourceList<R>()
+			list.addAll(
+				itemList.map { id ->
+					adapter.fromAggregate(repository.get(id))
+				},
+			)
+			return list
+		} catch (x: Exception) {
+			throw RuntimeException("crashed on findAll", x)
+		}
+	}
+
+	@Transactional
+	@Suppress("UNCHECKED_CAST")
+	override fun <S : R> save(dto: S): S {
+		val id = dto.id?.toInt() ?: throw BadRequestException("Can only save existing object (missing id)")
+		val dtoMeta = dto.meta ?: throw BadRequestException("Missing meta information")
+		val clientVersion = GenericDtoHelper.getClientVersion(dtoMeta)
+		if (clientVersion == null && !dtoMeta.hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
+			throw BadRequestException("Missing meta information (version or operation)")
+		}
+
+		val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
+
+		try {
+			if (dtoMeta.hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
+				toAggregate(dto, aggregate)
+				return adapter.fromAggregate(repository.get(id)) as S
+			} else if (clientVersion == aggregate.meta.version) {
+				toAggregate(dto, aggregate)
+				repository.store(aggregate)
+				return adapter.fromAggregate(repository.get(id)) as S
+			}
+		} catch (x: Exception) {
+			throw RuntimeException("crashed on save", x)
+		}
+
+		val modifiedByUserId = if (aggregate is Obj) {
+			(aggregate as Obj).meta.modifiedByUserId
+		} else {
+			(aggregate as Doc).meta.modifiedByUserId
+		}
+		val userName = if (modifiedByUserId != null) {
+			val userRepository = directory.getRepository(ObjUser::class.java)
+			userRepository.get(modifiedByUserId).caption
+		} else {
+			"unknown"
+		}
+		val errorData: ErrorData =
+			ErrorDataBuilder()
+				.setStatus("${HttpStatus.CONFLICT_409}")
+				.setTitle("Fehler beim Speichern")
+				.setDetail(
+					"Sie versuchten eine veraltete Version zu speichern." +
+						" Benutzer $userName hat das Objekt in der Zwischenzeit bereits geändert." +
+						" Ihre Änderungen wurden verworfen und die aktuelle Version geladen.",
+				).build()
+		throw BadRequestException(HttpStatus.CONFLICT_409, errorData)
+	}
+
+	@Transactional
+	@Suppress("UNCHECKED_CAST")
+	override fun delete(dtoId: String) {
+		try {
+			if (repository !is ObjRepository<*>) {
+				throw BadRequestException("Can only delete an Object")
+			}
+			val id = dtoId.toInt()
+			val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
+			(repository as ObjRepository<Obj>).close(aggregate as Obj)
+			repository.store(aggregate)
+		} catch (x: Exception) {
+			throw RuntimeException("crashed on delete", x)
+		}
+	}
+
+	/**
+	 * Apply DTO values to aggregate.
+	 * Override this method to add custom behavior (e.g., disabling calculations during update).
+	 */
+	protected open fun toAggregate(
+		dto: R,
+		aggregate: A,
+	) {
+		if (aggregate is Obj) {
+			try {
+				aggregate.meta.disableCalc()
+				adapter.toAggregate(dto, aggregate)
+			} finally {
+				aggregate.meta.enableCalc()
+				aggregate.meta.calcAll()
+			}
+		} else {
+			adapter.toAggregate(dto, aggregate)
+		}
+	}
+
+}

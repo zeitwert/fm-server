@@ -27,15 +27,15 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 		this.accountDtoAdapter = accountDtoAdapter;
 	}
 
-	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
+	public ObjAccountDto getAccountDto(String id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
 	}
 
 	@Override
 	public void toAggregate(DocTaskDto dto, DocTask doc) {
 		Integer relatedToId = dto.getRelatedTo() != null ? Integer.parseInt(dto.getRelatedTo().getId()) : null;
 		super.toAggregate(dto, doc);
-		doc.setAccountId(dto.getAccountId());
+		doc.setAccountId(Integer.parseInt(dto.getAccountId()));
 		doc.setRelatedToId(relatedToId);
 		doc.setSubject(dto.getSubject());
 		doc.setContent(dto.getContent());
@@ -53,7 +53,7 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
-				.accountId((Integer) doc.getAccountId())
+				.accountId(doc.getAccountId() != null ? doc.getAccountId().toString() : null)
 				.relatedTo(this.asEnumerated(doc.getRelatedTo()))
 				.subject(doc.getSubject())
 				.content(doc.getContent())

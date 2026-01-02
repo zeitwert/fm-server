@@ -1,14 +1,8 @@
 package io.zeitwert.fm.task.adapter.api.jsonapi.dto;
 
-import java.time.OffsetDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.crnk.core.resource.annotations.JsonApiField;
-import io.crnk.core.resource.annotations.JsonApiRelation;
-import io.crnk.core.resource.annotations.JsonApiRelationId;
-import io.crnk.core.resource.annotations.JsonApiResource;
-import io.crnk.core.resource.annotations.SerializeType;
+import io.crnk.core.resource.annotations.*;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
@@ -20,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.OffsetDateTime;
+
 @Data()
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -28,25 +24,31 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "task", resourcePath = "collaboration/tasks")
 public class DocTaskDto extends DocDtoBase<DocTask> {
 
+	private EnumeratedDto relatedTo;
+	@JsonApiRelationId
+	private String accountId;
+	@JsonIgnore
+	private ObjAccountDto accountDto;
+	private String subject;
+	private String content;
+	private Boolean isPrivate;
+	private EnumeratedDto priority;
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private OffsetDateTime dueAt;
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private OffsetDateTime remindAt;
+
 	@Override
 	public DocTaskDtoAdapter getAdapter() {
 		return (DocTaskDtoAdapter) super.getAdapter();
 	}
-
-	private EnumeratedDto relatedTo;
 
 	@JsonApiField(readable = false, filterable = true)
 	public Integer getRelatedToId() {
 		return null;
 	}
 
-	@JsonApiRelationId
-	private Integer accountId;
-
-	@JsonIgnore
-	private ObjAccountDto accountDto;
-
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 		this.accountDto = null;
 	}
@@ -63,15 +65,5 @@ public class DocTaskDto extends DocDtoBase<DocTask> {
 		this.accountDto = account;
 		this.accountId = account != null ? account.getId() : null;
 	}
-
-	private String subject;
-	private String content;
-	private Boolean isPrivate;
-
-	private EnumeratedDto priority;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private OffsetDateTime dueAt;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private OffsetDateTime remindAt;
 
 }

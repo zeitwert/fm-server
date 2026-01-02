@@ -33,8 +33,8 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		this.accountDtoAdapter = accountDtoAdapter;
 	}
 
-	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
+	public ObjAccountDto getAccountDto(String id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 			obj.getMeta().disableCalc();
 			super.toAggregate(dto, obj);
 
-			obj.setAccountId(dto.getAccountId());
+			obj.setAccountId(Integer.parseInt(dto.getAccountId()));
 			obj.setContactRole(dto.getContactRole() == null ? null : CodeContactRole.getContactRole(dto.getContactRole().getId()));
 			obj.setSalutation(dto.getSalutation() == null ? null : CodeSalutation.getSalutation(dto.getSalutation().getId()));
 			obj.setTitle(dto.getTitle() == null ? null : CodeTitle.getTitle(dto.getTitle().getId()));
@@ -94,7 +94,7 @@ public class ObjContactDtoAdapter extends ObjDtoAdapterBase<ObjContact, ObjConta
 		this.fromAggregate(dtoBuilder, obj);
 		// @formatter:off
 		return dtoBuilder
-			.accountId((Integer)obj.getAccountId())
+			.accountId(obj.getAccountId() != null ? obj.getAccountId().toString() : null)
 			.contactRole(EnumeratedDto.of(obj.getContactRole()))
 			.salutation(EnumeratedDto.of(obj.getSalutation()))
 			.title(EnumeratedDto.of(obj.getTitle()))

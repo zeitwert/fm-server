@@ -1,6 +1,7 @@
 package dddrive.ddd.property.model
 
 import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.enums.model.Enumeration
 
 /**
  * Property that holds a set of enum values.
@@ -10,6 +11,8 @@ import dddrive.ddd.enums.model.Enumerated
 interface EnumSetProperty<E : Enumerated> :
 	Property<E>,
 	Collection<E> {
+
+	val enumeration: Enumeration<E>
 
 	fun has(item: E): Boolean
 

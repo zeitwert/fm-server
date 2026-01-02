@@ -4,6 +4,5 @@ import dddrive.ddd.core.model.Aggregate;
 
 public interface AggregateDto<A extends Aggregate> {
 
-	AggregateDtoAdapter<?, ?> getAdapter();
-
 }
+

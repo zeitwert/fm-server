@@ -5,6 +5,7 @@ import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjBase
 import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.ddd.model.EntityWithExtn
 
@@ -32,6 +33,17 @@ abstract class FMObjBase(
 		super.doAfterCreate(sessionContext)
 		if (this is ItemWithAccount) {
 			this.accountId = sessionContext.accountId!!
+		}
+	}
+
+	override fun doBeforeSet(
+		property: Property<*>,
+		value: Any?,
+		oldValue: Any?,
+	) {
+		super.doAfterSet(property, value, oldValue)
+		if (property.name == "accountId") {
+			require(value == null || value is Int) { "accountId is Int" }
 		}
 	}
 

@@ -1,6 +1,5 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
@@ -17,14 +16,14 @@ import java.time.OffsetDateTime;
 @Component("objUserDtoAdapter")
 public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, ObjUserDto> {
 
-	private static EnumeratedDto AGGREGATE_TYPE;
+//	private static EnumeratedDto AGGREGATE_TYPE;
 
 	private ObjDocumentRepository documentRepository = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
-	protected ObjUserDtoAdapter() {
-		AGGREGATE_TYPE = EnumeratedDto.of(CodeAggregateTypeEnum.getAggregateType("obj_user"));
-	}
+//	protected ObjUserDtoAdapter() {
+//		AGGREGATE_TYPE = EnumeratedDto.of(CodeAggregateTypeEnum.getAggregateType("obj_user"));
+//	}
 
 	@Autowired
 	void setDocumentRepository(ObjDocumentRepository documentRepository) {

@@ -75,8 +75,8 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 		this.documentDtoAdapter = documentDtoAdapter;
 	}
 
-	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
+	public ObjAccountDto getAccountDto(String id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
 	}
 
 	public ObjContactDto getContactDto(Integer id) {
@@ -94,7 +94,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			super.toAggregate(dto, obj);
 
 			// @formatter:off
-			obj.setAccountId(dto.getAccountId());
+			obj.setAccountId(Integer.parseInt(dto.getAccountId()));
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
 			obj.setBuildingNr(dto.getBuildingNr());
@@ -177,7 +177,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		dtoBuilder
-				.accountId((Integer) obj.getAccountId())
+				.accountId(obj.getAccountId() != null ? obj.getAccountId().toString() : null)
 				.buildingType(EnumeratedDto.of(obj.getBuildingType()))
 				.buildingSubType(EnumeratedDto.of(obj.getBuildingSubType()))
 				.name(obj.getName())

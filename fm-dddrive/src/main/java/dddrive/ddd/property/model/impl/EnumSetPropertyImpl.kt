@@ -10,7 +10,7 @@ import dddrive.ddd.property.model.base.PropertyBase
 class EnumSetPropertyImpl<E : Enumerated>(
 	entity: EntityWithProperties,
 	name: String,
-	private val enumeration: Enumeration<E>,
+	override val enumeration: Enumeration<E>,
 ) : PropertyBase<E>(entity, name),
 	EnumSetProperty<E> {
 

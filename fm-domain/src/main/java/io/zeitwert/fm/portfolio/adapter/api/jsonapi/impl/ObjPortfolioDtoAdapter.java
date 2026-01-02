@@ -38,8 +38,8 @@ public class ObjPortfolioDtoAdapter
 		this.accountDtoAdapter = accountDtoAdapter;
 	}
 
-	public ObjAccountDto getAccountDto(Integer id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(id)) : null;
+	public ObjAccountDto getAccountDto(String id) {
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ObjPortfolioDtoAdapter
 			pf.setName(dto.getName());
 			pf.setDescription(dto.getDescription());
 			pf.setPortfolioNr(dto.getPortfolioNr());
-			pf.setAccountId(dto.getAccountId());
+			pf.setAccountId(Integer.parseInt(dto.getAccountId()));
 			// TODO prevent calculation during insert
 			if (dto.getIncludes() != null) {
 				pf.getIncludeSet().clear();
@@ -86,7 +86,7 @@ public class ObjPortfolioDtoAdapter
 			.name(pf.getName())
 			.description(pf.getDescription())
 			.portfolioNr(pf.getPortfolioNr())
-			.accountId((Integer)pf.getAccountId())
+			.accountId(pf.getAccountId() != null ? pf.getAccountId().toString() : null)
 			.includes(pf.getIncludeSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
 			.excludes(pf.getExcludeSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
 			.buildings(pf.getBuildingSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))

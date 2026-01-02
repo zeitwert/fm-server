@@ -1,6 +1,5 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
@@ -17,14 +16,14 @@ import org.springframework.stereotype.Component;
 @DependsOn("oeConfig")
 public class ObjTenantDtoAdapter extends ObjDtoAdapterBase<ObjTenant, ObjTenantDto> {
 
-	private static EnumeratedDto AGGREGATE_TYPE;
+//	private static EnumeratedDto AGGREGATE_TYPE;
 
 	private ObjDocumentRepository documentRepository = null;
 	private ObjDocumentDtoAdapter documentDtoAdapter = null;
 
-	protected ObjTenantDtoAdapter() {
-		AGGREGATE_TYPE = EnumeratedDto.of(CodeAggregateTypeEnum.getAggregateType("obj_tenant"));
-	}
+//	protected ObjTenantDtoAdapter() {
+//		AGGREGATE_TYPE = EnumeratedDto.of(CodeAggregateTypeEnum.getAggregateType("obj_tenant"));
+//	}
 
 	@Autowired
 	void setDocumentRepository(ObjDocumentRepository documentRepository) {

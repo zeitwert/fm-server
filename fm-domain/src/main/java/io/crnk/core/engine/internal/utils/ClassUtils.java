@@ -1,20 +1,11 @@
 package io.crnk.core.engine.internal.utils;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import io.crnk.core.exception.ResourceException;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateDtoBase;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Provides reflection methods for parsing information about a class.
@@ -224,7 +215,7 @@ public class ClassUtils {
 	}
 
 	private static void getClassGetters(Class<?> currentClass, Map<String, Method> resultMap,
-			LinkedList<Method> results) {
+																			LinkedList<Method> results) {
 		if (currentClass == null || currentClass == Object.class) {
 			return;
 		}
@@ -236,7 +227,7 @@ public class ClassUtils {
 	}
 
 	private static void getDeclaredClassGetters(Class<?> currentClass, Map<String, Method> resultMap,
-			LinkedList<Method> results) {
+																							LinkedList<Method> results) {
 		for (Method method : currentClass.getDeclaredMethods()) {
 			if (!method.isSynthetic() && isGetter(method)) {
 				Method v = resultMap.get(method.getName());
@@ -303,7 +294,7 @@ public class ClassUtils {
 		try {
 			return clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+						 | NoSuchMethodException | SecurityException e) {
 			throw new ResourceException(String.format("couldn't create a new instance of %s", clazz), e);
 		}
 	}
@@ -349,13 +340,13 @@ public class ClassUtils {
 
 	/**
 	 * Given a type, this method resolves the corresponding raw type.
-	 *
+	 * <p>
 	 * This method works if {@code type} is of type {@link Class}, or
 	 * {@link ParameterizedType}. Its shortcoming is that it cannot resolve
 	 * {@link TypeVariable} and will always return {@code Object.class}, not
 	 * attempting to resolve the concrete type that the variable is to be
 	 * substituted with.
-	 *
+	 * <p>
 	 * Please use tools like
 	 * {@link io.crnk.core.engine.information.bean.BeanInformation} and
 	 * {@link io.crnk.core.engine.information.bean.BeanAttributeInformation}
@@ -386,8 +377,9 @@ public class ClassUtils {
 	 */
 	public static boolean isGenericResource(Class<?> clazz) {
 		Class<?> current = clazz;
+		String targetClassName = GenericAggregateDtoBase.class.getCanonicalName();
 		while (current != null && current != Object.class) {
-			if ("io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericResourceBase".equals(current.getName())) {
+			if (targetClassName.equals(current.getName())) {
 				return true;
 			}
 			current = current.getSuperclass();

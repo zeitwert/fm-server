@@ -1,10 +1,6 @@
 package io.zeitwert.fm.contact.adapter.api.jsonapi.dto;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -20,6 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Data()
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -28,21 +27,32 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "contact", resourcePath = "contact/contacts")
 public class ObjContactDto extends ObjDtoBase<ObjContact> {
 
+	@JsonApiRelationId
+	private String accountId;
+	@JsonIgnore
+	private ObjAccountDto accountDto;
+	private EnumeratedDto contactRole;
+	private EnumeratedDto salutation;
+	private EnumeratedDto title;
+	private String firstName;
+	private String lastName;
+	private String description;
+	private LocalDate birthDate;
+	private String phone;
+	private String mobile;
+	private String email;
+	private List<ObjContactPartAddressDto> mailAddresses;
+	private List<ObjContactPartAddressDto> electronicAddresses;
+
 	@Override
 	public ObjContactDtoAdapter getAdapter() {
 		return (ObjContactDtoAdapter) super.getAdapter();
 	}
 
-	@JsonApiRelationId
-	private Integer accountId;
-
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 		this.accountDto = null;
 	}
-
-	@JsonIgnore
-	private ObjAccountDto accountDto;
 
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	public ObjAccountDto getAccount() {
@@ -56,19 +66,5 @@ public class ObjContactDto extends ObjDtoBase<ObjContact> {
 		this.accountDto = account;
 		this.accountId = account != null ? account.getId() : null;
 	}
-
-	private EnumeratedDto contactRole;
-	private EnumeratedDto salutation;
-	private EnumeratedDto title;
-	private String firstName;
-	private String lastName;
-	private String description;
-	private LocalDate birthDate;
-	private String phone;
-	private String mobile;
-	private String email;
-
-	private List<ObjContactPartAddressDto> mailAddresses;
-	private List<ObjContactPartAddressDto> electronicAddresses;
 
 }

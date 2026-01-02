@@ -32,7 +32,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 
 	public static final String AddRatingOperation = "addRating";
 	@JsonApiRelationId
-	private Integer accountId;
+	private String accountId;
 	@JsonIgnore
 	private ObjAccountDto accountDto;
 	@JsonApiRelationId
@@ -79,7 +79,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 		return (ObjBuildingDtoAdapter) super.getAdapter();
 	}
 
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 		this.accountDto = null;
 	}

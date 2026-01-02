@@ -36,4 +36,5 @@ interface ObjAccount :
 	val mainContact: ObjContact?
 
 	val contactList: List<Any>
+
 }

@@ -1,9 +1,6 @@
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.dto;
 
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
@@ -19,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
+
 @Data()
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -27,18 +26,23 @@ import lombok.experimental.SuperBuilder;
 @JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
 public class ObjPortfolioDto extends ObjDtoBase<ObjPortfolio> {
 
+	@JsonApiRelationId
+	private String accountId;
+	@JsonIgnore
+	private ObjAccountDto accountDto;
+	private String name;
+	private String description;
+	private String portfolioNr;
+	private Set<EnumeratedDto> includes;
+	private Set<EnumeratedDto> excludes;
+	private Set<EnumeratedDto> buildings;
+
 	@Override
 	public ObjPortfolioDtoAdapter getAdapter() {
 		return (ObjPortfolioDtoAdapter) super.getAdapter();
 	}
 
-	@JsonApiRelationId
-	private Integer accountId;
-
-	@JsonIgnore
-	private ObjAccountDto accountDto;
-
-	public void setAccountId(Integer accountId) {
+	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 		this.accountDto = null;
 	}
@@ -55,12 +59,5 @@ public class ObjPortfolioDto extends ObjDtoBase<ObjPortfolio> {
 		this.accountDto = account;
 		this.accountId = account != null ? account.getId() : null;
 	}
-
-	private String name;
-	private String description;
-	private String portfolioNr;
-	private Set<EnumeratedDto> includes;
-	private Set<EnumeratedDto> excludes;
-	private Set<EnumeratedDto> buildings;
 
 }

@@ -93,7 +93,6 @@ class EnumController {
 	): ResponseEntity<List<EnumeratedDto>> {
 		try {
 			val enumeration = directory.getEnumeration(module, enumerationName)
-			println("enum($module, $enumerationName): ${enumeration.id}, ${enumeration.items}")
 			val items = enumeration.items.filter { !filter.contains(it.id) }.map { EnumeratedDto.of(it)!! }
 			return ResponseEntity.ok().body(items)
 		} catch (e: Exception) {

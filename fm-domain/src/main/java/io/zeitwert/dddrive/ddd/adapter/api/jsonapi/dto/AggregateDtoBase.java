@@ -1,12 +1,11 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import dddrive.ddd.core.model.Aggregate;
 import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
-import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,6 @@ public abstract class AggregateDtoBase<A extends Aggregate> implements Aggregate
 	// Read: for orderbooks, write: for updates
 	private EnumeratedDto owner;
 
-	@Override
 	public AggregateDtoAdapter<?, ?> getAdapter() {
 		return this.adapter;
 	}
