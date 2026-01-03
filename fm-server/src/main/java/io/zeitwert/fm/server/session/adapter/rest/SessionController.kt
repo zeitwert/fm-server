@@ -1,9 +1,9 @@
 package io.zeitwert.fm.server.session.adapter.rest
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto.Companion.of
+import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto.Companion.of
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
 import io.zeitwert.fm.oe.model.ObjTenantRepository
@@ -51,7 +51,7 @@ class SessionController {
 	lateinit var accountRepository: ObjAccountRepository
 
 	@Autowired
-	lateinit var requestCtx: SessionContextFM
+	lateinit var sessionContext: SessionContext
 
 	@Autowired
 	lateinit var tenantDtoAdapter: ObjTenantDtoAdapter
@@ -75,7 +75,7 @@ class SessionController {
 			val userDetails = authentication.principal as AppUserDetails
 			val tenantId = loginRequest.tenantId
 			require(tenantId != null) { "tenantId not null" }
-			userDetails.tenantId = tenantId
+			userDetails._tenantId = tenantId
 			userDetails.accountId = loginRequest.accountId
 
 			// Create authentication with updated user details
@@ -98,7 +98,7 @@ class SessionController {
 			val role = userDetails.authorities.map { it.authority }[0]
 			val loginResponse = LoginResponse(
 				sessionId = session.id,
-				id = userDetails.userId,
+				id = userDetails.userId as Int,
 				username = userDetails.username,
 				email = userDetails.username,
 				accountId = loginRequest.accountId,
@@ -117,12 +117,12 @@ class SessionController {
 	): Authentication = UsernamePasswordAuthenticationToken(email, password)
 
 	@get:GetMapping("/session")
-	val sessionContext: ResponseEntity<SessionInfoResponse?>
+	val sessionInfo: ResponseEntity<SessionInfoResponse>
 		get() {
-			val tenant = this.tenantRepository.get(this.requestCtx.getTenantId())
+			val tenant = this.tenantRepository.get(this.sessionContext.tenantId)
 			val account =
-				if (this.requestCtx.hasAccount()) this.accountRepository.get(this.requestCtx.getAccountId()) else null
-			val user = this.requestCtx.getUser() as ObjUser
+				if (this.sessionContext.hasAccount()) this.accountRepository.get(this.sessionContext.accountId!!) else null
+			val user = this.sessionContext.user as ObjUser
 			var defaultApp: String? = null
 			if (user.isAppAdmin) {
 				defaultApp = "appAdmin"
@@ -134,14 +134,14 @@ class SessionController {
 			val response = SessionInfoResponse(
 				applicationName = ApplicationInfo.getName(),
 				applicationVersion = ApplicationInfo.getVersion(),
-				user = this.userDtoAdapter.fromAggregate(this.requestCtx.getUser() as ObjUser?),
+				user = this.userDtoAdapter.fromAggregate(this.sessionContext.user as ObjUser?),
 				tenant = this.tenantDtoAdapter.fromAggregate(tenant),
 				account = this.accountDtoAdapter.fromAggregate(account),
-				locale = this.requestCtx.getLocale().id,
+				locale = this.sessionContext.locale.id,
 				applicationId = defaultApp,
 				availableApplications = emptyList(),
 			)
-			return ResponseEntity.ok<SessionInfoResponse?>(response)
+			return ResponseEntity.ok(response)
 		}
 
 	@PostMapping("/logout")

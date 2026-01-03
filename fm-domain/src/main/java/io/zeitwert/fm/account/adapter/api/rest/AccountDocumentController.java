@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountDocumentController {
 
 	@Autowired
-	SessionContext requestCtx;
+	SessionContext sessionContext;
 	@Autowired
 	private ObjAccountRepository accountRepository;
 	@Autowired

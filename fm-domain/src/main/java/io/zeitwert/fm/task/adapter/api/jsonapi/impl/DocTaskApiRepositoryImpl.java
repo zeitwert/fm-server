@@ -16,10 +16,10 @@ public class DocTaskApiRepositoryImpl
 
 	public DocTaskApiRepositoryImpl(
 			DocTaskRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			DocTaskDtoAdapter dtoAdapter) {
-		super(DocTaskDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(DocTaskDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

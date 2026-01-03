@@ -6,7 +6,6 @@ import dddrive.app.obj.model.ObjRepository
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.AggregateRepository
 import dddrive.ddd.core.model.RepositoryDirectory
-import io.crnk.core.engine.document.ErrorData
 import io.crnk.core.engine.document.ErrorDataBuilder
 import io.crnk.core.engine.http.HttpStatus
 import io.crnk.core.exception.BadRequestException
@@ -15,10 +14,10 @@ import io.crnk.core.queryspec.QuerySpec
 import io.crnk.core.repository.ResourceRepositoryBase
 import io.crnk.core.resource.list.DefaultResourceList
 import io.crnk.core.resource.list.ResourceList
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase
 import io.zeitwert.dddrive.model.FMAggregateRepository
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.model.ObjUser
 import org.springframework.transaction.annotation.Transactional
 
@@ -41,19 +40,19 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	private val directory: RepositoryDirectory,
 	private val repository: AggregateRepository<A>,
 	private val adapter: GenericAggregateDtoAdapterBase<A, R>,
-	private val sessionCtx: SessionContextFM,
+	private val sessionCtx: SessionContext,
 ) : ResourceRepositoryBase<R, String>(resourceClass) {
 
 	@Transactional
+	@Suppress("UNCHECKED_CAST")
 	override fun <S : R> create(dto: S): S {
-		if (dto["id"] != null) {
-			throw BadRequestException("Cannot specify id on creation (${dto["id"]})")
+		if (dto.id != null) {
+			throw BadRequestException("Cannot specify id on creation (${dto.id})")
 		}
 		try {
 			val aggregate = repository.create()
 			toAggregate(dto, aggregate)
 			repository.store(aggregate)
-			@Suppress("UNCHECKED_CAST")
 			return adapter.fromAggregate(aggregate) as S
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on create", x)
@@ -66,9 +65,8 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 		querySpec: QuerySpec,
 	): R {
 		try {
-			val id = dtoId.toInt()
-			val aggregate = repository.load(id)
-			sessionCtx.addAggregate(id, aggregate)
+			val aggregate = repository.load(repository.idFromString(dtoId)!!)
+			sessionCtx.addAggregate(aggregate.id, aggregate)
 			return adapter.fromAggregate(aggregate)
 		} catch (x: Exception) {
 			x.printStackTrace()
@@ -79,13 +77,9 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	@Transactional
 	override fun findAll(querySpec: QuerySpec): ResourceList<R> {
 		try {
-			val itemList = (repository as FMAggregateRepository).find(null)
+			val itemList = (repository as FMAggregateRepository).find(querySpec)
 			val list = DefaultResourceList<R>()
-			list.addAll(
-				itemList.map { id ->
-					adapter.fromAggregate(repository.get(id))
-				},
-			)
+			list.addAll(itemList.map { adapter.fromAggregate(repository.get(it)) })
 			return list
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on findAll", x)
@@ -95,21 +89,41 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	@Transactional
 	@Suppress("UNCHECKED_CAST")
 	override fun <S : R> save(dto: S): S {
-		val id = dto.id?.toInt() ?: throw BadRequestException("Can only save existing object (missing id)")
+		val id = repository.idFromString(dto.id) ?: throw BadRequestException("Can only save existing object (missing id)")
 		val dtoMeta = dto.meta ?: throw BadRequestException("Missing meta information")
-		val clientVersion = GenericDtoHelper.getClientVersion(dtoMeta)
-		if (clientVersion == null && !dtoMeta.hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
-			throw BadRequestException("Missing meta information (version or operation)")
-		}
-
+		val clientVersion = DtoUtils.getClientVersion(dtoMeta) ?: throw BadRequestException("Missing meta.clientVersion")
 		val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
 
+		if (clientVersion != aggregate.meta.version) {
+			val modifiedByUserId = if (aggregate is Obj) {
+				(aggregate as Obj).meta.modifiedByUserId
+			} else {
+				(aggregate as Doc).meta.modifiedByUserId
+			}
+			val userName = if (modifiedByUserId != null) {
+				val userRepository = directory.getRepository(ObjUser::class.java)
+				userRepository.get(modifiedByUserId).caption
+			} else {
+				"unknown"
+			}
+			throw BadRequestException(
+				HttpStatus.CONFLICT_409,
+				ErrorDataBuilder()
+					.setStatus("${HttpStatus.CONFLICT_409}")
+					.setTitle("Fehler beim Speichern")
+					.setDetail(
+						"Sie versuchten eine veraltete Version zu speichern." +
+							" Benutzer $userName hat das Objekt in der Zwischenzeit bereits geändert." +
+							" Ihre Änderungen wurden verworfen und die aktuelle Version geladen.",
+					).build(),
+			)
+		}
+
 		try {
+			toAggregate(dto, aggregate)
 			if (dtoMeta.hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
-				toAggregate(dto, aggregate)
-				return adapter.fromAggregate(repository.get(id)) as S
-			} else if (clientVersion == aggregate.meta.version) {
-				toAggregate(dto, aggregate)
+				return adapter.fromAggregate(aggregate) as S
+			} else {
 				repository.store(aggregate)
 				return adapter.fromAggregate(repository.get(id)) as S
 			}
@@ -117,27 +131,6 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 			throw RuntimeException("crashed on save", x)
 		}
 
-		val modifiedByUserId = if (aggregate is Obj) {
-			(aggregate as Obj).meta.modifiedByUserId
-		} else {
-			(aggregate as Doc).meta.modifiedByUserId
-		}
-		val userName = if (modifiedByUserId != null) {
-			val userRepository = directory.getRepository(ObjUser::class.java)
-			userRepository.get(modifiedByUserId).caption
-		} else {
-			"unknown"
-		}
-		val errorData: ErrorData =
-			ErrorDataBuilder()
-				.setStatus("${HttpStatus.CONFLICT_409}")
-				.setTitle("Fehler beim Speichern")
-				.setDetail(
-					"Sie versuchten eine veraltete Version zu speichern." +
-						" Benutzer $userName hat das Objekt in der Zwischenzeit bereits geändert." +
-						" Ihre Änderungen wurden verworfen und die aktuelle Version geladen.",
-				).build()
-		throw BadRequestException(HttpStatus.CONFLICT_409, errorData)
 	}
 
 	@Transactional
@@ -147,7 +140,7 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 			if (repository !is ObjRepository<*>) {
 				throw BadRequestException("Can only delete an Object")
 			}
-			val id = dtoId.toInt()
+			val id = repository.idFromString(dtoId)!!
 			val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
 			(repository as ObjRepository<Obj>).close(aggregate as Obj)
 			repository.store(aggregate)

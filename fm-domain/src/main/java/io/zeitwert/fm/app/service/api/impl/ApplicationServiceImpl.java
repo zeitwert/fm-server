@@ -17,11 +17,11 @@ class ApplicationServiceImpl implements ApplicationService {
 	private static final ApplicationConfig appConfig = new ApplicationConfig();
 
 	@Autowired
-	private SessionContext requestCtx;
+	private SessionContext sessionCtx;
 
 	@Override
 	public List<Application> getAllApplications() {
-		ObjUser user = (ObjUser) this.requestCtx.getUser();
+		ObjUser user = this.sessionCtx.getUser();
 		if (user.isAppAdmin()) {
 			return appConfig.AppAdminApplications;
 		} else if (user.isAdmin()) {

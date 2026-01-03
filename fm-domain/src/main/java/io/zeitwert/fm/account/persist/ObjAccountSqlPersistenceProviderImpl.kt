@@ -2,6 +2,7 @@ package io.zeitwert.fm.account.persist
 
 import dddrive.ddd.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.ObjAccount
@@ -10,7 +11,6 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
@@ -21,7 +21,7 @@ import java.util.*
 @Component("objAccountPersistenceProvider")
 open class ObjAccountSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjSqlPersistenceProviderBase<ObjAccount>(ObjAccount::class.java),
 	SqlRecordMapper<ObjAccount> {
 

@@ -1,11 +1,12 @@
 package io.zeitwert.fm.building.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.app.model.SessionContext;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingPartRatingDto;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBuildingDto> {
 
 	private final ObjUserDtoAdapter userDtoAdapter;
-	private SessionContextFM sessionContext;
+	private SessionContext sessionContext;
 	private ObjAccountRepository accountRepository = null;
 	private ObjAccountDtoAdapter accountDtoAdapter;
 	private ObjContactRepository contactRepository = null;
@@ -41,7 +42,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 	}
 
 	@Autowired
-	public void setRequestContext(SessionContextFM sessionContext) {
+	public void setRequestContext(SessionContext sessionContext) {
 		this.sessionContext = sessionContext;
 	}
 
@@ -76,11 +77,11 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 	}
 
 	public ObjAccountDto getAccountDto(String id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
-	public ObjContactDto getContactDto(Integer id) {
-		return id != null ? this.contactDtoAdapter.fromAggregate(this.contactRepository.get(id)) : null;
+	public ObjContactDto getContactDto(String id) {
+		return id != null ? this.contactDtoAdapter.fromAggregate(this.contactRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
 	public ObjDocumentDto getDocumentDto(Integer id) {
@@ -94,7 +95,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 			super.toAggregate(dto, obj);
 
 			// @formatter:off
-			obj.setAccountId(Integer.parseInt(dto.getAccountId()));
+			obj.setAccountId(DtoUtils.idFromString(dto.getAccountId()));
 			obj.setName(dto.getName());
 			obj.setDescription(dto.getDescription());
 			obj.setBuildingNr(dto.getBuildingNr());
@@ -128,7 +129,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 
 			if (dto.getContactIds() != null) {
 				obj.getContactSet().clear();
-				dto.getContactIds().forEach(id -> obj.getContactSet().add(id));
+				dto.getContactIds().forEach(id -> obj.getContactSet().add(DtoUtils.idFromString(id)));
 			}
 
 			if (dto.getMeta() != null && dto.getMeta().hasOperation(ObjBuildingDto.AddRatingOperation)) {
@@ -141,7 +142,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 						? obj.addRating(this.sessionContext.getUser(), this.sessionContext.getCurrentTime())
 						: obj.getCurrentRating();
 				ratingDto.toPart(rating);
-				Integer userId = ratingDto.getRatingUser() == null ? null : Integer.parseInt(ratingDto.getRatingUser().getId());
+				Object userId = ratingDto.getRatingUser() == null ? null : DtoUtils.idFromString(ratingDto.getRatingUser().getId());
 				rating.setRatingUser(userId == null ? null : this.getUser(userId));
 				if (ratingDto.getElements() != null) {
 					ratingDto.getElements().forEach(elementDto -> {
@@ -177,7 +178,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 		ObjBuildingDto.ObjBuildingDtoBuilder<?, ?> dtoBuilder = ObjBuildingDto.builder();
 		this.fromAggregate(dtoBuilder, obj);
 		dtoBuilder
-				.accountId(obj.getAccountId() != null ? obj.getAccountId().toString() : null)
+				.accountId(obj.getAccountId() != null ? DtoUtils.idToString(obj.getAccountId()) : null)
 				.buildingType(EnumeratedDto.of(obj.getBuildingType()))
 				.buildingSubType(EnumeratedDto.of(obj.getBuildingSubType()))
 				.name(obj.getName())
@@ -208,7 +209,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 				.notInsuredValueYear(obj.getNotInsuredValueYear())
 				.thirdPartyValue(obj.getThirdPartyValue())
 				.thirdPartyValueYear(obj.getThirdPartyValueYear())
-				.contactIds(obj.getContactSet().stream().map(id -> (Integer) id).collect(java.util.stream.Collectors.toSet()));
+				.contactIds(obj.getContactSet().stream().map(DtoUtils::idToString).collect(java.util.stream.Collectors.toSet()));
 		if (obj.getCurrentRating() != null) {
 			int seqNr = (int) obj.getRatingList().stream().filter(this::isActiveRating).count() - 1;
 			dtoBuilder.currentRating(ObjBuildingPartRatingDto.fromPart(obj.getCurrentRating(), this.userDtoAdapter, seqNr));

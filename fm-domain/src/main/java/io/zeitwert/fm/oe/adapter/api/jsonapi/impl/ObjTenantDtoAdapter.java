@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;

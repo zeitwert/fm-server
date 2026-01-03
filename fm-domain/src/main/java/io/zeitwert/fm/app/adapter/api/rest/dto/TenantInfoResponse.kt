@@ -1,6 +1,6 @@
 package io.zeitwert.fm.app.adapter.api.rest.dto
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 
 data class TenantInfoResponse(
 	val id: Int,

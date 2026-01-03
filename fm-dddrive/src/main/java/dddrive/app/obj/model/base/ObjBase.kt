@@ -9,6 +9,7 @@ import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.ObjSPI
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.partListProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -23,7 +24,7 @@ abstract class ObjBase(
 	private var _objTypeId by baseProperty<String>("objTypeId")
 	override val objTypeId get() = _objTypeId!!
 
-	override var closedByUserId by baseProperty<Any>("closedByUserId")
+	override var closedByUserId by referenceIdProperty<Obj>("closedByUser")
 	override var closedAt by baseProperty<OffsetDateTime>("closedAt")
 
 	private val _transitionList = partListProperty<Obj, ObjPartTransition>("transitionList")
@@ -41,7 +42,7 @@ abstract class ObjBase(
 		try {
 			disableCalc()
 			_objTypeId = repository.aggregateType.id
-			_transitionList.add(null).init(sessionContext.userId, sessionContext.timestamp)
+			_transitionList.add(null).init(sessionContext.userId, sessionContext.currentTime)
 		} finally {
 			enableCalc()
 		}
@@ -49,7 +50,7 @@ abstract class ObjBase(
 
 	override fun doBeforeStore(sessionContext: SessionContext) {
 		super.doBeforeStore(sessionContext)
-		_transitionList.add(null).init(sessionContext.userId, sessionContext.timestamp)
+		_transitionList.add(null).init(sessionContext.userId, sessionContext.currentTime)
 	}
 
 	override fun doBeforeClose(sessionContext: SessionContext) {
@@ -59,7 +60,7 @@ abstract class ObjBase(
 	override fun doClose(sessionContext: SessionContext) {
 		doCloseSeqNr += 1
 		closedByUserId = sessionContext.userId
-		closedAt = sessionContext.timestamp
+		closedAt = sessionContext.currentTime
 	}
 
 	override fun doAfterClose(sessionContext: SessionContext) {

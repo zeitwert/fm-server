@@ -1,6 +1,7 @@
 package io.zeitwert.fm.task.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -28,14 +29,14 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 	}
 
 	public ObjAccountDto getAccountDto(String id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
 	@Override
 	public void toAggregate(DocTaskDto dto, DocTask doc) {
-		Integer relatedToId = dto.getRelatedTo() != null ? Integer.parseInt(dto.getRelatedTo().getId()) : null;
+		Object relatedToId = dto.getRelatedTo() != null ? DtoUtils.idFromString(dto.getRelatedTo().getId()) : null;
 		super.toAggregate(dto, doc);
-		doc.setAccountId(Integer.parseInt(dto.getAccountId()));
+		doc.setAccountId(DtoUtils.idFromString(dto.getAccountId()));
 		doc.setRelatedToId(relatedToId);
 		doc.setSubject(dto.getSubject());
 		doc.setContent(dto.getContent());
@@ -53,7 +54,7 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
 		this.fromAggregate(dtoBuilder, doc);
 		return dtoBuilder
-				.accountId(doc.getAccountId() != null ? doc.getAccountId().toString() : null)
+				.accountId(doc.getAccountId() != null ? DtoUtils.idToString(doc.getAccountId()) : null)
 				.relatedTo(this.asEnumerated(doc.getRelatedTo()))
 				.subject(doc.getSubject())
 				.content(doc.getContent())
@@ -63,26 +64,5 @@ public class DocTaskDtoAdapter extends DocDtoAdapterBase<DocTask, DocTaskDto> {
 				.remindAt(doc.getRemindAt())
 				.build();
 	}
-
-//	@Override
-//	public DocTaskDto fromRecord(DocTaskVRecord doc) {
-//		if (doc == null) {
-//			return null;
-//		}
-//		DocTaskDto.DocTaskDtoBuilder<?, ?> dtoBuilder = DocTaskDto.builder();
-//		this.fromRecord(dtoBuilder, doc);
-//		Integer relatedToId = doc.getRelatedObjId() != null ? doc.getRelatedObjId() : doc.getRelatedDocId();
-//		EnumeratedDto relatedTo = EnumeratedDto.builder().id(relatedToId.toString()).build();
-//		return dtoBuilder
-//				.accountId(doc.getAccountId())
-//				.relatedTo(relatedTo)
-//				.subject(doc.getSubject())
-//				.content(doc.getContent())
-//				.isPrivate(doc.getIsPrivate())
-//				.priority(EnumeratedDto.of(CodeTaskPriority.getPriority(doc.getPriorityId())))
-//				.dueAt(doc.getDueAt())
-//				.remindAt(doc.getRemindAt())
-//				.build();
-//	}
 
 }

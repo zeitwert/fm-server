@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import io.zeitwert.fm.oe.model.ObjUser;
 import io.zeitwert.dddrive.app.model.SessionContext;
-import io.zeitwert.fm.app.model.impl.SessionContextFMImpl;
+import io.zeitwert.fm.app.model.impl.SessionContextImpl;
 import io.zeitwert.fm.oe.model.enums.CodeLocale;
 
 @Service("appContext")
@@ -34,7 +34,7 @@ public class AppContextImpl extends AppContextBase {
 	public void beginKernelSession(String userEmail) {
 		String email = userEmail != null ? userEmail : K_ZEITWERT_IO;
 		ObjUser user = ((ObjUserCache) this.getCache(ObjUser.class)).getByEmail(email).get();
-		this.kernelSessionContext = SessionContextFMImpl.builder()
+		this.kernelSessionContext = SessionContextImpl.builder()
 				.tenantId(user.getTenantId())
 				.user(user)
 				.locale(CodeLocale.EN_US)

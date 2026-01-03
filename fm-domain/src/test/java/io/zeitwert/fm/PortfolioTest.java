@@ -1,8 +1,8 @@
 package io.zeitwert.fm;
 
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
 import io.zeitwert.fm.portfolio.model.ObjPortfolio;
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class PortfolioTest {
 
 	@Autowired
-	private SessionContextFM requestCtx;
+	private SessionContext sessionContext;
 
 	@Autowired
 	private ObjAccountRepository accountRepository;
@@ -43,7 +43,7 @@ public class PortfolioTest {
 		assertNotNull(buildingRepository, "buildingRepository not null");
 		assertEquals("obj_building", buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = getTestAccount(requestCtx);
+		ObjAccount account = getTestAccount(sessionContext);
 		ObjPortfolio pf1a = portfolioRepository.create();
 		// Integer pf1Id = pf1a.getId();
 		// Integer pf1aIdHash = System.identityHashCode(pf1a);
@@ -70,7 +70,7 @@ public class PortfolioTest {
 		// portfolioRepository.store(pf1a);
 		// pf1a = null;
 
-		// ObjPortfolio pf1b = portfolioRepository.get(requestCtx, pf1Id).get();
+		// ObjPortfolio pf1b = portfolioRepository.get(sessionContext, pf1Id).get();
 		// Integer pf1bIdHash = System.identityHashCode(pf1b);
 
 		// assertNotEquals(pf1aIdHash, pf1bIdHash);
@@ -84,7 +84,7 @@ public class PortfolioTest {
 		assertEquals(account.getId(), pf1a.getAccountId(), "account id");
 	}
 
-	private ObjAccount getTestAccount(SessionContextFM requestCtx) {
+	private ObjAccount getTestAccount(SessionContext sessionContext) {
 		return accountRepository.get(accountRepository.find(null).getFirst());
 	}
 

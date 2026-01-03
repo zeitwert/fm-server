@@ -16,10 +16,10 @@ public class ObjTenantApiRepositoryImpl
 
 	public ObjTenantApiRepositoryImpl(
 			ObjTenantRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			ObjTenantDtoAdapter dtoAdapter) {
-		super(ObjTenantDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(ObjTenantDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

@@ -4,9 +4,11 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocPartTransition
 import dddrive.app.doc.model.base.DocPartBase
 import dddrive.app.doc.model.enums.CodeCaseStage
+import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -21,8 +23,8 @@ class DocPartTransitionImpl(
 	// seqNr is the part id
 	override val seqNr: Int get() = id
 
-	private var _tenantId by baseProperty<Any>("tenantId")
-	private var _userId by baseProperty<Any>("userId")
+	private var _tenantId by referenceIdProperty<Obj>("tenant")
+	private var _userId by referenceIdProperty<Obj>("user")
 	override val userId get() = _userId!!
 
 	private var _timestamp by baseProperty<OffsetDateTime>("timestamp")

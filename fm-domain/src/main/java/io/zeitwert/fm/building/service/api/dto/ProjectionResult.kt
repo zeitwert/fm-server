@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.service.api.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 
@@ -17,13 +17,9 @@ data class ProjectionResult(
 	val endYear: Int
 		get() = startYear + duration
 
-	fun getElement(enumerated: EnumeratedDto): ObjBuildingPartElementRating {
-		return elementMap[enumerated]!!
-	}
+	fun getElement(enumerated: EnumeratedDto): ObjBuildingPartElementRating = elementMap[enumerated]!!
 
-	fun getBuilding(enumerated: EnumeratedDto): ObjBuilding {
-		return getElement(enumerated)!!.meta.aggregate as ObjBuilding
-	}
+	fun getBuilding(enumerated: EnumeratedDto): ObjBuilding = getElement(enumerated)!!.meta.aggregate as ObjBuilding
 
 }
 

@@ -1,7 +1,7 @@
 package io.zeitwert.fm.dms.model.impl
 
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType
@@ -14,7 +14,7 @@ import java.time.OffsetDateTime
 
 @Component("objDocumentRepository")
 class ObjDocumentRepositoryImpl(
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<ObjDocument>(
 		ObjDocument::class.java,
 		AGGREGATE_TYPE_ID,

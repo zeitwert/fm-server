@@ -4,7 +4,7 @@ import dddrive.app.obj.model.Obj;
 import dddrive.app.obj.model.ObjMeta;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjDtoBase;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto;

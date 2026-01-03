@@ -6,7 +6,6 @@ import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

@@ -23,7 +23,7 @@ class ObjAccountDto : GenericObjDtoBase<ObjAccount>() {
 	var tenantInfoId: Int? = null
 		get() = (getRelation("tenantInfoId") as String?)?.toInt()
 		set(value) {
-			setRelation("tenantInfoId", value?.toString())
+			setRelation("tenantInfoId", value)
 			field = value
 		}
 
@@ -31,10 +31,10 @@ class ObjAccountDto : GenericObjDtoBase<ObjAccount>() {
 	val tenantInfo: ObjTenantDto? = null
 
 	@JsonApiRelationId
-	var mainContactId: Int? = null
-		get() = (getRelation("mainContactId") as String?)?.toInt()
+	var mainContactId: String? = null
+		get() = getRelation("mainContactId") as String?
 		set(value) {
-			setRelation("mainContactId", value?.toString())
+			setRelation("mainContactId", value)
 			field = value
 		}
 
@@ -45,7 +45,7 @@ class ObjAccountDto : GenericObjDtoBase<ObjAccount>() {
 	var logoId: Int? = null
 		get() = (getRelation("logoId") as String?)?.toInt()
 		set(value) {
-			setRelation("logoId", value?.toString())
+			setRelation("logoId", value)
 			field = value
 		}
 
@@ -54,8 +54,8 @@ class ObjAccountDto : GenericObjDtoBase<ObjAccount>() {
 
 	@JsonApiRelationId
 	@Suppress("UNCHECKED_CAST")
-	var contactIds: List<Int>? = null
-		get() = getRelation("contactIds") as List<Int>?
+	var contactIds: List<String>? = null
+		get() = getRelation("contactIds") as List<String>?
 		set(value) {
 			setRelation("contactIds", value)
 			field = value

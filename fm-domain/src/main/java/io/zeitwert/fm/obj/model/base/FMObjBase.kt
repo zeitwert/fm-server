@@ -4,7 +4,7 @@ import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjBase
-import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.model.Property
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.ddd.model.EntityWithExtn
@@ -25,7 +25,7 @@ abstract class FMObjBase(
 ) : ObjBase(repository, isNew),
 	EntityWithExtn {
 
-	var accountId by baseProperty<Any>("accountId")
+	var accountId by referenceIdProperty<Obj>("account")
 
 	private val _extnMap = mutableMapOf<String, Any>()
 

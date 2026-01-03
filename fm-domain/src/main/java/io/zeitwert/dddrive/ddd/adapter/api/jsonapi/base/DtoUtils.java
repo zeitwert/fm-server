@@ -1,9 +1,11 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base;
 
+import dddrive.ddd.core.model.RepositoryDirectory;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto;
+import io.zeitwert.fm.oe.model.ObjTenant;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,7 +15,21 @@ import java.util.List;
  * from Kotlin code (Kotlin compiles before Java, so Lombok-generated
  * methods aren't visible during Kotlin compilation).
  */
-public class GenericDtoHelper {
+public class DtoUtils {
+
+	public static String idToString(Object id) {
+		if (id == null) {
+			return null;
+		}
+		return RepositoryDirectory.Companion.getInstance().getRepository(ObjTenant.class).idToString(id);
+	}
+
+	public static Object idFromString(String dtoId) {
+		if (dtoId == null) {
+			return null;
+		}
+		return RepositoryDirectory.Companion.getInstance().getRepository(ObjTenant.class).idFromString(dtoId);
+	}
 
 	/**
 	 * Create an ObjMetaDto with the given values.

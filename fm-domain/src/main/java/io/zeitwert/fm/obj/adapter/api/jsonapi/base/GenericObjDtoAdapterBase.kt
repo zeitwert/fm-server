@@ -2,9 +2,9 @@ package io.zeitwert.fm.obj.adapter.api.jsonapi.base
 
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.RepositoryDirectory
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateDtoAdapterBase
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericDtoHelper
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto
 
@@ -14,15 +14,14 @@ abstract class GenericObjDtoAdapterBase<O : Obj, D : GenericObjDtoBase<O>>(
 ) : GenericAggregateDtoAdapterBase<O, D>(directory, resourceFactory) {
 
 	init {
-		relationship("tenantInfoId", "tenant", "tenantId")
-		relationship("accountId", "account", "accountId")
+		relationship("tenantInfoId", "tenant", "tenant")
+		relationship("accountId", "account", "account")
 	}
 
 	override fun fromAggregate(
 		aggregate: O,
 	): D {
 		val dto = super.fromAggregate(aggregate)
-		dto["id"] = aggregate.id.toString()
 		dto.meta = buildObjMeta(aggregate)
 		dto["tenant"] = EnumeratedDto.of(tenantRepository.get(aggregate.tenantId))
 		val ownerId = aggregate.ownerId
@@ -44,7 +43,7 @@ abstract class GenericObjDtoAdapterBase<O : Obj, D : GenericObjDtoBase<O>>(
 		val ownerId = aggregate.ownerId
 		val modifiedByUserId = meta.modifiedByUserId
 		val closedByUserId = meta.closedByUserId
-		return GenericDtoHelper.createObjMetaDto(
+		return DtoUtils.createObjMetaDto(
 			EnumeratedDto.of(meta.repository.aggregateType),
 			if (ownerId != null) EnumeratedDto.of(userRepository.get(ownerId)) else null,
 			meta.version,

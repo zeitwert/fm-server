@@ -2,13 +2,13 @@ package io.zeitwert.domain.test.persist
 
 import dddrive.ddd.path.setValueByPath
 import io.crnk.core.queryspec.QuerySpec
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.DocTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.persist.DocPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
 

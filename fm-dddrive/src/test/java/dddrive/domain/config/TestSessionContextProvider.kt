@@ -1,7 +1,7 @@
 package dddrive.domain.config
 
 import dddrive.app.ddd.model.SessionContext
-import dddrive.domain.ddd.model.impl.SessionContextImpl
+import dddrive.domain.ddd.model.impl.TestSessionContextImpl
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUserRepository
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -24,7 +24,7 @@ open class TestSessionContextProvider {
 		assertNotNull(tenant, "kTenant")
 		val user = userRepository.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL).orElse(null)
 		assertNotNull(user, "kUser")
-		return SessionContextImpl(
+		return TestSessionContextImpl(
 			tenantId = user!!.tenantId,
 			userId = user.id,
 			accountId = null,

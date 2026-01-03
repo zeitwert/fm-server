@@ -93,7 +93,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		id: Any,
 		isFrozen: Boolean,
 	): A {
-		check(persistenceProvider.isValidId(id)) { "valid id $id(${id.javaClass.getSimpleName()})" }
+		check(persistenceProvider.isValidId(id)) { "valid id $id (${id.javaClass.getSimpleName()})" }
 
 		val aggregate = createAggregate(false)
 

@@ -1,6 +1,6 @@
 package io.zeitwert.fm.contact.model.impl
 
-import io.zeitwert.fm.app.model.SessionContextFM
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
  */
 @Component("objContactRepository")
 class ObjContactRepositoryImpl(
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<ObjContact>(
 		ObjContact::class.java,
 		AGGREGATE_TYPE_ID,

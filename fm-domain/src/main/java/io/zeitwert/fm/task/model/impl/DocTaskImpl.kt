@@ -1,8 +1,11 @@
 package io.zeitwert.fm.task.model.impl
 
+import dddrive.app.doc.model.Doc
+import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -21,8 +24,8 @@ class DocTaskImpl(
 	DocTask,
 	AggregateWithNotesMixin {
 
-	private var relatedObjId by baseProperty<Any>("relatedObjId")
-	private var relatedDocId by baseProperty<Any>("relatedDocId")
+	private var relatedObjId by referenceIdProperty<Obj>("relatedObj")
+	private var relatedDocId by referenceIdProperty<Doc>("relatedDoc")
 
 	override var subject by baseProperty<String>("subject")
 	override var content by baseProperty<String>("content")

@@ -15,10 +15,10 @@ public class ObjNoteApiRepositoryImpl extends AggregateApiRepositoryBase<ObjNote
 
 	public ObjNoteApiRepositoryImpl(
 			ObjNoteRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			ObjNoteDtoAdapter dtoAdapter) {
-		super(ObjNoteDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(ObjNoteDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

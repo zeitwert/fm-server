@@ -24,13 +24,13 @@ class AppUserDetails(
 
 	override fun isEnabled(): Boolean = true
 
-	@JvmField
-	var tenantId: Int? = null
+	val tenantId: Any get() = _tenantId!!
 
-	@JvmField
-	var accountId: Int? = null
+	var _tenantId: Any? = null
 
-	val userId: Int
+	var accountId: Any? = null
+
+	val userId: Any
 		get() = this.user.id as Int
 
 	val isAppAdmin: Boolean
@@ -47,11 +47,11 @@ class AppUserDetails(
 	}
 
 	override fun hashCode(): Int {
-		var result = tenantId ?: 0
-		result = 31 * result + (accountId ?: 0)
+		var result = tenantId as Int
+		result = 31 * result + (accountId as Int? ?: 0)
 		result = 31 * result + user.hashCode()
 		result = 31 * result + authorities.hashCode()
-		result = 31 * result + userId
+		result = 31 * result + userId as Int
 		result = 31 * result + isAppAdmin.hashCode()
 		result = 31 * result + isAdmin.hashCode()
 		return result

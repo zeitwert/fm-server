@@ -1,4 +1,4 @@
-package io.zeitwert.dddrive.ddd.api.rest.dto
+package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto
 
 import dddrive.app.validation.model.AggregatePartValidation
 
@@ -18,4 +18,5 @@ data class AggregatePartValidationDto(
 				validation.message,
 			)
 	}
+
 }

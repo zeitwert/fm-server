@@ -16,10 +16,10 @@ public class ObjBuildingApiRepositoryImpl
 
 	public ObjBuildingApiRepositoryImpl(
 			ObjBuildingRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			ObjBuildingDtoAdapter dtoAdapter) {
-		super(ObjBuildingDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(ObjBuildingDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

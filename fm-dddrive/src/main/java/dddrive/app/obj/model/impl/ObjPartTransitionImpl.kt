@@ -5,6 +5,7 @@ import dddrive.app.obj.model.ObjPartTransition
 import dddrive.app.obj.model.base.ObjPartBase
 import dddrive.ddd.core.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -16,8 +17,8 @@ class ObjPartTransitionImpl(
 ) : ObjPartBase<Obj>(obj, repository, property, id),
 	ObjPartTransition {
 
-	private var _tenantId by baseProperty<Any>("tenantId")
-	private var _userId by baseProperty<Any>("userId")
+	private var _tenantId by referenceIdProperty<Obj>("tenant")
+	private var _userId by referenceIdProperty<Obj>("user")
 	override val userId get() = _userId!!
 
 	private var _timestamp by baseProperty<OffsetDateTime>("timestamp")

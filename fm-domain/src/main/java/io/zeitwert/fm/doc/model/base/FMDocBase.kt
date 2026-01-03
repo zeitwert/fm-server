@@ -4,8 +4,9 @@ import dddrive.app.ddd.model.SessionContext
 import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.base.DocBase
-import dddrive.ddd.property.delegate.baseProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
+import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.ddd.model.EntityWithExtn
 
 /**
@@ -23,7 +24,7 @@ abstract class FMDocBase(
 ) : DocBase(repository, isNew),
 	EntityWithExtn {
 
-	var accountId by baseProperty<Any>("accountId")
+	var accountId by referenceIdProperty<ObjAccount>("account")
 
 	private val _extnMap = mutableMapOf<String, Any>()
 

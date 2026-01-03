@@ -1,15 +1,14 @@
-
 package io.zeitwert.fm.obj.adapter.api.jsonapi.dto;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor

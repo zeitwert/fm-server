@@ -1,7 +1,8 @@
 package io.zeitwert.fm.portfolio.adapter.api.jsonapi.impl;
 
 import dddrive.app.obj.model.Obj;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -39,7 +40,7 @@ public class ObjPortfolioDtoAdapter
 	}
 
 	public ObjAccountDto getAccountDto(String id) {
-		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(Integer.parseInt(id))) : null;
+		return id != null ? this.accountDtoAdapter.fromAggregate(this.accountRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
 	@Override
@@ -51,19 +52,19 @@ public class ObjPortfolioDtoAdapter
 			pf.setName(dto.getName());
 			pf.setDescription(dto.getDescription());
 			pf.setPortfolioNr(dto.getPortfolioNr());
-			pf.setAccountId(Integer.parseInt(dto.getAccountId()));
+			pf.setAccountId(DtoUtils.idFromString(dto.getAccountId()));
 			// TODO prevent calculation during insert
 			if (dto.getIncludes() != null) {
 				pf.getIncludeSet().clear();
 				dto.getIncludes().forEach(item -> {
-					Integer id = Integer.parseInt(item.getId());
+					Object id = DtoUtils.idFromString(item.getId());
 					pf.getIncludeSet().add(id);
 				});
 			}
 			if (dto.getExcludes() != null) {
 				pf.getExcludeSet().clear();
 				dto.getExcludes().forEach(item -> {
-					Integer id = Integer.parseInt(item.getId());
+					Object id = DtoUtils.idFromString(item.getId());
 					pf.getExcludeSet().add(id);
 				});
 			}
@@ -86,7 +87,7 @@ public class ObjPortfolioDtoAdapter
 			.name(pf.getName())
 			.description(pf.getDescription())
 			.portfolioNr(pf.getPortfolioNr())
-			.accountId(pf.getAccountId() != null ? pf.getAccountId().toString() : null)
+			.accountId(pf.getAccountId() != null ? DtoUtils.idToString(pf.getAccountId()) : null)
 			.includes(pf.getIncludeSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
 			.excludes(pf.getExcludeSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
 			.buildings(pf.getBuildingSet().stream().map(id -> getObj((Integer)id)).collect(Collectors.toSet()))
@@ -96,7 +97,7 @@ public class ObjPortfolioDtoAdapter
 
 	private EnumeratedDto getObj(Integer id) {
 		Obj obj = this.objRepository.get(id);
-		return EnumeratedDto.of(obj.getId().toString(), obj.getCaption());
+		return EnumeratedDto.of(DtoUtils.idToString(obj.getId()), obj.getCaption());
 	}
 
 }

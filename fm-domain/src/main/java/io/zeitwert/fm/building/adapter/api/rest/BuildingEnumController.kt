@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.adapter.api.rest
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingPartWeightDto
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType

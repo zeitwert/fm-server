@@ -9,9 +9,11 @@ import dddrive.app.doc.model.DocPartTransition
 import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseStage
+import dddrive.app.obj.model.Obj
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.model.Property
 import java.time.OffsetDateTime
 
@@ -29,7 +31,7 @@ abstract class DocBase(
 	override var caseDef by enumProperty<CodeCaseDef>("caseDef")
 	override var caseStage by enumProperty<CodeCaseStage>("caseStage")
 
-	override var assigneeId by baseProperty<Any>("assigneeId")
+	override var assigneeId by referenceIdProperty<Obj>("assignee")
 
 	private val _transitionList = partListProperty<Doc, DocPartTransition>("transitionList")
 	override val transitionList get() = _transitionList.toList()
@@ -56,7 +58,7 @@ abstract class DocBase(
 
 	override fun doBeforeStore(sessionContext: SessionContext) {
 		super.doBeforeStore(sessionContext)
-		_transitionList.add(null).init(sessionContext.userId, sessionContext.timestamp, oldCaseStage, caseStage!!)
+		_transitionList.add(null).init(sessionContext.userId, sessionContext.currentTime, oldCaseStage, caseStage!!)
 	}
 
 	override val isInWork: Boolean

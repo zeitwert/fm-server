@@ -5,7 +5,6 @@ import dddrive.app.obj.model.Obj;
 import dddrive.ddd.core.model.Aggregate;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.oe.model.ObjTenant;
 import io.zeitwert.fm.oe.model.ObjTenantRepository;
 import io.zeitwert.fm.oe.model.ObjUser;
@@ -27,7 +26,7 @@ public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends Agg
 		this.tenantRepository = tenantRepository;
 	}
 
-	protected ObjTenant getTenant(Integer tenantId) {
+	protected ObjTenant getTenant(Object tenantId) {
 		return this.tenantRepository.get(tenantId);
 	}
 
@@ -44,7 +43,7 @@ public abstract class AggregateDtoAdapterBase<A extends Aggregate, D extends Agg
 		this.userRepository = userRepository;
 	}
 
-	protected ObjUser getUser(Integer userId) {
+	protected ObjUser getUser(Object userId) {
 		return this.userRepository.get(userId);
 	}
 

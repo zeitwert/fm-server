@@ -4,6 +4,7 @@ import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
 import io.crnk.core.queryspec.QuerySpec
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.domain.test.model.ObjTest
@@ -12,7 +13,6 @@ import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.fm.account.model.ItemWithAccount
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component
 @Component("objTestPersistenceProvider")
 open class ObjTestSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
 	SqlRecordMapper<ObjTest> {
 

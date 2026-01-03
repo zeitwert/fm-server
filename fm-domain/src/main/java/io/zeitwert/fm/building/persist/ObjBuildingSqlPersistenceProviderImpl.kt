@@ -1,10 +1,10 @@
 package io.zeitwert.fm.building.persist
 
 import io.crnk.core.queryspec.QuerySpec
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
 import io.zeitwert.fm.account.model.enums.CodeCurrency
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.db.Tables
 import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component
 @Component("objBuildingPersistenceProvider")
 open class ObjBuildingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjSqlPersistenceProviderBase<ObjBuilding>(ObjBuilding::class.java),
 	SqlRecordMapper<ObjBuilding> {
 

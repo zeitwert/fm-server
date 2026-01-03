@@ -5,7 +5,7 @@ import dddrive.app.doc.model.DocMeta;
 import dddrive.app.doc.model.enums.CodeCaseStageEnum;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocMetaDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocPartTransitionDto;

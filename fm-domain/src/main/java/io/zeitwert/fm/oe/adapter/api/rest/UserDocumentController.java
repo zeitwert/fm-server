@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserDocumentController {
 
 	@Autowired
-	SessionContext requestCtx;
+	SessionContext sessionContext;
 	@Autowired
 	private ObjUserRepository userRepository;
 	@Autowired

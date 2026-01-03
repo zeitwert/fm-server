@@ -4,8 +4,8 @@ import dddrive.ddd.core.model.Aggregate
 import io.crnk.core.queryspec.FilterOperator
 import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.util.SqlUtils
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import org.jooq.DSLContext
 import org.jooq.Field
@@ -22,7 +22,7 @@ interface AggregateFindMixin {
 
 	val sqlUtils: SqlUtils
 
-	val requestCtx: SessionContextFM
+	val sessionContext: SessionContext
 
 	fun queryWithFilter(querySpec: QuerySpec?): QuerySpec {
 		var querySpec = querySpec
@@ -31,12 +31,12 @@ interface AggregateFindMixin {
 		}
 		// String tenantField = AggregateFields.TENANT_ID.getName();
 		val tenantField = "tenant_id"
-		val tenantId = requestCtx.getTenantId() as Int
+		val tenantId = sessionContext.tenantId as Int
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId))
 		}
-		if (hasAccount && requestCtx.hasAccount()) {
-			val accountId = requestCtx.getAccountId()
+		if (hasAccount && sessionContext.hasAccount()) {
+			val accountId = sessionContext.accountId
 			querySpec.addFilter(PathSpec.of("account_id").filter(FilterOperator.EQ, accountId))
 		}
 		return querySpec

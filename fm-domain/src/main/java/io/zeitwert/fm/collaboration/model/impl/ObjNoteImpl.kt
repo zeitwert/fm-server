@@ -1,8 +1,10 @@
 package io.zeitwert.fm.collaboration.model.impl
 
+import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
+import dddrive.ddd.property.delegate.referenceIdProperty
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
@@ -14,7 +16,7 @@ class ObjNoteImpl(
 ) : FMObjBase(repository, isNew),
 	ObjNote {
 
-	override var relatedToId by baseProperty<Any>("relatedToId")
+	override var relatedToId by referenceIdProperty<Obj>("relatedTo")
 	override var noteType by enumProperty<CodeNoteType>("noteType")
 	override var subject by baseProperty<String>("subject")
 	override var content by baseProperty<String>("content")

@@ -1,9 +1,9 @@
 package io.zeitwert.fm;
 
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.account.model.enums.CodeCurrency;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BuildingTest {
 
 	@Autowired
-	private SessionContextFM requestCtx;
+	private SessionContext sessionContext;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
@@ -38,7 +38,7 @@ public class BuildingTest {
 		assertNotNull(this.buildingRepository, "buildingRepository not null");
 		assertEquals("obj_building", this.buildingRepository.getAggregateType().getId());
 
-		ObjAccount account = this.getTestAccount(requestCtx);
+		ObjAccount account = this.getTestAccount(sessionContext);
 		ObjBuilding buildingA1 = this.buildingRepository.create();
 
 		assertNotNull(buildingA1, "test not null");
@@ -138,7 +138,7 @@ public class BuildingTest {
 
 	}
 
-	private ObjAccount getTestAccount(SessionContextFM requestCtx) {
+	private ObjAccount getTestAccount(SessionContext sessionContext) {
 		return this.accountRepo.get(this.accountRepo.find(null).getFirst());
 	}
 
@@ -172,7 +172,7 @@ public class BuildingTest {
 		building.setThirdPartyValue(BigDecimal.valueOf(0.0));
 		building.setThirdPartyValueYear(2000);
 
-		building.addRating(requestCtx.getUser(), requestCtx.getCurrentTime());
+		building.addRating(sessionContext.getUser(), sessionContext.getCurrentTime());
 		building.getCurrentRating().setPartCatalog(CodeBuildingPartCatalog.C6);
 		building.getCurrentRating().setMaintenanceStrategy(CodeBuildingMaintenanceStrategy.N);
 

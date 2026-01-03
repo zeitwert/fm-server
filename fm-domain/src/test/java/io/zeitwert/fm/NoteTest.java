@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NoteTest {
 
 	@Autowired
-	private SessionContext requestCtx;
+	private SessionContext sessionContext;
 
 	@Autowired
 	private ObjUserRepository userRepo;
@@ -46,9 +46,8 @@ public class NoteTest {
 		assertNotNull(this.testRepo, "testRepository not null");
 		assertEquals("obj_test", this.testRepo.getAggregateType().getId());
 
-		Object tenantId = requestCtx.getTenantId();
-		Object userId = requestCtx.getUserId();
-		OffsetDateTime now = requestCtx.getCurrentTime();
+		Object userId = sessionContext.getUserId();
+		OffsetDateTime now = sessionContext.getCurrentTime();
 
 		ObjTest testA1 = this.testRepo.create();
 		this.initObjTest(testA1, "One", "type_a");

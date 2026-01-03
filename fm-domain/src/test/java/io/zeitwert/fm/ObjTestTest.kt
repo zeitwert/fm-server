@@ -31,7 +31,7 @@ class ObjTestTest {
 	}
 
 	@Autowired
-	private lateinit var requestCtx: SessionContext
+	private lateinit var sessionContext: SessionContext
 
 	@Autowired
 	private lateinit var testRepository: ObjTestRepository
@@ -41,9 +41,9 @@ class ObjTestTest {
 		assertNotNull(this.testRepository, "objTestRepository not null")
 		assertEquals("obj_test", this.testRepository.aggregateType.id)
 
-		requestCtx.tenantId
-		requestCtx.userId
-		requestCtx.currentTime
+		sessionContext.tenantId
+		sessionContext.userId
+		sessionContext.currentTime
 
 		val testA1 = this.testRepository.create()
 		assertNotNull(testA1, "test not null")
@@ -76,9 +76,9 @@ class ObjTestTest {
 
 	@Test
 	fun testProperties() {
-		requestCtx.tenantId
-		requestCtx.userId
-		requestCtx.currentTime
+		sessionContext.tenantId
+		sessionContext.userId
+		sessionContext.currentTime
 
 		val testA1 = this.testRepository.create()
 		requireNotNull(testA1)
@@ -148,9 +148,9 @@ class ObjTestTest {
 
 	@Test
 	fun testEnumSet() {
-		requestCtx.tenantId
-		requestCtx.userId
-		requestCtx.currentTime
+		sessionContext.tenantId
+		sessionContext.userId
+		sessionContext.currentTime
 
 		val testA1 = this.testRepository.create()
 		requireNotNull(testA1)
@@ -198,9 +198,9 @@ class ObjTestTest {
 
 	@Test
 	fun testPartList() {
-		requestCtx.tenantId
-		requestCtx.userId
-		requestCtx.currentTime
+		sessionContext.tenantId
+		sessionContext.userId
+		sessionContext.currentTime
 
 		lateinit var testAId: Any
 

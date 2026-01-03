@@ -37,7 +37,6 @@ fun EntityWithProperties.toMap(): Map<String, Any?> {
 			}
 
 			is EnumSetProperty<*> -> {
-				// Store actual enum objects (not IDs) since this is in-memory persistence
 				result[property.name] = property.toSet()
 			}
 
@@ -46,7 +45,6 @@ fun EntityWithProperties.toMap(): Map<String, Any?> {
 			}
 
 			is ReferenceProperty<*, *> -> {
-				// Store reference as "propertyId" to match convention
 				result[property.name + "Id"] = property.id
 			}
 
@@ -96,7 +94,6 @@ private fun EntityWithProperties.createPartsFromMap(map: Map<String, Any?>) {
 				for (partMap in partMaps) {
 					val partId = partMap["id"] as? Int
 					val part = property.add(partId)
-					// Recursively create nested parts
 					(part as EntityWithProperties).createPartsFromMap(partMap)
 				}
 			}
@@ -107,7 +104,6 @@ private fun EntityWithProperties.createPartsFromMap(map: Map<String, Any?>) {
 				for ((key, partMap) in partMaps) {
 					val partId = partMap["id"] as? Int
 					val part = property.add(key, partId)
-					// Recursively create nested parts
 					(part as EntityWithProperties).createPartsFromMap(partMap)
 				}
 			}
@@ -124,13 +120,11 @@ private fun EntityWithProperties.setValuesFromMap(map: Map<String, Any?>) {
 	for (property in properties) {
 		when (property) {
 			is PartListProperty<*, *> -> {
-				// Recurse into parts to set their values
 				val partMaps = map[property.name] as? List<Map<String, Any?>> ?: continue
 				partMaps.forEachIndexed { idx, partMap -> (property[idx] as EntityWithProperties).setValuesFromMap(partMap) }
 			}
 
 			is PartMapProperty<*, *> -> {
-				// Recurse into parts to set their values
 				val partMaps = map[property.name] as? Map<String, Map<String, Any?>> ?: continue
 				for ((key, partMap) in partMaps) {
 					(property[key] as EntityWithProperties).setValuesFromMap(partMap)
@@ -159,7 +153,6 @@ private fun EntityWithProperties.setValuesFromMap(map: Map<String, Any?>) {
 			}
 
 			is ReferenceProperty<*, *> -> {
-				// References are stored as "propertyNameId"
 				val id = map[property.name + "Id"]
 				(property as ReferenceProperty<Any, Any>).id = id
 			}

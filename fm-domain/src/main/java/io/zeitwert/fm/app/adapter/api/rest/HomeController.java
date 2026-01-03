@@ -5,13 +5,13 @@ import dddrive.app.doc.model.enums.CodeCaseStageEnum;
 import dddrive.app.obj.model.Obj;
 import dddrive.ddd.core.model.enums.CodeAggregateType;
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.app.model.SessionContext;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse;
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.building.model.ObjBuilding;
 import io.zeitwert.fm.building.model.ObjBuildingPartRating;
 import io.zeitwert.fm.building.model.ObjBuildingRepository;
@@ -56,7 +56,7 @@ public class HomeController {
 	@Autowired
 	DocTaskRepository taskRepository;
 	@Autowired
-	private SessionContextFM sessionContext;
+	private SessionContext sessionContext;
 
 	@GetMapping("/overview/{accountId}")
 	public ResponseEntity<HomeOverviewResponse> getOverview(@PathVariable("accountId") Integer accountId) {

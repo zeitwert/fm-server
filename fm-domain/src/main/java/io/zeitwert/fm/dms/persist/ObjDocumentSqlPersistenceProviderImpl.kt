@@ -1,9 +1,9 @@
 package io.zeitwert.fm.dms.persist
 
 import io.crnk.core.queryspec.QuerySpec
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.db.Tables
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 @Component("objDocumentPersistenceProvider")
 open class ObjDocumentSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjSqlPersistenceProviderBase<ObjDocument>(ObjDocument::class.java),
 	SqlRecordMapper<ObjDocument> {
 

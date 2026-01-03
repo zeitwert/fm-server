@@ -1,10 +1,10 @@
 package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
+import dddrive.app.doc.model.Doc;
 import io.crnk.core.resource.annotations.JsonApiField;
 import io.crnk.core.resource.annotations.JsonApiMetaInformation;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
-import dddrive.app.doc.model.Doc;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

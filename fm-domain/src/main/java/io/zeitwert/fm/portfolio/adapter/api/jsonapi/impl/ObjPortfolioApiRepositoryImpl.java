@@ -16,10 +16,10 @@ public class ObjPortfolioApiRepositoryImpl
 
 	public ObjPortfolioApiRepositoryImpl(
 			ObjPortfolioRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			ObjPortfolioDtoAdapter dtoAdapter) {
-		super(ObjPortfolioDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(ObjPortfolioDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

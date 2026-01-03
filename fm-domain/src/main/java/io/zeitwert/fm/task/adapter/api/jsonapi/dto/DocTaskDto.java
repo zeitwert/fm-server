@@ -3,7 +3,7 @@ package io.zeitwert.fm.task.adapter.api.jsonapi.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.crnk.core.resource.annotations.*;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocDtoBase;
 import io.zeitwert.fm.task.adapter.api.jsonapi.impl.DocTaskDtoAdapter;

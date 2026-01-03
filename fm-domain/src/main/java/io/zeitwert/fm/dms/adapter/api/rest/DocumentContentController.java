@@ -1,6 +1,6 @@
 package io.zeitwert.fm.dms.adapter.api.rest;
 
-import io.zeitwert.fm.app.model.SessionContextFM;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.dms.model.ObjDocument;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
 import io.zeitwert.fm.dms.model.enums.CodeContentType;
@@ -17,9 +17,9 @@ import java.io.IOException;
 public class DocumentContentController {
 
 	private final ObjDocumentRepository documentRepository;
-	private final SessionContextFM sessionContext;
+	private final SessionContext sessionContext;
 
-	public DocumentContentController(ObjDocumentRepository documentRepository, SessionContextFM sessionContext) {
+	public DocumentContentController(ObjDocumentRepository documentRepository, SessionContext sessionContext) {
 		this.documentRepository = documentRepository;
 		this.sessionContext = sessionContext;
 	}
@@ -41,8 +41,10 @@ public class DocumentContentController {
 	}
 
 	@RequestMapping(value = "/{documentId}/content", method = RequestMethod.POST)
-	public ResponseEntity<Void> setContent(@PathVariable Integer documentId,
-																				 @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<Void> setContent(
+			@PathVariable Integer documentId,
+			@RequestParam("file") MultipartFile file
+	) {
 		try {
 			CodeContentType contentType = CodeContentType.getContentType(file.getContentType(),
 					file.getOriginalFilename());
@@ -50,7 +52,7 @@ public class DocumentContentController {
 				return ResponseEntity.badRequest().body(null);
 			}
 			ObjDocument document = this.documentRepository.load(documentId);
-			document.storeContent(contentType, file.getBytes(), sessionContext.getUser().getId(), sessionContext.getCurrentTime());
+			document.storeContent(contentType, file.getBytes(), sessionContext.getUserId(), sessionContext.getCurrentTime());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return ResponseEntity.internalServerError().body(null);

@@ -15,10 +15,9 @@ import io.crnk.core.repository.ResourceRepositoryBase;
 import io.crnk.core.resource.list.DefaultResourceList;
 import io.crnk.core.resource.list.ResourceList;
 import io.zeitwert.dddrive.app.model.SessionContext;
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoAdapterBase;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase;
 import io.zeitwert.dddrive.model.FMAggregateRepository;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +26,19 @@ import java.util.List;
 public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends AggregateDtoBase<A>>
 		extends ResourceRepositoryBase<D, Integer> {
 
-	private final SessionContextFM requestCtx;
+	private final SessionContext sessionCtx;
 	private final ObjUserRepository userRepository;
 	private final AggregateRepository<A> repository;
-	private final AggregateDtoAdapterBase<A, D> dtoAdapter;
+	private final AggregateDtoAdapter<A, D> dtoAdapter;
 
 	public AggregateApiRepositoryBase(
 			Class<D> dtoClass,
-			SessionContext requestCtx,
+			SessionContext sessionCtx,
 			ObjUserRepository userRepository,
 			AggregateRepository<A> repository,
-			AggregateDtoAdapterBase<A, D> dtoAdapter) {
+			AggregateDtoAdapter<A, D> dtoAdapter) {
 		super(dtoClass);
-		this.requestCtx = (SessionContextFM) requestCtx;
+		this.sessionCtx = sessionCtx;
 		this.userRepository = userRepository;
 		this.repository = repository;
 		this.dtoAdapter = dtoAdapter;
@@ -53,11 +52,11 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			throw new BadRequestException("Cannot specify id on creation (" + dto.getId() + ")");
 		}
 		try {
-			// this.userRepository.touch(this.requestCtx.getUser().getId());
-			A aggregate = this.repository.create();
-			this.dtoAdapter.toAggregate(dto, aggregate);
-			this.repository.store(aggregate);
-			return (S) this.dtoAdapter.fromAggregate(aggregate);
+			// userRepository.touch(sessionCtx.getUser().getId());
+			A aggregate = repository.create();
+			dtoAdapter.toAggregate(dto, aggregate);
+			repository.store(aggregate);
+			return (S) dtoAdapter.fromAggregate(aggregate);
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on create", x);
 		}
@@ -67,13 +66,13 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	public D findOne(Integer objId, QuerySpec querySpec) {
 		try {
-			// this.userRepository.touch(this.requestCtx.getUser().getId());
-			A aggregate = this.repository.load(objId);
-			this.requestCtx.addAggregate(objId, aggregate);
-			return this.dtoAdapter.fromAggregate(aggregate);
+			// userRepository.touch(sessionCtx.getUser().getId());
+			A aggregate = repository.load(objId);
+			sessionCtx.addAggregate(objId, aggregate);
+			return dtoAdapter.fromAggregate(aggregate);
 		} catch (Exception x) {
 			x.printStackTrace();
-			throw new ResourceNotFoundException(this.repository.getAggregateType().getDefaultName() + "[" + objId + "]");
+			throw new ResourceNotFoundException(repository.getAggregateType().getDefaultName() + "[" + objId + "]");
 		}
 	}
 
@@ -81,11 +80,11 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	public ResourceList<D> findAll(QuerySpec querySpec) {
 		try {
-			// this.userRepository.touch(this.requestCtx.getUser().getId());
-			List<Object> itemList = ((FMAggregateRepository) this.repository).find(null);
-			// List<A> itemList = this.repository.find(querySpec);
+			// userRepository.touch(sessionCtx.getUser().getId());
+			List<Object> itemList = ((FMAggregateRepository) repository).find(null);
+			// List<A> itemList = repository.find(querySpec);
 			ResourceList<D> list = new DefaultResourceList<>();
-			list.addAll(itemList.stream().map(repository::get).map(this.dtoAdapter::fromAggregate).toList());
+			list.addAll(itemList.stream().map(repository::get).map(dtoAdapter::fromAggregate).toList());
 			return list;
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on findAll", x);
@@ -96,7 +95,7 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public <S extends D> S save(S dto) {
-		// this.userRepository.touch(this.requestCtx.getUser().getId());
+		// userRepository.touch(sessionCtx.getUser().getId());
 		if (dto.getId() == null) {
 			throw new BadRequestException("Can only save existing object (missing id)");
 		} else if (dto.getMeta() == null) {
@@ -106,11 +105,11 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 			throw new BadRequestException("Missing meta information (version or operation)");
 		}
 		try {
-			A aggregate = this.requestCtx.hasAggregate(dto.getId())
-					? (A) this.requestCtx.getAggregate(dto.getId())
-					: this.repository.load(dto.getId());
+			A aggregate = sessionCtx.hasAggregate(dto.getId())
+					? (A) sessionCtx.getAggregate(dto.getId())
+					: repository.load(dto.getId());
 			if (dto.getMeta().hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
-				this.dtoAdapter.toAggregate(dto, aggregate);
+				dtoAdapter.toAggregate(dto, aggregate);
 			} else {
 				if (dto.getMeta().getClientVersion() == null) {
 					throw new BadRequestException("Missing version");
@@ -131,11 +130,11 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 							.build();
 					throw new BadRequestException(HttpStatus.CONFLICT_409, errorData);
 				}
-				this.dtoAdapter.toAggregate(dto, aggregate);
-				this.repository.store(aggregate);
-				aggregate = this.repository.get(dto.getId());
+				dtoAdapter.toAggregate(dto, aggregate);
+				repository.store(aggregate);
+				aggregate = repository.get(dto.getId());
 			}
-			return (S) this.dtoAdapter.fromAggregate(aggregate);
+			return (S) dtoAdapter.fromAggregate(aggregate);
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on save", x);
 		}
@@ -145,19 +144,19 @@ public abstract class AggregateApiRepositoryBase<A extends Aggregate, D extends 
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public void delete(Integer id) {
-		// this.userRepository.touch(this.requestCtx.getUser().getId());
+		// userRepository.touch(sessionCtx.getUser().getId());
 		if (id == null) {
 			throw new ResourceNotFoundException("Can only delete existing object (missing id)");
 		}
 		try {
-			A aggregate = this.requestCtx.hasAggregate(id)
-					? (A) this.requestCtx.getAggregate(id)
-					: this.repository.load(id);
+			A aggregate = sessionCtx.hasAggregate(id)
+					? (A) sessionCtx.getAggregate(id)
+					: repository.load(id);
 			if (!(aggregate instanceof Obj)) {
 				throw new BadRequestException("Can only delete an Object");
 			}
-			((ObjRepository<Obj>) this.repository).close((Obj) aggregate);
-			this.repository.store(aggregate);
+			((ObjRepository<Obj>) repository).close((Obj) aggregate);
+			repository.store(aggregate);
 		} catch (Exception x) {
 			throw new RuntimeException("crashed on delete", x);
 		}

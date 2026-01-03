@@ -24,7 +24,7 @@ public class SessionTest {
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
 
 	@Autowired
-	private SessionContext requestCtx;
+	private SessionContext sessionContext;
 
 	@Autowired
 	private ObjTestRepository testRepo;

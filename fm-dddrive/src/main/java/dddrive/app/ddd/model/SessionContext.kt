@@ -10,6 +10,6 @@ interface SessionContext {
 
 	val userId: Any
 
-	val timestamp: OffsetDateTime
+	val currentTime: OffsetDateTime
 
 }

@@ -2,7 +2,7 @@ package io.zeitwert.fm.doc.adapter.api.jsonapi.dto;
 
 import dddrive.app.doc.model.DocPartTransition;
 import dddrive.app.doc.model.enums.CodeCaseStage;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import lombok.Builder;
 import lombok.Data;

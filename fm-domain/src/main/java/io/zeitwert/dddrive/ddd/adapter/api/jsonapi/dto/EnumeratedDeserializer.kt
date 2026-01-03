@@ -1,6 +1,5 @@
-package io.zeitwert.dddrive.ddd.api.rest.impl
+package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
@@ -8,6 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import java.io.IOException
 
 class EnumeratedDeserializer : StdDeserializer<EnumeratedDto> {
+
 	constructor() : this(null)
 
 	constructor(vc: Class<*>?) : super(vc)
@@ -23,4 +23,5 @@ class EnumeratedDeserializer : StdDeserializer<EnumeratedDto> {
 		val name = if (nameNode?.isNull != false) "" else nameNode.asText()
 		return EnumeratedDto.of(id, name)
 	}
+
 }

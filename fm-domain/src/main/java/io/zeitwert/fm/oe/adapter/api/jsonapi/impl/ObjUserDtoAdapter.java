@@ -1,6 +1,7 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl;
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto;
 import io.zeitwert.fm.dms.adapter.api.jsonapi.impl.ObjDocumentDtoAdapter;
 import io.zeitwert.fm.dms.model.ObjDocumentRepository;
@@ -60,7 +61,7 @@ public class ObjUserDtoAdapter extends ObjDtoAdapterBase<ObjUser, ObjUserDto> {
 			obj.setRole(CodeUserRole.getUserRole(dto.getRole().getId()));
 			obj.getTenantSet().clear();
 			for (EnumeratedDto tenant : dto.getTenants()) {
-				obj.getTenantSet().add(Integer.parseInt(tenant.getId()));
+				obj.getTenantSet().add(DtoUtils.idFromString(tenant.getId()));
 			}
 		}
 	}

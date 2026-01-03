@@ -1,6 +1,7 @@
 package io.zeitwert.fm;
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum;
+import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.domain.test.model.DocTest;
 import io.zeitwert.domain.test.model.DocTestRepository;
 import io.zeitwert.domain.test.model.ObjTest;
@@ -8,7 +9,6 @@ import io.zeitwert.domain.test.model.ObjTestRepository;
 import io.zeitwert.domain.test.model.enums.CodeTestType;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.test.TestApplication;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class DocTestTest {
 	private static final String TYPE_C = "type_c";
 
 	@Autowired
-	private SessionContextFM requestCtx;
+	private SessionContext sessionContext;
 
 	@Autowired
 	private DocTestRepository docTestRepo;
@@ -54,10 +54,9 @@ public class DocTestTest {
 		assertNotNull(this.docTestRepo, "docTestRepository not null");
 		assertEquals("doc_test", this.docTestRepo.getAggregateType().getId());
 
-		Object tenantId = requestCtx.getTenantId();
-		Object userId = requestCtx.getUserId();
-		OffsetDateTime now = requestCtx.getCurrentTime();
-		ObjAccount account = this.getTestAccount(this.requestCtx);
+		Object userId = sessionContext.getUserId();
+		OffsetDateTime now = sessionContext.getCurrentTime();
+		ObjAccount account = this.getTestAccount(this.sessionContext);
 
 		DocTest testA1 = this.docTestRepo.create();
 		assertEquals(0, testA1.getMeta().getVersion());
@@ -99,10 +98,8 @@ public class DocTestTest {
 	@Test
 	public void testAggregateProperties() throws Exception {
 
-		Object tenantId = requestCtx.getTenantId();
-		Object userId = requestCtx.getUserId();
-		OffsetDateTime now = requestCtx.getCurrentTime();
-		ObjAccount account = this.getTestAccount(this.requestCtx);
+		Object userId = sessionContext.getUserId();
+		ObjAccount account = this.getTestAccount(this.sessionContext);
 
 		CodeTestType typeA = CodeTestType.Enumeration.getTestType(TYPE_A);
 		CodeTestType typeB = CodeTestType.Enumeration.getTestType(TYPE_B);
@@ -214,7 +211,7 @@ public class DocTestTest {
 
 	}
 
-	private ObjAccount getTestAccount(SessionContextFM requestCtx) {
+	private ObjAccount getTestAccount(SessionContext sessionContext) {
 		return this.accountRepository.get(this.accountRepo.find(null).getFirst());
 	}
 

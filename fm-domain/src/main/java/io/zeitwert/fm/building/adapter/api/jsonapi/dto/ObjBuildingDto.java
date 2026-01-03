@@ -5,7 +5,7 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiRelationId;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto;
 import io.zeitwert.fm.building.adapter.api.jsonapi.impl.ObjBuildingDtoAdapter;
 import io.zeitwert.fm.building.model.ObjBuilding;
@@ -36,7 +36,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 	@JsonIgnore
 	private ObjAccountDto accountDto;
 	@JsonApiRelationId
-	private Set<Integer> contactIds;
+	private Set<String> contactIds;
 	@JsonIgnore
 	private Set<ObjContactDto> contactsDtos;
 	private EnumeratedDto buildingType;
@@ -97,7 +97,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 		this.accountId = account != null ? account.getId() : null;
 	}
 
-	public void setContactIds(Set<Integer> contactIds) {
+	public void setContactIds(Set<String> contactIds) {
 		this.contactIds = contactIds;
 		this.contactsDtos = null;
 	}

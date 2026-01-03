@@ -6,7 +6,6 @@ import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum;
 import io.crnk.core.queryspec.FilterSpec;
 import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.dddrive.persist.util.SqlUtils;
-import io.zeitwert.fm.app.model.SessionContextFM;
 import io.zeitwert.fm.ddd.model.SearchResult;
 import io.zeitwert.fm.ddd.service.api.SearchService;
 import io.zeitwert.fm.obj.model.db.tables.Obj;
@@ -65,22 +64,26 @@ public class SearchServiceImpl implements SearchService, SqlUtils.SearchConditio
 	}
 
 	@Override
-	public SearchResult findOne(SessionContext requestCtx, String itemType, String searchText) {
-		List<SearchResult> results = this.find(requestCtx, List.of(itemType), searchText, 1);
+	public SearchResult findOne(SessionContext sessionContext, String itemType, String searchText) {
+		List<SearchResult> results = this.find(sessionContext, List.of(itemType), searchText, 1);
 		return results.size() > 0 && results.get(0).getRank().doubleValue() > 0.5 ? results.get(0) : null;
 	}
 
 	@Override
-	public List<SearchResult> find(SessionContext requestCtx, String searchText, int maxResultSize) {
-		return this.find(requestCtx, List.of(), searchText, maxResultSize);
+	public List<SearchResult> find(SessionContext sessionContext, String searchText, int maxResultSize) {
+		return this.find(sessionContext, List.of(), searchText, maxResultSize);
 	}
 
 	@Override
-	public List<SearchResult> find(SessionContext requestCtx, List<String> itemTypes, String searchToken,
-																 int maxResultSize) {
+	public List<SearchResult> find(
+			SessionContext sessionCtx,
+			List<String> itemTypes,
+			String searchToken,
+			int maxResultSize
+	) {
 
-		Integer tenantId = (Integer) requestCtx.getTenantId();
-		Integer accountId = ((SessionContextFM) requestCtx).getAccountId();
+		Integer tenantId = (Integer) sessionCtx.getTenantId();
+		Integer accountId = (Integer) sessionCtx.getAccountId();
 
 		Condition tenantCondition = tenantId == ObjTenantRepository.KERNEL_TENANT_ID
 				? DSL.trueCondition()

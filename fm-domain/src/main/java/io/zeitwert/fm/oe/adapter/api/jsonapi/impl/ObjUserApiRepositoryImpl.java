@@ -15,10 +15,10 @@ public class ObjUserApiRepositoryImpl
 
 	public ObjUserApiRepositoryImpl(
 			ObjUserRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			ObjUserDtoAdapter dtoAdapter) {
-		super(ObjUserDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(ObjUserDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

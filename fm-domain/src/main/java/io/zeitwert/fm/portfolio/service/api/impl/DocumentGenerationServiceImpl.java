@@ -49,7 +49,7 @@ public class DocumentGenerationServiceImpl implements DocumentGenerationService 
 	Formatter fmt = Formatter.INSTANCE;
 
 	@Autowired
-	SessionContext requestCtx;
+	SessionContext sessionContext;
 
 	@Autowired
 	PortfolioEvaluationService evaluationService;

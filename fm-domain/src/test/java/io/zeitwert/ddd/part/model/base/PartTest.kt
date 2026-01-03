@@ -25,7 +25,7 @@ import kotlin.run
 class PartTest {
 
 	@Autowired
-	private lateinit var requestCtx: SessionContext
+	private lateinit var sessionContext: SessionContext
 
 	@Autowired
 	private lateinit var testRepository: ObjTestRepository

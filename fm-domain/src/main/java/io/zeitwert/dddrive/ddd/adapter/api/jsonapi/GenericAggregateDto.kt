@@ -7,8 +7,6 @@ interface GenericAggregateDto<A : Aggregate> :
 	AggregateDto<A>,
 	GenericDto {
 
-	val id: String? get() = this["id"] as? String
-
 	var meta: AggregateMetaDto?
 
 	fun hasRelation(name: String): Boolean

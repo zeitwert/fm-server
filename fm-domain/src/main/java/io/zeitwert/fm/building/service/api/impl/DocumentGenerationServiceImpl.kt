@@ -50,7 +50,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 	private val logger: Logger = LoggerFactory.getLogger(DocumentGenerationServiceImpl::class.java)
 
 	@Autowired
-	lateinit var requestCtx: SessionContext
+	lateinit var sessionContext: SessionContext
 
 	@Autowired
 	lateinit var evaluationService: BuildingEvaluationService
@@ -434,7 +434,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 			cell = cell.nextSibling as Cell
 			val weight = Math.round(76.0 * e.weight!! / maxWeight).toInt()
 			builder.moveTo(cell.firstParagraph)
-			builder.write(kotlin.text.String(CharArray(weight)).replace('\u0000', 'I'))
+			builder.write(String(CharArray(weight)).replace('\u0000', 'I'))
 
 			val weightPC = Formatter.INSTANCE.formatValueWithUnit(e.weight, "%")
 			cell = cell.nextSibling as Cell

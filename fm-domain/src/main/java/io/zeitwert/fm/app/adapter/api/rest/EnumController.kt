@@ -2,8 +2,8 @@ package io.zeitwert.fm.app.adapter.api.rest
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import dddrive.ddd.core.model.RepositoryDirectory
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
-import io.zeitwert.fm.app.model.SessionContextFM
+import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 class EnumController {
 
 	@Autowired
-	lateinit var sessionContext: SessionContextFM
+	lateinit var sessionContext: SessionContext
 
 	@Autowired
 	lateinit var directory: RepositoryDirectory
@@ -55,7 +55,7 @@ class EnumController {
 	@get:GetMapping("/oe/objUser")
 	val users: ResponseEntity<List<EnumeratedDto>>
 		get() {
-			sessionContext.getTenantId()
+			sessionContext.tenantId
 			val users = userRepo.find(null).map { userRepo.get(it) }
 			return ResponseEntity.ok(users.map { EnumeratedDto.of(it.id.toString(), it.caption) })
 		}

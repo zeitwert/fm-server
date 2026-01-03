@@ -17,7 +17,7 @@ import dddrive.ddd.property.model.ReferenceSetProperty
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericDto
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -196,6 +196,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		aggregate: A,
 	): R {
 		val dto = resourceFactory()
+		dto["id"] = DtoUtils.idToString(aggregate.id)
 		fromEntity(
 			entity = aggregate as EntityWithProperties,
 			properties = aggregate.properties.filter { !it.isExcluded() },
@@ -211,41 +212,42 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		dto: GenericDto,
 	) {
 		for (property in properties) {
-			when (property) {
-				is PartListProperty<*, *> -> {
-					dto[property.name] = property.map { fromPart(it) }
-				}
+			try {
+				when (property) {
+					is PartListProperty<*, *> -> {
+						dto[property.name] = property.map { fromPart(it) }
+					}
 
-				is PartMapProperty<*, *> -> {
-					dto[property.name] =
-						property.entries.associate { (key, p) ->
-							key to fromPart(p)
-						}
-				}
+					is PartMapProperty<*, *> -> {
+						dto[property.name] = property.entries.associate { (key, p) -> key to fromPart(p) }
+					}
 
-				is EnumSetProperty<*> -> {
-					dto[property.name] = property.map { EnumeratedDto.of(it) }
-				}
+					is EnumSetProperty<*> -> {
+						dto[property.name] = property.map { EnumeratedDto.of(it) }
+					}
 
-				is ReferenceSetProperty<*> -> {
-					dto["${property.name}Ids"] = property.toSet()
-				}
+					is ReferenceSetProperty<*> -> {
+						dto["${property.name}Ids"] = property.toSet()
+					}
 
-				is AggregateReferenceProperty<*> -> {
-					dto["${property.name}Id"] = property.id?.toString()
-				}
+					is AggregateReferenceProperty<*> -> {
+						dto["${property.name}Id"] = DtoUtils.idToString(property.id)
+					}
 
-				is PartReferenceProperty<*, *> -> {
-					dto["${property.name}Id"] = property.id?.toString()
-				}
+					is PartReferenceProperty<*, *> -> {
+						dto["${property.name}Id"] = property.id?.toString()
+					}
 
-				is EnumProperty<*> -> {
-					dto[property.name] = EnumeratedDto.of(property.value)
-				}
+					is EnumProperty<*> -> {
+						dto[property.name] = EnumeratedDto.of(property.value)
+					}
 
-				is BaseProperty<*> -> {
-					dto[property.name] = property.value
+					is BaseProperty<*> -> {
+						dto[property.name] = property.value
+					}
 				}
+			} catch (ex: Exception) {
+				throw RuntimeException("fromEntity(${entity.javaClass.simpleName}.${property.name}) crashed: ${ex.message}", ex)
 			}
 		}
 	}
@@ -266,33 +268,37 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		dto: R,
 	) {
 		for (rel in relationships) {
-			if (rel.dataSource != null) {
-				dto.setRelation(rel.targetRelation, rel.dataSource.invoke(entity, dto))
-			} else if (rel.sourceProperty != null) {
-				when (val property = entity.getProperty(rel.sourceProperty, Any::class)) {
-					is AggregateReferenceProperty<*> -> {
-						val id: String? = property.id?.toString()
-						if (id != null) {
-							dto.setRelation(rel.targetRelation, id)
+			try {
+				if (rel.dataSource != null) {
+					dto.setRelation(rel.targetRelation, rel.dataSource.invoke(entity, dto))
+				} else if (rel.sourceProperty != null) {
+					when (val property = entity.getProperty(rel.sourceProperty, Any::class)) {
+						is AggregateReferenceProperty<*> -> {
+							val id: String? = DtoUtils.idToString(property.id)
+							if (id != null) {
+								dto.setRelation(rel.targetRelation, id)
+							}
 						}
-					}
 
-					is ReferenceSetProperty<*> -> {
-						val ids: List<String> = property.map { it.toString() }
-						dto.setRelation(rel.targetRelation, ids)
-					}
-
-					is BaseProperty<*> -> {
-						val id: String? = property.value?.toString()
-						if (id != null) {
-							dto.setRelation(rel.targetRelation, id)
+						is ReferenceSetProperty<*> -> {
+							val ids: List<String> = property.map { DtoUtils.idToString(it) }
+							dto.setRelation(rel.targetRelation, ids)
 						}
-					}
 
-					else -> {
-						null
+						is BaseProperty<*> -> {
+							dto.setRelation(rel.targetRelation, DtoUtils.idToString(property.value))
+						}
+
+						else -> {
+							null
+						}
 					}
 				}
+			} catch (ex: Exception) {
+				throw RuntimeException(
+					"fromRelationship(${entity.javaClass.simpleName}.${rel.targetRelation}) crashed: ${ex.message}",
+					ex,
+				)
 			}
 		}
 	}
@@ -331,38 +337,42 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		properties: List<Property<*>>,
 	) {
 		for (property in properties) {
-			when (property) {
-				is PartListProperty<*, *> -> {
-					toPartList(dto, property)
-				}
+			try {
+				when (property) {
+					is PartListProperty<*, *> -> {
+						toPartList(dto, property)
+					}
 
-				is PartMapProperty<*, *> -> {
-					toPartMap(dto, property)
-				}
+					is PartMapProperty<*, *> -> {
+						toPartMap(dto, property)
+					}
 
-				is EnumSetProperty<*> -> {
-					toEnumSet(dto, property as EnumSetProperty<Enumerated>)
-				}
+					is EnumSetProperty<*> -> {
+						toEnumSet(dto, property as EnumSetProperty<Enumerated>)
+					}
 
-				is ReferenceSetProperty<*> -> {
-					toReferenceSet(dto, property)
-				}
+					is ReferenceSetProperty<*> -> {
+						toReferenceSet(dto, property)
+					}
 
-				is AggregateReferenceProperty<*> -> {
-					property.id = (dto["${property.name}Id"] as String?)?.toInt()
-				}
+					is AggregateReferenceProperty<*> -> {
+						property.id = DtoUtils.idFromString(dto["${property.name}Id"] as String?)
+					}
 
-				is PartReferenceProperty<*, *> -> {
-					property.id = (dto["${property.name}Id"] as String?)?.toInt()
-				}
+					is PartReferenceProperty<*, *> -> {
+						property.id = (dto["${property.name}Id"] as String?)?.toInt()
+					}
 
-				is EnumProperty<*> -> {
-					property.id = (dto[property.name] as Map<String, Any?>)["id"] as? String
-				}
+					is EnumProperty<*> -> {
+						property.id = (dto[property.name] as Map<String, Any?>?)?.get("id") as? String
+					}
 
-				is BaseProperty<*> -> {
-					(property as BaseProperty<Any>).value = toDomainValue(dto[property.name], property.type)
+					is BaseProperty<*> -> {
+						(property as BaseProperty<Any>).value = toDomainValue(dto[property.name], property.type)
+					}
 				}
+			} catch (ex: Exception) {
+				throw RuntimeException("toEntity(${entity.javaClass.simpleName}.${property.name}) crashed: ${ex.message}", ex)
 			}
 		}
 	}
@@ -431,10 +441,10 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		dto: GenericDto,
 		property: ReferenceSetProperty<*>,
 	) {
-		val ids = dto["${property.name}Ids"] as? Collection<Any> ?: return
+		val ids = dto[property.name] as? Collection<String> ?: return
 		property.clear()
 		for (id in ids) {
-			property.add(id)
+			property.add(DtoUtils.idFromString(id))
 		}
 	}
 

@@ -1,12 +1,10 @@
-
 package io.zeitwert.fm.app.adapter.api.rest.dto;
 
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
-
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 
 @Data
 @Builder

@@ -16,10 +16,10 @@ public class ObjDocumentApiRepositoryImpl
 
 	public ObjDocumentApiRepositoryImpl(
 			ObjDocumentRepository repository,
-			SessionContext requestCtx,
+			SessionContext sessionContext,
 			ObjUserRepository userRepository,
 			ObjDocumentDtoAdapter dtoAdapter) {
-		super(ObjDocumentDto.class, requestCtx, userRepository, repository, dtoAdapter);
+		super(ObjDocumentDto.class, sessionContext, userRepository, repository, dtoAdapter);
 	}
 
 }

@@ -5,8 +5,6 @@ import dddrive.app.doc.model.DocMeta;
 import dddrive.app.obj.model.Obj;
 import dddrive.app.obj.model.ObjMeta;
 import io.crnk.core.resource.meta.MetaInformation;
-import io.zeitwert.dddrive.ddd.api.rest.dto.AggregatePartValidationDto;
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto;
 import io.zeitwert.fm.oe.model.ObjUserRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;

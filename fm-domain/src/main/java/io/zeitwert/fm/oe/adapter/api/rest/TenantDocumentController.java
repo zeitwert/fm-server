@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TenantDocumentController {
 
 	@Autowired
-	SessionContext requestCtx;
+	SessionContext sessionContext;
 	@Autowired
 	private ObjTenantRepository tenantRepository;
 	@Autowired

@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.service.api.impl
 
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto
-import io.zeitwert.dddrive.ddd.api.rest.dto.EnumeratedDto.Companion.of
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto.Companion.of
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart.Enumeration.getMaintenanceRate
@@ -105,7 +105,7 @@ class ProjectionServiceImpl : ProjectionService {
 	}
 
 	private fun getAsEnumerated(building: ObjBuilding): EnumeratedDto {
-		val id: String? = building.id.toString()
+		val id: String = building.id.toString()
 		return of(id, building.name)
 	}
 

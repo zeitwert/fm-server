@@ -1,15 +1,15 @@
 package io.zeitwert.domain.test.model.impl
 
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.ObjTestRepository
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 
 @Component("objTestRepository")
 class ObjTestRepositoryImpl(
-	override val requestCtx: SessionContextFM,
+	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<ObjTest>(
 		ObjTest::class.java,
 		AGGREGATE_TYPE_ID,

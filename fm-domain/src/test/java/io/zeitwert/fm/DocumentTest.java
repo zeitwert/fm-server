@@ -30,7 +30,7 @@ public class DocumentTest {
 	static String TEST_JPG_CONTENT = "JPEG-JPEG-JPEG";
 
 	@Autowired
-	private SessionContext requestCtx;
+	private SessionContext sessionContext;
 
 	@Autowired
 	private ObjAccountRepository accountRepo;
@@ -41,9 +41,9 @@ public class DocumentTest {
 	@Test
 	public void testDocument() throws Exception {
 
-		Object tenantId = requestCtx.getTenantId();
-		Object userId = requestCtx.getUser().getId();
-		OffsetDateTime timestamp = requestCtx.getCurrentTime();
+		Object tenantId = sessionContext.getTenantId();
+		Object userId = sessionContext.getUserId();
+		OffsetDateTime timestamp = sessionContext.getCurrentTime();
 
 		this.getTestData(tenantId, userId, timestamp);
 

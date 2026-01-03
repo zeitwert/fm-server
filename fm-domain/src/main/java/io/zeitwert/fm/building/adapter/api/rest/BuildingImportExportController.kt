@@ -1,8 +1,8 @@
 package io.zeitwert.fm.building.adapter.api.rest
 
 import dddrive.ddd.core.model.RepositoryDirectory
+import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.account.model.enums.CodeCurrency
-import io.zeitwert.fm.app.model.SessionContextFM
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferDto
 import io.zeitwert.fm.building.adapter.api.rest.dto.BuildingTransferElementRatingDto
 import io.zeitwert.fm.building.adapter.api.rest.dto.NoteTransferDto
@@ -42,7 +42,7 @@ import java.util.function.Consumer
 class BuildingImportExportController {
 
 	@Autowired
-	lateinit var requestCtx: SessionContextFM
+	lateinit var sessionCtx: SessionContext
 
 	@Autowired
 	lateinit var directory: RepositoryDirectory
@@ -75,7 +75,7 @@ class BuildingImportExportController {
 	fun importBuilding(
 		@RequestBody dto: BuildingTransferDto,
 	): ResponseEntity<BuildingTransferDto?> {
-		val accountId = this.requestCtx.getAccountId()
+		val accountId = this.sessionCtx.accountId
 		if (accountId == null) {
 			return ResponseEntity.badRequest().build<BuildingTransferDto?>()
 		} else if (AGGREGATE != dto.meta?.aggregate) {
@@ -183,8 +183,8 @@ class BuildingImportExportController {
 		try {
 			building.meta.disableCalc()
 
-			val user = this.requestCtx.getUser() as ObjUser
-			val now = this.requestCtx.getCurrentTime()
+			val user = this.sessionCtx.user as ObjUser
+			val now = this.sessionCtx.currentTime
 			building.ownerId = user.id
 			building.name = dto.name
 			building.description = dto.description
@@ -256,7 +256,7 @@ class BuildingImportExportController {
 			}
 			if (dto.notes != null) {
 				val noteType = getNoteType("note")
-				val noteUserId = this.requestCtx.getUser().id
+				val noteUserId = this.sessionCtx.user.id
 				dto.notes.forEach(
 					Consumer { dtoNote: NoteTransferDto? ->
 						val note = building.addNote(noteType!!, noteUserId)
