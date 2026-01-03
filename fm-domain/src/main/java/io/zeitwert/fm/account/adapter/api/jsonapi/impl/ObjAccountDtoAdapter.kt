@@ -18,7 +18,7 @@ class ObjAccountDtoAdapter(
 		relationship("mainContactId", "contact") { entity, dto ->
 			val accountId = (entity as ObjAccount).id
 			val contactIds = directory.getRepository(ObjContact::class.java).getByForeignKey("accountId", accountId)
-			contactIds.map { DtoUtils.idToString(it) }.random()
+			contactIds.map { DtoUtils.idToString(it) }.firstOrNull()
 		}
 		relationship("logoId", "document", "logoImage")
 		relationshipSet("contactIds", "contact") { entity, dto ->

@@ -28,7 +28,7 @@ public class ObjAccountLoginDto extends ObjDtoBase<ObjAccount> {
 	private EnumeratedDto clientSegment;
 	private EnumeratedDto referenceCurrency;
 	@JsonApiRelationId
-	private Integer logoId;
+	private String logoId;
 	@JsonIgnore
 	private ObjDocumentDto logoDto;
 
@@ -37,7 +37,7 @@ public class ObjAccountLoginDto extends ObjDtoBase<ObjAccount> {
 		return (ObjAccountLoginDtoAdapter) super.getAdapter();
 	}
 
-	public void setLogoId(Integer logoId) {
+	public void setLogoId(String logoId) {
 		// assertThis(false, "logoId is read-only");
 	}
 

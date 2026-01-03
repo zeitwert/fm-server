@@ -70,7 +70,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 	private Integer thirdPartyValueYear;
 	private ObjBuildingPartRatingDto currentRating;
 	@JsonApiRelationId
-	private Integer coverFotoId;
+	private String coverFotoId;
 	@JsonIgnore
 	private ObjDocumentDto coverFotoDto;
 
@@ -122,7 +122,7 @@ public class ObjBuildingDto extends ObjDtoBase<ObjBuilding> {
 				: null;
 	}
 
-	public void setCoverFotoId(Integer fotoId) {
+	public void setCoverFotoId(String fotoId) {
 		// assertThis(false, "coverFotoId is read-only");
 	}
 

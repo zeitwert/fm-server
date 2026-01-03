@@ -84,8 +84,8 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 		return id != null ? this.contactDtoAdapter.fromAggregate(this.contactRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
-	public ObjDocumentDto getDocumentDto(Integer id) {
-		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(id)) : null;
+	public ObjDocumentDto getDocumentDto(String id) {
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class ObjBuildingDtoAdapter extends ObjDtoAdapterBase<ObjBuilding, ObjBui
 				.geoAddress(obj.getGeoAddress())
 				.geoCoordinates(obj.getGeoCoordinates())
 				.geoZoom(obj.getGeoZoom())
-				.coverFotoId((Integer) obj.getCoverFotoId())
+				.coverFotoId(DtoUtils.idToString(obj.getCoverFotoId()))
 				.currency(EnumeratedDto.of(obj.getCurrency()))
 				.volume(obj.getVolume())
 				.areaGross(obj.getAreaGross())

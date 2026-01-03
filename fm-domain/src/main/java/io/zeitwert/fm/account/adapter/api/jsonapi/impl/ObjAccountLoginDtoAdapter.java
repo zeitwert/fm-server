@@ -1,5 +1,6 @@
 package io.zeitwert.fm.account.adapter.api.jsonapi.impl;
 
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountLoginDto;
 import io.zeitwert.fm.account.model.ObjAccount;
@@ -27,8 +28,8 @@ public class ObjAccountLoginDtoAdapter
 		this.documentDtoAdapter = documentDtoAdapter;
 	}
 
-	public ObjDocumentDto getDocumentDto(Integer id) {
-		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(id)) : null;
+	public ObjDocumentDto getDocumentDto(String id) {
+		return id != null ? this.documentDtoAdapter.fromAggregate(this.documentRepository.get(DtoUtils.idFromString(id))) : null;
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class ObjAccountLoginDtoAdapter
 				.accountType(EnumeratedDto.of(obj.getAccountType()))
 				.clientSegment(EnumeratedDto.of(obj.getClientSegment()))
 				.referenceCurrency(EnumeratedDto.of(obj.getReferenceCurrency()))
-				.logoId((Integer) obj.getLogoImageId())
+				.logoId(DtoUtils.idToString(obj.getLogoImageId()))
 				.build();
 	}
 
