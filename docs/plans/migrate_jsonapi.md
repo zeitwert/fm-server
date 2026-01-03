@@ -3,13 +3,25 @@
 This cookbook describes how to migrate a JSON API repository from the legacy Java-based pattern to the new generic
 Kotlin pattern.
 
-## Reference Implementation
+## Reference Implementations
 
-The reference implementation is `ObjAccount`:
+### ObjAccount (basic relationships)
 
 - `fm-domain/src/main/java/io/zeitwert/fm/account/adapter/api/jsonapi/impl/ObjAccountApiRepositoryImpl.kt`
 - `fm-domain/src/main/java/io/zeitwert/fm/account/adapter/api/jsonapi/impl/ObjAccountDtoAdapter.kt`
 - `fm-domain/src/main/java/io/zeitwert/fm/account/adapter/api/jsonapi/dto/ObjAccountDto.kt`
+
+### ObjUser (field mapping with ReferenceSetProperty)
+
+- `fm-domain/src/main/java/io/zeitwert/fm/oe/adapter/api/jsonapi/impl/ObjUserApiRepositoryImpl.kt`
+- `fm-domain/src/main/java/io/zeitwert/fm/oe/adapter/api/jsonapi/impl/ObjUserDtoAdapter.kt`
+- `fm-domain/src/main/java/io/zeitwert/fm/oe/adapter/api/jsonapi/dto/ObjUserDto.kt`
+
+### ObjTenant (simple with asEnumerated)
+
+- `fm-domain/src/main/java/io/zeitwert/fm/oe/adapter/api/jsonapi/impl/ObjTenantApiRepositoryImpl.kt`
+- `fm-domain/src/main/java/io/zeitwert/fm/oe/adapter/api/jsonapi/impl/ObjTenantDtoAdapter.kt`
+- `fm-domain/src/main/java/io/zeitwert/fm/oe/adapter/api/jsonapi/dto/ObjTenantDto.kt`
 
 ## Migration Steps
 
@@ -96,7 +108,60 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoAdapterBase
 
 - The base class handles `fromAggregate()` and `toAggregate()` automatically using metadata
 - Parts are handled generically - no manual part mapping needed
-- Use `init {}` block to configure custom relationships if needed
+- Use `init {}` block to configure custom relationships and field mappings
+
+#### Adapter Configuration Options
+
+The adapter supports several configuration methods in the `init {}` block:
+
+**Relationship Configuration** (for JSON API relationships with `@JsonApiRelationId`):
+
+```kotlin
+init {
+    // Single relationship: maps DTO field "logoId" to entity property "logoImage"
+    relationship("logoId", "document", "logoImage")
+
+    // Relationship with custom data source:
+    relationship("mainContactId", "contact") { entity, dto ->
+        // Custom logic to compute the related ID
+        DtoUtils.idToString(someValue)
+    }
+
+    // Collection relationship:
+    relationshipSet("contactIds", "contact", "contacts")
+}
+```
+
+**Field Configuration** (for regular fields with name mapping or type conversion):
+
+```kotlin
+init {
+    // Exclude a property from automatic handling
+    exclude("tenantSet")
+
+    // Simple field mapping: maps DTO field "tenants" from entity property "tenantSet"
+    // Intelligent type detection:
+    //   - ReferenceSetProperty<T> → List<EnumeratedDto> (loads entities)
+    //   - AggregateReferenceProperty<T> → EnumeratedDto (loads entity)
+    field("tenants", "tenantSet")
+
+    // Custom field with outgoing/incoming functions:
+    field("customField",
+        outgoing = { entity, dto -> /* compute value */ },
+        incoming = { dto, entity -> /* apply value */ }
+    )
+}
+```
+
+**Keep `asEnumerated()` Method** if used by other components:
+
+```kotlin
+fun asEnumerated(obj: ObjXxx?): EnumeratedDto? {
+    return if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)
+}
+```
+
+Check usages with: `grep -r "xxxDtoAdapter.asEnumerated"` - if found, keep this method.
 
 ### 3. Create the new DTO (Kotlin)
 
@@ -163,10 +228,19 @@ The following files are no longer needed and should be deleted:
 
 ### 5. Check for Downstream Consumers
 
-Search for usages of the DTO in other files. Common issues:
+Search for usages of the DTO and adapter in other files:
 
-**dto.getId() returns String now:**
-If other code expects `getId()` to return `Integer`, you need to update it:
+```bash
+# Search for DTO usages
+grep -r "ObjXxxDto" --include="*.java" --include="*.kt"
+
+# Search for adapter usages (especially asEnumerated)
+grep -r "xxxDtoAdapter" --include="*.java" --include="*.kt"
+```
+
+**Common issues to fix:**
+
+**1. `dto.getId()` returns String now:**
 
 ```java
 // Old code (will fail):
@@ -174,6 +248,30 @@ contacts.stream().map(ct -> ct.getId()).collect(...)
 
 // New code:
 contacts.stream().map(ct -> DtoUtils.idFromString(ct.getId())).collect(...)
+```
+
+**2. `adapter.fromAggregate()` requires non-null parameter:**
+
+The new Kotlin adapter's `fromAggregate(A)` requires a non-null aggregate. If callers pass nullable:
+
+```kotlin
+// Old code (will fail):
+userDtoAdapter.fromAggregate(this.sessionContext.user as ObjUser?)
+
+// New code - use safe call:
+val user = this.sessionContext.user as? ObjUser
+user?.let { userDtoAdapter.fromAggregate(it) }
+```
+
+**3. Adapter's `asEnumerated()` method:**
+
+If the old adapter had `asEnumerated()` used by other components (e.g., `ObjBuildingPartRatingDto`),
+keep it in the new adapter:
+
+```kotlin
+fun asEnumerated(obj: ObjXxx?): EnumeratedDto? {
+    return if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)
+}
 ```
 
 ### 6. Verify the Migration
@@ -187,17 +285,41 @@ You do not need to run tests, since UI is not covered. User will do that manuall
 
 ## Quick Checklist
 
+### Before Starting
+
+- [ ] Check for field name differences between old DTO and entity (e.g., `logoId` vs `logoImageId`)
+- [ ] Check for `ReferenceSetProperty` that need `List<EnumeratedDto>` conversion
+- [ ] Check if adapter has `asEnumerated()` method used elsewhere
+
+### Create New Files
+
 - [ ] Create `ObjXxxApiRepositoryImpl.kt` extending `GenericAggregateApiRepositoryBase`
 - [ ] Create `ObjXxxDtoAdapter.kt` extending `GenericObjDtoAdapterBase`
+  - [ ] Configure relationships with `relationship()` for fields needing name mapping
+  - [ ] Configure field mappings with `field()` for ReferenceSet → EnumeratedDto conversion
+  - [ ] Keep `asEnumerated()` method if used by other components
 - [ ] Create `ObjXxxDto.kt` extending `GenericObjDtoBase`
-- [ ] Ensure relation ID fields use `String?` type
+  - [ ] Only declare `@JsonApiRelationId` fields explicitly
+  - [ ] Use `String?` type for all relation IDs
+
+### Delete Old Files
+
 - [ ] Delete `ObjXxxApiRepositoryImpl.java`
 - [ ] Delete `ObjXxxDtoAdapter.java`
 - [ ] Delete `ObjXxxDto.java`
 - [ ] Delete `ObjXxxApiRepository.java` (interface)
 - [ ] Delete any Part DTO files (e.g., `ObjXxxPartYyyDto.java`)
-- [ ] Search for and fix downstream consumers
-- [ ] Build and test
+
+### Fix Downstream Consumers
+
+- [ ] Search: `grep -r "ObjXxxDto" --include="*.kt" --include="*.java"`
+- [ ] Search: `grep -r "xxxDtoAdapter" --include="*.kt" --include="*.java"`
+- [ ] Fix nullable `fromAggregate()` calls with `?.let { }`
+- [ ] Fix `getId()` calls expecting Integer with `DtoUtils.idFromString()`
+
+### Verify
+
+- [ ] Build: `mvn compile test-compile -DskipTests -pl !fm-ui -nsu`
 
 ## Common Issues
 
@@ -226,3 +348,51 @@ var accountId: String? = null
 ```java
 DtoUtils.idFromString(dto.getId())
 ```
+
+### Field name mismatch between DTO and entity
+
+**Cause:** The old Java DTO had a field like `logoId` but the entity property is `logoImageId`
+
+**Solution:** Use relationship mapping with explicit source property:
+
+```kotlin
+init {
+    // Maps DTO "logoId" to entity "logoImage" (which has logoImageId)
+    relationship("logoId", "document", "logoImage")
+}
+```
+
+Common mappings to watch for:
+- `logoId` → `logoImage` (entity stores as `logoImageId`)
+- `avatarId` → `avatarImage` (entity stores as `avatarImageId`)
+- `coverFotoId` → `coverFoto` (entity stores as `coverFotoId`)
+
+### ReferenceSetProperty needs List<EnumeratedDto>
+
+**Cause:** Entity has `tenantSet: ReferenceSetProperty<ObjTenant>` but DTO needs `tenants: List<EnumeratedDto>`
+
+**Solution:** Use field mapping with intelligent type detection:
+
+```kotlin
+init {
+    exclude("tenantSet")  // Exclude from automatic handling
+    field("tenants", "tenantSet")  // Maps with auto-conversion to List<EnumeratedDto>
+}
+```
+
+The adapter automatically detects `ReferenceSetProperty` and converts to `List<EnumeratedDto>` by loading
+each referenced entity and calling `EnumeratedDto.of(entity)`.
+
+## Framework Files Reference
+
+These are the key framework files involved in the generic adapter pattern:
+
+| File | Purpose |
+|------|---------|
+| `GenericAggregateDtoAdapterBase.kt` | Base adapter with relationship/field configuration |
+| `GenericObjDtoAdapterBase.kt` | Obj-specific adapter (extends above, adds meta/owner) |
+| `GenericAggregateApiRepositoryBase.kt` | Base API repository |
+| `GenericObjDtoBase.kt` | Base DTO class |
+| `ReferenceSetProperty.kt` | Interface for reference sets (has `targetClass`) |
+| `AggregateReferenceProperty.kt` | Interface for single references (has `targetClass`) |
+| `EnumeratedDto.kt` | DTO for id+name pairs (has `of(Aggregate?)` method) |

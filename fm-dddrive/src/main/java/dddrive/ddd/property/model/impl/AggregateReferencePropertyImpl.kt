@@ -14,6 +14,8 @@ class AggregateReferencePropertyImpl<A : Aggregate>(
 ) : ReferencePropertyBase<A, Any>(entity, name, Any::class.java),
 	AggregateReferenceProperty<A> {
 
+	override val targetClass: Class<A> get() = type
+
 	override var value: A?
 		get() {
 			val repo = (entity as EntityWithPropertiesSPI).directory.getRepository(type)

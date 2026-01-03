@@ -12,6 +12,7 @@ class ReferenceSetPropertyImpl<A : Aggregate>(
 	entity: EntityWithProperties,
 	name: String,
 	val repo: AggregateRepository<A>,
+	override val targetClass: Class<A>,
 ) : PropertyBase<A>(entity, name),
 	ReferenceSetProperty<A> {
 

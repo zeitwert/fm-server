@@ -131,10 +131,11 @@ class SessionController {
 			} else {
 				defaultApp = "fm"
 			}
+			val sessionUser = this.sessionContext.user as? ObjUser
 			val response = SessionInfoResponse(
 				applicationName = ApplicationInfo.getName(),
 				applicationVersion = ApplicationInfo.getVersion(),
-				user = this.userDtoAdapter.fromAggregate(this.sessionContext.user as ObjUser?),
+				user = sessionUser?.let { this.userDtoAdapter.fromAggregate(it) },
 				tenant = this.tenantDtoAdapter.fromAggregate(tenant),
 				account = this.accountDtoAdapter.fromAggregate(account),
 				locale = this.sessionContext.locale.id,

@@ -30,7 +30,8 @@ abstract class FMDocBase(
 
 	override fun doAfterCreate(sessionContext: SessionContext) {
 		super.doAfterCreate(sessionContext)
-		if (this is ItemWithAccount) {
+		// !hasAccount is possible for modifications in kernel tenant (f.ex. to create avatar image for user)
+		if (this is ItemWithAccount && (sessionContext as io.zeitwert.dddrive.app.model.SessionContext).hasAccount()) {
 			this.accountId = sessionContext.accountId!!
 		}
 	}

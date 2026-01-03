@@ -41,6 +41,21 @@ data class RelationshipConfig(
 	val isCollection: Boolean,
 )
 
+/**
+ * Configuration for a field mapping to be registered with the adapter.
+ *
+ * @param targetField The name of the field on the DTO (e.g., "tenants")
+ * @param sourceProperty The name of the property on the aggregate (e.g., "tenantSet"), or null if using custom functions
+ * @param outgoing Function to compute the DTO value from the entity (for fromAggregate)
+ * @param incoming Function to apply the DTO value to the entity (for toAggregate)
+ */
+data class FieldConfig(
+	val targetField: String,
+	val sourceProperty: String?,
+	val outgoing: ((EntityWithProperties, GenericDto) -> Any?)?,
+	val incoming: ((GenericDto, EntityWithProperties) -> Unit)?,
+)
+
 data class ReadableMap(
 	val map: Map<String, Any?>,
 ) : GenericDto {
@@ -95,6 +110,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 
 	private val exclusions = mutableListOf<String>()
 	private val relationships = mutableListOf<RelationshipConfig>()
+	private val fields = mutableListOf<FieldConfig>()
 
 	// Properties to exclude from automatic serialization (handled separately)
 	init {
@@ -187,7 +203,39 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		isCollection: Boolean,
 	) = relationships.add(RelationshipConfig(sourceProperty, dataSource, targetRelation, resourceType, isCollection))
 
-	private fun Property<*>.isExcluded(): Boolean = name in exclusions || relationships.any { name == it.sourceProperty }
+	/**
+	 * Register a field mapping from a source property to a target field.
+	 *
+	 * Uses intelligent type detection:
+	 * - ReferenceSetProperty -> List<EnumeratedDto> (loads each entity)
+	 * - AggregateReferenceProperty -> EnumeratedDto (loads entity)
+	 * - Other properties -> direct value copy
+	 *
+	 * @param targetField The name of the field on the DTO (e.g., "tenants")
+	 * @param sourceProperty The name of the property on the aggregate (e.g., "tenantSet")
+	 */
+	fun field(
+		targetField: String,
+		sourceProperty: String,
+	) = fields.add(FieldConfig(targetField, sourceProperty, null, null))
+
+	/**
+	 * Register a field with custom outgoing and incoming functions.
+	 *
+	 * @param targetField The name of the field on the DTO
+	 * @param outgoing Function to compute the DTO value from the entity (for fromAggregate)
+	 * @param incoming Function to apply the DTO value to the entity (for toAggregate)
+	 */
+	fun field(
+		targetField: String,
+		outgoing: (EntityWithProperties, GenericDto) -> Any?,
+		incoming: (GenericDto, EntityWithProperties) -> Unit,
+	) = fields.add(FieldConfig(targetField, null, outgoing, incoming))
+
+	private fun Property<*>.isExcluded(): Boolean =
+		name in exclusions ||
+			relationships.any { name == it.sourceProperty } ||
+			fields.any { name == it.sourceProperty }
 
 	/**
 	 * Convert an aggregate to a resource DTO.
@@ -203,6 +251,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 			dto = dto,
 		)
 		fromRelationships(aggregate, dto)
+		fromFields(aggregate, dto)
 		return dto
 	}
 
@@ -304,6 +353,64 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	}
 
 	/**
+	 * Populate field values on the DTO based on registered field mappings.
+	 * Uses intelligent type detection for simple mappings.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	private fun fromFields(
+		entity: EntityWithProperties,
+		dto: R,
+	) {
+		for (fieldConfig in fields) {
+			try {
+				if (fieldConfig.outgoing != null) {
+					// Custom outgoing function
+					dto[fieldConfig.targetField] = fieldConfig.outgoing.invoke(entity, dto)
+				} else if (fieldConfig.sourceProperty != null) {
+					// Simple mapping with intelligent type detection
+					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
+						is ReferenceSetProperty<*> -> {
+							// Convert reference set to List<EnumeratedDto>
+							val repo = directory.getRepository(property.targetClass)
+							val enumDtos = property.mapNotNull { id ->
+								val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
+								if (aggregate != null) EnumeratedDto.of(aggregate) else null
+							}
+							dto[fieldConfig.targetField] = enumDtos
+						}
+
+						is AggregateReferenceProperty<*> -> {
+							// Convert aggregate reference to EnumeratedDto
+							val id = property.id
+							if (id != null) {
+								val repo = directory.getRepository(property.targetClass)
+									as dddrive.ddd.core.model.AggregateRepository<dddrive.app.ddd.model.Aggregate>
+								val referencedEntity = repo.get(id)
+								dto[fieldConfig.targetField] =
+									if (referencedEntity != null) EnumeratedDto.of(referencedEntity) else null
+							}
+						}
+
+						is BaseProperty<*> -> {
+							// Direct value copy
+							dto[fieldConfig.targetField] = property.value
+						}
+
+						else -> {
+							// Unsupported property type
+						}
+					}
+				}
+			} catch (ex: Exception) {
+				throw RuntimeException(
+					"fromField(${entity.javaClass.simpleName}.${fieldConfig.targetField}) crashed: ${ex.message}",
+					ex,
+				)
+			}
+		}
+	}
+
+	/**
 	 * Apply DTO values to an aggregate.
 	 */
 	@Suppress("UNCHECKED_CAST")
@@ -314,6 +421,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		aggregate as EntityWithProperties
 		val properties = aggregate.properties.filter { !it.isExcluded() && it.isWritable }
 		toEntity(dto, aggregate, properties)
+		toFields(dto, aggregate)
 	}
 
 	/**
@@ -373,6 +481,69 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException("toEntity(${entity.javaClass.simpleName}.${property.name}) crashed: ${ex.message}", ex)
+			}
+		}
+	}
+
+	/**
+	 * Apply field values from DTO to entity based on registered field mappings.
+	 * Uses intelligent type detection for simple mappings.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	private fun toFields(
+		dto: GenericDto,
+		entity: EntityWithProperties,
+	) {
+		for (fieldConfig in fields) {
+			try {
+				if (fieldConfig.incoming != null) {
+					// Custom incoming function
+					fieldConfig.incoming.invoke(dto, entity)
+				} else if (fieldConfig.sourceProperty != null) {
+					// Simple mapping with intelligent type detection
+					val dtoValue = dto[fieldConfig.targetField]
+					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
+						is ReferenceSetProperty<*> -> {
+							// Convert List<EnumeratedDto> (or List<Map>) to reference set
+							val values = dtoValue as List<*>
+							property.clear()
+							for (value in values) {
+								val id = when (value) {
+									is EnumeratedDto -> DtoUtils.idFromString(value.id)
+									is Map<*, *> -> DtoUtils.idFromString(value["id"] as? String)
+									else -> throw IllegalArgumentException("Invalid value type for ReferenceSetProperty: ${value?.javaClass?.name}")
+								}
+								if (id != null) {
+									property.add(id)
+								}
+							}
+						}
+
+						is AggregateReferenceProperty<*> -> {
+							// Convert EnumeratedDto (or Map) to aggregate reference
+							val id = when (dtoValue) {
+								is EnumeratedDto -> DtoUtils.idFromString(dtoValue.id)
+								is Map<*, *> -> DtoUtils.idFromString(dtoValue["id"] as String?)
+								else -> null
+							}
+							property.id = id
+						}
+
+						is BaseProperty<*> -> {
+							// Direct value copy
+							(property as BaseProperty<Any>).value = toDomainValue(dtoValue, property.type)
+						}
+
+						else -> {
+							// Unsupported property type
+						}
+					}
+				}
+			} catch (ex: Exception) {
+				throw RuntimeException(
+					"toField(${entity.javaClass.simpleName}.${fieldConfig.targetField}) crashed: ${ex.message}",
+					ex,
+				)
 			}
 		}
 	}

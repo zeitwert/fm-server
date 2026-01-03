@@ -49,7 +49,7 @@ inline fun <reified A : Aggregate> EntityWithProperties.referenceSetProperty(
 			getProperty(name, Any::class) as ReferenceSetProperty<A>
 		}
 		val repo: AggregateRepository<A> = (this as EntityWithPropertiesSPI).directory.getRepository(A::class.java)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo)
+		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo, A::class.java)
 		addProperty(property)
 		property
 	}

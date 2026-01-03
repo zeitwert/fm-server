@@ -12,6 +12,11 @@ interface ReferenceSetProperty<A : Aggregate> :
 	Property<A>,
 	Collection<Any> {
 
+	/**
+	 * The class of the referenced aggregate type.
+	 */
+	val targetClass: Class<A>
+
 	fun has(aggregateId: Any): Boolean
 
 	fun clear()

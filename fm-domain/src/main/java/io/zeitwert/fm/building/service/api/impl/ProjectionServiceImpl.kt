@@ -1,7 +1,6 @@
 package io.zeitwert.fm.building.service.api.impl
 
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto.Companion.of
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart.Enumeration.getMaintenanceRate
@@ -43,7 +42,7 @@ class ProjectionServiceImpl : ProjectionService {
 			if (building.currentRating != null) {
 				for (element in building.currentRating!!.elementList) {
 					val elementEnum = this.getAsEnumerated(element)
-					val buildingPartEnum = of(element.buildingPart)!!
+					val buildingPartEnum = EnumeratedDto.of(element.buildingPart)!!
 					if (element.weight != null && element.ratingYear != null) {
 						if (element.weight!! > 0 && element.condition!! > 0) {
 							val elementPeriodList =
@@ -106,12 +105,12 @@ class ProjectionServiceImpl : ProjectionService {
 
 	private fun getAsEnumerated(building: ObjBuilding): EnumeratedDto {
 		val id: String = building.id.toString()
-		return of(id, building.name)
+		return EnumeratedDto.of(id, building.name ?: "Building")
 	}
 
 	private fun getAsEnumerated(element: ObjBuildingPartElementRating): EnumeratedDto {
 		val id = element.id.toString()
-		return of(id, element.meta.aggregate.name + ": " + element.buildingPart!!.defaultName)
+		return EnumeratedDto.of(id, element.meta.aggregate.name + ": " + element.buildingPart!!.defaultName)
 	}
 
 	private fun consolidateProjection(projectionResult: ProjectionResult): ProjectionResult {
@@ -143,7 +142,7 @@ class ProjectionServiceImpl : ProjectionService {
 				restorationCosts += elementRestorationCosts
 				if (elementRestorationCosts != 0.0) {
 					val buildingEnum = this.getAsEnumerated(building)
-					val buildingPartEnum = of(element.buildingPart)!!
+					val buildingPartEnum = EnumeratedDto.of(element.buildingPart)!!
 					val restorationElement =
 						ProjectionElement(
 							element = elementEnum,
