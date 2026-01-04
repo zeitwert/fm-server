@@ -160,6 +160,7 @@ const MstAggregateStoreModel = types
 					repository = yield self.api.storeAggregate({
 						id: self.item!.id,
 						meta: {
+							clientVersion: self.item?.meta?.version,
 							operations: operations
 						}
 					} as unknown as Aggregate);
@@ -186,7 +187,8 @@ const MstAggregateStoreModel = types
 						{
 							//id: self.item!.id,
 							meta: {
-								operations: ["calculationOnly"]
+								clientVersion: self.item?.meta?.version,
+								operations: ["calculationOnly"],
 							}
 						}
 					);
