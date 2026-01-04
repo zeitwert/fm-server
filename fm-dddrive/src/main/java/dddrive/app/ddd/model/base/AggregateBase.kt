@@ -100,6 +100,4 @@ abstract class AggregateBase(
 		validationList.add(AggregatePartValidationImpl(validationList.size, validationLevel, validation, path))
 	}
 
-	override fun toString(): String = caption
-
 }

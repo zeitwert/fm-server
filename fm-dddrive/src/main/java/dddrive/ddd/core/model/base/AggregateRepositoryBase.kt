@@ -19,7 +19,7 @@ import dddrive.ddd.property.model.Property
 import java.util.function.Function
 
 abstract class AggregateRepositoryBase<A : Aggregate>(
-	private val intfClass: Class<out Aggregate>,
+	override val intfClass: Class<out Aggregate>,
 	private val aggregateTypeId: String,
 ) : AggregateRepository<A>,
 	AggregateRepositorySPI<A> {

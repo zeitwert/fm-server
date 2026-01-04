@@ -5,16 +5,16 @@ import dddrive.ddd.core.model.AggregateRepository
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.enums.model.Enumerated
 import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumSetProperty
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartMapProperty
-import dddrive.ddd.property.model.ReferenceSetProperty
+import dddrive.ddd.property.model.impl.AggregateReferenceSetPropertyImpl
 import dddrive.ddd.property.model.impl.EnumSetPropertyImpl
 import dddrive.ddd.property.model.impl.PartListPropertyImpl
 import dddrive.ddd.property.model.impl.PartMapPropertyImpl
-import dddrive.ddd.property.model.impl.ReferenceSetPropertyImpl
 
 /**
  * Creates an EnumSetProperty.
@@ -43,13 +43,13 @@ inline fun <reified E : Enumerated> EntityWithProperties.enumSetProperty(
 @Suppress("UNCHECKED_CAST")
 inline fun <reified A : Aggregate> EntityWithProperties.referenceSetProperty(
 	name: String,
-): ReferenceSetProperty<A> =
+): AggregateReferenceSetProperty<A> =
 	synchronized(this) {
 		if (hasProperty(name)) {
-			getProperty(name, Any::class) as ReferenceSetProperty<A>
+			getProperty(name, Any::class) as AggregateReferenceSetProperty<A>
 		}
 		val repo: AggregateRepository<A> = (this as EntityWithPropertiesSPI).directory.getRepository(A::class.java)
-		val property: ReferenceSetProperty<A> = ReferenceSetPropertyImpl(this, name, repo, A::class.java)
+		val property: AggregateReferenceSetProperty<A> = AggregateReferenceSetPropertyImpl(this, name, repo, A::class.java)
 		addProperty(property)
 		property
 	}

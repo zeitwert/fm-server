@@ -2,11 +2,9 @@ package io.zeitwert.fm.obj.adapter.api.jsonapi.base
 
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.RepositoryDirectory
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils
+import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateDtoAdapterBase
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto
-import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto
 
 abstract class GenericObjDtoAdapterBase<O : Obj, D : GenericObjDtoBase<O>>(
 	directory: RepositoryDirectory,
@@ -14,47 +12,20 @@ abstract class GenericObjDtoAdapterBase<O : Obj, D : GenericObjDtoBase<O>>(
 ) : GenericAggregateDtoAdapterBase<O, D>(directory, resourceFactory) {
 
 	init {
+		exclude("objTypeId")
+		meta("itemType", {
+			val itemType = CodeAggregateTypeEnum.getAggregateType((it as Obj).meta.objTypeId)
+			EnumeratedDto.of(itemType)
+		})
+		meta(
+			listOf(
+				"closedByUser",
+				"closedAt",
+				"transitionList",
+			),
+		)
 		relationship("tenantInfoId", "tenant", "tenant")
 		relationship("accountId", "account", "account")
-	}
-
-	override fun fromAggregate(
-		aggregate: O,
-	): D {
-		val dto = super.fromAggregate(aggregate)
-		dto.meta = buildObjMeta(aggregate)
-		dto["tenant"] = EnumeratedDto.of(tenantRepository.get(aggregate.tenantId))
-		val ownerId = aggregate.ownerId
-		dto["owner"] = if (ownerId != null) {
-			EnumeratedDto.of(userRepository.get(ownerId))
-		} else {
-			null
-		}
-		return dto
-	}
-
-	/**
-	 * Build meta information for the aggregate.
-	 */
-	private fun buildObjMeta(
-		aggregate: Obj,
-	): ObjMetaDto {
-		val meta = aggregate.meta
-		val ownerId = aggregate.ownerId
-		val modifiedByUserId = meta.modifiedByUserId
-		val closedByUserId = meta.closedByUserId
-		return DtoUtils.createObjMetaDto(
-			EnumeratedDto.of(meta.repository.aggregateType),
-			if (ownerId != null) EnumeratedDto.of(userRepository.get(ownerId)) else null,
-			meta.version,
-			EnumeratedDto.of(userRepository.get(meta.createdByUserId)),
-			meta.createdAt,
-			if (modifiedByUserId != null) EnumeratedDto.of(userRepository.get(modifiedByUserId)) else null,
-			meta.modifiedAt,
-			if (closedByUserId != null) EnumeratedDto.of(userRepository.get(closedByUserId)) else null,
-			meta.closedAt,
-			meta.transitionList.map { ObjPartTransitionDto.fromPart(it, userRepository) },
-		)
 	}
 
 	@Suppress("UNCHECKED_CAST")

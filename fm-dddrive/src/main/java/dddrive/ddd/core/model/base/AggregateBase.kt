@@ -211,6 +211,8 @@ abstract class AggregateBase(
 	}
 
 	private val className: String
-		get() = javaClass.getSuperclass().getSimpleName()
+		get() = javaClass.simpleName
+
+	override fun toString() = "$className[$id] $properties"
 
 }

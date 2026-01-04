@@ -1,8 +1,8 @@
 package io.zeitwert.fm.building.model
 
 import dddrive.app.obj.model.Obj
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.PartListProperty
-import dddrive.ddd.property.model.ReferenceSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
@@ -104,5 +104,5 @@ interface ObjBuilding :
 
 	fun getBuildingValue(year: Int): Double
 
-	val contactSet: ReferenceSetProperty<ObjContact>
+	val contactSet: AggregateReferenceSetProperty<ObjContact>
 }

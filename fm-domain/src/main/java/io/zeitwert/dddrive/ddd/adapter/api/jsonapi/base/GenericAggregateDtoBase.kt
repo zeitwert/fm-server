@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import dddrive.app.ddd.model.Aggregate
 import io.crnk.core.resource.annotations.JsonApiId
+import io.crnk.core.resource.annotations.JsonApiMetaInformation
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
 
 /**
@@ -17,6 +18,9 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
  * appropriate type and resourcePath.
  */
 abstract class GenericAggregateDtoBase<A : Aggregate> : GenericAggregateDto<A> {
+
+	@JsonApiMetaInformation
+	override lateinit var meta: MutableMap<String, Any?>
 
 	@JsonIgnore
 	private val attributes: MutableMap<String, Any?> = mutableMapOf()
@@ -58,6 +62,6 @@ abstract class GenericAggregateDtoBase<A : Aggregate> : GenericAggregateDto<A> {
 
 	override fun getRelation(name: String): Any? = relations[name]
 
-	override fun toString() = "${javaClass.simpleName}($id) [$attributes]"
+	override fun toString() = "${javaClass.simpleName}[$id] meta: $meta $attributes"
 
 }

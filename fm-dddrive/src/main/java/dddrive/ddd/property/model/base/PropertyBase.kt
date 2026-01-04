@@ -54,4 +54,6 @@ abstract class PropertyBase<T : Any>(
 		}
 	}
 
+	override fun toString(): String = name
+
 }

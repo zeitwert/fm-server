@@ -8,14 +8,14 @@ import dddrive.ddd.core.model.Aggregate
  * Implements [Collection] interface so it can be used directly as a set in consumer code.
  * Note: The set contains IDs, not the aggregates themselves.
  */
-interface ReferenceSetProperty<A : Aggregate> :
+interface AggregateReferenceSetProperty<A : Aggregate> :
 	Property<A>,
 	Collection<Any> {
 
 	/**
 	 * The class of the referenced aggregate type.
 	 */
-	val targetClass: Class<A>
+	val aggregateType: Class<A>
 
 	fun has(aggregateId: Any): Boolean
 

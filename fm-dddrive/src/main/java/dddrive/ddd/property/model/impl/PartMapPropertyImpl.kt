@@ -95,4 +95,6 @@ open class PartMapPropertyImpl<A : Aggregate, P : Part<A>>(
 
 	override fun containsValue(value: P): Boolean = parts.containsValue(value)
 
+	override fun toString(): String = "$name: $parts"
+
 }

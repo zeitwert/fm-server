@@ -1,6 +1,5 @@
 package dddrive.app.doc.model.enums
 
-import dddrive.app.doc.model.enums.CodeCaseDefEnum.Companion.getCaseDef
 import dddrive.ddd.enums.model.Enumerated
 
 class CodeCaseStage(
@@ -16,11 +15,15 @@ class CodeCaseStage(
 	val availableActions: List<String>?,
 ) : Enumerated {
 
+	init {
+		CodeCaseDefEnum.getCaseDef(caseDefId).addCaseStage(this)
+	}
+
 	override val enumeration: CodeCaseStageEnum
 		get() = CodeCaseStageEnum.instance
 
 	val caseDef: CodeCaseDef
-		get() = getCaseDef(this.caseDefId)
+		get() = CodeCaseDefEnum.getCaseDef(this.caseDefId)
 
 	val isInWork: Boolean
 		get() = "terminal" != this.caseStageTypeId

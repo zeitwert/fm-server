@@ -83,7 +83,7 @@ abstract class DocBase(
 	}
 
 	override val caseStages: List<CodeCaseStage>
-		get() = caseDef?.getCaseStages() ?: emptyList()
+		get() = caseDef!!.caseStages
 
 	override fun doAddPart(
 		property: Property<*>,

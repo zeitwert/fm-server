@@ -31,6 +31,8 @@ abstract class ReferencePropertyBase<T : Any, ID : Any>(
 
 	protected abstract fun isValidId(id: ID?): Boolean
 
+	override fun toString(): String = "$name: $id"
+
 }
 
 class IdProperty<T : Any, ID : Any>(

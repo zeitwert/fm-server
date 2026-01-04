@@ -15,6 +15,10 @@ class BasePropertyImpl<T : Any>(
 	override var value: T? = null
 		set(value) {
 			require(this.isWritable) { "writable" }
+			// check that value is assignable to type
+			if (value != null) {
+				require(type.isAssignableFrom(value::class.java)) { "BaseProperty type mismatch: expected ${type.name}, got [$value](${value::class.java.name})" }
+			}
 			if (field == value) {
 				return
 			}
@@ -28,5 +32,7 @@ class BasePropertyImpl<T : Any>(
 			fireFieldSetChange(value, oldValue)
 			entity.doAfterSet(this, value, oldValue)
 		}
+
+	override fun toString(): String = "$name: $value"
 
 }

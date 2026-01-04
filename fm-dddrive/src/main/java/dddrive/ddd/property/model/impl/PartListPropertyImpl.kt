@@ -69,4 +69,6 @@ open class PartListPropertyImpl<A : Aggregate, P : Part<A>>(
 
 	override fun iterator(): Iterator<P> = parts.iterator()
 
+	override fun toString(): String = "$name: $parts"
+
 }

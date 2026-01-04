@@ -132,7 +132,7 @@ abstract class PartBase<A : Aggregate>(
 			beginCalc()
 			doCalcAll()
 			aggregate.meta.calcAll()
-			check(didCalcAll) { className + ": doCalcAll was propagated" }
+			check(didCalcAll) { "$className: doCalcAll was propagated" }
 		} finally {
 			endCalc()
 		}
@@ -149,7 +149,7 @@ abstract class PartBase<A : Aggregate>(
 		try {
 			beginCalc()
 			doCalcVolatile()
-			check(didCalcVolatile) { className + ": doCalcAll was propagated" }
+			check(didCalcVolatile) { "$className: doCalcAll was propagated" }
 		} finally {
 			endCalc()
 		}
@@ -160,6 +160,8 @@ abstract class PartBase<A : Aggregate>(
 	}
 
 	private val className: String
-		get() = javaClass.getSuperclass().getSimpleName()
+		get() = javaClass.simpleName
+
+	override fun toString() = "$className[$id] $properties"
 
 }

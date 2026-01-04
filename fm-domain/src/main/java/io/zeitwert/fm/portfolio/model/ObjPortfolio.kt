@@ -1,7 +1,7 @@
 package io.zeitwert.fm.portfolio.model
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.model.ReferenceSetProperty
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
@@ -19,11 +19,11 @@ interface ObjPortfolio :
 
 	var portfolioNr: String?
 
-	val buildingSet: ReferenceSetProperty<ObjBuilding>
+	val buildingSet: AggregateReferenceSetProperty<ObjBuilding>
 
-	val includeSet: ReferenceSetProperty<Obj>
+	val includeSet: AggregateReferenceSetProperty<Obj>
 
-	val excludeSet: ReferenceSetProperty<Obj>
+	val excludeSet: AggregateReferenceSetProperty<Obj>
 
 	val inflationRate: Double
 

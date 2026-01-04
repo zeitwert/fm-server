@@ -7,6 +7,6 @@ interface AggregateReferenceProperty<A : Aggregate> : ReferenceProperty<A, Any> 
 	/**
 	 * The class of the referenced aggregate type.
 	 */
-	val targetClass: Class<A>
+	val aggregateType: Class<A>
 
 }

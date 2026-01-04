@@ -1,13 +1,12 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi
 
 import dddrive.ddd.core.model.Aggregate
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto
 
 interface GenericAggregateDto<A : Aggregate> :
 	AggregateDto<A>,
 	GenericDto {
 
-	var meta: AggregateMetaDto?
+	val meta: Map<String, Any?>
 
 	fun hasRelation(name: String): Boolean
 

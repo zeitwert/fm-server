@@ -3,18 +3,18 @@ package dddrive.ddd.property.model.impl
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.AggregateRepository
 import dddrive.ddd.core.model.AggregateRepositorySPI
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
-import dddrive.ddd.property.model.ReferenceSetProperty
 import dddrive.ddd.property.model.base.PropertyBase
 
-class ReferenceSetPropertyImpl<A : Aggregate>(
+class AggregateReferenceSetPropertyImpl<A : Aggregate>(
 	entity: EntityWithProperties,
 	name: String,
 	val repo: AggregateRepository<A>,
-	override val targetClass: Class<A>,
+	override val aggregateType: Class<A>,
 ) : PropertyBase<A>(entity, name),
-	ReferenceSetProperty<A> {
+	AggregateReferenceSetProperty<A> {
 
 	private val items: MutableSet<Any> = mutableSetOf()
 
@@ -65,5 +65,7 @@ class ReferenceSetPropertyImpl<A : Aggregate>(
 	override fun containsAll(elements: Collection<Any>): Boolean = items.containsAll(elements)
 
 	override fun contains(element: Any): Boolean = items.contains(element)
+
+	override fun toString(): String = "$name: $items"
 
 }

@@ -19,6 +19,7 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase
 import io.zeitwert.dddrive.model.FMAggregateRepository
 import io.zeitwert.fm.oe.model.ObjUser
+import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -43,6 +44,11 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	private val sessionCtx: SessionContext,
 ) : ResourceRepositoryBase<R, String>(resourceClass) {
 
+	companion object {
+
+		private val logger = LoggerFactory.getLogger(GenericAggregateApiRepositoryBase::class.java)
+	}
+
 	@Transactional
 	@Suppress("UNCHECKED_CAST")
 	override fun <S : R> create(dto: S): S {
@@ -50,10 +56,16 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 			throw BadRequestException("Cannot specify id on creation (${dto.id})")
 		}
 		try {
+			logger.debug("create {} from {}", repository.intfClass.simpleName, dto)
 			val aggregate = repository.create()
+			logger.trace("create.created: {}", aggregate)
 			toAggregate(dto, aggregate)
+			logger.trace("create.assigned: {}", aggregate)
 			repository.store(aggregate)
-			return adapter.fromAggregate(aggregate) as S
+			logger.trace("create.stored: {}", aggregate)
+			val dto = adapter.fromAggregate(aggregate) as S
+			logger.trace("create.dto: {}", dto)
+			return dto
 		} catch (x: Exception) {
 			throw RuntimeException("crashed on create", x)
 		}
@@ -89,9 +101,11 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	@Transactional
 	@Suppress("UNCHECKED_CAST")
 	override fun <S : R> save(dto: S): S {
+		logger.debug("save({}): {}", dto.javaClass.simpleName, dto)
 		val id = repository.idFromString(dto.id) ?: throw BadRequestException("Can only save existing object (missing id)")
-		val dtoMeta = dto.meta ?: throw BadRequestException("Missing meta information")
-		val clientVersion = DtoUtils.getClientVersion(dtoMeta) ?: throw BadRequestException("Missing meta.clientVersion")
+		dto.meta["clientVersion"] ?: throw BadRequestException("Missing meta.clientVersion")
+		val clientVersion = dto.meta["clientVersion"] as Int
+		val operations = dto.meta["operations"] as List<String>? ?: emptyList()
 		val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
 
 		if (clientVersion != aggregate.meta.version) {
@@ -121,7 +135,7 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 
 		try {
 			toAggregate(dto, aggregate)
-			if (dtoMeta.hasOperation(AggregateDtoBase.CalculationOnlyOperation)) {
+			if (operations.contains(AggregateDtoBase.CalculationOnlyOperation)) {
 				return adapter.fromAggregate(aggregate) as S
 			} else {
 				repository.store(aggregate)

@@ -5,6 +5,7 @@ import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.RepositoryDirectory
 import dddrive.ddd.enums.model.Enumerated
 import dddrive.ddd.property.model.AggregateReferenceProperty
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EnumProperty
@@ -13,7 +14,7 @@ import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.PartReferenceProperty
 import dddrive.ddd.property.model.Property
-import dddrive.ddd.property.model.ReferenceSetProperty
+import io.crnk.core.resource.meta.MetaInformation
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericDto
@@ -22,7 +23,11 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
+import org.slf4j.LoggerFactory
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Configuration for a relationship to be registered with the adapter.
@@ -88,6 +93,24 @@ data class WritableMap(
 
 }
 
+class MetaInfo :
+	HashMap<String, Any?>(),
+	GenericDto,
+	MetaInformation {
+
+	override fun hasAttribute(name: String): Boolean = containsKey(name)
+
+	override operator fun set(
+		name: String,
+		value: Any?,
+	) {
+		super.put(name, value)
+	}
+
+	override operator fun get(name: String): Any? = super.get(name)
+
+}
+
 /**
  * Generic adapter for converting between Aggregates and GenericResourceBase DTOs.
  *
@@ -105,12 +128,18 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	private val resourceFactory: () -> R,
 ) : AggregateDtoAdapter<A, R> {
 
+	companion object {
+
+		val logger = LoggerFactory.getLogger(GenericAggregateDtoAdapterBase::class.java)
+	}
+
 	val tenantRepository get() = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
 	val userRepository get() = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
 	private val exclusions = mutableListOf<String>()
 	private val relationships = mutableListOf<RelationshipConfig>()
 	private val fields = mutableListOf<FieldConfig>()
+	private val metas = mutableListOf<FieldConfig>()
 
 	// Properties to exclude from automatic serialization (handled separately)
 	init {
@@ -118,18 +147,19 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 			listOf(
 				"id",
 				"maxPartId",
-				"objTypeId",
-				"docTypeId",
+			),
+		)
+		field("tenant", "tenant")
+		field("owner", "owner")
+		meta("tenant")
+		meta("owner")
+		meta(
+			listOf(
 				"version",
-				"tenantId",
-				"ownerId",
-				"createdByUserId",
+				"createdByUser",
 				"createdAt",
-				"modifiedByUserId",
+				"modifiedByUser",
 				"modifiedAt",
-				"closedByUserId",
-				"closedAt",
-				"transitionList",
 			),
 		)
 	}
@@ -232,10 +262,28 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		incoming: ((Any?, EntityWithProperties) -> Unit)? = null,
 	) = fields.add(FieldConfig(targetField, null, outgoing, incoming))
 
+	fun meta(
+		property: String,
+	) = metas.add(FieldConfig(property, property, null, null))
+
+	fun meta(properties: List<String>) = metas.addAll(properties.map { FieldConfig(it, it, null, null) })
+
+	fun meta(
+		targetField: String,
+		sourceProperty: String,
+	) = metas.add(FieldConfig(targetField, sourceProperty, null, null))
+
+	fun meta(
+		targetField: String,
+		outgoing: (EntityWithProperties) -> Any?,
+		incoming: ((Any?, EntityWithProperties) -> Unit)? = null,
+	) = metas.add(FieldConfig(targetField, null, outgoing, incoming))
+
 	private fun Property<*>.isExcluded(): Boolean =
 		name in exclusions ||
 			relationships.any { name == it.sourceProperty } ||
-			fields.any { name == it.sourceProperty }
+			fields.any { name == it.sourceProperty } ||
+			metas.any { name == it.sourceProperty }
 
 	/**
 	 * Convert an aggregate to a resource DTO.
@@ -245,13 +293,16 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	): R {
 		val dto = resourceFactory()
 		dto["id"] = DtoUtils.idToString(aggregate.id)
+		val meta = MetaInfo()
+		fromFields(aggregate as EntityWithProperties, meta, metas)
+		(dto as GenericAggregateDtoBase<*>).meta = meta
 		fromEntity(
-			entity = aggregate as EntityWithProperties,
+			entity = aggregate,
 			properties = aggregate.properties.filter { !it.isExcluded() },
 			dto = dto,
 		)
 		fromRelationships(aggregate, dto)
-		fromFields(aggregate, dto)
+		fromFields(aggregate, dto, fields)
 		return dto
 	}
 
@@ -260,39 +311,46 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		properties: List<Property<*>>,
 		dto: GenericDto,
 	) {
+		logger.trace("fromEntity: {}, properties: {}", entity, properties.map { it.name })
 		for (property in properties) {
 			try {
+				val fieldName = when (property) {
+					is AggregateReferenceProperty<*> -> "${property.name}Id"
+					is PartReferenceProperty<*, *> -> "${property.name}Id"
+					else -> property.name
+				}
+				logger.trace("fromEntity[{}] = {}", fieldName, property)
 				when (property) {
 					is PartListProperty<*, *> -> {
-						dto[property.name] = property.map { fromPart(it) }
+						dto[fieldName] = property.map { fromPart(it) }
 					}
 
 					is PartMapProperty<*, *> -> {
-						dto[property.name] = property.entries.associate { (key, p) -> key to fromPart(p) }
+						dto[fieldName] = property.entries.associate { (key, p) -> key to fromPart(p) }
 					}
 
 					is EnumSetProperty<*> -> {
-						dto[property.name] = property.map { EnumeratedDto.of(it) }
+						dto[fieldName] = property.map { EnumeratedDto.of(it) }
 					}
 
-					is ReferenceSetProperty<*> -> {
-						dto["${property.name}Ids"] = property.toSet()
+					is AggregateReferenceSetProperty<*> -> {
+						dto[fieldName] = property.toSet()
 					}
 
 					is AggregateReferenceProperty<*> -> {
-						dto["${property.name}Id"] = DtoUtils.idToString(property.id)
+						dto[fieldName] = DtoUtils.idToString(property.id)
 					}
 
 					is PartReferenceProperty<*, *> -> {
-						dto["${property.name}Id"] = property.id?.toString()
+						dto[fieldName] = property.id?.toString()
 					}
 
 					is EnumProperty<*> -> {
-						dto[property.name] = EnumeratedDto.of(property.value)
+						dto[fieldName] = EnumeratedDto.of(property.value)
 					}
 
 					is BaseProperty<*> -> {
-						dto[property.name] = property.value
+						dto[fieldName] = fromDomainValue(property.value, property.type)
 					}
 				}
 			} catch (ex: Exception) {
@@ -317,7 +375,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	 */
 	private fun fromRelationships(
 		entity: EntityWithProperties,
-		dto: R,
+		dto: GenericAggregateDto<*>,
 	) {
 		for (rel in relationships) {
 			try {
@@ -332,7 +390,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 							}
 						}
 
-						is ReferenceSetProperty<*> -> {
+						is AggregateReferenceSetProperty<*> -> {
 							val ids: List<String> = property.map { DtoUtils.idToString(it) }
 							dto.setRelation(rel.targetRelation, ids)
 						}
@@ -362,45 +420,62 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	@Suppress("UNCHECKED_CAST")
 	private fun fromFields(
 		entity: EntityWithProperties,
-		dto: R,
+		dto: GenericDto,
+		fields: List<FieldConfig>,
 	) {
 		for (fieldConfig in fields) {
 			try {
 				if (fieldConfig.outgoing != null) {
-					// Custom outgoing function
 					dto[fieldConfig.targetField] = fieldConfig.outgoing.invoke(entity)
 				} else if (fieldConfig.sourceProperty != null) {
-					// Simple mapping with intelligent type detection
+					val fieldName = fieldConfig.targetField
 					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
-						is ReferenceSetProperty<*> -> {
-							// Convert reference set to List<EnumeratedDto>
-							val repo = directory.getRepository(property.targetClass)
-							val enumDtos = property.mapNotNull { id ->
+						is PartListProperty<*, *> -> {
+							dto[fieldName] = property.map { fromPart(it) }
+						}
+
+						is PartMapProperty<*, *> -> {
+							dto[fieldName] = property.entries.associate { (key, p) -> key to fromPart(p) }
+						}
+
+						is EnumSetProperty<*> -> {
+							dto[fieldName] = property.map { EnumeratedDto.of(it) }
+						}
+
+						is AggregateReferenceSetProperty<*> -> {
+							val repo = directory.getRepository(property.aggregateType)
+							val enumDtos = property.map { id ->
 								val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
-								if (aggregate != null) EnumeratedDto.of(aggregate) else null
+								EnumeratedDto.of(aggregate)
 							}
-							dto[fieldConfig.targetField] = enumDtos
+							dto[fieldName] = enumDtos
 						}
 
 						is AggregateReferenceProperty<*> -> {
-							// Convert aggregate reference to EnumeratedDto
 							val id = property.id
 							if (id != null) {
-								val repo = directory.getRepository(property.targetClass)
+								val repo = directory.getRepository(property.aggregateType)
 								val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
-								dto[fieldConfig.targetField] = EnumeratedDto.of(aggregate)
+								dto[fieldName] = EnumeratedDto.of(aggregate)
 							} else {
-								dto[fieldConfig.targetField] = null
+								dto[fieldName] = null
 							}
 						}
 
+						is PartReferenceProperty<*, *> -> {
+							dto[fieldName] = property.id?.toString()
+						}
+
+						is EnumProperty<*> -> {
+							dto[fieldName] = EnumeratedDto.of(property.value)
+						}
+
 						is BaseProperty<*> -> {
-							// Direct value copy
-							dto[fieldConfig.targetField] = property.value
+							dto[fieldName] = fromDomainValue(property.value, property.type)
 						}
 
 						else -> {
-							throw IllegalArgumentException("[${entity.javaClass.simpleName}.${fieldConfig.targetField}] Unsupported property type for field mapping ${entity.javaClass.simpleName}.${fieldConfig.sourceProperty}: ${property.javaClass.name}")
+							throw IllegalArgumentException("[${entity.javaClass.simpleName}.$fieldName] Unsupported property type for field mapping ${entity.javaClass.simpleName}.${fieldConfig.sourceProperty}: ${property.javaClass.name}")
 						}
 					}
 				}
@@ -423,6 +498,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	) {
 		aggregate as EntityWithProperties
 		val properties = aggregate.properties.filter { !it.isExcluded() && it.isWritable }
+		logger.trace("toAggregate: {} from {}, properties: {}", aggregate, dto, properties.map { it.name })
 		toEntity(dto, aggregate, properties)
 		toFields(dto, aggregate)
 	}
@@ -448,7 +524,13 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		properties: List<Property<*>>,
 	) {
 		for (property in properties) {
-			if (!dto.hasAttribute(property.name)) continue
+			val fieldName = when (property) {
+				is AggregateReferenceProperty<*> -> "${property.name}Id"
+				is PartReferenceProperty<*, *> -> "${property.name}Id"
+				else -> property.name
+			}
+			logger.trace("toEntity.property: {} from dto field {}: {}", property.name, fieldName, dto[fieldName])
+			if (!dto.hasAttribute(fieldName)) continue
 			try {
 				when (property) {
 					is PartListProperty<*, *> -> {
@@ -463,24 +545,24 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 						toEnumSet(dto, property as EnumSetProperty<Enumerated>)
 					}
 
-					is ReferenceSetProperty<*> -> {
+					is AggregateReferenceSetProperty<*> -> {
 						toReferenceSet(dto, property)
 					}
 
 					is AggregateReferenceProperty<*> -> {
-						property.id = DtoUtils.idFromString(dto["${property.name}Id"] as String?)
+						property.id = DtoUtils.idFromString(dto[fieldName] as String?)
 					}
 
 					is PartReferenceProperty<*, *> -> {
-						property.id = (dto["${property.name}Id"] as String?)?.toInt()
+						property.id = (dto[fieldName] as String?)?.toInt()
 					}
 
 					is EnumProperty<*> -> {
-						property.id = (dto[property.name] as Map<String, Any?>?)?.get("id") as? String
+						property.id = (dto[fieldName] as Map<String, Any?>?)?.get("id") as? String
 					}
 
 					is BaseProperty<*> -> {
-						(property as BaseProperty<Any>).value = toDomainValue(dto[property.name], property.type)
+						(property as BaseProperty<Any>).value = toDomainValue(dto[fieldName], property.type)
 					}
 				}
 			} catch (ex: Exception) {
@@ -506,7 +588,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 					fieldConfig.incoming.invoke(dtoValue, entity)
 				} else if (fieldConfig.sourceProperty != null) {
 					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
-						is ReferenceSetProperty<*> -> {
+						is AggregateReferenceSetProperty<*> -> {
 							val values = dtoValue as List<*>
 							property.clear()
 							for (value in values) {
@@ -609,12 +691,34 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	@Suppress("UNCHECKED_CAST")
 	private fun toReferenceSet(
 		dto: GenericDto,
-		property: ReferenceSetProperty<*>,
+		property: AggregateReferenceSetProperty<*>,
 	) {
 		val ids = dto[property.name] as? Collection<String> ?: return
 		property.clear()
 		for (id in ids) {
 			property.add(DtoUtils.idFromString(id))
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	private fun <T : Any> fromDomainValue(
+		value: Any?,
+		sourceType: Class<T>,
+	): Any? {
+		if (value == null) return null
+
+		return when (sourceType) {
+			LocalDate::class.java -> {
+				(value as LocalDate).format(DateTimeFormatter.ISO_DATE)
+			}
+
+			OffsetDateTime::class.java -> {
+				(value as OffsetDateTime).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+			}
+
+			else -> {
+				value
+			}
 		}
 	}
 
@@ -647,6 +751,14 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 
 			targetType == Double::class.java && value is Number -> {
 				value.toDouble() as T
+			}
+
+			targetType == LocalDate::class.java -> {
+				LocalDate.parse(value.toString(), DateTimeFormatter.ISO_DATE) as T
+			}
+
+			targetType == OffsetDateTime::class.java -> {
+				OffsetDateTime.parse(value.toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME) as T
 			}
 
 			targetType == String::class.java -> {

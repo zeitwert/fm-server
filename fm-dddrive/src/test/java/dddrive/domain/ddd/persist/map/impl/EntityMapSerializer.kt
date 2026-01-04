@@ -2,13 +2,13 @@ package dddrive.domain.ddd.persist.map.impl
 
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EnumSetProperty
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.ReferenceProperty
-import dddrive.ddd.property.model.ReferenceSetProperty
 
 /**
  * Serializes an entity with all its properties to a nested map structure.
@@ -40,7 +40,7 @@ fun EntityWithProperties.toMap(): Map<String, Any?> {
 				result[property.name] = property.toSet()
 			}
 
-			is ReferenceSetProperty<*> -> {
+			is AggregateReferenceSetProperty<*> -> {
 				result[property.name] = property.toSet()
 			}
 
@@ -144,7 +144,7 @@ private fun EntityWithProperties.setValuesFromMap(map: Map<String, Any?>) {
 				}
 			}
 
-			is ReferenceSetProperty<*> -> {
+			is AggregateReferenceSetProperty<*> -> {
 				property.clear()
 				val refIds = map[property.name] as? Set<Any> ?: continue
 				for (refId in refIds) {

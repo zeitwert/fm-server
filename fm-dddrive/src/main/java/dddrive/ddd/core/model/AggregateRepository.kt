@@ -8,12 +8,17 @@ import dddrive.ddd.core.model.enums.CodeAggregateType
 interface AggregateRepository<A : Aggregate> {
 
 	/**
-	 * Get aggregate type
+	 * Aggregate class
+	 */
+	val intfClass: Class<out Aggregate>
+
+	/**
+	 * Aggregate type
 	 */
 	val aggregateType: CodeAggregateType
 
 	/**
-	 * Get repository directory
+	 * Repository directory
 	 */
 	val directory: RepositoryDirectory
 

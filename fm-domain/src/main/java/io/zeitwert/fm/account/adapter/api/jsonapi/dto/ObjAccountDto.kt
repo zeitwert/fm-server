@@ -20,8 +20,8 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto
 class ObjAccountDto : GenericObjDtoBase<ObjAccount>() {
 
 	@JsonApiRelationId
-	var tenantInfoId: Int? = null
-		get() = (getRelation("tenantInfoId") as String?)?.toInt()
+	var tenantInfoId: String? = null
+		get() = getRelation("tenantInfoId") as String?
 		set(value) {
 			setRelation("tenantInfoId", value)
 			field = value
@@ -42,8 +42,8 @@ class ObjAccountDto : GenericObjDtoBase<ObjAccount>() {
 	var mainContact: ObjContactDto? = null
 
 	@JsonApiRelationId
-	var logoId: Int? = null
-		get() = (getRelation("logoId") as String?)?.toInt()
+	var logoId: String? = null
+		get() = getRelation("logoId") as String?
 		set(value) {
 			setRelation("logoId", value)
 			field = value

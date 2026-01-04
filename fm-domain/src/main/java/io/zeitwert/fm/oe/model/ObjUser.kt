@@ -1,7 +1,7 @@
 package io.zeitwert.fm.oe.model
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.model.ReferenceSetProperty
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 
@@ -29,6 +29,6 @@ interface ObjUser : Obj {
 
 	fun hasRole(role: CodeUserRole): Boolean
 
-	val tenantSet: ReferenceSetProperty<ObjTenant>
+	val tenantSet: AggregateReferenceSetProperty<ObjTenant>
 
 }

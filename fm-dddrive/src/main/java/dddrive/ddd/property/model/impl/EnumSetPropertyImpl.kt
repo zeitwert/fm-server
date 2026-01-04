@@ -63,4 +63,6 @@ class EnumSetPropertyImpl<E : Enumerated>(
 
 	override fun contains(element: E): Boolean = items.contains(element)
 
+	override fun toString(): String = "$name: ${items.map { it.id }}"
+
 }
