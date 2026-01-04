@@ -25,6 +25,8 @@ abstract class AggregateBase(
 	Aggregate,
 	AggregateMeta {
 
+	override val meta: AggregateMeta get() = this
+
 	protected var _tenantId by referenceIdProperty<Obj>("tenant")
 	override val tenantId get() = _tenantId!!
 

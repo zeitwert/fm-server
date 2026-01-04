@@ -13,28 +13,15 @@ class ObjDocumentDtoAdapter(
 ) : GenericObjDtoAdapterBase<ObjDocument, ObjDocumentDto>(directory, { ObjDocumentDto() }) {
 
 	init {
-		// contentType is a computed property (not a delegated property), so we handle it manually
 		field(
 			"contentType",
-			outgoing = { entity, _ ->
-				val document = entity as ObjDocument
-				EnumeratedDto.of(document.contentType)
-			},
-			incoming = { _, _ ->
-				// contentType is read-only (calculated from stored content)
-			},
+			outgoing = { EnumeratedDto.of((it as ObjDocument).contentType) },
 		)
 
 		// supportedContentTypes is a calculated field from contentKind.getExtensions()
 		field(
 			"supportedContentTypes",
-			outgoing = { entity, _ ->
-				val document = entity as ObjDocument
-				document.contentKind?.getExtensions()?.joinToString(",") ?: ""
-			},
-			incoming = { _, _ ->
-				// supportedContentTypes is read-only (calculated)
-			},
+			outgoing = { (it as ObjDocument).contentKind?.getExtensions()?.joinToString(",") ?: "" },
 		)
 	}
 

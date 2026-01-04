@@ -6,12 +6,10 @@ interface Aggregate : Aggregate {
 
 	val tenantId: Any
 
-	// val tenant: ObjTenant
-
 	var ownerId: Any?
 
-	// var owner: ObjUser?
-
 	val caption: String
+
+	override val meta: AggregateMeta
 
 }

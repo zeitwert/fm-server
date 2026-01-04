@@ -52,8 +52,8 @@ data class RelationshipConfig(
 data class FieldConfig(
 	val targetField: String,
 	val sourceProperty: String?,
-	val outgoing: ((EntityWithProperties, GenericDto) -> Any?)?,
-	val incoming: ((GenericDto, EntityWithProperties) -> Unit)?,
+	val outgoing: ((EntityWithProperties) -> Any?)?,
+	val incoming: ((Any?, EntityWithProperties) -> Unit)?,
 )
 
 data class ReadableMap(
@@ -228,8 +228,8 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	 */
 	fun field(
 		targetField: String,
-		outgoing: (EntityWithProperties, GenericDto) -> Any?,
-		incoming: (GenericDto, EntityWithProperties) -> Unit,
+		outgoing: (EntityWithProperties) -> Any?,
+		incoming: ((Any?, EntityWithProperties) -> Unit)? = null,
 	) = fields.add(FieldConfig(targetField, null, outgoing, incoming))
 
 	private fun Property<*>.isExcluded(): Boolean =
@@ -296,7 +296,10 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 					}
 				}
 			} catch (ex: Exception) {
-				throw RuntimeException("fromEntity(${entity.javaClass.simpleName}.${property.name}) crashed: ${ex.message}", ex)
+				throw RuntimeException(
+					"[${entity.javaClass.simpleName}.${property.name}] fromProperty crashed: ${ex.message}",
+					ex,
+				)
 			}
 		}
 	}
@@ -339,13 +342,13 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 						}
 
 						else -> {
-							null
+							throw IllegalArgumentException("[${entity.javaClass.simpleName}.${rel.targetRelation}] Unsupported property type for relationship mapping ${entity.javaClass.simpleName}.${rel.sourceProperty}: ${property.javaClass.name}")
 						}
 					}
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(
-					"fromRelationship(${entity.javaClass.simpleName}.${rel.targetRelation}) crashed: ${ex.message}",
+					"[${entity.javaClass.simpleName}.${rel.targetRelation}] fromRelationship crashed: ${ex.message}",
 					ex,
 				)
 			}
@@ -365,7 +368,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 			try {
 				if (fieldConfig.outgoing != null) {
 					// Custom outgoing function
-					dto[fieldConfig.targetField] = fieldConfig.outgoing.invoke(entity, dto)
+					dto[fieldConfig.targetField] = fieldConfig.outgoing.invoke(entity)
 				} else if (fieldConfig.sourceProperty != null) {
 					// Simple mapping with intelligent type detection
 					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
@@ -384,10 +387,10 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 							val id = property.id
 							if (id != null) {
 								val repo = directory.getRepository(property.targetClass)
-									as dddrive.ddd.core.model.AggregateRepository<dddrive.app.ddd.model.Aggregate>
-								val referencedEntity = repo.get(id)
-								dto[fieldConfig.targetField] =
-									if (referencedEntity != null) EnumeratedDto.of(referencedEntity) else null
+								val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
+								dto[fieldConfig.targetField] = EnumeratedDto.of(aggregate)
+							} else {
+								dto[fieldConfig.targetField] = null
 							}
 						}
 
@@ -397,13 +400,13 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 						}
 
 						else -> {
-							// Unsupported property type
+							throw IllegalArgumentException("[${entity.javaClass.simpleName}.${fieldConfig.targetField}] Unsupported property type for field mapping ${entity.javaClass.simpleName}.${fieldConfig.sourceProperty}: ${property.javaClass.name}")
 						}
 					}
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(
-					"fromField(${entity.javaClass.simpleName}.${fieldConfig.targetField}) crashed: ${ex.message}",
+					"[${entity.javaClass.simpleName}.${fieldConfig.targetField}] fromField crashed: ${ex.message}",
 					ex,
 				)
 			}
@@ -445,6 +448,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		properties: List<Property<*>>,
 	) {
 		for (property in properties) {
+			if (!dto.hasAttribute(property.name)) continue
 			try {
 				when (property) {
 					is PartListProperty<*, *> -> {
@@ -495,21 +499,18 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		entity: EntityWithProperties,
 	) {
 		for (fieldConfig in fields) {
+			if (!dto.hasAttribute(fieldConfig.targetField)) continue
+			val dtoValue = dto[fieldConfig.targetField]
 			try {
 				if (fieldConfig.incoming != null) {
-					// Custom incoming function
-					fieldConfig.incoming.invoke(dto, entity)
+					fieldConfig.incoming.invoke(dtoValue, entity)
 				} else if (fieldConfig.sourceProperty != null) {
-					// Simple mapping with intelligent type detection
-					val dtoValue = dto[fieldConfig.targetField]
 					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
 						is ReferenceSetProperty<*> -> {
-							// Convert List<EnumeratedDto> (or List<Map>) to reference set
 							val values = dtoValue as List<*>
 							property.clear()
 							for (value in values) {
 								val id = when (value) {
-									is EnumeratedDto -> DtoUtils.idFromString(value.id)
 									is Map<*, *> -> DtoUtils.idFromString(value["id"] as? String)
 									else -> throw IllegalArgumentException("Invalid value type for ReferenceSetProperty: ${value?.javaClass?.name}")
 								}
@@ -520,22 +521,20 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 						}
 
 						is AggregateReferenceProperty<*> -> {
-							// Convert EnumeratedDto (or Map) to aggregate reference
 							val id = when (dtoValue) {
-								is EnumeratedDto -> DtoUtils.idFromString(dtoValue.id)
+								null -> null
 								is Map<*, *> -> DtoUtils.idFromString(dtoValue["id"] as String?)
-								else -> null
+								else -> throw IllegalArgumentException("Invalid value type for ReferenceProperty: ${dtoValue.javaClass.name}")
 							}
 							property.id = id
 						}
 
 						is BaseProperty<*> -> {
-							// Direct value copy
 							(property as BaseProperty<Any>).value = toDomainValue(dtoValue, property.type)
 						}
 
 						else -> {
-							// Unsupported property type
+							throw IllegalArgumentException("[${entity.javaClass.simpleName}.${fieldConfig.targetField}] Unsupported property type for field mapping ${entity.javaClass.simpleName}.${fieldConfig.sourceProperty}: ${property.javaClass.name}")
 						}
 					}
 				}

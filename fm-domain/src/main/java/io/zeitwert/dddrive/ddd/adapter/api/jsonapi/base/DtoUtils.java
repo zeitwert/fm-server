@@ -3,6 +3,8 @@ package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base;
 import dddrive.ddd.core.model.RepositoryDirectory;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateMetaDto;
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto;
+import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocMetaDto;
+import io.zeitwert.fm.doc.adapter.api.jsonapi.dto.DocPartTransitionDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjMetaDto;
 import io.zeitwert.fm.obj.adapter.api.jsonapi.dto.ObjPartTransitionDto;
 import io.zeitwert.fm.oe.model.ObjTenant;
@@ -55,6 +57,40 @@ public class DtoUtils {
 		dto.setModifiedAt(modifiedAt);
 		dto.setClosedByUser(closedByUser);
 		dto.setClosedAt(closedAt);
+		dto.setTransitions(transitions);
+		return dto;
+	}
+
+	/**
+	 * Create an ObjMetaDto with the given values.
+	 */
+	public static DocMetaDto createDocMetaDto(
+			EnumeratedDto itemType,
+			EnumeratedDto owner,
+			Integer version,
+			EnumeratedDto createdByUser,
+			OffsetDateTime createdAt,
+			EnumeratedDto modifiedByUser,
+			OffsetDateTime modifiedAt,
+			EnumeratedDto caseDef,
+			EnumeratedDto caseStage,
+			boolean isInWork,
+			EnumeratedDto assignee,
+			List<EnumeratedDto> caseStages,
+			List<DocPartTransitionDto> transitions) {
+		DocMetaDto dto = new DocMetaDto();
+		dto.setItemType(itemType);
+		dto.setOwner(owner);
+		dto.setVersion(version);
+		dto.setCreatedByUser(createdByUser);
+		dto.setCreatedAt(createdAt);
+		dto.setModifiedByUser(modifiedByUser);
+		dto.setModifiedAt(modifiedAt);
+		dto.setCaseDef(caseDef);
+		dto.setCaseStage(caseStage);
+		dto.setInWork(isInWork);
+		dto.setAssignee(assignee);
+		dto.setCaseStages(caseStages);
 		dto.setTransitions(transitions);
 		return dto;
 	}
