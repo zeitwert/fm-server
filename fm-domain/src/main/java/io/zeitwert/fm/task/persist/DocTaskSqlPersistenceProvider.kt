@@ -79,11 +79,4 @@ open class DocTaskSqlPersistenceProvider(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.DOC_TASK_V, Tables.DOC_TASK_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.DOC_TASK.DOC_ID)
-			.from(Tables.DOC_TASK)
-			.where(Tables.DOC_TASK.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.DOC_TASK.DOC_ID)
-
 }

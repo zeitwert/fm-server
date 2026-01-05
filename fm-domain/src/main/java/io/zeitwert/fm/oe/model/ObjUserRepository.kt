@@ -1,11 +1,11 @@
 package io.zeitwert.fm.oe.model
 
+import dddrive.app.obj.model.ObjRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.FMObjRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
-interface ObjUserRepository : FMObjRepository<ObjUser> {
+interface ObjUserRepository : ObjRepository<ObjUser> {
 
 	val passwordEncoder: PasswordEncoder
 

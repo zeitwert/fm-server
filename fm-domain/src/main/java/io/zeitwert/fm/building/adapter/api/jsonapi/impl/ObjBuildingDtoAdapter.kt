@@ -27,20 +27,20 @@ class ObjBuildingDtoAdapter(
 	}
 
 	init {
-		exclude("currentRating") // Handled via custom field (computed property)
-		exclude("ratingList") // Not exposed via API
-		relationshipSet("contactIds", "contact", "contactSet")
-		relationship("coverFotoId", "document", "coverFoto")
+		config.exclude("currentRating") // Handled via custom field (computed property)
+		config.exclude("ratingList") // Not exposed via API
+		config.relationshipSet("contactIds", "contact", "contactSet")
+		config.relationship("coverFotoId", "document", "coverFoto")
 
 		// Custom field for currentRating (computed property on aggregate)
-		field(
+		config.field(
 			"currentRating",
 			outgoing = { entity -> buildCurrentRatingMap(entity as ObjBuilding) },
 			incoming = { value, entity -> applyCurrentRating(value, entity as ObjBuilding) },
 		)
 
 		// Configure part adapter for ObjBuildingPartRating
-		partAdapter(ObjBuildingPartRating::class.java) {
+		config.partAdapter(ObjBuildingPartRating::class.java) {
 			exclude("ratingUser") // Handled via custom field (needs EnumeratedDto conversion)
 			field("ratingUser", { part ->
 				userDtoAdapter.asEnumerated((part as ObjBuildingPartRating).ratingUser)
@@ -49,7 +49,7 @@ class ObjBuildingDtoAdapter(
 		}
 
 		// Configure part adapter for ObjBuildingPartElementRating
-		partAdapter(ObjBuildingPartElementRating::class.java) {
+		config.partAdapter(ObjBuildingPartElementRating::class.java) {
 			// Add computed fields for restoration and lifetime calculations
 			field("restorationYear", { part -> calculateRestorationYear(part as ObjBuildingPartElementRating) })
 			field("restorationCosts", { part -> calculateRestorationCosts(part as ObjBuildingPartElementRating) })

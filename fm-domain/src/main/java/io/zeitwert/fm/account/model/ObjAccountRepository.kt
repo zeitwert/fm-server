@@ -1,9 +1,9 @@
 package io.zeitwert.fm.account.model
 
-import io.zeitwert.fm.obj.model.FMObjRepository
+import dddrive.app.obj.model.ObjRepository
 import java.util.*
 
-interface ObjAccountRepository : FMObjRepository<ObjAccount> {
+interface ObjAccountRepository : ObjRepository<ObjAccount> {
 
 	fun getByKey(key: String): Optional<ObjAccount>
 

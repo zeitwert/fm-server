@@ -1,5 +1,5 @@
 package io.zeitwert.fm.contact.model
 
-import io.zeitwert.fm.obj.model.FMObjRepository
+import dddrive.app.obj.model.ObjRepository
 
-interface ObjContactRepository : FMObjRepository<ObjContact>
+interface ObjContactRepository : ObjRepository<ObjContact>

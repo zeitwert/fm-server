@@ -1,5 +1,6 @@
 package io.zeitwert.fm.doc.model
 
 import dddrive.app.doc.model.Doc
+import dddrive.app.doc.model.DocRepository
 
-interface FMDocVRepository : FMDocRepository<Doc>
+interface FMDocVRepository : DocRepository<Doc>

@@ -1,10 +1,10 @@
 package io.zeitwert.fm.oe.model
 
+import dddrive.app.obj.model.ObjRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.FMObjRepository
 import java.util.*
 
-interface ObjTenantRepository : FMObjRepository<ObjTenant> {
+interface ObjTenantRepository : ObjRepository<ObjTenant> {
 
 	val userRepository: ObjUserRepository
 

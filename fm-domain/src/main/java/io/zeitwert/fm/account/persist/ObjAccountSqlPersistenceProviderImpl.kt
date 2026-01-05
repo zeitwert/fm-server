@@ -86,13 +86,6 @@ open class ObjAccountSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_ACCOUNT.OBJ_ID)
-			.from(Tables.OBJ_ACCOUNT)
-			.where(Tables.OBJ_ACCOUNT.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_ACCOUNT.OBJ_ID)
-
 	fun getByKey(key: String): Optional<Any> {
 		val accountId = dslContext
 			.select(Tables.OBJ_ACCOUNT.OBJ_ID)

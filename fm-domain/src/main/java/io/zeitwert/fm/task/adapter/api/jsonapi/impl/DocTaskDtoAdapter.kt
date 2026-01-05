@@ -15,7 +15,7 @@ class DocTaskDtoAdapter(
 ) : DocDtoAdapterBase<DocTask, DocTaskDto>(directory, { DocTaskDto() }) {
 
 	init {
-		field(
+		config.field(
 			"relatedTo",
 			outgoing = { EnumeratedDto.of((it as DocTask).relatedTo as? Aggregate) },
 			incoming = { dtoValue, task ->

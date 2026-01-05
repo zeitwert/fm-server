@@ -93,6 +93,4 @@ class ObjRecordMapperImpl(
 		return record
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
-
 }

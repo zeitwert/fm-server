@@ -9,9 +9,7 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 abstract class ObjDtoAdapterBase<O : Obj, D : ObjDtoBase<O>>(
 	directory: RepositoryDirectory,
 	resourceFactory: () -> D,
-) : AggregateDtoAdapterBase<O, D>(directory, resourceFactory) {
-
-	init {
+) : AggregateDtoAdapterBase<O, D>(directory, resourceFactory, {
 		exclude("objTypeId")
 		meta("itemType", {
 			val itemType = CodeAggregateTypeEnum.getAggregateType((it as Obj).meta.objTypeId)
@@ -26,7 +24,7 @@ abstract class ObjDtoAdapterBase<O : Obj, D : ObjDtoBase<O>>(
 		)
 		relationship("tenantInfoId", "tenant", "tenant")
 		relationship("accountId", "account", "account")
-	}
+	}) {
 
 	@Suppress("UNCHECKED_CAST")
 	override fun toAggregate(

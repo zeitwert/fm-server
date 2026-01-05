@@ -98,6 +98,4 @@ class DocRecordMapperImpl(
 		return record
 	}
 
-	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
-
 }

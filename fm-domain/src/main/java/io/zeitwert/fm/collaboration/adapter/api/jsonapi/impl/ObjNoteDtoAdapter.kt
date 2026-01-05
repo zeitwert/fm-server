@@ -13,7 +13,7 @@ class ObjNoteDtoAdapter(
 ) : ObjDtoAdapterBase<ObjNote, ObjNoteDto>(directory, { ObjNoteDto() }) {
 
 	init {
-		field(
+		config.field(
 			"relatedToId",
 			{ DtoUtils.idToString((it as ObjNote).relatedToId) },
 			{ dtoValue, note -> (note as ObjNote).relatedToId = DtoUtils.idFromString(dtoValue as String?) },

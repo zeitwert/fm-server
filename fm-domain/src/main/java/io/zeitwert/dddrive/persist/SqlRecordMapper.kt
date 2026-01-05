@@ -8,6 +8,4 @@ interface SqlRecordMapper<A : Aggregate> {
 
 	fun storeRecord(aggregate: A)
 
-	fun getAll(tenantId: Any): List<Any>
-
 }

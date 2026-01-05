@@ -12,33 +12,35 @@ import org.springframework.beans.factory.annotation.Autowired
 abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase<E>>(
 	directory: RepositoryDirectory,
 	resourceFactory: () -> D,
-) : AggregateDtoAdapterBase<E, D>(directory, resourceFactory) {
+) : AggregateDtoAdapterBase<E, D>(
+		directory,
+		resourceFactory,
+		{
+			exclude("docTypeId")
+			meta("itemType", {
+				val itemType = CodeAggregateTypeEnum.getAggregateType((it as Doc).meta.docTypeId)
+				EnumeratedDto.of(itemType)
+			})
+			field("caseStage", "caseStage")
+			field("assignee", "assignee")
+			meta(
+				listOf(
+					"caseDef",
+					"caseStage",
+					"assignee",
+					"transitionList",
+				),
+			)
+			meta("caseStages", {
+				(it as Doc).meta.caseStages.map { cs -> EnumeratedDto.of(cs) }
+			})
+			relationship("tenantInfoId", "tenant", "tenant")
+			relationship("accountId", "account", "account")
+		},
+	) {
 
 	@Autowired
 	lateinit var sessionContext: SessionContext
-
-	init {
-		exclude("docTypeId")
-		meta("itemType", {
-			val itemType = CodeAggregateTypeEnum.getAggregateType((it as Doc).meta.docTypeId)
-			EnumeratedDto.of(itemType)
-		})
-		field("caseStage", "caseStage")
-		field("assignee", "assignee")
-		meta(
-			listOf(
-				"caseDef",
-				"caseStage",
-				"assignee",
-				"transitionList",
-			),
-		)
-		meta("caseStages", {
-			(it as Doc).meta.caseStages.map { cs -> EnumeratedDto.of(cs) }
-		})
-		relationship("tenantInfoId", "tenant", "tenant")
-		relationship("accountId", "account", "account")
-	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun toAggregate(

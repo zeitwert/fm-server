@@ -15,8 +15,8 @@ class ObjAccountDtoAdapter(
 ) : ObjDtoAdapterBase<ObjAccount, ObjAccountDto>(directory, { ObjAccountDto() }) {
 
 	init {
-		exclude("mainContact")
-		relationship("mainContactId", "contact") { entity, dto ->
+		config.exclude("mainContact")
+		config.relationship("mainContactId", "contact") { entity, dto ->
 			val accountId = (entity as ObjAccount).id
 			val querySpec = query {
 				filter { "accountId" eq accountId }
@@ -24,8 +24,8 @@ class ObjAccountDtoAdapter(
 			val contactIds = directory.getRepository(ObjContact::class.java).find(querySpec)
 			contactIds.map { DtoUtils.idToString(it) }.firstOrNull()
 		}
-		relationship("logoId", "document", "logoImage")
-		relationshipSet("contactIds", "contact") { entity, dto ->
+		config.relationship("logoId", "document", "logoImage")
+		config.relationshipSet("contactIds", "contact") { entity, dto ->
 			val accountId = (entity as ObjAccount).id
 			val querySpec = query {
 				filter { "accountId" eq accountId }

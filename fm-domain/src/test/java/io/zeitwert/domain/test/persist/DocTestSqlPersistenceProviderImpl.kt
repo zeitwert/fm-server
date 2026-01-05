@@ -111,11 +111,4 @@ open class DocTestSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.DOC_TEST_V, Tables.DOC_TEST_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.DOC_TEST.DOC_ID)
-			.from(Tables.DOC_TEST)
-			.where(Tables.DOC_TEST.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.DOC_TEST.DOC_ID)
-
 }

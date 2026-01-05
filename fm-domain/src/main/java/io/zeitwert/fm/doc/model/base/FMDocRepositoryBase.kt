@@ -1,10 +1,10 @@
 package io.zeitwert.fm.doc.model.base
 
 import dddrive.app.doc.model.Doc
+import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.base.DocRepositoryBase
 import dddrive.ddd.query.QuerySpec
 import io.zeitwert.dddrive.persist.AggregateSqlPersistenceProvider
-import io.zeitwert.fm.doc.model.FMDocRepository
 
 /**
  * Base repository class for FM Orders.
@@ -20,7 +20,7 @@ abstract class FMDocRepositoryBase<D : Doc>(
 	intfClass: Class<out Doc>,
 	aggregateTypeId: String,
 ) : DocRepositoryBase<D>(intfClass, aggregateTypeId),
-	FMDocRepository<D> {
+	DocRepository<D> {
 
 	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<D>
 

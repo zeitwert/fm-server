@@ -14,9 +14,9 @@ class ObjUserDtoAdapter(
 ) : ObjDtoAdapterBase<ObjUser, ObjUserDto>(directory, { ObjUserDto() }) {
 
 	init {
-		relationship("avatarId", "document", "avatarImage")
-		exclude("tenantSet")
-		field("tenants", "tenantSet")
+		config.relationship("avatarId", "document", "avatarImage")
+		config.exclude("tenantSet")
+		config.field("tenants", "tenantSet")
 	}
 
 	fun asEnumerated(obj: ObjUser?): EnumeratedDto? = if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)

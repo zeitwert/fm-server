@@ -1,5 +1,5 @@
 package io.zeitwert.fm.collaboration.model
 
-import io.zeitwert.fm.obj.model.FMObjRepository
+import dddrive.app.obj.model.ObjRepository
 
-interface ObjNoteRepository : FMObjRepository<ObjNote>
+interface ObjNoteRepository : ObjRepository<ObjNote>

@@ -77,15 +77,6 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_DOCUMENT.OBJ_ID)
-			.from(Tables.OBJ_DOCUMENT)
-			.where(Tables.OBJ_DOCUMENT.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
-
-	// Content-related helper methods (used by repository)
-
 	fun getContentType(document: ObjDocument): CodeContentType? {
 		val maxVersionNr = dslContext.fetchValue(getContentMaxVersionQuery(document))
 		if (maxVersionNr == null) return null

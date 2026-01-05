@@ -1,5 +1,5 @@
 package io.zeitwert.domain.test.model
 
-import io.zeitwert.fm.doc.model.FMDocRepository
+import dddrive.app.doc.model.DocRepository
 
-interface DocTestRepository : FMDocRepository<DocTest>
+interface DocTestRepository : DocRepository<DocTest>

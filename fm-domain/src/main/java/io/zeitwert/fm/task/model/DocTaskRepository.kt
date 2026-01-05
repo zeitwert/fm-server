@@ -1,5 +1,5 @@
 package io.zeitwert.fm.task.model
 
-import io.zeitwert.fm.doc.model.FMDocRepository
+import dddrive.app.doc.model.DocRepository
 
-interface DocTaskRepository : FMDocRepository<DocTask>
+interface DocTaskRepository : DocRepository<DocTask>

@@ -13,13 +13,13 @@ class ObjDocumentDtoAdapter(
 ) : ObjDtoAdapterBase<ObjDocument, ObjDocumentDto>(directory, { ObjDocumentDto() }) {
 
 	init {
-		field(
+		config.field(
 			"contentType",
 			outgoing = { EnumeratedDto.of((it as ObjDocument).contentType) },
 		)
 
 		// supportedContentTypes is a calculated field from contentKind.getExtensions()
-		field(
+		config.field(
 			"supportedContentTypes",
 			outgoing = { (it as ObjDocument).contentKind?.getExtensions()?.joinToString(",") ?: "" },
 		)

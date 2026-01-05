@@ -90,11 +90,4 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_PORTFOLIO_V, Tables.OBJ_PORTFOLIO_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_PORTFOLIO.OBJ_ID)
-			.from(Tables.OBJ_PORTFOLIO)
-			.where(Tables.OBJ_PORTFOLIO.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_PORTFOLIO.OBJ_ID)
-
 }

@@ -76,12 +76,6 @@ open class ObjTenantSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_TENANT.OBJ_ID)
-			.from(Tables.OBJ_TENANT)
-			.fetch(Tables.OBJ_TENANT.OBJ_ID)
-
 	fun getByKey(key: String): Optional<Any> {
 		val tenantId = dslContext
 			.select(Tables.OBJ_TENANT.OBJ_ID)

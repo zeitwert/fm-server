@@ -169,11 +169,4 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_BUILDING_V, Tables.OBJ_BUILDING_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_BUILDING.OBJ_ID)
-			.from(Tables.OBJ_BUILDING)
-			.where(Tables.OBJ_BUILDING.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_BUILDING.OBJ_ID)
-
 }

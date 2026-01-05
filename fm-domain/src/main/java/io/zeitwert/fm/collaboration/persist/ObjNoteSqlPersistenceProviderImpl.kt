@@ -74,11 +74,4 @@ open class ObjNoteSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_NOTE_V, Tables.OBJ_NOTE_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_NOTE.OBJ_ID)
-			.from(Tables.OBJ_NOTE)
-			.where(Tables.OBJ_NOTE.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_NOTE.OBJ_ID)
-
 }

@@ -99,13 +99,6 @@ open class ObjUserSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_USER.OBJ_ID)
-			.from(Tables.OBJ_USER)
-			.where(Tables.OBJ_USER.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_USER.OBJ_ID)
-
 	fun getByEmail(email: String): Optional<Any> {
 		val userId = dslContext
 			.select(Tables.OBJ_USER.OBJ_ID)

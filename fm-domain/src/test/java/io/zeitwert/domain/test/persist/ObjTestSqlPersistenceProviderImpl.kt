@@ -132,11 +132,4 @@ open class ObjTestSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_TEST_V, Tables.OBJ_TEST_V.ID, query)
 
-	override fun getAll(tenantId: Any): List<Any> =
-		dslContext
-			.select(Tables.OBJ_TEST.OBJ_ID)
-			.from(Tables.OBJ_TEST)
-			.where(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_TEST.OBJ_ID)
-
 }
