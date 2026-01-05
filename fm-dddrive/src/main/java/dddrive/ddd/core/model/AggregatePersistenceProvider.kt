@@ -53,13 +53,4 @@ interface AggregatePersistenceProvider<A : Aggregate?> {
 	 */
 	fun doStore(aggregate: A)
 
-	/**
-	 * Get a list of Aggregate Ids with the given foreign key pointing to targetId
-	 */
-	fun getByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>
-
 }

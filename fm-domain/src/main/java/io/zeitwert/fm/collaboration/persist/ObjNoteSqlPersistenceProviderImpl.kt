@@ -13,7 +13,6 @@ import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
-import io.zeitwert.fm.obj.model.db.Tables as ObjTables
 
 /** Persistence provider for ObjNote aggregates. */
 @Component("objNotePersistenceProvider")
@@ -81,25 +80,5 @@ open class ObjNoteSqlPersistenceProviderImpl(
 			.from(Tables.OBJ_NOTE)
 			.where(Tables.OBJ_NOTE.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_NOTE.OBJ_ID)
-
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.OBJ_NOTE.TENANT_ID
-			"relatedToId" -> Tables.OBJ_NOTE.RELATED_TO_ID
-			else -> return null
-		}
-		return dslContext
-			.select(Tables.OBJ_NOTE.OBJ_ID)
-			.from(Tables.OBJ_NOTE)
-			.join(ObjTables.OBJ)
-			.on(ObjTables.OBJ.ID.eq(Tables.OBJ_NOTE.OBJ_ID))
-			.where(field.eq(targetId as Int))
-			.and(ObjTables.OBJ.CLOSED_AT.isNull)
-			.fetch(Tables.OBJ_NOTE.OBJ_ID)
-	}
 
 }

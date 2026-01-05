@@ -6,6 +6,8 @@ import dddrive.ddd.core.model.base.AggregatePersistenceProviderBase
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.domain.ddd.persist.map.impl.fromMap
 import dddrive.domain.ddd.persist.map.impl.toMap
+import io.crnk.core.queryspec.FilterOperator
+import io.crnk.core.queryspec.QuerySpec
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -93,16 +95,27 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 		id?.let { aggregates[it] = map }
 	}
 
-	override fun getByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any> {
-		// Convert fkName to the map key (e.g., "tenantId" -> look for "tenantId" in map)
-		val mapKey = if (fkName.endsWith("Id")) fkName else "${fkName}Id"
+	/**
+	 * Find aggregates matching the query specification.
+	 * Supports basic EQ filters on map properties.
+	 */
+	fun find(query: QuerySpec?): List<Any> {
+		if (query == null) {
+			return aggregates.values.mapNotNull { map -> map["id"] as? Int }.toList()
+		}
 
 		return aggregates.values
-			.filter { map -> map[mapKey] == targetId }
+			.filter { map ->
+				query.filters.all { filter ->
+					val path = filter.path.toString()
+					val mapKey = if (path.endsWith("Id")) path else "${path}Id"
+					val mapValue = map[path] ?: map[mapKey]
+					when (filter.operator) {
+						FilterOperator.EQ -> mapValue == filter.getValue()
+						else -> true // Ignore unsupported operators in test implementation
+					}
+				}
+			}
 			.mapNotNull { map -> map["id"] as? Int }
 			.toList()
 	}

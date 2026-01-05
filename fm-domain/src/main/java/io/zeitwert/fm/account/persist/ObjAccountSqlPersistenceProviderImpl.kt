@@ -93,23 +93,6 @@ open class ObjAccountSqlPersistenceProviderImpl(
 			.where(Tables.OBJ_ACCOUNT.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_ACCOUNT.OBJ_ID)
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.OBJ_ACCOUNT.TENANT_ID
-			else -> return null
-		}
-		return dslContext
-			.select(Tables.OBJ_ACCOUNT.OBJ_ID)
-			.from(Tables.OBJ_ACCOUNT)
-			.where(field.eq(targetId as Int))
-			// .and(Tables.OBJ_TEST.TENANT_ID.eq(tenantId as Int))
-			.fetch(Tables.OBJ_ACCOUNT.OBJ_ID)
-	}
-
 	fun getByKey(key: String): Optional<Any> {
 		val accountId = dslContext
 			.select(Tables.OBJ_ACCOUNT.OBJ_ID)

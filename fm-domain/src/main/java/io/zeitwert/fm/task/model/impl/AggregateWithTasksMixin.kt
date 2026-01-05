@@ -3,6 +3,9 @@ package io.zeitwert.fm.task.model.impl
 import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
+import io.crnk.core.queryspec.FilterOperator
+import io.crnk.core.queryspec.PathSpec
+import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.ItemWithTasks
@@ -18,7 +21,10 @@ interface AggregateWithTasksMixin : ItemWithTasks {
 		get() {
 			val id = this.aggregate().id
 			val fkName = if (this is Obj) "relatedObjId" else "relatedDocId"
-			return this.taskRepository().getByForeignKey(fkName, id).map { taskRepository().get(it) }
+			val query = QuerySpec(DocTask::class.java).apply {
+				addFilter(PathSpec.of(fkName).filter(FilterOperator.EQ, id))
+			}
+			return this.taskRepository().find(query).map { taskRepository().get(it) }
 		}
 
 	override fun addTask(

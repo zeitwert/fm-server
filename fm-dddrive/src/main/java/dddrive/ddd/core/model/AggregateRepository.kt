@@ -1,6 +1,7 @@
 package dddrive.ddd.core.model
 
 import dddrive.ddd.core.model.enums.CodeAggregateType
+import io.crnk.core.queryspec.QuerySpec
 
 /**
  * A DDD Aggregate Repository
@@ -64,11 +65,11 @@ interface AggregateRepository<A : Aggregate> {
 	fun store(aggregate: A)
 
 	/**
-	 * Get a list of Aggregates with the given foreign key pointing to targetId
+	 * Find aggregates matching the query specification
+	 *
+	 * @param query the query specification with filters, sorting, etc.
+	 * @return list of aggregate IDs matching the query
 	 */
-	fun getByForeignKey(
-		fkName: String,
-		targetId: Any,
-	): List<Any>
+	fun find(query: QuerySpec?): List<Any>
 
 }

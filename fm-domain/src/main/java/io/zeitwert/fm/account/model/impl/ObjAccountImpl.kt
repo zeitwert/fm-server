@@ -6,6 +6,9 @@ import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
+import io.crnk.core.queryspec.FilterOperator
+import io.crnk.core.queryspec.PathSpec
+import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
@@ -67,7 +70,10 @@ class ObjAccountImpl(
 
 	override val contactList: List<Any>
 		get() {
-			return directory.getRepository(ObjContact::class.java).getByForeignKey("accountId", id)
+			val query = QuerySpec(ObjContact::class.java).apply {
+				addFilter(PathSpec.of("accountId").filter(FilterOperator.EQ, id))
+			}
+			return directory.getRepository(ObjContact::class.java).find(query)
 		}
 
 	override fun doCalcAll() {

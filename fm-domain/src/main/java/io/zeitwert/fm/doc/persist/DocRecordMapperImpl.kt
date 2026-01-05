@@ -100,24 +100,4 @@ class DocRecordMapperImpl(
 
 	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.DOC.TENANT_ID
-			"accountId" -> Tables.DOC.ACCOUNT_ID
-			"ownerId" -> Tables.DOC.OWNER_ID
-			"assigneeId" -> Tables.DOC.ASSIGNEE_ID
-			else -> return null
-		}
-		return dslContext
-			.select(Tables.DOC.ID)
-			.from(Tables.DOC)
-			.where(field.eq(targetId as Int))
-			.and(Tables.DOC.DOC_TYPE_ID.eq(aggregateTypeId))
-			.fetch(Tables.DOC.ID)
-	}
-
 }

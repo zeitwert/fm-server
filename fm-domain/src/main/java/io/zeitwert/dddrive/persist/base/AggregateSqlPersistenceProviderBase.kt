@@ -79,17 +79,4 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	protected open fun doStoreParts(aggregate: A) {
 	}
 
-	final override fun getByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any> {
-		var foreignKeys = baseRecordMapper.getIdsByForeignKey(aggregateTypeId, fkName, targetId)
-		if (foreignKeys == null && extnRecordMapper != null) {
-			foreignKeys = extnRecordMapper!!.getIdsByForeignKey(aggregateTypeId, fkName, targetId)
-		}
-		assert(foreignKeys != null) { "valid foreign key: $fkName" }
-		return foreignKeys!!
-	}
-
 }

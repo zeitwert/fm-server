@@ -118,23 +118,4 @@ open class DocTestSqlPersistenceProviderImpl(
 			.where(Tables.DOC_TEST.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.DOC_TEST.DOC_ID)
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field =
-			when (fkName) {
-				"tenantId" -> Tables.DOC_TEST.TENANT_ID
-				"accountId" -> Tables.DOC_TEST.ACCOUNT_ID
-				"refObjId" -> Tables.DOC_TEST.REF_OBJ_ID
-				"refDocId" -> Tables.DOC_TEST.REF_DOC_ID
-				else -> return null
-			}
-		return dslContext
-			.select(Tables.DOC_TEST.DOC_ID)
-			.from(Tables.DOC_TEST)
-			.where(field.eq(targetId as Int))
-			.fetch(Tables.DOC_TEST.DOC_ID)
-	}
 }

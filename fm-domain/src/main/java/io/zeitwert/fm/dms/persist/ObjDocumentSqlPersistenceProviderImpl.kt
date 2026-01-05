@@ -84,24 +84,6 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 			.where(Tables.OBJ_DOCUMENT.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.OBJ_DOCUMENT.TENANT_ID
-			"accountId" -> Tables.OBJ_DOCUMENT.ACCOUNT_ID
-			"templateDocumentId" -> Tables.OBJ_DOCUMENT.TEMPLATE_DOCUMENT_ID
-			else -> return null
-		}
-		return dslContext
-			.select(Tables.OBJ_DOCUMENT.OBJ_ID)
-			.from(Tables.OBJ_DOCUMENT)
-			.where(field.eq(targetId as Int))
-			.fetch(Tables.OBJ_DOCUMENT.OBJ_ID)
-	}
-
 	// Content-related helper methods (used by repository)
 
 	fun getContentType(document: ObjDocument): CodeContentType? {

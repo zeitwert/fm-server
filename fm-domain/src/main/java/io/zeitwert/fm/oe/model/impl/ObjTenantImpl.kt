@@ -6,6 +6,9 @@ import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
+import io.crnk.core.queryspec.FilterOperator
+import io.crnk.core.queryspec.PathSpec
+import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
@@ -34,9 +37,12 @@ class ObjTenantImpl(
 	override val logoImage by referenceProperty<ObjDocument>("logoImage")
 
 	override val users: List<ObjUser>
-		get() = repository.userRepository
-			.getByForeignKey("tenantId", this.id)
-			.map { repository.userRepository.get(it) }
+		get() {
+			val query = QuerySpec(ObjUser::class.java).apply {
+				addFilter(PathSpec.of("tenantId").filter(FilterOperator.EQ, this@ObjTenantImpl.id))
+			}
+			return repository.userRepository.find(query).map { repository.userRepository.get(it) }
+		}
 
 	override fun doCalcAll() {
 		super.doCalcAll()

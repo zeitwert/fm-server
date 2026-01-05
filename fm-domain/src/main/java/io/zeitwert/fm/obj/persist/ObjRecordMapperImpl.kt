@@ -95,24 +95,4 @@ class ObjRecordMapperImpl(
 
 	override fun getAll(tenantId: Any): List<Any> = throw UnsupportedOperationException()
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.OBJ.TENANT_ID
-			"accountId" -> Tables.OBJ.ACCOUNT_ID
-			"ownerId" -> Tables.OBJ.OWNER_ID
-			else -> return null
-		}
-		return dslContext
-			.select(Tables.OBJ.ID)
-			.from(Tables.OBJ)
-			.where(field.eq(targetId as Int))
-			.and(Tables.OBJ.OBJ_TYPE_ID.eq(aggregateTypeId))
-			.and(Tables.OBJ.CLOSED_AT.isNull)
-			.fetch(Tables.OBJ.ID)
-	}
-
 }

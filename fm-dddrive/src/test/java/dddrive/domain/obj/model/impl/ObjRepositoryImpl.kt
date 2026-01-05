@@ -5,6 +5,7 @@ import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjRepositoryBase
 import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
+import io.crnk.core.queryspec.QuerySpec
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 
@@ -22,6 +23,8 @@ class ObjRepositoryImpl(
 	override val persistenceProvider = object : MapObjPersistenceProviderBase<Obj>(Obj::class.java) {}
 
 	override fun createAggregate(isNew: Boolean): Obj = TODO()
+
+	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
 
 	companion object {
 

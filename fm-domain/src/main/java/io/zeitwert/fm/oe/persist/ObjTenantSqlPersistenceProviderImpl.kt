@@ -82,15 +82,6 @@ open class ObjTenantSqlPersistenceProviderImpl(
 			.from(Tables.OBJ_TENANT)
 			.fetch(Tables.OBJ_TENANT.OBJ_ID)
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		// ObjTenant typically doesn't have foreign keys to other entities
-		return null
-	}
-
 	fun getByKey(key: String): Optional<Any> {
 		val tenantId = dslContext
 			.select(Tables.OBJ_TENANT.OBJ_ID)

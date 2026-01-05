@@ -6,6 +6,7 @@ import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
+import io.crnk.core.queryspec.QuerySpec
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 
@@ -23,6 +24,8 @@ class ObjHouseholdRepositoryImpl(
 	override val persistenceProvider = object : MapObjPersistenceProviderBase<ObjHousehold>(ObjHousehold::class.java) {}
 
 	override fun createAggregate(isNew: Boolean): ObjHousehold = ObjHouseholdImpl(this, isNew)
+
+	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
 
 	override fun registerParts() {
 		super.registerParts()

@@ -5,6 +5,7 @@ import dddrive.app.obj.model.base.ObjRepositoryBase
 import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.persist.ObjTenantPersistenceProvider
+import io.crnk.core.queryspec.QuerySpec
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 import java.util.*
@@ -23,6 +24,8 @@ class ObjTenantRepositoryImpl(
 	override val persistenceProvider get() = directory.getPersistenceProvider(ObjTenant::class.java) as ObjTenantPersistenceProvider
 
 	override fun createAggregate(isNew: Boolean): ObjTenant = ObjTenantImpl(this, isNew)
+
+	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
 
 	override fun getByKey(key: String): Optional<ObjTenant> = this.persistenceProvider.getByKey(key).map { get(it) }
 

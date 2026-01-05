@@ -86,22 +86,4 @@ open class DocTaskSqlPersistenceProvider(
 			.where(Tables.DOC_TASK.TENANT_ID.eq(tenantId as Int))
 			.fetch(Tables.DOC_TASK.DOC_ID)
 
-	override fun getIdsByForeignKey(
-		aggregateTypeId: String,
-		fkName: String,
-		targetId: Any,
-	): List<Any>? {
-		val field = when (fkName) {
-			"tenantId" -> Tables.DOC_TASK.TENANT_ID
-			"accountId" -> Tables.DOC_TASK.ACCOUNT_ID
-			"relatedToId" -> Tables.DOC_TASK.RELATED_TO_ID
-			else -> return null
-		}
-		return dslContext
-			.select(Tables.DOC_TASK.DOC_ID)
-			.from(Tables.DOC_TASK)
-			.where(field.eq(targetId as Int))
-			.fetch(Tables.DOC_TASK.DOC_ID)
-	}
-
 }
