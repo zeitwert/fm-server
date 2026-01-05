@@ -2,6 +2,9 @@ package io.zeitwert.fm;
 
 import dddrive.app.doc.model.enums.CodeCaseStage;
 import dddrive.app.doc.model.enums.CodeCaseStageEnum;
+import io.crnk.core.queryspec.FilterOperator;
+import io.crnk.core.queryspec.PathSpec;
+import io.crnk.core.queryspec.QuerySpec;
 import io.zeitwert.dddrive.app.model.SessionContext;
 import io.zeitwert.fm.account.model.ObjAccount;
 import io.zeitwert.fm.account.model.ObjAccountRepository;
@@ -18,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -172,6 +176,61 @@ public class TaskTest {
 		assertEquals(task.getPriority(), PrioHigh);
 		assertEquals(task.getDueAt(), DueDate.plusDays(4));
 		assertEquals(task.getMeta().getCaseStage(), StageProgress);
+	}
+
+	@Test
+	public void testFindByRelatedToId() {
+		this.getTestData(sessionContext);
+
+		Object userId = sessionContext.getUserId();
+		OffsetDateTime now = sessionContext.getCurrentTime();
+
+		// Create two tasks related to the same user (RelatedTo)
+		DocTask task1 = this.taskRepository.create();
+		this.initTask1(task1, userId, now);
+		this.taskRepository.store(task1);
+		Object task1Id = task1.getId();
+
+		DocTask task2 = this.taskRepository.create();
+		this.initTask1(task2, userId, now);
+		task2.setSubject("Task 2");
+		this.taskRepository.store(task2);
+		Object task2Id = task2.getId();
+
+		// Create a task related to a different object (Account)
+		DocTask task3 = this.taskRepository.create();
+		task3.getMeta().setCaseStage(CodeCaseStageEnum.getCaseStage("task.new"), userId, now);
+		task3.setRelatedToId(Account.getId());
+		task3.setAccountId(Account.getId());
+		task3.setSubject("Task 3 - different related");
+		task3.setContent("content");
+		task3.setPrivate(false);
+		task3.setPriority(PrioNormal);
+		task3.setDueAt(DueDate);
+		this.taskRepository.store(task3);
+		Object task3Id = task3.getId();
+
+		// Find tasks by relatedToId using QuerySpec
+		QuerySpec querySpec = new QuerySpec(DocTask.class);
+		querySpec.addFilter(PathSpec.of("relatedToId").filter(FilterOperator.EQ, RelatedTo.getId()));
+
+		List<Object> foundIds = this.taskRepository.find(querySpec);
+
+		// Should find task1 and task2 (both related to RelatedTo user)
+		assertTrue(foundIds.contains(task1Id), "Should find task1");
+		assertTrue(foundIds.contains(task2Id), "Should find task2");
+		assertFalse(foundIds.contains(task3Id), "Should NOT find task3 (different relatedToId)");
+
+		// Find tasks related to Account
+		QuerySpec querySpec2 = new QuerySpec(DocTask.class);
+		querySpec2.addFilter(PathSpec.of("relatedToId").filter(FilterOperator.EQ, Account.getId()));
+
+		List<Object> foundIds2 = this.taskRepository.find(querySpec2);
+
+		// Should find task3 (related to Account)
+		assertTrue(foundIds2.contains(task3Id), "Should find task3");
+		assertFalse(foundIds2.contains(task1Id), "Should NOT find task1");
+		assertFalse(foundIds2.contains(task2Id), "Should NOT find task2");
 	}
 
 }

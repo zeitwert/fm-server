@@ -23,7 +23,6 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index DOC_TASK$ACCOUNT = Internal.createIndex(DSL.name("doc_task$account"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.ACCOUNT_ID }, false);
-    public static final Index DOC_TASK$RELATED_DOC = Internal.createIndex(DSL.name("doc_task$related_doc"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.RELATED_DOC_ID }, false);
-    public static final Index DOC_TASK$RELATED_OBJ = Internal.createIndex(DSL.name("doc_task$related_obj"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.RELATED_OBJ_ID }, false);
+    public static final Index DOC_TASK$RELATED_TO = Internal.createIndex(DSL.name("doc_task$related_to"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.RELATED_TO_ID }, false);
     public static final Index DOC_TASK$TENANT = Internal.createIndex(DSL.name("doc_task$tenant"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.TENANT_ID }, false);
 }

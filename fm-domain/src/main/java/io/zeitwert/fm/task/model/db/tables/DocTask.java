@@ -75,16 +75,6 @@ public class DocTask extends TableImpl<DocTaskRecord> {
     public final TableField<DocTaskRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.doc_task.related_obj_id</code>.
-     */
-    public final TableField<DocTaskRecord, Integer> RELATED_OBJ_ID = createField(DSL.name("related_obj_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.doc_task.related_doc_id</code>.
-     */
-    public final TableField<DocTaskRecord, Integer> RELATED_DOC_ID = createField(DSL.name("related_doc_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.doc_task.subject</code>.
      */
     public final TableField<DocTaskRecord, String> SUBJECT = createField(DSL.name("subject"), SQLDataType.VARCHAR(100), this, "");
@@ -113,6 +103,11 @@ public class DocTask extends TableImpl<DocTaskRecord> {
      * The column <code>public.doc_task.remind_at</code>.
      */
     public final TableField<DocTaskRecord, OffsetDateTime> REMIND_AT = createField(DSL.name("remind_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
+
+    /**
+     * The column <code>public.doc_task.related_to_id</code>.
+     */
+    public final TableField<DocTaskRecord, Integer> RELATED_TO_ID = createField(DSL.name("related_to_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private DocTask(Name alias, Table<DocTaskRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -183,7 +178,7 @@ public class DocTask extends TableImpl<DocTaskRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.DOC_TASK$ACCOUNT, Indexes.DOC_TASK$RELATED_DOC, Indexes.DOC_TASK$RELATED_OBJ, Indexes.DOC_TASK$TENANT);
+        return Arrays.asList(Indexes.DOC_TASK$ACCOUNT, Indexes.DOC_TASK$RELATED_TO, Indexes.DOC_TASK$TENANT);
     }
 
     @Override

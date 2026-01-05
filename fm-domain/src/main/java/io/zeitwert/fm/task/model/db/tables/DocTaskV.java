@@ -129,16 +129,6 @@ public class DocTaskV extends TableImpl<DocTaskVRecord> {
     public final TableField<DocTaskVRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.doc_task_v.related_obj_id</code>.
-     */
-    public final TableField<DocTaskVRecord, Integer> RELATED_OBJ_ID = createField(DSL.name("related_obj_id"), SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.doc_task_v.related_doc_id</code>.
-     */
-    public final TableField<DocTaskVRecord, Integer> RELATED_DOC_ID = createField(DSL.name("related_doc_id"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>public.doc_task_v.subject</code>.
      */
     public final TableField<DocTaskVRecord, String> SUBJECT = createField(DSL.name("subject"), SQLDataType.VARCHAR(100), this, "");
@@ -168,6 +158,11 @@ public class DocTaskV extends TableImpl<DocTaskVRecord> {
      */
     public final TableField<DocTaskVRecord, OffsetDateTime> REMIND_AT = createField(DSL.name("remind_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
+    /**
+     * The column <code>public.doc_task_v.related_to_id</code>.
+     */
+    public final TableField<DocTaskVRecord, Integer> RELATED_TO_ID = createField(DSL.name("related_to_id"), SQLDataType.INTEGER, this, "");
+
     private DocTaskV(Name alias, Table<DocTaskVRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -190,14 +185,13 @@ public class DocTaskV extends TableImpl<DocTaskVRecord> {
          dt.doc_id,
          dt.tenant_id,
          dt.account_id,
-         dt.related_obj_id,
-         dt.related_doc_id,
          dt.subject,
          dt.content,
          dt.is_private,
          dt.priority_id,
          dt.due_at,
-         dt.remind_at
+         dt.remind_at,
+         dt.related_to_id
         FROM (doc_task dt
           JOIN doc ON ((doc.id = dt.doc_id)));
         """), where);

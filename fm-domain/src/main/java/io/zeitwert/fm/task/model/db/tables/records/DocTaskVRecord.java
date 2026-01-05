@@ -244,115 +244,101 @@ public class DocTaskVRecord extends TableRecordImpl<DocTaskVRecord> {
     }
 
     /**
-     * Setter for <code>public.doc_task_v.related_obj_id</code>.
-     */
-    public void setRelatedObjId(Integer value) {
-        set(16, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_task_v.related_obj_id</code>.
-     */
-    public Integer getRelatedObjId() {
-        return (Integer) get(16);
-    }
-
-    /**
-     * Setter for <code>public.doc_task_v.related_doc_id</code>.
-     */
-    public void setRelatedDocId(Integer value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_task_v.related_doc_id</code>.
-     */
-    public Integer getRelatedDocId() {
-        return (Integer) get(17);
-    }
-
-    /**
      * Setter for <code>public.doc_task_v.subject</code>.
      */
     public void setSubject(String value) {
-        set(18, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.doc_task_v.subject</code>.
      */
     public String getSubject() {
-        return (String) get(18);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>public.doc_task_v.content</code>.
      */
     public void setContent(String value) {
-        set(19, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.doc_task_v.content</code>.
      */
     public String getContent() {
-        return (String) get(19);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.doc_task_v.is_private</code>.
      */
     public void setIsPrivate(Boolean value) {
-        set(20, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.doc_task_v.is_private</code>.
      */
     public Boolean getIsPrivate() {
-        return (Boolean) get(20);
+        return (Boolean) get(18);
     }
 
     /**
      * Setter for <code>public.doc_task_v.priority_id</code>.
      */
     public void setPriorityId(String value) {
-        set(21, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.doc_task_v.priority_id</code>.
      */
     public String getPriorityId() {
-        return (String) get(21);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>public.doc_task_v.due_at</code>.
      */
     public void setDueAt(OffsetDateTime value) {
-        set(22, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.doc_task_v.due_at</code>.
      */
     public OffsetDateTime getDueAt() {
-        return (OffsetDateTime) get(22);
+        return (OffsetDateTime) get(20);
     }
 
     /**
      * Setter for <code>public.doc_task_v.remind_at</code>.
      */
     public void setRemindAt(OffsetDateTime value) {
-        set(23, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.doc_task_v.remind_at</code>.
      */
     public OffsetDateTime getRemindAt() {
-        return (OffsetDateTime) get(23);
+        return (OffsetDateTime) get(21);
+    }
+
+    /**
+     * Setter for <code>public.doc_task_v.related_to_id</code>.
+     */
+    public void setRelatedToId(Integer value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_task_v.related_to_id</code>.
+     */
+    public Integer getRelatedToId() {
+        return (Integer) get(22);
     }
 
     // -------------------------------------------------------------------------
@@ -369,7 +355,7 @@ public class DocTaskVRecord extends TableRecordImpl<DocTaskVRecord> {
     /**
      * Create a detached, initialised DocTaskVRecord
      */
-    public DocTaskVRecord(String docTypeId, Integer id, Integer version, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, Integer relatedObjId, Integer relatedDocId, String subject, String content, Boolean isPrivate, String priorityId, OffsetDateTime dueAt, OffsetDateTime remindAt) {
+    public DocTaskVRecord(String docTypeId, Integer id, Integer version, Integer ownerId, String caption, String caseDefId, String caseStageId, Boolean isInWork, Integer assigneeId, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer docId, Integer tenantId, Integer accountId, String subject, String content, Boolean isPrivate, String priorityId, OffsetDateTime dueAt, OffsetDateTime remindAt, Integer relatedToId) {
         super(DocTaskV.DOC_TASK_V);
 
         setDocTypeId(docTypeId);
@@ -388,14 +374,13 @@ public class DocTaskVRecord extends TableRecordImpl<DocTaskVRecord> {
         setDocId(docId);
         setTenantId(tenantId);
         setAccountId(accountId);
-        setRelatedObjId(relatedObjId);
-        setRelatedDocId(relatedDocId);
         setSubject(subject);
         setContent(content);
         setIsPrivate(isPrivate);
         setPriorityId(priorityId);
         setDueAt(dueAt);
         setRemindAt(remindAt);
+        setRelatedToId(relatedToId);
         resetChangedOnNotNull();
     }
 }

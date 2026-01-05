@@ -1,6 +1,5 @@
 package io.zeitwert.fm.task.model.impl
 
-import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.property.delegate.baseProperty
@@ -24,8 +23,7 @@ class DocTaskImpl(
 	DocTask,
 	AggregateWithNotesMixin {
 
-	private var relatedObjId by referenceIdProperty<Obj>("relatedObj")
-	private var relatedDocId by referenceIdProperty<Doc>("relatedDoc")
+	override var relatedToId by referenceIdProperty<Obj>("relatedTo")
 
 	override var subject by baseProperty<String>("subject")
 	override var content by baseProperty<String>("content")
@@ -51,29 +49,10 @@ class DocTaskImpl(
 
 	override val account get() = if (accountId != null) accountRepository().get(accountId!!) else null
 
-	override var relatedToId: Any?
-		get() = relatedObjId ?: relatedDocId
-		set(id) {
-			if (id == null) {
-				relatedObjId = null
-				relatedDocId = null
-			} else { // TODO determine type of id
-				relatedObjId = id
-				relatedDocId = null
-			}
+	override val relatedTo: Aggregate?
+		get() {
+			// TODO: Implement via repository directory lookup
+			return null
 		}
-
-	override val relatedTo: Aggregate? get() = null
-
-	// Helper methods for persistence provider to access internal fields
-	fun setRelatedIds(
-		objId: Int?,
-		docId: Int?,
-	) {
-		relatedObjId = objId
-		relatedDocId = docId
-	}
-
-	fun getRelatedIds(): Pair<Int?, Int?> = Pair(relatedObjId as Int?, relatedDocId as Int?)
 
 }

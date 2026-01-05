@@ -63,115 +63,101 @@ public class DocTaskRecord extends UpdatableRecordImpl<DocTaskRecord> {
     }
 
     /**
-     * Setter for <code>public.doc_task.related_obj_id</code>.
-     */
-    public void setRelatedObjId(Integer value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_task.related_obj_id</code>.
-     */
-    public Integer getRelatedObjId() {
-        return (Integer) get(3);
-    }
-
-    /**
-     * Setter for <code>public.doc_task.related_doc_id</code>.
-     */
-    public void setRelatedDocId(Integer value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.doc_task.related_doc_id</code>.
-     */
-    public Integer getRelatedDocId() {
-        return (Integer) get(4);
-    }
-
-    /**
      * Setter for <code>public.doc_task.subject</code>.
      */
     public void setSubject(String value) {
-        set(5, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.doc_task.subject</code>.
      */
     public String getSubject() {
-        return (String) get(5);
+        return (String) get(3);
     }
 
     /**
      * Setter for <code>public.doc_task.content</code>.
      */
     public void setContent(String value) {
-        set(6, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.doc_task.content</code>.
      */
     public String getContent() {
-        return (String) get(6);
+        return (String) get(4);
     }
 
     /**
      * Setter for <code>public.doc_task.is_private</code>.
      */
     public void setIsPrivate(Boolean value) {
-        set(7, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.doc_task.is_private</code>.
      */
     public Boolean getIsPrivate() {
-        return (Boolean) get(7);
+        return (Boolean) get(5);
     }
 
     /**
      * Setter for <code>public.doc_task.priority_id</code>.
      */
     public void setPriorityId(String value) {
-        set(8, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.doc_task.priority_id</code>.
      */
     public String getPriorityId() {
-        return (String) get(8);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>public.doc_task.due_at</code>.
      */
     public void setDueAt(OffsetDateTime value) {
-        set(9, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.doc_task.due_at</code>.
      */
     public OffsetDateTime getDueAt() {
-        return (OffsetDateTime) get(9);
+        return (OffsetDateTime) get(7);
     }
 
     /**
      * Setter for <code>public.doc_task.remind_at</code>.
      */
     public void setRemindAt(OffsetDateTime value) {
-        set(10, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.doc_task.remind_at</code>.
      */
     public OffsetDateTime getRemindAt() {
-        return (OffsetDateTime) get(10);
+        return (OffsetDateTime) get(8);
+    }
+
+    /**
+     * Setter for <code>public.doc_task.related_to_id</code>.
+     */
+    public void setRelatedToId(Integer value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.doc_task.related_to_id</code>.
+     */
+    public Integer getRelatedToId() {
+        return (Integer) get(9);
     }
 
     // -------------------------------------------------------------------------
@@ -197,20 +183,19 @@ public class DocTaskRecord extends UpdatableRecordImpl<DocTaskRecord> {
     /**
      * Create a detached, initialised DocTaskRecord
      */
-    public DocTaskRecord(Integer docId, Integer tenantId, Integer accountId, Integer relatedObjId, Integer relatedDocId, String subject, String content, Boolean isPrivate, String priorityId, OffsetDateTime dueAt, OffsetDateTime remindAt) {
+    public DocTaskRecord(Integer docId, Integer tenantId, Integer accountId, String subject, String content, Boolean isPrivate, String priorityId, OffsetDateTime dueAt, OffsetDateTime remindAt, Integer relatedToId) {
         super(DocTask.DOC_TASK);
 
         setDocId(docId);
         setTenantId(tenantId);
         setAccountId(accountId);
-        setRelatedObjId(relatedObjId);
-        setRelatedDocId(relatedDocId);
         setSubject(subject);
         setContent(content);
         setIsPrivate(isPrivate);
         setPriorityId(priorityId);
         setDueAt(dueAt);
         setRemindAt(remindAt);
+        setRelatedToId(relatedToId);
         resetChangedOnNotNull();
     }
 }
