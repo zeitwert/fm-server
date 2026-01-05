@@ -2,7 +2,6 @@
 import { BrandBand, Settings } from "@salesforce/design-system-react";
 import { session } from "@zeitwert/ui-model";
 import DynamicView from "app/frame/DynamicView";
-import { Navigator } from "app/frame/Navigation";
 import AppHeader from "app/ui/AppHeader";
 import RedirectItemView from "lib/item/ui/RedirectItemView";
 import { observer } from "mobx-react";
@@ -15,7 +14,6 @@ export interface AppProps {
 }
 
 export interface AppCtx {
-	navigator: Navigator;
 	showToast: (variant: string, message: string) => void;
 	showAlert: (variant: string, message: string) => void;
 }

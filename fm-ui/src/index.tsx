@@ -1,7 +1,6 @@
 
 import { IconSettings } from "@salesforce/design-system-react";
 import { assertThis, Config, Locale, observeMutation, session, unregisterServiceWorker } from "@zeitwert/ui-model";
-import { NavigatorImpl } from "app/frame/impl/NavigationImpl";
 import "assets/app.css";
 import Highcharts from "highcharts";
 import Logger from "loglevel";
@@ -46,12 +45,8 @@ Highcharts.setOptions({
 const logLevel: Logger.LogLevelDesc = Config.getEnvParam("LOG_LEVEL") as Logger.LogLevelDesc;
 Logger.setLevel(logLevel);
 
-// Navigation.
-const navigator = new NavigatorImpl(session);
-
 // Base stores.
 const appCtx: AppCtx = {
-	navigator,
 	showToast: () => { },
 	showAlert: () => { }
 };

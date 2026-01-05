@@ -1,7 +1,6 @@
 
 import { Enumerated } from "../../../ddd/aggregate/model/EnumeratedModel";
 import { Locale } from "../../common";
-import { Application } from "./Application";
 
 export const KERNEL_TENANT = "kernel";
 export const ADVISOR_TENANT = "advisor";
@@ -15,7 +14,7 @@ export interface SessionInfo {
 	applicationId: string;
 	applicationName: string;
 	applicationVersion: string;
-	applications: Application[];
+	availableApplications: string[];
 }
 
 export interface TenantInfo {

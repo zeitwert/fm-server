@@ -2,11 +2,8 @@ package io.zeitwert.fm.app.adapter.api.rest
 
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.account.service.api.AccountService
-import io.zeitwert.fm.app.ApplicationService
 import io.zeitwert.fm.app.adapter.api.rest.dto.TenantInfoResponse
 import io.zeitwert.fm.app.adapter.api.rest.dto.UserInfoResponse
-import io.zeitwert.fm.app.model.Application
-import io.zeitwert.fm.app.model.ApplicationInfo
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,24 +26,6 @@ class ApplicationController {
 
 	@Autowired
 	lateinit var accountService: AccountService
-
-	@Autowired
-	lateinit var applicationService: ApplicationService
-
-	@GetMapping("/applications")
-	fun getApplications(): ResponseEntity<List<Application>> = ResponseEntity.ok(applicationService.getAllApplications())
-
-	@GetMapping("/applications/{id}")
-	fun getApplication(
-		@PathVariable id: String,
-	): ResponseEntity<ApplicationInfo> {
-		try {
-			val appInfo = applicationService.getApplicationMenu(id)
-			return ResponseEntity.ok(appInfo)
-		} catch (e: NumberFormatException) {
-			return ResponseEntity.notFound().build()
-		}
-	}
 
 	@GetMapping("/userInfo/{email}")
 	fun userInfo(

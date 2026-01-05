@@ -1,4 +1,5 @@
 
+import AppConfig from "app/config/AppConfig";
 import AppBanner from "app/ui/AppBannerSvg";
 import { AxiosResponse } from "axios";
 import { Canvg, presets } from "canvg";
@@ -34,7 +35,6 @@ const LOGIN_URL = "login";
 const LOGOUT_URL = "logout";
 
 const SESSION_URL = "session";
-const APP_LIST_URL = "applications";
 
 const preset = presets.offscreen();
 
@@ -104,25 +104,22 @@ const MstSessionModel = types
 			});
 		},
 		setApp(appId: string) {
-			return flow(function* () {
-				try {
-					const appResponse = yield API.get(Config.getRestUrl("app", APP_LIST_URL + "/" + appId));
-					self.appInfo = appResponse.data;
-					self.appAreaMap = self.appInfo!.areas.reduce(
-						(map: ApplicationAreaMap, area: ApplicationArea): ApplicationAreaMap => {
-							area.appId = appId;
-							map[area.id] = area;
-							return map;
-						},
-						{} as ApplicationAreaMap
-					);
-					self.sessionInfo = Object.assign({}, self.sessionInfo, { applicationId: appId });
-					sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(self.sessionInfo));
-				} catch (error: any) {
-					self.setState(SessionState.close);
-					Logger.error("Failed to load application", error);
-				}
-			})();
+			const appInfo = AppConfig.getApplicationInfo(appId);
+			if (!appInfo) {
+				Logger.error("Failed to load application: unknown appId", appId);
+				self.setState(SessionState.close);
+				return;
+			}
+			self.appInfo = appInfo;
+			self.appAreaMap = appInfo.areas.reduce(
+				(map: ApplicationAreaMap, area: ApplicationArea): ApplicationAreaMap => {
+					map[area.id] = area;
+					return map;
+				},
+				{} as ApplicationAreaMap
+			);
+			self.sessionInfo = Object.assign({}, self.sessionInfo, { applicationId: appId });
+			sessionStorage.setItem(SESSION_INFO_ITEM, JSON.stringify(self.sessionInfo));
 		}
 	}))
 	.actions((self) => ({
@@ -141,8 +138,9 @@ const MstSessionModel = types
 					} else {
 						sessionInfo = oldSessionInfo;
 					}
-					const appListResponse = yield API.get(Config.getRestUrl("app", APP_LIST_URL));
-					const appList = appListResponse.data;
+					// Get application list from client-side config, filtered by allowed applications
+					const allowedApps = sessionInfo.availableApplications || [sessionInfo.applicationId];
+					const appList = AppConfig.getApplicationList(allowedApps);
 					transaction(() => {
 						self.sessionInfo = sessionInfo;
 						self.appList = appList;

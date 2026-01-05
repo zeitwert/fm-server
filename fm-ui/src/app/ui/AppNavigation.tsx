@@ -1,19 +1,13 @@
-import { AppLauncher, AppLauncherExpandableSection, AppLauncherTile, Avatar, GlobalNavigationBar, GlobalNavigationBarDropdown, GlobalNavigationBarLink, GlobalNavigationBarRegion } from "@salesforce/design-system-react";
-import { ApplicationArea, MenuItem, session } from "@zeitwert/ui-model";
-import { AppCtx } from "app/App";
+import { AppLauncher, AppLauncherExpandableSection, AppLauncherTile, Avatar, GlobalNavigationBar, GlobalNavigationBarLink, GlobalNavigationBarRegion } from "@salesforce/design-system-react";
+import { ApplicationArea, session } from "@zeitwert/ui-model";
 import { RouteComponentProps, withRouter } from "app/frame/withRouter";
 import { makeObservable, observable } from "mobx";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import React from "react";
 
-@inject("navigator")
 @observer
 class AppNavigation extends React.Component<RouteComponentProps> {
 	@observable isLauncherOpen = false;
-
-	get ctx() {
-		return this.props as any as AppCtx;
-	}
 
 	constructor(props: RouteComponentProps) {
 		super(props);
@@ -59,51 +53,15 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 				<GlobalNavigationBarRegion region="secondary" navigation>
 					{
 						session.appInfo!.areas.map((area: ApplicationArea) => {
-							if (area.menuAction) {
-								const isDefault = session.appInfo?.defaultArea === area.path;
-								return (
-									<GlobalNavigationBarLink
-										active={this.isActive(area.path, isDefault)}
-										label={area.name}
-										id={area.id}
-										key={area.id}
-										className="slds-context-bar__item_tab"
-										onClick={() => (!isDefault || !this.isActive(area.path, false)) && this.props.navigate(this.ctx.navigator.navigate(area.id, area.menuAction!.navigation))}
-									/>
-								);
-							}
+							const isDefault = session.appInfo?.defaultArea === area.path;
 							return (
-								<GlobalNavigationBarDropdown
-									assistiveText={{
-										icon: "Open menu item submenu"
-									}}
+								<GlobalNavigationBarLink
+									active={this.isActive(area.path, isDefault)}
+									label={area.name}
 									id={area.id}
-									options={
-										area.menu!.items.map((item: MenuItem) => {
-											switch (item._type) {
-												case "zeitwert.app.domain.MenuHeader":
-													return {
-														label: item.name,
-														value: item.id,
-														type: "header"
-													};
-												case "zeitwert.app.domain.MenuAction":
-													return {
-														label: item.name,
-														value: item.id,
-														iconCategory: item.icon.split(":")[0],
-														iconName: item.icon.split(":")[1],
-														href: "/#",
-														onClick: () =>
-															this.props.navigate(
-																this.ctx.navigator.navigate(area.id, item.navigation)
-															)
-													};
-												default:
-													return null;
-											}
-										})
-									}
+									key={area.id}
+									className="slds-context-bar__item_tab"
+									onClick={() => (!isDefault || !this.isActive(area.path, false)) && this.navigateToArea(area)}
 								/>
 							);
 						})
@@ -113,15 +71,19 @@ class AppNavigation extends React.Component<RouteComponentProps> {
 		);
 	}
 
+	private navigateToArea(area: ApplicationArea) {
+		const targetUrl = area.path.startsWith("/") ? area.path : "/" + area.path;
+		this.props.navigate(targetUrl);
+	}
+
 	private onAppClick = async (appId: string) => {
 		await session.setApp(appId);
-		const area = session.appInfo!.areas.find((app) => app.id === session.appInfo!.defaultArea)!;
-		this.props.navigate(this.ctx.navigator.navigate(area.id, area.menuAction!.navigation));
+		const area = session.appInfo!.areas.find((a) => a.id === session.appInfo!.defaultArea)!;
+		this.navigateToArea(area);
 		this.isLauncherOpen = false;
 	};
 
 	private isActive(areaPath: string, isDefault: boolean) {
-		console.log("isActive", areaPath, isDefault, this.props.location.pathname);
 		const path = this.props.location.pathname;
 		if (!path) {
 			return false;
