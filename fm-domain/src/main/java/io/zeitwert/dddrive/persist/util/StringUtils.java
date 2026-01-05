@@ -4,9 +4,9 @@ public class StringUtils {
 
 	public static String toCamelCase(String name) {
 		String[] parts = name.split("_");
-		String camelCaseString = "";
+		StringBuilder camelCaseString = new StringBuilder();
 		for (String part : parts) {
-			camelCaseString = camelCaseString + StringUtils.toProperCase(part);
+			camelCaseString.append(StringUtils.toProperCase(part));
 		}
 		return camelCaseString.substring(0, 1).toLowerCase() + camelCaseString.substring(1);
 	}

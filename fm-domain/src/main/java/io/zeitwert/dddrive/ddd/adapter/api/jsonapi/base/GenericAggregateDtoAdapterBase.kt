@@ -18,6 +18,7 @@ import io.crnk.core.resource.meta.MetaInformation
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.DtoUtils
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
@@ -504,7 +505,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 						}
 
 						is AggregateReferenceSetProperty<*> -> {
-							val ids: List<String> = property.map { DtoUtils.idToString(it) }
+							val ids: List<String> = property.map { DtoUtils.idToString(it)!! }
 							dto.setRelation(rel.targetRelation, ids)
 						}
 
@@ -743,7 +744,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 							for (value in values) {
 								val id = dto.enumId(value)
 								if (id != null) {
-									property.add(DtoUtils.idFromString(id))
+									property.add(DtoUtils.idFromString(id)!!)
 								}
 							}
 						}
@@ -837,7 +838,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		val ids = dto[property.name] as? Collection<String> ?: return
 		property.clear()
 		for (id in ids) {
-			property.add(DtoUtils.idFromString(id))
+			property.add(DtoUtils.idFromString(id)!!)
 		}
 	}
 

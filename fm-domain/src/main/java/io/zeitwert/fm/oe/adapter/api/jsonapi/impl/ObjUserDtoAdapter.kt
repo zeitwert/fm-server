@@ -1,7 +1,6 @@
 package io.zeitwert.fm.oe.adapter.api.jsonapi.impl
 
 import dddrive.ddd.core.model.RepositoryDirectory
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoAdapterBase
 import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto
@@ -20,11 +19,12 @@ class ObjUserDtoAdapter(
 		field("tenants", "tenantSet")
 	}
 
-	fun asEnumerated(obj: ObjUser?): EnumeratedDto? {
-		return if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)
-	}
+	fun asEnumerated(obj: ObjUser?): EnumeratedDto? = if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)
 
-	override fun toAggregate(dto: ObjUserDto, aggregate: ObjUser) {
+	override fun toAggregate(
+		dto: ObjUserDto,
+		aggregate: ObjUser,
+	) {
 		super.toAggregate(dto, aggregate)
 		// Handle password and role updates
 		val dtoId = dto["id"] as String?

@@ -2,7 +2,7 @@ package io.zeitwert.fm.task.adapter.api.jsonapi.impl
 
 import dddrive.app.ddd.model.Aggregate
 import dddrive.ddd.core.model.RepositoryDirectory
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.DtoUtils
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.DtoUtils
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.doc.adapter.api.jsonapi.base.GenericDocDtoAdapterBase
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto

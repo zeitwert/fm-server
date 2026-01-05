@@ -52,13 +52,12 @@ class EnumController {
 		return ResponseEntity.ok(tenant)
 	}
 
-	@get:GetMapping("/oe/objUser")
-	val users: ResponseEntity<List<EnumeratedDto>>
-		get() {
-			sessionContext.tenantId
-			val users = userRepo.find(null).map { userRepo.get(it) }
-			return ResponseEntity.ok(users.map { EnumeratedDto.of(it.id.toString(), it.caption) })
-		}
+	@GetMapping("/oe/objUser")
+	fun getUsers(): ResponseEntity<List<EnumeratedDto>> {
+		sessionContext.tenantId
+		val users = userRepo.find(null).map { userRepo.get(it) }
+		return ResponseEntity.ok(users.map { EnumeratedDto.of(it.id.toString(), it.caption) })
+	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")
 	fun getUser(

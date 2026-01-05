@@ -2,12 +2,11 @@ package io.zeitwert.fm.server.session.adapter.rest
 
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto.Companion.of
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountLoginDtoAdapter
+import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
 import io.zeitwert.fm.oe.model.ObjTenantRepository
-import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole
 import io.zeitwert.fm.server.config.security.AppUserDetails
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
@@ -57,7 +56,7 @@ class SessionController {
 	lateinit var tenantDtoAdapter: ObjTenantDtoAdapter
 
 	@Autowired
-	lateinit var accountDtoAdapter: ObjAccountLoginDtoAdapter
+	lateinit var accountDtoAdapter: ObjAccountDtoAdapter
 
 	@Autowired
 	lateinit var userDtoAdapter: ObjUserDtoAdapter
@@ -68,8 +67,8 @@ class SessionController {
 		request: HttpServletRequest,
 	): ResponseEntity<LoginResponse?> {
 		try {
-			val authToken = this.getAuthToken(loginRequest.email, loginRequest.password)
-			val authentication = this.authenticationManager.authenticate(authToken)
+			val authToken = getAuthToken(loginRequest.email, loginRequest.password)
+			val authentication = authenticationManager.authenticate(authToken)
 
 			// Get user details and set tenantId/accountId
 			val userDetails = authentication.principal as AppUserDetails
@@ -106,7 +105,7 @@ class SessionController {
 			)
 			return ResponseEntity.ok<LoginResponse?>(loginResponse)
 		} catch (ex: Exception) {
-			this.logger.error("Login failed: $ex")
+			logger.error("Login failed: $ex")
 			throw RuntimeException(ex)
 		}
 	}
@@ -116,34 +115,32 @@ class SessionController {
 		password: String?,
 	): Authentication = UsernamePasswordAuthenticationToken(email, password)
 
-	@get:GetMapping("/session")
-	val sessionInfo: ResponseEntity<SessionInfoResponse>
-		get() {
-			val tenant = this.tenantRepository.get(this.sessionContext.tenantId)
-			val account =
-				if (this.sessionContext.hasAccount()) this.accountRepository.get(this.sessionContext.accountId!!) else null
-			val user = this.sessionContext.user as ObjUser
-			var defaultApp: String? = null
-			if (user.isAppAdmin) {
-				defaultApp = "appAdmin"
-			} else if (user.isAdmin) {
-				defaultApp = "tenantAdmin"
-			} else {
-				defaultApp = "fm"
-			}
-			val sessionUser = this.sessionContext.user as? ObjUser
-			val response = SessionInfoResponse(
-				applicationName = ApplicationInfo.getName(),
-				applicationVersion = ApplicationInfo.getVersion(),
-				user = sessionUser?.let { this.userDtoAdapter.fromAggregate(it) },
-				tenant = this.tenantDtoAdapter.fromAggregate(tenant),
-				account = this.accountDtoAdapter.fromAggregate(account),
-				locale = this.sessionContext.locale.id,
-				applicationId = defaultApp,
-				availableApplications = emptyList(),
-			)
-			return ResponseEntity.ok(response)
+	@GetMapping("/session")
+	fun getSessionInfo(): ResponseEntity<SessionInfoResponse> {
+		val tenantId = sessionContext.tenantId
+		val tenant = tenantRepository.get(tenantId)
+		val accountId = sessionContext.accountId
+		val account = if (accountId != null) accountRepository.get(accountId) else null
+		val user = sessionContext.user
+		val defaultApp = if (user.isAppAdmin) {
+			"appAdmin"
+		} else if (user.isAdmin) {
+			"tenantAdmin"
+		} else {
+			"fm"
 		}
+		val response = SessionInfoResponse(
+			applicationName = ApplicationInfo.getName(),
+			applicationVersion = ApplicationInfo.getVersion(),
+			user = userDtoAdapter.fromAggregate(user),
+			tenant = tenantDtoAdapter.fromAggregate(tenant),
+			account = if (account != null) accountDtoAdapter.fromAggregate(account) else null,
+			locale = sessionContext.locale.id,
+			applicationId = defaultApp,
+			availableApplications = listOf(defaultApp),
+		)
+		return ResponseEntity.ok(response)
+	}
 
 	@PostMapping("/logout")
 	fun logout(

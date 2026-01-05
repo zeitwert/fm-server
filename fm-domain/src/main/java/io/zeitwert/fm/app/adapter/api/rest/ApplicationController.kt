@@ -33,8 +33,8 @@ class ApplicationController {
 	@Autowired
 	lateinit var applicationService: ApplicationService
 
-	@get:GetMapping("/applications")
-	val applications: ResponseEntity<List<Application>> get() = ResponseEntity.ok(applicationService.getAllApplications())
+	@GetMapping("/applications")
+	fun getApplications(): ResponseEntity<List<Application>> = ResponseEntity.ok(applicationService.getAllApplications())
 
 	@GetMapping("/applications/{id}")
 	fun getApplication(
