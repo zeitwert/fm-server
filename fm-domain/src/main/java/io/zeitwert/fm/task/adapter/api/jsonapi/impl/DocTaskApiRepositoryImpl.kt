@@ -2,7 +2,7 @@ package io.zeitwert.fm.task.adapter.api.jsonapi.impl
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateApiRepositoryBase
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase
 import io.zeitwert.fm.task.adapter.api.jsonapi.dto.DocTaskDto
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
@@ -14,7 +14,7 @@ open class DocTaskApiRepositoryImpl(
 	repository: DocTaskRepository,
 	adapter: DocTaskDtoAdapter,
 	sessionCtx: SessionContext,
-) : GenericAggregateApiRepositoryBase<DocTask, DocTaskDto>(
+) : AggregateApiRepositoryBase<DocTask, DocTaskDto>(
 		resourceClass = DocTaskDto::class.java,
 		directory = directory,
 		repository = repository,

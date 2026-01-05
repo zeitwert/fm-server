@@ -2,7 +2,7 @@ package io.zeitwert.fm.account.adapter.api.jsonapi.impl
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateApiRepositoryBase
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
@@ -20,7 +20,7 @@ open class ObjAccountApiRepositoryImpl(
 	repository: ObjAccountRepository,
 	adapter: ObjAccountDtoAdapter,
 	sessionCtx: SessionContext,
-) : GenericAggregateApiRepositoryBase<ObjAccount, ObjAccountDto>(
+) : AggregateApiRepositoryBase<ObjAccount, ObjAccountDto>(
 		resourceClass = ObjAccountDto::class.java,
 		directory = directory,
 		repository = repository,

@@ -24,7 +24,6 @@ class BuildingEvaluationServiceImpl(
 	override fun getEvaluation(building: ObjBuilding): BuildingEvaluationResult {
 		require(building.currentRating != null) { "has current rating" }
 
-		val fmt = Formatter.INSTANCE
 		var value: String? = null
 
 		val projectionResult =
@@ -53,24 +52,25 @@ class BuildingEvaluationServiceImpl(
 			this.addParameter(onePageFacts, "Baujahr", value)
 		}
 		if (building.insuredValue != null) {
-			value = fmt.formatMonetaryValue(1000 * building.insuredValue!!.toDouble(), "CHF")
+			value = Formatter.formatMonetaryValue(1000 * building.insuredValue!!.toDouble(), "CHF")
 			this.addParameter(facts, "GV-Neuwert (" + building.insuredValueYear + ")", value)
 			this.addParameter(onePageFacts, "GV-Neuwert (" + building.insuredValueYear + ")", value)
 		}
 		if (building.volume != null) {
-			value = fmt.formatNumber(building.volume) + " m³"
+			value = Formatter.formatNumber(building.volume) + " m³"
 			this.addParameter(facts, "Volumen Rauminhalt SIA 416", value)
 		}
 		if (currentRating.ratingDate != null) {
-			value = fmt.formatDate(currentRating.ratingDate)
+			value = Formatter.formatDate(currentRating.ratingDate!!)
 			this.addParameter(facts, "Begehung am", value)
 		}
 
-		val timeValue = fmt.formatMonetaryValue(projectionResult.periodList.get(0).timeValue, "CHF")
-		val shortTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF")
-		val midTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF")
-		val longTermRestoration = fmt.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF")
-		val averageMaintenance = fmt.formatMonetaryValue(this.getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF")
+		val timeValue = Formatter.formatMonetaryValue(projectionResult.periodList.get(0).timeValue, "CHF")
+		val shortTermRestoration = Formatter.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF")
+		val midTermRestoration = Formatter.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF")
+		val longTermRestoration = Formatter.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF")
+		val averageMaintenance =
+			Formatter.formatMonetaryValue(this.getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF")
 
 		var ratingYear = 9999
 		var elementCount = 0

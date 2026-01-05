@@ -10,7 +10,7 @@ import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoAdapterBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
 import org.springframework.stereotype.Component
 
@@ -19,7 +19,7 @@ class ObjBuildingDtoAdapter(
 	directory: RepositoryDirectory,
 	private val sessionContext: SessionContext,
 	private val userDtoAdapter: ObjUserDtoAdapter,
-) : GenericObjDtoAdapterBase<ObjBuilding, ObjBuildingDto>(directory, { ObjBuildingDto() }) {
+) : ObjDtoAdapterBase<ObjBuilding, ObjBuildingDto>(directory, { ObjBuildingDto() }) {
 
 	companion object {
 

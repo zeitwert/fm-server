@@ -8,10 +8,10 @@ import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
 
 @JsonApiResource(type = "building", resourcePath = "building/buildings")
-class ObjBuildingDto : GenericObjDtoBase<ObjBuilding>() {
+class ObjBuildingDto : ObjDtoBase<ObjBuilding>() {
 
 	@JsonApiRelationId
 	var accountId: String? = null

@@ -1,7 +1,7 @@
 package io.crnk.core.engine.internal.utils;
 
 import io.crnk.core.exception.ResourceException;
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateDtoBase;
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoBase;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -377,7 +377,7 @@ public class ClassUtils {
 	 */
 	public static boolean isGenericResource(Class<?> clazz) {
 		Class<?> current = clazz;
-		String targetClassName = GenericAggregateDtoBase.class.getCanonicalName();
+		String targetClassName = AggregateDtoBase.class.getCanonicalName();
 		while (current != null && current != Object.class) {
 			if (targetClassName.equals(current.getName())) {
 				return true;

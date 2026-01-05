@@ -2,7 +2,7 @@ package io.zeitwert.fm.contact.adapter.api.jsonapi.impl
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.GenericAggregateApiRepositoryBase
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateApiRepositoryBase
 import io.zeitwert.fm.contact.adapter.api.jsonapi.dto.ObjContactDto
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository
@@ -20,7 +20,7 @@ open class ObjContactApiRepositoryImpl(
 	repository: ObjContactRepository,
 	adapter: ObjContactDtoAdapter,
 	sessionCtx: SessionContext,
-) : GenericAggregateApiRepositoryBase<ObjContact, ObjContactDto>(
+) : AggregateApiRepositoryBase<ObjContact, ObjContactDto>(
 		resourceClass = ObjContactDto::class.java,
 		directory = directory,
 		repository = repository,

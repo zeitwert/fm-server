@@ -35,7 +35,7 @@ class BuildingDocumentController(
 	@GetMapping(value = ["/{id}/coverFoto"])
 	fun getCoverFoto(
 		@PathVariable id: Int,
-	): ResponseEntity<ByteArray?>? {
+	): ResponseEntity<ByteArray> {
 		val documentId = this.buildingRepo.get(id).coverFotoId
 		if (documentId == null) {
 			return ResponseEntity.noContent().build<ByteArray?>()

@@ -6,11 +6,11 @@ import io.crnk.core.resource.annotations.JsonApiRelationId
 import io.crnk.core.resource.annotations.JsonApiResource
 import io.crnk.core.resource.annotations.SerializeType
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
-import io.zeitwert.fm.doc.adapter.api.jsonapi.base.GenericDocDtoBase
+import io.zeitwert.fm.doc.adapter.api.jsonapi.base.DocDtoBase
 import io.zeitwert.fm.task.model.DocTask
 
 @JsonApiResource(type = "task", resourcePath = "collaboration/tasks")
-class DocTaskDto : GenericDocDtoBase<DocTask>() {
+class DocTaskDto : DocDtoBase<DocTask>() {
 
 	@JsonApiRelationId
 	var accountId: String? = null

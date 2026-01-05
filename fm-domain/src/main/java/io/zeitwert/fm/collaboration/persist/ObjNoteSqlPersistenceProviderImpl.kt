@@ -23,6 +23,8 @@ open class ObjNoteSqlPersistenceProviderImpl(
 ) : FMObjSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
 	SqlRecordMapper<ObjNote> {
 
+	override val hasAccount = false
+
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)

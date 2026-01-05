@@ -4,13 +4,13 @@ import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto
 import io.zeitwert.fm.dms.model.ObjDocument
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoAdapterBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase
 import org.springframework.stereotype.Component
 
 @Component("objDocumentDtoAdapter")
 class ObjDocumentDtoAdapter(
 	directory: RepositoryDirectory,
-) : GenericObjDtoAdapterBase<ObjDocument, ObjDocumentDto>(directory, { ObjDocumentDto() }) {
+) : ObjDtoAdapterBase<ObjDocument, ObjDocumentDto>(directory, { ObjDocumentDto() }) {
 
 	init {
 		field(

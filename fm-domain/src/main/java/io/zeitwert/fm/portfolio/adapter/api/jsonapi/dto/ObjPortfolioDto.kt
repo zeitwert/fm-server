@@ -5,11 +5,11 @@ import io.crnk.core.resource.annotations.JsonApiRelationId
 import io.crnk.core.resource.annotations.JsonApiResource
 import io.crnk.core.resource.annotations.SerializeType
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 
 @JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
-class ObjPortfolioDto : GenericObjDtoBase<ObjPortfolio>() {
+class ObjPortfolioDto : ObjDtoBase<ObjPortfolio>() {
 
 	@JsonApiRelationId
 	var accountId: String? = null

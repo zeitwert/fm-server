@@ -19,19 +19,23 @@ import java.util.stream.Collectors
 @Service("portfolioEvaluationService")
 class PortfolioEvaluationServiceImpl(
 	private val buildingRepository: ObjBuildingRepository,
-	private val projectionService: ProjectionService
+	private val projectionService: ProjectionService,
 ) : PortfolioEvaluationService {
 
-	override fun getEvaluation(portfolio: ObjPortfolio): PortfolioEvaluationResult? {
-		val buildings = portfolio.buildingSet.stream().map<ObjBuilding?> { id: Any? -> this.buildingRepository.get(id!!) }
+	override fun getEvaluation(portfolio: ObjPortfolio): PortfolioEvaluationResult {
+		val buildings = portfolio.buildingSet
+			.stream()
+			.map<ObjBuilding?> { id: Any? -> this.buildingRepository.get(id!!) }
 			.collect(Collectors.toSet())
 		val projectionResult = this.projectionService.getProjection(
 			buildings,
-			ProjectionService.DefaultDuration
+			ProjectionService.DefaultDuration,
 		)
 
 		val buildingList: MutableList<EvaluationBuilding> = mutableListOf()
-		val maxInsuredValue = buildings.stream().map { b: ObjBuilding? -> b!!.insuredValue!!.toInt() }
+		val maxInsuredValue = buildings
+			.stream()
+			.map { b: ObjBuilding? -> b!!.insuredValue!!.toInt() }
 			.reduce(0) { max: Int?, b: Int? -> if (b!! > max!!) b else max }
 		for (building in buildings) {
 			val rating = building.currentRating
@@ -47,7 +51,7 @@ class PortfolioEvaluationServiceImpl(
 				insuredValueYear = building.insuredValueYear!!,
 				ratingYear = ratingYear!!,
 				condition = building.getCondition(2023)!!,
-				conditionColor = getConditionColor(building.getCondition(2023))!!
+				conditionColor = getConditionColor(building.getCondition(2023))!!,
 			)
 			buildingList.add(evaluationBuilding)
 		}
@@ -94,7 +98,9 @@ class PortfolioEvaluationServiceImpl(
 			aggrCosts += totalCosts
 			var restorationElement: String? = ""
 			if (pp.restorationElements.size == 1) {
-				restorationElement = pp.restorationElements.get(0).buildingPart.name
+				restorationElement = pp.restorationElements
+					.get(0)
+					.buildingPart.name
 			}
 			val eps = EvaluationPeriod(
 				year = pp.year,
@@ -132,8 +138,6 @@ class PortfolioEvaluationServiceImpl(
 		)
 	}
 
-	private fun replaceEol(text: String?): String {
-		return text?.replace("<br>", SOFT_RETURN) ?: ""
-	}
+	private fun replaceEol(text: String?): String = text?.replace("<br>", SOFT_RETURN) ?: ""
 
 }

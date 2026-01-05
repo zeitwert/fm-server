@@ -1,9 +1,11 @@
 package io.zeitwert.fm.task.persist
 
+import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.dddrive.persist.util.CrnkUtils
 import io.zeitwert.fm.doc.model.base.FMDocBase
 import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
 import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
@@ -22,11 +24,35 @@ open class DocTaskSqlPersistenceProvider(
 ) : FMDocSqlPersistenceProviderBase<DocTask>(DocTask::class.java),
 	SqlRecordMapper<DocTask> {
 
+	companion object {
+
+		val RELATED_TO_FIELD = "relatedToId"
+		val RELATED_TO_OBJ_FIELD = "relatedObjId"
+	}
+
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = DocRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper get() = this
+
+	override fun find(query: QuerySpec?): List<Any> {
+		val querySpec = if (query == null) {
+			null
+		} else if (CrnkUtils.hasFilterFor(query, RELATED_TO_FIELD)) {
+			val newQuery = QuerySpec(query.resourceClass)
+			query.filters
+				.filter { CrnkUtils.getPath(it) != RELATED_TO_FIELD }
+				.forEach { newQuery.addFilter(it) }
+			val relToFilter = query.filters.find { CrnkUtils.getPath(it) == RELATED_TO_FIELD }!!
+			val relToObjFilter = PathSpec.of(RELATED_TO_OBJ_FIELD).filter(relToFilter.operator, relToFilter.getValue())
+			newQuery.addFilter(relToObjFilter)
+			newQuery
+		} else {
+			query
+		}
+		return super.find(querySpec)
+	}
 
 	override fun loadRecord(aggregate: DocTask) {
 		val record = dslContext.fetchOne(Tables.DOC_TASK, Tables.DOC_TASK.DOC_ID.eq(aggregate.id as Int))

@@ -82,7 +82,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 
 		try {
 			val doc = Document(this.templateFile.inputStream)
-			doc.fontSettings = this.asposeConfig.getFontSettings()
+			doc.fontSettings = this.asposeConfig.fontSettings
 
 			this.insertCoverFoto(doc, building)
 			this.insertLocationImage(doc, building)
@@ -204,7 +204,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 					builder.moveTo(cell.firstParagraph)
 					builder.write(OptimumRenovationMarker)
 					cell = row.lastCell
-					val costs = Formatter.INSTANCE.formatNumber(e.restorationCosts)
+					val costs = Formatter.formatNumber(e.restorationCosts)
 					builder.moveTo(cell.firstParagraph)
 					builder.write(costs)
 					cell = cell.previousSibling as Cell
@@ -221,7 +221,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		builder.moveTo(cell.firstParagraph)
 		builder.write("Total")
 		cell = row.lastCell
-		val costs = Formatter.INSTANCE.formatNumber(totalRestorationCosts)
+		val costs = Formatter.formatNumber(totalRestorationCosts)
 		builder.moveTo(cell.firstParagraph)
 		builder.write(costs)
 
@@ -295,7 +295,6 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 	) {
 		val costsTable = doc.getChild(NodeType.TABLE, CostsTable, true) as Table
 		val builder = DocumentBuilder(doc)
-		val fmt = Formatter.INSTANCE
 
 		for (ep in evaluationResult.periods!!) {
 			val row = this.addCostsTableRow(costsTable)
@@ -307,15 +306,15 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 				// originalValue
 				cell = cell.nextSibling as Cell
 				builder.moveTo(cell.firstParagraph)
-				builder.write(fmt.formatNumber(ep.originalValue))
+				builder.write(Formatter.formatNumber(ep.originalValue))
 				// timeValue
 				cell = cell.nextSibling as Cell
 				builder.moveTo(cell.firstParagraph)
-				builder.write(fmt.formatNumber(ep.timeValue))
+				builder.write(Formatter.formatNumber(ep.timeValue))
 				// maintenanceCosts
 				cell = cell.nextSibling as Cell
 				builder.moveTo(cell.firstParagraph)
-				builder.write(fmt.formatNumber(ep.maintenanceCosts))
+				builder.write(Formatter.formatNumber(ep.maintenanceCosts))
 			} else {
 				cell = cell.nextSibling.nextSibling.nextSibling as Cell
 			}
@@ -323,7 +322,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 			cell = cell.nextSibling as Cell
 			if (ep?.restorationCosts != null && ep.restorationCosts > 0) {
 				builder.moveTo(cell.firstParagraph)
-				builder.write(fmt.formatNumber(ep.restorationCosts))
+				builder.write(Formatter.formatNumber(ep.restorationCosts))
 			}
 			// restorationElement
 			cell = cell.nextSibling as Cell
@@ -333,11 +332,11 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 				// totalCosts
 				cell = cell.nextSibling as Cell
 				builder.moveTo(cell.firstParagraph)
-				builder.write(fmt.formatNumber(ep.totalCosts))
+				builder.write(Formatter.formatNumber(ep.totalCosts))
 				// aggrCosts
 				cell = cell.nextSibling as Cell
 				builder.moveTo(cell.firstParagraph)
-				builder.write(fmt.formatNumber(ep.aggrCosts))
+				builder.write(Formatter.formatNumber(ep.aggrCosts))
 			}
 		}
 
@@ -436,7 +435,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 			builder.moveTo(cell.firstParagraph)
 			builder.write(String(CharArray(weight)).replace('\u0000', 'I'))
 
-			val weightPC = Formatter.INSTANCE.formatValueWithUnit(e.weight, "%")
+			val weightPC = Formatter.formatValueWithUnit(e.weight, "%")
 			cell = cell.nextSibling as Cell
 			builder.moveTo(cell.firstParagraph)
 			builder.write(weightPC)

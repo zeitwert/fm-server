@@ -5,11 +5,11 @@ import io.crnk.core.resource.annotations.JsonApiRelationId
 import io.crnk.core.resource.annotations.JsonApiResource
 import io.crnk.core.resource.annotations.SerializeType
 import io.zeitwert.fm.dms.adapter.api.jsonapi.dto.ObjDocumentDto
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
 import io.zeitwert.fm.oe.model.ObjTenant
 
 @JsonApiResource(type = "tenant", resourcePath = "oe/tenants")
-class ObjTenantDto : GenericObjDtoBase<ObjTenant>() {
+class ObjTenantDto : ObjDtoBase<ObjTenant>() {
 
 	@JsonApiRelationId
 	var logoId: String? = null

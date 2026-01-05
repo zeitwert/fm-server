@@ -19,7 +19,7 @@ data class EvaluationBuilding(
 ) : Comparable<EvaluationBuilding> {
 
 	val formattedInsuredValue: String
-		get() = Formatter.INSTANCE.formatNumber(1000 * (insuredValue ?: 0))
+		get() = Formatter.formatNumber(1000 * (insuredValue ?: 0))
 
 	fun getRelativeValue(): String {
 		val weight = (relativeValue * 70.0 / 100).roundToInt()

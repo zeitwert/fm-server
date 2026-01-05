@@ -22,6 +22,8 @@ open class ObjUserSqlPersistenceProviderImpl(
 ) : FMObjSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
 	SqlRecordMapper<ObjUser> {
 
+	override val hasAccount = false
+
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
 	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)

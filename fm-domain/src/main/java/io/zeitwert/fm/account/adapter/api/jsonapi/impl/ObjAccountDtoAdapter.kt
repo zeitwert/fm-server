@@ -5,13 +5,13 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.DtoUtils
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.contact.model.ObjContact
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoAdapterBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoAdapterBase
 import org.springframework.stereotype.Component
 
 @Component("objAccountDtoAdapter")
 class ObjAccountDtoAdapter(
 	directory: RepositoryDirectory,
-) : GenericObjDtoAdapterBase<ObjAccount, ObjAccountDto>(directory, { ObjAccountDto() }) {
+) : ObjDtoAdapterBase<ObjAccount, ObjAccountDto>(directory, { ObjAccountDto() }) {
 
 	init {
 		exclude("mainContact")

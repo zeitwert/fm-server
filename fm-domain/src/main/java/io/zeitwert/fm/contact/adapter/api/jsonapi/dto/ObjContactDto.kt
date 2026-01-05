@@ -6,7 +6,7 @@ import io.crnk.core.resource.annotations.JsonApiResource
 import io.crnk.core.resource.annotations.SerializeType
 import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
 import io.zeitwert.fm.contact.model.ObjContact
-import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoBase
+import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
 
 /**
  * Generic JSON API resource for ObjContact.
@@ -15,7 +15,7 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.GenericObjDtoBase
  * for crnk registration.
  */
 @JsonApiResource(type = "contact", resourcePath = "contact/contacts")
-class ObjContactDto : GenericObjDtoBase<ObjContact>() {
+class ObjContactDto : ObjDtoBase<ObjContact>() {
 
 	@JsonApiRelationId
 	var accountId: String? = null

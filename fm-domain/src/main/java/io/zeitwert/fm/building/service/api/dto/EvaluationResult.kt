@@ -40,13 +40,13 @@ data class EvaluationElement(
 ) {
 
 	val formattedShortTermCosts: String
-		get() = Formatter.INSTANCE.formatNumber(shortTermCosts)
+		get() = Formatter.formatNumber(shortTermCosts)
 
 	val formattedMidTermCosts: String
-		get() = Formatter.INSTANCE.formatNumber(midTermCosts)
+		get() = Formatter.formatNumber(midTermCosts)
 
 	val formattedLongTermCosts: String
-		get() = Formatter.INSTANCE.formatNumber(longTermCosts)
+		get() = Formatter.formatNumber(longTermCosts)
 
 }
 

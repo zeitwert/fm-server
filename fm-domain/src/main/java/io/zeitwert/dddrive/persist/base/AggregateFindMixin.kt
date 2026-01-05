@@ -6,15 +6,21 @@ import io.crnk.core.queryspec.PathSpec
 import io.crnk.core.queryspec.QuerySpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.util.SqlUtils
+import io.zeitwert.fm.obj.model.db.Tables
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import org.jooq.DSLContext
 import org.jooq.Field
 import org.jooq.Record
-import org.jooq.SortField
 import org.jooq.Table
 import org.jooq.impl.DSL
+import org.slf4j.LoggerFactory
 
 interface AggregateFindMixin {
+
+	companion object {
+
+		val logger = LoggerFactory.getLogger(AggregateFindMixin::class.java)!!
+	}
 
 	val dslContext: DSLContext
 
@@ -25,12 +31,8 @@ interface AggregateFindMixin {
 	val sessionContext: SessionContext
 
 	fun queryWithFilter(querySpec: QuerySpec?): QuerySpec {
-		var querySpec = querySpec
-		if (querySpec == null) {
-			querySpec = QuerySpec(Aggregate::class.java)
-		}
-		// String tenantField = AggregateFields.TENANT_ID.getName();
-		val tenantField = "tenant_id"
+		val querySpec = querySpec ?: QuerySpec(Aggregate::class.java)
+		val tenantField = Tables.OBJ.TENANT_ID.name
 		val tenantId = sessionContext.tenantId as Int
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
 			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId))
@@ -47,25 +49,26 @@ interface AggregateFindMixin {
 		idField: Field<Int>,
 		querySpec: QuerySpec?,
 	): List<Any> {
+		logger.debug("doFind({}, {}, {})", table, idField, querySpec)
 		var whereClause = DSL.noCondition()
-
 		if (querySpec != null) {
 			for (filter in querySpec.filters) {
-				if (filter.operator == FilterOperator.OR && filter.expression != null) {
-					whereClause = sqlUtils.orFilter(whereClause, table, idField, filter)
+				whereClause = if (filter.operator == FilterOperator.OR && filter.expression != null) {
+					sqlUtils.orFilter(whereClause, table, idField, filter)
 				} else {
-					whereClause = sqlUtils.andFilter(whereClause, table, idField, filter)
+					sqlUtils.andFilter(whereClause, table, idField, filter)
 				}
 			}
 		}
+		logger.trace("doFind.where(): {}", whereClause)
 
 		// Sort.
 		val sortFields = if (querySpec != null && !querySpec.sort.isEmpty()) {
-			sqlUtils.sortFilter(table, querySpec.sort)
-		} else if (table.field("modified_at") != null) {
-			listOf<SortField<*>>(table.field("modified_at")!!.desc())
+			sqlUtils.sortFields(table, querySpec.sort)
+		} else if (table.field(Tables.OBJ.MODIFIED_AT.name) != null && table.field(Tables.OBJ.MODIFIED_AT.name) != null) {
+			listOf(table.field(Tables.OBJ.MODIFIED_AT.name)!!.desc(), table.field(Tables.OBJ.CREATED_AT.name)!!.desc())
 		} else {
-			listOf<SortField<*>>(table.field("id")!!.desc())
+			listOf(table.field(Tables.OBJ.ID.name)!!.desc())
 		}
 
 		val offset = querySpec?.getOffset()
