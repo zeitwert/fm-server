@@ -46,7 +46,6 @@
 		<flyway.version>10.21.0</flyway.version>
 		<!-- jOOQ version is managed by Spring Boot (${jooq.version}) -->
 		<jjwt.version>0.12.5</jjwt.version>
-		<lombok.version>1.18.34</lombok.version>
 		<aspose-words.version>22.12</aspose-words.version>
 		<google-maps.version>2.1.2</google-maps.version>
 		<jackson.version>2.20.1</jackson.version>
@@ -184,14 +183,6 @@
 				<version>${google-maps.version}</version>
 			</dependency>
 
-			<!-- Lombok -->
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${lombok.version}</version>
-				<scope>provided</scope>
-			</dependency>
-
 			<!-- Monitoring -->
 			<dependency>
 				<groupId>org.apache.maven</groupId>
@@ -205,14 +196,6 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!--
-				Mixed Java/Kotlin compilation order:
-				1. Kotlin compiles first (compile phase) - can see Java classes
-				2. Java compiles second (compile phase) - can see Kotlin classes, Lombok processes annotations
-
-				IMPORTANT: kotlin-maven-plugin must be declared BEFORE maven-compiler-plugin
-				so that in the 'compile' phase, Kotlin runs first, then Java.
-			-->
 				<!-- Kotlin compilation (runs first in compile phase) -->
 				<plugin>
 					<groupId>org.jetbrains.kotlin</groupId>
@@ -289,15 +272,6 @@
 							</goals>
 						</execution>
 					</executions>
-					<configuration>
-						<annotationProcessorPaths>
-							<path>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-								<version>${lombok.version}</version>
-							</path>
-						</annotationProcessorPaths>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
