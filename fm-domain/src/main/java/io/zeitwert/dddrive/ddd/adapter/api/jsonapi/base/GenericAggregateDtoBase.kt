@@ -62,6 +62,12 @@ abstract class GenericAggregateDtoBase<A : Aggregate> : GenericAggregateDto<A> {
 
 	override fun getRelation(name: String): Any? = relations[name]
 
+	@Suppress("UNCHECKED_CAST")
+	override fun hasOperation(name: String): Boolean {
+		val operations = meta["operations"] as List<String>? ?: emptyList()
+		return operations.contains(name)
+	}
+
 	override fun toString() = "${javaClass.simpleName}[$id] meta: $meta $attributes"
 
 }

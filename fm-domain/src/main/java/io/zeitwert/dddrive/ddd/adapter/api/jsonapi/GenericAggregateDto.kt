@@ -17,4 +17,6 @@ interface GenericAggregateDto<A : Aggregate> :
 
 	fun getRelation(name: String): Any?
 
+	fun hasOperation(name: String): Boolean
+
 }

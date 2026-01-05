@@ -15,8 +15,8 @@ import io.crnk.core.repository.ResourceRepositoryBase
 import io.crnk.core.resource.list.DefaultResourceList
 import io.crnk.core.resource.list.ResourceList
 import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateApiRepository
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.GenericAggregateDto
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.AggregateDtoBase
 import io.zeitwert.dddrive.model.FMAggregateRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import org.slf4j.LoggerFactory
@@ -42,7 +42,8 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	private val repository: AggregateRepository<A>,
 	private val adapter: GenericAggregateDtoAdapterBase<A, R>,
 	private val sessionCtx: SessionContext,
-) : ResourceRepositoryBase<R, String>(resourceClass) {
+) : ResourceRepositoryBase<R, String>(resourceClass),
+	GenericAggregateApiRepository<A, R> {
 
 	companion object {
 
@@ -74,7 +75,7 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 	@Transactional
 	override fun findOne(
 		dtoId: String,
-		querySpec: QuerySpec,
+		querySpec: QuerySpec?,
 	): R {
 		try {
 			val aggregate = repository.load(repository.idFromString(dtoId)!!)
@@ -105,7 +106,6 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 		val id = repository.idFromString(dto.id) ?: throw BadRequestException("Can only save existing object (missing id)")
 		dto.meta["clientVersion"] ?: throw BadRequestException("Missing meta.clientVersion")
 		val clientVersion = dto.meta["clientVersion"] as Int
-		val operations = dto.meta["operations"] as List<String>? ?: emptyList()
 		val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
 
 		if (clientVersion != aggregate.meta.version) {
@@ -135,7 +135,7 @@ abstract class GenericAggregateApiRepositoryBase<A : Aggregate, R : GenericAggre
 
 		try {
 			toAggregate(dto, aggregate)
-			if (operations.contains(AggregateDtoBase.CalculationOnlyOperation)) {
+			if (dto.hasOperation(GenericAggregateApiRepository.CalculationOnlyOperation)) {
 				return adapter.fromAggregate(aggregate) as S
 			} else {
 				repository.store(aggregate)
