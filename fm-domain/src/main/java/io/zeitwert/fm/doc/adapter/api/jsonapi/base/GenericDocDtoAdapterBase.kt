@@ -46,15 +46,15 @@ abstract class GenericDocDtoAdapterBase<E : Doc, D : GenericDocDtoBase<E>>(
 		aggregate: E,
 	) {
 		if (dto["caseStage"] != null) {
-			val caseStageId = (dto["caseStage"] as Map<String, Any?>)["id"] as String
+			val caseStageId = dto.enumId("caseStage")!!
 			val caseStage = CodeCaseStageEnum.getCaseStage(caseStageId)
 			aggregate.meta.setCaseStage(caseStage, sessionContext.userId, sessionContext.currentTime)
 		}
 		if (dto.hasAttribute("owner")) {
-			aggregate.ownerId = userRepository.idFromString((dto["owner"] as Map<String, Any?>)["id"] as String)
+			aggregate.ownerId = userRepository.idFromString(dto.enumId("owner"))
 		}
 		if (dto["assignee"] != null) {
-			aggregate.assigneeId = userRepository.idFromString((dto["assignee"] as Map<String, Any?>)["id"] as String)
+			aggregate.assigneeId = userRepository.idFromString(dto.enumId("assignee"))
 		}
 		super.toAggregate(dto, aggregate)
 	}

@@ -61,6 +61,57 @@ data class FieldConfig(
 	val incoming: ((Any?, EntityWithProperties) -> Unit)?,
 )
 
+/**
+ * Configuration for customizing part serialization/deserialization.
+ *
+ * Parts without explicit configuration are serialized using the generic infrastructure.
+ * This allows adding computed fields, excluding properties, or transforming values
+ * for specific part types.
+ *
+ * @param P The part type
+ */
+class PartAdapterConfig<P : Part<*>> {
+
+	internal val exclusions = mutableListOf<String>()
+	internal val fields = mutableListOf<FieldConfig>()
+
+	/**
+	 * Exclude a property from automatic serialization.
+	 */
+	fun exclude(propertyName: String) {
+		exclusions.add(propertyName)
+	}
+
+	fun exclude(propertyNames: List<String>) {
+		exclusions.addAll(propertyNames)
+	}
+
+	/**
+	 * Register a field mapping from a source property to a target field.
+	 */
+	fun field(
+		targetField: String,
+		sourceProperty: String,
+	) {
+		fields.add(FieldConfig(targetField, sourceProperty, null, null))
+	}
+
+	/**
+	 * Register a field with custom outgoing and incoming functions.
+	 *
+	 * @param targetField The name of the field on the DTO
+	 * @param outgoing Function to compute the DTO value from the part (for serialization)
+	 * @param incoming Function to apply the DTO value to the part (for deserialization)
+	 */
+	fun field(
+		targetField: String,
+		outgoing: (EntityWithProperties) -> Any?,
+		incoming: ((Any?, EntityWithProperties) -> Unit)? = null,
+	) {
+		fields.add(FieldConfig(targetField, null, outgoing, incoming))
+	}
+}
+
 data class ReadableMap(
 	val map: Map<String, Any?>,
 ) : GenericDto {
@@ -140,6 +191,33 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 	private val relationships = mutableListOf<RelationshipConfig>()
 	private val fields = mutableListOf<FieldConfig>()
 	private val metas = mutableListOf<FieldConfig>()
+	private val partAdapters = mutableMapOf<Class<*>, PartAdapterConfig<*>>()
+
+	/**
+	 * Find a part adapter config by searching the class hierarchy (interfaces and superclasses).
+	 * This allows registering adapters using interface types while matching implementation classes at runtime.
+	 */
+	private fun findPartAdapterConfig(partClass: Class<*>): PartAdapterConfig<*>? {
+		// Direct match first
+		partAdapters[partClass]?.let { return it }
+
+		// Check interfaces
+		for (iface in partClass.interfaces) {
+			partAdapters[iface]?.let { return it }
+		}
+
+		// Check superclass hierarchy
+		var superclass = partClass.superclass
+		while (superclass != null) {
+			partAdapters[superclass]?.let { return it }
+			for (iface in superclass.interfaces) {
+				partAdapters[iface]?.let { return it }
+			}
+			superclass = superclass.superclass
+		}
+
+		return null
+	}
 
 	// Properties to exclude from automatic serialization (handled separately)
 	init {
@@ -279,6 +357,23 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		incoming: ((Any?, EntityWithProperties) -> Unit)? = null,
 	) = metas.add(FieldConfig(targetField, null, outgoing, incoming))
 
+	/**
+	 * Register a part adapter configuration for customizing part serialization.
+	 *
+	 * Parts without explicit configuration are serialized using the generic infrastructure.
+	 *
+	 * @param partClass The part class to configure
+	 * @param configure Configuration block to set up exclusions and custom fields
+	 */
+	fun <P : Part<*>> partAdapter(
+		partClass: Class<P>,
+		configure: PartAdapterConfig<P>.() -> Unit,
+	) {
+		val config = PartAdapterConfig<P>()
+		config.configure()
+		partAdapters[partClass] = config
+	}
+
 	private fun Property<*>.isExcluded(): Boolean =
 		name in exclusions ||
 			relationships.any { name == it.sourceProperty } ||
@@ -304,6 +399,31 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		fromRelationships(aggregate, dto)
 		fromFields(aggregate, dto, fields)
 		return dto
+	}
+
+	/**
+	 * Convert a part to a map for JSON serialization.
+	 *
+	 * If a part adapter is registered for the part's class, it will be used to:
+	 * - Exclude specified properties from serialization
+	 * - Add custom computed fields
+	 *
+	 * Parts without explicit configuration are serialized using the generic infrastructure.
+	 */
+	protected open fun fromPart(part: Part<*>): Map<String, Any?> {
+		val dto = WritableMap(mutableMapOf())
+		dto["id"] = part.id.toString()
+		val entity = part as EntityWithProperties
+		val config = findPartAdapterConfig(part.javaClass)
+		logger.trace("fromPart: ${part.javaClass.simpleName}, config: ${config?.exclusions?.size ?: 0}, ${config?.fields?.size ?: 0}")
+		val properties = if (config != null) {
+			entity.properties.filter { it.name !in config.exclusions && !config.fields.any { f -> it.name == f.sourceProperty } }
+		} else {
+			entity.properties
+		}
+		fromEntity(entity, properties, dto)
+		fromFields(entity, dto, config?.fields ?: emptyList())
+		return dto.map
 	}
 
 	private fun fromEntity(
@@ -360,13 +480,6 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 				)
 			}
 		}
-	}
-
-	private fun fromPart(part: Part<*>): Map<String, Any?> {
-		val dto = WritableMap(mutableMapOf())
-		dto["id"] = part.id.toString()
-		fromEntity(part as EntityWithProperties, part.properties, dto)
-		return dto.map
 	}
 
 	/**
@@ -429,7 +542,15 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 					dto[fieldConfig.targetField] = fieldConfig.outgoing.invoke(entity)
 				} else if (fieldConfig.sourceProperty != null) {
 					val fieldName = fieldConfig.targetField
-					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
+					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
+					logger.trace(
+						"fromField: {}.{}: {} -> {}",
+						entity.javaClass.simpleName,
+						fieldConfig.sourceProperty,
+						property.javaClass.simpleName,
+						fieldName,
+					)
+					when (property) {
 						is PartListProperty<*, *> -> {
 							dto[fieldName] = property.map { fromPart(it) }
 						}
@@ -505,13 +626,41 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 
 	/**
 	 * Apply DTO values to a part.
+	 *
+	 * If a part adapter is registered for the part's class, it will be used to:
+	 * - Exclude specified properties from deserialization
+	 * - Apply custom incoming field handlers
+	 *
+	 * Parts without explicit configuration are deserialized using the generic infrastructure.
 	 */
 	@Suppress("UNCHECKED_CAST")
 	fun toPart(
 		dto: GenericDto,
 		part: Part<*>,
 	) {
-		toEntity(dto, part as EntityWithProperties, part.properties)
+		val entity = part as EntityWithProperties
+		val config = findPartAdapterConfig(part.javaClass)
+		val properties = if (config != null) {
+			entity.properties.filter { it.name !in config.exclusions && it.isWritable }
+		} else {
+			entity.properties.filter { it.isWritable }
+		}
+
+		toEntity(dto, entity, properties)
+
+		// Apply custom incoming fields from part adapter config
+		config?.fields?.forEach { fieldConfig ->
+			if (fieldConfig.incoming != null && dto.hasAttribute(fieldConfig.targetField)) {
+				try {
+					fieldConfig.incoming.invoke(dto[fieldConfig.targetField], part)
+				} catch (ex: Exception) {
+					throw RuntimeException(
+						"[${part.javaClass.simpleName}.${fieldConfig.targetField}] toPart field crashed: ${ex.message}",
+						ex,
+					)
+				}
+			}
+		}
 	}
 
 	/**
@@ -558,7 +707,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 					}
 
 					is EnumProperty<*> -> {
-						property.id = (dto[fieldName] as Map<String, Any?>?)?.get("id") as? String
+						property.id = dto.enumId(fieldName)
 					}
 
 					is BaseProperty<*> -> {
@@ -592,23 +741,15 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 							val values = dtoValue as List<*>
 							property.clear()
 							for (value in values) {
-								val id = when (value) {
-									is Map<*, *> -> DtoUtils.idFromString(value["id"] as? String)
-									else -> throw IllegalArgumentException("Invalid value type for ReferenceSetProperty: ${value?.javaClass?.name}")
-								}
+								val id = dto.enumId(value)
 								if (id != null) {
-									property.add(id)
+									property.add(DtoUtils.idFromString(id))
 								}
 							}
 						}
 
 						is AggregateReferenceProperty<*> -> {
-							val id = when (dtoValue) {
-								null -> null
-								is Map<*, *> -> DtoUtils.idFromString(dtoValue["id"] as String?)
-								else -> throw IllegalArgumentException("Invalid value type for ReferenceProperty: ${dtoValue.javaClass.name}")
-							}
-							property.id = id
+							property.id = DtoUtils.idFromString(dto.enumId(dtoValue))
 						}
 
 						is BaseProperty<*> -> {
@@ -678,7 +819,7 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 		val values = dto[property.name] as? List<*> ?: return
 		property.clear()
 		for (value in values) {
-			val enumId = (value as Map<String, Any?>)["id"] as? String
+			val enumId = dto.enumId(value)
 			if (enumId != null) {
 				property.add(property.enumeration.getItem(enumId))
 			}
@@ -753,8 +894,8 @@ open class GenericAggregateDtoAdapterBase<A : Aggregate, R : GenericAggregateDto
 				value.toDouble() as T
 			}
 
-			targetType == LocalDate::class.java -> {
-				LocalDate.parse(value.toString(), DateTimeFormatter.ISO_DATE) as T
+			targetType == LocalDate::class.java -> { // Expecting ISO date string, strip time if datetime provided
+				LocalDate.parse(value.toString().substring(0, 10), DateTimeFormatter.ISO_DATE) as T
 			}
 
 			targetType == OffsetDateTime::class.java -> {

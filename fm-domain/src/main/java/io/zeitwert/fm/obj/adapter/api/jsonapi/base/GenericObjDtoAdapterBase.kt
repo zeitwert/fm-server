@@ -34,7 +34,7 @@ abstract class GenericObjDtoAdapterBase<O : Obj, D : GenericObjDtoBase<O>>(
 		aggregate: O,
 	) {
 		if (dto["owner"] != null) {
-			aggregate.ownerId = userRepository.idFromString((dto["owner"] as Map<String, Any?>)["id"] as String)
+			aggregate.ownerId = userRepository.idFromString(dto.enumId("owner"))
 		}
 		super.toAggregate(dto, aggregate)
 	}
