@@ -36,11 +36,6 @@
 			<artifactId>caffeine</artifactId>
 			<version>${caffeine.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.crnk</groupId>
-			<artifactId>crnk-core</artifactId>
-			<version>${crnk.version}</version>
-		</dependency>
 
 		<!-- Test -->
 		<dependency>

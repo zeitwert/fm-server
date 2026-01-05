@@ -5,8 +5,8 @@ import dddrive.app.doc.model.base.DocRepositoryBase
 import dddrive.domain.doc.persist.base.MapDocPersistenceProviderBase
 import dddrive.domain.task.model.DocTask
 import dddrive.domain.task.model.DocTaskPartComment
+import dddrive.ddd.query.QuerySpec
 import dddrive.domain.task.model.DocTaskRepository
-import io.crnk.core.queryspec.QuerySpec
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 

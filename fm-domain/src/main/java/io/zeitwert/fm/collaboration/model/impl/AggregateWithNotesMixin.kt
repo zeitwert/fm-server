@@ -3,9 +3,7 @@ package io.zeitwert.fm.collaboration.model.impl
 import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.PathSpec
-import io.crnk.core.queryspec.QuerySpec
+import dddrive.ddd.query.query
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
@@ -19,10 +17,10 @@ interface AggregateWithNotesMixin : ItemWithNotes {
 
 	override val notes: List<Any>
 		get() {
-			val query = QuerySpec(ObjNote::class.java).apply {
-				addFilter(PathSpec.of("relatedToId").filter(FilterOperator.EQ, aggregate().id))
+			val querySpec = query {
+				filter { "relatedToId" eq aggregate().id }
 			}
-			return noteRepository().find(query)
+			return noteRepository().find(querySpec)
 		}
 
 	override fun addNote(

@@ -4,10 +4,11 @@ import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.Part
 import dddrive.ddd.core.model.base.AggregatePersistenceProviderBase
 import dddrive.ddd.property.model.EntityWithProperties
+import dddrive.ddd.query.ComparisonOperator
+import dddrive.ddd.query.FilterSpec
+import dddrive.ddd.query.QuerySpec
 import dddrive.domain.ddd.persist.map.impl.fromMap
 import dddrive.domain.ddd.persist.map.impl.toMap
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.QuerySpec
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -106,17 +107,30 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 
 		return aggregates.values
 			.filter { map ->
-				query.filters.all { filter ->
-					val path = filter.path.toString()
-					val mapKey = if (path.endsWith("Id")) path else "${path}Id"
-					val mapValue = map[path] ?: map[mapKey]
-					when (filter.operator) {
-						FilterOperator.EQ -> mapValue == filter.getValue()
-						else -> true // Ignore unsupported operators in test implementation
-					}
-				}
+				query.filters.all { filter -> matchesFilter(map, filter) }
 			}
 			.mapNotNull { map -> map["id"] as? Int }
 			.toList()
+	}
+
+	private fun matchesFilter(map: Map<String, Any?>, filter: FilterSpec): Boolean {
+		return when (filter) {
+			is FilterSpec.Comparison -> {
+				val path = filter.path
+				val mapKey = if (path.endsWith("Id")) path else "${path}Id"
+				val mapValue = map[path] ?: map[mapKey]
+				when (filter.operator) {
+					ComparisonOperator.EQ -> mapValue == filter.value
+					else -> true // Ignore unsupported operators in test implementation
+				}
+			}
+			is FilterSpec.In -> {
+				val mapValue = map[filter.path]
+				mapValue in filter.values
+			}
+			is FilterSpec.Or -> {
+				filter.filters.any { matchesFilter(map, it) }
+			}
+		}
 	}
 }

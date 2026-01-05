@@ -1,10 +1,9 @@
 package io.zeitwert.dddrive.persist.util
 
-import io.crnk.core.queryspec.Direction
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.FilterSpec
-import io.crnk.core.queryspec.SortSpec
-import io.zeitwert.dddrive.persist.util.CrnkUtils.getPath
+import dddrive.ddd.query.ComparisonOperator
+import dddrive.ddd.query.FilterSpec
+import dddrive.ddd.query.SortDirection
+import dddrive.ddd.query.SortSpec
 import io.zeitwert.fm.obj.model.db.Tables
 import org.jooq.Condition
 import org.jooq.Field
@@ -34,50 +33,122 @@ class SqlUtils {
 		this.searchConditionProvider = searchConditionProvider
 	}
 
+	/**
+	 * Add a filter to the where clause with AND.
+	 */
 	fun andFilter(
 		whereClause: Condition,
 		table: Table<*>,
 		idField: Field<Int>,
 		filter: FilterSpec,
-	) = whereClause.and(filter(table, idField, filter))
+	): Condition = whereClause.and(filterToCondition(table, idField, filter))
 
-	fun orFilter(
-		whereClause: Condition,
-		table: Table<*>,
-		idField: Field<Int>,
-		filter: FilterSpec,
-	) = whereClause.and(DSL.or(filter.expression.map { filter(table, idField, it) }))
-
+	/**
+	 * Convert sort specifications to jOOQ sort fields.
+	 */
 	fun sortFields(
 		table: Table<*>,
 		sortSpec: List<SortSpec>,
 	) = sortSpec.map {
 		table
-			.field(StringUtils.toSnakeCase(it.path.toString()))!!
-			.sort(if (Direction.ASC == it.direction) SortOrder.ASC else SortOrder.DESC)
+			.field(StringUtils.toSnakeCase(it.path))!!
+			.sort(if (SortDirection.ASC == it.direction) SortOrder.ASC else SortOrder.DESC)
 			.nullsLast()
+	}
+
+	/**
+	 * Convert a FilterSpec to a jOOQ Condition.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	fun filterToCondition(
+		table: Table<*>,
+		idField: Field<Int>,
+		filter: FilterSpec,
+	): Condition {
+		return when (filter) {
+			is FilterSpec.Comparison -> comparisonToCondition(table, idField, filter)
+			is FilterSpec.In -> inToCondition(table, filter)
+			is FilterSpec.Or -> orToCondition(table, idField, filter)
+		}
+	}
+
+	private fun comparisonToCondition(
+		table: Table<*>,
+		idField: Field<Int>,
+		filter: FilterSpec.Comparison,
+	): Condition {
+		try {
+			val fieldName = StringUtils.toSnakeCase(filter.path)
+
+			// Handle special fields
+			if ("is_closed" == fieldName) {
+				return closedFilter(table, filter)
+			} else if ("search_text" == fieldName) {
+				return searchConditionProvider!!.applySearch(idField, filter.value?.toString())
+			}
+
+			val field = table.field(fieldName)
+				?: throw IllegalArgumentException("Unknown field: $fieldName in table ${table.name}")
+
+			return when {
+				field.type == Integer::class.java -> integerComparisonFilter(field as Field<Int>, filter)
+				field.type == java.lang.String::class.java -> stringComparisonFilter(field as Field<String>, filter)
+				field.type == java.lang.Boolean::class.java -> booleanComparisonFilter(field as Field<Boolean>, filter)
+				field.type == LocalDateTime::class.java -> localDateTimeComparisonFilter(field as Field<LocalDateTime>, filter)
+				field.type == OffsetDateTime::class.java -> offsetDateTimeComparisonFilter(field as Field<OffsetDateTime>, filter)
+				else -> throw IllegalArgumentException("Unsupported field type ${fieldName}: ${field.type}")
+			}
+		} catch (e: Exception) {
+			throw RuntimeException("comparisonToCondition($table, $filter) crashed: ${e.message}", e)
+		}
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	private fun inToCondition(
+		table: Table<*>,
+		filter: FilterSpec.In,
+	): Condition {
+		val fieldName = StringUtils.toSnakeCase(filter.path)
+		val field = table.field(fieldName)
+			?: throw IllegalArgumentException("Unknown field: $fieldName in table ${table.name}")
+
+		return when {
+			field.type == Integer::class.java -> (field as Field<Int>).`in`(filter.values.map { toInteger(it) })
+			field.type == java.lang.String::class.java -> {
+				// Build OR condition for string IN
+				var inner = DSL.noCondition()
+				for (value in filter.values) {
+					inner = inner.or((field as Field<String>).eq(value.toString()))
+				}
+				inner
+			}
+			else -> throw IllegalArgumentException("Unsupported IN field type ${fieldName}: ${field.type}")
+		}
+	}
+
+	private fun orToCondition(
+		table: Table<*>,
+		idField: Field<Int>,
+		filter: FilterSpec.Or,
+	): Condition {
+		return DSL.or(filter.filters.map { filterToCondition(table, idField, it) })
 	}
 
 	private fun closedFilter(
 		table: Table<*>,
-		filter: FilterSpec,
+		filter: FilterSpec.Comparison,
 	): Condition {
 		val field = table.field(Tables.OBJ.CLOSED_AT.name)!!
-		val value = filter.getValue<Boolean>()
-		if (value) {
-			if (filter.operator === FilterOperator.EQ) {
-				return field.isNotNull()
-			} else if (filter.operator === FilterOperator.NEQ) {
-				return field.isNull()
-			}
-		} else if (!value) {
-			if (filter.operator === FilterOperator.EQ) {
-				return field.isNull()
-			} else if (filter.operator === FilterOperator.NEQ) {
-				return field.isNotNull()
-			}
+		val value = when (val v = filter.value) {
+			is Boolean -> v
+			is String -> v.toBoolean()
+			else -> throw IllegalArgumentException("isClosed filter value must be Boolean, got: $v")
 		}
-		return DSL.trueCondition()
+		return when (filter.operator) {
+			ComparisonOperator.EQ -> if (value) field.isNotNull() else field.isNull()
+			ComparisonOperator.NEQ -> if (value) field.isNull() else field.isNotNull()
+			else -> DSL.trueCondition()
+		}
 	}
 
 	@Suppress("UNCHECKED_CAST")
@@ -93,249 +164,108 @@ class SqlUtils {
 		} else if (value.javaClass == String::class.java || value.javaClass == java.lang.String::class.java) {
 			(value as String).toInt()
 		} else {
-			throw IllegalArgumentException("" + value + " (" + value.javaClass + ") is not an integer")
+			throw IllegalArgumentException("$value (${value.javaClass}) is not an integer")
 		}
 
-	@Suppress("UNCHECKED_CAST")
-	private fun integerFilter(
+	private fun integerComparisonFilter(
 		field: Field<Int>,
-		filter: FilterSpec,
+		filter: FilterSpec.Comparison,
 	): Condition {
-		val fieldName = StringUtils.toSnakeCase(getPath(filter))
-		val fieldValue = filter.getValue<Any?>()
-		logger.trace("integerFilter({} {} {} ({})", fieldName, filter.operator, fieldName, fieldValue?.javaClass)
-		try {
-			return if (fieldValue is Collection<*>) {
-				if (filter.operator === CustomFilters.IN || filter.operator === FilterOperator.EQ) {
-					return field.`in`(fieldValue as Collection<Int>?)
-				} else {
-					throw IllegalArgumentException("Unsupported integer collection operator $fieldName ${filter.operator} $fieldValue (${fieldValue.javaClass})")
-				}
-			} else {
-				val intValue = toInteger(fieldValue)
-				if (filter.operator === FilterOperator.EQ) {
-					if (intValue != null) {
-						field.eq(intValue)
-					} else {
-						field.isNull()
-					}
-				} else if (filter.operator === FilterOperator.NEQ) {
-					if (intValue != null) {
-						field.eq(intValue).not()
-					} else {
-						field.isNotNull()
-					}
-				} else if (filter.operator === FilterOperator.GT) {
-					field.gt(intValue)
-				} else if (filter.operator === FilterOperator.GE) {
-					field.ge(intValue)
-				} else if (filter.operator === FilterOperator.LT) {
-					field.lt(intValue)
-				} else if (filter.operator === FilterOperator.LE) {
-					field.le(intValue)
-				} else {
-					throw IllegalArgumentException("Unsupported integer operator $fieldName ${filter.operator} $intValue (${intValue?.javaClass})")
-				}
-			}
-		} catch (e: Exception) {
-			throw RuntimeException(
-				"integerFilter $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass}) crashed: ${e.message}",
-				e,
-			)
+		val intValue = toInteger(filter.value)
+		return when (filter.operator) {
+			ComparisonOperator.EQ -> if (intValue != null) field.eq(intValue) else field.isNull()
+			ComparisonOperator.NEQ -> if (intValue != null) field.eq(intValue).not() else field.isNotNull()
+			ComparisonOperator.GT -> field.gt(intValue)
+			ComparisonOperator.GE -> field.ge(intValue)
+			ComparisonOperator.LT -> field.lt(intValue)
+			ComparisonOperator.LE -> field.le(intValue)
+			ComparisonOperator.LIKE -> throw IllegalArgumentException("LIKE not supported for integer fields")
 		}
 	}
 
-	private fun stringFilter(
+	private fun stringComparisonFilter(
 		field: Field<String>,
-		filter: FilterSpec,
+		filter: FilterSpec.Comparison,
 	): Condition {
-		if (filter.operator === CustomFilters.IN) {
-			val value = filter.getValue<Set<String>>()
-			var inner = DSL.noCondition()
-			for (`val` in value) {
-				inner = inner.or(field.eq(`val`))
-			}
-			return inner
-		}
-		val fieldName = StringUtils.toSnakeCase(getPath(filter))
-		val fieldValue = filter.getValue<Any?>()?.toString()
-		try {
-			return if (filter.operator === FilterOperator.EQ) {
+		val fieldValue = filter.value?.toString()
+		return when (filter.operator) {
+			ComparisonOperator.EQ -> if (fieldValue != null) field.eq(fieldValue) else field.isNull().or(field.eq(""))
+			ComparisonOperator.NEQ -> if (fieldValue != null) field.eq(fieldValue).not() else field.isNotNull().and(field.eq("").not())
+			ComparisonOperator.GT -> field.gt(fieldValue)
+			ComparisonOperator.GE -> field.ge(fieldValue)
+			ComparisonOperator.LT -> field.lt(fieldValue)
+			ComparisonOperator.LE -> field.le(fieldValue)
+			ComparisonOperator.LIKE -> {
 				if (fieldValue != null) {
-					field.eq(fieldValue)
+					DSL.lower(field).like(fieldValue.replace("*", "%"))
 				} else {
-					field.isNull().or(field.eq(""))
+					throw IllegalArgumentException("LIKE requires a non-null value")
 				}
-			} else if (filter.operator === FilterOperator.NEQ) {
-				if (fieldValue != null) {
-					field.eq(fieldValue).not()
-				} else {
-					field.isNotNull().and(field.eq("").not())
-				}
-			} else if (filter.operator === FilterOperator.GT) {
-				field.gt(fieldValue)
-			} else if (filter.operator === FilterOperator.GE) {
-				field.ge(fieldValue)
-			} else if (filter.operator === FilterOperator.LT) {
-				field.lt(fieldValue)
-			} else if (filter.operator === FilterOperator.LE) {
-				field.le(fieldValue)
-			} else if (filter.operator === FilterOperator.LIKE && fieldValue != null) {
-				DSL.lower(field).like(fieldValue.replace("*", "%"))
-			} else {
-				throw IllegalArgumentException("Unsupported string operator $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass})")
 			}
-		} catch (e: Exception) {
-			throw RuntimeException(
-				"stringFilter $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass}) crashed: ${e.message}",
-				e,
-			)
 		}
 	}
 
-	private fun booleanFilter(
+	private fun booleanComparisonFilter(
 		field: Field<Boolean>,
-		filter: FilterSpec,
+		filter: FilterSpec.Comparison,
 	): Condition {
-		val fieldName = StringUtils.toSnakeCase(getPath(filter))
-		val anyValue = filter.getValue<Any?>()
-		val fieldValue = when (anyValue) {
-			is Boolean -> anyValue
-			is String -> anyValue.toBoolean()
-			else -> throw IllegalArgumentException("Unsupported boolean value type for $fieldName: $anyValue (${anyValue?.javaClass})")
+		val fieldValue = when (val v = filter.value) {
+			is Boolean -> v
+			is String -> v.toBoolean()
+			else -> throw IllegalArgumentException("Boolean filter value must be Boolean or String, got: $v (${v?.javaClass})")
 		}
-		try {
-			return if (filter.operator === FilterOperator.EQ) {
-				field.eq(fieldValue)
-			} else {
-				throw IllegalArgumentException("Unsupported boolean operator $fieldName ${filter.operator} $fieldValue (${fieldValue.javaClass})")
-			}
-		} catch (e: Exception) {
-			throw RuntimeException(
-				"booleanFilter $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass}) crashed: ${e.message}",
-				e,
-			)
+		return when (filter.operator) {
+			ComparisonOperator.EQ -> field.eq(fieldValue)
+			ComparisonOperator.NEQ -> field.eq(fieldValue).not()
+			else -> throw IllegalArgumentException("Unsupported boolean operator: ${filter.operator}")
 		}
 	}
 
-	private fun localDateTimeFilter(
+	private fun localDateTimeComparisonFilter(
 		field: Field<LocalDateTime>,
-		filter: FilterSpec,
+		filter: FilterSpec.Comparison,
 	): Condition {
-		val fieldName = StringUtils.toSnakeCase(getPath(filter))
-		val fieldValue = filter.getValue<LocalDateTime?>()
-		try {
-			return if (filter.operator === FilterOperator.EQ) {
-				if (fieldValue != null) {
-					field.eq(fieldValue)
-				} else {
-					field.isNull()
-				}
-			} else if (filter.operator === FilterOperator.NEQ) {
-				if (fieldValue != null) {
-					field.eq(fieldValue).not()
-				} else {
-					field.isNotNull()
-				}
-			} else if (filter.operator === FilterOperator.GT) {
-				field.gt(fieldValue)
-			} else if (filter.operator === FilterOperator.GE) {
-				field.ge(fieldValue)
-			} else if (filter.operator === FilterOperator.LT) {
-				field.lt(fieldValue)
-			} else if (filter.operator === FilterOperator.LE) {
-				field.le(fieldValue)
-			} else {
-				throw IllegalArgumentException("Unsupported LocalDateTime operator $fieldName ${filter.operator} $fieldValue (${fieldValue.javaClass})")
-			}
-		} catch (e: Exception) {
-			throw RuntimeException(
-				"localDateTimeFilter $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass}) crashed: ${e.message}",
-				e,
-			)
+		val fieldValue = filter.value as? LocalDateTime
+		return when (filter.operator) {
+			ComparisonOperator.EQ -> if (fieldValue != null) field.eq(fieldValue) else field.isNull()
+			ComparisonOperator.NEQ -> if (fieldValue != null) field.eq(fieldValue).not() else field.isNotNull()
+			ComparisonOperator.GT -> field.gt(fieldValue)
+			ComparisonOperator.GE -> field.ge(fieldValue)
+			ComparisonOperator.LT -> field.lt(fieldValue)
+			ComparisonOperator.LE -> field.le(fieldValue)
+			ComparisonOperator.LIKE -> throw IllegalArgumentException("LIKE not supported for LocalDateTime fields")
 		}
 	}
 
-	private fun offsetDateTimeFilter(
+	private fun offsetDateTimeComparisonFilter(
 		field: Field<OffsetDateTime>,
-		filter: FilterSpec,
+		filter: FilterSpec.Comparison,
 	): Condition {
-		val fieldName = StringUtils.toSnakeCase(getPath(filter))
-		var fieldValue = filter.getValue<OffsetDateTime?>()
-		try {
-			return if (fieldValue == null) {
-				if (filter.operator === FilterOperator.EQ) {
-					field.isNull()
-				} else if (filter.operator === FilterOperator.NEQ) {
-					field.isNotNull()
-				} else {
-					throw IllegalArgumentException("Unsupported OffsetDateTime null operator $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass})")
-				}
-			} else {
-				val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
-				fieldValue = fieldValue.atZoneSameInstant(zoneOffset).toOffsetDateTime()
-				if (filter.operator === FilterOperator.EQ) {
-					field.eq(fieldValue)
-				} else if (filter.operator === FilterOperator.NEQ) {
-					field.eq(fieldValue).not()
-				} else if (filter.operator === FilterOperator.GT) {
-					field.gt(fieldValue)
-				} else if (filter.operator === FilterOperator.GE) {
-					field.ge(fieldValue)
-				} else if (filter.operator === FilterOperator.LT) {
-					field.lt(fieldValue)
-				} else if (filter.operator === FilterOperator.LE) {
-					field.le(fieldValue)
-				} else {
-					throw IllegalArgumentException("Unsupported OffsetDateTime operator $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass})")
-				}
-			}
-		} catch (e: Exception) {
-			throw RuntimeException(
-				"offsetDateTimeFilter $fieldName ${filter.operator} $fieldValue (${fieldValue?.javaClass}) crashed: ${e.message}",
-				e,
-			)
+		var fieldValue = filter.value as? OffsetDateTime
+		if (fieldValue != null) {
+			val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
+			fieldValue = fieldValue.atZoneSameInstant(zoneOffset).toOffsetDateTime()
+		}
+		return when (filter.operator) {
+			ComparisonOperator.EQ -> if (fieldValue != null) field.eq(fieldValue) else field.isNull()
+			ComparisonOperator.NEQ -> if (fieldValue != null) field.eq(fieldValue).not() else field.isNotNull()
+			ComparisonOperator.GT -> field.gt(fieldValue)
+			ComparisonOperator.GE -> field.ge(fieldValue)
+			ComparisonOperator.LT -> field.lt(fieldValue)
+			ComparisonOperator.LE -> field.le(fieldValue)
+			ComparisonOperator.LIKE -> throw IllegalArgumentException("LIKE not supported for OffsetDateTime fields")
 		}
 	}
 
-	@Suppress("UNCHECKED_CAST")
-	private fun filter(
-		table: Table<*>,
-		idField: Field<Int>,
-		filter: FilterSpec,
-	): Condition? {
-		try {
-			val fieldName = StringUtils.toSnakeCase(getPath(filter))
-			if ("is_closed" == fieldName) {
-				return closedFilter(table, filter)
-			} else if ("search_text" == fieldName) {
-				return searchConditionProvider!!.apply(idField, filter)
-			}
-			val field = table.field(fieldName)!!
-			return if (field.getType() == Integer::class.java) {
-				integerFilter(field as Field<Int>, filter)
-			} else if (field.getType() == java.lang.String::class.java) {
-				stringFilter(field as Field<String>, filter)
-			} else if (field.getType() == java.lang.Boolean::class.java) {
-				booleanFilter(field as Field<Boolean>, filter)
-			} else if (field.getType() == LocalDateTime::class.java) {
-				localDateTimeFilter(field as Field<LocalDateTime>, filter)
-			} else if (field.getType() == OffsetDateTime::class.java) {
-				offsetDateTimeFilter(field as Field<OffsetDateTime>, filter)
-			} else {
-				throw IllegalArgumentException("Unsupported field type " + fieldName + ": " + field.getType())
-			}
-		} catch (e: Exception) {
-			throw RuntimeException("filter($table.$idField, $filter) crashed ${e.message}", e)
-		}
-	}
-
+	/**
+	 * Provider for search text conditions.
+	 */
 	interface SearchConditionProvider {
 
-		fun apply(
+		fun applySearch(
 			idField: Field<Int>,
-			filter: FilterSpec,
-		): Condition?
+			searchText: String?,
+		): Condition
 
 	}
 

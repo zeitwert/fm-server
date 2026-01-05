@@ -1,7 +1,7 @@
 package io.zeitwert.fm.doc.persist
 
 import dddrive.app.doc.model.Doc
-import io.crnk.core.queryspec.QuerySpec
+import dddrive.ddd.query.QuerySpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.fm.doc.model.db.Tables

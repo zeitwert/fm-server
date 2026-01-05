@@ -17,6 +17,7 @@ import io.crnk.core.resource.list.ResourceList
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateApiRepository
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto
+import io.zeitwert.dddrive.persist.util.QuerySpecConverter
 import io.zeitwert.fm.oe.model.ObjUser
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
@@ -89,7 +90,8 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, R : AggregateDto<A>>(
 	@Transactional
 	override fun findAll(querySpec: QuerySpec): ResourceList<R> {
 		try {
-			val itemList = repository.find(querySpec)
+			val convertedQuery = QuerySpecConverter.convert(querySpec)
+			val itemList = repository.find(convertedQuery)
 			val list = DefaultResourceList<R>()
 			list.addAll(itemList.map { adapter.fromAggregate(repository.get(it)) })
 			return list

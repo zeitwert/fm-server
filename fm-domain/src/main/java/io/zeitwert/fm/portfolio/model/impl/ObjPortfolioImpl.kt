@@ -5,9 +5,7 @@ import dddrive.ddd.core.model.enums.CodeAggregateType
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.PathSpec
-import io.crnk.core.queryspec.QuerySpec
+import dddrive.ddd.query.query
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
@@ -117,12 +115,12 @@ class ObjPortfolioImpl(
 			}
 
 			"obj_account" -> {
-				val query = QuerySpec(ObjBuilding::class.java).apply {
-					addFilter(PathSpec.of("accountId").filter(FilterOperator.EQ, id))
+				val querySpec = query {
+					filter { "accountId" eq id }
 				}
 				repository
 					.buildingRepository
-					.find(query)
+					.find(querySpec)
 					.toSet()
 			}
 

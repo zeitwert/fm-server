@@ -4,8 +4,8 @@ import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjRepositoryBase
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
+import dddrive.ddd.query.QuerySpec
 import dddrive.domain.oe.persist.ObjUserPersistenceProvider
-import io.crnk.core.queryspec.QuerySpec
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 import java.util.*

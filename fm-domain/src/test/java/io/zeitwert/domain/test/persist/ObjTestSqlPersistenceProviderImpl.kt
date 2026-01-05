@@ -3,7 +3,7 @@ package io.zeitwert.domain.test.persist
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
-import io.crnk.core.queryspec.QuerySpec
+import dddrive.ddd.query.QuerySpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper

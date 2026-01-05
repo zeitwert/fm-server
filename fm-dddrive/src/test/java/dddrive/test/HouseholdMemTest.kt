@@ -10,12 +10,10 @@ import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
+import dddrive.ddd.query.query
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.PathSpec
-import io.crnk.core.queryspec.QuerySpec
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -140,8 +138,8 @@ class HouseholdMemTest {
 	@Test
 	fun testHouseholdRepository() {
 		assertEquals("objHousehold", hhRepo.aggregateType.id)
-		assertEquals(0, hhRepo.find(QuerySpec(ObjHousehold::class.java).apply {
-			addFilter(PathSpec.of("objTypeId").filter(FilterOperator.EQ, "obj_household"))
+		assertEquals(0, hhRepo.find(query {
+			filter { "objTypeId" eq "obj_household" }
 		}).size, "0 hh")
 
 		val hhA1 = hhRepo.create()
@@ -329,8 +327,8 @@ class HouseholdMemTest {
 		assertEquals(user1.id, hhA2.responsibleUserId, "responsibleUser persisted by id")
 		assertEquals(user1.id, hhA2.responsibleUser?.id, "responsibleUser persisted by value")
 
-		assertEquals(1, hhRepo.find(QuerySpec(ObjHousehold::class.java).apply {
-			addFilter(PathSpec.of("objTypeId").filter(FilterOperator.EQ, "objHousehold"))
+		assertEquals(1, hhRepo.find(query {
+			filter { "objTypeId" eq "objHousehold" }
 		}).size, "1 hh")
 	}
 

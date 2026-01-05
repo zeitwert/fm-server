@@ -1,8 +1,8 @@
 package dddrive.domain.oe.persist
 
 import dddrive.ddd.core.model.AggregatePersistenceProvider
+import dddrive.ddd.query.QuerySpec
 import dddrive.domain.oe.model.ObjUser
-import io.crnk.core.queryspec.QuerySpec
 import java.util.*
 
 interface ObjUserPersistenceProvider : AggregatePersistenceProvider<ObjUser> {

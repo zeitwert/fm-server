@@ -1,9 +1,8 @@
 package io.zeitwert.dddrive.persist.base
 
-import dddrive.ddd.core.model.Aggregate
-import io.crnk.core.queryspec.FilterOperator
-import io.crnk.core.queryspec.PathSpec
-import io.crnk.core.queryspec.QuerySpec
+import dddrive.ddd.query.ComparisonOperator
+import dddrive.ddd.query.FilterSpec
+import dddrive.ddd.query.QuerySpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.util.SqlUtils
 import io.zeitwert.fm.obj.model.db.Tables
@@ -30,18 +29,34 @@ interface AggregateFindMixin {
 
 	val sessionContext: SessionContext
 
+	/**
+	 * Add tenant and account filters to the query specification.
+	 * Returns a new QuerySpec with the added filters.
+	 */
 	fun queryWithFilter(querySpec: QuerySpec?): QuerySpec {
-		val querySpec = querySpec ?: QuerySpec(Aggregate::class.java)
-		val tenantField = Tables.OBJ.TENANT_ID.name
+		val filters = mutableListOf<FilterSpec>()
+
+		// Add existing filters
+		querySpec?.filters?.let { filters.addAll(it) }
+
+		// Add tenant filter
 		val tenantId = sessionContext.tenantId as Int
 		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
-			querySpec.addFilter(PathSpec.of(tenantField).filter(FilterOperator.EQ, tenantId))
+			filters.add(FilterSpec.Comparison(Tables.OBJ.TENANT_ID.name, ComparisonOperator.EQ, tenantId))
 		}
+
+		// Add account filter
 		if (hasAccount && sessionContext.hasAccount()) {
 			val accountId = sessionContext.accountId
-			querySpec.addFilter(PathSpec.of("account_id").filter(FilterOperator.EQ, accountId))
+			filters.add(FilterSpec.Comparison("account_id", ComparisonOperator.EQ, accountId))
 		}
-		return querySpec
+
+		return QuerySpec(
+			filters = filters,
+			sort = querySpec?.sort ?: emptyList(),
+			offset = querySpec?.offset,
+			limit = querySpec?.limit,
+		)
 	}
 
 	fun doFind(
@@ -53,17 +68,13 @@ interface AggregateFindMixin {
 		var whereClause = DSL.noCondition()
 		if (querySpec != null) {
 			for (filter in querySpec.filters) {
-				whereClause = if (filter.operator == FilterOperator.OR && filter.expression != null) {
-					sqlUtils.orFilter(whereClause, table, idField, filter)
-				} else {
-					sqlUtils.andFilter(whereClause, table, idField, filter)
-				}
+				whereClause = sqlUtils.andFilter(whereClause, table, idField, filter)
 			}
 		}
 		logger.trace("doFind.where(): {}", whereClause)
 
 		// Sort.
-		val sortFields = if (querySpec != null && !querySpec.sort.isEmpty()) {
+		val sortFields = if (querySpec != null && querySpec.sort.isNotEmpty()) {
 			sqlUtils.sortFields(table, querySpec.sort)
 		} else if (table.field(Tables.OBJ.MODIFIED_AT.name) != null && table.field(Tables.OBJ.MODIFIED_AT.name) != null) {
 			listOf(table.field(Tables.OBJ.MODIFIED_AT.name)!!.desc(), table.field(Tables.OBJ.CREATED_AT.name)!!.desc())
@@ -71,8 +82,8 @@ interface AggregateFindMixin {
 			listOf(table.field(Tables.OBJ.ID.name)!!.desc())
 		}
 
-		val offset = querySpec?.getOffset()
-		val limit = querySpec?.getLimit()
+		val offset = querySpec?.offset
+		val limit = querySpec?.limit
 
 		return dslContext
 			.select(idField)

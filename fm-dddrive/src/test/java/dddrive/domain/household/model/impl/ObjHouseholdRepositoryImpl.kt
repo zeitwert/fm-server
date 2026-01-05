@@ -5,8 +5,8 @@ import dddrive.app.obj.model.base.ObjRepositoryBase
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.ObjHouseholdRepository
+import dddrive.ddd.query.QuerySpec
 import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
-import io.crnk.core.queryspec.QuerySpec
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 

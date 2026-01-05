@@ -2,7 +2,6 @@ package io.zeitwert.fm.search.service.api.impl
 
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import io.crnk.core.queryspec.FilterSpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.util.SqlUtils
 import io.zeitwert.fm.ddd.model.SearchResult
@@ -158,16 +157,18 @@ class SearchServiceImpl internal constructor(
 		return result
 	}
 
-	override fun apply(
+	override fun applySearch(
 		idField: Field<Int>,
-		filter: FilterSpec,
-	): Condition = searchCondition(idField, filter)
+		searchText: String?,
+	): Condition = searchCondition(idField, searchText)
 
 	private fun searchCondition(
 		idField: Field<Int>,
-		filter: FilterSpec,
+		searchToken: String?,
 	): Condition {
-		val searchToken = filter.getValue<String>()
+		if (searchToken.isNullOrBlank()) {
+			return DSL.trueCondition()
+		}
 		val searchText = listOf(
 			*searchToken
 				.split(" ".toRegex())

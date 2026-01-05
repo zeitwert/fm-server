@@ -1,6 +1,6 @@
 package io.zeitwert.fm.task.persist
 
-import io.crnk.core.queryspec.QuerySpec
+import dddrive.ddd.query.QuerySpec
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.persist.SqlIdProvider
 import io.zeitwert.dddrive.persist.SqlRecordMapper
