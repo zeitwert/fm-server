@@ -25,6 +25,8 @@ class ObjRecordMapperImpl(
 	): Int = dslContext.nextval(Sequences.OBJ_PART_ID_SEQ).toInt()
 	// (aggregate as AggregateSPI).nextPartId(partClass)
 
+	fun isObj(id: Any) = dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(id as Int)) != null
+
 	override fun loadRecord(aggregate: Aggregate) {
 		val record = dslContext.fetchOne(Tables.OBJ, Tables.OBJ.ID.eq(aggregate.id as Int))
 		record ?: throw IllegalArgumentException("no OBJ record found for ${aggregate.id}")

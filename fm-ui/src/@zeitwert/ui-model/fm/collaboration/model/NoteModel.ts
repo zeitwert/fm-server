@@ -9,7 +9,7 @@ export const VISIT: Enumerated = { id: "visit", name: "Besuchsnotiz" };
 
 const MstNoteModel = ObjModel.named("Note")
 	.props({
-		relatedToId: types.string,
+		relatedTo: types.frozen<Enumerated>(),
 		noteType: types.frozen<Enumerated>(),
 		isPrivate: types.boolean,
 		subject: types.maybe(types.string),

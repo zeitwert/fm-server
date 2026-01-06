@@ -11,112 +11,126 @@ import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
-import io.zeitwert.fm.task.model.enums.CodeTaskPriority.Enumeration.getPriority
 import io.zeitwert.test.TestApplication
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
 class TaskTest {
 
 	@Autowired
-	private val sessionContext: SessionContext? = null
+	lateinit var sessionContext: SessionContext
 
 	@Autowired
-	private val userRepository: ObjUserRepository? = null
+	lateinit var userRepository: ObjUserRepository
 
 	@Autowired
-	private val accountRepository: ObjAccountRepository? = null
+	lateinit var accountRepository: ObjAccountRepository
 
 	@Autowired
-	private val taskRepository: DocTaskRepository? = null
+	lateinit var taskRepository: DocTaskRepository
+
+	val DueDate: OffsetDateTime = OffsetDateTime.of(2023, 9, 8, 0, 0, 0, 0, ZoneOffset.ofHours(2))
+
+	val USER_EMAIL: String = "cc@zeitwert.io"
+	val TEST_ACCOUNT: String = "TA"
+
+	lateinit var firstRelatedTo: ObjUser
+	lateinit var secondRelatedTo: ObjAccount
+
+	lateinit var newStage: CodeCaseStage
+	lateinit var progressStage: CodeCaseStage
+	lateinit var doneStage: CodeCaseStage
 
 	@Test
 	@Throws(Exception::class)
 	fun testTask() {
-		this.getTestData(sessionContext)
+		initTestData()
 
-		val userId = sessionContext!!.userId
+		val userId = sessionContext.userId
 		val now = sessionContext.currentTime
 
-		Assertions.assertNotNull(this.taskRepository, "taskRepository not null")
-		Assertions.assertEquals("doc_task", this.taskRepository!!.aggregateType.id)
+		assertNotNull(taskRepository, "taskRepository not null")
+		assertEquals("doc_task", taskRepository.aggregateType.id)
 
-		var taskA1: DocTask? = this.taskRepository.create()
+		val taskA1 = taskRepository.create()
 
-		Assertions.assertNotNull(taskA1, "task not null")
-		Assertions.assertNotNull(taskA1!!.id, "id not null")
-		Assertions.assertNotNull(taskA1.tenantId, "tenant not null")
+		assertNotNull(taskA1, "task not null")
+		assertNotNull(taskA1.id, "id not null")
+		assertNotNull(taskA1.tenantId, "tenant not null")
 
 		val taskA_id = taskA1.id
 		val taskA_idHash = System.identityHashCode(taskA1)
 
-		Assertions.assertNotNull(taskA1.meta.createdByUserId, "createdByUser not null")
-		Assertions.assertNotNull(taskA1.meta.createdAt, "createdAt not null")
+		assertNotNull(taskA1.meta.createdByUserId, "createdByUser not null")
+		assertNotNull(taskA1.meta.createdAt, "createdAt not null")
 
-		this.initTask1(taskA1, userId, now)
-		Assertions.assertEquals(taskA1.meta.caseStage, StageNew)
-		Assertions.assertTrue(taskA1.meta.isInWork)
-		this.checkTask1(taskA1)
+		initTask1(taskA1, userId, now)
+		assertEquals(taskA1.meta.caseStage, newStage)
+		assertTrue(taskA1.meta.isInWork)
+		checkTask1(taskA1)
 
-		this.taskRepository.store(taskA1)
-		taskA1 = null
+		taskRepository.store(taskA1)
 
-		var taskA2: DocTask? = this.taskRepository.load(taskA_id)
+		val taskA2 = taskRepository.load(taskA_id)
 		val taskA2_idHash = System.identityHashCode(taskA2)
 
-		Assertions.assertNotEquals(taskA_idHash, taskA2_idHash)
-		Assertions.assertNotNull(taskA2!!.meta.modifiedByUserId, "modifiedByUser not null")
-		Assertions.assertNotNull(taskA2.meta.modifiedAt, "modifiedAt not null")
-		Assertions.assertEquals(taskA2.meta.caseStage, StageNew)
-		Assertions.assertTrue(taskA2.meta.isInWork)
+		assertNotEquals(taskA_idHash, taskA2_idHash)
+		assertNotNull(taskA2.meta.modifiedByUserId, "modifiedByUser not null")
+		assertNotNull(taskA2.meta.modifiedAt, "modifiedAt not null")
+		assertEquals(taskA2.meta.caseStage, newStage)
+		assertTrue(taskA2.meta.isInWork)
 
-		this.checkTask1(taskA2)
+		val relatedTo = taskA2.relatedTo
+		assertNotNull(relatedTo, "relatedTo not null")
+		assertEquals(firstRelatedTo.id, relatedTo.id, "relatedTo id")
 
-		this.initTask2(taskA2, userId, now)
-		Assertions.assertTrue(taskA2.meta.isInWork)
+		checkTask1(taskA2)
 
-		this.taskRepository.store(taskA2)
-		taskA2 = null
+		initTask2(taskA2, userId, now)
+		assertTrue(taskA2.meta.isInWork)
 
-		var taskA3: DocTask? = this.taskRepository.load(taskA_id)
+		taskRepository.store(taskA2)
 
-		Assertions.assertEquals(taskA3!!.meta.caseStage, StageProgress)
-		Assertions.assertTrue(taskA3.meta.isInWork)
+		val taskA3 = taskRepository.load(taskA_id)
 
-		this.checkTask2(taskA3)
+		assertEquals(taskA3.meta.caseStage, progressStage)
+		assertTrue(taskA3.meta.isInWork)
 
-		this.initTask1(taskA3, userId, now)
-		taskA3.meta.setCaseStage(StageDone!!, userId, now)
-		Assertions.assertFalse(taskA3.meta.isInWork)
+		checkTask2(taskA3)
 
-		this.taskRepository.store(taskA3)
-		taskA3 = null
+		initTask1(taskA3, userId, now)
+		taskA3.meta.setCaseStage(doneStage, userId, now)
+		assertFalse(taskA3.meta.isInWork)
 
-		val taskA4 = this.taskRepository.get(taskA_id)
+		taskRepository.store(taskA3)
 
-		Assertions.assertEquals(taskA4.meta.caseStage, StageDone)
-		Assertions.assertFalse(taskA4.meta.isInWork)
+		val taskA4 = taskRepository.get(taskA_id)
 
-		this.checkTask1(taskA4)
+		assertEquals(taskA4.meta.caseStage, doneStage)
+		assertFalse(taskA4.meta.isInWork)
+
+		checkTask1(taskA4)
 	}
 
-	private fun getTestData(sessionContext: SessionContext?) {
-		RelatedTo = this.userRepository!!.getByEmail(USER_EMAIL).get()
-		Assertions.assertNotNull(RelatedTo, "relatedTo")
-		Account = this.accountRepository!!.get(this.accountRepository.find(null).first())
-		Assertions.assertNotNull(Account, "account")
-		StageNew = getCaseStage("task.new")
-		StageProgress = getCaseStage("task.progress")
-		StageDone = getCaseStage("task.done")
-		PrioNormal = getPriority("normal")
-		PrioHigh = getPriority("high")
+	private fun initTestData() {
+		firstRelatedTo = userRepository.getByEmail(USER_EMAIL).get()
+		assertNotNull(firstRelatedTo, "relatedTo")
+		secondRelatedTo = accountRepository.get(accountRepository.find(null).first())
+		assertNotNull(secondRelatedTo, "account")
+		newStage = getCaseStage("task.new")
+		progressStage = getCaseStage("task.progress")
+		doneStage = getCaseStage("task.done")
 	}
 
 	private fun initTask1(
@@ -125,24 +139,24 @@ class TaskTest {
 		timestamp: OffsetDateTime,
 	) {
 		task.meta.setCaseStage(getCaseStage("task.new"), userId, timestamp)
-		task.relatedToId = RelatedTo!!.id
-		task.accountId = Account!!.id
+		task.relatedToId = firstRelatedTo.id
+		task.accountId = secondRelatedTo.id
 		task.subject = "Todo"
 		task.content = "content"
 		task.isPrivate = false
-		task.priority = PrioNormal
+		task.priority = CodeTaskPriority.NORMAL
 		task.dueAt = DueDate
 	}
 
 	private fun checkTask1(task: DocTask) {
-		Assertions.assertEquals(task.relatedToId, RelatedTo!!.id)
-		Assertions.assertEquals(Account!!.id, task.accountId, "account id")
-		Assertions.assertEquals(Account!!.id, task.accountId, "account id")
-		Assertions.assertEquals("Todo", task.subject)
-		Assertions.assertEquals("content", task.content)
-		Assertions.assertEquals(false, task.isPrivate)
-		Assertions.assertEquals(task.priority, PrioNormal)
-		Assertions.assertEquals(DueDate, task.dueAt)
+		assertEquals(task.relatedToId, firstRelatedTo.id)
+		assertEquals(secondRelatedTo.id, task.accountId, "account id")
+		assertEquals(secondRelatedTo.id, task.accountId, "account id")
+		assertEquals("Todo", task.subject)
+		assertEquals("content", task.content)
+		assertEquals(false, task.isPrivate)
+		assertEquals(task.priority, CodeTaskPriority.NORMAL)
+		assertEquals(DueDate, task.dueAt)
 	}
 
 	private fun initTask2(
@@ -150,93 +164,77 @@ class TaskTest {
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		Assertions.assertEquals(Account!!.id, task.accountId, "account id")
-		Assertions.assertEquals(Account!!.id, task.accountId, "account id")
+		assertEquals(secondRelatedTo.id, task.accountId, "account id")
+		assertEquals(secondRelatedTo.id, task.accountId, "account id")
 		task.subject = "Todos"
 		task.content = "contents"
 		task.isPrivate = true
-		task.priority = PrioHigh
+		task.priority = CodeTaskPriority.HIGH
 		task.dueAt = DueDate.plusDays(4)
-		task.meta.setCaseStage(StageProgress!!, userId, timestamp)
+		task.meta.setCaseStage(progressStage, userId, timestamp)
 	}
 
 	private fun checkTask2(task: DocTask) {
-		Assertions.assertEquals("contents", task.content)
-		Assertions.assertEquals(true, task.isPrivate)
-		Assertions.assertEquals(task.priority, PrioHigh)
-		Assertions.assertEquals(task.dueAt, DueDate.plusDays(4))
-		Assertions.assertEquals(task.meta.caseStage, StageProgress)
+		assertEquals("contents", task.content)
+		assertEquals(true, task.isPrivate)
+		assertEquals(task.priority, CodeTaskPriority.HIGH)
+		assertEquals(task.dueAt, DueDate.plusDays(4))
+		assertEquals(task.meta.caseStage, progressStage)
 	}
 
 	@Test
 	fun testFindByRelatedToId() {
-		this.getTestData(sessionContext)
+		initTestData()
 
-		val userId = sessionContext!!.userId
+		val userId = sessionContext.userId
 		val now = sessionContext.currentTime
 
 		// Create two tasks related to the same user (RelatedTo)
-		val task1 = this.taskRepository!!.create()
-		this.initTask1(task1, userId, now)
-		this.taskRepository.store(task1)
+		val task1 = taskRepository.create()
+		initTask1(task1, userId, now)
+		taskRepository.store(task1)
 		val task1Id = task1.id
 
-		val task2 = this.taskRepository.create()
-		this.initTask1(task2, userId, now)
+		val task2 = taskRepository.create()
+		initTask1(task2, userId, now)
 		task2.subject = "Task 2"
-		this.taskRepository.store(task2)
+		taskRepository.store(task2)
 		val task2Id = task2.id
 
 		// Create a task related to a different object (Account)
-		val task3 = this.taskRepository.create()
+		val task3 = taskRepository.create()
 		task3.meta.setCaseStage(getCaseStage("task.new"), userId, now)
-		task3.relatedToId = Account!!.id
-		task3.accountId = Account!!.id
+		task3.relatedToId = secondRelatedTo.id
+		task3.accountId = secondRelatedTo.id
 		task3.subject = "Task 3 - different related"
 		task3.content = "content"
 		task3.isPrivate = false
-		task3.priority = PrioNormal
+		task3.priority = CodeTaskPriority.NORMAL
 		task3.dueAt = DueDate
-		this.taskRepository.store(task3)
+		taskRepository.store(task3)
 		val task3Id = task3.id
 
 		// Find tasks by relatedToId using QuerySpec
 		val querySpec = query {
-			filter { "relatedToId" eq RelatedTo!!.id }
+			filter { "relatedToId" eq firstRelatedTo.id }
 		}
-		val foundIds = this.taskRepository.find(querySpec)
+		val foundIds = taskRepository.find(querySpec)
 
 		// Should find task1 and task2 (both related to RelatedTo user)
-		Assertions.assertTrue(foundIds.contains(task1Id), "Should find task1")
-		Assertions.assertTrue(foundIds.contains(task2Id), "Should find task2")
-		Assertions.assertFalse(foundIds.contains(task3Id), "Should NOT find task3 (different relatedToId)")
+		assertTrue(foundIds.contains(task1Id), "Should find task1")
+		assertTrue(foundIds.contains(task2Id), "Should find task2")
+		assertFalse(foundIds.contains(task3Id), "Should NOT find task3 (different relatedToId)")
 
 		// Find tasks related to Account
 		val querySpec2 = query {
-			filter { "relatedToId" eq Account!!.id }
+			filter { "relatedToId" eq secondRelatedTo.id }
 		}
-		val foundIds2 = this.taskRepository.find(querySpec2)
+		val foundIds2 = taskRepository.find(querySpec2)
 
 		// Should find task3 (related to Account)
-		Assertions.assertTrue(foundIds2.contains(task3Id), "Should find task3")
-		Assertions.assertFalse(foundIds2.contains(task1Id), "Should NOT find task1")
-		Assertions.assertFalse(foundIds2.contains(task2Id), "Should NOT find task2")
-	}
-
-	companion object {
-
-		val DueDate: OffsetDateTime = OffsetDateTime.of(2023, 9, 8, 0, 0, 0, 0, ZoneOffset.ofHours(2))
-
-		const val USER_EMAIL: String = "cc@zeitwert.io"
-		const val TEST_ACCOUNT: String = "TA"
-
-		var RelatedTo: ObjUser? = null
-		var Account: ObjAccount? = null
-		var StageNew: CodeCaseStage? = null
-		var StageProgress: CodeCaseStage? = null
-		var StageDone: CodeCaseStage? = null
-		var PrioNormal: CodeTaskPriority? = null
-		var PrioHigh: CodeTaskPriority? = null
+		assertTrue(foundIds2.contains(task3Id), "Should find task3")
+		assertFalse(foundIds2.contains(task1Id), "Should NOT find task1")
+		assertFalse(foundIds2.contains(task2Id), "Should NOT find task2")
 	}
 
 }

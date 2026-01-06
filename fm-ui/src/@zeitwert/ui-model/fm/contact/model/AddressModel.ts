@@ -11,9 +11,9 @@ const MstAddressModel = ObjPartModel.named("Address")
 		zip: types.maybe(types.string),
 		city: types.maybe(types.string),
 		state: types.maybe(types.string),
-		countryId: types.maybe(types.frozen<Enumerated>()),
+		country: types.maybe(types.frozen<Enumerated>()),
 		//
-		channelId: types.maybe(types.frozen<Enumerated>()),
+		channel: types.maybe(types.frozen<Enumerated>()),
 		isFavorite: types.maybe(types.boolean),
 		isPostalAddress: types.maybe(types.boolean)
 	});

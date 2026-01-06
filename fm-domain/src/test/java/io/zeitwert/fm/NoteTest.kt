@@ -7,7 +7,6 @@ import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
-import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -27,9 +26,6 @@ class NoteTest {
 	private lateinit var sessionContext: SessionContext
 
 	@Autowired
-	private lateinit var userRepo: ObjUserRepository
-
-	@Autowired
 	private lateinit var testRepo: ObjTestRepository
 
 	@Autowired
@@ -44,7 +40,7 @@ class NoteTest {
 		val userId: Any = sessionContext.userId
 		sessionContext.currentTime // kept for parity with Java even if unused
 
-		var testA1: ObjTest = this.testRepo.create()
+		val testA1: ObjTest = this.testRepo.create()
 		initObjTest(testA1, "One", "type_a")
 		val testAId: Any = testA1.id
 
@@ -112,6 +108,11 @@ class NoteTest {
 			assertEquals(setOf("Subject 1", "Subject 3"), testA2NoteList.map { it.subject }.toSet())
 			assertTrue(testA2NoteList.map { it.subject }.toSet().contains("Subject 3"))
 
+			val noteA2_1 = testA2NoteList.first()
+			val relatedTo = noteA2_1.relatedTo
+			kotlin.test.assertNotNull(relatedTo, "relatedTo not null")
+			kotlin.test.assertEquals(testAId, relatedTo.id, "relatedTo id")
+
 			val noteD1: ObjNote = testA2.addNote(CodeNoteType.NOTE, userId)
 			initNote(noteD1, "Subject 4", "Content 4", false)
 			this.noteRepo.store(noteD1)
@@ -164,7 +165,7 @@ class NoteTest {
 		assertEquals("[Short Test $name, ]", test.caption)
 		test.longText = "Long Test $name"
 		assertEquals("[Short Test $name, Long Test $name]", test.caption)
-		test.`int` = 42
+		test.int = 42
 		test.nr = BigDecimal.valueOf(42)
 		test.isDone = false
 		test.date = LocalDate.of(1966, 9, 8)

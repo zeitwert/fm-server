@@ -96,7 +96,7 @@ export default class NotesTab extends React.Component<NotesTabProps> {
 
 	private addNote = async (note: NotePayload) => {
 		//this.props.notesStore.addNote(this.props.relatedToId, note);
-		const np: NotePayload = Object.assign({}, note, { relatedToId: this.props.relatedToId });
+		const np: NotePayload = Object.assign({}, note, { relatedTo: { id: this.props.relatedToId } });
 		await NOTE_API.createAggregate(np as NoteSnapshot);
 		await this.loadNotes();
 	}

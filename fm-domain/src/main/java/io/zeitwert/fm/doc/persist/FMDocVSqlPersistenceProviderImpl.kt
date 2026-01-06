@@ -9,7 +9,7 @@ import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 
 @Component("docPersistenceProvider")
-open class FMDocVSqlPersistenceProviderImpl<D : Doc>(
+open class FMDocVSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
 ) : FMDocSqlPersistenceProviderBase<Doc>(Doc::class.java) {
@@ -19,6 +19,8 @@ open class FMDocVSqlPersistenceProviderImpl<D : Doc>(
 	override val baseRecordMapper = DocRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper = null
+
+	fun isDoc(id: Any): Boolean = baseRecordMapper.isDoc(id)
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.DOC, Tables.DOC.ID, query)
 

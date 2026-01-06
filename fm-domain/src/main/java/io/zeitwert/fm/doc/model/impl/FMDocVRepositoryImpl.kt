@@ -4,6 +4,7 @@ import dddrive.app.doc.model.Doc
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.doc.model.FMDocVRepository
 import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
+import io.zeitwert.fm.doc.persist.FMDocVSqlPersistenceProviderImpl
 import org.springframework.stereotype.Component
 
 @Component("docRepository")
@@ -14,6 +15,10 @@ class FMDocVRepositoryImpl(
 		AGGREGATE_TYPE_ID,
 	),
 	FMDocVRepository {
+
+	override val persistenceProvider get() = super.persistenceProvider as FMDocVSqlPersistenceProviderImpl
+
+	override fun isDoc(id: Any): Boolean = persistenceProvider.isDoc(id)
 
 	override fun createAggregate(isNew: Boolean) = DocVImpl(this, isNew)
 

@@ -26,6 +26,8 @@ class DocRecordMapperImpl(
 	): Int = dslContext.nextval(Sequences.DOC_PART_ID_SEQ).toInt()
 	// (aggregate as AggregateSPI).nextPartId(partClass)
 
+	fun isDoc(id: Any) = dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(id as Int)) != null
+
 	override fun loadRecord(aggregate: Aggregate) {
 		val record = dslContext.fetchOne(Tables.DOC, Tables.DOC.ID.eq(aggregate.id as Int))
 		record ?: throw IllegalArgumentException("no DOC record found for ${aggregate.id}")

@@ -1,5 +1,6 @@
 package io.zeitwert.fm.task.model.impl
 
+import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.property.delegate.baseProperty
@@ -10,7 +11,9 @@ import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
+import io.zeitwert.fm.doc.model.FMDocVRepository
 import io.zeitwert.fm.doc.model.base.FMDocBase
+import io.zeitwert.fm.obj.model.FMObjVRepository
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
@@ -49,6 +52,16 @@ class DocTaskImpl(
 
 	override val account get() = if (accountId != null) accountRepository().get(accountId!!) else null
 
-	override val relatedTo: Aggregate? = TODO()
+	override val relatedTo: Aggregate?
+		get() {
+			if (relatedToId == null) return null
+			val objRepository = directory.getRepository(Obj::class.java) as FMObjVRepository
+			if (objRepository.isObj(relatedToId!!)) {
+				return objRepository.get(relatedToId!!)
+			}
+			val docRepository = directory.getRepository(Doc::class.java) as FMDocVRepository
+			require(docRepository.isDoc(relatedToId!!)) { "relatedToId must refer to Obj or Doc" }
+			return objRepository.get(relatedToId!!)
+		}
 
 }
