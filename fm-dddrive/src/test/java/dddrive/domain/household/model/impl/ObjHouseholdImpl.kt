@@ -38,6 +38,16 @@ class ObjHouseholdImpl(
 	override val membersByRole = partMapProperty<ObjHousehold, ObjHouseholdPartMember>("membersByRole")
 	override var literalId by baseProperty<String>("literalId")
 
+	// Computed properties - calculator returns the value directly for baseProperty
+	override var memberCount by baseProperty<Int>("memberCount") { _ ->
+		memberList.size
+	}
+
+	// Computed properties - calculator returns the ID for partReferenceProperty
+	override var firstMember by partReferenceProperty<ObjHousehold, ObjHouseholdPartMember>("firstMember") { _ ->
+		if (memberList.isEmpty()) null else memberList[0].id
+	}
+
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,

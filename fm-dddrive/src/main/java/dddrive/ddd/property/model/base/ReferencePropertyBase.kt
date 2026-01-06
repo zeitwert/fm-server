@@ -9,22 +9,26 @@ abstract class ReferencePropertyBase<T : Any, ID : Any>(
 	entity: EntityWithProperties,
 	name: String,
 	idType: Class<ID>,
-) : PropertyBase<T>(entity, name),
+	private val idCalculator: ((ReferenceProperty<T, ID>) -> ID?)? = null,
+) : PropertyBase<T>(entity, name, idCalculator != null),
 	ReferenceProperty<T, ID> {
 
 	override val idProperty = IdProperty<T, ID>(this, idType)
 
-	override var id: ID? = null
+	private var storedId: ID? = null
+
+	override var id: ID?
+		get() = idCalculator?.invoke(this) ?: storedId
 		set(id) {
 			require(this.isWritable) { "not frozen" }
 			require(isValidId(id)) { "valid id [$id]" }
-			if (field == id) {
+			if (storedId == id) {
 				return
 			}
 			val entity = this.entity as EntityWithPropertiesSPI
-			val oldId = field
+			val oldId = storedId
 			entity.doBeforeSet(this, id, oldId)
-			field = id
+			storedId = id
 			fireFieldSetChange(id, oldId)
 			entity.doAfterSet(this, id, oldId)
 		}

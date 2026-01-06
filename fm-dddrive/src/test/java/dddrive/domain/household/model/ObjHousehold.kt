@@ -33,4 +33,9 @@ interface ObjHousehold : Obj {
 
 	var literalId: String?
 
+	// Computed properties for testing
+	val memberCount: Int?
+
+	val firstMember: ObjHouseholdPartMember?
+
 }

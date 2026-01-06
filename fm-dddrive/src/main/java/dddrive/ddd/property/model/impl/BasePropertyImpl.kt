@@ -9,26 +9,30 @@ class BasePropertyImpl<T : Any>(
 	entity: EntityWithProperties,
 	name: String,
 	override val type: Class<T>,
-) : PropertyBase<T>(entity, name),
+	private val calculator: ((BaseProperty<T>) -> T?)? = null,
+) : PropertyBase<T>(entity, name, calculator != null),
 	BaseProperty<T> {
 
-	override var value: T? = null
+	private var storedValue: T? = null
+
+	override var value: T?
+		get() = calculator?.invoke(this) ?: storedValue
 		set(value) {
 			require(this.isWritable) { "writable" }
 			// check that value is assignable to type
 			if (value != null) {
 				require(type.isAssignableFrom(value::class.java)) { "BaseProperty type mismatch: expected ${type.name}, got [$value](${value::class.java.name})" }
 			}
-			if (field == value) {
+			if (storedValue == value) {
 				return
 			}
 			val entity = this.entity as EntityWithPropertiesSPI
-			val oldValue = field
+			val oldValue = storedValue
 			// cannot fire doBeforeSet before setting id, as path depends on id
 			if (this.name != "id") {
 				entity.doBeforeSet(this, value, oldValue)
 			}
-			field = value
+			storedValue = value
 			fireFieldSetChange(value, oldValue)
 			entity.doAfterSet(this, value, oldValue)
 		}

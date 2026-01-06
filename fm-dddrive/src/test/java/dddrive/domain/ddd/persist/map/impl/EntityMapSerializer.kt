@@ -113,11 +113,14 @@ private fun EntityWithProperties.createPartsFromMap(map: Map<String, Any?>) {
 
 /**
  * Pass 2: Recursively sets all property values from the map. At this point, all parts already
- * exist, so part references will work.
+ * exist, so part references will work. Skips computed (non-writable) properties.
  */
 @Suppress("UNCHECKED_CAST")
 private fun EntityWithProperties.setValuesFromMap(map: Map<String, Any?>) {
 	for (property in properties) {
+		// Skip computed properties (they are read-only)
+		if (!property.isWritable) continue
+
 		when (property) {
 			is PartListProperty<*, *> -> {
 				val partMaps = map[property.name] as? List<Map<String, Any?>> ?: continue

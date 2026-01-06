@@ -29,11 +29,13 @@ class ObjBuildingDtoAdapter(
 
 	init {
 		config.exclude("ratingList") // Not exposed via API
+		config.exclude("currentRating") // Handled via custom field below (needs full part serialization)
 		config.relationship("contacts", "contact", "contactSet")
 		config.relationship("coverFoto", "document", "coverFoto")
 
-		// Custom field for currentRating (computed property on aggregate)
-		// TODO wait for computed property support in dddrive
+		// Custom field for currentRating - needs special handling:
+		// - Outgoing: serialize full part object (not just ID like generic PartReferenceProperty handler)
+		// - Incoming: update rating fields via toPart (even though property is computed/read-only)
 		config.field(
 			"currentRating",
 			outgoing = { if ((it as ObjBuilding).currentRating != null) fromPart(it.currentRating!!) else null },

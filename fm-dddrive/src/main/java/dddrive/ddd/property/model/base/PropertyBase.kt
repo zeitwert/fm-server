@@ -9,10 +9,11 @@ import dddrive.ddd.property.model.Property
 abstract class PropertyBase<T : Any>(
 	final override val entity: EntityWithProperties,
 	override val name: String,
+	private val isComputed: Boolean = false,
 ) : Property<T> {
 
 	override val isWritable: Boolean
-		get() = !this.entity.isFrozen
+		get() = !isComputed && !this.entity.isFrozen
 
 	fun firePartAddedChange(part: EntityWithPropertiesSPI) {
 		if (!entity.isInLoad && (entity as EntityWithPropertiesSPI).doLogChange(this)) {

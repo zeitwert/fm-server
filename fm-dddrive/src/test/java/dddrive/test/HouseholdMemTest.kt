@@ -949,4 +949,94 @@ class HouseholdMemTest {
 		assertEquals("Jane", wifeLoaded.name, "wife name persisted")
 	}
 
+	// Computed Property Tests
+
+	@Test
+	fun testComputedBaseProperty() {
+		val hh = hhRepo.create()
+
+		// Initially no members, computed memberCount should be 0
+		assertEquals(0, hh.memberCount, "memberCount is 0 initially")
+
+		// Add a member
+		hh.memberList.add()
+		assertEquals(1, hh.memberCount, "memberCount is 1 after adding member")
+
+		// Add more members
+		hh.memberList.add()
+		hh.memberList.add()
+		assertEquals(3, hh.memberCount, "memberCount is 3 after adding more members")
+
+		// Remove a member
+		val firstId = hh.memberList[0].id
+		hh.memberList.remove(firstId)
+		assertEquals(2, hh.memberCount, "memberCount is 2 after removing member")
+
+		// Clear all members
+		hh.memberList.clear()
+		assertEquals(0, hh.memberCount, "memberCount is 0 after clearing")
+	}
+
+	@Test
+	fun testComputedPartReferenceProperty() {
+		val hh = hhRepo.create()
+
+		// Initially no members, computed firstMember should be null
+		assertNull(hh.firstMember, "firstMember is null initially")
+
+		// Add first member
+		val p1 = hh.memberList.add()
+		p1.name = "First"
+		assertEquals(p1, hh.firstMember, "firstMember is p1")
+		assertEquals("First", hh.firstMember?.name, "firstMember name is First")
+
+		// Add second member - firstMember should still be p1
+		val p2 = hh.memberList.add()
+		p2.name = "Second"
+		assertEquals(p1, hh.firstMember, "firstMember is still p1")
+
+		// Remove first member - firstMember should now be p2
+		hh.memberList.remove(p1.id)
+		assertEquals(p2, hh.firstMember, "firstMember is now p2")
+		assertEquals("Second", hh.firstMember?.name, "firstMember name is Second")
+
+		// Clear all - firstMember should be null again
+		hh.memberList.clear()
+		assertNull(hh.firstMember, "firstMember is null after clearing")
+	}
+
+	@Test
+	fun testComputedPropertyIsReadOnly() {
+		val hh = hhRepo.create()
+		val hhEntity = hh as dddrive.ddd.property.model.EntityWithProperties
+
+		// Verify computed properties are read-only (isWritable = false)
+		val memberCountProperty = hhEntity.getProperty("memberCount", Any::class)
+		assertFalse(memberCountProperty.isWritable, "memberCount property is not writable")
+
+		val firstMemberProperty = hhEntity.getProperty("firstMember", Any::class)
+		assertFalse(firstMemberProperty.isWritable, "firstMember property is not writable")
+
+		// Verify setting computed property throws exception
+		assertThrows(IllegalArgumentException::class.java) {
+			(memberCountProperty as dddrive.ddd.property.model.BaseProperty<Int>).value = 5
+		}
+
+		hh.memberList.add() // Need at least one member for firstMember to return non-null
+		assertThrows(IllegalArgumentException::class.java) {
+			(firstMemberProperty as dddrive.ddd.property.model.PartReferenceProperty<*, *>).id = 999
+		}
+	}
+
+	@Test
+	fun testComputedPropertiesAppearInPropertiesList() {
+		val hh = hhRepo.create()
+		val hhEntity = hh as dddrive.ddd.property.model.EntityWithProperties
+
+		// Verify computed properties appear in the properties list
+		val propertyNames = hhEntity.properties.map { it.name }
+		assertTrue(propertyNames.contains("memberCount"), "properties contains memberCount")
+		assertTrue(propertyNames.contains("firstMember"), "properties contains firstMember")
+	}
+
 }

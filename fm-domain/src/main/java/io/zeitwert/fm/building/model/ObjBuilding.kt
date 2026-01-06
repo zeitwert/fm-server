@@ -85,7 +85,7 @@ interface ObjBuilding :
 
 	var thirdPartyValueYear: Int?
 
-	val currentRating: ObjBuildingPartRating?
+	var currentRating: ObjBuildingPartRating?
 
 	val currentRatingForView: ObjBuildingPartRating?
 

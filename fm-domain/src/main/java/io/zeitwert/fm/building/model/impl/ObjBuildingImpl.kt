@@ -6,6 +6,7 @@ import dddrive.ddd.core.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
+import dddrive.ddd.property.delegate.partReferenceProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
@@ -151,16 +152,16 @@ class ObjBuildingImpl(
 		return 0.0
 	}
 
-	override val currentRating: ObjBuildingPartRating?
-		get() {
-			for (i in ratingList.size downTo 1) {
-				val rating = ratingList.get(i - 1)
-				if (rating.ratingStatus == null || rating.ratingStatus != CodeBuildingRatingStatus.DISCARD) {
-					return rating
-				}
+	// Computed property - calculator returns the part ID, value is derived via getPart()
+	override var currentRating by partReferenceProperty<ObjBuilding, ObjBuildingPartRating>("currentRating") { _ ->
+		for (i in ratingList.size downTo 1) {
+			val rating = ratingList.get(i - 1)
+			if (rating.ratingStatus == null || rating.ratingStatus != CodeBuildingRatingStatus.DISCARD) {
+				return@partReferenceProperty rating.id
 			}
-			return null
 		}
+		null
+	}
 
 	override val currentRatingForView: ObjBuildingPartRating?
 		get() = currentRating

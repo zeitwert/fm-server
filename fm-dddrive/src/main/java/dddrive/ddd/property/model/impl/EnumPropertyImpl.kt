@@ -5,13 +5,21 @@ import dddrive.ddd.enums.model.Enumeration
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumProperty
+import dddrive.ddd.property.model.ReferenceProperty
 import dddrive.ddd.property.model.base.ReferencePropertyBase
 
 class EnumPropertyImpl<E : Enumerated>(
 	entity: EntityWithProperties,
 	name: String,
 	override val type: Class<E>,
-) : ReferencePropertyBase<E, String>(entity, name, String::class.java),
+	idCalculator: ((EnumProperty<E>) -> String?)? = null,
+) : ReferencePropertyBase<E, String>(
+	entity,
+	name,
+	String::class.java,
+	@Suppress("UNCHECKED_CAST")
+	idCalculator as ((ReferenceProperty<E, String>) -> String?)?,
+),
 	EnumProperty<E> {
 
 	override val enumeration: Enumeration<E>
