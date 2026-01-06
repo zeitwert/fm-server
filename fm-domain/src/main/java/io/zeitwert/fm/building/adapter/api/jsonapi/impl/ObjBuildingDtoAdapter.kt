@@ -23,8 +23,8 @@ class ObjBuildingDtoAdapter(
 
 	init {
 		config.exclude("ratingList") // Not exposed via API
-		config.relationship("contactIds", "contact", "contactSet")
-		config.relationship("coverFotoId", "document", "coverFoto")
+		config.relationship("contacts", "contact", "contactSet")
+		config.relationship("coverFoto", "document", "coverFoto")
 
 		// Custom field for currentRating (computed property on aggregate)
 		// TODO wait for computed property support in dddrive

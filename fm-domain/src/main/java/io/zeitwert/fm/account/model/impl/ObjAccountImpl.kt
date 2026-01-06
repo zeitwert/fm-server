@@ -77,10 +77,15 @@ class ObjAccountImpl(
 	override fun doCalcAll() {
 		super.doCalcAll()
 		calcCaption()
+		calcMainContact()
 	}
 
 	private fun calcCaption() {
 		setCaption(name)
+	}
+
+	private fun calcMainContact() {
+		mainContactId = contactList.firstOrNull()
 	}
 
 	private fun addLogoImage() {

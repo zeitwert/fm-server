@@ -14,8 +14,7 @@ class ObjUserDtoAdapter(
 ) : ObjDtoAdapterBase<ObjUser, ObjUserDto>(directory, { ObjUserDto() }) {
 
 	init {
-		config.relationship("avatarId", "document", "avatarImage")
-		config.exclude("tenantSet")
+		config.relationship("avatar", "document", "avatarImage")
 		config.field("tenants", "tenantSet")
 	}
 

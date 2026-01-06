@@ -13,7 +13,7 @@ class ObjTenantDtoAdapter(
 ) : ObjDtoAdapterBase<ObjTenant, ObjTenantDto>(directory, { ObjTenantDto() }) {
 
 	init {
-		config.relationship("logoId", "document", "logoImage")
+		config.relationship("logo", "document", "logoImage")
 	}
 
 	fun asEnumerated(obj: ObjTenant?): EnumeratedDto? = if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)

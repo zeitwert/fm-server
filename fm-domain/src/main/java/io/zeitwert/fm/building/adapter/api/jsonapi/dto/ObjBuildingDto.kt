@@ -13,23 +13,14 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
 @JsonApiResource(type = "building", resourcePath = "building/buildings")
 class ObjBuildingDto : ObjDtoBase<ObjBuilding>() {
 
-	@JsonApiRelationId
-	var accountId: String? = null
-		get() = getRelation("accountId") as String?
-		set(value) {
-			setRelation("accountId", value)
-			field = value
-		}
-
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	var account: ObjAccountDto? = null
 
 	@JsonApiRelationId
-	@Suppress("UNCHECKED_CAST")
-	var contactIds: List<String>? = null
-		get() = getRelation("contactIds") as List<String>?
+	var accountId: String? = null
+		get() = getRelation("account") as String?
 		set(value) {
-			setRelation("contactIds", value)
+			setRelation("account", value)
 			field = value
 		}
 
@@ -37,13 +28,23 @@ class ObjBuildingDto : ObjDtoBase<ObjBuilding>() {
 	var contacts: List<ObjContactDto>? = null
 
 	@JsonApiRelationId
-	var coverFotoId: String? = null
-		get() = getRelation("coverFotoId") as String?
+	@Suppress("UNCHECKED_CAST")
+	var contactIds: List<String>? = null
+		get() = getRelation("contacts") as List<String>?
 		set(value) {
-			setRelation("coverFotoId", value)
+			setRelation("contacts", value)
 			field = value
 		}
 
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	var coverFoto: ObjDocumentDto? = null
+
+	@JsonApiRelationId
+	var coverFotoId: String? = null
+		get() = getRelation("coverFoto") as String?
+		set(value) {
+			setRelation("coverFoto", value)
+			field = value
+		}
+
 }

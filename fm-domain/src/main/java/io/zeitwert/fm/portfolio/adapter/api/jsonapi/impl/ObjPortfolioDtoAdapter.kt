@@ -12,7 +12,6 @@ class ObjPortfolioDtoAdapter(
 ) : ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioDto>(directory, { ObjPortfolioDto() }) {
 
 	init {
-		// config.relationship("accountId", "account", "accountId")
 		config.field("includes", "includeSet")
 		config.field("excludes", "excludeSet")
 		config.field("buildings", "buildingSet")

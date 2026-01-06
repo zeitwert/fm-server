@@ -11,15 +11,15 @@ import io.zeitwert.fm.portfolio.model.ObjPortfolio
 @JsonApiResource(type = "portfolio", resourcePath = "portfolio/portfolios")
 class ObjPortfolioDto : ObjDtoBase<ObjPortfolio>() {
 
-	@JsonApiRelationId
-	var accountId: String? = null
-		get() = getRelation("accountId") as String?
-		set(value) {
-			setRelation("accountId", value)
-			field = value
-		}
-
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	var account: ObjAccountDto? = null
+
+	@JsonApiRelationId
+	var accountId: String? = null
+		get() = getRelation("account") as String?
+		set(value) {
+			setRelation("account", value)
+			field = value
+		}
 
 }

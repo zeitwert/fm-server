@@ -11,15 +11,15 @@ import io.zeitwert.fm.oe.model.ObjUser
 @JsonApiResource(type = "user", resourcePath = "oe/users")
 class ObjUserDto : ObjDtoBase<ObjUser>() {
 
-	@JsonApiRelationId
-	var avatarId: String? = null
-		get() = getRelation("avatarId") as String?
-		set(value) {
-			setRelation("avatarId", value)
-			field = value
-		}
-
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	var avatar: ObjDocumentDto? = null
+
+	@JsonApiRelationId
+	var avatarId: String? = null
+		get() = getRelation("avatar") as String?
+		set(value) {
+			setRelation("avatar", value)
+			field = value
+		}
 
 }

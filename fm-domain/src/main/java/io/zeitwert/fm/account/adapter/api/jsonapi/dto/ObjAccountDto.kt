@@ -19,22 +19,14 @@ import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto
 @JsonApiResource(type = "account", resourcePath = "account/accounts")
 class ObjAccountDto : ObjDtoBase<ObjAccount>() {
 
-	@JsonApiRelationId
-	var tenantInfoId: String? = null
-		get() = getRelation("tenantInfoId") as String?
-		set(value) {
-			setRelation("tenantInfoId", value)
-			field = value
-		}
-
 	@JsonApiRelation(serialize = SerializeType.LAZY)
 	val tenantInfo: ObjTenantDto? = null
 
 	@JsonApiRelationId
-	var mainContactId: String? = null
-		get() = getRelation("mainContactId") as String?
+	var tenantInfoId: String? = null
+		get() = getRelation("tenantInfo") as String?
 		set(value) {
-			setRelation("mainContactId", value)
+			setRelation("tenantInfo", value)
 			field = value
 		}
 
@@ -42,10 +34,23 @@ class ObjAccountDto : ObjDtoBase<ObjAccount>() {
 	var mainContact: ObjContactDto? = null
 
 	@JsonApiRelationId
-	var logoId: String? = null
-		get() = getRelation("logoId") as String?
+	var mainContactId: String? = null
+		get() = getRelation("mainContact") as String?
 		set(value) {
-			setRelation("logoId", value)
+			setRelation("mainContact", value)
+			field = value
+		}
+
+	@JsonApiRelation(serialize = SerializeType.LAZY, idField = "contactIds")
+	@Suppress("UNCHECKED_CAST")
+	val contacts: List<ObjContactDto>? = null
+
+	@JsonApiRelationId
+	@Suppress("UNCHECKED_CAST")
+	var contactIds: List<String>? = null
+		get() = getRelation("contacts") as List<String>?
+		set(value) {
+			setRelation("contacts", value)
 			field = value
 		}
 
@@ -53,16 +58,11 @@ class ObjAccountDto : ObjDtoBase<ObjAccount>() {
 	var logo: ObjDocumentDto? = null
 
 	@JsonApiRelationId
-	@Suppress("UNCHECKED_CAST")
-	var contactIds: List<String>? = null
-		get() = getRelation("contactIds") as List<String>?
+	var logoId: String? = null
+		get() = getRelation("logo") as String?
 		set(value) {
-			setRelation("contactIds", value)
+			setRelation("logo", value)
 			field = value
 		}
-
-	@JsonApiRelation(serialize = SerializeType.LAZY, idField = "contactIds")
-	@Suppress("UNCHECKED_CAST")
-	val contacts: List<ObjContactDto>? = null
 
 }
