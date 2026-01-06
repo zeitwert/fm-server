@@ -105,8 +105,8 @@ abstract class AggregateApiRepositoryBase<A : Aggregate, R : AggregateDto<A>>(
 	override fun <S : R> save(dto: S): S {
 		logger.debug("save({}): {}", dto.javaClass.simpleName, dto)
 		val id = repository.idFromString(dto.id) ?: throw BadRequestException("Can only save existing object (missing id)")
-		dto.meta["clientVersion"] ?: throw BadRequestException("Missing meta.clientVersion")
-		val clientVersion = dto.meta["clientVersion"] as Int
+		dto.meta?.get("clientVersion") ?: throw BadRequestException("Missing meta.clientVersion")
+		val clientVersion = dto.meta?.get("clientVersion") as Int
 		val aggregate = sessionCtx.getAggregate(id) as A? ?: repository.load(id)
 
 		if (clientVersion != aggregate.meta.version) {

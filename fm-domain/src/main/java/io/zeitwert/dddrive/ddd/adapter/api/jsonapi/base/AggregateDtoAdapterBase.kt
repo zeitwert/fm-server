@@ -112,6 +112,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 
 	val tenantRepository
 		get() = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
+
 	val userRepository
 		get() = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
@@ -121,20 +122,46 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 */
 	protected val config: AggregateDtoAdapterConfig = AggregateDtoAdapterConfig().apply(configure)
 
+	init {
+		config.exclude(listOf("id", "maxPartId"))
+		config.field(
+			"tenant",
+			{
+				val tenantId = (it.getProperty("tenant", ObjTenant::class) as AggregateReferenceProperty<ObjTenant>).id!!
+				EnumeratedDto.of(tenantRepository.get(tenantId))
+			},
+		)
+		config.field("owner")
+		config.meta(
+			listOf(
+				"tenant",
+				"owner",
+				"version",
+				"createdByUser",
+				"createdAt",
+				"modifiedByUser",
+				"modifiedAt",
+			),
+		)
+		config.relationship("tenantInfoId", "tenant", "tenant")
+		config.relationship("accountId", "account", "account")
+	}
+
 	/** Convert an aggregate to a resource DTO. */
 	override fun fromAggregate(
 		aggregate: A,
 	): R {
+		aggregate as EntityWithProperties
 		val dto = resourceFactory()
 		dto["id"] = DtoUtils.idToString(aggregate.id)
 		val meta = MetaInfo()
 		fromFields(aggregate as EntityWithProperties, meta, config.metas)
 		(dto as AggregateDtoBase<*>).meta = meta
-		fromEntity(
-			entity = aggregate,
-			properties = aggregate.properties.filter { !config.run { it.isExcluded() } },
-			dto = dto,
-		)
+		val properties = aggregate.properties.filter { !config.isExcluded(it) }
+		logger.trace("fromAggregate: {}", aggregate)
+		logger.trace(". config: {exclusions: ${config.exclusions.size}, fields: ${config.fields.size}, relationships: ${config.relationships.size}, metas: ${config.metas.size}}")
+		logger.trace(". properties: {}", properties.map { it.name })
+		fromEntity(aggregate, properties, dto)
 		fromRelationships(aggregate, dto)
 		fromFields(aggregate, dto, config.fields)
 		return dto
@@ -150,24 +177,16 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 * Parts without explicit configuration are serialized using the generic infrastructure.
 	 */
 	protected open fun fromPart(part: Part<*>): Map<String, Any?> {
+		part as EntityWithProperties
 		val dto = WritableMap(mutableMapOf())
 		dto["id"] = part.id.toString()
-		val entity = part as EntityWithProperties
-		val partConfig = config.findPartAdapterConfig(part.javaClass)
-		logger.trace(
-			"fromPart: ${part.javaClass.simpleName}, config: ${partConfig?.exclusions?.size ?: 0}, ${partConfig?.fields?.size ?: 0}",
-		)
-		val properties =
-			if (partConfig != null) {
-				entity.properties.filter {
-					it.name !in partConfig.exclusions &&
-						!partConfig.fields.any { f -> it.name == f.sourceProperty }
-				}
-			} else {
-				entity.properties
-			}
-		fromEntity(entity, properties, dto)
-		fromFields(entity, dto, partConfig?.fields ?: emptyList())
+		val partConfig = config.partAdapterConfig(part.javaClass)
+		val properties = part.properties.filter { !partConfig.isExcluded(it) }
+		logger.trace(". fromPart: {}", part)
+		logger.trace(".   properties: {}", properties.map { it.name })
+		logger.trace(".   config: {exclusions: ${partConfig.exclusions.size}, fields: ${partConfig.fields.size}}")
+		fromEntity(part, properties, dto)
+		fromFields(part, dto, partConfig.fields)
 		return dto.map
 	}
 
@@ -176,49 +195,17 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		properties: List<Property<*>>,
 		dto: JsonApiDto,
 	) {
-		logger.trace("fromEntity: {}, properties: {}", entity, properties.map { it.name })
+		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (property in properties) {
 			try {
-				val fieldName =
-					when (property) {
-						is AggregateReferenceProperty<*> -> "${property.name}Id"
-						is PartReferenceProperty<*, *> -> "${property.name}Id"
-						else -> property.name
-					}
-				logger.trace("fromEntity[{}] = {}", fieldName, property)
-				when (property) {
-					is PartListProperty<*, *> -> {
-						dto[fieldName] = property.map { fromPart(it) }
-					}
-
-					is PartMapProperty<*, *> -> {
-						dto[fieldName] = property.entries.associate { (key, p) -> key to fromPart(p) }
-					}
-
-					is EnumSetProperty<*> -> {
-						dto[fieldName] = property.map { EnumeratedDto.of(it) }
-					}
-
-					is AggregateReferenceSetProperty<*> -> {
-						dto[fieldName] = property.toSet()
-					}
-
-					is AggregateReferenceProperty<*> -> {
-						dto[fieldName] = DtoUtils.idToString(property.id)
-					}
-
-					is PartReferenceProperty<*, *> -> {
-						dto[fieldName] = property.id?.toString()
-					}
-
-					is EnumProperty<*> -> {
-						dto[fieldName] = EnumeratedDto.of(property.value)
-					}
-
-					is BaseProperty<*> -> {
-						dto[fieldName] = fromDomainValue(property.value, property.type)
-					}
-				}
+				dto[property.name] = fromProperty(property)
+				logger.trace(
+					"${indent}dto[{}]: {} = fromProperty({}, {})",
+					property.name,
+					dto[property.name],
+					property,
+					property.javaClass.simpleName,
+				)
 			} catch (ex: Exception) {
 				throw RuntimeException(
 					"[${entity.javaClass.simpleName}.${property.name}] fromProperty crashed: ${ex.message}",
@@ -228,6 +215,57 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		}
 	}
 
+	/** Convert a property value to its DTO representation */
+	private fun fromProperty(
+		property: Property<*>,
+	): Any? =
+		when (property) {
+			is AggregateReferenceProperty<*> -> {
+				val id = property.id ?: return null
+				val repo = directory.getRepository(property.aggregateType)
+				val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
+				EnumeratedDto.of(aggregate)
+			}
+
+			is AggregateReferenceSetProperty<*> -> {
+				val repo = directory.getRepository(property.aggregateType)
+				property.map { id ->
+					val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
+					EnumeratedDto.of(aggregate)
+				}
+			}
+
+			is PartReferenceProperty<*, *> -> {
+				property.id?.toString()
+			}
+
+			is PartListProperty<*, *> -> {
+				property.map { fromPart(it) }
+			}
+
+			is PartMapProperty<*, *> -> {
+				property.entries.associate { (key, p) -> key to fromPart(p) }
+			}
+
+			is EnumProperty<*> -> {
+				EnumeratedDto.of(property.value)
+			}
+
+			is EnumSetProperty<*> -> {
+				property.map { EnumeratedDto.of(it) }
+			}
+
+			is BaseProperty<*> -> {
+				fromDomainValue(property.value, property.type)
+			}
+
+			else -> {
+				throw IllegalArgumentException(
+					"Unsupported property type: ${property.javaClass.name}",
+				)
+			}
+		}
+
 	/**
 	 * Populate relationship ID fields on the DTO based on registered relationships. Uses reflection
 	 * to set fields declared on the concrete resource class.
@@ -236,21 +274,21 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		entity: EntityWithProperties,
 		dto: AggregateDto<*>,
 	) {
+		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (rel in config.relationships) {
 			try {
 				if (rel.dataSource != null) {
 					dto.setRelation(rel.targetRelation, rel.dataSource.invoke(entity, dto))
+					logger.trace("${indent}dto.relation[{}]: {}", rel.targetRelation, dto.getRelation(rel.targetRelation))
 				} else if (rel.sourceProperty != null) {
-					when (val property = entity.getProperty(rel.sourceProperty, Any::class)) {
+					val property = entity.getProperty(rel.sourceProperty, Any::class)
+					when (property) {
 						is AggregateReferenceProperty<*> -> {
-							val id: String? = DtoUtils.idToString(property.id)
-							if (id != null) {
-								dto.setRelation(rel.targetRelation, id)
-							}
+							dto.setRelation(rel.targetRelation, DtoUtils.idToString(property.id))
 						}
 
 						is AggregateReferenceSetProperty<*> -> {
-							val ids: List<String> = property.map { DtoUtils.idToString(it)!! }
+							val ids = property.map { DtoUtils.idToString(it)!! }
 							dto.setRelation(rel.targetRelation, ids)
 						}
 
@@ -264,6 +302,13 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 							)
 						}
 					}
+					logger.trace(
+						"${indent}dto.relation[{}]: {} = fromRelation[{} ({})]",
+						rel.targetRelation,
+						dto.getRelation(rel.targetRelation),
+						property,
+						property.javaClass.simpleName,
+					)
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(
@@ -278,78 +323,32 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 * Populate field values on the DTO based on registered field mappings. Uses intelligent type
 	 * detection for simple mappings.
 	 */
-	@Suppress("UNCHECKED_CAST")
 	private fun fromFields(
 		entity: EntityWithProperties,
 		dto: JsonApiDto,
 		fields: List<FieldConfig>,
 	) {
+		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (fieldConfig in fields) {
 			try {
+				val fieldName = fieldConfig.targetField
 				if (fieldConfig.outgoing != null) {
-					dto[fieldConfig.targetField] = fieldConfig.outgoing.invoke(entity)
-				} else if (fieldConfig.sourceProperty != null) {
-					val fieldName = fieldConfig.targetField
-					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
+					dto[fieldName] = fieldConfig.outgoing.invoke(entity)
 					logger.trace(
-						"fromField: {}.{}: {} -> {}",
-						entity.javaClass.simpleName,
-						fieldConfig.sourceProperty,
-						property.javaClass.simpleName,
+						"${indent}dto[{}]: {} = fromField.outgoing",
 						fieldName,
+						dto[fieldName],
 					)
-					when (property) {
-						is PartListProperty<*, *> -> {
-							dto[fieldName] = property.map { fromPart(it) }
-						}
-
-						is PartMapProperty<*, *> -> {
-							dto[fieldName] = property.entries.associate { (key, p) -> key to fromPart(p) }
-						}
-
-						is EnumSetProperty<*> -> {
-							dto[fieldName] = property.map { EnumeratedDto.of(it) }
-						}
-
-						is AggregateReferenceSetProperty<*> -> {
-							val repo = directory.getRepository(property.aggregateType)
-							val enumDtos =
-								property.map { id ->
-									val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
-									EnumeratedDto.of(aggregate)
-								}
-							dto[fieldName] = enumDtos
-						}
-
-						is AggregateReferenceProperty<*> -> {
-							val id = property.id
-							if (id != null) {
-								val repo = directory.getRepository(property.aggregateType)
-								val aggregate = repo.get(id) as dddrive.app.ddd.model.Aggregate
-								dto[fieldName] = EnumeratedDto.of(aggregate)
-							} else {
-								dto[fieldName] = null
-							}
-						}
-
-						is PartReferenceProperty<*, *> -> {
-							dto[fieldName] = property.id?.toString()
-						}
-
-						is EnumProperty<*> -> {
-							dto[fieldName] = EnumeratedDto.of(property.value)
-						}
-
-						is BaseProperty<*> -> {
-							dto[fieldName] = fromDomainValue(property.value, property.type)
-						}
-
-						else -> {
-							throw IllegalArgumentException(
-								"[${entity.javaClass.simpleName}.$fieldName] Unsupported property type for field mapping ${entity.javaClass.simpleName}.${fieldConfig.sourceProperty}: ${property.javaClass.name}",
-							)
-						}
-					}
+				} else if (fieldConfig.sourceProperty != null) {
+					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
+					dto[fieldName] = fromProperty(property)
+					logger.trace(
+						"${indent}dto[{}]: {} = fromField[{} ({})]",
+						fieldName,
+						dto[fieldName],
+						property,
+						property.javaClass.simpleName,
+					)
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(
@@ -367,16 +366,12 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		aggregate: A,
 	) {
 		aggregate as EntityWithProperties
-		val properties =
-			aggregate.properties.filter { !config.run { it.isExcluded() } && it.isWritable }
-		logger.trace(
-			"toAggregate: {} from {}, properties: {}",
-			aggregate,
-			dto,
-			properties.map { it.name },
-		)
+		val properties = aggregate.properties.filter { !config.isExcluded(it) && it.isWritable }
+		logger.trace("toAggregate: {}", aggregate)
+		logger.trace(". properties: {}", properties.map { it.name })
+		logger.trace(". dto: {}", dto)
 		toEntity(dto, aggregate, properties)
-		toFields(dto, aggregate)
+		toFields(dto, aggregate, config.fields)
 	}
 
 	/**
@@ -393,87 +388,36 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		dto: JsonApiDto,
 		part: Part<*>,
 	) {
-		val entity = part as EntityWithProperties
-		val partConfig = config.findPartAdapterConfig(part.javaClass)
-		val properties =
-			if (partConfig != null) {
-				entity.properties.filter { it.name !in partConfig.exclusions && it.isWritable }
-			} else {
-				entity.properties.filter { it.isWritable }
-			}
-
-		toEntity(dto, entity, properties)
-
-		// Apply custom incoming fields from part adapter config
-		partConfig?.fields?.forEach { fieldConfig ->
-			if (fieldConfig.incoming != null && dto.hasAttribute(fieldConfig.targetField)) {
-				try {
-					fieldConfig.incoming.invoke(dto[fieldConfig.targetField], part)
-				} catch (ex: Exception) {
-					throw RuntimeException(
-						"[${part.javaClass.simpleName}.${fieldConfig.targetField}] toPart field crashed: ${ex.message}",
-						ex,
-					)
-				}
-			}
-		}
+		part as EntityWithProperties
+		val partConfig = config.partAdapterConfig(part.javaClass)
+		val properties = part.properties.filter { !partConfig.isExcluded(it) && it.isWritable }
+		logger.trace(". toPart: {}", part)
+		logger.trace(".   properties: {}", properties.map { it.name })
+		logger.trace(".   dto: {}", dto)
+		toEntity(dto, part, properties)
+		toFields(dto, part, partConfig.fields)
 	}
 
 	/** Apply DTO values to an aggregate. */
-	@Suppress("UNCHECKED_CAST")
 	fun toEntity(
 		dto: JsonApiDto,
 		entity: EntityWithProperties,
 		properties: List<Property<*>>,
 	) {
+		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (property in properties) {
-			val fieldName =
-				when (property) {
-					is AggregateReferenceProperty<*> -> "${property.name}Id"
-					is PartReferenceProperty<*, *> -> "${property.name}Id"
-					else -> property.name
-				}
-			logger.trace(
-				"toEntity.property: {} from dto field {}: {}",
-				property.name,
-				fieldName,
-				dto[fieldName],
-			)
-			if (!dto.hasAttribute(fieldName)) continue
+			if (!dto.hasAttribute(property.name)) continue
+			val dtoValue = dto[property.name]
 			try {
-				when (property) {
-					is PartListProperty<*, *> -> {
-						toPartList(dto, property)
-					}
-
-					is PartMapProperty<*, *> -> {
-						toPartMap(dto, property)
-					}
-
-					is EnumSetProperty<*> -> {
-						toEnumSet(dto, property as EnumSetProperty<Enumerated>)
-					}
-
-					is AggregateReferenceSetProperty<*> -> {
-						toReferenceSet(dto, property)
-					}
-
-					is AggregateReferenceProperty<*> -> {
-						property.id = DtoUtils.idFromString(dto[fieldName] as String?)
-					}
-
-					is PartReferenceProperty<*, *> -> {
-						property.id = (dto[fieldName] as String?)?.toInt()
-					}
-
-					is EnumProperty<*> -> {
-						property.id = dto.enumId(fieldName)
-					}
-
-					is BaseProperty<*> -> {
-						(property as BaseProperty<Any>).value = toDomainValue(dto[fieldName], property.type)
-					}
-				}
+				logger.trace(
+					"${indent}toEntity.before[{}]({}) = toProperty(dto[{}]: {})",
+					property,
+					property.javaClass.simpleName,
+					property.name,
+					dtoValue,
+				)
+				toProperty(property, dtoValue)
+				logger.trace("${indent}toEntity.after[{}]", property)
 			} catch (ex: Exception) {
 				throw RuntimeException(
 					"toEntity(${entity.javaClass.simpleName}.${property.name}) crashed: ${ex.message}",
@@ -483,52 +427,83 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		}
 	}
 
+	/** Apply a DTO value to a property */
+	@Suppress("UNCHECKED_CAST")
+	private fun toProperty(
+		property: Property<*>,
+		dtoValue: Any?,
+	) {
+		when (property) {
+			is AggregateReferenceProperty<*> -> {
+				property.id = DtoUtils.idFromString(enumId(dtoValue))
+			}
+
+			is AggregateReferenceSetProperty<*> -> {
+				toReferenceSet(dtoValue, property)
+			}
+
+			is PartReferenceProperty<*, *> -> {
+				property.id = (dtoValue as String?)?.toInt()
+			}
+
+			is PartListProperty<*, *> -> {
+				toPartList(dtoValue, property)
+			}
+
+			is PartMapProperty<*, *> -> {
+				toPartMap(dtoValue, property)
+			}
+
+			is EnumProperty<*> -> {
+				property.id = enumId(dtoValue)
+			}
+
+			is EnumSetProperty<*> -> {
+				toEnumSet(dtoValue, property as EnumSetProperty<Enumerated>)
+			}
+
+			is BaseProperty<*> -> {
+				(property as BaseProperty<Any>).value = toDomainValue(dtoValue, property.type)
+			}
+
+			else -> {
+				throw IllegalArgumentException(
+					"Unsupported property type: ${property.javaClass.name}",
+				)
+			}
+		}
+	}
+
 	/**
 	 * Apply field values from DTO to entity based on registered field mappings. Uses intelligent type
 	 * detection for simple mappings.
 	 */
-	@Suppress("UNCHECKED_CAST")
 	private fun toFields(
 		dto: JsonApiDto,
 		entity: EntityWithProperties,
+		fields: List<FieldConfig>,
 	) {
-		for (fieldConfig in config.fields) {
+		val indent = if (entity is Part<*>) ".     " else ".   "
+		for (fieldConfig in fields) {
 			if (!dto.hasAttribute(fieldConfig.targetField)) continue
-			val dtoValue = dto[fieldConfig.targetField]
+			val fieldName = fieldConfig.targetField
+			val dtoValue = dto[fieldName]
 			try {
 				if (fieldConfig.incoming != null) {
+					logger.trace("${indent}toFields.before[{}] = toProperty(dto[{}]: {})", entity, fieldName, dtoValue)
 					fieldConfig.incoming.invoke(dtoValue, entity)
+					logger.trace("${indent}toFields.after[{}]", entity)
 				} else if (fieldConfig.sourceProperty != null) {
-					when (val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)) {
-						is AggregateReferenceSetProperty<*> -> {
-							val values = dtoValue as List<*>
-							property.clear()
-							for (value in values) {
-								val id = dto.enumId(value)
-								if (id != null) {
-									property.add(DtoUtils.idFromString(id)!!)
-								}
-							}
-						}
-
-						is AggregateReferenceProperty<*> -> {
-							property.id = DtoUtils.idFromString(dto.enumId(dtoValue))
-						}
-
-						is EnumProperty<*> -> {
-							property.id = dto.enumId(dtoValue)
-						}
-
-						is BaseProperty<*> -> {
-							(property as BaseProperty<Any>).value = toDomainValue(dtoValue, property.type)
-						}
-
-						else -> {
-							throw IllegalArgumentException(
-								"[${entity.javaClass.simpleName}.${fieldConfig.targetField}] Unsupported property type for field mapping ${entity.javaClass.simpleName}.${fieldConfig.sourceProperty}: ${property.javaClass.name}",
-							)
-						}
-					}
+					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
+					logger.trace(
+						"${indent}toFields.before[{}]({}) = toProperty(dto[{}]: {})",
+						property,
+						property.javaClass.simpleName,
+						fieldName,
+						dtoValue,
+					)
+					toProperty(property, dtoValue)
+					logger.trace("${indent}toFields.after[{}]", property)
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(
@@ -539,33 +514,70 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		}
 	}
 
+	/** Deserialize a reference set from DTO. */
+	@Suppress("UNCHECKED_CAST")
+	private fun toReferenceSet(
+		dtoValue: Any?,
+		property: AggregateReferenceSetProperty<*>,
+	) {
+		val dtoRefs = dtoValue as List<*>? ?: return
+		property.clear()
+		for (dtoRef in dtoRefs) {
+			val refId = enumId(dtoRef)!!
+			property.add(DtoUtils.idFromString(refId)!!)
+		}
+	}
+
 	/** Deserialize a part list from DTO. */
 	@Suppress("UNCHECKED_CAST")
 	private fun toPartList(
-		dto: JsonApiDto,
+		dtoValue: Any?,
 		property: PartListProperty<*, *>,
 	) {
-		val parts = dto[property.name] as? List<Map<String, Any?>> ?: return
-		property.clear()
-		for (partValues in parts) {
-			val partId = partValues["id"] as? Int // TODO creation
-			val part = property.add(partId)
-			toPart(ReadableMap(partValues), part)
+		val indent = if (property.entity is Part<*>) ".       " else ".     "
+		val dtoParts = dtoValue as List<Map<String, Any?>>? ?: return
+		val dtoPartsToUpdate = dtoParts.filter { dtoPart ->
+			val partId = (dtoPart["id"] as String?)?.toInt()
+			partId != null && property.any { it.id == partId }
+		}
+		val dtoPartsToInsert = dtoParts.filter { dtoPart ->
+			val partId = (dtoPart["id"] as String?)?.toInt()
+			partId == null || property.none { it.id == partId }
+		}
+		val partsToDelete = property.filter { part ->
+			dtoPartsToUpdate.none { (it["id"] as String).toInt() == part.id }
+		}
+		logger.trace("{}toPartList({})", indent, property.name)
+		logger.trace("{}  toUpdate: {}", indent, dtoPartsToUpdate.map { it["id"] })
+		logger.trace("{}  toInsert: {}", indent, dtoPartsToInsert.map { it["id"] })
+		logger.trace("{}  toDelete: {}", indent, partsToDelete.map { it.id })
+		for (part in partsToDelete) {
+			property.remove(part.id)
+		}
+		for (dtoPart in dtoPartsToUpdate) {
+			val partId = (dtoPart["id"] as String).toInt()
+			val part = property.getById(partId)
+			toPart(ReadableMap(dtoPart), part)
+		}
+		for (dtoPart in dtoPartsToInsert) {
+			val part = property.add()
+			toPart(ReadableMap(dtoPart), part)
 		}
 	}
 
 	/** Deserialize a part map from DTO. */
 	@Suppress("UNCHECKED_CAST")
 	private fun toPartMap(
-		dto: JsonApiDto,
+		dtoValue: Any?,
 		property: PartMapProperty<*, *>,
 	) {
-		val parts = dto[property.name] as? Map<String, Map<String, Any?>> ?: return
+		val dtoParts = dtoValue as Map<String, Map<String, Any?>>? ?: return
+		// TODO optimize updates/inserts/deletes as in toPartList
 		property.clear()
-		for ((key, partValues) in parts) {
-			val partId = partValues["id"] as? Int // TODO creation
+		for ((key, dtoPart) in dtoParts) {
+			val partId = (dtoPart["id"] as String).toInt()
 			val part = property.add(key, partId)
-			toPart(ReadableMap(partValues), part)
+			toPart(ReadableMap(dtoPart), part)
 		}
 	}
 
@@ -577,29 +589,14 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 */
 	@Suppress("UNCHECKED_CAST")
 	private fun toEnumSet(
-		dto: JsonApiDto,
+		dtoValue: Any?,
 		property: EnumSetProperty<Enumerated>,
 	) {
-		val values = dto[property.name] as? List<*> ?: return
+		val dtoEnums = dtoValue as List<*>? ?: return
 		property.clear()
-		for (value in values) {
-			val enumId = dto.enumId(value)
-			if (enumId != null) {
-				property.add(property.enumeration.getItem(enumId))
-			}
-		}
-	}
-
-	/** Deserialize a reference set from DTO. */
-	@Suppress("UNCHECKED_CAST")
-	private fun toReferenceSet(
-		dto: JsonApiDto,
-		property: AggregateReferenceSetProperty<*>,
-	) {
-		val ids = dto[property.name] as? Collection<String> ?: return
-		property.clear()
-		for (id in ids) {
-			property.add(DtoUtils.idFromString(id)!!)
+		for (dtoEnum in dtoEnums) {
+			val enumId = enumId(dtoEnum)!!
+			property.add(property.enumeration.getItem(enumId))
 		}
 	}
 
@@ -624,6 +621,20 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 			}
 		}
 	}
+
+	fun enumId(
+		dto: JsonApiDto,
+		fieldName: String,
+	): String? = enumId(dto[fieldName])
+
+	@Suppress("UNCHECKED_CAST")
+	fun enumId(dtoValue: Any?): String? =
+		when (dtoValue) {
+			null -> null
+			is EnumeratedDto -> dtoValue.id
+			is Map<*, *> -> (dtoValue as Map<String, Any?>)["id"] as String?
+			else -> null
+		}
 
 	/** Convert a value to the expected type. */
 	@Suppress("UNCHECKED_CAST")
@@ -668,8 +679,9 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 			}
 
 			else -> {
-				value as? T
+				value as T?
 			}
 		}
 	}
+
 }

@@ -21,8 +21,8 @@ abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase<E>>(
 				val itemType = CodeAggregateTypeEnum.getAggregateType((it as Doc).meta.docTypeId)
 				EnumeratedDto.of(itemType)
 			})
-			field("caseStage", "caseStage")
-			field("assignee", "assignee")
+			field("caseStage")
+			field("assignee")
 			meta(
 				listOf(
 					"caseDef",
@@ -34,8 +34,6 @@ abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase<E>>(
 			meta("caseStages", {
 				(it as Doc).meta.caseStages.map { cs -> EnumeratedDto.of(cs) }
 			})
-			relationship("tenantInfoId", "tenant", "tenant")
-			relationship("accountId", "account", "account")
 		},
 	) {
 
@@ -48,15 +46,9 @@ abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase<E>>(
 		aggregate: E,
 	) {
 		if (dto["caseStage"] != null) {
-			val caseStageId = dto.enumId("caseStage")!!
+			val caseStageId = enumId(dto, "caseStage")!!
 			val caseStage = CodeCaseStageEnum.getCaseStage(caseStageId)
 			aggregate.meta.setCaseStage(caseStage, sessionContext.userId, sessionContext.currentTime)
-		}
-		if (dto.hasAttribute("owner")) {
-			aggregate.ownerId = userRepository.idFromString(dto.enumId("owner"))
-		}
-		if (dto["assignee"] != null) {
-			aggregate.assigneeId = userRepository.idFromString(dto.enumId("assignee"))
 		}
 		super.toAggregate(dto, aggregate)
 	}

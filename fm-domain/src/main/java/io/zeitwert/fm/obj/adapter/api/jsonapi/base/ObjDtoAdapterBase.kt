@@ -22,19 +22,4 @@ abstract class ObjDtoAdapterBase<O : Obj, D : ObjDtoBase<O>>(
 				"transitionList",
 			),
 		)
-		relationship("tenantInfoId", "tenant", "tenant")
-		relationship("accountId", "account", "account")
-	}) {
-
-	@Suppress("UNCHECKED_CAST")
-	override fun toAggregate(
-		dto: D,
-		aggregate: O,
-	) {
-		if (dto["owner"] != null) {
-			aggregate.ownerId = userRepository.idFromString(dto.enumId("owner"))
-		}
-		super.toAggregate(dto, aggregate)
-	}
-
-}
+	})

@@ -4,7 +4,7 @@ import dddrive.ddd.core.model.Aggregate
 
 interface AggregateDto<A : Aggregate> : JsonApiDto {
 
-	val meta: Map<String, Any?>
+	val meta: Map<String, Any?>?
 
 	fun hasRelation(name: String): Boolean
 

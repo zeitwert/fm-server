@@ -25,7 +25,7 @@ class ObjAccountDtoAdapter(
 			contactIds.map { DtoUtils.idToString(it) }.firstOrNull()
 		}
 		config.relationship("logoId", "document", "logoImage")
-		config.relationshipSet("contactIds", "contact") { entity, dto ->
+		config.relationship("contactIds", "contact") { entity, dto ->
 			val accountId = (entity as ObjAccount).id
 			val querySpec = query {
 				filter { "accountId" eq accountId }

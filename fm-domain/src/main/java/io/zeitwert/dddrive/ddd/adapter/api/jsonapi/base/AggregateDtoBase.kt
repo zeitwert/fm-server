@@ -20,7 +20,7 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto
 abstract class AggregateDtoBase<A : Aggregate> : AggregateDto<A> {
 
 	@JsonApiMetaInformation
-	override lateinit var meta: MutableMap<String, Any?>
+	override var meta: MutableMap<String, Any?>? = null
 
 	@JsonIgnore
 	private val attributes: MutableMap<String, Any?> = mutableMapOf()
@@ -64,7 +64,7 @@ abstract class AggregateDtoBase<A : Aggregate> : AggregateDto<A> {
 
 	@Suppress("UNCHECKED_CAST")
 	override fun hasOperation(name: String): Boolean {
-		val operations = meta["operations"] as List<String>? ?: emptyList()
+		val operations = meta?.get("operations") as List<String>? ?: emptyList()
 		return operations.contains(name)
 	}
 

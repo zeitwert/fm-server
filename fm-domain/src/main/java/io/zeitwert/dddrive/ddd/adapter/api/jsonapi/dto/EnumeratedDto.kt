@@ -9,7 +9,7 @@ data class EnumeratedDto(
 	val name: String? = null,
 ) {
 
-	override fun toString(): String = name ?: ""
+	override fun toString(): String = "[$id: ${name ?: "__"}]"
 
 	companion object {
 

@@ -1,6 +1,8 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base
 
 import dddrive.ddd.core.model.Part
+import dddrive.ddd.property.model.AggregateReferenceProperty
+import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.Property
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.JsonApiDto
@@ -15,14 +17,12 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.JsonApiDto
  * @param targetRelation The name of the ID field on the DTO relation (e.g., "mainContactId",
  *   "logoId")
  * @param resourceType The JSON API resource type of the target (e.g., "contact", "document")
- * @param isCollection Whether this is a collection relationship
  */
 data class RelationshipConfig(
 	val sourceProperty: String?,
 	val dataSource: ((EntityWithProperties, JsonApiDto) -> Any?)?,
 	val targetRelation: String,
 	val resourceType: String,
-	val isCollection: Boolean,
 )
 
 /**
@@ -66,10 +66,8 @@ class PartAdapterConfig<P : Part<*>> {
 	/** Register a field mapping from a source property to a target field. */
 	fun field(
 		targetField: String,
-		sourceProperty: String,
-	) {
-		fields.add(FieldConfig(targetField, sourceProperty, null, null))
-	}
+		sourceProperty: String? = null,
+	) = fields.add(FieldConfig(targetField, sourceProperty ?: targetField, null, null))
 
 	/**
 	 * Register a field with custom outgoing and incoming functions.
@@ -85,6 +83,14 @@ class PartAdapterConfig<P : Part<*>> {
 	) {
 		fields.add(FieldConfig(targetField, null, outgoing, incoming))
 	}
+
+	/** Check if a property should be excluded from automatic serialization. */
+	fun isExcluded(property: Property<*>): Boolean =
+		property is AggregateReferenceProperty ||
+			property is AggregateReferenceSetProperty ||
+			property.name in exclusions ||
+			fields.any { property.name == it.sourceProperty }
+
 }
 
 /**
@@ -107,31 +113,6 @@ class AggregateDtoAdapterConfig {
 	internal val metas = mutableListOf<FieldConfig>()
 	internal val partAdapters = mutableMapOf<Class<*>, PartAdapterConfig<*>>()
 
-	init {
-		// Default exclusions for all aggregates
-		exclude(
-			listOf(
-				"id",
-				"maxPartId",
-			),
-		)
-		// Default field mappings
-		field("tenant", "tenant")
-		field("owner", "owner")
-		// Default meta mappings
-		meta("tenant")
-		meta("owner")
-		meta(
-			listOf(
-				"version",
-				"createdByUser",
-				"createdAt",
-				"modifiedByUser",
-				"modifiedAt",
-			),
-		)
-	}
-
 	/**
 	 * Exclude a property from automatic serialization.
 	 *
@@ -151,8 +132,8 @@ class AggregateDtoAdapterConfig {
 	fun relationship(
 		targetRelation: String,
 		resourceType: String,
-		sourceProperty: String,
-	) = addRelationship(targetRelation, resourceType, sourceProperty, null, false)
+		sourceProperty: String? = null,
+	) = addRelationship(targetRelation, resourceType, sourceProperty ?: targetRelation, null)
 
 	/**
 	 * Register a single-value relationship.
@@ -165,47 +146,19 @@ class AggregateDtoAdapterConfig {
 		targetRelation: String,
 		resourceType: String,
 		dataSource: (EntityWithProperties, JsonApiDto) -> Any?,
-	) = addRelationship(targetRelation, resourceType, null, dataSource, false)
-
-	/**
-	 * Register a collection relationship.
-	 *
-	 * @param targetRelation The name of the IDs field on the DTO (e.g., "contactIds")
-	 * @param resourceType The JSON API resource type of the target (e.g., "contact")
-	 * @param sourceProperty The name of the aggregate property (e.g., "contacts")
-	 */
-	fun relationshipSet(
-		targetRelation: String,
-		resourceType: String,
-		sourceProperty: String,
-	) = addRelationship(targetRelation, resourceType, sourceProperty, null, true)
-
-	/**
-	 * Register a collection relationship.
-	 *
-	 * @param targetRelation The name of the IDs field on the DTO (e.g., "contactIds")
-	 * @param resourceType The JSON API resource type of the target (e.g., "contact")
-	 * @param dataSource Function to obtain the related IDs from the aggregate
-	 */
-	fun relationshipSet(
-		targetRelation: String,
-		resourceType: String,
-		dataSource: (EntityWithProperties, JsonApiDto) -> List<Any>,
-	) = addRelationship(targetRelation, resourceType, null, dataSource, true)
+	) = addRelationship(targetRelation, resourceType, null, dataSource)
 
 	private fun addRelationship(
 		targetRelation: String,
 		resourceType: String,
 		sourceProperty: String?,
 		dataSource: ((EntityWithProperties, JsonApiDto) -> Any?)?,
-		isCollection: Boolean,
 	) = relationships.add(
 		RelationshipConfig(
 			sourceProperty,
 			dataSource,
 			targetRelation,
 			resourceType,
-			isCollection,
 		),
 	)
 
@@ -222,8 +175,8 @@ class AggregateDtoAdapterConfig {
 	 */
 	fun field(
 		targetField: String,
-		sourceProperty: String,
-	) = fields.add(FieldConfig(targetField, sourceProperty, null, null))
+		sourceProperty: String? = null,
+	) = fields.add(FieldConfig(targetField, sourceProperty ?: targetField, null, null))
 
 	/**
 	 * Register a field with custom outgoing and incoming functions.
@@ -239,21 +192,26 @@ class AggregateDtoAdapterConfig {
 	) = fields.add(FieldConfig(targetField, null, outgoing, incoming))
 
 	fun meta(
-		property: String,
-	) = metas.add(FieldConfig(property, property, null, null))
+		targetField: String,
+		sourceProperty: String? = null,
+	) = metas.add(FieldConfig(targetField, sourceProperty ?: targetField, null, null))
 
 	fun meta(properties: List<String>) = metas.addAll(properties.map { FieldConfig(it, it, null, null) })
-
-	fun meta(
-		targetField: String,
-		sourceProperty: String,
-	) = metas.add(FieldConfig(targetField, sourceProperty, null, null))
 
 	fun meta(
 		targetField: String,
 		outgoing: (EntityWithProperties) -> Any?,
 		incoming: ((Any?, EntityWithProperties) -> Unit)? = null,
 	) = metas.add(FieldConfig(targetField, null, outgoing, incoming))
+
+	/** Check if a property should be excluded from automatic serialization. */
+	fun isExcluded(property: Property<*>): Boolean =
+		property is AggregateReferenceProperty ||
+			property is AggregateReferenceSetProperty ||
+			property.name in exclusions ||
+			relationships.any { property.name == it.sourceProperty } ||
+			fields.any { property.name == it.sourceProperty } ||
+			metas.any { property.name == it.sourceProperty }
 
 	/**
 	 * Register a part adapter configuration for customizing part serialization.
@@ -277,19 +235,17 @@ class AggregateDtoAdapterConfig {
 	 * allows registering adapters using interface types while matching implementation classes at
 	 * runtime.
 	 */
-	internal fun findPartAdapterConfig(partClass: Class<*>): PartAdapterConfig<*>? {
+	internal fun partAdapterConfig(partClass: Class<*>): PartAdapterConfig<*> {
 		// Direct match first
 		partAdapters[partClass]?.let {
 			return it
 		}
-
 		// Check interfaces
 		for (iface in partClass.interfaces) {
 			partAdapters[iface]?.let {
 				return it
 			}
 		}
-
 		// Check superclass hierarchy
 		var superclass = partClass.superclass
 		while (superclass != null) {
@@ -303,14 +259,9 @@ class AggregateDtoAdapterConfig {
 			}
 			superclass = superclass.superclass
 		}
-
-		return null
+		// Register empty config and return
+		partAdapters[partClass] = PartAdapterConfig<Part<*>>()
+		return partAdapters[partClass]!!
 	}
 
-	/** Check if a property should be excluded from automatic serialization. */
-	internal fun Property<*>.isExcluded(): Boolean =
-		name in exclusions ||
-			relationships.any { name == it.sourceProperty } ||
-			fields.any { name == it.sourceProperty } ||
-			metas.any { name == it.sourceProperty }
 }

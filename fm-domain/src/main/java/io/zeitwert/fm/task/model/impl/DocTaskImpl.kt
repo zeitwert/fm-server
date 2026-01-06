@@ -49,10 +49,6 @@ class DocTaskImpl(
 
 	override val account get() = if (accountId != null) accountRepository().get(accountId!!) else null
 
-	override val relatedTo: Aggregate?
-		get() {
-			// TODO: Implement via repository directory lookup
-			return null
-		}
+	override val relatedTo: Aggregate? = TODO()
 
 }
