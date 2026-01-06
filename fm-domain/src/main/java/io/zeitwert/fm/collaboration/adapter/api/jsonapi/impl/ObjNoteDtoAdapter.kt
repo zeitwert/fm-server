@@ -9,7 +9,13 @@ import org.springframework.stereotype.Component
 @Component("objNoteDtoAdapter")
 class ObjNoteDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjNote, ObjNoteDto>(directory, { ObjNoteDto() }) {
+) : ObjDtoAdapterBase<ObjNote, ObjNoteDto>(
+	ObjNote::class.java,
+	"note",
+	ObjNoteDto::class.java,
+	directory,
+	{ ObjNoteDto() },
+) {
 
 	init {
 		config.field("relatedTo")

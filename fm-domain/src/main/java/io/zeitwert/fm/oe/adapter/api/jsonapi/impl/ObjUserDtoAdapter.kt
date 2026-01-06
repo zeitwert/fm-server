@@ -11,7 +11,13 @@ import org.springframework.stereotype.Component
 @Component("objUserDtoAdapter")
 class ObjUserDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjUser, ObjUserDto>(directory, { ObjUserDto() }) {
+) : ObjDtoAdapterBase<ObjUser, ObjUserDto>(
+	ObjUser::class.java,
+	"user",
+	ObjUserDto::class.java,
+	directory,
+	{ ObjUserDto() },
+) {
 
 	init {
 		config.relationship("avatar", "document", "avatarImage")

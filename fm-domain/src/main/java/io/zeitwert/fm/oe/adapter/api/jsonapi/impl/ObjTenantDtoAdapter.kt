@@ -10,7 +10,13 @@ import org.springframework.stereotype.Component
 @Component("objTenantDtoAdapter")
 class ObjTenantDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjTenant, ObjTenantDto>(directory, { ObjTenantDto() }) {
+) : ObjDtoAdapterBase<ObjTenant, ObjTenantDto>(
+	ObjTenant::class.java,
+	"tenant",
+	ObjTenantDto::class.java,
+	directory,
+	{ ObjTenantDto() },
+) {
 
 	init {
 		config.relationship("logo", "document", "logoImage")

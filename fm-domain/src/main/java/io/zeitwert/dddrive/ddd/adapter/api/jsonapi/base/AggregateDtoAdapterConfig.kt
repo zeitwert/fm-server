@@ -114,6 +114,12 @@ class AggregateDtoAdapterConfig {
 	internal val partAdapters = mutableMapOf<Class<*>, PartAdapterConfig<*>>()
 
 	/**
+	 * Get all registered relationship configurations.
+	 * Used by DynamicRelationshipContributor to generate Crnk relationship fields.
+	 */
+	val relationshipConfigs: List<RelationshipConfig> get() = relationships.toList()
+
+	/**
 	 * Exclude a property from automatic serialization.
 	 *
 	 * @param propertyName The name of the property to exclude

@@ -9,7 +9,13 @@ import org.springframework.stereotype.Component
 @Component("docTaskDtoAdapter")
 class DocTaskDtoAdapter(
 	directory: RepositoryDirectory,
-) : DocDtoAdapterBase<DocTask, DocTaskDto>(directory, { DocTaskDto() }) {
+) : DocDtoAdapterBase<DocTask, DocTaskDto>(
+	DocTask::class.java,
+	"task",
+	DocTaskDto::class.java,
+	directory,
+	{ DocTaskDto() },
+) {
 
 	init {
 		config.field("relatedTo")

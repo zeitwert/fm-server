@@ -9,4 +9,10 @@ import org.springframework.stereotype.Component
 @Component("objContactDtoAdapter")
 class ObjContactDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjContact, ObjContactDto>(directory, { ObjContactDto() })
+) : ObjDtoAdapterBase<ObjContact, ObjContactDto>(
+	ObjContact::class.java,
+	"contact",
+	ObjContactDto::class.java,
+	directory,
+	{ ObjContactDto() },
+)

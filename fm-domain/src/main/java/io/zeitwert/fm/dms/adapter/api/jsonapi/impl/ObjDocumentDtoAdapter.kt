@@ -10,7 +10,13 @@ import org.springframework.stereotype.Component
 @Component("objDocumentDtoAdapter")
 class ObjDocumentDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjDocument, ObjDocumentDto>(directory, { ObjDocumentDto() }) {
+) : ObjDtoAdapterBase<ObjDocument, ObjDocumentDto>(
+	ObjDocument::class.java,
+	"document",
+	ObjDocumentDto::class.java,
+	directory,
+	{ ObjDocumentDto() },
+) {
 
 	init {
 		config.field(

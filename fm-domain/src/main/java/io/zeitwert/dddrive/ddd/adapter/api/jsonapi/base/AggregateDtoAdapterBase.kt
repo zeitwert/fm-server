@@ -18,6 +18,8 @@ import io.crnk.core.resource.meta.MetaInformation
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.JsonApiDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.ResourceEntry
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.ResourceRegistry
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.DtoUtils
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.oe.model.ObjTenant
@@ -95,14 +97,19 @@ class MetaInfo :
  *
  * @param A The aggregate type
  * @param R The resource type (must extend GenericResourceBase)
+ * @param aggregateClass The aggregate class for registry registration
+ * @param resourceType The JSON API resource type (e.g., "account", "contact")
+ * @param dtoClass The DTO class for registry registration
  * @param directory The repository directory for loading related entities
  * @param resourceFactory Factory function to create new resource instances
  * @param configure Optional DSL block to configure the adapter
  */
 open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
+	private val aggregateClass: Class<A>,
+	private val resourceType: String,
+	private val dtoClass: Class<out AggregateDtoBase<*>>,
 	private val directory: RepositoryDirectory,
 	private val resourceFactory: () -> R,
-	configure: AggregateDtoAdapterConfig.() -> Unit = {},
 ) : AggregateDtoAdapter<A, R> {
 
 	companion object {
@@ -120,9 +127,20 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 * The configuration for this adapter. Subclasses can access this to add additional configuration
 	 * in their init blocks.
 	 */
-	protected val config: AggregateDtoAdapterConfig = AggregateDtoAdapterConfig().apply(configure)
+	val config: AggregateDtoAdapterConfig = AggregateDtoAdapterConfig()
 
 	init {
+		// Self-register with the resource registry
+		@Suppress("UNCHECKED_CAST")
+		ResourceRegistry.register(
+			ResourceEntry(
+				aggregateClass = aggregateClass as Class<out dddrive.app.ddd.model.Aggregate>,
+				resourceType = resourceType,
+				dtoClass = dtoClass,
+				adapter = this,
+			),
+		)
+
 		config.exclude(listOf("id", "maxPartId"))
 		config.field(
 			"tenant",

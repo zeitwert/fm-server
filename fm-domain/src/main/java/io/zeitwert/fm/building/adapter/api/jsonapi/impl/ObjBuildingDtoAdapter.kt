@@ -14,7 +14,13 @@ import org.springframework.stereotype.Component
 class ObjBuildingDtoAdapter(
 	directory: RepositoryDirectory,
 	private val sessionContext: SessionContext,
-) : ObjDtoAdapterBase<ObjBuilding, ObjBuildingDto>(directory, { ObjBuildingDto() }) {
+) : ObjDtoAdapterBase<ObjBuilding, ObjBuildingDto>(
+	ObjBuilding::class.java,
+	"building",
+	ObjBuildingDto::class.java,
+	directory,
+	{ ObjBuildingDto() },
+) {
 
 	companion object {
 

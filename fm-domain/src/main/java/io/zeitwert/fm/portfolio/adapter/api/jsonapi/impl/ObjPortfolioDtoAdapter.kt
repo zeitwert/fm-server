@@ -9,7 +9,13 @@ import org.springframework.stereotype.Component
 @Component("objPortfolioDtoAdapter")
 class ObjPortfolioDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioDto>(directory, { ObjPortfolioDto() }) {
+) : ObjDtoAdapterBase<ObjPortfolio, ObjPortfolioDto>(
+	ObjPortfolio::class.java,
+	"portfolio",
+	ObjPortfolioDto::class.java,
+	directory,
+	{ ObjPortfolioDto() },
+) {
 
 	init {
 		config.field("includes", "includeSet")

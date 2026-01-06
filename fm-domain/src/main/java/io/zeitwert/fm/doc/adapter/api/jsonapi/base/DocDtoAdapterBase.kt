@@ -6,39 +6,47 @@ import dddrive.ddd.core.model.RepositoryDirectory
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoAdapterBase
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoBase
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import org.springframework.beans.factory.annotation.Autowired
 
 abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase<E>>(
+	aggregateClass: Class<E>,
+	resourceType: String,
+	dtoClass: Class<out AggregateDtoBase<*>>,
 	directory: RepositoryDirectory,
 	resourceFactory: () -> D,
 ) : AggregateDtoAdapterBase<E, D>(
+		aggregateClass,
+		resourceType,
+		dtoClass,
 		directory,
 		resourceFactory,
-		{
-			exclude("docTypeId")
-			meta("itemType", {
-				val itemType = CodeAggregateTypeEnum.getAggregateType((it as Doc).meta.docTypeId)
-				EnumeratedDto.of(itemType)
-			})
-			field("caseStage")
-			field("assignee")
-			meta(
-				listOf(
-					"caseDef",
-					"caseStage",
-					"assignee",
-					"transitionList",
-				),
-			)
-			meta("caseStages", {
-				(it as Doc).meta.caseStages.map { cs -> EnumeratedDto.of(cs) }
-			})
-		},
 	) {
 
 	@Autowired
 	lateinit var sessionContext: SessionContext
+
+	init {
+		config.exclude("docTypeId")
+		config.meta("itemType", {
+			val itemType = CodeAggregateTypeEnum.getAggregateType((it as Doc).meta.docTypeId)
+			EnumeratedDto.of(itemType)
+		})
+		config.field("caseStage")
+		config.field("assignee")
+		config.meta(
+			listOf(
+				"caseDef",
+				"caseStage",
+				"assignee",
+				"transitionList",
+			),
+		)
+		config.meta("caseStages", {
+			(it as Doc).meta.caseStages.map { cs -> EnumeratedDto.of(cs) }
+		})
+	}
 
 	@Suppress("UNCHECKED_CAST")
 	override fun toAggregate(

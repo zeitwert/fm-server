@@ -10,9 +10,16 @@ import org.springframework.stereotype.Component
 @Component("objAccountDtoAdapter")
 class ObjAccountDtoAdapter(
 	directory: RepositoryDirectory,
-) : ObjDtoAdapterBase<ObjAccount, ObjAccountDto>(directory, { ObjAccountDto() }) {
+) : ObjDtoAdapterBase<ObjAccount, ObjAccountDto>(
+		ObjAccount::class.java,
+		"account",
+		ObjAccountDto::class.java,
+		directory,
+		{ ObjAccountDto() },
+	) {
 
 	init {
+		// Relationship configuration
 		config.relationship("tenantInfo", "tenant", "tenant")
 		config.relationship("mainContact", "contact", "mainContact")
 		config.relationship("logo", "document", "logoImage")
