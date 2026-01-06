@@ -1,14 +1,15 @@
 package io.zeitwert.fm.app.adapter.api.rest.dto
 
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.TypedEnumeratedDto
 import java.time.OffsetDateTime
 
 data class HomeActionResponse(
-	val item: EnumeratedDto,
+	val item: TypedEnumeratedDto,
 	val seqNr: Int,
 	val timestamp: OffsetDateTime,
-	val user: EnumeratedDto,
+	val user: TypedEnumeratedDto,
 	val changes: String? = null,
 	val oldCaseStage: EnumeratedDto? = null,
-	val newCaseStage: EnumeratedDto,
+	val newCaseStage: EnumeratedDto? = null,
 )

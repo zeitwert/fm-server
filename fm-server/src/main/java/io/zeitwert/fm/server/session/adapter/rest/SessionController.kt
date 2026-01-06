@@ -1,7 +1,7 @@
 package io.zeitwert.fm.server.session.adapter.rest
 
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto.Companion.of
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
@@ -101,7 +101,7 @@ class SessionController {
 				username = userDetails.username,
 				email = userDetails.username,
 				accountId = loginRequest.accountId,
-				role = of(getUserRole(role)),
+				role = EnumeratedDto.of(getUserRole(role)),
 			)
 			return ResponseEntity.ok<LoginResponse?>(loginResponse)
 		} catch (ex: Exception) {

@@ -4,12 +4,14 @@ import dddrive.app.doc.model.enums.CodeCaseStageEnum.Companion.getCaseStage
 import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum.Companion.getAggregateType
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.TypedEnumeratedDto
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActionResponse
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeActivityResponse
 import io.zeitwert.fm.app.adapter.api.rest.dto.HomeOverviewResponse
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingRepository
+import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ActivityVRecord
 import io.zeitwert.fm.obj.model.FMObjVRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
@@ -54,6 +56,16 @@ class HomeController {
 	@Autowired
 	lateinit var dslContext: DSLContext
 
+	var allBuildings: List<ObjBuilding>? = null
+
+	fun getBuildings(): List<ObjBuilding> {
+		if (allBuildings == null) {
+			val buildingIds = buildingRepository.find(null)
+			allBuildings = buildingIds.map { buildingRepository.get(it) }
+		}
+		return allBuildings!!
+	}
+
 	@GetMapping("/overview/{accountId}")
 	fun getOverview(
 		@PathVariable("accountId") accountId: Int,
@@ -61,20 +73,14 @@ class HomeController {
 		val account = accountRepository.get(accountId)
 		sessionContext.tenantId
 		val portfolioCount = portfolioRepository.find(null).size
-		val buildingCount = buildingRepository.find(null).size
-		// 		List<ObjBuilding> buildings = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
-		val ratingCount = 0
-		val insuranceValue = 0
-		// 		Integer ratingCount = (int) buildings.stream()
-// 				.filter(b -> b.getCurrentRating() != null && activeRatings.contains(b.getCurrentRating().getRatingStatus().getId()))
-// 				.count();
-// 		Integer insuranceValue = buildings.stream()
-// 				.map(b -> b.getInsuredValue() != null ? b.getInsuredValue().intValue() : 0).reduce(0, Integer::sum);
-		return ResponseEntity.ok<HomeOverviewResponse>(
+		val buildings = getBuildings()
+		val ratingCount = buildings.filter { activeRatings.contains(it.currentRating?.ratingStatus?.id) }.size
+		val insuranceValue = buildings.sumOf { it.insuredValue?.toInt() ?: 0 }
+		return ResponseEntity.ok(
 			HomeOverviewResponse(
 				accountId = accountId,
 				accountName = account.name ?: "Unbekannt",
-				buildingCount = buildingCount,
+				buildingCount = buildings.size,
 				portfolioCount = portfolioCount,
 				ratingCount = ratingCount,
 				insuranceValue = insuranceValue,
@@ -88,28 +94,20 @@ class HomeController {
 	@GetMapping("/openActivities/{accountId}")
 	fun getOpenActivities(
 		@PathVariable("accountId") accountId: Int?,
-	): ResponseEntity<MutableList<HomeActivityResponse?>?> {
-		return ResponseEntity.ok<MutableList<HomeActivityResponse?>?>(mutableListOf<HomeActivityResponse?>())
-		// 		Object tenantId = sessionContext.getTenantId();
-// 		List<ObjBuilding> buildingList = buildingRepository.getAll(tenantId).stream().map(it -> buildingRepository.get(it)).toList();
-// 		List<HomeActivityResponse> rrList = buildingList
-// 				.stream()
-// 				.filter(b -> b.getCurrentRating() != null && activeRatings.contains(b.getCurrentRating().getRatingStatus().getId()))
-// 				.map(this::getRatingResponse)
-// 				.toList();
-// 		List<DocTask> taskList = taskRepository.getAll(tenantId).stream().map(it -> taskRepository.get(it)).toList();
-// 		List<HomeActivityResponse> ttList = taskList
-// 				.stream()
-// 				.filter(b -> !"task.done".equals(b.getMeta().getCaseStage().getId()))
-// 				.map(this::getTaskResponse)
-// 				.toList();
-// 		List<HomeActivityResponse> result = new ArrayList<>();
-// 		result.addAll(rrList);
-// 		result.addAll(ttList);
-// 		return ResponseEntity.ok(result);
+	): ResponseEntity<List<HomeActivityResponse>> {
+		val buildings = getBuildings()
+		val rrList = buildings
+			.filter { activeRatings.contains(it.currentRating?.ratingStatus?.id) }
+			.map { getRatingResponse(it) }
+		val taskList = taskRepository.find(null).map { taskRepository.get(it) }
+		val ttList = taskList.filter { "task.done" != it.meta.caseStage!!.id }.map { getTaskResponse(it) }
+		val result = mutableListOf<HomeActivityResponse>()
+		result.addAll(rrList)
+		result.addAll(ttList)
+		return ResponseEntity.ok(result)
 	}
 
-	private fun getRatingResponse(building: ObjBuilding): HomeActivityResponse? {
+	private fun getRatingResponse(building: ObjBuilding): HomeActivityResponse {
 		val address = building.street + "\n" + building.zip + " " + building.city
 		val rating = building.currentRating
 		val ratingUser = rating?.ratingUser
@@ -127,14 +125,14 @@ class HomeController {
 		)
 	}
 
-	private fun getTaskResponse(task: DocTask): HomeActivityResponse? {
+	private fun getTaskResponse(task: DocTask): HomeActivityResponse {
 		val relatedToId = task.relatedToId as Int?
-		val relatedTo = this.objRepository!!.get(relatedToId!!)
+		val relatedTo = objRepository.get(relatedToId!!)
 		return HomeActivityResponse(
 			item = EnumeratedDto.of(task)!!,
 			relatedTo = EnumeratedDto.of(relatedTo)!!,
-			owner = EnumeratedDto.of(if (task.ownerId != null) userRepository!!.get(task.ownerId!!) else null),
-			user = EnumeratedDto.of(if (task.assigneeId != null) userRepository!!.get(task.assigneeId!!) else null),
+			owner = EnumeratedDto.of(if (task.ownerId != null) userRepository.get(task.ownerId!!) else null),
+			user = EnumeratedDto.of(if (task.assigneeId != null) userRepository.get(task.assigneeId!!) else null),
 			dueAt = formatIsoDate(task.dueAt!!.toLocalDate()),
 			subject = task.subject,
 			content = task.content,
@@ -144,29 +142,28 @@ class HomeController {
 
 	@GetMapping("/recentActions/{accountId}")
 	fun getRecentActions(
-		@PathVariable("accountId") accountId: Int?,
-	): ResponseEntity<MutableList<HomeActionResponse?>?> {
-		return ResponseEntity.ok<MutableList<HomeActionResponse?>?>(mutableListOf<HomeActionResponse?>())
-		// 		ObjAccount account = this.accountRepository.get(accountId);
-// 		Result<ActivityVRecord> result = this.dslContext
-// 				.selectFrom(Tables.ACTIVITY_V)
-// 				.where(
-// 						Tables.ACTIVITY_V.TENANT_ID.eq((Integer) account.getTenantId())
-// 								.and(Tables.ACTIVITY_V.ACCOUNT_ID.eq(accountId)))
-// 				.orderBy(Tables.ACTIVITY_V.TIMESTAMP.desc())
-// 				.limit(20)
-// 				.fetch();
-// 		return ResponseEntity.ok(result.stream().map(this::getActivityResponse).toList());
+		@PathVariable("accountId") accountId: Int,
+	): ResponseEntity<List<HomeActionResponse>> {
+		val account = accountRepository.get(accountId)
+		val result = dslContext
+			.selectFrom(Tables.ACTIVITY_V)
+			.where(
+				Tables.ACTIVITY_V.TENANT_ID
+					.eq(account.tenantId as Int)
+					.and(Tables.ACTIVITY_V.ACCOUNT_ID.eq(accountId)),
+			).orderBy(Tables.ACTIVITY_V.TIMESTAMP.desc())
+			.limit(20)
+			.fetch()
+		return ResponseEntity.ok(result.map { getActivityResponse(it) })
 	}
 
-	private fun getActivityResponse(a: ActivityVRecord): HomeActionResponse? {
-		getAggregateType(a.aggregateTypeId)
-		val item = EnumeratedDto.of(a.id.toString(), a.caption)
-		// 		EnumeratedDto item = EnumeratedDto.builder()
-// 				.id(a.getId().toString())
-// 				.name(a.getCaption())
-// 				.itemType(EnumeratedDto.of(type))
-// 				.build();
+	private fun getActivityResponse(a: ActivityVRecord): HomeActionResponse {
+		val type = getAggregateType(a.aggregateTypeId)
+		val item = TypedEnumeratedDto(
+			a.id.toString(),
+			a.caption,
+			EnumeratedDto.of(type)!!,
+		)
 		val oldCaseStage = if (a.oldCaseStageId != null) {
 			getCaseStage(a.oldCaseStageId)
 		} else {
@@ -181,10 +178,10 @@ class HomeController {
 			item = item,
 			seqNr = a.seqNr,
 			timestamp = a.timestamp,
-			user = EnumeratedDto.of(this.userRepository.get(a.userId))!!,
+			user = EnumeratedDto.of(userRepository.get(a.userId))!!,
 			changes = null,
 			oldCaseStage = EnumeratedDto.of(oldCaseStage),
-			newCaseStage = EnumeratedDto.of(newCaseStage)!!,
+			newCaseStage = EnumeratedDto.of(newCaseStage),
 		)
 	}
 

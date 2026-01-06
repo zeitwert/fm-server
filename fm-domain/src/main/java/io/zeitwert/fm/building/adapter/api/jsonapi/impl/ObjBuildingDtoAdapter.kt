@@ -30,7 +30,7 @@ class ObjBuildingDtoAdapter(
 		// TODO wait for computed property support in dddrive
 		config.field(
 			"currentRating",
-			outgoing = { fromPart((it as ObjBuilding).currentRating!!) },
+			outgoing = { if ((it as ObjBuilding).currentRating != null) fromPart(it.currentRating!!) else null },
 			incoming = { dto, entity ->
 				@Suppress("UNCHECKED_CAST")
 				val ratingMap = dto as Map<String, Any?>
