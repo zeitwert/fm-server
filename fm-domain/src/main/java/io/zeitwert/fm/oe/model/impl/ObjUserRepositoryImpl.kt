@@ -9,6 +9,7 @@ import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.fm.oe.persist.ObjUserSqlPersistenceProviderImpl
 import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Lazy
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.util.*
@@ -16,7 +17,6 @@ import java.util.*
 @Component("objUserRepository")
 @DependsOn("objUserPersistenceProvider")
 class ObjUserRepositoryImpl(
-	@param:Lazy override val passwordEncoder: PasswordEncoder,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,
 	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<ObjUser>(
@@ -24,6 +24,8 @@ class ObjUserRepositoryImpl(
 		AGGREGATE_TYPE_ID,
 	),
 	ObjUserRepository {
+
+	override val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
 	override fun createAggregate(isNew: Boolean): ObjUser = ObjUserImpl(this, isNew)
 

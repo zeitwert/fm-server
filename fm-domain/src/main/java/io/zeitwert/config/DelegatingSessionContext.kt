@@ -16,13 +16,10 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * A delegating SessionContext that can switch between setup mode and normal mode.
  *
- * During Flyway migration (data setup phase), there's no web session, so the normal session-scoped
- * SessionContext can't be created. This delegating context:
- * - In setup mode: returns kernel tenant ID and user ID directly
+ * During data setup there's no web session, so the normal session-scoped SessionContext can't be created.
+ * This delegating context:
+ * - In data setup mode: can be initialized to return the desired tenant and user through the [TenantDSL]
  * - In normal mode: delegates to the session-scoped provider
- *
- * This is a transient solution until all data generation is DSL-based, at which point data setup
- * can be moved to a later phase (e.g., ApplicationRunner).
  */
 @Component("delegatingSessionContext")
 @Primary

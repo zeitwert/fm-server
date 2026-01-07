@@ -3,6 +3,7 @@ package io.zeitwert.fm
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum.Companion.getCaseStage
 import dddrive.ddd.query.query
+import io.zeitwert.config.data.TestDataSetup
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
@@ -126,7 +127,7 @@ class TaskTest {
 	private fun initTestData() {
 		firstRelatedTo = userRepository.getByEmail(USER_EMAIL).get()
 		assertNotNull(firstRelatedTo, "relatedTo")
-		secondRelatedTo = accountRepository.get(accountRepository.find(null).first())
+		secondRelatedTo = accountRepository.getByKey(TestDataSetup.TEST_USER_EMAIL).get()
 		assertNotNull(secondRelatedTo, "account")
 		newStage = getCaseStage("task.new")
 		progressStage = getCaseStage("task.progress")
