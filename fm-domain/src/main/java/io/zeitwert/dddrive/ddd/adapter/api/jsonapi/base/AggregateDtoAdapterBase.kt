@@ -14,14 +14,19 @@ import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.PartReferenceProperty
 import dddrive.ddd.property.model.Property
-import io.crnk.core.resource.meta.MetaInformation
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDtoAdapter
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.JsonApiDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.JsonDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.AggregateDtoAdapterConfig
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.FieldConfig
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.RelationshipConfig
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.ResourceEntry
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.ResourceRegistry
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.DtoUtils
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.MapDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.MetaInfoDto
+import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.MutableMapDto
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -32,77 +37,21 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-// ============================================================================
-// Helper Classes for DTO Wrapping
-// ============================================================================
-
-data class ReadableMap(
-	val map: Map<String, Any?>,
-) : JsonApiDto {
-
-	override fun hasAttribute(name: String): Boolean = map.containsKey(name)
-
-	override operator fun set(
-		name: String,
-		value: Any?,
-	) = TODO()
-
-	override operator fun get(name: String): Any? = map[name]
-}
-
-data class WritableMap(
-	val map: MutableMap<String, Any?>,
-) : JsonApiDto {
-
-	override fun hasAttribute(name: String): Boolean = map.containsKey(name)
-
-	override operator fun set(
-		name: String,
-		value: Any?,
-	) {
-		map[name] = value
-	}
-
-	override operator fun get(name: String): Any? = map[name]
-}
-
-class MetaInfo :
-	HashMap<String, Any?>(),
-	JsonApiDto,
-	MetaInformation {
-
-	override fun hasAttribute(name: String): Boolean = containsKey(name)
-
-	override operator fun set(
-		name: String,
-		value: Any?,
-	) {
-		super.put(name, value)
-	}
-
-	override operator fun get(name: String): Any? = super.get(name)
-}
-
-// ============================================================================
-// Aggregate DTO Adapter
-// ============================================================================
-
 /**
- * Generic adapter for converting between Aggregates and GenericResourceBase DTOs.
+ * Generic adapter for converting between Aggregate and JsonDto.
  *
  * Uses property metadata from EntityWithProperties to automatically serialize/deserialize aggregate
  * properties without requiring manual mapping code.
  *
- * Configuration is provided via a DSL block that configures an [AggregateDtoAdapterConfig].
+ * Non-generic fields can be mapped through configuration via a config DSL of [io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config.AggregateDtoAdapterConfig].
  *
  * @param A The aggregate type
- * @param R The resource type (must extend GenericResourceBase)
- * @param aggregateClass The aggregate class for registry registration
+ * @param R The resource type (must extend JsonDto)
+ * @param aggregateClass The aggregate class (for registry registration)
  * @param resourceType The JSON API resource type (e.g., "account", "contact")
- * @param dtoClass The DTO class for registry registration
+ * @param dtoClass The DTO class (for registry registration)
  * @param directory The repository directory for loading related entities
  * @param resourceFactory Factory function to create new resource instances
- * @param configure Optional DSL block to configure the adapter
  */
 open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	private val aggregateClass: Class<A>,
@@ -142,13 +91,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		)
 
 		config.exclude(listOf("id", "maxPartId"))
-		config.field(
-			"tenant",
-			{
-				val tenantId = (it.getProperty("tenant", ObjTenant::class) as AggregateReferenceProperty<ObjTenant>).id!!
-				EnumeratedDto.of(tenantRepository.get(tenantId))
-			},
-		)
+		config.field("tenant")
 		config.field("owner")
 		config.meta(
 			listOf(
@@ -161,8 +104,8 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 				"modifiedAt",
 			),
 		)
-		config.relationship("tenantInfoId", "tenant", "tenant")
-		config.relationship("accountId", "account", "account")
+		config.relationship("tenantInfo", "tenant", "tenant")
+		config.relationship("account", "account", "account")
 	}
 
 	/** Convert an aggregate to a resource DTO. */
@@ -172,16 +115,16 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		aggregate as EntityWithProperties
 		val dto = resourceFactory()
 		dto["id"] = DtoUtils.idToString(aggregate.id)
-		val meta = MetaInfo()
-		fromFields(aggregate as EntityWithProperties, meta, config.metas)
+		val meta = MetaInfoDto()
+		fromFields(aggregate as EntityWithProperties, meta, config.metas.values)
 		(dto as AggregateDtoBase<*>).meta = meta
 		val properties = aggregate.properties.filter { !config.isExcluded(it) }
 		logger.trace("fromAggregate: {}", aggregate)
 		logger.trace(". config: {exclusions: ${config.exclusions.size}, fields: ${config.fields.size}, relationships: ${config.relationships.size}, metas: ${config.metas.size}}")
 		logger.trace(". properties: {}", properties.map { it.name })
 		fromEntity(aggregate, properties, dto)
-		fromRelationships(aggregate, dto)
-		fromFields(aggregate, dto, config.fields)
+		fromRelationships(aggregate, dto, config.relationships.values)
+		fromFields(aggregate, dto, config.fields.values)
 		return dto
 	}
 
@@ -196,7 +139,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 */
 	protected open fun fromPart(part: Part<*>): Map<String, Any?> {
 		part as EntityWithProperties
-		val dto = WritableMap(mutableMapOf())
+		val dto = MutableMapDto()
 		dto["id"] = part.id.toString()
 		val partConfig = config.partAdapterConfig(part.javaClass)
 		val properties = part.properties.filter { !partConfig.isExcluded(it) }
@@ -204,14 +147,14 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		logger.trace(".   properties: {}", properties.map { it.name })
 		logger.trace(".   config: {exclusions: ${partConfig.exclusions.size}, fields: ${partConfig.fields.size}}")
 		fromEntity(part, properties, dto)
-		fromFields(part, dto, partConfig.fields)
-		return dto.map
+		fromFields(part, dto, partConfig.fields.values)
+		return dto
 	}
 
 	private fun fromEntity(
 		entity: EntityWithProperties,
 		properties: List<Property<*>>,
-		dto: JsonApiDto,
+		dto: JsonDto,
 	) {
 		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (property in properties) {
@@ -236,6 +179,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	/** Convert a property value to its DTO representation */
 	private fun fromProperty(
 		property: Property<*>,
+		doInline: Boolean = false,
 	): Any? =
 		when (property) {
 			is AggregateReferenceProperty<*> -> {
@@ -254,7 +198,11 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 			}
 
 			is PartReferenceProperty<*, *> -> {
-				property.id?.toString()
+				if (doInline) {
+					property.value?.let { fromPart(it) }
+				} else {
+					property.id?.toString()
+				}
 			}
 
 			is PartListProperty<*, *> -> {
@@ -291,9 +239,10 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	private fun fromRelationships(
 		entity: EntityWithProperties,
 		dto: AggregateDto<*>,
+		relationships: Collection<RelationshipConfig>,
 	) {
 		val indent = if (entity is Part<*>) ".     " else ".   "
-		for (rel in config.relationships) {
+		for (rel in relationships) {
 			try {
 				if (rel.dataSource != null) {
 					dto.setRelation(rel.targetRelation, rel.dataSource.invoke(entity, dto))
@@ -343,8 +292,8 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 */
 	private fun fromFields(
 		entity: EntityWithProperties,
-		dto: JsonApiDto,
-		fields: List<FieldConfig>,
+		dto: JsonDto,
+		fields: Collection<FieldConfig>,
 	) {
 		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (fieldConfig in fields) {
@@ -359,7 +308,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 					)
 				} else if (fieldConfig.sourceProperty != null) {
 					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
-					dto[fieldName] = fromProperty(property)
+					dto[fieldName] = fromProperty(property, fieldConfig.doInline)
 					logger.trace(
 						"${indent}dto[{}]: {} = fromField[{} ({})]",
 						fieldName,
@@ -389,7 +338,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		logger.trace(". properties: {}", properties.map { it.name })
 		logger.trace(". dto: {}", dto)
 		toEntity(dto, aggregate, properties)
-		toFields(dto, aggregate, config.fields)
+		toFields(dto, aggregate, config.fields.values)
 	}
 
 	/**
@@ -403,7 +352,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 */
 	@Suppress("UNCHECKED_CAST")
 	fun toPart(
-		dto: JsonApiDto,
+		dto: JsonDto,
 		part: Part<*>,
 	) {
 		part as EntityWithProperties
@@ -413,18 +362,18 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		logger.trace(".   properties: {}", properties.map { it.name })
 		logger.trace(".   dto: {}", dto)
 		toEntity(dto, part, properties)
-		toFields(dto, part, partConfig.fields)
+		toFields(dto, part, partConfig.fields.values)
 	}
 
 	/** Apply DTO values to an aggregate. */
 	fun toEntity(
-		dto: JsonApiDto,
+		dto: JsonDto,
 		entity: EntityWithProperties,
 		properties: List<Property<*>>,
 	) {
 		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (property in properties) {
-			if (!dto.hasAttribute(property.name)) continue
+			if (!dto.containsKey(property.name)) continue
 			val dtoValue = dto[property.name]
 			try {
 				logger.trace(
@@ -450,6 +399,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	private fun toProperty(
 		property: Property<*>,
 		dtoValue: Any?,
+		doInline: Boolean = false,
 	) {
 		when (property) {
 			is AggregateReferenceProperty<*> -> {
@@ -461,7 +411,15 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 			}
 
 			is PartReferenceProperty<*, *> -> {
-				property.id = (dtoValue as String?)?.toInt()
+				if (doInline) {
+					val dtoPart = dtoValue as Map<String, Any?>?
+					if (dtoPart != null) {
+						check(property.value != null) { "Cannot inline to null part property ${property.name}" }
+						toPart(MapDto(dtoPart), property.value!!)
+					}
+				} else {
+					property.id = (dtoValue as String?)?.toInt()
+				}
 			}
 
 			is PartListProperty<*, *> -> {
@@ -497,13 +455,13 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 * detection for simple mappings.
 	 */
 	private fun toFields(
-		dto: JsonApiDto,
+		dto: JsonDto,
 		entity: EntityWithProperties,
-		fields: List<FieldConfig>,
+		fields: Collection<FieldConfig>,
 	) {
 		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (fieldConfig in fields) {
-			if (!dto.hasAttribute(fieldConfig.targetField)) continue
+			if (!dto.containsKey(fieldConfig.targetField)) continue
 			val fieldName = fieldConfig.targetField
 			val dtoValue = dto[fieldName]
 			try {
@@ -520,7 +478,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 						fieldName,
 						dtoValue,
 					)
-					toProperty(property, dtoValue)
+					toProperty(property, dtoValue, fieldConfig.doInline)
 					logger.trace("${indent}toFields.after[{}]", property)
 				}
 			} catch (ex: Exception) {
@@ -575,11 +533,11 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		for (dtoPart in dtoPartsToUpdate) {
 			val partId = (dtoPart["id"] as String).toInt()
 			val part = property.getById(partId)
-			toPart(ReadableMap(dtoPart), part)
+			toPart(MapDto(dtoPart), part)
 		}
 		for (dtoPart in dtoPartsToInsert) {
 			val part = property.add()
-			toPart(ReadableMap(dtoPart), part)
+			toPart(MapDto(dtoPart), part)
 		}
 	}
 
@@ -595,7 +553,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		for ((key, dtoPart) in dtoParts) {
 			val partId = (dtoPart["id"] as String).toInt()
 			val part = property.add(key, partId)
-			toPart(ReadableMap(dtoPart), part)
+			toPart(MapDto(dtoPart), part)
 		}
 	}
 
@@ -641,7 +599,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	}
 
 	fun enumId(
-		dto: JsonApiDto,
+		dto: JsonDto,
 		fieldName: String,
 	): String? = enumId(dto[fieldName])
 

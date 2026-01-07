@@ -2,7 +2,6 @@ package io.zeitwert.fm.building.adapter.api.jsonapi.impl
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.ReadableMap
 import io.zeitwert.fm.building.adapter.api.jsonapi.dto.ObjBuildingDto
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
@@ -15,12 +14,12 @@ class ObjBuildingDtoAdapter(
 	directory: RepositoryDirectory,
 	private val sessionContext: SessionContext,
 ) : ObjDtoAdapterBase<ObjBuilding, ObjBuildingDto>(
-	ObjBuilding::class.java,
-	"building",
-	ObjBuildingDto::class.java,
-	directory,
-	{ ObjBuildingDto() },
-) {
+		ObjBuilding::class.java,
+		"building",
+		ObjBuildingDto::class.java,
+		directory,
+		{ ObjBuildingDto() },
+	) {
 
 	companion object {
 
@@ -29,22 +28,11 @@ class ObjBuildingDtoAdapter(
 
 	init {
 		config.exclude("ratingList") // Not exposed via API
-		config.exclude("currentRating") // Handled via custom field below (needs full part serialization)
-		config.relationship("contacts", "contact", "contactSet")
+		config.relationshipMany("contacts", "contact", "contactSet")
 		config.relationship("coverFoto", "document", "coverFoto")
 
-		// Custom field for currentRating - needs special handling:
-		// - Outgoing: serialize full part object (not just ID like generic PartReferenceProperty handler)
-		// - Incoming: update rating fields via toPart (even though property is computed/read-only)
-		config.field(
-			"currentRating",
-			outgoing = { if ((it as ObjBuilding).currentRating != null) fromPart(it.currentRating!!) else null },
-			incoming = { dto, entity ->
-				@Suppress("UNCHECKED_CAST")
-				val ratingMap = dto as Map<String, Any?>
-				toPart(ReadableMap(ratingMap), (entity as ObjBuilding).currentRating!!)
-			},
-		)
+		// Inline the full part content instead of just the ID
+		config.field("currentRating", doInline = true)
 
 		config.partAdapter(ObjBuildingPartRating::class.java) {
 			field("ratingUser")
@@ -66,21 +54,33 @@ class ObjBuildingDtoAdapter(
 	private fun ObjBuildingPartElementRating.restorationYear(): Int? {
 		val building = meta.aggregate
 		if (building.insuredValue == null) return null
-		if (weight == null || weight!! <= 0 || condition == null || ratingYear == null || buildingPart == null) {
+		if (weight == null ||
+			weight!! <= 0 ||
+			condition == null ||
+			ratingYear == null ||
+			buildingPart == null
+		) {
 			return null
 		}
-		val renovationPeriod = buildingPart!!.getNextRestoration(1000000.0, ratingYear!!, condition!!.toDouble())
+		val renovationPeriod =
+			buildingPart!!.getNextRestoration(1000000.0, ratingYear!!, condition!!.toDouble())
 		return renovationPeriod?.year
 	}
 
 	private fun ObjBuildingPartElementRating.restorationCosts(): Double? {
 		val building = meta.aggregate
 		if (building.insuredValue == null) return null
-		if (weight == null || weight!! <= 0 || condition == null || ratingYear == null || buildingPart == null) {
+		if (weight == null ||
+			weight!! <= 0 ||
+			condition == null ||
+			ratingYear == null ||
+			buildingPart == null
+		) {
 			return null
 		}
 		val renovationPeriod =
-			buildingPart!!.getNextRestoration(1000000.0, ratingYear!!, condition!!.toDouble()) ?: return null
+			buildingPart!!.getNextRestoration(1000000.0, ratingYear!!, condition!!.toDouble())
+				?: return null
 		val restorationYear = renovationPeriod.year
 		val elementValue = weight!! / 100.0 * building.getBuildingValue(restorationYear) / 1000.0
 		return Math.round(renovationPeriod.restorationCosts / 1000000.0 * elementValue).toDouble()

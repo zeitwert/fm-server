@@ -2,7 +2,7 @@ package io.zeitwert.dddrive.ddd.adapter.api.jsonapi
 
 import dddrive.ddd.core.model.Aggregate
 
-interface AggregateDto<A : Aggregate> : JsonApiDto {
+interface AggregateDto<A : Aggregate> : JsonDto {
 
 	val meta: Map<String, Any?>?
 

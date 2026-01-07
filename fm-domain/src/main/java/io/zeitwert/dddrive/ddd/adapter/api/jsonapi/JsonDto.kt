@@ -1,16 +1,16 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi
 
-interface JsonApiDto {
+interface JsonDto {
 
 	val id: String? get() = this["id"] as? String
 
-	fun hasAttribute(name: String): Boolean
+	fun containsKey(key: String): Boolean
 
 	operator fun set(
-		name: String,
+		key: String,
 		value: Any?,
 	)
 
-	operator fun get(name: String): Any?
+	operator fun get(key: String): Any?
 
 }

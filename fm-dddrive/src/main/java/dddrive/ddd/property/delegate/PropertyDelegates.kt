@@ -20,8 +20,8 @@ import kotlin.reflect.KProperty
  *
  * Usage: `var name by baseProperty<String>("name")`
  *
- * For computed properties, provide a calculator function:
- * Usage: `var memberCount by baseProperty<Int>("memberCount") { memberList.size }`
+ * For computed properties, provide a calculator function: Usage: `var memberCount by
+ * baseProperty<Int>("memberCount") { memberList.size }`
  */
 inline fun <reified T : Any> EntityWithProperties.baseProperty(
 	name: String,
@@ -33,8 +33,8 @@ inline fun <reified T : Any> EntityWithProperties.baseProperty(
  *
  * Usage: `var status: CodeStatus? by enumProperty("status")`
  *
- * For computed properties, provide an ID calculator function (returns String?):
- * Usage: `var computedStatus by enumProperty<CodeStatus>("computedStatus") { "active" }`
+ * For computed properties, provide an ID calculator function (returns String?): Usage: `var
+ * computedStatus by enumProperty<CodeStatus>("computedStatus") { "active" }`
  */
 inline fun <reified E : Enumerated> EntityWithProperties.enumProperty(
 	name: String,
@@ -46,8 +46,8 @@ inline fun <reified E : Enumerated> EntityWithProperties.enumProperty(
  *
  * Usage: `var owner: ObjUser? by referenceProperty("owner")`
  *
- * For computed properties, provide an ID calculator function (returns Any?):
- * Usage: `var computedOwner by referenceProperty<ObjUser>("computedOwner") { someUserId }`
+ * For computed properties, provide an ID calculator function (returns Any?): Usage: `var
+ * computedOwner by referenceProperty<ObjUser>("computedOwner") { someUserId }`
  */
 inline fun <reified A : Aggregate> EntityWithProperties.referenceProperty(
 	name: String,
@@ -59,8 +59,8 @@ inline fun <reified A : Aggregate> EntityWithProperties.referenceProperty(
  *
  * Usage: `var ownerId by referenceIdProperty<ObjUser>("owner")`
  *
- * For computed properties, provide an ID calculator function (returns Any?):
- * Usage: `var computedOwnerId by referenceIdProperty<ObjUser>("computedOwner") { someUserId }`
+ * For computed properties, provide an ID calculator function (returns Any?): Usage: `var
+ * computedOwnerId by referenceIdProperty<ObjUser>("computedOwner") { someUserId }`
  */
 inline fun <reified A : Aggregate> EntityWithProperties.referenceIdProperty(
 	name: String,
@@ -72,8 +72,9 @@ inline fun <reified A : Aggregate> EntityWithProperties.referenceIdProperty(
  *
  * Usage: `var mainMember: ObjHouseholdPartMember? by partReferenceProperty("mainMember")`
  *
- * For computed properties, provide an ID calculator function (returns Int?):
- * Usage: `var firstMember by partReferenceProperty<ObjHousehold, ObjHouseholdPartMember>("firstMember") { memberList.firstOrNull()?.id }`
+ * For computed properties, provide an ID calculator function (returns Int?): Usage: `var
+ * firstMember by partReferenceProperty<ObjHousehold, ObjHouseholdPartMember>("firstMember") {
+ * memberList.firstOrNull()?.id }`
  */
 inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.partReferenceProperty(
 	name: String,
@@ -83,10 +84,12 @@ inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.par
 /**
  * Creates a property delegate for part reference ID properties.
  *
- * Usage: `var mainMemberId: Int? by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>("mainMember")`
+ * Usage: `var mainMemberId: Int? by partReferenceIdProperty<ObjHousehold,
+ * ObjHouseholdPartMember>("mainMember")`
  *
- * For computed properties, provide an ID calculator function (returns Int?):
- * Usage: `var firstMemberId by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>("firstMember") { memberList.firstOrNull()?.id }`
+ * For computed properties, provide an ID calculator function (returns Int?): Usage: `var
+ * firstMemberId by partReferenceIdProperty<ObjHousehold, ObjHouseholdPartMember>("firstMember") {
+ * memberList.firstOrNull()?.id }`
  */
 inline fun <reified A : Aggregate, reified P : Part<A>> EntityWithProperties.partReferenceIdProperty(
 	name: String,
@@ -336,8 +339,8 @@ class PartReferenceIdPropertyDelegate<A : Aggregate, P : Part<A>>(
 }
 
 /**
- * Gets an existing base property or creates a new one if it doesn't exist.
- * Used by property delegates for lazy property registration.
+ * Gets an existing base property or creates a new one if it doesn't exist. Used by property
+ * delegates for lazy property registration.
  */
 @Suppress("UNCHECKED_CAST")
 private fun <T : Any> EntityWithProperties.getOrAddBaseProperty(
@@ -354,8 +357,8 @@ private fun <T : Any> EntityWithProperties.getOrAddBaseProperty(
 }
 
 /**
- * Gets an existing enum property or creates a new one if it doesn't exist.
- * Used by property delegates for lazy property registration.
+ * Gets an existing enum property or creates a new one if it doesn't exist. Used by property
+ * delegates for lazy property registration.
  */
 @Suppress("UNCHECKED_CAST")
 private fun <E : Enumerated> EntityWithProperties.getOrAddEnumProperty(
@@ -372,8 +375,8 @@ private fun <E : Enumerated> EntityWithProperties.getOrAddEnumProperty(
 }
 
 /**
- * Gets an existing aggregate reference property or creates a new one if it doesn't exist.
- * Used by property delegates for lazy property registration.
+ * Gets an existing aggregate reference property or creates a new one if it doesn't exist. Used by
+ * property delegates for lazy property registration.
  */
 @Suppress("UNCHECKED_CAST")
 private fun <A : Aggregate> EntityWithProperties.getOrAddReferenceProperty(
@@ -390,8 +393,8 @@ private fun <A : Aggregate> EntityWithProperties.getOrAddReferenceProperty(
 }
 
 /**
- * Gets an existing part reference property or creates a new one if it doesn't exist.
- * Used by property delegates for lazy property registration.
+ * Gets an existing part reference property or creates a new one if it doesn't exist. Used by
+ * property delegates for lazy property registration.
  */
 @Suppress("UNCHECKED_CAST")
 private fun <A : Aggregate, P : Part<A>> EntityWithProperties.getOrAddPartReferenceProperty(

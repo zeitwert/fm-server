@@ -36,19 +36,19 @@ abstract class AggregateDtoBase<A : Aggregate> : AggregateDto<A> {
 			field = value
 		}
 
-	override fun hasAttribute(name: String): Boolean = attributes.containsKey(name)
+	override fun containsKey(key: String): Boolean = attributes.containsKey(key)
 
-	override operator fun get(name: String): Any? = attributes[name]
+	override operator fun get(key: String): Any? = attributes[key]
 
 	@JsonAnyGetter
 	fun any(): Map<String, Any?> = attributes
 
 	@JsonAnySetter
 	override operator fun set(
-		name: String,
+		key: String,
 		value: Any?,
 	) {
-		attributes[name] = value
+		attributes[key] = value
 	}
 
 	override fun hasRelation(name: String): Boolean = relations.containsKey(name)

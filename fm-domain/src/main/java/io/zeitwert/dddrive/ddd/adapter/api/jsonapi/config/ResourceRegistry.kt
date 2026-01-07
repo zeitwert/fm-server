@@ -3,7 +3,8 @@ package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.config
 import dddrive.app.ddd.model.Aggregate
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoAdapterBase
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoBase
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.RelationshipConfig
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Entry in the resource registry containing all metadata for a JSON API resource.
@@ -20,7 +21,7 @@ data class ResourceEntry(
 	val adapter: AggregateDtoAdapterBase<*, *>,
 ) {
 
-	val relationships: List<RelationshipConfig>
+	val relationships: Collection<RelationshipConfig>
 		get() = adapter.config.relationshipConfigs
 
 }
@@ -38,6 +39,8 @@ data class ResourceEntry(
  */
 object ResourceRegistry {
 
+	val logger: Logger = LoggerFactory.getLogger(ResourceRegistry::class.java)!!
+
 	private val entries = mutableListOf<ResourceEntry>()
 	private val byResourceType = mutableMapOf<String, ResourceEntry>()
 	private val byAggregateClass = mutableMapOf<Class<*>, ResourceEntry>()
@@ -47,7 +50,7 @@ object ResourceRegistry {
 	 * Called by adapters during their initialization.
 	 */
 	fun register(entry: ResourceEntry) {
-		println("Registering resource: type='${entry.resourceType}', aggregate='${entry.aggregateClass.simpleName}', dto='${entry.dtoClass.simpleName}'")
+		logger.debug("RR[${entry.resourceType}, ${entry.aggregateClass.simpleName}, ${entry.dtoClass.simpleName}]")
 		entries.add(entry)
 		byResourceType[entry.resourceType] = entry
 		byAggregateClass[entry.aggregateClass] = entry
