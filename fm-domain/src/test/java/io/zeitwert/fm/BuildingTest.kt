@@ -1,7 +1,7 @@
 package io.zeitwert.fm
 
+import io.zeitwert.config.data.TestDataSetup
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -42,11 +42,11 @@ class BuildingTest {
 	@Test
 	@Throws(Exception::class)
 	fun testBuilding() {
-		assertNotNull(this.buildingRepository, "buildingRepository not null")
-		assertEquals("obj_building", this.buildingRepository.aggregateType.id)
+		assertNotNull(buildingRepository, "buildingRepository not null")
+		assertEquals("obj_building", buildingRepository.aggregateType.id)
 
-		val account = this.getTestAccount(sessionContext)
-		var buildingA1: ObjBuilding? = this.buildingRepository.create()
+		val account = accountRepo.getByKey(TestDataSetup.TEST_ACCOUNT_KEY).get()
+		var buildingA1: ObjBuilding? = buildingRepository.create()
 
 		assertNotNull(buildingA1, "test not null")
 		assertNotNull(buildingA1.id, "id not null")
@@ -59,7 +59,7 @@ class BuildingTest {
 		assertNotNull(buildingA1.meta.createdAt, "createdAt not null")
 
 		buildingA1.accountId = account.id
-		this.initBuilding(buildingA1)
+		initBuilding(buildingA1)
 		assertEquals(account.id, buildingA1.accountId, "account id")
 		assertEquals(account.id, buildingA1.account!!.id, "account id")
 
@@ -88,16 +88,16 @@ class BuildingTest {
 		e2.weight = 50
 		val e2id = e2.id
 
-		this.checkBuilding(buildingA1)
+		checkBuilding(buildingA1)
 		assertEquals(e1, buildingA1.currentRating!!.elementList.getById(e1id), "e1 by id")
 		assertEquals(e2, buildingA1.currentRating!!.elementList.getById(e2id), "e2 by id")
 		assertEquals(e1, buildingA1.currentRating!!.getElement(bp1), "e1 by buildingPart")
 		assertEquals(e2, buildingA1.currentRating!!.getElement(bp2), "e2 by buildingPart")
 
-		this.buildingRepository.store(buildingA1)
+		buildingRepository.store(buildingA1)
 		buildingA1 = null
 
-		var buildingA2: ObjBuilding? = this.buildingRepository.load(buildingA_id)
+		var buildingA2: ObjBuilding? = buildingRepository.load(buildingA_id)
 		val buildingA2_idHash = System.identityHashCode(buildingA2)
 		assertNotEquals(buildingA_idHash, buildingA2_idHash)
 		assertNotNull(buildingA2!!.meta.modifiedByUserId, "modifiedByUser not null")
@@ -105,7 +105,7 @@ class BuildingTest {
 		assertEquals(account.id, buildingA2.accountId, "account id")
 		assertEquals(account.id, buildingA2.account!!.id, "account id")
 
-		this.checkBuilding(buildingA2)
+		checkBuilding(buildingA2)
 		assertEquals(
 			bp1,
 			buildingA2.currentRating!!
@@ -157,10 +157,10 @@ class BuildingTest {
 		assertEquals(bp1, buildingA2.currentRating!!.getElement(bp1).buildingPart, "e1 by buildingPart")
 		assertEquals(bp3, buildingA2.currentRating!!.getElement(bp3).buildingPart, "e3 by buildingPart")
 
-		this.buildingRepository.store(buildingA2)
+		buildingRepository.store(buildingA2)
 		buildingA2 = null
 
-		val buildingA3 = this.buildingRepository.get(buildingA_id)
+		val buildingA3 = buildingRepository.get(buildingA_id)
 
 		assertEquals(21, buildingA3.currentRating!!.elementList.size, "element count 21")
 		assertEquals(21, buildingA3.currentRating!!.elementList.size, "element list size 21")
@@ -185,8 +185,6 @@ class BuildingTest {
 		assertEquals(bp1, buildingA3.currentRating!!.getElement(bp1).buildingPart, "e1 by buildingPart")
 		assertEquals(bp3, buildingA3.currentRating!!.getElement(bp3).buildingPart, "e3 by buildingPart")
 	}
-
-	private fun getTestAccount(sessionContext: SessionContext?): ObjAccount = this.accountRepo!!.get(this.accountRepo.find(null).first())
 
 	private fun initBuilding(building: ObjBuilding) {
 		building.buildingNr = "B1"

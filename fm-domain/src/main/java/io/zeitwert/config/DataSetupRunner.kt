@@ -35,6 +35,7 @@ class DataSetupRunner(
 		try {
 			dataSetup.setup()
 		} finally {
+			DelegatingSessionContext.clearSetupContext()
 			DelegatingSessionContext.exitSetupMode()
 		}
 

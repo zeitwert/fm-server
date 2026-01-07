@@ -38,60 +38,60 @@ class DemoDataSetup(
 		println("  Setting up demo tenant and users...")
 
 		Tenant.init(tenantRepository, userRepository)
-
-		Tenant(DEMO_TENANT_KEY, "Demo", "advisor") {
-			user(DEMO_ADMIN_EMAIL, "Admin", "admin", "demo")
-			user("hannes@zeitwert.io", "Hannes Brunner", "super_user", "demo")
-			user("martin@zeitwert.io", "Martin Frey", "super_user", "demo")
-			user("urs@zeitwert.io", "Urs Muster", "user", "demo")
-		}
-
-		println("  Setting up demo accounts and contacts...")
-
 		Account.init(accountRepository, contactRepository)
 
-		// Real account data from R__2903_account_data.sql
-		Account("8355", "Aadorf 8355", "client") { randomContacts(2) }
-		Account("8479", "Altikon 8479", "client") { randomContacts(2) }
-		Account("9220", "Bischofszell 9220", "client") { randomContacts(3) }
-		Account("5620", "Bremgarten 5620", "client") { randomContacts(2) }
-		Account("9470", "Buchs SG 9470", "client") { randomContacts(2) }
-		Account("8253", "Diessenhofen 8253", "client") { randomContacts(2) }
-		Account("9651", "Ennetbühl 9651", "client") { randomContacts(2) }
-		Account("9225", "Gotthaus 9225", "client") { randomContacts(2) }
-		Account("9223", "Halden 9223", "client") { randomContacts(2) }
-		Account("9213", "Hauptwil 9213", "client") { randomContacts(3) }
-		Account("8444", "Henggart 8444", "client") { randomContacts(2) }
-		Account("5626", "Hermetschwil 5626", "client") { randomContacts(2) }
-		Account("3032", "Hinterkappelen 3032", "client") { randomContacts(2) }
-		Account("8335", "Hittnau 8335", "client") { randomContacts(2) }
-		Account("9216", "Hohentannen 9216", "client") { randomContacts(2) }
-		Account("4950", "Huttwil 4950", "client") { randomContacts(3) }
-		Account("4303", "Kaiseraugst 4303", "client") { randomContacts(2) }
-		Account("7304", "Maienfeld 7304", "client") { randomContacts(2) }
-		Account("5318", "Mandach 5318", "client") { randomContacts(2) }
-		Account("3034", "Murzelen 3034", "client") { randomContacts(2) }
-		Account("1111", "Musterstadt 1111", "client") { randomContacts(3) }
-		Account("8477", "Oberstammheim 8477", "client") { randomContacts(2) }
-		Account("8558", "Raperswilen 8558", "client") { randomContacts(2) }
-		Account("9471", "Rheinau SG 9471", "client") { randomContacts(2) }
-		Account("8153", "Rümlang 8153", "client") { randomContacts(2) }
-		Account("3049", "Säriswil 3049", "client") { randomContacts(2) }
-		Account("8255", "Schlattingen 8255", "client") { randomContacts(2) }
-		Account("5425", "Schneisingen 5425", "client") { randomContacts(2) }
-		Account("8589", "Sitterdorf 8589", "client") { randomContacts(2) }
-		Account("8564", "Sonterswil 8564", "client") { randomContacts(2) }
-		Account("8266", "Steckborn 8266", "client") { randomContacts(3) }
-		Account("3043", "Uettligen 3043", "client") { randomContacts(2) }
-		Account("8476", "Unterstammheim 8476", "client") { randomContacts(2) }
-		Account("8468", "Waltalingen 8468", "client") { randomContacts(2) }
-		Account("8104", "Weiningen 8104", "client") { randomContacts(2) }
-		Account("8620", "Wetzikon 8620", "client") { randomContacts(3) }
-		Account("8556", "Wigoltingen 8556", "client") { randomContacts(2) }
-		Account("3033", "Wohlen 3033", "client") { randomContacts(2) }
-		Account("8588", "Zihlschlacht 8588", "client") { randomContacts(2) }
-		Account("8006", "Zürich 8006", "client") { randomContacts(3) }
-		Account("8022", "Zürich 8022", "client") { randomContacts(2) }
+		Tenant(DEMO_TENANT_KEY, "Demo", "advisor") {
+			adminUser(DEMO_ADMIN_EMAIL, "Admin", "admin", "demo") {
+				user("hannes@zeitwert.io", "Hannes Brunner", "super_user", "demo")
+				user("martin@zeitwert.io", "Martin Frey", "super_user", "demo")
+				user("urs@zeitwert.io", "Urs Muster", "user", "demo")
+
+				println("  Setting up demo accounts and contacts...")
+
+				// Real account data from R__2903_account_data.sql
+				account("8355", "Aadorf 8355", "client") { randomContacts(2) }
+				account("8479", "Altikon 8479", "client") { randomContacts(2) }
+				account("9220", "Bischofszell 9220", "client") { randomContacts(3) }
+				account("5620", "Bremgarten 5620", "client") { randomContacts(2) }
+				account("9470", "Buchs SG 9470", "client") { randomContacts(2) }
+				account("8253", "Diessenhofen 8253", "client") { randomContacts(2) }
+				account("9651", "Ennetbühl 9651", "client") { randomContacts(2) }
+				account("9225", "Gotthaus 9225", "client") { randomContacts(2) }
+				account("9223", "Halden 9223", "client") { randomContacts(2) }
+				account("9213", "Hauptwil 9213", "client") { randomContacts(3) }
+				account("8444", "Henggart 8444", "client") { randomContacts(2) }
+				account("5626", "Hermetschwil 5626", "client") { randomContacts(2) }
+				account("3032", "Hinterkappelen 3032", "client") { randomContacts(2) }
+				account("8335", "Hittnau 8335", "client") { randomContacts(2) }
+				account("9216", "Hohentannen 9216", "client") { randomContacts(2) }
+				account("4950", "Huttwil 4950", "client") { randomContacts(3) }
+				account("4303", "Kaiseraugst 4303", "client") { randomContacts(2) }
+				account("7304", "Maienfeld 7304", "client") { randomContacts(2) }
+				account("5318", "Mandach 5318", "client") { randomContacts(2) }
+				account("3034", "Murzelen 3034", "client") { randomContacts(2) }
+				account("1111", "Musterstadt 1111", "client") { randomContacts(3) }
+				account("8477", "Oberstammheim 8477", "client") { randomContacts(2) }
+				account("8558", "Raperswilen 8558", "client") { randomContacts(2) }
+				account("9471", "Rheinau SG 9471", "client") { randomContacts(2) }
+				account("8153", "Rümlang 8153", "client") { randomContacts(2) }
+				account("3049", "Säriswil 3049", "client") { randomContacts(2) }
+				account("8255", "Schlattingen 8255", "client") { randomContacts(2) }
+				account("5425", "Schneisingen 5425", "client") { randomContacts(2) }
+				account("8589", "Sitterdorf 8589", "client") { randomContacts(2) }
+				account("8564", "Sonterswil 8564", "client") { randomContacts(2) }
+				account("8266", "Steckborn 8266", "client") { randomContacts(3) }
+				account("3043", "Uettligen 3043", "client") { randomContacts(2) }
+				account("8476", "Unterstammheim 8476", "client") { randomContacts(2) }
+				account("8468", "Waltalingen 8468", "client") { randomContacts(2) }
+				account("8104", "Weiningen 8104", "client") { randomContacts(2) }
+				account("8620", "Wetzikon 8620", "client") { randomContacts(3) }
+				account("8556", "Wigoltingen 8556", "client") { randomContacts(2) }
+				account("3033", "Wohlen 3033", "client") { randomContacts(2) }
+				account("8588", "Zihlschlacht 8588", "client") { randomContacts(2) }
+				account("8006", "Zürich 8006", "client") { randomContacts(3) }
+				account("8022", "Zürich 8022", "client") { randomContacts(2) }
+			}
+		}
 
 		println("  Demo data setup complete.\n")
 	}

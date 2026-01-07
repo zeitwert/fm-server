@@ -1,13 +1,13 @@
 package io.zeitwert.fm
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
+import io.zeitwert.config.data.TestDataSetup
 import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.DocTestRepository
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestRepository
 import io.zeitwert.domain.test.model.enums.CodeTestType
-import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.test.TestApplication
 import org.jooq.JSON
@@ -61,7 +61,7 @@ class DocTestTest {
 
 		val userId = sessionContext.userId
 		sessionContext.currentTime
-		val account: ObjAccount = getTestAccount(sessionContext)
+		val account = accountRepository.getByKey(TestDataSetup.TEST_ACCOUNT_KEY).get()
 
 		var testA1: DocTest = docTestRepo.create()
 		assertEquals(0, testA1.meta.version)
@@ -104,7 +104,7 @@ class DocTestTest {
 	@Test
 	fun testAggregateProperties() {
 		val userId = sessionContext.userId
-		val account: ObjAccount = getTestAccount(sessionContext)
+		val account = accountRepository.getByKey(TestDataSetup.TEST_ACCOUNT_KEY).get()
 
 		val typeA: CodeTestType = CodeTestType.TYPE_A
 		val typeB: CodeTestType = CodeTestType.TYPE_B
@@ -219,8 +219,6 @@ class DocTestTest {
 		assertTrue(testA2.testTypeSet.contains(typeB))
 		assertTrue(testA2.testTypeSet.contains(typeC))
 	}
-
-	private fun getTestAccount(sessionContext: SessionContext): ObjAccount = accountRepository.get(accountRepo.find(null).first())
 
 	private fun initDocTest(
 		test: DocTest,

@@ -127,7 +127,7 @@ class TaskTest {
 	private fun initTestData() {
 		firstRelatedTo = userRepository.getByEmail(USER_EMAIL).get()
 		assertNotNull(firstRelatedTo, "relatedTo")
-		secondRelatedTo = accountRepository.getByKey(TestDataSetup.TEST_USER_EMAIL).get()
+		secondRelatedTo = accountRepository.getByKey(TestDataSetup.TEST_ACCOUNT_KEY).get()
 		assertNotNull(secondRelatedTo, "account")
 		newStage = getCaseStage("task.new")
 		progressStage = getCaseStage("task.progress")

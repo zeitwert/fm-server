@@ -1,5 +1,6 @@
 package io.zeitwert.config.dsl
 
+import io.zeitwert.config.DelegatingSessionContext
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
@@ -16,8 +17,12 @@ import io.zeitwert.fm.oe.model.enums.CodeUserRole
  * ```
  * Tenant.init(tenantRepository, userRepository)
  * Tenant("demo", "Demo", "advisor") {
- *     user("admin@zeitwert.io", "Admin", "admin", "demo")
- *     user("user@zeitwert.io", "User", "user", "demo")
+ *     adminUser("admin@zeitwert.io", "Admin", "admin", "demo") {
+ *         user("user@zeitwert.io", "User", "user", "demo")
+ *         account("ACC", "Account Name", "client") {
+ *             contact(...)
+ *         }
+ *     }
  * }
  * ```
  */
@@ -40,8 +45,24 @@ object Tenant {
 		type: String,
 		init: TenantContext.() -> Unit,
 	): Int {
-		val context = TenantContext(key, name, type).apply(init)
-		return createOrGetTenant(context)
+		val context = TenantContext(key, name, type)
+
+		// Create or get tenant first
+		val tenantId = createOrGetTenant(context)
+
+		// Set tenant ID in session context for nested operations
+		DelegatingSessionContext.setSetupTenantId(tenantId)
+
+		// Now execute the DSL block with tenant context set
+		context.init()
+
+		// Process any simple users (non-admin)
+		context.users.forEach { userCtx ->
+			val tenant = tenantRepository.get(tenantId)
+			createOrGetUser(tenant, userCtx)
+		}
+
+		return tenantId
 	}
 
 	private fun createOrGetTenant(ctx: TenantContext): Int {
@@ -52,8 +73,6 @@ object Tenant {
 			val tenant = existingTenant.get()
 			val tenantId = tenant.id as Int
 			println("    Tenant ${ctx.key} already exists (id=$tenantId)")
-			// Still create users that don't exist
-			ctx.users.forEach { userCtx -> createOrGetUser(tenant, userCtx) }
 			return tenantId
 		}
 
@@ -67,13 +86,10 @@ object Tenant {
 		val tenantId = tenant.id as Int
 		println("    Created tenant ${ctx.key} - ${ctx.name} (id=$tenantId)")
 
-		// Create users for this tenant
-		ctx.users.forEach { userCtx -> createOrGetUser(tenant, userCtx) }
-
 		return tenantId
 	}
 
-	private fun createOrGetUser(
+	internal fun createOrGetUser(
 		tenant: ObjTenant,
 		ctx: UserContext,
 	): Int {
@@ -117,6 +133,10 @@ class TenantContext(
 
 	internal val users = mutableListOf<UserContext>()
 
+	/**
+	 * Create a simple user without nested context.
+	 * Use this for users that don't need to create accounts or other objects.
+	 */
 	fun user(
 		email: String,
 		name: String,
@@ -124,6 +144,31 @@ class TenantContext(
 		password: String,
 	) {
 		users += UserContext(email, name, role, password)
+	}
+
+	/**
+	 * Create an admin user with a nested context for creating additional users and accounts.
+	 * The admin user's ID will be set in the session context for all nested operations.
+	 */
+	fun adminUser(
+		email: String,
+		name: String,
+		role: String,
+		password: String,
+		init: AdminUserContext.() -> Unit,
+	) {
+		val tenantId = DelegatingSessionContext.getSetupTenantId()
+			?: throw IllegalStateException("Tenant ID not set in session context")
+		val tenant = Tenant.tenantRepository.get(tenantId)
+
+		// Create the admin user
+		val userId = Tenant.createOrGetUser(tenant, UserContext(email, name, role, password))
+
+		// Set user ID in session context for nested operations
+		DelegatingSessionContext.setSetupUserId(userId)
+
+		// Execute nested block with user context set
+		AdminUserContext(tenant).init()
 	}
 }
 
@@ -134,3 +179,36 @@ class UserContext(
 	val role: String,
 	val password: String,
 )
+
+/**
+ * Context for admin user that allows creating additional users and accounts.
+ */
+@TenantDslMarker
+class AdminUserContext(
+	private val tenant: ObjTenant,
+) {
+
+	/**
+	 * Create a simple user within this admin context.
+	 */
+	fun user(
+		email: String,
+		name: String,
+		role: String,
+		password: String,
+	) {
+		Tenant.createOrGetUser(tenant, UserContext(email, name, role, password))
+	}
+
+	/**
+	 * Create an account with optional nested contacts.
+	 */
+	fun account(
+		key: String,
+		name: String,
+		accountType: String,
+		init: AccountContext.() -> Unit = {},
+	): Int {
+		return Account(key, name, accountType, init)
+	}
+}

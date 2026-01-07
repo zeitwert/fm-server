@@ -31,6 +31,8 @@ class DelegatingSessionContext(
 	companion object {
 
 		private val setupMode = ThreadLocal.withInitial { false }
+		private val setupTenantId = ThreadLocal<Int?>()
+		private val setupUserId = ThreadLocal<Int?>()
 
 		fun enterSetupMode() {
 			setupMode.set(true)
@@ -41,6 +43,23 @@ class DelegatingSessionContext(
 		}
 
 		fun isSetupMode(): Boolean = setupMode.get()
+
+		fun setSetupTenantId(id: Int) {
+			setupTenantId.set(id)
+		}
+
+		fun setSetupUserId(id: Int) {
+			setupUserId.set(id)
+		}
+
+		fun getSetupTenantId(): Int? = setupTenantId.get()
+
+		fun getSetupUserId(): Int? = setupUserId.get()
+
+		fun clearSetupContext() {
+			setupTenantId.remove()
+			setupUserId.remove()
+		}
 	}
 
 	// Lazy-loaded kernel user ID for setup mode
@@ -57,10 +76,10 @@ class DelegatingSessionContext(
 	private val setupAggregates: MutableMap<Any, Aggregate> = ConcurrentHashMap()
 
 	override val tenantId: Any
-		get() = if (isSetupMode()) ObjTenantRepository.KERNEL_TENANT_ID else delegate.tenantId
+		get() = if (isSetupMode()) getSetupTenantId() ?: ObjTenantRepository.KERNEL_TENANT_ID else delegate.tenantId
 
 	override val userId: Any
-		get() = if (isSetupMode()) kernelUserId else delegate.userId
+		get() = if (isSetupMode()) getSetupUserId() ?: kernelUserId else delegate.userId
 
 	override val accountId: Any?
 		get() = if (isSetupMode()) null else delegate.accountId

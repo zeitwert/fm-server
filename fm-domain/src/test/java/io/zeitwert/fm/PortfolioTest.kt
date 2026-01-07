@@ -1,7 +1,7 @@
 package io.zeitwert.fm
 
+import io.zeitwert.config.data.TestDataSetup
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuildingRepository
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
@@ -41,7 +41,7 @@ class PortfolioTest {
 		assertNotNull(buildingRepository, "buildingRepository not null")
 		assertEquals("obj_building", buildingRepository.aggregateType.id)
 
-		val account = getTestAccount(sessionContext)
+		val account = accountRepository.getByKey(TestDataSetup.TEST_ACCOUNT_KEY).get()
 		val pf1a = portfolioRepository.create()
 
 		// Integer pf1Id = pf1a.getId();
@@ -80,7 +80,5 @@ class PortfolioTest {
 		// assertEquals(3, pf1b.getBuildingSet().size(), "building set count 5");
 		assertEquals(account.id, pf1a.accountId, "account id")
 	}
-
-	private fun getTestAccount(sessionContext: SessionContext?): ObjAccount = accountRepository.get(accountRepository.find(null).first())
 
 }

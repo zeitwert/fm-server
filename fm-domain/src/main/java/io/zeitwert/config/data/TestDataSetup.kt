@@ -36,17 +36,21 @@ class TestDataSetup(
 		println("  Setting up test tenant and users...")
 
 		Tenant.init(tenantRepository, userRepository)
-
-		Tenant(TEST_TENANT_KEY, "Test", "advisor") {
-			user(TEST_USER_EMAIL, "Tony Testeroni", "user", "test")
-			user("cc@zeitwert.io", "Chuck Checkeroni", "user", "test")
-		}
-
-		println("  Setting up test accounts and contacts...")
-
 		Account.init(accountRepository, contactRepository)
 
-		Account(TEST_ACCOUNT_KEY, "Testlingen", "client")
+		Tenant(TEST_TENANT_KEY, "Test", "advisor") {
+			// here we have already set tenantId and kernelUserId for session context
+			adminUser(TEST_USER_EMAIL, "Tony Testeroni", "user", "test") {
+				// here we now have the adminUserId for session context
+				user("cc@zeitwert.io", "Chuck Checkeroni", "user", "test")
+				account(TEST_ACCOUNT_KEY, "Testlingen", "client") {
+					contact("Max", "Muster", "max.muster@test.ch", "councilor") {
+						salutation = "mr"
+						phone = "+41 44 123 45 67"
+					}
+				}
+			}
+		}
 
 		println("  Test data setup complete.\n")
 	}

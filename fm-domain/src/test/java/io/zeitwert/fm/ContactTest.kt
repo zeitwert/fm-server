@@ -1,7 +1,7 @@
 package io.zeitwert.fm
 
+import io.zeitwert.config.data.TestDataSetup
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository
@@ -37,10 +37,10 @@ class ContactTest {
 	@Test
 	@Throws(Exception::class)
 	fun testContact() {
-		assertEquals("obj_contact", this.contactRepository.aggregateType.id)
+		assertEquals("obj_contact", contactRepository.aggregateType.id)
 
-		val account = this.getTestAccount(sessionContext)
-		val contactA1 = this.contactRepository.create()
+		val account = accountRepo.getByKey(TestDataSetup.TEST_ACCOUNT_KEY).get()
+		val contactA1 = contactRepository.create()
 
 		assertNotNull(contactA1, "contact not null")
 		assertNotNull(contactA1.id, "id not null")
@@ -53,7 +53,7 @@ class ContactTest {
 		assertNotNull(contactA1.meta.createdAt, "createdAt not null")
 
 		contactA1.accountId = account.id
-		this.initContact(contactA1)
+		initContact(contactA1)
 		assertEquals(account.id, contactA1.accountId, "account id")
 
 		// Check initial addresses
@@ -66,18 +66,18 @@ class ContactTest {
 		val emailAddr1 = contactA1.electronicAddressList[0]
 		val emailAddr1Id = emailAddr1.id
 
-		this.checkContact(contactA1)
+		checkContact(contactA1)
 
-		this.contactRepository.store(contactA1)
+		contactRepository.store(contactA1)
 
-		val contactA2 = this.contactRepository.load(contactA_id)
+		val contactA2 = contactRepository.load(contactA_id)
 		val contactA2_idHash = System.identityHashCode(contactA2)
 		assertNotEquals(contactA_idHash, contactA2_idHash)
 		assertNotNull(contactA2.meta.modifiedByUserId, "modifiedByUser not null")
 		assertNotNull(contactA2.meta.modifiedAt, "modifiedAt not null")
 		assertEquals(account.id, contactA2.accountId, "account id")
 
-		this.checkContact(contactA2)
+		checkContact(contactA2)
 
 		// Verify addresses persisted
 		assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after reload")
@@ -113,9 +113,9 @@ class ContactTest {
 
 		assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after add/remove")
 
-		this.contactRepository.store(contactA2)
+		contactRepository.store(contactA2)
 
-		val contactA3 = this.contactRepository.get(contactA_id)
+		val contactA3 = contactRepository.get(contactA_id)
 
 		assertEquals(2, contactA3.mailAddressList.size, "mail address count 2 after reload")
 		assertEquals(1, contactA3.electronicAddressList.size, "electronic address count 1 after reload")
@@ -135,8 +135,6 @@ class ContactTest {
 		}
 		assertTrue(hasException, "deleted mail address should not exist")
 	}
-
-	private fun getTestAccount(sessionContext: SessionContext): ObjAccount = this.accountRepo.get(this.accountRepo.find(null)[0])
 
 	private fun initContact(contact: ObjContact) {
 		contact.contactRole = CodeContactRole.CARETAKER

@@ -102,10 +102,7 @@ object Account {
 
 }
 
-@DslMarker
-annotation class AccountDslMarker
-
-@AccountDslMarker
+@TenantDslMarker
 class AccountContext(
 	val key: String,
 	val name: String,
@@ -126,7 +123,7 @@ class AccountContext(
 
 }
 
-@AccountDslMarker
+@TenantDslMarker
 class ContactContext(
 	val firstName: String,
 	val lastName: String,
