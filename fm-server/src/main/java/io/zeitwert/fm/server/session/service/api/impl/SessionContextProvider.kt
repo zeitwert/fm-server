@@ -30,7 +30,7 @@ open class SessionContextProvider {
 
 		return SessionContextImpl(
 			tenantId = tenantId,
-			user = user,
+			userId = user.id,
 			accountId = accountId,
 			locale = CodeLocale.DE_CH, // ,
 		)

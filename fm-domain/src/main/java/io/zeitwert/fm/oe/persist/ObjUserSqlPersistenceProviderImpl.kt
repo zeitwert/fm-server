@@ -12,26 +12,34 @@ import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import org.jooq.DSLContext
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objUserPersistenceProvider")
 open class ObjUserSqlPersistenceProviderImpl(
-	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : FMObjSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
 	SqlRecordMapper<ObjUser> {
 
+	override val dslContext: DSLContext
+		get() = dslContextProvider.getObject()
+
 	override val hasAccount = false
 
-	override val idProvider: SqlIdProvider get() = baseRecordMapper
+	override val idProvider: SqlIdProvider
+		get() = baseRecordMapper
 
-	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
+	override val baseRecordMapper: ObjRecordMapperImpl
+		get() = ObjRecordMapperImpl(dslContext)
 
-	override val extnRecordMapper get() = this
+	override val extnRecordMapper
+		get() = this
 
 	override fun loadRecord(aggregate: ObjUser) {
-		val record = dslContext.fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(aggregate.id as Int))
+		val record =
+			dslContext.fetchOne(Tables.OBJ_USER, Tables.OBJ_USER.OBJ_ID.eq(aggregate.id as Int))
 		record ?: throw IllegalArgumentException("no OBJ_USER record found for ${aggregate.id}")
 		mapFromRecord(aggregate, record)
 	}
@@ -64,9 +72,7 @@ open class ObjUserSqlPersistenceProviderImpl(
 		aggregate as ObjUser
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("user.tenantList").forEach {
-				it.toIntOrNull()?.let { tenantId ->
-					aggregate.tenantSet.add(tenantId)
-				}
+				it.toIntOrNull()?.let { tenantId -> aggregate.tenantSet.add(tenantId) }
 			}
 		}
 	}
@@ -100,11 +106,12 @@ open class ObjUserSqlPersistenceProviderImpl(
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, query)
 
 	fun getByEmail(email: String): Optional<Any> {
-		val userId = dslContext
-			.select(Tables.OBJ_USER.OBJ_ID)
-			.from(Tables.OBJ_USER)
-			.where(Tables.OBJ_USER.EMAIL.eq(email))
-			.fetchOne(Tables.OBJ_USER.OBJ_ID)
+		val userId =
+			dslContext
+				.select(Tables.OBJ_USER.OBJ_ID)
+				.from(Tables.OBJ_USER)
+				.where(Tables.OBJ_USER.EMAIL.eq(email))
+				.fetchOne(Tables.OBJ_USER.OBJ_ID)
 		return Optional.ofNullable(userId)
 	}
 

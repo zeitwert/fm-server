@@ -11,6 +11,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry.Enumeration.getCountry
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Test
@@ -28,6 +29,9 @@ class BuildingTest {
 
 	@Autowired
 	lateinit var sessionContext: SessionContext
+
+	@Autowired
+	lateinit var userRepo: ObjUserRepository
 
 	@Autowired
 	lateinit var accountRepo: ObjAccountRepository
@@ -213,7 +217,7 @@ class BuildingTest {
 		building.thirdPartyValue = BigDecimal.valueOf(0.0)
 		building.thirdPartyValueYear = 2000
 
-		building.addRating(sessionContext!!.user, sessionContext.currentTime)
+		building.addRating(userRepo.get(sessionContext.userId), sessionContext.currentTime)
 		building.currentRating!!.partCatalog = CodeBuildingPartCatalog.C6
 		building.currentRating!!.maintenanceStrategy = CodeBuildingMaintenanceStrategy.N
 	}

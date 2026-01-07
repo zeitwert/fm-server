@@ -19,23 +19,31 @@ import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
 import org.jooq.DSLContext
 import org.jooq.JSON
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 
 @Component("objTestPersistenceProvider")
 open class ObjTestSqlPersistenceProviderImpl(
-	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : FMObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
 	SqlRecordMapper<ObjTest> {
 
-	override val idProvider: SqlIdProvider get() = baseRecordMapper
+	override val dslContext: DSLContext
+		get() = dslContextProvider.getObject()
 
-	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
+	override val idProvider: SqlIdProvider
+		get() = baseRecordMapper
 
-	override val extnRecordMapper get() = this
+	override val baseRecordMapper: ObjRecordMapperImpl
+		get() = ObjRecordMapperImpl(dslContext)
+
+	override val extnRecordMapper
+		get() = this
 
 	override fun loadRecord(aggregate: ObjTest) {
-		val record = dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(aggregate.id as Int))
+		val record =
+			dslContext.fetchOne(Tables.OBJ_TEST, Tables.OBJ_TEST.OBJ_ID.eq(aggregate.id as Int))
 		record ?: throw IllegalArgumentException("no OBJ_TEST record found for ${aggregate.id}")
 		mapFromRecord(aggregate, record)
 	}
@@ -65,7 +73,8 @@ open class ObjTestSqlPersistenceProviderImpl(
 				(aggregate as EntityWithProperties).getProperty(
 					"nodeList",
 					ObjTestPartNode::class,
-				) as PartListProperty<ObjTest, ObjTestPartNode>,
+				) as
+					PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endLoad()
@@ -118,7 +127,8 @@ open class ObjTestSqlPersistenceProviderImpl(
 				(aggregate as EntityWithProperties).getProperty(
 					"nodeList",
 					ObjTestPartNode::class,
-				) as PartListProperty<ObjTest, ObjTestPartNode>,
+				) as
+					PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endStore()

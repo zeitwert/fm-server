@@ -12,26 +12,34 @@ import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import org.jooq.DSLContext
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objTenantPersistenceProvider")
 open class ObjTenantSqlPersistenceProviderImpl(
-	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : FMObjSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	SqlRecordMapper<ObjTenant> {
 
+	override val dslContext: DSLContext
+		get() = dslContextProvider.getObject()
+
 	override val hasAccount = false
 
-	override val idProvider: SqlIdProvider get() = baseRecordMapper
+	override val idProvider: SqlIdProvider
+		get() = baseRecordMapper
 
-	override val baseRecordMapper = ObjRecordMapperImpl(dslContext)
+	override val baseRecordMapper: ObjRecordMapperImpl
+		get() = ObjRecordMapperImpl(dslContext)
 
-	override val extnRecordMapper get() = this
+	override val extnRecordMapper
+		get() = this
 
 	override fun loadRecord(aggregate: ObjTenant) {
-		val record = dslContext.fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(aggregate.id as Int))
+		val record =
+			dslContext.fetchOne(Tables.OBJ_TENANT, Tables.OBJ_TENANT.OBJ_ID.eq(aggregate.id as Int))
 		record ?: throw IllegalArgumentException("no OBJ_TENANT record found for ${aggregate.id}")
 		mapFromRecord(aggregate, record)
 	}
@@ -79,11 +87,12 @@ open class ObjTenantSqlPersistenceProviderImpl(
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, query)
 
 	fun getByKey(key: String): Optional<Any> {
-		val tenantId = dslContext
-			.select(Tables.OBJ_TENANT.OBJ_ID)
-			.from(Tables.OBJ_TENANT)
-			.where(Tables.OBJ_TENANT.KEY.eq(key))
-			.fetchOne(Tables.OBJ_TENANT.OBJ_ID)
+		val tenantId =
+			dslContext
+				.select(Tables.OBJ_TENANT.OBJ_ID)
+				.from(Tables.OBJ_TENANT)
+				.where(Tables.OBJ_TENANT.KEY.eq(key))
+				.fetchOne(Tables.OBJ_TENANT.OBJ_ID)
 		return Optional.ofNullable(tenantId)
 	}
 

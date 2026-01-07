@@ -7,6 +7,7 @@ import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
 import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
 import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole
 import io.zeitwert.fm.server.config.security.AppUserDetails
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
@@ -45,6 +46,9 @@ class SessionController {
 
 	@Autowired
 	lateinit var tenantRepository: ObjTenantRepository
+
+	@Autowired
+	lateinit var userRepository: ObjUserRepository
 
 	@Autowired
 	lateinit var accountRepository: ObjAccountRepository
@@ -121,7 +125,7 @@ class SessionController {
 		val tenant = tenantRepository.get(tenantId)
 		val accountId = sessionContext.accountId
 		val account = if (accountId != null) accountRepository.get(accountId) else null
-		val user = sessionContext.user
+		val user = userRepository.get(sessionContext.userId)
 		val defaultApp = if (user.isAppAdmin) {
 			"appAdmin"
 		} else if (user.isAdmin) {

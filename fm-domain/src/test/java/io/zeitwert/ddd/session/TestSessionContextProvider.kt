@@ -32,7 +32,7 @@ open class TestSessionContextProvider {
 		val account = maybeAccount.get()
 		return SessionContextImpl(
 			tenantId = user.tenantId,
-			user = user,
+			userId = user.id,
 			accountId = account.id as Int,
 			locale = getLocale("en-US")!!,
 		)

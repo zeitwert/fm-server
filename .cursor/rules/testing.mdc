@@ -19,7 +19,13 @@ example:
 
 `mvn clean test -Dtest=HouseholdMemTest -pl fm-dddrive -nsu`
 
-## run a selection or specific test file (WITHOUT code generation when you already did it before)
+## be smart and mind resource consumption
+
+If you just did a full compile, you don't need to recompile again, just execute the tests.
+
+`mvn surefire:test -pl !fm-ui -nsu`
+
+## to run a selection or specific test file (WITHOUT code generation when you already did it before)
 
 `mvn surefire:test -Dtest=[test-name-pattern] -pl [module-name] -nsu`
 
@@ -27,16 +33,8 @@ example:
 
 `mvn surefire:test -Dtest=BuildingTest -pl fm-domain -nsu`
 
-## be smart
-
-If you just did a full compile, you don't need to clean before doing the tests, just execute the tests.
-
-`mvn test -pl !fm-ui -nsu`
-
-`mvn test -Dtest=HouseholdMemTest -pl fm-dddrive -nsu`
-
 # Run Build
 
 Before terminating your task, check that the builds are still correctly done (this is not necessary if you just ran all tests).
 
-`mvn clean compile test-compile -DskipTests -pl !fm-ui -nsu`
+`mvn clean test-compile -DskipTests -pl !fm-ui -nsu`

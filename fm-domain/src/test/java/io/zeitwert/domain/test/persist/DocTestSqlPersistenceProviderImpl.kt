@@ -15,20 +15,25 @@ import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
 import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 
 /** jOOQ-based persistence provider for DocTest aggregates. */
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
-	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
+
+	override val dslContext: DSLContext
+		get() = dslContextProvider.getObject()
 
 	override val idProvider: SqlIdProvider
 		get() = baseRecordMapper
 
-	override val baseRecordMapper = DocRecordMapperImpl(dslContext)
+	override val baseRecordMapper: DocRecordMapperImpl
+		get() = DocRecordMapperImpl(dslContext)
 
 	override val extnRecordMapper
 		get() = this

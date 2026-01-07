@@ -7,11 +7,13 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.persist.ObjTenantSqlPersistenceProviderImpl
+import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objTenantRepository")
+@DependsOn("objTenantPersistenceProvider")
 class ObjTenantRepositoryImpl(
 	@param:Lazy override val userRepository: ObjUserRepository,
 	@param:Lazy override val documentRepository: ObjDocumentRepository,

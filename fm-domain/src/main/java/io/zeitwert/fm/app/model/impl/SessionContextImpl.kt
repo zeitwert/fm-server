@@ -2,7 +2,6 @@ package io.zeitwert.fm.app.model.impl
 
 import dddrive.ddd.core.model.Aggregate
 import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeLocale
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -10,14 +9,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 data class SessionContextImpl(
 	override val tenantId: Any,
-	override val user: ObjUser,
+	override val userId: Any,
 	override var accountId: Any?,
 	override val locale: CodeLocale,
 ) : SessionContext {
 
 	private val aggregates: MutableMap<Any, Aggregate> = ConcurrentHashMap<Any, Aggregate>()
-
-	override val userId: Any get() = user.id
 
 	override fun hasAccount(): Boolean = this.accountId != null
 

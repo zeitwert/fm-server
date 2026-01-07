@@ -20,7 +20,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingType.Enumeration.getBuild
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation.Enumeration.getHistoricPreservation
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType.Enumeration.getNoteType
-import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry.Enumeration.getCountry
 import jakarta.servlet.ServletException
@@ -61,9 +60,9 @@ class BuildingImportExportController {
 	fun exportBuilding(
 		@PathVariable("id") id: Int,
 	): ResponseEntity<BuildingTransferDto?> {
-		val building = this.buildingRepo.get(id)
-		val export = this.getTransferDto(building)
-		val fileName = this.getFileName(building)
+		val building = buildingRepo.get(id)
+		val export = getTransferDto(building)
+		val fileName = getFileName(building)
 		val contentDisposition = ContentDisposition.builder("attachment").filename(fileName).build()
 		val headers = HttpHeaders()
 		headers.contentDisposition = contentDisposition
@@ -75,7 +74,7 @@ class BuildingImportExportController {
 	fun importBuilding(
 		@RequestBody dto: BuildingTransferDto,
 	): ResponseEntity<BuildingTransferDto?> {
-		val accountId = this.sessionCtx.accountId
+		val accountId = sessionCtx.accountId
 		if (accountId == null) {
 			return ResponseEntity.badRequest().build<BuildingTransferDto?>()
 		} else if (AGGREGATE != dto.meta?.aggregate) {
@@ -83,11 +82,11 @@ class BuildingImportExportController {
 		} else if (VERSION != dto.meta.version) {
 			return ResponseEntity.unprocessableEntity().build<BuildingTransferDto?>()
 		}
-		val building = this.buildingRepo.create()
+		val building = buildingRepo.create()
 		building.accountId = accountId
-		this.fillFromDto(building, dto)
-		this.buildingRepo.store(building)
-		val export = this.getTransferDto(building)
+		fillFromDto(building, dto)
+		buildingRepo.store(building)
+		val export = getTransferDto(building)
 		return ResponseEntity.ok().body<BuildingTransferDto?>(export)
 	}
 
@@ -119,7 +118,7 @@ class BuildingImportExportController {
 		val notes = building.notes
 			.stream()
 			.map { noteId ->
-				val note = this.noteRepo.load(noteId)
+				val note = noteRepo.load(noteId)
 				NoteTransferDto(
 					subject = note.subject,
 					content = note.content,
@@ -183,8 +182,8 @@ class BuildingImportExportController {
 		try {
 			building.meta.disableCalc()
 
-			val user = this.sessionCtx.user as ObjUser
-			val now = this.sessionCtx.currentTime
+			val user = userRepo.get(sessionCtx.userId)
+			val now = sessionCtx.currentTime
 			building.ownerId = user.id
 			building.name = dto.name
 			building.description = dto.description
@@ -228,7 +227,7 @@ class BuildingImportExportController {
 			rating.ratingStatus = getRatingStatus(dto.ratingStatus)
 			rating.ratingDate = dto.ratingDate
 			rating.ratingUser = if (dto.ratingUser != null) {
-				this.userRepo.getByEmail(dto.ratingUser).get()
+				userRepo.getByEmail(dto.ratingUser).get()
 			} else {
 				null
 			}
@@ -256,14 +255,14 @@ class BuildingImportExportController {
 			}
 			if (dto.notes != null) {
 				val noteType = getNoteType("note")
-				val noteUserId = this.sessionCtx.user.id
+				val noteUserId = user.id
 				dto.notes.forEach(
 					Consumer { dtoNote: NoteTransferDto? ->
 						val note = building.addNote(noteType!!, noteUserId)
 						note.subject = dtoNote!!.subject
 						note.content = dtoNote.content
 						note.isPrivate = dtoNote.isPrivate
-						this.noteRepo.store(note)
+						noteRepo.store(note)
 					},
 				)
 			}
@@ -278,4 +277,5 @@ class BuildingImportExportController {
 		private const val AGGREGATE = "zeitwert/building"
 		private const val VERSION = "1.0"
 	}
+
 }
