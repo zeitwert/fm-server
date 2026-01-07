@@ -48,6 +48,7 @@ open class ObjContactSqlPersistenceProviderImpl(
 		record: ObjContactRecord,
 	) {
 		aggregate.accountId = record.accountId
+		aggregate.key = record.key
 		aggregate.contactRole = CodeContactRole.getContactRole(record.contactRoleId)
 		aggregate.salutation = CodeSalutation.getSalutation(record.salutationId)
 		aggregate.title = CodeTitle.getTitle(record.titleId)
@@ -96,6 +97,7 @@ open class ObjContactSqlPersistenceProviderImpl(
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
 		record.accountId = aggregate.accountId as? Int
+		record.key = aggregate.key
 		record.contactRoleId = aggregate.contactRole?.id
 		record.salutationId = aggregate.salutation?.id
 		record.titleId = aggregate.title?.id

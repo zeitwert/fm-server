@@ -342,6 +342,20 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
         return (BigDecimal) get(22);
     }
 
+    /**
+     * Setter for <code>public.obj_account_v.key</code>.
+     */
+    public void setKey(String value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_account_v.key</code>.
+     */
+    public String getKey() {
+        return (String) get(23);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -356,7 +370,7 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
     /**
      * Create a detached, initialised ObjAccountVRecord
      */
-    public ObjAccountVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, BigDecimal inflationRate, Integer accountId, BigDecimal discountRate) {
+    public ObjAccountVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, BigDecimal inflationRate, Integer accountId, BigDecimal discountRate, String key) {
         super(ObjAccountV.OBJ_ACCOUNT_V);
 
         setObjTypeId(objTypeId);
@@ -382,6 +396,7 @@ public class ObjAccountVRecord extends TableRecordImpl<ObjAccountVRecord> {
         setInflationRate(inflationRate);
         setAccountId(accountId);
         setDiscountRate(discountRate);
+        setKey(key);
         resetChangedOnNotNull();
     }
 }

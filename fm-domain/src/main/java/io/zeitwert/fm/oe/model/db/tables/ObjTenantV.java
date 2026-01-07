@@ -144,6 +144,11 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
      */
     public final TableField<ObjTenantVRecord, BigDecimal> DISCOUNT_RATE = createField(DSL.name("discount_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_tenant_v.key</code>.
+     */
+    public final TableField<ObjTenantVRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(40), this, "");
+
     private ObjTenantV(Name alias, Table<ObjTenantVRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -168,7 +173,8 @@ public class ObjTenantV extends TableImpl<ObjTenantVRecord> {
          t.logo_img_id,
          t.inflation_rate,
          t.tenant_id,
-         t.discount_rate
+         t.discount_rate,
+         t.key
         FROM (obj_tenant t
           JOIN obj ON ((obj.id = t.obj_id)));
         """), where);

@@ -286,6 +286,20 @@ public class ObjTenantVRecord extends TableRecordImpl<ObjTenantVRecord> {
         return (BigDecimal) get(18);
     }
 
+    /**
+     * Setter for <code>public.obj_tenant_v.key</code>.
+     */
+    public void setKey(String value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_tenant_v.key</code>.
+     */
+    public String getKey() {
+        return (String) get(19);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -300,7 +314,7 @@ public class ObjTenantVRecord extends TableRecordImpl<ObjTenantVRecord> {
     /**
      * Create a detached, initialised ObjTenantVRecord
      */
-    public ObjTenantVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, String tenantTypeId, String name, String description, Integer logoImgId, BigDecimal inflationRate, Integer tenantId, BigDecimal discountRate) {
+    public ObjTenantVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, String tenantTypeId, String name, String description, Integer logoImgId, BigDecimal inflationRate, Integer tenantId, BigDecimal discountRate, String key) {
         super(ObjTenantV.OBJ_TENANT_V);
 
         setObjTypeId(objTypeId);
@@ -322,6 +336,7 @@ public class ObjTenantVRecord extends TableRecordImpl<ObjTenantVRecord> {
         setInflationRate(inflationRate);
         setTenantId(tenantId);
         setDiscountRate(discountRate);
+        setKey(key);
         resetChangedOnNotNull();
     }
 }

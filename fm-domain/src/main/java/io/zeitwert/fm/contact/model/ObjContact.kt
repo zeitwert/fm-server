@@ -16,6 +16,8 @@ interface ObjContact :
 	ItemWithNotes,
 	ItemWithTasks {
 
+	var key: String?
+
 	var contactRole: CodeContactRole?
 
 	var salutation: CodeSalutation?

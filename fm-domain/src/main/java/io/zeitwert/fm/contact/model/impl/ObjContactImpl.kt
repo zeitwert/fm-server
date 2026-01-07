@@ -30,6 +30,7 @@ class ObjContactImpl(
 	AggregateWithNotesMixin,
 	AggregateWithTasksMixin {
 
+	override var key by baseProperty<String>("key")
 	override var contactRole by enumProperty<CodeContactRole>("contactRole")
 	override var salutation by enumProperty<CodeSalutation>("salutation")
 	override var title by enumProperty<CodeTitle>("title")

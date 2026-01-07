@@ -202,6 +202,20 @@ public class ObjContactRecord extends UpdatableRecordImpl<ObjContactRecord> {
         return (String) get(12);
     }
 
+    /**
+     * Setter for <code>public.obj_contact.key</code>.
+     */
+    public void setKey(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact.key</code>.
+     */
+    public String getKey() {
+        return (String) get(13);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -225,7 +239,7 @@ public class ObjContactRecord extends UpdatableRecordImpl<ObjContactRecord> {
     /**
      * Create a detached, initialised ObjContactRecord
      */
-    public ObjContactRecord(Integer objId, Integer tenantId, Integer accountId, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email) {
+    public ObjContactRecord(Integer objId, Integer tenantId, Integer accountId, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email, String key) {
         super(ObjContact.OBJ_CONTACT);
 
         setObjId(objId);
@@ -241,6 +255,7 @@ public class ObjContactRecord extends UpdatableRecordImpl<ObjContactRecord> {
         setPhone(phone);
         setMobile(mobile);
         setEmail(email);
+        setKey(key);
         resetChangedOnNotNull();
     }
 }

@@ -137,6 +137,7 @@ class ContactTest {
 	}
 
 	private fun initContact(contact: ObjContact) {
+		contact.key = "TEST-CONTACT-001"
 		contact.contactRole = CodeContactRole.CARETAKER
 		contact.salutation = CodeSalutation.MR
 		contact.title = CodeTitle.DR
@@ -172,6 +173,7 @@ class ContactTest {
 	}
 
 	private fun checkContact(contact: ObjContact) {
+		assertEquals("TEST-CONTACT-001", contact.key)
 		assertEquals(CodeContactRole.CARETAKER, contact.contactRole)
 		assertEquals(CodeSalutation.MR, contact.salutation)
 		assertEquals(CodeTitle.DR, contact.title)

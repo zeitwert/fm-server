@@ -127,6 +127,11 @@ public class ObjContact extends TableImpl<ObjContactRecord> {
      */
     public final TableField<ObjContactRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(60), this, "");
 
+    /**
+     * The column <code>public.obj_contact.key</code>.
+     */
+    public final TableField<ObjContactRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(40), this, "");
+
     private ObjContact(Name alias, Table<ObjContactRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -196,7 +201,7 @@ public class ObjContact extends TableImpl<ObjContactRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.OBJ_CONTACT$ACCOUNT);
+        return Arrays.asList(Indexes.OBJ_CONTACT$ACCOUNT, Indexes.OBJ_CONTACT_KEY_IDX);
     }
 
     @Override

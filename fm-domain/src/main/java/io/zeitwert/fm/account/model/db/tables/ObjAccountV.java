@@ -164,6 +164,11 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
      */
     public final TableField<ObjAccountVRecord, BigDecimal> DISCOUNT_RATE = createField(DSL.name("discount_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_account_v.key</code>.
+     */
+    public final TableField<ObjAccountVRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(40), this, "");
+
     private ObjAccountV(Name alias, Table<ObjAccountVRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -192,7 +197,8 @@ public class ObjAccountV extends TableImpl<ObjAccountVRecord> {
          a.logo_img_id,
          a.inflation_rate,
          a.account_id,
-         a.discount_rate
+         a.discount_rate,
+         a.key
         FROM (obj_account a
           JOIN obj ON ((obj.id = a.obj_id)));
         """), where);

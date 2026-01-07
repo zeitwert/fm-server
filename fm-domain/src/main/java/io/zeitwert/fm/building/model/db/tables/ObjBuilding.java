@@ -91,7 +91,7 @@ public class ObjBuilding extends TableImpl<ObjBuildingRecord> {
     /**
      * The column <code>public.obj_building.building_nr</code>.
      */
-    public final TableField<ObjBuildingRecord, String> BUILDING_NR = createField(DSL.name("building_nr"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<ObjBuildingRecord, String> BUILDING_NR = createField(DSL.name("building_nr"), SQLDataType.VARCHAR(200), this, "");
 
     /**
      * The column <code>public.obj_building.insurance_nr</code>.
