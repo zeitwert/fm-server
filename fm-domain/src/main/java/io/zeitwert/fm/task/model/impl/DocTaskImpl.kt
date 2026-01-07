@@ -1,11 +1,10 @@
 package io.zeitwert.fm.task.model.impl
 
+import dddrive.app.ddd.model.Aggregate
 import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.core.model.Aggregate
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote
@@ -26,8 +25,7 @@ class DocTaskImpl(
 	DocTask,
 	AggregateWithNotesMixin {
 
-	override var relatedToId by referenceIdProperty<Obj>("relatedTo")
-
+	override var relatedToId by baseProperty<Any>("relatedToId")
 	override var subject by baseProperty<String>("subject")
 	override var content by baseProperty<String>("content")
 	override var isPrivate by baseProperty<Boolean>("isPrivate")
@@ -61,7 +59,7 @@ class DocTaskImpl(
 			}
 			val docRepository = directory.getRepository(Doc::class.java) as FMDocVRepository
 			require(docRepository.isDoc(relatedToId!!)) { "relatedToId must refer to Obj or Doc" }
-			return objRepository.get(relatedToId!!)
+			return docRepository.get(relatedToId!!)
 		}
 
 }

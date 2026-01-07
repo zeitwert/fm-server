@@ -63,7 +63,7 @@ open class ObjNoteSqlPersistenceProviderImpl(
 
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.tenantId as Int
-		record.relatedToId = aggregate.relatedToId as? Int
+		record.relatedToId = aggregate.relatedToId as Int
 		record.noteTypeId = aggregate.noteType?.id
 		record.subject = aggregate.subject
 		record.content = aggregate.content
