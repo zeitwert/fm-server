@@ -43,6 +43,7 @@ open class ObjAccountSqlPersistenceProviderImpl(
 		record: ObjAccountRecord,
 	) {
 		aggregate.setValueByPath("accountId", record.accountId)
+		aggregate.key = record.key
 		aggregate.name = record.name
 		aggregate.description = record.description
 		aggregate.accountType = CodeAccountType.getAccountType(record.accountTypeId)
@@ -71,6 +72,7 @@ open class ObjAccountSqlPersistenceProviderImpl(
 		record.tenantId = aggregate.tenantId as Int
 		record.accountId = aggregate.id as Int
 
+		record.key = aggregate.key
 		record.name = aggregate.name
 		record.description = aggregate.description
 		record.accountTypeId = aggregate.accountType?.id
@@ -90,7 +92,7 @@ open class ObjAccountSqlPersistenceProviderImpl(
 		val accountId = dslContext
 			.select(Tables.OBJ_ACCOUNT.OBJ_ID)
 			.from(Tables.OBJ_ACCOUNT)
-			.where(Tables.OBJ_ACCOUNT.NAME.eq(key))
+			.where(Tables.OBJ_ACCOUNT.KEY.eq(key))
 			.fetchOne(Tables.OBJ_ACCOUNT.OBJ_ID)
 		return Optional.ofNullable(accountId)
 	}

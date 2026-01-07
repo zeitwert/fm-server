@@ -4,6 +4,7 @@
 package io.zeitwert.fm.oe.model.db.tables;
 
 
+import io.zeitwert.fm.oe.model.db.Indexes;
 import io.zeitwert.fm.oe.model.db.Keys;
 import io.zeitwert.fm.oe.model.db.Public;
 import io.zeitwert.fm.oe.model.db.tables.CodeTenantType.CodeTenantTypePath;
@@ -19,6 +20,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -99,6 +101,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
      */
     public final TableField<ObjTenantRecord, BigDecimal> DISCOUNT_RATE = createField(DSL.name("discount_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_tenant.key</code>.
+     */
+    public final TableField<ObjTenantRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(40), this, "");
+
     private ObjTenant(Name alias, Table<ObjTenantRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -164,6 +171,11 @@ public class ObjTenant extends TableImpl<ObjTenantRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.OBJ_TENANT_KEY_IDX);
     }
 
     @Override

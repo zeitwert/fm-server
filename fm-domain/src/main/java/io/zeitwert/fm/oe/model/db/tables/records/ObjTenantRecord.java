@@ -132,6 +132,20 @@ public class ObjTenantRecord extends UpdatableRecordImpl<ObjTenantRecord> {
         return (BigDecimal) get(7);
     }
 
+    /**
+     * Setter for <code>public.obj_tenant.key</code>.
+     */
+    public void setKey(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_tenant.key</code>.
+     */
+    public String getKey() {
+        return (String) get(8);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -155,7 +169,7 @@ public class ObjTenantRecord extends UpdatableRecordImpl<ObjTenantRecord> {
     /**
      * Create a detached, initialised ObjTenantRecord
      */
-    public ObjTenantRecord(Integer objId, String tenantTypeId, String name, String description, Integer logoImgId, BigDecimal inflationRate, Integer tenantId, BigDecimal discountRate) {
+    public ObjTenantRecord(Integer objId, String tenantTypeId, String name, String description, Integer logoImgId, BigDecimal inflationRate, Integer tenantId, BigDecimal discountRate, String key) {
         super(ObjTenant.OBJ_TENANT);
 
         setObjId(objId);
@@ -166,6 +180,7 @@ public class ObjTenantRecord extends UpdatableRecordImpl<ObjTenantRecord> {
         setInflationRate(inflationRate);
         setTenantId(tenantId);
         setDiscountRate(discountRate);
+        setKey(key);
         resetChangedOnNotNull();
     }
 }

@@ -4,6 +4,7 @@
 package io.zeitwert.fm.oe.model.db;
 
 
+import io.zeitwert.fm.oe.model.db.tables.ObjTenant;
 import io.zeitwert.fm.oe.model.db.tables.ObjUser;
 
 import org.jooq.Index;
@@ -22,6 +23,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index OBJ_TENANT_KEY_IDX = Internal.createIndex(DSL.name("obj_tenant_key_idx"), ObjTenant.OBJ_TENANT, new OrderField[] { ObjTenant.OBJ_TENANT.KEY }, true);
     public static final Index OBJ_USER$EMAIL = Internal.createIndex(DSL.name("obj_user$email"), ObjUser.OBJ_USER, new OrderField[] { ObjUser.OBJ_USER.EMAIL }, false);
     public static final Index OBJ_USER$TENANT = Internal.createIndex(DSL.name("obj_user$tenant"), ObjUser.OBJ_USER, new OrderField[] { ObjUser.OBJ_USER.TENANT_ID }, false);
 }

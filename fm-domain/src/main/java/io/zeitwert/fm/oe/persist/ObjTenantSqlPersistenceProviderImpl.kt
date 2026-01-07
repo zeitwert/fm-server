@@ -40,6 +40,7 @@ open class ObjTenantSqlPersistenceProviderImpl(
 		aggregate: ObjTenant,
 		record: ObjTenantRecord,
 	) {
+		aggregate.key = record.key
 		aggregate.tenantType = CodeTenantType.getTenantType(record.tenantTypeId)
 		aggregate.name = record.name
 		aggregate.description = record.description
@@ -64,6 +65,7 @@ open class ObjTenantSqlPersistenceProviderImpl(
 
 		record.objId = aggregate.id as Int
 		record.tenantId = aggregate.id as Int
+		record.key = aggregate.key
 		record.tenantTypeId = aggregate.tenantType?.id
 		record.name = aggregate.name
 		record.description = aggregate.description
@@ -80,7 +82,7 @@ open class ObjTenantSqlPersistenceProviderImpl(
 		val tenantId = dslContext
 			.select(Tables.OBJ_TENANT.OBJ_ID)
 			.from(Tables.OBJ_TENANT)
-			.where(Tables.OBJ_TENANT.NAME.eq(key))
+			.where(Tables.OBJ_TENANT.KEY.eq(key))
 			.fetchOne(Tables.OBJ_TENANT.OBJ_ID)
 		return Optional.ofNullable(tenantId)
 	}

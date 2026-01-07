@@ -41,7 +41,7 @@ open class TestSessionContextProvider {
 	companion object {
 
 		const val userEmail: String = "tt@zeitwert.io"
-		const val accountKey: String = "Testlingen"
+		const val accountKey: String = "TA"
 	}
 
 }

@@ -42,8 +42,8 @@ begin
 	select id into k_user_id from obj_user_v where email = 'k@zeitwert.io';
 	insert into migr_key(obj_id, obj_type_id, tenant_id, key)
 	values (tenant_id, 'tenant', tenant_id, new.key);
-	insert into obj_tenant(obj_id, tenant_type_id, name, tenant_id)
-	values (tenant_id, new.tenant_type_id, new.name, tenant_id);
+	insert into obj_tenant(obj_id, tenant_type_id, key, name, tenant_id)
+	values (tenant_id, new.tenant_type_id, new.key, new.name, tenant_id);
 	insert into obj(id, tenant_id, obj_type_id, caption, owner_id, created_by_user_id)
 	values (tenant_id, tenant_id, 'obj_tenant', new.name, k_user_id, k_user_id);
 	return new;
@@ -156,8 +156,8 @@ begin
 	values (new_id, 'account', tnt_id, new.key);
 	insert into obj(id, tenant_id, account_id, obj_type_id, owner_id, created_by_user_id, caption)
 	values (new_id, tnt_id, new_id, 'obj_account', owner_id, owner_id, new.name);
-	insert into obj_account(obj_id, tenant_id, account_id, name, description, account_type_id, client_segment_id, reference_currency_id)
-	values (new_id, tnt_id, new_id, new.name, new.description, new.account_type_id, new.client_segment, new.reference_currency);
+	insert into obj_account(obj_id, tenant_id, account_id, key, name, description, account_type_id, client_segment_id, reference_currency_id)
+	values (new_id, tnt_id, new_id, new.key, new.name, new.description, new.account_type_id, new.client_segment, new.reference_currency);
 	return new;
 end
 $func$

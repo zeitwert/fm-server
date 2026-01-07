@@ -4,6 +4,7 @@
 package io.zeitwert.fm.account.model.db.tables;
 
 
+import io.zeitwert.fm.account.model.db.Indexes;
 import io.zeitwert.fm.account.model.db.Keys;
 import io.zeitwert.fm.account.model.db.Public;
 import io.zeitwert.fm.account.model.db.tables.CodeAccountType.CodeAccountTypePath;
@@ -20,6 +21,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Index;
 import org.jooq.InverseForeignKey;
 import org.jooq.Name;
 import org.jooq.Path;
@@ -120,6 +122,11 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
      */
     public final TableField<ObjAccountRecord, BigDecimal> DISCOUNT_RATE = createField(DSL.name("discount_rate"), SQLDataType.NUMERIC, this, "");
 
+    /**
+     * The column <code>public.obj_account.key</code>.
+     */
+    public final TableField<ObjAccountRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(40), this, "");
+
     private ObjAccount(Name alias, Table<ObjAccountRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -185,6 +192,11 @@ public class ObjAccount extends TableImpl<ObjAccountRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.OBJ_ACCOUNT_KEY_IDX);
     }
 
     @Override

@@ -13,6 +13,8 @@ interface ObjAccount :
 	Obj,
 	ItemWithNotes {
 
+	var key: String?
+
 	var name: String?
 
 	var description: String?

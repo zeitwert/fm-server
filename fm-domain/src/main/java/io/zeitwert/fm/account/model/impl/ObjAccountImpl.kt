@@ -31,6 +31,7 @@ class ObjAccountImpl(
 	AggregateWithNotesMixin {
 
 	// Base properties
+	override var key by baseProperty<String>("key")
 	override var name by baseProperty<String>("name")
 	override var description by baseProperty<String>("description")
 	override var inflationRate by baseProperty<BigDecimal>("inflationRate")

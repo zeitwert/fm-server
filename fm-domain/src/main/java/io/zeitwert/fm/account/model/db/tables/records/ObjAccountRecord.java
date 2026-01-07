@@ -188,6 +188,20 @@ public class ObjAccountRecord extends UpdatableRecordImpl<ObjAccountRecord> {
         return (BigDecimal) get(11);
     }
 
+    /**
+     * Setter for <code>public.obj_account.key</code>.
+     */
+    public void setKey(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_account.key</code>.
+     */
+    public String getKey() {
+        return (String) get(12);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -211,7 +225,7 @@ public class ObjAccountRecord extends UpdatableRecordImpl<ObjAccountRecord> {
     /**
      * Create a detached, initialised ObjAccountRecord
      */
-    public ObjAccountRecord(Integer objId, Integer tenantId, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, BigDecimal inflationRate, Integer accountId, BigDecimal discountRate) {
+    public ObjAccountRecord(Integer objId, Integer tenantId, String name, String description, String accountTypeId, String clientSegmentId, Integer mainContactId, String referenceCurrencyId, Integer logoImgId, BigDecimal inflationRate, Integer accountId, BigDecimal discountRate, String key) {
         super(ObjAccount.OBJ_ACCOUNT);
 
         setObjId(objId);
@@ -226,6 +240,7 @@ public class ObjAccountRecord extends UpdatableRecordImpl<ObjAccountRecord> {
         setInflationRate(inflationRate);
         setAccountId(accountId);
         setDiscountRate(discountRate);
+        setKey(key);
         resetChangedOnNotNull();
     }
 }

@@ -1,7 +1,6 @@
 
-src/main/java/io/dddrive
-src/main/java/io/dddrive/
-**/dddrive/**
+## Symlinks
+docs/dfp-app-server
 
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**

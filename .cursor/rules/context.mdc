@@ -7,6 +7,11 @@ alwaysApply: true
 This is an ERP application for real estate management, written in mixed Java/Kotlin targeting a Spring Boot deployment.
 It is a multi-module Maven project, and includes the dddrive application development framework.
 
+# Implementation Approach
+
+Whenever you hit a roadblock during implementation that implies that you will need to change the design of the solution or the implementation approach, NEVER do it automatically.
+Always ask for feedback - we need to think about that together, there was a reason we decided on the current approach.
+
 # Coding
 
 Any new code must be written in Kotlin.
