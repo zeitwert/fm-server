@@ -50,18 +50,16 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 		id: Any,
 	) {
 		require(isValidId(id)) { "valid id" }
-		dslContext.transaction { _ ->
-			aggregate.meta.disableCalc()
-			try {
-				aggregate.setValueByPath("id", id)
-				baseRecordMapper.loadRecord(aggregate)
-				extnRecordMapper?.loadRecord(aggregate)
-				doLoadParts(aggregate)
-			} finally {
-				aggregate.meta.enableCalc()
-			}
-			aggregate.meta.calcVolatile()
+		aggregate.meta.disableCalc()
+		try {
+			aggregate.setValueByPath("id", id)
+			baseRecordMapper.loadRecord(aggregate)
+			extnRecordMapper?.loadRecord(aggregate)
+			doLoadParts(aggregate)
+		} finally {
+			aggregate.meta.enableCalc()
 		}
+		aggregate.meta.calcVolatile()
 	}
 
 	protected open fun doLoadParts(aggregate: A) {
@@ -69,11 +67,9 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 
 	@Suppress("UNCHECKED_CAST")
 	override fun doStore(aggregate: A) {
-		dslContext.transaction { _ ->
-			baseRecordMapper.storeRecord(aggregate)
-			extnRecordMapper?.storeRecord(aggregate)
-			doStoreParts(aggregate)
-		}
+		baseRecordMapper.storeRecord(aggregate)
+		extnRecordMapper?.storeRecord(aggregate)
+		doStoreParts(aggregate)
 	}
 
 	protected open fun doStoreParts(aggregate: A) {

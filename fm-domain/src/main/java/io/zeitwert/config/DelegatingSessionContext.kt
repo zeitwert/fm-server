@@ -33,6 +33,7 @@ class DelegatingSessionContext(
 		private val setupMode = ThreadLocal.withInitial { false }
 		private val setupTenantId = ThreadLocal<Int?>()
 		private val setupUserId = ThreadLocal<Int?>()
+		private val setupAccountId = ThreadLocal<Int?>()
 
 		fun enterSetupMode() {
 			setupMode.set(true)
@@ -52,13 +53,20 @@ class DelegatingSessionContext(
 			setupUserId.set(id)
 		}
 
+		fun setSetupAccountId(id: Int?) {
+			setupAccountId.set(id)
+		}
+
 		fun getSetupTenantId(): Int? = setupTenantId.get()
 
 		fun getSetupUserId(): Int? = setupUserId.get()
 
+		fun getSetupAccountId(): Int? = setupAccountId.get()
+
 		fun clearSetupContext() {
 			setupTenantId.remove()
 			setupUserId.remove()
+			setupAccountId.remove()
 		}
 	}
 
@@ -82,7 +90,7 @@ class DelegatingSessionContext(
 		get() = if (isSetupMode()) getSetupUserId() ?: kernelUserId else delegate.userId
 
 	override val accountId: Any?
-		get() = if (isSetupMode()) null else delegate.accountId
+		get() = if (isSetupMode()) getSetupAccountId() else delegate.accountId
 
 	override val locale: CodeLocale
 		get() = if (isSetupMode()) CodeLocale.getLocale("en-US")!! else delegate.locale
@@ -93,7 +101,7 @@ class DelegatingSessionContext(
 	override val currentTime: OffsetDateTime
 		get() = OffsetDateTime.now()
 
-	override fun hasAccount(): Boolean = if (isSetupMode()) false else delegate.hasAccount()
+	override fun hasAccount(): Boolean = if (isSetupMode()) getSetupAccountId() != null else delegate.hasAccount()
 
 	override fun hasAggregate(id: Any): Boolean = if (isSetupMode()) setupAggregates.containsKey(id) else delegate.hasAggregate(id)
 

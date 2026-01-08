@@ -11,6 +11,7 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.test.TestApplication
+import org.jooq.DSLContext
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -33,6 +34,9 @@ class DocumentTest {
 	@Autowired
 	lateinit var sessionContext: SessionContext
 
+	@Autowired
+	lateinit var dslContext: DSLContext
+
 	@Test
 	@Throws(Exception::class)
 	fun testDocument() {
@@ -40,14 +44,10 @@ class DocumentTest {
 		val userId = sessionContext.userId
 		val timestamp = sessionContext.currentTime
 
-		getTestData()
+		genTestData()
 
-		assertNotNull(documentRepository, "documentRepository not null")
-		assertEquals("obj_document", documentRepository.aggregateType.id)
+		var documentA1 = documentRepository.create()
 
-		var documentA1: ObjDocument? = documentRepository.create()
-
-		assertNotNull(documentA1, "test not null")
 		assertNotNull(documentA1.id, "id not null")
 		assertNotNull(documentA1.tenantId, "tenant not null")
 
@@ -75,8 +75,6 @@ class DocumentTest {
 			TEST_PNG_CONTENT,
 			String(documentRepository.getContent(documentA1)!!, StandardCharsets.UTF_8),
 		)
-
-		documentA1 = null
 
 		val documentA2 = documentRepository.load(documentA_id)
 		val document1bIdHash = System.identityHashCode(documentA2)
@@ -109,17 +107,18 @@ class DocumentTest {
 		checkDocument(documentA2)
 	}
 
-	@Throws(Exception::class)
-	private fun getTestData() {
+	private fun genTestData() {
 		Account = accountRepo.create()
-		Account!!.name = "Test HH"
-		Account!!.accountType = CodeAccountType.CLIENT
-		accountRepo.store(Account!!)
+		Account.name = "Test HH"
+		Account.accountType = CodeAccountType.CLIENT
+		dslContext.transaction { _ ->
+			accountRepo.store(Account)
+		}
 		assertNotNull(Account, "account")
 	}
 
 	private fun initDocument(document: ObjDocument) {
-		document.accountId = Account!!.id
+		document.accountId = Account.id
 		document.name = "Schulhaus Isenweg"
 		document.contentKind = CodeContentKind.FOTO
 		document.documentKind = CodeDocumentKind.STANDALONE
@@ -127,7 +126,7 @@ class DocumentTest {
 	}
 
 	private fun checkDocument(document: ObjDocument) {
-		assertEquals(Account!!.id, document.accountId, "account id")
+		assertEquals(Account.id, document.accountId, "account id")
 		assertEquals("Schulhaus Isenweg", document.name)
 		assertEquals(CodeContentKind.FOTO, document.contentKind)
 		assertEquals(CodeDocumentKind.STANDALONE, document.documentKind)
@@ -136,9 +135,10 @@ class DocumentTest {
 
 	companion object {
 
-		var Account: ObjAccount? = null
-		var TEST_PNG_CONTENT: String = "PNG-PNG-PNG-PNG-PNG-PNG-PNG"
-		var TEST_JPG_CONTENT: String = "JPEG-JPEG-JPEG"
+		lateinit var Account: ObjAccount
+		const val TEST_PNG_CONTENT: String = "PNG-PNG-PNG-PNG-PNG-PNG-PNG"
+		const val TEST_JPG_CONTENT: String = "JPEG-JPEG-JPEG"
+
 	}
 
 }

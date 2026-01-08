@@ -1,11 +1,15 @@
 package io.zeitwert.config.dsl
 
+import dddrive.ddd.core.model.RepositoryDirectory
+import io.zeitwert.config.DelegatingSessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
+import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
+import org.jooq.DSLContext
 import java.time.LocalDate
 
 /**
@@ -16,7 +20,7 @@ import java.time.LocalDate
  *
  * Usage:
  * ```
- * Account.init(accountRepository, contactRepository)
+ * Account.init(accountRepository, contactRepository, documentRepository)
  * Account("TA", "Testlingen", "client") {
  *     contact("Max", "Muster", "max.muster@test.ch", "councilor") {
  *         salutation = "mr"
@@ -27,15 +31,21 @@ import java.time.LocalDate
  */
 object Account {
 
-	lateinit var accountRepository: ObjAccountRepository
-	lateinit var contactRepository: ObjContactRepository
+	lateinit var dslContext: DSLContext
+	lateinit var directory: RepositoryDirectory
+
+	val accountRepository: ObjAccountRepository
+		get() = directory.getRepository(ObjAccount::class.java) as ObjAccountRepository
+
+	val contactRepository: ObjContactRepository
+		get() = directory.getRepository(ObjContact::class.java) as ObjContactRepository
 
 	fun init(
-		accountRepo: ObjAccountRepository,
-		contactRepo: ObjContactRepository,
+		dslContext: DSLContext,
+		directory: RepositoryDirectory,
 	) {
-		accountRepository = accountRepo
-		contactRepository = contactRepo
+		this.dslContext = dslContext
+		this.directory = directory
 	}
 
 	operator fun invoke(
@@ -57,7 +67,7 @@ object Account {
 			val accountId = account.id as Int
 			println("    Account ${ctx.key} already exists (id=$accountId)")
 			// Still create contacts that don't exist
-			ctx.contacts.forEach { contactCtx -> createContact(account, contactCtx) }
+			// ctx.contacts.forEach { contactCtx -> createContact(account, contactCtx) }
 			return accountId
 		}
 
@@ -66,7 +76,13 @@ object Account {
 		account.key = ctx.key
 		account.name = ctx.name
 		account.accountType = CodeAccountType.getAccountType(ctx.accountType)
-		accountRepository.store(account)
+
+		// Set account ID in session context for nested operations
+		DelegatingSessionContext.setSetupAccountId(account.id as Int)
+
+		dslContext.transaction { _ ->
+			accountRepository.store(account)
+		}
 
 		val accountId = account.id as Int
 		println("    Created account ${ctx.key} - ${ctx.name} (id=$accountId)")
@@ -92,7 +108,10 @@ object Account {
 		ctx.phone?.let { contact.phone = it }
 		ctx.mobile?.let { contact.mobile = it }
 		ctx.birthDate?.let { contact.birthDate = it }
-		contactRepository.store(contact)
+
+		dslContext.transaction { _ ->
+			contactRepository.store(contact)
+		}
 
 		val contactId = contact.id as Int
 		println("      Created contact ${ctx.firstName} ${ctx.lastName} (id=$contactId)")
@@ -135,4 +154,5 @@ class ContactContext(
 	var phone: String? = null
 	var mobile: String? = null
 	var birthDate: LocalDate? = null
+
 }

@@ -1,11 +1,14 @@
 package io.zeitwert.config.dsl
 
+import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.config.DelegatingSessionContext
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
+import org.jooq.DSLContext
 
 /**
  * DSL for creating tenants with nested users using Spring repositories.
@@ -28,15 +31,21 @@ import io.zeitwert.fm.oe.model.enums.CodeUserRole
  */
 object Tenant {
 
-	lateinit var tenantRepository: ObjTenantRepository
-	lateinit var userRepository: ObjUserRepository
+	lateinit var dslContext: DSLContext
+	lateinit var directory: RepositoryDirectory
+
+	val tenantRepository: ObjTenantRepository
+		get() = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
+
+	val userRepository: ObjUserRepository
+		get() = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
 	fun init(
-		tenantRepo: ObjTenantRepository,
-		userRepo: ObjUserRepository,
+		dslContext: DSLContext,
+		directory: RepositoryDirectory,
 	) {
-		tenantRepository = tenantRepo
-		userRepository = userRepo
+		this.dslContext = dslContext
+		this.directory = directory
 	}
 
 	operator fun invoke(
@@ -81,7 +90,9 @@ object Tenant {
 		tenant.key = ctx.key
 		tenant.name = ctx.name
 		tenant.tenantType = CodeTenantType.getTenantType(ctx.type)
-		tenantRepository.store(tenant)
+		dslContext.transaction { _ ->
+			tenantRepository.store(tenant)
+		}
 
 		val tenantId = tenant.id as Int
 		println("    Created tenant ${ctx.key} - ${ctx.name} (id=$tenantId)")
@@ -112,7 +123,9 @@ object Tenant {
 		// Associate user with tenant
 		user.tenantSet.add(tenant.id)
 
-		userRepository.store(user)
+		dslContext.transaction { _ ->
+			userRepository.store(user)
+		}
 
 		val userId = user.id as Int
 		println("      Created user ${ctx.email} - ${ctx.name} (id=$userId)")
@@ -208,7 +221,6 @@ class AdminUserContext(
 		name: String,
 		accountType: String,
 		init: AccountContext.() -> Unit = {},
-	): Int {
-		return Account(key, name, accountType, init)
-	}
+	): Int = Account(key, name, accountType, init)
+
 }

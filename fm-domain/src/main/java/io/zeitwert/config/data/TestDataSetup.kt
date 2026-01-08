@@ -1,12 +1,10 @@
 package io.zeitwert.config.data
 
+import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.config.DataSetup
 import io.zeitwert.config.dsl.Account
 import io.zeitwert.config.dsl.Tenant
-import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.contact.model.ObjContactRepository
-import io.zeitwert.fm.oe.model.ObjTenantRepository
-import io.zeitwert.fm.oe.model.ObjUserRepository
+import org.jooq.DSLContext
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -16,10 +14,8 @@ import org.springframework.stereotype.Component
 @Component
 @ConditionalOnProperty(name = ["zeitwert.install_test_data"], havingValue = "true")
 class TestDataSetup(
-	private val tenantRepository: ObjTenantRepository,
-	private val userRepository: ObjUserRepository,
-	private val accountRepository: ObjAccountRepository,
-	private val contactRepository: ObjContactRepository,
+	val directory: RepositoryDirectory,
+	val dslContext: DSLContext,
 ) : DataSetup {
 
 	companion object {
@@ -27,6 +23,7 @@ class TestDataSetup(
 		const val TEST_TENANT_KEY = "test"
 		const val TEST_USER_EMAIL = "tt@zeitwert.io"
 		const val TEST_ACCOUNT_KEY = "TA"
+
 	}
 
 	override val name = "TEST"
@@ -35,8 +32,8 @@ class TestDataSetup(
 		println("\nTEST DATA SETUP")
 		println("  Setting up test tenant and users...")
 
-		Tenant.init(tenantRepository, userRepository)
-		Account.init(accountRepository, contactRepository)
+		Tenant.init(dslContext, directory)
+		Account.init(dslContext, directory)
 
 		Tenant(TEST_TENANT_KEY, "Test", "advisor") {
 			// here we have already set tenantId and kernelUserId for session context

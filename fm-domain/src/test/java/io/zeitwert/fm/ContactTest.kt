@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
@@ -54,6 +55,7 @@ class ContactTest {
 
 		contactA1.accountId = account.id
 		initContact(contactA1)
+		val contactA_key = contactA1.key!!
 		assertEquals(account.id, contactA1.accountId, "account id")
 
 		// Check initial addresses
@@ -66,7 +68,7 @@ class ContactTest {
 		val emailAddr1 = contactA1.electronicAddressList[0]
 		val emailAddr1Id = emailAddr1.id
 
-		checkContact(contactA1)
+		checkContact(contactA1, contactA_key)
 
 		contactRepository.store(contactA1)
 
@@ -77,7 +79,7 @@ class ContactTest {
 		assertNotNull(contactA2.meta.modifiedAt, "modifiedAt not null")
 		assertEquals(account.id, contactA2.accountId, "account id")
 
-		checkContact(contactA2)
+		checkContact(contactA2, contactA_key)
 
 		// Verify addresses persisted
 		assertEquals(2, contactA2.mailAddressList.size, "mail address count 2 after reload")
@@ -137,7 +139,7 @@ class ContactTest {
 	}
 
 	private fun initContact(contact: ObjContact) {
-		contact.key = "TEST-CONTACT-001"
+		contact.key = "contact-key-${UUID.randomUUID().toString().substring(0, 8)}"
 		contact.contactRole = CodeContactRole.CARETAKER
 		contact.salutation = CodeSalutation.MR
 		contact.title = CodeTitle.DR
@@ -172,8 +174,11 @@ class ContactTest {
 		emailAddr.name = "Work Email"
 	}
 
-	private fun checkContact(contact: ObjContact) {
-		assertEquals("TEST-CONTACT-001", contact.key)
+	private fun checkContact(
+		contact: ObjContact,
+		key: String,
+	) {
+		assertEquals(key, contact.key)
 		assertEquals(CodeContactRole.CARETAKER, contact.contactRole)
 		assertEquals(CodeSalutation.MR, contact.salutation)
 		assertEquals(CodeTitle.DR, contact.title)

@@ -1,6 +1,5 @@
 package io.zeitwert.fm
 
-import io.zeitwert.dddrive.app.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -8,6 +7,7 @@ import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.test.TestApplication
+import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -25,7 +25,7 @@ import java.util.*
 class UserTest {
 
 	@Autowired
-	private lateinit var sessionContext: SessionContext
+	private lateinit var dslContext: DSLContext
 
 	@Autowired
 	private lateinit var userRepository: ObjUserRepository
@@ -46,7 +46,9 @@ class UserTest {
 				tenantType = CodeTenantType.COMMUNITY
 				assertNotNull(id, "tenant t1.id not null")
 				assertNotNull(tenantId, "tenant t1.tenantId not null")
-				tenantRepository.store(this)
+				dslContext.transaction { _ ->
+					tenantRepository.store(this)
+				}
 			}
 		}
 		t2 = tenantRepository.getByKey("tt2").orElseGet {
@@ -54,7 +56,9 @@ class UserTest {
 				key = "tt2"
 				name = "tt2"
 				tenantType = CodeTenantType.COMMUNITY
-				tenantRepository.store(this)
+				dslContext.transaction { _ ->
+					tenantRepository.store(this)
+				}
 			}
 		}
 		t3 = tenantRepository.getByKey("tt3").orElseGet {
@@ -62,7 +66,9 @@ class UserTest {
 				key = "tt3"
 				name = "tt3"
 				tenantType = CodeTenantType.COMMUNITY
-				tenantRepository.store(this)
+				dslContext.transaction { _ ->
+					tenantRepository.store(this)
+				}
 			}
 		}
 	}
@@ -88,7 +94,9 @@ class UserTest {
 		assertNotNull(user1.meta.createdAt, "createdAt not null")
 		assertEquals(1, user1.meta.transitionList.size)
 
-		userRepository.store(user1)
+		dslContext.transaction { _ ->
+			userRepository.store(user1)
+		}
 
 		val user2 = userRepository.get(user1Id)
 		val user2IdHash = System.identityHashCode(user2)
@@ -115,7 +123,9 @@ class UserTest {
 		assertTrue(user1.hasRole(CodeUserRole.ADMIN))
 		assertFalse(user1.hasRole(CodeUserRole.USER))
 
-		userRepository.store(user1)
+		dslContext.transaction { _ ->
+			userRepository.store(user1)
+		}
 
 		val user2 = userRepository.load(user1Id)
 
@@ -136,7 +146,9 @@ class UserTest {
 		assertEquals("Updated description", user2.description)
 		assertEquals(CodeUserRole.SUPER_USER, user2.role)
 
-		userRepository.store(user2)
+		dslContext.transaction { _ ->
+			userRepository.store(user2)
+		}
 
 		val user3 = userRepository.load(user1Id)
 
@@ -175,7 +187,9 @@ class UserTest {
 		assertFalse(user1.tenantSet.any { it == t2.id })
 
 		assertEquals(1, user1.meta.transitionList.size)
-		userRepository.store(user1)
+		dslContext.transaction { _ ->
+			userRepository.store(user1)
+		}
 		assertEquals(2, user1.meta.transitionList.size)
 
 		// Load and verify persistence
@@ -196,7 +210,9 @@ class UserTest {
 		assertTrue(user2.tenantSet.any { it == t2.id })
 		assertTrue(user2.tenantSet.any { it == t3.id })
 
-		userRepository.store(user2)
+		dslContext.transaction { _ ->
+			userRepository.store(user2)
+		}
 
 		// Verify final state
 		val user3 = userRepository.load(user1Id)
@@ -218,7 +234,9 @@ class UserTest {
 		user1.tenantSet.add(t2.id)
 		assertEquals(2, user1.tenantSet.size)
 
-		userRepository.store(user1)
+		dslContext.transaction { _ ->
+			userRepository.store(user1)
+		}
 
 		// Load and clear
 		val user2 = userRepository.load(user1Id)
@@ -227,7 +245,9 @@ class UserTest {
 		user2.tenantSet.clear()
 		assertEquals(0, user2.tenantSet.size)
 
-		userRepository.store(user2)
+		dslContext.transaction { _ ->
+			userRepository.store(user2)
+		}
 
 		// Verify cleared
 		val user3 = userRepository.load(user1Id)
@@ -245,7 +265,9 @@ class UserTest {
 		// First transition is from creation
 		assertEquals(1, user1.meta.transitionList.size)
 
-		userRepository.store(user1)
+		dslContext.transaction { _ ->
+			userRepository.store(user1)
+		}
 
 		// Second transition after first store
 		assertEquals(2, user1.meta.transitionList.size)
@@ -254,7 +276,9 @@ class UserTest {
 		assertEquals(2, user2.meta.transitionList.size)
 
 		user2.name = "Updated Name"
-		userRepository.store(user2)
+		dslContext.transaction { _ ->
+			userRepository.store(user2)
+		}
 
 		// Third transition after update
 		assertEquals(3, user2.meta.transitionList.size)

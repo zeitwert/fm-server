@@ -57,14 +57,11 @@ class ObjAccountImpl(
 	override fun doAfterCreate(sessionContext: SessionContext) {
 		super.doAfterCreate(sessionContext)
 		setValueByPath("accountId", id)
-		addLogoImage()
 	}
 
 	override fun doBeforeStore(sessionContext: SessionContext) {
 		super.doBeforeStore(sessionContext)
-		if (logoImageId == null) {
-			addLogoImage()
-		}
+		addLogoImage()
 	}
 
 	override val contactList: List<Any>
@@ -92,6 +89,8 @@ class ObjAccountImpl(
 	private fun addLogoImage() {
 		val documentRepo = directory.getRepository(ObjDocument::class.java)
 		val image = documentRepo.create()
+		// need to overwrite sessionContext.accountId upon creation
+		image.accountId = id
 		image.name = "Logo"
 		image.contentKind = CodeContentKind.FOTO
 		image.documentKind = CodeDocumentKind.STANDALONE
