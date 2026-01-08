@@ -2,6 +2,9 @@ package io.zeitwert.config.dsl
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.config.DelegatingSessionContext
+import io.zeitwert.fm.dms.model.ObjDocument
+import io.zeitwert.fm.dms.model.ObjDocumentRepository
+import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -9,6 +12,7 @@ import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import org.jooq.DSLContext
+import java.time.OffsetDateTime
 
 /**
  * DSL for creating tenants with nested users using Spring repositories.
@@ -19,10 +23,10 @@ import org.jooq.DSLContext
  * Usage:
  * ```
  * Tenant.init(tenantRepository, userRepository)
- * Tenant("demo", "Demo", "advisor") {
+ * Tenant("demo", "Demo", "advisor", "demo/tenant/logo-demo.png") {
  *     adminUser("admin@zeitwert.io", "Admin", "admin", "demo") {
  *         user("user@zeitwert.io", "User", "user", "demo")
- *         account("ACC", "Account Name", "client") {
+ *         account("ACC", "Account Name", "client", "demo/account/logo-ACC.jpg") {
  *             contact(...)
  *         }
  *     }
@@ -40,6 +44,43 @@ object Tenant {
 	val userRepository: ObjUserRepository
 		get() = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
+	val documentRepository: ObjDocumentRepository
+		get() = directory.getRepository(ObjDocument::class.java) as ObjDocumentRepository
+
+	/**
+	 * Upload logo content from classpath resource to a document.
+	 * Loads the document for writing by ID.
+	 *
+	 * @param documentId The ID of the logo document to upload content to
+	 * @param resourcePath The resource path relative to resources (e.g., "demo/tenant/logo-demo.png")
+	 * @param userId The user ID for the upload
+	 */
+	fun uploadLogoFromResource(
+		documentId: Any,
+		resourcePath: String,
+		userId: Any,
+	) {
+		val fullPath = "/$resourcePath"
+		val inputStream = Tenant::class.java.getResourceAsStream(fullPath)
+		if (inputStream == null) {
+			println("      Warning: No logo resource found at $resourcePath")
+			return
+		}
+
+		val extension = resourcePath.substringAfterLast(".", "")
+		val contentType = CodeContentType.getItemByExtension(extension)
+		if (contentType == null) {
+			println("      Warning: Unknown content type for extension '$extension' in $resourcePath")
+			return
+		}
+
+		val bytes = inputStream.use { it.readBytes() }
+		// Load document for writing
+		val document = documentRepository.load(documentId)
+		document.storeContent(contentType, bytes, userId, OffsetDateTime.now())
+		println("      Uploaded logo from $resourcePath")
+	}
+
 	fun init(
 		dslContext: DSLContext,
 		directory: RepositoryDirectory,
@@ -52,6 +93,7 @@ object Tenant {
 		key: String,
 		name: String,
 		type: String,
+		logoPath: String? = null,
 		init: TenantContext.() -> Unit,
 	): Pair<Int, Int> {
 		val context = TenantContext(key, name, type)
@@ -70,6 +112,12 @@ object Tenant {
 		context.users.forEach { userCtx ->
 			val tenant = tenantRepository.get(tenantId)
 			getOrCreateUser(tenant, userCtx)
+		}
+
+		// Upload tenant logo if path is provided
+		if (logoPath != null) {
+			val tenant = tenantRepository.get(tenantId)
+			uploadLogoFromResource(tenant.logoImageId!!, logoPath, context.adminUserId!!)
 		}
 
 		return Pair(tenantId, context.adminUserId!!)
@@ -94,6 +142,7 @@ object Tenant {
 		dslContext.transaction { _ ->
 			tenantRepository.store(newTenant)
 		}
+		check(newTenant.logoImageId != null) { "Tenant logoImageId is created in domain logic" }
 
 		val tenantId = newTenant.id as Int
 		println("    Created tenant ${ctx.key} - ${ctx.name} (id=$tenantId)")
@@ -219,12 +268,19 @@ class AdminUserContext(
 
 	/**
 	 * Create an account with optional nested contacts.
+	 *
+	 * @param key Account key
+	 * @param name Account name
+	 * @param accountType Account type
+	 * @param logoPath Optional path to logo resource relative to resources (e.g., "demo/account/logo-3032.jpg")
+	 * @param init Lambda to configure the account
 	 */
 	fun account(
 		key: String,
 		name: String,
 		accountType: String,
+		logoPath: String? = null,
 		init: AccountContext.() -> Unit = {},
-	): Int = Account(userId, key, name, accountType, init)
+	): Int = Account(userId, key, name, accountType, logoPath, init)
 
 }

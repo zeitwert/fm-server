@@ -21,7 +21,7 @@ import java.time.LocalDate
  * Usage:
  * ```
  * Account.init(accountRepository, contactRepository, documentRepository)
- * Account("TA", "Testlingen", "client") {
+ * Account("TA", "Testlingen", "client", "demo/account/logo-TA.jpg") {
  *     contact("Max", "Muster", "max.muster@test.ch", "councilor") {
  *         salutation = "mr"
  *         phone = "+41 44 123 45 67"
@@ -53,9 +53,10 @@ object Account {
 		key: String,
 		name: String,
 		accountType: String,
+		logoPath: String? = null,
 		init: AccountContext.() -> Unit = {},
 	): Int {
-		val context = AccountContext(userId, key, name, accountType).apply(init)
+		val context = AccountContext(userId, key, name, accountType, logoPath).apply(init)
 		return createOrGetAccount(context)
 	}
 
@@ -86,9 +87,15 @@ object Account {
 		dslContext.transaction { _ ->
 			accountRepository.store(newAccount)
 		}
+		check(newAccount.logoImageId != null) { "Tenant logoImageId is created in domain logic" }
 
 		val accountId = newAccount.id as Int
 		println("    Created account ${ctx.key} - ${ctx.name} (id=$accountId)")
+
+		// Upload account logo from resource if path is provided
+		if (ctx.logoPath != null) {
+			Tenant.uploadLogoFromResource(newAccount.logoImageId!!, ctx.logoPath, ctx.userId)
+		}
 
 		// Create contacts for this account
 		ctx.contacts.forEach { contactCtx -> createContact(newAccount, contactCtx) }
@@ -142,6 +149,7 @@ class AccountContext(
 	val key: String,
 	val name: String,
 	val accountType: String,
+	val logoPath: String? = null,
 ) {
 
 	internal val contacts = mutableListOf<ContactContext>()

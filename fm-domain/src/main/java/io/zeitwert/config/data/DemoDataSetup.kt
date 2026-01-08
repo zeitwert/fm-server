@@ -7,6 +7,10 @@ import io.zeitwert.config.dsl.Account
 import io.zeitwert.config.dsl.AccountContext
 import io.zeitwert.config.dsl.Building
 import io.zeitwert.config.dsl.Tenant
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUser
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import org.jooq.DSLContext
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
@@ -50,30 +54,33 @@ class DemoDataSetup(
 		Account.init(dslContext, directory)
 		Building.init(dslContext, directory)
 
-		Tenant(DEMO_TENANT_KEY, "Demo", "advisor") {
+		// Upload kernel tenant logo if empty
+		setupKernelTenantLogo()
+
+		Tenant(DEMO_TENANT_KEY, "Demo", "advisor", "demo/tenant/logo-demo.png") {
 			val allUsers = getUsers("zeitwert.io")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, name, role) -> user(email, name, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
-				account("3032", "Hinterkappelen 3032", "client") {
+				account("3032", "Hinterkappelen 3032", "client", "demo/account/logo-3032.jpg") {
 					genRandomContacts()
 					buildings3032()
 				}
-				account("3033", "Wohlen 3033", "client") {
+				account("3033", "Wohlen 3033", "client", "demo/account/logo-3033.jpg") {
 					genRandomContacts()
 					buildings3033()
 				}
-				account("3034", "Murzelen 3034", "client") {
+				account("3034", "Murzelen 3034", "client", "demo/account/logo-3034.jpg") {
 					genRandomContacts()
 					buildings3034()
 				}
-				account("3043", "Uettligen 3043", "client") {
+				account("3043", "Uettligen 3043", "client", "demo/account/logo-3043.jpg") {
 					genRandomContacts()
 					buildings3043()
 				}
-				account("8556", "Wigoltingen 8556", "client") {
+				account("8556", "Wigoltingen 8556", "client", "demo/account/logo-8556.jpg") {
 					genRandomContacts()
 					buildings8556()
 				}
@@ -83,14 +90,14 @@ class DemoDataSetup(
 			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
-		Tenant("8253", "Diessenhofen", "community") {
+		Tenant("8253", "Diessenhofen", "community", "demo/tenant/logo-8253.jpg") {
 			val allUsers = getUsers("diessenhofen.ch")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
-				account("8253", "Diessenhofen 8253", "client") {
+				account("8253", "Diessenhofen 8253", "client", "demo/account/logo-8253.jpg") {
 					genRandomContacts()
 					buildings8253()
 				}
@@ -100,14 +107,14 @@ class DemoDataSetup(
 			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
-		Tenant("8266", "Steckborn", "community") {
+		Tenant("8266", "Steckborn", "community", "demo/tenant/logo-8266.jpg") {
 			val allUsers = getUsers("steckborn.ch")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
-				account("8266", "Steckborn 8266", "client") {
+				account("8266", "Steckborn 8266", "client", "demo/account/logo-8266.jpg") {
 					genRandomContacts()
 					buildings8266()
 				}
@@ -117,14 +124,14 @@ class DemoDataSetup(
 			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
-		Tenant("8476", "Unterstammheim", "community") {
+		Tenant("8476", "Unterstammheim", "community", "demo/tenant/logo-8476.jpg") {
 			val allUsers = getUsers("unterstammheim.ch")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
-				account("8476", "Unterstammheim 8476", "client") {
+				account("8476", "Unterstammheim 8476", "client", "demo/account/logo-8476.jpg") {
 					genRandomContacts()
 					buildings8476()
 				}
@@ -134,6 +141,41 @@ class DemoDataSetup(
 			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
+	}
+
+	/**
+	 * Check if the kernel tenant's logo document is empty and upload the logo if needed.
+	 */
+	private fun setupKernelTenantLogo() {
+		val tenantRepository = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
+		val userRepository = directory.getRepository(ObjUser::class.java) as ObjUserRepository
+
+		// Get the kernel tenant (id=1) - use get() for read-only access
+		val kernelTenant = tenantRepository.get(ObjTenantRepository.KERNEL_TENANT_ID)
+		val logoImageId = kernelTenant.logoImageId
+
+		if (logoImageId == null) {
+			println("    Kernel tenant has no logo document, skipping logo upload")
+			return
+		}
+
+		// Check if logo document already has content by loading it
+		val logoImage = Tenant.documentRepository.load(logoImageId)
+		if (logoImage.content != null && logoImage.content!!.isNotEmpty()) {
+			println("    Kernel tenant logo already has content, skipping")
+			return
+		}
+
+		// Get kernel user for the upload
+		val kernelUser = userRepository.getByEmail("k@zeitwert.io")
+		if (kernelUser.isEmpty) {
+			println("    Warning: Kernel user not found, skipping kernel logo upload")
+			return
+		}
+
+		// Upload the kernel logo (uploadLogoFromResource will load the document for writing)
+		Tenant.uploadLogoFromResource(logoImageId, "demo/tenant/logo-kernel.jpg", kernelUser.get().id!!)
+		println("    Uploaded kernel tenant logo")
 	}
 
 	/**
@@ -284,4 +326,5 @@ class DemoDataSetup(
 		val day = (1..28).random()
 		return LocalDate.of(year, month, day)
 	}
+
 }

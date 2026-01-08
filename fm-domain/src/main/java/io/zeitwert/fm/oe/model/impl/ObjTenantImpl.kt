@@ -54,7 +54,6 @@ class ObjTenantImpl(
 	override fun doAfterCreate(sessionContext: SessionContext) {
 		super.doAfterCreate(sessionContext)
 		setValueByPath("tenantId", id)
-		println("ObjTenantImpl.doAfterCreate: id=$id, tenantId=$tenantId")
 		this.addLogoImage()
 	}
 
