@@ -79,7 +79,7 @@ class ObjBuildingImpl(
 	override var buildingSubType by enumProperty<CodeBuildingSubType>("buildingSubType")
 
 	// Reference properties (coverFoto)
-	override var coverFotoId by referenceIdProperty<ObjDocument>("coverFotoId")
+	override var coverFotoId by referenceIdProperty<ObjDocument>("coverFoto")
 	override var coverFoto by referenceProperty<ObjDocument>("coverFoto")
 
 	// Part list property

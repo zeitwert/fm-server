@@ -90,6 +90,17 @@ object Account {
 		// Create contacts for this account
 		ctx.contacts.forEach { contactCtx -> createContact(account, contactCtx) }
 
+		// Create buildings for this account
+		ctx.buildings.forEach { buildingCtx ->
+			Building(
+				account,
+				buildingCtx.name,
+				buildingCtx.street,
+				buildingCtx.zip,
+				buildingCtx.city,
+			) { copyFrom(buildingCtx) }
+		}
+
 		return accountId
 	}
 
@@ -129,6 +140,7 @@ class AccountContext(
 ) {
 
 	internal val contacts = mutableListOf<ContactContext>()
+	internal val buildings = mutableListOf<BuildingContext>()
 
 	fun contact(
 		firstName: String,
@@ -138,6 +150,25 @@ class AccountContext(
 		init: ContactContext.() -> Unit = {},
 	) {
 		contacts += ContactContext(firstName, lastName, email, contactRole).apply(init)
+	}
+
+	/**
+	 * Create a building within this account.
+	 *
+	 * @param name Building name
+	 * @param street Street address
+	 * @param zip Postal code
+	 * @param city City name
+	 * @param init Lambda to configure the building
+	 */
+	fun building(
+		name: String,
+		street: String,
+		zip: String,
+		city: String,
+		init: BuildingContext.() -> Unit = {},
+	) {
+		buildings += BuildingContext(name, street, zip, city).apply(init)
 	}
 
 }
