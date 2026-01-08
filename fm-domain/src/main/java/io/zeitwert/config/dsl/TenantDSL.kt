@@ -53,14 +53,15 @@ object Tenant {
 		name: String,
 		type: String,
 		init: TenantContext.() -> Unit,
-	): Int {
+	): Pair<Int, Int> {
 		val context = TenantContext(key, name, type)
 
 		// Create or get tenant first
-		val tenantId = createOrGetTenant(context)
+		val tenantId = getOrCreateTenant(context)
 
 		// Set tenant ID in session context for nested operations
-		DelegatingSessionContext.setSetupTenantId(tenantId)
+		DelegatingSessionContext.setTenantId(tenantId)
+		context.tenantId = tenantId
 
 		// Now execute the DSL block with tenant context set
 		context.init()
@@ -68,66 +69,66 @@ object Tenant {
 		// Process any simple users (non-admin)
 		context.users.forEach { userCtx ->
 			val tenant = tenantRepository.get(tenantId)
-			createOrGetUser(tenant, userCtx)
+			getOrCreateUser(tenant, userCtx)
 		}
 
-		return tenantId
+		return Pair(tenantId, context.adminUserId!!)
 	}
 
-	private fun createOrGetTenant(ctx: TenantContext): Int {
+	private fun getOrCreateTenant(ctx: TenantContext): Int {
 		// Check if tenant already exists
-		val existingTenant = tenantRepository.getByKey(ctx.key)
+		val tenant = tenantRepository.getByKey(ctx.key)
 
-		if (existingTenant.isPresent) {
-			val tenant = existingTenant.get()
+		if (tenant.isPresent) {
+			val tenant = tenant.get()
 			val tenantId = tenant.id as Int
 			println("    Tenant ${ctx.key} already exists (id=$tenantId)")
 			return tenantId
 		}
 
 		// Create new tenant via repository
-		val tenant = tenantRepository.create()
-		tenant.key = ctx.key
-		tenant.name = ctx.name
-		tenant.tenantType = CodeTenantType.getTenantType(ctx.type)
+		val newTenant = tenantRepository.create()
+		newTenant.key = ctx.key
+		newTenant.name = ctx.name
+		newTenant.tenantType = CodeTenantType.getTenantType(ctx.type)
 		dslContext.transaction { _ ->
-			tenantRepository.store(tenant)
+			tenantRepository.store(newTenant)
 		}
 
-		val tenantId = tenant.id as Int
+		val tenantId = newTenant.id as Int
 		println("    Created tenant ${ctx.key} - ${ctx.name} (id=$tenantId)")
 
 		return tenantId
 	}
 
-	internal fun createOrGetUser(
+	internal fun getOrCreateUser(
 		tenant: ObjTenant,
 		ctx: UserContext,
 	): Int {
 		// Check if user already exists
-		val existingUser = userRepository.getByEmail(ctx.email)
+		val user = userRepository.getByEmail(ctx.email)
 
-		if (existingUser.isPresent) {
-			val userId = existingUser.get().id as Int
+		if (user.isPresent) {
+			val userId = user.get().id as Int
 			println("      User ${ctx.email} already exists (id=$userId)")
 			return userId
 		}
 
 		// Create new user via repository
-		val user = userRepository.create()
-		user.email = ctx.email
-		user.name = ctx.name
-		user.role = CodeUserRole.getUserRole(ctx.role)
-		user.password = userRepository.passwordEncoder.encode(ctx.password)
+		val newUser = userRepository.create()
+		newUser.email = ctx.email
+		newUser.name = ctx.name
+		newUser.role = CodeUserRole.getUserRole(ctx.role)
+		newUser.password = userRepository.passwordEncoder.encode(ctx.password)
 
 		// Associate user with tenant
-		user.tenantSet.add(tenant.id)
+		newUser.tenantSet.add(tenant.id)
 
 		dslContext.transaction { _ ->
-			userRepository.store(user)
+			userRepository.store(newUser)
 		}
 
-		val userId = user.id as Int
+		val userId = newUser.id as Int
 		println("      Created user ${ctx.email} - ${ctx.name} (id=$userId)")
 
 		return userId
@@ -142,9 +143,35 @@ class TenantContext(
 	val key: String,
 	val name: String,
 	val type: String,
+	var tenantId: Int? = null,
+	var adminUserId: Int? = null,
 ) {
 
 	internal val users = mutableListOf<UserContext>()
+
+	/**
+	 * Create an admin user with a nested context for creating additional users and accounts.
+	 * The admin user's ID will be set in the session context for all nested operations.
+	 */
+	fun adminUser(
+		email: String,
+		name: String,
+		role: String,
+		password: String,
+		init: AdminUserContext.() -> Unit,
+	) {
+		val tenant = Tenant.tenantRepository.get(tenantId!!)
+
+		// Create the admin user
+		val userId = Tenant.getOrCreateUser(tenant, UserContext(email, name, role, password))
+
+		// Set user ID in session context for nested operations
+		DelegatingSessionContext.setUserId(userId)
+		adminUserId = userId
+
+		// Execute nested block with user context set
+		AdminUserContext(tenant, userId).init()
+	}
 
 	/**
 	 * Create a simple user without nested context.
@@ -159,30 +186,6 @@ class TenantContext(
 		users += UserContext(email, name, role, password)
 	}
 
-	/**
-	 * Create an admin user with a nested context for creating additional users and accounts.
-	 * The admin user's ID will be set in the session context for all nested operations.
-	 */
-	fun adminUser(
-		email: String,
-		name: String,
-		role: String,
-		password: String,
-		init: AdminUserContext.() -> Unit,
-	) {
-		val tenantId = DelegatingSessionContext.getSetupTenantId()
-			?: throw IllegalStateException("Tenant ID not set in session context")
-		val tenant = Tenant.tenantRepository.get(tenantId)
-
-		// Create the admin user
-		val userId = Tenant.createOrGetUser(tenant, UserContext(email, name, role, password))
-
-		// Set user ID in session context for nested operations
-		DelegatingSessionContext.setSetupUserId(userId)
-
-		// Execute nested block with user context set
-		AdminUserContext(tenant).init()
-	}
 }
 
 @TenantDslMarker
@@ -198,7 +201,8 @@ class UserContext(
  */
 @TenantDslMarker
 class AdminUserContext(
-	private val tenant: ObjTenant,
+	val tenant: ObjTenant,
+	val userId: Int,
 ) {
 
 	/**
@@ -210,7 +214,7 @@ class AdminUserContext(
 		role: String,
 		password: String,
 	) {
-		Tenant.createOrGetUser(tenant, UserContext(email, name, role, password))
+		Tenant.getOrCreateUser(tenant, UserContext(email, name, role, password))
 	}
 
 	/**
@@ -221,6 +225,6 @@ class AdminUserContext(
 		name: String,
 		accountType: String,
 		init: AccountContext.() -> Unit = {},
-	): Int = Account(key, name, accountType, init)
+	): Int = Account(userId, key, name, accountType, init)
 
 }

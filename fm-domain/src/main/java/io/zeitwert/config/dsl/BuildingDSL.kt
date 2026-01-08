@@ -1,7 +1,6 @@
 package io.zeitwert.config.dsl
 
 import dddrive.ddd.core.model.RepositoryDirectory
-import io.zeitwert.config.DelegatingSessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -68,6 +67,7 @@ object Building {
 	}
 
 	operator fun invoke(
+		userId: Any,
 		account: ObjAccount,
 		name: String,
 		street: String,
@@ -75,7 +75,7 @@ object Building {
 		city: String,
 		init: BuildingContext.() -> Unit = {},
 	): Int {
-		val context = BuildingContext(name, street, zip, city).apply(init)
+		val context = BuildingContext(userId, name, street, zip, city).apply(init)
 		return createBuilding(account, context)
 	}
 
@@ -121,15 +121,8 @@ object Building {
 		building: ObjBuilding,
 		ctx: RatingContext,
 	) {
-		// Get the user for rating
-		val userId = DelegatingSessionContext.getSetupUserId()
-		val user = if (userId != null) userRepository.get(userId) else null
-
 		// Add rating to building
-		val rating = building.addRating(
-			user ?: userRepository.get(1), // fallback to first user
-			OffsetDateTime.now(),
-		)
+		val rating = building.addRating(ctx.userId, OffsetDateTime.now())
 
 		// Set rating properties
 		rating.ratingDate = LocalDate.of(ctx.ratingYear, 1, 1)
@@ -165,6 +158,7 @@ object Building {
 
 @TenantDslMarker
 class BuildingContext(
+	val userId: Any,
 	val name: String,
 	val street: String,
 	val zip: String,
@@ -197,7 +191,7 @@ class BuildingContext(
 		maintenanceStrategy: String? = null,
 		init: RatingContext.() -> Unit = {},
 	) {
-		ratingContext = RatingContext(ratingYear, partCatalog, maintenanceStrategy).apply(init)
+		ratingContext = RatingContext(userId, ratingYear, partCatalog, maintenanceStrategy).apply(init)
 	}
 
 	/**
@@ -220,6 +214,7 @@ class BuildingContext(
 
 @TenantDslMarker
 class RatingContext(
+	val userId: Any,
 	val ratingYear: Int,
 	val partCatalog: String?,
 	val maintenanceStrategy: String?,

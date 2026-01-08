@@ -180,11 +180,12 @@ class BuildingImportExportController {
 		dto: BuildingTransferDto,
 	) {
 		try {
+			val userId = sessionCtx.userId
+			val now = sessionCtx.currentTime
+
 			building.meta.disableCalc()
 
-			val user = userRepo.get(sessionCtx.userId)
-			val now = sessionCtx.currentTime
-			building.ownerId = user.id
+			building.ownerId = userId
 			building.name = dto.name
 			building.description = dto.description
 			building.buildingNr = dto.buildingNr
@@ -218,7 +219,7 @@ class BuildingImportExportController {
 				if (building.currentRating != null) {
 					building.currentRating
 				} else {
-					building.addRating(user, now)
+					building.addRating(userId, now)
 				}
 			)!!
 			rating.partCatalog = getPartCatalog(dto.buildingPartCatalog)
@@ -255,7 +256,7 @@ class BuildingImportExportController {
 			}
 			if (dto.notes != null) {
 				val noteType = getNoteType("note")
-				val noteUserId = user.id
+				val noteUserId = userId
 				dto.notes.forEach(
 					Consumer { dtoNote: NoteTransferDto? ->
 						val note = building.addNote(noteType!!, noteUserId)

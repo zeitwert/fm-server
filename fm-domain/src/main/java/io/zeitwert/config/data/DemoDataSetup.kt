@@ -2,6 +2,7 @@ package io.zeitwert.config.data
 
 import dddrive.ddd.core.model.RepositoryDirectory
 import io.zeitwert.config.DataSetup
+import io.zeitwert.config.DelegatingSessionContext
 import io.zeitwert.config.dsl.Account
 import io.zeitwert.config.dsl.AccountContext
 import io.zeitwert.config.dsl.Building
@@ -25,10 +26,21 @@ class DemoDataSetup(
 	companion object {
 
 		const val DEMO_TENANT_KEY = "demo"
-		const val DEMO_ADMIN_EMAIL = "admin@zeitwert.io"
+		const val DEMO_PASSWORD = "demo"
 	}
 
 	override val name = "DEMO"
+
+	val userTemplates = listOf(
+		Triple("admin", "Admin", "admin"),
+		Triple("hannes", "Hannes Brunner", "super_user"),
+		Triple("martin", "Martin Frey", "super_user"),
+	)
+
+	private fun getUsers(domain: String): List<Triple<String, String, String>> =
+		userTemplates.map { (mail, name, role) ->
+			Triple("$mail@$domain", name, role)
+		}
 
 	override fun setup() {
 		println("\nDEMO DATA SETUP")
@@ -39,95 +51,163 @@ class DemoDataSetup(
 		Building.init(dslContext, directory)
 
 		Tenant(DEMO_TENANT_KEY, "Demo", "advisor") {
-			adminUser(DEMO_ADMIN_EMAIL, "Admin", "admin", "demo") {
-				user("hannes@zeitwert.io", "Hannes Brunner", "super_user", "demo")
-				user("martin@zeitwert.io", "Martin Frey", "super_user", "demo")
-				user("robert@zeitwert.io", "Robert Reader", "read_only", "demo")
+			val allUsers = getUsers("zeitwert.io")
+			val adminUser = allUsers[0]
+			val stdUsers = allUsers.subList(1, allUsers.size)
+			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
+				stdUsers.forEach { (email, name, role) -> user(email, name, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
 				account("3032", "Hinterkappelen 3032", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings3032()
 				}
 				account("3033", "Wohlen 3033", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings3033()
 				}
 				account("3034", "Murzelen 3034", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings3034()
 				}
 				account("3043", "Uettligen 3043", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings3043()
 				}
 				account("8556", "Wigoltingen 8556", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings8556()
 				}
 				println("  Demo data setup complete.\n")
 			}
+		}.also { (tenantId, userId) ->
+			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
-		Tenant("DH", "Diessenhofen", "community") {
-			adminUser("", "Admin", "admin", "demo") {
-				user("hannes@diessenhofen.ch", "Hannes Brunner", "super_user", "demo")
-				user("martin@diessenhofen.ch", "Martin Frey", "super_user", "demo")
+		Tenant("8253", "Diessenhofen", "community") {
+			val allUsers = getUsers("diessenhofen.ch")
+			val adminUser = allUsers[0]
+			val stdUsers = allUsers.subList(1, allUsers.size)
+			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
+				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
 				account("8253", "Diessenhofen 8253", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings8253()
 				}
 				println("  Demo data setup complete.\n")
 			}
+		}.also { (tenantId, userId) ->
+			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
-		Tenant("SB", "Steckborn", "community") {
-			adminUser("", "Admin", "admin", "demo") {
-				user("hannes@steckborn.ch", "Hannes Brunner", "super_user", "demo")
-				user("martin@steckborn.ch", "Martin Frey", "super_user", "demo")
+		Tenant("8266", "Steckborn", "community") {
+			val allUsers = getUsers("steckborn.ch")
+			val adminUser = allUsers[0]
+			val stdUsers = allUsers.subList(1, allUsers.size)
+			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
+				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
 				account("8266", "Steckborn 8266", "client") {
-					randomContacts(3)
+					genRandomContacts()
 					buildings8266()
 				}
 				println("  Demo data setup complete.\n")
 			}
+		}.also { (tenantId, userId) ->
+			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
-		Tenant("US", "Unterstammheim", "community") {
-			adminUser("", "Admin", "admin", "demo") {
-				user("hannes@unterstammheim.ch", "Hannes Brunner", "super_user", "demo")
-				user("martin@unterstammheim.ch", "Martin Frey", "super_user", "demo")
+		Tenant("8476", "Unterstammheim", "community") {
+			val allUsers = getUsers("unterstammheim.ch")
+			val adminUser = allUsers[0]
+			val stdUsers = allUsers.subList(1, allUsers.size)
+			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
+				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
 				println("  Setting up demo accounts, contacts, and buildings...")
 				account("8476", "Unterstammheim 8476", "client") {
-					randomContacts(2)
+					genRandomContacts()
 					buildings8476()
 				}
 				println("  Demo data setup complete.\n")
 			}
+		}.also { (tenantId, userId) ->
+			attachRandomContactsToAllBuildings(tenantId, userId)
 		}
 
 	}
 
 	/**
-	 * Generate random contacts for this account.
-	 *
-	 * @param count Number of contacts to generate
+	 * Generate a random number (3-6) of contacts for this account.
 	 */
-	fun AccountContext.randomContacts(count: Int) {
-		repeat(count) { index ->
+	fun AccountContext.genRandomContacts() {
+		val count = (3..6).random()
+		repeat(count) {
 			val (firstName, lastName, salutation) = randomName()
 			val email = "${firstName.lowercase()}.${lastName.lowercase()}@example.ch"
 			val role = randomContactRole()
 			val phone = randomPhone()
 			val mobile = randomMobile()
 			val birthDate = randomBirthDate()
-
 			contact(firstName, lastName, email, role) {
 				this.salutation = salutation
 				this.phone = phone
 				this.mobile = mobile
 				this.birthDate = birthDate
+			}
+		}
+	}
+
+	/**
+	 * Post-processing: attach random contacts to all buildings across all tenants.
+	 * Each building gets 1 to N contacts (where N = total contacts on its account).
+	 */
+	private fun attachRandomContactsToAllBuildings(
+		tenantId: Any,
+		userId: Any,
+	) {
+		println("  Attaching random contacts to buildings of tenant $tenantId (user: $userId)")
+
+		// Set tenant context for security
+		DelegatingSessionContext.setTenantId(tenantId as Int)
+		DelegatingSessionContext.setUserId(userId as Int)
+
+		// Get all accounts for this tenant
+		val accountIds = Account.accountRepository.find(null)
+		println("tenant($tenantId) accounts: $accountIds")
+		check(accountIds.isNotEmpty()) {
+			"Tenant $tenantId has no accounts to process."
+		}
+
+		for (accountId in accountIds) {
+			DelegatingSessionContext.setAccountId(accountId as Int)
+			// Query all contacts for this account
+			val contactIds = Account.contactRepository.find(null)
+			println("account($accountId) contacts: $contactIds")
+			check(contactIds.isNotEmpty()) {
+				"Account $accountId has no contacts to attach to buildings."
+			}
+
+			// Query all buildings for this account
+			val buildingIds = Building.buildingRepository.find(null)
+			println("account($accountId) buildings: $buildingIds")
+			check(buildingIds.isNotEmpty()) {
+				"Account $accountId has no buildings to attach contacts to."
+			}
+
+			// Attach random contacts to each building
+			for (buildingId in buildingIds) {
+				val building = Building.buildingRepository.load(buildingId)
+				val numContacts = (1..contactIds.size).random()
+				val selectedContacts = contactIds.shuffled().take(numContacts)
+
+				for (contactId in selectedContacts) {
+					println("attaching contact $contactId to building $buildingId")
+					building.contactSet.add(contactId as Int)
+				}
+
+				dslContext.transaction { _ ->
+					Building.buildingRepository.store(building)
+				}
 			}
 		}
 	}

@@ -49,51 +49,55 @@ object Account {
 	}
 
 	operator fun invoke(
+		userId: Any,
 		key: String,
 		name: String,
 		accountType: String,
 		init: AccountContext.() -> Unit = {},
 	): Int {
-		val context = AccountContext(key, name, accountType).apply(init)
+		val context = AccountContext(userId, key, name, accountType).apply(init)
 		return createOrGetAccount(context)
 	}
 
 	private fun createOrGetAccount(ctx: AccountContext): Int {
 		// Check if account already exists
-		val existingAccount = accountRepository.getByKey(ctx.key)
+		val account = accountRepository.getByKey(ctx.key)
 
-		if (existingAccount.isPresent) {
-			val account = existingAccount.get()
+		if (account.isPresent) {
+			val account = account.get()
 			val accountId = account.id as Int
 			println("    Account ${ctx.key} already exists (id=$accountId)")
 			// Still create contacts that don't exist
+			// set DelegatingSessionContext account ID for nested operations
+			// DelegatingSessionContext.setAccountId(accountId)
 			// ctx.contacts.forEach { contactCtx -> createContact(account, contactCtx) }
 			return accountId
 		}
 
 		// Create new account via repository
-		val account = accountRepository.create()
-		account.key = ctx.key
-		account.name = ctx.name
-		account.accountType = CodeAccountType.getAccountType(ctx.accountType)
+		val newAccount = accountRepository.create()
+		newAccount.key = ctx.key
+		newAccount.name = ctx.name
+		newAccount.accountType = CodeAccountType.getAccountType(ctx.accountType)
 
 		// Set account ID in session context for nested operations
-		DelegatingSessionContext.setSetupAccountId(account.id as Int)
+		DelegatingSessionContext.setAccountId(newAccount.id as Int)
 
 		dslContext.transaction { _ ->
-			accountRepository.store(account)
+			accountRepository.store(newAccount)
 		}
 
-		val accountId = account.id as Int
+		val accountId = newAccount.id as Int
 		println("    Created account ${ctx.key} - ${ctx.name} (id=$accountId)")
 
 		// Create contacts for this account
-		ctx.contacts.forEach { contactCtx -> createContact(account, contactCtx) }
+		ctx.contacts.forEach { contactCtx -> createContact(newAccount, contactCtx) }
 
 		// Create buildings for this account
 		ctx.buildings.forEach { buildingCtx ->
 			Building(
-				account,
+				ctx.userId,
+				newAccount,
 				buildingCtx.name,
 				buildingCtx.street,
 				buildingCtx.zip,
@@ -134,6 +138,7 @@ object Account {
 
 @TenantDslMarker
 class AccountContext(
+	val userId: Any,
 	val key: String,
 	val name: String,
 	val accountType: String,
@@ -168,7 +173,7 @@ class AccountContext(
 		city: String,
 		init: BuildingContext.() -> Unit = {},
 	) {
-		buildings += BuildingContext(name, street, zip, city).apply(init)
+		buildings += BuildingContext(userId, name, street, zip, city).apply(init)
 	}
 
 }

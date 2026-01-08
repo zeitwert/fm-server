@@ -11,7 +11,6 @@ import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
-import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.fm.task.model.ItemWithTasks
 import java.math.BigDecimal
@@ -92,7 +91,7 @@ interface ObjBuilding :
 	val ratingList: PartListProperty<ObjBuilding, ObjBuildingPartRating>
 
 	fun addRating(
-		user: ObjUser,
+		userId: Any,
 		timestamp: OffsetDateTime,
 	): ObjBuildingPartRating
 

@@ -94,7 +94,7 @@ class ObjBuildingDtoAdapter(
 			aggregate.meta.disableCalc()
 			// Handle AddRatingOperation before generic processing
 			if (dto.hasOperation(ADD_RATING_OPERATION)) {
-				aggregate.addRating(userRepository.get(sessionContext.userId), sessionContext.currentTime)
+				aggregate.addRating(sessionContext.userId, sessionContext.currentTime)
 			} else {
 				super.toAggregate(dto, aggregate)
 			}

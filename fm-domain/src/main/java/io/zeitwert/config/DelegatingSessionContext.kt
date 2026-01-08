@@ -31,42 +31,39 @@ class DelegatingSessionContext(
 	companion object {
 
 		private val setupMode = ThreadLocal.withInitial { false }
-		private val setupTenantId = ThreadLocal<Int?>()
-		private val setupUserId = ThreadLocal<Int?>()
-		private val setupAccountId = ThreadLocal<Int?>()
-
-		fun enterSetupMode() {
-			setupMode.set(true)
-		}
-
-		fun exitSetupMode() {
-			setupMode.set(false)
-		}
+		private val localTenantId = ThreadLocal<Int?>()
+		private val localUserId = ThreadLocal<Int?>()
+		private val localAccountId = ThreadLocal<Int?>()
 
 		fun isSetupMode(): Boolean = setupMode.get()
 
-		fun setSetupTenantId(id: Int) {
-			setupTenantId.set(id)
+		fun startSetupMode() {
+			setupMode.set(true)
 		}
 
-		fun setSetupUserId(id: Int) {
-			setupUserId.set(id)
+		fun stopSetupMode() {
+			clearLocalContext()
+			setupMode.set(false)
 		}
 
-		fun setSetupAccountId(id: Int?) {
-			setupAccountId.set(id)
+		fun setTenantId(id: Int) {
+			localTenantId.set(id)
+			localUserId.set(null)
+			localAccountId.set(null)
 		}
 
-		fun getSetupTenantId(): Int? = setupTenantId.get()
+		fun setUserId(id: Int) {
+			localUserId.set(id)
+		}
 
-		fun getSetupUserId(): Int? = setupUserId.get()
+		fun setAccountId(id: Int?) {
+			localAccountId.set(id)
+		}
 
-		fun getSetupAccountId(): Int? = setupAccountId.get()
-
-		fun clearSetupContext() {
-			setupTenantId.remove()
-			setupUserId.remove()
-			setupAccountId.remove()
+		fun clearLocalContext() {
+			localTenantId.remove()
+			localUserId.remove()
+			localAccountId.remove()
 		}
 	}
 
@@ -84,13 +81,13 @@ class DelegatingSessionContext(
 	private val setupAggregates: MutableMap<Any, Aggregate> = ConcurrentHashMap()
 
 	override val tenantId: Any
-		get() = if (isSetupMode()) getSetupTenantId() ?: ObjTenantRepository.KERNEL_TENANT_ID else delegate.tenantId
+		get() = if (isSetupMode()) localTenantId.get() ?: ObjTenantRepository.KERNEL_TENANT_ID else delegate.tenantId
 
 	override val userId: Any
-		get() = if (isSetupMode()) getSetupUserId() ?: kernelUserId else delegate.userId
+		get() = if (isSetupMode()) localUserId.get() ?: kernelUserId else delegate.userId
 
 	override val accountId: Any?
-		get() = if (isSetupMode()) getSetupAccountId() else delegate.accountId
+		get() = if (isSetupMode()) localAccountId.get() else delegate.accountId
 
 	override val locale: CodeLocale
 		get() = if (isSetupMode()) CodeLocale.getLocale("en-US")!! else delegate.locale
@@ -101,7 +98,7 @@ class DelegatingSessionContext(
 	override val currentTime: OffsetDateTime
 		get() = OffsetDateTime.now()
 
-	override fun hasAccount(): Boolean = if (isSetupMode()) getSetupAccountId() != null else delegate.hasAccount()
+	override fun hasAccount(): Boolean = if (isSetupMode()) localAccountId.get() != null else delegate.hasAccount()
 
 	override fun hasAggregate(id: Any): Boolean = if (isSetupMode()) setupAggregates.containsKey(id) else delegate.hasAggregate(id)
 

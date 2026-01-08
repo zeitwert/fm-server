@@ -215,7 +215,7 @@ class BuildingTest {
 		building.thirdPartyValue = BigDecimal.valueOf(0.0)
 		building.thirdPartyValueYear = 2000
 
-		building.addRating(userRepo.get(sessionContext.userId), sessionContext.currentTime)
+		building.addRating(sessionContext.userId, sessionContext.currentTime)
 		building.currentRating!!.partCatalog = CodeBuildingPartCatalog.C6
 		building.currentRating!!.maintenanceStrategy = CodeBuildingMaintenanceStrategy.N
 	}

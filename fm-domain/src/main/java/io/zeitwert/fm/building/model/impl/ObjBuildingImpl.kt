@@ -31,7 +31,6 @@ import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenant
-import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.math.BigDecimal
@@ -169,7 +168,7 @@ class ObjBuildingImpl(
 	override fun getCondition(year: Int): Int? = currentRating?.getCondition(year)
 
 	override fun addRating(
-		user: ObjUser,
+		userId: Any,
 		timestamp: OffsetDateTime,
 	): ObjBuildingPartRating {
 		val oldRating = currentRating
@@ -184,7 +183,7 @@ class ObjBuildingImpl(
 			} else {
 				rating.maintenanceStrategy = CodeBuildingMaintenanceStrategy.N
 			}
-			rating.ratingUser = user
+			rating.ratingUserId = userId
 			rating.ratingDate = timestamp.toLocalDate()
 		} finally {
 			rating.meta.enableCalc()

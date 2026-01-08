@@ -31,15 +31,13 @@ class DataSetupRunner(
 		val dataSetup = dataSetups.first()
 		println("\n=== ${dataSetup.name} DATA SETUP ===")
 
-		DelegatingSessionContext.enterSetupMode()
+		DelegatingSessionContext.startSetupMode()
 		try {
 			dataSetup.setup()
 		} finally {
-			DelegatingSessionContext.clearSetupContext()
-			DelegatingSessionContext.exitSetupMode()
+			DelegatingSessionContext.stopSetupMode()
 		}
 
 		println("=== ${dataSetup.name} DATA SETUP: Complete ===\n")
 	}
 }
-
