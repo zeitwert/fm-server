@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-# Run Tests within the domain module
+# Run Tests within the dddrive module
 
 After any change, you run the tests to ensure the changes are working as expected.
 The tests can be run via `mvn` on the windows command shell.

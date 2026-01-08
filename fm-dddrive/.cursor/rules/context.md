@@ -9,6 +9,14 @@ It is part of a multi-module Maven project, but has no dependencies on other mod
 
 # Environment
 
-The linting inside the cursor IDE is not reliable, so you need to run the compilation with `mvn clean compile -DskipTests` on the command shellto ensure the code is correct.
-
 We are on a Windows machine with the command shell.
+
+# Compilation and Linting
+
+The linting inside the cursor IDE is not reliable, so you need to run the compilation to ensure the code is correct.
+
+`mvn compile -DskipTests -nsu`
+
+or even with full recompilation (VERY SLOW):
+
+`mvn clean test-compile -DskipTests -nsu`

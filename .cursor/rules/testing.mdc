@@ -7,34 +7,26 @@ alwaysApply: true
 After any change, you run the tests to ensure the changes are working as expected.
 The tests can be run via `mvn` on the windows command shell.
 
-## run all tests (before completing the task)
+## run tests as specific as possible to minimize resource consumption
+
+Run one specific test (need to specify the module):
+
+`mvn surefire:test -Dtest=HouseholdMemTest -pl fm-dddrive`
+
+Run all tests in one specific module:
+
+`mvn surefire:test -pl fm-dddrive`
+
+Run all tests in all modules except the ui (never test UI, it does not work with maven):
+
+`mvn surefire:test -pl !fm-ui`
+
+Run all tests in all modules WITH recompilation (VERY SLOW):
 
 `mvn clean test -pl !fm-ui -nsu`
 
-## run a selection or specific test file (WITH code generation)
-
-`mvn clean test -Dtest=[test-name-pattern] -pl [module-name] -nsu`
-
-example:
-
-`mvn clean test -Dtest=HouseholdMemTest -pl fm-dddrive -nsu`
-
-## be smart and mind resource consumption
-
-If you just did a full compile, you don't need to recompile again, just execute the tests.
-
-`mvn surefire:test -pl !fm-ui -nsu`
-
-## to run a selection or specific test file (WITHOUT code generation when you already did it before)
-
-`mvn surefire:test -Dtest=[test-name-pattern] -pl [module-name] -nsu`
-
-example:
-
-`mvn surefire:test -Dtest=BuildingTest -pl fm-domain -nsu`
-
 # Run Build
 
-Before terminating your task, check that the builds are still correctly done (this is not necessary if you just ran all tests).
+Before terminating your task, check that the build still compiles correctly done (this is not necessary if you just ran all tests).
 
 `mvn clean test-compile -DskipTests -pl !fm-ui -nsu`
