@@ -11,6 +11,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
+import io.zeitwert.fm.building.service.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry
@@ -49,8 +50,11 @@ import java.time.OffsetDateTime
  */
 object Building {
 
+	private const val DefaultGeoZoom = 17
+
 	lateinit var dslContext: DSLContext
 	lateinit var directory: RepositoryDirectory
+	lateinit var buildingService: BuildingService
 
 	val buildingRepository: ObjBuildingRepository
 		get() = directory.getRepository(ObjBuilding::class.java) as ObjBuildingRepository
@@ -61,9 +65,11 @@ object Building {
 	fun init(
 		dslContext: DSLContext,
 		directory: RepositoryDirectory,
+		buildingService: BuildingService,
 	) {
 		this.dslContext = dslContext
 		this.directory = directory
+		this.buildingService = buildingService
 	}
 
 	operator fun invoke(
@@ -106,13 +112,21 @@ object Building {
 		ctx.buildingType?.let { building.buildingType = CodeBuildingType.getBuildingType(it) }
 		ctx.buildingSubType?.let { building.buildingSubType = CodeBuildingSubType.getBuildingSubType(it) }
 
+		// Calculate and set geo-coordinates
+		val address = "${ctx.street}, ${ctx.zip} ${ctx.city}, ${building.country?.name ?: "CH"}"
+		val coordinates = buildingService.getCoordinates(address)
+		if (coordinates != null) {
+			building.geoCoordinates = coordinates
+			building.geoZoom = DefaultGeoZoom
+		}
+
 		// Create rating if specified
 		ctx.ratingContext?.let { ratingCtx ->
 			createRating(building, ratingCtx)
 		}
 
 		val buildingId = building.id as Int
-		println("      Created building ${ctx.name} at ${ctx.street}, ${ctx.zip} ${ctx.city} (id=$buildingId)")
+		println("      Created building ${ctx.name} at ${ctx.street}, ${ctx.zip} ${ctx.city} (id=$buildingId, geo=$coordinates)")
 
 		return buildingId
 	}

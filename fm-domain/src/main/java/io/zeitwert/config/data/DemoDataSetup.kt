@@ -7,6 +7,7 @@ import io.zeitwert.config.dsl.Account
 import io.zeitwert.config.dsl.AccountContext
 import io.zeitwert.config.dsl.Building
 import io.zeitwert.config.dsl.Tenant
+import io.zeitwert.fm.building.service.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -25,6 +26,7 @@ import kotlin.random.Random
 class DemoDataSetup(
 	val directory: RepositoryDirectory,
 	val dslContext: DSLContext,
+	val buildingService: BuildingService,
 ) : DataSetup {
 
 	companion object {
@@ -35,16 +37,14 @@ class DemoDataSetup(
 
 	override val name = "DEMO"
 
-	val userTemplates = listOf(
-		Triple("admin", "Admin", "admin"),
-		Triple("hannes", "Hannes Brunner", "super_user"),
-		Triple("martin", "Martin Frey", "super_user"),
-	)
+	val userTemplates =
+		listOf(
+			Triple("admin", "Admin", "admin"),
+			Triple("hannes", "Hannes Brunner", "super_user"),
+			Triple("martin", "Martin Frey", "super_user"),
+		)
 
-	private fun getUsers(domain: String): List<Triple<String, String, String>> =
-		userTemplates.map { (mail, name, role) ->
-			Triple("$mail@$domain", name, role)
-		}
+	private fun getUsers(domain: String): List<Triple<String, String, String>> = userTemplates.map { (mail, name, role) -> Triple("$mail@$domain", name, role) }
 
 	override fun setup() {
 		println("\nDEMO DATA SETUP")
@@ -52,7 +52,7 @@ class DemoDataSetup(
 
 		Tenant.init(dslContext, directory)
 		Account.init(dslContext, directory)
-		Building.init(dslContext, directory)
+		Building.init(dslContext, directory, buildingService)
 
 		// Upload kernel tenant logo if empty
 		setupKernelTenantLogo()
@@ -86,9 +86,7 @@ class DemoDataSetup(
 				}
 				println("  Demo data setup complete.\n")
 			}
-		}.also { (tenantId, userId) ->
-			attachRandomContactsToAllBuildings(tenantId, userId)
-		}
+		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 
 		Tenant("8253", "Diessenhofen", "community", "demo/tenant/logo-8253.jpg") {
 			val allUsers = getUsers("diessenhofen.ch")
@@ -103,9 +101,7 @@ class DemoDataSetup(
 				}
 				println("  Demo data setup complete.\n")
 			}
-		}.also { (tenantId, userId) ->
-			attachRandomContactsToAllBuildings(tenantId, userId)
-		}
+		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 
 		Tenant("8266", "Steckborn", "community", "demo/tenant/logo-8266.jpg") {
 			val allUsers = getUsers("steckborn.ch")
@@ -120,9 +116,7 @@ class DemoDataSetup(
 				}
 				println("  Demo data setup complete.\n")
 			}
-		}.also { (tenantId, userId) ->
-			attachRandomContactsToAllBuildings(tenantId, userId)
-		}
+		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 
 		Tenant("8476", "Unterstammheim", "community", "demo/tenant/logo-8476.jpg") {
 			val allUsers = getUsers("unterstammheim.ch")
@@ -137,15 +131,10 @@ class DemoDataSetup(
 				}
 				println("  Demo data setup complete.\n")
 			}
-		}.also { (tenantId, userId) ->
-			attachRandomContactsToAllBuildings(tenantId, userId)
-		}
-
+		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 	}
 
-	/**
-	 * Check if the kernel tenant's logo document is empty and upload the logo if needed.
-	 */
+	/** Check if the kernel tenant's logo document is empty and upload the logo if needed. */
 	private fun setupKernelTenantLogo() {
 		val tenantRepository = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
 		val userRepository = directory.getRepository(ObjUser::class.java) as ObjUserRepository
@@ -179,12 +168,22 @@ class DemoDataSetup(
 	}
 
 	/**
-	 * Generate a random number (3-6) of contacts for this account.
+	 * Generate a random number (3-6) of contacts for this account. Ensures no duplicate first name +
+	 * last name combinations.
 	 */
 	fun AccountContext.genRandomContacts() {
 		val count = (3..6).random()
+		val usedNames = mutableSetOf<Pair<String, String>>()
 		repeat(count) {
-			val (firstName, lastName, salutation) = randomName()
+			var firstName: String
+			var lastName: String
+			var salutation: String
+			do {
+				val name = randomName()
+				firstName = name.first
+				lastName = name.second
+				salutation = name.third
+			} while (!usedNames.add(firstName to lastName))
 			val email = "${firstName.lowercase()}.${lastName.lowercase()}@example.ch"
 			val role = randomContactRole()
 			val phone = randomPhone()
@@ -200,8 +199,8 @@ class DemoDataSetup(
 	}
 
 	/**
-	 * Post-processing: attach random contacts to all buildings across all tenants.
-	 * Each building gets 1 to N contacts (where N = total contacts on its account).
+	 * Post-processing: attach random contacts to all buildings across all tenants. Each building gets
+	 * 1 to N contacts (where N = total contacts on its account).
 	 */
 	private fun attachRandomContactsToAllBuildings(
 		tenantId: Any,
@@ -216,9 +215,7 @@ class DemoDataSetup(
 		// Get all accounts for this tenant
 		val accountIds = Account.accountRepository.find(null)
 		println("tenant($tenantId) accounts: $accountIds")
-		check(accountIds.isNotEmpty()) {
-			"Tenant $tenantId has no accounts to process."
-		}
+		check(accountIds.isNotEmpty()) { "Tenant $tenantId has no accounts to process." }
 
 		for (accountId in accountIds) {
 			DelegatingSessionContext.setAccountId(accountId as Int)
@@ -247,9 +244,7 @@ class DemoDataSetup(
 					building.contactSet.add(contactId as Int)
 				}
 
-				dslContext.transaction { _ ->
-					Building.buildingRepository.store(building)
-				}
+				dslContext.transaction { _ -> Building.buildingRepository.store(building) }
 			}
 		}
 	}
