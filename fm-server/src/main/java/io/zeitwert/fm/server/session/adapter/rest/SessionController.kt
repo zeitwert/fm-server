@@ -10,6 +10,9 @@ import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole
 import io.zeitwert.fm.server.config.security.AppUserDetails
+import io.zeitwert.fm.server.session.adapter.rest.dto.ActivateRequest
+import io.zeitwert.fm.server.session.adapter.rest.dto.AuthenticateRequest
+import io.zeitwert.fm.server.session.adapter.rest.dto.AuthenticateResponse
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginRequest
 import io.zeitwert.fm.server.session.adapter.rest.dto.LoginResponse
 import io.zeitwert.fm.server.session.adapter.rest.dto.SessionInfoResponse
@@ -65,6 +68,128 @@ class SessionController {
 	@Autowired
 	lateinit var userDtoAdapter: ObjUserDtoAdapter
 
+	/**
+	 * Phase 1: Authenticate user with email/password.
+	 * Creates a pre-session (authenticated but not fully activated).
+	 * Returns user info including available tenants.
+	 */
+	@PostMapping("/authenticate")
+	fun authenticate(
+		@RequestBody request: AuthenticateRequest,
+		httpRequest: HttpServletRequest,
+	): ResponseEntity<AuthenticateResponse> {
+		try {
+			val authToken = getAuthToken(request.email, request.password)
+			val authentication = authenticationManager.authenticate(authToken)
+
+			val userDetails = authentication.principal as AppUserDetails
+
+			// Create authentication without tenantId/accountId yet
+			val preAuthentication = UsernamePasswordAuthenticationToken(
+				userDetails,
+				null,
+				userDetails.authorities,
+			)
+			preAuthentication.details = WebAuthenticationDetailsSource().buildDetails(httpRequest)
+
+			// Set security context
+			val securityContext = SecurityContextHolder.createEmptyContext()
+			securityContext.authentication = preAuthentication
+			SecurityContextHolder.setContext(securityContext)
+
+			// Create session and store security context
+			val session = httpRequest.getSession(true)
+			session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
+
+			// Get user with tenant list
+			val user = userRepository.get(userDetails.userId)
+			val role = userDetails.authorities.map { it.authority }[0]
+			val tenants = user.tenantSet.map { EnumeratedDto.of(tenantRepository.get(it))!! }
+
+			val response = AuthenticateResponse(
+				id = userDetails.userId as Int,
+				name = user.name!!,
+				email = user.email!!,
+				role = EnumeratedDto.of(getUserRole(role))!!,
+				tenants = tenants,
+			)
+			return ResponseEntity.ok(response)
+		} catch (ex: Exception) {
+			logger.error("Authentication failed: $ex")
+			throw RuntimeException(ex)
+		}
+	}
+
+	/**
+	 * Phase 2: Activate session with tenant and optional account.
+	 * Requires prior authentication via /authenticate.
+	 * Returns full session info.
+	 */
+	@PostMapping("/activate")
+	fun activate(
+		@RequestBody request: ActivateRequest,
+		httpRequest: HttpServletRequest,
+	): ResponseEntity<SessionInfoResponse> {
+		try {
+			val auth = SecurityContextHolder.getContext().authentication
+			check(auth != null && auth.principal is AppUserDetails) { "User must be authenticated first" }
+
+			val userDetails = auth.principal as AppUserDetails
+
+			// Set tenantId and accountId
+			userDetails._tenantId = request.tenantId
+			userDetails.accountId = request.accountId
+
+			// Create updated authentication with tenant/account
+			val updatedAuthentication = UsernamePasswordAuthenticationToken(
+				userDetails,
+				null,
+				userDetails.authorities,
+			)
+			updatedAuthentication.details = WebAuthenticationDetailsSource().buildDetails(httpRequest)
+
+			// Update security context
+			val securityContext = SecurityContextHolder.createEmptyContext()
+			securityContext.authentication = updatedAuthentication
+			SecurityContextHolder.setContext(securityContext)
+
+			// Update session with new security context
+			val session = httpRequest.getSession(false)
+			session?.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
+
+			// Build session info response
+			val tenant = tenantRepository.get(request.tenantId)
+			val account = if (request.accountId != null) accountRepository.get(request.accountId) else null
+			val user = userRepository.get(userDetails.userId)
+			val defaultApp = if (user.isAppAdmin) {
+				"appAdmin"
+			} else if (user.isAdmin) {
+				"tenantAdmin"
+			} else {
+				"fm"
+			}
+
+			val response = SessionInfoResponse(
+				applicationName = ApplicationInfo.getName(),
+				applicationVersion = ApplicationInfo.getVersion(),
+				user = userDtoAdapter.fromAggregate(user),
+				tenant = tenantDtoAdapter.fromAggregate(tenant),
+				account = if (account != null) accountDtoAdapter.fromAggregate(account) else null,
+				locale = "de_CH",
+				applicationId = defaultApp,
+				availableApplications = listOf(defaultApp),
+			)
+			return ResponseEntity.ok(response)
+		} catch (ex: Exception) {
+			logger.error("Session activation failed: $ex")
+			throw RuntimeException(ex)
+		}
+	}
+
+	/**
+	 * Legacy login endpoint - requires tenantId upfront.
+	 * @deprecated Use /authenticate followed by /activate instead.
+	 */
 	@PostMapping("/login")
 	fun login(
 		@RequestBody loginRequest: LoginRequest,

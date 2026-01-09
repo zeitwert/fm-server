@@ -6,7 +6,15 @@ export default defineConfig({
 	plugins: [TanStackRouterVite(), react()],
 	server: {
 		proxy: {
+			'/rest': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
 			'/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
+			'/enum': {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},

@@ -49,6 +49,7 @@ private val GET_PERMIT_ALL = arrayOf(
 
 private val POST_PERMIT_ALL = arrayOf(
 	"/rest/session/login/**",
+	"/rest/session/authenticate",
 )
 
 @Configuration
