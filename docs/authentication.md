@@ -15,6 +15,14 @@ This decoupled approach allows the UI to present a wizard-style login experience
 
 ## UI Flow Diagram
 
+The authentication sequence has at most three steps. The wizard navigation only exists between steps 2 and 3 (tenant and account selection) - users cannot go back to the login page from the wizard.
+
+**Login Behavior Summary:**
+- If only one tenant AND one account available → immediate login (no wizard shown)
+- If multiple tenants but only one account → tenant selection only, no back navigation needed
+- If one tenant but multiple accounts → account selection only, no back navigation available
+- If multiple tenants AND multiple accounts → full wizard with back navigation between tenant/account selection
+
 ```mermaid
 flowchart TD
     Start[App Load] --> CheckAuth{Authenticated?}
@@ -24,15 +32,18 @@ flowchart TD
     CheckAccount -->|Yes| App[Main Application]
     CheckAccount -->|No| CheckTenant{Tenant Selected?}
     
-    CheckTenant -->|No| TenantSelect[Tenant Selection]
+    CheckTenant -->|No| CheckMultiTenant{Multiple Tenants?}
     CheckTenant -->|Yes| CheckMultiAccount{Multiple Accounts?}
+    
+    CheckMultiTenant -->|Yes| TenantSelect[Tenant Selection]
+    CheckMultiTenant -->|No| AutoSelectTenant[Auto-select Tenant]
     
     CheckMultiAccount -->|Yes| AccountSelect[Account Selection]
     CheckMultiAccount -->|No| FinalLogin[Complete Login]
     
     LoginPage -->|Submit| Authenticate[POST /rest/session/authenticate]
     Authenticate -->|Success| CheckSingleTenant{Single Tenant?}
-    CheckSingleTenant -->|Yes| AutoSelectTenant[Auto-select Tenant]
+    CheckSingleTenant -->|Yes| AutoSelectTenant
     CheckSingleTenant -->|No| TenantSelect
     AutoSelectTenant --> FetchTenant
     
@@ -40,6 +51,7 @@ flowchart TD
     FetchTenant --> CheckMultiAccount
     
     AccountSelect -->|Select| FinalLogin
+    AccountSelect -->|Back if multiple tenants| TenantSelect
     FinalLogin --> ActivateSession[POST /rest/session/activate]
     ActivateSession --> App
 ```
@@ -250,8 +262,14 @@ stateDiagram-v2
 
 To streamline the user experience, the frontend automatically skips selection steps when possible:
 
-1. **Single Tenant:** If the user has access to only one tenant, it is automatically selected
+1. **Single Tenant:** If the user has access to only one tenant, it is automatically selected (no tenant selection wizard shown)
 2. **No Accounts / Single Account:** If the tenant has zero or one account, selection is skipped and the session is activated immediately
+
+**Wizard Navigation Rules:**
+- The wizard only handles steps 2 (tenant selection) and 3 (account selection)
+- Back navigation is only available from account selection TO tenant selection, and only when multiple tenants exist
+- The "Sign in with a different account" link provides logout functionality at any wizard step
+- If both tenant and account are auto-selected, login is immediate (no wizard shown)
 
 ```mermaid
 flowchart TD
@@ -270,6 +288,7 @@ flowchart TD
     AccountCount -->|>1| ShowAccount[Show Account Selection]
     
     ShowAccount -->|User selects| Activate
+    ShowAccount -->|Back - only if multiple tenants| ShowTenant
     AutoAccount --> Activate[Activate Session]
     
     Activate --> SessionOpen[Session Open]

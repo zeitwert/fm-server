@@ -1,7 +1,17 @@
-import { ArrowLeftOutlined, BankOutlined, TeamOutlined } from '@ant-design/icons';
-import { Alert, Button, Card, Col, Row, Spin, Typography } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Alert, Avatar, Button, Card, Col, Row, Spin, Typography } from 'antd';
+import { getRestUrl } from '../../common/api/client';
 import { useSessionStore } from '../model/sessionStore';
 import { Enumerated, TypedEnumerated } from '../model/types';
+
+// Helper functions to build logo URLs
+const getTenantLogoUrl = (tenantId: string): string => {
+  return getRestUrl('oe', `tenants/${tenantId}/logo`);
+};
+
+const getAccountLogoUrl = (accountId: string): string => {
+  return getRestUrl('account', `accounts/${accountId}/logo`);
+};
 
 const { Title, Text } = Typography;
 
@@ -17,13 +27,19 @@ export function SelectionWizard() {
     completeLogin,
     clearError,
     logout,
+    goBackToTenantSelection,
   } = useSessionStore();
 
   // Determine current step
-  const showTenantSelection = !selectedTenant && (userInfo?.tenants?.length ?? 0) > 0;
-  const showAccountSelection =
-    selectedTenant && (tenantInfo?.accounts?.length ?? 0) > 1 && !selectedAccount;
+  const hasMultipleTenants = (userInfo?.tenants?.length ?? 0) > 1;
+  const hasMultipleAccounts = (tenantInfo?.accounts?.length ?? 0) > 1;
+  
+  const showTenantSelection = !selectedTenant && hasMultipleTenants;
+  const showAccountSelection = selectedTenant && hasMultipleAccounts && !selectedAccount;
   const isLoading = selectedTenant && !tenantInfo && !showAccountSelection;
+
+  // Only allow going back to tenant selection if there are multiple tenants to choose from
+  const canGoBackToTenantSelection = hasMultipleTenants;
 
   const handleTenantSelect = async (tenant: TypedEnumerated) => {
     await selectTenant(tenant);
@@ -35,9 +51,8 @@ export function SelectionWizard() {
   };
 
   const handleBack = () => {
-    // Reset to tenant selection by logging out and back in
-    // In a more sophisticated implementation, we'd reset just the tenant selection
-    logout();
+    // Go back to tenant selection (not logout)
+    goBackToTenantSelection();
   };
 
   return (
@@ -106,7 +121,11 @@ export function SelectionWizard() {
                   }}
                   bodyStyle={{ padding: '24px 16px' }}
                 >
-                  <TeamOutlined style={{ fontSize: 32, color: '#667eea', marginBottom: 12 }} />
+                  <Avatar
+                    src={getTenantLogoUrl(tenant.id)}
+                    size={64}
+                    style={{ marginBottom: 12 }}
+                  />
                   <div>
                     <Text strong style={{ fontSize: 16 }}>
                       {tenant.name}
@@ -135,7 +154,11 @@ export function SelectionWizard() {
                     }}
                     bodyStyle={{ padding: '24px 16px' }}
                   >
-                    <BankOutlined style={{ fontSize: 32, color: '#764ba2', marginBottom: 12 }} />
+                    <Avatar
+                      src={getAccountLogoUrl(account.id)}
+                      size={64}
+                      style={{ marginBottom: 12 }}
+                    />
                     <div>
                       <Text strong style={{ fontSize: 16 }}>
                         {account.name}
@@ -146,23 +169,23 @@ export function SelectionWizard() {
               ))}
             </Row>
 
-            {/* Back button */}
-            <div style={{ marginTop: 24, textAlign: 'center' }}>
-              <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
-                Back to Login
-              </Button>
-            </div>
+            {/* Back button - only show if there are multiple tenants to go back to */}
+            {canGoBackToTenantSelection && (
+              <div style={{ marginTop: 24, textAlign: 'center' }}>
+                <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
+                  Back to Tenant Selection
+                </Button>
+              </div>
+            )}
           </>
         )}
 
-        {/* Logout option */}
-        {showTenantSelection && (
-          <div style={{ marginTop: 24, textAlign: 'center' }}>
-            <Button type="link" onClick={logout}>
-              Sign in with a different account
-            </Button>
-          </div>
-        )}
+        {/* Logout option - always available */}
+        <div style={{ marginTop: 24, textAlign: 'center' }}>
+          <Button type="link" onClick={logout}>
+            Sign in with a different account
+          </Button>
+        </div>
       </Card>
     </div>
   );
