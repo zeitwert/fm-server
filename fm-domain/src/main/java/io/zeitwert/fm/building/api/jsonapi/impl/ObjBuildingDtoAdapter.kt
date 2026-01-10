@@ -1,8 +1,8 @@
 package io.zeitwert.fm.building.api.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.obj.api.jsonapi.base.ObjDtoAdapterBase
+import io.zeitwert.app.obj.api.jsonapi.base.ObjDtoAdapterBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.building.api.jsonapi.dto.ObjBuildingDto
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating

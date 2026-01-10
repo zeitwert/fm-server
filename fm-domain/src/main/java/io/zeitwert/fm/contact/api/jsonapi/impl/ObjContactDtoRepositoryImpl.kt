@@ -1,8 +1,8 @@
 package io.zeitwert.fm.contact.api.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.contact.api.jsonapi.dto.ObjContactDto
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository

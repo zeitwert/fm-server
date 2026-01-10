@@ -1,12 +1,12 @@
 package io.zeitwert.fm.dms.model.impl
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType
-import io.zeitwert.fm.dms.persist.ObjDocumentSqlPersistenceProviderImpl
+import io.zeitwert.persist.sql.ObjDocumentSqlPersistenceProviderImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component

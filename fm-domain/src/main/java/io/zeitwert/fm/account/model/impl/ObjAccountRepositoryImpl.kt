@@ -1,10 +1,10 @@
 package io.zeitwert.fm.account.model.impl
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.account.persist.ObjAccountSqlPersistenceProviderImpl
+import io.zeitwert.persist.sql.ObjAccountSqlPersistenceProviderImpl
 import org.springframework.stereotype.Component
 import java.util.*
 

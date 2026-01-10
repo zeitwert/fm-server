@@ -2,8 +2,8 @@ package io.zeitwert.app.api.rest
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser

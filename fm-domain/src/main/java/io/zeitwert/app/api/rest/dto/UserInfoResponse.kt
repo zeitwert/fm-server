@@ -1,7 +1,7 @@
 package io.zeitwert.app.api.rest.dto
 
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
-import io.zeitwert.dddrive.api.jsonapi.dto.TypedEnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.TypedEnumeratedDto
 
 data class UserInfoResponse(
 	val id: Int,

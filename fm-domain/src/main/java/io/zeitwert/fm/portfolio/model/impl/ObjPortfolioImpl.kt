@@ -6,7 +6,7 @@ import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
 import dddrive.ddd.query.query
-import io.zeitwert.dddrive.obj.model.base.FMObjBase
+import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository

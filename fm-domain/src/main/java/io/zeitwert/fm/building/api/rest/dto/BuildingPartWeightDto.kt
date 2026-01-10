@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.api.rest.dto
 
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
 
 data class BuildingPartWeightDto(
 	var part: EnumeratedDto,

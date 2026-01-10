@@ -8,7 +8,7 @@ import dddrive.ddd.property.delegate.partListProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.model.Property
-import io.zeitwert.dddrive.obj.model.base.FMObjBase
+import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.ObjTestRepository

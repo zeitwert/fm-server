@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.service.api.impl
 
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart.Enumeration.getMaintenanceRate

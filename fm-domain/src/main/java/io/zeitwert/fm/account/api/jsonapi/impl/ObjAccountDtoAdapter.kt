@@ -1,8 +1,8 @@
 package io.zeitwert.fm.account.api.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.dddrive.api.jsonapi.dto.DtoUtils
-import io.zeitwert.dddrive.obj.api.jsonapi.base.ObjDtoAdapterBase
+import io.zeitwert.app.api.jsonapi.dto.DtoUtils
+import io.zeitwert.app.obj.api.jsonapi.base.ObjDtoAdapterBase
 import io.zeitwert.fm.account.api.jsonapi.dto.ObjAccountDto
 import io.zeitwert.fm.account.model.ObjAccount
 import org.springframework.stereotype.Component

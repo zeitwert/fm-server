@@ -2,17 +2,17 @@ package io.zeitwert.domain.test.persist
 
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.doc.model.base.FMDocBase
-import io.zeitwert.dddrive.doc.persist.DocPartItemSqlPersistenceProviderImpl
-import io.zeitwert.dddrive.doc.persist.DocRecordMapperImpl
-import io.zeitwert.dddrive.doc.persist.FMDocSqlPersistenceProviderBase
+import io.zeitwert.app.doc.model.base.FMDocBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.DocTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
-import io.zeitwert.persist.sql.SqlIdProvider
-import io.zeitwert.persist.sql.SqlRecordMapper
+import io.zeitwert.persist.sql.ddd.SqlIdProvider
+import io.zeitwert.persist.sql.ddd.SqlRecordMapper
+import io.zeitwert.persist.sql.doc.DocPartItemSqlPersistenceProviderImpl
+import io.zeitwert.persist.sql.doc.DocRecordMapperImpl
+import io.zeitwert.persist.sql.doc.DocSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component
 open class DocTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
-) : FMDocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
+) : DocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {
 
 	override val dslContext: DSLContext

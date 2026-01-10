@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.model.impl
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating

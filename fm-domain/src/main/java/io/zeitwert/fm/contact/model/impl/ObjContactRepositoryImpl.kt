@@ -1,7 +1,7 @@
 package io.zeitwert.fm.contact.model.impl
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository

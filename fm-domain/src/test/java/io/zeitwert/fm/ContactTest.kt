@@ -1,6 +1,6 @@
 package io.zeitwert.fm
 
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.data.config.TestDataSetup
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.contact.model.ObjContact

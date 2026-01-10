@@ -1,6 +1,6 @@
 package io.zeitwert.ddd.part.model.base
 
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.ObjTestRepository

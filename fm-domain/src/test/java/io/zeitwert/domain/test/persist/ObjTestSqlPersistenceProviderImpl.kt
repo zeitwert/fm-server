@@ -4,19 +4,19 @@ import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.obj.model.base.FMObjBase
-import io.zeitwert.dddrive.obj.persist.FMObjSqlPersistenceProviderBase
-import io.zeitwert.dddrive.obj.persist.ObjPartItemSqlPersistenceProviderImpl
-import io.zeitwert.dddrive.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.app.obj.model.base.FMObjBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.fm.account.model.ItemWithAccount
-import io.zeitwert.persist.sql.SqlIdProvider
-import io.zeitwert.persist.sql.SqlRecordMapper
+import io.zeitwert.persist.sql.ddd.SqlIdProvider
+import io.zeitwert.persist.sql.ddd.SqlRecordMapper
+import io.zeitwert.persist.sql.obj.ObjPartItemSqlPersistenceProviderImpl
+import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
+import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component
 open class ObjTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
-) : FMObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
+) : ObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
 	SqlRecordMapper<ObjTest> {
 
 	override val dslContext: DSLContext

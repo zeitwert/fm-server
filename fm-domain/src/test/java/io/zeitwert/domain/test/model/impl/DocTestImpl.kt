@@ -6,7 +6,7 @@ import dddrive.ddd.property.delegate.enumSetProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.model.EnumSetProperty
-import io.zeitwert.dddrive.doc.model.base.FMDocBase
+import io.zeitwert.app.doc.model.base.FMDocBase
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.DocTestRepository
 import io.zeitwert.domain.test.model.ObjTest

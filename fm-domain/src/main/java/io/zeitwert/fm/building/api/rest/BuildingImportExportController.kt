@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.api.rest
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.api.rest.dto.BuildingTransferDto
 import io.zeitwert.fm.building.api.rest.dto.BuildingTransferElementRatingDto

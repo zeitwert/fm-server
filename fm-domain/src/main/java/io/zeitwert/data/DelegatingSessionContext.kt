@@ -1,7 +1,7 @@
 package io.zeitwert.data
 
 import dddrive.ddd.model.Aggregate
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.enums.CodeLocale

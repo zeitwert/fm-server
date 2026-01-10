@@ -1,7 +1,7 @@
 package io.zeitwert.fm.server.config.crnk
 
 import io.crnk.core.boot.CrnkBoot
-import io.zeitwert.persist.sql.util.CustomFilters
+import io.zeitwert.persist.sql.ddd.util.CustomFilters
 import org.springframework.stereotype.Component
 
 /**

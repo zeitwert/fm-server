@@ -1,7 +1,7 @@
 package io.zeitwert.fm.server.session.adapter.rest
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.api.jsonapi.impl.ObjAccountDtoAdapter
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.api.jsonapi.impl.ObjTenantDtoAdapter

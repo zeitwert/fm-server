@@ -1,7 +1,7 @@
 package io.zeitwert.fm.server.session.service.api.impl
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.app.model.impl.SessionContextImpl
+import io.zeitwert.app.session.model.SessionContext
+import io.zeitwert.app.session.model.impl.SessionContextImpl
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeLocale
 import io.zeitwert.fm.server.config.security.AppUserDetails

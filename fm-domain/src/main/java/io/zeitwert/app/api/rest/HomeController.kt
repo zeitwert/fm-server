@@ -2,13 +2,13 @@ package io.zeitwert.app.api.rest
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum.Companion.getCaseStage
 import dddrive.ddd.model.enums.CodeAggregateTypeEnum.Companion.getAggregateType
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.dto.TypedEnumeratedDto
 import io.zeitwert.app.api.rest.dto.HomeActionResponse
 import io.zeitwert.app.api.rest.dto.HomeActivityResponse
 import io.zeitwert.app.api.rest.dto.HomeOverviewResponse
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
-import io.zeitwert.dddrive.api.jsonapi.dto.TypedEnumeratedDto
-import io.zeitwert.dddrive.obj.model.FMObjVRepository
+import io.zeitwert.app.obj.model.FMObjVRepository
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingRepository

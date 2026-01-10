@@ -8,7 +8,7 @@ import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.ObjTestPartNodeRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
-import io.zeitwert.persist.sql.PartSqlPersistenceProvider
+import io.zeitwert.persist.sql.ddd.PartSqlPersistenceProvider
 import org.jooq.DSLContext
 import org.jooq.JSON
 

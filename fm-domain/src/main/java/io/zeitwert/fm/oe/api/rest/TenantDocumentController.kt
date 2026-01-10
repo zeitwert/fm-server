@@ -1,6 +1,6 @@
 package io.zeitwert.fm.oe.api.rest
 
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.dms.api.rest.DocumentContentController
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import org.springframework.beans.factory.annotation.Autowired

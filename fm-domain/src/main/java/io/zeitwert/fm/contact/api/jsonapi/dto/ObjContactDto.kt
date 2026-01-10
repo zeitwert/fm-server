@@ -1,7 +1,7 @@
 package io.zeitwert.fm.contact.api.jsonapi.dto
 
 import io.crnk.core.resource.annotations.JsonApiResource
-import io.zeitwert.dddrive.obj.api.jsonapi.base.ObjDtoBase
+import io.zeitwert.app.obj.api.jsonapi.base.ObjDtoBase
 
 /**
  * Generic JSON API resource for ObjContact.

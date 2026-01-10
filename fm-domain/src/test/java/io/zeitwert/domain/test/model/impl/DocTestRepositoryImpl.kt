@@ -1,7 +1,7 @@
 package io.zeitwert.domain.test.model.impl
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.doc.model.base.FMDocRepositoryBase
+import io.zeitwert.app.doc.model.base.FMDocRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.DocTestRepository
 import org.springframework.stereotype.Component

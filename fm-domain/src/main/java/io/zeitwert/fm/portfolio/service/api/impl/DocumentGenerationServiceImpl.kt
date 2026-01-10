@@ -22,7 +22,7 @@ import com.aspose.words.ShapeType
 import com.aspose.words.Table
 import com.aspose.words.WrapType
 import com.google.maps.model.Size
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.config.aspose.AsposeConfig
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult
 import io.zeitwert.fm.building.service.api.dto.EvaluationBuilding

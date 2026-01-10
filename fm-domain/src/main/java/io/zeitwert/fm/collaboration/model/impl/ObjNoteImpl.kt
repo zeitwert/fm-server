@@ -5,9 +5,9 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
-import io.zeitwert.dddrive.doc.model.FMDocVRepository
-import io.zeitwert.dddrive.obj.model.FMObjVRepository
-import io.zeitwert.dddrive.obj.model.base.FMObjBase
+import io.zeitwert.app.doc.model.FMDocVRepository
+import io.zeitwert.app.obj.model.FMObjVRepository
+import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType

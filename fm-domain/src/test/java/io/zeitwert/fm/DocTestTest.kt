@@ -1,7 +1,7 @@
 package io.zeitwert.fm
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.data.config.TestDataSetup
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.DocTestRepository

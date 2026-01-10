@@ -1,8 +1,8 @@
 package io.zeitwert.fm.account.api.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.api.jsonapi.dto.ObjAccountDto
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository

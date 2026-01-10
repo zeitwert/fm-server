@@ -1,6 +1,6 @@
 package io.zeitwert.fm.dms.api.rest
 
-import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType.Enumeration.getContentType
 import org.springframework.http.ContentDisposition

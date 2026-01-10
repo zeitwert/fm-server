@@ -1,7 +1,7 @@
 package io.zeitwert.ddd.session
 
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.app.model.impl.SessionContextImpl
+import io.zeitwert.app.session.model.SessionContext
+import io.zeitwert.app.session.model.impl.SessionContextImpl
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeLocale.Enumeration.getLocale

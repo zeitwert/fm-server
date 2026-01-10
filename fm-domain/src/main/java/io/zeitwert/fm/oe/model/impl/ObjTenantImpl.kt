@@ -7,7 +7,7 @@ import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.query.query
-import io.zeitwert.dddrive.obj.model.base.FMObjBase
+import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory

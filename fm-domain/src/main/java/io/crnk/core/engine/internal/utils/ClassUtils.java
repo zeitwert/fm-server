@@ -1,7 +1,7 @@
 package io.crnk.core.engine.internal.utils;
 
 import io.crnk.core.exception.ResourceException;
-import io.zeitwert.dddrive.api.jsonapi.base.AggregateDtoBase;
+import io.zeitwert.app.api.jsonapi.base.AggregateDtoBase;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;

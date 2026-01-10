@@ -145,36 +145,36 @@
 				<artifactId>jooq-codegen-maven</artifactId>
 				<executions>
 					<execution>
-						<id>jooq-codegen-fm-obj</id>
+						<id>jooq-codegen-obj</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/obj/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/dddrive/obj/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
-						<id>jooq-codegen-fm-doc</id>
+						<id>jooq-codegen-doc</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/doc/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/dddrive/doc/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
-						<id>jooq-codegen-fm-search</id>
+						<id>jooq-codegen-search</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/fm/search/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/dddrive/search/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>

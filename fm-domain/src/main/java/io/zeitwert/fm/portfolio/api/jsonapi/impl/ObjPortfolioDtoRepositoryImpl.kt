@@ -1,8 +1,8 @@
 package io.zeitwert.fm.portfolio.api.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.model.SessionContext
-import io.zeitwert.dddrive.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.portfolio.api.jsonapi.dto.ObjPortfolioDto
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository

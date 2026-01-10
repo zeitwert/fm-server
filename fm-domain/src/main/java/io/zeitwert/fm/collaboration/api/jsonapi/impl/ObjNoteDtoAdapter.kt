@@ -1,9 +1,9 @@
 package io.zeitwert.fm.collaboration.api.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.dddrive.api.jsonapi.dto.DtoUtils
-import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
-import io.zeitwert.dddrive.obj.api.jsonapi.base.ObjDtoAdapterBase
+import io.zeitwert.app.api.jsonapi.dto.DtoUtils
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.obj.api.jsonapi.base.ObjDtoAdapterBase
 import io.zeitwert.fm.collaboration.api.jsonapi.dto.ObjNoteDto
 import io.zeitwert.fm.collaboration.model.ObjNote
 import org.springframework.stereotype.Component
