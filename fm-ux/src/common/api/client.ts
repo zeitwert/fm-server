@@ -5,6 +5,7 @@ export const API_CONTENT_TYPE = 'application/vnd.api+json';
 
 const SESSION_INFO_KEY = 'fm-ux-session-info';
 const SESSION_STATE_KEY = 'fm-ux-session-state';
+const TENANT_INFO_KEY = 'fm-ux-tenant-info';
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -90,4 +91,4 @@ export const api = {
 };
 
 // Storage keys export for use in session store
-export { SESSION_INFO_KEY, SESSION_STATE_KEY };
+export { SESSION_INFO_KEY, SESSION_STATE_KEY, TENANT_INFO_KEY };

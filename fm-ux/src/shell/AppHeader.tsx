@@ -1,0 +1,155 @@
+import {
+	BankOutlined,
+	DownOutlined,
+	LogoutOutlined,
+	SearchOutlined,
+	SettingOutlined,
+	UserOutlined,
+} from '@ant-design/icons';
+import { Avatar, Dropdown, Flex, Input, Space, theme, Typography } from 'antd';
+import type { MenuProps } from 'antd';
+import { useSessionStore } from '../session/model/sessionStore';
+
+const { Text } = Typography;
+const { useToken } = theme;
+
+export function AppHeader() {
+	const { token } = useToken();
+	const { sessionInfo, tenantInfo, switchAccount, logout } = useSessionStore();
+
+	const currentAccount = sessionInfo?.account;
+	const availableAccounts = tenantInfo?.accounts ?? [];
+	const hasMultipleAccounts = availableAccounts.length > 1;
+
+	const accountMenuItems: MenuProps['items'] = availableAccounts.map((account) => ({
+		key: account.id,
+		label: account.name,
+		icon: <BankOutlined />,
+		onClick: () => {
+			if (account.id !== currentAccount?.id) {
+				switchAccount(account.id);
+			}
+		},
+	}));
+
+	const userMenuItems: MenuProps['items'] = [
+		{
+			key: 'settings',
+			label: 'Einstellungen',
+			icon: <SettingOutlined />,
+		},
+		{
+			type: 'divider',
+		},
+		{
+			key: 'logout',
+			label: 'Abmelden',
+			icon: <LogoutOutlined />,
+			danger: true,
+			onClick: () => logout(),
+		},
+	];
+
+	return (
+		<div
+			style={{
+				display: 'grid',
+				gridTemplateColumns: '1fr auto 1fr',
+				alignItems: 'center',
+				height: 48,
+				padding: '0 16px',
+				background: token.colorBgContainer,
+				borderBottom: `1px solid ${token.colorBorderSecondary}`,
+			}}
+		>
+			{/* Left: Logo and App Name */}
+			<Flex align="center" gap={12} style={{ justifySelf: 'start' }}>
+				<div
+					style={{
+						width: 32,
+						height: 32,
+						borderRadius: 6,
+						background: `linear-gradient(135deg, ${token.colorPrimary} 0%, ${token.colorPrimaryActive} 100%)`,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<BankOutlined style={{ color: '#fff', fontSize: 18 }} />
+				</div>
+				<Text strong style={{ fontSize: 16, letterSpacing: -0.5 }}>
+					FM-UX
+				</Text>
+			</Flex>
+
+			{/* Center: Search */}
+			<div style={{ width: 400 }}>
+				<Input
+					prefix={<SearchOutlined style={{ color: token.colorTextPlaceholder }} />}
+					placeholder="Suchen..."
+					size="middle"
+					style={{
+						borderRadius: 20,
+						background: token.colorFillTertiary,
+					}}
+					variant="filled"
+				/>
+			</div>
+
+			{/* Right: Account, User, Settings */}
+			<Flex align="center" gap={16} style={{ justifySelf: 'end' }}>
+				{/* Account Chooser */}
+				{currentAccount && (
+					<>
+						{hasMultipleAccounts ? (
+							<Dropdown menu={{ items: accountMenuItems }} trigger={['click']}>
+								<Space
+									style={{
+										cursor: 'pointer',
+										padding: '4px 8px',
+										borderRadius: 6,
+										transition: 'background 0.2s',
+									}}
+									className="header-dropdown-trigger"
+								>
+									<BankOutlined style={{ color: token.colorTextSecondary }} />
+									<Text style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+										{currentAccount.name}
+									</Text>
+									<DownOutlined style={{ fontSize: 10, color: token.colorTextSecondary }} />
+								</Space>
+							</Dropdown>
+						) : (
+							<Space style={{ padding: '4px 8px' }}>
+								<BankOutlined style={{ color: token.colorTextSecondary }} />
+								<Text style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+									{currentAccount.name}
+								</Text>
+							</Space>
+						)}
+					</>
+				)}
+
+				{/* User Menu */}
+				<Dropdown menu={{ items: userMenuItems }} trigger={['click']} placement="bottomRight">
+					<Space
+						style={{
+							cursor: 'pointer',
+							padding: '4px 8px',
+							borderRadius: 6,
+							transition: 'background 0.2s',
+						}}
+						className="header-dropdown-trigger"
+					>
+						<Avatar size={28} icon={<UserOutlined />} style={{ background: token.colorPrimary }} />
+						<Text style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+							{sessionInfo?.user?.name ?? 'Benutzer'}
+						</Text>
+						<DownOutlined style={{ fontSize: 10, color: token.colorTextSecondary }} />
+					</Space>
+				</Dropdown>
+			</Flex>
+		</div>
+	);
+}
+

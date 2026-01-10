@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { api, getRestUrl, SESSION_INFO_KEY, SESSION_STATE_KEY } from '../../common/api/client';
+import { api, getRestUrl, SESSION_INFO_KEY, SESSION_STATE_KEY, TENANT_INFO_KEY } from '../../common/api/client';
 import {
 	Enumerated,
 	LoginTenantInfo,
@@ -24,6 +24,7 @@ interface SessionStore {
 	needsTenantSelection: () => boolean;
 	needsAccountSelection: () => boolean;
 	isSessionReady: () => boolean;
+	availableAccounts: () => Enumerated[];
 
 	// Actions
 	login: (email: string, password: string) => Promise<void>;
@@ -34,6 +35,7 @@ interface SessionStore {
 	initSession: () => Promise<void>;
 	clearError: () => void;
 	goBackToTenantSelection: () => void;
+	switchAccount: (accountId: string) => Promise<void>;
 }
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
@@ -70,6 +72,11 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 	isSessionReady: () => {
 		const { state } = get();
 		return state === SessionState.open;
+	},
+
+	availableAccounts: () => {
+		const { tenantInfo } = get();
+		return tenantInfo?.accounts ?? [];
 	},
 
 	// Actions
@@ -126,6 +133,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			}
 
 			const tenantInfo = tenantInfoResponse.data;
+			sessionStorage.setItem(TENANT_INFO_KEY, JSON.stringify(tenantInfo));
 			set({ tenantInfo });
 
 			// Auto-complete if no accounts or single account
@@ -197,6 +205,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 		} finally {
 			sessionStorage.removeItem(SESSION_STATE_KEY);
 			sessionStorage.removeItem(SESSION_INFO_KEY);
+			sessionStorage.removeItem(TENANT_INFO_KEY);
 			set({
 				state: SessionState.close,
 				error: null,
@@ -213,23 +222,28 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 	initSession: async () => {
 		const storedState = sessionStorage.getItem(SESSION_STATE_KEY) as SessionState | null;
 		const storedSessionInfo = sessionStorage.getItem(SESSION_INFO_KEY);
+		const storedTenantInfo = sessionStorage.getItem(TENANT_INFO_KEY);
 
 		if (storedState === SessionState.open && storedSessionInfo) {
 			try {
 				const sessionInfo = JSON.parse(storedSessionInfo) as SessionInfo;
+				const tenantInfo = storedTenantInfo ? (JSON.parse(storedTenantInfo) as LoginTenantInfo) : null;
 				set({
 					state: SessionState.open,
 					sessionInfo,
+					tenantInfo,
 				});
 			} catch {
 				// Invalid stored session, clear it
 				sessionStorage.removeItem(SESSION_STATE_KEY);
 				sessionStorage.removeItem(SESSION_INFO_KEY);
+				sessionStorage.removeItem(TENANT_INFO_KEY);
 				set({ state: SessionState.close });
 			}
 		} else if (storedState === SessionState.authenticated) {
 			// User was in the middle of tenant/account selection, restart login
 			sessionStorage.removeItem(SESSION_STATE_KEY);
+			sessionStorage.removeItem(TENANT_INFO_KEY);
 			set({ state: SessionState.close });
 		}
 	},
@@ -245,5 +259,47 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			selectedAccount: null,
 			error: null,
 		});
+	},
+
+	switchAccount: async (accountId: string) => {
+		const { sessionInfo } = get();
+		if (!sessionInfo) return;
+
+		set({ error: null });
+
+		try {
+			// Call backend to switch account context
+			const sessionResponse = await api.post<SessionInfo>(getRestUrl('session', 'activate'), {
+				tenantId: parseInt(sessionInfo.tenant.id, 10),
+				accountId: parseInt(accountId, 10),
+			});
+
+			if (sessionResponse.status !== 200) {
+				throw new Error('Failed to switch account');
+			}
+
+			const newSessionInfo = sessionResponse.data;
+
+			// Normalize IDs to strings
+			newSessionInfo.tenant.id = newSessionInfo.tenant.id.toString();
+			newSessionInfo.user.id = newSessionInfo.user.id.toString();
+			if (newSessionInfo.account?.id) {
+				newSessionInfo.account.id = newSessionInfo.account.id.toString();
+			}
+
+			// Update session storage
+			sessionStorage.setItem(SESSION_INFO_KEY, JSON.stringify(newSessionInfo));
+
+			set({
+				sessionInfo: newSessionInfo,
+				selectedAccount: newSessionInfo.account
+					? { id: newSessionInfo.account.id, name: newSessionInfo.account.name }
+					: null,
+			});
+		} catch (error) {
+			set({
+				error: error instanceof Error ? error.message : 'Failed to switch account',
+			});
+		}
 	},
 }));
