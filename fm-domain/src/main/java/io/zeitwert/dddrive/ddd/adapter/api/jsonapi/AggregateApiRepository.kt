@@ -1,10 +1,9 @@
 package io.zeitwert.dddrive.ddd.adapter.api.jsonapi
 
-import dddrive.ddd.core.model.Aggregate
 import io.crnk.core.queryspec.QuerySpec
 import io.crnk.core.resource.list.ResourceList
 
-interface AggregateApiRepository<A : Aggregate, D : AggregateDto<A>> {
+interface AggregateApiRepository<D : AggregateDto> {
 
 	fun getResourceClass(): Class<D>
 

@@ -53,10 +53,10 @@ import java.time.format.DateTimeFormatter
  * @param directory The repository directory for loading related entities
  * @param resourceFactory Factory function to create new resource instances
  */
-open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
+open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto>(
 	private val aggregateClass: Class<A>,
 	private val resourceType: String,
-	private val dtoClass: Class<out AggregateDtoBase<*>>,
+	private val dtoClass: Class<out AggregateDtoBase>,
 	private val directory: RepositoryDirectory,
 	private val resourceFactory: () -> R,
 ) : AggregateDtoAdapter<A, R> {
@@ -117,7 +117,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 		dto["id"] = DtoUtils.idToString(aggregate.id)
 		val meta = MetaInfoDto()
 		fromFields(aggregate as EntityWithProperties, meta, config.metas.values)
-		(dto as AggregateDtoBase<*>).meta = meta
+		(dto as AggregateDtoBase).meta = meta
 		val properties = aggregate.properties.filter { !config.isExcluded(it) }
 		logger.trace("fromAggregate: {}", aggregate)
 		logger.trace(". config: {exclusions: ${config.exclusions.size}, fields: ${config.fields.size}, relationships: ${config.relationships.size}, metas: ${config.metas.size}}")
@@ -238,7 +238,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : AggregateDto<A>>(
 	 */
 	private fun fromRelationships(
 		entity: EntityWithProperties,
-		dto: AggregateDto<*>,
+		dto: AggregateDto,
 		relationships: Collection<RelationshipConfig>,
 	) {
 		val indent = if (entity is Part<*>) ".     " else ".   "

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 data class ResourceEntry(
 	val aggregateClass: Class<out Aggregate>,
 	val resourceType: String,
-	val dtoClass: Class<out AggregateDtoBase<*>>,
+	val dtoClass: Class<out AggregateDtoBase>,
 	val adapter: AggregateDtoAdapterBase<*, *>,
 ) {
 

@@ -3,7 +3,6 @@ package io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
-import dddrive.app.ddd.model.Aggregate
 import io.crnk.core.resource.annotations.JsonApiId
 import io.crnk.core.resource.annotations.JsonApiMetaInformation
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto
@@ -17,7 +16,7 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.AggregateDto
  * Subclasses only need to add the @JsonApiResource annotation with the
  * appropriate type and resourcePath.
  */
-abstract class AggregateDtoBase<A : Aggregate> : AggregateDto<A> {
+abstract class AggregateDtoBase : AggregateDto {
 
 	@JsonApiMetaInformation
 	override var meta: MutableMap<String, Any?>? = null

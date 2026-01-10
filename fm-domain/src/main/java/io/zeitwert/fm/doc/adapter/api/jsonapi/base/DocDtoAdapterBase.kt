@@ -10,10 +10,10 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoBase
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 import org.springframework.beans.factory.annotation.Autowired
 
-abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase<E>>(
+abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase>(
 	aggregateClass: Class<E>,
 	resourceType: String,
-	dtoClass: Class<out AggregateDtoBase<*>>,
+	dtoClass: Class<out AggregateDtoBase>,
 	directory: RepositoryDirectory,
 	resourceFactory: () -> D,
 ) : AggregateDtoAdapterBase<E, D>(

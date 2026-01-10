@@ -7,10 +7,10 @@ import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoAdapterBase
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.base.AggregateDtoBase
 import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
 
-abstract class ObjDtoAdapterBase<O : Obj, D : ObjDtoBase<O>>(
+abstract class ObjDtoAdapterBase<O : Obj, D : ObjDtoBase>(
 	aggregateClass: Class<O>,
 	resourceType: String,
-	dtoClass: Class<out AggregateDtoBase<*>>,
+	dtoClass: Class<out AggregateDtoBase>,
 	directory: RepositoryDirectory,
 	resourceFactory: () -> D,
 ) : AggregateDtoAdapterBase<O, D>(aggregateClass, resourceType, dtoClass, directory, resourceFactory) {

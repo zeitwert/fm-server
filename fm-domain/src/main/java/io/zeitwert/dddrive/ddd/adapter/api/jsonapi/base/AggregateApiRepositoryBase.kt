@@ -36,14 +36,14 @@ import org.springframework.transaction.annotation.Transactional
  * @param repository The aggregate repository
  * @param sessionCtx The session context
  */
-abstract class AggregateApiRepositoryBase<A : Aggregate, R : AggregateDto<A>>(
+abstract class AggregateApiRepositoryBase<A : Aggregate, R : AggregateDto>(
 	resourceClass: Class<R>,
 	private val directory: RepositoryDirectory,
 	private val repository: AggregateRepository<A>,
 	private val adapter: AggregateDtoAdapterBase<A, R>,
 	private val sessionCtx: SessionContext,
 ) : ResourceRepositoryBase<R, String>(resourceClass),
-	AggregateApiRepository<A, R> {
+	AggregateApiRepository<R> {
 
 	companion object {
 

@@ -76,7 +76,7 @@ class NullAccessor(
 	override fun getImplementationClass(): Class<*> = fieldType
 
 	override fun getValue(resource: Any): Any? {
-		resource as AggregateDtoBase<*>
+		resource as AggregateDtoBase
 		DynamicRelationshipContributor.logger.trace(
 			"DRC[{}({}).{}].getValue()",
 			resourceType,
@@ -90,7 +90,7 @@ class NullAccessor(
 		resource: Any,
 		fieldValue: Any?,
 	) {
-		resource as AggregateDtoBase<*>
+		resource as AggregateDtoBase
 		DynamicRelationshipContributor.logger.trace(
 			"DRC[{}({}).{}].setValue({}, {})",
 			resourceType,
@@ -113,7 +113,7 @@ class RelationIdAccessor(
 	override fun getImplementationClass(): Class<*> = if (isMultiple) List::class.java else String::class.java
 
 	override fun getValue(resource: Any): Any? {
-		resource as AggregateDtoBase<*>
+		resource as AggregateDtoBase
 		val value = resource.getRelation(relationName)
 		DynamicRelationshipContributor.logger.trace(
 			"DRC[{}({}).{}].getId(): {}",
@@ -129,7 +129,7 @@ class RelationIdAccessor(
 		resource: Any,
 		fieldValue: Any?,
 	) {
-		resource as AggregateDtoBase<*>
+		resource as AggregateDtoBase
 		DynamicRelationshipContributor.logger.trace(
 			"DRC[{}({}).{}].setId({}, {})",
 			resourceType,

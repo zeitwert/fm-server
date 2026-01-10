@@ -1,7 +1,6 @@
 package io.zeitwert.fm.contact.adapter.api.jsonapi.dto
 
 import io.crnk.core.resource.annotations.JsonApiResource
-import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
 
 /**
@@ -11,4 +10,4 @@ import io.zeitwert.fm.obj.adapter.api.jsonapi.base.ObjDtoBase
  * for crnk registration.
  */
 @JsonApiResource(type = "contact", resourcePath = "contact/contacts")
-class ObjContactDto : ObjDtoBase<ObjContact>()
+class ObjContactDto : ObjDtoBase()
