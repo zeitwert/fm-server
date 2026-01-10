@@ -1,8 +1,8 @@
 package io.zeitwert.ddd.session
 
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.app.model.impl.SessionContextImpl
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.app.model.impl.SessionContextImpl
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeLocale.Enumeration.getLocale
 import org.springframework.context.annotation.Bean

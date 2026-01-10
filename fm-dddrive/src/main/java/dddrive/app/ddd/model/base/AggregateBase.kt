@@ -2,15 +2,15 @@ package dddrive.app.ddd.model.base
 
 import dddrive.app.ddd.model.Aggregate
 import dddrive.app.ddd.model.AggregateMeta
+import dddrive.app.ddd.model.AggregatePartValidation
 import dddrive.app.ddd.model.AggregateSPI
 import dddrive.app.ddd.model.SessionContext
+import dddrive.app.ddd.model.enums.CodeValidationLevel
+import dddrive.app.ddd.model.impl.AggregatePartValidationImpl
 import dddrive.app.obj.model.Obj
-import dddrive.app.validation.model.AggregatePartValidation
-import dddrive.app.validation.model.enums.CodeValidationLevel
-import dddrive.app.validation.model.impl.AggregatePartValidationImpl
-import dddrive.ddd.core.model.AggregateRepository
-import dddrive.ddd.core.model.Entity
-import dddrive.ddd.core.model.base.AggregateBase
+import dddrive.ddd.model.AggregateRepository
+import dddrive.ddd.model.Entity
+import dddrive.ddd.model.base.AggregateBase
 import dddrive.ddd.path.relativePath
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.referenceIdProperty

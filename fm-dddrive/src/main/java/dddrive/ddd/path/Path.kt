@@ -1,8 +1,8 @@
 package dddrive.ddd.path
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Entity
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Entity
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.PartListProperty
 import dddrive.ddd.property.model.PartMapProperty
 import dddrive.ddd.property.model.Property

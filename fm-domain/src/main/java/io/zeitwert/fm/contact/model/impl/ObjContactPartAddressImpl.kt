@@ -1,7 +1,7 @@
 package io.zeitwert.fm.contact.model.impl
 
 import dddrive.app.obj.model.base.ObjPartBase
-import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.model.Property

@@ -1,8 +1,8 @@
 package dddrive.ddd.property.model.impl
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.AggregateRepository
-import dddrive.ddd.core.model.AggregateRepositorySPI
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.AggregateRepository
+import dddrive.ddd.model.AggregateRepositorySPI
 import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI

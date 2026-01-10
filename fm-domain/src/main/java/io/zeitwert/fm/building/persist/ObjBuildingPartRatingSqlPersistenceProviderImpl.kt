@@ -1,9 +1,8 @@
 package io.zeitwert.fm.building.persist
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.PartListProperty
-import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
 import io.zeitwert.fm.building.model.db.Tables
@@ -11,6 +10,7 @@ import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingPartRatingReco
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
+import io.zeitwert.persist.sql.PartSqlPersistenceProvider
 import org.jooq.DSLContext
 
 class ObjBuildingPartRatingSqlPersistenceProviderImpl(

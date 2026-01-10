@@ -1,9 +1,9 @@
 package io.zeitwert.fm.building.model.impl
 
 import dddrive.app.obj.model.base.ObjPartBase
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.core.model.PartMeta
-import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.model.Part
+import dddrive.ddd.model.PartMeta
+import dddrive.ddd.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty

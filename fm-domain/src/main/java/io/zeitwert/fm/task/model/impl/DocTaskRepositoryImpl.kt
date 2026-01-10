@@ -1,7 +1,7 @@
 package io.zeitwert.fm.task.model.impl
 
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.fm.doc.model.base.FMDocRepositoryBase
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import org.springframework.stereotype.Component

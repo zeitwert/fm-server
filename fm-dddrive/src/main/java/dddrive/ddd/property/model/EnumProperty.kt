@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model
 
-import dddrive.ddd.enums.model.Enumerated
-import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.Enumeration
 
 interface EnumProperty<E : Enumerated> : ReferenceProperty<E, String> {
 

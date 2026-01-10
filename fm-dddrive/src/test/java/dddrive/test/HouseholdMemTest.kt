@@ -2,15 +2,15 @@ package dddrive.test
 
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjBase
-import dddrive.ddd.core.model.AggregateSPI
+import dddrive.ddd.model.AggregateSPI
 import dddrive.ddd.path.getValueByPath
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.property.model.PropertyChangeListener
+import dddrive.ddd.query.query
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
-import dddrive.ddd.query.query
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
@@ -138,9 +138,16 @@ class HouseholdMemTest {
 	@Test
 	fun testHouseholdRepository() {
 		assertEquals("objHousehold", hhRepo.aggregateType.id)
-		assertEquals(0, hhRepo.find(query {
-			filter { "objTypeId" eq "obj_household" }
-		}).size, "0 hh")
+		assertEquals(
+			0,
+			hhRepo
+				.find(
+					query {
+						filter { "objTypeId" eq "obj_household" }
+					},
+				).size,
+			"0 hh",
+		)
 
 		val hhA1 = hhRepo.create()
 		val collector = PropertyChangeCollector()
@@ -327,9 +334,16 @@ class HouseholdMemTest {
 		assertEquals(user1.id, hhA2.responsibleUserId, "responsibleUser persisted by id")
 		assertEquals(user1.id, hhA2.responsibleUser?.id, "responsibleUser persisted by value")
 
-		assertEquals(1, hhRepo.find(query {
-			filter { "objTypeId" eq "objHousehold" }
-		}).size, "1 hh")
+		assertEquals(
+			1,
+			hhRepo
+				.find(
+					query {
+						filter { "objTypeId" eq "objHousehold" }
+					},
+				).size,
+			"1 hh",
+		)
 	}
 
 	@Test

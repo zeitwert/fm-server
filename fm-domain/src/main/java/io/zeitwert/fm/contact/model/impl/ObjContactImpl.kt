@@ -1,10 +1,11 @@
 package io.zeitwert.fm.contact.model.impl
 
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
 import dddrive.ddd.property.model.Property
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
@@ -15,7 +16,6 @@ import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin

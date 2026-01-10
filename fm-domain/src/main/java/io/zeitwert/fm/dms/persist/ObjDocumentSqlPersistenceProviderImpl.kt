@@ -1,9 +1,10 @@
 package io.zeitwert.fm.dms.persist
 
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
+import io.zeitwert.dddrive.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.dddrive.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.db.Tables
 import io.zeitwert.fm.dms.model.db.tables.records.ObjDocumentRecord
@@ -11,9 +12,8 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
-import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.persist.sql.SqlIdProvider
+import io.zeitwert.persist.sql.SqlRecordMapper
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Component

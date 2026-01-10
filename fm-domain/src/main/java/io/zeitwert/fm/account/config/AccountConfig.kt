@@ -1,8 +1,8 @@
 package io.zeitwert.fm.account.config
 
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.model.base.EnumConfigBase
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency

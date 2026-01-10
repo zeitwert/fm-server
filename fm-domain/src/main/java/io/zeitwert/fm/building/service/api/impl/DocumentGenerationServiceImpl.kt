@@ -21,7 +21,8 @@ import com.aspose.words.ShapeType
 import com.aspose.words.Table
 import com.aspose.words.WrapType
 import com.google.maps.model.Size
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.config.aspose.AsposeConfig
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.service.api.BuildingEvaluationService
 import io.zeitwert.fm.building.service.api.BuildingService
@@ -29,7 +30,6 @@ import io.zeitwert.fm.building.service.api.DocumentGenerationService
 import io.zeitwert.fm.building.service.api.dto.BuildingEvaluationResult
 import io.zeitwert.fm.building.service.api.dto.EvaluationElement
 import io.zeitwert.fm.building.service.api.dto.EvaluationPeriod
-import io.zeitwert.fm.server.config.aspose.AsposeConfig
 import io.zeitwert.fm.util.Formatter
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -2,17 +2,17 @@ package io.zeitwert.domain.test.persist
 
 import dddrive.ddd.path.setValueByPath
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.doc.model.base.FMDocBase
+import io.zeitwert.dddrive.doc.persist.DocPartItemSqlPersistenceProviderImpl
+import io.zeitwert.dddrive.doc.persist.DocRecordMapperImpl
+import io.zeitwert.dddrive.doc.persist.FMDocSqlPersistenceProviderBase
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.DocTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
-import io.zeitwert.fm.doc.model.base.FMDocBase
-import io.zeitwert.fm.doc.persist.DocPartItemSqlPersistenceProviderImpl
-import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
-import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
+import io.zeitwert.persist.sql.SqlIdProvider
+import io.zeitwert.persist.sql.SqlRecordMapper
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider

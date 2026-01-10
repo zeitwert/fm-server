@@ -1,6 +1,6 @@
 package dddrive.app.ddd.model
 
-import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.model.Aggregate
 
 interface Aggregate : Aggregate {
 

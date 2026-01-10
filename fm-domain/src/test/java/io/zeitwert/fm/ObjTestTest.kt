@@ -1,6 +1,6 @@
 package io.zeitwert.fm
 
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestRepository
 import io.zeitwert.domain.test.model.enums.CodeTestType

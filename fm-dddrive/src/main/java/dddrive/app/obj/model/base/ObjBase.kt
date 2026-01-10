@@ -7,6 +7,7 @@ import dddrive.app.obj.model.ObjMeta
 import dddrive.app.obj.model.ObjPartTransition
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.ObjSPI
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.partListProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
@@ -70,7 +71,7 @@ abstract class ObjBase(
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
-	): dddrive.ddd.core.model.Part<*> {
+	): Part<*> {
 		if (property === _transitionList) {
 			return directory.getPartRepository(ObjPartTransition::class.java).create(this, property, partId)
 		}

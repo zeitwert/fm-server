@@ -1,6 +1,6 @@
 package dddrive.app.ddd.model
 
-import dddrive.ddd.core.model.AggregateSPI
+import dddrive.ddd.model.AggregateSPI
 
 interface AggregateSPI : AggregateSPI {
 

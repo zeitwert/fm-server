@@ -1,8 +1,8 @@
 package io.zeitwert.fm.oe.config
 
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.model.base.EnumConfigBase
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.fm.oe.model.enums.CodeLocale
 import io.zeitwert.fm.oe.model.enums.CodeTenantType

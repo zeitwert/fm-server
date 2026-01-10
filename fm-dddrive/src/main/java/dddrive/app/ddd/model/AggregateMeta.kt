@@ -1,7 +1,6 @@
 package dddrive.app.ddd.model
 
-import dddrive.app.validation.model.AggregatePartValidation
-import dddrive.ddd.core.model.AggregateMeta
+import dddrive.ddd.model.AggregateMeta
 import java.time.OffsetDateTime
 
 interface AggregateMeta : AggregateMeta {

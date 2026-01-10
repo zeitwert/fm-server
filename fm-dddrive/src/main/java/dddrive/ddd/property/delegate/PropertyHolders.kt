@@ -1,10 +1,10 @@
 package dddrive.ddd.property.delegate
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.AggregateRepository
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.enums.model.Enumerated
-import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.AggregateRepository
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.Enumeration
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI

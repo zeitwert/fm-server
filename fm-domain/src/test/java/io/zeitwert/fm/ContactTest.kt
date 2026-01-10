@@ -1,7 +1,7 @@
 package io.zeitwert.fm
 
-import io.zeitwert.config.data.TestDataSetup
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.data.config.TestDataSetup
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository

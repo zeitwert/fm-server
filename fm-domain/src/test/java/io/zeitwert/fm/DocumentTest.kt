@@ -1,6 +1,6 @@
 package io.zeitwert.fm
 
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType

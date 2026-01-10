@@ -1,8 +1,8 @@
 package dddrive.app.doc.model.enums
 
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum.Companion.getAggregateType
-import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum.Companion.getAggregateType
 
 class CodeCaseDef(
 	override val id: String,

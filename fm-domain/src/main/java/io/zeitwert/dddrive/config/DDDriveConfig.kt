@@ -1,13 +1,13 @@
 package io.zeitwert.dddrive.config
 
+import dddrive.app.ddd.model.enums.CodeValidationLevelEnum
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
-import dddrive.app.validation.model.enums.CodeValidationLevelEnum
-import dddrive.ddd.core.model.RepositoryDirectory
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.core.model.enums.CodePartListTypeEnum
-import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.model.RepositoryDirectory
+import dddrive.ddd.model.base.EnumConfigBase
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.model.enums.CodePartListTypeEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration
 open class DDDriveConfig : EnumConfigBase() {
 
 	@Bean("directory")
-	open fun directory(): RepositoryDirectory = RepositoryDirectory.instance
+	open fun directory(): RepositoryDirectory = RepositoryDirectory.Companion.instance
 
 	@Bean("aggregateTypeEnum")
 	open fun aggregateTypeEnum(): CodeAggregateTypeEnum {

@@ -6,11 +6,11 @@ import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository

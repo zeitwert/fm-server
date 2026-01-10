@@ -1,6 +1,6 @@
 package dddrive.app.doc.model.enums
 
-import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.model.Enumerated
 
 class CodeCaseStage(
 	override val id: String,

@@ -1,10 +1,10 @@
 package io.zeitwert.fm.contact.model.impl
 
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.ObjContactRepository
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 
 /**

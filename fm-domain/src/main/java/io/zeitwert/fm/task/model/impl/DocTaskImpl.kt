@@ -5,14 +5,14 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
+import io.zeitwert.dddrive.doc.model.FMDocVRepository
+import io.zeitwert.dddrive.doc.model.base.FMDocBase
+import io.zeitwert.dddrive.obj.model.FMObjVRepository
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
-import io.zeitwert.fm.doc.model.FMDocVRepository
-import io.zeitwert.fm.doc.model.base.FMDocBase
-import io.zeitwert.fm.obj.model.FMObjVRepository
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority

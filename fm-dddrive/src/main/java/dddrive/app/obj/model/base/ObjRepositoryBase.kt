@@ -7,7 +7,7 @@ import dddrive.app.obj.model.ObjPartTransition
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.ObjSPI
 import dddrive.app.obj.model.impl.ObjPartTransitionImpl
-import dddrive.ddd.core.model.base.AggregateRepositoryBase
+import dddrive.ddd.model.base.AggregateRepositoryBase
 
 abstract class ObjRepositoryBase<O : Obj>(
 	intfClass: Class<out Obj>,

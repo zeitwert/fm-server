@@ -1,6 +1,6 @@
 package dddrive.test
 
-import dddrive.ddd.core.model.RepositoryDirectory
+import dddrive.ddd.model.RepositoryDirectory
 import dddrive.domain.household.model.enums.CodeLabel
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

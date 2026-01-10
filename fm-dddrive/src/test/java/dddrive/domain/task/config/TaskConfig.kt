@@ -4,9 +4,9 @@ import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.model.base.EnumConfigBase
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import dddrive.domain.task.model.enums.CodeTaskPriority
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired

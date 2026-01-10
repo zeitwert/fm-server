@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.model.enums
 
-import dddrive.ddd.enums.model.Enumerated
-import dddrive.ddd.enums.model.base.EnumerationBase
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.base.EnumerationBase
 import kotlin.math.pow
 
 enum class CodeBuildingPriceIndex(

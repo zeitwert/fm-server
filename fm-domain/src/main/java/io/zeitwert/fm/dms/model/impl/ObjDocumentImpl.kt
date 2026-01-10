@@ -4,6 +4,7 @@ import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
@@ -14,7 +15,6 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin

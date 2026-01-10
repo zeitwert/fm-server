@@ -1,16 +1,16 @@
 package io.zeitwert.fm.task.persist
 
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.doc.model.base.FMDocBase
-import io.zeitwert.fm.doc.persist.DocRecordMapperImpl
-import io.zeitwert.fm.doc.persist.FMDocSqlPersistenceProviderBase
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.doc.model.base.FMDocBase
+import io.zeitwert.dddrive.doc.persist.DocRecordMapperImpl
+import io.zeitwert.dddrive.doc.persist.FMDocSqlPersistenceProviderBase
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
+import io.zeitwert.persist.sql.SqlIdProvider
+import io.zeitwert.persist.sql.SqlRecordMapper
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 

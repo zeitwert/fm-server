@@ -1,6 +1,6 @@
 package dddrive.ddd.property.model.base
 
-import dddrive.ddd.core.model.Entity
+import dddrive.ddd.model.Entity
 import dddrive.ddd.path.path
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI

@@ -6,7 +6,7 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocPartTransition
 import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.impl.DocPartTransitionImpl
-import dddrive.ddd.core.model.base.AggregateRepositoryBase
+import dddrive.ddd.model.base.AggregateRepositoryBase
 
 abstract class DocRepositoryBase<D : Doc>(
 	intfClass: Class<out Doc>,

@@ -1,6 +1,6 @@
 package dddrive.ddd.path
 
-import dddrive.ddd.core.model.Entity
+import dddrive.ddd.model.Entity
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.PartListProperty

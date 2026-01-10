@@ -1,16 +1,16 @@
 package io.zeitwert.fm.search.service.api.impl
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.persist.util.SqlUtils
-import io.zeitwert.fm.ddd.model.SearchResult
-import io.zeitwert.fm.ddd.service.api.SearchService
-import io.zeitwert.fm.obj.model.db.tables.Obj
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.ddd.model.SearchResult
+import io.zeitwert.dddrive.ddd.service.api.SearchService
+import io.zeitwert.dddrive.obj.model.db.tables.Obj
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.search.model.db.Tables
 import io.zeitwert.fm.search.model.db.tables.ItemSearch
 import io.zeitwert.fm.search.model.db.tables.records.ItemSearchRecord
+import io.zeitwert.persist.sql.util.SqlUtils
 import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.Field
@@ -198,7 +198,7 @@ class SearchServiceImpl internal constructor(
 	companion object {
 
 		private val ITEM_SEARCH: ItemSearch = Tables.ITEM_SEARCH
-		private val OBJ: Obj = io.zeitwert.fm.obj.model.db.Tables.OBJ
+		private val OBJ: Obj = io.zeitwert.dddrive.obj.model.db.Tables.OBJ
 	}
 
 }

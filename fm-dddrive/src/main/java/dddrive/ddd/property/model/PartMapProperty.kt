@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Part
 
 /**
  * Property that holds a string-indexed map of parts.

@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model.base
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.Property

@@ -1,7 +1,7 @@
 package dddrive.domain.task.model.impl
 
 import dddrive.app.doc.model.base.DocPartBase
-import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.model.Property
 import dddrive.domain.task.model.DocTask

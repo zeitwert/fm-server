@@ -3,7 +3,7 @@ package dddrive.app.obj.model.impl
 import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjPartTransition
 import dddrive.app.obj.model.base.ObjPartBase
-import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.model.Property

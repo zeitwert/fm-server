@@ -6,6 +6,7 @@ import dddrive.ddd.property.delegate.enumSetProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.model.EnumSetProperty
+import io.zeitwert.dddrive.doc.model.base.FMDocBase
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.DocTestRepository
 import io.zeitwert.domain.test.model.ObjTest
@@ -14,7 +15,6 @@ import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
-import io.zeitwert.fm.doc.model.base.FMDocBase
 import org.jooq.JSON
 import java.math.BigDecimal
 import java.time.LocalDate

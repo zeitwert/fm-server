@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model
 
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.core.model.RepositoryDirectory
+import dddrive.ddd.model.Part
+import dddrive.ddd.model.RepositoryDirectory
 
 interface EntityWithPropertiesSPI {
 

@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model.impl
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.PartReferenceProperty
@@ -14,12 +14,12 @@ class PartReferencePropertyImpl<A : Aggregate, P : Part<A>>(
 	override val type: Class<P>,
 	idCalculator: ((PartReferenceProperty<A, P>) -> Int?)? = null,
 ) : ReferencePropertyBase<P, Int>(
-	entity,
-	name,
-	Int::class.java,
-	@Suppress("UNCHECKED_CAST")
-	idCalculator as ((ReferenceProperty<P, Int>) -> Int?)?,
-),
+		entity,
+		name,
+		Int::class.java,
+		@Suppress("UNCHECKED_CAST")
+		idCalculator as ((ReferenceProperty<P, Int>) -> Int?)?,
+	),
 	PartReferenceProperty<A, P> {
 
 	@Suppress("UNCHECKED_CAST")

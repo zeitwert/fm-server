@@ -1,8 +1,8 @@
 package io.zeitwert.fm.collaboration.config
 
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.model.base.EnumConfigBase
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,6 +1,6 @@
 package dddrive.ddd.property.model
 
-import dddrive.ddd.core.model.Aggregate
+import dddrive.ddd.model.Aggregate
 
 /**
  * Property that holds a set of aggregate references (by ID).

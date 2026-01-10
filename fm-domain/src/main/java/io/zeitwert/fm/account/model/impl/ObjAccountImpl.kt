@@ -7,6 +7,7 @@ import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.query.query
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
@@ -20,7 +21,6 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import java.math.BigDecimal
 
 class ObjAccountImpl(

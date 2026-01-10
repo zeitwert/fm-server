@@ -1,7 +1,7 @@
 package dddrive.domain.ddd.persist.map.impl
 
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.AggregateReferenceSetProperty
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties

@@ -2,9 +2,9 @@ package dddrive.app.doc.model.base
 
 import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocPart
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.core.model.PartRepository
-import dddrive.ddd.core.model.base.PartBase
+import dddrive.ddd.model.Part
+import dddrive.ddd.model.PartRepository
+import dddrive.ddd.model.base.PartBase
 import dddrive.ddd.property.model.Property
 
 abstract class DocPartBase<D : Doc>(

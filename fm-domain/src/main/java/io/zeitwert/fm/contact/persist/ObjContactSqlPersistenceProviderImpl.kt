@@ -1,18 +1,18 @@
 package io.zeitwert.fm.contact.persist
 
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.dddrive.persist.SqlRecordMapper
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
+import io.zeitwert.dddrive.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.dddrive.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
-import io.zeitwert.fm.obj.model.base.FMObjBase
-import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
-import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.persist.sql.SqlIdProvider
+import io.zeitwert.persist.sql.SqlRecordMapper
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
 

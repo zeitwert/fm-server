@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model.impl
 
-import dddrive.ddd.enums.model.Enumerated
-import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.Enumeration
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumProperty
@@ -14,12 +14,12 @@ class EnumPropertyImpl<E : Enumerated>(
 	override val type: Class<E>,
 	idCalculator: ((EnumProperty<E>) -> String?)? = null,
 ) : ReferencePropertyBase<E, String>(
-	entity,
-	name,
-	String::class.java,
-	@Suppress("UNCHECKED_CAST")
-	idCalculator as ((ReferenceProperty<E, String>) -> String?)?,
-),
+		entity,
+		name,
+		String::class.java,
+		@Suppress("UNCHECKED_CAST")
+		idCalculator as ((ReferenceProperty<E, String>) -> String?)?,
+	),
 	EnumProperty<E> {
 
 	override val enumeration: Enumeration<E>

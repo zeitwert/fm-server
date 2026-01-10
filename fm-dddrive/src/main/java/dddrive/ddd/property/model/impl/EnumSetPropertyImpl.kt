@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model.impl
 
-import dddrive.ddd.enums.model.Enumerated
-import dddrive.ddd.enums.model.Enumeration
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.Enumeration
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
 import dddrive.ddd.property.model.EnumSetProperty

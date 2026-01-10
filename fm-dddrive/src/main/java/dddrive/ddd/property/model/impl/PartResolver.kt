@@ -1,6 +1,6 @@
 package dddrive.ddd.property.model.impl
 
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Part
 
 fun interface PartResolver<P : Part<*>> {
 

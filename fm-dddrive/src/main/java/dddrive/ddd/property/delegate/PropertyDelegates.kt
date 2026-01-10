@@ -1,8 +1,8 @@
 package dddrive.ddd.property.delegate
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Part
-import dddrive.ddd.enums.model.Enumerated
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Enumerated
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.AggregateReferenceProperty
 import dddrive.ddd.property.model.BaseProperty
 import dddrive.ddd.property.model.EntityWithProperties

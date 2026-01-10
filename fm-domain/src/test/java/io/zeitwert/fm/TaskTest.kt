@@ -3,8 +3,8 @@ package io.zeitwert.fm
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum.Companion.getCaseStage
 import dddrive.ddd.query.query
-import io.zeitwert.config.data.TestDataSetup
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.data.config.TestDataSetup
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.model.ObjUser

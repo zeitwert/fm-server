@@ -5,7 +5,7 @@ import dddrive.app.doc.model.DocPartTransition
 import dddrive.app.doc.model.base.DocPartBase
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.core.model.PartRepository
+import dddrive.ddd.model.PartRepository
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.referenceIdProperty

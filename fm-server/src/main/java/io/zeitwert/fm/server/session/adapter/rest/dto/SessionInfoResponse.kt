@@ -1,8 +1,8 @@
 package io.zeitwert.fm.server.session.adapter.rest.dto
 
-import io.zeitwert.fm.account.adapter.api.jsonapi.dto.ObjAccountDto
-import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjTenantDto
-import io.zeitwert.fm.oe.adapter.api.jsonapi.dto.ObjUserDto
+import io.zeitwert.fm.account.api.jsonapi.dto.ObjAccountDto
+import io.zeitwert.fm.oe.api.jsonapi.dto.ObjTenantDto
+import io.zeitwert.fm.oe.api.jsonapi.dto.ObjUserDto
 
 data class SessionInfoResponse(
 	val user: ObjUserDto? = null,

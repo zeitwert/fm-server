@@ -1,7 +1,7 @@
 package io.zeitwert.fm.building.service.api.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 

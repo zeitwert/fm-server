@@ -1,6 +1,7 @@
 package io.zeitwert.fm.building.model.impl
 
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
@@ -8,7 +9,6 @@ import io.zeitwert.fm.building.model.ObjBuildingPartRating
 import io.zeitwert.fm.building.model.ObjBuildingRepository
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.task.model.DocTaskRepository
 import org.springframework.stereotype.Component
 

@@ -1,5 +1,5 @@
 package dddrive.app.doc.model
 
-import dddrive.ddd.core.model.AggregateRepository
+import dddrive.ddd.model.AggregateRepository
 
 interface DocRepository<D : Doc> : AggregateRepository<D>

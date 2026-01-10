@@ -1,10 +1,10 @@
 package io.zeitwert.fm.contact.config
 
-import dddrive.ddd.core.model.enums.CodeAggregateType
-import dddrive.ddd.core.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.core.model.enums.CodePartListType
-import dddrive.ddd.core.model.enums.CodePartListTypeEnum
-import dddrive.ddd.enums.model.base.EnumConfigBase
+import dddrive.ddd.model.base.EnumConfigBase
+import dddrive.ddd.model.enums.CodeAggregateType
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import dddrive.ddd.model.enums.CodePartListType
+import dddrive.ddd.model.enums.CodePartListTypeEnum
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel
 import io.zeitwert.fm.contact.model.enums.CodeAddressType
 import io.zeitwert.fm.contact.model.enums.CodeContactRole

@@ -1,7 +1,7 @@
 package dddrive.domain.household.model.impl
 
 import dddrive.app.obj.model.base.ObjBase
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.enumSetProperty

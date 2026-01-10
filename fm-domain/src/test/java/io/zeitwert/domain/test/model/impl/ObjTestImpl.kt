@@ -1,6 +1,6 @@
 package io.zeitwert.domain.test.model.impl
 
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.enumSetProperty
@@ -8,6 +8,7 @@ import dddrive.ddd.property.delegate.partListProperty
 import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.model.Property
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.ObjTestRepository
@@ -15,7 +16,6 @@ import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
 import io.zeitwert.fm.collaboration.model.impl.AggregateWithNotesMixin
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import org.jooq.JSON
 import java.math.BigDecimal
 import java.time.LocalDate

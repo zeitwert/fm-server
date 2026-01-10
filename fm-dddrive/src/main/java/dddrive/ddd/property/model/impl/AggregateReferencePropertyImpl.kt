@@ -1,7 +1,7 @@
 package dddrive.ddd.property.model.impl
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.AggregateRepositorySPI
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.AggregateRepositorySPI
 import dddrive.ddd.property.model.AggregateReferenceProperty
 import dddrive.ddd.property.model.EntityWithProperties
 import dddrive.ddd.property.model.EntityWithPropertiesSPI
@@ -14,12 +14,12 @@ class AggregateReferencePropertyImpl<A : Aggregate>(
 	override val type: Class<A>,
 	idCalculator: ((AggregateReferenceProperty<A>) -> Any?)? = null,
 ) : ReferencePropertyBase<A, Any>(
-	entity,
-	name,
-	Any::class.java,
-	@Suppress("UNCHECKED_CAST")
-	idCalculator as ((ReferenceProperty<A, Any>) -> Any?)?,
-),
+		entity,
+		name,
+		Any::class.java,
+		@Suppress("UNCHECKED_CAST")
+		idCalculator as ((ReferenceProperty<A, Any>) -> Any?)?,
+	),
 	AggregateReferenceProperty<A> {
 
 	override val aggregateType: Class<A> get() = type

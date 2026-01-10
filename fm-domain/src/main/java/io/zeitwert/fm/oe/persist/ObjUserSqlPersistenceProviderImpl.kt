@@ -1,16 +1,16 @@
 package io.zeitwert.fm.oe.persist
 
 import dddrive.ddd.query.QuerySpec
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.persist.SqlIdProvider
-import io.zeitwert.dddrive.persist.SqlRecordMapper
-import io.zeitwert.fm.obj.persist.FMObjSqlPersistenceProviderBase
-import io.zeitwert.fm.obj.persist.ObjPartItemSqlPersistenceProviderImpl
-import io.zeitwert.fm.obj.persist.ObjRecordMapperImpl
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.obj.persist.FMObjSqlPersistenceProviderBase
+import io.zeitwert.dddrive.obj.persist.ObjPartItemSqlPersistenceProviderImpl
+import io.zeitwert.dddrive.obj.persist.ObjRecordMapperImpl
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
+import io.zeitwert.persist.sql.SqlIdProvider
+import io.zeitwert.persist.sql.SqlRecordMapper
 import org.jooq.DSLContext
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component

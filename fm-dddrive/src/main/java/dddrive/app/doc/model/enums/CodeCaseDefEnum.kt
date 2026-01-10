@@ -1,6 +1,6 @@
 package dddrive.app.doc.model.enums
 
-import dddrive.ddd.enums.model.base.EnumerationBase
+import dddrive.ddd.model.base.EnumerationBase
 
 class CodeCaseDefEnum : EnumerationBase<CodeCaseDef>(CodeCaseDef::class.java) {
 

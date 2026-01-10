@@ -1,9 +1,9 @@
 package io.zeitwert.fm.collaboration.model.impl
 
-import io.zeitwert.dddrive.app.model.SessionContext
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
-import io.zeitwert.fm.obj.model.base.FMObjRepositoryBase
 import org.springframework.stereotype.Component
 
 @Component("objNoteRepository")

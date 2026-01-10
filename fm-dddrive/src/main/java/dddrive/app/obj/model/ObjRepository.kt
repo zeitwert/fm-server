@@ -1,6 +1,6 @@
 package dddrive.app.obj.model
 
-import dddrive.ddd.core.model.AggregateRepository
+import dddrive.ddd.model.AggregateRepository
 
 interface ObjRepository<O : Obj> : AggregateRepository<O> {
 

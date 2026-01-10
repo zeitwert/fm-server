@@ -1,15 +1,15 @@
 package io.zeitwert.fm.contact.persist
 
-import dddrive.ddd.core.model.Aggregate
-import dddrive.ddd.core.model.Part
+import dddrive.ddd.model.Aggregate
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.model.PartListProperty
-import io.zeitwert.dddrive.persist.PartSqlPersistenceProvider
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.db.Tables
 import io.zeitwert.fm.contact.model.db.tables.records.ObjContactPartAddressRecord
 import io.zeitwert.fm.contact.model.enums.CodeAddressChannel
 import io.zeitwert.fm.oe.model.enums.CodeCountry
+import io.zeitwert.persist.sql.PartSqlPersistenceProvider
 import org.jooq.DSLContext
 
 class ObjContactPartAddressSqlPersistenceProviderImpl(

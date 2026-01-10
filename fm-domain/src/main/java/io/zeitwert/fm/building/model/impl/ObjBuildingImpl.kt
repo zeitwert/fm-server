@@ -1,8 +1,8 @@
 package io.zeitwert.fm.building.model.impl
 
 import dddrive.app.ddd.model.SessionContext
-import dddrive.app.validation.model.enums.CodeValidationLevelEnum
-import dddrive.ddd.core.model.Part
+import dddrive.app.ddd.model.enums.CodeValidationLevelEnum
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
@@ -11,6 +11,7 @@ import dddrive.ddd.property.delegate.referenceIdProperty
 import dddrive.ddd.property.delegate.referenceProperty
 import dddrive.ddd.property.delegate.referenceSetProperty
 import dddrive.ddd.property.model.Property
+import io.zeitwert.dddrive.obj.model.base.FMObjBase
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartRating
@@ -29,7 +30,6 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
-import io.zeitwert.fm.obj.model.base.FMObjBase
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin

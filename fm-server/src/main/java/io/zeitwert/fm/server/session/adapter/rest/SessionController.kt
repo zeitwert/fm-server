@@ -1,11 +1,11 @@
 package io.zeitwert.fm.server.session.adapter.rest
 
-import io.zeitwert.dddrive.app.model.SessionContext
-import io.zeitwert.dddrive.ddd.adapter.api.jsonapi.dto.EnumeratedDto
-import io.zeitwert.fm.account.adapter.api.jsonapi.impl.ObjAccountDtoAdapter
+import io.zeitwert.app.model.SessionContext
+import io.zeitwert.dddrive.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.fm.account.api.jsonapi.impl.ObjAccountDtoAdapter
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjTenantDtoAdapter
-import io.zeitwert.fm.oe.adapter.api.jsonapi.impl.ObjUserDtoAdapter
+import io.zeitwert.fm.oe.api.jsonapi.impl.ObjTenantDtoAdapter
+import io.zeitwert.fm.oe.api.jsonapi.impl.ObjUserDtoAdapter
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole.Enumeration.getUserRole

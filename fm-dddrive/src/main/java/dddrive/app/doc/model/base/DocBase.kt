@@ -10,6 +10,7 @@ import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.obj.model.Obj
+import dddrive.ddd.model.Part
 import dddrive.ddd.property.delegate.baseProperty
 import dddrive.ddd.property.delegate.enumProperty
 import dddrive.ddd.property.delegate.partListProperty
@@ -88,7 +89,7 @@ abstract class DocBase(
 	override fun doAddPart(
 		property: Property<*>,
 		partId: Int?,
-	): dddrive.ddd.core.model.Part<*> {
+	): Part<*> {
 		if (property === _transitionList) {
 			return directory.getPartRepository(DocPartTransition::class.java).create(this, property, partId)
 		}
