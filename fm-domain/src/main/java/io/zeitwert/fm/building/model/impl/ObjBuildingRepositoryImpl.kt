@@ -20,9 +20,9 @@ class ObjBuildingRepositoryImpl(
 	override val taskRepository: DocTaskRepository,
 	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<ObjBuilding>(
-		ObjBuilding::class.java,
-		AGGREGATE_TYPE_ID,
-	),
+	ObjBuilding::class.java,
+	AGGREGATE_TYPE_ID,
+),
 	ObjBuildingRepository {
 
 	override fun createAggregate(isNew: Boolean): ObjBuilding = ObjBuildingImpl(this, isNew)

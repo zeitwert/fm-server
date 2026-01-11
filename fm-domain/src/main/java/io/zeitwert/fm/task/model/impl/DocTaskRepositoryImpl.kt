@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component
 class DocTaskRepositoryImpl(
 	override val sessionContext: SessionContext,
 ) : FMDocRepositoryBase<DocTask>(
-		DocTask::class.java,
-		AGGREGATE_TYPE_ID,
-	),
+	DocTask::class.java,
+	AGGREGATE_TYPE_ID,
+),
 	DocTaskRepository {
 
 	override fun createAggregate(isNew: Boolean): DocTask = DocTaskImpl(this, isNew)

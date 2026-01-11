@@ -1,0 +1,23 @@
+package io.zeitwert.fm.oe.adapter.jsonapi.impl
+
+import dddrive.ddd.model.RepositoryDirectory
+import io.zeitwert.app.api.jsonapi.base.AggregateDtoRepositoryBase
+import io.zeitwert.app.session.model.SessionContext
+import io.zeitwert.fm.oe.adapter.jsonapi.dto.ObjUserDto
+import io.zeitwert.fm.oe.model.ObjUser
+import io.zeitwert.fm.oe.model.ObjUserRepository
+import org.springframework.stereotype.Controller
+
+@Controller("objUserApiRepository")
+open class ObjUserDtoRepositoryImpl(
+	directory: RepositoryDirectory,
+	repository: ObjUserRepository,
+	adapter: ObjUserDtoAdapter,
+	sessionCtx: SessionContext,
+) : AggregateDtoRepositoryBase<ObjUser, ObjUserDto>(
+		resourceClass = ObjUserDto::class.java,
+		directory = directory,
+		repository = repository,
+		adapter = adapter,
+		sessionCtx = sessionCtx,
+	)

@@ -1,0 +1,7 @@
+package io.zeitwert.fm.oe.adapter.jsonapi.dto
+
+import io.crnk.core.resource.annotations.JsonApiResource
+import io.zeitwert.app.obj.api.jsonapi.base.ObjDtoBase
+
+@JsonApiResource(type = "tenant", resourcePath = "oe/tenants")
+class ObjTenantDto : ObjDtoBase()

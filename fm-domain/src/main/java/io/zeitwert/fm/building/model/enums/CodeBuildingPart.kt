@@ -2,7 +2,7 @@ package io.zeitwert.fm.building.model.enums
 
 import dddrive.ddd.model.Enumerated
 import dddrive.ddd.model.base.EnumerationBase
-import io.zeitwert.fm.building.service.api.dto.ProjectionPeriod
+import io.zeitwert.fm.building.api.dto.ProjectionPeriod
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.min
@@ -101,16 +101,16 @@ enum class CodeBuildingPart(
 			return 1 - relativeAge / linearDuration * (1 - linearTimeValue)
 		}
 		return c0 +
-			c1 * relativeAge +
-			c2 * relativeAge.pow(2.0) +
-			c3 * relativeAge.pow(3.0) +
-			c4 * relativeAge.pow(4.0) +
-			c5 * relativeAge.pow(5.0) +
-			c6 * relativeAge.pow(6.0) +
-			c7 * relativeAge.pow(7.0) +
-			c8 * relativeAge.pow(8.0) +
-			c9 * relativeAge.pow(9.0) +
-			c10 * relativeAge.pow(10.0)
+				c1 * relativeAge +
+				c2 * relativeAge.pow(2.0) +
+				c3 * relativeAge.pow(3.0) +
+				c4 * relativeAge.pow(4.0) +
+				c5 * relativeAge.pow(5.0) +
+				c6 * relativeAge.pow(6.0) +
+				c7 * relativeAge.pow(7.0) +
+				c8 * relativeAge.pow(8.0) +
+				c9 * relativeAge.pow(9.0) +
+				c10 * relativeAge.pow(10.0)
 	}
 
 	fun getRelativeAge(timeValue: Double): Double {
@@ -141,15 +141,15 @@ enum class CodeBuildingPart(
 
 	private fun fDerivative(relativeAge: Double): Double =
 		c1 +
-			2 * c2 * relativeAge +
-			3 * c3 * relativeAge.pow(2.0) +
-			4 * c4 * relativeAge.pow(3.0) +
-			5 * c5 * relativeAge.pow(4.0) +
-			6 * c6 * relativeAge.pow(5.0) +
-			7 * c7 * relativeAge.pow(6.0) +
-			8 * c8 * relativeAge.pow(7.0) +
-			9 * c9 * relativeAge.pow(8.0) +
-			10 * c10 * relativeAge.pow(9.0)
+				2 * c2 * relativeAge +
+				3 * c3 * relativeAge.pow(2.0) +
+				4 * c4 * relativeAge.pow(3.0) +
+				5 * c5 * relativeAge.pow(4.0) +
+				6 * c6 * relativeAge.pow(5.0) +
+				7 * c7 * relativeAge.pow(6.0) +
+				8 * c8 * relativeAge.pow(7.0) +
+				9 * c9 * relativeAge.pow(8.0) +
+				10 * c10 * relativeAge.pow(9.0)
 
 	fun getProjection(
 		elementValue: Double,

@@ -5,7 +5,7 @@
 		<database>
 			<name>org.jooq.meta.postgres.PostgresDatabase</name>
 			<includes>
-				  code_task.*
+				code_task.*
 				| doc_task.*
 			</includes>
 			<excludes></excludes>

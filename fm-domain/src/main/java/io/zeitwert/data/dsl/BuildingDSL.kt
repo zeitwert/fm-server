@@ -11,7 +11,7 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
-import io.zeitwert.fm.building.service.api.BuildingService
+import io.zeitwert.fm.building.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry

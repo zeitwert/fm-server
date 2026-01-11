@@ -98,7 +98,8 @@ class ObjBuildingPartRatingImpl(
 	override val ratingYear: Int?
 		get() = if (this.ratingDate != null) this.ratingDate!!.year else null
 
-	override fun getElement(buildingPart: CodeBuildingPart) = this.elementList.first { p: ObjBuildingPartElementRating? -> p!!.buildingPart === buildingPart }
+	override fun getElement(buildingPart: CodeBuildingPart) =
+		this.elementList.first { p: ObjBuildingPartElementRating? -> p!!.buildingPart === buildingPart }
 
 	override fun addElement(buildingPart: CodeBuildingPart): ObjBuildingPartElementRating {
 		val e: ObjBuildingPartElementRating = this.elementList.add(null)

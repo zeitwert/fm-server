@@ -1,0 +1,30 @@
+package io.zeitwert.fm.task.adapter.jsonapi.impl
+
+import dddrive.ddd.model.RepositoryDirectory
+import io.zeitwert.app.api.jsonapi.dto.DtoUtils
+import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.doc.api.jsonapi.base.DocDtoAdapterBase
+import io.zeitwert.fm.task.adapter.jsonapi.dto.DocTaskDto
+import io.zeitwert.fm.task.model.DocTask
+import org.springframework.stereotype.Component
+
+@Component("docTaskDtoAdapter")
+class DocTaskDtoAdapter(
+	directory: RepositoryDirectory,
+) : DocDtoAdapterBase<DocTask, DocTaskDto>(
+	DocTask::class.java,
+	"task",
+	DocTaskDto::class.java,
+	directory,
+	{ DocTaskDto() },
+) {
+
+	init {
+		config.field(
+			"relatedTo",
+			{ task -> EnumeratedDto.of((task as DocTask).relatedTo) },
+			{ dtoValue, task -> (task as DocTask).relatedToId = DtoUtils.idFromString(enumId(dtoValue)) },
+		)
+	}
+
+}

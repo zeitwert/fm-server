@@ -1,16 +1,12 @@
 package io.zeitwert.fm.building.model;
 
-import static java.util.Map.entry;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Map.entry;
 
 public final class StratusImport {
 

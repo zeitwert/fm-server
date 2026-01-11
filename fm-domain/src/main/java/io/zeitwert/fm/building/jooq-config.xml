@@ -5,7 +5,7 @@
 		<database>
 			<name>org.jooq.meta.postgres.PostgresDatabase</name>
 			<includes>
-				  code_building.*
+				code_building.*
 				| code_historic_preservation
 				| obj_building.*
 			</includes>

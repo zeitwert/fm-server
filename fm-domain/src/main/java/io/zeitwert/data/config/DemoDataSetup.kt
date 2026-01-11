@@ -7,7 +7,7 @@ import io.zeitwert.data.dsl.Account
 import io.zeitwert.data.dsl.AccountContext
 import io.zeitwert.data.dsl.Building
 import io.zeitwert.data.dsl.Tenant
-import io.zeitwert.fm.building.service.api.BuildingService
+import io.zeitwert.fm.building.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser

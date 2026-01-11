@@ -5,7 +5,6 @@ package io.zeitwert.fm.task.model.db;
 
 
 import io.zeitwert.fm.task.model.db.tables.DocTask;
-
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.DSL;
@@ -15,14 +14,15 @@ import org.jooq.impl.Internal;
 /**
  * A class modelling indexes of tables in public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class Indexes {
 
-    // -------------------------------------------------------------------------
-    // INDEX definitions
-    // -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// INDEX definitions
+	// -------------------------------------------------------------------------
 
-    public static final Index DOC_TASK$ACCOUNT = Internal.createIndex(DSL.name("doc_task$account"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.ACCOUNT_ID }, false);
-    public static final Index DOC_TASK$RELATED_TO = Internal.createIndex(DSL.name("doc_task$related_to"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.RELATED_TO_ID }, false);
-    public static final Index DOC_TASK$TENANT = Internal.createIndex(DSL.name("doc_task$tenant"), DocTask.DOC_TASK, new OrderField[] { DocTask.DOC_TASK.TENANT_ID }, false);
+	public static final Index DOC_TASK$ACCOUNT = Internal.createIndex(DSL.name("doc_task$account"), DocTask.DOC_TASK, new OrderField[]{DocTask.DOC_TASK.ACCOUNT_ID}, false);
+	public static final Index DOC_TASK$RELATED_TO = Internal.createIndex(DSL.name("doc_task$related_to"), DocTask.DOC_TASK, new OrderField[]{DocTask.DOC_TASK.RELATED_TO_ID}, false);
+	public static final Index DOC_TASK$TENANT = Internal.createIndex(DSL.name("doc_task$tenant"), DocTask.DOC_TASK, new OrderField[]{DocTask.DOC_TASK.TENANT_ID}, false);
+
 }
