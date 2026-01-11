@@ -25,15 +25,15 @@ abstract class EnumerationBase<E : Enumerated>(
 
 		check(parts[0] == "dddrive" || numOfParts > 5) {
 			"valid enumeration class name (i), ([company/project].[area].[module].model.enums.[xyEnum]): " +
-				javaClass.getCanonicalName()
+					javaClass.getCanonicalName()
 		}
 		check("model" == parts[numOfParts - 3]) {
 			"valid enumeration class name (ii), must end with (model.enums.[xyEnum]): " +
-				javaClass.getCanonicalName()
+					javaClass.getCanonicalName()
 		}
 		check("enums" == parts[numOfParts - 2]) {
 			"valid enumeration class name (iii), must end with (model.enums.[xyEnum]): " +
-				javaClass.getCanonicalName()
+					javaClass.getCanonicalName()
 		}
 
 		area = parts[numOfParts - 5]

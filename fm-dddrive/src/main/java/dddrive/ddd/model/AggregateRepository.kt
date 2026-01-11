@@ -1,7 +1,7 @@
 package dddrive.ddd.model
 
 import dddrive.ddd.model.enums.CodeAggregateType
-import dddrive.ddd.query.QuerySpec
+import dddrive.query.QuerySpec
 
 /**
  * A DDD Aggregate Repository

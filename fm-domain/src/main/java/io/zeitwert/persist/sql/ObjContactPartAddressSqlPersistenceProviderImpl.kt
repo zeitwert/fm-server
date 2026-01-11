@@ -2,7 +2,7 @@ package io.zeitwert.persist.sql
 
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.model.PartListProperty
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactPartAddress
 import io.zeitwert.fm.contact.model.db.Tables

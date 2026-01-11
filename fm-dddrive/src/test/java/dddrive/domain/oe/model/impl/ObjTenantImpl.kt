@@ -2,8 +2,8 @@ package dddrive.domain.oe.model.impl
 
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjBase
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.delegate.baseProperty
+import dddrive.property.path.setValueByPath
+import dddrive.property.delegate.baseProperty
 import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 

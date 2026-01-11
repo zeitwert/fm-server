@@ -1,6 +1,8 @@
 package dddrive.ddd.model
 
-interface AggregatePersistenceProvider<A : Aggregate?> {
+import dddrive.hex.OutgoingPort
+
+interface AggregatePersistenceProvider<A : Aggregate> : OutgoingPort {
 
 	/**
 	 * Is the given Any a valid id

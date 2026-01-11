@@ -1,7 +1,7 @@
 package dddrive.domain.task.model
 
 import dddrive.app.doc.model.Doc
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.model.PartListProperty
 import dddrive.domain.task.model.enums.CodeTaskPriority
 import java.time.OffsetDateTime
 

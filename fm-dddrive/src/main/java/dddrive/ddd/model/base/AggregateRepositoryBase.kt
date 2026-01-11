@@ -14,8 +14,8 @@ import dddrive.ddd.model.RepositoryDirectorySPI
 import dddrive.ddd.model.enums.CodeAggregateType
 import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import dddrive.ddd.model.impl.PartRepositoryImpl
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.model.Property
+import dddrive.property.model.Property
+import dddrive.property.path.setValueByPath
 import java.util.function.Function
 
 abstract class AggregateRepositoryBase<A : Aggregate>(

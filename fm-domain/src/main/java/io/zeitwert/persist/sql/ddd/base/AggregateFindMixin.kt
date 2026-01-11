@@ -1,8 +1,8 @@
 package io.zeitwert.persist.sql.ddd.base
 
-import dddrive.ddd.query.ComparisonOperator
-import dddrive.ddd.query.FilterSpec
-import dddrive.ddd.query.QuerySpec
+import dddrive.query.ComparisonOperator
+import dddrive.query.FilterSpec
+import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.db.Tables
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjTenantRepository

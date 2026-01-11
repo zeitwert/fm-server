@@ -5,12 +5,11 @@ import dddrive.app.obj.model.ObjPart
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.PartRepository
 import dddrive.ddd.model.base.PartBase
-import dddrive.ddd.property.model.Property
 
 abstract class ObjPartBase<O : Obj>(
 	obj: O,
 	repository: PartRepository<O, out Part<O>>,
-	property: Property<*>,
+	property: dddrive.property.model.Property<*>,
 	id: Int,
 ) : PartBase<O>(obj, repository, property, id),
 	ObjPart<O>

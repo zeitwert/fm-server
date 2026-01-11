@@ -2,7 +2,7 @@ package io.zeitwert.domain.test.persist
 
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.model.PartListProperty
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.db.Tables

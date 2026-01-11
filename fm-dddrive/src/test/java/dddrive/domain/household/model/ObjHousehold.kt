@@ -1,10 +1,10 @@
 package dddrive.domain.household.model
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.model.AggregateReferenceSetProperty
-import dddrive.ddd.property.model.EnumSetProperty
-import dddrive.ddd.property.model.PartListProperty
-import dddrive.ddd.property.model.PartMapProperty
+import dddrive.property.model.AggregateReferenceSetProperty
+import dddrive.property.model.EnumSetProperty
+import dddrive.property.model.PartListProperty
+import dddrive.property.model.PartMapProperty
 import dddrive.domain.household.model.enums.CodeLabel
 import dddrive.domain.household.model.enums.CodeSalutation
 import dddrive.domain.oe.model.ObjUser

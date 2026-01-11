@@ -2,13 +2,13 @@ package dddrive.domain.ddd.persist.map.impl
 
 import dddrive.ddd.model.Enumerated
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.model.AggregateReferenceSetProperty
-import dddrive.ddd.property.model.BaseProperty
-import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.ddd.property.model.EnumSetProperty
-import dddrive.ddd.property.model.PartListProperty
-import dddrive.ddd.property.model.PartMapProperty
-import dddrive.ddd.property.model.ReferenceProperty
+import dddrive.property.model.AggregateReferenceSetProperty
+import dddrive.property.model.BaseProperty
+import dddrive.property.model.EntityWithProperties
+import dddrive.property.model.EnumSetProperty
+import dddrive.property.model.PartListProperty
+import dddrive.property.model.PartMapProperty
+import dddrive.property.model.ReferenceProperty
 
 /**
  * Serializes an entity with all its properties to a nested map structure.

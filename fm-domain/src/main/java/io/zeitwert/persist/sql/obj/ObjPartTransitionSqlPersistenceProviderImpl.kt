@@ -4,8 +4,8 @@ import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjPartTransition
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.path.setValueByPath
+import dddrive.property.model.PartListProperty
 import io.zeitwert.app.obj.model.db.Tables
 import io.zeitwert.app.obj.model.db.tables.records.ObjPartTransitionRecord
 import io.zeitwert.persist.sql.ddd.PartSqlPersistenceProvider

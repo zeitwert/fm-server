@@ -4,8 +4,8 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocPartTransition
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.path.setValueByPath
+import dddrive.property.model.PartListProperty
 import io.zeitwert.app.doc.model.db.Tables
 import io.zeitwert.app.doc.model.db.tables.records.DocPartTransitionRecord
 import io.zeitwert.persist.sql.ddd.PartSqlPersistenceProvider

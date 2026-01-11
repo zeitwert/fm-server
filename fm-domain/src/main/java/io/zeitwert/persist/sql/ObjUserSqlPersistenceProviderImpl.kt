@@ -1,6 +1,6 @@
 package io.zeitwert.persist.sql
 
-import dddrive.ddd.query.QuerySpec
+import dddrive.query.QuerySpec
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.db.Tables

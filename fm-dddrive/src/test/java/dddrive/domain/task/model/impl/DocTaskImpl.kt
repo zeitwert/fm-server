@@ -2,10 +2,10 @@ package dddrive.domain.task.model.impl
 
 import dddrive.app.doc.model.base.DocBase
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.partListProperty
+import dddrive.property.model.Property
 import dddrive.domain.task.model.DocTask
 import dddrive.domain.task.model.DocTaskPartComment
 import dddrive.domain.task.model.DocTaskRepository

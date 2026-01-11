@@ -1,7 +1,7 @@
 package io.zeitwert.fm.oe.model
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.model.AggregateReferenceSetProperty
+import dddrive.property.model.AggregateReferenceSetProperty
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 

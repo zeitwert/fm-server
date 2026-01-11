@@ -6,10 +6,9 @@ import dddrive.ddd.model.AggregateRepository
 import dddrive.ddd.model.AggregateSPI
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.RepositoryDirectory
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.model.Property
-import dddrive.ddd.property.model.PropertyChangeListener
-import dddrive.ddd.property.model.base.EntityWithPropertiesBase
+import dddrive.property.delegate.baseProperty
+import dddrive.property.model.Property
+import dddrive.property.model.PropertyChangeListener
 import java.util.function.Consumer
 
 /**
@@ -18,7 +17,7 @@ import java.util.function.Consumer
 abstract class AggregateBase(
 	override val repository: AggregateRepository<out Aggregate>,
 	override val isNew: Boolean,
-) : EntityWithPropertiesBase(),
+) : dddrive.property.model.base.EntityWithPropertiesBase(),
 	Aggregate,
 	AggregateMeta,
 	AggregateSPI {
@@ -44,18 +43,18 @@ abstract class AggregateBase(
 	private var didCalcAll = false
 	private var didCalcVolatile = false
 
-	private val _propertyChangeListeners: MutableSet<PropertyChangeListener> = mutableSetOf()
+	private val _propertyChangeListeners: MutableSet<dddrive.property.model.PropertyChangeListener> = mutableSetOf()
 
 	override val directory: RepositoryDirectory get() = repository.directory
 
 	override val meta: AggregateMeta
 		get() = this
 
-	override fun addPropertyChangeListener(listener: PropertyChangeListener) {
+	override fun addPropertyChangeListener(listener: dddrive.property.model.PropertyChangeListener) {
 		_propertyChangeListeners.add(listener)
 	}
 
-	override fun removePropertyChangeListener(listener: PropertyChangeListener) {
+	override fun removePropertyChangeListener(listener: dddrive.property.model.PropertyChangeListener) {
 		_propertyChangeListeners.remove(listener)
 	}
 

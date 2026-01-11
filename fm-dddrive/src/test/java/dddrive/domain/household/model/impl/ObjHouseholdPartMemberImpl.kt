@@ -2,11 +2,11 @@ package dddrive.domain.household.model.impl
 
 import dddrive.app.obj.model.base.ObjPartBase
 import dddrive.ddd.model.PartRepository
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.partReferenceIdProperty
-import dddrive.ddd.property.delegate.partReferenceProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.partReferenceIdProperty
+import dddrive.property.delegate.partReferenceProperty
+import dddrive.property.model.Property
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdPartMember
 import dddrive.domain.household.model.enums.CodeSalutation

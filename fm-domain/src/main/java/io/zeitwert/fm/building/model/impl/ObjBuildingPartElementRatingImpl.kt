@@ -3,9 +3,9 @@ package io.zeitwert.fm.building.model.impl
 import dddrive.app.obj.model.base.ObjPartBase
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.PartRepository
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.model.Property
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingPartElementRating
 import io.zeitwert.fm.building.model.enums.CodeBuildingPart

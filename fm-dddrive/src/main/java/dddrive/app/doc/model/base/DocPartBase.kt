@@ -5,12 +5,11 @@ import dddrive.app.doc.model.DocPart
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.PartRepository
 import dddrive.ddd.model.base.PartBase
-import dddrive.ddd.property.model.Property
 
 abstract class DocPartBase<D : Doc>(
 	doc: D,
 	repository: PartRepository<D, out Part<D>>,
-	property: Property<*>,
+	property: dddrive.property.model.Property<*>,
 	id: Int,
 ) : PartBase<D>(doc, repository, property, id),
 	DocPart<D>

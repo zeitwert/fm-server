@@ -4,8 +4,8 @@ import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjBase
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.referenceIdProperty
+import dddrive.property.model.Property
 import io.zeitwert.app.ddd.model.EntityWithExtn
 import io.zeitwert.fm.account.model.ItemWithAccount
 

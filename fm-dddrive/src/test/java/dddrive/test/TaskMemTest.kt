@@ -5,7 +5,7 @@ import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseDefEnum
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
-import dddrive.ddd.path.setValueByPath
+import dddrive.property.path.setValueByPath
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository

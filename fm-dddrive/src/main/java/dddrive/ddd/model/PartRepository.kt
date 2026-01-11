@@ -1,7 +1,5 @@
 package dddrive.ddd.model
 
-import dddrive.ddd.property.model.Property
-
 interface PartRepository<A : Aggregate, P : Part<A>> {
 
 	/**
@@ -18,7 +16,7 @@ interface PartRepository<A : Aggregate, P : Part<A>> {
 	 */
 	fun create(
 		aggregate: A,
-		property: Property<*>,
+		property: dddrive.property.model.Property<*>,
 		partId: Int?,
 	): P
 

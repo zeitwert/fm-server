@@ -2,11 +2,11 @@ package io.zeitwert.domain.test.model.impl
 
 import dddrive.app.obj.model.base.ObjPartBase
 import dddrive.ddd.model.PartRepository
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.delegate.referenceProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.referenceIdProperty
+import dddrive.property.delegate.referenceProperty
+import dddrive.property.model.Property
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.enums.CodeTestType

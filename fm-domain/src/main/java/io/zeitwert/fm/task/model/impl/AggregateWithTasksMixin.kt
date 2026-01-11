@@ -3,7 +3,7 @@ package io.zeitwert.fm.task.model.impl
 import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.Aggregate
-import dddrive.ddd.query.query
+import dddrive.query.query
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.ItemWithTasks

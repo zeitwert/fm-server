@@ -1,8 +1,8 @@
 package io.zeitwert.domain.test.model
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.model.EnumSetProperty
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.model.EnumSetProperty
+import dddrive.property.model.PartListProperty
 import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import java.math.BigDecimal

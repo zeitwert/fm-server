@@ -1,7 +1,5 @@
 package dddrive.ddd.model
 
-import dddrive.ddd.property.model.PropertyChangeListener
-
 /**
  * This interface defines the internal callbacks for an Aggregate
  * implementation.
@@ -24,9 +22,9 @@ interface AggregateSPI {
 
 	fun doAfterLoad()
 
-	fun addPropertyChangeListener(listener: PropertyChangeListener)
+	fun addPropertyChangeListener(listener: dddrive.property.model.PropertyChangeListener)
 
-	fun removePropertyChangeListener(listener: PropertyChangeListener)
+	fun removePropertyChangeListener(listener: dddrive.property.model.PropertyChangeListener)
 
 	fun doBeforeStore()
 

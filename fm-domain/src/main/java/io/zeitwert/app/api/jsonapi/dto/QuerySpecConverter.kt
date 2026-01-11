@@ -1,10 +1,10 @@
 package io.zeitwert.app.api.jsonapi.dto
 
-import dddrive.ddd.query.ComparisonOperator
-import dddrive.ddd.query.FilterSpec
-import dddrive.ddd.query.QuerySpec
-import dddrive.ddd.query.SortDirection
-import dddrive.ddd.query.SortSpec
+import dddrive.query.ComparisonOperator
+import dddrive.query.FilterSpec
+import dddrive.query.QuerySpec
+import dddrive.query.SortDirection
+import dddrive.query.SortSpec
 import io.crnk.core.queryspec.Direction
 import io.crnk.core.queryspec.FilterOperator
 import io.zeitwert.persist.sql.ddd.util.CustomFilters

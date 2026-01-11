@@ -1,11 +1,11 @@
 package dddrive.test
 
-import dddrive.ddd.path.getPropertyByPath
-import dddrive.ddd.path.getValueByPath
-import dddrive.ddd.path.relativePath
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.model.BaseProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.path.getPropertyByPath
+import dddrive.property.path.getValueByPath
+import dddrive.property.path.relativePath
+import dddrive.property.path.setValueByPath
+import dddrive.property.model.BaseProperty
+import dddrive.property.model.Property
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeSalutation

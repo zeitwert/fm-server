@@ -1,7 +1,7 @@
 package io.zeitwert.fm.portfolio.model
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.model.AggregateReferenceSetProperty
+import dddrive.property.model.AggregateReferenceSetProperty
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ItemWithNotes

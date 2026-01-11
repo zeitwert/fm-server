@@ -3,10 +3,10 @@ package dddrive.test
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.obj.model.base.ObjBase
 import dddrive.ddd.model.AggregateSPI
-import dddrive.ddd.path.getValueByPath
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.property.model.PropertyChangeListener
-import dddrive.ddd.query.query
+import dddrive.property.path.getValueByPath
+import dddrive.property.path.setValueByPath
+import dddrive.property.model.PropertyChangeListener
+import dddrive.query.query
 import dddrive.domain.household.model.ObjHousehold
 import dddrive.domain.household.model.ObjHouseholdRepository
 import dddrive.domain.household.model.enums.CodeLabel
@@ -1022,7 +1022,7 @@ class HouseholdMemTest {
 	@Test
 	fun testComputedPropertyIsReadOnly() {
 		val hh = hhRepo.create()
-		val hhEntity = hh as dddrive.ddd.property.model.EntityWithProperties
+		val hhEntity = hh as dddrive.property.model.EntityWithProperties
 
 		// Verify computed properties are read-only (isWritable = false)
 		val memberCountProperty = hhEntity.getProperty("memberCount", Any::class)
@@ -1033,19 +1033,19 @@ class HouseholdMemTest {
 
 		// Verify setting computed property throws exception
 		assertThrows(IllegalArgumentException::class.java) {
-			(memberCountProperty as dddrive.ddd.property.model.BaseProperty<Int>).value = 5
+			(memberCountProperty as dddrive.property.model.BaseProperty<Int>).value = 5
 		}
 
 		hh.memberList.add() // Need at least one member for firstMember to return non-null
 		assertThrows(IllegalArgumentException::class.java) {
-			(firstMemberProperty as dddrive.ddd.property.model.PartReferenceProperty<*, *>).id = 999
+			(firstMemberProperty as dddrive.property.model.PartReferenceProperty<*, *>).id = 999
 		}
 	}
 
 	@Test
 	fun testComputedPropertiesAppearInPropertiesList() {
 		val hh = hhRepo.create()
-		val hhEntity = hh as dddrive.ddd.property.model.EntityWithProperties
+		val hhEntity = hh as dddrive.property.model.EntityWithProperties
 
 		// Verify computed properties appear in the properties list
 		val propertyNames = hhEntity.properties.map { it.name }

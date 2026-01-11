@@ -3,7 +3,7 @@ package io.zeitwert.app.obj.model.base
 import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjRepository
 import dddrive.app.obj.model.base.ObjRepositoryBase
-import dddrive.ddd.query.QuerySpec
+import dddrive.query.QuerySpec
 import io.zeitwert.persist.sql.ddd.AggregateSqlPersistenceProvider
 
 /**

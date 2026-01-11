@@ -3,7 +3,7 @@ package io.zeitwert.persist.sql.doc
 import dddrive.app.doc.model.Doc
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
-import dddrive.ddd.path.setValueByPath
+import dddrive.property.path.setValueByPath
 import io.zeitwert.app.doc.model.base.FMDocBase
 import io.zeitwert.app.doc.model.db.Sequences
 import io.zeitwert.app.doc.model.db.Tables

@@ -11,11 +11,10 @@ import dddrive.app.doc.model.enums.CodeCaseDef
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.partListProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.partListProperty
+import dddrive.property.delegate.referenceIdProperty
 import java.time.OffsetDateTime
 
 abstract class DocBase(
@@ -87,7 +86,7 @@ abstract class DocBase(
 		get() = caseDef!!.caseStages
 
 	override fun doAddPart(
-		property: Property<*>,
+		property: dddrive.property.model.Property<*>,
 		partId: Int?,
 	): Part<*> {
 		if (property === _transitionList) {

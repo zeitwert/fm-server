@@ -3,8 +3,8 @@ package io.zeitwert.fm.collaboration.model.impl
 import dddrive.app.ddd.model.Aggregate
 import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
 import io.zeitwert.app.doc.model.FMDocVRepository
 import io.zeitwert.app.obj.model.FMObjVRepository
 import io.zeitwert.app.obj.model.base.FMObjBase

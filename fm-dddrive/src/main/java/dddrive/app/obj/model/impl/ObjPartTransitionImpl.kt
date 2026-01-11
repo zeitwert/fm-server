@@ -4,15 +4,14 @@ import dddrive.app.obj.model.Obj
 import dddrive.app.obj.model.ObjPartTransition
 import dddrive.app.obj.model.base.ObjPartBase
 import dddrive.ddd.model.PartRepository
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.referenceIdProperty
 import java.time.OffsetDateTime
 
 class ObjPartTransitionImpl(
 	obj: Obj,
 	override val repository: PartRepository<Obj, ObjPartTransition>,
-	property: Property<*>,
+	property: dddrive.property.model.Property<*>,
 	id: Int,
 ) : ObjPartBase<Obj>(obj, repository, property, id),
 	ObjPartTransition {

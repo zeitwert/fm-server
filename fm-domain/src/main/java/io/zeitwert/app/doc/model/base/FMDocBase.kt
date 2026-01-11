@@ -4,7 +4,7 @@ import dddrive.app.ddd.model.SessionContext
 import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.base.DocBase
-import dddrive.ddd.property.delegate.referenceIdProperty
+import dddrive.property.delegate.referenceIdProperty
 import io.zeitwert.app.ddd.model.EntityWithExtn
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.fm.account.model.ObjAccount

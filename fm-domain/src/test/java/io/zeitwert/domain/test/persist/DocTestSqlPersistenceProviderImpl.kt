@@ -1,7 +1,7 @@
 package io.zeitwert.domain.test.persist
 
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.query.QuerySpec
+import dddrive.property.path.setValueByPath
+import dddrive.query.QuerySpec
 import io.zeitwert.app.doc.model.base.FMDocBase
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.DocTest

@@ -1,11 +1,11 @@
 package io.zeitwert.domain.test.model.impl
 
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.enumSetProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.delegate.referenceProperty
-import dddrive.ddd.property.model.EnumSetProperty
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.enumSetProperty
+import dddrive.property.delegate.referenceIdProperty
+import dddrive.property.delegate.referenceProperty
+import dddrive.property.model.EnumSetProperty
 import io.zeitwert.app.doc.model.base.FMDocBase
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.DocTestRepository

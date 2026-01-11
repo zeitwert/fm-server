@@ -3,7 +3,7 @@ package io.zeitwert.persist.sql.ddd.base
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.base.AggregatePersistenceProviderBase
-import dddrive.ddd.path.setValueByPath
+import dddrive.property.path.setValueByPath
 import io.zeitwert.persist.sql.ddd.AggregateSqlPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper

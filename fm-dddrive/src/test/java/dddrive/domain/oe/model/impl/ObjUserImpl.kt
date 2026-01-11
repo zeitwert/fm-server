@@ -1,7 +1,7 @@
 package dddrive.domain.oe.model.impl
 
 import dddrive.app.obj.model.base.ObjBase
-import dddrive.ddd.property.delegate.baseProperty
+import dddrive.property.delegate.baseProperty
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
 

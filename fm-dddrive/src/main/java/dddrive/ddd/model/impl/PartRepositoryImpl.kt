@@ -6,7 +6,7 @@ import dddrive.ddd.model.Part
 import dddrive.ddd.model.PartRepository
 import dddrive.ddd.model.PartSPI
 import dddrive.ddd.model.base.PartBase
-import dddrive.ddd.property.model.Property
+import dddrive.property.model.Property
 
 class PartRepositoryImpl<A : Aggregate, P : Part<A>>(
 	private val intfClass: Class<out P>,

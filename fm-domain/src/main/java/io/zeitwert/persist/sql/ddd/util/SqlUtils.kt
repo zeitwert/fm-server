@@ -1,9 +1,9 @@
 package io.zeitwert.persist.sql.ddd.util
 
-import dddrive.ddd.query.ComparisonOperator
-import dddrive.ddd.query.FilterSpec
-import dddrive.ddd.query.SortDirection
-import dddrive.ddd.query.SortSpec
+import dddrive.query.ComparisonOperator
+import dddrive.query.FilterSpec
+import dddrive.query.SortDirection
+import dddrive.query.SortSpec
 import io.zeitwert.app.obj.model.db.Tables
 import org.jooq.Condition
 import org.jooq.Field

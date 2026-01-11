@@ -3,8 +3,8 @@ package io.zeitwert.persist.sql.ddd
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Entity
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.ddd.property.model.PartListProperty
+import dddrive.property.model.EntityWithProperties
+import dddrive.property.model.PartListProperty
 import org.jooq.DSLContext
 
 interface PartSqlPersistenceProvider<A : Aggregate, P : Part<A>> {

@@ -1,9 +1,9 @@
 package io.zeitwert.persist.sql.obj
 
 import dddrive.app.obj.model.Obj
-import dddrive.ddd.query.ComparisonOperator
-import dddrive.ddd.query.FilterSpec
-import dddrive.ddd.query.QuerySpec
+import dddrive.query.ComparisonOperator
+import dddrive.query.FilterSpec
+import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.db.Tables
 import io.zeitwert.persist.sql.ddd.base.AggregateSqlPersistenceProviderBase
 import io.zeitwert.persist.sql.ddd.util.SqlUtils

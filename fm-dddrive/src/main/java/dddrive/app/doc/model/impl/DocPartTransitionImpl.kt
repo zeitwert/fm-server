@@ -6,16 +6,15 @@ import dddrive.app.doc.model.base.DocPartBase
 import dddrive.app.doc.model.enums.CodeCaseStage
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.PartRepository
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.referenceIdProperty
 import java.time.OffsetDateTime
 
 class DocPartTransitionImpl(
 	doc: Doc,
 	override val repository: PartRepository<Doc, DocPartTransition>,
-	property: Property<*>,
+	property: dddrive.property.model.Property<*>,
 	id: Int,
 ) : DocPartBase<Doc>(doc, repository, property, id),
 	DocPartTransition {

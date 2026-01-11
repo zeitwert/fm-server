@@ -3,9 +3,9 @@ package io.zeitwert.fm.portfolio.model.impl
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.enums.CodeAggregateType
 import dddrive.ddd.model.enums.CodeAggregateTypeEnum
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.referenceSetProperty
-import dddrive.ddd.query.query
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.referenceSetProperty
+import dddrive.query.query
 import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.collaboration.model.ObjNote

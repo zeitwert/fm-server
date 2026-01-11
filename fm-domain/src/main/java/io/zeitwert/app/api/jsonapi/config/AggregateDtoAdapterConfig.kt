@@ -1,10 +1,10 @@
 package io.zeitwert.app.api.jsonapi.config
 
 import dddrive.ddd.model.Part
-import dddrive.ddd.property.model.AggregateReferenceProperty
-import dddrive.ddd.property.model.AggregateReferenceSetProperty
-import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.ddd.property.model.Property
+import dddrive.property.model.AggregateReferenceProperty
+import dddrive.property.model.AggregateReferenceSetProperty
+import dddrive.property.model.EntityWithProperties
+import dddrive.property.model.Property
 import io.zeitwert.app.api.jsonapi.AttributeDto
 
 /**

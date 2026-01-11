@@ -1,7 +1,7 @@
 package io.zeitwert.persist.sql
 
-import dddrive.ddd.path.setValueByPath
-import dddrive.ddd.query.QuerySpec
+import dddrive.property.path.setValueByPath
+import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount

@@ -3,7 +3,7 @@ package io.zeitwert.fm.collaboration.model.impl
 import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.Aggregate
-import dddrive.ddd.query.query
+import dddrive.query.query
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository

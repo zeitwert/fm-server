@@ -3,10 +3,10 @@ package dddrive.domain.ddd.persist.map.base
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.base.AggregatePersistenceProviderBase
-import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.ddd.query.ComparisonOperator
-import dddrive.ddd.query.FilterSpec
-import dddrive.ddd.query.QuerySpec
+import dddrive.property.model.EntityWithProperties
+import dddrive.query.ComparisonOperator
+import dddrive.query.FilterSpec
+import dddrive.query.QuerySpec
 import dddrive.domain.ddd.persist.map.impl.fromMap
 import dddrive.domain.ddd.persist.map.impl.toMap
 import java.util.concurrent.atomic.AtomicReference

@@ -1,9 +1,9 @@
 package io.zeitwert.fm.dms.model.impl
 
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.enumProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.delegate.referenceProperty
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.enumProperty
+import dddrive.property.delegate.referenceIdProperty
+import dddrive.property.delegate.referenceProperty
 import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.collaboration.model.ObjNote

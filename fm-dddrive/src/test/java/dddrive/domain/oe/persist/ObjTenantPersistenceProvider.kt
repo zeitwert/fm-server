@@ -1,7 +1,7 @@
 package dddrive.domain.oe.persist
 
 import dddrive.ddd.model.AggregatePersistenceProvider
-import dddrive.ddd.query.QuerySpec
+import dddrive.query.QuerySpec
 import dddrive.domain.oe.model.ObjTenant
 import java.util.*
 

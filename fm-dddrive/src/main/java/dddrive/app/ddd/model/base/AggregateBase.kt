@@ -11,10 +11,9 @@ import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.AggregateRepository
 import dddrive.ddd.model.Entity
 import dddrive.ddd.model.base.AggregateBase
-import dddrive.ddd.path.relativePath
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.delegate.referenceIdProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.delegate.referenceIdProperty
+import dddrive.property.path.relativePath
 import java.time.OffsetDateTime
 
 abstract class AggregateBase(
@@ -87,7 +86,7 @@ abstract class AggregateBase(
 	fun addValidation(
 		validationLevel: CodeValidationLevel,
 		validation: String,
-		property: Property<*>,
+		property: dddrive.property.model.Property<*>,
 	) {
 		addValidation(validationLevel, validation, property.relativePath())
 	}

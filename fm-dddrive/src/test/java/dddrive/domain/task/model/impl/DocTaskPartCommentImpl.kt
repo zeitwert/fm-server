@@ -2,8 +2,8 @@ package dddrive.domain.task.model.impl
 
 import dddrive.app.doc.model.base.DocPartBase
 import dddrive.ddd.model.PartRepository
-import dddrive.ddd.property.delegate.baseProperty
-import dddrive.ddd.property.model.Property
+import dddrive.property.delegate.baseProperty
+import dddrive.property.model.Property
 import dddrive.domain.task.model.DocTask
 import dddrive.domain.task.model.DocTaskPartComment
 import java.time.OffsetDateTime

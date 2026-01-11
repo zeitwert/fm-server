@@ -7,10 +7,10 @@ import dddrive.ddd.model.PartMeta
 import dddrive.ddd.model.PartRepository
 import dddrive.ddd.model.PartSPI
 import dddrive.ddd.model.RepositoryDirectory
-import dddrive.ddd.property.model.EntityWithProperties
-import dddrive.ddd.property.model.EntityWithPropertiesSPI
-import dddrive.ddd.property.model.Property
-import dddrive.ddd.property.model.base.EntityWithPropertiesBase
+import dddrive.property.model.EntityWithProperties
+import dddrive.property.model.EntityWithPropertiesSPI
+import dddrive.property.model.Property
+import dddrive.property.model.base.EntityWithPropertiesBase
 
 abstract class PartBase<A : Aggregate>(
 	override val aggregate: A,
