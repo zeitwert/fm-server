@@ -1,14 +1,13 @@
 package dddrive.domain.ddd.persist.map.base
 
+import dddrive.db.MemoryDb
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.base.AggregatePersistenceProviderBase
-import dddrive.property.model.EntityWithProperties
-import dddrive.query.ComparisonOperator
-import dddrive.query.FilterSpec
-import dddrive.query.QuerySpec
 import dddrive.domain.ddd.persist.map.impl.fromMap
 import dddrive.domain.ddd.persist.map.impl.toMap
+import dddrive.property.model.EntityWithProperties
+import dddrive.query.QuerySpec
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -17,9 +16,11 @@ import java.util.concurrent.atomic.AtomicReference
  * Unlike the PTO-based MemAggregatePersistenceProviderBase, this implementation
  * automatically serializes/deserializes aggregates using the property system,
  * storing them as nested Map<String, Any?> structures.
+ *
+ * Storage is delegated to [MemoryDb] singleton.
  */
-abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
-	intfClass: Class<A>,
+abstract class MemAggregatePersistenceProviderBase<A : Aggregate>(
+	protected val intfClass: Class<A>,
 ) : AggregatePersistenceProviderBase<A>(intfClass) {
 
 	companion object {
@@ -27,8 +28,6 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 		private val lastId = AtomicReference(0)
 		private val lastPartId = AtomicReference(0)
 	}
-
-	protected val aggregates: MutableMap<Int, Map<String, Any?>> = HashMap()
 
 	override fun isValidId(id: Any): Boolean = id is Int
 
@@ -47,7 +46,7 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 		id: Int,
 		version: Int,
 	): Int {
-		val currentVersion = (aggregates[id]?.get("version") as? Int) ?: 0
+		val currentVersion = (MemoryDb.get(intfClass, id)?.get("version") as? Int) ?: 0
 		check(version == currentVersion + 1) { "correct version" }
 		return currentVersion + 1
 	}
@@ -57,7 +56,7 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 		id: Any,
 	) {
 		require(isValidId(id)) { "valid id" }
-		val map = aggregates[id as Int]
+		val map = MemoryDb.get(intfClass, id as Int)
 		check(map != null) { "aggregate found for id ($id)" }
 
 		aggregate.meta.disableCalc()
@@ -92,48 +91,15 @@ abstract class MapAggregatePersistenceProviderBase<A : Aggregate>(
 	protected open fun fromAggregate(aggregate: A): Map<String, Any?> = (aggregate as EntityWithProperties).toMap()
 
 	protected open fun store(map: Map<String, Any?>) {
-		val id = map["id"] as? Int
-		id?.let { aggregates[it] = map }
+		MemoryDb.store(intfClass, map)
 	}
 
 	/**
 	 * Find aggregates matching the query specification.
-	 * Supports basic EQ filters on map properties.
+	 * Delegates filtering to [MemoryDb] and returns matching IDs.
 	 */
-	fun find(query: QuerySpec?): List<Any> {
-		if (query == null) {
-			return aggregates.values.mapNotNull { map -> map["id"] as? Int }.toList()
-		}
-
-		return aggregates.values
-			.filter { map ->
-				query.filters.all { filter -> matchesFilter(map, filter) }
-			}.mapNotNull { map -> map["id"] as? Int }
-			.toList()
-	}
-
-	private fun matchesFilter(
-		map: Map<String, Any?>,
-		filter: FilterSpec,
-	): Boolean =
-		when (filter) {
-			is FilterSpec.Comparison -> {
-				val path = filter.path
-				val mapKey = if (path.endsWith("Id")) path else "${path}Id"
-				val mapValue = map[path] ?: map[mapKey]
-				when (filter.operator) {
-					ComparisonOperator.EQ -> mapValue == filter.value
-					else -> true // Ignore unsupported operators in test implementation
-				}
-			}
-
-			is FilterSpec.In -> {
-				val mapValue = map[filter.path]
-				mapValue in filter.values
-			}
-
-			is FilterSpec.Or -> {
-				filter.filters.any { matchesFilter(map, it) }
-			}
-		}
+	fun find(query: QuerySpec?): List<Any> =
+		MemoryDb
+			.find(intfClass, query)
+			.mapNotNull { map -> map["id"] as? Int }
 }

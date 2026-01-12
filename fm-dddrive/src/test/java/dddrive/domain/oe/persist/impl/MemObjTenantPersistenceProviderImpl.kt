@@ -1,9 +1,11 @@
 package dddrive.domain.oe.persist.impl
 
-import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
+import dddrive.db.MemoryDb
+import dddrive.domain.obj.persist.base.MemObjPersistenceProviderBase
 import dddrive.domain.oe.model.ObjTenant
 import dddrive.domain.oe.model.ObjTenantRepository
 import dddrive.domain.oe.persist.ObjTenantPersistenceProvider
+import dddrive.query.query
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.util.*
@@ -14,8 +16,8 @@ import java.util.*
  * Active when persistence.type=map
  */
 @Component("objTenantPersistenceProvider")
-class MapObjTenantPersistenceProviderImpl :
-	MapObjPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
+class MemObjTenantPersistenceProviderImpl :
+	MemObjPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	ObjTenantPersistenceProvider {
 
 	override fun initKernelTenant(
@@ -40,9 +42,10 @@ class MapObjTenantPersistenceProviderImpl :
 	}
 
 	override fun getByKey(key: String): Optional<Any> {
-		val tenantMap = aggregates.values.firstOrNull { map ->
-			map["key"] == key
-		}
+		val tenantMap =
+			MemoryDb
+				.find(intfClass, query { filter { "key" eq key } })
+				.firstOrNull()
 		return Optional.ofNullable(tenantMap?.get("id"))
 	}
 

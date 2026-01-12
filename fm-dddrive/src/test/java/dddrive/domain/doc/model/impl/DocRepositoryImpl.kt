@@ -5,7 +5,7 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.DocRepository
 import dddrive.app.doc.model.base.DocRepositoryBase
 import dddrive.query.QuerySpec
-import dddrive.domain.doc.persist.base.MapDocPersistenceProviderBase
+import dddrive.domain.doc.persist.base.MemDocPersistenceProviderBase
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.stereotype.Component
 
@@ -20,7 +20,7 @@ class DocRepositoryImpl(
 
 	override val sessionContext: SessionContext get() = sessionContextProvider.getObject()
 
-	override val persistenceProvider = object : MapDocPersistenceProviderBase<Doc>(Doc::class.java) {}
+	override val persistenceProvider = object : MemDocPersistenceProviderBase<Doc>(Doc::class.java) {}
 
 	override fun createAggregate(isNew: Boolean): Doc = TODO()
 

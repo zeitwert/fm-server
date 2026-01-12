@@ -1,9 +1,11 @@
 package dddrive.domain.oe.persist.impl
 
-import dddrive.domain.obj.persist.base.MapObjPersistenceProviderBase
+import dddrive.db.MemoryDb
+import dddrive.domain.obj.persist.base.MemObjPersistenceProviderBase
 import dddrive.domain.oe.model.ObjUser
 import dddrive.domain.oe.model.ObjUserRepository
 import dddrive.domain.oe.persist.ObjUserPersistenceProvider
+import dddrive.query.query
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.util.*
@@ -14,8 +16,8 @@ import java.util.*
  * Active when persistence.type=map
  */
 @Component("objUserPersistenceProvider")
-class MapObjUserPersistenceProviderImpl :
-	MapObjPersistenceProviderBase<ObjUser>(ObjUser::class.java),
+class MemObjUserPersistenceProviderImpl :
+	MemObjPersistenceProviderBase<ObjUser>(ObjUser::class.java),
 	ObjUserPersistenceProvider {
 
 	override fun initKernelUser(
@@ -40,9 +42,10 @@ class MapObjUserPersistenceProviderImpl :
 	}
 
 	override fun getByEmail(email: String): Optional<Any> {
-		val userMap = aggregates.values.firstOrNull { map ->
-			map["email"] == email
-		}
+		val userMap =
+			MemoryDb
+				.find(intfClass, query { filter { "email" eq email } })
+				.firstOrNull()
 		return Optional.ofNullable(userMap?.get("id"))
 	}
 

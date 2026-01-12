@@ -2,7 +2,7 @@ package dddrive.domain.task.model.impl
 
 import dddrive.app.ddd.model.SessionContext
 import dddrive.app.doc.model.base.DocRepositoryBase
-import dddrive.domain.doc.persist.base.MapDocPersistenceProviderBase
+import dddrive.domain.doc.persist.base.MemDocPersistenceProviderBase
 import dddrive.domain.task.model.DocTask
 import dddrive.domain.task.model.DocTaskPartComment
 import dddrive.query.QuerySpec
@@ -21,7 +21,7 @@ class DocTaskRepositoryImpl(
 
 	override val sessionContext: SessionContext get() = sessionContextProvider.getObject()
 
-	override val persistenceProvider = object : MapDocPersistenceProviderBase<DocTask>(DocTask::class.java) {}
+	override val persistenceProvider = object : MemDocPersistenceProviderBase<DocTask>(DocTask::class.java) {}
 
 	override fun createAggregate(isNew: Boolean): DocTask = DocTaskImpl(this, isNew)
 
