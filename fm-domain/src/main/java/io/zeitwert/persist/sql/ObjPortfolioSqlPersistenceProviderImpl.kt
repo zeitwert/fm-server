@@ -6,20 +6,28 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.portfolio.model.ObjPortfolio
 import io.zeitwert.fm.portfolio.model.db.Tables
 import io.zeitwert.fm.portfolio.model.db.tables.records.ObjPortfolioRecord
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.persist.ObjPortfolioPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 @Component("objPortfolioPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjPortfolioSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : ObjSqlPersistenceProviderBase<ObjPortfolio>(ObjPortfolio::class.java),
-	SqlRecordMapper<ObjPortfolio> {
+	SqlRecordMapper<ObjPortfolio>,
+	ObjPortfolioPersistenceProvider {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 

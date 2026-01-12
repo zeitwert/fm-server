@@ -6,7 +6,7 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
-import io.zeitwert.persist.sql.ObjTenantSqlPersistenceProviderImpl
+import io.zeitwert.persist.ObjTenantPersistenceProvider
 import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -27,7 +27,7 @@ class ObjTenantRepositoryImpl(
 	override fun createAggregate(isNew: Boolean): ObjTenant = ObjTenantImpl(this, isNew)
 
 	override fun getByKey(key: String): Optional<ObjTenant> {
-		val tenantId = (persistenceProvider as ObjTenantSqlPersistenceProviderImpl).getByKey(key)
+		val tenantId = (persistenceProvider as ObjTenantPersistenceProvider).getByKey(key)
 		return tenantId.map { id -> get(id) }
 	}
 

@@ -5,8 +5,8 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.property.delegate.baseProperty
 import dddrive.property.delegate.enumProperty
-import io.zeitwert.app.doc.model.FMDocVRepository
-import io.zeitwert.app.obj.model.FMObjVRepository
+import io.zeitwert.app.doc.model.FMDocRepository
+import io.zeitwert.app.obj.model.FMObjRepository
 import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.ObjNoteRepository
@@ -36,11 +36,11 @@ class ObjNoteImpl(
 	override val relatedTo: Aggregate?
 		get() {
 			if (relatedToId == null) return null
-			val objRepository = directory.getRepository(Obj::class.java) as FMObjVRepository
+			val objRepository = directory.getRepository(Obj::class.java) as FMObjRepository
 			if (objRepository.isObj(relatedToId!!)) {
 				return objRepository.get(relatedToId!!)
 			}
-			val docRepository = directory.getRepository(Doc::class.java) as FMDocVRepository
+			val docRepository = directory.getRepository(Doc::class.java) as FMDocRepository
 			require(docRepository.isDoc(relatedToId!!)) { "relatedToId must refer to Obj or Doc" }
 			return docRepository.get(relatedToId!!)
 		}

@@ -14,6 +14,4 @@ interface ObjUserPersistenceProvider : AggregatePersistenceProvider<ObjUser> {
 
 	fun getByEmail(email: String): Optional<Any>
 
-	fun find(query: QuerySpec?): List<Any>
-
 }

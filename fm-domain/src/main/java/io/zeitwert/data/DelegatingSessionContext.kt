@@ -1,8 +1,9 @@
 package io.zeitwert.data
 
 import dddrive.ddd.model.Aggregate
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.fm.oe.model.ObjTenantRepository
+import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.enums.CodeLocale
 import org.jooq.DSLContext
@@ -26,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
 class DelegatingSessionContext(
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 	private val sessionContextProvider: ObjectProvider<SessionContext>,
+	private val kernelContextProvider: ObjectProvider<KernelContext>,
 ) : SessionContext {
 
 	companion object {
@@ -69,19 +71,19 @@ class DelegatingSessionContext(
 
 	// Lazy-loaded kernel user ID for setup mode
 	private val kernelUserId: Int by lazy {
-		dslContextProvider
-			.getObject()
-			.select(Tables.OBJ_USER.OBJ_ID)
-			.from(Tables.OBJ_USER)
-			.where(Tables.OBJ_USER.EMAIL.eq("k@zeitwert.io"))
-			.fetchOne(Tables.OBJ_USER.OBJ_ID)!!
+		kernelContextProvider.getObject().kernelUserId as Int
+	}
+
+	// Lazy-loaded kernel tenant ID for setup mode
+	private val kernelTenantId: Int by lazy {
+		kernelContextProvider.getObject().kernelTenantId as Int
 	}
 
 	// Aggregates cache for setup mode
 	private val setupAggregates: MutableMap<Any, Aggregate> = ConcurrentHashMap()
 
 	override val tenantId: Any
-		get() = if (isSetupMode()) localTenantId.get() ?: ObjTenantRepository.KERNEL_TENANT_ID else delegate.tenantId
+		get() = if (isSetupMode()) localTenantId.get() ?: kernelTenantId else delegate.tenantId
 
 	override val userId: Any
 		get() = if (isSetupMode()) localUserId.get() ?: kernelUserId else delegate.userId

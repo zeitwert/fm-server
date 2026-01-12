@@ -1,6 +1,7 @@
 package dddrive.ddd.model
 
 import dddrive.hex.OutgoingPort
+import dddrive.query.QuerySpec
 
 interface AggregatePersistenceProvider<A : Aggregate> : OutgoingPort {
 
@@ -54,5 +55,7 @@ interface AggregatePersistenceProvider<A : Aggregate> : OutgoingPort {
 	 * @param aggregate aggregate to store
 	 */
 	fun doStore(aggregate: A)
+
+	fun find(query: QuerySpec?): List<Any>
 
 }

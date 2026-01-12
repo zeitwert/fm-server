@@ -10,20 +10,28 @@ import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.persist.ObjDocumentPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 @Component("objDocumentPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjDocumentSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : ObjSqlPersistenceProviderBase<ObjDocument>(ObjDocument::class.java),
-	SqlRecordMapper<ObjDocument> {
+	SqlRecordMapper<ObjDocument>,
+	ObjDocumentPersistenceProvider {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
@@ -77,7 +85,7 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_DOCUMENT_V, Tables.OBJ_DOCUMENT_V.ID, query)
 
-	fun getContentType(document: ObjDocument): CodeContentType? {
+	override fun getContentType(document: ObjDocument): CodeContentType? {
 		val maxVersionNr = dslContext.fetchValue(getContentMaxVersionQuery(document))
 		if (maxVersionNr == null) return null
 
@@ -86,12 +94,12 @@ open class ObjDocumentSqlPersistenceProviderImpl(
 		return CodeContentType.Enumeration.getContentType(contentTypeId)
 	}
 
-	fun getContent(document: ObjDocument): ByteArray? {
+	override fun getContent(document: ObjDocument): ByteArray? {
 		val query = getContentWithMaxVersionQuery(document)
 		return dslContext.fetchOne(query)?.content
 	}
 
-	fun storeContent(
+	override fun storeContent(
 		document: ObjDocument,
 		contentType: CodeContentType?,
 		content: ByteArray?,

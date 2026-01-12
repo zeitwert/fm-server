@@ -4,6 +4,7 @@ import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part
 import dddrive.ddd.model.base.AggregatePersistenceProviderBase
 import dddrive.property.path.setValueByPath
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.persist.sql.ddd.AggregateSqlPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
@@ -23,6 +24,8 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	AggregateFindMixin {
 
 	abstract override val dslContext: DSLContext
+
+	abstract override val kernelContext: KernelContext
 
 	abstract val idProvider: SqlIdProvider
 

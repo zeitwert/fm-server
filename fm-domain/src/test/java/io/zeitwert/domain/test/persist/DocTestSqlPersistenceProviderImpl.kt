@@ -7,6 +7,7 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.DocTestRecord
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component
 @Component("docTestPersistenceProvider")
 open class DocTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : DocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
 	SqlRecordMapper<DocTest> {

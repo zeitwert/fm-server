@@ -12,6 +12,7 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
+import io.zeitwert.app.session.model.KernelContext
 import org.jooq.DSLContext
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
@@ -27,6 +28,7 @@ class DemoDataSetup(
 	val directory: RepositoryDirectory,
 	val dslContext: DSLContext,
 	val buildingService: BuildingService,
+	val kernelContext: KernelContext,
 ) : DataSetup {
 
 	companion object {
@@ -139,8 +141,8 @@ class DemoDataSetup(
 		val tenantRepository = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
 		val userRepository = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
-		// Get the kernel tenant (id=1) - use get() for read-only access
-		val kernelTenant = tenantRepository.get(ObjTenantRepository.KERNEL_TENANT_ID)
+		// Get the kernel tenant - use get() for read-only access
+		val kernelTenant = tenantRepository.get(kernelContext.kernelTenantId)
 		val logoImageId = kernelTenant.logoImageId
 
 		if (logoImageId == null) {
@@ -156,7 +158,7 @@ class DemoDataSetup(
 		}
 
 		// Get kernel user for the upload
-		val kernelUser = userRepository.getByEmail("k@zeitwert.io")
+		val kernelUser = userRepository.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL)
 		if (kernelUser.isEmpty) {
 			println("    Warning: Kernel user not found, skipping kernel logo upload")
 			return

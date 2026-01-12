@@ -8,8 +8,8 @@ import io.zeitwert.app.obj.model.db.tables.Obj
 import io.zeitwert.app.search.model.db.Tables
 import io.zeitwert.app.search.model.db.tables.ItemSearch
 import io.zeitwert.app.search.model.db.tables.records.ItemSearchRecord
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.persist.sql.ddd.util.SqlUtils
 import org.jooq.Condition
 import org.jooq.DSLContext
@@ -24,6 +24,7 @@ import java.util.*
 @Service("searchService")
 class SearchServiceImpl internal constructor(
 	private val dslContext: DSLContext,
+	private val kernelContext: KernelContext,
 ) : SearchService,
 	SqlUtils.SearchConditionProvider {
 
@@ -85,10 +86,11 @@ class SearchServiceImpl internal constructor(
 		val tenantId = sessionContext.tenantId as Int
 		val accountId = sessionContext.accountId as Int?
 
-		val tenantCondition: Condition = if (tenantId == ObjTenantRepository.KERNEL_TENANT_ID) {
+		val kernelTenantId = kernelContext.kernelTenantId as Int
+		val tenantCondition: Condition = if (kernelContext.isKernelTenant(tenantId)) {
 			DSL.trueCondition()
 		} else {
-			OBJ.TENANT_ID.eq(tenantId).or(OBJ.TENANT_ID.eq(ObjTenantRepository.KERNEL_TENANT_ID))
+			OBJ.TENANT_ID.eq(tenantId).or(OBJ.TENANT_ID.eq(kernelTenantId))
 		}
 		val accountCondition: Condition = if (accountId == null) {
 			DSL.trueCondition()

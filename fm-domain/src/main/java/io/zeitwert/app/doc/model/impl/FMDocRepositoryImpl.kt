@@ -1,26 +1,26 @@
 package io.zeitwert.app.doc.model.impl
 
 import dddrive.app.doc.model.Doc
-import io.zeitwert.app.doc.model.FMDocVRepository
+import io.zeitwert.app.doc.model.FMDocRepository
 import io.zeitwert.app.doc.model.base.FMDocRepositoryBase
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.persist.sql.DocSqlPersistenceProviderImpl
+import io.zeitwert.persist.DocPersistenceProvider
 import org.springframework.stereotype.Component
 
 @Component("docRepository")
-class FMDocVRepositoryImpl(
+class FMDocRepositoryImpl(
 	override val sessionContext: SessionContext,
 ) : FMDocRepositoryBase<Doc>(
 		Doc::class.java,
 		AGGREGATE_TYPE_ID,
 	),
-	FMDocVRepository {
+	FMDocRepository {
 
-	override val persistenceProvider get() = super.persistenceProvider as DocSqlPersistenceProviderImpl
+	override val persistenceProvider get() = super.persistenceProvider as DocPersistenceProvider
 
 	override fun isDoc(id: Any): Boolean = persistenceProvider.isDoc(id)
 
-	override fun createAggregate(isNew: Boolean) = DocVImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean) = DocImpl(this, isNew)
 
 	override fun create(): Doc = throw UnsupportedOperationException("this is a readonly repository")
 

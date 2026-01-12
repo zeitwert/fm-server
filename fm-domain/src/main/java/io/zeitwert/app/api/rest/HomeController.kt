@@ -7,7 +7,7 @@ import io.zeitwert.app.api.jsonapi.dto.TypedEnumeratedDto
 import io.zeitwert.app.api.rest.dto.HomeActionResponse
 import io.zeitwert.app.api.rest.dto.HomeActivityResponse
 import io.zeitwert.app.api.rest.dto.HomeOverviewResponse
-import io.zeitwert.app.obj.model.FMObjVRepository
+import io.zeitwert.app.obj.model.FMObjRepository
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController
 class HomeController {
 
 	@Autowired
-	lateinit var objRepository: FMObjVRepository
+	lateinit var objRepository: FMObjRepository
 
 	@Autowired
 	lateinit var userRepository: ObjUserRepository

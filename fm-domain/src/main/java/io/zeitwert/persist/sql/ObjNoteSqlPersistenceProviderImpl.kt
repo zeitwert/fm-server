@@ -6,21 +6,29 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
+import io.zeitwert.persist.ObjNotePersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 /** Persistence provider for ObjNote aggregates. */
 @Component("objNotePersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjNoteSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : ObjSqlPersistenceProviderBase<ObjNote>(ObjNote::class.java),
-	SqlRecordMapper<ObjNote> {
+	SqlRecordMapper<ObjNote>,
+	ObjNotePersistenceProvider {
 
 	override val hasAccount = false
 

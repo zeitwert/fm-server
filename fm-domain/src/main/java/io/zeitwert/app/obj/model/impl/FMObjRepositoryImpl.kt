@@ -1,26 +1,26 @@
 package io.zeitwert.app.obj.model.impl
 
 import dddrive.app.obj.model.Obj
-import io.zeitwert.app.obj.model.FMObjVRepository
+import io.zeitwert.app.obj.model.FMObjRepository
 import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.persist.sql.ObjSqlPersistenceProviderImpl
+import io.zeitwert.persist.ObjPersistenceProvider
 import org.springframework.stereotype.Component
 
 @Component("objRepository")
-class FMObjVRepositoryImpl(
+class FMObjRepositoryImpl(
 	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<Obj>(
 		Obj::class.java,
 		AGGREGATE_TYPE_ID,
 	),
-	FMObjVRepository {
+	FMObjRepository {
 
-	override val persistenceProvider get() = super.persistenceProvider as ObjSqlPersistenceProviderImpl
+	override val persistenceProvider get() = super.persistenceProvider as ObjPersistenceProvider
 
 	override fun isObj(id: Any): Boolean = persistenceProvider.isObj(id)
 
-	override fun createAggregate(isNew: Boolean) = ObjVImpl(this, isNew)
+	override fun createAggregate(isNew: Boolean) = ObjImpl(this, isNew)
 
 	override fun create(): Obj = throw UnsupportedOperationException("this is a readonly repository")
 

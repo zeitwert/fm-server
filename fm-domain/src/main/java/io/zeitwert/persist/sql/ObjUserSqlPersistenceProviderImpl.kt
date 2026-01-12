@@ -5,7 +5,9 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
+import io.zeitwert.persist.ObjUserPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjPartItemSqlPersistenceProviderImpl
@@ -13,15 +15,21 @@ import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.springframework.beans.factory.ObjectProvider
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objUserPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjUserSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : ObjSqlPersistenceProviderBase<ObjUser>(ObjUser::class.java),
-	SqlRecordMapper<ObjUser> {
+	SqlRecordMapper<ObjUser>,
+	ObjUserPersistenceProvider {
 
 	override val dslContext: DSLContext
 		get() = dslContextProvider.getObject()
@@ -105,7 +113,7 @@ open class ObjUserSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_USER_V, Tables.OBJ_USER_V.ID, query)
 
-	fun getByEmail(email: String): Optional<Any> {
+	override fun getByEmail(email: String): Optional<Any> {
 		val userId =
 			dslContext
 				.select(Tables.OBJ_USER.OBJ_ID)

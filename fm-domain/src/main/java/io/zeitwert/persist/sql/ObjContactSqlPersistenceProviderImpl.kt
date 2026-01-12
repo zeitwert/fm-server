@@ -9,20 +9,28 @@ import io.zeitwert.fm.contact.model.db.tables.records.ObjContactRecord
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
 import io.zeitwert.fm.contact.model.enums.CodeTitle
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.persist.ObjContactPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 /** Persistence provider for ObjContact aggregates. */
 @Component("objContactPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjContactSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : ObjSqlPersistenceProviderBase<ObjContact>(ObjContact::class.java),
-	SqlRecordMapper<ObjContact> {
+	SqlRecordMapper<ObjContact>,
+	ObjContactPersistenceProvider {
 
 	override val idProvider: SqlIdProvider
 		get() = baseRecordMapper

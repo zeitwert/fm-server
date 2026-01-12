@@ -11,6 +11,7 @@ import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component
 @Component("objTestPersistenceProvider")
 open class ObjTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : ObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
 	SqlRecordMapper<ObjTest> {

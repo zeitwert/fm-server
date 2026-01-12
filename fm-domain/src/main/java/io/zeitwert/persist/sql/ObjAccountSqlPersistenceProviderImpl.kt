@@ -10,20 +10,28 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.persist.ObjAccountPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objAccountPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjAccountSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : ObjSqlPersistenceProviderBase<ObjAccount>(ObjAccount::class.java),
-	SqlRecordMapper<ObjAccount> {
+	SqlRecordMapper<ObjAccount>,
+	ObjAccountPersistenceProvider {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 
@@ -88,7 +96,7 @@ open class ObjAccountSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_ACCOUNT_V, Tables.OBJ_ACCOUNT_V.ID, query)
 
-	fun getByKey(key: String): Optional<Any> {
+	override fun getByKey(key: String): Optional<Any> {
 		val accountId = dslContext
 			.select(Tables.OBJ_ACCOUNT.OBJ_ID)
 			.from(Tables.OBJ_ACCOUNT)

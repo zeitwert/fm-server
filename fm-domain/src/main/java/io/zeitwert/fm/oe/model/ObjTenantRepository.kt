@@ -14,7 +14,8 @@ interface ObjTenantRepository : ObjRepository<ObjTenant> {
 
 	companion object {
 
-		const val KERNEL_TENANT_ID: Int = 1
+		/** Key used to identify the kernel tenant. */
+		const val KERNEL_TENANT_KEY: String = "kernel"
 	}
 
 }

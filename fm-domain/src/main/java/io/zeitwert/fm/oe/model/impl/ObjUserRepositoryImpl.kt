@@ -6,7 +6,7 @@ import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
-import io.zeitwert.persist.sql.ObjUserSqlPersistenceProviderImpl
+import io.zeitwert.persist.ObjUserPersistenceProvider
 import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -34,7 +34,7 @@ class ObjUserRepositoryImpl(
 	override fun isAdmin(user: ObjUser): Boolean = user.hasRole(CodeUserRole.ADMIN)
 
 	override fun getByEmail(email: String): Optional<ObjUser> {
-		val userId = (persistenceProvider as ObjUserSqlPersistenceProviderImpl).getByEmail(email)
+		val userId = (persistenceProvider as ObjUserPersistenceProvider).getByEmail(email)
 		return userId.map { id -> get(id) }
 	}
 

@@ -4,8 +4,8 @@ import dddrive.query.ComparisonOperator
 import dddrive.query.FilterSpec
 import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.db.Tables
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.persist.sql.ddd.util.SqlUtils
 import org.jooq.DSLContext
 import org.jooq.Field
@@ -29,6 +29,8 @@ interface AggregateFindMixin {
 
 	val sessionContext: SessionContext
 
+	val kernelContext: KernelContext
+
 	/**
 	 * Add tenant and account filters to the query specification.
 	 * Returns a new QuerySpec with the added filters.
@@ -41,7 +43,7 @@ interface AggregateFindMixin {
 
 		// Add tenant filter
 		val tenantId = sessionContext.tenantId as Int
-		if (tenantId != ObjTenantRepository.KERNEL_TENANT_ID) { // in kernel tenant everything is visible
+		if (!kernelContext.isKernelTenant(tenantId)) { // in kernel tenant everything is visible
 			filters.add(FilterSpec.Comparison(Tables.OBJ.TENANT_ID.name, ComparisonOperator.EQ, tenantId))
 		}
 

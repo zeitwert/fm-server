@@ -7,21 +7,29 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjTenantRecord
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.persist.ObjTenantPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.springframework.beans.factory.ObjectProvider
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objTenantPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjTenantSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : ObjSqlPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
-	SqlRecordMapper<ObjTenant> {
+	SqlRecordMapper<ObjTenant>,
+	ObjTenantPersistenceProvider {
 
 	override val dslContext: DSLContext
 		get() = dslContextProvider.getObject()
@@ -86,7 +94,7 @@ open class ObjTenantSqlPersistenceProviderImpl(
 
 	override fun doFind(query: QuerySpec): List<Any> = doFind(Tables.OBJ_TENANT_V, Tables.OBJ_TENANT_V.ID, query)
 
-	fun getByKey(key: String): Optional<Any> {
+	override fun getByKey(key: String): Optional<Any> {
 		val tenantId =
 			dslContext
 				.select(Tables.OBJ_TENANT.OBJ_ID)

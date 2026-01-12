@@ -6,20 +6,26 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
+import io.zeitwert.persist.DocTaskPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.doc.DocRecordMapperImpl
 import io.zeitwert.persist.sql.doc.DocSqlPersistenceProviderBase
 import org.jooq.DSLContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component("docTaskPersistenceProvider")
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class DocTaskSqlPersistenceProvider(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : DocSqlPersistenceProviderBase<DocTask>(DocTask::class.java),
-	SqlRecordMapper<DocTask> {
+	SqlRecordMapper<DocTask>,
+	DocTaskPersistenceProvider {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 

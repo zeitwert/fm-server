@@ -6,7 +6,7 @@ import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType
-import io.zeitwert.persist.sql.ObjDocumentSqlPersistenceProviderImpl
+import io.zeitwert.persist.ObjDocumentPersistenceProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -25,7 +25,7 @@ class ObjDocumentRepositoryImpl(
 
 	override fun createAggregate(isNew: Boolean): ObjDocument = ObjDocumentImpl(this, isNew)
 
-	override val persistenceProvider get() = super.persistenceProvider as ObjDocumentSqlPersistenceProviderImpl
+	private val documentPersistenceProvider get() = persistenceProvider as ObjDocumentPersistenceProvider
 
 	@Autowired
 	@Lazy
@@ -33,9 +33,9 @@ class ObjDocumentRepositoryImpl(
 		this.accountRepository = accountRepository
 	}
 
-	override fun getContent(document: ObjDocument): ByteArray? = persistenceProvider.getContent(document)
+	override fun getContent(document: ObjDocument): ByteArray? = documentPersistenceProvider.getContent(document)
 
-	override fun getContentType(document: ObjDocument): CodeContentType? = persistenceProvider.getContentType(document)
+	override fun getContentType(document: ObjDocument): CodeContentType? = documentPersistenceProvider.getContentType(document)
 
 	override fun storeContent(
 		document: ObjDocument,
@@ -44,7 +44,7 @@ class ObjDocumentRepositoryImpl(
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		persistenceProvider.storeContent(document, contentType, content)
+		documentPersistenceProvider.storeContent(document, contentType, content)
 // 		this.store(document, directory.getRepository(ObjUser::class.java).get(userId), timestamp)
 	}
 

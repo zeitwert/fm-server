@@ -98,7 +98,7 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate>(
 	 * Find aggregates matching the query specification.
 	 * Delegates filtering to [MemoryDb] and returns matching IDs.
 	 */
-	fun find(query: QuerySpec?): List<Any> =
+	override fun find(query: QuerySpec?): List<Any> =
 		MemoryDb
 			.find(intfClass, query)
 			.mapNotNull { map -> map["id"] as? Int }

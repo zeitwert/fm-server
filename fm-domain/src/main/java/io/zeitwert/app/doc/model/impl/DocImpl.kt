@@ -1,9 +1,9 @@
 package io.zeitwert.app.doc.model.impl
 
-import io.zeitwert.app.doc.model.FMDocVRepository
+import io.zeitwert.app.doc.model.FMDocRepository
 import io.zeitwert.app.doc.model.base.FMDocBase
 
-class DocVImpl(
-	override val repository: FMDocVRepository,
+class DocImpl(
+	override val repository: FMDocRepository,
 	isNew: Boolean,
 ) : FMDocBase(repository, isNew)

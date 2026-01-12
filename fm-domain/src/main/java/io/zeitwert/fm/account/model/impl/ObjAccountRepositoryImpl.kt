@@ -4,7 +4,7 @@ import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
-import io.zeitwert.persist.sql.ObjAccountSqlPersistenceProviderImpl
+import io.zeitwert.persist.ObjAccountPersistenceProvider
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -20,7 +20,7 @@ class ObjAccountRepositoryImpl(
 	override fun createAggregate(isNew: Boolean): ObjAccount = ObjAccountImpl(this, isNew)
 
 	override fun getByKey(key: String): Optional<ObjAccount> {
-		val accountId = (persistenceProvider as ObjAccountSqlPersistenceProviderImpl).getByKey(key)
+		val accountId = (persistenceProvider as ObjAccountPersistenceProvider).getByKey(key)
 		return accountId.map { id -> get(id) }
 	}
 

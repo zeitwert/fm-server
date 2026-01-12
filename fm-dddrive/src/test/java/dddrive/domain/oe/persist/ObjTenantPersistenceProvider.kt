@@ -14,6 +14,4 @@ interface ObjTenantPersistenceProvider : AggregatePersistenceProvider<ObjTenant>
 
 	fun getByKey(key: String): Optional<Any>
 
-	fun find(query: QuerySpec?): List<Any>
-
 }

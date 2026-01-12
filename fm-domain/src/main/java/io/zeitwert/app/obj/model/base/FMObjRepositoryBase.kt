@@ -22,8 +22,4 @@ abstract class FMObjRepositoryBase<O : Obj>(
 ) : ObjRepositoryBase<O>(intfClass, aggregateTypeId),
 	ObjRepository<O> {
 
-	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<O>
-
-	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
-
 }

@@ -10,21 +10,29 @@ import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.oe.model.enums.CodeCountry
+import io.zeitwert.persist.ObjBuildingPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
 import io.zeitwert.persist.sql.obj.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
 import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 @Component("objBuildingPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjBuildingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
 ) : ObjSqlPersistenceProviderBase<ObjBuilding>(ObjBuilding::class.java),
-	SqlRecordMapper<ObjBuilding> {
+	SqlRecordMapper<ObjBuilding>,
+	ObjBuildingPersistenceProvider {
 
 	override val idProvider: SqlIdProvider get() = baseRecordMapper
 

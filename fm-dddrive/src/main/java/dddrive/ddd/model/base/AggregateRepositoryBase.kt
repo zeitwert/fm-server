@@ -16,6 +16,7 @@ import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import dddrive.ddd.model.impl.PartRepositoryImpl
 import dddrive.property.model.Property
 import dddrive.property.path.setValueByPath
+import dddrive.query.QuerySpec
 import java.util.function.Function
 
 abstract class AggregateRepositoryBase<A : Aggregate>(
@@ -157,6 +158,8 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 			objCache.invalidate(id)
 		}
 	}
+
+	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
 
 	companion object {
 

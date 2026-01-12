@@ -22,8 +22,4 @@ abstract class FMDocRepositoryBase<D : Doc>(
 ) : DocRepositoryBase<D>(intfClass, aggregateTypeId),
 	DocRepository<D> {
 
-	override val persistenceProvider get() = super.persistenceProvider as AggregateSqlPersistenceProvider<D>
-
-	override fun find(query: QuerySpec?): List<Any> = persistenceProvider.find(query)
-
 }
