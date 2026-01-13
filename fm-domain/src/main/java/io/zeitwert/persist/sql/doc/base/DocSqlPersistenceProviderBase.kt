@@ -19,13 +19,13 @@ abstract class DocSqlPersistenceProviderBase<D : Doc>(
 		return doFind(querySpec)
 	}
 
-	override fun doLoadParts(aggregate: D) {
+	override fun loadParts(aggregate: D) {
 		DocPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			loadPartList(aggregate, "transitionList", "doc.transitionList")
 		}
 	}
 
-	override fun doStoreParts(aggregate: D) {
+	override fun storeParts(aggregate: D) {
 		DocPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			storePartList(aggregate, "transitionList", "doc.transitionList")
 		}

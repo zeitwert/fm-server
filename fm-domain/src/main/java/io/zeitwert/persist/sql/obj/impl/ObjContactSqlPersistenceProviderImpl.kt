@@ -78,8 +78,8 @@ open class ObjContactSqlPersistenceProviderImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doLoadParts(aggregate: ObjContact) {
-		super.doLoadParts(aggregate)
+	override fun loadParts(aggregate: ObjContact) {
+		super.loadParts(aggregate)
 		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			// Load mail addresses and electronic addresses as separate part lists
 			loadPartList(aggregate.mailAddressList, "contact.mailAddressList")
@@ -88,8 +88,8 @@ open class ObjContactSqlPersistenceProviderImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doStoreParts(aggregate: ObjContact) {
-		super.doStoreParts(aggregate)
+	override fun storeParts(aggregate: ObjContact) {
+		super.storeParts(aggregate)
 		ObjContactPartAddressSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			// Store mail addresses and electronic addresses as separate part lists
 			storePartList(aggregate.mailAddressList, "contact.mailAddressList")

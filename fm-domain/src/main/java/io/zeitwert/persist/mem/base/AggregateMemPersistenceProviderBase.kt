@@ -46,7 +46,7 @@ abstract class AggregateMemPersistenceProviderBase<A : Aggregate>(
 		return currentVersion + 1
 	}
 
-	final override fun doLoad(
+	final override fun load(
 		aggregate: A,
 		id: Any,
 	) {
@@ -63,9 +63,9 @@ abstract class AggregateMemPersistenceProviderBase<A : Aggregate>(
 		}
 	}
 
-	final override fun doStore(aggregate: A) {
+	final override fun store(aggregate: A) {
 		val map = fromAggregate(aggregate)
-		store(map)
+		MemoryDb.store(intfClass, map)
 	}
 
 	/**
@@ -84,10 +84,6 @@ abstract class AggregateMemPersistenceProviderBase<A : Aggregate>(
 	 * Override to add custom handling if needed.
 	 */
 	protected open fun fromAggregate(aggregate: A): Map<String, Any?> = (aggregate as EntityWithProperties).toMap()
-
-	protected open fun store(map: Map<String, Any?>) {
-		MemoryDb.store(intfClass, map)
-	}
 
 	/**
 	 * Find aggregates matching the query specification.

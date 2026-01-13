@@ -65,8 +65,8 @@ open class DocTestSqlPersistenceProviderImpl(
 		aggregate.testType = CodeTestType.getTestType(record.testTypeId)
 	}
 
-	override fun doLoadParts(aggregate: DocTest) {
-		super.doLoadParts(aggregate)
+	override fun loadParts(aggregate: DocTest) {
+		super.loadParts(aggregate)
 		DocPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
 			items("test.testTypeSet").forEach {
@@ -107,8 +107,8 @@ open class DocTestSqlPersistenceProviderImpl(
 		return record
 	}
 
-	override fun doStoreParts(aggregate: DocTest) {
-		super.doStoreParts(aggregate)
+	override fun storeParts(aggregate: DocTest) {
+		super.storeParts(aggregate)
 		DocPartItemSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginStore()
 			addItems("test.testTypeSet", aggregate.testTypeSet.map { it.id })

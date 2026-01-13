@@ -59,8 +59,8 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		}
 	}
 
-	override fun doLoadParts(aggregate: ObjPortfolio) {
-		super.doLoadParts(aggregate)
+	override fun loadParts(aggregate: ObjPortfolio) {
+		super.loadParts(aggregate)
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("portfolio.includeList").forEach {
 				it.toIntOrNull()?.let { objId -> aggregate.includeSet.add(objId) }
@@ -71,8 +71,8 @@ open class ObjPortfolioSqlPersistenceProviderImpl(
 		}
 	}
 
-	override fun doStoreParts(aggregate: ObjPortfolio) {
-		super.doStoreParts(aggregate)
+	override fun storeParts(aggregate: ObjPortfolio) {
+		super.storeParts(aggregate)
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			addItems("portfolio.includeList", aggregate.includeSet.map { it.toString() })
 			addItems("portfolio.excludeList", aggregate.excludeSet.map { it.toString() })

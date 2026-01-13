@@ -73,8 +73,8 @@ open class ObjUserSqlPersistenceProviderImpl(
 		}
 	}
 
-	override fun doLoadParts(aggregate: ObjUser) {
-		super.doLoadParts(aggregate)
+	override fun loadParts(aggregate: ObjUser) {
+		super.loadParts(aggregate)
 		aggregate as ObjUser
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			items("user.tenantList").forEach {
@@ -83,8 +83,8 @@ open class ObjUserSqlPersistenceProviderImpl(
 		}
 	}
 
-	override fun doStoreParts(aggregate: ObjUser) {
-		super.doStoreParts(aggregate)
+	override fun storeParts(aggregate: ObjUser) {
+		super.storeParts(aggregate)
 		aggregate as ObjUser
 		ObjPartItemSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			addItems("user.tenantList", aggregate.tenantSet.map { it.toString() })

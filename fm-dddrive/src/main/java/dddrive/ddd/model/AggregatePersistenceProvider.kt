@@ -44,7 +44,7 @@ interface AggregatePersistenceProvider<A : Aggregate> : OutgoingPort {
 	 * @param aggregate newly created, yet empty aggregate
 	 * @param id        aggregate id
 	 */
-	fun doLoad(
+	fun load(
 		aggregate: A,
 		id: Any,
 	)
@@ -54,7 +54,7 @@ interface AggregatePersistenceProvider<A : Aggregate> : OutgoingPort {
 	 *
 	 * @param aggregate aggregate to store
 	 */
-	fun doStore(aggregate: A)
+	fun store(aggregate: A)
 
 	fun find(query: QuerySpec?): List<Any>
 

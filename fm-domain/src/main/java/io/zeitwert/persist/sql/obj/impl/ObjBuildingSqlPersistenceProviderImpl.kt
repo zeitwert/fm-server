@@ -92,8 +92,8 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doLoadParts(aggregate: ObjBuilding) {
-		super.doLoadParts(aggregate)
+	override fun loadParts(aggregate: ObjBuilding) {
+		super.loadParts(aggregate)
 		// Load ratings
 		ObjBuildingPartRatingSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			loadPartList(aggregate.ratingList, "building.ratingList")
@@ -113,8 +113,8 @@ open class ObjBuildingSqlPersistenceProviderImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doStoreParts(aggregate: ObjBuilding) {
-		super.doStoreParts(aggregate)
+	override fun storeParts(aggregate: ObjBuilding) {
+		super.storeParts(aggregate)
 		// Store ratings
 		ObjBuildingPartRatingSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			storePartList(aggregate.ratingList, "building.ratingList")

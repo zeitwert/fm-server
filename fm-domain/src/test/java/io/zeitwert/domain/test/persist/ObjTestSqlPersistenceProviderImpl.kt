@@ -67,8 +67,8 @@ open class ObjTestSqlPersistenceProviderImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doLoadParts(aggregate: ObjTest) {
-		super.doLoadParts(aggregate)
+	override fun loadParts(aggregate: ObjTest) {
+		super.loadParts(aggregate)
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginLoad()
 			loadPartList(
@@ -121,8 +121,8 @@ open class ObjTestSqlPersistenceProviderImpl(
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doStoreParts(aggregate: ObjTest) {
-		super.doStoreParts(aggregate)
+	override fun storeParts(aggregate: ObjTest) {
+		super.storeParts(aggregate)
 		ObjTestPartNodeSqlPersistenceProviderImpl(dslContext, aggregate).apply {
 			beginStore()
 			storePartList(

@@ -48,7 +48,7 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	): Int = idProvider.nextPartId(aggregate, partClass)
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doLoad(
+	override fun load(
 		aggregate: A,
 		id: Any,
 	) {
@@ -58,24 +58,24 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 			aggregate.setValueByPath("id", id)
 			baseRecordMapper.loadRecord(aggregate)
 			extnRecordMapper?.loadRecord(aggregate)
-			doLoadParts(aggregate)
+			loadParts(aggregate)
 		} finally {
 			aggregate.meta.enableCalc()
 		}
 		aggregate.meta.calcVolatile()
 	}
 
-	protected open fun doLoadParts(aggregate: A) {
+	protected open fun loadParts(aggregate: A) {
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun doStore(aggregate: A) {
+	override fun store(aggregate: A) {
 		baseRecordMapper.storeRecord(aggregate)
 		extnRecordMapper?.storeRecord(aggregate)
-		doStoreParts(aggregate)
+		storeParts(aggregate)
 	}
 
-	protected open fun doStoreParts(aggregate: A) {
+	protected open fun storeParts(aggregate: A) {
 	}
 
 }

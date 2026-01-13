@@ -51,7 +51,7 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate>(
 		return currentVersion + 1
 	}
 
-	final override fun doLoad(
+	final override fun load(
 		aggregate: A,
 		id: Any,
 	) {
@@ -68,7 +68,7 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate>(
 		}
 	}
 
-	final override fun doStore(aggregate: A) {
+	final override fun store(aggregate: A) {
 		val map = fromAggregate(aggregate)
 		store(map)
 	}

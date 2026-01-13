@@ -49,13 +49,13 @@ abstract class ObjSqlPersistenceProviderBase<O : Obj>(
 			}
 		}
 
-	override fun doLoadParts(aggregate: O) {
+	override fun loadParts(aggregate: O) {
 		ObjPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).doLoadParts {
 			loadPartList(aggregate, "transitionList", "obj.transitionList")
 		}
 	}
 
-	override fun doStoreParts(aggregate: O) {
+	override fun storeParts(aggregate: O) {
 		ObjPartTransitionSqlPersistenceProviderImpl(dslContext, aggregate).doStoreParts {
 			storePartList(aggregate, "transitionList", "obj.transitionList")
 		}

@@ -99,7 +99,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		val aggregate = createAggregate(false)
 
 		(aggregate as AggregateSPI).beginLoad()
-		persistenceProvider.doLoad(aggregate, id)
+		persistenceProvider.load(aggregate, id)
 		aggregate.endLoad()
 
 		aggregate.meta.calcVolatile()
@@ -128,7 +128,7 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 			doBeforeStore(aggregate)
 			check(didBeforeStore) { intfClass.simpleName + ": doBeforeStore was propagated" }
 
-			persistenceProvider.doStore(aggregate)
+			persistenceProvider.store(aggregate)
 
 			didAfterStore = false
 			doAfterStore(aggregate)
