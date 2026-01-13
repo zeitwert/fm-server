@@ -1,9 +1,11 @@
 package io.zeitwert.persist.mem.impl
 
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.persist.ObjDocumentPersistenceProvider
-import io.zeitwert.persist.mem.base.AggregateMemPersistenceProviderBase
+import io.zeitwert.persist.mem.base.ObjMemPersistenceProviderBase
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
@@ -14,8 +16,10 @@ import org.springframework.stereotype.Component
  */
 @Component("objDocumentPersistenceProvider")
 @ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
-class ObjDocumentMemPersistenceProviderImpl :
-	AggregateMemPersistenceProviderBase<ObjDocument>(ObjDocument::class.java),
+class ObjDocumentMemPersistenceProviderImpl(
+	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
+) : ObjMemPersistenceProviderBase<ObjDocument>(ObjDocument::class.java),
 	ObjDocumentPersistenceProvider {
 
 	// Storage for document content: documentId -> (versionNr -> content data)

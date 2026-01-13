@@ -1,35 +1,41 @@
-package io.zeitwert.domain.test.persist
+package io.zeitwert.domain.test.persist.sql
 
-import dddrive.property.path.setValueByPath
 import dddrive.property.model.EntityWithProperties
 import dddrive.property.model.PartListProperty
+import dddrive.property.path.setValueByPath
 import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.base.FMObjBase
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.ObjTest
 import io.zeitwert.domain.test.model.ObjTestPartNode
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.ObjTestRecord
 import io.zeitwert.domain.test.model.enums.CodeTestType
-import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.domain.test.persist.ObjTestPersistenceProvider
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
+import io.zeitwert.persist.sql.obj.base.ObjSqlPersistenceProviderBase
 import io.zeitwert.persist.sql.obj.impl.ObjPartItemSqlPersistenceProviderImpl
 import io.zeitwert.persist.sql.obj.impl.ObjRecordMapperImpl
-import io.zeitwert.persist.sql.obj.base.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 @Component("objTestPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class ObjTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : ObjSqlPersistenceProviderBase<ObjTest>(ObjTest::class.java),
-	SqlRecordMapper<ObjTest> {
+	SqlRecordMapper<ObjTest>,
+	ObjTestPersistenceProvider {
 
 	override val dslContext: DSLContext
 		get() = dslContextProvider.getObject()
@@ -76,7 +82,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 					"nodeList",
 					ObjTestPartNode::class,
 				) as
-					PartListProperty<ObjTest, ObjTestPartNode>,
+						PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endLoad()
@@ -130,7 +136,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 					"nodeList",
 					ObjTestPartNode::class,
 				) as
-					PartListProperty<ObjTest, ObjTestPartNode>,
+						PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endStore()

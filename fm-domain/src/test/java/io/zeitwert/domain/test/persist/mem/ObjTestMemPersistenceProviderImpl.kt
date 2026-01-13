@@ -1,22 +1,19 @@
-package io.zeitwert.persist.mem.impl
+package io.zeitwert.domain.test.persist.mem
 
 import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.fm.contact.model.ObjContact
-import io.zeitwert.persist.ObjContactPersistenceProvider
+import io.zeitwert.domain.test.model.ObjTest
+import io.zeitwert.domain.test.persist.ObjTestPersistenceProvider
+import io.zeitwert.fm.collaboration.model.ObjNote
+import io.zeitwert.persist.ObjNotePersistenceProvider
 import io.zeitwert.persist.mem.base.ObjMemPersistenceProviderBase
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
-/**
- * Memory-based persistence provider for ObjContact.
- *
- * Active when zeitwert.persistence.type=mem
- */
-@Component("objContactPersistenceProvider")
+@Component("objTestPersistenceProvider")
 @ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
-class ObjContactMemPersistenceProviderImpl(
+class ObjTestMemPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,
-) : ObjMemPersistenceProviderBase<ObjContact>(ObjContact::class.java),
-	ObjContactPersistenceProvider
+) : ObjMemPersistenceProviderBase<ObjTest>(ObjTest::class.java),
+	ObjTestPersistenceProvider

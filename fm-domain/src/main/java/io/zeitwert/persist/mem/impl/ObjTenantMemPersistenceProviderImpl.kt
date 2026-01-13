@@ -2,12 +2,14 @@ package io.zeitwert.persist.mem.impl
 
 import dddrive.db.MemoryDb
 import dddrive.query.query
+import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.persist.ObjTenantPersistenceProvider
-import io.zeitwert.persist.mem.base.AggregateMemPersistenceProviderBase
+import io.zeitwert.persist.mem.base.ObjMemPersistenceProviderBase
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
@@ -21,8 +23,10 @@ import kotlin.jvm.java
  */
 @Component("objTenantPersistenceProvider")
 @ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
-class ObjTenantMemPersistenceProviderImpl :
-	AggregateMemPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
+class ObjTenantMemPersistenceProviderImpl(
+	override val sessionContext: SessionContext,
+	override val kernelContext: KernelContext,
+) : ObjMemPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	ObjTenantPersistenceProvider {
 
 	init {

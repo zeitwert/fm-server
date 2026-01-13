@@ -1,4 +1,4 @@
-package io.zeitwert.domain.test.persist
+package io.zeitwert.domain.test.persist.sql
 
 import dddrive.ddd.model.Aggregate
 import dddrive.ddd.model.Part

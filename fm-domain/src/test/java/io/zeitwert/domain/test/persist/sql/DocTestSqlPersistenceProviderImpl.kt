@@ -1,32 +1,38 @@
-package io.zeitwert.domain.test.persist
+package io.zeitwert.domain.test.persist.sql
 
 import dddrive.property.path.setValueByPath
 import dddrive.query.QuerySpec
 import io.zeitwert.app.doc.model.base.FMDocBase
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.domain.test.model.DocTest
 import io.zeitwert.domain.test.model.db.Tables
 import io.zeitwert.domain.test.model.db.tables.records.DocTestRecord
-import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.domain.test.model.enums.CodeTestType
+import io.zeitwert.domain.test.persist.DocTestPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
+import io.zeitwert.persist.sql.doc.base.DocSqlPersistenceProviderBase
 import io.zeitwert.persist.sql.doc.impl.DocPartItemSqlPersistenceProviderImpl
 import io.zeitwert.persist.sql.doc.impl.DocRecordMapperImpl
-import io.zeitwert.persist.sql.doc.base.DocSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
 /** jOOQ-based persistence provider for DocTest aggregates. */
 @Component("docTestPersistenceProvider")
+@Primary
+@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
 open class DocTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,
 	private val dslContextProvider: ObjectProvider<DSLContext>,
 ) : DocSqlPersistenceProviderBase<DocTest>(DocTest::class.java),
-	SqlRecordMapper<DocTest> {
+	SqlRecordMapper<DocTest>,
+	DocTestPersistenceProvider {
 
 	override val dslContext: DSLContext
 		get() = dslContextProvider.getObject()
