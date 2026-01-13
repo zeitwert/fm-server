@@ -15,9 +15,9 @@ import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.account.model.ItemWithAccount
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
-import io.zeitwert.persist.sql.obj.ObjPartItemSqlPersistenceProviderImpl
-import io.zeitwert.persist.sql.obj.ObjRecordMapperImpl
-import io.zeitwert.persist.sql.obj.ObjSqlPersistenceProviderBase
+import io.zeitwert.persist.sql.obj.impl.ObjPartItemSqlPersistenceProviderImpl
+import io.zeitwert.persist.sql.obj.impl.ObjRecordMapperImpl
+import io.zeitwert.persist.sql.obj.base.ObjSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider

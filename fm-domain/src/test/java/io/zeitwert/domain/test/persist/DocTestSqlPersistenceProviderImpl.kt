@@ -11,9 +11,9 @@ import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
-import io.zeitwert.persist.sql.doc.DocPartItemSqlPersistenceProviderImpl
-import io.zeitwert.persist.sql.doc.DocRecordMapperImpl
-import io.zeitwert.persist.sql.doc.DocSqlPersistenceProviderBase
+import io.zeitwert.persist.sql.doc.impl.DocPartItemSqlPersistenceProviderImpl
+import io.zeitwert.persist.sql.doc.impl.DocRecordMapperImpl
+import io.zeitwert.persist.sql.doc.base.DocSqlPersistenceProviderBase
 import org.jooq.DSLContext
 import org.jooq.JSON
 import org.springframework.beans.factory.ObjectProvider
