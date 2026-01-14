@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 
 @SpringBootApplication(exclude = [CodecsAutoConfiguration::class])
 @EnableAsync
-@ComponentScan("io.zeitwert")
+@ComponentScan("io.zeitwert", "io.domain")
 @Profile("test", "ci")
 open class TestApplication {
 

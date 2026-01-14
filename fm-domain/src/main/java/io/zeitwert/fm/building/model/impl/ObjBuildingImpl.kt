@@ -154,7 +154,7 @@ class ObjBuildingImpl(
 	// Computed property - calculator returns the part ID, value is derived via getPart()
 	override var currentRating by partReferenceProperty<ObjBuilding, ObjBuildingPartRating>("currentRating") { _ ->
 		for (i in ratingList.size downTo 1) {
-			val rating = ratingList.get(i - 1)
+			val rating = ratingList[i - 1]
 			if (rating.ratingStatus == null || rating.ratingStatus != CodeBuildingRatingStatus.DISCARD) {
 				return@partReferenceProperty rating.id
 			}

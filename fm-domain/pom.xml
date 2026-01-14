@@ -273,7 +273,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/test/java/io/zeitwert/fm/test/jooq-config.xml</configurationFile>
+							<configurationFile>src/test/java/io/domain/test/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 				</executions>

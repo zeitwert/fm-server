@@ -1,13 +1,13 @@
 package io.zeitwert.fm
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
+import io.domain.test.model.DocTest
+import io.domain.test.model.DocTestRepository
+import io.domain.test.model.ObjTest
+import io.domain.test.model.ObjTestRepository
+import io.domain.test.model.enums.CodeTestType
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.data.config.TestDataSetup
-import io.zeitwert.domain.test.model.DocTest
-import io.zeitwert.domain.test.model.DocTestRepository
-import io.zeitwert.domain.test.model.ObjTest
-import io.zeitwert.domain.test.model.ObjTestRepository
-import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.test.TestApplication
 import org.jooq.JSON
@@ -130,7 +130,7 @@ class DocTestTest {
 
 		val refObj: ObjTest = objTestRepo.create()
 		initObjTest(refObj, "Two", TYPE_B)
-		val refObjId: Any? = refObj.id
+		val refObjId: Any = refObj.id
 		objTestRepo.store(refObj)
 
 		testA1.refObjId = refObjId
@@ -142,7 +142,7 @@ class DocTestTest {
 		val refDoc: DocTest = docTestRepo.create()
 		initDocTest(refDoc, "Two", TYPE_B, userId)
 		refDoc.accountId = account.id
-		val refDocId: Any? = refDoc.id
+		val refDocId: Any = refDoc.id
 		docTestRepo.store(refDoc)
 
 		testA1.refDocId = refDocId

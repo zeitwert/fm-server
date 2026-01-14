@@ -1,9 +1,9 @@
 package io.zeitwert.fm
 
+import io.domain.test.model.ObjTest
+import io.domain.test.model.ObjTestRepository
+import io.domain.test.model.enums.CodeTestType
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.domain.test.model.ObjTest
-import io.zeitwert.domain.test.model.ObjTestRepository
-import io.zeitwert.domain.test.model.enums.CodeTestType
 import io.zeitwert.test.TestApplication
 import org.jooq.JSON
 import org.junit.jupiter.api.Assertions.assertEquals
