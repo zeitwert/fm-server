@@ -24,7 +24,6 @@ abstract class ObjSqlPersistenceProviderBase<O : Obj>(
 	override val sqlUtils = SqlUtils()
 
 	override fun find(query: QuerySpec?): List<Any> {
-		logger.debug("find({})", query)
 		var querySpec = queryWithFilter(query)
 		logger.trace("find.1: {}", querySpec)
 
@@ -39,8 +38,8 @@ abstract class ObjSqlPersistenceProviderBase<O : Obj>(
 	}
 
 	private fun hasFilterFor(
-        querySpec: QuerySpec,
-        fieldName: String,
+		querySpec: QuerySpec,
+		fieldName: String,
 	): Boolean =
 		querySpec.filters.any { filter ->
 			when (filter) {

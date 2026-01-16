@@ -1,6 +1,6 @@
 package io.zeitwert.app.search.api.rest
 
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.ddd.model.SearchResult
 import io.zeitwert.app.ddd.service.api.SearchService
 import io.zeitwert.app.search.api.rest.dto.SearchResultDto

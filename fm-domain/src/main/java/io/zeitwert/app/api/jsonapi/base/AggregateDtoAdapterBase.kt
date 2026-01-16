@@ -16,6 +16,7 @@ import dddrive.property.model.PartReferenceProperty
 import dddrive.property.model.Property
 import io.zeitwert.app.api.jsonapi.AggregateDtoAdapter
 import io.zeitwert.app.api.jsonapi.AttributeDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.api.jsonapi.ResourceDto
 import io.zeitwert.app.api.jsonapi.config.AggregateDtoAdapterConfig
 import io.zeitwert.app.api.jsonapi.config.FieldConfig
@@ -23,7 +24,6 @@ import io.zeitwert.app.api.jsonapi.config.RelationshipConfig
 import io.zeitwert.app.api.jsonapi.config.ResourceEntry
 import io.zeitwert.app.api.jsonapi.config.ResourceRegistry
 import io.zeitwert.app.api.jsonapi.dto.DtoUtils
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
@@ -331,11 +331,14 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	) {
 		aggregate as EntityWithProperties
 		val properties = aggregate.properties.filter { !config.isExcluded(it) && it.isWritable }
-		logger.trace("toAggregate: {}", aggregate)
-		logger.trace(". properties: {}", properties.map { it.name })
-		logger.trace(". dto: {}", dto)
+		logger.info("toAggregate: {}", aggregate)
+		logger.info(". properties: {}", properties.map { it.name })
+		logger.info(". dto: {}", dto)
+		check((aggregate as dddrive.app.ddd.model.Aggregate).tenantId != null) { "valid tenantId" }
 		toEntity(dto, aggregate, properties)
+		check((aggregate as dddrive.app.ddd.model.Aggregate).tenantId != null) { "valid tenantId" }
 		toFields(dto, aggregate, config.fields.values)
+		check((aggregate as dddrive.app.ddd.model.Aggregate).tenantId != null) { "valid tenantId" }
 	}
 
 	/**
@@ -400,6 +403,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	) {
 		when (property) {
 			is AggregateReferenceProperty<*> -> {
+				println("toProperty ${property.javaClass.simpleName}.${property.name}: $dtoValue ${enumId(dtoValue)} ${dtoValue?.javaClass?.simpleName}")
 				property.id = DtoUtils.idFromString(enumId(dtoValue))
 			}
 
@@ -463,12 +467,12 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 			val dtoValue = dto.getAttribute(fieldName)
 			try {
 				if (fieldConfig.incoming != null) {
-					logger.trace("${indent}toFields.before[{}] = toProperty(dto[{}]: {})", entity, fieldName, dtoValue)
+					logger.info("${indent}toFields.before[{}] = toProperty(dto[{}]: {})", entity, fieldName, dtoValue)
 					fieldConfig.incoming.invoke(dtoValue, entity)
-					logger.trace("${indent}toFields.after[{}]", entity)
+					logger.info("${indent}toFields.after[{}]", entity)
 				} else if (fieldConfig.sourceProperty != null) {
 					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
-					logger.trace(
+					logger.info(
 						"${indent}toFields.before[{}]({}) = toProperty(dto[{}]: {})",
 						property,
 						property.javaClass.simpleName,
@@ -476,7 +480,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 						dtoValue,
 					)
 					toProperty(property, dtoValue, fieldConfig.doInline)
-					logger.trace("${indent}toFields.after[{}]", property)
+					logger.info("${indent}toFields.after[{}]", property)
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(

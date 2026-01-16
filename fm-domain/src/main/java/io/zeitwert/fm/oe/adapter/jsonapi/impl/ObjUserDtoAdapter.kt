@@ -1,7 +1,7 @@
 package io.zeitwert.fm.oe.adapter.jsonapi.impl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.obj.api.jsonapi.base.ObjDtoAdapterBase
 import io.zeitwert.fm.oe.adapter.jsonapi.dto.ObjUserDto
 import io.zeitwert.fm.oe.model.ObjUser
@@ -12,19 +12,20 @@ import org.springframework.stereotype.Component
 class ObjUserDtoAdapter(
 	directory: RepositoryDirectory,
 ) : ObjDtoAdapterBase<ObjUser, ObjUserDto>(
-		ObjUser::class.java,
-		"user",
-		ObjUserDto::class.java,
-		directory,
-		{ ObjUserDto() },
-	) {
+	ObjUser::class.java,
+	"user",
+	ObjUserDto::class.java,
+	directory,
+	{ ObjUserDto() },
+) {
 
 	init {
 		config.relationship("avatar", "document", "avatarImage")
 		config.field("tenants", "tenantSet")
 	}
 
-	fun asEnumerated(obj: ObjUser?): EnumeratedDto? = if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)
+	fun asEnumerated(obj: ObjUser?): EnumeratedDto? =
+		if (obj == null) null else EnumeratedDto.of("" + obj.id, obj.caption)
 
 	override fun toAggregate(
 		dto: ObjUserDto,

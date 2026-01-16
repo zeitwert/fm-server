@@ -1,6 +1,6 @@
 package io.zeitwert.fm.server.session.adapter.rest.dto
 
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 
 data class LoginResponse(
 	val sessionId: String? = null,

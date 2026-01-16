@@ -75,6 +75,8 @@ abstract class AggregateMemPersistenceProviderBase<A : Aggregate>(
 		}
 	}
 
+	override fun transaction(work: () -> Unit) = work()
+
 	final override fun store(aggregate: A) {
 		require(intfClass != Obj::class.java) { "cannot store object" }
 		require(intfClass != Doc::class.java) { "cannot store doc" }

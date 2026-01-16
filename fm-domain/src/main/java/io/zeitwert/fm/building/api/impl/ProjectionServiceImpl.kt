@@ -1,6 +1,6 @@
 package io.zeitwert.fm.building.api.impl
 
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.fm.building.api.ProjectionService
 import io.zeitwert.fm.building.api.dto.ProjectionElement
 import io.zeitwert.fm.building.api.dto.ProjectionPeriod

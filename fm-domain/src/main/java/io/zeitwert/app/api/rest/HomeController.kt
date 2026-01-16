@@ -2,7 +2,7 @@ package io.zeitwert.app.api.rest
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum.Companion.getCaseStage
 import dddrive.ddd.model.enums.CodeAggregateTypeEnum.Companion.getAggregateType
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.api.jsonapi.dto.TypedEnumeratedDto
 import io.zeitwert.app.api.rest.dto.HomeActionResponse
 import io.zeitwert.app.api.rest.dto.HomeActivityResponse
@@ -12,7 +12,6 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingRepository
-import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ActivityVRecord
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.portfolio.model.ObjPortfolioRepository
@@ -20,7 +19,6 @@ import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import io.zeitwert.fm.util.Formatter.formatIsoDate
-import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -53,8 +51,8 @@ class HomeController {
 	@Autowired
 	lateinit var sessionContext: SessionContext
 
-	@Autowired
-	lateinit var dslContext: DSLContext
+//	@Autowired
+//	lateinit var dslContext: DSLContext
 
 	var allBuildings: List<ObjBuilding>? = null
 
@@ -144,17 +142,18 @@ class HomeController {
 	fun getRecentActions(
 		@PathVariable("accountId") accountId: Int,
 	): ResponseEntity<List<HomeActionResponse>> {
-		val account = accountRepository.get(accountId)
-		val result = dslContext
-			.selectFrom(Tables.ACTIVITY_V)
-			.where(
-				Tables.ACTIVITY_V.TENANT_ID
-					.eq(account.tenantId as Int)
-					.and(Tables.ACTIVITY_V.ACCOUNT_ID.eq(accountId)),
-			).orderBy(Tables.ACTIVITY_V.TIMESTAMP.desc())
-			.limit(20)
-			.fetch()
-		return ResponseEntity.ok(result.map { getActivityResponse(it) })
+		return ResponseEntity.ok(emptyList())
+		// val account = accountRepository.get(accountId)
+		// val result = dslContext
+		// 	.selectFrom(Tables.ACTIVITY_V)
+		// 	.where(
+		// 		Tables.ACTIVITY_V.TENANT_ID
+		// 			.eq(account.tenantId as Int)
+		// 			.and(Tables.ACTIVITY_V.ACCOUNT_ID.eq(accountId)),
+		// 	).orderBy(Tables.ACTIVITY_V.TIMESTAMP.desc())
+		// 	.limit(20)
+		// 	.fetch()
+		// return ResponseEntity.ok(result.map { getActivityResponse(it) })
 	}
 
 	private fun getActivityResponse(a: ActivityVRecord): HomeActionResponse {

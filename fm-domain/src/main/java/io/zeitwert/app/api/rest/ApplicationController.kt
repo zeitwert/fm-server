@@ -1,6 +1,6 @@
 package io.zeitwert.app.api.rest
 
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.api.rest.dto.TenantInfoResponse
 import io.zeitwert.app.api.rest.dto.UserInfoResponse
 import io.zeitwert.fm.account.api.AccountService

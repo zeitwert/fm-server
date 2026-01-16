@@ -4,9 +4,9 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import dddrive.ddd.model.RepositoryDirectory
 import dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.api.jsonapi.base.AggregateDtoAdapterBase
 import io.zeitwert.app.api.jsonapi.base.AggregateDtoBase
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
 import io.zeitwert.app.session.model.SessionContext
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -17,12 +17,12 @@ abstract class DocDtoAdapterBase<E : Doc, D : DocDtoBase>(
 	directory: RepositoryDirectory,
 	resourceFactory: () -> D,
 ) : AggregateDtoAdapterBase<E, D>(
-		aggregateClass,
-		resourceType,
-		dtoClass,
-		directory,
-		resourceFactory,
-	) {
+	aggregateClass,
+	resourceType,
+	dtoClass,
+	directory,
+	resourceFactory,
+) {
 
 	@Autowired
 	lateinit var sessionContext: SessionContext

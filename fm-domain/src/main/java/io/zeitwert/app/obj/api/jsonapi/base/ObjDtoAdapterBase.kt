@@ -3,9 +3,9 @@ package io.zeitwert.app.obj.api.jsonapi.base
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.RepositoryDirectory
 import dddrive.ddd.model.enums.CodeAggregateTypeEnum
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 import io.zeitwert.app.api.jsonapi.base.AggregateDtoAdapterBase
 import io.zeitwert.app.api.jsonapi.base.AggregateDtoBase
-import io.zeitwert.app.api.jsonapi.dto.EnumeratedDto
 
 abstract class ObjDtoAdapterBase<O : Obj, D : ObjDtoBase>(
 	aggregateClass: Class<O>,

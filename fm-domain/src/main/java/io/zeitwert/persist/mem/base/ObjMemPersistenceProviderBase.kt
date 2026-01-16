@@ -28,7 +28,6 @@ abstract class ObjMemPersistenceProviderBase<O : Obj>(
 			filters.add(FilterSpec.Comparison("closedAt", ComparisonOperator.EQ, null))
 			querySpec = querySpec.copy(filters = filters)
 		}
-		println("find(${intfClass.simpleName}) $querySpec")
 		return MemoryDb
 			.find(intfClass, querySpec)
 			.mapNotNull { map -> map["id"] as? Int }
