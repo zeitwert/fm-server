@@ -1,4 +1,4 @@
-package io.zeitwert.fm.server.config.jooq;
+package io.zeitwert.config.jooq;
 
 import org.jooq.conf.Settings;
 import org.jooq.impl.DefaultConfiguration;

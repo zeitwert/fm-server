@@ -1,4 +1,4 @@
-package io.zeitwert.jsonapi.config
+package io.zeitwert.config.crnk
 
 import io.crnk.core.engine.http.DefaultHttpRequestContextBase
 import io.crnk.core.engine.http.HttpRequestContext
@@ -17,7 +17,7 @@ import java.net.URISyntaxException
  *
  * This bridges jakarta.servlet (Spring Boot 3) to crnk's internal HTTP abstraction.
  */
-class TestHttpRequestContext(
+class JakartaHttpRequestContext(
 	private val request: HttpServletRequest,
 	private val response: HttpServletResponse,
 	private val pathPrefix: String,
@@ -110,6 +110,7 @@ class TestHttpRequestContext(
 	override fun getRequestHeader(name: String): String? = request.getHeader(name)
 
 	val requestHeaders: Map<String, String>
+		// Note: Not an interface method - helper for internal use
 		get() {
 			val headers = mutableMapOf<String, String>()
 			val headerNames = request.headerNames
@@ -192,4 +193,5 @@ class TestHttpRequestContext(
 			}
 		}
 	}
+
 }

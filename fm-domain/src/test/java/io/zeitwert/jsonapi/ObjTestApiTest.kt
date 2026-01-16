@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import dddrive.ddd.model.RepositoryDirectory
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -82,38 +83,29 @@ class ObjTestApiTest {
 
 	@Test
 	fun `test Create and Read for ObjTest via JSON API`() {
-
 		// === CREATE ===
 		val createPayload = createObjTestPayload()
-		val createResult = mockMvc.perform(
-			post(API_PATH)
-				.with(csrf().asHeader())
-				.contentType(JSON_API_CONTENT_TYPE)
-				.accept(JSON_API_CONTENT_TYPE)
-				.content(createPayload),
-		)
-			.andExpect(status().isCreated)
+		val createResult = mockMvc
+			.perform(
+				post(API_PATH)
+					.with(csrf().asHeader())
+					.contentType(JSON_API_CONTENT_TYPE)
+					.accept(JSON_API_CONTENT_TYPE)
+					.content(createPayload),
+			).andExpect(status().isCreated)
 			.andReturn()
 
 		val createResponse = parseJsonApiResponse(createResult.response.contentAsString)
 		val createdId = createResponse["id"] as String
 		assertNotNull(createdId, "Created object should have an ID")
 
-		// Verify created attributes
+		// Verify created attributes using shared verification method
 		val createAttributes = createResponse["attributes"] as Map<*, *>
-		assertEquals(TEST_SHORT_TEXT, createAttributes["shortText"])
-		assertEquals(TEST_LONG_TEXT, createAttributes["longText"])
-		assertEquals(TEST_INT, createAttributes["integer"])
-		assertEquals(TEST_DATE, createAttributes["date"])
-		assertEquals(TEST_IS_DONE, createAttributes["isDone"])
-		verifyEnumField(createAttributes["testType"], TEST_TYPE_ID)
+		verifyInitialAttributes(createAttributes)
 
-		// Verify nodeList part was created
+		// Verify nodeList was created with 2 nodes, capture their IDs
 		val createNodeList = createAttributes["nodeList"] as List<*>
-		assertEquals(1, createNodeList.size)
-		val createFirstNode = createNodeList[0] as Map<*, *>
-		assertEquals("Node A", createFirstNode["shortText"])
-		assertEquals(1, createFirstNode["integer"])
+		val (nodeAId, nodeBId) = verifyInitialNodeList(createNodeList)
 
 		// Verify meta fields
 		val createMeta = createResponse["meta"] as Map<*, *>
@@ -125,76 +117,79 @@ class ObjTestApiTest {
 		assertNull(createMeta["closedByUser"], "closedByUser should be null for new object")
 
 		// === READ ===
-		val readResult = mockMvc.perform(
-			get("$API_PATH/$createdId")
-				.accept(JSON_API_CONTENT_TYPE),
-		)
-			.andExpect(status().isOk)
+		val readResult = mockMvc
+			.perform(
+				get("$API_PATH/$createdId").accept(JSON_API_CONTENT_TYPE),
+			).andExpect(status().isOk)
 			.andReturn()
 
 		val readResponse = parseJsonApiResponse(readResult.response.contentAsString)
 		assertEquals(createdId, readResponse["id"])
 
+		// Verify read attributes using shared verification method
 		val readAttributes = readResponse["attributes"] as Map<*, *>
-		assertEquals(TEST_SHORT_TEXT, readAttributes["shortText"])
-		assertEquals(TEST_LONG_TEXT, readAttributes["longText"])
-		assertEquals(TEST_INT, readAttributes["integer"])
-		// BigDecimal comparison - nr might be returned as number or string
-		verifyBigDecimal(readAttributes["nr"], BigDecimal.valueOf(TEST_NR))
-		assertEquals(TEST_DATE, readAttributes["date"])
-		assertEquals(TEST_IS_DONE, readAttributes["isDone"])
-		verifyEnumField(readAttributes["testType"], TEST_TYPE_ID)
+		verifyInitialAttributes(readAttributes)
 
-		// Verify nodeList
+		// Verify nodeList using shared verification method
 		val readNodeList = readAttributes["nodeList"] as List<*>
-		assertEquals(1, readNodeList.size)
+		verifyInitialNodeList(readNodeList)
 
 		val readMeta = readResponse["meta"] as Map<*, *>
 		assertNull(readMeta["closedAt"], "closedAt should still be null")
 		assertNull(readMeta["closedByUser"], "closedByUser should still be null")
 
 		// === UPDATE ===
+		// Update will: UPDATE Node A (by ID), INSERT Node C (no ID), DELETE Node B (omitted)
 		val version = readMeta["version"] as Int
-		val updatePayload = createUpdatePayload(createdId, version)
-		val updateResult = mockMvc.perform(
-			patch("$API_PATH/$createdId")
-				.with(csrf().asHeader())
-				.contentType(JSON_API_CONTENT_TYPE)
-				.accept(JSON_API_CONTENT_TYPE)
-				.content(updatePayload),
-		)
-			.andExpect(status().isOk)
+		val updatePayload = createUpdatePayload(createdId, version, nodeAId)
+		val updateResult = mockMvc
+			.perform(
+				patch("$API_PATH/$createdId")
+					.with(csrf().asHeader())
+					.contentType(JSON_API_CONTENT_TYPE)
+					.accept(JSON_API_CONTENT_TYPE)
+					.content(updatePayload),
+			).andExpect(status().isOk)
 			.andReturn()
 
-		val updateResponse = parseJsonApiResponse(updateResult.response.contentAsString)
-		assertEquals(createdId, updateResponse["id"])
+		run {
+			val updateResponse = parseJsonApiResponse(updateResult.response.contentAsString)
+			assertEquals(createdId, updateResponse["id"])
+
+			// Verify updated attributes using shared verification method
+			val updatedAttributes = updateResponse["attributes"] as Map<*, *>
+			verifyUpdatedAttributes(updatedAttributes)
+
+			// Verify nodeList: Node A updated, Node B deleted, Node C inserted
+			val updatedNodeList = updatedAttributes["nodeList"] as List<*>
+			verifyUpdatedNodeList(updatedNodeList, nodeAId, nodeBId)
+
+			// Verify meta - version should be incremented
+			val updatedMeta = updateResponse["meta"] as Map<*, *>
+			val newVersion = updatedMeta["version"] as Int
+			assertTrue(newVersion > version, "Version should be incremented after update")
+			assertNotNull(updatedMeta["modifiedAt"], "modifiedAt should be set after update")
+			assertNotNull(updatedMeta["modifiedByUser"], "modifiedByUser should be set after update")
+			assertNull(updatedMeta["closedAt"], "closedAt should still be null")
+			assertNull(updatedMeta["closedByUser"], "closedByUser should still be null")
+		}
 
 		// === READ AFTER UPDATE ===
-		val readUpdatedResult = mockMvc.perform(
-			get("$API_PATH/$createdId")
-				.accept(JSON_API_CONTENT_TYPE),
-		)
-			.andExpect(status().isOk)
+		val readUpdatedResult = mockMvc
+			.perform(
+				get("$API_PATH/$createdId").accept(JSON_API_CONTENT_TYPE),
+			).andExpect(status().isOk)
 			.andReturn()
 
 		val readUpdatedResponse = parseJsonApiResponse(readUpdatedResult.response.contentAsString)
+
+		// Verify updated attributes using shared verification method
 		val updatedAttributes = readUpdatedResponse["attributes"] as Map<*, *>
+		verifyUpdatedAttributes(updatedAttributes)
 
-		// Verify all updated values
-		assertEquals(UPDATED_SHORT_TEXT, updatedAttributes["shortText"])
-		assertEquals(UPDATED_LONG_TEXT, updatedAttributes["longText"])
-		assertEquals(UPDATED_INT, updatedAttributes["integer"])
-		verifyBigDecimal(updatedAttributes["nr"], BigDecimal.valueOf(UPDATED_NR))
-		assertEquals(UPDATED_DATE, updatedAttributes["date"])
-		assertEquals(UPDATED_IS_DONE, updatedAttributes["isDone"])
-		verifyEnumField(updatedAttributes["testType"], UPDATED_TYPE_ID)
-
-		// Verify nodeList was updated
+		// Verify nodeList: Node A updated, Node B deleted, Node C inserted
 		val updatedNodeList = updatedAttributes["nodeList"] as List<*>
-		assertEquals(2, updatedNodeList.size)
-		val nodeTexts = updatedNodeList.map { (it as Map<*, *>)["shortText"] }
-		assertTrue(nodeTexts.contains("Node A Updated"), "Should contain updated node")
-		assertTrue(nodeTexts.contains("Node B"), "Should contain new node")
+		verifyUpdatedNodeList(updatedNodeList, nodeAId, nodeBId)
 
 		// Verify meta - version should be incremented
 		val updatedMeta = readUpdatedResponse["meta"] as Map<*, *>
@@ -206,19 +201,18 @@ class ObjTestApiTest {
 		assertNull(updatedMeta["closedByUser"], "closedByUser should still be null")
 
 		// === DELETE (soft delete / close) ===
-		mockMvc.perform(
-			delete("$API_PATH/$createdId")
-				.with(csrf().asHeader())
-				.accept(JSON_API_CONTENT_TYPE),
-		)
-			.andExpect(status().isNoContent)
+		mockMvc
+			.perform(
+				delete("$API_PATH/$createdId")
+					.with(csrf().asHeader())
+					.accept(JSON_API_CONTENT_TYPE),
+			).andExpect(status().isNoContent)
 
 		// === READ AFTER DELETE (verify closed) ===
-		val readClosedResult = mockMvc.perform(
-			get("$API_PATH/$createdId")
-				.accept(JSON_API_CONTENT_TYPE),
-		)
-			.andExpect(status().isOk)
+		val readClosedResult = mockMvc
+			.perform(
+				get("$API_PATH/$createdId").accept(JSON_API_CONTENT_TYPE),
+			).andExpect(status().isOk)
 			.andReturn()
 
 		val readClosedResponse = parseJsonApiResponse(readClosedResult.response.contentAsString)
@@ -226,10 +220,6 @@ class ObjTestApiTest {
 
 		assertNotNull(closedMeta["closedAt"], "closedAt should be set after delete")
 		assertNotNull(closedMeta["closedByUser"], "closedByUser should be set after delete")
-
-		// Note: UPDATE and DELETE operations have been disabled due to a known framework issue
-		// where tenantId is null during the store operation when parts are involved.
-		// TODO: Re-enable once the ObjBase.doBeforeStore tenant issue is resolved.
 	}
 
 	private fun createObjTestPayload(): String {
@@ -249,6 +239,10 @@ class ObjTestApiTest {
 							"shortText" to "Node A",
 							"integer" to 1,
 						),
+						mapOf(
+							"shortText" to "Node B",
+							"integer" to 2,
+						),
 					),
 				),
 			),
@@ -256,9 +250,16 @@ class ObjTestApiTest {
 		return objectMapper.writeValueAsString(payload)
 	}
 
+	/**
+	 * Create update payload that:
+	 * - Updates Node A (by providing its ID)
+	 * - Inserts Node C (no ID provided)
+	 * - Deletes Node B (omitted from payload)
+	 */
 	private fun createUpdatePayload(
 		id: String,
 		clientVersion: Int,
+		nodeAId: String,
 	): String {
 		val payload = mapOf(
 			"data" to mapOf(
@@ -274,13 +275,17 @@ class ObjTestApiTest {
 					"testType" to mapOf("id" to UPDATED_TYPE_ID, "name" to "Type B"),
 					"nodeList" to listOf(
 						mapOf(
+							// Include ID -> triggers UPDATE
+							"id" to nodeAId,
 							"shortText" to "Node A Updated",
 							"integer" to 10,
 						),
 						mapOf(
-							"shortText" to "Node B",
-							"integer" to 20,
+							// No ID -> triggers INSERT
+							"shortText" to "Node C",
+							"integer" to 30,
 						),
+						// Node B omitted -> triggers DELETE
 					),
 				),
 				"meta" to mapOf(
@@ -321,12 +326,92 @@ class ObjTestApiTest {
 		expected: BigDecimal,
 	) {
 		assertNotNull(actual, "BigDecimal field should not be null")
-		val actualBigDecimal = when (actual) {
-			is BigDecimal -> actual
-			is Number -> BigDecimal.valueOf(actual.toDouble())
-			is String -> BigDecimal(actual)
-			else -> throw AssertionError("Unexpected BigDecimal field type: ${actual?.javaClass}")
-		}
+		val actualBigDecimal =
+			when (actual) {
+				is BigDecimal -> actual
+				is Number -> BigDecimal.valueOf(actual.toDouble())
+				is String -> BigDecimal(actual)
+				else -> throw AssertionError("Unexpected BigDecimal field type: ${actual?.javaClass}")
+			}
 		assertEquals(0, expected.compareTo(actualBigDecimal), "BigDecimal values should match")
+	}
+
+	/** Verify attributes match the initial (pre-update) values. */
+	private fun verifyInitialAttributes(attributes: Map<*, *>) {
+		assertEquals(TEST_SHORT_TEXT, attributes["shortText"])
+		assertEquals(TEST_LONG_TEXT, attributes["longText"])
+		assertEquals(TEST_INT, attributes["integer"])
+		verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(TEST_NR))
+		assertEquals(TEST_DATE, attributes["date"])
+		assertEquals(TEST_IS_DONE, attributes["isDone"])
+		verifyEnumField(attributes["testType"], TEST_TYPE_ID)
+	}
+
+	/** Verify attributes match the updated values. */
+	private fun verifyUpdatedAttributes(attributes: Map<*, *>) {
+		assertEquals(UPDATED_SHORT_TEXT, attributes["shortText"])
+		assertEquals(UPDATED_LONG_TEXT, attributes["longText"])
+		assertEquals(UPDATED_INT, attributes["integer"])
+		verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(UPDATED_NR))
+		assertEquals(UPDATED_DATE, attributes["date"])
+		assertEquals(UPDATED_IS_DONE, attributes["isDone"])
+		verifyEnumField(attributes["testType"], UPDATED_TYPE_ID)
+	}
+
+	/**
+	 * Verify the initial nodeList has 2 nodes (Node A and Node B).
+	 * @return Pair of (nodeAId, nodeBId) for use in update verification
+	 */
+	private fun verifyInitialNodeList(nodeList: List<*>): Pair<String, String> {
+		assertEquals(2, nodeList.size, "Initial nodeList should have 2 nodes")
+		val nodeA = nodeList.find { (it as Map<*, *>)["shortText"] == "Node A" } as Map<*, *>
+		val nodeB = nodeList.find { (it as Map<*, *>)["shortText"] == "Node B" } as Map<*, *>
+		assertNotNull(nodeA, "Node A should exist")
+		assertNotNull(nodeB, "Node B should exist")
+		assertEquals(1, nodeA["integer"], "Node A integer should be 1")
+		assertEquals(2, nodeB["integer"], "Node B integer should be 2")
+		val nodeAId = nodeA["id"] as String
+		val nodeBId = nodeB["id"] as String
+		assertNotNull(nodeAId, "Node A should have an ID")
+		assertNotNull(nodeBId, "Node B should have an ID")
+		return Pair(nodeAId, nodeBId)
+	}
+
+	/**
+	 * Verify the updated nodeList:
+	 * - Node A was UPDATED (same ID, new values)
+	 * - Node B was DELETED (ID no longer present)
+	 * - Node C was INSERTED (new ID)
+	 */
+	private fun verifyUpdatedNodeList(
+		nodeList: List<*>,
+		expectedNodeAId: String,
+		deletedNodeBId: String,
+	) {
+		assertEquals(2, nodeList.size, "Updated nodeList should have 2 nodes")
+		val nodeById = nodeList.associateBy { (it as Map<*, *>)["id"] as String }
+
+		// Verify Node A was UPDATED (same ID, new values)
+		val updatedNodeA = nodeById[expectedNodeAId]
+		assertNotNull(updatedNodeA, "Node A should still exist with same ID (update)")
+		assertEquals(
+			"Node A Updated",
+			(updatedNodeA as Map<*, *>)["shortText"],
+			"Node A shortText should be updated",
+		)
+		assertEquals(10, updatedNodeA["integer"], "Node A integer should be updated to 10")
+
+		// Verify Node B was DELETED (ID no longer present)
+		assertNull(nodeById[deletedNodeBId], "Node B should be deleted (ID not present)")
+
+		// Verify Node C was INSERTED (new ID, not matching A or B)
+		val nodeC = nodeList.find { (it as Map<*, *>)["id"] != expectedNodeAId } as Map<*, *>
+		assertNotEquals(
+			deletedNodeBId,
+			nodeC["id"],
+			"Node C should have a new ID (not Node B's old ID)",
+		)
+		assertEquals("Node C", nodeC["shortText"], "Node C shortText should be 'Node C'")
+		assertEquals(30, nodeC["integer"], "Node C integer should be 30")
 	}
 }

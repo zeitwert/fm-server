@@ -24,10 +24,7 @@ import io.zeitwert.app.api.jsonapi.config.RelationshipConfig
 import io.zeitwert.app.api.jsonapi.config.ResourceEntry
 import io.zeitwert.app.api.jsonapi.config.ResourceRegistry
 import io.zeitwert.app.api.jsonapi.dto.DtoUtils
-import io.zeitwert.fm.oe.model.ObjTenant
-import io.zeitwert.fm.oe.model.ObjTenantRepository
-import io.zeitwert.fm.oe.model.ObjUser
-import io.zeitwert.fm.oe.model.ObjUserRepository
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -60,20 +57,20 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 
 	companion object {
 
-		val logger = LoggerFactory.getLogger(AggregateDtoAdapterBase::class.java)
+		val logger: Logger = LoggerFactory.getLogger(AggregateDtoAdapterBase::class.java)
+
 	}
-
-	val tenantRepository
-		get() = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
-
-	val userRepository
-		get() = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
 	/**
 	 * The configuration for this adapter. Subclasses can access this to add additional configuration
 	 * in their init blocks.
 	 */
 	val config: AggregateDtoAdapterConfig = AggregateDtoAdapterConfig()
+
+	/**
+	 * Pretty-print indent string for logging.
+	 */
+	var indent = ""
 
 	init {
 		// Self-register with the resource registry
@@ -105,23 +102,63 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		config.relationship("account", "account", "account")
 	}
 
+	private fun startIndent() {
+		indent = ""
+	}
+
+	private fun indent() {
+		indent = if (indent.startsWith(".")) "$indent  " else ". "
+	}
+
+	private fun outdent() {
+		indent = if (indent.length <= 2) "" else indent.substring(0, indent.length - 2)
+	}
+
 	/** Convert an aggregate to a resource DTO. */
 	override fun fromAggregate(
 		aggregate: A,
 	): R {
 		aggregate as EntityWithProperties
+		val properties = aggregate.properties.filter { !config.isExcluded(it) }
 		val dto = resourceFactory()
 		dto.setAttribute("id", DtoUtils.idToString(aggregate.id))
+
+		startIndent()
+		logger.trace("{}fromAggregate: {}", indent, aggregate)
+		indent()
+		logger.trace(
+			"{}config: {} exclusions, {} fields, {} relationships, {} metas",
+			indent,
+			config.exclusions.size,
+			config.fields.size,
+			config.relationships.size,
+			config.metas.size,
+		)
+		logger.trace("{}properties: {}", indent, properties.map { it.name })
+
+		logger.trace("{}fromMeta: {}", indent, config.metas.values.map { it.targetField })
 		val meta = MetaInfoOutDto()
+		indent()
 		fromFields(aggregate as EntityWithProperties, meta, config.metas.values)
 		(dto as AggregateDtoBase).meta = meta
-		val properties = aggregate.properties.filter { !config.isExcluded(it) }
-		logger.trace("fromAggregate: {}", aggregate)
-		logger.trace(". config: {exclusions: ${config.exclusions.size}, fields: ${config.fields.size}, relationships: ${config.relationships.size}, metas: ${config.metas.size}}")
-		logger.trace(". properties: {}", properties.map { it.name })
-		fromEntity(aggregate, properties, dto)
+		outdent()
+
+		logger.trace("{}fromRelationships:", indent)
+		indent()
 		fromRelationships(aggregate, dto, config.relationships.values)
+		outdent()
+
+		logger.trace("{}fromEntity:", indent)
+		indent()
+		fromEntity(aggregate, properties, dto)
+		outdent()
+
+		logger.trace("{}fromFields:", indent)
+		indent()
 		fromFields(aggregate, dto, config.fields.values)
+		outdent()
+
+		outdent()
 		return dto
 	}
 
@@ -140,11 +177,22 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		dto.setAttribute("id", part.id.toString())
 		val partConfig = config.partAdapterConfig(part.javaClass)
 		val properties = part.properties.filter { !partConfig.isExcluded(it) }
-		logger.trace(". fromPart: {}", part)
-		logger.trace(".   properties: {}", properties.map { it.name })
-		logger.trace(".   config: {exclusions: ${partConfig.exclusions.size}, fields: ${partConfig.fields.size}}")
+		logger.trace("{}fromPart: {}", indent, part)
+		indent()
+		logger.trace("{}properties: {}", indent, properties.map { it.name })
+		logger.trace("{}config: {} exclusions, {} fields", indent, partConfig.exclusions.size, partConfig.fields.size)
+
+		logger.trace("{}fromEntity:", indent)
+		indent()
 		fromEntity(part, properties, dto)
+		outdent()
+
+		logger.trace("{}fromFields:", indent)
+		indent()
 		fromFields(part, dto, partConfig.fields.values)
+		outdent()
+
+		outdent()
 		return dto
 	}
 
@@ -153,12 +201,12 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		properties: List<Property<*>>,
 		dto: AttributeDto,
 	) {
-		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (property in properties) {
 			try {
 				dto.setAttribute(property.name, fromProperty(property))
 				logger.trace(
-					"${indent}dto[{}]: {} = fromProperty({}, {})",
+					"{}dto[{}]: {} = fromProperty({}, {})",
+					indent,
 					property.name,
 					dto.getAttribute(property.name),
 					property,
@@ -174,7 +222,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	}
 
 	/** Convert a property value to its DTO representation */
-	private fun fromProperty(
+	protected fun fromProperty(
 		property: Property<*>,
 		doInline: Boolean = false,
 	): Any? =
@@ -238,12 +286,11 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		dto: ResourceDto,
 		relationships: Collection<RelationshipConfig>,
 	) {
-		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (rel in relationships) {
 			try {
 				if (rel.dataSource != null) {
 					dto.setRelation(rel.targetRelation, rel.dataSource.invoke(entity, dto))
-					logger.trace("${indent}dto.relation[{}]: {}", rel.targetRelation, dto.getRelation(rel.targetRelation))
+					logger.trace("{}relation[{}]: {}", indent, rel.targetRelation, dto.getRelation(rel.targetRelation))
 				} else if (rel.sourceProperty != null) {
 					val property = entity.getProperty(rel.sourceProperty, Any::class)
 					when (property) {
@@ -267,7 +314,8 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 						}
 					}
 					logger.trace(
-						"${indent}dto.relation[{}]: {} = fromRelation[{} ({})]",
+						"{}relation[{}]: {} = fromRelation[{} ({})]",
+						indent,
 						rel.targetRelation,
 						dto.getRelation(rel.targetRelation),
 						property,
@@ -284,30 +332,31 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	}
 
 	/**
-	 * Populate field values on the DTO based on registered field mappings. Uses intelligent type
-	 * detection for simple mappings.
+	 * Populate field values on the DTO based on registered field mappings.
 	 */
 	private fun fromFields(
 		entity: EntityWithProperties,
 		dto: AttributeDto,
 		fields: Collection<FieldConfig>,
 	) {
-		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (fieldConfig in fields) {
 			try {
 				val fieldName = fieldConfig.targetField
 				if (fieldConfig.outgoing != null) {
 					dto.setAttribute(fieldName, fieldConfig.outgoing.invoke(entity))
 					logger.trace(
-						"${indent}dto[{}]: {} = fromField.outgoing",
+						"{}dto[{}]: {} = outgoing({})",
+						indent,
 						fieldName,
 						dto.getAttribute(fieldName),
+						entity,
 					)
 				} else if (fieldConfig.sourceProperty != null) {
 					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
 					dto.setAttribute(fieldName, fromProperty(property, fieldConfig.doInline))
 					logger.trace(
-						"${indent}dto[{}]: {} = fromField[{} ({})]",
+						"{}dto[{}]: {} = [{} ({})]",
+						indent,
 						fieldName,
 						dto.getAttribute(fieldName),
 						property,
@@ -331,14 +380,22 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	) {
 		aggregate as EntityWithProperties
 		val properties = aggregate.properties.filter { !config.isExcluded(it) && it.isWritable }
-		logger.info("toAggregate: {}", aggregate)
-		logger.info(". properties: {}", properties.map { it.name })
-		logger.info(". dto: {}", dto)
-		check((aggregate as dddrive.app.ddd.model.Aggregate).tenantId != null) { "valid tenantId" }
+		startIndent()
+		logger.trace("{}toAggregate: {}", indent, aggregate)
+		indent()
+		logger.trace("{}properties: {}", indent, properties.map { it.name })
+		logger.trace("{}dto: {}", indent, dto)
+
+		logger.trace("{}toEntity:", indent)
+		indent()
 		toEntity(dto, aggregate, properties)
-		check((aggregate as dddrive.app.ddd.model.Aggregate).tenantId != null) { "valid tenantId" }
+		outdent()
+
+		logger.trace("{}toFields:", indent)
+		indent()
 		toFields(dto, aggregate, config.fields.values)
-		check((aggregate as dddrive.app.ddd.model.Aggregate).tenantId != null) { "valid tenantId" }
+		outdent()
+		outdent()
 	}
 
 	/**
@@ -358,11 +415,19 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		part as EntityWithProperties
 		val partConfig = config.partAdapterConfig(part.javaClass)
 		val properties = part.properties.filter { !partConfig.isExcluded(it) && it.isWritable }
-		logger.trace(". toPart: {}", part)
-		logger.trace(".   properties: {}", properties.map { it.name })
-		logger.trace(".   dto: {}", dto)
+		logger.trace("{}toPart: {}", indent, part)
+		indent()
+		logger.trace("{}properties: {}", indent, properties.map { it.name })
+		logger.trace("{}dto: {}", indent, dto)
+		logger.trace("{}toEntity:", indent)
+		indent()
 		toEntity(dto, part, properties)
+		outdent()
+		logger.trace("{}toFields:", indent)
+		indent()
 		toFields(dto, part, partConfig.fields.values)
+		outdent()
+		outdent()
 	}
 
 	/** Apply DTO values to an aggregate. */
@@ -371,20 +436,20 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		entity: EntityWithProperties,
 		properties: List<Property<*>>,
 	) {
-		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (property in properties) {
 			if (!dto.hasAttribute(property.name)) continue
 			val dtoValue = dto.getAttribute(property.name)
 			try {
 				logger.trace(
-					"${indent}toEntity.before[{}]({}) = toProperty(dto[{}]: {})",
+					"{}{} ({}) = dto[{}]: {}",
+					indent,
 					property,
 					property.javaClass.simpleName,
 					property.name,
 					dtoValue,
 				)
 				toProperty(property, dtoValue)
-				logger.trace("${indent}toEntity.after[{}]", property)
+				logger.trace("{}{}", indent, property)
 			} catch (ex: Exception) {
 				throw RuntimeException(
 					"toEntity(${entity.javaClass.simpleName}.${property.name}) crashed: ${ex.message}",
@@ -396,7 +461,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 
 	/** Apply a DTO value to a property */
 	@Suppress("UNCHECKED_CAST")
-	private fun toProperty(
+	protected fun toProperty(
 		property: Property<*>,
 		dtoValue: Any?,
 		doInline: Boolean = false,
@@ -423,7 +488,9 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 			}
 
 			is PartListProperty<*, *> -> {
+				indent()
 				toPartList(dtoValue, property)
+				outdent()
 			}
 
 			is PartMapProperty<*, *> -> {
@@ -459,27 +526,31 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		entity: EntityWithProperties,
 		fields: Collection<FieldConfig>,
 	) {
-		val indent = if (entity is Part<*>) ".     " else ".   "
 		for (fieldConfig in fields) {
 			if (!dto.hasAttribute(fieldConfig.targetField)) continue
-			val fieldName = fieldConfig.targetField
-			val dtoValue = dto.getAttribute(fieldName)
+			val dtoFieldName = fieldConfig.targetField
+			val dtoValue = dto.getAttribute(dtoFieldName)
 			try {
 				if (fieldConfig.incoming != null) {
-					logger.info("${indent}toFields.before[{}] = toProperty(dto[{}]: {})", entity, fieldName, dtoValue)
-					fieldConfig.incoming.invoke(dtoValue, entity)
-					logger.info("${indent}toFields.after[{}]", entity)
-				} else if (fieldConfig.sourceProperty != null) {
-					val property = entity.getProperty(fieldConfig.sourceProperty, Any::class)
-					logger.info(
-						"${indent}toFields.before[{}]({}) = toProperty(dto[{}]: {})",
-						property,
-						property.javaClass.simpleName,
-						fieldName,
+					logger.trace(
+						"{}{}: incoming({})",
+						indent,
+						dtoFieldName,
 						dtoValue,
 					)
-					toProperty(property, dtoValue, fieldConfig.doInline)
-					logger.info("${indent}toFields.after[{}]", property)
+					fieldConfig.incoming.invoke(dtoValue, entity)
+					logger.trace("{}{}", indent, entity)
+				} else if (fieldConfig.sourceProperty != null) {
+					val sourceProperty = entity.getProperty(fieldConfig.sourceProperty, Any::class)
+					logger.trace(
+						"{}{} ({}) = dto[{}]: {}",
+						indent,
+						sourceProperty,
+						sourceProperty.javaClass.simpleName,
+						dtoFieldName,
+						dtoValue,
+					)
+					toProperty(sourceProperty, dtoValue, fieldConfig.doInline)
 				}
 			} catch (ex: Exception) {
 				throw RuntimeException(
@@ -510,7 +581,6 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		dtoValue: Any?,
 		property: PartListProperty<*, *>,
 	) {
-		val indent = if (property.entity is Part<*>) ".       " else ".     "
 		val dtoParts = dtoValue as List<Map<String, Any?>>? ?: return
 		val dtoPartsToUpdate = dtoParts.filter { dtoPart ->
 			val partId = (dtoPart["id"] as String?)?.toInt()
@@ -524,12 +594,15 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 			dtoPartsToUpdate.none { (it["id"] as String).toInt() == part.id }
 		}
 		logger.trace("{}toPartList({})", indent, property.name)
-		logger.trace("{}  toUpdate: {}", indent, dtoPartsToUpdate.map { it["id"] })
-		logger.trace("{}  toInsert: {}", indent, dtoPartsToInsert.map { it["id"] })
-		logger.trace("{}  toDelete: {}", indent, partsToDelete.map { it.id })
+		indent()
+		logger.trace("{}update: {}", indent, dtoPartsToUpdate.map { it })
+		logger.trace("{}insert: {}", indent, dtoPartsToInsert.map { it })
+		logger.trace("{}delete: {}", indent, partsToDelete.map { it.id })
+		outdent()
 		for (part in partsToDelete) {
 			property.remove(part.id)
 		}
+		indent()
 		for (dtoPart in dtoPartsToUpdate) {
 			val partId = (dtoPart["id"] as String).toInt()
 			val part = property.getById(partId)
@@ -539,6 +612,7 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 			val part = property.add()
 			toPart(PartInDto(dtoPart), part)
 		}
+		outdent()
 	}
 
 	/** Deserialize a part map from DTO. */

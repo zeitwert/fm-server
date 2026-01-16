@@ -10,20 +10,19 @@ import org.springframework.stereotype.Component
 class ObjTestDtoAdapter(
 	directory: RepositoryDirectory,
 ) : ObjDtoAdapterBase<ObjTest, ObjTestDto>(
-	ObjTest::class.java,
-	"objTest",
-	ObjTestDto::class.java,
-	directory,
-	{ ObjTestDto() },
-) {
+		ObjTest::class.java,
+		"objTest",
+		ObjTestDto::class.java,
+		directory,
+		{ ObjTestDto() },
+	) {
 
 	init {
-		config.field("firstNode", doInline = true)
-		// 	config.relationship("mainContact", "contact", "mainContact")
-		// 	config.relationship("logo", "document", "logoImage")
-		// 	config.relationshipMany("contacts", "contact") { entity, dto ->
-		// 		(entity as ObjAccount).contactList.map { DtoUtils.idToString(it)!! }
-		// 	}
+		config.field("firstNode", { test ->
+			fromProperty(test.getProperty("firstNode", Any::class), doInline = true)
+		}, { _, _ ->
+			// no-op
+		})
 	}
 
 }

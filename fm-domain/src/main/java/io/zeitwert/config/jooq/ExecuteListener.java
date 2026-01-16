@@ -1,4 +1,4 @@
-package io.zeitwert.fm.server.config.jooq;
+package io.zeitwert.config.jooq;
 
 import org.jooq.ExecuteContext;
 import org.jooq.impl.DefaultExecuteListener;
@@ -8,7 +8,7 @@ public class ExecuteListener extends DefaultExecuteListener {
 	@Override
 	public void executeStart(ExecuteContext ctx) {
 		String sql = (ctx.query() != null ? ctx.query().toString().replace("\n", " ") : "")
-				+ (ctx.sql() != null ? ctx.sql().toString().replace("\n", " ") : "");
+				+ (ctx.sql() != null ? ctx.sql().replace("\n", " ") : "");
 		int fromPos = sql.indexOf(" from ");
 		int orderByPos = sql.indexOf(" order by ");
 		String fromStmt = fromPos >= 0

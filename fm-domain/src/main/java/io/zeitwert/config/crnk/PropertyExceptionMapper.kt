@@ -1,4 +1,4 @@
-package io.zeitwert.fm.server.config.crnk
+package io.zeitwert.config.crnk
 
 import io.crnk.core.engine.document.ErrorData
 import io.crnk.core.engine.error.ErrorResponse

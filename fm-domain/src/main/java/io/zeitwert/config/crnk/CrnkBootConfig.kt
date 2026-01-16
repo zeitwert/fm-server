@@ -1,4 +1,4 @@
-package io.zeitwert.fm.server.config.crnk
+package io.zeitwert.config.crnk
 
 import io.crnk.core.boot.CrnkBoot
 import io.zeitwert.persist.sql.ddd.util.CustomFilters
