@@ -1,4 +1,4 @@
-package io.zeitwert.fm
+package io.zeitwert.b_unit
 
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType

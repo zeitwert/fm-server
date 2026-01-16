@@ -1,10 +1,10 @@
-package io.zeitwert.ddd.session
+package io.zeitwert
 
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.app.session.model.impl.SessionContextImpl
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.oe.model.ObjUserRepository
-import io.zeitwert.fm.oe.model.enums.CodeLocale.Enumeration.getLocale
+import io.zeitwert.fm.oe.model.enums.CodeLocale
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -34,7 +34,7 @@ open class TestSessionContextProvider {
 			tenantId = user.tenantId,
 			userId = user.id,
 			accountId = account.id as Int,
-			locale = getLocale("en-US")!!,
+			locale = CodeLocale.Enumeration.getLocale("en-US")!!,
 		)
 	}
 

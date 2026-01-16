@@ -283,6 +283,16 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- Classes executed in deterministic order -->
+					<runOrder>alphabetical</runOrder>
+					<!-- Stop running further tests in this module after the first failure -->
+					<skipAfterFailureCount>1</skipAfterFailureCount>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

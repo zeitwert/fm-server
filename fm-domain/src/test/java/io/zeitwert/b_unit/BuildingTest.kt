@@ -1,4 +1,4 @@
-package io.zeitwert.fm
+package io.zeitwert.b_unit
 
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.data.config.TestDataSetup
@@ -11,7 +11,6 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPart
 import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
-import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry.Enumeration.getCountry
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Test
@@ -29,9 +28,6 @@ class BuildingTest {
 
 	@Autowired
 	lateinit var sessionContext: SessionContext
-
-	@Autowired
-	lateinit var userRepo: ObjUserRepository
 
 	@Autowired
 	lateinit var accountRepo: ObjAccountRepository

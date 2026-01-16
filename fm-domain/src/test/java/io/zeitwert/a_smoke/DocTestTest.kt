@@ -1,4 +1,4 @@
-package io.zeitwert.fm
+package io.zeitwert.a_smoke
 
 import dddrive.app.doc.model.enums.CodeCaseStageEnum
 import io.domain.test.model.DocTest
@@ -45,9 +45,6 @@ class DocTestTest {
 
 	@Autowired
 	lateinit var objTestRepo: ObjTestRepository
-
-	@Autowired
-	lateinit var accountRepo: ObjAccountRepository
 
 	@Autowired
 	lateinit var accountRepository: ObjAccountRepository

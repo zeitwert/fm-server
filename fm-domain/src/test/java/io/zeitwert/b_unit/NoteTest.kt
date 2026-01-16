@@ -1,4 +1,4 @@
-package io.zeitwert.fm
+package io.zeitwert.b_unit
 
 import io.domain.test.model.ObjTest
 import io.domain.test.model.ObjTestRepository

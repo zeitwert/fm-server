@@ -1,4 +1,4 @@
-package io.zeitwert.fm
+package io.zeitwert.b_unit
 
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType

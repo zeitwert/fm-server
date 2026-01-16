@@ -1,10 +1,9 @@
-package io.zeitwert.ddd.part.model.base
+package io.zeitwert.a_smoke
 
 import io.domain.test.model.ObjTest
 import io.domain.test.model.ObjTestPartNode
 import io.domain.test.model.ObjTestRepository
-import io.domain.test.model.enums.CodeTestType.Enumeration.getTestType
-import io.zeitwert.app.session.model.SessionContext
+import io.domain.test.model.enums.CodeTestType
 import io.zeitwert.test.TestApplication
 import org.jooq.JSON
 import org.junit.jupiter.api.Assertions
@@ -12,20 +11,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.lang.String
 import java.math.BigDecimal
 import java.time.LocalDate
-import kotlin.Any
-import kotlin.Int
-import kotlin.arrayOf
-import kotlin.run
 
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
 class PartTest {
-
-	@Autowired
-	private lateinit var sessionContext: SessionContext
 
 	@Autowired
 	private lateinit var testRepository: ObjTestRepository
@@ -64,11 +55,11 @@ class PartTest {
 			)
 			Assertions.assertEquals(
 				"Short Test Node First,Short Test Node Second,Short Test Node Third",
-				String.join(
+				java.lang.String.join(
 					",",
 					testA1.nodeList
 						.stream()
-						.map<kotlin.String?>(ObjTestPartNode::shortText)
+						.map<String?>(ObjTestPartNode::shortText)
 						.toList(),
 				),
 			)
@@ -95,11 +86,11 @@ class PartTest {
 			Assertions.assertEquals(2, testA2.nodeList.size)
 			Assertions.assertEquals(
 				"Short Test Node First,Short Test Node Third",
-				String.join(
+				java.lang.String.join(
 					",",
 					testA2.nodeList
 						.stream()
-						.map<kotlin.String?>(ObjTestPartNode::shortText)
+						.map<String?>(ObjTestPartNode::shortText)
 						.toList(),
 				),
 			)
@@ -118,11 +109,11 @@ class PartTest {
 			Assertions.assertEquals(3, testA3.nodeList.size)
 			Assertions.assertEquals(
 				"Short Test Node First,Short Test Node Third,Short Test Node Fourth",
-				String.join(
+				java.lang.String.join(
 					",",
 					testA3.nodeList
 						.stream()
-						.map<kotlin.String?>(ObjTestPartNode::shortText)
+						.map<String?>(ObjTestPartNode::shortText)
 						.toList(),
 				),
 			)
@@ -167,7 +158,7 @@ class PartTest {
 			Assertions.assertEquals(
 				testB1_n0,
 				testB1.firstNode,
-				"firstNode should remain the first node after adding more nodes"
+				"firstNode should remain the first node after adding more nodes",
 			)
 			Assertions.assertEquals(testB1_n0.id, testB1.firstNode?.id, "firstNode.id should remain unchanged")
 
@@ -177,7 +168,7 @@ class PartTest {
 			Assertions.assertEquals(
 				testB1_n0,
 				testB1.firstNode,
-				"firstNode should remain unchanged when removing non-first node"
+				"firstNode should remain unchanged when removing non-first node",
 			)
 			Assertions.assertEquals(testB1_n0.id, testB1.firstNode?.id, "firstNode.id should remain unchanged")
 
@@ -187,7 +178,7 @@ class PartTest {
 			Assertions.assertEquals(
 				testB1_n2,
 				testB1.firstNode,
-				"firstNode should update to the new first node after removing the first node"
+				"firstNode should update to the new first node after removing the first node",
 			)
 			Assertions.assertEquals(testB1_n2.id, testB1.firstNode?.id, "firstNode.id should equal the new first node id")
 
@@ -217,12 +208,12 @@ class PartTest {
 			Assertions.assertEquals(
 				"Short Test Node Fourth",
 				testB2.firstNode?.shortText,
-				"firstNode should persist correctly"
+				"firstNode should persist correctly",
 			)
 			Assertions.assertEquals(
 				testB2.nodeList[0],
 				testB2.firstNode,
-				"firstNode should equal the first node in the list after load"
+				"firstNode should equal the first node in the list after load",
 			)
 
 			// Test that firstNode updates correctly after modifications on loaded object
@@ -233,7 +224,7 @@ class PartTest {
 			Assertions.assertEquals(
 				"Short Test Node Fourth",
 				testB2.firstNode?.shortText,
-				"firstNode should remain unchanged after adding to end"
+				"firstNode should remain unchanged after adding to end",
 			)
 
 			// Remove the first node and verify firstNode updates
@@ -243,7 +234,7 @@ class PartTest {
 			Assertions.assertEquals(
 				"Short Test Node Fifth",
 				testB2.firstNode?.shortText,
-				"firstNode should update after removing the first node"
+				"firstNode should update after removing the first node",
 			)
 
 			this.testRepository.store(testB2)
@@ -258,15 +249,15 @@ class PartTest {
 			Assertions.assertEquals(
 				"Short Test Node Fifth",
 				testB3.firstNode?.shortText,
-				"firstNode should persist the updated value correctly"
+				"firstNode should persist the updated value correctly",
 			)
 		}
 	}
 
 	private fun initObjTest(
 		test: ObjTest,
-		name: kotlin.String,
-		testTypeId: kotlin.String,
+		name: String,
+		testTypeId: String,
 	) {
 		Assertions.assertEquals("[, ]", test.caption)
 		test.shortText = "Short Test $name"
@@ -278,14 +269,14 @@ class PartTest {
 		test.isDone = false
 		test.date = LocalDate.of(1966, 9, 8)
 		test.json = JSON.valueOf(TEST_JSON).toString()
-		val testType = getTestType(testTypeId)
+		val testType = CodeTestType.Enumeration.getTestType(testTypeId)
 		test.testType = testType
 	}
 
 	private fun initObjTestPartNode(
 		node: ObjTestPartNode,
-		name: kotlin.String?,
-		testTypeId: kotlin.String?,
+		name: String?,
+		testTypeId: String?,
 	) {
 		node.shortText = "Short Test Node $name"
 		node.longText = "Long Test Node $name"
@@ -294,7 +285,7 @@ class PartTest {
 		node.isDone = false
 		node.date = LocalDate.of(1966, 9, 8)
 		node.json = JSON.valueOf(TEST_JSON).toString()
-		val testType = getTestType(testTypeId)
+		val testType = CodeTestType.Enumeration.getTestType(testTypeId)
 		node.testType = testType
 	}
 

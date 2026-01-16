@@ -1,4 +1,4 @@
-package io.zeitwert.fm
+package io.zeitwert.a_smoke
 
 import io.domain.test.model.ObjTest
 import io.domain.test.model.ObjTestRepository
@@ -34,18 +34,18 @@ class ObjTestTest {
 	private lateinit var sessionContext: SessionContext
 
 	@Autowired
-	private lateinit var testRepository: ObjTestRepository
+	private lateinit var objTestRepo: ObjTestRepository
 
 	@Test
 	fun testBase() {
-		assertNotNull(this.testRepository, "objTestRepository not null")
-		assertEquals("obj_test", this.testRepository.aggregateType.id)
+		assertNotNull(objTestRepo, "objTestRepository not null")
+		assertEquals("obj_test", objTestRepo.aggregateType.id)
 
 		sessionContext.tenantId
 		sessionContext.userId
 		sessionContext.currentTime
 
-		val testA1 = this.testRepository.create()
+		val testA1 = objTestRepo.create()
 		assertNotNull(testA1, "test not null")
 		requireNotNull(testA1)
 
@@ -63,9 +63,9 @@ class ObjTestTest {
 
 		assertEquals(1, testA1.meta.transitionList.size)
 
-		this.testRepository.store(testA1)
+		objTestRepo.store(testA1)
 
-		val testA2 = this.testRepository.get(testAId)
+		val testA2 = objTestRepo.get(testAId)
 		val testA2IdHash = System.identityHashCode(testA2)
 		assertNotEquals(testA1IdHash, testA2IdHash)
 
@@ -80,7 +80,7 @@ class ObjTestTest {
 		sessionContext.userId
 		sessionContext.currentTime
 
-		val testA1 = this.testRepository.create()
+		val testA1 = objTestRepo.create()
 		requireNotNull(testA1)
 
 		val testAId = testA1.id
@@ -98,10 +98,10 @@ class ObjTestTest {
 		assertEquals(JSON.valueOf(TEST_JSON), JSON.valueOf(testA1.json))
 		assertEquals(CodeTestType.TYPE_A, testA1.testType)
 
-		val testB1: ObjTest = this.testRepository.create()
+		val testB1: ObjTest = objTestRepo.create()
 		initObjTest(testB1, "Two", TYPE_B)
 		val testBId: Any = testB1.id
-		this.testRepository.store(testB1)
+		objTestRepo.store(testB1)
 
 		testA1.refObjId = testBId
 		assertEquals(
@@ -109,9 +109,9 @@ class ObjTestTest {
 			testA1.caption,
 		)
 
-		this.testRepository.store(testA1)
+		objTestRepo.store(testA1)
 
-		val testA2 = this.testRepository.load(testAId)
+		val testA2 = objTestRepo.load(testAId)
 
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", testA2.caption)
 		assertEquals("Short Test One", testA2.shortText)
@@ -152,7 +152,7 @@ class ObjTestTest {
 		sessionContext.userId
 		sessionContext.currentTime
 
-		val testA1 = this.testRepository.create()
+		val testA1 = objTestRepo.create()
 		requireNotNull(testA1)
 
 		val testAId = testA1.id
@@ -177,10 +177,10 @@ class ObjTestTest {
 		assertEquals(2, testA1.testTypeSet.size)
 
 		assertEquals(1, testA1.meta.transitionList.size)
-		this.testRepository.store(testA1)
+		objTestRepo.store(testA1)
 		assertEquals(2, testA1.meta.transitionList.size)
 
-		val testA2: ObjTest = this.testRepository.load(testAId)
+		val testA2: ObjTest = objTestRepo.load(testAId)
 		assertEquals(2, testA2.meta.transitionList.size)
 
 		assertEquals(2, testA2.testTypeSet.size)
@@ -205,7 +205,7 @@ class ObjTestTest {
 		lateinit var testAId: Any
 
 		run {
-			val testA1 = this.testRepository.create()
+			val testA1 = objTestRepo.create()
 			assertEquals(0, testA1.meta.version)
 			assertEquals(1, testA1.meta.transitionList.size)
 
@@ -228,13 +228,13 @@ class ObjTestTest {
 			assertEquals(3, testA1.nodeList.size)
 
 			testAId = testA1.id
-			this.testRepository.store(testA1)
+			objTestRepo.store(testA1)
 			assertEquals(1, testA1.meta.version)
 			assertEquals(2, testA1.meta.transitionList.size)
 		}
 
 		run {
-			val testA2 = this.testRepository.load(testAId)
+			val testA2 = objTestRepo.load(testAId)
 			assertEquals(1, testA2.meta.version)
 			assertEquals(2, testA2.meta.transitionList.size)
 			assertEquals(3, testA2.nodeList.size)
@@ -250,13 +250,13 @@ class ObjTestTest {
 			testA2.nodeList.add(null).apply { shortText = "E" }
 			assertEquals(3, testA2.nodeList.size)
 
-			this.testRepository.store(testA2)
+			objTestRepo.store(testA2)
 			assertEquals(2, testA2.meta.version)
 			assertEquals(3, testA2.meta.transitionList.size)
 		}
 
 		run {
-			val testA3 = this.testRepository.load(testAId)
+			val testA3 = objTestRepo.load(testAId)
 			assertEquals(2, testA3.meta.version)
 			assertEquals(3, testA3.meta.transitionList.size)
 			assertEquals(3, testA3.nodeList.size)

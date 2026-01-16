@@ -1,9 +1,8 @@
-package io.zeitwert.ddd.session;
+package io.zeitwert.a_smoke;
 
 import io.domain.test.model.ObjTest;
 import io.domain.test.model.ObjTestRepository;
 import io.domain.test.model.enums.CodeTestType;
-import io.zeitwert.app.session.model.SessionContext;
 import io.zeitwert.test.TestApplication;
 import org.jooq.JSON;
 import org.junit.jupiter.api.Test;
@@ -19,12 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
-public class SessionTest {
+public class AggregateTest {
 
 	private static final String TEST_JSON = "{ \"one\": \"one\", \"two\": 2 }";
-
-	@Autowired
-	private SessionContext sessionContext;
 
 	@Autowired
 	private ObjTestRepository testRepo;
