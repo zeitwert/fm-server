@@ -28,6 +28,17 @@
 		"org.graalvm.*",
 		"io.micrometer.shaded.*"
 	],
+	"editor.formatOnSave": true,
+	"[kotlin]": {
+		"editor.formatOnSave": false
+	},
+	"runOnSave.commands": [
+		{
+			"match": "\\.kt$",
+			"command": "ktlint --format ${file}",
+			"runIn": "terminal"
+		}
+	],
 	"java.completion.importOrder": [
 		"#",
 		"java",
@@ -45,12 +56,10 @@
 		"addOverride"
 	],
 	"java.compile.nullAnalysis.mode": "automatic",
-	"java.debug.settings.onBuildFailureProceed": true,
 	"editor.insertSpaces": false,
 	"editor.detectIndentation": false,
 	"editor.tabCompletion": "on",
 	"terminal.integrated.tabStopWidth": 2,
-	"editor.formatOnSave": true,
 	"kotlin.codegen.enabled": true,
 	"terminal.integrated.defaultProfile.windows": "Command Prompt"
 }
