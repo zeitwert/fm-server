@@ -2,8 +2,8 @@ package io.zeitwert.data.config
 
 import dddrive.ddd.model.RepositoryDirectory
 import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.config.session.TestSessionContext
 import io.zeitwert.data.DataSetup
-import io.zeitwert.data.DelegatingSessionContext
 import io.zeitwert.data.dsl.Account
 import io.zeitwert.data.dsl.AccountContext
 import io.zeitwert.data.dsl.Building
@@ -209,8 +209,8 @@ class DemoDataSetup(
 		println("  Attaching random contacts to buildings of tenant $tenantId (user: $userId)")
 
 		// Set tenant context for security
-		DelegatingSessionContext.setTenantId(tenantId as Int)
-		DelegatingSessionContext.setUserId(userId as Int)
+		TestSessionContext.overrideTenantId(tenantId as Int)
+		TestSessionContext.overrideUserId(userId as Int)
 
 		// Get all accounts for this tenant
 		val accountIds = Account.accountRepository.find(null)
@@ -218,7 +218,7 @@ class DemoDataSetup(
 		check(accountIds.isNotEmpty()) { "Tenant $tenantId has no accounts to process." }
 
 		for (accountId in accountIds) {
-			DelegatingSessionContext.setAccountId(accountId as Int)
+			TestSessionContext.overrideAccountId(accountId as Int)
 			// Query all contacts for this account
 			val contactIds = Account.contactRepository.find(null)
 			println("account($accountId) contacts: $contactIds")

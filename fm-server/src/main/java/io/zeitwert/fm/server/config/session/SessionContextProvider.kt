@@ -1,4 +1,4 @@
-package io.zeitwert.fm.server.session.service.api.impl
+package io.zeitwert.fm.server.config.session
 
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.app.session.model.impl.SessionContextImpl

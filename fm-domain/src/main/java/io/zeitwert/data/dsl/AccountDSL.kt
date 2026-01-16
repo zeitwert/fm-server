@@ -1,7 +1,7 @@
 package io.zeitwert.data.dsl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.data.DelegatingSessionContext
+import io.zeitwert.config.session.TestSessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
@@ -78,7 +78,7 @@ object Account {
 		newAccount.accountType = CodeAccountType.getAccountType(ctx.accountType)
 
 		// Set account ID in session context for nested operations
-		DelegatingSessionContext.setAccountId(newAccount.id as Int)
+		TestSessionContext.overrideAccountId(newAccount.id as Int)
 
 		accountRepository.transaction {
 			accountRepository.store(newAccount)

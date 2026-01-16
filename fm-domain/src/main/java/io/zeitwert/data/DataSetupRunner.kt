@@ -1,5 +1,6 @@
 package io.zeitwert.data
 
+import io.zeitwert.config.session.TestSessionContext
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -31,11 +32,11 @@ class DataSetupRunner(
 		val dataSetup = dataSetups.first()
 		println("\n=== ${dataSetup.name} DATA SETUP ===")
 
-		DelegatingSessionContext.startSetupMode()
+		TestSessionContext.startOverride()
 		try {
 			dataSetup.setup()
 		} finally {
-			DelegatingSessionContext.stopSetupMode()
+			TestSessionContext.stopOverride()
 		}
 
 		println("=== ${dataSetup.name} DATA SETUP: Complete ===\n")

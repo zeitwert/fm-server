@@ -5,25 +5,21 @@ import dddrive.property.model.AggregateReferenceProperty
 import dddrive.property.model.AggregateReferenceSetProperty
 import dddrive.property.model.EntityWithProperties
 import dddrive.property.model.Property
-import io.zeitwert.app.api.jsonapi.AttributeDto
 
 /**
  * Configuration for a relationship to be registered with the adapter.
  *
- * @param sourceProperty The name of the property on the aggregate (e.g., "mainContact",
- * "logoImage")
- * @param dataSource Function to obtain the related ID(s) from the aggregate and DTO (either this or
- * aggregatePropertyName must be provided)
- * @param targetRelation The name of the ID field on the DTO relation (e.g., "mainContactId",
- * "logoId")
+ * @param targetRelation The name of the jsonapi relation (e.g., "mainContact", "logo")
  * @param resourceType The JSON API resource type of the target (e.g., "contact", "document")
+ * @param sourceProperty The name of the property on the aggregate (e.g., "mainContact", "logoImage")
+ * @param outgoing Function to obtain the related ID(s) from the aggregate (either this or sourceProperty must be provided)
  * @param isMultiple Whether this is a to-many relationship (collection of references)
  */
 data class RelationshipConfig(
 	val targetRelation: String,
 	val resourceType: String,
 	val sourceProperty: String?,
-	val dataSource: ((EntityWithProperties, AttributeDto) -> Any?)?,
+	val outgoing: ((EntityWithProperties) -> Any?)?,
 	val isMultiple: Boolean = false,
 )
 
@@ -164,13 +160,13 @@ class AggregateDtoAdapterConfig {
 	 *
 	 * @param targetRelation The name of the IDs field on the DTO (e.g., "mainContactId", "logoId")
 	 * @param resourceType The JSON API resource type of the target (e.g., "contact", "document")
-	 * @param dataSource Function to obtain the related ID from the aggregate
+	 * @param outgoing Function to obtain the related ID from the aggregate
 	 */
 	fun relationship(
 		targetRelation: String,
 		resourceType: String,
-		dataSource: (EntityWithProperties, AttributeDto) -> Any?,
-	) = addRelationship(targetRelation, resourceType, null, dataSource, false)
+		outgoing: (EntityWithProperties) -> Any?,
+	) = addRelationship(targetRelation, resourceType, null, outgoing, false)
 
 	/**
 	 * Register a multi-value (to-many) relationship.
@@ -190,19 +186,19 @@ class AggregateDtoAdapterConfig {
 	 *
 	 * @param targetRelation The name of the IDs field on the DTO (e.g., "contactsId")
 	 * @param resourceType The JSON API resource type of the target (e.g., "contact", "document")
-	 * @param dataSource Function to obtain the related IDs from the aggregate
+	 * @param outgoing Function to obtain the related IDs from the aggregate
 	 */
 	fun relationshipMany(
 		targetRelation: String,
 		resourceType: String,
-		dataSource: (EntityWithProperties, AttributeDto) -> Any?,
-	) = addRelationship(targetRelation, resourceType, null, dataSource, true)
+		outgoing: (EntityWithProperties) -> Any?,
+	) = addRelationship(targetRelation, resourceType, null, outgoing, true)
 
 	private fun addRelationship(
 		targetRelation: String,
 		resourceType: String,
 		sourceProperty: String?,
-		dataSource: ((EntityWithProperties, AttributeDto) -> Any?)?,
+		outgoing: ((EntityWithProperties) -> Any?)?,
 		isMultiple: Boolean,
 	) {
 		require(!relationships.containsKey(targetRelation)) {
@@ -212,7 +208,7 @@ class AggregateDtoAdapterConfig {
 			targetRelation,
 			resourceType,
 			sourceProperty,
-			dataSource,
+			outgoing,
 			isMultiple,
 		)
 	}

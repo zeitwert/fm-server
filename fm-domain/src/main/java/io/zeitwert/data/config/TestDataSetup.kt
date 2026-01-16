@@ -19,6 +19,8 @@ class TestDataSetup(
 	companion object {
 
 		const val TEST_TENANT_KEY = "test"
+		const val TEST_TENANT_NAME = "Test"
+		const val TEST_ADMIN_EMAIL = "admin@zeitwert.io"
 		const val TEST_USER_EMAIL = "tt@zeitwert.io"
 		const val TEST_ACCOUNT_KEY = "TA"
 
@@ -33,10 +35,11 @@ class TestDataSetup(
 		Tenant.init(directory)
 		Account.init(directory)
 
-		Tenant(TEST_TENANT_KEY, "Test", "advisor") {
+		Tenant(TEST_TENANT_KEY, TEST_TENANT_NAME, "advisor") {
 			// here we have already set tenantId and kernelUserId for session context
-			adminUser(TEST_USER_EMAIL, "Tony Testeroni", "user", "test") {
+			adminUser(TEST_ADMIN_EMAIL, "Andy Admin", "super_user", "test") {
 				// here we now have the adminUserId for session context
+				user(TEST_USER_EMAIL, "Tony Testeroni", "user", "test")
 				user("cc@zeitwert.io", "Chuck Checkeroni", "user", "test")
 				account(TEST_ACCOUNT_KEY, "Testlingen", "client") {
 					contact("Max", "Muster", "max.muster@test.ch", "councilor") {

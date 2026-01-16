@@ -21,7 +21,7 @@ class ObjAccountDtoAdapter(
 	init {
 		config.relationship("mainContact", "contact", "mainContact")
 		config.relationship("logo", "document", "logoImage")
-		config.relationshipMany("contacts", "contact") { entity, dto ->
+		config.relationshipMany("contacts", "contact") { entity ->
 			(entity as ObjAccount).contactList.map { DtoUtils.idToString(it)!! }
 		}
 	}

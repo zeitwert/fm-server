@@ -1,7 +1,7 @@
 package io.zeitwert.data.dsl
 
 import dddrive.ddd.model.RepositoryDirectory
-import io.zeitwert.data.DelegatingSessionContext
+import io.zeitwert.config.session.TestSessionContext
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType
@@ -98,7 +98,7 @@ object Tenant {
 		val tenantId = getOrCreateTenant(context)
 
 		// Set tenant ID in session context for nested operations
-		DelegatingSessionContext.setTenantId(tenantId)
+		TestSessionContext.overrideTenantId(tenantId)
 		context.tenantId = tenantId
 
 		// Now execute the DSL block with tenant context set
@@ -211,7 +211,7 @@ class TenantContext(
 		val userId = Tenant.getOrCreateUser(tenant, UserContext(email, name, role, password))
 
 		// Set user ID in session context for nested operations
-		DelegatingSessionContext.setUserId(userId)
+		TestSessionContext.overrideUserId(userId)
 		adminUserId = userId
 
 		// Execute nested block with user context set

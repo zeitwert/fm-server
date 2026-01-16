@@ -14,6 +14,7 @@ import dddrive.property.model.PartListProperty
 import dddrive.property.model.PartMapProperty
 import dddrive.property.model.PartReferenceProperty
 import dddrive.property.model.Property
+import io.crnk.core.engine.document.ResourceIdentifier
 import io.zeitwert.app.api.jsonapi.AggregateDtoAdapter
 import io.zeitwert.app.api.jsonapi.AttributeDto
 import io.zeitwert.app.api.jsonapi.EnumeratedDto
@@ -288,8 +289,8 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	) {
 		for (rel in relationships) {
 			try {
-				if (rel.dataSource != null) {
-					dto.setRelation(rel.targetRelation, rel.dataSource.invoke(entity, dto))
+				if (rel.outgoing != null) {
+					dto.setRelation(rel.targetRelation, rel.outgoing.invoke(entity))
 					logger.trace("{}relation[{}]: {}", indent, rel.targetRelation, dto.getRelation(rel.targetRelation))
 				} else if (rel.sourceProperty != null) {
 					val property = entity.getProperty(rel.sourceProperty, Any::class)
@@ -385,6 +386,11 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 		indent()
 		logger.trace("{}properties: {}", indent, properties.map { it.name })
 		logger.trace("{}dto: {}", indent, dto)
+
+		logger.trace("{}toRelationships:", indent)
+		indent()
+		toRelationships(dto, aggregate, config.relationships.values)
+		outdent()
 
 		logger.trace("{}toEntity:", indent)
 		indent()
@@ -514,6 +520,75 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 					"Unsupported property type: ${property.javaClass.name}",
 				)
 			}
+		}
+	}
+
+	private fun toRelationships(
+		dto: ResourceDto,
+		entity: EntityWithProperties,
+		relationships: Collection<RelationshipConfig>,
+	) {
+		for (rel in relationships) {
+			if (!dto.hasRelation(rel.targetRelation)) continue
+			if (rel.sourceProperty == null) continue
+			val dtoValue = dto.getRelation(rel.targetRelation)
+			try {
+				val property = entity.getProperty(rel.sourceProperty, Any::class)
+				logger.trace(
+					"{}{} ({}) = dto[{}]: {}",
+					indent,
+					property,
+					property.javaClass.simpleName,
+					property.name,
+					dtoValue,
+				)
+				when (property) {
+					is AggregateReferenceProperty<*> -> {
+						property.id = DtoUtils.idFromString(relationId(dtoValue))
+					}
+
+					is AggregateReferenceSetProperty<*> -> {
+						val ids = relationIds(dtoValue)
+						property.clear()
+						for (id in ids) {
+							property.add(DtoUtils.idFromString(id)!!)
+						}
+					}
+
+					else -> {
+						throw IllegalArgumentException(
+							"[${entity.javaClass.simpleName}.${rel.targetRelation}] Unsupported property type for relationship mapping ${entity.javaClass.simpleName}.${rel.sourceProperty}: ${property.javaClass.name}",
+						)
+					}
+				}
+				logger.trace("{}{}", indent, property)
+			} catch (ex: Exception) {
+				throw RuntimeException(
+					"[${entity.javaClass.simpleName}.${rel.targetRelation}] toRelationship crashed: ${ex.message}",
+					ex,
+				)
+			}
+		}
+	}
+
+	private fun relationId(
+		dtoValue: Any?,
+	): String? =
+		when (dtoValue) {
+			null -> null
+			is String -> dtoValue
+			is Map<*, *> -> dtoValue["id"] as? String
+			is ResourceIdentifier -> dtoValue.id?.toString()
+			else -> null
+		}
+
+	private fun relationIds(
+		dtoValue: Any?,
+	): List<String> {
+		if (dtoValue == null) return emptyList()
+		return when (dtoValue) {
+			is List<*> -> dtoValue.mapNotNull { relationId(it) }
+			else -> listOfNotNull(relationId(dtoValue))
 		}
 	}
 

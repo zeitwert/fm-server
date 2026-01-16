@@ -1,12 +1,16 @@
 package io.zeitwert.c_api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import dddrive.ddd.model.RepositoryDirectory
+import io.zeitwert.app.session.model.SessionContext
+import io.zeitwert.data.config.TestDataSetup
 import io.zeitwert.test.TestApplication
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -37,6 +41,7 @@ import java.math.BigDecimal
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @WithMockUser(username = "tt@zeitwert.io", roles = ["USER"])
+@TestMethodOrder(OrderAnnotation::class)
 class ObjTestApiTest {
 
 	companion object {
@@ -66,17 +71,28 @@ class ObjTestApiTest {
 		private const val UPDATED_DATE = "2025-01-14"
 		private const val UPDATED_IS_DONE = true
 		private const val UPDATED_TYPE_ID = "type_b"
+
+		private lateinit var tenantId: String
+
+		private lateinit var createdId: String
+		private lateinit var nodeAId: String
+		private lateinit var nodeBId: String
+		private var currentVersion: Int = 0
 	}
 
 	@Autowired
 	private lateinit var mockMvc: MockMvc
 
 	@Autowired
+	private lateinit var sessionContext: SessionContext
+
+	@Autowired
 	private lateinit var objectMapper: ObjectMapper
 
 	@Test
-	fun `test Create and Read for ObjTest via JSON API`() {
-		// === CREATE ===
+	@Order(1)
+	fun `create ObjTest via JSON API`() {
+		tenantId = sessionContext.tenantId.toString()
 		val createPayload = createObjTestPayload()
 		val createResult = mockMvc
 			.perform(
@@ -89,17 +105,19 @@ class ObjTestApiTest {
 			).andExpect(MockMvcResultMatchers.status().isCreated)
 			.andReturn()
 
-		val createResponse = parseJsonApiResponse(createResult.response.contentAsString)
-		val createdId = createResponse["id"] as String
+		val createResponse = JsonApiTestSupport.parseJsonApiResponse(objectMapper, createResult.response.contentAsString)
+		createdId = createResponse["id"] as String
 		Assertions.assertNotNull(createdId, "Created object should have an ID")
 
-		// Verify created attributes using shared verification method
+		// Verify created attributes
 		val createAttributes = createResponse["attributes"] as Map<*, *>
 		verifyInitialAttributes(createAttributes)
 
 		// Verify nodeList was created with 2 nodes, capture their IDs
 		val createNodeList = createAttributes["nodeList"] as List<*>
-		val (nodeAId, nodeBId) = verifyInitialNodeList(createNodeList)
+		val nodes = verifyInitialNodeList(createNodeList)
+		nodeAId = nodes.first
+		nodeBId = nodes.second
 
 		// Verify meta fields
 		val createMeta = createResponse["meta"] as Map<*, *>
@@ -109,39 +127,45 @@ class ObjTestApiTest {
 		Assertions.assertNotNull(createMeta["createdByUser"], "Meta should have createdByUser")
 		Assertions.assertNull(createMeta["closedAt"], "closedAt should be null for new object")
 		Assertions.assertNull(createMeta["closedByUser"], "closedByUser should be null for new object")
+	}
 
-		// === READ (with tenantInfo include) ===
+	@Test
+	@Order(2)
+	fun `read ObjTest with tenantInfo include`() {
 		val readResult = mockMvc
 			.perform(
 				MockMvcRequestBuilders.get("$API_PATH/$createdId?include=tenantInfo").accept(JSON_API_CONTENT_TYPE),
 			).andExpect(MockMvcResultMatchers.status().isOk)
 			.andReturn()
 
-		val readResponse = parseJsonApiResponse(readResult.response.contentAsString)
+		val readResponse = JsonApiTestSupport.parseJsonApiResponse(objectMapper, readResult.response.contentAsString)
 		Assertions.assertEquals(createdId, readResponse["id"])
 
-		// Verify read attributes using shared verification method
+		// Verify read attributes
 		val readAttributes = readResponse["attributes"] as Map<*, *>
 		verifyInitialAttributes(readAttributes)
 
-		// Verify nodeList using shared verification method
+		// Verify nodeList
 		val readNodeList = readAttributes["nodeList"] as List<*>
 		verifyInitialNodeList(readNodeList)
 
 		val readMeta = readResponse["meta"] as Map<*, *>
 		Assertions.assertNull(readMeta["closedAt"], "closedAt should still be null")
 		Assertions.assertNull(readMeta["closedByUser"], "closedByUser should still be null")
+		currentVersion = readMeta["version"] as Int
 
 		// Verify tenant info is in meta (always present)
-		verifyTenantInMeta(readMeta)
+		JsonApiTestSupport.verifyTenantInMeta(readMeta, tenantId, TestDataSetup.TEST_TENANT_NAME)
 
 		// Verify tenantInfo relationship and included tenant aggregate
-		verifyTenantRelationAndInclude(readResponse)
+		JsonApiTestSupport.verifyTenantRelationAndInclude(readResponse, tenantId)
+	}
 
-		// === UPDATE ===
+	@Test
+	@Order(3)
+	fun `update ObjTest via JSON API`() {
 		// Update will: UPDATE Node A (by ID), INSERT Node C (no ID), DELETE Node B (omitted)
-		val version = readMeta["version"] as Int
-		val updatePayload = createUpdatePayload(createdId, version, nodeAId)
+		val updatePayload = createUpdatePayload(createdId, currentVersion, nodeAId)
 		val updateResult = mockMvc
 			.perform(
 				MockMvcRequestBuilders
@@ -153,38 +177,41 @@ class ObjTestApiTest {
 			).andExpect(MockMvcResultMatchers.status().isOk)
 			.andReturn()
 
-		run {
-			val updateResponse = parseJsonApiResponse(updateResult.response.contentAsString)
-			Assertions.assertEquals(createdId, updateResponse["id"])
+		val updateResponse = JsonApiTestSupport.parseJsonApiResponse(objectMapper, updateResult.response.contentAsString)
+		Assertions.assertEquals(createdId, updateResponse["id"])
 
-			// Verify updated attributes using shared verification method
-			val updatedAttributes = updateResponse["attributes"] as Map<*, *>
-			verifyUpdatedAttributes(updatedAttributes)
+		// Verify updated attributes
+		val updatedAttributes = updateResponse["attributes"] as Map<*, *>
+		verifyUpdatedAttributes(updatedAttributes)
 
-			// Verify nodeList: Node A updated, Node B deleted, Node C inserted
-			val updatedNodeList = updatedAttributes["nodeList"] as List<*>
-			verifyUpdatedNodeList(updatedNodeList, nodeAId, nodeBId)
+		// Verify nodeList: Node A updated, Node B deleted, Node C inserted
+		val updatedNodeList = updatedAttributes["nodeList"] as List<*>
+		verifyUpdatedNodeList(updatedNodeList, nodeAId, nodeBId)
 
-			// Verify meta - version should be incremented
-			val updatedMeta = updateResponse["meta"] as Map<*, *>
-			val newVersion = updatedMeta["version"] as Int
-			Assertions.assertTrue(newVersion > version, "Version should be incremented after update")
-			Assertions.assertNotNull(updatedMeta["modifiedAt"], "modifiedAt should be set after update")
-			Assertions.assertNotNull(updatedMeta["modifiedByUser"], "modifiedByUser should be set after update")
-			Assertions.assertNull(updatedMeta["closedAt"], "closedAt should still be null")
-			Assertions.assertNull(updatedMeta["closedByUser"], "closedByUser should still be null")
-		}
+		// Verify meta - version should be incremented
+		val updatedMeta = updateResponse["meta"] as Map<*, *>
+		val newVersion = updatedMeta["version"] as Int
+		Assertions.assertTrue(newVersion > currentVersion, "Version should be incremented after update")
+		currentVersion = newVersion
+		Assertions.assertNotNull(updatedMeta["modifiedAt"], "modifiedAt should be set after update")
+		Assertions.assertNotNull(updatedMeta["modifiedByUser"], "modifiedByUser should be set after update")
+		Assertions.assertNull(updatedMeta["closedAt"], "closedAt should still be null")
+		Assertions.assertNull(updatedMeta["closedByUser"], "closedByUser should still be null")
+	}
 
-		// === READ AFTER UPDATE ===
+	@Test
+	@Order(4)
+	fun `read ObjTest after update`() {
 		val readUpdatedResult = mockMvc
 			.perform(
 				MockMvcRequestBuilders.get("$API_PATH/$createdId").accept(JSON_API_CONTENT_TYPE),
 			).andExpect(MockMvcResultMatchers.status().isOk)
 			.andReturn()
 
-		val readUpdatedResponse = parseJsonApiResponse(readUpdatedResult.response.contentAsString)
+		val readUpdatedResponse =
+			JsonApiTestSupport.parseJsonApiResponse(objectMapper, readUpdatedResult.response.contentAsString)
 
-		// Verify updated attributes using shared verification method
+		// Verify updated attributes
 		val updatedAttributes = readUpdatedResponse["attributes"] as Map<*, *>
 		verifyUpdatedAttributes(updatedAttributes)
 
@@ -195,13 +222,16 @@ class ObjTestApiTest {
 		// Verify meta - version should be incremented
 		val updatedMeta = readUpdatedResponse["meta"] as Map<*, *>
 		val newVersion = updatedMeta["version"] as Int
-		Assertions.assertTrue(newVersion > version, "Version should be incremented after update")
+		Assertions.assertTrue(newVersion >= currentVersion, "Version should be incremented after update")
 		Assertions.assertNotNull(updatedMeta["modifiedAt"], "modifiedAt should be set after update")
 		Assertions.assertNotNull(updatedMeta["modifiedByUser"], "modifiedByUser should be set after update")
 		Assertions.assertNull(updatedMeta["closedAt"], "closedAt should still be null")
 		Assertions.assertNull(updatedMeta["closedByUser"], "closedByUser should still be null")
+	}
 
-		// === DELETE (soft delete / close) ===
+	@Test
+	@Order(5)
+	fun `delete ObjTest via JSON API`() {
 		mockMvc
 			.perform(
 				MockMvcRequestBuilders
@@ -209,15 +239,19 @@ class ObjTestApiTest {
 					.with(SecurityMockMvcRequestPostProcessors.csrf().asHeader())
 					.accept(JSON_API_CONTENT_TYPE),
 			).andExpect(MockMvcResultMatchers.status().isNoContent)
+	}
 
-		// === READ AFTER DELETE (verify closed) ===
+	@Test
+	@Order(6)
+	fun `read ObjTest after delete`() {
 		val readClosedResult = mockMvc
 			.perform(
 				MockMvcRequestBuilders.get("$API_PATH/$createdId").accept(JSON_API_CONTENT_TYPE),
 			).andExpect(MockMvcResultMatchers.status().isOk)
 			.andReturn()
 
-		val readClosedResponse = parseJsonApiResponse(readClosedResult.response.contentAsString)
+		val readClosedResponse =
+			JsonApiTestSupport.parseJsonApiResponse(objectMapper, readClosedResult.response.contentAsString)
 		val closedMeta = readClosedResponse["meta"] as Map<*, *>
 
 		Assertions.assertNotNull(closedMeta["closedAt"], "closedAt should be set after delete")
@@ -298,56 +332,15 @@ class ObjTestApiTest {
 		return objectMapper.writeValueAsString(payload)
 	}
 
-	@Suppress("UNCHECKED_CAST")
-	private fun parseJsonApiResponse(json: String): Map<String, Any?> {
-		val response: Map<String, Any?> = objectMapper.readValue(json)
-		val data = response["data"] as Map<String, Any?>
-		return mapOf(
-			"id" to data["id"],
-			"type" to data["type"],
-			"attributes" to data["attributes"],
-			"meta" to data["meta"],
-			"relationships" to data["relationships"],
-			"included" to response["included"],
-		)
-	}
-
-	private fun verifyEnumField(
-		actual: Any?,
-		expectedId: String,
-	) {
-		Assertions.assertNotNull(actual, "Enum field should not be null")
-		when (actual) {
-			is Map<*, *> -> Assertions.assertEquals(expectedId, actual["id"], "Enum id should match")
-			is String -> Assertions.assertEquals(expectedId, actual, "Enum id should match")
-			else -> throw AssertionError("Unexpected enum field type: ${actual?.javaClass}")
-		}
-	}
-
-	private fun verifyBigDecimal(
-		actual: Any?,
-		expected: BigDecimal,
-	) {
-		Assertions.assertNotNull(actual, "BigDecimal field should not be null")
-		val actualBigDecimal =
-			when (actual) {
-				is BigDecimal -> actual
-				is Number -> BigDecimal.valueOf(actual.toDouble())
-				is String -> BigDecimal(actual)
-				else -> throw AssertionError("Unexpected BigDecimal field type: ${actual?.javaClass}")
-			}
-		Assertions.assertEquals(0, expected.compareTo(actualBigDecimal), "BigDecimal values should match")
-	}
-
 	/** Verify attributes match the initial (pre-update) values. */
 	private fun verifyInitialAttributes(attributes: Map<*, *>) {
 		Assertions.assertEquals(TEST_SHORT_TEXT, attributes["shortText"])
 		Assertions.assertEquals(TEST_LONG_TEXT, attributes["longText"])
 		Assertions.assertEquals(TEST_INT, attributes["integer"])
-		verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(TEST_NR))
+		JsonApiTestSupport.verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(TEST_NR))
 		Assertions.assertEquals(TEST_DATE, attributes["date"])
 		Assertions.assertEquals(TEST_IS_DONE, attributes["isDone"])
-		verifyEnumField(attributes["testType"], TEST_TYPE_ID)
+		JsonApiTestSupport.verifyEnumField(attributes["testType"], TEST_TYPE_ID)
 	}
 
 	/** Verify attributes match the updated values. */
@@ -355,10 +348,10 @@ class ObjTestApiTest {
 		Assertions.assertEquals(UPDATED_SHORT_TEXT, attributes["shortText"])
 		Assertions.assertEquals(UPDATED_LONG_TEXT, attributes["longText"])
 		Assertions.assertEquals(UPDATED_INT, attributes["integer"])
-		verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(UPDATED_NR))
+		JsonApiTestSupport.verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(UPDATED_NR))
 		Assertions.assertEquals(UPDATED_DATE, attributes["date"])
 		Assertions.assertEquals(UPDATED_IS_DONE, attributes["isDone"])
-		verifyEnumField(attributes["testType"], UPDATED_TYPE_ID)
+		JsonApiTestSupport.verifyEnumField(attributes["testType"], UPDATED_TYPE_ID)
 	}
 
 	/**
@@ -418,62 +411,4 @@ class ObjTestApiTest {
 		Assertions.assertEquals(30, nodeC["integer"], "Node C integer should be 30")
 	}
 
-	/**
-	 * Verify tenant info is present in the meta section.
-	 *
-	 * The tenant info is always included in meta for all aggregates,
-	 * providing id, name, and itemType.
-	 */
-	@Suppress("UNCHECKED_CAST")
-	private fun verifyTenantInMeta(meta: Map<*, *>) {
-		val tenantMeta = meta["tenant"] as? Map<String, Any?>
-		Assertions.assertNotNull(tenantMeta, "Meta should have tenant info")
-
-		Assertions.assertEquals("3", tenantMeta!!["id"], "Tenant id should be '3'")
-		Assertions.assertEquals("Test", tenantMeta["name"], "Tenant name should be 'Test'")
-
-		// Verify itemType is present
-		val itemType = tenantMeta["itemType"] as? Map<String, Any?>
-		Assertions.assertNotNull(itemType, "Tenant should have itemType")
-		Assertions.assertEquals("obj_tenant", itemType!!["id"], "Tenant itemType id should be 'obj_tenant'")
-	}
-
-	/**
-	 * Verify tenantInfo relationship and included tenant aggregate.
-	 *
-	 * When ?include=tenantInfo is used, the response should contain:
-	 * - A relationships.tenantInfo section with a link to the tenant
-	 * - An included array with the full tenant resource
-	 */
-	@Suppress("UNCHECKED_CAST")
-	private fun verifyTenantRelationAndInclude(response: Map<String, Any?>) {
-		// Verify relationships section exists
-		val relationships = response["relationships"] as? Map<String, Any?>
-		Assertions.assertNotNull(relationships, "Response should have relationships")
-
-		// Verify tenantInfo relationship
-		val tenantInfoRel = relationships!!["tenantInfo"] as? Map<String, Any?>
-		Assertions.assertNotNull(tenantInfoRel, "Relationships should have tenantInfo")
-
-		val tenantInfoData = tenantInfoRel!!["data"] as? Map<String, Any?>
-		Assertions.assertNotNull(tenantInfoData, "tenantInfo should have data")
-		Assertions.assertEquals("tenant", tenantInfoData!!["type"], "tenantInfo type should be 'tenant'")
-		Assertions.assertEquals("3", tenantInfoData["id"], "tenantInfo id should be '3'")
-
-		// Verify included array contains the tenant
-		val included = response["included"] as? List<Map<String, Any?>>
-		Assertions.assertNotNull(included, "Response should have included array")
-		Assertions.assertTrue(included!!.isNotEmpty(), "Included array should not be empty")
-
-		// Find the tenant in included array
-		val includedTenant = included.find { it["type"] == "tenant" && it["id"] == "3" }
-		Assertions.assertNotNull(includedTenant, "Included array should contain tenant with id=3")
-
-		// Verify tenant attributes
-		val tenantAttributes = includedTenant!!["attributes"] as? Map<String, Any?>
-		Assertions.assertNotNull(tenantAttributes, "Included tenant should have attributes")
-		Assertions.assertEquals("test", tenantAttributes!!["key"], "Tenant key should be 'test'")
-		Assertions.assertEquals("Test", tenantAttributes["name"], "Tenant name should be 'Test'")
-		verifyEnumField(tenantAttributes["tenantType"], "advisor")
-	}
 }
