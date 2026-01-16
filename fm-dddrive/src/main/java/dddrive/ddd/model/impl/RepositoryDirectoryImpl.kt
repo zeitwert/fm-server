@@ -119,4 +119,16 @@ class RepositoryDirectoryImpl :
 		pppByIntf.put(intfClass, ppp)
 	}
 
+	/**
+	 * Clear all providers and repositories, but preserve enumerations.
+	 * This is used when resetting for a new test context while keeping
+	 * enum items that were registered during class loading.
+	 */
+	fun clearProvidersAndRepositories() {
+		repoByIntf.clear()
+		partRepoByIntf.clear()
+		appByIntf.clear()
+		pppByIntf.clear()
+	}
+
 }

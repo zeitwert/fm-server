@@ -68,6 +68,10 @@ abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
 	protected open fun loadParts(aggregate: A) {
 	}
 
+	override fun transaction(work: () -> Unit) {
+		dslContext.transaction { _ -> work() }
+	}
+
 	@Suppress("UNCHECKED_CAST")
 	override fun store(aggregate: A) {
 		baseRecordMapper.storeRecord(aggregate)

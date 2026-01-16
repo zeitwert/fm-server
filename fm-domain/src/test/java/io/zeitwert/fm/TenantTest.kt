@@ -3,7 +3,6 @@ package io.zeitwert.fm
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.test.TestApplication
-import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -17,9 +16,6 @@ import java.util.*
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
 class TenantTest {
-
-	@Autowired
-	private lateinit var dslContext: DSLContext
 
 	@Autowired
 	private lateinit var tenantRepository: ObjTenantRepository
@@ -38,7 +34,7 @@ class TenantTest {
 		tenant.tenantType = CodeTenantType.COMMUNITY
 		tenant.description = "Test description"
 
-		dslContext.transaction { _ ->
+		tenantRepository.transaction {
 			tenantRepository.store(tenant)
 		}
 
@@ -60,7 +56,7 @@ class TenantTest {
 		tenant.name = "Tenant with key"
 		tenant.tenantType = CodeTenantType.COMMUNITY
 
-		dslContext.transaction { _ ->
+		tenantRepository.transaction {
 			tenantRepository.store(tenant)
 		}
 
@@ -87,7 +83,7 @@ class TenantTest {
 		tenant.name = "Tenant for persistence test"
 		tenant.tenantType = CodeTenantType.COMMUNITY
 
-		dslContext.transaction { _ ->
+		tenantRepository.transaction {
 			tenantRepository.store(tenant)
 		}
 
@@ -101,7 +97,7 @@ class TenantTest {
 		val newKey = "updated-key-${UUID.randomUUID().toString().substring(0, 8)}"
 		loadedTenant.key = newKey
 
-		dslContext.transaction { _ ->
+		tenantRepository.transaction {
 			tenantRepository.store(loadedTenant)
 		}
 

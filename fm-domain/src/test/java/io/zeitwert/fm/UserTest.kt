@@ -7,7 +7,6 @@ import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.test.TestApplication
-import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -23,9 +22,6 @@ import java.util.*
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
 class UserTest {
-
-	@Autowired
-	private lateinit var dslContext: DSLContext
 
 	@Autowired
 	private lateinit var userRepository: ObjUserRepository
@@ -46,7 +42,7 @@ class UserTest {
 				tenantType = CodeTenantType.COMMUNITY
 				assertNotNull(id, "tenant t1.id not null")
 				assertNotNull(tenantId, "tenant t1.tenantId not null")
-				dslContext.transaction { _ ->
+				tenantRepository.transaction {
 					tenantRepository.store(this)
 				}
 			}
@@ -56,7 +52,7 @@ class UserTest {
 				key = "tt2"
 				name = "tt2"
 				tenantType = CodeTenantType.COMMUNITY
-				dslContext.transaction { _ ->
+				tenantRepository.transaction {
 					tenantRepository.store(this)
 				}
 			}
@@ -66,7 +62,7 @@ class UserTest {
 				key = "tt3"
 				name = "tt3"
 				tenantType = CodeTenantType.COMMUNITY
-				dslContext.transaction { _ ->
+				tenantRepository.transaction {
 					tenantRepository.store(this)
 				}
 			}
@@ -94,7 +90,7 @@ class UserTest {
 		assertNotNull(user1.meta.createdAt, "createdAt not null")
 		assertEquals(1, user1.meta.transitionList.size)
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user1)
 		}
 
@@ -123,7 +119,7 @@ class UserTest {
 		assertTrue(user1.hasRole(CodeUserRole.ADMIN))
 		assertFalse(user1.hasRole(CodeUserRole.USER))
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user1)
 		}
 
@@ -146,7 +142,7 @@ class UserTest {
 		assertEquals("Updated description", user2.description)
 		assertEquals(CodeUserRole.SUPER_USER, user2.role)
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user2)
 		}
 
@@ -187,7 +183,7 @@ class UserTest {
 		assertFalse(user1.tenantSet.any { it == t2.id })
 
 		assertEquals(1, user1.meta.transitionList.size)
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user1)
 		}
 		assertEquals(2, user1.meta.transitionList.size)
@@ -210,7 +206,7 @@ class UserTest {
 		assertTrue(user2.tenantSet.any { it == t2.id })
 		assertTrue(user2.tenantSet.any { it == t3.id })
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user2)
 		}
 
@@ -234,7 +230,7 @@ class UserTest {
 		user1.tenantSet.add(t2.id)
 		assertEquals(2, user1.tenantSet.size)
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user1)
 		}
 
@@ -245,7 +241,7 @@ class UserTest {
 		user2.tenantSet.clear()
 		assertEquals(0, user2.tenantSet.size)
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user2)
 		}
 
@@ -265,7 +261,7 @@ class UserTest {
 		// First transition is from creation
 		assertEquals(1, user1.meta.transitionList.size)
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user1)
 		}
 
@@ -276,7 +272,7 @@ class UserTest {
 		assertEquals(2, user2.meta.transitionList.size)
 
 		user2.name = "Updated Name"
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(user2)
 		}
 

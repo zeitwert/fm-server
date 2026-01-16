@@ -59,6 +59,10 @@ interface AggregateRepository<A : Aggregate> {
 	 */
 	fun load(id: Any): A
 
+	fun transaction(
+		work: () -> Unit
+	)
+
 	/**
 	 * Store the Aggregate
 	 */

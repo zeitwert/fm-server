@@ -3,7 +3,6 @@ package io.zeitwert.fm
 import io.zeitwert.fm.account.model.ObjAccountRepository
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.test.TestApplication
-import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -17,9 +16,6 @@ import java.util.*
 @SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test")
 class AccountTest {
-
-	@Autowired
-	private lateinit var dslContext: DSLContext
 
 	@Autowired
 	private lateinit var accountRepository: ObjAccountRepository
@@ -38,7 +34,7 @@ class AccountTest {
 		account.accountType = CodeAccountType.CLIENT
 		account.description = "Test description"
 
-		dslContext.transaction { _ ->
+		accountRepository.transaction {
 			accountRepository.store(account)
 		}
 
@@ -60,7 +56,7 @@ class AccountTest {
 		account.name = "Account with key"
 		account.accountType = CodeAccountType.CLIENT
 
-		dslContext.transaction { _ ->
+		accountRepository.transaction {
 			accountRepository.store(account)
 		}
 
@@ -87,7 +83,7 @@ class AccountTest {
 		account.name = "Account for persistence test"
 		account.accountType = CodeAccountType.CLIENT
 
-		dslContext.transaction { _ ->
+		accountRepository.transaction {
 			accountRepository.store(account)
 		}
 
@@ -101,7 +97,7 @@ class AccountTest {
 		val newKey = "updated-key-${UUID.randomUUID().toString().substring(0, 8)}"
 		loadedAccount.key = newKey
 
-		dslContext.transaction { _ ->
+		accountRepository.transaction {
 			accountRepository.store(loadedAccount)
 		}
 

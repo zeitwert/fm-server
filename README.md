@@ -51,6 +51,12 @@ example:
 
 Trigger manual migration `mvnw flyway:migrate`
 
+### In-memory persistence
+
+When running with `zeitwert.persistence.type=mem`, an `EnvironmentPostProcessor` in `fm-domain` runs during Spring Boot
+startup and injects `spring.autoconfigure.exclude` for Flyway and jOOQ. This happens before auto-configuration kicks in,
+so no database connections are attempted.
+
 ### jOOQ
 
 **Code Generation**

@@ -36,6 +36,16 @@ interface RepositoryDirectory {
 		fun reset() {
 			_instance = RepositoryDirectoryImpl()
 		}
+
+		/**
+		 * Clear all providers and repositories but preserve enumerations.
+		 * Use this when resetting for a new test context while keeping
+		 * enum items that were registered during class loading.
+		 */
+		@JvmStatic
+		fun resetProvidersAndRepositories() {
+			(_instance as RepositoryDirectoryImpl).clearProvidersAndRepositories()
+		}
 	}
 
 }

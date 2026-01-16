@@ -11,7 +11,6 @@ import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
 import io.zeitwert.test.TestApplication
-import org.jooq.DSLContext
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -33,9 +32,6 @@ class DocumentTest {
 
 	@Autowired
 	lateinit var sessionContext: SessionContext
-
-	@Autowired
-	lateinit var dslContext: DSLContext
 
 	@Test
 	@Throws(Exception::class)
@@ -111,7 +107,7 @@ class DocumentTest {
 		Account = accountRepo.create()
 		Account.name = "Test HH"
 		Account.accountType = CodeAccountType.CLIENT
-		dslContext.transaction { _ ->
+		accountRepo.transaction {
 			accountRepo.store(Account)
 		}
 		assertNotNull(Account, "account")

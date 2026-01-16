@@ -122,6 +122,8 @@ abstract class AggregateRepositoryBase<A : Aggregate>(
 		check(aggregate.doAfterLoadSeqNr > doAfterLoadSeqNr) { intfClass.simpleName + ": doAfterLoad was propagated" }
 	}
 
+	override fun transaction(work: () -> Unit) = persistenceProvider.transaction(work)
+
 	override fun store(aggregate: A) {
 		try {
 			didBeforeStore = false

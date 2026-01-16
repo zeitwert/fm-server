@@ -49,6 +49,10 @@ interface AggregatePersistenceProvider<A : Aggregate> : OutgoingPort {
 		id: Any,
 	)
 
+	fun transaction(
+		work: () -> Unit
+	)
+
 	/**
 	 * Store the aggregate on the persistence layer.
 	 *

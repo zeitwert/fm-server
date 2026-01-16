@@ -68,6 +68,8 @@ abstract class MemAggregatePersistenceProviderBase<A : Aggregate>(
 		}
 	}
 
+	override fun transaction(work: () -> Unit) = work()
+
 	final override fun store(aggregate: A) {
 		val map = fromAggregate(aggregate)
 		store(map)
