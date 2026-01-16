@@ -1,5 +1,6 @@
 package io.zeitwert.persist.mem.impl
 
+import dddrive.app.obj.model.Obj
 import dddrive.db.MemoryDb
 import dddrive.query.query
 import io.zeitwert.app.session.model.KernelContext
@@ -28,12 +29,15 @@ class ObjTenantMemPersistenceProviderImpl(
 ) : ObjMemPersistenceProviderBase<ObjTenant>(ObjTenant::class.java),
 	ObjTenantPersistenceProvider {
 
+	override val hasAccount = false
+
 	init {
 		val tenantId = nextAggregateId()
 		val userId = nextAggregateId()
 		val kernelTenantMap = mapOf(
 			"id" to tenantId,
 			"tenantId" to tenantId,
+			"objTypeId" to "obj_tenant",
 			"version" to 0,
 			"maxPartId" to 0,
 			"ownerId" to userId,
@@ -46,9 +50,11 @@ class ObjTenantMemPersistenceProviderImpl(
 			"key" to ObjTenantRepository.KERNEL_TENANT_KEY,
 		)
 		MemoryDb.store(ObjTenant::class.java, kernelTenantMap)
+		MemoryDb.store(Obj::class.java, kernelTenantMap)
 		val kernelUserMap = mapOf(
 			"id" to userId,
 			"tenantId" to tenantId,
+			"objTypeId" to "obj_user",
 			"version" to 0,
 			"maxPartId" to 0,
 			"ownerId" to userId,
@@ -61,6 +67,7 @@ class ObjTenantMemPersistenceProviderImpl(
 			"name" to "Kernel User",
 		)
 		MemoryDb.store(ObjUser::class.java, kernelUserMap)
+		MemoryDb.store(Obj::class.java, kernelUserMap)
 	}
 
 	override fun getByKey(key: String): Optional<Any> {

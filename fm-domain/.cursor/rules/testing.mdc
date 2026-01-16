@@ -7,6 +7,12 @@ alwaysApply: true
 After any change, you run the tests to ensure the changes are working as expected.
 The tests can be run via `mvn` on the windows command shell.
 
+## compilation
+
+If you changed code, you need to compile the code before running the tests.
+
+`mvn test-compile -DskipTests -pl !fm-ui -nsu`
+
 ## run tests as specific as possible to minimize resource consumption
 
 Run one specific test (need to specify the module):

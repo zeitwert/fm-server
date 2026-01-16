@@ -116,10 +116,10 @@ class ObjTestApiTest {
 		assertNull(createMeta["closedAt"], "closedAt should be null for new object")
 		assertNull(createMeta["closedByUser"], "closedByUser should be null for new object")
 
-		// === READ ===
+		// === READ (with tenantInfo include) ===
 		val readResult = mockMvc
 			.perform(
-				get("$API_PATH/$createdId").accept(JSON_API_CONTENT_TYPE),
+				get("$API_PATH/$createdId?include=tenantInfo").accept(JSON_API_CONTENT_TYPE),
 			).andExpect(status().isOk)
 			.andReturn()
 
@@ -137,6 +137,12 @@ class ObjTestApiTest {
 		val readMeta = readResponse["meta"] as Map<*, *>
 		assertNull(readMeta["closedAt"], "closedAt should still be null")
 		assertNull(readMeta["closedByUser"], "closedByUser should still be null")
+
+		// Verify tenant info is in meta (always present)
+		verifyTenantInMeta(readMeta)
+
+		// Verify tenantInfo relationship and included tenant aggregate
+		verifyTenantRelationAndInclude(readResponse)
 
 		// === UPDATE ===
 		// Update will: UPDATE Node A (by ID), INSERT Node C (no ID), DELETE Node B (omitted)
@@ -306,6 +312,7 @@ class ObjTestApiTest {
 			"attributes" to data["attributes"],
 			"meta" to data["meta"],
 			"relationships" to data["relationships"],
+			"included" to response["included"],
 		)
 	}
 
@@ -413,5 +420,64 @@ class ObjTestApiTest {
 		)
 		assertEquals("Node C", nodeC["shortText"], "Node C shortText should be 'Node C'")
 		assertEquals(30, nodeC["integer"], "Node C integer should be 30")
+	}
+
+	/**
+	 * Verify tenant info is present in the meta section.
+	 *
+	 * The tenant info is always included in meta for all aggregates,
+	 * providing id, name, and itemType.
+	 */
+	@Suppress("UNCHECKED_CAST")
+	private fun verifyTenantInMeta(meta: Map<*, *>) {
+		val tenantMeta = meta["tenant"] as? Map<String, Any?>
+		assertNotNull(tenantMeta, "Meta should have tenant info")
+
+		assertEquals("3", tenantMeta!!["id"], "Tenant id should be '3'")
+		assertEquals("Test", tenantMeta["name"], "Tenant name should be 'Test'")
+
+		// Verify itemType is present
+		val itemType = tenantMeta["itemType"] as? Map<String, Any?>
+		assertNotNull(itemType, "Tenant should have itemType")
+		assertEquals("obj_tenant", itemType!!["id"], "Tenant itemType id should be 'obj_tenant'")
+	}
+
+	/**
+	 * Verify tenantInfo relationship and included tenant aggregate.
+	 *
+	 * When ?include=tenantInfo is used, the response should contain:
+	 * - A relationships.tenantInfo section with a link to the tenant
+	 * - An included array with the full tenant resource
+	 */
+	@Suppress("UNCHECKED_CAST")
+	private fun verifyTenantRelationAndInclude(response: Map<String, Any?>) {
+		// Verify relationships section exists
+		val relationships = response["relationships"] as? Map<String, Any?>
+		assertNotNull(relationships, "Response should have relationships")
+
+		// Verify tenantInfo relationship
+		val tenantInfoRel = relationships!!["tenantInfo"] as? Map<String, Any?>
+		assertNotNull(tenantInfoRel, "Relationships should have tenantInfo")
+
+		val tenantInfoData = tenantInfoRel!!["data"] as? Map<String, Any?>
+		assertNotNull(tenantInfoData, "tenantInfo should have data")
+		assertEquals("tenant", tenantInfoData!!["type"], "tenantInfo type should be 'tenant'")
+		assertEquals("3", tenantInfoData["id"], "tenantInfo id should be '3'")
+
+		// Verify included array contains the tenant
+		val included = response["included"] as? List<Map<String, Any?>>
+		assertNotNull(included, "Response should have included array")
+		assertTrue(included!!.isNotEmpty(), "Included array should not be empty")
+
+		// Find the tenant in included array
+		val includedTenant = included.find { it["type"] == "tenant" && it["id"] == "3" }
+		assertNotNull(includedTenant, "Included array should contain tenant with id=3")
+
+		// Verify tenant attributes
+		val tenantAttributes = includedTenant!!["attributes"] as? Map<String, Any?>
+		assertNotNull(tenantAttributes, "Included tenant should have attributes")
+		assertEquals("test", tenantAttributes!!["key"], "Tenant key should be 'test'")
+		assertEquals("Test", tenantAttributes["name"], "Tenant name should be 'Test'")
+		verifyEnumField(tenantAttributes["tenantType"], "advisor")
 	}
 }

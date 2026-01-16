@@ -78,6 +78,7 @@ abstract class AggregateDtoRepositoryBase<A : Aggregate, R : ResourceDto>(
 		querySpec: QuerySpec?,
 	): R {
 		try {
+			logger.trace("{}.findOne({}, {})", repository.intfClass.simpleName, dtoId, querySpec)
 			val aggregate = repository.load(repository.idFromString(dtoId)!!)
 			sessionCtx.addAggregate(aggregate.id, aggregate)
 			return adapter.fromAggregate(aggregate)
@@ -90,8 +91,11 @@ abstract class AggregateDtoRepositoryBase<A : Aggregate, R : ResourceDto>(
 	@Transactional
 	override fun findAll(querySpec: QuerySpec): ResourceList<R> {
 		try {
+			logger.trace("{}.findAll({})", repository.intfClass.simpleName, querySpec)
 			val convertedQuery = QuerySpecConverter.convert(querySpec)
+			logger.trace("{}.findAll.1({})", repository.intfClass.simpleName, convertedQuery)
 			val itemList = repository.find(convertedQuery)
+			logger.trace("{}.findAll.2: {}", repository.intfClass.simpleName, itemList)
 			val list = DefaultResourceList<R>()
 			list.addAll(itemList.map { adapter.fromAggregate(repository.get(it)) })
 			return list

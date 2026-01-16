@@ -61,12 +61,13 @@ object QuerySpecConverter {
 		val value = crnkFilter.getValue<Any?>()
 		if (crnkFilter.operator == FilterOperator.EQ && value is Collection<*>) {
 			@Suppress("UNCHECKED_CAST")
-			return FilterSpec.In(path, value as Collection<Any>)
+			val normalizedValues = value.mapNotNull { normalizeIdValue(path, it) }
+			return FilterSpec.In(path, normalizedValues)
 		}
 
 		// Handle standard comparison operators
 		val operator = convertOperator(crnkFilter.operator)
-		return FilterSpec.Comparison(path, operator, value)
+		return FilterSpec.Comparison(path, operator, normalizeIdValue(path, value))
 	}
 
 	private fun convertOperator(crnkOperator: FilterOperator): ComparisonOperator =
@@ -80,6 +81,16 @@ object QuerySpecConverter {
 			FilterOperator.LIKE -> ComparisonOperator.LIKE
 			else -> throw IllegalArgumentException("Unsupported filter operator: $crnkOperator")
 		}
+
+	private fun normalizeIdValue(
+		path: String,
+		value: Any?,
+	): Any? {
+		if (value is String && (path == "id" || path.endsWith("Id"))) {
+			return value.toIntOrNull() ?: value
+		}
+		return value
+	}
 
 	private fun convertSort(crnkSort: io.crnk.core.queryspec.SortSpec): SortSpec =
 		SortSpec(
