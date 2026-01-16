@@ -4,83 +4,95 @@
 package io.zeitwert.fm.building.model.db;
 
 
-import io.zeitwert.fm.building.model.db.tables.*;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingElementDescription;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingMaintenanceStrategy;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingPart;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingPartCatalog;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingPriceIndex;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingPriceIndexValue;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingRatingStatus;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingSubType;
+import io.zeitwert.fm.building.model.db.tables.CodeBuildingType;
+import io.zeitwert.fm.building.model.db.tables.CodeHistoricPreservation;
+import io.zeitwert.fm.building.model.db.tables.ObjBuilding;
+import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartElementRating;
+import io.zeitwert.fm.building.model.db.tables.ObjBuildingPartRating;
+import io.zeitwert.fm.building.model.db.tables.ObjBuildingV;
 
 
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
-	/**
-	 * The table <code>public.code_building_element_description</code>.
-	 */
-	public static final CodeBuildingElementDescription CODE_BUILDING_ELEMENT_DESCRIPTION = CodeBuildingElementDescription.CODE_BUILDING_ELEMENT_DESCRIPTION;
+    /**
+     * The table <code>public.code_building_element_description</code>.
+     */
+    public static final CodeBuildingElementDescription CODE_BUILDING_ELEMENT_DESCRIPTION = CodeBuildingElementDescription.CODE_BUILDING_ELEMENT_DESCRIPTION;
 
-	/**
-	 * The table <code>public.code_building_maintenance_strategy</code>.
-	 */
-	public static final CodeBuildingMaintenanceStrategy CODE_BUILDING_MAINTENANCE_STRATEGY = CodeBuildingMaintenanceStrategy.CODE_BUILDING_MAINTENANCE_STRATEGY;
+    /**
+     * The table <code>public.code_building_maintenance_strategy</code>.
+     */
+    public static final CodeBuildingMaintenanceStrategy CODE_BUILDING_MAINTENANCE_STRATEGY = CodeBuildingMaintenanceStrategy.CODE_BUILDING_MAINTENANCE_STRATEGY;
 
-	/**
-	 * The table <code>public.code_building_part</code>.
-	 */
-	public static final CodeBuildingPart CODE_BUILDING_PART = CodeBuildingPart.CODE_BUILDING_PART;
+    /**
+     * The table <code>public.code_building_part</code>.
+     */
+    public static final CodeBuildingPart CODE_BUILDING_PART = CodeBuildingPart.CODE_BUILDING_PART;
 
-	/**
-	 * The table <code>public.code_building_part_catalog</code>.
-	 */
-	public static final CodeBuildingPartCatalog CODE_BUILDING_PART_CATALOG = CodeBuildingPartCatalog.CODE_BUILDING_PART_CATALOG;
+    /**
+     * The table <code>public.code_building_part_catalog</code>.
+     */
+    public static final CodeBuildingPartCatalog CODE_BUILDING_PART_CATALOG = CodeBuildingPartCatalog.CODE_BUILDING_PART_CATALOG;
 
-	/**
-	 * The table <code>public.code_building_price_index</code>.
-	 */
-	public static final CodeBuildingPriceIndex CODE_BUILDING_PRICE_INDEX = CodeBuildingPriceIndex.CODE_BUILDING_PRICE_INDEX;
+    /**
+     * The table <code>public.code_building_price_index</code>.
+     */
+    public static final CodeBuildingPriceIndex CODE_BUILDING_PRICE_INDEX = CodeBuildingPriceIndex.CODE_BUILDING_PRICE_INDEX;
 
-	/**
-	 * The table <code>public.code_building_price_index_value</code>.
-	 */
-	public static final CodeBuildingPriceIndexValue CODE_BUILDING_PRICE_INDEX_VALUE = CodeBuildingPriceIndexValue.CODE_BUILDING_PRICE_INDEX_VALUE;
+    /**
+     * The table <code>public.code_building_price_index_value</code>.
+     */
+    public static final CodeBuildingPriceIndexValue CODE_BUILDING_PRICE_INDEX_VALUE = CodeBuildingPriceIndexValue.CODE_BUILDING_PRICE_INDEX_VALUE;
 
-	/**
-	 * The table <code>public.code_building_rating_status</code>.
-	 */
-	public static final CodeBuildingRatingStatus CODE_BUILDING_RATING_STATUS = CodeBuildingRatingStatus.CODE_BUILDING_RATING_STATUS;
+    /**
+     * The table <code>public.code_building_rating_status</code>.
+     */
+    public static final CodeBuildingRatingStatus CODE_BUILDING_RATING_STATUS = CodeBuildingRatingStatus.CODE_BUILDING_RATING_STATUS;
 
-	/**
-	 * The table <code>public.code_building_sub_type</code>.
-	 */
-	public static final CodeBuildingSubType CODE_BUILDING_SUB_TYPE = CodeBuildingSubType.CODE_BUILDING_SUB_TYPE;
+    /**
+     * The table <code>public.code_building_sub_type</code>.
+     */
+    public static final CodeBuildingSubType CODE_BUILDING_SUB_TYPE = CodeBuildingSubType.CODE_BUILDING_SUB_TYPE;
 
-	/**
-	 * The table <code>public.code_building_type</code>.
-	 */
-	public static final CodeBuildingType CODE_BUILDING_TYPE = CodeBuildingType.CODE_BUILDING_TYPE;
+    /**
+     * The table <code>public.code_building_type</code>.
+     */
+    public static final CodeBuildingType CODE_BUILDING_TYPE = CodeBuildingType.CODE_BUILDING_TYPE;
 
-	/**
-	 * The table <code>public.code_historic_preservation</code>.
-	 */
-	public static final CodeHistoricPreservation CODE_HISTORIC_PRESERVATION = CodeHistoricPreservation.CODE_HISTORIC_PRESERVATION;
+    /**
+     * The table <code>public.code_historic_preservation</code>.
+     */
+    public static final CodeHistoricPreservation CODE_HISTORIC_PRESERVATION = CodeHistoricPreservation.CODE_HISTORIC_PRESERVATION;
 
-	/**
-	 * The table <code>public.obj_building</code>.
-	 */
-	public static final ObjBuilding OBJ_BUILDING = ObjBuilding.OBJ_BUILDING;
+    /**
+     * The table <code>public.obj_building</code>.
+     */
+    public static final ObjBuilding OBJ_BUILDING = ObjBuilding.OBJ_BUILDING;
 
-	/**
-	 * The table <code>public.obj_building_part_element_rating</code>.
-	 */
-	public static final ObjBuildingPartElementRating OBJ_BUILDING_PART_ELEMENT_RATING = ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING;
+    /**
+     * The table <code>public.obj_building_part_element_rating</code>.
+     */
+    public static final ObjBuildingPartElementRating OBJ_BUILDING_PART_ELEMENT_RATING = ObjBuildingPartElementRating.OBJ_BUILDING_PART_ELEMENT_RATING;
 
-	/**
-	 * The table <code>public.obj_building_part_rating</code>.
-	 */
-	public static final ObjBuildingPartRating OBJ_BUILDING_PART_RATING = ObjBuildingPartRating.OBJ_BUILDING_PART_RATING;
+    /**
+     * The table <code>public.obj_building_part_rating</code>.
+     */
+    public static final ObjBuildingPartRating OBJ_BUILDING_PART_RATING = ObjBuildingPartRating.OBJ_BUILDING_PART_RATING;
 
-	/**
-	 * The table <code>public.obj_building_v</code>.
-	 */
-	public static final ObjBuildingV OBJ_BUILDING_V = ObjBuildingV.OBJ_BUILDING_V;
-
+    /**
+     * The table <code>public.obj_building_v</code>.
+     */
+    public static final ObjBuildingV OBJ_BUILDING_V = ObjBuildingV.OBJ_BUILDING_V;
 }

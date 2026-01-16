@@ -51,6 +51,29 @@ example:
 
 Trigger manual migration `mvnw flyway:migrate`
 
+### jOOQ
+
+**Code Generation**
+Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/model/db` (according
+to definition in jooq XML config files).
+
+Sources (including test) can be generated (after database has been set up through flyway) with:
+
+```bash
+mvnw -Dskip.jooq.generation=false generate-sources generate-test-sources -pl fm-domain -nsu
+```
+
+Generating sources for only a single component can be done like this:
+
+```bash
+mvnw -Dskip.jooq.generation=false jooq-codegen:generate@jooq-codegen-fm-account -pl fm-domain -nsu
+```
+
+**Enumeration Loading** (TODO)
+When loading enum domains from DB in the `@PostConstruct` method, it must be guaranteed that flyway migrations have done
+their work. This can be achieved by specifying a corresponding dependency:
+`@DependsOn({ "flyway", "flywayInitializer" })`.
+
 ### In-memory persistence
 
 To run a profile with in-memory persistence (for fast local dev and test), the following properties must be set (memory
@@ -64,29 +87,6 @@ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jooq.JooqAut
 
 [MemTransactionConfiguration](fm-domain/src/main/java/io/zeitwert/fm/domain/config/MemTransactionConfiguration.java)
 configures a no-op transaction manager for in-memory mode.
-
-### jOOQ
-
-**Code Generation**
-Generated source code of jOOQ is checked in under `src/main/java/io/zeitwert/[module]/[component]/db` (according to
-definition in jooq XML config files).
-
-Sources (including test) can be generated (after database has been set up through flyway) with:
-
-```bash
-mvnw -Dskip.jooq.generation=false generate-sources generate-test-sources -pl !fm-ui -nsu
-```
-
-Generating sources for only a single component can be done like this:
-
-```bash
-mvnw -Dskip.jooq.generation=false jooq-codegen:generate@jooq-codegen-fm-account
-```
-
-**Enumeration Loading** (TODO)
-When loading enum domains from DB in the `@PostConstruct` method, it must be guaranteed that flyway migrations have done
-their work. This can be achieved by specifying a corresponding dependency:
-`@DependsOn({ "flyway", "flywayInitializer" })`.
 
 ### Crank (io.crnk)
 

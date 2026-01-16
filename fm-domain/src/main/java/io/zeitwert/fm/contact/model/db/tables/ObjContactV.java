@@ -169,6 +169,11 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
      */
     public final TableField<ObjContactVRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(60), this, "");
 
+    /**
+     * The column <code>public.obj_contact_v.key</code>.
+     */
+    public final TableField<ObjContactVRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(40), this, "");
+
     private ObjContactV(Name alias, Table<ObjContactVRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -198,7 +203,8 @@ public class ObjContactV extends TableImpl<ObjContactVRecord> {
          ct.birth_date,
          ct.phone,
          ct.mobile,
-         ct.email
+         ct.email,
+         ct.key
         FROM (obj_contact ct
           JOIN obj ON ((obj.id = ct.obj_id)));
         """), where);

@@ -12,22 +12,21 @@ import io.zeitwert.fm.task.model.db.tables.DocTaskV;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
-	/**
-	 * The table <code>public.code_task_priority</code>.
-	 */
-	public static final CodeTaskPriority CODE_TASK_PRIORITY = CodeTaskPriority.CODE_TASK_PRIORITY;
+    /**
+     * The table <code>public.code_task_priority</code>.
+     */
+    public static final CodeTaskPriority CODE_TASK_PRIORITY = CodeTaskPriority.CODE_TASK_PRIORITY;
 
-	/**
-	 * The table <code>public.doc_task</code>.
-	 */
-	public static final DocTask DOC_TASK = DocTask.DOC_TASK;
+    /**
+     * The table <code>public.doc_task</code>.
+     */
+    public static final DocTask DOC_TASK = DocTask.DOC_TASK;
 
-	/**
-	 * The table <code>public.doc_task_v</code>.
-	 */
-	public static final DocTaskV DOC_TASK_V = DocTaskV.DOC_TASK_V;
-
+    /**
+     * The table <code>public.doc_task_v</code>.
+     */
+    public static final DocTaskV DOC_TASK_V = DocTaskV.DOC_TASK_V;
 }

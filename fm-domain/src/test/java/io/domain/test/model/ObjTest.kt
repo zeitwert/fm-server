@@ -14,6 +14,10 @@ interface ObjTest :
 
 	var shortText: String?
 
+	var shortTextU: String?
+
+	val shortTextL: String?
+
 	var longText: String?
 
 	var date: LocalDate?

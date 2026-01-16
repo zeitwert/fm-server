@@ -5,6 +5,7 @@ package io.zeitwert.app.search.model.db;
 
 
 import io.zeitwert.app.search.model.db.tables.ItemSearch;
+
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.DSL;
@@ -14,13 +15,12 @@ import org.jooq.impl.Internal;
 /**
  * A class modelling indexes of tables in public.
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Indexes {
 
-	// -------------------------------------------------------------------------
-	// INDEX definitions
-	// -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // INDEX definitions
+    // -------------------------------------------------------------------------
 
-	public static final Index ITEM_SEARCH_KEY = Internal.createIndex(DSL.name("item_search_key"), ItemSearch.ITEM_SEARCH, new OrderField[]{ItemSearch.ITEM_SEARCH.SEARCH_KEY}, false);
-
+    public static final Index ITEM_SEARCH_KEY = Internal.createIndex(DSL.name("item_search_key"), ItemSearch.ITEM_SEARCH, new OrderField[] { ItemSearch.ITEM_SEARCH.SEARCH_KEY }, false);
 }

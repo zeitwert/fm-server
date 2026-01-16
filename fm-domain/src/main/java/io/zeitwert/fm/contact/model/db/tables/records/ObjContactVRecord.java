@@ -356,6 +356,20 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
         return (String) get(23);
     }
 
+    /**
+     * Setter for <code>public.obj_contact_v.key</code>.
+     */
+    public void setKey(String value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>public.obj_contact_v.key</code>.
+     */
+    public String getKey() {
+        return (String) get(24);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -370,7 +384,7 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
     /**
      * Create a detached, initialised ObjContactVRecord
      */
-    public ObjContactVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email) {
+    public ObjContactVRecord(String objTypeId, Integer id, Integer version, Integer ownerId, String caption, Integer createdByUserId, OffsetDateTime createdAt, Integer modifiedByUserId, OffsetDateTime modifiedAt, Integer closedByUserId, OffsetDateTime closedAt, Integer objId, Integer tenantId, Integer accountId, String description, String contactRoleId, String salutationId, String titleId, String firstName, String lastName, LocalDate birthDate, String phone, String mobile, String email, String key) {
         super(ObjContactV.OBJ_CONTACT_V);
 
         setObjTypeId(objTypeId);
@@ -397,6 +411,7 @@ public class ObjContactVRecord extends TableRecordImpl<ObjContactVRecord> {
         setPhone(phone);
         setMobile(mobile);
         setEmail(email);
+        setKey(key);
         resetChangedOnNotNull();
     }
 }

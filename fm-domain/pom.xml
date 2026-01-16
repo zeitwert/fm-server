@@ -141,6 +141,7 @@
 						<location>filesystem:src/main/resources/db/V1.0/1-baseline</location>
 						<location>filesystem:src/main/resources/db/V1.0/2-upgrade/V1.0.1</location>
 						<location>filesystem:src/main/resources/db/V1.0/3-config</location>
+						<location>filesystem:src/main/resources/db/V1.0/5-test</location>
 					</locations>
 				</configuration>
 			</plugin>
@@ -157,7 +158,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/dddrive/obj/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/app/obj/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -168,7 +169,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/dddrive/doc/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/app/doc/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -179,7 +180,7 @@
 						</goals>
 						<configuration>
 							<skip>${skip.jooq.generation}</skip>
-							<configurationFile>src/main/java/io/zeitwert/dddrive/search/jooq-config.xml</configurationFile>
+							<configurationFile>src/main/java/io/zeitwert/app/search/jooq-config.xml</configurationFile>
 						</configuration>
 					</execution>
 					<execution>
@@ -272,7 +273,7 @@
 					</execution>
 					<execution>
 						<id>jooq-codegen-fm-test</id>
-						<phase>generate-test-sources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>

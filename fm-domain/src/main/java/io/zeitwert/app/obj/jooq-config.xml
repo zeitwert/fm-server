@@ -16,7 +16,7 @@
 			<javaTimeTypes>true</javaTimeTypes>
 		</generate>
 		<target>
-			<packageName>io.zeitwert.dddrive.obj.model.db</packageName>
+			<packageName>io.zeitwert.app.obj.model.db</packageName>
 			<directory>/src/main/java</directory>
 		</target>
 	</generator>

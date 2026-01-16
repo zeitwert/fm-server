@@ -10,12 +10,11 @@ import io.zeitwert.app.search.model.db.tables.ItemSearch;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
-	/**
-	 * The table <code>public.item_search</code>.
-	 */
-	public static final ItemSearch ITEM_SEARCH = ItemSearch.ITEM_SEARCH;
-
+    /**
+     * The table <code>public.item_search</code>.
+     */
+    public static final ItemSearch ITEM_SEARCH = ItemSearch.ITEM_SEARCH;
 }

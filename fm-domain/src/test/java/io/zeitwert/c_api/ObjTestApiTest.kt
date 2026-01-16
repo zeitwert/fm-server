@@ -2,6 +2,7 @@ package io.zeitwert.c_api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dddrive.ddd.model.RepositoryDirectory
+import io.zeitwert.app.api.jsonapi.ResourceRepository
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.data.config.TestDataSetup
 import io.zeitwert.test.TestApplication
@@ -71,6 +72,8 @@ class ObjTestApiTest {
 		private const val UPDATED_DATE = "2025-01-14"
 		private const val UPDATED_IS_DONE = true
 		private const val UPDATED_TYPE_ID = "type_b"
+
+	private const val CALC_ONLY_SHORT_TEXT = "Calc Only Text"
 
 		private lateinit var tenantId: String
 
@@ -201,6 +204,33 @@ class ObjTestApiTest {
 
 	@Test
 	@Order(4)
+	fun `update ObjTest calculationOnly recalculates shortText fields`() {
+		val versionBefore = currentVersion
+		val calcOnlyPayload = createCalculationOnlyPayload(createdId, versionBefore, CALC_ONLY_SHORT_TEXT)
+		val calcOnlyResult = mockMvc
+			.perform(
+				MockMvcRequestBuilders
+					.patch("$API_PATH/$createdId")
+					.with(SecurityMockMvcRequestPostProcessors.csrf().asHeader())
+					.contentType(JSON_API_CONTENT_TYPE)
+					.accept(JSON_API_CONTENT_TYPE)
+					.content(calcOnlyPayload),
+			).andExpect(MockMvcResultMatchers.status().isOk)
+			.andReturn()
+
+		val calcOnlyResponse =
+			JsonApiTestSupport.parseJsonApiResponse(objectMapper, calcOnlyResult.response.contentAsString)
+		val calcOnlyAttributes = calcOnlyResponse["attributes"] as Map<*, *>
+		Assertions.assertEquals(CALC_ONLY_SHORT_TEXT, calcOnlyAttributes["shortText"])
+		Assertions.assertEquals(CALC_ONLY_SHORT_TEXT.uppercase(), calcOnlyAttributes["shortTextU"])
+		Assertions.assertEquals(CALC_ONLY_SHORT_TEXT.lowercase(), calcOnlyAttributes["shortTextL"])
+
+		val calcOnlyMeta = calcOnlyResponse["meta"] as Map<*, *>
+		Assertions.assertEquals(versionBefore, calcOnlyMeta["version"], "Version should not change on calculationOnly")
+	}
+
+	@Test
+	@Order(5)
 	fun `read ObjTest after update`() {
 		val readUpdatedResult = mockMvc
 			.perform(
@@ -230,7 +260,7 @@ class ObjTestApiTest {
 	}
 
 	@Test
-	@Order(5)
+	@Order(6)
 	fun `delete ObjTest via JSON API`() {
 		mockMvc
 			.perform(
@@ -242,7 +272,7 @@ class ObjTestApiTest {
 	}
 
 	@Test
-	@Order(6)
+	@Order(7)
 	fun `read ObjTest after delete`() {
 		val readClosedResult = mockMvc
 			.perform(
@@ -332,9 +362,32 @@ class ObjTestApiTest {
 		return objectMapper.writeValueAsString(payload)
 	}
 
+	private fun createCalculationOnlyPayload(
+		id: String,
+		clientVersion: Int,
+		shortText: String,
+	): String {
+		val payload = mapOf(
+			"data" to mapOf(
+				"type" to "objTest",
+				"id" to id,
+				"attributes" to mapOf(
+					"shortText" to shortText,
+				),
+				"meta" to mapOf(
+					"clientVersion" to clientVersion,
+					"operations" to listOf(ResourceRepository.CalculationOnlyOperation),
+				),
+			),
+		)
+		return objectMapper.writeValueAsString(payload)
+	}
+
 	/** Verify attributes match the initial (pre-update) values. */
 	private fun verifyInitialAttributes(attributes: Map<*, *>) {
 		Assertions.assertEquals(TEST_SHORT_TEXT, attributes["shortText"])
+		Assertions.assertEquals(TEST_SHORT_TEXT.uppercase(), attributes["shortTextU"])
+		Assertions.assertEquals(TEST_SHORT_TEXT.lowercase(), attributes["shortTextL"])
 		Assertions.assertEquals(TEST_LONG_TEXT, attributes["longText"])
 		Assertions.assertEquals(TEST_INT, attributes["integer"])
 		JsonApiTestSupport.verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(TEST_NR))
@@ -346,6 +399,8 @@ class ObjTestApiTest {
 	/** Verify attributes match the updated values. */
 	private fun verifyUpdatedAttributes(attributes: Map<*, *>) {
 		Assertions.assertEquals(UPDATED_SHORT_TEXT, attributes["shortText"])
+		Assertions.assertEquals(UPDATED_SHORT_TEXT.uppercase(), attributes["shortTextU"])
+		Assertions.assertEquals(UPDATED_SHORT_TEXT.lowercase(), attributes["shortTextL"])
 		Assertions.assertEquals(UPDATED_LONG_TEXT, attributes["longText"])
 		Assertions.assertEquals(UPDATED_INT, attributes["integer"])
 		JsonApiTestSupport.verifyBigDecimal(attributes["nr"], BigDecimal.valueOf(UPDATED_NR))

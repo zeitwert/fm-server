@@ -13,27 +13,26 @@ import io.zeitwert.app.obj.model.db.tables.ObjPartTransition;
 /**
  * Convenience access to all tables in public.
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
 
-	/**
-	 * The table <code>public.obj</code>.
-	 */
-	public static final Obj OBJ = Obj.OBJ;
+    /**
+     * The table <code>public.obj</code>.
+     */
+    public static final Obj OBJ = Obj.OBJ;
 
-	/**
-	 * The table <code>public.obj_activity_v</code>.
-	 */
-	public static final ObjActivityV OBJ_ACTIVITY_V = ObjActivityV.OBJ_ACTIVITY_V;
+    /**
+     * The table <code>public.obj_activity_v</code>.
+     */
+    public static final ObjActivityV OBJ_ACTIVITY_V = ObjActivityV.OBJ_ACTIVITY_V;
 
-	/**
-	 * The table <code>public.obj_part_item</code>.
-	 */
-	public static final ObjPartItem OBJ_PART_ITEM = ObjPartItem.OBJ_PART_ITEM;
+    /**
+     * The table <code>public.obj_part_item</code>.
+     */
+    public static final ObjPartItem OBJ_PART_ITEM = ObjPartItem.OBJ_PART_ITEM;
 
-	/**
-	 * The table <code>public.obj_part_transition</code>.
-	 */
-	public static final ObjPartTransition OBJ_PART_TRANSITION = ObjPartTransition.OBJ_PART_TRANSITION;
-
+    /**
+     * The table <code>public.obj_part_transition</code>.
+     */
+    public static final ObjPartTransition OBJ_PART_TRANSITION = ObjPartTransition.OBJ_PART_TRANSITION;
 }

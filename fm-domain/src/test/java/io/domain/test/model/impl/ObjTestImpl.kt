@@ -29,6 +29,10 @@ class ObjTestImpl(
 	AggregateWithNotesMixin {
 
 	override var shortText by baseProperty<String>("shortText")
+	override var shortTextU by baseProperty<String>("shortTextU")
+	override var shortTextL by baseProperty<String>("shortTextL") { _ ->
+		shortText?.lowercase()
+	}
 	override var longText by baseProperty<String>("longText")
 	override var date by baseProperty<LocalDate>("date")
 	override var int by baseProperty<Int>("integer")
@@ -68,6 +72,7 @@ class ObjTestImpl(
 
 	override fun doCalcAll() {
 		super.doCalcAll()
+		shortTextU = shortText?.uppercase()
 		this.calcCaption()
 	}
 

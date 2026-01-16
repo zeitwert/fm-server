@@ -15,6 +15,7 @@ create table obj_test (
 	account_id														integer							references obj_account(obj_id) deferrable initially deferred,
 	-- simple fields
 	short_text														varchar(200),
+	short_text_u													varchar(200),
 	long_text															text,
 	date																	date,
 	int																		integer,

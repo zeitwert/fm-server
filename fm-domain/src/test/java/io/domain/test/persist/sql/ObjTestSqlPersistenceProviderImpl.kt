@@ -62,6 +62,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 		record: ObjTestRecord,
 	) {
 		aggregate.shortText = record.shortText
+		aggregate.shortTextU = record.shortTextU
 		aggregate.longText = record.longText
 		aggregate.date = record.date
 		aggregate.int = record.int
@@ -115,6 +116,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 			record.accountId = aggregate.accountId as Int?
 		}
 		record.shortText = aggregate.shortText
+		record.shortTextU = aggregate.shortTextU
 		record.longText = aggregate.longText
 		record.date = aggregate.date
 		record.int = aggregate.int

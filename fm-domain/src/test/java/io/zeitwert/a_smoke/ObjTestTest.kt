@@ -90,6 +90,8 @@ class ObjTestTest {
 		assertNotNull(testA1.meta.createdAt, "createdAt not null")
 		assertEquals("[Short Test One, Long Test One]", testA1.caption)
 		assertEquals("Short Test One", testA1.shortText)
+		assertEquals("SHORT TEST ONE", testA1.shortTextU)
+		assertEquals("short test one", testA1.shortTextL)
 		assertEquals("Long Test One", testA1.longText)
 		assertEquals(42, testA1.int)
 		assertEquals(BigDecimal.valueOf(42), testA1.nr)
@@ -115,6 +117,8 @@ class ObjTestTest {
 
 		assertEquals("[Short Test One, Long Test One] ([Short Test Two, Long Test Two])", testA2.caption)
 		assertEquals("Short Test One", testA2.shortText)
+		assertEquals("SHORT TEST ONE", testA2.shortTextU)
+		assertEquals("short test one", testA2.shortTextL)
 		assertEquals("Long Test One", testA2.longText)
 		assertEquals(42, testA2.int)
 		assertEquals(BigDecimal.valueOf(42).setScale(3), testA2.nr?.setScale(3))
@@ -136,6 +140,8 @@ class ObjTestTest {
 
 		assertEquals("[another shortText, another longText]", testA2.caption)
 		assertEquals("another shortText", testA2.shortText)
+		assertEquals("ANOTHER SHORTTEXT", testA2.shortTextU)
+		assertEquals("another shorttext", testA2.shortTextL)
 		assertEquals("another longText", testA2.longText)
 		assertEquals(41, testA2.int)
 		assertEquals(BigDecimal.valueOf(41).setScale(3), testA2.nr?.setScale(3))
