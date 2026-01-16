@@ -9,7 +9,6 @@ import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.contact.model.ObjContactRepository
 import io.zeitwert.fm.contact.model.enums.CodeContactRole
 import io.zeitwert.fm.contact.model.enums.CodeSalutation
-import org.jooq.DSLContext
 import java.time.LocalDate
 
 /**
@@ -31,7 +30,6 @@ import java.time.LocalDate
  */
 object Account {
 
-	lateinit var dslContext: DSLContext
 	lateinit var directory: RepositoryDirectory
 
 	val accountRepository: ObjAccountRepository
@@ -41,10 +39,8 @@ object Account {
 		get() = directory.getRepository(ObjContact::class.java) as ObjContactRepository
 
 	fun init(
-		dslContext: DSLContext,
 		directory: RepositoryDirectory,
 	) {
-		this.dslContext = dslContext
 		this.directory = directory
 	}
 
@@ -84,7 +80,7 @@ object Account {
 		// Set account ID in session context for nested operations
 		DelegatingSessionContext.setAccountId(newAccount.id as Int)
 
-		dslContext.transaction { _ ->
+		accountRepository.transaction {
 			accountRepository.store(newAccount)
 		}
 		check(newAccount.logoImageId != null) { "Tenant logoImageId is created in domain logic" }
@@ -131,7 +127,7 @@ object Account {
 		ctx.mobile?.let { contact.mobile = it }
 		ctx.birthDate?.let { contact.birthDate = it }
 
-		dslContext.transaction { _ ->
+		contactRepository.transaction {
 			contactRepository.store(contact)
 		}
 

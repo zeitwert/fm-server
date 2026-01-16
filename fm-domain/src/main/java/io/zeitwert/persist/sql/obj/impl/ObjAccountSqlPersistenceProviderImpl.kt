@@ -3,6 +3,7 @@ package io.zeitwert.persist.sql.obj.impl
 import dddrive.property.path.setValueByPath
 import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.base.FMObjBase
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.db.Tables
@@ -10,7 +11,6 @@ import io.zeitwert.fm.account.model.db.tables.records.ObjAccountRecord
 import io.zeitwert.fm.account.model.enums.CodeAccountType
 import io.zeitwert.fm.account.model.enums.CodeClientSegment
 import io.zeitwert.fm.account.model.enums.CodeCurrency
-import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.persist.ObjAccountPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.ddd.SqlRecordMapper
@@ -23,7 +23,7 @@ import java.util.*
 
 @Component("objAccountPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class ObjAccountSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,

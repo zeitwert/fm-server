@@ -5,9 +5,12 @@ import dddrive.app.doc.model.Doc
 import dddrive.app.obj.model.Obj
 import dddrive.ddd.model.Enumerated
 import dddrive.ddd.model.Part
+import dddrive.ddd.model.enums.CodeAggregateTypeEnum
 import io.zeitwert.app.api.jsonapi.dto.DtoUtils
 import io.zeitwert.app.api.jsonapi.dto.SimpleEnumeratedDto
 import io.zeitwert.app.api.jsonapi.dto.TypedEnumeratedDto
+import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.fm.oe.model.ObjUser
 
 interface EnumeratedDto {
 
@@ -27,7 +30,7 @@ interface EnumeratedDto {
 		fun of(e: Enumerated?): EnumeratedDto? = e?.let { SimpleEnumeratedDto(it.id, it.defaultName) }
 
 		@JvmStatic
-		fun of(a: Aggregate?): TypedEnumeratedDto? =
+		fun of(a: Aggregate?): EnumeratedDto? =
 			when (a) {
 				is Obj -> of(a)
 				is Doc -> of(a)
@@ -35,10 +38,14 @@ interface EnumeratedDto {
 			}
 
 		@JvmStatic
-		fun of(a: Obj?): TypedEnumeratedDto? =
+		fun of(a: Obj?): EnumeratedDto? =
 			a?.let {
-				val objType = of(it.meta.objTypeId, "")
-				TypedEnumeratedDto(DtoUtils.idToString(it.id)!!, it.caption, objType)
+				val objType = CodeAggregateTypeEnum.getAggregateType(it.meta.objTypeId)
+				when {
+					a is ObjTenant -> SimpleEnumeratedDto(DtoUtils.idToString(it.id)!!, it.caption)
+					a is ObjUser -> SimpleEnumeratedDto(DtoUtils.idToString(it.id)!!, it.caption)
+					else -> TypedEnumeratedDto(DtoUtils.idToString(it.id)!!, it.caption, of(objType)!!)
+				}
 			}
 
 		@JvmStatic

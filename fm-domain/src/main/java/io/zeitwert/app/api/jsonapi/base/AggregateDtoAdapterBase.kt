@@ -403,7 +403,6 @@ open class AggregateDtoAdapterBase<A : Aggregate, R : ResourceDto>(
 	) {
 		when (property) {
 			is AggregateReferenceProperty<*> -> {
-				println("toProperty ${property.javaClass.simpleName}.${property.name}: $dtoValue ${enumId(dtoValue)} ${dtoValue?.javaClass?.simpleName}")
 				property.id = DtoUtils.idFromString(enumId(dtoValue))
 			}
 

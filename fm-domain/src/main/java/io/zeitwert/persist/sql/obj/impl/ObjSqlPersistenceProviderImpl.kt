@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 
 @Component("objPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class ObjSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,

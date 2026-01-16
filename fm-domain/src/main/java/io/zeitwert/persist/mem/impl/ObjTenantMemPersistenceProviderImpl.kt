@@ -14,15 +14,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.util.*
-import kotlin.jvm.java
 
 /**
  * Memory-based persistence provider for ObjTenant.
  *
- * Active when zeitwert.persistence.type=mem
+ * Active when zeitwert.persistence_type=mem
  */
 @Component("objTenantPersistenceProvider")
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "mem")
 class ObjTenantMemPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

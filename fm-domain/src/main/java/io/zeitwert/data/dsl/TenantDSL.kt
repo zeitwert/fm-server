@@ -11,7 +11,6 @@ import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
-import org.jooq.DSLContext
 import java.time.OffsetDateTime
 
 /**
@@ -35,7 +34,6 @@ import java.time.OffsetDateTime
  */
 object Tenant {
 
-	lateinit var dslContext: DSLContext
 	lateinit var directory: RepositoryDirectory
 
 	val tenantRepository: ObjTenantRepository
@@ -82,10 +80,8 @@ object Tenant {
 	}
 
 	fun init(
-		dslContext: DSLContext,
 		directory: RepositoryDirectory,
 	) {
-		this.dslContext = dslContext
 		this.directory = directory
 	}
 
@@ -139,7 +135,7 @@ object Tenant {
 		newTenant.key = ctx.key
 		newTenant.name = ctx.name
 		newTenant.tenantType = CodeTenantType.getTenantType(ctx.type)
-		dslContext.transaction { _ ->
+		tenantRepository.transaction {
 			tenantRepository.store(newTenant)
 		}
 		check(newTenant.logoImageId != null) { "Tenant logoImageId is created in domain logic" }
@@ -173,7 +169,7 @@ object Tenant {
 		// Associate user with tenant
 		newUser.tenantSet.add(tenant.id)
 
-		dslContext.transaction { _ ->
+		userRepository.transaction {
 			userRepository.store(newUser)
 		}
 

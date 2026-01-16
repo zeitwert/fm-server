@@ -1,6 +1,7 @@
 package io.zeitwert.data.config
 
 import dddrive.ddd.model.RepositoryDirectory
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.data.DataSetup
 import io.zeitwert.data.DelegatingSessionContext
 import io.zeitwert.data.dsl.Account
@@ -12,8 +13,6 @@ import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
-import io.zeitwert.app.session.model.KernelContext
-import org.jooq.DSLContext
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -26,7 +25,6 @@ import kotlin.random.Random
 @ConditionalOnProperty(name = ["zeitwert.install_demo_data"], havingValue = "true")
 class DemoDataSetup(
 	val directory: RepositoryDirectory,
-	val dslContext: DSLContext,
 	val buildingService: BuildingService,
 	val kernelContext: KernelContext,
 ) : DataSetup {
@@ -52,9 +50,9 @@ class DemoDataSetup(
 		println("\nDEMO DATA SETUP")
 		println("  Setting up demo tenant and users...")
 
-		Tenant.init(dslContext, directory)
-		Account.init(dslContext, directory)
-		Building.init(dslContext, directory, buildingService)
+		Tenant.init(directory)
+		Account.init(directory)
+		Building.init(directory, buildingService)
 
 		// Upload kernel tenant logo if empty
 		setupKernelTenantLogo()
@@ -246,7 +244,9 @@ class DemoDataSetup(
 					building.contactSet.add(contactId as Int)
 				}
 
-				dslContext.transaction { _ -> Building.buildingRepository.store(building) }
+				Building.buildingRepository.transaction {
+					Building.buildingRepository.store(building)
+				}
 			}
 		}
 	}

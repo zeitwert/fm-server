@@ -1,11 +1,11 @@
 package io.zeitwert.persist.sql.obj.impl
 
 import dddrive.query.QuerySpec
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.db.Tables
 import io.zeitwert.fm.oe.model.db.tables.records.ObjUserRecord
-import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.persist.ObjUserPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
@@ -20,7 +20,7 @@ import java.util.*
 
 @Component("objUserPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class ObjUserSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

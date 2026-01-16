@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component
 /**
  * Memory-based persistence provider for ObjNote.
  *
- * Active when zeitwert.persistence.type=mem
+ * Active when zeitwert.persistence_type=mem
  */
 @Component("objNotePersistenceProvider")
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "mem")
 class ObjNoteMemPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

@@ -14,10 +14,10 @@ import java.util.*
 /**
  * Memory-based persistence provider for ObjUser.
  *
- * Active when zeitwert.persistence.type=mem
+ * Active when zeitwert.persistence_type=mem
  */
 @Component("objUserPersistenceProvider")
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "mem")
 class ObjUserMemPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

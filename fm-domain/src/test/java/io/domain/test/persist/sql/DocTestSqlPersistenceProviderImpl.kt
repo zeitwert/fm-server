@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 /** jOOQ-based persistence provider for DocTest aggregates. */
 @Component("docTestPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class DocTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

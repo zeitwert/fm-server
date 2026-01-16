@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component
 
 @Component("objTestPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class ObjTestSqlPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,
@@ -82,7 +82,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 					"nodeList",
 					ObjTestPartNode::class,
 				) as
-						PartListProperty<ObjTest, ObjTestPartNode>,
+					PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endLoad()
@@ -136,7 +136,7 @@ open class ObjTestSqlPersistenceProviderImpl(
 					"nodeList",
 					ObjTestPartNode::class,
 				) as
-						PartListProperty<ObjTest, ObjTestPartNode>,
+					PartListProperty<ObjTest, ObjTestPartNode>,
 				"test.nodeList",
 			)
 			endStore()

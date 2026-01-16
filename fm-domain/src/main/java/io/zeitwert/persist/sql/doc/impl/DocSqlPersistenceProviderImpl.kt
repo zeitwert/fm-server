@@ -3,8 +3,8 @@ package io.zeitwert.persist.sql.doc.impl
 import dddrive.app.doc.model.Doc
 import dddrive.query.QuerySpec
 import io.zeitwert.app.doc.model.db.Tables
-import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.app.session.model.KernelContext
+import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.persist.DocPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
 import io.zeitwert.persist.sql.doc.base.DocSqlPersistenceProviderBase
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 
 @Component("docPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class DocSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,

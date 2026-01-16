@@ -3,6 +3,7 @@ package io.zeitwert.data.dsl
 import dddrive.ddd.model.RepositoryDirectory
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.enums.CodeCurrency
+import io.zeitwert.fm.building.api.BuildingService
 import io.zeitwert.fm.building.model.ObjBuilding
 import io.zeitwert.fm.building.model.ObjBuildingRepository
 import io.zeitwert.fm.building.model.enums.CodeBuildingMaintenanceStrategy
@@ -11,11 +12,9 @@ import io.zeitwert.fm.building.model.enums.CodeBuildingPartCatalog
 import io.zeitwert.fm.building.model.enums.CodeBuildingRatingStatus
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
-import io.zeitwert.fm.building.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeCountry
-import org.jooq.DSLContext
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -52,7 +51,6 @@ object Building {
 
 	private const val DefaultGeoZoom = 17
 
-	lateinit var dslContext: DSLContext
 	lateinit var directory: RepositoryDirectory
 	lateinit var buildingService: BuildingService
 
@@ -63,11 +61,9 @@ object Building {
 		get() = directory.getRepository(ObjUser::class.java) as ObjUserRepository
 
 	fun init(
-		dslContext: DSLContext,
 		directory: RepositoryDirectory,
 		buildingService: BuildingService,
 	) {
-		this.dslContext = dslContext
 		this.directory = directory
 		this.buildingService = buildingService
 	}
@@ -162,7 +158,7 @@ object Building {
 			}
 		}
 
-		dslContext.transaction { _ ->
+		buildingRepository.transaction {
 			buildingRepository.store(building)
 		}
 

@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component
 /**
  * Memory-based persistence provider for base Doc.
  *
- * Active when zeitwert.persistence.type=mem
+ * Active when zeitwert.persistence_type=mem
  */
 @Component("docPersistenceProvider")
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "mem")
 class DocMemPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component("docTestPersistenceProvider")
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "mem")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "mem")
 class DocTestMemPersistenceProviderImpl(
 	override val sessionContext: SessionContext,
 	override val kernelContext: KernelContext,

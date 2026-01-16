@@ -2,6 +2,7 @@ package io.zeitwert.persist.sql.obj.impl
 
 import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.base.FMObjBase
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.building.model.ObjBuilding
@@ -10,7 +11,6 @@ import io.zeitwert.fm.building.model.db.tables.records.ObjBuildingRecord
 import io.zeitwert.fm.building.model.enums.CodeBuildingSubType
 import io.zeitwert.fm.building.model.enums.CodeBuildingType
 import io.zeitwert.fm.building.model.enums.CodeHistoricPreservation
-import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.oe.model.enums.CodeCountry
 import io.zeitwert.persist.ObjBuildingPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component
 
 @Component("objBuildingPersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class ObjBuildingSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,

@@ -4,7 +4,6 @@ import dddrive.ddd.model.RepositoryDirectory
 import io.zeitwert.data.DataSetup
 import io.zeitwert.data.dsl.Account
 import io.zeitwert.data.dsl.Tenant
-import org.jooq.DSLContext
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component
 @ConditionalOnProperty(name = ["zeitwert.install_test_data"], havingValue = "true")
 class TestDataSetup(
 	val directory: RepositoryDirectory,
-	val dslContext: DSLContext,
 ) : DataSetup {
 
 	companion object {
@@ -32,8 +30,8 @@ class TestDataSetup(
 		println("\nTEST DATA SETUP")
 		println("  Setting up test tenant and users...")
 
-		Tenant.init(dslContext, directory)
-		Account.init(dslContext, directory)
+		Tenant.init(directory)
+		Account.init(directory)
 
 		Tenant(TEST_TENANT_KEY, "Test", "advisor") {
 			// here we have already set tenantId and kernelUserId for session context

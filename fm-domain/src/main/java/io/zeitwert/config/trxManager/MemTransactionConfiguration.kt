@@ -1,4 +1,4 @@
-package io.zeitwert.app.config
+package io.zeitwert.config.trxManager
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
@@ -10,26 +10,22 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.SimpleTransactionStatus
 
 @Configuration
-@ConditionalOnProperty(
-	name = ["zeitwert.persistence.type"],
-	havingValue = "mem",
-	matchIfMissing = false,
-)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "mem", matchIfMissing = false)
 open class MemTransactionConfiguration {
 
 	@Bean(name = ["transactionManager"])
 	@Primary
-	open fun transactionManager(): PlatformTransactionManager = object : PlatformTransactionManager {
-		override fun getTransaction(definition: TransactionDefinition): TransactionStatus {
-			return SimpleTransactionStatus()
+	open fun transactionManager(): PlatformTransactionManager =
+		object : PlatformTransactionManager {
+			override fun getTransaction(definition: TransactionDefinition): TransactionStatus = SimpleTransactionStatus()
+
+			override fun commit(status: TransactionStatus) {
+				// no-op for in-memory persistence
+			}
+
+			override fun rollback(status: TransactionStatus) {
+				// no-op for in-memory persistence
+			}
 		}
 
-		override fun commit(status: TransactionStatus) {
-			// no-op for in-memory persistence
-		}
-
-		override fun rollback(status: TransactionStatus) {
-			// no-op for in-memory persistence
-		}
-	}
 }

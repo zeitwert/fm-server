@@ -2,11 +2,11 @@ package io.zeitwert.persist.sql.obj.impl
 
 import dddrive.query.QuerySpec
 import io.zeitwert.app.obj.model.base.FMObjBase
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.collaboration.model.ObjNote
 import io.zeitwert.fm.collaboration.model.db.Tables
 import io.zeitwert.fm.collaboration.model.db.tables.records.ObjNoteRecord
-import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.collaboration.model.enums.CodeNoteType
 import io.zeitwert.persist.ObjNotePersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 /** Persistence provider for ObjNote aggregates. */
 @Component("objNotePersistenceProvider")
 @Primary
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class ObjNoteSqlPersistenceProviderImpl(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,

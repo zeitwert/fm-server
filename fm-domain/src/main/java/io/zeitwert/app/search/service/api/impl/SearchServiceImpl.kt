@@ -17,11 +17,13 @@ import org.jooq.Field
 import org.jooq.Record6
 import org.jooq.SelectWithTiesAfterOffsetStep
 import org.jooq.impl.DSL
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.*
 
 @Service("searchService")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 class SearchServiceImpl internal constructor(
 	private val dslContext: DSLContext,
 	private val kernelContext: KernelContext,

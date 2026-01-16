@@ -6,6 +6,7 @@ import io.zeitwert.app.ddd.service.api.SearchService
 import io.zeitwert.app.search.api.rest.dto.SearchResultDto
 import io.zeitwert.app.session.model.SessionContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,6 +16,7 @@ import java.util.*
 
 @RestController("searchController")
 @RequestMapping("/rest/search")
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 class SearchController {
 
 	@Autowired

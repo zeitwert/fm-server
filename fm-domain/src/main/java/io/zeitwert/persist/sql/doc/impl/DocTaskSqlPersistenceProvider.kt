@@ -2,11 +2,11 @@ package io.zeitwert.persist.sql.doc.impl
 
 import dddrive.query.QuerySpec
 import io.zeitwert.app.doc.model.base.FMDocBase
+import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.task.model.DocTask
 import io.zeitwert.fm.task.model.db.Tables
 import io.zeitwert.fm.task.model.db.tables.records.DocTaskRecord
-import io.zeitwert.app.session.model.KernelContext
 import io.zeitwert.fm.task.model.enums.CodeTaskPriority
 import io.zeitwert.persist.DocTaskPersistenceProvider
 import io.zeitwert.persist.sql.ddd.SqlIdProvider
@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component("docTaskPersistenceProvider")
-@ConditionalOnProperty(name = ["zeitwert.persistence.type"], havingValue = "sql", matchIfMissing = true)
+@ConditionalOnProperty(name = ["zeitwert.persistence_type"], havingValue = "sql", matchIfMissing = true)
 open class DocTaskSqlPersistenceProvider(
 	override val dslContext: DSLContext,
 	override val sessionContext: SessionContext,
