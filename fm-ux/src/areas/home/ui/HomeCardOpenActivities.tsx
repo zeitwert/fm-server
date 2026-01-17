@@ -62,6 +62,13 @@ function getItemPath(item?: TypedEnumerated) {
 	return `/${typeSegment}/${item.id}`;
 }
 
+function isActivityBuilding(activity: OpenActivity): boolean {
+	const typeId = activity.item.itemType?.id ?? '';
+	// itemType.id format: "AGGR" prefix + type name, or just the type name
+	const typeSegment = typeId.length > 4 ? typeId.substring(4) : typeId;
+	return typeSegment.toLowerCase() === 'building';
+}
+
 function renderLink(label: string, href: string | null) {
 	if (!href) {
 		return <span>{label}</span>;
@@ -89,6 +96,13 @@ function ActivityList({
 				const itemPath = getItemPath(activity.item);
 				const subject = activity.subject || '(ohne Titel)';
 
+				// If the activity itself is a building, show only the building as header
+				const isBuilding = isActivityBuilding(activity);
+				const headerName = isBuilding
+					? (activity.item.name ?? 'Unbekannt')
+					: (activity.relatedTo?.name ?? 'Unbekannt');
+				const headerPath = isBuilding ? itemPath : relatedToPath;
+
 				return (
 					<div key={`${activity.item.id}-${index}`}>
 						<div style={{ display: 'flex', gap: 12 }}>
@@ -104,7 +118,7 @@ function ActivityList({
 									}}
 								>
 									<Typography.Text strong>
-										{renderLink(activity.relatedTo?.name ?? 'Unbekannt', relatedToPath)}
+										{renderLink(headerName, headerPath)}
 									</Typography.Text>
 									{dueRelative && (
 										<Typography.Text type={isOverdue ? 'danger' : 'secondary'}>
@@ -115,11 +129,13 @@ function ActivityList({
 								<Typography.Text type="secondary" style={{ fontSize: 12 }}>
 									{dueAt} · {userLabel}
 								</Typography.Text>
-								<div style={{ marginTop: 4 }}>
-									<Typography.Text strong>
-										{renderLink(subject, itemPath)}
-									</Typography.Text>
-								</div>
+								{!isBuilding && (
+									<div style={{ marginTop: 4 }}>
+										<Typography.Text strong>
+											{renderLink(subject, itemPath)}
+										</Typography.Text>
+									</div>
+								)}
 								{activity.content && (
 									<Typography.Paragraph
 										style={{ marginTop: 4, marginBottom: 0 }}
