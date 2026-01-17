@@ -145,8 +145,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 				await get().completeLogin();
 			}
 		} catch (error) {
+			sessionStorage.removeItem(SESSION_STATE_KEY);
+			sessionStorage.removeItem(TENANT_INFO_KEY);
 			set({
+				state: SessionState.close,
 				error: error instanceof Error ? error.message : 'Failed to fetch tenant info',
+				selectedTenant: null,
+				tenantInfo: null,
+				selectedAccount: null,
 			});
 		}
 	},

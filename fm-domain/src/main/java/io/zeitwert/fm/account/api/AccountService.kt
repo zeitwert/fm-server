@@ -1,16 +1,15 @@
 package io.zeitwert.fm.account.api
 
-import io.zeitwert.fm.account.model.db.tables.records.ObjAccountVRecord
-import io.zeitwert.fm.oe.model.ObjTenant
+import io.zeitwert.app.api.jsonapi.EnumeratedDto
 
 interface AccountService {
 
 	/**
 	 * Get all accounts of a tenant, without any security check.
 	 *
-	 * @param tenant tenant
+	 * @param tenantId tenant id
 	 * @return accounts of the tenant
 	 */
-	fun getAccounts(tenant: ObjTenant): List<ObjAccountVRecord>
+	fun getAccounts(tenantId: Any): List<EnumeratedDto>
 
 }

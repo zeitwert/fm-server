@@ -14,9 +14,6 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.session.HttpSessionEventPublisher
 
 private val GET_PERMIT_ALL = arrayOf(
-	// login
-	"/rest/app/userInfo/**",
-	"/rest/app/tenantInfo/**",
 	// enumerations
 	"/enum/**",
 	// static content
