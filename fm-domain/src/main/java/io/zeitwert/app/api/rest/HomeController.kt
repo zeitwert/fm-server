@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import kotlin.math.round
 
 @RestController("homeController")
 @RequestMapping("/rest/home")
@@ -51,14 +53,13 @@ class HomeController {
 	@Autowired
 	lateinit var sessionContext: SessionContext
 
-//	@Autowired
-//	lateinit var dslContext: DSLContext
-
+	var accountId: Any? = null
 	var allBuildings: List<ObjBuilding>? = null
 
-	fun getBuildings(): List<ObjBuilding> {
-		if (allBuildings == null) {
+	fun getBuildings(accountId: Any): List<ObjBuilding> {
+		if (allBuildings == null || accountId != this.accountId) {
 			val buildingIds = buildingRepository.find(null)
+			this.accountId = accountId
 			allBuildings = buildingIds.map { buildingRepository.get(it) }
 		}
 		return allBuildings!!
@@ -71,7 +72,7 @@ class HomeController {
 		val account = accountRepository.get(accountId)
 		sessionContext.tenantId
 		val portfolioCount = portfolioRepository.find(null).size
-		val buildings = getBuildings()
+		val buildings = getBuildings(accountId)
 		val ratingCount = buildings.filter { activeRatings.contains(it.currentRating?.ratingStatus?.id) }.size
 		val insuranceValue = buildings.sumOf { it.insuredValue?.toInt() ?: 0 }
 		return ResponseEntity.ok(
@@ -91,9 +92,9 @@ class HomeController {
 
 	@GetMapping("/openActivities/{accountId}")
 	fun getOpenActivities(
-		@PathVariable("accountId") accountId: Int?,
+		@PathVariable("accountId") accountId: Int,
 	): ResponseEntity<List<HomeActivityResponse>> {
-		val buildings = getBuildings()
+		val buildings = getBuildings(accountId)
 		val rrList = buildings
 			.filter { activeRatings.contains(it.currentRating?.ratingStatus?.id) }
 			.map { getRatingResponse(it) }
@@ -110,7 +111,7 @@ class HomeController {
 		val rating = building.currentRating
 		val ratingUser = rating?.ratingUser
 		val ratingUserDto = EnumeratedDto.of(ratingUser)
-		val ratingDate = rating?.ratingDate
+		val ratingDate = LocalDate.now().plusWeeks(round(20.0 * Math.random()).toLong()) // rating?.ratingDate
 		return HomeActivityResponse(
 			item = EnumeratedDto.of(building)!!,
 			relatedTo = EnumeratedDto.of(building)!!,
@@ -142,7 +143,30 @@ class HomeController {
 	fun getRecentActions(
 		@PathVariable("accountId") accountId: Int,
 	): ResponseEntity<List<HomeActionResponse>> {
-		return ResponseEntity.ok(emptyList())
+		val demoItems = buildDemoItems(accountId)
+		val demoUser = resolveDemoUser()
+		val now = sessionContext.currentTime
+		val caseStageOpen = EnumeratedDto.of(getCaseStage("task.open"))
+		val caseStageDone = EnumeratedDto.of(getCaseStage("task.done"))
+
+		val actions = demoItems.take(6).mapIndexed { index, item ->
+			val timestamp = now.minusHours((index * 3L) + 1L)
+			val seqNr = if (index % 2 == 0) 0 else 1
+			val oldCaseStage = if (index % 3 == 0) caseStageOpen else null
+			val newCaseStage = if (index % 3 == 0) caseStageDone else null
+
+			HomeActionResponse(
+				item = item,
+				seqNr = seqNr,
+				timestamp = timestamp,
+				user = demoUser,
+				changes = null,
+				oldCaseStage = oldCaseStage,
+				newCaseStage = newCaseStage,
+			)
+		}
+
+		return ResponseEntity.ok(actions)
 		// val account = accountRepository.get(accountId)
 		// val result = dslContext
 		// 	.selectFrom(Tables.ACTIVITY_V)
@@ -154,6 +178,54 @@ class HomeController {
 		// 	.limit(20)
 		// 	.fetch()
 		// return ResponseEntity.ok(result.map { getActivityResponse(it) })
+	}
+
+	private fun buildDemoItems(accountId: Int): List<EnumeratedDto> {
+		val items = mutableListOf<EnumeratedDto>()
+		val buildings = getBuildings(accountId)
+		buildings.take(2).forEach { EnumeratedDto.of(it)?.let(items::add) }
+
+		val portfolios = portfolioRepository.find(null).map { portfolioRepository.get(it) }
+		portfolios.take(2).forEach { EnumeratedDto.of(it)?.let(items::add) }
+
+		val tasks = taskRepository.find(null).map { taskRepository.get(it) }
+		tasks.take(2).forEach { EnumeratedDto.of(it)?.let(items::add) }
+
+		if (items.isEmpty()) {
+			items.add(demoItem("demo-building-1", "Demo Immobilie", "obj.building", "Immobilie"))
+			items.add(demoItem("demo-portfolio-1", "Demo Portfolio", "obj.portfolio", "Portfolio"))
+			items.add(demoItem("demo-task-1", "Demo Aufgabe", "doc.task", "Aufgabe"))
+			items.add(demoItem("demo-building-2", "Demo Immobilie 2", "obj.building", "Immobilie"))
+			items.add(demoItem("demo-portfolio-2", "Demo Portfolio 2", "obj.portfolio", "Portfolio"))
+			items.add(demoItem("demo-task-2", "Demo Aufgabe 2", "doc.task", "Aufgabe"))
+		}
+
+		return items
+	}
+
+	private fun demoItem(
+		id: String,
+		name: String,
+		typeId: String,
+		typeName: String,
+	): EnumeratedDto {
+		val itemType = EnumeratedDto.of(typeId, typeName)
+		return TypedEnumeratedDto(id, name, itemType)
+	}
+
+	private fun resolveDemoUser(): EnumeratedDto {
+		val user = runCatching { userRepository.get(sessionContext.userId) }.getOrNull()
+		if (user != null) {
+			return EnumeratedDto.of(user)!!
+		}
+
+		val fallbackUserId = userRepository.find(null).firstOrNull()
+		val fallbackUser = fallbackUserId?.let { userRepository.get(it) }
+		return if (fallbackUser != null) {
+			EnumeratedDto.of(fallbackUser)!!
+		} else {
+			EnumeratedDto.of("demo-user", "Demo User")
+		}
 	}
 
 	private fun getActivityResponse(a: ActivityVRecord): HomeActionResponse {

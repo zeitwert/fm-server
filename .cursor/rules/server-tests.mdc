@@ -4,8 +4,10 @@ alwaysApply: true
 
 # Run Tests
 
-After any change, you run the tests to ensure the changes are working as expected.
+After any *server* change, you run the tests to ensure the changes are working as expected.
 The tests can be run via `mvn` on the windows command shell.
+
+If you only changed the UI, you do not need to run the tests, we do not have any tests yet (except running the application).
 
 ## compilation
 

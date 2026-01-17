@@ -24,6 +24,7 @@ open class SessionContextProvider {
 		check("anonymousUser" != auth.principal) { "Anonymous user is not allowed to access this resource" }
 
 		val userDetails = auth.principal as AppUserDetails
+		println("getSessionContext(${userDetails.username}, ${userDetails.userId}, ${userDetails._tenantId}, ${userDetails.accountId})")
 		val user = userRepository.get(userDetails.userId)
 		val tenantId = userDetails.tenantId
 		val accountId = userDetails.accountId
@@ -32,7 +33,7 @@ open class SessionContextProvider {
 			tenantId = tenantId,
 			userId = user.id,
 			accountId = accountId,
-			locale = CodeLocale.DE_CH, // ,
+			locale = CodeLocale.DE_CH,
 		)
 	}
 

@@ -136,7 +136,7 @@ object Building {
 
 		// Set rating properties
 		rating.ratingDate = LocalDate.of(ctx.ratingYear, 1, 1)
-		rating.ratingStatus = CodeBuildingRatingStatus.DONE
+		rating.ratingStatus = if (Math.random() < 0.3) CodeBuildingRatingStatus.OPEN else CodeBuildingRatingStatus.DONE
 
 		// Set part catalog and maintenance strategy
 		ctx.partCatalog?.let { rating.partCatalog = CodeBuildingPartCatalog.getPartCatalog(it) }

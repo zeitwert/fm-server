@@ -56,8 +56,10 @@ export function AppHeader() {
 				display: 'grid',
 				gridTemplateColumns: '1fr auto 1fr',
 				alignItems: 'center',
+				width: '100%',
 				height: 48,
 				padding: '0 16px',
+				boxSizing: 'border-box',
 				background: token.colorBgContainer,
 				borderBottom: `1px solid ${token.colorBorderSecondary}`,
 			}}
