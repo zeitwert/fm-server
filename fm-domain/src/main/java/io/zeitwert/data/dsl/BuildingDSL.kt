@@ -122,7 +122,7 @@ object Building {
 		}
 
 		val buildingId = building.id as Int
-		println("      Created building ${ctx.name} at ${ctx.street}, ${ctx.zip} ${ctx.city} (id=$buildingId, geo=$coordinates)")
+		DslUtil.logger.info("${DslUtil.indent}Created building ${ctx.name} ($buildingId) at ${ctx.street}, ${ctx.zip} ${ctx.city}, $coordinates")
 
 		return buildingId
 	}
@@ -161,8 +161,6 @@ object Building {
 		buildingRepository.transaction {
 			buildingRepository.store(building)
 		}
-
-		println("        Added rating for year ${ctx.ratingYear} with ${ctx.elements.size} elements")
 	}
 }
 

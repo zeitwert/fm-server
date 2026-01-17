@@ -1,6 +1,8 @@
 package io.zeitwert.data
 
 import io.zeitwert.config.session.TestSessionContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -23,6 +25,12 @@ class DataSetupRunner(
 	private val dataSetupsProvider: ObjectProvider<DataSetup>,
 ) : ApplicationRunner {
 
+	companion object {
+
+		val logger: Logger = LoggerFactory.getLogger(DataSetupRunner::class.java)
+
+	}
+
 	override fun run(args: ApplicationArguments) {
 		val dataSetups = dataSetupsProvider.orderedStream().toList()
 		if (dataSetups.isEmpty()) {
@@ -30,7 +38,9 @@ class DataSetupRunner(
 		}
 
 		val dataSetup = dataSetups.first()
-		println("\n=== ${dataSetup.name} DATA SETUP ===")
+
+		logger.info("")
+		logger.info("=== ${dataSetup.name} DATA SETUP ===")
 
 		TestSessionContext.startOverride()
 		try {
@@ -39,6 +49,8 @@ class DataSetupRunner(
 			TestSessionContext.stopOverride()
 		}
 
-		println("=== ${dataSetup.name} DATA SETUP: Complete ===\n")
+		logger.info("=== ${dataSetup.name} DATA SETUP: Complete ===")
+
 	}
+
 }

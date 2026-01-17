@@ -7,12 +7,14 @@ import io.zeitwert.data.DataSetup
 import io.zeitwert.data.dsl.Account
 import io.zeitwert.data.dsl.AccountContext
 import io.zeitwert.data.dsl.Building
+import io.zeitwert.data.dsl.DslUtil
 import io.zeitwert.data.dsl.Tenant
 import io.zeitwert.fm.building.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
+import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
@@ -32,7 +34,11 @@ class DemoDataSetup(
 	companion object {
 
 		const val DEMO_TENANT_KEY = "demo"
+		const val DEMO_TENANT_NAME = "Demo"
+		const val DEMO_TENANT_LOGO = "demo/tenant/logo-demo.png"
+
 		const val DEMO_PASSWORD = "demo"
+
 	}
 
 	override val name = "DEMO"
@@ -44,12 +50,13 @@ class DemoDataSetup(
 			Triple("martin", "Martin Frey", "super_user"),
 		)
 
-	private fun getUsers(domain: String): List<Triple<String, String, String>> = userTemplates.map { (mail, name, role) -> Triple("$mail@$domain", name, role) }
+	private fun getUsersInDomain(domain: String): List<Triple<String, String, String>> =
+		userTemplates.map { (mail, name, role) ->
+			Triple("$mail@$domain", name, role)
+		}
 
 	override fun setup() {
-		println("\nDEMO DATA SETUP")
-		println("  Setting up demo tenant and users...")
-
+		DslUtil.init(directory)
 		Tenant.init(directory)
 		Account.init(directory)
 		Building.init(directory, buildingService)
@@ -57,79 +64,72 @@ class DemoDataSetup(
 		// Upload kernel tenant logo if empty
 		setupKernelTenantLogo()
 
-		Tenant(DEMO_TENANT_KEY, "Demo", "advisor", "demo/tenant/logo-demo.png") {
-			val allUsers = getUsers("zeitwert.io")
+		DslUtil.startIndent()
+		Tenant(DEMO_TENANT_KEY, DEMO_TENANT_NAME, CodeTenantType.ADVISOR.id, DEMO_TENANT_LOGO) {
+			val allUsers = getUsersInDomain("zeitwert.io")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, name, role) -> user(email, name, role, DEMO_PASSWORD) }
-				println("  Setting up demo accounts, contacts, and buildings...")
 				account("3032", "Hinterkappelen 3032", "client", "demo/account/logo-3032.jpg") {
-					genRandomContacts()
+					genRandomContacts("hinterkappelen.ch")
 					buildings3032()
 				}
 				account("3033", "Wohlen 3033", "client", "demo/account/logo-3033.jpg") {
-					genRandomContacts()
+					genRandomContacts("wohlen.ch")
 					buildings3033()
 				}
 				account("3034", "Murzelen 3034", "client", "demo/account/logo-3034.jpg") {
-					genRandomContacts()
+					genRandomContacts("murzelen.ch")
 					buildings3034()
 				}
 				account("3043", "Uettligen 3043", "client", "demo/account/logo-3043.jpg") {
-					genRandomContacts()
+					genRandomContacts("uettligen.ch")
 					buildings3043()
 				}
 				account("8556", "Wigoltingen 8556", "client", "demo/account/logo-8556.jpg") {
-					genRandomContacts()
+					genRandomContacts("wigoltingen.ch")
 					buildings8556()
 				}
-				println("  Demo data setup complete.\n")
 			}
 		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 
 		Tenant("8253", "Diessenhofen", "community", "demo/tenant/logo-8253.jpg") {
-			val allUsers = getUsers("diessenhofen.ch")
+			val allUsers = getUsersInDomain("diessenhofen.ch")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
-				println("  Setting up demo accounts, contacts, and buildings...")
 				account("8253", "Diessenhofen 8253", "client", "demo/account/logo-8253.jpg") {
-					genRandomContacts()
+					genRandomContacts("diessenhofen.ch")
 					buildings8253()
 				}
-				println("  Demo data setup complete.\n")
 			}
 		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 
 		Tenant("8266", "Steckborn", "community", "demo/tenant/logo-8266.jpg") {
-			val allUsers = getUsers("steckborn.ch")
+			val allUsers = getUsersInDomain("steckborn.ch")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
-				println("  Setting up demo accounts, contacts, and buildings...")
 				account("8266", "Steckborn 8266", "client", "demo/account/logo-8266.jpg") {
-					genRandomContacts()
+					genRandomContacts("steckborn.ch")
 					buildings8266()
 				}
-				println("  Demo data setup complete.\n")
 			}
 		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 
 		Tenant("8476", "Unterstammheim", "community", "demo/tenant/logo-8476.jpg") {
-			val allUsers = getUsers("unterstammheim.ch")
+			val allUsers = getUsersInDomain("unterstammheim.ch")
 			val adminUser = allUsers[0]
 			val stdUsers = allUsers.subList(1, allUsers.size)
 			adminUser(adminUser.first, adminUser.second, adminUser.third, DEMO_PASSWORD) {
 				stdUsers.forEach { (email, fullName, role) -> user(email, fullName, role, DEMO_PASSWORD) }
-				println("  Setting up demo accounts, contacts, and buildings...")
 				account("8476", "Unterstammheim 8476", "client", "demo/account/logo-8476.jpg") {
-					genRandomContacts()
+					genRandomContacts("unterstammheim.ch")
 					buildings8476()
 				}
-				println("  Demo data setup complete.\n")
 			}
 		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
 	}
@@ -138,40 +138,35 @@ class DemoDataSetup(
 	private fun setupKernelTenantLogo() {
 		val tenantRepository = directory.getRepository(ObjTenant::class.java) as ObjTenantRepository
 		val userRepository = directory.getRepository(ObjUser::class.java) as ObjUserRepository
-
 		// Get the kernel tenant - use get() for read-only access
 		val kernelTenant = tenantRepository.get(kernelContext.kernelTenantId)
 		val logoImageId = kernelTenant.logoImageId
-
 		if (logoImageId == null) {
-			println("    Kernel tenant has no logo document, skipping logo upload")
+			DslUtil.logger.info("${DslUtil.indent}Kernel tenant has no logo document, skipping logo upload")
 			return
 		}
-
 		// Check if logo document already has content by loading it
 		val logoImage = Tenant.documentRepository.load(logoImageId)
 		if (logoImage.content != null && logoImage.content!!.isNotEmpty()) {
-			println("    Kernel tenant logo already has content, skipping")
+			DslUtil.logger.debug("${DslUtil.indent}Kernel tenant logo already has content, skipping")
 			return
 		}
-
 		// Get kernel user for the upload
 		val kernelUser = userRepository.getByEmail(ObjUserRepository.KERNEL_USER_EMAIL)
 		if (kernelUser.isEmpty) {
-			println("    Warning: Kernel user not found, skipping kernel logo upload")
+			DslUtil.logger.warn("${DslUtil.indent}Kernel user not found, skipping kernel logo upload")
 			return
 		}
-
 		// Upload the kernel logo (uploadLogoFromResource will load the document for writing)
-		Tenant.uploadLogoFromResource(logoImageId, "demo/tenant/logo-kernel.jpg", kernelUser.get().id!!)
-		println("    Uploaded kernel tenant logo")
+		DslUtil.uploadLogoFromResource(logoImageId, "demo/tenant/logo-kernel.jpg", kernelUser.get().id)
+		DslUtil.logger.debug("${DslUtil.indent}Uploaded kernel tenant logo")
 	}
 
 	/**
 	 * Generate a random number (3-6) of contacts for this account. Ensures no duplicate first name +
 	 * last name combinations.
 	 */
-	fun AccountContext.genRandomContacts() {
+	fun AccountContext.genRandomContacts(domain: String) {
 		val count = (3..6).random()
 		val usedNames = mutableSetOf<Pair<String, String>>()
 		repeat(count) {
@@ -184,7 +179,7 @@ class DemoDataSetup(
 				lastName = name.second
 				salutation = name.third
 			} while (!usedNames.add(firstName to lastName))
-			val email = "${firstName.lowercase()}.${lastName.lowercase()}@example.ch"
+			val email = "${firstName.lowercase()}.${lastName.lowercase()}@$domain"
 			val role = randomContactRole()
 			val phone = randomPhone()
 			val mobile = randomMobile()
@@ -206,7 +201,12 @@ class DemoDataSetup(
 		tenantId: Any,
 		userId: Any,
 	) {
-		println("  Attaching random contacts to buildings of tenant $tenantId (user: $userId)")
+		DslUtil.logger.info(
+			"{}Attaching random contacts to buildings of tenant {} (user: {})",
+			DslUtil.indent,
+			tenantId,
+			userId,
+		)
 
 		// Set tenant context for security
 		TestSessionContext.overrideTenantId(tenantId as Int)
@@ -214,21 +214,18 @@ class DemoDataSetup(
 
 		// Get all accounts for this tenant
 		val accountIds = Account.accountRepository.find(null)
-		println("tenant($tenantId) accounts: $accountIds")
 		check(accountIds.isNotEmpty()) { "Tenant $tenantId has no accounts to process." }
 
 		for (accountId in accountIds) {
 			TestSessionContext.overrideAccountId(accountId as Int)
 			// Query all contacts for this account
 			val contactIds = Account.contactRepository.find(null)
-			println("account($accountId) contacts: $contactIds")
 			check(contactIds.isNotEmpty()) {
 				"Account $accountId has no contacts to attach to buildings."
 			}
 
 			// Query all buildings for this account
 			val buildingIds = Building.buildingRepository.find(null)
-			println("account($accountId) buildings: $buildingIds")
 			check(buildingIds.isNotEmpty()) {
 				"Account $accountId has no buildings to attach contacts to."
 			}
@@ -240,7 +237,6 @@ class DemoDataSetup(
 				val selectedContacts = contactIds.shuffled().take(numContacts)
 
 				for (contactId in selectedContacts) {
-					println("attaching contact $contactId to building $buildingId")
 					building.contactSet.add(contactId as Int)
 				}
 

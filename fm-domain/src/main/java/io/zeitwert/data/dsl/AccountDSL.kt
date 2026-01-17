@@ -63,7 +63,7 @@ object Account {
 		if (account.isPresent) {
 			val account = account.get()
 			val accountId = account.id as Int
-			println("    Account ${ctx.key} already exists (id=$accountId)")
+			DslUtil.logger.info("${DslUtil.indent}Account ${ctx.key} ($accountId) already exists")
 			// Still create contacts that don't exist
 			// set DelegatingSessionContext account ID for nested operations
 			// DelegatingSessionContext.setAccountId(accountId)
@@ -86,11 +86,13 @@ object Account {
 		check(newAccount.logoImageId != null) { "Tenant logoImageId is created in domain logic" }
 
 		val accountId = newAccount.id as Int
-		println("    Created account ${ctx.key} - ${ctx.name} (id=$accountId)")
+		DslUtil.logger.info("${DslUtil.indent}Created account ${ctx.key} ($accountId)")
+
+		DslUtil.indent()
 
 		// Upload account logo from resource if path is provided
 		if (ctx.logoPath != null) {
-			Tenant.uploadLogoFromResource(newAccount.logoImageId!!, ctx.logoPath, ctx.userId)
+			DslUtil.uploadLogoFromResource(newAccount.logoImageId!!, ctx.logoPath, ctx.userId)
 		}
 
 		// Create contacts for this account
@@ -107,6 +109,8 @@ object Account {
 				buildingCtx.city,
 			) { copyFrom(buildingCtx) }
 		}
+
+		DslUtil.outdent()
 
 		return accountId
 	}
@@ -132,7 +136,7 @@ object Account {
 		}
 
 		val contactId = contact.id as Int
-		println("      Created contact ${ctx.firstName} ${ctx.lastName} (id=$contactId)")
+		DslUtil.logger.info("${DslUtil.indent}Created contact ${ctx.firstName} ${ctx.lastName} ($contactId)")
 
 		return contactId
 	}

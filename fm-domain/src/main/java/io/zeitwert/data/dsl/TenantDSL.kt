@@ -4,14 +4,12 @@ import dddrive.ddd.model.RepositoryDirectory
 import io.zeitwert.config.session.TestSessionContext
 import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
-import io.zeitwert.fm.dms.model.enums.CodeContentType
 import io.zeitwert.fm.oe.model.ObjTenant
 import io.zeitwert.fm.oe.model.ObjTenantRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
 import io.zeitwert.fm.oe.model.enums.CodeTenantType
 import io.zeitwert.fm.oe.model.enums.CodeUserRole
-import java.time.OffsetDateTime
 
 /**
  * DSL for creating tenants with nested users using Spring repositories.
@@ -45,43 +43,7 @@ object Tenant {
 	val documentRepository: ObjDocumentRepository
 		get() = directory.getRepository(ObjDocument::class.java) as ObjDocumentRepository
 
-	/**
-	 * Upload logo content from classpath resource to a document.
-	 * Loads the document for writing by ID.
-	 *
-	 * @param documentId The ID of the logo document to upload content to
-	 * @param resourcePath The resource path relative to resources (e.g., "demo/tenant/logo-demo.png")
-	 * @param userId The user ID for the upload
-	 */
-	fun uploadLogoFromResource(
-		documentId: Any,
-		resourcePath: String,
-		userId: Any,
-	) {
-		val fullPath = "/$resourcePath"
-		val inputStream = Tenant::class.java.getResourceAsStream(fullPath)
-		if (inputStream == null) {
-			println("      Warning: No logo resource found at $resourcePath")
-			return
-		}
-
-		val extension = resourcePath.substringAfterLast(".", "")
-		val contentType = CodeContentType.getItemByExtension(extension)
-		if (contentType == null) {
-			println("      Warning: Unknown content type for extension '$extension' in $resourcePath")
-			return
-		}
-
-		val bytes = inputStream.use { it.readBytes() }
-		// Load document for writing
-		val document = documentRepository.load(documentId)
-		document.storeContent(contentType, bytes, userId, OffsetDateTime.now())
-		println("      Uploaded logo from $resourcePath")
-	}
-
-	fun init(
-		directory: RepositoryDirectory,
-	) {
+	fun init(directory: RepositoryDirectory) {
 		this.directory = directory
 	}
 
@@ -101,8 +63,16 @@ object Tenant {
 		TestSessionContext.overrideTenantId(tenantId)
 		context.tenantId = tenantId
 
+		DslUtil.indent()
+
 		// Now execute the DSL block with tenant context set
 		context.init()
+
+		// Upload tenant logo if path is provided
+		if (logoPath != null) {
+			val tenant = tenantRepository.get(tenantId)
+			DslUtil.uploadLogoFromResource(tenant.logoImageId!!, logoPath, context.adminUserId!!)
+		}
 
 		// Process any simple users (non-admin)
 		context.users.forEach { userCtx ->
@@ -110,11 +80,7 @@ object Tenant {
 			getOrCreateUser(tenant, userCtx)
 		}
 
-		// Upload tenant logo if path is provided
-		if (logoPath != null) {
-			val tenant = tenantRepository.get(tenantId)
-			uploadLogoFromResource(tenant.logoImageId!!, logoPath, context.adminUserId!!)
-		}
+		DslUtil.outdent()
 
 		return Pair(tenantId, context.adminUserId!!)
 	}
@@ -126,7 +92,7 @@ object Tenant {
 		if (tenant.isPresent) {
 			val tenant = tenant.get()
 			val tenantId = tenant.id as Int
-			println("    Tenant ${ctx.key} already exists (id=$tenantId)")
+			DslUtil.logger.info("${DslUtil.indent}Tenant ${ctx.key} ($tenantId) already exists")
 			return tenantId
 		}
 
@@ -141,7 +107,7 @@ object Tenant {
 		check(newTenant.logoImageId != null) { "Tenant logoImageId is created in domain logic" }
 
 		val tenantId = newTenant.id as Int
-		println("    Created tenant ${ctx.key} - ${ctx.name} (id=$tenantId)")
+		DslUtil.logger.info("${DslUtil.indent}Created Tenant ${ctx.key} ($tenantId)")
 
 		return tenantId
 	}
@@ -155,7 +121,7 @@ object Tenant {
 
 		if (user.isPresent) {
 			val userId = user.get().id as Int
-			println("      User ${ctx.email} already exists (id=$userId)")
+			DslUtil.logger.info("${DslUtil.indent}User ${ctx.email} ($userId) already exists")
 			return userId
 		}
 
@@ -174,7 +140,7 @@ object Tenant {
 		}
 
 		val userId = newUser.id as Int
-		println("      Created user ${ctx.email} - ${ctx.name} (id=$userId)")
+		DslUtil.logger.info("${DslUtil.indent}Created user ${ctx.email} ($userId)")
 
 		return userId
 	}
@@ -215,7 +181,9 @@ class TenantContext(
 		adminUserId = userId
 
 		// Execute nested block with user context set
+		DslUtil.indent()
 		AdminUserContext(tenant, userId).init()
+		DslUtil.outdent()
 	}
 
 	/**
