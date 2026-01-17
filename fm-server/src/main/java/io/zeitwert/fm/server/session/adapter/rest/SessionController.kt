@@ -135,6 +135,28 @@ class SessionController {
 			check(auth != null && auth.principal is AppUserDetails) { "User must be authenticated first" }
 
 			val userDetails = auth.principal as AppUserDetails
+			val user = userRepository.get(userDetails.userId)
+
+			// Validate tenant switching is not allowed
+			val existingTenantId = userDetails._tenantId
+			if (existingTenantId != null && existingTenantId != request.tenantId) {
+				throw IllegalArgumentException(
+					"Cannot switch tenant during session. Current: $existingTenantId, Requested: ${request.tenantId}"
+				)
+			}
+
+			// Validate tenant is allowed for user
+			check(user.tenantSet.contains(request.tenantId)) {
+				"User does not have access to tenant ${request.tenantId}"
+			}
+
+			// Validate account belongs to the current tenant
+			if (request.accountId != null) {
+				val account = accountRepository.get(request.accountId)
+				check(account.tenantId == request.tenantId) {
+					"Account ${request.accountId} does not belong to tenant ${request.tenantId}"
+				}
+			}
 
 			// Set tenantId and accountId
 			userDetails._tenantId = request.tenantId
@@ -160,7 +182,6 @@ class SessionController {
 			// Build session info response
 			val tenant = tenantRepository.get(request.tenantId)
 			val account = if (request.accountId != null) accountRepository.get(request.accountId) else null
-			val user = userRepository.get(userDetails.userId)
 			val defaultApp = if (user.isAppAdmin) {
 				"appAdmin"
 			} else if (user.isAdmin) {

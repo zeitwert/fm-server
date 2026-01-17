@@ -1,28 +1,13 @@
 import { Col, Row } from 'antd';
-import { useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { HomeCardMap } from './HomeCardMap';
 import { HomeCardOpenActivities } from './HomeCardOpenActivities';
 import { HomeCardOverview } from './HomeCardOverview';
 import { HomeCardRecentActions } from './HomeCardRecentActions';
 import { HomeCardStatistics } from './HomeCardStatistics';
-import { useSessionStore } from '../../../session/model/sessionStore';
 
 const GRID_GUTTER = 16;
 
 export function HomeArea() {
-	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
-	const queryClient = useQueryClient();
-
-	useEffect(() => {
-		if (!accountId) {
-			queryClient.removeQueries({ queryKey: ['home'] });
-			return;
-		}
-
-		queryClient.invalidateQueries({ queryKey: ['home'] });
-	}, [accountId, queryClient]);
-
 	return (
 		<div
 			style={{

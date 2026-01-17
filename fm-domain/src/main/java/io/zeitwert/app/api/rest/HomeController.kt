@@ -57,7 +57,7 @@ class HomeController {
 	var allBuildings: List<ObjBuilding>? = null
 
 	fun getBuildings(accountId: Any): List<ObjBuilding> {
-		if (allBuildings == null || accountId != this.accountId) {
+		if (accountId != this.accountId) {
 			val buildingIds = buildingRepository.find(null)
 			this.accountId = accountId
 			allBuildings = buildingIds.map { buildingRepository.get(it) }

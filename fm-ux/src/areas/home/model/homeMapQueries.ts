@@ -67,9 +67,10 @@ async function fetchBuildings() {
 	};
 }
 
-export function useHomeMapBuildings() {
+export function useHomeMapBuildings(accountId?: string | null) {
 	return useQuery({
-		queryKey: ['home', 'map', 'buildings'],
+		queryKey: ['home', 'map', 'buildings', accountId],
 		queryFn: fetchBuildings,
+		enabled: Boolean(accountId),
 	});
 }

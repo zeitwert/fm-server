@@ -71,6 +71,7 @@ export function HomeCardOverview() {
 						{accountLogoUrl && (
 							<div style={{ display: 'flex', justifyContent: 'center' }}>
 								<img
+									key={data.accountId}
 									src={accountLogoUrl}
 									alt="Account logo"
 									style={{ maxWidth: '100%', maxHeight: 80, objectFit: 'contain' }}

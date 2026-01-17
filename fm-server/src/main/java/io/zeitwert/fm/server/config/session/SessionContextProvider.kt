@@ -1,9 +1,6 @@
 package io.zeitwert.fm.server.config.session
 
 import io.zeitwert.app.session.model.SessionContext
-import io.zeitwert.app.session.model.impl.SessionContextImpl
-import io.zeitwert.fm.oe.model.ObjUserRepository
-import io.zeitwert.fm.oe.model.enums.CodeLocale
 import io.zeitwert.fm.server.config.security.AppUserDetails
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,22 +16,16 @@ open class SessionContextProvider {
 
 	@Bean
 	@SessionScope
-	open fun getSessionContext(userRepository: ObjUserRepository): SessionContext {
+	open fun getSessionContext(): SessionContext {
 		val auth = SecurityContextHolder.getContext().authentication
 		check("anonymousUser" != auth.principal) { "Anonymous user is not allowed to access this resource" }
 
 		val userDetails = auth.principal as AppUserDetails
 		println("getSessionContext(${userDetails.username}, ${userDetails.userId}, ${userDetails._tenantId}, ${userDetails.accountId})")
-		val user = userRepository.get(userDetails.userId)
-		val tenantId = userDetails.tenantId
-		val accountId = userDetails.accountId
 
-		return SessionContextImpl(
-			tenantId = tenantId,
-			userId = user.id,
-			accountId = accountId,
-			locale = CodeLocale.DE_CH,
-		)
+		// Use DelegatingSessionContext which reads dynamically from SecurityContextHolder
+		// This ensures that reactivation with a new account is properly reflected
+		return DynamicSessionContext()
 	}
 
 }
