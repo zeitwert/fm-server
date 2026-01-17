@@ -15,6 +15,8 @@ This decoupled approach allows the UI to present a wizard-style login experience
 
 ## UI Flow Diagram
 
+The authentication flow uses a dedicated `/login` route. When accessing any protected URL without authentication, users are redirected to `/login?redirect=<original-url>`. After successful login, users are redirected back to their intended destination.
+
 The authentication sequence has at most three steps. The wizard navigation only exists between steps 2 and 3 (tenant and account selection) - users cannot go back to the login page from the wizard.
 
 **Login Behavior Summary:**
@@ -26,7 +28,8 @@ The authentication sequence has at most three steps. The wizard navigation only 
 ```mermaid
 flowchart TD
     Start[App Load] --> CheckAuth{Authenticated?}
-    CheckAuth -->|No| LoginPage[Login Page]
+    CheckAuth -->|No| RedirectLogin[Redirect to /login?redirect=url]
+    RedirectLogin --> LoginPage[Login Page]
     CheckAuth -->|Yes| CheckAccount{Account Selected?}
     
     CheckAccount -->|Yes| App[Main Application]
@@ -53,7 +56,8 @@ flowchart TD
     AccountSelect -->|Select| FinalLogin
     AccountSelect -->|Back if multiple tenants| TenantSelect
     FinalLogin --> ActivateSession[POST /rest/session/activate]
-    ActivateSession --> App
+    ActivateSession --> Redirect[Redirect to ?redirect or /home]
+    Redirect --> App
 ```
 
 ## API Sequence Diagram
@@ -300,15 +304,31 @@ The frontend persists session state in `sessionStorage`:
 
 - `fm-ux-session-state` - Current state (`close`, `authenticated`, `open`)
 - `fm-ux-session-info` - Full session info JSON (when state is `open`)
+- `fm-ux-tenant-info` - Tenant info with accounts (during selection)
 
 On page load, the `initSession()` function checks for stored state and restores the session if valid.
+
+## URL Routing
+
+The authentication flow uses a dedicated `/login` route:
+
+- **Protected Routes:** All routes except `/login` require an active session. Unauthenticated users are redirected to `/login`.
+- **Redirect Parameter:** When redirecting to login, the original URL is preserved as `?redirect=<url>`. After successful login, users are redirected back to their intended destination (or `/home` if no redirect parameter).
+- **Logout:** On logout, users are redirected to `/login`.
+- **401 Response:** API 401 responses trigger a redirect to `/login?redirect=<current-path>`, clearing session storage in the process.
+
+Example flow:
+1. User visits `/building/123` without authentication
+2. App redirects to `/login?redirect=%2Fbuilding%2F123`
+3. User completes login
+4. App redirects to `/building/123`
 
 ## Security Considerations
 
 1. **Session Cookies:** The backend uses HTTP-only session cookies (`JSESSIONID`) for session management
 2. **CORS:** The frontend sends requests with `withCredentials: true` to include cookies
 3. **Pre-Session State:** After `/authenticate`, the user is authenticated but cannot access protected resources until `/activate` is called with a valid tenant
-4. **401 Handling:** The frontend automatically redirects to login on 401 responses
+4. **401 Handling:** The frontend automatically redirects to `/login?redirect=<current-path>` on 401 responses, preserving the intended destination for post-login redirect
 
 ## Legacy Endpoint
 

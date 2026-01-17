@@ -42,6 +42,9 @@ importers:
       '@tanstack/router-plugin':
         specifier: ^1.93.0
         version: 1.146.3(@tanstack/react-router@1.146.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(vite@6.4.1(tsx@4.21.0))
+      '@types/google-map-react':
+        specifier: ^2.1.10
+        version: 2.1.10
       '@types/react':
         specifier: ^18.3.14
         version: 18.3.27
@@ -921,6 +924,9 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
+
+  '@types/google-map-react@2.1.10':
+    resolution: {integrity: sha512-8/0UllZS7tF08WNBRPQlSJCkETvz3e3sZoPxzDaWkj2iV5dmFSnOKXVtoeKo8dLZSe+RkLn479t1wj6nXmLLSA==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -3246,6 +3252,10 @@ snapshots:
   '@types/d3-timer@3.0.2': {}
 
   '@types/estree@1.0.8': {}
+
+  '@types/google-map-react@2.1.10':
+    dependencies:
+      '@types/react': 18.3.27
 
   '@types/json-schema@7.0.15': {}
 

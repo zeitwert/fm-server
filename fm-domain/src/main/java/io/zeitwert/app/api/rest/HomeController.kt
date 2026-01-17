@@ -53,16 +53,32 @@ class HomeController {
 	@Autowired
 	lateinit var sessionContext: SessionContext
 
-	var accountId: Any? = null
-	var allBuildings: List<ObjBuilding>? = null
+	private data class BuildingCache(
+		val accountId: Any,
+		val buildings: List<ObjBuilding>,
+	)
+
+	@Volatile
+	private var buildingCache: BuildingCache? = null
+
+	private val buildingsLock = Any()
 
 	fun getBuildings(accountId: Any): List<ObjBuilding> {
-		if (accountId != this.accountId) {
-			val buildingIds = buildingRepository.find(null)
-			this.accountId = accountId
-			allBuildings = buildingIds.map { buildingRepository.get(it) }
+		// Fast path: read single reference, then check (safe because cache is immutable)
+		buildingCache?.let { cache ->
+			if (cache.accountId == accountId) return cache.buildings
 		}
-		return allBuildings!!
+		// Slow path: synchronize and reload
+		synchronized(buildingsLock) {
+			// Re-check inside lock
+			buildingCache?.let { cache ->
+				if (cache.accountId == accountId) return cache.buildings
+			}
+			val buildingIds = buildingRepository.find(null)
+			val buildings = buildingIds.map { buildingRepository.get(it) }
+			buildingCache = BuildingCache(accountId, buildings)
+			return buildings
+		}
 	}
 
 	@GetMapping("/overview/{accountId}")

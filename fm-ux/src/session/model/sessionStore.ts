@@ -221,7 +221,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 				selectedAccount: null,
 				sessionInfo: null,
 			});
-			window.location.replace('/');
+			window.location.replace('/login');
 		}
 	},
 

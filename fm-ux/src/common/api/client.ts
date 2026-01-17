@@ -22,7 +22,13 @@ apiClient.interceptors.response.use(
 		if (error.response?.status === 401) {
 			sessionStorage.removeItem(SESSION_STATE_KEY);
 			sessionStorage.removeItem(SESSION_INFO_KEY);
-			window.location.replace('/');
+			sessionStorage.removeItem(TENANT_INFO_KEY);
+			// Redirect to login with current path as redirect parameter
+			const currentPath = window.location.pathname + window.location.search;
+			const redirectParam = currentPath && currentPath !== '/' && currentPath !== '/login' 
+				? `?redirect=${encodeURIComponent(currentPath)}` 
+				: '';
+			window.location.replace(`/login${redirectParam}`);
 		}
 
 		if (error.response) {

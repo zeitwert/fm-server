@@ -1,84 +1,92 @@
-import { createRootRoute } from '@tanstack/react-router';
+import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router';
 import { ConfigProvider, Spin } from 'antd';
 import { useEffect } from 'react';
 import { useSessionStore } from '../session/model/sessionStore';
 import { SessionState } from '../session/model/types';
-import { LoginPage } from '../session/ui/LoginPage';
-import { SelectionWizard } from '../session/ui/SelectionWizard';
 import { AppShell } from '../shell/AppShell';
 
 export const Route = createRootRoute({
-  component: RootComponent,
+	component: RootComponent,
 });
 
 function RootComponent() {
-  const { state, initSession, needsTenantSelection, needsAccountSelection } = useSessionStore();
+	const { state, initSession, needsTenantSelection, needsAccountSelection } = useSessionStore();
+	const location = useLocation();
 
-  // Initialize session on mount
-  useEffect(() => {
-    initSession();
-  }, [initSession]);
+	const isLoginRoute = location.pathname === '/login';
+	const isFullyAuthenticated =
+		state === SessionState.open ||
+		(state === SessionState.authenticated && !needsTenantSelection() && !needsAccountSelection());
 
-  // Show login page when not authenticated
-  if (state === SessionState.close) {
-    return (
-      <ConfigProvider>
-        <LoginPage />
-      </ConfigProvider>
-    );
-  }
+	// Initialize session on mount
+	useEffect(() => {
+		initSession();
+	}, [initSession]);
 
-  // Show loading during authentication
-  if (state === SessionState.pendingAuth) {
-    return (
-      <ConfigProvider>
-        <div
-          style={{
-            minHeight: '100vh',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          }}
-        >
-          <Spin size="large" />
-        </div>
-      </ConfigProvider>
-    );
-  }
+	// Redirect to login if not authenticated and not already on login page
+	useEffect(() => {
+		if (!isLoginRoute && !isFullyAuthenticated && state !== SessionState.pendingOpen) {
+			// Don't redirect during initial session check or pending states
+			if (state === SessionState.close) {
+				// Use window.location for reliable path string
+				const currentPath = window.location.pathname + window.location.search;
+				const redirectParam = currentPath && currentPath !== '/' ? `?redirect=${encodeURIComponent(currentPath)}` : '';
+				window.location.replace(`/login${redirectParam}`);
+			}
+		}
+	}, [isLoginRoute, isFullyAuthenticated, state]);
 
-  // Show tenant/account selection wizard
-  if (state === SessionState.authenticated && (needsTenantSelection() || needsAccountSelection())) {
-    return (
-      <ConfigProvider>
-        <SelectionWizard />
-      </ConfigProvider>
-    );
-  }
+	// On login route, just render the outlet (LoginComponent handles everything)
+	if (isLoginRoute) {
+		return (
+			<ConfigProvider>
+				<Outlet />
+			</ConfigProvider>
+		);
+	}
 
-  // Show loading during session initialization
-  if (state === SessionState.pendingOpen) {
-    return (
-      <ConfigProvider>
-        <div
-          style={{
-            minHeight: '100vh',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          }}
-        >
-          <Spin size="large" />
-        </div>
-      </ConfigProvider>
-    );
-  }
+	// Show loading during session initialization
+	if (state === SessionState.pendingOpen) {
+		return (
+			<ConfigProvider>
+				<div
+					style={{
+						minHeight: '100vh',
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+					}}
+				>
+					<Spin size="large" />
+				</div>
+			</ConfigProvider>
+		);
+	}
 
-  // Show main application when session is open
-  return (
-    <ConfigProvider>
-      <AppShell />
-    </ConfigProvider>
-  );
+	// If not authenticated and not on login route, show loading while redirect happens
+	if (!isFullyAuthenticated) {
+		return (
+			<ConfigProvider>
+				<div
+					style={{
+						minHeight: '100vh',
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+						background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+					}}
+				>
+					<Spin size="large" />
+				</div>
+			</ConfigProvider>
+		);
+	}
+
+	// Show main application when session is open
+	return (
+		<ConfigProvider>
+			<AppShell />
+		</ConfigProvider>
+	);
 }

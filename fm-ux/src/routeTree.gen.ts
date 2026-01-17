@@ -13,6 +13,7 @@ import { Route as UserRouteImport } from './routes/user'
 import { Route as TenantRouteImport } from './routes/tenant'
 import { Route as TaskRouteImport } from './routes/task'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as DocumentRouteImport } from './routes/document'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -38,6 +39,11 @@ const TaskRoute = TaskRouteImport.update({
 const PortfolioRoute = PortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/document': typeof DocumentRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/portfolio': typeof PortfolioRoute
   '/task': typeof TaskRoute
   '/tenant': typeof TenantRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/document': typeof DocumentRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/portfolio': typeof PortfolioRoute
   '/task': typeof TaskRoute
   '/tenant': typeof TenantRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/document': typeof DocumentRoute
   '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
   '/portfolio': typeof PortfolioRoute
   '/task': typeof TaskRoute
   '/tenant': typeof TenantRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/document'
     | '/home'
+    | '/login'
     | '/portfolio'
     | '/task'
     | '/tenant'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/document'
     | '/home'
+    | '/login'
     | '/portfolio'
     | '/task'
     | '/tenant'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/document'
     | '/home'
+    | '/login'
     | '/portfolio'
     | '/task'
     | '/tenant'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DocumentRoute: typeof DocumentRoute
   HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
   PortfolioRoute: typeof PortfolioRoute
   TaskRoute: typeof TaskRoute
   TenantRoute: typeof TenantRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/portfolio'
       fullPath: '/portfolio'
       preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DocumentRoute: DocumentRoute,
   HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
   PortfolioRoute: PortfolioRoute,
   TaskRoute: TaskRoute,
   TenantRoute: TenantRoute,
