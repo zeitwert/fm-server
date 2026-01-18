@@ -13,7 +13,7 @@
 
 	<artifactId>fm-domain</artifactId>
 	<name>FM Domain</name>
-	<description>Domain models for FM (account, building, contact, portfolio, etc.)</description>
+	<description>Domain model for FM (account, building, contact, portfolio, etc.)</description>
 
 	<dependencies>
 

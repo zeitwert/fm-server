@@ -7,5 +7,11 @@
 	"unknown": "Unknown",
 	"you": "You",
 	"user": "User",
-	"noTitle": "(no title)"
+	"noTitle": "(no title)",
+	"email": "Email",
+	"tenant": "Tenant",
+	"account": "Account",
+	"noAccount": "No Account",
+	"application": "Application",
+	"version": "Version"
 }

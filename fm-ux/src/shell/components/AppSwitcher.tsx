@@ -1,8 +1,8 @@
 import { Flex, Segmented, theme } from "antd";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { ApplicationMap } from "../app/config/AppConfig";
-import { useSessionStore } from "../session/model/sessionStore";
+import { ApplicationMap } from "../../app/config/AppConfig";
+import { useSessionStore } from "../../session/model/sessionStore";
 
 const { useToken } = theme;
 
