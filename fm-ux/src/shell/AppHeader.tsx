@@ -9,6 +9,7 @@ import {
 import { Avatar, Dropdown, Flex, Input, Space, theme, Typography } from 'antd';
 import type { MenuProps } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getLogoUrl } from '../common/api/client';
 import { useSessionStore } from '../session/model/sessionStore';
 
@@ -16,6 +17,7 @@ const { Text } = Typography;
 const { useToken } = theme;
 
 export function AppHeader() {
+	const { t } = useTranslation('common');
 	const { token } = useToken();
 	const { sessionInfo, tenantInfo, switchAccount, logout } = useSessionStore();
 	const [logoError, setLogoError] = useState(false);
@@ -65,7 +67,7 @@ export function AppHeader() {
 	const userMenuItems: MenuProps['items'] = [
 		{
 			key: 'settings',
-			label: 'Einstellungen',
+			label: t('settings'),
 			icon: <SettingOutlined />,
 		},
 		{
@@ -73,7 +75,7 @@ export function AppHeader() {
 		},
 		{
 			key: 'logout',
-			label: 'Abmelden',
+			label: t('logout'),
 			icon: <LogoutOutlined />,
 			danger: true,
 			onClick: () => logout(),
@@ -139,13 +141,14 @@ export function AppHeader() {
 			<div style={{ width: 400 }}>
 				<Input
 					prefix={<SearchOutlined style={{ color: token.colorTextPlaceholder }} />}
-					placeholder="Suchen..."
+					placeholder={t('searchPlaceholder')}
 					size="middle"
 					style={{
 						borderRadius: 20,
 						background: token.colorFillTertiary,
 					}}
 					variant="filled"
+					aria-label="common:search"
 				/>
 			</div>
 
@@ -193,10 +196,11 @@ export function AppHeader() {
 							transition: 'background 0.2s',
 						}}
 						className="header-dropdown-trigger"
+						aria-label="common:user"
 					>
 						<Avatar size={28} icon={<UserOutlined />} style={{ background: token.colorPrimary }} />
 						<Text style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-							{sessionInfo?.user?.name ?? 'Benutzer'}
+							{sessionInfo?.user?.name ?? t('user')}
 						</Text>
 						<DownOutlined style={{ fontSize: 10, color: token.colorTextSecondary }} />
 					</Space>
@@ -205,4 +209,3 @@ export function AppHeader() {
 		</div>
 	);
 }
-

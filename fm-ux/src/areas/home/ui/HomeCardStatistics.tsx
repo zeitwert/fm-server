@@ -1,24 +1,27 @@
 import { Col, Row, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { DashboardCard } from './components/DashboardCard';
 
-const CHART_DATA = [
-	{ name: 'gut', value: 21, color: '#52c41a' },
-	{ name: 'mittel', value: 53, color: '#b7eb8f' },
-	{ name: 'schlecht', value: 17, color: '#fa8c16' },
-	{ name: 'sehr schlecht', value: 9, color: '#f5222d' },
-];
-
 export function HomeCardStatistics() {
+	const { t } = useTranslation('home');
+
+	const chartData = [
+		{ name: t('conditionGood'), value: 21, color: '#52c41a' },
+		{ name: t('conditionMedium'), value: 53, color: '#b7eb8f' },
+		{ name: t('conditionBad'), value: 17, color: '#fa8c16' },
+		{ name: t('conditionVeryBad'), value: 9, color: '#f5222d' },
+	];
+
 	return (
-		<DashboardCard title="Auswertung des Tages">
+		<DashboardCard title={t('statistics')}>
 			<div style={{ height: '100%', padding: 12 }}>
 				<Row align="middle" style={{ marginBottom: 12 }}>
 					<Col span={12}>
-						<Typography.Text strong>Gebaeudezustand</Typography.Text>
+						<Typography.Text strong>{t('buildingCondition')}</Typography.Text>
 					</Col>
 					<Col span={12} style={{ textAlign: 'right' }}>
-						<Typography.Text type="secondary">Z/N Portfolio</Typography.Text>
+						<Typography.Text type="secondary">{t('znPortfolio')}</Typography.Text>
 						<div>
 							<Typography.Text strong style={{ fontSize: 18 }}>
 								0.79
@@ -30,14 +33,14 @@ export function HomeCardStatistics() {
 					<ResponsiveContainer>
 						<PieChart>
 							<Pie
-								data={CHART_DATA}
+								data={chartData}
 								dataKey="value"
 								nameKey="name"
 								innerRadius="60%"
 								outerRadius="90%"
 								stroke="none"
 							>
-								{CHART_DATA.map((entry) => (
+								{chartData.map((entry) => (
 									<Cell key={entry.name} fill={entry.color} />
 								))}
 							</Pie>

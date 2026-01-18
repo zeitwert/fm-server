@@ -5,6 +5,9 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { queryClient } from './common/queryClient';
 
+// Initialize i18n before rendering
+import './i18n';
+
 const router = createRouter({ routeTree });
 
 declare module '@tanstack/react-router' {

@@ -1,0 +1,42 @@
+---
+alwaysApply: true
+---
+
+# FM-UX Coding Conventions
+
+## Stack
+- React 18, TypeScript, Vite
+- Ant Design components
+- Zustand for UI state management
+- TanStack Router + React Query
+- Vitest + Testing Library for tests
+- react-i18next for i18n
+- google-map-react for maps (needs mocking in tests)
+- recharts for charts (warning about 0 dimensions in tests - ignorable)
+
+## File Conventions
+- Components: PascalCase `.tsx`
+- Stores: camelCase with `Store` suffix
+- Translation files: lowercase `.json` per namespace
+
+## Internationalization (i18n)
+- Config: `src/i18n/index.ts`
+- Translations: `src/i18n/locales/{en,de}/{common,login,app,home}.json`
+- Default language: German (`de`) before login
+- Language syncs from `sessionInfo.locale` via `changeLanguage()` in sessionStore
+- Use `useTranslation(namespace)` hook in components
+
+## Testing Pattern
+- aria-labels use `ns:key` format for deterministic queries: `aria-label="login:signIn"`
+- Tests use mocked i18n returning keys: `screen.findByRole('button', { name: 'login:signIn' })`
+- Mock in `test/setup.ts` returns `${ns}:${key}` for `t()` calls
+
+## Route Protection
+- `__root.tsx` redirects to `/login` if `SessionState !== open`
+- Tests for authenticated routes must pre-populate session store (see ui-tests.mdc)
+
+## Definition of Done
+1. TypeScript compiles: `pnpm tsc --noEmit`
+2. Tests pass: `pnpm test:run`
+3. Interactive elements have `aria-label="ns:key"` for testing
+4. New text uses translation keys, not hardcoded strings

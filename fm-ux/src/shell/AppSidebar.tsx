@@ -3,6 +3,7 @@ import { Link, useLocation } from '@tanstack/react-router';
 import { Button, Flex, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getApplicationInfo } from '../app/config/AppConfig';
 import { useSessionStore } from '../session/model/sessionStore';
 import { useShellStore } from './shellStore';
@@ -12,6 +13,7 @@ const { useToken } = theme;
 type MenuItem = Required<MenuProps>['items'][number];
 
 export function AppSidebar() {
+	const { t } = useTranslation('app');
 	const { token } = useToken();
 	const { sidebarCollapsed, toggleSidebar } = useShellStore();
 	const { sessionInfo } = useSessionStore();
@@ -30,9 +32,9 @@ export function AppSidebar() {
 		return appInfo.areas.map((area) => ({
 			key: area.path,
 			icon: area.icon,
-			label: <Link to={`/${area.path}` as '/'}>{area.name}</Link>,
+			label: <Link to={`/${area.path}` as '/'}>{area.label(t)}</Link>,
 		}));
-	}, [appInfo]);
+	}, [appInfo, t]);
 
 	// Get current selected key from URL path
 	const selectedKeys = useMemo(() => {
@@ -78,8 +80,9 @@ export function AppSidebar() {
 						width: sidebarCollapsed ? 40 : '100%',
 						margin: sidebarCollapsed ? 0 : '0 8px',
 					}}
+					aria-label="app:collapse"
 				>
-					{!sidebarCollapsed && 'Einklappen'}
+					{!sidebarCollapsed && t('collapse')}
 				</Button>
 			</Flex>
 		</Flex>

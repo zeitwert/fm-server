@@ -1,5 +1,6 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Alert, Button, Card, Form, Input, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '../model/sessionStore';
 import { SessionState } from '../model/types';
 
@@ -11,7 +12,7 @@ interface LoginFormValues {
 }
 
 export function LoginPage() {
-
+	const { t } = useTranslation('login');
 	const [form] = Form.useForm<LoginFormValues>();
 	const { state, error, login, clearError } = useSessionStore();
 	const isLoading = state === SessionState.pendingAuth;
@@ -41,9 +42,9 @@ export function LoginPage() {
 			>
 				<div style={{ textAlign: 'center', marginBottom: 32 }}>
 					<Title level={2} style={{ marginBottom: 8 }}>
-						Welcome
+						{t('welcome')}
 					</Title>
-					<Typography.Text type="secondary">Sign in to continue</Typography.Text>
+					<Typography.Text type="secondary">{t('subtitle')}</Typography.Text>
 				</div>
 
 				{error && (
@@ -61,28 +62,45 @@ export function LoginPage() {
 					<Form.Item
 						name="email"
 						rules={[
-							{ required: true, message: 'Please enter your email' },
-							{ type: 'email', message: 'Please enter a valid email' },
+							{ required: true, message: t('emailRequired') },
+							{ type: 'email', message: t('emailInvalid') },
 						]}
 					>
-						<Input prefix={<UserOutlined />} placeholder="Email" size="large" autoFocus />
+						<Input
+							prefix={<UserOutlined />}
+							placeholder={t('email')}
+							size="large"
+							autoFocus
+							aria-label="login:email"
+						/>
 					</Form.Item>
 
 					<Form.Item
 						name="password"
-						rules={[{ required: true, message: 'Please enter your password' }]}
+						rules={[{ required: true, message: t('passwordRequired') }]}
 					>
-						<Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
+						<Input.Password
+							prefix={<LockOutlined />}
+							placeholder={t('password')}
+							size="large"
+							aria-label="login:password"
+						/>
 					</Form.Item>
 
 					<Form.Item style={{ marginBottom: 0 }}>
-						<Button type="primary" htmlType="submit" size="large" block loading={isLoading}>
-							Sign In
+						<Button
+							type="primary"
+							htmlType="submit"
+							size="large"
+							block
+							loading={isLoading}
+							aria-label="login:signIn"
+						>
+							{t('signIn')}
 						</Button>
 					</Form.Item>
 				</Form>
 			</Card>
 		</div>
 	);
-
 }

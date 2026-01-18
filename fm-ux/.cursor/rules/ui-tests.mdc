@@ -1,0 +1,131 @@
+---
+alwaysApply: false
+---
+
+# UI Tests for fm-ux
+
+There are two ways to run UI tests:
+
+* functional with vitest and react-testing-library
+* visual tests with embedded browser.
+
+# Functional Tests
+
+Uses Vitest + React Testing Library + MSW for API mocking.
+
+## Running Tests
+
+```bash
+cd fm-ux
+pnpm test        # Watch mode (re-runs on file changes)
+pnpm test:run    # Single run
+pnpm test:coverage  # With coverage report
+```
+
+## Test File Structure
+
+```
+fm-ux/src/
+├── test/
+│   ├── setup.ts           # Global setup (jest-dom, MSW server lifecycle, DOM mocks)
+│   ├── utils.tsx          # Custom render with QueryClient + Router providers
+│   └── mocks/
+│       ├── server.ts      # MSW server for Node.js
+│       ├── handlers.ts    # Default API mock handlers
+│       └── fixtures.ts    # Test data (users, tenants, accounts, session)
+└── **/*.test.tsx          # Test files next to components
+```
+
+## Writing Tests
+
+### Basic Pattern
+
+```typescript
+import { renderApp, screen, waitFor } from '../../test/utils';
+import { useSessionStore } from '../model/sessionStore';
+
+it('should do something', async () => {
+  const { user } = renderApp({ initialPath: '/login' });
+  
+  // Use findBy* for elements that need to wait for rendering
+  const input = await screen.findByPlaceholderText('Email', {}, { timeout: 10000 });
+  
+  // Interact with user-event
+  await user.type(input, 'test@example.com');
+  await user.click(screen.getByRole('button', { name: /submit/i }));
+  
+  // Assert on store state
+  await waitFor(() => {
+    expect(useSessionStore.getState().state).toBe('open');
+  }, { timeout: 10000 });
+});
+```
+
+### Overriding API Responses
+
+```typescript
+import { server } from '../../test/mocks/server';
+import { http, HttpResponse } from 'msw';
+
+beforeEach(() => {
+  server.use(
+    http.post('/rest/session/authenticate', () => {
+      return HttpResponse.json(customUserData);
+    })
+  );
+});
+```
+
+## Bypassing Login (Pre-populated Session)
+
+Tests for authenticated pages can skip login by pre-populating the session store:
+
+```typescript
+import { activeSessionInfo, singleAccountTenantInfo } from '../../../test/mocks/fixtures';
+
+beforeEach(() => {
+  useSessionStore.setState({
+    state: SessionState.open,
+    sessionInfo: activeSessionInfo,
+    tenantInfo: singleAccountTenantInfo,
+    selectedTenant: { id: '100', name: 'Test Tenant' },
+    selectedAccount: { id: '1000', name: 'Default Account' },
+    error: null,
+    userInfo: null,
+  });
+});
+```
+
+MSW handlers still mock API responses - no real auth needed.
+
+## Mocking External Libraries
+
+```typescript
+// Mock google-map-react for map components
+vi.mock('google-map-react', () => ({
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="google-map">{children}</div>
+  ),
+}));
+```
+
+## Tips
+
+- Use `findBy*` queries (async) instead of `getBy*` for elements that render after async operations
+- Set longer timeouts (10000ms) for integration tests with multiple API calls
+- Reset store state in `beforeEach` to ensure test isolation
+- Ant Design components may need DOM mocks (ResizeObserver, matchMedia) - already configured in setup.ts
+- Use `getAllByText` when element text appears multiple times (e.g., account name in header + card)
+- Ant Design `Collapse` hides content - click panel header to expand before asserting hidden content
+
+# Visual Tests with embedded browser
+
+These tests need a running development server (which it usually is when you are developing the UI).
+
+## Login
+
+http://localhost:5173/
+
+user: hannes@zeitwert.io
+pwd: demo
+

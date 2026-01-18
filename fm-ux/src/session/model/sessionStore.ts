@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { api, getRestUrl, SESSION_INFO_KEY, SESSION_STATE_KEY, TENANT_INFO_KEY } from '../../common/api/client';
+import { changeLanguage } from '../../i18n';
 import {
 	Enumerated,
 	LoginTenantInfo,
@@ -190,6 +191,9 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			sessionStorage.setItem(SESSION_STATE_KEY, SessionState.open);
 			sessionStorage.setItem(SESSION_INFO_KEY, JSON.stringify(sessionInfo));
 
+			// Sync i18n language with session locale
+			changeLanguage(sessionInfo.locale);
+
 			set({
 				state: SessionState.open,
 				sessionInfo,
@@ -234,6 +238,10 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			try {
 				const sessionInfo = JSON.parse(storedSessionInfo) as SessionInfo;
 				const tenantInfo = storedTenantInfo ? (JSON.parse(storedTenantInfo) as LoginTenantInfo) : null;
+
+				// Sync i18n language with session locale
+				changeLanguage(sessionInfo.locale);
+
 				set({
 					state: SessionState.open,
 					sessionInfo,
@@ -295,6 +303,9 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
 			// Update session storage
 			sessionStorage.setItem(SESSION_INFO_KEY, JSON.stringify(newSessionInfo));
+
+			// Sync i18n language if locale changed
+			changeLanguage(newSessionInfo.locale);
 
 			set({
 				sessionInfo: newSessionInfo,

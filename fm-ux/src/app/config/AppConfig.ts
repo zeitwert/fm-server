@@ -1,5 +1,6 @@
 // Application configuration - defines all apps and their areas
 import type { ReactNode } from 'react';
+import type { TFunction } from 'i18next';
 import {
 	AppstoreOutlined,
 	BankOutlined,
@@ -20,7 +21,8 @@ export interface Application {
 
 export interface ApplicationArea {
 	id: string;
-	name: string;
+	labelKey: string; // Translation key in 'app' namespace
+	label: (t: TFunction) => string; // Returns translated label
 	icon: ReactNode;
 	path: string;
 }
@@ -32,69 +34,52 @@ export interface ApplicationInfo {
 	defaultArea: string;
 }
 
+// Helper to create area with translation support
+function createArea(
+	id: string,
+	labelKey: string,
+	icon: ReactNode,
+	path: string
+): ApplicationArea {
+	return {
+		id,
+		labelKey,
+		label: (t: TFunction) => t(labelKey),
+		icon,
+		path,
+	};
+}
+
 // Application Areas
-const homeArea: ApplicationArea = {
-	id: 'home',
-	name: 'Dashboard',
-	icon: React.createElement(DashboardOutlined),
-	path: 'home',
-};
-
-const tenantArea: ApplicationArea = {
-	id: 'tenant',
-	name: 'Mandanten',
-	icon: React.createElement(FileTextOutlined),
-	path: 'tenant',
-};
-
-const userArea: ApplicationArea = {
-	id: 'user',
-	name: 'Benutzer',
-	icon: React.createElement(UserOutlined),
-	path: 'user',
-};
-
-const accountArea: ApplicationArea = {
-	id: 'account',
-	name: 'Kunden',
-	icon: React.createElement(BankOutlined),
-	path: 'account',
-};
-
-const contactArea: ApplicationArea = {
-	id: 'contact',
-	name: 'Kontakte',
-	icon: React.createElement(TeamOutlined),
-	path: 'contact',
-};
-
-const portfolioArea: ApplicationArea = {
-	id: 'portfolio',
-	name: 'Portfolios',
-	icon: React.createElement(AppstoreOutlined),
-	path: 'portfolio',
-};
-
-const buildingArea: ApplicationArea = {
-	id: 'building',
-	name: 'Immobilien',
-	icon: React.createElement(HomeOutlined),
-	path: 'building',
-};
-
-const documentArea: ApplicationArea = {
-	id: 'document',
-	name: 'Dokumente',
-	icon: React.createElement(FileTextOutlined),
-	path: 'document',
-};
-
-const taskArea: ApplicationArea = {
-	id: 'task',
-	name: 'Aufgaben',
-	icon: React.createElement(CheckSquareOutlined),
-	path: 'task',
-};
+const homeArea = createArea('home', 'dashboard', React.createElement(DashboardOutlined), 'home');
+const tenantArea = createArea('tenant', 'tenants', React.createElement(FileTextOutlined), 'tenant');
+const userArea = createArea('user', 'users', React.createElement(UserOutlined), 'user');
+const accountArea = createArea('account', 'accounts', React.createElement(BankOutlined), 'account');
+const contactArea = createArea('contact', 'contacts', React.createElement(TeamOutlined), 'contact');
+const portfolioArea = createArea(
+	'portfolio',
+	'portfolios',
+	React.createElement(AppstoreOutlined),
+	'portfolio'
+);
+const buildingArea = createArea(
+	'building',
+	'buildings',
+	React.createElement(HomeOutlined),
+	'building'
+);
+const documentArea = createArea(
+	'document',
+	'documents',
+	React.createElement(FileTextOutlined),
+	'document'
+);
+const taskArea = createArea(
+	'task',
+	'tasks',
+	React.createElement(CheckSquareOutlined),
+	'task'
+);
 
 // Applications
 const fmApp: Application = {
@@ -187,4 +172,3 @@ export const AppConfig = {
 };
 
 export default AppConfig;
-

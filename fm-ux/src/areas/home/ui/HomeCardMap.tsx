@@ -1,17 +1,19 @@
 import { Spin } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { DashboardCard } from './components/DashboardCard';
 import { BuildingMap } from './components/BuildingMap';
 import { useHomeMapBuildings } from '../model';
 import { useSessionStore } from '../../../session/model/sessionStore';
 
 export function HomeCardMap() {
+	const { t } = useTranslation('home');
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const { data, isLoading } = useHomeMapBuildings(accountId);
 	const buildings = data?.buildings ?? [];
 
 	return (
 		<DashboardCard
-			title="Übersicht Bestand"
+			title={t('mapTitle')}
 			bodyStyle={{ padding: 0, background: 'transparent', borderRadius: 0 }}
 		>
 			<div style={{ height: '100%', position: 'relative' }}>

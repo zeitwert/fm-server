@@ -1,4 +1,5 @@
 import { Avatar, Collapse, Divider, Empty, Spin, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { DashboardCard } from './components/DashboardCard';
 import { useHomeOpenActivities } from '../model';
 import { useSessionStore } from '../../../session/model/sessionStore';
@@ -79,28 +80,34 @@ function renderLink(label: string, href: string | null) {
 function ActivityList({
 	activities,
 	sessionUserId,
+	unknownLabel,
+	youLabel,
+	noTitleLabel,
 }: {
 	activities: OpenActivity[];
 	sessionUserId?: string;
+	unknownLabel: string;
+	youLabel: string;
+	noTitleLabel: string;
 }) {
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 			{activities.map((activity, index) => {
 				const userName = activity.user?.name ?? '??';
-				const userLabel = activity.user?.id === sessionUserId ? 'Du' : userName;
+				const userLabel = activity.user?.id === sessionUserId ? youLabel : userName;
 				const initials = getInitials(userName);
-				const dueAt = activity.dueAt ? formatDate(activity.dueAt) : 'Unbekannt';
+				const dueAt = activity.dueAt ? formatDate(activity.dueAt) : unknownLabel;
 				const dueRelative = activity.dueAt ? formatRelativeTime(activity.dueAt) : null;
 				const isOverdue = activity.dueAt ? activity.dueAt.getTime() <= Date.now() : true;
 				const relatedToPath = getItemPath(activity.relatedTo);
 				const itemPath = getItemPath(activity.item);
-				const subject = activity.subject || '(ohne Titel)';
+				const subject = activity.subject || noTitleLabel;
 
 				// If the activity itself is a building, show only the building as header
 				const isBuilding = isActivityBuilding(activity);
 				const headerName = isBuilding
-					? (activity.item.name ?? 'Unbekannt')
-					: (activity.relatedTo?.name ?? 'Unbekannt');
+					? (activity.item.name ?? unknownLabel)
+					: (activity.relatedTo?.name ?? unknownLabel);
 				const headerPath = isBuilding ? itemPath : relatedToPath;
 
 				return (
@@ -155,19 +162,23 @@ function ActivityList({
 }
 
 export function HomeCardOpenActivities() {
+	const { t } = useTranslation('home');
+	const { t: tCommon } = useTranslation('common');
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const sessionUserId = useSessionStore((state) => state.sessionInfo?.user.id);
 	const { data, isLoading } = useHomeOpenActivities(accountId);
 	const activities = data?.activities ?? [];
 
 	const now = Date.now();
-	const futureActivities = activities.filter((activity) => activity.dueAt && activity.dueAt.getTime() > now);
+	const futureActivities = activities.filter(
+		(activity) => activity.dueAt && activity.dueAt.getTime() > now
+	);
 	const overdueActivities = activities.filter(
 		(activity) => !activity.dueAt || activity.dueAt.getTime() <= now
 	);
 
 	return (
-		<DashboardCard title={`Laufende Aktivitäten (${data?.totalCount ?? 0})`}>
+		<DashboardCard title={`${t('openActivities')} (${data?.totalCount ?? 0})`}>
 			<div style={{ height: '100%', position: 'relative' }}>
 				{isLoading && (
 					<div
@@ -182,13 +193,17 @@ export function HomeCardOpenActivities() {
 						<Spin />
 					</div>
 				)}
-				{!isLoading && activities.length === 0 && (
-					<Empty description="Keine laufenden Aktivitäten." />
-				)}
+				{!isLoading && activities.length === 0 && <Empty description={t('noActivities')} />}
 				{!isLoading && activities.length > 0 && (
 					<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 						{futureActivities.length > 0 && (
-							<ActivityList activities={futureActivities} sessionUserId={sessionUserId} />
+							<ActivityList
+								activities={futureActivities}
+								sessionUserId={sessionUserId}
+								unknownLabel={tCommon('unknown')}
+								youLabel={tCommon('you')}
+								noTitleLabel={tCommon('noTitle')}
+							/>
 						)}
 						{overdueActivities.length > 0 && (
 							<Collapse
@@ -197,11 +212,14 @@ export function HomeCardOpenActivities() {
 								items={[
 									{
 										key: 'overdue',
-										label: `Überfällig (${overdueActivities.length})`,
+										label: `${t('overdue')} (${overdueActivities.length})`,
 										children: (
 											<ActivityList
 												activities={overdueActivities}
 												sessionUserId={sessionUserId}
+												unknownLabel={tCommon('unknown')}
+												youLabel={tCommon('you')}
+												noTitleLabel={tCommon('noTitle')}
 											/>
 										),
 									},

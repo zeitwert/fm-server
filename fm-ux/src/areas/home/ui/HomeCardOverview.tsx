@@ -1,4 +1,5 @@
 import { Col, Empty, Row, Spin, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { DashboardCard } from './components/DashboardCard';
 import { useHomeOverview } from '../model';
 import { useSessionStore } from '../../../session/model/sessionStore';
@@ -23,7 +24,7 @@ function FactRow({
 	url?: string;
 }) {
 	if (value === undefined || value === null) return null;
-	const label = value === 1 ? singular : plural ?? singular;
+	const label = value === 1 ? singular : (plural ?? singular);
 
 	return (
 		<Row style={{ width: '100%' }} align="middle">
@@ -33,15 +34,14 @@ function FactRow({
 				</Typography.Text>
 			</Col>
 			<Col span={16} style={{ paddingLeft: 8 }}>
-				<Typography.Text>
-					{url ? <a href={url}>{label}</a> : label}
-				</Typography.Text>
+				<Typography.Text>{url ? <a href={url}>{label}</a> : label}</Typography.Text>
 			</Col>
 		</Row>
 	);
 }
 
 export function HomeCardOverview() {
+	const { t } = useTranslation('home');
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const { data, isLoading } = useHomeOverview(accountId);
 
@@ -50,7 +50,7 @@ export function HomeCardOverview() {
 		: null;
 
 	return (
-		<DashboardCard title={data?.accountName ?? 'Übersicht'}>
+		<DashboardCard title={data?.accountName ?? t('overview')}>
 			<div style={{ height: '100%', position: 'relative', padding: 12 }}>
 				{isLoading && (
 					<div
@@ -65,7 +65,7 @@ export function HomeCardOverview() {
 						<Spin />
 					</div>
 				)}
-				{!isLoading && !data && <Empty description="Keine Übersicht verfügbar." />}
+				{!isLoading && !data && <Empty description={t('noOverview')} />}
 				{!isLoading && data && (
 					<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 						{accountLogoUrl && (
@@ -79,13 +79,27 @@ export function HomeCardOverview() {
 							</div>
 						)}
 						<div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-							<FactRow value={data.buildingCount} singular="Immobilie" plural="Immobilien" url="/building" />
-							<FactRow value={data.portfolioCount} singular="Portfolio" plural="Portfolios" url="/portfolio" />
-							<FactRow value={data.ratingCount} singular="Bewertung" plural="Bewertungen" />
-							<FactRow value={data.insuranceValue} singular="kCHF Versicherungswert" />
-							<FactRow value={data.timeValue} singular="kCHF Zeitwert" />
-							<FactRow value={data.shortTermRenovationCosts} singular="kCHF IS kurzfristig" />
-							<FactRow value={data.midTermRenovationCosts} singular="kCHF IS mittelfristig" />
+							<FactRow
+								value={data.buildingCount}
+								singular={t('building')}
+								plural={t('buildings')}
+								url="/building"
+							/>
+							<FactRow
+								value={data.portfolioCount}
+								singular={t('portfolio')}
+								plural={t('portfolios')}
+								url="/portfolio"
+							/>
+							<FactRow
+								value={data.ratingCount}
+								singular={t('rating')}
+								plural={t('ratings')}
+							/>
+							<FactRow value={data.insuranceValue} singular={t('insuranceValue')} />
+							<FactRow value={data.timeValue} singular={t('timeValue')} />
+							<FactRow value={data.shortTermRenovationCosts} singular={t('shortTermCosts')} />
+							<FactRow value={data.midTermRenovationCosts} singular={t('midTermCosts')} />
 						</div>
 					</div>
 				)}

@@ -14,18 +14,27 @@ Always ask for feedback - we need to think about changing the design together, t
 
 # Coding
 
-Any new code must be written in Kotlin.
+Any new server code must be written in Kotlin.
+Any new UI code must be written in TypeScript.
 
 # Persistence
 
-The application uses a PostgreSQL database for persistence, accessed via the jOOQ library.
+The application uses a PostgreSQL database for production persistence, accessed via the jOOQ library.
 The database schema is generated and maintained via flyway through the scripts in the src/main/resources/db directory.
+
+For development, we use a custom in-memory database.
 
 # Environment
 
 We are on a Windows machine with the command shell.
 
 # Compilation and Linting
+
+## Client
+
+You can use cursor/vscode to lint the client code.
+
+## Server
 
 The linting inside the cursor IDE is not reliable, so you need to run the compilation to ensure the code is correct.
 

@@ -1,4 +1,5 @@
 import { Empty, Spin, Timeline, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { DashboardCard } from './components/DashboardCard';
 import { useHomeRecentActions } from '../model';
 import { useSessionStore } from '../../../session/model/sessionStore';
@@ -41,23 +42,6 @@ function formatRelativeTime(date: Date) {
 	return RELATIVE_FORMAT.format(diffYears, 'year');
 }
 
-function getActivityName(activity: RecentAction) {
-	const typeId = activity.item.itemType?.id ?? '';
-	if (typeId.startsWith('obj')) {
-		return activity.seqNr === 0 ? 'Eröffnung' : 'Modifikation';
-	}
-
-	if (activity.seqNr === 0) {
-		return 'Eröffnung';
-	}
-
-	if (activity.newCaseStage?.id === activity.oldCaseStage?.id) {
-		return 'Modifikation';
-	}
-
-	return 'Statusänderung';
-}
-
 function getItemPath(action: RecentAction) {
 	const typeId = action.item.itemType?.id;
 	if (!typeId) return null;
@@ -68,16 +52,43 @@ function getItemPath(action: RecentAction) {
 function ActivityRow({
 	action,
 	sessionUserId,
+	youLabel,
+	openingLabel,
+	modificationLabel,
+	statusChangeLabel,
 }: {
 	action: RecentAction;
 	sessionUserId?: string;
+	youLabel: string;
+	openingLabel: string;
+	modificationLabel: string;
+	statusChangeLabel: string;
 }) {
 	const timestamp = new Date(action.timestamp);
 	const timestampLabel = Number.isNaN(timestamp.getTime())
 		? action.timestamp
 		: formatRelativeTime(timestamp);
-	const userLabel = action.user.id === sessionUserId ? 'Du' : action.user.name;
-	const activityLabel = `${userLabel} · ${getActivityName(action)}`;
+	const userLabel = action.user.id === sessionUserId ? youLabel : action.user.name;
+
+	// Determine activity type
+	const getActivityName = () => {
+		const typeId = action.item.itemType?.id ?? '';
+		if (typeId.startsWith('obj')) {
+			return action.seqNr === 0 ? openingLabel : modificationLabel;
+		}
+
+		if (action.seqNr === 0) {
+			return openingLabel;
+		}
+
+		if (action.newCaseStage?.id === action.oldCaseStage?.id) {
+			return modificationLabel;
+		}
+
+		return statusChangeLabel;
+	};
+
+	const activityLabel = `${userLabel} · ${getActivityName()}`;
 	const href = getItemPath(action);
 
 	return (
@@ -96,13 +107,15 @@ function ActivityRow({
 }
 
 export function HomeCardRecentActions() {
+	const { t } = useTranslation('home');
+	const { t: tCommon } = useTranslation('common');
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const sessionUserId = useSessionStore((state) => state.sessionInfo?.user.id);
 	const { data, isLoading } = useHomeRecentActions(accountId);
 	const actions = data ?? [];
 
 	return (
-		<DashboardCard title="Letzte Aktionen">
+		<DashboardCard title={t('recentActions')}>
 			<div style={{ height: '100%', position: 'relative', padding: 12 }}>
 				{isLoading && (
 					<div
@@ -117,14 +130,21 @@ export function HomeCardRecentActions() {
 						<Spin />
 					</div>
 				)}
-				{!isLoading && actions.length === 0 && <Empty description="Keine Aktivität." />}
+				{!isLoading && actions.length === 0 && <Empty description={t('noRecentActions')} />}
 				{!isLoading && actions.length > 0 && (
 					<Timeline
 						style={{ marginTop: 4 }}
 						items={actions.map((action, index) => ({
 							key: `${action.item.id}-${action.seqNr}-${index}`,
 							children: (
-								<ActivityRow action={action} sessionUserId={sessionUserId} />
+								<ActivityRow
+									action={action}
+									sessionUserId={sessionUserId}
+									youLabel={tCommon('you')}
+									openingLabel={t('opening')}
+									modificationLabel={t('modification')}
+									statusChangeLabel={t('statusChange')}
+								/>
 							),
 						}))}
 					/>
