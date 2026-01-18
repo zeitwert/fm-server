@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { api, getRestUrl } from '../../../common/api/client';
-import type { Enumerated } from '../../../session/model/types';
+import { useQuery } from "@tanstack/react-query";
+import { api, getRestUrl } from "../../../common/api/client";
+import type { Enumerated } from "../../../session/model/types";
 
 interface ActionItemType {
 	id: string;
@@ -24,14 +24,14 @@ export interface RecentAction {
 }
 
 async function fetchRecentActions(accountId: string) {
-	const response = await api.get<RecentAction[]>(getRestUrl('home', `recentActions/${accountId}`));
+	const response = await api.get<RecentAction[]>(getRestUrl("home", `recentActions/${accountId}`));
 	return response.data ?? [];
 }
 
 export function useHomeRecentActions(accountId?: string | null) {
 	return useQuery({
-		queryKey: ['home', 'recent-actions', accountId],
-		queryFn: () => fetchRecentActions(accountId ?? ''),
+		queryKey: ["home", "recent-actions", accountId],
+		queryFn: () => fetchRecentActions(accountId ?? ""),
 		enabled: Boolean(accountId),
 	});
 }

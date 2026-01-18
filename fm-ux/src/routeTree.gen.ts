@@ -8,155 +8,155 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as UserRouteImport } from './routes/user'
-import { Route as TenantRouteImport } from './routes/tenant'
-import { Route as TaskRouteImport } from './routes/task'
-import { Route as PortfolioRouteImport } from './routes/portfolio'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as DocumentRouteImport } from './routes/document'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BuildingRouteImport } from './routes/building'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as rootRouteImport } from "./routes/__root"
+import { Route as UserRouteImport } from "./routes/user"
+import { Route as TenantRouteImport } from "./routes/tenant"
+import { Route as TaskRouteImport } from "./routes/task"
+import { Route as PortfolioRouteImport } from "./routes/portfolio"
+import { Route as LoginRouteImport } from "./routes/login"
+import { Route as HomeRouteImport } from "./routes/home"
+import { Route as DocumentRouteImport } from "./routes/document"
+import { Route as ContactRouteImport } from "./routes/contact"
+import { Route as BuildingRouteImport } from "./routes/building"
+import { Route as AccountRouteImport } from "./routes/account"
+import { Route as IndexRouteImport } from "./routes/index"
 
 const UserRoute = UserRouteImport.update({
-  id: '/user',
-  path: '/user',
+  id: "/user",
+  path: "/user",
   getParentRoute: () => rootRouteImport,
 } as any)
 const TenantRoute = TenantRouteImport.update({
-  id: '/tenant',
-  path: '/tenant',
+  id: "/tenant",
+  path: "/tenant",
   getParentRoute: () => rootRouteImport,
 } as any)
 const TaskRoute = TaskRouteImport.update({
-  id: '/task',
-  path: '/task',
+  id: "/task",
+  path: "/task",
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortfolioRoute = PortfolioRouteImport.update({
-  id: '/portfolio',
-  path: '/portfolio',
+  id: "/portfolio",
+  path: "/portfolio",
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
-  id: '/home',
-  path: '/home',
+  id: "/home",
+  path: "/home",
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentRoute = DocumentRouteImport.update({
-  id: '/document',
-  path: '/document',
+  id: "/document",
+  path: "/document",
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+  id: "/contact",
+  path: "/contact",
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildingRoute = BuildingRouteImport.update({
-  id: '/building',
-  path: '/building',
+  id: "/building",
+  path: "/building",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
+  id: "/account",
+  path: "/account",
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/building': typeof BuildingRoute
-  '/contact': typeof ContactRoute
-  '/document': typeof DocumentRoute
-  '/home': typeof HomeRoute
-  '/login': typeof LoginRoute
-  '/portfolio': typeof PortfolioRoute
-  '/task': typeof TaskRoute
-  '/tenant': typeof TenantRoute
-  '/user': typeof UserRoute
+  "/": typeof IndexRoute
+  "/account": typeof AccountRoute
+  "/building": typeof BuildingRoute
+  "/contact": typeof ContactRoute
+  "/document": typeof DocumentRoute
+  "/home": typeof HomeRoute
+  "/login": typeof LoginRoute
+  "/portfolio": typeof PortfolioRoute
+  "/task": typeof TaskRoute
+  "/tenant": typeof TenantRoute
+  "/user": typeof UserRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/building': typeof BuildingRoute
-  '/contact': typeof ContactRoute
-  '/document': typeof DocumentRoute
-  '/home': typeof HomeRoute
-  '/login': typeof LoginRoute
-  '/portfolio': typeof PortfolioRoute
-  '/task': typeof TaskRoute
-  '/tenant': typeof TenantRoute
-  '/user': typeof UserRoute
+  "/": typeof IndexRoute
+  "/account": typeof AccountRoute
+  "/building": typeof BuildingRoute
+  "/contact": typeof ContactRoute
+  "/document": typeof DocumentRoute
+  "/home": typeof HomeRoute
+  "/login": typeof LoginRoute
+  "/portfolio": typeof PortfolioRoute
+  "/task": typeof TaskRoute
+  "/tenant": typeof TenantRoute
+  "/user": typeof UserRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/building': typeof BuildingRoute
-  '/contact': typeof ContactRoute
-  '/document': typeof DocumentRoute
-  '/home': typeof HomeRoute
-  '/login': typeof LoginRoute
-  '/portfolio': typeof PortfolioRoute
-  '/task': typeof TaskRoute
-  '/tenant': typeof TenantRoute
-  '/user': typeof UserRoute
+  "/": typeof IndexRoute
+  "/account": typeof AccountRoute
+  "/building": typeof BuildingRoute
+  "/contact": typeof ContactRoute
+  "/document": typeof DocumentRoute
+  "/home": typeof HomeRoute
+  "/login": typeof LoginRoute
+  "/portfolio": typeof PortfolioRoute
+  "/task": typeof TaskRoute
+  "/tenant": typeof TenantRoute
+  "/user": typeof UserRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/account'
-    | '/building'
-    | '/contact'
-    | '/document'
-    | '/home'
-    | '/login'
-    | '/portfolio'
-    | '/task'
-    | '/tenant'
-    | '/user'
+    | "/"
+    | "/account"
+    | "/building"
+    | "/contact"
+    | "/document"
+    | "/home"
+    | "/login"
+    | "/portfolio"
+    | "/task"
+    | "/tenant"
+    | "/user"
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/account'
-    | '/building'
-    | '/contact'
-    | '/document'
-    | '/home'
-    | '/login'
-    | '/portfolio'
-    | '/task'
-    | '/tenant'
-    | '/user'
+    | "/"
+    | "/account"
+    | "/building"
+    | "/contact"
+    | "/document"
+    | "/home"
+    | "/login"
+    | "/portfolio"
+    | "/task"
+    | "/tenant"
+    | "/user"
   id:
-    | '__root__'
-    | '/'
-    | '/account'
-    | '/building'
-    | '/contact'
-    | '/document'
-    | '/home'
-    | '/login'
-    | '/portfolio'
-    | '/task'
-    | '/tenant'
-    | '/user'
+    | "__root__"
+    | "/"
+    | "/account"
+    | "/building"
+    | "/contact"
+    | "/document"
+    | "/home"
+    | "/login"
+    | "/portfolio"
+    | "/task"
+    | "/tenant"
+    | "/user"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -173,82 +173,82 @@ export interface RootRouteChildren {
   UserRoute: typeof UserRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/user': {
-      id: '/user'
-      path: '/user'
-      fullPath: '/user'
+    "/user": {
+      id: "/user"
+      path: "/user"
+      fullPath: "/user"
       preLoaderRoute: typeof UserRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tenant': {
-      id: '/tenant'
-      path: '/tenant'
-      fullPath: '/tenant'
+    "/tenant": {
+      id: "/tenant"
+      path: "/tenant"
+      fullPath: "/tenant"
       preLoaderRoute: typeof TenantRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/task': {
-      id: '/task'
-      path: '/task'
-      fullPath: '/task'
+    "/task": {
+      id: "/task"
+      path: "/task"
+      fullPath: "/task"
       preLoaderRoute: typeof TaskRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/portfolio': {
-      id: '/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
+    "/portfolio": {
+      id: "/portfolio"
+      path: "/portfolio"
+      fullPath: "/portfolio"
       preLoaderRoute: typeof PortfolioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
+    "/login": {
+      id: "/login"
+      path: "/login"
+      fullPath: "/login"
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
+    "/home": {
+      id: "/home"
+      path: "/home"
+      fullPath: "/home"
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/document': {
-      id: '/document'
-      path: '/document'
-      fullPath: '/document'
+    "/document": {
+      id: "/document"
+      path: "/document"
+      fullPath: "/document"
       preLoaderRoute: typeof DocumentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
+    "/contact": {
+      id: "/contact"
+      path: "/contact"
+      fullPath: "/contact"
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/building': {
-      id: '/building'
-      path: '/building'
-      fullPath: '/building'
+    "/building": {
+      id: "/building"
+      path: "/building"
+      fullPath: "/building"
       preLoaderRoute: typeof BuildingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
+    "/account": {
+      id: "/account"
+      path: "/account"
+      fullPath: "/account"
       preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
+    "/": {
+      id: "/"
+      path: "/"
+      fullPath: "/"
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }

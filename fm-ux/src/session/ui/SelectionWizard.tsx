@@ -1,24 +1,24 @@
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Alert, Avatar, Button, Card, Col, Row, Spin, Typography } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { getRestUrl } from '../../common/api/client';
-import { useSessionStore } from '../model/sessionStore';
-import { Enumerated, TypedEnumerated } from '../model/types';
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { Alert, Avatar, Button, Card, Col, Row, Spin, Typography } from "antd";
+import { useTranslation } from "react-i18next";
+import { getRestUrl } from "../../common/api/client";
+import { useSessionStore } from "../model/sessionStore";
+import { Enumerated, TypedEnumerated } from "../model/types";
 
 // Helper functions to build logo URLs
 const getTenantLogoUrl = (tenantId: string): string => {
-	return getRestUrl('oe', `tenants/${tenantId}/logo`);
+	return getRestUrl("oe", `tenants/${tenantId}/logo`);
 };
 
 const getAccountLogoUrl = (accountId: string): string => {
-	return getRestUrl('account', `accounts/${accountId}/logo`);
+	return getRestUrl("account", `accounts/${accountId}/logo`);
 };
 
 const { Title, Text } = Typography;
 
 export function SelectionWizard() {
-	const { t } = useTranslation('login');
-	const { t: tCommon } = useTranslation('common');
+	const { t } = useTranslation("login");
+	const { t: tCommon } = useTranslation("common");
 	const {
 		userInfo,
 		selectedTenant,
@@ -60,37 +60,37 @@ export function SelectionWizard() {
 
 	// Determine title and hint based on current step
 	const getTitle = () => {
-		if (showTenantSelection) return t('selectTenant');
-		if (showAccountSelection) return t('selectAccount');
-		return tCommon('loading');
+		if (showTenantSelection) return t("selectTenant");
+		if (showAccountSelection) return t("selectAccount");
+		return tCommon("loading");
 	};
 
 	const getHint = () => {
-		if (showTenantSelection) return t('selectTenantHint');
-		if (showAccountSelection) return t('selectAccountHint');
-		return '';
+		if (showTenantSelection) return t("selectTenantHint");
+		if (showAccountSelection) return t("selectAccountHint");
+		return "";
 	};
 
 	return (
 		<div
 			style={{
-				minHeight: '100vh',
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-				background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-				padding: '20px',
+				minHeight: "100vh",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+				padding: "20px",
 			}}
 		>
 			<Card
 				style={{
-					width: '100%',
+					width: "100%",
 					maxWidth: 600,
-					boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+					boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
 				}}
 			>
 				{/* Header */}
-				<div style={{ textAlign: 'center', marginBottom: 32 }}>
+				<div style={{ textAlign: "center", marginBottom: 32 }}>
 					<Title level={3} style={{ marginBottom: 8 }}>
 						{getTitle()}
 					</Title>
@@ -111,7 +111,7 @@ export function SelectionWizard() {
 
 				{/* Loading state */}
 				{isLoading && (
-					<div style={{ textAlign: 'center', padding: '40px 0' }}>
+					<div style={{ textAlign: "center", padding: "40px 0" }}>
 						<Spin size="large" />
 					</div>
 				)}
@@ -125,12 +125,12 @@ export function SelectionWizard() {
 									hoverable
 									onClick={() => handleTenantSelect(tenant)}
 									style={{
-										textAlign: 'center',
-										cursor: 'pointer',
-										border: '2px solid transparent',
-										transition: 'all 0.3s',
+										textAlign: "center",
+										cursor: "pointer",
+										border: "2px solid transparent",
+										transition: "all 0.3s",
 									}}
-									bodyStyle={{ padding: '24px 16px' }}
+									bodyStyle={{ padding: "24px 16px" }}
 								>
 									<Avatar
 										src={getTenantLogoUrl(tenant.id)}
@@ -158,12 +158,12 @@ export function SelectionWizard() {
 										hoverable
 										onClick={() => handleAccountSelect(account)}
 										style={{
-											textAlign: 'center',
-											cursor: 'pointer',
-											border: '2px solid transparent',
-											transition: 'all 0.3s',
+											textAlign: "center",
+											cursor: "pointer",
+											border: "2px solid transparent",
+											transition: "all 0.3s",
 										}}
-										bodyStyle={{ padding: '24px 16px' }}
+										bodyStyle={{ padding: "24px 16px" }}
 									>
 										<Avatar
 											src={getAccountLogoUrl(account.id)}
@@ -182,13 +182,13 @@ export function SelectionWizard() {
 
 						{/* Back button - only show if there are multiple tenants to go back to */}
 						{canGoBackToTenantSelection && (
-							<div style={{ marginTop: 24, textAlign: 'center' }}>
+							<div style={{ marginTop: 24, textAlign: "center" }}>
 								<Button
 									icon={<ArrowLeftOutlined />}
 									onClick={handleBack}
 									aria-label="login:backToTenant"
 								>
-									{t('backToTenant')}
+									{t("backToTenant")}
 								</Button>
 							</div>
 						)}
@@ -196,9 +196,9 @@ export function SelectionWizard() {
 				)}
 
 				{/* Logout option - always available */}
-				<div style={{ marginTop: 24, textAlign: 'center' }}>
+				<div style={{ marginTop: 24, textAlign: "center" }}>
 					<Button type="link" onClick={logout} aria-label="login:signInDifferent">
-						{t('signInDifferent')}
+						{t("signInDifferent")}
 					</Button>
 				</div>
 			</Card>

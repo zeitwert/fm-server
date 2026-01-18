@@ -1,11 +1,11 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
-export const JSON_CONTENT_TYPE = 'application/json';
-export const API_CONTENT_TYPE = 'application/vnd.api+json';
+export const JSON_CONTENT_TYPE = "application/json";
+export const API_CONTENT_TYPE = "application/vnd.api+json";
 
-const SESSION_INFO_KEY = 'fm-ux-session-info';
-const SESSION_STATE_KEY = 'fm-ux-session-state';
-const TENANT_INFO_KEY = 'fm-ux-tenant-info';
+const SESSION_INFO_KEY = "fm-ux-session-info";
+const SESSION_STATE_KEY = "fm-ux-session-state";
+const TENANT_INFO_KEY = "fm-ux-tenant-info";
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -26,9 +26,9 @@ apiClient.interceptors.response.use(
 			// Redirect to login with current path as redirect parameter
 			const currentPath = window.location.pathname + window.location.search;
 			const redirectParam =
-				currentPath && currentPath !== '/' && currentPath !== '/login'
+				currentPath && currentPath !== "/" && currentPath !== "/login"
 					? `?redirect=${encodeURIComponent(currentPath)}`
-					: '';
+					: "";
 			window.location.replace(`/login${redirectParam}`);
 		}
 
@@ -40,14 +40,14 @@ apiClient.interceptors.response.use(
 			return Promise.reject({
 				detail: error.message,
 				status: error.response.status,
-				title: 'Unknown error',
+				title: "Unknown error",
 			});
 		}
 
 		return Promise.reject({
 			detail: error.message,
-			status: '',
-			title: 'Unknown error',
+			status: "",
+			title: "Unknown error",
 		});
 	}
 );
@@ -65,8 +65,8 @@ export const getEnumUrl = (module: string, enumName: string): string => {
 	return `/enum/${module}/${enumName}`;
 };
 
-export const getLogoUrl = (type: 'account' | 'tenant', id: string): string => {
-	if (type === 'account') {
+export const getLogoUrl = (type: "account" | "tenant", id: string): string => {
+	if (type === "account") {
 		return `/rest/account/accounts/${id}/logo`;
 	}
 	return `/rest/oe/tenants/${id}/logo`;

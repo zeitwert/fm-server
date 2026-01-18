@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface ShellStore {
 	// State
@@ -26,7 +26,7 @@ export const useShellStore = create<ShellStore>()(
 			},
 		}),
 		{
-			name: 'shell-storage',
+			name: "shell-storage",
 		}
 	)
 );

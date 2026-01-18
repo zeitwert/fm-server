@@ -1,26 +1,29 @@
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { Link, useLocation } from '@tanstack/react-router';
-import { Button, Flex, Menu, Segmented, theme } from 'antd';
-import type { MenuProps } from 'antd';
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ApplicationMap, getApplicationInfo } from '../app/config/AppConfig';
-import { useSessionStore } from '../session/model/sessionStore';
-import { useShellStore } from './shellStore';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Button, Flex, Menu, Segmented, theme } from "antd";
+import type { MenuProps } from "antd";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { ApplicationMap, getApplicationInfo } from "../app/config/AppConfig";
+import { useSessionStore } from "../session/model/sessionStore";
+import { useShellStore } from "./shellStore";
 
 const { useToken } = theme;
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>["items"][number];
 
 export function AppSidebar() {
-	const { t } = useTranslation('app');
+	const { t } = useTranslation("app");
 	const { token } = useToken();
 	const { sidebarCollapsed, toggleSidebar } = useShellStore();
 	const { sessionInfo, switchApplication } = useSessionStore();
 	const location = useLocation();
 
 	// Get available applications for segmented control
-	const availableApplications = sessionInfo?.availableApplications ?? [];
+	const availableApplications = useMemo(
+		() => sessionInfo?.availableApplications ?? [],
+		[sessionInfo?.availableApplications]
+	);
 	const hasMultipleApps = availableApplications.length > 1;
 
 	// Get current application for collapsed display
@@ -53,14 +56,14 @@ export function AppSidebar() {
 		return appInfo.areas.map((area) => ({
 			key: area.path,
 			icon: area.icon,
-			label: <Link to={`/${area.path}` as '/'}>{area.label(t)}</Link>,
+			label: <Link to={`/${area.path}` as "/"}>{area.label(t)}</Link>,
 		}));
 	}, [appInfo, t]);
 
 	// Get current selected key from URL path
 	const selectedKeys = useMemo(() => {
-		const path = location.pathname.replace('/', '');
-		return path ? [path] : [appInfo?.defaultArea ?? 'home'];
+		const path = location.pathname.replace("/", "");
+		return path ? [path] : [appInfo?.defaultArea ?? "home"];
 	}, [location.pathname, appInfo?.defaultArea]);
 
 	return (
@@ -68,7 +71,7 @@ export function AppSidebar() {
 			vertical
 			justify="space-between"
 			style={{
-				height: '100%',
+				height: "100%",
 				background: token.colorBgContainer,
 				borderRight: `1px solid ${token.colorBorderSecondary}`,
 			}}
@@ -79,7 +82,7 @@ export function AppSidebar() {
 					<Flex
 						justify="center"
 						style={{
-							padding: sidebarCollapsed ? '12px 0' : '12px 8px',
+							padding: sidebarCollapsed ? "12px 0" : "12px 8px",
 							borderBottom: `1px solid ${token.colorBorderSecondary}`,
 						}}
 					>
@@ -89,9 +92,9 @@ export function AppSidebar() {
 								style={{
 									width: 40,
 									height: 32,
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
 									fontWeight: 600,
 									fontSize: 14,
 									color: token.colorPrimary,
@@ -107,7 +110,7 @@ export function AppSidebar() {
 								options={appSegmentOptions}
 								onChange={(value) => switchApplication(value as string)}
 								block
-								style={{ width: '100%' }}
+								style={{ width: "100%" }}
 							/>
 						)}
 					</Flex>
@@ -120,8 +123,8 @@ export function AppSidebar() {
 					items={navigationItems}
 					inlineCollapsed={sidebarCollapsed}
 					style={{
-						border: 'none',
-						background: 'transparent',
+						border: "none",
+						background: "transparent",
 					}}
 				/>
 			</Flex>
@@ -130,7 +133,7 @@ export function AppSidebar() {
 			<Flex
 				justify="center"
 				style={{
-					padding: '12px 0',
+					padding: "12px 0",
 					borderTop: `1px solid ${token.colorBorderSecondary}`,
 				}}
 			>
@@ -139,12 +142,12 @@ export function AppSidebar() {
 					icon={sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
 					onClick={toggleSidebar}
 					style={{
-						width: sidebarCollapsed ? 40 : '100%',
-						margin: sidebarCollapsed ? 0 : '0 8px',
+						width: sidebarCollapsed ? 40 : "100%",
+						margin: sidebarCollapsed ? 0 : "0 8px",
 					}}
 					aria-label="app:collapse"
 				>
-					{!sidebarCollapsed && t('collapse')}
+					{!sidebarCollapsed && t("collapse")}
 				</Button>
 			</Flex>
 		</Flex>

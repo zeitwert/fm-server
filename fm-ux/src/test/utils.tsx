@@ -1,9 +1,9 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createMemoryHistory, createRouter } from '@tanstack/react-router';
-import { render, type RenderOptions } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import type { ReactElement, ReactNode } from 'react';
-import { routeTree } from '../routeTree.gen';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider, createMemoryHistory, createRouter } from "@tanstack/react-router";
+import { render, type RenderOptions } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { ReactElement, ReactNode } from "react";
+import { routeTree } from "../routeTree.gen";
 
 // Create a fresh QueryClient for each test
 function createTestQueryClient() {
@@ -18,7 +18,7 @@ function createTestQueryClient() {
 }
 
 // Create a test router with memory history
-function createTestRouter(initialPath: string = '/login') {
+function createTestRouter(initialPath: string = "/login") {
 	const memoryHistory = createMemoryHistory({
 		initialEntries: [initialPath],
 	});
@@ -33,7 +33,7 @@ interface WrapperProps {
 	children: ReactNode;
 }
 
-interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
+interface CustomRenderOptions extends Omit<RenderOptions, "wrapper"> {
 	initialPath?: string;
 	queryClient?: QueryClient;
 }
@@ -41,7 +41,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 // Custom render function that wraps components with providers
 function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
 	const {
-		initialPath = '/login',
+		initialPath = "/login",
 		queryClient = createTestQueryClient(),
 		...renderOptions
 	} = options;
@@ -62,10 +62,10 @@ function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
 
 // Render the full app with router
 function renderApp(
-	options: Omit<CustomRenderOptions, 'initialPath'> & { initialPath?: string } = {}
+	options: Omit<CustomRenderOptions, "initialPath"> & { initialPath?: string } = {}
 ) {
 	const {
-		initialPath = '/login',
+		initialPath = "/login",
 		queryClient = createTestQueryClient(),
 		...renderOptions
 	} = options;
@@ -86,5 +86,5 @@ function renderApp(
 }
 
 // Re-export testing utilities
-export * from '@testing-library/react';
+export * from "@testing-library/react";
 export { customRender as render, renderApp, createTestQueryClient, createTestRouter, userEvent };

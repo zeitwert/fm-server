@@ -1,12 +1,12 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import {
 	api,
 	getRestUrl,
 	SESSION_INFO_KEY,
 	SESSION_STATE_KEY,
 	TENANT_INFO_KEY,
-} from '../../common/api/client';
-import { changeLanguage } from '../../i18n';
+} from "../../common/api/client";
+import { changeLanguage } from "../../i18n";
 import {
 	Enumerated,
 	LoginTenantInfo,
@@ -14,7 +14,7 @@ import {
 	SessionInfo,
 	SessionState,
 	TypedEnumerated,
-} from './types';
+} from "./types";
 
 interface SessionStore {
 	// State
@@ -97,13 +97,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
 		try {
 			// Authenticate and get user info with tenant list in one call
-			const authResponse = await api.login<LoginUserInfo>(getRestUrl('session', 'authenticate'), {
+			const authResponse = await api.login<LoginUserInfo>(getRestUrl("session", "authenticate"), {
 				email,
 				password,
 			});
 
 			if (authResponse.status !== 200) {
-				throw new Error('Authentication failed');
+				throw new Error("Authentication failed");
 			}
 
 			const userInfo = authResponse.data;
@@ -124,7 +124,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			sessionStorage.removeItem(SESSION_STATE_KEY);
 			set({
 				state: SessionState.close,
-				error: error instanceof Error ? error.message : 'Login failed',
+				error: error instanceof Error ? error.message : "Login failed",
 			});
 		}
 	},
@@ -137,11 +137,11 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 		try {
 			// Fetch tenant info with account list
 			const tenantInfoResponse = await api.get<LoginTenantInfo>(
-				getRestUrl('app', `tenantInfo/${tenant.id}`)
+				getRestUrl("app", `tenantInfo/${tenant.id}`)
 			);
 
 			if (tenantInfoResponse.status !== 200) {
-				throw new Error('Failed to fetch tenant info');
+				throw new Error("Failed to fetch tenant info");
 			}
 
 			const tenantInfo = tenantInfoResponse.data;
@@ -161,7 +161,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			sessionStorage.removeItem(TENANT_INFO_KEY);
 			set({
 				state: SessionState.close,
-				error: error instanceof Error ? error.message : 'Failed to fetch tenant info',
+				error: error instanceof Error ? error.message : "Failed to fetch tenant info",
 				selectedTenant: null,
 				tenantInfo: null,
 				selectedAccount: null,
@@ -180,13 +180,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
 		try {
 			// Activate session with tenant and optional account
-			const sessionResponse = await api.post<SessionInfo>(getRestUrl('session', 'activate'), {
+			const sessionResponse = await api.post<SessionInfo>(getRestUrl("session", "activate"), {
 				tenantId: selectedTenant?.id ? parseInt(selectedTenant.id, 10) : null,
 				accountId: selectedAccount?.id ? parseInt(selectedAccount.id, 10) : null,
 			});
 
 			if (sessionResponse.status !== 200) {
-				throw new Error('Failed to activate session');
+				throw new Error("Failed to activate session");
 			}
 
 			const sessionInfo = sessionResponse.data;
@@ -213,14 +213,14 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 		} catch (error) {
 			set({
 				state: SessionState.authenticated,
-				error: error instanceof Error ? error.message : 'Failed to complete login',
+				error: error instanceof Error ? error.message : "Failed to complete login",
 			});
 		}
 	},
 
 	logout: async () => {
 		try {
-			await api.post(getRestUrl('session', 'logout'), {});
+			await api.post(getRestUrl("session", "logout"), {});
 		} catch {
 			// Ignore logout errors
 		} finally {
@@ -236,7 +236,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 				selectedAccount: null,
 				sessionInfo: null,
 			});
-			window.location.replace('/login');
+			window.location.replace("/login");
 		}
 	},
 
@@ -296,13 +296,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
 		try {
 			// Call backend to switch account context
-			const sessionResponse = await api.post<SessionInfo>(getRestUrl('session', 'activate'), {
+			const sessionResponse = await api.post<SessionInfo>(getRestUrl("session", "activate"), {
 				tenantId: parseInt(sessionInfo.tenant.id, 10),
 				accountId: parseInt(accountId, 10),
 			});
 
 			if (sessionResponse.status !== 200) {
-				throw new Error('Failed to switch account');
+				throw new Error("Failed to switch account");
 			}
 
 			const newSessionInfo = sessionResponse.data;
@@ -328,7 +328,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 			});
 		} catch (error) {
 			set({
-				error: error instanceof Error ? error.message : 'Failed to switch account',
+				error: error instanceof Error ? error.message : "Failed to switch account",
 			});
 		}
 	},

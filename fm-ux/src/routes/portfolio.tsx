@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { Card, Typography } from 'antd';
-import { AppstoreOutlined } from '@ant-design/icons';
+import { createFileRoute } from "@tanstack/react-router";
+import { Card, Typography } from "antd";
+import { AppstoreOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
-export const Route = createFileRoute('/portfolio')({
+export const Route = createFileRoute("/portfolio")({
 	component: PortfolioArea,
 });
 

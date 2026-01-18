@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { api, getRestUrl } from '../../../common/api/client';
-import type { Enumerated, TypedEnumerated } from '../../../session/model/types';
+import { useQuery } from "@tanstack/react-query";
+import { api, getRestUrl } from "../../../common/api/client";
+import type { Enumerated, TypedEnumerated } from "../../../session/model/types";
 
 interface OpenActivityApiItem {
 	item: TypedEnumerated;
@@ -34,15 +34,15 @@ function parseActivity(activity: OpenActivityApiItem): OpenActivity {
 		owner: activity.owner,
 		user: activity.user,
 		dueAt: parsedDueAt,
-		subject: activity.subject ?? '',
-		content: activity.content ?? '',
+		subject: activity.subject ?? "",
+		content: activity.content ?? "",
 		priority: activity.priority,
 	};
 }
 
 async function fetchOpenActivities(accountId: string) {
 	const response = await api.get<OpenActivityApiItem[]>(
-		getRestUrl('home', `openActivities/${accountId}`)
+		getRestUrl("home", `openActivities/${accountId}`)
 	);
 	const activities = (response.data ?? [])
 		.map(parseActivity)
@@ -56,8 +56,8 @@ async function fetchOpenActivities(accountId: string) {
 
 export function useHomeOpenActivities(accountId?: string | null) {
 	return useQuery({
-		queryKey: ['home', 'open-activities', accountId],
-		queryFn: () => fetchOpenActivities(accountId ?? ''),
+		queryKey: ["home", "open-activities", accountId],
+		queryFn: () => fetchOpenActivities(accountId ?? ""),
 		enabled: Boolean(accountId),
 	});
 }

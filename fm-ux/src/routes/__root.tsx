@@ -1,9 +1,9 @@
-import { Outlet, createRootRoute, useLocation } from '@tanstack/react-router';
-import { ConfigProvider, Spin } from 'antd';
-import { useEffect } from 'react';
-import { useSessionStore } from '../session/model/sessionStore';
-import { SessionState } from '../session/model/types';
-import { AppShell } from '../shell/AppShell';
+import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
+import { ConfigProvider, Spin } from "antd";
+import { useEffect } from "react";
+import { useSessionStore } from "../session/model/sessionStore";
+import { SessionState } from "../session/model/types";
+import { AppShell } from "../shell/AppShell";
 
 export const Route = createRootRoute({
 	component: RootComponent,
@@ -13,7 +13,7 @@ function RootComponent() {
 	const { state, initSession, needsTenantSelection, needsAccountSelection } = useSessionStore();
 	const location = useLocation();
 
-	const isLoginRoute = location.pathname === '/login';
+	const isLoginRoute = location.pathname === "/login";
 	const isFullyAuthenticated =
 		state === SessionState.open ||
 		(state === SessionState.authenticated && !needsTenantSelection() && !needsAccountSelection());
@@ -31,7 +31,7 @@ function RootComponent() {
 				// Use window.location for reliable path string
 				const currentPath = window.location.pathname + window.location.search;
 				const redirectParam =
-					currentPath && currentPath !== '/' ? `?redirect=${encodeURIComponent(currentPath)}` : '';
+					currentPath && currentPath !== "/" ? `?redirect=${encodeURIComponent(currentPath)}` : "";
 				window.location.replace(`/login${redirectParam}`);
 			}
 		}
@@ -52,11 +52,11 @@ function RootComponent() {
 			<ConfigProvider>
 				<div
 					style={{
-						minHeight: '100vh',
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+						minHeight: "100vh",
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
 					}}
 				>
 					<Spin size="large" />
@@ -71,11 +71,11 @@ function RootComponent() {
 			<ConfigProvider>
 				<div
 					style={{
-						minHeight: '100vh',
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+						minHeight: "100vh",
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
 					}}
 				>
 					<Spin size="large" />

@@ -1,16 +1,16 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
 
 // Import translation files
-import enCommon from './locales/en/common.json';
-import enLogin from './locales/en/login.json';
-import enApp from './locales/en/app.json';
-import enHome from './locales/en/home.json';
+import enCommon from "./locales/en/common.json";
+import enLogin from "./locales/en/login.json";
+import enApp from "./locales/en/app.json";
+import enHome from "./locales/en/home.json";
 
-import deCommon from './locales/de/common.json';
-import deLogin from './locales/de/login.json';
-import deApp from './locales/de/app.json';
-import deHome from './locales/de/home.json';
+import deCommon from "./locales/de/common.json";
+import deLogin from "./locales/de/login.json";
+import deApp from "./locales/de/app.json";
+import deHome from "./locales/de/home.json";
 
 // Resources bundled inline for synchronous loading
 const resources = {
@@ -30,10 +30,10 @@ const resources = {
 
 i18n.use(initReactI18next).init({
 	resources,
-	lng: 'de', // Default language before login
-	fallbackLng: 'de',
-	ns: ['common', 'login', 'app', 'home'],
-	defaultNS: 'common',
+	lng: "de", // Default language before login
+	fallbackLng: "de",
+	ns: ["common", "login", "app", "home"],
+	defaultNS: "common",
 	interpolation: {
 		escapeValue: false, // React already escapes values
 	},

@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { api, getApiUrl } from '../../../common/api/client';
+import { useQuery } from "@tanstack/react-query";
+import { api, getApiUrl } from "../../../common/api/client";
 
 interface BuildingAttributes {
 	name?: string;
@@ -28,13 +28,13 @@ export interface BuildingInfo {
 
 function parseBuilding(item: BuildingApiItem): BuildingInfo | null {
 	const coords = item.attributes?.geoCoordinates;
-	if (!coords?.startsWith('WGS:')) {
+	if (!coords?.startsWith("WGS:")) {
 		return null;
 	}
 
-	const [latRaw, lngRaw] = coords.substring(4).split(',');
-	const lat = Number.parseFloat(latRaw ?? '');
-	const lng = Number.parseFloat(lngRaw ?? '');
+	const [latRaw, lngRaw] = coords.substring(4).split(",");
+	const lat = Number.parseFloat(latRaw ?? "");
+	const lng = Number.parseFloat(lngRaw ?? "");
 
 	if (Number.isNaN(lat) || Number.isNaN(lng)) {
 		return null;
@@ -42,14 +42,14 @@ function parseBuilding(item: BuildingApiItem): BuildingInfo | null {
 
 	const addressParts = [
 		item.attributes?.street,
-		[item.attributes?.zip, item.attributes?.city].filter(Boolean).join(' '),
+		[item.attributes?.zip, item.attributes?.city].filter(Boolean).join(" "),
 	]
 		.filter(Boolean)
-		.join(', ');
+		.join(", ");
 
 	return {
 		id: item.id,
-		name: item.attributes?.name ?? 'Unbekannt',
+		name: item.attributes?.name ?? "Unbekannt",
 		address: addressParts,
 		lat,
 		lng,
@@ -57,7 +57,7 @@ function parseBuilding(item: BuildingApiItem): BuildingInfo | null {
 }
 
 async function fetchBuildings() {
-	const response = await api.get<BuildingApiResponse>(getApiUrl('building', 'buildings'));
+	const response = await api.get<BuildingApiResponse>(getApiUrl("building", "buildings"));
 	const items = response.data?.data ?? [];
 	const buildings = items.map(parseBuilding).filter((item): item is BuildingInfo => item !== null);
 
@@ -69,7 +69,7 @@ async function fetchBuildings() {
 
 export function useHomeMapBuildings(accountId?: string | null) {
 	return useQuery({
-		queryKey: ['home', 'map', 'buildings', accountId],
+		queryKey: ["home", "map", "buildings", accountId],
 		queryFn: fetchBuildings,
 		enabled: Boolean(accountId),
 	});

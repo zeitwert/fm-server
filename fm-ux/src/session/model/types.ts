@@ -1,10 +1,10 @@
 // Session state enum
 export enum SessionState {
-	close = 'close',
-	pendingAuth = 'pendingAuth',
-	authenticated = 'authenticated',
-	pendingOpen = 'pendingOpen',
-	open = 'open',
+	close = "close",
+	pendingAuth = "pendingAuth",
+	authenticated = "authenticated",
+	pendingOpen = "pendingOpen",
+	open = "open",
 }
 
 // Basic enumerated type for dropdowns
@@ -91,6 +91,6 @@ export interface SessionInfo {
 }
 
 // Tenant type constants
-export const KERNEL_TENANT = 'kernel';
-export const ADVISOR_TENANT = 'advisor';
-export const COMMUNITY_TENANT = 'community';
+export const KERNEL_TENANT = "kernel";
+export const ADVISOR_TENANT = "advisor";
+export const COMMUNITY_TENANT = "community";

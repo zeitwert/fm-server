@@ -1,8 +1,8 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Alert, Button, Card, Form, Input, Typography } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { useSessionStore } from '../model/sessionStore';
-import { SessionState } from '../model/types';
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Alert, Button, Card, Form, Input, Typography } from "antd";
+import { useTranslation } from "react-i18next";
+import { useSessionStore } from "../model/sessionStore";
+import { SessionState } from "../model/types";
 
 const { Title } = Typography;
 
@@ -12,7 +12,7 @@ interface LoginFormValues {
 }
 
 export function LoginPage() {
-	const { t } = useTranslation('login');
+	const { t } = useTranslation("login");
 	const [form] = Form.useForm<LoginFormValues>();
 	const { state, error, login, clearError } = useSessionStore();
 	const isLoading = state === SessionState.pendingAuth;
@@ -25,26 +25,26 @@ export function LoginPage() {
 	return (
 		<div
 			style={{
-				minHeight: '100vh',
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-				background: 'white',
-				padding: '20px',
+				minHeight: "100vh",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				background: "white",
+				padding: "20px",
 			}}
 		>
 			<Card
 				style={{
-					width: '100%',
+					width: "100%",
 					maxWidth: 400,
-					boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+					boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
 				}}
 			>
-				<div style={{ textAlign: 'center', marginBottom: 32 }}>
+				<div style={{ textAlign: "center", marginBottom: 32 }}>
 					<Title level={2} style={{ marginBottom: 8 }}>
-						{t('welcome')}
+						{t("welcome")}
 					</Title>
-					<Typography.Text type="secondary">{t('subtitle')}</Typography.Text>
+					<Typography.Text type="secondary">{t("subtitle")}</Typography.Text>
 				</div>
 
 				{error && (
@@ -62,23 +62,23 @@ export function LoginPage() {
 					<Form.Item
 						name="email"
 						rules={[
-							{ required: true, message: t('emailRequired') },
-							{ type: 'email', message: t('emailInvalid') },
+							{ required: true, message: t("emailRequired") },
+							{ type: "email", message: t("emailInvalid") },
 						]}
 					>
 						<Input
 							prefix={<UserOutlined />}
-							placeholder={t('email')}
+							placeholder={t("email")}
 							size="large"
 							autoFocus
 							aria-label="login:email"
 						/>
 					</Form.Item>
 
-					<Form.Item name="password" rules={[{ required: true, message: t('passwordRequired') }]}>
+					<Form.Item name="password" rules={[{ required: true, message: t("passwordRequired") }]}>
 						<Input.Password
 							prefix={<LockOutlined />}
-							placeholder={t('password')}
+							placeholder={t("password")}
 							size="large"
 							aria-label="login:password"
 						/>
@@ -93,7 +93,7 @@ export function LoginPage() {
 							loading={isLoading}
 							aria-label="login:signIn"
 						>
-							{t('signIn')}
+							{t("signIn")}
 						</Button>
 					</Form.Item>
 				</Form>

@@ -18,6 +18,11 @@ alwaysApply: true
 
 All commands run from the `fm-ux` directory.
 
+### Formatting
+```bash
+npx prettier --write "src/**/*.{ts,tsx,js,json}"
+```
+
 ### Type Checking
 ```bash
 pnpm tsc --noEmit          # Check TypeScript without emitting files

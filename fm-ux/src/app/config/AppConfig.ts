@@ -1,6 +1,6 @@
 // Application configuration - defines all apps and their areas
-import type { ReactNode } from 'react';
-import type { TFunction } from 'i18next';
+import type { ReactNode } from "react";
+import type { TFunction } from "i18next";
 import {
 	AppstoreOutlined,
 	BankOutlined,
@@ -10,8 +10,8 @@ import {
 	HomeOutlined,
 	TeamOutlined,
 	UserOutlined,
-} from '@ant-design/icons';
-import React from 'react';
+} from "@ant-design/icons";
+import React from "react";
 
 export interface Application {
 	id: string;
@@ -48,91 +48,91 @@ function createArea(id: string, labelKey: string, icon: ReactNode, path: string)
 }
 
 // Application Areas
-const homeArea = createArea('home', 'dashboard', React.createElement(DashboardOutlined), 'home');
-const tenantArea = createArea('tenant', 'tenants', React.createElement(FileTextOutlined), 'tenant');
-const userArea = createArea('user', 'users', React.createElement(UserOutlined), 'user');
-const accountArea = createArea('account', 'accounts', React.createElement(BankOutlined), 'account');
-const contactArea = createArea('contact', 'contacts', React.createElement(TeamOutlined), 'contact');
+const homeArea = createArea("home", "dashboard", React.createElement(DashboardOutlined), "home");
+const tenantArea = createArea("tenant", "tenants", React.createElement(FileTextOutlined), "tenant");
+const userArea = createArea("user", "users", React.createElement(UserOutlined), "user");
+const accountArea = createArea("account", "accounts", React.createElement(BankOutlined), "account");
+const contactArea = createArea("contact", "contacts", React.createElement(TeamOutlined), "contact");
 const portfolioArea = createArea(
-	'portfolio',
-	'portfolios',
+	"portfolio",
+	"portfolios",
 	React.createElement(AppstoreOutlined),
-	'portfolio'
+	"portfolio"
 );
 const buildingArea = createArea(
-	'building',
-	'buildings',
+	"building",
+	"buildings",
 	React.createElement(HomeOutlined),
-	'building'
+	"building"
 );
 const documentArea = createArea(
-	'document',
-	'documents',
+	"document",
+	"documents",
 	React.createElement(FileTextOutlined),
-	'document'
+	"document"
 );
-const taskArea = createArea('task', 'tasks', React.createElement(CheckSquareOutlined), 'task');
+const taskArea = createArea("task", "tasks", React.createElement(CheckSquareOutlined), "task");
 
 // Applications
 const fmApp: Application = {
-	id: 'fm',
-	name: 'ZEitWERT: fm',
-	appKey: 'FM',
-	shortName: 'appFm',
-	description: 'Strategische Unterhaltsplanung',
+	id: "fm",
+	name: "ZEitWERT: fm",
+	appKey: "FM",
+	shortName: "appFm",
+	description: "Strategische Unterhaltsplanung",
 };
 
 const fmAdminApp: Application = {
-	id: 'fmAdmin',
-	name: 'ZEitWERT: fmAdmin',
-	appKey: 'AD',
-	shortName: 'appFmAdmin',
-	description: 'Kunden Administration',
+	id: "fmAdmin",
+	name: "ZEitWERT: fmAdmin",
+	appKey: "AD",
+	shortName: "appFmAdmin",
+	description: "Kunden Administration",
 };
 
 const tenantAdminApp: Application = {
-	id: 'tenantAdmin',
-	name: 'ZEitWERT: admin',
-	appKey: 'MA',
-	shortName: 'appTenantAdmin',
-	description: 'Mandantenadministration',
+	id: "tenantAdmin",
+	name: "ZEitWERT: admin",
+	appKey: "MA",
+	shortName: "appTenantAdmin",
+	description: "Mandantenadministration",
 };
 
 const appAdminApp: Application = {
-	id: 'appAdmin',
-	name: 'ZEitWERT: appAdmin',
-	appKey: 'AP',
-	shortName: 'appAppAdmin',
-	description: 'Applikationsadministration',
+	id: "appAdmin",
+	name: "ZEitWERT: appAdmin",
+	appKey: "AP",
+	shortName: "appAppAdmin",
+	description: "Applikationsadministration",
 };
 
 // Application Infos (with areas)
 const fmAppInfo: ApplicationInfo = {
-	id: 'fmMenu',
-	name: 'ZEitWERT: fm',
+	id: "fmMenu",
+	name: "ZEitWERT: fm",
 	areas: [homeArea, portfolioArea, buildingArea, taskArea],
-	defaultArea: 'home',
+	defaultArea: "home",
 };
 
 const fmAdminAppInfo: ApplicationInfo = {
-	id: 'fmAdminMenu',
-	name: 'ZEitWERT: fmAdmin',
+	id: "fmAdminMenu",
+	name: "ZEitWERT: fmAdmin",
 	areas: [accountArea, contactArea],
-	defaultArea: 'home',
+	defaultArea: "home",
 };
 
 const tenantAdminAppInfo: ApplicationInfo = {
-	id: 'adminMenu',
-	name: 'ZEitWERT: admin',
+	id: "adminMenu",
+	name: "ZEitWERT: admin",
 	areas: [tenantArea, accountArea, userArea],
-	defaultArea: 'user',
+	defaultArea: "user",
 };
 
 const appAdminAppInfo: ApplicationInfo = {
-	id: 'appAdminMenu',
-	name: 'ZEitWERT: appAdmin',
+	id: "appAdminMenu",
+	name: "ZEitWERT: appAdmin",
 	areas: [tenantArea, accountArea, userArea],
-	defaultArea: 'tenant',
+	defaultArea: "tenant",
 };
 
 // Export configuration maps

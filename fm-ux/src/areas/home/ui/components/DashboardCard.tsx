@@ -1,5 +1,5 @@
-import { Card } from 'antd';
-import type { CSSProperties, ReactNode } from 'react';
+import { Card } from "antd";
+import type { CSSProperties, ReactNode } from "react";
 
 interface DashboardCardProps {
 	title: ReactNode;
@@ -20,25 +20,25 @@ export function DashboardCard({
 		<Card
 			title={title}
 			style={{
-				height: '100%',
-				display: 'flex',
-				flexDirection: 'column',
-				border: '1px solid #d9d9d9',
+				height: "100%",
+				display: "flex",
+				flexDirection: "column",
+				border: "1px solid #d9d9d9",
 				...cardStyle,
 			}}
 			headStyle={{
-				padding: '6px 16px',
+				padding: "6px 16px",
 				minHeight: 0,
 				...headStyle,
 			}}
 			bodyStyle={{
 				flex: 1,
-				overflow: 'auto',
-				background: '#ffffff',
+				overflow: "auto",
+				background: "#ffffff",
 				...bodyStyle,
 			}}
 		>
-			{children ?? <div style={{ height: '100%' }} />}
+			{children ?? <div style={{ height: "100%" }} />}
 		</Card>
 	);
 }

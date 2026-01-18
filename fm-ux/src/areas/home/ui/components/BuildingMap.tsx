@@ -1,9 +1,9 @@
-import GoogleMapReact from 'google-map-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
-import type { BuildingInfo } from '../../model';
+import GoogleMapReact from "google-map-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
+import type { BuildingInfo } from "../../model";
 
-const GOOGLE_API_KEY = 'AIzaSyBQF6Fi_Z0tZxVh5Eqzfx2m7hK3n718jsI';
+const GOOGLE_API_KEY = "AIzaSyBQF6Fi_Z0tZxVh5Eqzfx2m7hK3n718jsI";
 const DEFAULT_ZOOM = 16;
 const DEFAULT_DIMENSIONS = { width: 800, height: 600 };
 
@@ -88,7 +88,7 @@ export function BuildingMap({ buildings, zoom, onZoomChange, onClick }: Building
 	return (
 		<div
 			ref={containerRef}
-			style={{ width: '100%', height: '100%', borderRadius: 0, overflow: 'hidden' }}
+			style={{ width: "100%", height: "100%", borderRadius: 0, overflow: "hidden" }}
 		>
 			<GoogleMapReact
 				bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
@@ -138,15 +138,15 @@ const DEFAULT_MARKER_SIZE = 20;
 const HOVER_MARKER_SIZE = 40;
 
 const DEFAULT_MARKER_STYLE: CSSProperties = {
-	position: 'absolute',
+	position: "absolute",
 	width: DEFAULT_MARKER_SIZE,
 	height: DEFAULT_MARKER_SIZE,
 	left: -DEFAULT_MARKER_SIZE / 2,
 	top: -DEFAULT_MARKER_SIZE / 2,
-	backgroundColor: '#bbb',
-	border: '2px solid #888',
-	borderRadius: '50%',
-	cursor: 'pointer',
+	backgroundColor: "#bbb",
+	border: "2px solid #888",
+	borderRadius: "50%",
+	cursor: "pointer",
 };
 
 const HOVER_MARKER_STYLE: CSSProperties = {
@@ -156,19 +156,19 @@ const HOVER_MARKER_STYLE: CSSProperties = {
 	left: -HOVER_MARKER_SIZE / 2,
 	top: -HOVER_MARKER_SIZE / 2,
 	zIndex: 1000,
-	backgroundColor: '#add8e6',
-	border: '4px solid #3f51b5',
+	backgroundColor: "#add8e6",
+	border: "4px solid #3f51b5",
 };
 
 const DEFAULT_TEXT_STYLE: CSSProperties = {
-	position: 'absolute',
-	backgroundColor: 'rgba(255, 255, 255, .6)',
+	position: "absolute",
+	backgroundColor: "rgba(255, 255, 255, .6)",
 	fontSize: 16,
-	color: '#000',
-	left: '40px',
-	top: '6px',
-	width: '200px',
-	textAlign: 'left',
+	color: "#000",
+	left: "40px",
+	top: "6px",
+	width: "200px",
+	textAlign: "left",
 };
 
 interface MarkerWithHoverProps {
