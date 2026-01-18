@@ -11,6 +11,11 @@ It is part of a multi-module Maven project, but has no dependencies on other mod
 
 We are on a Windows machine with the command shell.
 
+# UI Module Notes
+
+The `fm-ux` UI module has its own Cursor rules and uses `pnpm` for tooling.
+When working on UI changes or tests, consult `fm-ux/.cursor/rules/ui-context.mdc` and `fm-ux/.cursor/rules/ui-tests.mdc`.
+
 # Compilation and Linting
 
 The linting inside the cursor IDE is not reliable, so you need to run the compilation to ensure the code is correct.

@@ -37,10 +37,12 @@ pnpm format                # Format code with Prettier
 
 ### Testing
 ```bash
-pnpm test                  # Run vitest in watch mode
-pnpm test:run              # Run vitest once (CI mode)
-pnpm test:coverage         # Run vitest with coverage report
+pnpm test                           # Run vitest in watch mode
+pnpm test:run                        # Run vitest once (CI mode)
+pnpm test:run -- src/path/file.test.tsx  # Run a single test file
+pnpm test:coverage                   # Run vitest with coverage report
 ```
+Testing conventions and patterns live in `ui-tests.mdc` (not alwaysApply).
 
 ### Building
 ```bash

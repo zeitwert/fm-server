@@ -15,12 +15,7 @@ Uses Vitest + React Testing Library + MSW for API mocking.
 
 ## Running Tests
 
-```bash
-cd fm-ux
-pnpm test        # Watch mode (re-runs on file changes)
-pnpm test:run    # Single run
-pnpm test:coverage  # With coverage report
-```
+Command shortcuts live in `ui-context.mdc`. Use those commands from the `fm-ux` directory.
 
 ## Test File Structure
 
