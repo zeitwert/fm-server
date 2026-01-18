@@ -1,5 +1,6 @@
 import { Navigate, createFileRoute, useSearch } from "@tanstack/react-router";
 import { ConfigProvider, Spin } from "antd";
+import { appTheme } from "../app/theme";
 import { useSessionStore } from "../session/model/sessionStore";
 import { SessionState } from "../session/model/types";
 import { LoginPage } from "../session/ui/LoginPage";
@@ -32,7 +33,7 @@ function LoginComponent() {
 	// Show login page when not authenticated
 	if (state === SessionState.close) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<LoginPage />
 			</ConfigProvider>
 		);
@@ -41,7 +42,7 @@ function LoginComponent() {
 	// Show loading during authentication
 	if (state === SessionState.pendingAuth) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<div
 					style={{
 						minHeight: "100vh",
@@ -60,7 +61,7 @@ function LoginComponent() {
 	// Show tenant/account selection wizard
 	if (state === SessionState.authenticated && (needsTenantSelection() || needsAccountSelection())) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<SelectionWizard />
 			</ConfigProvider>
 		);
@@ -69,7 +70,7 @@ function LoginComponent() {
 	// Show loading during session initialization
 	if (state === SessionState.pendingOpen) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<div
 					style={{
 						minHeight: "100vh",

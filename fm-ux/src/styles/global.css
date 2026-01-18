@@ -1,0 +1,13 @@
+/* Override browser autofill background color (not controllable via Ant Design theme) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+.ant-input-affix-wrapper > input.ant-input:-webkit-autofill,
+.ant-input-affix-wrapper > input.ant-input:-webkit-autofill:hover,
+.ant-input-affix-wrapper > input.ant-input:-webkit-autofill:focus,
+.ant-input-affix-wrapper > input.ant-input:-webkit-autofill:active {
+	-webkit-box-shadow: 0 0 0 1000px white inset !important;
+	box-shadow: 0 0 0 1000px white inset !important;
+	-webkit-text-fill-color: inherit !important;
+}

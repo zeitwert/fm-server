@@ -8,6 +8,9 @@ import { queryClient } from "./common/queryClient";
 // Initialize i18n before rendering
 import "./i18n";
 
+// Global styles
+import "./styles/global.css";
+
 const router = createRouter({ routeTree });
 
 declare module "@tanstack/react-router" {

@@ -1,6 +1,7 @@
 import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
 import { ConfigProvider, Spin } from "antd";
 import { useEffect } from "react";
+import { appTheme } from "../app/theme";
 import { useSessionStore } from "../session/model/sessionStore";
 import { SessionState } from "../session/model/types";
 import { AppShell } from "../shell/AppShell";
@@ -40,7 +41,7 @@ function RootComponent() {
 	// On login route, just render the outlet (LoginComponent handles everything)
 	if (isLoginRoute) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<Outlet />
 			</ConfigProvider>
 		);
@@ -49,7 +50,7 @@ function RootComponent() {
 	// Show loading during session initialization
 	if (state === SessionState.pendingOpen) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<div
 					style={{
 						minHeight: "100vh",
@@ -68,7 +69,7 @@ function RootComponent() {
 	// If not authenticated and not on login route, show loading while redirect happens
 	if (!isFullyAuthenticated) {
 		return (
-			<ConfigProvider>
+			<ConfigProvider theme={appTheme}>
 				<div
 					style={{
 						minHeight: "100vh",
@@ -86,7 +87,7 @@ function RootComponent() {
 
 	// Show main application when session is open
 	return (
-		<ConfigProvider>
+		<ConfigProvider theme={appTheme}>
 			<AppShell />
 		</ConfigProvider>
 	);

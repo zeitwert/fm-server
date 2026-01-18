@@ -64,6 +64,8 @@ class DemoDataSetup(
 		// Upload kernel tenant logo if empty
 		setupKernelTenantLogo()
 
+		val allTenantIds = mutableListOf<Int>()
+
 		DslUtil.startIndent()
 		Tenant(DEMO_TENANT_KEY, DEMO_TENANT_NAME, CodeTenantType.ADVISOR.id, DEMO_TENANT_LOGO) {
 			val allUsers = getUsersInDomain("zeitwert.io")
@@ -92,7 +94,10 @@ class DemoDataSetup(
 					buildings8556()
 				}
 			}
-		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
+		}.also { (tenantId, userId) ->
+			allTenantIds.add(tenantId)
+			attachRandomContactsToAllBuildings(tenantId, userId)
+		}
 
 		Tenant("8253", "Diessenhofen", "community", "demo/tenant/logo-8253.jpg") {
 			val allUsers = getUsersInDomain("diessenhofen.ch")
@@ -105,7 +110,10 @@ class DemoDataSetup(
 					buildings8253()
 				}
 			}
-		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
+		}.also { (tenantId, userId) ->
+			allTenantIds.add(tenantId)
+			attachRandomContactsToAllBuildings(tenantId, userId)
+		}
 
 		Tenant("8266", "Steckborn", "community", "demo/tenant/logo-8266.jpg") {
 			val allUsers = getUsersInDomain("steckborn.ch")
@@ -118,7 +126,10 @@ class DemoDataSetup(
 					buildings8266()
 				}
 			}
-		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
+		}.also { (tenantId, userId) ->
+			allTenantIds.add(tenantId)
+			attachRandomContactsToAllBuildings(tenantId, userId)
+		}
 
 		Tenant("8476", "Unterstammheim", "community", "demo/tenant/logo-8476.jpg") {
 			val allUsers = getUsersInDomain("unterstammheim.ch")
@@ -131,7 +142,13 @@ class DemoDataSetup(
 					buildings8476()
 				}
 			}
-		}.also { (tenantId, userId) -> attachRandomContactsToAllBuildings(tenantId, userId) }
+		}.also { (tenantId, userId) ->
+			allTenantIds.add(tenantId)
+			attachRandomContactsToAllBuildings(tenantId, userId)
+		}
+
+		// Add all tenants to zeitwert.io users so they can access all tenants
+		addTenantsToZeitwertUsers(allTenantIds)
 	}
 
 	/** Check if the kernel tenant's logo document is empty and upload the logo if needed. */
@@ -190,6 +207,26 @@ class DemoDataSetup(
 				this.mobile = mobile
 				this.birthDate = birthDate
 			}
+		}
+	}
+
+	/** Add all tenants to the tenant sets of the zeitwert.io users. */
+	private fun addTenantsToZeitwertUsers(tenantIds: List<Int>) {
+		val userRepository = directory.getRepository(ObjUser::class.java) as ObjUserRepository
+		val zeitwertEmails = getUsersInDomain("zeitwert.io").map { it.first }
+
+		for (email in zeitwertEmails) {
+			val userOpt = userRepository.getByEmail(email)
+			if (userOpt.isEmpty) continue
+
+			val user = userRepository.load(userOpt.get().id)
+			for (tenantId in tenantIds) {
+				user.tenantSet.add(tenantId)
+			}
+			userRepository.transaction {
+				userRepository.store(user)
+			}
+			DslUtil.logger.info("${DslUtil.indent}Added ${tenantIds.size} tenants to user $email")
 		}
 	}
 
