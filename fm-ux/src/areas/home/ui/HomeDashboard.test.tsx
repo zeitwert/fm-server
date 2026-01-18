@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderApp, screen, waitFor } from '../../../test/utils';
-import {
-	activeSessionInfo,
-	singleAccountTenantInfo,
-} from '../../../test/mocks/fixtures';
+import { activeSessionInfo, singleAccountTenantInfo } from '../../../test/mocks/fixtures';
 import { useSessionStore } from '../../../session/model/sessionStore';
 import { SessionState } from '../../../session/model/types';
 
@@ -149,9 +146,7 @@ describe('Home Dashboard', () => {
 
 			// Now the activity details should be visible
 			await waitFor(() => {
-				expect(
-					screen.getByText('Review inspection report')
-				).toBeInTheDocument();
+				expect(screen.getByText('Review inspection report')).toBeInTheDocument();
 			});
 
 			// Activity content

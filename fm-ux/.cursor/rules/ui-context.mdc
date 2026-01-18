@@ -14,6 +14,36 @@ alwaysApply: true
 - google-map-react for maps (needs mocking in tests)
 - recharts for charts (warning about 0 dimensions in tests - ignorable)
 
+## Development Commands (pnpm)
+
+All commands run from the `fm-ux` directory.
+
+### Type Checking
+```bash
+pnpm tsc --noEmit          # Check TypeScript without emitting files
+```
+
+### Linting
+```bash
+pnpm lint                  # Run ESLint
+pnpm lint:fix              # Run ESLint with auto-fix
+pnpm format                # Format code with Prettier
+```
+
+### Testing
+```bash
+pnpm test                  # Run vitest in watch mode
+pnpm test:run              # Run vitest once (CI mode)
+pnpm test:coverage         # Run vitest with coverage report
+```
+
+### Building
+```bash
+pnpm build                 # Type check (tsc -b) + Vite production build
+pnpm dev                   # Start Vite dev server
+pnpm preview               # Preview production build locally
+```
+
 ## File Conventions
 - Components: PascalCase `.tsx`
 - Stores: camelCase with `Store` suffix
@@ -37,6 +67,7 @@ alwaysApply: true
 
 ## Definition of Done
 1. TypeScript compiles: `pnpm tsc --noEmit`
-2. Tests pass: `pnpm test:run`
-3. Interactive elements have `aria-label="ns:key"` for testing
-4. New text uses translation keys, not hardcoded strings
+2. TypeScript no linting errors/warnings anymore: `pnpm lint`
+3. Tests pass: `pnpm test:run`
+4. Interactive elements have `aria-label="ns:key"` for testing
+5. New text uses translation keys, not hardcoded strings

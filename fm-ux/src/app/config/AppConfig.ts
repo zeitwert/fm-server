@@ -16,6 +16,8 @@ import React from 'react';
 export interface Application {
 	id: string;
 	name: string;
+	appKey: string; // Two-letter abbreviation for collapsed sidebar display
+	shortName: string; // Translation key for short name display (e.g., in segmented control)
 	description: string;
 }
 
@@ -35,12 +37,7 @@ export interface ApplicationInfo {
 }
 
 // Helper to create area with translation support
-function createArea(
-	id: string,
-	labelKey: string,
-	icon: ReactNode,
-	path: string
-): ApplicationArea {
+function createArea(id: string, labelKey: string, icon: ReactNode, path: string): ApplicationArea {
 	return {
 		id,
 		labelKey,
@@ -74,29 +71,38 @@ const documentArea = createArea(
 	React.createElement(FileTextOutlined),
 	'document'
 );
-const taskArea = createArea(
-	'task',
-	'tasks',
-	React.createElement(CheckSquareOutlined),
-	'task'
-);
+const taskArea = createArea('task', 'tasks', React.createElement(CheckSquareOutlined), 'task');
 
 // Applications
 const fmApp: Application = {
 	id: 'fm',
-	name: 'zeitwert: fm',
+	name: 'ZEitWERT: fm',
+	appKey: 'FM',
+	shortName: 'appFm',
 	description: 'Strategische Unterhaltsplanung',
+};
+
+const fmAdminApp: Application = {
+	id: 'fmAdmin',
+	name: 'ZEitWERT: fmAdmin',
+	appKey: 'AD',
+	shortName: 'appFmAdmin',
+	description: 'Kunden Administration',
 };
 
 const tenantAdminApp: Application = {
 	id: 'tenantAdmin',
 	name: 'ZEitWERT: admin',
+	appKey: 'MA',
+	shortName: 'appTenantAdmin',
 	description: 'Mandantenadministration',
 };
 
 const appAdminApp: Application = {
 	id: 'appAdmin',
 	name: 'ZEitWERT: appAdmin',
+	appKey: 'AP',
+	shortName: 'appAppAdmin',
 	description: 'Applikationsadministration',
 };
 
@@ -104,7 +110,14 @@ const appAdminApp: Application = {
 const fmAppInfo: ApplicationInfo = {
 	id: 'fmMenu',
 	name: 'ZEitWERT: fm',
-	areas: [homeArea, portfolioArea, buildingArea, taskArea, accountArea, contactArea],
+	areas: [homeArea, portfolioArea, buildingArea, taskArea],
+	defaultArea: 'home',
+};
+
+const fmAdminAppInfo: ApplicationInfo = {
+	id: 'fmAdminMenu',
+	name: 'ZEitWERT: fmAdmin',
+	areas: [accountArea, contactArea],
 	defaultArea: 'home',
 };
 
@@ -125,12 +138,14 @@ const appAdminAppInfo: ApplicationInfo = {
 // Export configuration maps
 export const ApplicationMap: { [id: string]: Application } = {
 	[fmApp.id]: fmApp,
+	[fmAdminApp.id]: fmAdminApp,
 	[tenantAdminApp.id]: tenantAdminApp,
 	[appAdminApp.id]: appAdminApp,
 };
 
 export const ApplicationInfoMap: { [id: string]: ApplicationInfo } = {
 	[fmApp.id]: fmAppInfo,
+	[fmAdminApp.id]: fmAdminAppInfo,
 	[tenantAdminApp.id]: tenantAdminAppInfo,
 	[appAdminApp.id]: appAdminAppInfo,
 };

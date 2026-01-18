@@ -9,5 +9,9 @@
 	"contacts": "Kontakte",
 	"tenants": "Mandanten",
 	"users": "Benutzer",
-	"documents": "Dokumente"
+	"documents": "Dokumente",
+	"appFm": "FM",
+	"appFmAdmin": "Admin",
+	"appTenantAdmin": "Mandant",
+	"appAppAdmin": "App"
 }

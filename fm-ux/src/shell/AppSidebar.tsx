@@ -1,10 +1,10 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { Link, useLocation } from '@tanstack/react-router';
-import { Button, Flex, Menu, theme } from 'antd';
+import { Button, Flex, Menu, Segmented, theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getApplicationInfo } from '../app/config/AppConfig';
+import { ApplicationMap, getApplicationInfo } from '../app/config/AppConfig';
 import { useSessionStore } from '../session/model/sessionStore';
 import { useShellStore } from './shellStore';
 
@@ -16,8 +16,29 @@ export function AppSidebar() {
 	const { t } = useTranslation('app');
 	const { token } = useToken();
 	const { sidebarCollapsed, toggleSidebar } = useShellStore();
-	const { sessionInfo } = useSessionStore();
+	const { sessionInfo, switchApplication } = useSessionStore();
 	const location = useLocation();
+
+	// Get available applications for segmented control
+	const availableApplications = sessionInfo?.availableApplications ?? [];
+	const hasMultipleApps = availableApplications.length > 1;
+
+	// Get current application for collapsed display
+	const currentApp = sessionInfo?.applicationId ? ApplicationMap[sessionInfo.applicationId] : null;
+
+	// Build segmented options from available applications
+	const appSegmentOptions = useMemo(() => {
+		return availableApplications
+			.map((appId) => {
+				const app = ApplicationMap[appId];
+				if (!app) return null;
+				return {
+					value: appId,
+					label: t(app.shortName),
+				};
+			})
+			.filter((option): option is { value: string; label: string } => option !== null);
+	}, [availableApplications, t]);
 
 	// Get current application areas
 	const appInfo = useMemo(() => {
@@ -52,17 +73,58 @@ export function AppSidebar() {
 				borderRight: `1px solid ${token.colorBorderSecondary}`,
 			}}
 		>
-			{/* Navigation Menu */}
-			<Menu
-				mode="inline"
-				selectedKeys={selectedKeys}
-				items={navigationItems}
-				inlineCollapsed={sidebarCollapsed}
-				style={{
-					border: 'none',
-					background: 'transparent',
-				}}
-			/>
+			<Flex vertical>
+				{/* Application Switcher - only show if multiple apps available */}
+				{hasMultipleApps && (
+					<Flex
+						justify="center"
+						style={{
+							padding: sidebarCollapsed ? '12px 0' : '12px 8px',
+							borderBottom: `1px solid ${token.colorBorderSecondary}`,
+						}}
+					>
+						{sidebarCollapsed ? (
+							// Show two-letter app key when collapsed
+							<div
+								style={{
+									width: 40,
+									height: 32,
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									fontWeight: 600,
+									fontSize: 14,
+									color: token.colorPrimary,
+									background: token.colorPrimaryBg,
+									borderRadius: token.borderRadius,
+								}}
+							>
+								{currentApp?.appKey}
+							</div>
+						) : (
+							<Segmented
+								value={sessionInfo?.applicationId}
+								options={appSegmentOptions}
+								onChange={(value) => switchApplication(value as string)}
+								block
+								style={{ width: '100%' }}
+							/>
+						)}
+					</Flex>
+				)}
+
+				{/* Navigation Menu */}
+				<Menu
+					mode="inline"
+					selectedKeys={selectedKeys}
+					items={navigationItems}
+					inlineCollapsed={sidebarCollapsed}
+					style={{
+						border: 'none',
+						background: 'transparent',
+					}}
+				/>
+			</Flex>
 
 			{/* Collapse Toggle */}
 			<Flex

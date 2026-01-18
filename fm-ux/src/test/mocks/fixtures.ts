@@ -64,10 +64,42 @@ export const activeSessionInfo: SessionInfo = {
 		logo: undefined,
 	},
 	locale: 'de',
-	applicationId: 'fm-ux',
-	applicationName: 'FM UX',
+	applicationId: 'fm',
+	applicationName: 'ZEitWERT: fm',
 	applicationVersion: '0.0.1-SNAPSHOT',
-	availableApplications: ['fm-ux'],
+	availableApplications: ['fm'],
+};
+
+// Session info for super user with multiple applications
+export const superUserSessionInfo: SessionInfo = {
+	tenant: {
+		id: '100',
+		caption: 'Test Tenant',
+		name: 'Test Tenant',
+		extlKey: 'test-tenant',
+		tenantType: { id: 'advisor', name: 'Advisor' },
+		logo: undefined,
+	},
+	user: {
+		id: '2',
+		caption: 'Super User',
+		name: 'Super User',
+		tenant: { id: '100', name: 'Test Tenant' },
+		email: 'super@example.com',
+		role: { id: 'superUser', name: 'Super User' },
+	},
+	account: {
+		id: '1000',
+		caption: 'Default Account',
+		name: 'Default Account',
+		accountType: { id: 'standard', name: 'Standard' },
+		logo: undefined,
+	},
+	locale: 'de',
+	applicationId: 'fm',
+	applicationName: 'ZEitWERT: fm',
+	applicationVersion: '0.0.1-SNAPSHOT',
+	availableApplications: ['fm', 'fmAdmin'],
 };
 
 // Home dashboard data

@@ -1,93 +1,93 @@
 // Session state enum
 export enum SessionState {
-  close = 'close',
-  pendingAuth = 'pendingAuth',
-  authenticated = 'authenticated',
-  pendingOpen = 'pendingOpen',
-  open = 'open',
+	close = 'close',
+	pendingAuth = 'pendingAuth',
+	authenticated = 'authenticated',
+	pendingOpen = 'pendingOpen',
+	open = 'open',
 }
 
 // Basic enumerated type for dropdowns
 export interface Enumerated {
-  id: string;
-  name: string;
+	id: string;
+	name: string;
 }
 
 // Typed enumerated (includes itemType for aggregates)
 export interface TypedEnumerated {
-  id: string;
-  name: string;
-  itemType: Enumerated;
+	id: string;
+	name: string;
+	itemType: Enumerated;
 }
 
 // Login flow types
 export interface LoginUserInfo {
-  id: string;
-  name: string;
-  email: string;
-  role: Enumerated;
-  tenants: TypedEnumerated[];
+	id: string;
+	name: string;
+	email: string;
+	role: Enumerated;
+	tenants: TypedEnumerated[];
 }
 
 export interface LoginTenantInfo {
-  id: string;
-  tenantType: Enumerated;
-  accounts: Enumerated[];
+	id: string;
+	tenantType: Enumerated;
+	accounts: Enumerated[];
 }
 
 export interface LoginInfo {
-  id: number;
-  email: string;
-  username: string;
-  accountId: number;
-  sessionId: string;
-  role: string;
+	id: number;
+	email: string;
+	username: string;
+	accountId: number;
+	sessionId: string;
+	role: string;
 }
 
 // Session info types
 export interface DocumentInfo {
-  id: string;
-  caption: string;
-  name: string;
-  contentKind: Enumerated;
-  contentType: Enumerated | undefined;
+	id: string;
+	caption: string;
+	name: string;
+	contentKind: Enumerated;
+	contentType: Enumerated | undefined;
 }
 
 export interface TenantInfo {
-  id: string;
-  caption: string;
-  name: string;
-  extlKey: string;
-  tenantType: Enumerated;
-  logo: DocumentInfo | undefined;
+	id: string;
+	caption: string;
+	name: string;
+	extlKey: string;
+	tenantType: Enumerated;
+	logo: DocumentInfo | undefined;
 }
 
 export interface UserInfo {
-  id: string;
-  caption: string;
-  name: string;
-  tenant: Enumerated;
-  email: string;
-  role: Enumerated;
+	id: string;
+	caption: string;
+	name: string;
+	tenant: Enumerated;
+	email: string;
+	role: Enumerated;
 }
 
 export interface AccountInfo {
-  id: string;
-  caption: string;
-  name: string;
-  accountType: Enumerated;
-  logo: DocumentInfo | undefined;
+	id: string;
+	caption: string;
+	name: string;
+	accountType: Enumerated;
+	logo: DocumentInfo | undefined;
 }
 
 export interface SessionInfo {
-  tenant: TenantInfo;
-  user: UserInfo;
-  account?: AccountInfo;
-  locale: string;
-  applicationId: string;
-  applicationName: string;
-  applicationVersion: string;
-  availableApplications: string[];
+	tenant: TenantInfo;
+	user: UserInfo;
+	account?: AccountInfo;
+	locale: string;
+	applicationId: string;
+	applicationName: string;
+	applicationVersion: string;
+	availableApplications: string[];
 }
 
 // Tenant type constants

@@ -33,9 +33,11 @@ class ObjUserImpl(
 	override val avatarImage by referenceProperty<ObjDocument>("avatarImage")
 	override val tenantSet = referenceSetProperty<ObjTenant>("tenantSet")
 
-	override val isAppAdmin get() = repository.isAppAdmin(this)
+	override val isAppAdmin get() = hasRole(CodeUserRole.APP_ADMIN)
 
-	override val isAdmin get() = repository.isAdmin(this)
+	override val isAdmin get() = hasRole(CodeUserRole.ADMIN)
+
+	override val isSuperUser get() = hasRole(CodeUserRole.SUPER_USER)
 
 	override fun hasRole(role: CodeUserRole) = this.role == role
 

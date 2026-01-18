@@ -25,9 +25,10 @@ apiClient.interceptors.response.use(
 			sessionStorage.removeItem(TENANT_INFO_KEY);
 			// Redirect to login with current path as redirect parameter
 			const currentPath = window.location.pathname + window.location.search;
-			const redirectParam = currentPath && currentPath !== '/' && currentPath !== '/login' 
-				? `?redirect=${encodeURIComponent(currentPath)}` 
-				: '';
+			const redirectParam =
+				currentPath && currentPath !== '/' && currentPath !== '/login'
+					? `?redirect=${encodeURIComponent(currentPath)}`
+					: '';
 			window.location.replace(`/login${redirectParam}`);
 		}
 

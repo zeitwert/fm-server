@@ -75,10 +75,7 @@ export function LoginPage() {
 						/>
 					</Form.Item>
 
-					<Form.Item
-						name="password"
-						rules={[{ required: true, message: t('passwordRequired') }]}
-					>
+					<Form.Item name="password" rules={[{ required: true, message: t('passwordRequired') }]}>
 						<Input.Password
 							prefix={<LockOutlined />}
 							placeholder={t('password')}

@@ -86,7 +86,11 @@ describe('Login Sequence', () => {
 			await user.click(screen.getByRole('button', { name: 'login:signIn' }));
 
 			// Wait for tenant selection wizard - title uses translation key
-			const selectTenantText = await screen.findByText('login:selectTenant', {}, { timeout: 10000 });
+			const selectTenantText = await screen.findByText(
+				'login:selectTenant',
+				{},
+				{ timeout: 10000 }
+			);
 			expect(selectTenantText).toBeInTheDocument();
 
 			// Both tenants should be visible
@@ -294,10 +298,7 @@ describe('Login Sequence', () => {
 		it('should handle server errors', async () => {
 			server.use(
 				http.post('/rest/session/authenticate', () => {
-					return HttpResponse.json(
-						{ errors: [{ detail: 'Server error' }] },
-						{ status: 500 }
-					);
+					return HttpResponse.json({ errors: [{ detail: 'Server error' }] }, { status: 500 });
 				})
 			);
 

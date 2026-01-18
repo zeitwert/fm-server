@@ -141,7 +141,7 @@ class SessionController {
 			val existingTenantId = userDetails._tenantId
 			if (existingTenantId != null && existingTenantId != request.tenantId) {
 				throw IllegalArgumentException(
-					"Cannot switch tenant during session. Current: $existingTenantId, Requested: ${request.tenantId}"
+					"Cannot switch tenant during session. Current: $existingTenantId, Requested: ${request.tenantId}",
 				)
 			}
 
@@ -179,28 +179,14 @@ class SessionController {
 			val session = httpRequest.getSession(false)
 			session?.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
 
-			// Build session info response
-			val tenant = tenantRepository.get(request.tenantId)
-			val account = if (request.accountId != null) accountRepository.get(request.accountId) else null
-			val defaultApp = if (user.isAppAdmin) {
-				"appAdmin"
-			} else if (user.isAdmin) {
-				"tenantAdmin"
-			} else {
-				"fm"
+			// Make sure session context is updated
+			check(sessionContext.tenantId == request.tenantId) {
+				"SessionContext tenantId not updated"
 			}
-
-			val response = SessionInfoResponse(
-				applicationName = ApplicationInfo.getName(),
-				applicationVersion = ApplicationInfo.getVersion(),
-				user = userDtoAdapter.fromAggregate(user),
-				tenant = tenantDtoAdapter.fromAggregate(tenant),
-				account = if (account != null) accountDtoAdapter.fromAggregate(account) else null,
-				locale = "de_CH",
-				applicationId = defaultApp,
-				availableApplications = listOf(defaultApp),
-			)
-			return ResponseEntity.ok(response)
+			check(sessionContext.accountId == request.accountId) {
+				"SessionContext accountId not updated"
+			}
+			return getSessionInfo()
 		} catch (ex: Exception) {
 			logger.error("Session activation failed: $ex")
 			throw RuntimeException(ex)
@@ -268,8 +254,8 @@ class SessionController {
 	@GetMapping("/session")
 	fun getSessionInfo(): ResponseEntity<SessionInfoResponse> {
 		val tenantId = sessionContext.tenantId
-		val tenant = tenantRepository.get(tenantId)
 		val accountId = sessionContext.accountId
+		val tenant = tenantRepository.get(tenantId)
 		val account = if (accountId != null) accountRepository.get(accountId) else null
 		val user = userRepository.get(sessionContext.userId)
 		val defaultApp = if (user.isAppAdmin) {
@@ -279,6 +265,15 @@ class SessionController {
 		} else {
 			"fm"
 		}
+		val availableApps = if (user.isAppAdmin) {
+			listOf("appAdmin")
+		} else if (user.isAdmin) {
+			listOf("tenantAdmin")
+		} else if (user.isSuperUser) {
+			listOf("fm", "fmAdmin")
+		} else {
+			listOf("fm")
+		}
 		val response = SessionInfoResponse(
 			applicationName = ApplicationInfo.getName(),
 			applicationVersion = ApplicationInfo.getVersion(),
@@ -287,7 +282,7 @@ class SessionController {
 			account = if (account != null) accountDtoAdapter.fromAggregate(account) else null,
 			locale = sessionContext.locale.id,
 			applicationId = defaultApp,
-			availableApplications = listOf(defaultApp),
+			availableApplications = availableApps,
 		)
 		return ResponseEntity.ok(response)
 	}

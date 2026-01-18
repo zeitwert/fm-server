@@ -17,10 +17,7 @@ export const handlers = [
 
 		// Simulate invalid credentials
 		if (body.password === 'invalid') {
-			return HttpResponse.json(
-				{ errors: [{ detail: 'Invalid credentials' }] },
-				{ status: 401 }
-			);
+			return HttpResponse.json({ errors: [{ detail: 'Invalid credentials' }] }, { status: 401 });
 		}
 
 		return HttpResponse.json(singleTenantUser);

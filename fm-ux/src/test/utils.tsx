@@ -40,16 +40,16 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 
 // Custom render function that wraps components with providers
 function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
-	const { initialPath = '/login', queryClient = createTestQueryClient(), ...renderOptions } = options;
+	const {
+		initialPath = '/login',
+		queryClient = createTestQueryClient(),
+		...renderOptions
+	} = options;
 
 	const testRouter = createTestRouter(initialPath);
 
 	function Wrapper({ children }: WrapperProps) {
-		return (
-			<QueryClientProvider client={queryClient}>
-				{children}
-			</QueryClientProvider>
-		);
+		return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 	}
 
 	return {
@@ -61,8 +61,14 @@ function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
 }
 
 // Render the full app with router
-function renderApp(options: Omit<CustomRenderOptions, 'initialPath'> & { initialPath?: string } = {}) {
-	const { initialPath = '/login', queryClient = createTestQueryClient(), ...renderOptions } = options;
+function renderApp(
+	options: Omit<CustomRenderOptions, 'initialPath'> & { initialPath?: string } = {}
+) {
+	const {
+		initialPath = '/login',
+		queryClient = createTestQueryClient(),
+		...renderOptions
+	} = options;
 
 	const testRouter = createTestRouter(initialPath);
 

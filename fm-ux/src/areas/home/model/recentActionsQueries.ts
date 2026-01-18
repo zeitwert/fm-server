@@ -24,9 +24,7 @@ export interface RecentAction {
 }
 
 async function fetchRecentActions(accountId: string) {
-	const response = await api.get<RecentAction[]>(
-		getRestUrl('home', `recentActions/${accountId}`)
-	);
+	const response = await api.get<RecentAction[]>(getRestUrl('home', `recentActions/${accountId}`));
 	return response.data ?? [];
 }
 

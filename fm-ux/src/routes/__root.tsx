@@ -30,7 +30,8 @@ function RootComponent() {
 			if (state === SessionState.close) {
 				// Use window.location for reliable path string
 				const currentPath = window.location.pathname + window.location.search;
-				const redirectParam = currentPath && currentPath !== '/' ? `?redirect=${encodeURIComponent(currentPath)}` : '';
+				const redirectParam =
+					currentPath && currentPath !== '/' ? `?redirect=${encodeURIComponent(currentPath)}` : '';
 				window.location.replace(`/login${redirectParam}`);
 			}
 		}

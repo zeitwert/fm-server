@@ -51,7 +51,6 @@ class ApplicationController {
 	fun tenantInfo(
 		@PathVariable id: Int,
 	): ResponseEntity<TenantInfoResponse> {
-		println("Fetching tenant info for ID: $id")
 		try {
 			// val accounts = accountService.getAccounts(tenant)
 			// val accountDtos = accounts.map { EnumeratedDto.of(it.id.toString(), it.name) }

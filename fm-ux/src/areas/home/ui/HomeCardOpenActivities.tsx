@@ -124,9 +124,7 @@ function ActivityList({
 										gap: 8,
 									}}
 								>
-									<Typography.Text strong>
-										{renderLink(headerName, headerPath)}
-									</Typography.Text>
+									<Typography.Text strong>{renderLink(headerName, headerPath)}</Typography.Text>
 									{dueRelative && (
 										<Typography.Text type={isOverdue ? 'danger' : 'secondary'}>
 											{dueRelative}
@@ -138,16 +136,11 @@ function ActivityList({
 								</Typography.Text>
 								{!isBuilding && (
 									<div style={{ marginTop: 4 }}>
-										<Typography.Text strong>
-											{renderLink(subject, itemPath)}
-										</Typography.Text>
+										<Typography.Text strong>{renderLink(subject, itemPath)}</Typography.Text>
 									</div>
 								)}
 								{activity.content && (
-									<Typography.Paragraph
-										style={{ marginTop: 4, marginBottom: 0 }}
-										type="secondary"
-									>
+									<Typography.Paragraph style={{ marginTop: 4, marginBottom: 0 }} type="secondary">
 										{activity.content}
 									</Typography.Paragraph>
 								)}

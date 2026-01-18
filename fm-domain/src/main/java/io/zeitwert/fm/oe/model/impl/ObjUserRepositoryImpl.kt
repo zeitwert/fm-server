@@ -5,7 +5,6 @@ import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.oe.model.ObjUser
 import io.zeitwert.fm.oe.model.ObjUserRepository
-import io.zeitwert.fm.oe.model.enums.CodeUserRole
 import io.zeitwert.persist.ObjUserPersistenceProvider
 import org.springframework.context.annotation.DependsOn
 import org.springframework.context.annotation.Lazy
@@ -28,10 +27,6 @@ class ObjUserRepositoryImpl(
 	override val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
 	override fun createAggregate(isNew: Boolean): ObjUser = ObjUserImpl(this, isNew)
-
-	override fun isAppAdmin(user: ObjUser): Boolean = user.hasRole(CodeUserRole.APP_ADMIN)
-
-	override fun isAdmin(user: ObjUser): Boolean = user.hasRole(CodeUserRole.ADMIN)
 
 	override fun getByEmail(email: String): Optional<ObjUser> {
 		val userId = (persistenceProvider as ObjUserPersistenceProvider).getByEmail(email)

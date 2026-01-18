@@ -21,6 +21,8 @@ interface ObjUser : Obj {
 
 	val isAdmin: Boolean
 
+	val isSuperUser: Boolean
+
 	var avatarImageId: Any?
 
 	val avatarImage: ObjDocument?

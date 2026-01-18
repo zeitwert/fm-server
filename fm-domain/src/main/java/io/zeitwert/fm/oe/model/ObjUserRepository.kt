@@ -13,10 +13,6 @@ interface ObjUserRepository : ObjRepository<ObjUser> {
 
 	fun getByEmail(email: String): Optional<ObjUser>
 
-	fun isAppAdmin(user: ObjUser): Boolean
-
-	fun isAdmin(user: ObjUser): Boolean
-
 	companion object {
 
 		/** Email used to identify the kernel user. */

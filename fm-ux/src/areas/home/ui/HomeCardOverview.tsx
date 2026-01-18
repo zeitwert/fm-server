@@ -91,11 +91,7 @@ export function HomeCardOverview() {
 								plural={t('portfolios')}
 								url="/portfolio"
 							/>
-							<FactRow
-								value={data.ratingCount}
-								singular={t('rating')}
-								plural={t('ratings')}
-							/>
+							<FactRow value={data.ratingCount} singular={t('rating')} plural={t('ratings')} />
 							<FactRow value={data.insuranceValue} singular={t('insuranceValue')} />
 							<FactRow value={data.timeValue} singular={t('timeValue')} />
 							<FactRow value={data.shortTermRenovationCosts} singular={t('shortTermCosts')} />

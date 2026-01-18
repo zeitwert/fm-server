@@ -10,9 +10,7 @@ function IndexComponent() {
 	const { sessionInfo } = useSessionStore();
 
 	// Get default area for current application
-	const appInfo = sessionInfo?.applicationId
-		? getApplicationInfo(sessionInfo.applicationId)
-		: null;
+	const appInfo = sessionInfo?.applicationId ? getApplicationInfo(sessionInfo.applicationId) : null;
 
 	const defaultArea = appInfo?.defaultArea ?? 'home';
 

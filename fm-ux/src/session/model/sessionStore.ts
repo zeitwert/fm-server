@@ -1,5 +1,11 @@
 import { create } from 'zustand';
-import { api, getRestUrl, SESSION_INFO_KEY, SESSION_STATE_KEY, TENANT_INFO_KEY } from '../../common/api/client';
+import {
+	api,
+	getRestUrl,
+	SESSION_INFO_KEY,
+	SESSION_STATE_KEY,
+	TENANT_INFO_KEY,
+} from '../../common/api/client';
 import { changeLanguage } from '../../i18n';
 import {
 	Enumerated,
@@ -37,6 +43,7 @@ interface SessionStore {
 	clearError: () => void;
 	goBackToTenantSelection: () => void;
 	switchAccount: (accountId: string) => Promise<void>;
+	switchApplication: (appId: string) => void;
 }
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
@@ -57,7 +64,11 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
 	needsTenantSelection: () => {
 		const { state, selectedTenant, userInfo } = get();
-		return state === SessionState.authenticated && !selectedTenant && (userInfo?.tenants?.length ?? 0) > 0;
+		return (
+			state === SessionState.authenticated &&
+			!selectedTenant &&
+			(userInfo?.tenants?.length ?? 0) > 0
+		);
 	},
 
 	needsAccountSelection: () => {
@@ -237,7 +248,9 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 		if (storedState === SessionState.open && storedSessionInfo) {
 			try {
 				const sessionInfo = JSON.parse(storedSessionInfo) as SessionInfo;
-				const tenantInfo = storedTenantInfo ? (JSON.parse(storedTenantInfo) as LoginTenantInfo) : null;
+				const tenantInfo = storedTenantInfo
+					? (JSON.parse(storedTenantInfo) as LoginTenantInfo)
+					: null;
 
 				// Sync i18n language with session locale
 				changeLanguage(sessionInfo.locale);
@@ -318,5 +331,26 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 				error: error instanceof Error ? error.message : 'Failed to switch account',
 			});
 		}
+	},
+
+	switchApplication: (appId: string) => {
+		const { sessionInfo } = get();
+		if (!sessionInfo) return;
+
+		// Validate appId is in available applications
+		if (!sessionInfo.availableApplications.includes(appId)) {
+			return;
+		}
+
+		// Update sessionInfo with new applicationId
+		const updatedSessionInfo: SessionInfo = {
+			...sessionInfo,
+			applicationId: appId,
+		};
+
+		// Persist to session storage
+		sessionStorage.setItem(SESSION_INFO_KEY, JSON.stringify(updatedSessionInfo));
+
+		set({ sessionInfo: updatedSessionInfo });
 	},
 }));
