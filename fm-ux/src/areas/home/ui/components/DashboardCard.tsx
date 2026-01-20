@@ -26,16 +26,18 @@ export function DashboardCard({
 				border: "1px solid #d9d9d9",
 				...cardStyle,
 			}}
-			headStyle={{
-				padding: "6px 16px",
-				minHeight: 0,
-				...headStyle,
-			}}
-			bodyStyle={{
-				flex: 1,
-				overflow: "auto",
-				background: "#ffffff",
-				...bodyStyle,
+			styles={{
+				header: {
+					padding: "6px 16px",
+					minHeight: 0,
+					...headStyle,
+				},
+				body: {
+					flex: 1,
+					overflow: "auto",
+					background: "#ffffff",
+					...bodyStyle,
+				},
 			}}
 		>
 			{children ?? <div style={{ height: "100%" }} />}

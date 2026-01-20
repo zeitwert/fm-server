@@ -130,7 +130,7 @@ export function SelectionWizard() {
 										border: "2px solid transparent",
 										transition: "all 0.3s",
 									}}
-									bodyStyle={{ padding: "24px 16px" }}
+									styles={{ body: { padding: "24px 16px" } }}
 								>
 									<Avatar
 										src={getTenantLogoUrl(tenant.id)}
@@ -163,7 +163,7 @@ export function SelectionWizard() {
 											border: "2px solid transparent",
 											transition: "all 0.3s",
 										}}
-										bodyStyle={{ padding: "24px 16px" }}
+										styles={{ body: { padding: "24px 16px" } }}
 									>
 										<Avatar
 											src={getAccountLogoUrl(account.id)}
